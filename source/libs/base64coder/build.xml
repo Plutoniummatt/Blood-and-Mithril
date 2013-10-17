@@ -1,0 +1,112 @@
+<!-- Ant build file for base64coder Java version -->
+<project name="base64Coder" default="package">
+
+<property environment="env"/>
+<property name="jUnitVersionToDownload" value="4.7"/>
+
+<!-- Main targets ===========================================================-->
+
+<target name="clean" description="Deletes the target directory.">
+ <delete dir="target" failonerror="true"/>
+</target>
+
+<target name="compile" description="Compiles the main source files.">
+ <mkdir dir="target/classes"/>
+ <javac srcdir="src/main/java" destdir="target/classes"
+    deprecation="true" includeAntRuntime="false" debug="true" debuglevel="lines,source"
+    source="1.5" target="1.5">
+ </javac>
+</target>
+
+<target name="package" depends="compile" description="Builds the JAR file.">
+ <jar destfile="target/base64coder.jar">
+  <fileset dir="target/classes"/>
+ </jar>
+</target>
+
+<target name="javadoc" description="Generates the API documentation (JavaDoc)">
+ <delete dir="target/apidocs" failonerror="true"/>
+ <mkdir dir="target/apidocs"/>
+ <javadoc sourcepath="src/main/java" destdir="target/apidocs" failonerror="true"
+    link="http://docs.oracle.com/javase/6/docs/api/"/>
+</target>
+
+<!-- Test ===================================================================-->
+
+<target name="compileTest" depends="package, getJUnitJar" description="Compiles the test class.">
+ <mkdir dir="target/test-classes"/>
+ <!-- Note: The "Sun proprietary" warnings cannot be suppressed as of 2010-02. -->
+ <javac srcdir="src/test/java"  destdir="target/test-classes"
+    deprecation="true" includeAntRuntime="false" debug="true" debuglevel="lines,source"
+    source="1.5" target="1.5">
+  <classpath>
+   <pathelement location="target/base64coder.jar"/>
+   <pathelement location="${jUnitJar}"/>
+  </classpath>
+ </javac>
+</target>
+
+<target name="test" depends="package, compileTest, getJUnitJar" description="Runs the JUnit tests.">
+ <delete dir="target/test-reports" failonerror="true"/>
+ <mkdir dir="target/test-reports"/>
+ <junit haltonfailure="true">
+  <classpath>
+   <pathelement location="target/test-classes"/>
+   <pathelement location="target/base64coder.jar"/>
+   <pathelement location="${jUnitJar}"/>
+  </classpath>
+  <formatter type="plain"/>
+  <test name="TestBase64Coder" todir="target/test-reports"/>
+ </junit>
+</target>
+
+<!-- External dependencies for the test module ==============================-->
+
+<target name="getJUnitJar" depends="getJUnitJar2" unless="jUnitJar">
+ <!-- Download the JUnit JAR file from the central Maven repository. -->
+ <property name="jUnitJar" location="target/junit-${jUnitVersionToDownload}.jar"/>
+ <get src="http://repo1.maven.org/maven2/junit/junit/${jUnitVersionToDownload}/junit-${jUnitVersionToDownload}.jar" dest="${jUnitJar}"/>
+  <!-- The "skipexisting" option of the "get" task emmits a warning message, so we don't use it and use the getJUnitJar2 target instead. -->
+</target>
+<target name="getJUnitJar2" depends="getJUnitJar3" unless="jUnitJar">
+ <available property="jUnitJar" value="target/junit-${jUnitVersionToDownload}.jar" file="target/junit-${jUnitVersionToDownload}.jar"/>
+</target>
+<target name="getJUnitJar3" unless="jUnitJar">
+ <!-- The OS environment variable JUNIT_JAR can be set to the path name of the JUnit JAR file. -->
+ <condition property="jUnitJar" value="${env.JUNIT_JAR}">
+  <isset property="env.JUNIT_JAR"/>
+ </condition>
+</target>
+
+<!-- Website update =========================================================-->
+
+<target name="buildDistribZip" description="Builds the distribution ZIP file.">
+ <antcall target="clean"/>
+ <antcall target="package"/>
+ <antcall target="javadoc"/>
+ <zip destfile="target/base64coder.zip">
+  <zipfileset dir="."
+   includes="build.xml, pom.xml, CHANGES.txt, README.txt, src/, target/base64coder.jar, target/apidocs/"/>
+ </zip>
+</target>
+
+<target name="updateWebsite">
+ <fail unless="env.base64CoderJavaWebsiteDir" message="Undefined website directory."/>
+ <property name="websiteDir" location="${env.base64CoderJavaWebsiteDir}"/>
+ <antcall target="buildDistribZip"/>
+ <copy todir="${websiteDir}" overwrite="true">
+  <fileset dir="src" includes="**/*.java"/>
+  <chainedmapper>
+   <flattenmapper/>
+   <mapper>
+    <globmapper from="*.java" to="*.java.txt"/>
+    <identitymapper/>
+   </mapper>
+  </chainedmapper>
+ </copy>
+ <copy todir="${websiteDir}" overwrite="true">
+  <fileset dir="target" includes="base64coder.zip, apidocs/"/>
+ </copy>
+</target>
+
+</project>

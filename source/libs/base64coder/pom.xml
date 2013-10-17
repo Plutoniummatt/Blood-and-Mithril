@@ -1,0 +1,174 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>biz.source_code</groupId>
+  <artifactId>base64coder</artifactId>
+  <version>2010-12-19</version>
+  <packaging>bundle</packaging>
+  <name>Base64Coder</name>
+  <description>A Base64 encoder/decoder in Java.</description>
+  <url>http://www.source-code.biz/base64coder/java</url>
+
+  <organization>
+    <name>source-code.biz</name>
+    <url>http://www.source-code.biz/</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>EPL (Eclipse Public License), V1.0 or later</name>
+      <url>http://www.eclipse.org/legal</url>
+      <distribution>repo</distribution>
+      <comments>Base64Coder is multi-licensed, EPL+LGPL+GPL+AL+BSD+MIT. Please contact the author if you need another license.</comments>
+    </license>
+    <license>
+      <name>GNU LGPL (GNU Lesser General Public License), V2.1 or later</name>
+      <url>http://www.gnu.org/licenses/lgpl.html</url>
+      <distribution>repo</distribution>
+      <comments>Base64Coder is multi-licensed, EPL+LGPL+GPL+AL+BSD+MIT. Please contact the author if you need another license.</comments>
+    </license>
+    <license>
+      <name>GNU LGP (GNU General Public License), V2 or later</name>
+      <url>http://www.gnu.org/licenses/lgpl.html</url>
+      <distribution>repo</distribution>
+      <comments>Base64Coder is multi-licensed, EPL+LGPL+GPL+AL+BSD+MIT. Please contact the author if you need another license.</comments>
+    </license>
+    <license>
+      <name>Apache License, V2.0 or later</name>
+      <url>http://www.apache.org/licenses</url>
+      <distribution>repo</distribution>
+      <comments>Base64Coder is multi-licensed, EPL+LGPL+GPL+AL+BSD+MIT. Please contact the author if you need another license.</comments>
+    </license>
+    <license>
+      <name>BSD License</name>
+      <url>http://www.opensource.org/licenses/bsd-license.php</url>
+      <distribution>repo</distribution>
+      <comments>Base64Coder is multi-licensed, EPL+LGPL+GPL+AL+BSD+MIT. Please contact the author if you need another license.</comments>
+    </license>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+      <comments>Base64Coder is multi-licensed, EPL+LGPL+GPL+AL+BSD+MIT. Please contact the author if you need another license.</comments>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>http://svn.source-code.biz/viewvc/base64coder-java/trunk/</url>
+    <connection>scm:svn:http://svn.source-code.biz/base64coder-java/trunk</connection>
+    <developerConnection>scm:svn:http://svn.source-code.biz/base64coder-java/trunk</developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>chdh</id>
+      <name>Christian d'Heureuse</name>
+      <email>chdh@inventec.ch</email>
+      <timezone>+1</timezone>
+      <url>http://www.inventec.ch/chdh</url>
+      <organization>Inventec Informatik AG</organization>
+      <organizationUrl>http://www.inventec.ch</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+        <role>mavenizer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>5</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.7</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2.1</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assemble/distribution.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>create-project-distribution-file</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.1.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Export-Package>biz.source_code.base64Coder.*</Export-Package>
+            <Bundle-Version>1.0.0.${project.version}</Bundle-Version>
+            <Bundle-DocURL>${project.url}</Bundle-DocURL>
+          </instructions>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+</project>
