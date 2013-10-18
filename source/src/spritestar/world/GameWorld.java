@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import spritestar.Fortress;
 import spritestar.character.Individual;
 import spritestar.prop.Prop;
 import spritestar.util.Shaders;
-import spritestar.util.datastructure.ConcurrentIntObjectHashMap;
 import spritestar.world.topography.Topography;
 import spritestar.world.weather.Weather;
 
@@ -51,7 +51,7 @@ public class GameWorld {
 	public static Set<Individual> selectedIndividuals = new HashSet<Individual>();
 
 	/** Every {@link Individual} that exists */
-	public static ConcurrentIntObjectHashMap<Individual> individuals = new ConcurrentIntObjectHashMap<>();
+	public static ConcurrentHashMap<Integer, Individual> individuals = new ConcurrentHashMap<>();
 
 	public static ArrayList<Prop> props = new ArrayList<>();
 
