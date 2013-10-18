@@ -30,7 +30,7 @@ public class TerrainGenerator {
 	private void populateTileArrays(int x, int y, Tile[][] fTiles, Tile[][] bTiles) {
 		for (int tileX = 0; tileX < Topography.chunkSize; tileX++) {
 			for (int tileY = 0; tileY < Topography.chunkSize; tileY++) {
-				// TODO
+				// TODO populateTileArrays
 				fTiles[tileX][tileY] = new Tile.EmptyTile();
 				bTiles[tileX][tileY] = new Tile.EmptyTile();
 			}

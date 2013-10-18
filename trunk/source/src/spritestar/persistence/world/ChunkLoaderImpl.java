@@ -95,7 +95,7 @@ public class ChunkLoaderImpl implements ChunkLoader {
 
 	/** Loads generation data */
 	public static void loadGenerationData() {
-		//TODO
+		//TODO loadGenerationData()
 	}
 
 
