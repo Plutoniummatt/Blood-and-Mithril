@@ -1,4 +1,4 @@
-package spritestar.world.generation;
+package spritestar.generation;
 
 import spritestar.world.topography.Chunk;
 import spritestar.world.topography.Topography;
