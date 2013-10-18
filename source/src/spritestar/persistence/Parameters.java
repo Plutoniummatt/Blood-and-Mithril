@@ -3,10 +3,10 @@ package spritestar.persistence;
 import java.io.Serializable;
 import java.util.Random;
 
-import com.badlogic.gdx.math.Vector2;
-
 import spritestar.character.Individual.IndividualIdentifier;
 import spritestar.world.Epoch;
+
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Parameters that require saving
@@ -15,11 +15,11 @@ import spritestar.world.Epoch;
  */
 public class Parameters implements Serializable {
 	private static final long serialVersionUID = -4405235813990330113L;
-	
+
 	private int structureKeyCounter = 0;
 	private int initialSeed = 0;
 	private int individualIdCounter = 0;
-	
+
 	private Vector2 camera;
 	private Epoch currentEpoch;
 
@@ -36,7 +36,8 @@ public class Parameters implements Serializable {
 	/**
 	 * Returns the current structure key counter
 	 */
-	public synchronized int getStructureKey() {
+	public synchronized int getNextStructureKey() {
+		structureKeyCounter++;
 		return structureKeyCounter;
 	}
 
@@ -51,29 +52,21 @@ public class Parameters implements Serializable {
 
 
 	/**
-	 * Increments {@link #structureKeyCounter}
-	 */
-	public synchronized void incrementStructureKey() {
-		structureKeyCounter++;
-	}
-
-
-	/**
 	 * Returns the current structure key counter
 	 */
 	public synchronized int getSeed() {
 		return initialSeed;
 	}
-	
-	
+
+
 	/**
 	 * Returns the saved camera position
 	 */
 	public Vector2 getSavedCameraPosition() {
 		return camera;
 	}
-	
-	
+
+
 	/**
 	 * Sets the saved camera position
 	 */

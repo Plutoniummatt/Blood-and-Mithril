@@ -229,6 +229,9 @@ public abstract class Tile implements Serializable {
 		 */
 		public DebugTile() {
 			super(false);
+			if (!"true".equals(System.getProperty("debug"))) {
+				throw new RuntimeException();
+			}
 		}
 
 

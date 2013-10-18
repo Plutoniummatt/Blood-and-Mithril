@@ -16,7 +16,6 @@ import spritestar.character.ai.AIProcessor;
 import spritestar.character.ai.AITask;
 import spritestar.character.ai.task.GoToLocation;
 import spritestar.persistence.GameSaver;
-import spritestar.persistence.ParameterPersistenceService;
 import spritestar.persistence.world.ChunkLoaderImpl;
 import spritestar.prop.Prop;
 import spritestar.ui.components.Button;
@@ -290,7 +289,6 @@ public class UserInterface {
 
 		defaultFont.setColor(Color.GREEN);
 		defaultFont.draw(Fortress.spriteBatch, "Number of chunks in memory: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 55);
-		defaultFont.draw(Fortress.spriteBatch, "Number of structures generated : " + Integer.toString(ParameterPersistenceService.getParameters().getStructureKey()), 5, Gdx.graphics.getHeight() - 75);
 
 		defaultFont.draw(Fortress.spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, Gdx.graphics.getHeight() - 125);
 		defaultFont.draw(Fortress.spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoaderImpl.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);

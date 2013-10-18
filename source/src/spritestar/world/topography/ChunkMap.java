@@ -30,15 +30,15 @@ public class ChunkMap {
 
 	
 	/**
-	 * @param x - x-world chunk coord
-	 * @param y - y-world chunk coord
+	 * @param chunkX - x-world chunk coord
+	 * @param chunkY - y-world chunk coord
 	 * @return whether or not a chunk at chunk coordinates x, y exists.
 	 */
-	public boolean doesChunkExist(int x, int y) {
-		if (chunkMap.get(x) == null) {
+	public boolean doesChunkExist(int chunkX, int chunkY) {
+		if (chunkMap.get(chunkX) == null) {
 			return false;
 		} else {
-			return chunkMap.get(x).get(y) != null;
+			return chunkMap.get(chunkX).get(chunkY) != null;
 		}
 	}
 	
@@ -67,11 +67,11 @@ public class ChunkMap {
 
 	
 	/**
-	 * @param x - the x chunk coordinate of the chunk column you want to get.
+	 * @param chunkX - the x chunk coordinate of the chunk column you want to get.
 	 * @return the column of chunks you wanted.
 	 */
-	public ConcurrentHashMap<Integer, Chunk> get(int x) {
-		return chunkMap.get(x);
+	public ConcurrentHashMap<Integer, Chunk> get(int chunkX) {
+		return chunkMap.get(chunkX);
 	}
 
 	
