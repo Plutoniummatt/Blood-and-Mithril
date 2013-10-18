@@ -12,13 +12,8 @@ import spritestar.util.Logger;
 import spritestar.util.Logger.LogLevel;
 import spritestar.util.Task;
 import spritestar.util.datastructure.ConcurrentDualKeyHashMap;
-import spritestar.world.generation.StructureMap;
-import spritestar.world.generation.patterns.Layers;
 import spritestar.world.topography.Chunk;
 import spritestar.world.topography.Topography;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 
 /**
  * Saves {@link Chunk}s using the {@link Serializable} interface
@@ -78,13 +73,13 @@ public class ChunkSaver {
 				@Override
 				public void execute() {
 					saveGenerationData();
-					
+
 					ZipHelper zip = new ZipHelper(GameSaver.savePath + "/world", "/chunkData.zip");
-					
+
 					for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> columnToSave : Topography.chunkMap.chunkMap.entrySet()) {
 						saveColumn(columnToSave.getKey(), columnToSave.getValue(), zip);
 					}
-					
+
 					zip.makeZip();
 				}
 
@@ -99,17 +94,7 @@ public class ChunkSaver {
 	 * Saves the datastructures used for generation
 	 */
 	private static void saveGenerationData() {
-		FileHandle superStructureKeys = Gdx.files.local(GameSaver.savePath + "/world/superStructureKeys.txt");
-		FileHandle subStructureKeys = Gdx.files.local(GameSaver.savePath + "/world/subStructureKeys.txt");
-		FileHandle structures = Gdx.files.local(GameSaver.savePath + "/world/structures.txt");
-		FileHandle surfaceHeight = Gdx.files.local(GameSaver.savePath + "/world/surfaceHeight.txt");
-		FileHandle layers = Gdx.files.local(GameSaver.savePath + "/world/layers.txt");
-
-		superStructureKeys.writeString(encode(StructureMap.superStructureKeys), false);
-		subStructureKeys.writeString(encode(StructureMap.subStructureKeys), false);
-		structures.writeString(encode(StructureMap.structures), false);
-		surfaceHeight.writeString(encode(StructureMap.surfaceHeight), false);
-		layers.writeString(encode(Layers.layers), false);
+		//TODO
 	}
 
 
@@ -143,7 +128,7 @@ public class ChunkSaver {
 				public void execute() {
 //					saveChunk(Topography.chunkMap.get(x).get(y), x, y);
 //					Topography.chunkMap.get(x).remove(y);
-					
+
 					//TODO
 				}
 			});

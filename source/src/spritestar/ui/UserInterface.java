@@ -29,8 +29,6 @@ import spritestar.util.Shaders;
 import spritestar.util.Task;
 import spritestar.world.GameWorld;
 import spritestar.world.WorldState;
-import spritestar.world.generation.Structure;
-import spritestar.world.generation.StructureMap;
 import spritestar.world.topography.Chunk;
 import spritestar.world.topography.Topography;
 
@@ -285,7 +283,6 @@ public class UserInterface {
 		defaultFont.draw(Fortress.spriteBatch, "Mouse World Coords: " + Fortress.getMouseWorldX() + ", " + Fortress.getMouseWorldY(), 5, 72);
 		defaultFont.draw(Fortress.spriteBatch, "Centre of screen Coords: " + Float.toString(Fortress.cam.position.x) + ", " + Float.toString(Fortress.cam.position.y) + ", " + Float.toString(Fortress.cam.zoom), 5, 52);
 
-		int structuresInMemory = StructureMap.structures.size();
 		int chunksInMemory = 0;
 		for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> entry : Topography.chunkMap.chunkMap.entrySet()) {
 			chunksInMemory = chunksInMemory + entry.getValue().size();
@@ -293,19 +290,13 @@ public class UserInterface {
 
 		defaultFont.setColor(Color.GREEN);
 		defaultFont.draw(Fortress.spriteBatch, "Number of chunks in memory: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 55);
-		defaultFont.draw(Fortress.spriteBatch, "Number of structures in memory : " + Integer.toString(structuresInMemory), 5, Gdx.graphics.getHeight() - 75);
-		defaultFont.draw(Fortress.spriteBatch, "Number of structures generated : " + Integer.toString(ParameterPersistenceService.getParameters().getStructureKey()), 5, Gdx.graphics.getHeight() - 95);
+		defaultFont.draw(Fortress.spriteBatch, "Number of structures generated : " + Integer.toString(ParameterPersistenceService.getParameters().getStructureKey()), 5, Gdx.graphics.getHeight() - 75);
 
 		defaultFont.draw(Fortress.spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, Gdx.graphics.getHeight() - 125);
 		defaultFont.draw(Fortress.spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoaderImpl.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);
 		defaultFont.draw(Fortress.spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, Gdx.graphics.getHeight() - 165);
 
 		defaultFont.setColor(Color.CYAN);
-		int i = 0;
-		for (Entry<String, Structure> structure : new HashMap<>(StructureMap.structures).entrySet()) {
-			defaultFont.draw(Fortress.spriteBatch, structure.getValue().toString(), 5, Gdx.graphics.getHeight() - 195 - 20 * i);
-			i++;
-		}
 	}
 
 

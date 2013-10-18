@@ -3,11 +3,9 @@ package spritestar.persistence.world;
 import static spritestar.persistence.PersistenceUtil.decode;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.zip.ZipFile;
 
 import spritestar.persistence.GameSaver;
@@ -16,18 +14,10 @@ import spritestar.util.Logger;
 import spritestar.util.Logger.LogLevel;
 import spritestar.util.Task;
 import spritestar.util.datastructure.ConcurrentDualKeyHashMap;
-import spritestar.util.datastructure.ConcurrentIntIntToIntHashMap;
-import spritestar.util.datastructure.ConcurrentIntObjectHashMap;
-import spritestar.util.datastructure.TwoInts;
-import spritestar.world.generation.Structure;
-import spritestar.world.generation.StructureMap;
 import spritestar.world.generation.TerrainGenerator;
-import spritestar.world.generation.patterns.Layers;
 import spritestar.world.topography.Chunk;
 import spritestar.world.topography.Chunk.ChunkData;
 import spritestar.world.topography.Topography;
-
-import com.badlogic.gdx.Gdx;
 
 /**
  * An implementation of {@link ChunkLoader} using {@link Serializable}
@@ -43,7 +33,7 @@ public class ChunkLoaderImpl implements ChunkLoader {
 	public static final BlockingQueue<Task> loaderTasks = new ArrayBlockingQueue<Task>(5000);
 
 	/** The terrain generator */
-	private final TerrainGenerator generator;
+	private final TerrainGenerator generator = new TerrainGenerator();
 
 	/** The current chunk coordinates that is in the queue to be loaded/generated */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<Integer, Integer, Boolean>();
@@ -51,9 +41,7 @@ public class ChunkLoaderImpl implements ChunkLoader {
 	/**
 	 * Constructor
 	 */
-	public ChunkLoaderImpl(TerrainGenerator generator) {
-		this.generator = generator;
-
+	public ChunkLoaderImpl() {
 		loaderThread = new Thread(new Runnable() {
 
 			@Override
@@ -107,50 +95,7 @@ public class ChunkLoaderImpl implements ChunkLoader {
 
 	/** Loads generation data */
 	public static void loadGenerationData() {
-		if (StructureMap.superStructureKeys == null) {
-			try {
-				StructureMap.superStructureKeys = decode(Gdx.files.local(GameSaver.savePath + "/world/superStructureKeys.txt"));
-			} catch (Exception e) {
-				Logger.loaderDebug("Failed to load chunk super structure structure keys", LogLevel.WARN);
-				StructureMap.superStructureKeys = new ConcurrentIntIntToIntHashMap();
-			}
-		}
-		
-		if (StructureMap.subStructureKeys == null) {
-			try {
-				StructureMap.subStructureKeys = decode(Gdx.files.local(GameSaver.savePath + "/world/subStructureKeys.txt"));
-			} catch (Exception e) {
-				Logger.loaderDebug("Failed to load chunk sub structure keys", LogLevel.WARN);
-				StructureMap.subStructureKeys = new ConcurrentIntIntToIntHashMap();
-			}
-		}
-		
-		if (StructureMap.structures == null) {
-			try {
-				StructureMap.structures = decode(Gdx.files.local(GameSaver.savePath + "/world/structures.txt"));
-			} catch (Exception e) {
-				Logger.loaderDebug("Failed to load structures", LogLevel.WARN);
-				StructureMap.structures = new ConcurrentIntObjectHashMap<Structure>();
-			}
-		}
-		
-		if (StructureMap.surfaceHeight == null) {
-			try {
-				StructureMap.surfaceHeight = decode(Gdx.files.local(GameSaver.savePath + "/world/surfaceHeight.txt"));
-			} catch (Exception e) {
-				Logger.loaderDebug("Failed to load surface height", LogLevel.WARN);
-				StructureMap.surfaceHeight = new HashMap<>();
-			}
-		}
-		
-		if (Layers.layers == null) {
-			try {
-				Layers.layers = decode(Gdx.files.local(GameSaver.savePath + "/world/layers.txt"));
-			} catch (Exception e) {
-				Logger.loaderDebug("Failed to load layers", LogLevel.WARN);
-				Layers.layers = new ConcurrentSkipListMap<Integer, TwoInts>();
-			}
-		}
+		//TODO
 	}
 
 
@@ -160,7 +105,7 @@ public class ChunkLoaderImpl implements ChunkLoader {
 
 		try {
 			ZipFile zipFile = new ZipFile(GameSaver.savePath + "/world/chunkData.zip");
-			
+
 			boolean newCol = Topography.chunkMap.get(chunkX) == null;
 			ConcurrentHashMap<Integer, Chunk> col = newCol ? new ConcurrentHashMap<Integer, Chunk>() : Topography.chunkMap.get(chunkX);
 
