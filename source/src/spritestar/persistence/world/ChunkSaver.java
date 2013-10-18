@@ -91,10 +91,10 @@ public class ChunkSaver {
 
 
 	/**
-	 * Saves the datastructures used for generation
+	 * Saves the data used for generation
 	 */
 	private static void saveGenerationData() {
-		//TODO
+		//TODO saveGenerationData()
 	}
 
 
@@ -126,10 +126,7 @@ public class ChunkSaver {
 			GameSaver.saverTasks.add(new Task() {
 				@Override
 				public void execute() {
-//					saveChunk(Topography.chunkMap.get(x).get(y), x, y);
-//					Topography.chunkMap.get(x).remove(y);
-
-					//TODO
+					//TODO saveAndFlushChunk
 				}
 			});
 			chunksInQueue.put(x, y, true);
