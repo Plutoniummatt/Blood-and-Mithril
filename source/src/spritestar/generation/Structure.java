@@ -21,11 +21,10 @@ public abstract class Structure {
 	 */
 	public Structure() {
 		this.key = ParameterPersistenceService.getParameters().getNextStructureKey();
-		Structures.structures.put(key, this);
 	}
 
 
-	/** True if {@link #chunksLeftToGenerate} is zero, ie we have no more chunks left pending generation */
+	/** True if {@link #chunksLeftToGenerate} is zero, i.e. we have no more chunks left pending generation */
 	public boolean isFinishedGenerating() {
 		return chunksLeftToGenerate == 0;
 	}
@@ -37,8 +36,18 @@ public abstract class Structure {
 	}
 
 
+	/** Generates this structure and adds it to the relevant maps */
+	public void generateAndAddToStructureMaps() {
+		internalGenerate();
+		Structures.structures.put(key, this);
+		addToStructureMap();
+	}
+
+	/** Generates this {@link Structure} */
+	protected abstract void internalGenerate();
+
 	/** Adds the {@link #key} of this structure to the specified structure key map */
-	public abstract void addToStructureMap(boolean superStructure);
+	public abstract void addToStructureMap();
 
 	/** Calculates how many chunks this {@link Structure} includes */
 	public abstract void calculateChunksToGenerate();
