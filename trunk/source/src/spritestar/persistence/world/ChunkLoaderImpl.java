@@ -8,13 +8,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipFile;
 
+import spritestar.generation.TerrainGenerator;
 import spritestar.persistence.GameSaver;
 import spritestar.persistence.ZipHelper;
 import spritestar.util.Logger;
 import spritestar.util.Logger.LogLevel;
 import spritestar.util.Task;
 import spritestar.util.datastructure.ConcurrentDualKeyHashMap;
-import spritestar.world.generation.TerrainGenerator;
 import spritestar.world.topography.Chunk;
 import spritestar.world.topography.Chunk.ChunkData;
 import spritestar.world.topography.Topography;
