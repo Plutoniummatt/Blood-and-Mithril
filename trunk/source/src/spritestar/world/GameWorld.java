@@ -10,7 +10,6 @@ import spritestar.character.Individual;
 import spritestar.prop.Prop;
 import spritestar.util.Shaders;
 import spritestar.util.datastructure.ConcurrentIntObjectHashMap;
-import spritestar.world.generation.TerrainGenerator;
 import spritestar.world.topography.Topography;
 import spritestar.world.weather.Weather;
 
@@ -60,8 +59,8 @@ public class GameWorld {
 	/**
 	 * Constructor
 	 */
-	public GameWorld(Class<? extends TerrainGenerator> generator) {
-		topography = new Topography(generator);
+	public GameWorld() {
+		topography = new Topography();
 		gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	}
 

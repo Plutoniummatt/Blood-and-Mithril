@@ -11,7 +11,6 @@ import spritestar.persistence.world.ChunkSaver;
 import spritestar.util.Logger;
 import spritestar.util.Logger.LogLevel;
 import spritestar.util.Task;
-import spritestar.world.generation.TerrainGenerator;
 import spritestar.world.topography.tile.Tile;
 import spritestar.world.topography.tile.Tile.EmptyTile;
 
@@ -49,28 +48,28 @@ public class Topography {
 	/** Any non-main thread topography tasks queued here */
 	private static BlockingQueue<Task> topographyTasks = new ArrayBlockingQueue<Task>(500000);
 
-	
+
 	/**
 	 * @param generator - The type of generator to use
 	 */
-	public Topography(Class<? extends TerrainGenerator> generator) {
+	public Topography() {
 		try {
-			this.chunkLoader = new ChunkLoaderImpl(generator.newInstance());
+			this.chunkLoader = new ChunkLoaderImpl();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		chunkMap = new ChunkMap();
 	}
-	
-	
+
+
 	/** Adds a task to be processed */
 	public static void addTask(Task task) {
 		synchronized(topographyTasks) {
 			topographyTasks.add(task);
 		}
 	}
-	
-	
+
+
 	/** Executes any tasks queued in {@link #topographyTasks} by other threads */
 	public static void executeBackLog() {
 		synchronized(topographyTasks) {
@@ -100,8 +99,8 @@ public class Topography {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Renders the foreground
 	 */
@@ -110,7 +109,7 @@ public class Topography {
 		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (chunkSize * tileSize);
 		int topRightX 		= bottomLeftX + Display.getWidth() / (chunkSize * tileSize);
 		int topRightY		= bottomLeftY + Display.getHeight() / (chunkSize * tileSize);
-		
+
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
@@ -121,21 +120,21 @@ public class Topography {
 			}
 		}
 	}
-	
-	
+
+
 	/** Get the lowest empty tile world coordinates */
 	public static Vector2 getLowestEmptyOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) {
 		return getLowestEmptyTileOrPlatformTileWorldCoords(new Vector2(worldX, worldY), floor);
 	}
-	
-	
+
+
 	/** Get the lowest empty tile world coordinates */
 	public static Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) {
 		float x = worldCoords.x;
 		float y = worldCoords.y;
 
 		if (getTile(worldCoords, true) instanceof EmptyTile) {
-			while ((getTile(x, y, true) instanceof EmptyTile)) {
+			while (getTile(x, y, true) instanceof EmptyTile) {
 				y = y - tileSize;
 			}
 			y = y + tileSize;
@@ -144,60 +143,60 @@ public class Topography {
 				y = y + tileSize;
 			}
 		}
-		
+
 		return new Vector2(
-			convertToWorldCoord(convertToWorldTileCoord(x), false), 
+			convertToWorldCoord(convertToWorldTileCoord(x), false),
 			convertToWorldCoord(convertToWorldTileCoord(y), floor)
 		);
 	}
-	
-	
+
+
 	/**
 	 * Converts chunk coord + chunk tile coord to world tile coord
 	 */
 	public static int convertToWorldTileCoord(int chunk, int tile) {
-		return (chunk * chunkSize + tile);
+		return chunk * chunkSize + tile;
 	}
-	
-	
+
+
 	/**
 	 * Converts chunk coord + chunk tile coord to world tile coord
 	 */
 	public static int convertToWorldTileCoord(float coord) {
 		return convertToWorldTileCoord(convertToChunkCoord(coord), convertToTileCoord(coord));
 	}
-	
-	
+
+
 	public static Vector2 convertToWorldCoord(Vector2 coords, boolean floor) {
 		return convertToWorldCoord(coords.x, coords.y, floor);
 	}
-	
-	
+
+
 	public static Vector2 convertToWorldCoord(float x, float y, boolean floor) {
 		return new Vector2(
 			convertToWorldCoord(convertToWorldTileCoord(convertToChunkCoord(x), convertToTileCoord(x)), false),
 			convertToWorldCoord(convertToWorldTileCoord(convertToChunkCoord(y), convertToTileCoord(y)), floor)
 		);
 	}
-	
-	
+
+
 	/**
 	 * Converts a world coordinate into a (chunk)tile coordinate
 	 */
 	public static int convertToTileCoord(float worldCoord) {
 		int worldCoordinateIntegerized = (int) worldCoord;
-		
+
 		if (worldCoordinateIntegerized >= 0) {
 			return worldCoordinateIntegerized / tileSize % chunkSize;
 		} else {
 			return chunkSize + worldCoordinateIntegerized / tileSize % chunkSize - 1;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Deletes a tile at this location
-	 * 
+	 *
 	 * @param worldX
 	 * @param worldY
 	 */
@@ -206,9 +205,9 @@ public class Topography {
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
-		
+
 		boolean answer = false;
-		
+
 		try {
 			if (!(getTile(worldX,  worldY, true) instanceof EmptyTile)) {
 				answer = true;
@@ -216,18 +215,18 @@ public class Topography {
 			chunkMap.get(chunkX).get(chunkY).deleteTile(tileX, tileY, foreGround);
 			Logger.generalDebug("Deleting tile at (" + convertToWorldTileCoord(chunkX, tileX) + ", " + convertToWorldTileCoord(chunkY, tileY) + "), World coord: (" + worldX + ", " + worldY + ")", LogLevel.TRACE);
 			return answer;
-			
+
 		} catch (NullPointerException e) {
 			Logger.generalDebug("can't delete a null tile", LogLevel.WARN);
 			return false;
-			
+
 		}
 	}
-	
-	
+
+
 	/**
 	 * Changes a tile at this location
-	 * 
+	 *
 	 * @param worldX
 	 * @param worldY
 	 */
@@ -242,14 +241,14 @@ public class Topography {
 			Logger.generalDebug("can't change a null tile", LogLevel.WARN);
 		}
 	}
-	
-	
+
+
 	/** Converts a world tile coord to a world coord, in the centre of the tile */
 	public static float convertToWorldCoord(int worldTileCoord, boolean floor) {
 		return worldTileCoord * Topography.tileSize + (floor ? 0 : Topography.tileSize/2);
 	}
-	
-	
+
+
 	/**
 	 * Converts a tile coordinate into a chunk coordinate
 	 */
@@ -260,37 +259,37 @@ public class Topography {
 			return tileCoord / chunkSize - 1;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Converts a world coordinate into a chunk coordinate
 	 */
 	public static int convertToChunkCoord(float worldCoord) {
 		int worldCoordinateIntegerized = (int) worldCoord;
-		
+
 		if (worldCoordinateIntegerized >= 0) {
 			return worldCoordinateIntegerized / tileSize / chunkSize;
 		} else {
 			return worldCoordinateIntegerized / tileSize / chunkSize - 1;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Gets a tile given the world coordinates
 	 */
 	public static Tile getTile(float worldX, float worldY, boolean foreGround) {
-		
+
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
-		
+
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
-		
+
 		return chunkMap.get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 	}
-	
-	
+
+
 	/** Overloaded method, see {@link #getTile(float, float)} */
 	public static Tile getTile(Vector2 location, boolean foreGround) {
 		return getTile(location.x, location.y, foreGround);
@@ -317,27 +316,27 @@ public class Topography {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Saves and flushes chunks from memory when they are too far from the screen coordinates
 	 */
 	public static void saveAndFlushUnneededChunks(int camX, int camY) {
-		
-		int bottomLeftX = convertToChunkCoord(((float)camX - Display.getWidth() / 2));
-		int bottomLeftY = convertToChunkCoord(((float)camY - Display.getHeight() / 2));
+
+		int bottomLeftX = convertToChunkCoord((float)camX - Display.getWidth() / 2);
+		int bottomLeftY = convertToChunkCoord((float)camY - Display.getHeight() / 2);
 		int topRightX = bottomLeftX + convertToChunkCoord((float)Display.getWidth());
 		int topRightY = bottomLeftY + convertToChunkCoord((float)Display.getHeight());
-		
+
 		int horizonDistance = 6;
-		
+
 		for (int x = bottomLeftX - horizonDistance; x < topRightX + horizonDistance; x++) {
 			if (chunkMap.get(x) != null && chunkMap.get(x).get(topRightY + horizonDistance) != null) {
 				ChunkSaver.saveAndFlushChunk(x, topRightY + horizonDistance);
 			}
 			if (chunkMap.get(x) != null && chunkMap.get(x).get(bottomLeftY - horizonDistance) != null) {
 				ChunkSaver.saveAndFlushChunk(x, bottomLeftY - horizonDistance);
-				
+
 			}
 		}
 		for (int y = bottomLeftY - horizonDistance + 1; y < topRightY + horizonDistance - 1; y++) {

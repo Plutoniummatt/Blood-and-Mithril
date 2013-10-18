@@ -22,7 +22,6 @@ import spritestar.util.Shaders;
 import spritestar.util.Util;
 import spritestar.world.GameWorld;
 import spritestar.world.GameWorld.Light;
-import spritestar.world.generation.StandardGenerator;
 import spritestar.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -82,7 +81,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 		cam = new OrthographicCamera(WIDTH, HEIGHT);
 		cam.setToOrtho(false, WIDTH, HEIGHT);
 
-		gameWorld = new GameWorld(StandardGenerator.class);
+		gameWorld = new GameWorld();
 
 		Gdx.input.setInputProcessor(this);
 
