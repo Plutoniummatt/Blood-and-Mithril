@@ -11,6 +11,7 @@ import spritestar.world.topography.tile.Tile;
  */
 public class TerrainGenerator {
 
+	/** Generates more chunks! */
 	public void generate(int chunkX, int chunkY) {
 
 		// Makes arrays of tiles to work on. both for foreground and background
@@ -46,7 +47,6 @@ public class TerrainGenerator {
 	private void populateTileArrays(int chunkX, int chunkY, Tile[][] fTiles, Tile[][] bTiles) {
 		for (int tileX = 0; tileX < Topography.chunkSize; tileX++) {
 			for (int tileY = 0; tileY < Topography.chunkSize; tileY++) {
-
 				// Obtain the structures underneath our current position
 				Structure superStructure = Structures.getStructure(chunkX, chunkY, true);
 				Structure subStructure = Structures.getStructure(chunkX, chunkY, false);
