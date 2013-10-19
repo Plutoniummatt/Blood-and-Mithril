@@ -213,6 +213,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 					for (Individual indi : GameWorld.individuals.values()) {
 						if (indi.controllable) {
 							indi.deselect(false);
+							GameWorld.selectedIndividuals.remove(indi);
 						}
 					}
 					GameWorld.selectedIndividuals.clear();
@@ -222,11 +223,11 @@ public class Fortress implements ApplicationListener, InputProcessor {
 				for (Individual indi : GameWorld.individuals.values()) {
 					if (indi.controllable) {
 						indi.deselect(false);
+						GameWorld.selectedIndividuals.remove(indi);
 					}
 				}
 
 				if (individualClicked.controllable) {
-
 					GameWorld.selectedIndividuals.add(individualClicked);
 					individualClicked.select();
 				}
