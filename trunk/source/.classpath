@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="libs/gdx-freetype-natives.jar"/>
 	<classpathentry kind="lib" path="libs/base64coder/target/base64coder.jar" sourcepath="libs/base64coder/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Generation"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
