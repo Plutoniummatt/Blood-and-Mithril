@@ -185,7 +185,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 						indi, 
 						new WayPoint(
 							new Vector2(
-								getMouseWorldX() + indi.width * Util.getRandom().nextFloat() * 0.5f * (GameWorld.selectedIndividuals.size() - 1), 
+								getMouseWorldX() + indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), 
 								getMouseWorldY()
 							)
 						), 
