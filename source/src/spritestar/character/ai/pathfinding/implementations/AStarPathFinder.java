@@ -6,7 +6,7 @@ import static spritestar.world.topography.Topography.convertToWorldCoord;
 import static spritestar.world.topography.Topography.getLowestEmptyOrPlatformTileWorldCoords;
 import static spritestar.world.topography.Topography.getLowestEmptyTileOrPlatformTileWorldCoords;
 import static spritestar.world.topography.Topography.getTile;
-import static spritestar.world.topography.Topography.tileSize;
+import static spritestar.world.topography.Topography.TILE_SIZE;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -153,7 +153,7 @@ public class AStarPathFinder extends PathFinder {
 			tile = getTile(location.x, location.y + 1, true);
 		}
 
-		if (tile.isPlatformTile && !(getTile(location.x, location.y - tileSize, true) instanceof EmptyTile)) {
+		if (tile.isPlatformTile && !(getTile(location.x, location.y - TILE_SIZE, true) instanceof EmptyTile)) {
 			return convertToWorldCoord(location, floor);
 		} else {
 			if (finish) {
@@ -203,7 +203,7 @@ public class AStarPathFinder extends PathFinder {
 		int size = answer.getWayPoints().size();
 		if (!answer.isEmpty() && size > 2) {
 			answer.getAndRemoveNextWayPoint();
-			answer.getNextPoint().tolerance = tileSize/2;
+			answer.getNextPoint().tolerance = TILE_SIZE/2;
 		}
 
 		return answer;
@@ -223,15 +223,15 @@ public class AStarPathFinder extends PathFinder {
 	private Node processAdjascentNodesToOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight) throws UndiscoveredPathNotification {
 
 		// Left and right nodes, the tiles immediately to the left/right of the open node to process
-		Node leftNode = new Node(toProcess.x - Topography.tileSize, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
-		Node rightNode = new Node(toProcess.x + Topography.tileSize, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
+		Node leftNode = new Node(toProcess.x - Topography.TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
+		Node rightNode = new Node(toProcess.x + Topography.TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
 
 
 		if (isDestination(leftNode, destinationNode)) {
 			return leftNode;
 		}
 		int stepUpLeft = processAdjascent(leftNode, height, false, toProcess, destinationNode, safeHeight);
-		Node newLeftNode = new Node(leftNode.x, leftNode.y + stepUpLeft * Topography.tileSize, leftNode.parentX, leftNode.parentY, destinationNode, safeHeight);
+		Node newLeftNode = new Node(leftNode.x, leftNode.y + stepUpLeft * Topography.TILE_SIZE, leftNode.parentX, leftNode.parentY, destinationNode, safeHeight);
 		if (!isDestination(newLeftNode, destinationNode)) {
 			if (stepUpLeft < 2) {
 				addToOpenNodes(newLeftNode);
@@ -245,7 +245,7 @@ public class AStarPathFinder extends PathFinder {
 			return rightNode;
 		}
 		int stepUpRight = processAdjascent(rightNode, height, true, toProcess, destinationNode, safeHeight);
-		Node newRightNode = new Node(rightNode.x, rightNode.y + stepUpRight * Topography.tileSize, rightNode.parentX, rightNode.parentY, destinationNode, safeHeight);
+		Node newRightNode = new Node(rightNode.x, rightNode.y + stepUpRight * Topography.TILE_SIZE, rightNode.parentX, rightNode.parentY, destinationNode, safeHeight);
 		if (!isDestination(newRightNode, destinationNode)) {
 			if (stepUpRight < 2) {
 				addToOpenNodes(newRightNode);
@@ -278,26 +278,26 @@ public class AStarPathFinder extends PathFinder {
 			if (tile instanceof EmptyTile) {
 				changeToDebugTile(to.x, to.y);
 				for (int i = 1; i <= height; i++) {
-					changeToDebugTile(to.x, to.y + i * tileSize);
-					if (!getTile(to.x, to.y + i * tileSize, true).isPassable()) {
+					changeToDebugTile(to.x, to.y + i * TILE_SIZE);
+					if (!getTile(to.x, to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
-				cascadeDownAndProcessPlatforms(to.x, to.y - tileSize, parent, destination, height, safeHeight);
+				cascadeDownAndProcessPlatforms(to.x, to.y - TILE_SIZE, parent, destination, height, safeHeight);
 				changeToDebugTile(to.x, getLowestEmptyOrPlatformTileWorldCoords(to.x, to.y, false).y);
-				return -round(to.y - getLowestEmptyOrPlatformTileWorldCoords(to.x, to.y, false).y) / Topography.tileSize;
+				return -round(to.y - getLowestEmptyOrPlatformTileWorldCoords(to.x, to.y, false).y) / Topography.TILE_SIZE;
 
 			// If the tile is not empty and not a platform, we check that all tiles above it (within specified height) are also empty, if so, we return 1, otherwise we return 2.
 			} else if (!tile.isPlatformTile) {
 				// Note we're using height + 1 because we're stepping up
 				for (int i = 1; i <= height + 1; i++) {
-					changeToDebugTile(to.x, to.y + i * tileSize);
-					if (!getTile(to.x, to.y + i * tileSize, true).isPassable()) {
+					changeToDebugTile(to.x, to.y + i * TILE_SIZE);
+					if (!getTile(to.x, to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
-				changeToDebugTile(to.x + (right ? -tileSize : tileSize), to.y + (height + 1) * tileSize);
-				if (!getTile(to.x + (right ? -tileSize : tileSize), to.y + (height + 1) * tileSize, true).isPassable()) {
+				changeToDebugTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE);
+				if (!getTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
 					return 2;
 				}
 				return 1;
@@ -305,17 +305,17 @@ public class AStarPathFinder extends PathFinder {
 			// The tile is a platform. Cascade downward and add all platforms to open nodes, until we hit a non-platform, the return value
 			// will be used for the top most node, added one up the call stack
 			} else {
-				cascadeDownAndProcessPlatforms(to.x, to.y - tileSize, parent, destination, height, safeHeight);
+				cascadeDownAndProcessPlatforms(to.x, to.y - TILE_SIZE, parent, destination, height, safeHeight);
 
 				for (int i = 1; i <= height + 1; i++) {
-					changeToDebugTile(to.x, to.y + i * tileSize);
-					if (!getTile(to.x, to.y + i * tileSize, true).isPassable()) {
+					changeToDebugTile(to.x, to.y + i * TILE_SIZE);
+					if (!getTile(to.x, to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
 
-				changeToDebugTile(to.x + (right ? -tileSize : tileSize), to.y + (height + 1) * tileSize);
-				if (!getTile(to.x + (right ? -tileSize : tileSize), to.y + (height + 1) * tileSize, true).isPassable()) {
+				changeToDebugTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE);
+				if (!getTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
 					return 2;
 				}
 				return 1;
@@ -339,29 +339,29 @@ public class AStarPathFinder extends PathFinder {
 
 		// If we're on empty, recursively call self with lower coordinate.
 		if (tile instanceof EmptyTile) {
-			cascadeDownAndProcessPlatforms(x, y - tileSize, parent, destination, height, safeHeight);
+			cascadeDownAndProcessPlatforms(x, y - TILE_SIZE, parent, destination, height, safeHeight);
 
 		} else {
 			// If we're not empty, check for legality, add the one above to open
 			// nodes.
 			boolean legal = true;
 			for (int i = 1; i <= height + 1; i++) {
-				changeToDebugTile(x, y + i * tileSize);
-				if (!getTile(x, y + i * tileSize, true).isPassable()) {
+				changeToDebugTile(x, y + i * TILE_SIZE);
+				if (!getTile(x, y + i * TILE_SIZE, true).isPassable()) {
 					legal = false;
 					break;
 				}
 			}
 
 			if (legal) {
-				Node newNode = new Node(round(x), round(y + tileSize), parent.x, parent.y, destination, safeHeight);
+				Node newNode = new Node(round(x), round(y + TILE_SIZE), parent.x, parent.y, destination, safeHeight);
 				addToOpenNodes(newNode);
 			}
 
 			// If this non-empty is a platform, recursively call self with lower
 			// coordinate.
 			if (tile.isPlatformTile) {
-				cascadeDownAndProcessPlatforms(x, y - tileSize, parent, destination, height, safeHeight);
+				cascadeDownAndProcessPlatforms(x, y - TILE_SIZE, parent, destination, height, safeHeight);
 			}
 
 			// If this non-empty is not a platform, stop.

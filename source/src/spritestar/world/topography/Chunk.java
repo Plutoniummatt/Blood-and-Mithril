@@ -30,8 +30,8 @@ public class Chunk {
 	private Mesh bMesh;
 
 	/** The vertex attributes. */
-	private final float[] fVertexAttributes = new float[16 * Topography.chunkSize * Topography.chunkSize];
-	private final float[] bVertexAttributes = new float[16 * Topography.chunkSize * Topography.chunkSize];
+	private final float[] fVertexAttributes = new float[16 * Topography.CHUNK_SIZE * Topography.CHUNK_SIZE];
+	private final float[] bVertexAttributes = new float[16 * Topography.CHUNK_SIZE * Topography.CHUNK_SIZE];
 
 	/**	The chunk data */
 	private ChunkData fData;
@@ -70,11 +70,11 @@ public class Chunk {
 	private void constructMesh(ChunkData data, float[] vertexAttributes, boolean foreGround) {
 
 
-		Mesh mesh = new Mesh(false, Topography.chunkSize * Topography.chunkSize * 4, 0, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_position"),
+		Mesh mesh = new Mesh(false, Topography.CHUNK_SIZE * Topography.CHUNK_SIZE * 4, 0, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_position"),
 				new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord0"));
 
-		for (int x = 0; x != Topography.chunkSize; x++) {
-			for (int y = 0; y != Topography.chunkSize; y++) {
+		for (int x = 0; x != Topography.CHUNK_SIZE; x++) {
+			for (int y = 0; y != Topography.CHUNK_SIZE; y++) {
 
 
 				float texX = fData.tiles[x][y].getTexCoordX(foreGround);
@@ -113,25 +113,25 @@ public class Chunk {
 	 * Populates the vertex attributes of a quad.
 	 */
 	private void populateQuadVertexAttributes(int x, int y, float texX, float texY, ChunkData data, float[] vertexAttributes) {
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 0] = data.xChunkCoord * Topography.chunkSize * Topography.tileSize + x * Topography.tileSize;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 1] = data.yChunkCoord	* Topography.chunkSize * Topography.tileSize + y * Topography.tileSize;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 2] = texX;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 3] = texY;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 0] = data.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + x * Topography.TILE_SIZE;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 1] = data.yChunkCoord	* Topography.CHUNK_SIZE * Topography.TILE_SIZE + y * Topography.TILE_SIZE;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 2] = texX;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 3] = texY;
 
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 4] = data.xChunkCoord * Topography.chunkSize * Topography.tileSize + x * Topography.tileSize + Topography.tileSize;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 5] = data.yChunkCoord * Topography.chunkSize * Topography.tileSize + y * Topography.tileSize;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 6] = texX + Topography.textureCoordinateQuantization;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 7] = texY;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 4] = data.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + x * Topography.TILE_SIZE + Topography.TILE_SIZE;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 5] = data.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + y * Topography.TILE_SIZE;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 6] = texX + Topography.textureCoordinateQuantization;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 7] = texY;
 
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 8] = data.xChunkCoord * Topography.chunkSize * Topography.tileSize + x * Topography.tileSize + Topography.tileSize;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 9] = data.yChunkCoord * Topography.chunkSize * Topography.tileSize + y * Topography.tileSize + Topography.tileSize;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 10] = texX + Topography.textureCoordinateQuantization;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 11] = texY - Topography.textureCoordinateQuantization;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 8] = data.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + x * Topography.TILE_SIZE + Topography.TILE_SIZE;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 9] = data.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + y * Topography.TILE_SIZE + Topography.TILE_SIZE;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 10] = texX + Topography.textureCoordinateQuantization;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 11] = texY - Topography.textureCoordinateQuantization;
 
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 12] = data.xChunkCoord * Topography.chunkSize * Topography.tileSize + x * Topography.tileSize;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 13] = data.yChunkCoord * Topography.chunkSize * Topography.tileSize + y * Topography.tileSize + Topography.tileSize;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 14] = texX;
-		vertexAttributes[16 * x * Topography.chunkSize + y * 16 + 15] = texY - Topography.textureCoordinateQuantization;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 12] = data.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + x * Topography.TILE_SIZE;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 13] = data.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + y * Topography.TILE_SIZE + Topography.TILE_SIZE;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 14] = texX;
+		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 15] = texY - Topography.textureCoordinateQuantization;
 	}
 
 
@@ -163,8 +163,8 @@ public class Chunk {
 	 * @return a row of tiles
 	 */
 	public Tile[] getRow(int y, boolean foreGround) {
-		Tile[] row = new Tile[Topography.chunkSize];
-		for (int x = 0; x < Topography.chunkSize; x++) {
+		Tile[] row = new Tile[Topography.CHUNK_SIZE];
+		for (int x = 0; x < Topography.CHUNK_SIZE; x++) {
 			row[x] = foreGround ? fData.tiles[x][y] : bData.tiles[x][y];
 		}
 
@@ -284,9 +284,9 @@ public class Chunk {
 
 		if (chunkMap.get(chunkX).get(chunkY - 1) != null) {
 			int x = 0;
-			for (Tile tile : chunkMap.get(chunkX).get(chunkY - 1).getRow(Topography.chunkSize - 1, foreGround)) {
-				tile.calculateOrientation(chunkX, chunkY - 1, x, Topography.chunkSize - 1, foreGround);
-				chunkMap.get(chunkX).get(chunkY - 1).repopulateTextureCoordinates(x, Topography.chunkSize - 1, foreGround);
+			for (Tile tile : chunkMap.get(chunkX).get(chunkY - 1).getRow(Topography.CHUNK_SIZE - 1, foreGround)) {
+				tile.calculateOrientation(chunkX, chunkY - 1, x, Topography.CHUNK_SIZE - 1, foreGround);
+				chunkMap.get(chunkX).get(chunkY - 1).repopulateTextureCoordinates(x, Topography.CHUNK_SIZE - 1, foreGround);
 				x++;
 			}
 			chunkMap.get(chunkX).get(chunkY - 1).refreshMesh();
@@ -294,9 +294,9 @@ public class Chunk {
 
 		if (chunkMap.get(chunkX - 1) != null && chunkMap.get(chunkX - 1).get(chunkY) != null) {
 			int y = 0;
-			for (Tile tile : chunkMap.get(chunkX - 1).get(chunkY).getColumn(Topography.chunkSize - 1, foreGround)) {
-				tile.calculateOrientation(chunkX - 1, chunkY, Topography.chunkSize - 1, y, foreGround);
-				chunkMap.get(chunkX - 1).get(chunkY).repopulateTextureCoordinates(Topography.chunkSize - 1, y, foreGround);
+			for (Tile tile : chunkMap.get(chunkX - 1).get(chunkY).getColumn(Topography.CHUNK_SIZE - 1, foreGround)) {
+				tile.calculateOrientation(chunkX - 1, chunkY, Topography.CHUNK_SIZE - 1, y, foreGround);
+				chunkMap.get(chunkX - 1).get(chunkY).repopulateTextureCoordinates(Topography.CHUNK_SIZE - 1, y, foreGround);
 				y++;
 			}
 			chunkMap.get(chunkX - 1).get(chunkY).refreshMesh();
@@ -312,8 +312,8 @@ public class Chunk {
 			chunkMap.get(chunkX + 1).get(chunkY).refreshMesh();
 		}
 
-		for (int x = 0; x < Topography.chunkSize; x++) {
-			for (int y = 0; y < Topography.chunkSize; y++) {
+		for (int x = 0; x < Topography.CHUNK_SIZE; x++) {
+			for (int y = 0; y < Topography.CHUNK_SIZE; y++) {
 				chunkMap.get(chunkX).get(chunkY).getTile(x, y, foreGround).calculateOrientation(chunkX, chunkY, x, y, foreGround);
 				chunkMap.get(chunkX).get(chunkY).repopulateTextureCoordinates(x, y, foreGround);
 			}
@@ -373,11 +373,11 @@ public class Chunk {
 		if (x == 0) {
 			if (map.doesChunkExist(fData.xChunkCoord - 1, fData.yChunkCoord)) {
 				Chunk chunk = map.get(fData.xChunkCoord - 1).get(fData.yChunkCoord);
-				left = chunk.getTile(Topography.chunkSize - 1, y, foreGround);
-				left.calculateOrientation(fData.xChunkCoord - 1, fData.yChunkCoord, Topography.chunkSize - 1, y, foreGround);
+				left = chunk.getTile(Topography.CHUNK_SIZE - 1, y, foreGround);
+				left.calculateOrientation(fData.xChunkCoord - 1, fData.yChunkCoord, Topography.CHUNK_SIZE - 1, y, foreGround);
 
 				chunk.populateQuadVertexAttributes(
-					Topography.chunkSize - 1,
+					Topography.CHUNK_SIZE - 1,
 					y,
 					left.getTexCoordX(foreGround),
 					left.getTexCoordY(),
@@ -406,7 +406,7 @@ public class Chunk {
 		}
 
 		// Get the tile to the right
-		if (x == Topography.chunkSize - 1) {
+		if (x == Topography.CHUNK_SIZE - 1) {
 			if (map.doesChunkExist(fData.xChunkCoord + 1, fData.yChunkCoord)) {
 				Chunk chunk = map.get(fData.xChunkCoord + 1).get(fData.yChunkCoord);
 				right = chunk.getTile(0, y, foreGround);
@@ -442,7 +442,7 @@ public class Chunk {
 		}
 
 		// Get the tile above
-		if (y == Topography.chunkSize - 1) {
+		if (y == Topography.CHUNK_SIZE - 1) {
 			if (map.doesChunkExist(fData.xChunkCoord, fData.yChunkCoord + 1)) {
 				Chunk chunk = map.get(fData.xChunkCoord).get(fData.yChunkCoord + 1);
 				above = chunk.getTile(x, 0, foreGround);
@@ -481,12 +481,12 @@ public class Chunk {
 		if (y == 0) {
 			if (map.doesChunkExist(fData.xChunkCoord, fData.yChunkCoord - 1)) {
 				Chunk chunk = map.get(fData.xChunkCoord).get(fData.yChunkCoord - 1);
-				below = chunk.getTile(x, Topography.chunkSize - 1, foreGround);
-				below.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord - 1, x, Topography.chunkSize - 1, foreGround);
+				below = chunk.getTile(x, Topography.CHUNK_SIZE - 1, foreGround);
+				below.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord - 1, x, Topography.CHUNK_SIZE - 1, foreGround);
 
 				chunk.populateQuadVertexAttributes(
 					x,
-					Topography.chunkSize - 1,
+					Topography.CHUNK_SIZE - 1,
 					below.getTexCoordX(foreGround),
 					below.getTexCoordY(),
 					foreGround ? chunk.fData : chunk.bData,

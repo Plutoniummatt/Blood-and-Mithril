@@ -28,10 +28,10 @@ import com.badlogic.gdx.math.Vector2;
 public class Topography {
 
 	/** The size of a single tile, in pixels (single dimension) */
-	public static final int tileSize = 16;
+	public static final int TILE_SIZE = 16;
 
 	/** The size of a chunk, in number of tiles (single dimension) */
-	public static final int chunkSize = 20;
+	public static final int CHUNK_SIZE = 20;
 
 	/** The texture atlas containing all textures for tiles */
 	public static final Texture atlas = new Texture(Gdx.files.internal("data/image/textureAtlas.png"));
@@ -84,10 +84,10 @@ public class Topography {
 	 * Renders the background
 	 */
 	public void renderBackGround(int camX, int camY) {
-		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (chunkSize * tileSize);
-		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (chunkSize * tileSize);
-		int topRightX 		= bottomLeftX + Display.getWidth() / (chunkSize * tileSize);
-		int topRightY		= bottomLeftY + Display.getHeight() / (chunkSize * tileSize);
+		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
+		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
+		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
+		int topRightY		= bottomLeftY + Display.getHeight() / (CHUNK_SIZE * TILE_SIZE);
 
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
@@ -105,10 +105,10 @@ public class Topography {
 	 * Renders the foreground
 	 */
 	public void renderForeGround(int camX, int camY) {
-		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (chunkSize * tileSize);
-		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (chunkSize * tileSize);
-		int topRightX 		= bottomLeftX + Display.getWidth() / (chunkSize * tileSize);
-		int topRightY		= bottomLeftY + Display.getHeight() / (chunkSize * tileSize);
+		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
+		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
+		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
+		int topRightY		= bottomLeftY + Display.getHeight() / (CHUNK_SIZE * TILE_SIZE);
 
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
@@ -135,12 +135,12 @@ public class Topography {
 
 		if (getTile(worldCoords, true) instanceof EmptyTile) {
 			while (getTile(x, y, true) instanceof EmptyTile) {
-				y = y - tileSize;
+				y = y - TILE_SIZE;
 			}
-			y = y + tileSize;
+			y = y + TILE_SIZE;
 		} else {
 			while (!(getTile(x, y, true) instanceof EmptyTile)) {
-				y = y + tileSize;
+				y = y + TILE_SIZE;
 			}
 		}
 
@@ -155,7 +155,7 @@ public class Topography {
 	 * Converts chunk coord + chunk tile coord to world tile coord
 	 */
 	public static int convertToWorldTileCoord(int chunk, int tile) {
-		return chunk * chunkSize + tile;
+		return chunk * CHUNK_SIZE + tile;
 	}
 
 
@@ -187,9 +187,9 @@ public class Topography {
 		int worldCoordinateIntegerized = (int) worldCoord;
 
 		if (worldCoordinateIntegerized >= 0) {
-			return worldCoordinateIntegerized / tileSize % chunkSize;
+			return worldCoordinateIntegerized / TILE_SIZE % CHUNK_SIZE;
 		} else {
-			return chunkSize + worldCoordinateIntegerized / tileSize % chunkSize - 1;
+			return CHUNK_SIZE + worldCoordinateIntegerized / TILE_SIZE % CHUNK_SIZE - 1;
 		}
 	}
 
@@ -245,7 +245,7 @@ public class Topography {
 
 	/** Converts a world tile coord to a world coord, in the centre of the tile */
 	public static float convertToWorldCoord(int worldTileCoord, boolean floor) {
-		return worldTileCoord * Topography.tileSize + (floor ? 0 : Topography.tileSize/2);
+		return worldTileCoord * Topography.TILE_SIZE + (floor ? 0 : Topography.TILE_SIZE/2);
 	}
 
 
@@ -254,9 +254,9 @@ public class Topography {
 	 */
 	public static int convertToChunkCoord(int tileCoord) {
 		if (tileCoord >= 0) {
-			return tileCoord / chunkSize;
+			return tileCoord / CHUNK_SIZE;
 		} else {
-			return tileCoord / chunkSize - 1;
+			return tileCoord / CHUNK_SIZE - 1;
 		}
 	}
 
@@ -268,9 +268,9 @@ public class Topography {
 		int worldCoordinateIntegerized = (int) worldCoord;
 
 		if (worldCoordinateIntegerized >= 0) {
-			return worldCoordinateIntegerized / tileSize / chunkSize;
+			return worldCoordinateIntegerized / TILE_SIZE / CHUNK_SIZE;
 		} else {
-			return worldCoordinateIntegerized / tileSize / chunkSize - 1;
+			return worldCoordinateIntegerized / TILE_SIZE / CHUNK_SIZE - 1;
 		}
 	}
 
