@@ -77,7 +77,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 	public static boolean paused = true;
 
 	/** See {@link #update(float)}, if delta is greater than this value, skip the update frame */
-	private static final float lagSpikeTolerance = 0.1f;
+	private static final float lagSpikeTolerance = Float.parseFloat(System.getProperty("lagSpikeTolerance"));
 
 	/** The tolerance for double clicking */
 	private static final float doubleClickTime = 0.2f;
@@ -181,7 +181,17 @@ public class Fortress implements ApplicationListener, InputProcessor {
 				if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 					indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
 				} else {
-					AIProcessor.sendPathfindingRequest(indi, new WayPoint(new Vector2(getMouseWorldX(), getMouseWorldY())), false, 150f);
+					AIProcessor.sendPathfindingRequest(
+						indi, 
+						new WayPoint(
+							new Vector2(
+								getMouseWorldX() + indi.width * Util.getRandom().nextFloat() * 0.5f * (GameWorld.selectedIndividuals.size() - 1), 
+								getMouseWorldY()
+							)
+						), 
+						false, 
+						150f
+					);
 				}
 			}
 		}
