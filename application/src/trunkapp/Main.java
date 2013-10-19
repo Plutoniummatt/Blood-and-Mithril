@@ -1,4 +1,6 @@
-package spritestar;
+package trunkapp;
+
+import spritestar.Fortress;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
