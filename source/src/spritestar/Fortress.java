@@ -184,7 +184,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 				if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 					indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
 				} else {
-					float spread = Math.max(indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
+					float spread = Math.min(indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
 					AIProcessor.sendPathfindingRequest(
 						indi, 
 						new WayPoint(
