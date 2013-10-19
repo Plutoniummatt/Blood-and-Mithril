@@ -1,12 +1,12 @@
 package spritestar.ui.components.window;
 
 import static spritestar.util.Fonts.defaultFont;
+import static spritestar.persistence.GameSaver.*;
 
 import java.util.Deque;
 import java.util.List;
 
 import spritestar.Fortress;
-import spritestar.persistence.GameSaver;
 import spritestar.ui.UserInterface.UIRef;
 import spritestar.ui.components.Button;
 import spritestar.ui.components.Component;
@@ -46,9 +46,9 @@ public class MainMenuWindow extends Window {
 	 */
 	@Override
 	protected void internalWindowRender() {
-		saveGame.render(length/2 + x, y - 26, active && !GameSaver.isSaving(), alpha);
-		options.render(length/2 + x, y - 46, active && !GameSaver.isSaving(), alpha);
-		saveAndExit.render(length/2 + x, y - 66, active && !GameSaver.isSaving(), alpha);
+		saveGame.render(length/2 + x, y - 26, active && !isSaving(), alpha);
+		options.render(length/2 + x, y - 46, active && !isSaving(), alpha);
+		saveAndExit.render(length/2 + x, y - 66, active && !isSaving(), alpha);
 	}
 
 
@@ -94,7 +94,7 @@ public class MainMenuWindow extends Window {
 			new Task() {
 				@Override
 				public void execute() {
-					GameSaver.save(false);
+					save(false);
 				}
 			},
 			Color.ORANGE,
@@ -132,7 +132,7 @@ public class MainMenuWindow extends Window {
 			new Task() {
 				@Override
 				public void execute() {
-					GameSaver.save(true);
+					save(true);
 			}
 			},
 			Color.ORANGE,
