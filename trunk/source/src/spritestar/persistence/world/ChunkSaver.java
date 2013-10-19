@@ -6,6 +6,11 @@ import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+
+import spritestar.generation.StructureMap;
+import spritestar.generation.patterns.Layers;
 import spritestar.persistence.GameSaver;
 import spritestar.persistence.ZipHelper;
 import spritestar.util.Logger;
@@ -94,7 +99,18 @@ public class ChunkSaver {
 	 * Saves the data used for generation
 	 */
 	private static void saveGenerationData() {
-		//TODO saveGenerationData()
+
+		FileHandle superStructureKeys = Gdx.files.local(GameSaver.savePath + "/world/superStructureKeys.txt");
+		FileHandle subStructureKeys = Gdx.files.local(GameSaver.savePath + "/world/subStructureKeys.txt");
+		FileHandle structures = Gdx.files.local(GameSaver.savePath + "/world/structures.txt");
+		FileHandle surfaceHeight = Gdx.files.local(GameSaver.savePath + "/world/surfaceHeight.txt");
+		FileHandle layers = Gdx.files.local(GameSaver.savePath + "/world/layers.txt");
+
+		superStructureKeys.writeString(encode(StructureMap.superStructureKeys), false);
+		subStructureKeys.writeString(encode(StructureMap.subStructureKeys), false);
+		structures.writeString(encode(StructureMap.structures), false);
+		surfaceHeight.writeString(encode(StructureMap.surfaceHeight), false);
+		layers.writeString(encode(Layers.layers), false);
 	}
 
 
@@ -126,7 +142,9 @@ public class ChunkSaver {
 			GameSaver.saverTasks.add(new Task() {
 				@Override
 				public void execute() {
-					//TODO saveAndFlushChunk
+					ZipHelper zip = new ZipHelper(GameSaver.savePath + "/world", "/chunkData.zip");
+					saveChunk(Topography.chunkMap.get(x).get(y), x, y, zip);
+					Topography.chunkMap.get(x).remove(y);
 				}
 			});
 			chunksInQueue.put(x, y, true);
