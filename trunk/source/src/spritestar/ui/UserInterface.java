@@ -120,7 +120,6 @@ public class UserInterface {
 		savingButton = new Button("Saving...", defaultFont, 0, 0, 75, 16, new Task() {
 			@Override
 			public void execute() {
-				Fortress.paused = false;
 			}
 		}, Color.WHITE, Color.WHITE, Color.WHITE, UIRef.M);
 
@@ -337,7 +336,7 @@ public class UserInterface {
 	 */
 	private static void renderButtons() {
 		for (Entry<String, Button> buttonEntry : buttons.entrySet()) {
-			buttonEntry.getValue().render(!Fortress.paused, 1f);
+			buttonEntry.getValue().render(!Fortress.paused && !GameSaver.isSaving(), 1f);
 		}
 	}
 
@@ -358,6 +357,10 @@ public class UserInterface {
 
 		if (Fortress.paused) {
 			clicked = unpauseButton.click();
+			return false;
+		}
+		
+		if (GameSaver.isSaving()) {
 			return false;
 		}
 
@@ -414,7 +417,7 @@ public class UserInterface {
 	 * Called when right mouse button is clicked
 	 */
 	public static void rightClick() {
-		if (Fortress.paused) {
+		if (Fortress.paused || GameSaver.isSaving()) {
 			return;
 		}
 
