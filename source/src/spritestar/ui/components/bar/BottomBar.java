@@ -5,6 +5,7 @@ import java.util.Deque;
 import java.util.List;
 
 import spritestar.Fortress;
+import spritestar.persistence.GameSaver;
 import spritestar.ui.UserInterface;
 import spritestar.ui.UserInterface.UIRef;
 import spritestar.ui.components.Button;
@@ -235,8 +236,8 @@ public class BottomBar extends Component {
 		Fortress.spriteBatch.begin();
 		renderRectangle(0, 34, Gdx.graphics.getWidth(), 34, true, Color.BLACK);
 		renderBox(-left.getRegionWidth(), 32, Gdx.graphics.getWidth(), 34, true, Color.DARK_GRAY);
-		mainMenu.render(!Fortress.paused, 1f);
-		windows.render(!Fortress.paused, 1f);
+		mainMenu.render(!Fortress.paused && !GameSaver.isSaving(), 1f);
+		windows.render(!Fortress.paused && !GameSaver.isSaving(), 1f);
 		Fortress.spriteBatch.end();
 	}
 }

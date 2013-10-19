@@ -46,9 +46,9 @@ public class MainMenuWindow extends Window {
 	 */
 	@Override
 	protected void internalWindowRender() {
-		saveGame.render(length/2 + x, y - 26, active, alpha);
-		options.render(length/2 + x, y - 46, active, alpha);
-		saveAndExit.render(length/2 + x, y - 66, active, alpha);
+		saveGame.render(length/2 + x, y - 26, active && !GameSaver.isSaving(), alpha);
+		options.render(length/2 + x, y - 46, active && !GameSaver.isSaving(), alpha);
+		saveAndExit.render(length/2 + x, y - 66, active && !GameSaver.isSaving(), alpha);
 	}
 
 
