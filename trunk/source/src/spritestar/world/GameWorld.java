@@ -29,11 +29,11 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
  */
 public class GameWorld {
 
+	/** Gravity */
+	public static float GRAVITY = 1200;
+	
 	/** Topography of the game world */
 	private final Topography topography;
-
-	/** Gravity */
-	public static float gravity = 1200;
 
 	/** Textures */
 	public static final Texture gameWorldTexture = new Texture(Gdx.files.internal("data/image/gameWorld.png"));

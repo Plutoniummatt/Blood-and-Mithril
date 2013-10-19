@@ -217,10 +217,10 @@ public abstract class Individual extends Container {
 		state.position.add(state.velocity.cpy().mul(delta));
 
 		//Calculate velocity based on acceleration, including gravity
-		if (Math.abs((state.velocity.y - delta * GameWorld.gravity) * delta) < Topography.tileSize/2) {
-			state.velocity.y = state.velocity.y - delta * GameWorld.gravity;
+		if (Math.abs((state.velocity.y - delta * GameWorld.GRAVITY) * delta) < Topography.TILE_SIZE/2) {
+			state.velocity.y = state.velocity.y - delta * GameWorld.GRAVITY;
 		} else {
-			state.velocity.y = state.velocity.y + delta * GameWorld.gravity;
+			state.velocity.y = state.velocity.y + delta * GameWorld.GRAVITY;
 		}
 		state.velocity.add(state.acceleration.cpy().mul(delta));
 
@@ -232,12 +232,12 @@ public abstract class Individual extends Container {
 			state.velocity.y = 0f;
 
 			if (state.position.y >= 0f) {
-				state.position.y = (int)state.position.y % Topography.tileSize == 0 ?
-					(int)state.position.y / Topography.tileSize * Topography.tileSize :
-					(int)state.position.y / Topography.tileSize * Topography.tileSize + Topography.tileSize;
+				state.position.y = (int)state.position.y % Topography.TILE_SIZE == 0 ?
+					(int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE :
+					(int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE + Topography.TILE_SIZE;
 
 			} else {
-				state.position.y = (int)state.position.y / Topography.tileSize * Topography.tileSize;
+				state.position.y = (int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE;
 			}
 		} else if (state.position.y == 0f && !(Topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
 			state.velocity.y = 0f;
@@ -248,7 +248,7 @@ public abstract class Individual extends Container {
 		//Wall check routine, only perform this if we're moving
 		if (state.velocity.x != 0 && obstructed(0)) {
 			if (canStepUp(0)) {
-				state.position.y = state.position.y + Topography.tileSize;
+				state.position.y = state.position.y + Topography.TILE_SIZE;
 			} else {
 				boolean check = false;
 				while (obstructed(0)) {
@@ -273,7 +273,7 @@ public abstract class Individual extends Container {
 	 */
 	protected boolean groundDetectionCriteriaMet() {
 		Tile currentTile = Topography.getTile(state.position.x, state.position.y, true);
-		Tile tileBelow = Topography.getTile(state.position.x, state.position.y - Topography.tileSize/2, true);
+		Tile tileBelow = Topography.getTile(state.position.x, state.position.y - Topography.TILE_SIZE/2, true);
 		return (!(currentTile instanceof Tile.EmptyTile) && !currentTile.isPlatformTile || currentTile.isPlatformTile && !(tileBelow instanceof EmptyTile)) &&
 			     !isToBeIgnored(state.position);
 	}
@@ -295,7 +295,7 @@ public abstract class Individual extends Container {
 			if (jumpedOff && !Topography.convertToWorldCoord(state.position, false).equals(jumpOff)) {
 				jumpedOff = false;
 				jumpOff = null;
-			} else if (Math.abs(Topography.convertToWorldCoord(state.position, false).cpy().sub(jumpOff).len()) > 2 * Topography.tileSize) {
+			} else if (Math.abs(Topography.convertToWorldCoord(state.position, false).cpy().sub(jumpOff).len()) > 2 * Topography.TILE_SIZE) {
 				jumpedOff = true;
 			}
 		}
@@ -317,8 +317,8 @@ public abstract class Individual extends Container {
 	 * Jump off the tile this {@link Individual} is currently standing on, as long as its a platform
 	 */
 	public void jumpOff() {
-		if (Topography.getTile(state.position.x, state.position.y - Topography.tileSize/2, true).isPlatformTile) {
-			jumpOff = Topography.convertToWorldCoord(state.position.x, state.position.y - Topography.tileSize/2, false);
+		if (Topography.getTile(state.position.x, state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile) {
+			jumpOff = Topography.convertToWorldCoord(state.position.x, state.position.y - Topography.TILE_SIZE/2, false);
 		}
 	}
 
@@ -327,22 +327,22 @@ public abstract class Individual extends Container {
 	 * Determines during {@link #kinetics(float)} whether we can step up
 	 */
 	protected boolean canStepUp(int offsetX) {
-		int blockspan = height/Topography.tileSize + (height % Topography.tileSize == 0 ? 0 : 1);
+		int blockspan = height/Topography.TILE_SIZE + (height % Topography.TILE_SIZE == 0 ? 0 : 1);
 
 		for (int block = 1; block != blockspan + 1; block++) {
-			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.tileSize*block + Topography.tileSize/2)) {
+			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE*block + Topography.TILE_SIZE/2)) {
 				return false;
 			}
 		}
-		return !isPassable(state.position.x + offsetX, state.position.y + Topography.tileSize/2);
+		return !isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE/2);
 	}
 
 
 	/** Whether this {@link Individual} is obstructed by {@link Tile}s */
 	protected boolean obstructed(int offsetX) {
-		int blockspan = height/Topography.tileSize + (height % Topography.tileSize == 0 ? 0 : 1);
+		int blockspan = height/Topography.TILE_SIZE + (height % Topography.TILE_SIZE == 0 ? 0 : 1);
 		for (int block = 0; block != blockspan; block++) {
-			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.tileSize/2 + Topography.tileSize * block)) {
+			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE/2 + Topography.TILE_SIZE * block)) {
 				return true;
 			}
 		}
@@ -369,7 +369,7 @@ public abstract class Individual extends Container {
 		//If we're on a platform and we're GoingToLocation, then check to see if the tile above is part of the path, if it is, then not passable, otherwise passable
 		if (tile.isPlatformTile) {
 			if (current instanceof GoToLocation) {
-				return !((GoToLocation)current).isPartOfPath(new Vector2(x, y + Topography.tileSize));
+				return !((GoToLocation)current).isPartOfPath(new Vector2(x, y + Topography.TILE_SIZE));
 			} else {
 				return true;
 			}

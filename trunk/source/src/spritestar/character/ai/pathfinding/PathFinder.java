@@ -54,16 +54,16 @@ public abstract class PathFinder implements Serializable {
 	private static Vector2 getGroundLocation(Vector2 location, int height) {
 		int currentHeight = 0;
 		if (Topography.getTile(location, true) instanceof EmptyTile) {
-			while(Topography.getTile(location.x, location.y + Topography.tileSize * currentHeight, true) instanceof EmptyTile && currentHeight >= -height - 1) {
+			while(Topography.getTile(location.x, location.y + Topography.TILE_SIZE * currentHeight, true) instanceof EmptyTile && currentHeight >= -height - 1) {
 				currentHeight--;
 			}
 		} else {
-			while(!(Topography.getTile(location.x, location.y + Topography.tileSize * currentHeight, true) instanceof EmptyTile) && currentHeight <= height + 1) {
+			while(!(Topography.getTile(location.x, location.y + Topography.TILE_SIZE * currentHeight, true) instanceof EmptyTile) && currentHeight <= height + 1) {
 				currentHeight++;
 			}
 		}
 		
-		return Math.abs(currentHeight) >= height + 1 ? null : new Vector2(location.x, location.y + (currentHeight + 1) * Topography.tileSize);
+		return Math.abs(currentHeight) >= height + 1 ? null : new Vector2(location.x, location.y + (currentHeight + 1) * Topography.TILE_SIZE);
 	}
 	
 	
@@ -86,8 +86,8 @@ public abstract class PathFinder implements Serializable {
 	
 	/** Cycles through 8 directions of tiles, starting from the top */
 	private static Vector2 cyclicTileCheck(Vector2 location, int distance) {
-		int additionalDistance = Topography.tileSize * distance;
-		float additionalDistanceDiagonal = Topography.tileSize * distance / 1.414f;
+		int additionalDistance = Topography.TILE_SIZE * distance;
+		float additionalDistanceDiagonal = Topography.TILE_SIZE * distance / 1.414f;
 		
 		// Top
 		if (Topography.getTile(location.x, location.y + additionalDistance, true).isPassable()) {

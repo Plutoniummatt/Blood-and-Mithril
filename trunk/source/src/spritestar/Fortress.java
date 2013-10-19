@@ -55,6 +55,15 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Fortress implements ApplicationListener, InputProcessor {
 
+	/** The maximum spread of individuals when going to location */
+	private static final float INDIVIDUAL_SPREAD = 600f;
+
+	/** See {@link #update(float)}, if delta is greater than this value, skip the update frame */
+	private static final float LAG_SPIKE_TOLERANCE = Float.parseFloat(System.getProperty("lagSpikeTolerance"));
+	
+	/** The tolerance for double clicking */
+	private static final float DOUBLE_CLICK_TIME = 0.2f;
+	
 	/** Resolution x */
 	public static int WIDTH = Integer.parseInt(System.getProperty("resX"));
 
@@ -75,12 +84,6 @@ public class Fortress implements ApplicationListener, InputProcessor {
 
 	/** True if game is paused */
 	public static boolean paused = true;
-
-	/** See {@link #update(float)}, if delta is greater than this value, skip the update frame */
-	private static final float lagSpikeTolerance = Float.parseFloat(System.getProperty("lagSpikeTolerance"));
-
-	/** The tolerance for double clicking */
-	private static final float doubleClickTime = 0.2f;
 
 	/** The current timer for double clicking */
 	private float leftDoubleClickTimer = 0f;
@@ -168,7 +171,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 	 * Called upon right clicking
 	 */
 	private void rightClick() {
-		boolean doubleClick = rightDoubleClickTimer < doubleClickTime;
+		boolean doubleClick = rightDoubleClickTimer < DOUBLE_CLICK_TIME;
 		rightDoubleClickTimer = 0f;
 
 		if (!Gdx.input.isKeyPressed(KeyMappings.contextMenuBypass)) {
@@ -181,11 +184,12 @@ public class Fortress implements ApplicationListener, InputProcessor {
 				if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 					indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
 				} else {
+					float spread = Math.max(indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
 					AIProcessor.sendPathfindingRequest(
 						indi, 
 						new WayPoint(
 							new Vector2(
-								getMouseWorldX() + indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), 
+								getMouseWorldX() + spread, 
 								getMouseWorldY()
 							)
 						), 
@@ -202,7 +206,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 	 * Called upon left clicking
 	 */
 	private void leftClick(int screenX, int screenY) {
-		boolean doubleClick = leftDoubleClickTimer < doubleClickTime;
+		boolean doubleClick = leftDoubleClickTimer < DOUBLE_CLICK_TIME;
 		leftDoubleClickTimer = 0f;
 
 		boolean uiClicked = UserInterface.leftClick();
@@ -412,7 +416,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 
 		// Do not update if game is paused
 		// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-		if (!paused && delta < lagSpikeTolerance && !GameSaver.isSaving()) {
+		if (!paused && delta < LAG_SPIKE_TOLERANCE && !GameSaver.isSaving()) {
 			Shaders.updateShaderUniforms();
 			gameWorld.update(delta);
 		}

@@ -168,14 +168,14 @@ public abstract class Tile implements Serializable {
 			if (map.get(chunkX - 1) == null || map.get(chunkX - 1).get(chunkY) == null) {
 				left = new EmptyTile();
 			} else {
-				left = map.get(chunkX - 1).get(chunkY).getTile(Topography.chunkSize - 1, y, foreGround);
+				left = map.get(chunkX - 1).get(chunkY).getTile(Topography.CHUNK_SIZE - 1, y, foreGround);
 			}
 		} else {
 			left = map.get(chunkX).get(chunkY).getTile(x - 1, y, foreGround);
 		}
 
 		// Get the tile to the right
-		if (x == Topography.chunkSize - 1) {
+		if (x == Topography.CHUNK_SIZE - 1) {
 			if (map.get(chunkX + 1) == null || map.get(chunkX + 1).get(chunkY) == null) {
 				right = new EmptyTile();
 			} else {
@@ -186,7 +186,7 @@ public abstract class Tile implements Serializable {
 		}
 
 		// Get the tile above
-		if (y == Topography.chunkSize - 1) {
+		if (y == Topography.CHUNK_SIZE - 1) {
 			if (map.get(chunkX).get(chunkY + 1) == null) {
 				above = new EmptyTile();
 			} else {
@@ -201,7 +201,7 @@ public abstract class Tile implements Serializable {
 			if (map.get(chunkX).get(chunkY - 1) == null) {
 				below = new EmptyTile();
 			} else {
-				below = map.get(chunkX).get(chunkY - 1).getTile(x, Topography.chunkSize - 1, foreGround);
+				below = map.get(chunkX).get(chunkY - 1).getTile(x, Topography.CHUNK_SIZE - 1, foreGround);
 			}
 		} else {
 			below = map.get(chunkX).get(chunkY).getTile(x, y - 1, foreGround);

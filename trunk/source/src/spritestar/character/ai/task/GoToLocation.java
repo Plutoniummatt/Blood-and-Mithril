@@ -46,7 +46,7 @@ public class GoToLocation extends AITask {
 		super(host.id);
 		this.fly = fly;
 
-		int blockspan = host.height/Topography.tileSize + (host.height % Topography.tileSize == 0 ? 0 : 1) - 1;
+		int blockspan = host.height/Topography.TILE_SIZE + (host.height % Topography.TILE_SIZE == 0 ? 0 : 1) - 1;
 
 		this.path = fly ?
 			pathFinder.findShortestPathAir(new WayPoint(host.state.position), destination):

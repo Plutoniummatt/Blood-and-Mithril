@@ -39,7 +39,7 @@ public class MineTile extends CompositeAITask {
 			"Mining", 
 			new GoToLocation(
 				host, 
-				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10), 3 * Topography.tileSize), 
+				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10), 3 * Topography.TILE_SIZE), 
 				false,
 				50f
 			)
