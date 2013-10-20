@@ -45,6 +45,21 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 public class Elf extends Individual {
+	
+	private static final String RUNNING_LEFT_HAIR = "runningLeftHair";
+	private static final String RUNNING_RIGHT_HAIR = "runningRightHair";
+	private static final String WALKING_LEFT_HAIR = "walkingLeftHair";
+	private static final String WALKING_RIGHT_HAIR = "walkingRightHair";
+	private static final String STANDING_LEFT_HAIR = "standingLeftHair";
+	private static final String STANDING_RIGHT_HAIR = "standingRightHair";
+	
+	private static final String RUNNING_RIGHT = "runningRight";
+	private static final String RUNNING_LEFT = "runningLeft";
+	private static final String WALKING_RIGHT = "walkingRight";
+	private static final String WALKING_LEFT = "walkingLeft";
+	private static final String STANDING_RIGHT = "standingRight";
+	private static final String STANDING_LEFT = "standingLeft";
+
 	private static final long serialVersionUID = -5566954059579973505L;
 
 	/** Hair color of this {@link Elf} */
@@ -60,13 +75,15 @@ public class Elf extends Individual {
 	private final boolean female;
 
 	/** Animations */
-	private static DualKeyHashMap<String, Integer, Animation> hairAnimation = new DualKeyHashMap<String, Integer, Animation>();
-	private static HashMap<String, Animation> animation = new HashMap<String, Animation>();
+	private static DualKeyHashMap<String, Integer, Animation> hairAnimations = new DualKeyHashMap<String, Integer, Animation>();
+	private static HashMap<String, Animation> animations = new HashMap<String, Animation>();
 
 	/** Current animations */
 	private String current, currentHair;
-
-
+	
+	/** Biography of this Elf */
+	private String biography = "Elves are cool";
+	
 	/**
 	 * Constructor
 	 */
@@ -83,8 +100,8 @@ public class Elf extends Individual {
 
 		this.ai = new ElfAI(this);
 
-		current = "standingRight";
-		currentHair = "standingRightHair";
+		current = STANDING_RIGHT;
+		currentHair = STANDING_RIGHT_HAIR;
 	}
 
 
@@ -93,27 +110,30 @@ public class Elf extends Individual {
 	 */
 	public static void loadAnimations() {
 		for (int i = 0; i <=3; i++) {
-			hairAnimation.put("standingRightHair", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 0, 64, 128, 1, 1));
-			hairAnimation.put("standingLeftHair", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 128, 64, 128, 1, 1));
-			hairAnimation.put("walkingRightHair", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 0, 64, 128, 1, 1));
-			hairAnimation.put("walkingLeftHair", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 128, 64, 128, 1, 1));
-			hairAnimation.put("runningRightHair", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 256, 64, 128, 1, 1));
-			hairAnimation.put("runningLeftHair", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 384, 64, 128, 1, 1));
+			hairAnimations.put(STANDING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 0, 64, 128, 1, 1));
+			hairAnimations.put(STANDING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 128, 64, 128, 1, 1));
+			hairAnimations.put(WALKING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 0, 64, 128, 1, 1));
+			hairAnimations.put(WALKING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 128, 64, 128, 1, 1));
+			hairAnimations.put(RUNNING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 256, 64, 128, 1, 1));
+			hairAnimations.put(RUNNING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 384, 64, 128, 1, 1));
 		}
 
-		animation.put("standingLeft", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 128, 64, 128, 1, 1));
-		animation.put("standingRight", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 0, 64, 128, 1, 1));
-		animation.put("walkingLeft", AnimationHelper.makeAnimation(GameWorld.individualTexture, 64, 128, 64, 128, 6, 0.17f));
-		animation.put("walkingRight", AnimationHelper.makeAnimation(GameWorld.individualTexture, 64, 0, 64, 128, 6, 0.17f));
-		animation.put("runningLeft", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 384, 64, 128, 7, 0.14f));
-		animation.put("runningRight", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 256, 64, 128, 7, 0.14f));
+		animations.put(STANDING_LEFT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 128, 64, 128, 1, 1));
+		animations.put(STANDING_RIGHT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 0, 64, 128, 1, 1));
+		animations.put(WALKING_LEFT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 64, 128, 64, 128, 6, 0.17f));
+		animations.put(WALKING_RIGHT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 64, 0, 64, 128, 6, 0.17f));
+		animations.put(RUNNING_LEFT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 384, 64, 128, 7, 0.14f));
+		animations.put(RUNNING_RIGHT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 256, 64, 128, 7, 0.14f));
 	}
 
 
 	@Override
 	protected void internalRender() {
 		Fortress.spriteBatch.begin();
+		
+		// Determine which shader we're using, normal, or highlighted
 		if (isMouseOver()) {
+			
 			Shaders.elfHighLight.begin();
 			Shaders.elfHighLight.setUniformi("hair", 0);
 			Shaders.elfHighLight.setUniformf("eyeColor", eyeColorR, eyeColorG, eyeColorB);
@@ -123,6 +143,7 @@ public class Elf extends Individual {
 			Fortress.spriteBatch.setShader(Shaders.elfHighLight);
 			Shaders.elfHighLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
 		} else {
+			
 			Shaders.elfDayLight.begin();
 			Shaders.elfDayLight.setUniformi("hair", 0);
 			Shaders.elfDayLight.setUniformf("eyeColor", eyeColorR, eyeColorG, eyeColorB);
@@ -132,54 +153,68 @@ public class Elf extends Individual {
 			Fortress.spriteBatch.setShader(Shaders.elfDayLight);
 			Shaders.elfDayLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
 		}
-		try {
-		Fortress.spriteBatch.draw(animation.get(current).getKeyFrame(animationTimer, true),
-				state.position.x - animation.get(current).getKeyFrame(0f).getRegionWidth()/2,
-				state.position.y);
+		
+		// Draw the body
+		Fortress.spriteBatch.draw(
+			animations.get(current + (female ? "F" : "M")).getKeyFrame(animationTimer, true),
+			state.position.x - animations.get(current + (female ? "F" : "M")).getKeyFrame(0f).getRegionWidth()/2,
+			state.position.y
+		);
+			
 		Fortress.spriteBatch.end();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
+		// Change draw mode to hair
 		Fortress.spriteBatch.begin();
 		Shaders.elfHighLight.setUniformi("hair", 1);
 		Shaders.elfDayLight.setUniformi("hair", 1);
 		Shaders.elfDayLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
 		Shaders.elfHighLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
-		Fortress.spriteBatch.draw(hairAnimation.get(currentHair, hairStyle).getKeyFrame(animationTimer, true),
-				state.position.x - hairAnimation.get(currentHair, hairStyle).getKeyFrame(0f).getRegionWidth()/2,
-				state.position.y);
+		
+		// Draw the hair
+		Fortress.spriteBatch.draw(
+			hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(animationTimer, true),
+			state.position.x - hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(0f).getRegionWidth()/2,
+			state.position.y
+		);
+		
 		Fortress.spriteBatch.flush();
-
 		Fortress.spriteBatch.end();
 	}
 
 
 	/** What animation should we use? */
 	private void updateAnimation() {
+		
+		// If we're moving to the right
 		if (state.velocity.x > 0) {
-			if (isCommandActive(KeyMappings.walk) && !current.equals("walkingRight")) {
-				current = "walkingRight";
-				currentHair = "walkingRightHair";
+			// If walking, and current animatin is not walking right, then set animations to walking right
+			if (isCommandActive(KeyMappings.walk) && !current.equals(WALKING_RIGHT)) {
+				current = WALKING_RIGHT;
+				currentHair = WALKING_RIGHT_HAIR;
 				animationTimer = 0f;
-			} else if (!isCommandActive(KeyMappings.walk) && !current.equals("runningRight")) {
-				current = "runningRight";
-				currentHair = "runningRightHair";
+			} else if (!isCommandActive(KeyMappings.walk) && !current.equals(RUNNING_RIGHT)) {
+				// Otherwise if running, and current animatin is not running right, then set animations to running right
+				current = RUNNING_RIGHT;
+				currentHair = RUNNING_RIGHT_HAIR;
 				animationTimer = 0f;
 			}
+			
+		// Same for if we're moving left
 		} else if (state.velocity.x < 0) {
-			if (isCommandActive(KeyMappings.walk) && !current.equals("walkingLeft")) {
-				current = "walkingLeft";
-				currentHair = "walkingLeftHair";
+			if (isCommandActive(KeyMappings.walk) && !current.equals(WALKING_LEFT)) {
+				current = WALKING_LEFT;
+				currentHair = WALKING_LEFT_HAIR;
 				animationTimer = 0f;
-			} else if (!isCommandActive(KeyMappings.walk) && !current.equals("runningLeft")) {
-				current = "runningLeft";
-				currentHair = "runningLeftHair";
+			} else if (!isCommandActive(KeyMappings.walk) && !current.equals(RUNNING_LEFT)) {
+				current = RUNNING_LEFT;
+				currentHair = RUNNING_LEFT_HAIR;
 				animationTimer = 0f;
 			}
-		} else if (state.velocity.x == 0 && !current.equals("standingLeft") && !current.equals("standingRight")) {
-			current = current.equals("walkingRight") || current.equals("runningRight") ? "standingRight" : "standingLeft";
-			currentHair = currentHair.equals("walkingRightHair") || currentHair.equals("runningRightHair") ? "standingRightHair" : "standingLeftHair";
+			
+		// Otherwise we're standing still, if current animation is not standing left or right, then set current to standing left/right depending on which direction we were facing before.
+		} else if (state.velocity.x == 0 && !current.equals(STANDING_LEFT) && !current.equals(STANDING_RIGHT)) {
+			current = current.equals(WALKING_RIGHT) || current.equals(RUNNING_RIGHT) ? STANDING_RIGHT : STANDING_LEFT;
+			currentHair = currentHair.equals(WALKING_RIGHT_HAIR) || currentHair.equals(RUNNING_RIGHT_HAIR) ? STANDING_RIGHT_HAIR : STANDING_LEFT_HAIR;
 		}
 	}
 
@@ -230,17 +265,6 @@ public class Elf extends Individual {
 
 		boolean ans = x >= state.position.x - width/2 && x <= state.position.x + width/2 && y >= state.position.y && y <= state.position.y + height;
 		return ans;
-	}
-
-
-	@Override
-	protected String getToolTipText() {
-		String gender = female ? "Female" : "Male";
-
-		return 	id.firstName + " " + id.lastName + "\n" +
-				"Elf, " + gender + "\n" +
-				"Birthday: " + id.birthday.getDateString() + "\n" +
-				ai.getCurrentTask().getDescription();
 	}
 
 
@@ -326,11 +350,11 @@ public class Elf extends Individual {
 						thisElf,
 						Fortress.getMouseScreenX(),
 						Fortress.getMouseScreenY(),
-						(id.getSimpleName() + " - Info").length() * 10 + 50,
-						200,
+						300,
+						320,
 						id.getSimpleName() + " - Info",
 						true,
-						100, 120
+						250, 200
 					);
 					UserInterface.addLayeredComponentUnique(individualInfoWindow, id.getSimpleName() + " - Info");
 				}
@@ -375,5 +399,17 @@ public class Elf extends Individual {
 		contextMenuToReturn.addMenuItem(inventoryMenuItem);
 
 		return contextMenuToReturn;
+	}
+	
+	
+	@Override
+	public String getDescription() {
+		return biography;
+	}
+
+
+	@Override
+	public void updateDescription(String updated) {
+		biography = updated;
 	}
 }

@@ -16,4 +16,5 @@ public class KeyMappings {
 	public static int moveRight = Input.Keys.D;
 	public static int walk = Input.Keys.SHIFT_RIGHT;
 	public static int contextMenuBypass = Input.Keys.SHIFT_LEFT;
+	public static int forceMove = Input.Keys.ALT_LEFT;
 }

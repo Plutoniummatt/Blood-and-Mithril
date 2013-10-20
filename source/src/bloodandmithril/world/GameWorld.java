@@ -38,7 +38,7 @@ public class GameWorld {
 
 	/** Textures */
 	public static final Texture gameWorldTexture = new Texture(Gdx.files.internal("data/image/gameWorld.png"));
-	public static final Texture individualTexture = new Texture(Gdx.files.internal("data/image/character/elf.png"));
+	public static final Texture individualTexture = new Texture(Gdx.files.internal("data/image/character/individual.png"));
 
 	/** Lights */
 	public static List<Light> lights = new ArrayList<Light>();

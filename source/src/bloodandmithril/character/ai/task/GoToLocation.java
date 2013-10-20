@@ -43,7 +43,7 @@ public class GoToLocation extends AITask {
 	/**
 	 * Constructor
 	 */
-	public GoToLocation(Individual host, WayPoint destination, boolean fly, float forceTolerance) {
+	public GoToLocation(Individual host, WayPoint destination, boolean fly, float forceTolerance, boolean safe) {
 		super(host.id);
 		this.fly = fly;
 
@@ -51,7 +51,7 @@ public class GoToLocation extends AITask {
 
 		this.path = fly ?
 			pathFinder.findShortestPathAir(new WayPoint(host.state.position), destination):
-			pathFinder.findShortestPathGround(new WayPoint(host.state.position), destination, blockspan, host.safetyHeight, forceTolerance);
+			pathFinder.findShortestPathGround(new WayPoint(host.state.position), destination, blockspan, safe ? host.safetyHeight : 1000, forceTolerance);
 	}
 
 

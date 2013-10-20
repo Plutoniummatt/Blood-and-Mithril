@@ -9,6 +9,7 @@ import java.util.List;
 import bloodandmithril.Fortress;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.util.Util;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -48,19 +49,8 @@ public class MessageWindow extends Window {
 	protected void internalWindowRender() {
 		defaultFont.setColor(active ? new Color(messageColor.r, messageColor.g, messageColor.b, alpha) : new Color(messageColor.r, messageColor.g, messageColor.b, 0.6f * alpha));
 
-		String messageToDisplay = "";
-		int lineLength = length / 12;
-		int lines = message.length() * 12 / length + 1;
-		for (int i = 0; i != lines; i++) {
-			messageToDisplay = messageToDisplay + message.substring(i * lineLength, (i + 1) * lineLength > message.length() ? message.length() : (i + 1) * lineLength);
-			if ((i + 1) * 20 + 110 > height) {
-				messageToDisplay = (messageToDisplay + "...").length() * 10 > lineLength ? messageToDisplay + "\n" + "..." : messageToDisplay + "...";
-				break;
-			} else {
-				messageToDisplay = messageToDisplay + "\n";
-			}
-		}
-
+		String messageToDisplay = Util.fitToWindow(message, length, (height - 75) / 25);
+		
 		defaultFont.drawMultiLine(Fortress.spriteBatch, messageToDisplay, x + 6, y - 25);
 	}
 

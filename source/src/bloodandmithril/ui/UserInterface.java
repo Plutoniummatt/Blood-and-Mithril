@@ -442,7 +442,7 @@ public class UserInterface {
 				final ContextMenu secondaryMenu = indi.getContextMenu();
 				newMenu.getMenuItems().add(
 					new ContextMenuItem(
-						indi.id.getSimpleName(),
+						indi.id.getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",
 						new Task() {
 							@Override
 							public void execute() {

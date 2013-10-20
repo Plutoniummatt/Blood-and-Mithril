@@ -140,7 +140,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 		Individual host = GameWorld.individuals.get(hostId.id);
 
 		if (Util.getRandom().nextBoolean() && getCurrentTask() instanceof Idle) {
-			setCurrentTask(new GoToLocation(host, new WayPoint(new Vector2(host.state.position.x + (0.5f - Util.getRandom().nextFloat()) * distance, host.state.position.y + host.height / 2)), fly, 0f));
+			setCurrentTask(new GoToLocation(host, new WayPoint(new Vector2(host.state.position.x + (0.5f - Util.getRandom().nextFloat()) * distance, host.state.position.y + host.height / 2)), fly, 0f, true));
 		} else if (currentTask instanceof Idle) {
 			setCurrentTask(new Wait(host, Util.getRandom().nextFloat() * 5f + 3f));
 		}
@@ -156,7 +156,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	public void goToIndividual(Individual individual, float tolerance, boolean fly) {
 		if (distanceFrom(individual) > tolerance) {
 			Individual host = GameWorld.individuals.get(hostId.id);
-			setCurrentTask(new GoToLocation(host, new WayPoint(individual.state.position), fly, individual.width * 2));
+			setCurrentTask(new GoToLocation(host, new WayPoint(individual.state.position), fly, individual.width * 2, true));
 		}
 	}
 }
