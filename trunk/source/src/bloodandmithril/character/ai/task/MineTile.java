@@ -42,7 +42,8 @@ public class MineTile extends CompositeAITask {
 				host, 
 				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10), 3 * Topography.TILE_SIZE), 
 				false,
-				50f
+				50f, 
+				true
 			)
 		);
 		

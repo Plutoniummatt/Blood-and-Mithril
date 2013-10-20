@@ -16,7 +16,7 @@ public class Wait extends AITask {
 	private float time;
 
 	/** Used for processing */
-	private long systemTimeSinceLastUpdate;
+	private long systemTimeSinceLastUpdate = System.currentTimeMillis();
 
 	/** {@link #execute()} will set this to true when the {@link #time} expires */
 	private boolean complete = false;
@@ -38,6 +38,7 @@ public class Wait extends AITask {
 			return;
 		}
 		time = time - (System.currentTimeMillis() - systemTimeSinceLastUpdate)/1000f;
+		systemTimeSinceLastUpdate = System.currentTimeMillis();
 	}
 
 

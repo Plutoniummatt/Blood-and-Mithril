@@ -10,6 +10,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.item.Container;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -101,6 +102,7 @@ public abstract class Individual extends Container {
 	 */
 	public static void setup() {
 		Elf.loadAnimations();
+		Boar.loadAnimations();
 	}
 
 
@@ -420,16 +422,18 @@ public abstract class Individual extends Container {
 	public abstract boolean isMouseOver();
 
 
-	/** Returns the tooltip text */
-	protected abstract String getToolTipText();
-
-
 	/** Returns the tooltip text color */
 	public abstract Color getToolTipTextColor();
 
 
 	/** Constructs a implementation-specific {@link ContextMenu} */
 	public abstract ContextMenu getContextMenu();
+	
+	/** Gets the description for this {@link Individual} */
+	public abstract String getDescription();
+	
+	/** Updates the description for this {@link Individual} */
+	public abstract void updateDescription(String updated);
 
 
 	/**
@@ -482,6 +486,9 @@ public abstract class Individual extends Container {
 
 		/** Gets the simple first name + last name representation of this {@link IndividualIdentifier} */
 		public String getSimpleName() {
+			if (lastName.equals("")) {
+				return firstName;
+			}
 			return firstName + " " + lastName;
 		}
 	}

@@ -95,12 +95,12 @@ public class AIProcessor {
 	/**
 	 * Queue a task for {@link #pathFinderThread}.
 	 */
-	public static void sendPathfindingRequest(final Individual host, final WayPoint destination, final boolean fly, final float forceTolerance) {
+	public static void sendPathfindingRequest(final Individual host, final WayPoint destination, final boolean fly, final float forceTolerance, final boolean safe) {
 		pathFinderTasks.add(
 			new Task() {
 				@Override
 				public void execute() {
-					host.ai.setCurrentTask(new GoToLocation(host, destination, fly, forceTolerance));
+					host.ai.setCurrentTask(new GoToLocation(host, destination, fly, forceTolerance, safe));
 				}
 			}
 		);

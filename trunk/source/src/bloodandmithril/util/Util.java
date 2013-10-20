@@ -2,11 +2,13 @@ package bloodandmithril.util;
 
 import java.util.Random;
 
+import bloodandmithril.util.datastructure.Wrapper;
+
 public class Util {
 
 	/** Global random number generator */
 	private static Random random = new Random();
-
+	
 	/**
 	 * Creates an independent copy(clone) of the array.
 	 *
@@ -35,26 +37,106 @@ public class Util {
 		return random;
 	}
 
-
+	
 	/**
 	 * @return - A random {@link Object} from a list of {@link Object}s
 	 */
 	@SafeVarargs
-  public static <T> T randomOneOf(T... objects) {
+	public static <T> T randomOneOf(T... objects) {
 		return objects[random.nextInt(objects.length)];
 	}
 
-
+	
 	/**
 	 * @return - The first non-null object in the vararg
 	 */
 	@SafeVarargs
-  public static <T> T firstNonNull(T... objects) {
+	public static <T> T firstNonNull(T... objects) {
 		for (T object : objects) {
 			if (object != null) {
 				return object;
 			}
 		}
 		return null;
+	}
+	
+	
+	public static String fitToWindow(String toPara, int length, int maxLines) {
+		String answer = "";
+		String toChop = toPara;
+		Wrapper<Integer> lineBeginIndex = new Wrapper<Integer>(new Integer(0));
+		Wrapper<Integer> currentLine = new Wrapper<Integer>(new Integer(0));
+		
+		// Work out length of line
+		int lineLength = length / 12;
+		
+		while (!toChop.isEmpty()) {
+			int lineNumber = currentLine.t.intValue();
+			
+			answer = addWord(answer, getFirstWord(toChop, 1), lineLength, maxLines, lineBeginIndex, currentLine);
+			
+			if (lineNumber == currentLine.t) {
+				toChop = removeFirstWord(toChop);
+			}
+		}
+		
+		return answer + (currentLine.t.equals(maxLines) ? "..." : "");
+	}
+	
+	
+	public static void main(String[] args) {
+		System.out.println(fitToWindow("Wild boar or wild pig is a species of the pig genus Sus, part of the biological family Suidae. The species includes many subspecies. It is the wild ancestor of the domestic pig, an animal with which it freely hybridises.", 300, 5));
+	}
+	
+	
+	private static String addWord(String toAddTo, String word, int maxLength, int maxLines, Wrapper<Integer> lineBeginIndex, Wrapper<Integer> currentLine) {
+		
+		if (currentLine.t > maxLines - 1) {
+			return toAddTo;
+		}
+		
+		if ((toAddTo.substring(lineBeginIndex.t) + word).length() > maxLength) {
+			lineBeginIndex.t = toAddTo.length() + 1;
+			currentLine.t++;
+			return toAddTo + "\n";
+		} else {
+			return toAddTo + word + " ";
+		}
+	}
+	
+	
+	private static String removeFirstWord(String toRemoveFrom) {
+		if (!toRemoveFrom.isEmpty()) {
+			while (toRemoveFrom.startsWith(" ")) {
+				toRemoveFrom = toRemoveFrom.substring(1);
+			}
+			
+			if (toRemoveFrom.isEmpty()) {
+				return "";
+			}
+			
+			int length = getFirstWord(toRemoveFrom, 1).length();
+			
+			return toRemoveFrom.substring(length);
+		}
+		
+		return "";
+	}
+	
+	
+	private static String getFirstWord(String string, int index) {
+		while (string.startsWith(" ")) {
+			string = string.substring(1);
+		}
+		
+		try {
+			if (string.substring(0, index).endsWith(" ")) {
+				return string.substring(0, index - 1);
+			} else {
+				return getFirstWord(string, index + 1);
+			}
+		} catch (IndexOutOfBoundsException e) {
+			return string.substring(0, index - 1);
+		}
 	}
 }

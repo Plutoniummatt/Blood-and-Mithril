@@ -8,6 +8,7 @@ import bloodandmithril.character.Individual.IndividualState;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.item.consumable.Carrot;
@@ -21,6 +22,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
+import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.GameWorld.Light;
 import bloodandmithril.world.weather.Weather;
@@ -41,16 +43,15 @@ import com.badlogic.gdx.math.Vector2;
  * To-do before ALPHA release
  *
  * <b><p> Generation                                                                                     </b></p>
- * <b><p> Terraforming - Mining & Placing blocks                                                         </b></p>
- * <b><p> Building and Construction (Building construction and decontruction framework)                  </b></p>
  * <b><p> Resource gathering and stockpiling (At least the following: farming, hunting, mining, foraging)</b></p>
  * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
+ * <b><p> Building and Construction (Building construction and decontruction framework)                  </b></p>
  * <b><p> Combat (New animations, equipment framework + equipment animation framework)                   </b></p>
- * <b><p> Main menu screen                                                                               </b></p>
- * <b><p> Multiple saved games (Huge refactors of current statics various everywhere)                    </b></p>
+ * <b><p> Terraforming - Mining & Placing blocks                                                         </b></p>
  * <b><p> Text input (Renaming elves, setting save path etc)                                             </b></p>
+ * <b><p> Multiple saved games (Huge refactors of current statics various everywhere)                    </b></p>
  * <b><p> At least 5 types of NPC                                                                        </b></p>
- * <b><p> Sound                                                                                          </b></p>
+ * <b><p> Main menu screen                                                                               </b></p>
  *
  * @author Matt
  */
@@ -195,7 +196,8 @@ public class Fortress implements ApplicationListener, InputProcessor {
 							)
 						), 
 						false, 
-						150f
+						150f,
+						Gdx.input.isKeyPressed(KeyMappings.forceMove) ? false : true
 					);
 				}
 			}
@@ -290,6 +292,20 @@ public class Fortress implements ApplicationListener, InputProcessor {
 			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
 
 			GameWorld.individuals.put(elf.id.id, elf);
+		}
+		
+		if (keycode == Input.Keys.U) {
+			IndividualState state = new IndividualState(10f, 10f);
+			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
+			state.velocity = new Vector2(0, 0);
+			state.acceleration = new Vector2(0, 0);
+			
+			IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
+			id.nickName = "Unknown";
+			
+			Boar boar = new Boar(id, state);
+			
+			GameWorld.individuals.put(boar.id.id, boar);
 		}
 
 		if (keycode == Input.Keys.T) {
