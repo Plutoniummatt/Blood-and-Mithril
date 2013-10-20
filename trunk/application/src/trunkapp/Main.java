@@ -17,7 +17,7 @@ public class Main {
 
 	  //Configurations
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = "Spritestar";
+		cfg.title = "Blood and Mithril";
 		cfg.useGL20 = true;
 		cfg.samples = 4;
 		try {
