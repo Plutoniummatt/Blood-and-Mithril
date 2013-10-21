@@ -32,7 +32,7 @@ import com.google.common.collect.Lists;
  * @author Matt
  */
 public class GameWorld {
-
+	
 	/** Gravity */
 	public static float GRAVITY = 1200;
 	
@@ -66,7 +66,7 @@ public class GameWorld {
 	public GameWorld() {
 		topography = new Topography();
 		gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
 	}
 
 
@@ -74,7 +74,6 @@ public class GameWorld {
 	 * Renders the game world
 	 */
 	public void render(int camX, int camY) {
-
 		topography.loadOrGenerateNullChunks(camX, camY);
 
 		bBuffer.begin();
@@ -90,128 +89,10 @@ public class GameWorld {
 
 		fBuffer.begin();
 		topography.renderForeGround(camX, camY);
-		
-		Predicate<Individual> onPlatform = new Predicate<Individual>() {
-			public boolean apply(Individual input) {
-				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile || 
-					Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
-					return true;
-				} else {
-					return false;
-				}
-			};
-		};
-		
-		Predicate<Individual> offPlatform = new Predicate<Individual>() {
-			public boolean apply(Individual input) {
-				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile || 
-						Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
-					return false;
-				} else {
-					return true;
-				}
-			};
-		};
-		
-		for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), onPlatform)) {
-			indi.render();
-		}
-		
-		for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), offPlatform)) {
-			indi.render();
-		}
-		
+		IndividualRenderer.renderIndividuals();
 		fBuffer.end();
 
-
-		ArrayList<Light> tempLights = new ArrayList<GameWorld.Light>();
-
-		//Do not bother with lights that are off screen
-		for (Light light : lights) {
-			if (light.x - light.size < camX + Fortress.WIDTH/2 &&
-				light.x + light.size > camX - Fortress.WIDTH/2 &&
-				light.y - light.size < camY + Fortress.HEIGHT/2 &&
-				light.y + light.size > camY - Fortress.HEIGHT/2) {
-				tempLights.add(light);
-			}
-		}
-
-		for (Light light : tempLights) {
-			//Draw foreground to occlusion map
-			light.occlusion.begin();
-			Fortress.spriteBatch.begin();
-			Fortress.spriteBatch.setShader(Shaders.pass);
-			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			Fortress.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0f, 0f, Fortress.WIDTH, Fortress.HEIGHT, (int)Fortress.worldToScreenX(light.x) - light.size/2, (int)Fortress.worldToScreenY(light.y) - light.size/2, light.size, light.size, false, false);
-			Fortress.spriteBatch.end();
-			light.occlusion.end();
-
-			//Calculate 1D shadow map
-			light.shadowMap.begin();
-			Fortress.spriteBatch.begin();
-			Fortress.spriteBatch.setShader(Shaders.shadowMap);
-			Shaders.shadowMap.setUniformf("resolution", light.occlusion.getWidth(), light.occlusion.getHeight());
-			Fortress.spriteBatch.draw(light.occlusion.getColorBufferTexture(), 0f, 0f, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, light.size, light.size, false, false);
-			Fortress.spriteBatch.end();
-			light.shadowMap.end();
-		}
-
-		//Begin rendering----------------------------------//
-		Weather.render();
-		Fortress.spriteBatch.begin();
-
-		bBufferLit.begin();
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		for (Light light : tempLights) {
-			Fortress.spriteBatch.setShader(Shaders.defaultBackGroundTiles);
-			Shaders.defaultBackGroundTiles.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			Shaders.defaultBackGroundTiles.setUniformf("size", light.size);
-			Shaders.defaultBackGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a);
-			Shaders.defaultBackGroundTiles.setUniformf("lightSource", (int)Fortress.worldToScreenX(light.x), (int)Fortress.worldToScreenY(light.y));
-			Fortress.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
-			Fortress.spriteBatch.flush();
-		}
-		bBufferLit.end();
-
-		//Render the backhground tiles
-		Fortress.spriteBatch.setShader(Shaders.black);
-		Shaders.black.setUniformf("color", new Color(0f, 0f, 0f, 1f));
-		Fortress.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
-		Fortress.spriteBatch.setShader(Shaders.pass);
-		Fortress.spriteBatch.draw(bBufferLit.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
-
-		//Render the light rays
-		for (Light light: tempLights) {
-			Fortress.spriteBatch.setShader(Shaders.shadow);
-			Shaders.shadow.setUniformf("resolution", light.occlusion.getWidth(), light.occlusion.getHeight());
-			Shaders.shadow.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a/20f);
-			Shaders.shadow.setUniformf("intensity", light.intensity);
-			Fortress.spriteBatch.draw(light.shadowMap.getColorBufferTexture(),  (int)Fortress.worldToScreenX(light.x) - light.size/2,  (int)Fortress.worldToScreenY(light.y) - light.size/2, light.size, light.size, 0, 0, light.size, 1, false, true);
-		}
-
-		//Render foreground tiles
-		if (System.getProperty("seeAll").equals("true")) {
-			Fortress.spriteBatch.setShader(Shaders.pass);
-			Fortress.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
-		} else {
-			Fortress.spriteBatch.setShader(Shaders.black);
-			float color = WorldState.currentEpoch.dayLight() * 0.15f;
-			Shaders.black.setUniformf("color", new Color(color, color, color, 1f));
-			Fortress.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
-		}
-
-		//Render the foreground, affected by lighting
-		for (Light light : tempLights) {
-			Fortress.spriteBatch.setShader(Shaders.defaultForeGroundTiles);
-			light.shadowMap.getColorBufferTexture().bind(1);
-			Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-			Shaders.defaultForeGroundTiles.setUniformi("u_texture2", 1);
-			Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a);
-			Fortress.spriteBatch.draw(light.occlusion.getColorBufferTexture(),  (int)Fortress.worldToScreenX(light.x) - light.size/2,  (int)Fortress.worldToScreenY(light.y) - light.size/2, light.size, light.size);
-		}
-
-		Fortress.spriteBatch.end();
-		//End rendering----------------------------------//
+		DynamicLightingPostRenderer.render(camX, camY);
 	}
 
 
@@ -266,6 +147,149 @@ public class GameWorld {
 			this.intensity = intensity;
 			shadowMap = new FrameBuffer(Format.RGBA8888, size, 1, true);
 			occlusion = new FrameBuffer(Format.RGBA8888, size, size, true);
+		}
+	}
+	
+	
+	/**
+	 * Class to encapsulate the rendering of {@link Individual}s
+	 *
+	 * @author Matt
+	 */
+	private static class IndividualRenderer {
+		
+		/** {@link Predicate} for filtering out those that are NOT on platorms */
+		private static Predicate<Individual> onPlatform = new Predicate<Individual>() {
+			public boolean apply(Individual input) {
+				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile || 
+					Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
+					return true;
+				} else {
+					return false;
+				}
+			};
+		};
+		
+		/** {@link Predicate} for filtering out those that ARE on platorms */
+		private static Predicate<Individual> offPlatform = new Predicate<Individual>() {
+			public boolean apply(Individual input) {
+				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile || 
+						Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
+					return false;
+				} else {
+					return true;
+				}
+			};
+		};
+		
+		/** Renders all individuals, ones that are on platforms are rendered first */
+		private static void renderIndividuals() {
+			for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), onPlatform)) {
+				indi.render();
+			}
+			
+			for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), offPlatform)) {
+				indi.render();
+			}
+		}
+	}
+	
+	
+	/**
+	 * Class to encapsulate post-rendering with dynamic lighting shaders.
+	 *
+	 * @author Matt
+	 */
+	private static class DynamicLightingPostRenderer {
+		private static void render(float camX, float camY) {
+			ArrayList<Light> tempLights = new ArrayList<GameWorld.Light>();
+
+			//Do not bother with lights that are off screen
+			for (Light light : lights) {
+				if (light.x - light.size < camX + Fortress.WIDTH/2 &&
+					light.x + light.size > camX - Fortress.WIDTH/2 &&
+					light.y - light.size < camY + Fortress.HEIGHT/2 &&
+					light.y + light.size > camY - Fortress.HEIGHT/2) {
+					tempLights.add(light);
+				}
+			}
+
+			for (Light light : tempLights) {
+				//Draw foreground to occlusion map
+				light.occlusion.begin();
+				Fortress.spriteBatch.begin();
+				Fortress.spriteBatch.setShader(Shaders.pass);
+				Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				Fortress.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0f, 0f, Fortress.WIDTH, Fortress.HEIGHT, (int)Fortress.worldToScreenX(light.x) - light.size/2, (int)Fortress.worldToScreenY(light.y) - light.size/2, light.size, light.size, false, false);
+				Fortress.spriteBatch.end();
+				light.occlusion.end();
+
+				//Calculate 1D shadow map
+				light.shadowMap.begin();
+				Fortress.spriteBatch.begin();
+				Fortress.spriteBatch.setShader(Shaders.shadowMap);
+				Shaders.shadowMap.setUniformf("resolution", light.occlusion.getWidth(), light.occlusion.getHeight());
+				Fortress.spriteBatch.draw(light.occlusion.getColorBufferTexture(), 0f, 0f, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, light.size, light.size, false, false);
+				Fortress.spriteBatch.end();
+				light.shadowMap.end();
+			}
+
+			//Begin rendering----------------------------------//
+			Weather.render();
+			Fortress.spriteBatch.begin();
+
+			bBufferLit.begin();
+			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			for (Light light : tempLights) {
+				Fortress.spriteBatch.setShader(Shaders.defaultBackGroundTiles);
+				Shaders.defaultBackGroundTiles.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				Shaders.defaultBackGroundTiles.setUniformf("size", light.size);
+				Shaders.defaultBackGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a);
+				Shaders.defaultBackGroundTiles.setUniformf("lightSource", (int)Fortress.worldToScreenX(light.x), (int)Fortress.worldToScreenY(light.y));
+				Fortress.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
+				Fortress.spriteBatch.flush();
+			}
+			bBufferLit.end();
+
+			//Render the backhground tiles
+			Fortress.spriteBatch.setShader(Shaders.black);
+			Shaders.black.setUniformf("color", new Color(0f, 0f, 0f, 1f));
+			Fortress.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
+			Fortress.spriteBatch.setShader(Shaders.pass);
+			Fortress.spriteBatch.draw(bBufferLit.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
+
+			//Render the light rays
+			for (Light light: tempLights) {
+				Fortress.spriteBatch.setShader(Shaders.shadow);
+				Shaders.shadow.setUniformf("resolution", light.occlusion.getWidth(), light.occlusion.getHeight());
+				Shaders.shadow.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a/20f);
+				Shaders.shadow.setUniformf("intensity", light.intensity);
+				Fortress.spriteBatch.draw(light.shadowMap.getColorBufferTexture(),  (int)Fortress.worldToScreenX(light.x) - light.size/2,  (int)Fortress.worldToScreenY(light.y) - light.size/2, light.size, light.size, 0, 0, light.size, 1, false, true);
+			}
+
+			//Render foreground tiles
+			if (System.getProperty("seeAll").equals("true")) {
+				Fortress.spriteBatch.setShader(Shaders.pass);
+				Fortress.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
+			} else {
+				Fortress.spriteBatch.setShader(Shaders.black);
+				float color = WorldState.currentEpoch.dayLight() * 0.15f;
+				Shaders.black.setUniformf("color", new Color(color, color, color, 1f));
+				Fortress.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
+			}
+
+			//Render the foreground, affected by lighting
+			for (Light light : tempLights) {
+				Fortress.spriteBatch.setShader(Shaders.defaultForeGroundTiles);
+				light.shadowMap.getColorBufferTexture().bind(1);
+				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
+				Shaders.defaultForeGroundTiles.setUniformi("u_texture2", 1);
+				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a);
+				Fortress.spriteBatch.draw(light.occlusion.getColorBufferTexture(),  (int)Fortress.worldToScreenX(light.x) - light.size/2,  (int)Fortress.worldToScreenY(light.y) - light.size/2, light.size, light.size);
+			}
+
+			Fortress.spriteBatch.end();
+			//End rendering----------------------------------//
 		}
 	}
 }
