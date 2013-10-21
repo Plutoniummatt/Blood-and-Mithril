@@ -8,7 +8,7 @@ uniform sampler2D u_texture;
 uniform vec2 resolution;
 
 //alpha threshold for our occlusion map
-const float THRESHOLD = 0.75;
+const float THRESHOLD = 0.90;
 
 void main(void) {
   float distance = 1.0;
@@ -26,7 +26,7 @@ void main(void) {
 		vec4 data = texture2D(u_texture, coord);
 		
 		//the current distance is how far from the top we've come
-		float dst = y/resolution.y;
+		float dst = y/resolution.y - (2/resolution.x);
 		
 		//if we've hit an opaque fragment (occluder), then get new distance
 		//if the new distance is below the current, then we'll use that for our ray
