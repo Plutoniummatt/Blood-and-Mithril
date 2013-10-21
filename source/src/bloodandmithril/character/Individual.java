@@ -13,10 +13,12 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.item.Container;
+import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
@@ -435,6 +437,9 @@ public abstract class Individual extends Container {
 	
 	/** Updates the description for this {@link Individual} */
 	public abstract void updateDescription(String updated);
+	
+	/** Returns the {@link SpacialConfiguration} where {@link OneHandedWeapon} will be rendered */
+	protected abstract SpacialConfiguration getOneHandedWeaponSpacialConfigration();
 
 
 	/**

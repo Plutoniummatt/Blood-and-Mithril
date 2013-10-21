@@ -22,6 +22,9 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 /**
  * Class representing the game world.
@@ -63,6 +66,7 @@ public class GameWorld {
 	public GameWorld() {
 		topography = new Topography();
 		gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	}
 
 
@@ -86,9 +90,37 @@ public class GameWorld {
 
 		fBuffer.begin();
 		topography.renderForeGround(camX, camY);
-		for (Individual indi : individuals.values()) {
+		
+		Predicate<Individual> onPlatform = new Predicate<Individual>() {
+			public boolean apply(Individual input) {
+				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile || 
+					Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
+					return true;
+				} else {
+					return false;
+				}
+			};
+		};
+		
+		Predicate<Individual> offPlatform = new Predicate<Individual>() {
+			public boolean apply(Individual input) {
+				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile || 
+						Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
+					return false;
+				} else {
+					return true;
+				}
+			};
+		};
+		
+		for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), onPlatform)) {
 			indi.render();
 		}
+		
+		for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), offPlatform)) {
+			indi.render();
+		}
+		
 		fBuffer.end();
 
 

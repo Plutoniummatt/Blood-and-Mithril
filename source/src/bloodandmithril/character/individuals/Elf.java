@@ -2,11 +2,11 @@ package bloodandmithril.character.individuals;
 
 import java.util.HashMap;
 
-
 import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -15,6 +15,7 @@ import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
@@ -83,6 +84,8 @@ public class Elf extends Individual {
 	
 	/** Biography of this Elf */
 	private String biography = "Elves are cool";
+	
+	private ButterflySword sword = new ButterflySword(1f, true, 11);
 	
 	/**
 	 * Constructor
@@ -160,7 +163,6 @@ public class Elf extends Individual {
 			state.position.x - animations.get(current + (female ? "F" : "M")).getKeyFrame(0f).getRegionWidth()/2,
 			state.position.y
 		);
-			
 		Fortress.spriteBatch.end();
 
 		// Change draw mode to hair
@@ -176,6 +178,11 @@ public class Elf extends Individual {
 			state.position.x - hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(0f).getRegionWidth()/2,
 			state.position.y
 		);
+		
+		SpacialConfiguration config = getOneHandedWeaponSpacialConfigration();
+		if (config != null) {
+			sword.render(config.position.add(state.position), config.orientation, config.flipX);
+		}
 		
 		Fortress.spriteBatch.flush();
 		Fortress.spriteBatch.end();
@@ -411,5 +418,66 @@ public class Elf extends Individual {
 	@Override
 	public void updateDescription(String updated) {
 		biography = updated;
+	}
+
+
+	@Override
+	protected SpacialConfiguration getOneHandedWeaponSpacialConfigration() {
+		int keyFrameIndex = animations.get(current + (female ? "F" : "M")).getKeyFrameIndex(animationTimer);
+		
+		switch (current) {
+			case WALKING_LEFT:
+				switch (keyFrameIndex) {
+					case 0:
+						return new SpacialConfiguration(new Vector2(3, 22), 0f, true);
+					case 1:
+						return new SpacialConfiguration(new Vector2(5, 20), 20f, true);
+					case 2:
+						return new SpacialConfiguration(new Vector2(3, 21), 0f, true);
+					case 3:
+						return new SpacialConfiguration(new Vector2(-6, 24), -45f, true);
+					case 4:
+						return new SpacialConfiguration(new Vector2(-11, 31), -90f, true);
+					case 5:
+						return new SpacialConfiguration(new Vector2(-6, 24), -45f, true);
+					default:
+						throw new RuntimeException("Unexpected keyframe index");
+				}
+				
+			case WALKING_RIGHT:
+				switch (keyFrameIndex) {
+					case 0:
+						return new SpacialConfiguration(new Vector2(-3, 22), 0f, false);
+					case 1:
+						return new SpacialConfiguration(new Vector2(-5, 20), -20f, false);
+					case 2:
+						return new SpacialConfiguration(new Vector2(-3, 21), 0f, false);
+					case 3:
+						return new SpacialConfiguration(new Vector2(6, 24), 45f, false);
+					case 4:
+						return new SpacialConfiguration(new Vector2(11, 31), 90f, false);
+					case 5:
+						return new SpacialConfiguration(new Vector2(6, 24), 45f, false);
+					default:
+						throw new RuntimeException("Unexpected keyframe index");
+				}
+				
+			case STANDING_LEFT:
+				switch (keyFrameIndex) {
+				case 0:
+					return new SpacialConfiguration(new Vector2(1, 20), 0f, true);
+				default:
+					throw new RuntimeException("Unexpected keyframe index");
+				}
+				
+			case STANDING_RIGHT:
+				switch (keyFrameIndex) {
+				case 0:
+					return new SpacialConfiguration(new Vector2(1, 20), 0f, false);
+				default:
+					throw new RuntimeException("Unexpected keyframe index");
+				}
+		}
+		return null;
 	}
 }
