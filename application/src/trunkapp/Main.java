@@ -1,6 +1,5 @@
 package trunkapp;
 
-
 import bloodandmithril.Fortress;
 
 import com.badlogic.gdx.Files.FileType;
