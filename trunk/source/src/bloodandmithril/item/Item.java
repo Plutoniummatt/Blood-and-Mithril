@@ -17,7 +17,7 @@ public abstract class Item implements Serializable {
 	/** The mass of this item */
 	public float mass;
 
-	/** The mass of this item */
+	/** The value of this item */
 	public long value;
 
 	/** Whether this item can be equipped by an {@link Individual} */

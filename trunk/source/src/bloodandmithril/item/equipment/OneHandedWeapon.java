@@ -1,0 +1,17 @@
+package bloodandmithril.item.equipment;
+
+/**
+ * An {@link Equipable} weapon
+ *
+ * @author Matt
+ */
+public abstract class OneHandedWeapon extends Equipable {
+	private static final long serialVersionUID = 2320214226123580597L;
+	
+	/**
+	 * Protected constructor
+	 */
+	protected OneHandedWeapon(float mass, boolean equippable, long value) {
+		super(mass, equippable, value);
+	}
+}

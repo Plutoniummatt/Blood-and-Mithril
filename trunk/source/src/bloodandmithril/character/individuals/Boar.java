@@ -17,6 +17,7 @@ import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.GameWorld;
@@ -235,5 +236,11 @@ public class Boar extends Individual {
 	@Override
 	public void updateDescription(String updated) {
 		biography = updated;
+	}
+
+
+	@Override
+	protected SpacialConfiguration getOneHandedWeaponSpacialConfigration() {
+		return null;
 	}
 }

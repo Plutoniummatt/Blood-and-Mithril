@@ -2,6 +2,9 @@ package bloodandmithril.util;
 
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import bloodandmithril.Fortress;
 import bloodandmithril.util.datastructure.Wrapper;
 
 public class Util {
@@ -35,6 +38,11 @@ public class Util {
 	 */
 	public static Random getRandom() {
 		return random;
+	}
+	
+	
+	public static void draw(TextureRegion region, float x, float y, float angle) {
+		Fortress.spriteBatch.draw(region, x, y, 0, 0, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, angle);
 	}
 
 	

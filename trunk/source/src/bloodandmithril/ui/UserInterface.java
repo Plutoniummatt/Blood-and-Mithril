@@ -145,6 +145,7 @@ public class UserInterface {
 	 */
 	public static void render() {
 
+		//Individual sprites (Selected arrow, movement arrow etc)
 		renderIndividualUISprites();
 
 		Fortress.spriteBatch.setShader(Shaders.text);
