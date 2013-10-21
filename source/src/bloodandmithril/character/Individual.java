@@ -223,7 +223,7 @@ public abstract class Individual extends Container {
 		if (Math.abs((state.velocity.y - delta * GameWorld.GRAVITY) * delta) < Topography.TILE_SIZE/2) {
 			state.velocity.y = state.velocity.y - delta * GameWorld.GRAVITY;
 		} else {
-			state.velocity.y = state.velocity.y + delta * GameWorld.GRAVITY;
+			state.velocity.y = state.velocity.y * 0.8f;
 		}
 		state.velocity.add(state.acceleration.cpy().mul(delta));
 
@@ -235,10 +235,11 @@ public abstract class Individual extends Container {
 			state.velocity.y = 0f;
 
 			if (state.position.y >= 0f) {
-				state.position.y = (int)state.position.y % Topography.TILE_SIZE == 0 ?
-					(int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE :
-					(int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE + Topography.TILE_SIZE;
-
+				if ((int)state.position.y % Topography.TILE_SIZE == 0) {
+					state.position.y = (int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE;
+				} else {
+					state.position.y = (int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE + Topography.TILE_SIZE;
+				}
 			} else {
 				state.position.y = (int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE;
 			}
