@@ -85,7 +85,7 @@ public class Elf extends Individual {
 	/** Biography of this Elf */
 	private String biography = "Elves are cool";
 	
-	private ButterflySword sword = new ButterflySword(1f, true, 11);
+	private ButterflySword bSword = new ButterflySword(1f, true, 11);
 	
 	/**
 	 * Constructor
@@ -181,7 +181,7 @@ public class Elf extends Individual {
 		
 		SpacialConfiguration config = getOneHandedWeaponSpacialConfigration();
 		if (config != null) {
-			sword.render(config.position.add(state.position), config.orientation, config.flipX);
+			bSword.render(config.position.add(state.position), config.orientation, config.flipX);
 		}
 		
 		Fortress.spriteBatch.flush();
@@ -429,17 +429,17 @@ public class Elf extends Individual {
 			case WALKING_LEFT:
 				switch (keyFrameIndex) {
 					case 0:
-						return new SpacialConfiguration(new Vector2(3, 22), 0f, true);
+						return new SpacialConfiguration(new Vector2(5, 21), 0f, true);
 					case 1:
-						return new SpacialConfiguration(new Vector2(5, 20), 20f, true);
+						return new SpacialConfiguration(new Vector2(7, 19), 15f, true);
 					case 2:
 						return new SpacialConfiguration(new Vector2(3, 21), 0f, true);
 					case 3:
-						return new SpacialConfiguration(new Vector2(-6, 24), -45f, true);
+						return new SpacialConfiguration(new Vector2(-6, 24), -20f, true);
 					case 4:
-						return new SpacialConfiguration(new Vector2(-11, 31), -90f, true);
+						return new SpacialConfiguration(new Vector2(-11, 31), -45f, true);
 					case 5:
-						return new SpacialConfiguration(new Vector2(-6, 24), -45f, true);
+						return new SpacialConfiguration(new Vector2(-6, 24), -20f, true);
 					default:
 						throw new RuntimeException("Unexpected keyframe index");
 				}
@@ -447,17 +447,17 @@ public class Elf extends Individual {
 			case WALKING_RIGHT:
 				switch (keyFrameIndex) {
 					case 0:
-						return new SpacialConfiguration(new Vector2(-3, 22), 0f, false);
+						return new SpacialConfiguration(new Vector2(-5, 21), 0f, false);
 					case 1:
-						return new SpacialConfiguration(new Vector2(-5, 20), -20f, false);
+						return new SpacialConfiguration(new Vector2(-7, 19), -15f, false);
 					case 2:
 						return new SpacialConfiguration(new Vector2(-3, 21), 0f, false);
 					case 3:
-						return new SpacialConfiguration(new Vector2(6, 24), 45f, false);
+						return new SpacialConfiguration(new Vector2(6, 24), 20f, false);
 					case 4:
-						return new SpacialConfiguration(new Vector2(11, 31), 90f, false);
+						return new SpacialConfiguration(new Vector2(11, 31), 45f, false);
 					case 5:
-						return new SpacialConfiguration(new Vector2(6, 24), 45f, false);
+						return new SpacialConfiguration(new Vector2(6, 24), 20f, false);
 					default:
 						throw new RuntimeException("Unexpected keyframe index");
 				}

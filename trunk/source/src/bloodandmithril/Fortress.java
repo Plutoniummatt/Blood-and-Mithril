@@ -255,7 +255,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 		if (Gdx.input.isKeyPressed(Input.Keys.E)) {
 			GameWorld.lights.add(
 				new Light(
-					500,
+					800,
 					getMouseWorldX(), getMouseWorldY(),
 					Util.randomOneOf(Color.WHITE),
 					1f
