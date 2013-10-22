@@ -16,6 +16,10 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.generation.Structure;
+import bloodandmithril.generation.StructureMap;
+import bloodandmithril.generation.component.Interface;
+import bloodandmithril.generation.superstructure.Desert;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.prop.Prop;
@@ -151,8 +155,8 @@ public class UserInterface {
 		Fortress.spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
 
+		renderComponentInterfaces();
 		renderDragBox();
-
 		renderLayeredComponents();
 		renderContextMenus();
 
@@ -162,12 +166,27 @@ public class UserInterface {
 		if (System.getProperty("debug").equals("true")) {
 			renderDebugText();
 		}
+		
 		renderUIText();
 		renderButtons();
+		
 		Fortress.spriteBatch.end();
 
 		renderPauseScreen();
 		renderSavingScreen();
+	}
+
+
+	private static void renderComponentInterfaces() {
+		for (Structure struct : StructureMap.structures.values()) {
+			if (struct instanceof Desert) {
+				for (bloodandmithril.generation.component.Component comp : ((Desert) struct).components) {
+					for (Interface in : comp.interfaces) {
+						in.render();
+					}
+				}
+			}
+		}
 	}
 
 
