@@ -181,8 +181,12 @@ public class UserInterface {
 		for (Structure struct : StructureMap.structures.values()) {
 			if (struct instanceof Desert) {
 				for (bloodandmithril.generation.component.Component comp : ((Desert) struct).components) {
-					for (Interface in : comp.interfaces) {
-						in.render();
+					for (Interface in : comp.availableInterfaces) {
+						in.render(Color.GREEN);
+					}
+					
+					for (Interface in : comp.existingInterfaces) {
+						in.render(Color.RED);
 					}
 				}
 			}
