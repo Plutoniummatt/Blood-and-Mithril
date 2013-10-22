@@ -92,11 +92,6 @@ public class Util {
 	}
 	
 	
-	public static void main(String[] args) {
-		System.out.println(fitToWindow("Wild boar or wild pig is a species of the pig genus Sus, part of the biological family Suidae. The species includes many subspecies. It is the wild ancestor of the domestic pig, an animal with which it freely hybridises.", 300, 5));
-	}
-	
-	
 	private static String addWord(String toAddTo, String word, int maxLength, int maxLines, Wrapper<Integer> lineBeginIndex, Wrapper<Integer> currentLine) {
 		
 		if (currentLine.t > maxLines - 1) {
@@ -147,4 +142,40 @@ public class Util {
 			return string.substring(0, index - 1);
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
