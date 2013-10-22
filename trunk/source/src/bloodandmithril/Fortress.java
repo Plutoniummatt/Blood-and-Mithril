@@ -314,6 +314,10 @@ public class Fortress implements ApplicationListener, InputProcessor {
 				GameWorld.props.add(new Furnace(individual.state.position.x, individual.state.position.y));
 			}
 		}
+		
+		if (keycode == Input.Keys.I) {
+			UserInterface.renderAvailableInterfaces = !UserInterface.renderAvailableInterfaces;
+		}
 
 		if (keycode == Input.Keys.Y) {
 			SoundService.changeMusic(5f, SoundService.music2);
