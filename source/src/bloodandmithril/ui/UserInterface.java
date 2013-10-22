@@ -76,6 +76,9 @@ public class UserInterface {
 
 	/** Initial coordinates for the drag box, see {@link #renderDragBox()} */
 	private static Vector2 initialDragCoordinates = null;
+	
+	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
+	public static boolean renderAvailableInterfaces = true;
 
 	/** Texture regions */
 	public static TextureRegion finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
@@ -178,19 +181,27 @@ public class UserInterface {
 
 
 	private static void renderComponentInterfaces() {
+		Color availableColor = new Color(0.2f, 1f, 0f, 0.5f);
+		Color existingColor = new Color(1f, 0.2f, 0f, 0.5f);
+		
+		Gdx.gl.glEnable(GL10.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : StructureMap.structures.values()) {
 			if (struct instanceof Desert) {
 				for (bloodandmithril.generation.component.Component comp : ((Desert) struct).components) {
-					for (Interface in : comp.availableInterfaces) {
-						in.render(Color.GREEN);
-					}
-					
-					for (Interface in : comp.existingInterfaces) {
-						in.render(Color.RED);
+					if (renderAvailableInterfaces) {
+						for (Interface in : comp.availableInterfaces) {
+							in.render(availableColor);
+						}
+					} else {
+						for (Interface in : comp.existingInterfaces) {
+							in.render(existingColor);
+						}
 					}
 				}
 			}
 		}
+		Gdx.gl.glDisable(GL10.GL_BLEND);
 	}
 
 
