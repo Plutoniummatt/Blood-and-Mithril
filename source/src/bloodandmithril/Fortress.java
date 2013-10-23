@@ -257,7 +257,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 				new Light(
 					800,
 					getMouseWorldX(), getMouseWorldY(),
-					Util.randomOneOf(Color.WHITE),
+					Util.randomOneOf(Color.WHITE, Color.CYAN, Color.GREEN, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.YELLOW),
 					1f
 				)
 			);
