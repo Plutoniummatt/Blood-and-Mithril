@@ -10,7 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.util.Logger;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.weather.Weather;
 
@@ -184,12 +186,16 @@ public class GameWorld {
 		
 		/** Renders all individuals, ones that are on platforms are rendered first */
 		private static void renderIndividuals() {
-			for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), onPlatform)) {
-				indi.render();
-			}
-			
-			for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), offPlatform)) {
-				indi.render();
+			try {
+				for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), onPlatform)) {
+					indi.render();
+				}
+				
+				for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), offPlatform)) {
+					indi.render();
+				}
+			} catch (NullPointerException e) {
+				Logger.generalDebug("Nullpointer whilst rendering individual", LogLevel.WARN);
 			}
 		}
 	}
