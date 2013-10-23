@@ -47,7 +47,7 @@ float illumination() {
 	if (center == 1) {
 		sum += 0;
 	} else {
-		sum += 1 - (r - sample2(1-tc))/0.15;
+		sum += 1 - (r - sample2(1-tc))/0.07;
 	}
 	
 	//sum of 1.0 -> in light, 0.0 -> in shadow
