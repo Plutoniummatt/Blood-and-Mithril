@@ -72,6 +72,7 @@ public class Container implements Serializable {
 			}
 		}
 		
+		takeItem(item, 1);
 		equippedItems.put(item, 1);
 		refreshCurrentLoad();
 	}
@@ -83,7 +84,7 @@ public class Container implements Serializable {
 	public void unequip(Item item) {
 		if (equippedItems.containsKey(item)) {
 			equippedItems.remove(item);
-			inventory.put(item, 1);
+			inventory.put(item, inventory.get(item) + 1);
 			refreshCurrentLoad();
 		}
 	}

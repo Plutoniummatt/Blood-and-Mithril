@@ -162,9 +162,8 @@ public class InventoryWindow extends Window {
 	private void populateList(HashMap<Item, Integer> listToPopulate, boolean eq) {
 		for(final Entry<Item, Integer> item : listToPopulate.entrySet()) {
 			
-			final ContextMenu menuToAdd = determineMenu(item.getKey());
-			
-			Button button = new Button(
+			final ContextMenu menuToAddUnequipped = determineMenu(item.getKey(), false);
+			Button inventoryButton = new Button(
 				item.getKey().getSingular(true),
 				defaultFont,
 				0,
@@ -174,8 +173,29 @@ public class InventoryWindow extends Window {
 				new Task() {
 					@Override
 					public void execute() {
-						menuToAdd.x = Fortress.getMouseScreenX();
-						menuToAdd.y = Fortress.getMouseScreenY();
+						menuToAddUnequipped.x = Fortress.getMouseScreenX();
+						menuToAddUnequipped.y = Fortress.getMouseScreenY();
+					}
+				},
+				eq ? new Color(0f, 0.6f, 0f, 1f) : new Color(0.8f, 0.8f, 0.8f, 1f),
+				Color.GREEN,
+				Color.WHITE,
+				UIRef.BL
+			);
+			
+			final ContextMenu menuToAddEquipped = determineMenu(item.getKey(), true);
+			Button equippedButton = new Button(
+				item.getKey().getSingular(true),
+				defaultFont,
+				0,
+				0,
+				item.getKey().getSingular(true).length() * 10,
+				16,
+				new Task() {
+					@Override
+					public void execute() {
+						menuToAddEquipped.x = Fortress.getMouseScreenX();
+						menuToAddEquipped.y = Fortress.getMouseScreenY();
 					}
 				},
 				eq ? new Color(0f, 0.6f, 0f, 1f) : new Color(0.8f, 0.8f, 0.8f, 1f),
@@ -186,23 +206,23 @@ public class InventoryWindow extends Window {
 
 			if (eq) {
 				this.equippedItemsToDisplay.put(
-					new InventoryWindowItem(item.getKey(), button, menuToAdd),
+					new InventoryWindowItem(item.getKey(), equippedButton, menuToAddEquipped),
 					item.getValue()
 				);
 			} else {
 				this.nonEquippedItemsToDisplay.put(
-					new InventoryWindowItem(item.getKey(), button, menuToAdd),
+					new InventoryWindowItem(item.getKey(), inventoryButton, menuToAddUnequipped),
 					item.getValue()
 				);
 			}
 
-			minLength = minLength < button.width + 100 ? button.width + 100 : minLength;
+			minLength = minLength < inventoryButton.width + 100 ? inventoryButton.width + 100 : minLength;
 		}
 	}
 
 
 	/** Determines which context menu to use */
-	private ContextMenu determineMenu(final Item item) {
+	private ContextMenu determineMenu(final Item item, boolean equipped) {
 		if (item instanceof Consumable) {
 			return new ContextMenu(x, y,
 				new ContextMenuItem(
@@ -240,8 +260,6 @@ public class InventoryWindow extends Window {
 		
 		if (item instanceof Equipable) {
 			
-			boolean equipped = host.getEquipped().containsKey(item);
-			
 			return new ContextMenu(x, y,
 				new ContextMenuItem(
 					"Show info",
@@ -277,7 +295,6 @@ public class InventoryWindow extends Window {
 					new Task() {
 						@Override
 						public void execute() {
-							host.takeItem(item, 1);
 							host.equip(item);
 							refresh();
 						}

@@ -256,7 +256,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 		if (Gdx.input.isKeyPressed(Input.Keys.E)) {
 			GameWorld.lights.add(
 				new Light(
-					800,
+					750,
 					getMouseWorldX(), getMouseWorldY(),
 					Util.randomOneOf(Color.WHITE, Color.CYAN, Color.GREEN, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.YELLOW),
 					1f
@@ -291,7 +291,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 
 			elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
 			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
-			elf.giveItem(new ButterflySword(100), 1);
+			elf.giveItem(new ButterflySword(100), 5);
 
 			GameWorld.individuals.put(elf.id.id, elf);
 		}
@@ -322,7 +322,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 		}
 
 		if (keycode == Input.Keys.Y) {
-			SoundService.changeMusic(5f, SoundService.music2);
+			SoundService.changeMusic(5f, SoundService.music3);
 		}
 
 		if (keycode == Input.Keys.U) {

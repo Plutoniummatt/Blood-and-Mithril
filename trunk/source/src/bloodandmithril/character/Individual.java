@@ -82,6 +82,12 @@ public abstract class Individual extends Container {
 	
 	/** True if this {@link Individual} is walking */
 	public boolean walking = true;
+	
+	/** True if this {@link Individual} is currently stepping up */
+	public boolean steppingUp;
+
+	/** Part of the step-up processing */
+	private int steps = 0;
 
 	/**
 	 * Constructor
@@ -220,10 +226,20 @@ public abstract class Individual extends Container {
 
 		//Calculate position
 		state.position.add(state.velocity.cpy().mul(delta));
+		
+		//Stepping up
+		if (steppingUp) {
+			state.position.y += 3f;
+			steps++;
+			if (steps == Topography.TILE_SIZE/3 - 1) {
+				steppingUp = false;
+			}
+		}
+		
 
 		//Calculate velocity based on acceleration, including gravity
 		if (Math.abs((state.velocity.y - delta * GameWorld.GRAVITY) * delta) < Topography.TILE_SIZE/2) {
-			state.velocity.y = state.velocity.y - delta * GameWorld.GRAVITY;
+			state.velocity.y = state.velocity.y - (steppingUp ? 0 : delta * GameWorld.GRAVITY);
 		} else {
 			state.velocity.y = state.velocity.y * 0.8f;
 		}
@@ -233,7 +249,7 @@ public abstract class Individual extends Container {
 		//If the position is not on an empty tile and is not a platform tile run the ground detection routine
 		//If the position is on a platform tile and if the tile below current position is not an empty tile, run ground detection routine
 		//If position below is a platform tile and the next waypoint is directly below current position, skip ground detection
-		if (groundDetectionCriteriaMet()) {
+		if (groundDetectionCriteriaMet() && !steppingUp) {
 			state.velocity.y = 0f;
 
 			if (state.position.y >= 0f) {
@@ -254,7 +270,8 @@ public abstract class Individual extends Container {
 		//Wall check routine, only perform this if we're moving
 		if (state.velocity.x != 0 && obstructed(0)) {
 			if (canStepUp(0)) {
-				state.position.y = state.position.y + Topography.TILE_SIZE;
+				steppingUp = true;
+				steps = 0;
 			} else {
 				boolean check = false;
 				while (obstructed(0)) {

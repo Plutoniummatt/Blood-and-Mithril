@@ -101,34 +101,39 @@ public abstract class Window extends Component {
 		}
 
 		if (UserInterface.contextMenus.isEmpty()) {
-			if (closeButton.click()) {
-				closing = true;
-				return false;
-			}
 
-			if (minimizable && minimizeButton.click()) {
-				minimized = true;
-				return true;
-			}
 
-			if (active && isWithin()) {
-				resizeButton.click();
-				internalLeftClick(copy, windowsCopy);
-				determinePositioning();
-				return true;
-			} else if (isWithin()) {
-				windowsCopy.remove(this);
-				windowsCopy.addLast(this);
-				resizeButton.click();
-				internalLeftClick(copy, windowsCopy);
-				determinePositioning();
-				active = true;
-				return true;
+			if (isWithin()) {
+				if (active) {
+					
+					if (closeButton.click()) {
+						closing = true;
+						return false;
+					}
+
+					if (minimizable && minimizeButton.click()) {
+						minimized = true;
+						return true;
+					}
+					
+					resizeButton.click();
+					internalLeftClick(copy, windowsCopy);
+					determinePositioning();
+					return true;
+				} else {
+					
+					windowsCopy.remove(this);
+					windowsCopy.addLast(this);
+					determinePositioning();
+					active = true;
+					return true;
+				}
 			} else {
 				active = false;
 				return false;
 			}
 		}
+		
 		return false;
 	}
 
