@@ -15,6 +15,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.consumable.Consumable;
+import bloodandmithril.item.equipment.Equipable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -160,55 +161,9 @@ public class InventoryWindow extends Window {
 	 */
 	private void populateList(HashMap<Item, Integer> listToPopulate, boolean eq) {
 		for(final Entry<Item, Integer> item : listToPopulate.entrySet()) {
-			final ContextMenu menu = new ContextMenu(x, y,
-				new ContextMenuItem(
-					"Show info",
-					new Task() {
-						@Override
-						public void execute() {
-							UserInterface.addLayeredComponent(item.getKey().getInfoWindow());
-						}
-					},
-					new Color(0.8f, 0.8f, 0.8f, 1f),
-					Color.GREEN,
-					Color.WHITE,
-					null
-				),
-
-				new ContextMenuItem(
-					"Eat one",
-					new Task() {
-						@Override
-						public void execute() {
-							if (item.getKey() instanceof Consumable && host instanceof Individual &&
-									((Consumable)item.getKey()).consume((Individual)host)) {
-								host.takeItem(item.getKey(), 1);
-							}
-							refresh();
-						}
-					},
-					new Color(0.8f, 0.8f, 0.8f, 1f),
-					Color.GREEN,
-					Color.WHITE,
-					null
-				),
-
-				new ContextMenuItem(
-					"Steal one",
-					new Task() {
-						@Override
-						public void execute() {
-						host.takeItem(item.getKey(), 1);
-							refresh();
-						}
-					},
-					new Color(0.8f, 0.8f, 0.8f, 1f),
-					Color.GREEN,
-					Color.WHITE,
-					null
-				)
-			);
-
+			
+			final ContextMenu menuToAdd = determineMenu(item.getKey());
+			
 			Button button = new Button(
 				item.getKey().getSingular(true),
 				defaultFont,
@@ -219,8 +174,8 @@ public class InventoryWindow extends Window {
 				new Task() {
 					@Override
 					public void execute() {
-						menu.x = Fortress.getMouseScreenX();
-						menu.y = Fortress.getMouseScreenY();
+						menuToAdd.x = Fortress.getMouseScreenX();
+						menuToAdd.y = Fortress.getMouseScreenY();
 					}
 				},
 				eq ? new Color(0f, 0.6f, 0f, 1f) : new Color(0.8f, 0.8f, 0.8f, 1f),
@@ -231,18 +186,111 @@ public class InventoryWindow extends Window {
 
 			if (eq) {
 				this.equippedItemsToDisplay.put(
-					new InventoryWindowItem(item.getKey(), button, menu),
+					new InventoryWindowItem(item.getKey(), button, menuToAdd),
 					item.getValue()
 				);
 			} else {
 				this.nonEquippedItemsToDisplay.put(
-					new InventoryWindowItem(item.getKey(), button, menu),
+					new InventoryWindowItem(item.getKey(), button, menuToAdd),
 					item.getValue()
 				);
 			}
 
 			minLength = minLength < button.width + 100 ? button.width + 100 : minLength;
 		}
+	}
+
+
+	/** Determines which context menu to use */
+	private ContextMenu determineMenu(final Item item) {
+		if (item instanceof Consumable) {
+			return new ContextMenu(x, y,
+				new ContextMenuItem(
+					"Show info",
+					new Task() {
+						@Override
+						public void execute() {
+							UserInterface.addLayeredComponent(item.getInfoWindow());
+						}
+					},
+					new Color(0.8f, 0.8f, 0.8f, 1f),
+					Color.GREEN,
+					Color.WHITE,
+					null
+				),
+					
+				new ContextMenuItem(
+					"Consume",
+					new Task() {
+						@Override
+						public void execute() {
+							if (item instanceof Consumable && host instanceof Individual && ((Consumable)item).consume((Individual)host)) {
+								host.takeItem(item, 1);
+							}
+							refresh();
+						}
+					},
+					new Color(0.8f, 0.8f, 0.8f, 1f),
+					Color.GREEN,
+					Color.WHITE,
+					null
+				)
+			);
+		}
+		
+		if (item instanceof Equipable) {
+			
+			boolean equipped = host.getEquipped().containsKey(item);
+			
+			return new ContextMenu(x, y,
+				new ContextMenuItem(
+					"Show info",
+					new Task() {
+						@Override
+						public void execute() {
+							UserInterface.addLayeredComponent(item.getInfoWindow());
+						}
+					},
+					new Color(0.8f, 0.8f, 0.8f, 1f),
+					Color.GREEN,
+					Color.WHITE,
+					null
+				),
+				
+				equipped ? new ContextMenuItem(
+					"Unequip",
+					new Task() {
+						@Override
+						public void execute() {
+							host.unequip(item);
+							refresh();
+						}
+					},
+					new Color(0.8f, 0.8f, 0.8f, 1f),
+					Color.GREEN,
+					Color.WHITE,
+					null
+				) :
+					
+				new ContextMenuItem(
+					"Equip",
+					new Task() {
+						@Override
+						public void execute() {
+							host.takeItem(item, 1);
+							host.equip(item);
+							refresh();
+						}
+					},
+					new Color(0.8f, 0.8f, 0.8f, 1f),
+					Color.GREEN,
+					Color.WHITE,
+					null
+				)
+			);
+		}
+		
+		return null;
 	}
 
 

@@ -1,10 +1,12 @@
 package bloodandmithril.item.equipment;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.Fortress;
 import bloodandmithril.item.Item;
+import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.world.GameWorld;
 
@@ -16,8 +18,8 @@ public class ButterflySword extends OneHandedWeapon {
 	/**
 	 * Constructor
 	 */
-	public ButterflySword(float mass, boolean equippable, long value) {
-		super(mass, equippable, value);
+	public ButterflySword(long value) {
+		super(10, true, value);
 	}
 
 	
@@ -35,7 +37,18 @@ public class ButterflySword extends OneHandedWeapon {
 	
 	@Override
 	public Window getInfoWindow() {
-		return null;
+		return new MessageWindow(
+			"The blade of a butterfly sword is roughly as long as a human forearm, which allows for easy concealment inside loose sleeves or boots, and allows greater maneuverability when spinning and rotating during close-quarters fighting.",
+			Color.ORANGE,
+			Fortress.getMouseScreenX(),
+			Fortress.getMouseScreenY(),
+			350,
+			200,
+			"Carrot",
+			true,
+			100,
+			100
+		);
 	}
 
 	

@@ -6,7 +6,9 @@ import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.task.Idle;
-import bloodandmithril.item.equipment.ButterflySword;
+import bloodandmithril.item.Item;
+import bloodandmithril.item.equipment.Equipable;
+import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -84,8 +86,6 @@ public class Elf extends Individual {
 	
 	/** Biography of this Elf */
 	private String biography = "Elves are cool";
-	
-	private ButterflySword bSword = new ButterflySword(1f, true, 11);
 	
 	/**
 	 * Constructor
@@ -178,10 +178,17 @@ public class Elf extends Individual {
 			state.position.x - hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(0f).getRegionWidth()/2,
 			state.position.y
 		);
-		
-		SpacialConfiguration config = getOneHandedWeaponSpacialConfigration();
-		if (config != null) {
-			bSword.render(config.position.add(state.position), config.orientation, config.flipX);
+
+		// Render equipped items
+		for (Item equipped : equippedItems.keySet()) {
+			Equipable toRender = (Equipable) equipped;
+			
+			if (equipped instanceof OneHandedWeapon) {
+				SpacialConfiguration config = getOneHandedWeaponSpacialConfigration();
+				if (config != null) {
+					toRender.render(config.position.add(state.position), config.orientation, config.flipX);
+				}
+			}
 		}
 		
 		Fortress.spriteBatch.flush();
