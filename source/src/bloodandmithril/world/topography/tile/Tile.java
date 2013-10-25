@@ -45,6 +45,9 @@ public abstract class Tile implements Serializable {
 
 	/** Whether this is a platform tile */
 	public final boolean isPlatformTile;
+	
+	/** Whether this is a Stair tile */
+	public boolean isStair = false;
 
 	/**
 	 * Protected constructor
@@ -62,11 +65,11 @@ public abstract class Tile implements Serializable {
 		int texX = 0;
 		if (orientation != null) {
 			switch (orientation) {
-			case TL: texX = 0;
+			case TL: texX = isStair ? 16 : 0;
 				break;
 			case TM: texX = 1;
 				break;
-			case TR: texX = 2;
+			case TR: texX = isStair ? 17 : 2;
 				break;
 			case L: texX = 3;
 				break;
@@ -98,7 +101,8 @@ public abstract class Tile implements Serializable {
 				throw new RuntimeException("Tile type is not defined");
 			}
 		}
-		return foreGround ? texX * Topography.textureCoordinateQuantization : (texX + 17) * Topography.textureCoordinateQuantization;
+		
+		return foreGround ? texX * Topography.textureCoordinateQuantization : (texX + 20) * Topography.textureCoordinateQuantization;
 	}
 
 
