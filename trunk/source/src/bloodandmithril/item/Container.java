@@ -114,6 +114,7 @@ public class Container implements Serializable {
 				break;
 			}
 		}
+		
 		inventory = copy;
 		refreshCurrentLoad();
 		return taken;
