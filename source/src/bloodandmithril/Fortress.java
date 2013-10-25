@@ -13,6 +13,7 @@ import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.item.consumable.Carrot;
 import bloodandmithril.item.consumable.ChickenLeg;
+import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.Furnace;
@@ -278,7 +279,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 			state.acceleration = new Vector2(0, 0);
 
 			IndividualIdentifier id = Names.getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
-			id.nickName = "LOL";
+			id.nickName = "Elfie";
 
 			Elf elf = new Elf(
 				id, state, true, true,
@@ -290,6 +291,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 
 			elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
 			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
+			elf.giveItem(new ButterflySword(100), 1);
 
 			GameWorld.individuals.put(elf.id.id, elf);
 		}

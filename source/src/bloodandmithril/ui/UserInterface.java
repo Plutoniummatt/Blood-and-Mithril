@@ -158,7 +158,10 @@ public class UserInterface {
 		Fortress.spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
 
-		renderComponentInterfaces();
+		if ("true".equals(System.getProperty("debug"))) {
+			renderComponentInterfaces();
+		}
+		
 		renderDragBox();
 		renderLayeredComponents();
 		renderContextMenus();
