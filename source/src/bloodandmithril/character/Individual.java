@@ -229,13 +229,12 @@ public abstract class Individual extends Container {
 		
 		//Stepping up
 		if (steppingUp) {
-			state.position.y += 3f;
+			state.position.y = state.position.y + 3f;
 			steps++;
-			if (steps == Topography.TILE_SIZE/3 - 1) {
+			if (steps == Topography.TILE_SIZE/3) {
 				steppingUp = false;
 			}
 		}
-		
 
 		//Calculate velocity based on acceleration, including gravity
 		if (Math.abs((state.velocity.y - delta * GameWorld.GRAVITY) * delta) < Topography.TILE_SIZE/2) {
@@ -270,8 +269,10 @@ public abstract class Individual extends Container {
 		//Wall check routine, only perform this if we're moving
 		if (state.velocity.x != 0 && obstructed(0)) {
 			if (canStepUp(0)) {
-				steppingUp = true;
-				steps = 0;
+				if (!steppingUp) {
+					steppingUp = true;
+					steps = 0;
+				}
 			} else {
 				boolean check = false;
 				while (obstructed(0)) {

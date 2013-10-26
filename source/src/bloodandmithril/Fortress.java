@@ -26,6 +26,8 @@ import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.GameWorld.Light;
+import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -262,6 +264,10 @@ public class Fortress implements ApplicationListener, InputProcessor {
 					1f
 				)
 			);
+		}
+		
+		if (Gdx.input.isKeyPressed(Input.Keys.V)) {
+			Topography.changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickPlatform.class);
 		}
 	}
 
