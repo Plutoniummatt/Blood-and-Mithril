@@ -224,17 +224,19 @@ public abstract class Individual extends Container {
 	protected void kinetics(float delta) {
 		jumpOffLogic();
 
-		//Calculate position
-		state.position.add(state.velocity.cpy().mul(delta));
-		
 		//Stepping up
 		if (steppingUp) {
-			state.position.y = state.position.y + 3f;
-			steps++;
-			if (steps == Topography.TILE_SIZE/3) {
+			if (steps >= Topography.TILE_SIZE) {
 				steppingUp = false;
+				state.position.y += Topography.TILE_SIZE - steps;
+			} else {
+				state.position.y = state.position.y + 3f;
+				steps += 3f;
 			}
 		}
+		
+		//Calculate position
+		state.position.add(state.velocity.cpy().mul(delta));
 
 		//Calculate velocity based on acceleration, including gravity
 		if (Math.abs((state.velocity.y - delta * GameWorld.GRAVITY) * delta) < Topography.TILE_SIZE/2) {
@@ -273,7 +275,7 @@ public abstract class Individual extends Container {
 					steppingUp = true;
 					steps = 0;
 				}
-			} else {
+			} else if (!steppingUp) {
 				boolean check = false;
 				while (obstructed(0)) {
 					if (state.velocity.x > 0) {
@@ -299,7 +301,7 @@ public abstract class Individual extends Container {
 		Tile currentTile = Topography.getTile(state.position.x, state.position.y, true);
 		Tile tileBelow = Topography.getTile(state.position.x, state.position.y - Topography.TILE_SIZE/2, true);
 		return (!(currentTile instanceof Tile.EmptyTile) && !currentTile.isPlatformTile || currentTile.isPlatformTile && !(tileBelow instanceof EmptyTile)) &&
-			     !isToBeIgnored(state.position);
+			    !isToBeIgnored(state.position);
 	}
 
 
