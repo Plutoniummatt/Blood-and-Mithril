@@ -22,4 +22,9 @@ public class DryDirtTile extends SoilTile {
 	@Override
 	public void changeToStair() {
 	}
+
+
+	@Override
+	public void changeToSmoothCeiling() {
+	}
 }

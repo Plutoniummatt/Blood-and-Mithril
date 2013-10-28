@@ -22,4 +22,9 @@ public class YellowSandTile extends SeditmentaryTile {
 	@Override
 	public void changeToStair() {
 	}
+
+
+	@Override
+	public void changeToSmoothCeiling() {
+	}
 }

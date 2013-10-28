@@ -48,6 +48,9 @@ public abstract class Tile implements Serializable {
 
 	/** Whether this is a Stair tile */
 	protected boolean isStair = false;
+	
+	/** Whether this is a smoothed ceiling tile */
+	protected boolean smoothCeiling = false;
 
 	/**
 	 * Protected constructor
@@ -77,11 +80,11 @@ public abstract class Tile implements Serializable {
 				break;
 			case R: texX = 5;
 				break;
-			case BL: texX = 6;
+			case BL: texX = smoothCeiling ? 18 : 6;
 				break;
 			case BM: texX = 7;
 				break;
-			case BR: texX = 8;
+			case BR: texX = smoothCeiling ? 19 : 8;
 				break;
 			case PL: texX = 9;
 				break;
@@ -102,7 +105,7 @@ public abstract class Tile implements Serializable {
 			}
 		}
 
-		return foreGround ? texX * Topography.textureCoordinateQuantization : (texX + 20) * Topography.textureCoordinateQuantization;
+		return foreGround ? texX * Topography.textureCoordinateQuantization : (texX + 21) * Topography.textureCoordinateQuantization;
 	}
 
 
@@ -149,6 +152,12 @@ public abstract class Tile implements Serializable {
 	 * Changes this tile to a {@link #isStair} tile
 	 */
 	public abstract void changeToStair();
+	
+	
+	/**
+	 * Changes this tile to a {@link #smoothCeiling} tile
+	 */
+	public abstract void changeToSmoothCeiling();
 
 
 	/**
@@ -157,7 +166,7 @@ public abstract class Tile implements Serializable {
 	public boolean isStair() {
 		return isStair;
 	}
-
+	
 
 	@Override
 	public String toString() {
@@ -263,6 +272,11 @@ public abstract class Tile implements Serializable {
 		@Override
 		public void changeToStair() {
 		}
+
+
+		@Override
+		public void changeToSmoothCeiling() {
+		}
 	}
 
 
@@ -290,6 +304,11 @@ public abstract class Tile implements Serializable {
 
 		@Override
 		public void changeToStair() {
+		}
+
+
+		@Override
+		public void changeToSmoothCeiling() {
 		}
 	}
 }

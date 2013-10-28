@@ -22,4 +22,9 @@ public class YellowBrickPlatform extends BrickTile {
 	@Override
 	public void changeToStair() {
 	}
+
+
+	@Override
+	public void changeToSmoothCeiling() {
+	}
 }

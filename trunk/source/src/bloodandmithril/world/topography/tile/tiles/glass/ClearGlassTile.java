@@ -22,4 +22,9 @@ public class ClearGlassTile extends GlassTile {
 	@Override
 	public void changeToStair() {
 	}
+
+
+	@Override
+	public void changeToSmoothCeiling() {
+	}
 }
