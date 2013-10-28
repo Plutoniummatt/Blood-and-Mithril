@@ -23,4 +23,10 @@ public class YellowBrickTile extends BrickTile {
 	public void changeToStair() {
 		this.isStair = true;
 	}
+
+
+	@Override
+	public void changeToSmoothCeiling() {
+		this.smoothCeiling = true;
+	}
 }

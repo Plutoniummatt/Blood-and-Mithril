@@ -22,4 +22,9 @@ public class SandStoneTile extends StoneTile {
 	@Override
 	public void changeToStair() {
 	}
+
+
+	@Override
+	public void changeToSmoothCeiling() {
+	}
 }
