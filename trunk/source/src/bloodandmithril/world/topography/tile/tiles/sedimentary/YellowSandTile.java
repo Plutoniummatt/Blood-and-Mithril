@@ -12,9 +12,14 @@ public class YellowSandTile extends SeditmentaryTile {
 		super(false);
 	}
 
-	
+
 	@Override
 	protected float getTexCoordYSpecific() {
 		return 5;
+	}
+
+
+	@Override
+	public void changeToStair() {
 	}
 }

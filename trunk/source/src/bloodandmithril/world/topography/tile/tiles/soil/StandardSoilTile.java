@@ -11,10 +11,15 @@ public class StandardSoilTile extends SoilTile {
 	public StandardSoilTile() {
 		super(false);
 	}
-	
+
 
 	@Override
 	protected float getTexCoordYSpecific() {
 		return 3;
+	}
+
+
+	@Override
+	public void changeToStair() {
 	}
 }

@@ -12,9 +12,14 @@ public class YellowBrickPlatform extends BrickTile {
 		super(true);
 	}
 
-	
+
 	@Override
 	protected float getTexCoordYSpecific() {
 		return 10;
+	}
+
+
+	@Override
+	public void changeToStair() {
 	}
 }
