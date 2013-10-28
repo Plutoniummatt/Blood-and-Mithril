@@ -12,9 +12,14 @@ public class SandStoneTile extends StoneTile {
 		super(false);
 	}
 
-	
+
 	@Override
 	protected float getTexCoordYSpecific() {
 		return 6;
+	}
+
+
+	@Override
+	public void changeToStair() {
 	}
 }

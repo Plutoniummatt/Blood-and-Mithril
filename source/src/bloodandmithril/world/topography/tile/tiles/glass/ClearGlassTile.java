@@ -11,10 +11,15 @@ public class ClearGlassTile extends GlassTile {
 	public ClearGlassTile() {
 		super(false);
 	}
-	
+
 
 	@Override
 	protected float getTexCoordYSpecific() {
 		return 9;
+	}
+
+
+	@Override
+	public void changeToStair() {
 	}
 }

@@ -45,9 +45,9 @@ public abstract class Tile implements Serializable {
 
 	/** Whether this is a platform tile */
 	public final boolean isPlatformTile;
-	
+
 	/** Whether this is a Stair tile */
-	public boolean isStair = false;
+	protected boolean isStair = false;
 
 	/**
 	 * Protected constructor
@@ -101,7 +101,7 @@ public abstract class Tile implements Serializable {
 				throw new RuntimeException("Tile type is not defined");
 			}
 		}
-		
+
 		return foreGround ? texX * Topography.textureCoordinateQuantization : (texX + 20) * Topography.textureCoordinateQuantization;
 	}
 
@@ -142,6 +142,20 @@ public abstract class Tile implements Serializable {
 	 */
 	public boolean isPassable() {
 		return this instanceof EmptyTile || isPlatformTile;
+	}
+
+
+	/**
+	 * Changes this tile to a {@link #isStair} tile
+	 */
+	public abstract void changeToStair();
+
+
+	/**
+	 * @return true if {@link #isStair}
+	 */
+	public boolean isStair() {
+		return isStair;
 	}
 
 
@@ -244,6 +258,11 @@ public abstract class Tile implements Serializable {
 		protected float getTexCoordYSpecific() {
 			return 2;
 		}
+
+
+		@Override
+		public void changeToStair() {
+		}
 	}
 
 
@@ -266,6 +285,11 @@ public abstract class Tile implements Serializable {
 		@Override
 		protected float getTexCoordYSpecific() {
 			return 1;
+		}
+
+
+		@Override
+		public void changeToStair() {
 		}
 	}
 }

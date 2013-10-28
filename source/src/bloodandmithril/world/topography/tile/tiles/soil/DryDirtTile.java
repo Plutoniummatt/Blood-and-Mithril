@@ -11,10 +11,15 @@ public class DryDirtTile extends SoilTile {
 	public DryDirtTile() {
 		super(false);
 	}
-	
+
 
 	@Override
 	protected float getTexCoordYSpecific() {
 		return 7;
+	}
+
+
+	@Override
+	public void changeToStair() {
 	}
 }
