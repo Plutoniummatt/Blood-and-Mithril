@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import org.lwjgl.opengl.GL11;
 
-
 import bloodandmithril.Fortress;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
@@ -35,8 +34,8 @@ public class Chunk {
 	private final float[] bVertexAttributes = new float[16 * Topography.CHUNK_SIZE * Topography.CHUNK_SIZE];
 
 	/**	The chunk data */
-	private ChunkData fData;
-	private ChunkData bData;
+	private final ChunkData fData;
+	private final ChunkData bData;
 
 	/**
 	 * Constructor
@@ -44,13 +43,6 @@ public class Chunk {
 	public Chunk(Tile[][] fTiles, Tile[][] bTiles, int x, int y) {
 		this.fData = new ChunkData(Util.clone2DArray(fTiles), x, y);
 		this.bData = new ChunkData(Util.clone2DArray(bTiles), x, y);
-	}
-
-
-	/**
-	 * No-arg constructor
-	 */
-	public Chunk() {
 	}
 
 
@@ -101,11 +93,11 @@ public class Chunk {
 	public void checkMesh() {
 		if (fMesh == null) {
 			constructMesh(fData, fVertexAttributes, true);
-			calculateChunkOrientations(fData.xChunkCoord, fData.yChunkCoord, true);
+			calculateChunkOrientations(true);
 		}
 		if (bMesh == null) {
 			constructMesh(bData, bVertexAttributes, false);
-			calculateChunkOrientations(bData.xChunkCoord, bData.yChunkCoord, false);
+			calculateChunkOrientations(false);
 		}
 	}
 
@@ -269,7 +261,9 @@ public class Chunk {
 	 * @param chunkX - the x coordinate of the chunk to calculate for
 	 * @param chunkY - the y coordinate of the chunk to calculate for
 	 */
-	private void calculateChunkOrientations(int chunkX, int chunkY, boolean foreGround) {
+	private void calculateChunkOrientations(boolean foreGround) {
+		int chunkX = fData.xChunkCoord;
+		int chunkY = fData.yChunkCoord;
 
 		ChunkMap chunkMap = Topography.chunkMap;
 
@@ -354,7 +348,7 @@ public class Chunk {
 			bData.tiles[tileX][tileY] = newTile;
 		}
 		repopulateTextureCoordinates(tileX, tileY, foreGround);
-		calculateChunkOrientations(fData.xChunkCoord, fData.yChunkCoord, foreGround);
+		calculateChunkOrientations(foreGround);
 	}
 
 
