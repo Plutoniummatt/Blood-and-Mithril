@@ -1,6 +1,6 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.util.Fonts.*;
+import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-
 import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Container;
+import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.consumable.Consumable;
 import bloodandmithril.item.equipment.Equipable;
@@ -36,18 +36,18 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public class InventoryWindow extends Window {
 
 	/** The list of items this inventory window displays, equipped items first. */
-	public Map<InventoryWindowItem, Integer> equippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();
-	public Map<InventoryWindowItem, Integer> nonEquippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();
+	public Map<InventoryWindowItem, Integer> equippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();    //TODO can not use TreeMap here, items with same value will cause problems
+	public Map<InventoryWindowItem, Integer> nonEquippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>(); //TODO can not use TreeMap here, items with same value will cause problems
 
 	/** The {@link Container} that is the host of this {@link InventoryWindow} */
-	public Container host;
+	public Equipper host;
 
 	/**
 	 * Constructor
 	 */
 	@Deprecated
 	public InventoryWindow(
-			Container host,
+			Equipper host,
 			int x,
 			int y,
 			int length,
@@ -68,7 +68,7 @@ public class InventoryWindow extends Window {
 	 * Overloaded constructor - with default colors
 	 */
 	public InventoryWindow(
-			Container host,
+			Equipper host,
 			int x,
 			int y,
 			int length,
@@ -161,7 +161,7 @@ public class InventoryWindow extends Window {
 	 */
 	private void populateList(HashMap<Item, Integer> listToPopulate, boolean eq) {
 		for(final Entry<Item, Integer> item : listToPopulate.entrySet()) {
-			
+
 			final ContextMenu menuToAddUnequipped = determineMenu(item.getKey(), false);
 			Button inventoryButton = new Button(
 				item.getKey().getSingular(true),
@@ -182,7 +182,7 @@ public class InventoryWindow extends Window {
 				Color.WHITE,
 				UIRef.BL
 			);
-			
+
 			final ContextMenu menuToAddEquipped = determineMenu(item.getKey(), true);
 			Button equippedButton = new Button(
 				item.getKey().getSingular(true),
@@ -238,7 +238,7 @@ public class InventoryWindow extends Window {
 					Color.WHITE,
 					null
 				),
-					
+
 				new ContextMenuItem(
 					"Consume",
 					new Task() {
@@ -257,9 +257,9 @@ public class InventoryWindow extends Window {
 				)
 			);
 		}
-		
+
 		if (item instanceof Equipable) {
-			
+
 			return new ContextMenu(x, y,
 				new ContextMenuItem(
 					"Show info",
@@ -274,13 +274,13 @@ public class InventoryWindow extends Window {
 					Color.WHITE,
 					null
 				),
-				
+
 				equipped ? new ContextMenuItem(
 					"Unequip",
 					new Task() {
 						@Override
 						public void execute() {
-							host.unequip(item);
+							host.unequip((Equipable)item);
 							refresh();
 						}
 					},
@@ -289,13 +289,13 @@ public class InventoryWindow extends Window {
 					Color.WHITE,
 					null
 				) :
-					
+
 				new ContextMenuItem(
 					"Equip",
 					new Task() {
 						@Override
 						public void execute() {
-							host.equip(item);
+							host.equip((Equipable)item);
 							refresh();
 						}
 					},
@@ -306,7 +306,7 @@ public class InventoryWindow extends Window {
 				)
 			);
 		}
-		
+
 		return null;
 	}
 

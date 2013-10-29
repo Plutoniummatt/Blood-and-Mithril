@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
-
 import bloodandmithril.Fortress;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
@@ -12,7 +11,7 @@ import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
-import bloodandmithril.item.Container;
+import bloodandmithril.item.Equipper;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.ui.UserInterface;
@@ -35,7 +34,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
-public abstract class Individual extends Container {
+public abstract class Individual extends Equipper {
 	private static final long serialVersionUID = 2821835360311044658L;
 
 	/** Identifier of this character */
@@ -58,7 +57,7 @@ public abstract class Individual extends Container {
 
 	/** Width and Height of the individual */
 	public int width, height;
-	
+
 	/** The box definining the region where this {@link Individual} can interact with entities */
 	public Box interactionBox;
 
@@ -79,10 +78,10 @@ public abstract class Individual extends Container {
 
 	/** Height at which it's deemed unsafe to fall to the ground */
 	public int safetyHeight;
-	
+
 	/** True if this {@link Individual} is walking */
 	public boolean walking = true;
-	
+
 	/** True if this {@link Individual} is currently stepping up */
 	public boolean steppingUp;
 
@@ -128,15 +127,15 @@ public abstract class Individual extends Container {
 			Fortress.spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + height);
 		}
 	}
-	
-	
+
+
 	/** Select this {@link Individual} */
 	public void select() {
 		selected = true;
 		ai.setToManual();
 	}
-	
-	
+
+
 	/** Deselect this {@link Individual} */
 	public void deselect(boolean clearTask) {
 		selected = false;
@@ -184,7 +183,7 @@ public abstract class Individual extends Container {
 	 * Updates the individual
 	 */
 	public void update(float delta) {
-		
+
 		// If chunk has not yet been loaded, do not update
 		try {
 			Topography.getTile(state.position, true);
@@ -201,13 +200,13 @@ public abstract class Individual extends Container {
 			ai.update();
 			aiReactionTimer = 0f;
 		}
-		
+
 		animationTimer += delta;
-		
+
 		internalUpdate(delta);
-		
+
 		respondToCommands();
-		
+
 		kinetics(delta);
 	}
 
@@ -234,7 +233,7 @@ public abstract class Individual extends Container {
 				steps += 3f;
 			}
 		}
-		
+
 		//Calculate position
 		state.position.add(state.velocity.cpy().mul(delta));
 
@@ -451,13 +450,13 @@ public abstract class Individual extends Container {
 
 	/** Constructs a implementation-specific {@link ContextMenu} */
 	public abstract ContextMenu getContextMenu();
-	
+
 	/** Gets the description for this {@link Individual} */
 	public abstract String getDescription();
-	
+
 	/** Updates the description for this {@link Individual} */
 	public abstract void updateDescription(String updated);
-	
+
 	/** Returns the {@link SpacialConfiguration} where {@link OneHandedWeapon} will be rendered */
 	protected abstract SpacialConfiguration getOneHandedWeaponSpacialConfigration();
 
