@@ -8,5 +8,5 @@ package bloodandmithril.world;
 public class WorldState {
 
 	/** THE current epoch */
-	public static Epoch currentEpoch = new Epoch(21, 13, 9, 2013);
+	public static Epoch currentEpoch = new Epoch(6.2f, 13, 9, 2013);
 }
