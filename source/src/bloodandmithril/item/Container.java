@@ -45,13 +45,18 @@ public class Container implements Serializable {
 		if (inventory.isEmpty()) {
 			copy.put(item, quantity);
 		} else  {
+			boolean stacked = false;
 			for (Entry<Item, Integer> entry : inventory.entrySet()) {
 				if (item.sameAs(entry.getKey())) {
 					copy.put(entry.getKey(), entry.getValue() + quantity);
+					stacked = true;
 					break;
 				}
 			}
-			copy.put(item, quantity);
+			
+			if (!stacked) {
+				copy.put(item, quantity);
+			}
 		}
 
 		inventory = copy;

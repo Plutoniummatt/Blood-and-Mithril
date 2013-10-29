@@ -11,6 +11,7 @@ import bloodandmithril.item.equipment.Equipable;
  * @author Matt
  */
 public class Equipper extends Container {
+	private static final long serialVersionUID = -4489215845226338399L;
 
 	/** The current equipped {@link Item}s of this {@link Container} */
 	protected HashMap<Item, Integer> equippedItems = new HashMap<Item, Integer>();

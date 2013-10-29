@@ -312,7 +312,7 @@ public class InventoryWindow extends Window {
 
 
 	/** Refreshes this {@link InventoryWindow} */
-	private void refresh() {
+	public void refresh() {
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();
 		buildItems(host.getEquipped(), host.getInventory());

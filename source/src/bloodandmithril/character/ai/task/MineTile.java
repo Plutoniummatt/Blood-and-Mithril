@@ -1,12 +1,16 @@
 package bloodandmithril.character.ai.task;
 
-
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.item.consumable.Carrot;
+import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.Component;
+import bloodandmithril.ui.components.window.InventoryWindow;
+import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Task;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.topography.Topography;
@@ -14,6 +18,8 @@ import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
  * Mine a {@link Tile}, a {@link CompositeAITask} comprising of:
@@ -88,7 +94,7 @@ public class MineTile extends CompositeAITask {
 		
 		@Override
 		public void execute() {
-			Individual host = GameWorld.individuals.get(hostId.id);
+			final Individual host = GameWorld.individuals.get(hostId.id);
 			
 			if (host.interactionBox.isWithinBox(tileCoordinate)) {
 				Topography.addTask(
@@ -101,6 +107,22 @@ public class MineTile extends CompositeAITask {
 									1f, 
 									SoundService.getPan(tileCoordinate)
 								);
+								
+								host.giveItem(new Carrot(), 1);
+								InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
+									
+									@Override
+									public boolean apply(Component input) {
+										if (input instanceof Window) {
+											return ((Window) input).title.equals(hostId.getSimpleName() + " - Inventory");
+										}
+										return false;
+									}
+								}, null);
+								
+								if (existingInventoryWindow != null) {
+									existingInventoryWindow.refresh();
+								}
 							}
 						}
 					}
