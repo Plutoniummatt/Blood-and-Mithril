@@ -24,5 +24,5 @@ float lighting() {
 void main()
 {
 	float lighting = lighting();
-	gl_FragColor = vec4(texture2D(u_texture, v_texCoords)) * vec4(1, 1, 1, lighting) * color;
+	gl_FragColor = vec4(texture2D(u_texture, v_texCoords)) * vec4(1, 1, 1, lighting) * color * 0.8;
 }
