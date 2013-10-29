@@ -13,6 +13,7 @@ import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.item.consumable.Carrot;
 import bloodandmithril.item.consumable.ChickenLeg;
+import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
@@ -297,7 +298,8 @@ public class Fortress implements ApplicationListener, InputProcessor {
 
 			elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
 			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
-			elf.giveItem(new ButterflySword(100), 2);
+			elf.giveItem(new ButterflySword(100), 1);
+			elf.giveItem(new Broadsword(101), 1);
 
 			GameWorld.individuals.put(elf.id.id, elf);
 		}
