@@ -22,9 +22,6 @@ public class Container implements Serializable {
 	/** What this {@link Container} has in its inventory, maps an Item to the quantity of said item */
 	protected HashMap<Item, Integer> inventory = new HashMap<Item, Integer>();
 
-	/** The current equipped {@link Item}s of this {@link Container} */
-	protected HashMap<Item, Integer> equippedItems = new HashMap<Item, Integer>();
-
 	/**
 	 * Protected constructor
 	 */
@@ -56,40 +53,12 @@ public class Container implements Serializable {
 			}
 			copy.put(item, quantity);
 		}
-		
+
 		inventory = copy;
 		refreshCurrentLoad();
 	}
-	
-	
-	/**
-	 * Equip an {@link Item}
-	 */
-	public void equip(Item item) {
-		for (Item equipped : equippedItems.keySet()) {
-			if (equipped.sameAs(item)) {
-				return;
-			}
-		}
-		
-		takeItem(item, 1);
-		equippedItems.put(item, 1);
-		refreshCurrentLoad();
-	}
-	
-	
-	/**
-	 * Equip an {@link Item}
-	 */
-	public void unequip(Item item) {
-		if (equippedItems.containsKey(item)) {
-			equippedItems.remove(item);
-			inventory.put(item, inventory.get(item) + 1);
-			refreshCurrentLoad();
-		}
-	}
-	
-	
+
+
 	/**
 	 * Takes a number of items
 	 * @return the number of items taken.
@@ -114,18 +83,10 @@ public class Container implements Serializable {
 				break;
 			}
 		}
-		
+
 		inventory = copy;
 		refreshCurrentLoad();
 		return taken;
-	}
-
-
-	/**
-	 * @return the equipped items
-	 */
-	public HashMap<Item, Integer> getEquipped() {
-		return equippedItems;
 	}
 
 
@@ -157,9 +118,6 @@ public class Container implements Serializable {
 	private void refreshCurrentLoad() {
 		float weight = 0f;
 		for (Entry<Item, Integer> entry : inventory.entrySet()) {
-			weight = weight + entry.getValue() * entry.getKey().mass;
-		}
-		for (Entry<Item, Integer> entry : equippedItems.entrySet()) {
 			weight = weight + entry.getValue() * entry.getKey().mass;
 		}
 		currentLoad = weight;

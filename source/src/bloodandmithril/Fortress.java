@@ -65,10 +65,10 @@ public class Fortress implements ApplicationListener, InputProcessor {
 
 	/** See {@link #update(float)}, if delta is greater than this value, skip the update frame */
 	private static final float LAG_SPIKE_TOLERANCE = Float.parseFloat(System.getProperty("lagSpikeTolerance"));
-	
+
 	/** The tolerance for double clicking */
 	private static final float DOUBLE_CLICK_TIME = 0.2f;
-	
+
 	/** Resolution x */
 	public static int WIDTH = Integer.parseInt(System.getProperty("resX"));
 
@@ -191,14 +191,14 @@ public class Fortress implements ApplicationListener, InputProcessor {
 				} else {
 					float spread = Math.min(indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
 					AIProcessor.sendPathfindingRequest(
-						indi, 
+						indi,
 						new WayPoint(
 							new Vector2(
-								getMouseWorldX() + spread, 
+								getMouseWorldX() + spread,
 								getMouseWorldY()
 							)
-						), 
-						false, 
+						),
+						false,
 						150f,
 						Gdx.input.isKeyPressed(KeyMappings.forceMove) ? false : true
 					);
@@ -265,7 +265,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 				)
 			);
 		}
-		
+
 		if (Gdx.input.isKeyPressed(Input.Keys.V)) {
 			Topography.changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickPlatform.class);
 		}
@@ -297,22 +297,22 @@ public class Fortress implements ApplicationListener, InputProcessor {
 
 			elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
 			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
-			elf.giveItem(new ButterflySword(100), 5);
+			elf.giveItem(new ButterflySword(100), 2);
 
 			GameWorld.individuals.put(elf.id.id, elf);
 		}
-		
+
 		if (keycode == Input.Keys.U) {
 			IndividualState state = new IndividualState(10f, 10f);
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
-			
+
 			IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
 			id.nickName = "Unknown";
-			
+
 			Boar boar = new Boar(id, state);
-			
+
 			GameWorld.individuals.put(boar.id.id, boar);
 		}
 
@@ -322,7 +322,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 				GameWorld.props.add(new Furnace(individual.state.position.x, individual.state.position.y));
 			}
 		}
-		
+
 		if (keycode == Input.Keys.I) {
 			UserInterface.renderAvailableInterfaces = !UserInterface.renderAvailableInterfaces;
 		}
