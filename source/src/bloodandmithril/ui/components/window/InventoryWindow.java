@@ -142,7 +142,7 @@ public class InventoryWindow extends Window {
 				new Color(1f, 0f, 0f, 0.6f * alpha);
 
 		defaultFont.setColor(active ? activeColor : inactiveColor);
-		defaultFont.draw(Fortress.spriteBatch, truncate("Weight: " + String.format("%.1f", host.getCurrentLoad()) + "/" + Float.toString(host.getMaxCapacity())), x + 6, y - height + 20);
+		defaultFont.draw(Fortress.spriteBatch, truncate("Weight: " + String.format("%.2f", host.getCurrentLoad()) + "/" + String.format("%.2f", host.getMaxCapacity())), x + 6, y - height + 20);
 	}
 
 
