@@ -5,14 +5,17 @@ import java.io.Serializable;
 import org.lwjgl.opengl.GL11;
 
 import bloodandmithril.Fortress;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.topography.tile.Tile;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * The topography of the game world.
@@ -182,6 +185,15 @@ public class Chunk {
 			Shaders.pass.setUniformi("u_texture", 0);
 			bMesh.render(Shaders.pass, GL11.GL_QUADS);
 			Shaders.pass.end();
+		}
+
+		if ("true".equals(System.getProperty("debug"))) {
+			UserInterface.shapeRenderer.begin(ShapeType.Rectangle);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			float x = Fortress.worldToScreenX(fData.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
+			float y = Fortress.worldToScreenY(fData.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
+			UserInterface.shapeRenderer.rect(x, y, Topography.CHUNK_SIZE * Topography.TILE_SIZE, Topography.CHUNK_SIZE * Topography.TILE_SIZE);
+			UserInterface.shapeRenderer.end();
 		}
 	}
 

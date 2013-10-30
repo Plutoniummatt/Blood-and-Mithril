@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AIProcessor;
@@ -76,7 +75,7 @@ public class UserInterface {
 
 	/** Initial coordinates for the drag box, see {@link #renderDragBox()} */
 	private static Vector2 initialDragCoordinates = null;
-	
+
 	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
 	public static boolean renderAvailableInterfaces = true;
 
@@ -160,8 +159,9 @@ public class UserInterface {
 
 		if ("true".equals(System.getProperty("debug"))) {
 			renderComponentInterfaces();
+			renderMouseOverTileHighlightBox();
 		}
-		
+
 		renderDragBox();
 		renderLayeredComponents();
 		renderContextMenus();
@@ -172,10 +172,10 @@ public class UserInterface {
 		if (System.getProperty("debug").equals("true")) {
 			renderDebugText();
 		}
-		
+
 		renderUIText();
 		renderButtons();
-		
+
 		Fortress.spriteBatch.end();
 
 		renderPauseScreen();
@@ -183,10 +183,27 @@ public class UserInterface {
 	}
 
 
+	/**
+	 * Renders a small rectangle to indicate the current tile the mouse is over
+	 */
+	private static void renderMouseOverTileHighlightBox() {
+		float x = Fortress.worldToScreenX(Topography.TILE_SIZE * Topography.convertToWorldTileCoord(Fortress.getMouseWorldX()));
+		float y = Fortress.worldToScreenY(Topography.TILE_SIZE * Topography.convertToWorldTileCoord(Fortress.getMouseWorldY()));
+
+		Gdx.gl.glEnable(GL10.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.begin(ShapeType.FilledRectangle);
+		shapeRenderer.setColor(new Color(0f, 1f, 1f, 0.3f));
+		shapeRenderer.filledRect(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE);
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL10.GL_BLEND);
+	}
+
+
 	private static void renderComponentInterfaces() {
 		Color availableColor = new Color(0.2f, 1f, 0f, 0.5f);
 		Color existingColor = new Color(1f, 0.2f, 0f, 0.5f);
-		
+
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : StructureMap.structures.values()) {
@@ -398,7 +415,7 @@ public class UserInterface {
 			clicked = unpauseButton.click();
 			return false;
 		}
-		
+
 		if (GameSaver.isSaving()) {
 			return false;
 		}
