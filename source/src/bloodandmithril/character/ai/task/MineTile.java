@@ -6,6 +6,7 @@ import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.item.Equipper;
 import bloodandmithril.item.consumable.Carrot;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -108,7 +109,7 @@ public class MineTile extends CompositeAITask {
 									SoundService.getPan(tileCoordinate)
 								);
 								
-								host.giveItem(new Carrot(), 1);
+								((Equipper)host).giveItem(new Carrot(), 1);
 								InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
 									
 									@Override
