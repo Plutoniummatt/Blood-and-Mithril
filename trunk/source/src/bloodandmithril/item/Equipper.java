@@ -29,6 +29,27 @@ public class Equipper extends Container {
 			availableEquipmentSlots.put(slot, true);
 		}
 	}
+	
+
+	/**
+	 * @param item to put
+	 * @param quantity of item to put
+	 */
+	public void giveItem(Item item, int quantity) {
+		super.giveItem(item, quantity);
+		refreshCurrentLoad();
+	}
+
+
+	/**
+	 * Takes a number of items
+	 * @return the number of items taken.
+	 */
+	public int takeItem(Item item, int quantity) {
+		int taken = super.takeItem(item, quantity);
+		refreshCurrentLoad();
+		return taken;
+	}
 
 
 	/**

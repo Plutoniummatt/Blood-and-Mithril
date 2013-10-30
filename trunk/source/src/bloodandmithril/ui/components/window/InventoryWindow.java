@@ -135,11 +135,11 @@ public class InventoryWindow extends Window {
 
 		Color activeColor = host.getCurrentLoad() < host.getMaxCapacity() ?
 				new Color(0.7f*host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, alpha) :
-				Color.RED;
+				new Color(1f, 0f, 0f, alpha);
 
 		Color inactiveColor = host.getCurrentLoad() < host.getMaxCapacity() ?
 				new Color(0.7f*host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, 0.6f * alpha) :
-				new Color(1f, 0f, 0f, 0.6f);
+				new Color(1f, 0f, 0f, 0.6f * alpha);
 
 		defaultFont.setColor(active ? activeColor : inactiveColor);
 		defaultFont.draw(Fortress.spriteBatch, truncate("Weight: " + String.format("%.1f", host.getCurrentLoad()) + "/" + Float.toString(host.getMaxCapacity())), x + 6, y - height + 20);
@@ -316,7 +316,6 @@ public class InventoryWindow extends Window {
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();
 		buildItems(host.getEquipped(), host.getInventory());
-
 	}
 
 
