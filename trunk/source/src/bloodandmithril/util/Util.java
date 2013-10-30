@@ -64,7 +64,7 @@ public class Util {
 			T t = objects[index];
 			return t;
 		} catch (ArrayIndexOutOfBoundsException e) {
-			return objects[objects.length % index - 1];
+			return objects[index % objects.length];
 		}
 	}
 
