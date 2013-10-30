@@ -39,7 +39,7 @@ public class Weather {
 	private static TextureRegion sunGlowTexture = new TextureRegion(GameWorld.gameWorldTexture, 512, 1536, 512, 512);
 
 	/** Orbital radius of the moon around the {@link #celestialPivot} */
-	private static float celestialOrbitalRadius = Fortress.WIDTH;
+	private static float celestialOrbitalRadius = Fortress.WIDTH * 3 / 4;
 
 	/** The pivot around which the moon resolves */
 	private static Vector2 celestialPivot = new Vector2(Fortress.WIDTH/2, -Fortress.HEIGHT/2);
