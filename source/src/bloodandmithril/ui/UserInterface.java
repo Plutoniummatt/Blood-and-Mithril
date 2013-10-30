@@ -78,7 +78,7 @@ public class UserInterface {
 	private static Vector2 initialDragCoordinates = null;
 
 	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
-	public static boolean renderAvailableInterfaces = true;
+	public static boolean renderAvailableInterfaces = true, renderComponentBoundaries = true;
 
 	/** Texture regions */
 	public static TextureRegion finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
@@ -160,7 +160,9 @@ public class UserInterface {
 
 		if ("true".equals(System.getProperty("debug"))) {
 			renderComponentInterfaces();
-			renderComponentBoundaries();
+			if (renderComponentBoundaries) {
+				renderComponentBoundaries();
+			}
 			renderMouseOverTileHighlightBox();
 		}
 
@@ -195,10 +197,10 @@ public class UserInterface {
 			int index = 0;
 			for (bloodandmithril.generation.component.Component comp : struct.components) {
 
-				Color color = Util.get(index, Color.ORANGE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.MAGENTA, Color.PINK, Color.RED);
+				Color color = Util.get(index, Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA);
 
 				shapeRenderer.begin(ShapeType.FilledRectangle);
-				shapeRenderer.setColor(new Color(color.r, color.g, color.b, 0.3f));
+				shapeRenderer.setColor(new Color(color.r, color.g, color.b, 0.15f));
 				shapeRenderer.filledRect(
 					Fortress.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
 					Fortress.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
@@ -371,7 +373,7 @@ public class UserInterface {
 	/** Debug text */
 	private static void renderDebugText() {
 		defaultFont.setColor(Color.YELLOW);
-		defaultFont.draw(Fortress.spriteBatch, "Mouse Tile Coords: " + Float.toString(Topography.convertToWorldTileCoord(Fortress.getMouseWorldX())) + ", " + Float.toString(Topography.convertToWorldTileCoord(Fortress.getMouseWorldY())), 5, 92);
+		defaultFont.draw(Fortress.spriteBatch, Float.toString(Topography.convertToWorldTileCoord(Fortress.getMouseWorldX())) + ", " + Float.toString(Topography.convertToWorldTileCoord(Fortress.getMouseWorldY())), Fortress.getMouseScreenX() - 35, Fortress.getMouseScreenY() - 35);
 		defaultFont.draw(Fortress.spriteBatch, "Mouse World Coords: " + Fortress.getMouseWorldX() + ", " + Fortress.getMouseWorldY(), 5, 72);
 		defaultFont.draw(Fortress.spriteBatch, "Centre of screen Coords: " + Float.toString(Fortress.cam.position.x) + ", " + Float.toString(Fortress.cam.position.y) + ", " + Float.toString(Fortress.cam.zoom), 5, 52);
 
