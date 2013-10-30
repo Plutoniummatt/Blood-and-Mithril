@@ -328,6 +328,10 @@ public class Fortress implements ApplicationListener, InputProcessor {
 		if (keycode == Input.Keys.I) {
 			UserInterface.renderAvailableInterfaces = !UserInterface.renderAvailableInterfaces;
 		}
+		
+		if (keycode == Input.Keys.B) {
+			UserInterface.renderComponentBoundaries = !UserInterface.renderComponentBoundaries;
+		}
 
 		if (keycode == Input.Keys.Y) {
 			SoundService.changeMusic(5f, SoundService.music3);
