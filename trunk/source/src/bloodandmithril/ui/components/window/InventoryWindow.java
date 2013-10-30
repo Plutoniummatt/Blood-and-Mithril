@@ -36,8 +36,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public class InventoryWindow extends Window {
 
 	/** The list of items this inventory window displays, equipped items first. */
-	public Map<InventoryWindowItem, Integer> equippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();    //TODO can not use TreeMap here, items with same value will cause problems
-	public Map<InventoryWindowItem, Integer> nonEquippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>(); //TODO can not use TreeMap here, items with same value will cause problems
+	public Map<InventoryWindowItem, Integer> equippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();   
+	public Map<InventoryWindowItem, Integer> nonEquippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();
 
 	/** The {@link Container} that is the host of this {@link InventoryWindow} */
 	public Equipper host;
@@ -335,7 +335,11 @@ public class InventoryWindow extends Window {
 
 		@Override
 		public int compareTo(InventoryWindowItem o) {
-			return item.value == o.item.value ? 0 : item.value > o.item.value ? 1 : -1;
+			if (item.value == o.item.value) {
+				return item.getClass().getSimpleName().compareTo(o.item.getClass().getSimpleName());
+			} else {
+				return item.value > o.item.value ? 1 : -1;
+			}
 		}
 	}
 }

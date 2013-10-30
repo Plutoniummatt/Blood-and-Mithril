@@ -299,7 +299,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 			elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
 			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
 			elf.giveItem(new ButterflySword(100), 1);
-			elf.giveItem(new Broadsword(101), 1);
+			elf.giveItem(new Broadsword(100), 1);
 
 			GameWorld.individuals.put(elf.id.id, elf);
 		}
