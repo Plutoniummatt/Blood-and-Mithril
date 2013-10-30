@@ -18,7 +18,6 @@ import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.StructureMap;
 import bloodandmithril.generation.component.Interface;
-import bloodandmithril.generation.superstructure.Desert;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.prop.Prop;
@@ -30,6 +29,8 @@ import bloodandmithril.ui.components.bar.BottomBar;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.Util;
+import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk;
@@ -159,6 +160,7 @@ public class UserInterface {
 
 		if ("true".equals(System.getProperty("debug"))) {
 			renderComponentInterfaces();
+			renderComponentBoundaries();
 			renderMouseOverTileHighlightBox();
 		}
 
@@ -180,6 +182,44 @@ public class UserInterface {
 
 		renderPauseScreen();
 		renderSavingScreen();
+	}
+
+
+	/**
+	 * Renders the {@link Boundaries} of all {@link bloodandmithril.generation.component.Component}s
+	 */
+	private static void renderComponentBoundaries() {
+		Gdx.gl.glEnable(GL10.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		for (Structure struct : StructureMap.structures.values()) {
+			int index = 0;
+			for (bloodandmithril.generation.component.Component comp : struct.components) {
+
+				Color color = Util.get(index, Color.ORANGE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.MAGENTA, Color.PINK, Color.RED);
+
+				shapeRenderer.begin(ShapeType.FilledRectangle);
+				shapeRenderer.setColor(new Color(color.r, color.g, color.b, 0.3f));
+				shapeRenderer.filledRect(
+					Fortress.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
+					Fortress.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
+					(comp.boundaries.right - comp.boundaries.left + 1) * Topography.TILE_SIZE,
+					(comp.boundaries.top - comp.boundaries.bottom + 1) * Topography.TILE_SIZE
+				);
+				shapeRenderer.end();
+
+				shapeRenderer.begin(ShapeType.Rectangle);
+				shapeRenderer.setColor(new Color(0.6f, 0.5f, 1f, 1f));
+				shapeRenderer.rect(
+					Fortress.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
+					Fortress.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
+					(comp.boundaries.right - comp.boundaries.left + 1) * Topography.TILE_SIZE,
+					(comp.boundaries.top - comp.boundaries.bottom + 1) * Topography.TILE_SIZE
+				);
+				shapeRenderer.end();
+				index++;
+			}
+		}
+		Gdx.gl.glDisable(GL10.GL_BLEND);
 	}
 
 
@@ -207,16 +247,14 @@ public class UserInterface {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : StructureMap.structures.values()) {
-			if (struct instanceof Desert) {
-				for (bloodandmithril.generation.component.Component comp : ((Desert) struct).components) {
-					if (renderAvailableInterfaces) {
-						for (Interface in : comp.availableInterfaces) {
-							in.render(availableColor);
-						}
-					} else {
-						for (Interface in : comp.existingInterfaces) {
-							in.render(existingColor);
-						}
+			for (bloodandmithril.generation.component.Component comp : struct.components) {
+				if (renderAvailableInterfaces) {
+					for (Interface in : comp.availableInterfaces) {
+						in.render(availableColor);
+					}
+				} else {
+					for (Interface in : comp.existingInterfaces) {
+						in.render(existingColor);
 					}
 				}
 			}
