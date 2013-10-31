@@ -64,6 +64,6 @@ public class Broadsword extends OneHandedWeapon {
 
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
-		Fortress.spriteBatch.draw(GameWorld.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 10 : 10), position.y - 7, flipX ? texture.getRegionWidth() - 10 : 10, 7, texture.getRegionWidth(), texture.getRegionHeight(), 1f, 1f, angle, 417, 621, 52, 11, flipX, false);
+		Fortress.spriteBatch.draw(GameWorld.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 13 : 13), position.y - 7, flipX ? texture.getRegionWidth() - 13 : 13, 7, texture.getRegionWidth(), texture.getRegionHeight(), 1f, 1f, angle, 417, 621, 52, 11, flipX, false);
 	}
 }

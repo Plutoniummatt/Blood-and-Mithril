@@ -29,7 +29,6 @@ import bloodandmithril.ui.components.bar.BottomBar;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
-import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.WorldState;
@@ -194,13 +193,9 @@ public class UserInterface {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : StructureMap.structures.values()) {
-			int index = 0;
 			for (bloodandmithril.generation.component.Component comp : struct.components) {
-
-				Color color = Util.get(index, Color.RED, Color.GREEN, Color.BLUE, Color.MAGENTA);
-
 				shapeRenderer.begin(ShapeType.FilledRectangle);
-				shapeRenderer.setColor(new Color(color.r, color.g, color.b, 0.15f));
+				shapeRenderer.setColor(new Color(0f, 1f, 0f, 0.15f));
 				shapeRenderer.filledRect(
 					Fortress.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
 					Fortress.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
@@ -210,7 +205,7 @@ public class UserInterface {
 				shapeRenderer.end();
 
 				shapeRenderer.begin(ShapeType.Rectangle);
-				shapeRenderer.setColor(new Color(0.6f, 0.5f, 1f, 1f));
+				shapeRenderer.setColor(new Color(1f, 1f, 1f, 0.5f));
 				shapeRenderer.rect(
 					Fortress.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
 					Fortress.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
@@ -218,7 +213,6 @@ public class UserInterface {
 					(comp.boundaries.top - comp.boundaries.bottom + 1) * Topography.TILE_SIZE
 				);
 				shapeRenderer.end();
-				index++;
 			}
 		}
 		Gdx.gl.glDisable(GL10.GL_BLEND);

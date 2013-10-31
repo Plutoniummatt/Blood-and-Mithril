@@ -10,7 +10,9 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.topography.tile.Tile;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -188,12 +190,15 @@ public class Chunk {
 		}
 
 		if ("true".equals(System.getProperty("debug"))) {
+			Gdx.gl.glEnable(GL10.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			UserInterface.shapeRenderer.begin(ShapeType.Rectangle);
-			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			UserInterface.shapeRenderer.setColor(new Color(1f, 0.5f, 1f, 0.15f));
 			float x = Fortress.worldToScreenX(fData.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
 			float y = Fortress.worldToScreenY(fData.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
 			UserInterface.shapeRenderer.rect(x, y, Topography.CHUNK_SIZE * Topography.TILE_SIZE, Topography.CHUNK_SIZE * Topography.TILE_SIZE);
 			UserInterface.shapeRenderer.end();
+			Gdx.gl.glDisable(GL10.GL_BLEND);
 		}
 	}
 
