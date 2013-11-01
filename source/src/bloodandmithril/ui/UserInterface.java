@@ -246,11 +246,11 @@ public class UserInterface {
 		for (Structure struct : StructureMap.structures.values()) {
 			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.components)) {
 				if (renderAvailableInterfaces) {
-					for (Interface in : comp.availableInterfaces) {
+					for (Interface in : Lists.newArrayList(comp.availableInterfaces)) {
 						in.render(availableColor);
 					}
 				} else {
-					for (Interface in : comp.existingInterfaces) {
+					for (Interface in : Lists.newArrayList(comp.existingInterfaces)) {
 						in.render(existingColor);
 					}
 				}
