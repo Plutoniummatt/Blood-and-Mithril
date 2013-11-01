@@ -1,5 +1,6 @@
 package bloodandmithril.prop.rigidBody;
 
+import bloodandmithril.character.Individual;
 import bloodandmithril.prop.Prop;
 
 /**
@@ -9,7 +10,7 @@ import bloodandmithril.prop.Prop;
  */
 public abstract class RigidBody extends Prop {
 
-	/** True if this {@link RigidBody} can collide with other Collidable {@link RigidBody}s */
+	/** True if this {@link RigidBody} can collide with other Collidable {@link RigidBody}s as well as {@link Individual}s */
 	public boolean collidable;
 
 	/** The collision radius */
