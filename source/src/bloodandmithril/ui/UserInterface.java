@@ -44,6 +44,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 /**
  * Class representing UI
@@ -193,7 +194,7 @@ public class UserInterface {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : StructureMap.structures.values()) {
-			for (bloodandmithril.generation.component.Component comp : struct.components) {
+			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.components)) {
 				shapeRenderer.begin(ShapeType.FilledRectangle);
 				shapeRenderer.setColor(new Color(0f, 1f, 0f, 0.15f));
 				shapeRenderer.filledRect(
@@ -243,7 +244,7 @@ public class UserInterface {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : StructureMap.structures.values()) {
-			for (bloodandmithril.generation.component.Component comp : struct.components) {
+			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.components)) {
 				if (renderAvailableInterfaces) {
 					for (Interface in : comp.availableInterfaces) {
 						in.render(availableColor);
