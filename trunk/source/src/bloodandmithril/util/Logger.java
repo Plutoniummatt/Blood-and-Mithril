@@ -15,8 +15,8 @@ public class Logger {
 			System.out.println(message);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Prints a debug message
 	 */
@@ -25,18 +25,28 @@ public class Logger {
 			System.out.println(message);
 		}
 	}
-	
-	
+
+
+	/**
+	 * Prints a debug message
+	 */
+	public static void generationDebug(String message, LogLevel level) {
+		if (System.getProperty("generationDebug") != null && LogLevel.valueOf(System.getProperty("generationDebug")).value >= level.value) {
+			System.out.println(message);
+		}
+	}
+
+
 	/**
 	 * Prints a debug message
 	 */
 	public static void saverDebug(String message, LogLevel level) {
-		if (System.getProperty("saverDebug") != null && LogLevel.valueOf(System.getProperty("saverDebug")).value >= level.value) {
+		if (System.getProperty("saverDebug") != null && LogLevel.valueOf(System.getProperty("generalDebug")).value >= level.value) {
 			System.out.println(message);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Prints an AI debug message
 	 */
@@ -45,8 +55,8 @@ public class Logger {
 			System.out.println(message);
 		}
 	}
-	
-	
+
+
 	/**
 	 * The Logging level.
 	 *
@@ -55,13 +65,13 @@ public class Logger {
 	public enum LogLevel {
 		TRACE(4), DEBUG(3), INFO(2), WARN(1);
 		public final int value;
-		
+
 		private LogLevel(int value) {
 			this.value = value;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Performs a task if in debug mode
 	 */
