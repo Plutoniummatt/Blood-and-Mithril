@@ -36,7 +36,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 public class InventoryWindow extends Window {
 
 	/** The list of items this inventory window displays, equipped items first. */
-	public Map<InventoryWindowItem, Integer> equippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();   
+	public Map<InventoryWindowItem, Integer> equippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();
 	public Map<InventoryWindowItem, Integer> nonEquippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();
 
 	/** The {@link Container} that is the host of this {@link InventoryWindow} */
@@ -106,14 +106,15 @@ public class InventoryWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		int i = 0;
-		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? borderColor.a : 0.7f * alpha);
+		// Render the separator
 		Fortress.spriteBatch.setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
-		Color color = new Color(borderColor.r, borderColor.g, borderColor.b, alpha);
-		shapeRenderer.filledRect(x + length - 88, y + 25 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
+		Color color = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.4f * alpha);
+		shapeRenderer.filledRect(x + length - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
 		shapeRenderer.end();
 
+		// Render the equipped items first
+		int i = 0;
 		for(Entry<InventoryWindowItem, Integer> item : equippedItemsToDisplay.entrySet()) {
 			if (y - i * 20 - 110 < y - height) {
 				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - i * 20 - 33);
@@ -123,6 +124,8 @@ public class InventoryWindow extends Window {
 			defaultFont.draw(Fortress.spriteBatch, Integer.toString(item.getValue()), x + length - 80, y - i * 20 - 33);
 			i++;
 		}
+
+		// Render the non-equipped items
 		for(Entry<InventoryWindowItem, Integer> item : nonEquippedItemsToDisplay.entrySet()) {
 			if (y - i * 20 - 110 < y - height) {
 				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - i * 20 - 33);
@@ -133,6 +136,7 @@ public class InventoryWindow extends Window {
 			i++;
 		}
 
+		// Render the weight indication text
 		Color activeColor = host.getCurrentLoad() < host.getMaxCapacity() ?
 				new Color(0.7f*host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, alpha) :
 				new Color(1f, 0f, 0f, alpha);

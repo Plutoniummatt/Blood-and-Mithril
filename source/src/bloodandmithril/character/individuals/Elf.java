@@ -15,7 +15,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
-import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
@@ -383,17 +383,16 @@ public class Elf extends Individual {
 					for (Individual indi : GameWorld.selectedIndividuals) {
 						if (indi != thisElf) {
 							UserInterface.addLayeredComponent(
-								new MessageWindow(
-									"This is the trade window",
-									Color.CYAN,
-									Fortress.WIDTH/2 - 150,
-									Fortress.HEIGHT/2 + 100,
+								new TradeWindow(
+									Fortress.WIDTH / 2 - 150,
+									Fortress.HEIGHT / 2 + 100,
 									300,
 									200,
-									"Trade between " + indi.id.getSimpleName() + " and " + thisElf.id.getSimpleName(),
+									"Trade between " + indi.id.firstName + " and " + thisElf.id.firstName,
 									true,
 									300,
-									200
+									200,
+									true
 								)
 							);
 						}
