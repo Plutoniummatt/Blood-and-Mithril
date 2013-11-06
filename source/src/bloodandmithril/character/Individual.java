@@ -451,11 +451,14 @@ public abstract class Individual extends Equipper {
 	/** Constructs a implementation-specific {@link ContextMenu} */
 	public abstract ContextMenu getContextMenu();
 
+
 	/** Gets the description for this {@link Individual} */
 	public abstract String getDescription();
 
+
 	/** Updates the description for this {@link Individual} */
 	public abstract void updateDescription(String updated);
+
 
 	/** Returns the {@link SpacialConfiguration} where {@link OneHandedWeapon} will be rendered */
 	protected abstract SpacialConfiguration getOneHandedWeaponSpacialConfigration();

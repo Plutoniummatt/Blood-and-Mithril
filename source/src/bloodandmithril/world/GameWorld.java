@@ -3,16 +3,14 @@ package bloodandmithril.world;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 
 import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger;
-import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.Shaders;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.weather.Weather;
 
@@ -34,10 +32,10 @@ import com.google.common.collect.Lists;
  * @author Matt
  */
 public class GameWorld {
-	
+
 	/** Gravity */
 	public static float GRAVITY = 1200;
-	
+
 	/** Topography of the game world */
 	private final Topography topography;
 
@@ -54,7 +52,7 @@ public class GameWorld {
 	private static FrameBuffer bBufferLit = new FrameBuffer(Format.RGBA8888, Fortress.WIDTH, Fortress.HEIGHT, true);
 
 	/** {@link Individual} that are selected for manual control */
-	public static Set<Individual> selectedIndividuals = new HashSet<Individual>();
+	public static HashSet<Individual> selectedIndividuals = new HashSet<Individual>();
 
 	/** Every {@link Individual} that exists */
 	public static ConcurrentHashMap<Integer, Individual> individuals = new ConcurrentHashMap<>();
@@ -151,19 +149,19 @@ public class GameWorld {
 			occlusion = new FrameBuffer(Format.RGBA8888, size, size, true);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Class to encapsulate the rendering of {@link Individual}s
 	 *
 	 * @author Matt
 	 */
 	private static class IndividualRenderer {
-		
+
 		/** {@link Predicate} for filtering out those that are NOT on platorms */
 		private static Predicate<Individual> onPlatform = new Predicate<Individual>() {
 			public boolean apply(Individual input) {
-				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile || 
+				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
 					Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
 					return true;
 				} else {
@@ -171,11 +169,11 @@ public class GameWorld {
 				}
 			};
 		};
-		
+
 		/** {@link Predicate} for filtering out those that ARE on platorms */
 		private static Predicate<Individual> offPlatform = new Predicate<Individual>() {
 			public boolean apply(Individual input) {
-				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile || 
+				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
 						Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
 					return false;
 				} else {
@@ -183,14 +181,14 @@ public class GameWorld {
 				}
 			};
 		};
-		
+
 		/** Renders all individuals, ones that are on platforms are rendered first */
 		private static void renderIndividuals() {
 			try {
 				for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), onPlatform)) {
 					indi.render();
 				}
-				
+
 				for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), offPlatform)) {
 					indi.render();
 				}
@@ -199,8 +197,8 @@ public class GameWorld {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Class to encapsulate post-rendering with dynamic lighting shaders.
 	 *
