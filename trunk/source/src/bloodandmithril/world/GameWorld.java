@@ -158,8 +158,9 @@ public class GameWorld {
 	 */
 	private static class IndividualRenderer {
 
-		/** {@link Predicate} for filtering out those that are NOT on platorms */
+		/** {@link Predicate} for filtering out those that are NOT on platforms */
 		private static Predicate<Individual> onPlatform = new Predicate<Individual>() {
+			@Override
 			public boolean apply(Individual input) {
 				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
 					Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
@@ -170,8 +171,9 @@ public class GameWorld {
 			};
 		};
 
-		/** {@link Predicate} for filtering out those that ARE on platorms */
+		/** {@link Predicate} for filtering out those that ARE on platforms */
 		private static Predicate<Individual> offPlatform = new Predicate<Individual>() {
+			@Override
 			public boolean apply(Individual input) {
 				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
 						Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
@@ -255,7 +257,7 @@ public class GameWorld {
 			}
 			bBufferLit.end();
 
-			//Render the backhground tiles
+			//Render the background tiles
 			Fortress.spriteBatch.setShader(Shaders.black);
 			Shaders.black.setUniformf("color", new Color(0f, 0f, 0f, 1f));
 			Fortress.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, Fortress.WIDTH, Fortress.HEIGHT, 0, 0, Fortress.WIDTH, Fortress.HEIGHT, false, true);
