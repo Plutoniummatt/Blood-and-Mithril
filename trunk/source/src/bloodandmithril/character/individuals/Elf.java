@@ -15,6 +15,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
+import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
@@ -48,14 +49,14 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 public class Elf extends Individual {
-	
+
 	private static final String RUNNING_LEFT_HAIR = "runningLeftHair";
 	private static final String RUNNING_RIGHT_HAIR = "runningRightHair";
 	private static final String WALKING_LEFT_HAIR = "walkingLeftHair";
 	private static final String WALKING_RIGHT_HAIR = "walkingRightHair";
 	private static final String STANDING_LEFT_HAIR = "standingLeftHair";
 	private static final String STANDING_RIGHT_HAIR = "standingRightHair";
-	
+
 	private static final String RUNNING_RIGHT = "runningRight";
 	private static final String RUNNING_LEFT = "runningLeft";
 	private static final String WALKING_RIGHT = "walkingRight";
@@ -83,10 +84,10 @@ public class Elf extends Individual {
 
 	/** Current animations */
 	private String current, currentHair;
-	
+
 	/** Biography of this Elf */
 	private String biography = "Elves are cool";
-	
+
 	/**
 	 * Constructor
 	 */
@@ -133,10 +134,10 @@ public class Elf extends Individual {
 	@Override
 	protected void internalRender() {
 		Fortress.spriteBatch.begin();
-		
+
 		// Determine which shader we're using, normal, or highlighted
 		if (isMouseOver()) {
-			
+
 			Shaders.elfHighLight.begin();
 			Shaders.elfHighLight.setUniformi("hair", 0);
 			Shaders.elfHighLight.setUniformf("eyeColor", eyeColorR, eyeColorG, eyeColorB);
@@ -146,7 +147,7 @@ public class Elf extends Individual {
 			Fortress.spriteBatch.setShader(Shaders.elfHighLight);
 			Shaders.elfHighLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
 		} else {
-			
+
 			Shaders.elfDayLight.begin();
 			Shaders.elfDayLight.setUniformi("hair", 0);
 			Shaders.elfDayLight.setUniformf("eyeColor", eyeColorR, eyeColorG, eyeColorB);
@@ -156,7 +157,7 @@ public class Elf extends Individual {
 			Fortress.spriteBatch.setShader(Shaders.elfDayLight);
 			Shaders.elfDayLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
 		}
-		
+
 		// Draw the body
 		Fortress.spriteBatch.draw(
 			animations.get(current + (female ? "F" : "M")).getKeyFrame(animationTimer, true),
@@ -171,7 +172,7 @@ public class Elf extends Individual {
 		Shaders.elfDayLight.setUniformi("hair", 1);
 		Shaders.elfDayLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
 		Shaders.elfHighLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
-		
+
 		// Draw the hair
 		Fortress.spriteBatch.draw(
 			hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(animationTimer, true),
@@ -182,7 +183,7 @@ public class Elf extends Individual {
 		// Render equipped items
 		for (Item equipped : equippedItems.keySet()) {
 			Equipable toRender = (Equipable) equipped;
-			
+
 			if (equipped instanceof OneHandedWeapon) {
 				SpacialConfiguration config = getOneHandedWeaponSpacialConfigration();
 				if (config != null) {
@@ -190,7 +191,7 @@ public class Elf extends Individual {
 				}
 			}
 		}
-		
+
 		Fortress.spriteBatch.flush();
 		Fortress.spriteBatch.end();
 	}
@@ -198,7 +199,7 @@ public class Elf extends Individual {
 
 	/** What animation should we use? */
 	private void updateAnimation() {
-		
+
 		// If we're moving to the right
 		if (state.velocity.x > 0) {
 			// If walking, and current animatin is not walking right, then set animations to walking right
@@ -212,7 +213,7 @@ public class Elf extends Individual {
 				currentHair = RUNNING_RIGHT_HAIR;
 				animationTimer = 0f;
 			}
-			
+
 		// Same for if we're moving left
 		} else if (state.velocity.x < 0) {
 			if (isCommandActive(KeyMappings.walk) && !current.equals(WALKING_LEFT)) {
@@ -224,7 +225,7 @@ public class Elf extends Individual {
 				currentHair = RUNNING_LEFT_HAIR;
 				animationTimer = 0f;
 			}
-			
+
 		// Otherwise we're standing still, if current animation is not standing left or right, then set current to standing left/right depending on which direction we were facing before.
 		} else if (state.velocity.x == 0 && !current.equals(STANDING_LEFT) && !current.equals(STANDING_RIGHT)) {
 			current = current.equals(WALKING_RIGHT) || current.equals(RUNNING_RIGHT) ? STANDING_RIGHT : STANDING_LEFT;
@@ -326,35 +327,6 @@ public class Elf extends Individual {
 				null
 			);
 
-		ContextMenuItem runOrWalkContextMenuItem = thisElf.walking ?
-			new ContextMenuItem(
-				"Run",
-				new Task() {
-					@Override
-					public void execute() {
-						thisElf.walking = false;
-					}
-				},
-				Color.WHITE,
-				getToolTipTextColor(),
-				Color.GRAY,
-				null
-				) :
-
-			new ContextMenuItem(
-				"Walk",
-				new Task() {
-					@Override
-					public void execute() {
-						thisElf.walking = true;
-					}
-				},
-				Color.WHITE,
-				getToolTipTextColor(),
-				Color.GRAY,
-				null
-			);
-
 		ContextMenuItem showInfoMenuItem = new ContextMenuItem(
 			"Show info",
 			new Task() {
@@ -403,19 +375,53 @@ public class Elf extends Individual {
 			null
 		);
 
+		ContextMenuItem tradeMenuItem = new ContextMenuItem(
+			"Trade with",
+			new Task() {
+				@Override
+				public void execute() {
+					for (Individual indi : GameWorld.selectedIndividuals) {
+						if (indi != thisElf) {
+							UserInterface.addLayeredComponent(
+								new MessageWindow(
+									"This is the trade window",
+									Color.CYAN,
+									Fortress.WIDTH/2 - 150,
+									Fortress.HEIGHT/2 + 100,
+									300,
+									200,
+									"Trade between " + indi.id.getSimpleName() + " and " + thisElf.id.getSimpleName(),
+									true,
+									300,
+									200
+								)
+							);
+						}
+					}
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+
 		ContextMenu contextMenuToReturn = new ContextMenu(0, 0);
 
 		if (controllable) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
 		}
-		contextMenuToReturn.addMenuItem(runOrWalkContextMenuItem);
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
 		contextMenuToReturn.addMenuItem(inventoryMenuItem);
+		if (!GameWorld.selectedIndividuals.isEmpty() &&
+			!(GameWorld.selectedIndividuals.size() == 1 && GameWorld.selectedIndividuals.contains(thisElf))) {
+			contextMenuToReturn.addMenuItem(tradeMenuItem);
+		}
 
 		return contextMenuToReturn;
 	}
-	
-	
+
+
 	@Override
 	public String getDescription() {
 		return biography;
@@ -431,7 +437,7 @@ public class Elf extends Individual {
 	@Override
 	protected SpacialConfiguration getOneHandedWeaponSpacialConfigration() {
 		int keyFrameIndex = animations.get(current + (female ? "F" : "M")).getKeyFrameIndex(animationTimer);
-		
+
 		switch (current) {
 			case WALKING_LEFT:
 				switch (keyFrameIndex) {
@@ -450,7 +456,7 @@ public class Elf extends Individual {
 					default:
 						throw new RuntimeException("Unexpected keyframe index");
 				}
-				
+
 			case WALKING_RIGHT:
 				switch (keyFrameIndex) {
 					case 0:
@@ -468,7 +474,7 @@ public class Elf extends Individual {
 					default:
 						throw new RuntimeException("Unexpected keyframe index");
 				}
-				
+
 			case STANDING_LEFT:
 				switch (keyFrameIndex) {
 				case 0:
@@ -476,7 +482,7 @@ public class Elf extends Individual {
 				default:
 					throw new RuntimeException("Unexpected keyframe index");
 				}
-				
+
 			case STANDING_RIGHT:
 				switch (keyFrameIndex) {
 				case 0:
