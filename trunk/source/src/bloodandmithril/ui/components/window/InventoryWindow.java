@@ -111,6 +111,17 @@ public class InventoryWindow extends Window {
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		Color color = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.4f * alpha);
 		shapeRenderer.filledRect(x + length - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
+
+		// Render the scroll bar
+		Color scrollBarColor = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha * 0.5f) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.2f * alpha);
+		shapeRenderer.setColor(scrollBarColor);
+		shapeRenderer.filledRect(x + length - 6, y - 50, 3, 30, scrollBarColor, scrollBarColor, Color.CLEAR, Color.CLEAR);
+		shapeRenderer.filledRect(x + length - 6, y + 52 - height, 3, height - 102);
+		shapeRenderer.filledRect(x + length - 6, y + 22 - height, 3, 30, Color.CLEAR, Color.CLEAR, scrollBarColor, scrollBarColor);
+
+		//Render the scroll button TODO prototyping
+		shapeRenderer.setColor(Color.WHITE);
+		shapeRenderer.filledRect(x + length - 8, y + 52 - height, 7, 15);
 		shapeRenderer.end();
 
 		// Render the equipped items first

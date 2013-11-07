@@ -118,27 +118,25 @@ public class Button {
 	 */
   public void render(boolean active, float alpha) {
 
-		Fortress.spriteBatch.setShader(Shaders.text);
-
 		Vector2 vec = new Vector2();
-
 		morph(vec);
 
-		Color downColorToUse = active ? downColor : idle == null ? downColor.cpy() : null;
-		Color overColorToUse = active ? overColor : idle == null ? overColor.cpy() : null;
-		Color idleColorToUse = active ? idleColor : idle == null ? idleColor.cpy() : null;
-
 		if (idle == null) {
+			Fortress.spriteBatch.setShader(Shaders.text);
+			Color downColorToUse = active ? downColor : idle == null ? downColor.cpy() : downColor;
+			Color overColorToUse = active ? overColor : idle == null ? overColor.cpy() : overColor;
+			Color idleColorToUse = active ? idleColor : idle == null ? idleColor.cpy() : idleColor;
+
 			if (isMouseOver() && active) {
 				if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
-					font.setColor(new Color(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f)));
+					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
 					font.draw(Fortress.spriteBatch, text, vec.x, vec.y);
 				} else {
-					font.setColor(new Color(overColorToUse.r, overColorToUse.g, overColorToUse.b, alpha * (active ? 1f : 0.3f)));
+					font.setColor(overColorToUse.r, overColorToUse.g, overColorToUse.b, alpha * (active ? 1f : 0.3f));
 					font.draw(Fortress.spriteBatch, text, vec.x, vec.y);
 				}
 			} else {
-				font.setColor(new Color(idleColorToUse.r, idleColorToUse.g, idleColorToUse.b, alpha * (active ? 1f : 0.3f)));
+				font.setColor(idleColorToUse.r, idleColorToUse.g, idleColorToUse.b, alpha * (active ? 1f : 0.3f));
 				font.draw(Fortress.spriteBatch, text, vec.x, vec.y);
 			}
 		} else {

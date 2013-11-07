@@ -1,11 +1,10 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.util.Fonts.*;
+import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
-
 
 import bloodandmithril.Fortress;
 import bloodandmithril.ui.KeyMappings;
@@ -19,6 +18,7 @@ import bloodandmithril.util.Task;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
@@ -105,7 +105,7 @@ public abstract class Window extends Component {
 
 			if (isWithin()) {
 				if (active) {
-					
+
 					if (closeButton.click()) {
 						closing = true;
 						return false;
@@ -115,13 +115,13 @@ public abstract class Window extends Component {
 						minimized = true;
 						return true;
 					}
-					
+
 					resizeButton.click();
 					internalLeftClick(copy, windowsCopy);
 					determinePositioning();
 					return true;
 				} else {
-					
+
 					windowsCopy.remove(this);
 					windowsCopy.addLast(this);
 					determinePositioning();
@@ -133,7 +133,7 @@ public abstract class Window extends Component {
 				return false;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -258,8 +258,13 @@ public abstract class Window extends Component {
 		renderSeparator();
 		renderWindowButtons();
 		renderTitle();
+		Fortress.spriteBatch.end();
 
+		Fortress.spriteBatch.begin();
+		Gdx.gl.glEnable(GL10.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		internalWindowRender();
+		Gdx.gl.glDisable(GL10.GL_BLEND);
 		Fortress.spriteBatch.end();
 	}
 
