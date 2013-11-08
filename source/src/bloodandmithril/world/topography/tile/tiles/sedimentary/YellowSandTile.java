@@ -1,5 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.sedimentary;
 
+import bloodandmithril.item.Item;
+import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.world.topography.tile.tiles.SeditmentaryTile;
 
 public class YellowSandTile extends SeditmentaryTile {
@@ -26,5 +28,11 @@ public class YellowSandTile extends SeditmentaryTile {
 
 	@Override
 	public void changeToSmoothCeiling() {
+	}
+
+
+	@Override
+	public Item mine() {
+		return new YellowSand();
 	}
 }

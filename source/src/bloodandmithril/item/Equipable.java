@@ -1,7 +1,7 @@
-package bloodandmithril.item.equipment;
+package bloodandmithril.item;
+
 
 import bloodandmithril.item.Equipper.EquipmentSlot;
-import bloodandmithril.item.Item;
 
 import com.badlogic.gdx.math.Vector2;
 

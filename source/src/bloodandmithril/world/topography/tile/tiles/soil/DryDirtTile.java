@@ -1,5 +1,6 @@
 package bloodandmithril.world.topography.tile.tiles.soil;
 
+import bloodandmithril.item.Item;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
 public class DryDirtTile extends SoilTile {
@@ -26,5 +27,12 @@ public class DryDirtTile extends SoilTile {
 
 	@Override
 	public void changeToSmoothCeiling() {
+	}
+
+
+	@Override
+	public Item mine() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

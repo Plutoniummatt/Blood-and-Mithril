@@ -4,10 +4,9 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.item.Equipper;
-import bloodandmithril.item.consumable.Carrot;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
@@ -24,7 +23,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * Mine a {@link Tile}, a {@link CompositeAITask} comprising of:
- * 
+ *
  * {@link GoToLocation} of the tile.
  * {@link Mine} mine the actual tile.
  *
@@ -43,23 +42,23 @@ public class MineTile extends CompositeAITask {
 	 */
 	public MineTile(Individual host, Vector2 coordinate) {
 		super(
-			host.id, 
-			"Mining", 
+			host.id,
+			"Mining",
 			new GoToLocation(
-				host, 
-				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10), 3 * Topography.TILE_SIZE), 
+				host,
+				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10), 3 * Topography.TILE_SIZE),
 				false,
-				50f, 
+				50f,
 				true
 			)
 		);
-		
+
 		appendTask(this.new Mine(host.id));
-		
+
 		this.tileCoordinate = coordinate;
 	}
-	
-	
+
+
 	/**
 	 * Task of mining a tile
 	 *
@@ -75,43 +74,44 @@ public class MineTile extends CompositeAITask {
 			super(hostId);
 		}
 
-		
+
 		@Override
 		public String getDescription() {
 			return "Mining";
 		}
 
-		
+
 		@Override
 		public boolean isComplete() {
 			return Topography.getTile(tileCoordinate, true) instanceof EmptyTile;
 		}
 
-		
+
 		@Override
 		public void uponCompletion() {
 		}
 
-		
+
 		@Override
 		public void execute() {
 			final Individual host = GameWorld.individuals.get(hostId.id);
-			
+
 			if (host.interactionBox.isWithinBox(tileCoordinate)) {
 				Topography.addTask(
 					new Task() {
 						@Override
 						public void execute() {
-							if (Topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true)) {
+							Tile deletedTile = Topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
+							if (deletedTile != null) {
 								SoundService.pickAxe.play(
-									SoundService.getVolumne(tileCoordinate), 
-									1f, 
+									SoundService.getVolumne(tileCoordinate),
+									1f,
 									SoundService.getPan(tileCoordinate)
 								);
-								
-								((Equipper)host).giveItem(new Carrot(), 1);
+
+								((Equipper)host).giveItem(deletedTile.mine(), 1);
 								InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
-									
+
 									@Override
 									public boolean apply(Component input) {
 										if (input instanceof Window) {
@@ -120,7 +120,7 @@ public class MineTile extends CompositeAITask {
 										return false;
 									}
 								}, null);
-								
+
 								if (existingInventoryWindow != null) {
 									existingInventoryWindow.refresh();
 								}

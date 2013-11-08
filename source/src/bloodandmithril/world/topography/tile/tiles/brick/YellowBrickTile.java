@@ -1,5 +1,6 @@
 package bloodandmithril.world.topography.tile.tiles.brick;
 
+import bloodandmithril.item.Item;
 import bloodandmithril.world.topography.tile.tiles.BrickTile;
 
 public class YellowBrickTile extends BrickTile {
@@ -28,5 +29,12 @@ public class YellowBrickTile extends BrickTile {
 	@Override
 	public void changeToSmoothCeiling() {
 		this.smoothCeiling = true;
+	}
+
+
+	@Override
+	public Item mine() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

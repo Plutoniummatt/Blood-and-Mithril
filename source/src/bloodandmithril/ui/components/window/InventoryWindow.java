@@ -11,11 +11,11 @@ import java.util.TreeMap;
 
 import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
+import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Container;
+import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.consumable.Consumable;
-import bloodandmithril.item.equipment.Equipable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;

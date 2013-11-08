@@ -1,9 +1,9 @@
-package bloodandmithril.item.consumable;
-
+package bloodandmithril.item.material.animal;
 
 import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.MessageWindow;
@@ -11,14 +11,14 @@ import bloodandmithril.ui.components.window.Window;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class ChickenLeg extends Consumable {
+public class ChickenLeg extends Item implements Consumable {
 	private static final long serialVersionUID = 327664484386522545L;
 
 	/**
 	 * Constructor
 	 */
 	public ChickenLeg() {
-		super(0.25f, false, 5);
+		super(0.25f, false, 15);
 	}
 
 

@@ -3,7 +3,6 @@ package bloodandmithril.item;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import bloodandmithril.item.equipment.Equipable;
 
 /**
  * An {@link Equipper} is an extention of {@link Container}, that is able to equip {@link Equipable} {@link Item}s
@@ -29,12 +28,13 @@ public class Equipper extends Container {
 			availableEquipmentSlots.put(slot, true);
 		}
 	}
-	
+
 
 	/**
 	 * @param item to put
 	 * @param quantity of item to put
 	 */
+	@Override
 	public void giveItem(Item item, int quantity) {
 		super.giveItem(item, quantity);
 		refreshCurrentLoad();
@@ -45,6 +45,7 @@ public class Equipper extends Container {
 	 * Takes a number of items
 	 * @return the number of items taken.
 	 */
+	@Override
 	public int takeItem(Item item, int quantity) {
 		int taken = super.takeItem(item, quantity);
 		refreshCurrentLoad();
