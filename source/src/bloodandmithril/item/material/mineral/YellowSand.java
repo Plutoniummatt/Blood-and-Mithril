@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 public class YellowSand extends Item {
+	private static final long serialVersionUID = -7756119539773387265L;
+
 
 	/**
 	 * Constructor

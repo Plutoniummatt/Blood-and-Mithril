@@ -41,6 +41,12 @@ public class InventoryWindow extends Window {
 
 	/** The {@link Container} that is the host of this {@link InventoryWindow} */
 	public Equipper host;
+	
+	/** The current starting index for which the inventory listing is rendered */
+	private int startingIndex = 0;
+
+	/** The position of the scroll bar button */
+	private float scrollBarButtonLocation = 0f;
 
 	/**
 	 * Constructor
@@ -107,47 +113,73 @@ public class InventoryWindow extends Window {
 	@Override
 	protected void internalWindowRender() {
 		// Render the separator
-		Fortress.spriteBatch.setShader(Shaders.filter);
-		shapeRenderer.begin(ShapeType.FilledRectangle);
-		Color color = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.4f * alpha);
-		shapeRenderer.filledRect(x + length - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
+		renderSeparator();
 
 		// Render the scroll bar
-		Color scrollBarColor = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha * 0.5f) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.2f * alpha);
-		shapeRenderer.setColor(scrollBarColor);
-		shapeRenderer.filledRect(x + length - 6, y - 50, 3, 30, scrollBarColor, scrollBarColor, Color.CLEAR, Color.CLEAR);
-		shapeRenderer.filledRect(x + length - 6, y + 52 - height, 3, height - 102);
-		shapeRenderer.filledRect(x + length - 6, y + 22 - height, 3, 30, Color.CLEAR, Color.CLEAR, scrollBarColor, scrollBarColor);
+		renderScrollBar();
 
-		//Render the scroll button TODO prototyping
-		shapeRenderer.setColor(Color.WHITE);
+		// Render the scroll button
+		renderScrollBarButton();
+
+		// Renders the inventory listing
+		renderInventoryItems();
+
+		// Render the weight indication text
+		renderWeightIndicationText();
+	}
+
+
+	/**
+	 * Renders the scroll bar button
+	 */
+	private void renderScrollBarButton() {
+		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.filledRect(x + length - 8, y + 52 - height, 7, 15);
 		shapeRenderer.end();
+	}
 
+
+	/**
+	 * Renders the inventory listing
+	 */
+	private void renderInventoryItems() {
 		// Render the equipped items first
 		int i = 0;
 		for(Entry<InventoryWindowItem, Integer> item : equippedItemsToDisplay.entrySet()) {
-			if (y - i * 20 - 110 < y - height) {
-				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - i * 20 - 33);
+			if (i + 1 < startingIndex) {
+				i++;
+				continue;
+			}
+			if (y - (i - startingIndex) * 20 - 110 < y - height) {
+				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - (i - startingIndex + 1) * 20 - 33);
 				break;
 			}
-			item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - i * 20 - 25, active && UserInterface.contextMenus.isEmpty(), alpha);
-			defaultFont.draw(Fortress.spriteBatch, Integer.toString(item.getValue()), x + length - 80, y - i * 20 - 33);
+			item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, active && UserInterface.contextMenus.isEmpty(), alpha);
+			defaultFont.draw(Fortress.spriteBatch, Integer.toString(item.getValue()), x + length - 80, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
 			i++;
 		}
 
 		// Render the non-equipped items
 		for(Entry<InventoryWindowItem, Integer> item : nonEquippedItemsToDisplay.entrySet()) {
-			if (y - i * 20 - 110 < y - height) {
-				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - i * 20 - 33);
+			if (i + 1 < startingIndex) {
+				i++;
+				continue;
+			}
+			if (y - (i - startingIndex) * 20 - 110 < y - height) {
+				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - (i - startingIndex + 1) * 20 - 33);
 				break;
 			}
-			item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - i * 20 - 25, active && UserInterface.contextMenus.isEmpty(), alpha);
-			defaultFont.draw(Fortress.spriteBatch, Integer.toString(item.getValue()), x + length - 80, y - i * 20 - 33);
+			item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, active && UserInterface.contextMenus.isEmpty(), alpha);
+			defaultFont.draw(Fortress.spriteBatch, Integer.toString(item.getValue()), x + length - 80, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
 			i++;
 		}
+	}
 
-		// Render the weight indication text
+
+	/**
+	 * Renders the weight display
+	 */
+	private void renderWeightIndicationText() {
 		Color activeColor = host.getCurrentLoad() < host.getMaxCapacity() ?
 				new Color(0.7f*host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, alpha) :
 				new Color(1f, 0f, 0f, alpha);
@@ -158,6 +190,29 @@ public class InventoryWindow extends Window {
 
 		defaultFont.setColor(active ? activeColor : inactiveColor);
 		defaultFont.draw(Fortress.spriteBatch, truncate("Weight: " + String.format("%.2f", host.getCurrentLoad()) + "/" + String.format("%.2f", host.getMaxCapacity())), x + 6, y - height + 20);
+	}
+
+
+	/**
+	 * Renders the separator that separates the item listing from the quantity listing
+	 */
+	private void renderSeparator() {
+		Fortress.spriteBatch.setShader(Shaders.filter);
+		shapeRenderer.begin(ShapeType.FilledRectangle);
+		Color color = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.4f * alpha);
+		shapeRenderer.filledRect(x + length - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
+	}
+
+
+	/**
+	 * Renders the scroll bar
+	 */
+	private void renderScrollBar() {
+		Color scrollBarColor = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha * 0.5f) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.2f * alpha);
+		shapeRenderer.setColor(scrollBarColor);
+		shapeRenderer.filledRect(x + length - 6, y - 50, 3, 30, scrollBarColor, scrollBarColor, Color.CLEAR, Color.CLEAR);
+		shapeRenderer.filledRect(x + length - 6, y + 52 - height, 3, height - 102);
+		shapeRenderer.filledRect(x + length - 6, y + 22 - height, 3, 30, Color.CLEAR, Color.CLEAR, scrollBarColor, scrollBarColor);
 	}
 
 

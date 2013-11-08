@@ -63,8 +63,6 @@ public class ScrollableListingPanel extends Panel {
 	 * Renders {@link #buttonListing}
 	 */
 	private void renderListing() {
-		for (Button button : buttonListing) {
-		}
 	}
 
 
