@@ -2,6 +2,8 @@ package bloodandmithril.world.topography.tile;
 
 import java.io.Serializable;
 
+import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.item.Item;
 import bloodandmithril.util.datastructure.BinaryTree;
 import bloodandmithril.world.topography.ChunkMap;
 import bloodandmithril.world.topography.Topography;
@@ -48,7 +50,7 @@ public abstract class Tile implements Serializable {
 
 	/** Whether this is a Stair tile */
 	protected boolean isStair = false;
-	
+
 	/** Whether this is a smoothed ceiling tile */
 	protected boolean smoothCeiling = false;
 
@@ -152,12 +154,18 @@ public abstract class Tile implements Serializable {
 	 * Changes this tile to a {@link #isStair} tile
 	 */
 	public abstract void changeToStair();
-	
-	
+
+
 	/**
 	 * Changes this tile to a {@link #smoothCeiling} tile
 	 */
 	public abstract void changeToSmoothCeiling();
+
+
+	/**
+	 * @return an {@link Item} that is obtained when this {@link Tile} is mined. See {@link MineTile}
+	 */
+	public abstract Item mine();
 
 
 	/**
@@ -166,7 +174,7 @@ public abstract class Tile implements Serializable {
 	public boolean isStair() {
 		return isStair;
 	}
-	
+
 
 	@Override
 	public String toString() {
@@ -277,6 +285,12 @@ public abstract class Tile implements Serializable {
 		@Override
 		public void changeToSmoothCeiling() {
 		}
+
+
+		@Override
+		public Item mine() {
+			throw new RuntimeException("Can not mine a debug tile");
+		}
 	}
 
 
@@ -309,6 +323,12 @@ public abstract class Tile implements Serializable {
 
 		@Override
 		public void changeToSmoothCeiling() {
+		}
+
+
+		@Override
+		public Item mine() {
+			throw new RuntimeException("Can not mine an empty tile");
 		}
 	}
 }

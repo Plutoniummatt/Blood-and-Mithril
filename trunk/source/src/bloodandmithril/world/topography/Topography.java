@@ -5,13 +5,12 @@ import java.util.concurrent.BlockingQueue;
 
 import org.lwjgl.opengl.Display;
 
-
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.persistence.world.ChunkSaver;
 import bloodandmithril.util.Logger;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.Task;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -201,26 +200,24 @@ public class Topography {
 	 * @param worldX
 	 * @param worldY
 	 */
-	public static boolean deleteTile(float worldX, float worldY, boolean foreGround) {
+	public static Tile deleteTile(float worldX, float worldY, boolean foreGround) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
 
-		boolean answer = false;
-
 		try {
-			if (!(getTile(worldX,  worldY, true) instanceof EmptyTile)) {
-				answer = true;
+			if (getTile(worldX,  worldY, true) instanceof EmptyTile) {
+				return null;
 			}
+			Tile tile = chunkMap.get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 			chunkMap.get(chunkX).get(chunkY).deleteTile(tileX, tileY, foreGround);
 			Logger.generalDebug("Deleting tile at (" + convertToWorldTileCoord(chunkX, tileX) + ", " + convertToWorldTileCoord(chunkY, tileY) + "), World coord: (" + worldX + ", " + worldY + ")", LogLevel.TRACE);
-			return answer;
+			return tile;
 
 		} catch (NullPointerException e) {
 			Logger.generalDebug("can't delete a null tile", LogLevel.WARN);
-			return false;
-
+			return null;
 		}
 	}
 

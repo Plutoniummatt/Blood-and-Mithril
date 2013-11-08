@@ -1,5 +1,6 @@
 package bloodandmithril.world.topography.tile.tiles.glass;
 
+import bloodandmithril.item.Item;
 import bloodandmithril.world.topography.tile.tiles.GlassTile;
 
 public class ClearGlassTile extends GlassTile {
@@ -26,5 +27,12 @@ public class ClearGlassTile extends GlassTile {
 
 	@Override
 	public void changeToSmoothCeiling() {
+	}
+
+
+	@Override
+	public Item mine() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

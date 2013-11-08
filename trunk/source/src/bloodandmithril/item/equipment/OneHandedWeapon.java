@@ -1,5 +1,6 @@
 package bloodandmithril.item.equipment;
 
+import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
 
 /**

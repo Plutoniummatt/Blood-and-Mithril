@@ -1,8 +1,8 @@
-package bloodandmithril.item.consumable;
-
+package bloodandmithril.item.material.plant;
 
 import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
+import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
-public class Carrot extends Consumable {
+public class Carrot extends Item implements Consumable {
 	private static final long serialVersionUID = 3714624810622084079L;
 
 
@@ -22,7 +22,7 @@ public class Carrot extends Consumable {
 	 * Constructor
 	 */
 	public Carrot() {
-		super(0.1f, false, 1);
+		super(0.1f, false, 5);
 	}
 
 

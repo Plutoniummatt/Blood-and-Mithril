@@ -1,5 +1,6 @@
 package bloodandmithril.world.topography.tile.tiles.stone;
 
+import bloodandmithril.item.Item;
 import bloodandmithril.world.topography.tile.tiles.StoneTile;
 
 public class SandStoneTile extends StoneTile {
@@ -26,5 +27,12 @@ public class SandStoneTile extends StoneTile {
 
 	@Override
 	public void changeToSmoothCeiling() {
+	}
+
+
+	@Override
+	public Item mine() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
