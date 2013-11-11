@@ -73,4 +73,9 @@ public class ScrollableListingPanel extends Panel {
 	public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		return false;
 	}
+
+
+	@Override
+	public void leftClickReleased() {
+	}
 }

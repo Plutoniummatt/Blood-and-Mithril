@@ -1,10 +1,9 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.util.Fonts.*;
+import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
 import java.util.List;
-
 
 import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
@@ -54,39 +53,39 @@ public class IndividualInfoWindow extends Window {
 		if (!drawLine("Name: ", 25)) {
 			return;
 		}
-		
+
 		defaultFont.setColor(active ? activeWhite : inactiveWhite);
 		if (!drawLine(truncate(individual.id.getSimpleName()), 45)) {
 			return;
 		}
-		
+
 		defaultFont.setColor(active ? activeGreen : inactiveGreen);
 		if (!drawLine("Nickname: ", 75)) {
 			return;
 		}
-		
+
 		defaultFont.setColor(active ? activeWhite : inactiveWhite);
 		if (!drawLine(truncate(individual.id.nickName), 95)) {
 			return;
 		}
-		
+
 		defaultFont.setColor(active ? activeGreen : inactiveGreen);
 		if (!drawLine("Age: ", 125)) {
 			return;
 		}
-		
+
 		defaultFont.setColor(active ? activeWhite : inactiveWhite);
 		if (!drawLine(truncate(Integer.toString(individual.getAge())), 145)) {
 			return;
 		}
-		
+
 		defaultFont.setColor(active ? activeGreen : inactiveGreen);
 		if (!drawLine("Description: ", 175)) {
 			return;
 		}
-		
+
 		String messageToDisplay = Util.fitToWindow(individual.getDescription(), length, (height - 250) / 25);
-		
+
 		defaultFont.setColor(active ? activeWhite : inactiveWhite);
 		defaultFont.drawMultiLine(Fortress.spriteBatch, messageToDisplay, x + 6, y - 195);
 	}
@@ -105,5 +104,10 @@ public class IndividualInfoWindow extends Window {
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	}
+
+
+	@Override
+	public void leftClickReleased() {
 	}
 }

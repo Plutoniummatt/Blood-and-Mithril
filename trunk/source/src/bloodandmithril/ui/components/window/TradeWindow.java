@@ -41,4 +41,10 @@ public class TradeWindow extends Window {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 
 	}
+
+
+	@Override
+	public void leftClickReleased() {
+
+	}
 }

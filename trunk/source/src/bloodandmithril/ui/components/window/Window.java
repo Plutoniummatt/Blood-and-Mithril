@@ -245,7 +245,6 @@ public abstract class Window extends Component {
 	/** Implementation-specific left click method */
 	protected abstract void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy);
 
-
 	/** Renders this {@link Window} */
 	@Override
 	protected void internalComponentRender() {

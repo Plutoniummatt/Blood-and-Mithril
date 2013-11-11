@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-
 import bloodandmithril.Fortress;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.ui.UserInterface;
@@ -240,5 +239,10 @@ public class BottomBar extends Component {
 		mainMenu.render(!Fortress.paused && !GameSaver.isSaving(), 1f);
 		windows.render(!Fortress.paused && !GameSaver.isSaving(), 1f);
 		Fortress.spriteBatch.end();
+	}
+
+
+	@Override
+	public void leftClickReleased() {
 	}
 }

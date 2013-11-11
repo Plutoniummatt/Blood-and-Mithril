@@ -16,6 +16,7 @@ import bloodandmithril.item.Container;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
+import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -25,6 +26,7 @@ import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
@@ -41,12 +43,16 @@ public class InventoryWindow extends Window {
 
 	/** The {@link Container} that is the host of this {@link InventoryWindow} */
 	public Equipper host;
-	
+
 	/** The current starting index for which the inventory listing is rendered */
 	private int startingIndex = 0;
 
-	/** The position of the scroll bar button */
+	/** The position of the scroll bar button, 0f is top of list, 1f is bottom of list */
 	private float scrollBarButtonLocation = 0f;
+
+	/** Used for scroll processing */
+	private Float scrollBarButtonLocationOld = null;
+	private float mouseLocYFrozen;
 
 	/**
 	 * Constructor
@@ -90,7 +96,7 @@ public class InventoryWindow extends Window {
 
 
 	@Override
-	public void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		for(Entry<InventoryWindowItem, Integer> item : equippedItemsToDisplay.entrySet()) {
 			if (item.getKey().button.click() && item.getKey().menu == null) {
 				copy.clear();
@@ -107,6 +113,24 @@ public class InventoryWindow extends Window {
 				copy.add(item.getKey().menu);
 			}
 		}
+
+
+		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
+		if (Fortress.getMouseScreenX() > x + length - 13 &&
+			Fortress.getMouseScreenX() < x + length + 4 &&
+			Fortress.getMouseScreenY() > scrollBarButtonPos - 5 &&
+			Fortress.getMouseScreenY() < scrollBarButtonPos + 12) {
+
+			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * (equippedItemsToDisplay.size() + nonEquippedItemsToDisplay.size()));
+			scrollBarButtonLocationOld = scrollBarButtonLocation;
+			mouseLocYFrozen = Fortress.getMouseScreenY();
+		}
+	}
+
+
+	@Override
+	public void leftClickReleased() {
+		scrollBarButtonLocationOld = null;
 	}
 
 
@@ -133,8 +157,23 @@ public class InventoryWindow extends Window {
 	 * Renders the scroll bar button
 	 */
 	private void renderScrollBarButton() {
-		shapeRenderer.setColor(Color.GREEN);
-		shapeRenderer.filledRect(x + length - 8, y + 52 - height, 7, 15);
+		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
+
+		if (Gdx.input.isButtonPressed(KeyMappings.leftClick) && scrollBarButtonLocationOld != null) {
+			scrollBarButtonLocation = Math.min(1, Math.max(0, scrollBarButtonLocationOld + (mouseLocYFrozen - Fortress.getMouseScreenY())/(height - 102)));
+			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * (equippedItemsToDisplay.size() + nonEquippedItemsToDisplay.size()));
+		}
+
+		if (Fortress.getMouseScreenX() > x + length - 13 &&
+			Fortress.getMouseScreenX() < x + length + 4 &&
+			Fortress.getMouseScreenY() > scrollBarButtonPos - 5 &&
+			Fortress.getMouseScreenY() < scrollBarButtonPos + 12) {
+			shapeRenderer.setColor(Color.GREEN);
+		} else {
+			shapeRenderer.setColor(Color.WHITE);
+		}
+
+		shapeRenderer.filledRect(x + length - 8, scrollBarButtonPos, 7, 7);
 		shapeRenderer.end();
 	}
 
@@ -146,12 +185,12 @@ public class InventoryWindow extends Window {
 		// Render the equipped items first
 		int i = 0;
 		for(Entry<InventoryWindowItem, Integer> item : equippedItemsToDisplay.entrySet()) {
-			if (i + 1 < startingIndex) {
+			if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
 				i++;
 				continue;
 			}
-			if (y - (i - startingIndex) * 20 - 110 < y - height) {
-				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - (i - startingIndex + 1) * 20 - 33);
+			if (y - (i - (startingIndex == 0 ? 1 : startingIndex)) * 20 - 110 < y - height) {
+				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
 				break;
 			}
 			item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, active && UserInterface.contextMenus.isEmpty(), alpha);
@@ -161,12 +200,12 @@ public class InventoryWindow extends Window {
 
 		// Render the non-equipped items
 		for(Entry<InventoryWindowItem, Integer> item : nonEquippedItemsToDisplay.entrySet()) {
-			if (i + 1 < startingIndex) {
+			if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
 				i++;
 				continue;
 			}
-			if (y - (i - startingIndex) * 20 - 110 < y - height) {
-				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - (i - startingIndex + 1) * 20 - 33);
+			if (y - (i - (startingIndex == 0 ? 1 : startingIndex)) * 20 - 110 < y - height) {
+				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
 				break;
 			}
 			item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, active && UserInterface.contextMenus.isEmpty(), alpha);

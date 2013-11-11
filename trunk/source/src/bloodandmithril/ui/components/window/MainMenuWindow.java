@@ -1,11 +1,11 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.persistence.GameSaver.*;
+import static bloodandmithril.persistence.GameSaver.isSaving;
+import static bloodandmithril.persistence.GameSaver.save;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
 import java.util.List;
-
 
 import bloodandmithril.Fortress;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -78,6 +78,11 @@ public class MainMenuWindow extends Window {
 				)
 			);
 		}
+	}
+
+
+	@Override
+	public void leftClickReleased() {
 	}
 
 
