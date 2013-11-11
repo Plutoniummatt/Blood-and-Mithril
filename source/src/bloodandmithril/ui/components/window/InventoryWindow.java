@@ -167,7 +167,8 @@ public class InventoryWindow extends Window {
 		if (Fortress.getMouseScreenX() > x + length - 13 &&
 			Fortress.getMouseScreenX() < x + length + 4 &&
 			Fortress.getMouseScreenY() > scrollBarButtonPos - 5 &&
-			Fortress.getMouseScreenY() < scrollBarButtonPos + 12) {
+			Fortress.getMouseScreenY() < scrollBarButtonPos + 12 ||
+			scrollBarButtonLocationOld != null) {
 			shapeRenderer.setColor(Color.GREEN);
 		} else {
 			shapeRenderer.setColor(Color.WHITE);
