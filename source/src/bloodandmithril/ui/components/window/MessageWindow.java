@@ -1,10 +1,9 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.util.Fonts.*;
+import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
 import java.util.List;
-
 
 import bloodandmithril.Fortress;
 import bloodandmithril.ui.components.Component;
@@ -50,13 +49,19 @@ public class MessageWindow extends Window {
 		defaultFont.setColor(active ? new Color(messageColor.r, messageColor.g, messageColor.b, alpha) : new Color(messageColor.r, messageColor.g, messageColor.b, 0.6f * alpha));
 
 		String messageToDisplay = Util.fitToWindow(message, length, (height - 75) / 25);
-		
+
 		defaultFont.drawMultiLine(Fortress.spriteBatch, messageToDisplay, x + 6, y - 25);
 	}
 
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		//Do nothing
+	}
+
+
+	@Override
+	public void leftClickReleased() {
 		//Do nothing
 	}
 }

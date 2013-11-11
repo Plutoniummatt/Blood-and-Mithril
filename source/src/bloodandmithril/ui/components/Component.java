@@ -59,6 +59,10 @@ public abstract class Component {
 	public abstract boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy);
 
 
+	/** left click released method */
+	public abstract void leftClickReleased();
+
+
 	/** Component specific render */
 	protected abstract void internalComponentRender();
 

@@ -5,7 +5,6 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
-
 import bloodandmithril.Fortress;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Fonts;
@@ -152,5 +151,10 @@ public class ContextMenu extends Component {
 				UIRef.BL
 			);
 		}
+	}
+
+
+	@Override
+	public void leftClickReleased() {
 	}
 }

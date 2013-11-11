@@ -322,6 +322,13 @@ public class UserInterface {
 				}
 			}
 		}
+
+		if (!layeredComponents.isEmpty()) {
+			Iterator<Component> iter = layeredComponents.descendingIterator();
+			while (iter.hasNext()) {
+				iter.next().leftClickReleased();
+			}
+		}
 	}
 
 
