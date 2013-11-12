@@ -1,6 +1,5 @@
 package bloodandmithril;
 
-
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
@@ -11,14 +10,16 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.equipment.Broadsword;
+import bloodandmithril.item.equipment.ButterflySword;
+import bloodandmithril.item.material.animal.ChickenLeg;
+import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
-import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
@@ -294,22 +295,10 @@ public class Fortress implements ApplicationListener, InputProcessor {
 				20f
 			);
 
-//			elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
-//			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
-//			elf.giveItem(new ButterflySword(100), 1);
-//			elf.giveItem(new Broadsword(100), 1);
-			giveAnonymousItem(elf, "Thing1", 1);
-			giveAnonymousItem(elf, "Thing2", 2);
-			giveAnonymousItem(elf, "Thing3", 3);
-			giveAnonymousItem(elf, "Thing4", 4);
-			giveAnonymousItem(elf, "Thing5", 5);
-			giveAnonymousItem(elf, "Thing6", 6);
-			giveAnonymousItem(elf, "Thing7", 7);
-			giveAnonymousItem(elf, "Thing8", 8);
-			giveAnonymousItem(elf, "Thing9", 9);
-			giveAnonymousItem(elf, "Thing10", 10);
-			giveAnonymousItem(elf, "Thing11", 11);
-			giveAnonymousItem(elf, "Thing12", 12);
+			elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
+			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
+			elf.giveItem(new ButterflySword(100), 1);
+			elf.giveItem(new Broadsword(100), 1);
 
 			GameWorld.individuals.put(elf.id.id, elf);
 		}
@@ -352,39 +341,6 @@ public class Fortress implements ApplicationListener, InputProcessor {
 		}
 
 		return false;
-	}
-
-
-	private void giveAnonymousItem(Elf elf, final String text, int value) {
-		elf.giveItem(
-			new Item(1, false, value) {
-				private static final long serialVersionUID = -4548775872351910293L;
-				
-				@Override
-				public boolean sameAs(Item other) {
-					return false;
-				}
-				
-				
-				@Override
-				public String getSingular(boolean firstCap) {
-					return text;
-				}
-				
-				
-				@Override
-				public String getPlural(boolean firstCap) {
-					return text + "s";
-				}
-				
-				
-				@Override
-				public Window getInfoWindow() {
-					return null;
-				}
-			}, 
-			1
-		);
 	}
 
 
