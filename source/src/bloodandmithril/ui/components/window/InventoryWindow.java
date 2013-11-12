@@ -164,14 +164,18 @@ public class InventoryWindow extends Window {
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * (equippedItemsToDisplay.size() + nonEquippedItemsToDisplay.size()));
 		}
 
-		if (Fortress.getMouseScreenX() > x + length - 13 &&
-			Fortress.getMouseScreenX() < x + length + 4 &&
-			Fortress.getMouseScreenY() > scrollBarButtonPos - 5 &&
-			Fortress.getMouseScreenY() < scrollBarButtonPos + 12 ||
-			scrollBarButtonLocationOld != null) {
-			shapeRenderer.setColor(Color.GREEN);
+		if (active) {
+			if (Fortress.getMouseScreenX() > x + length - 13 &&
+					Fortress.getMouseScreenX() < x + length + 4 &&
+					Fortress.getMouseScreenY() > scrollBarButtonPos - 5 &&
+					Fortress.getMouseScreenY() < scrollBarButtonPos + 12 ||
+					scrollBarButtonLocationOld != null) {
+				shapeRenderer.setColor(0f, 1f, 0f, alpha);
+			} else {
+				shapeRenderer.setColor(1f, 1f, 1f, alpha);
+			}
 		} else {
-			shapeRenderer.setColor(Color.WHITE);
+			shapeRenderer.setColor(0.5f, 0.5f, 0.5f, alpha);
 		}
 
 		shapeRenderer.filledRect(x + length - 8, scrollBarButtonPos, 7, 7);

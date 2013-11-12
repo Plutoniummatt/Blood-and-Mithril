@@ -6,10 +6,6 @@ import java.util.List;
 import bloodandmithril.item.Container;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.Panel;
-import bloodandmithril.ui.components.panel.ScrollableListingPanel;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * Trade window, used when transferring items between {@link Container}s
@@ -17,8 +13,6 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 public class TradeWindow extends Window {
-
-	Panel panel = new ScrollableListingPanel(this, Color.MAGENTA, 10, 10, 100, 100, Color.MAGENTA);
 
 	/**
 	 * Constructor
@@ -32,8 +26,8 @@ public class TradeWindow extends Window {
 	protected void internalWindowRender() {
 		// 2 Panes, either top/bottom split, or left/right split, corresponding to the container being transferred from/to
 		// Arrows indicating moving items between containers
+		// 2 Further panes indicating which items are currently selected for trading
 		// Currency will be treated as an Item, not separately.
-		panel.render();
 	}
 
 
