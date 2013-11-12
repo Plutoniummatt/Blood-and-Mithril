@@ -392,7 +392,9 @@ public class Elf extends Individual {
 									true,
 									300,
 									200,
-									true
+									true,
+									GameWorld.selectedIndividuals.iterator().next(),
+									thisElf
 								)
 							);
 						}
