@@ -41,7 +41,7 @@ public abstract class Component {
 	protected static final TextureRegion resize			= new TextureRegion(UserInterface.uiTexture, 41, 0, 12, 12);
 
 	/** Utility {@link ShapeRenderer} for {@link Component}s */
-	protected static ShapeRenderer shapeRenderer 		= new ShapeRenderer();
+	public static ShapeRenderer shapeRenderer 		= new ShapeRenderer();
 
 	/** The alpha(transparent) value this {@link Component} should be rendered with */
 	public float alpha = 0f;

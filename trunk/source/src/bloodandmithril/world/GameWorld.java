@@ -100,10 +100,11 @@ public class GameWorld {
 	 * Updates the game world
 	 */
 	public void update(float delta) {
-		WorldState.currentEpoch.incrementTime(delta / 60f);
+		float d = 1f/60f;
+		WorldState.currentEpoch.incrementTime(d / 60f);
 
 		for (Individual indi : individuals.values()) {
-			indi.update(delta);
+			indi.update(d);
 		}
 
 		Topography.saveAndFlushUnneededChunks((int) Fortress.cam.position.x, (int) Fortress.cam.position.y);

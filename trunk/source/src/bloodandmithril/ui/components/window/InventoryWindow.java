@@ -5,7 +5,6 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -16,19 +15,21 @@ import bloodandmithril.item.Container;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.Panel;
+import bloodandmithril.ui.components.panel.ScrollableListingPanel;
+import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.collect.Maps;
 
 /**
  * {@link Window} to display the inventory of an {@link Individual} or Container
@@ -37,23 +38,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  */
 public class InventoryWindow extends Window {
 
-	/** The list of items this inventory window displays, equipped items first. */
-	public Map<InventoryWindowItem, Integer> equippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();
-	public Map<InventoryWindowItem, Integer> nonEquippedItemsToDisplay = new TreeMap<InventoryWindowItem, Integer>();
+	/** Inventory listing maps */
+	TreeMap<ListingMenuItem, Integer> equippedItemsToDisplay = Maps.newTreeMap();
+	TreeMap<ListingMenuItem, Integer> nonEquippedItemsToDisplay = Maps.newTreeMap();
 
 	/** The {@link Container} that is the host of this {@link InventoryWindow} */
 	public Equipper host;
 
-	/** The current starting index for which the inventory listing is rendered */
-	private int startingIndex = 0;
-
-	/** The position of the scroll bar button, 0f is top of list, 1f is bottom of list */
-	private float scrollBarButtonLocation = 0f;
-
-	/** Used for scroll processing */
-	private Float scrollBarButtonLocationOld = null;
-	private float mouseLocYFrozen;
-
+	/** The inventory listing panel, see {@link ScrollableListingPanel} */
+	private Panel inventoryListingPanel;
+	
 	/**
 	 * Constructor
 	 */
@@ -97,128 +91,33 @@ public class InventoryWindow extends Window {
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		for(Entry<InventoryWindowItem, Integer> item : equippedItemsToDisplay.entrySet()) {
-			if (item.getKey().button.click() && item.getKey().menu == null) {
-				copy.clear();
-			}
-			if (item.getKey().menu != null && item.getKey().button.isMouseOver()) {
-				copy.add(item.getKey().menu);
-			}
-		}
-		for(Entry<InventoryWindowItem, Integer> item : nonEquippedItemsToDisplay.entrySet()) {
-			if (item.getKey().button.click() && item.getKey().menu == null) {
-				copy.clear();
-			}
-			if (item.getKey().menu != null && item.getKey().button.isMouseOver()) {
-				copy.add(item.getKey().menu);
-			}
-		}
-
-
-		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
-		if (isMouseOverScrollButton(scrollBarButtonPos)) {
-
-			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * (equippedItemsToDisplay.size() + nonEquippedItemsToDisplay.size()));
-			scrollBarButtonLocationOld = scrollBarButtonLocation;
-			mouseLocYFrozen = Fortress.getMouseScreenY();
-		}
+		inventoryListingPanel.leftClick(copy, windowsCopy);
 	}
 
 
 	@Override
 	public void leftClickReleased() {
-		scrollBarButtonLocationOld = null;
+		inventoryListingPanel.leftClickReleased();
 	}
 
 
 	@Override
 	protected void internalWindowRender() {
+		
+		// Set the position and dimenstions of the panel
+		inventoryListingPanel.height = height;
+		inventoryListingPanel.width = length;
+		inventoryListingPanel.x = x;
+		inventoryListingPanel.y = y;
+		
 		// Render the separator
 		renderSeparator();
-
-		// Render the scroll bar
-		renderScrollBar();
-
-		// Render the scroll button
-		renderScrollBarButton();
-
-		// Renders the inventory listing
-		renderInventoryItems();
+		
+		// Render the listing panel
+		inventoryListingPanel.render();
 
 		// Render the weight indication text
 		renderWeightIndicationText();
-	}
-
-
-	/**
-	 * Renders the scroll bar button
-	 */
-	private void renderScrollBarButton() {
-		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
-
-		if (Gdx.input.isButtonPressed(KeyMappings.leftClick) && scrollBarButtonLocationOld != null) {
-			scrollBarButtonLocation = Math.min(1, Math.max(0, scrollBarButtonLocationOld + (mouseLocYFrozen - Fortress.getMouseScreenY())/(height - 102)));
-			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * (equippedItemsToDisplay.size() + nonEquippedItemsToDisplay.size()));
-		}
-
-		if (active) {
-			if (isMouseOverScrollButton(scrollBarButtonPos) ||
-					scrollBarButtonLocationOld != null) {
-				shapeRenderer.setColor(0f, 1f, 0f, alpha);
-			} else {
-				shapeRenderer.setColor(1f, 1f, 1f, alpha);
-			}
-		} else {
-			shapeRenderer.setColor(0.5f, 0.5f, 0.5f, alpha);
-		}
-
-		shapeRenderer.filledRect(x + length - 8, scrollBarButtonPos - 7.5f, 7, 15);
-		shapeRenderer.end();
-	}
-
-
-	private boolean isMouseOverScrollButton(float scrollBarButtonPos) {
-		return	Fortress.getMouseScreenX() > x + length - 13 &&
-				Fortress.getMouseScreenX() < x + length + 4 &&
-				Fortress.getMouseScreenY() > scrollBarButtonPos - 10 &&
-				Fortress.getMouseScreenY() < scrollBarButtonPos + 10;
-	}
-
-
-	/**
-	 * Renders the inventory listing
-	 */
-	private void renderInventoryItems() {
-		// Render the equipped items first
-		int i = 0;
-		for(Entry<InventoryWindowItem, Integer> item : equippedItemsToDisplay.entrySet()) {
-			if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
-				i++;
-				continue;
-			}
-			if (y - (i - (startingIndex == 0 ? 1 : startingIndex)) * 20 - 110 < y - height) {
-				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
-				break;
-			}
-			item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, active && UserInterface.contextMenus.isEmpty(), alpha);
-			defaultFont.draw(Fortress.spriteBatch, Integer.toString(item.getValue()), x + length - 80, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
-			i++;
-		}
-
-		// Render the non-equipped items
-		for(Entry<InventoryWindowItem, Integer> item : nonEquippedItemsToDisplay.entrySet()) {
-			if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
-				i++;
-				continue;
-			}
-			if (y - (i - (startingIndex == 0 ? 1 : startingIndex)) * 20 - 110 < y - height) {
-				defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
-				break;
-			}
-			item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, active && UserInterface.contextMenus.isEmpty(), alpha);
-			defaultFont.draw(Fortress.spriteBatch, Integer.toString(item.getValue()), x + length - 80, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
-			i++;
-		}
 	}
 
 
@@ -247,27 +146,34 @@ public class InventoryWindow extends Window {
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		Color color = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.4f * alpha);
 		shapeRenderer.filledRect(x + length - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
-	}
-
-
-	/**
-	 * Renders the scroll bar
-	 */
-	private void renderScrollBar() {
-		Color scrollBarColor = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha * 0.5f) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.2f * alpha);
-		shapeRenderer.setColor(scrollBarColor);
-		shapeRenderer.filledRect(x + length - 6, y - 50, 3, 30, scrollBarColor, scrollBarColor, Color.CLEAR, Color.CLEAR);
-		shapeRenderer.filledRect(x + length - 6, y + 52 - height, 3, height - 102);
-		shapeRenderer.filledRect(x + length - 6, y + 22 - height, 3, 30, Color.CLEAR, Color.CLEAR, scrollBarColor, scrollBarColor);
+		shapeRenderer.end();
 	}
 
 
 	/**
 	 * Builds the list of items to display
 	 */
-	private void buildItems(HashMap<Item, Integer> equippedItemsToDisplay, HashMap<Item, Integer> nonEquippedItemsToDisplay) {
-		populateList(equippedItemsToDisplay, true);
-		populateList(nonEquippedItemsToDisplay, false);
+	private void buildItems(HashMap<Item, Integer> equippedItems, HashMap<Item, Integer> nonEquippedItems) {
+		populateList(equippedItems, true);
+		populateList(nonEquippedItems, false);
+		
+		inventoryListingPanel = new ScrollableListingPanel(this) {
+			@Override
+			protected void onSetup(List<TreeMap<ListingMenuItem, Integer>> listings) {
+				listings.add(equippedItemsToDisplay);
+				listings.add(nonEquippedItemsToDisplay);
+			}
+			
+			@Override
+			protected int getExtraStringOffset() {
+				return 80;
+			}
+			
+			@Override
+			protected String getExtraString(Entry<ListingMenuItem, Integer> item) {
+				return Integer.toString(item.getValue());
+			}
+		};
 	}
 
 
@@ -322,12 +228,12 @@ public class InventoryWindow extends Window {
 
 			if (eq) {
 				this.equippedItemsToDisplay.put(
-					new InventoryWindowItem(item.getKey(), equippedButton, menuToAddEquipped),
+					new ListingMenuItem(item.getKey(), equippedButton, menuToAddEquipped),
 					item.getValue()
 				);
 			} else {
 				this.nonEquippedItemsToDisplay.put(
-					new InventoryWindowItem(item.getKey(), inventoryButton, menuToAddUnequipped),
+					new ListingMenuItem(item.getKey(), inventoryButton, menuToAddUnequipped),
 					item.getValue()
 				);
 			}
@@ -432,30 +338,5 @@ public class InventoryWindow extends Window {
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();
 		buildItems(host.getEquipped(), host.getInventory());
-	}
-
-
-	/**
-	 * An item to be displayed within this {@link InventoryWindow}
-	 *
-	 * @author Matt
-	 */
-	public static class InventoryWindowItem extends ContextMenuItem implements Comparable<InventoryWindowItem> {
-
-		public Item item;
-
-		public InventoryWindowItem(Item item, Button button, ContextMenu menu) {
-			super(button, menu);
-			this.item = item;
-		}
-
-		@Override
-		public int compareTo(InventoryWindowItem o) {
-			if (item.value == o.item.value) {
-				return item.getClass().getSimpleName().compareTo(o.item.getClass().getSimpleName());
-			} else {
-				return item.value > o.item.value ? 1 : -1;
-			}
-		}
 	}
 }

@@ -19,7 +19,6 @@ import bloodandmithril.util.Task;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
  * A window, able to be dragged, minimized, stays open until closed (unless game decides it should close).
@@ -29,13 +28,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public abstract class Window extends Component {
 
 	/** Colors of this window */
-	protected Color borderColor, backGroundColor;
+	public Color borderColor, backGroundColor;
 
 	/** Position of this window */
 	public int x, y, length, height, oldLength, oldHeight, mx, my, oldX, oldY, minLength, minHeight;
-
-	/** {@link ShapeRenderer} to use */
-	protected ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	/** Whether or not this {@link Window} is currently being resized */
 	private boolean resizing = false;
