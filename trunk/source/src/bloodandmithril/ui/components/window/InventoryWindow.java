@@ -116,10 +116,7 @@ public class InventoryWindow extends Window {
 
 
 		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
-		if (Fortress.getMouseScreenX() > x + length - 13 &&
-			Fortress.getMouseScreenX() < x + length + 4 &&
-			Fortress.getMouseScreenY() > scrollBarButtonPos - 5 &&
-			Fortress.getMouseScreenY() < scrollBarButtonPos + 12) {
+		if (isMouseOverScrollButton(scrollBarButtonPos)) {
 
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * (equippedItemsToDisplay.size() + nonEquippedItemsToDisplay.size()));
 			scrollBarButtonLocationOld = scrollBarButtonLocation;
@@ -165,10 +162,7 @@ public class InventoryWindow extends Window {
 		}
 
 		if (active) {
-			if (Fortress.getMouseScreenX() > x + length - 13 &&
-					Fortress.getMouseScreenX() < x + length + 4 &&
-					Fortress.getMouseScreenY() > scrollBarButtonPos - 5 &&
-					Fortress.getMouseScreenY() < scrollBarButtonPos + 12 ||
+			if (isMouseOverScrollButton(scrollBarButtonPos) ||
 					scrollBarButtonLocationOld != null) {
 				shapeRenderer.setColor(0f, 1f, 0f, alpha);
 			} else {
@@ -178,8 +172,16 @@ public class InventoryWindow extends Window {
 			shapeRenderer.setColor(0.5f, 0.5f, 0.5f, alpha);
 		}
 
-		shapeRenderer.filledRect(x + length - 8, scrollBarButtonPos, 7, 7);
+		shapeRenderer.filledRect(x + length - 8, scrollBarButtonPos - 7.5f, 7, 15);
 		shapeRenderer.end();
+	}
+
+
+	private boolean isMouseOverScrollButton(float scrollBarButtonPos) {
+		return	Fortress.getMouseScreenX() > x + length - 13 &&
+				Fortress.getMouseScreenX() < x + length + 4 &&
+				Fortress.getMouseScreenY() > scrollBarButtonPos - 10 &&
+				Fortress.getMouseScreenY() < scrollBarButtonPos + 10;
 	}
 
 
