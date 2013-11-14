@@ -15,20 +15,16 @@ import bloodandmithril.util.Util;
 public class SawToothGenerator implements Serializable {
 	private static final long serialVersionUID = 8666913840394916203L;
 	
-	/** TODO */
 	private final int period;
 	private int counter;
 
-	/** TODO */
 	private int minSurface;
 	private int maxSurface;
 	private int gradientDampening;
 	private final int panicGradientDampening;
 
-	/** TODO */
 	private int slopeGradient = 0;
 	private int slopeGradientAccelerationDirection = 1;
-
 
 	/**
 	 * @param minSurface - the maximum height the surface can be, takes world tile coord.

@@ -6,7 +6,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
@@ -39,8 +38,8 @@ import com.google.common.collect.Maps;
 public class InventoryWindow extends Window {
 
 	/** Inventory listing maps */
-	TreeMap<ListingMenuItem, Integer> equippedItemsToDisplay = Maps.newTreeMap();
-	TreeMap<ListingMenuItem, Integer> nonEquippedItemsToDisplay = Maps.newTreeMap();
+	HashMap<ListingMenuItem, Integer> equippedItemsToDisplay = Maps.newHashMap();
+	HashMap<ListingMenuItem, Integer> nonEquippedItemsToDisplay = Maps.newHashMap();
 
 	/** The {@link Container} that is the host of this {@link InventoryWindow} */
 	public Equipper host;
@@ -159,7 +158,7 @@ public class InventoryWindow extends Window {
 		
 		inventoryListingPanel = new ScrollableListingPanel(this) {
 			@Override
-			protected void onSetup(List<TreeMap<ListingMenuItem, Integer>> listings) {
+			protected void onSetup(List<HashMap<ListingMenuItem, Integer>> listings) {
 				listings.add(equippedItemsToDisplay);
 				listings.add(nonEquippedItemsToDisplay);
 			}
