@@ -382,15 +382,16 @@ public class Elf extends Individual {
 				public void execute() {
 					for (Individual indi : GameWorld.selectedIndividuals) {
 						if (indi != thisElf) {
+							// TODO close any open inventory windows
 							UserInterface.addLayeredComponent(
 								new TradeWindow(
-									Fortress.WIDTH / 2 - 150,
+									Fortress.WIDTH / 2 - 350,
 									Fortress.HEIGHT / 2 + 100,
-									300,
+									700,
 									200,
 									"Trade between " + indi.id.firstName + " and " + thisElf.id.firstName,
 									true,
-									300,
+									700,
 									200,
 									true,
 									GameWorld.selectedIndividuals.iterator().next(),
@@ -413,7 +414,10 @@ public class Elf extends Individual {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
 		}
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
+		
+		// TODO do not do this if currently trading
 		contextMenuToReturn.addMenuItem(inventoryMenuItem);
+		
 		if (!GameWorld.selectedIndividuals.isEmpty() &&
 			!(GameWorld.selectedIndividuals.size() == 1 && GameWorld.selectedIndividuals.contains(thisElf))) {
 			contextMenuToReturn.addMenuItem(tradeMenuItem);

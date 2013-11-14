@@ -33,6 +33,6 @@ public abstract class RigidBody extends Prop {
 	 * Kinetics of this {@link RigidBody}
 	 */
 	public void update(float delta) {
-		//TODO
+		//TODO update rigid body
 	}
 }

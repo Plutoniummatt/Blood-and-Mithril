@@ -9,7 +9,7 @@ import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
- * The structure of a cave. TODO - Caves are substructures
+ * A region of superstructre where cavity patterns are used
  *
  * @author Sam, Matt
  */

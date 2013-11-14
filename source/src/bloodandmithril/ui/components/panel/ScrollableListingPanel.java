@@ -2,11 +2,13 @@ package bloodandmithril.ui.components.panel;
 
 import static bloodandmithril.util.Fonts.defaultFont;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -33,7 +35,7 @@ import bloodandmithril.ui.components.window.Window;
 public abstract class ScrollableListingPanel extends Panel {
 
 	/** Datastructure that backs this listing panel */
-	private final List<TreeMap<ListingMenuItem, Integer>> listings = Lists.newArrayList();
+	private final List<HashMap<ListingMenuItem, Integer>> listings = Lists.newArrayList();
 	
 	/** The current starting index for which the inventory listing is rendered */
 	private int startingIndex = 0;
@@ -69,7 +71,7 @@ public abstract class ScrollableListingPanel extends Panel {
 	/**
 	 * Populates the datastructure {@link #listings}
 	 */
-	protected abstract void onSetup(List<TreeMap<ListingMenuItem, Integer>> listings);
+	protected abstract void onSetup(List<HashMap<ListingMenuItem, Integer>> listings);
 	
 	
 	@Override
@@ -79,8 +81,8 @@ public abstract class ScrollableListingPanel extends Panel {
 			size += listing.size();
 		}
 		
-		for (TreeMap<ListingMenuItem, Integer> listing : listings) {
-			for(Entry<ListingMenuItem, Integer> item : listing.entrySet()) {
+		for (HashMap<ListingMenuItem, Integer> listing : listings) {
+			for(Entry<ListingMenuItem, Integer> item : Lists.newArrayList(listing.entrySet())) {
 				if (item.getKey().button.click() && item.getKey().menu == null) {
 					copy.clear();
 				}
@@ -142,7 +144,17 @@ public abstract class ScrollableListingPanel extends Panel {
 		// Render the equipped items first
 		int i = 0;
 		for (Map<ListingMenuItem, Integer> listing : listings) {
-			for(Entry<ListingMenuItem, Integer> item : listing.entrySet()) {
+			
+			List<Entry<ListingMenuItem, Integer>> entrySet = Lists.newArrayList(listing.entrySet());
+			
+			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem, Integer>>() {
+				@Override
+				public int compare(Entry<ListingMenuItem, Integer> o1, Entry<ListingMenuItem, Integer> o2) {
+					return o1.getKey().item.getClass().getName().compareTo(o2.getKey().item.getClass().getName());
+				}
+			});
+			
+			for(Entry<ListingMenuItem, Integer> item : entrySet) {
 				if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
 					i++;
 					continue;
@@ -156,6 +168,7 @@ public abstract class ScrollableListingPanel extends Panel {
 				i++;
 			}
 		}
+		Fortress.spriteBatch.flush();
 	}
 
 	
@@ -211,6 +224,9 @@ public abstract class ScrollableListingPanel extends Panel {
 
 		public Item item;
 
+		/**
+		 * Constructor which takes an {@link Item}
+		 */
 		public ListingMenuItem(Item item, Button button, ContextMenu menu) {
 			super(button, menu);
 			this.item = item;
