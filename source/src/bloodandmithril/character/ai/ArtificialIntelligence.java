@@ -2,7 +2,6 @@ package bloodandmithril.character.ai;
 
 import java.io.Serializable;
 
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -10,9 +9,9 @@ import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.util.Logger;
+import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
-import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.math.Vector2;
@@ -66,7 +65,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 			if (currentTask != null) {
 				AITask taskToExecute = getCurrentTask();
 				taskToExecute.execute();
-				Logger.aiDebug(hostId.getSimpleName() + " is: " + taskToExecute.getDescription(), LogLevel.TRACE);
+				Logger.aiDebug(hostId.getSimpleName() + " is: " + taskToExecute.getDescription(), LogLevel.INFO);
 
 				if (currentTask.isComplete()) {
 					currentTask.uponCompletion();

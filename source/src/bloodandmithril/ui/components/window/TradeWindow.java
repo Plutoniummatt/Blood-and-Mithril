@@ -32,19 +32,22 @@ import com.google.common.collect.Maps;
  */
 public class TradeWindow extends Window {
 
+	/** Panels of involved traders */
 	private ScrollableListingPanel buyerPanel;
 	private ScrollableListingPanel sellerPanel;
 
+	/** Listings of items to display */
 	private final HashMap<ListingMenuItem, Integer> proposerItemsToTrade = Maps.newHashMap();
 	private final HashMap<ListingMenuItem, Integer> proposerItemsNotToTrade = Maps.newHashMap();
 
 	private final HashMap<ListingMenuItem, Integer> proposeeItemsToTrade = Maps.newHashMap();
 	private final HashMap<ListingMenuItem, Integer> proposeeItemsNotToTrade = Maps.newHashMap();
 
+	/** Traders */
 	private final Container proposer, proposee;
 
+	/** Used to process trade rejections */
 	private boolean rejected = false;
-
 	private float tradeRejectionTimer = 1f;
 
 	private final Button tradeButton = new Button(
