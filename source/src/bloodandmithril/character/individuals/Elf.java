@@ -6,16 +6,19 @@ import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.TradeWindow;
+import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
@@ -27,6 +30,7 @@ import bloodandmithril.world.GameWorld;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 /**
  * Exceptional at:
@@ -382,7 +386,16 @@ public class Elf extends Individual {
 				public void execute() {
 					for (Individual indi : GameWorld.selectedIndividuals) {
 						if (indi != thisElf) {
-							// TODO close any open inventory windows
+
+							for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
+								if (component instanceof Window) {
+									if (((Window)component).title.equals(id.getSimpleName() + " - Inventory") ||
+									((Window)component).title.equals(indi.id.getSimpleName() + " - Inventory")) {
+										UserInterface.removeLayeredComponent(component);
+									}
+								}
+							}
+
 							UserInterface.addLayeredComponent(
 								new TradeWindow(
 									Fortress.WIDTH / 2 - 350,
@@ -398,6 +411,9 @@ public class Elf extends Individual {
 									thisElf
 								)
 							);
+
+							ai.setCurrentTask(new Trading(id));
+							indi.ai.setCurrentTask(new Trading(indi.id));
 						}
 					}
 				}
@@ -414,12 +430,12 @@ public class Elf extends Individual {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
 		}
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
-		
-		// TODO do not do this if currently trading
-		contextMenuToReturn.addMenuItem(inventoryMenuItem);
-		
-		if (!GameWorld.selectedIndividuals.isEmpty() &&
-			!(GameWorld.selectedIndividuals.size() == 1 && GameWorld.selectedIndividuals.contains(thisElf))) {
+
+		if (!(ai.getCurrentTask() instanceof Trading)) {
+			contextMenuToReturn.addMenuItem(inventoryMenuItem);
+		}
+
+		if (!GameWorld.selectedIndividuals.isEmpty() && GameWorld.selectedIndividuals.size() == 1 && !GameWorld.selectedIndividuals.contains(thisElf)) {
 			contextMenuToReturn.addMenuItem(tradeMenuItem);
 		}
 

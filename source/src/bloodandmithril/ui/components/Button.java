@@ -113,10 +113,15 @@ public class Button {
 	}
 
 
+	public void setIdleColor(Color color) {
+		this.idleColor = color;
+	}
+
+
 	/**
 	 * Renders this button
 	 */
-  public void render(boolean active, float alpha) {
+	public void render(boolean active, float alpha) {
 
 		Vector2 vec = new Vector2();
 		morph(vec);

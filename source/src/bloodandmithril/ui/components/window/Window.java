@@ -239,6 +239,9 @@ public abstract class Window extends Component {
 	/** Implementation-specific left click method */
 	protected abstract void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy);
 
+	/** Called when this window is closed */
+	protected abstract void uponClose();
+
 	/** Renders this {@link Window} */
 	@Override
 	protected void internalComponentRender() {
@@ -308,6 +311,7 @@ public abstract class Window extends Component {
 			if (alpha == 0f) {
 				windowsCopy.remove(this);
 				windowsCopy.remove(this);
+				uponClose();
 			}
 		}
 	}

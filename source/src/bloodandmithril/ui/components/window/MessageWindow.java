@@ -64,4 +64,9 @@ public class MessageWindow extends Window {
 	public void leftClickReleased() {
 		//Do nothing
 	}
+
+
+	@Override
+	protected void uponClose() {
+	}
 }

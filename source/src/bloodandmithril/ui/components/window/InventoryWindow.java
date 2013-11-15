@@ -46,7 +46,7 @@ public class InventoryWindow extends Window {
 
 	/** The inventory listing panel, see {@link ScrollableListingPanel} */
 	private Panel inventoryListingPanel;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -102,16 +102,16 @@ public class InventoryWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		
+
 		// Set the position and dimenstions of the panel
 		inventoryListingPanel.height = height;
 		inventoryListingPanel.width = length;
 		inventoryListingPanel.x = x;
 		inventoryListingPanel.y = y;
-		
+
 		// Render the separator
 		renderSeparator();
-		
+
 		// Render the listing panel
 		inventoryListingPanel.render();
 
@@ -155,19 +155,19 @@ public class InventoryWindow extends Window {
 	private void buildItems(HashMap<Item, Integer> equippedItems, HashMap<Item, Integer> nonEquippedItems) {
 		populateList(equippedItems, true);
 		populateList(nonEquippedItems, false);
-		
+
 		inventoryListingPanel = new ScrollableListingPanel(this) {
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem, Integer>> listings) {
 				listings.add(equippedItemsToDisplay);
 				listings.add(nonEquippedItemsToDisplay);
 			}
-			
+
 			@Override
 			protected int getExtraStringOffset() {
 				return 80;
 			}
-			
+
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem, Integer> item) {
 				return Integer.toString(item.getValue());
@@ -337,5 +337,10 @@ public class InventoryWindow extends Window {
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();
 		buildItems(host.getEquipped(), host.getInventory());
+	}
+
+
+	@Override
+	protected void uponClose() {
 	}
 }

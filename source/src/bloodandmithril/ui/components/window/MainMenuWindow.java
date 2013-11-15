@@ -147,4 +147,9 @@ public class MainMenuWindow extends Window {
 			UIRef.BL
 		);
 	}
+
+
+	@Override
+	protected void uponClose() {
+	}
 }

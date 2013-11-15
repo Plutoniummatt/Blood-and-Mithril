@@ -7,12 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeProposalEvaluator;
@@ -24,25 +20,34 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Task;
 
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 /**
  * Trade window, used when transferring items between {@link Container}s
  *
  * @author Matt
  */
 public class TradeWindow extends Window {
-	
+
 	private ScrollableListingPanel buyerPanel;
 	private ScrollableListingPanel sellerPanel;
-	
-	private HashMap<ListingMenuItem, Integer> proposerItemsToTrade = Maps.newHashMap();
-	private HashMap<ListingMenuItem, Integer> proposerItemsNotToTrade = Maps.newHashMap();
-	
-	private HashMap<ListingMenuItem, Integer> proposeeItemsToTrade = Maps.newHashMap();
-	private HashMap<ListingMenuItem, Integer> proposeeItemsNotToTrade = Maps.newHashMap();
-	
-	private Container proposer, proposee;
-	
-	private Button tradeButton = new Button(
+
+	private final HashMap<ListingMenuItem, Integer> proposerItemsToTrade = Maps.newHashMap();
+	private final HashMap<ListingMenuItem, Integer> proposerItemsNotToTrade = Maps.newHashMap();
+
+	private final HashMap<ListingMenuItem, Integer> proposeeItemsToTrade = Maps.newHashMap();
+	private final HashMap<ListingMenuItem, Integer> proposeeItemsNotToTrade = Maps.newHashMap();
+
+	private final Container proposer, proposee;
+
+	private boolean rejected = false;
+
+	private float tradeRejectionTimer = 1f;
+
+	private final Button tradeButton = new Button(
 		"Propose Trade",
 		defaultFont,
 		0,
@@ -60,33 +65,33 @@ public class TradeWindow extends Window {
 		Color.WHITE,
 		UIRef.BL
 	);
-	
+
 	/**
 	 * Constructor
 	 */
 	public TradeWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, Container proposer, Container proposee) {
 		super(x, y, length, height, title, active, minLength, minHeight, minimizable);
-		
+
 		this.proposer = proposer;
 		this.proposee = proposee;
-		
+
 		populate(proposerItemsToTrade, proposerItemsNotToTrade, proposer.getInventory());
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
-		
+
 		createPanels();
 	}
-	
-	
+
+
 	/**
 	 * Called when the "Propose Trade" button is clicked.
 	 */
 	private void proposeTrade() {
-		
+
 		boolean proposalAccepted = false;
-		
+
 		if (proposer instanceof Individual && proposee instanceof Individual) {
 			proposalAccepted = TradeProposalEvaluator.evaluate(
-				(Individual)proposer, 
+				(Individual)proposer,
 				Lists.transform(Lists.newArrayList(proposerItemsToTrade.entrySet()), new Function<Entry<ListingMenuItem, Integer>, Item>() {
 					@Override
 					public Item apply(Entry<ListingMenuItem, Integer> input) {
@@ -102,7 +107,7 @@ public class TradeWindow extends Window {
 				})
 			);
 		}
-		
+
 		if (proposalAccepted) {
 			finalizeTrade();
 			refresh();
@@ -120,7 +125,7 @@ public class TradeWindow extends Window {
 		proposeeItemsToTrade.clear();
 		proposerItemsNotToTrade.clear();
 		proposeeItemsNotToTrade.clear();
-		
+
 		populate(proposerItemsToTrade, proposerItemsNotToTrade, proposer.getInventory());
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
 	}
@@ -130,7 +135,7 @@ public class TradeWindow extends Window {
 	 * The proposee has rejected the proposers proposal.
 	 */
 	private void rejectTradeProposal() {
-		// TODO - trade proposal rejceted
+		rejected = true;
 	}
 
 
@@ -151,37 +156,37 @@ public class TradeWindow extends Window {
 
 	private void createPanels() {
 		buyerPanel = new ScrollableListingPanel(this) {
-			
+
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem, Integer>> listings) {
 				listings.add(proposerItemsToTrade);
 				listings.add(proposerItemsNotToTrade);
 			}
-			
+
 			@Override
 			protected int getExtraStringOffset() {
 				return 80;
 			}
-			
+
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
 		};
-		
+
 		sellerPanel = new ScrollableListingPanel(this) {
-			
+
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem, Integer>> listings) {
 				listings.add(proposeeItemsToTrade);
 				listings.add(proposeeItemsNotToTrade);
 			}
-			
+
 			@Override
 			protected int getExtraStringOffset() {
 				return 80;
 			}
-			
+
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem, Integer> item) {
 				return Integer.toString(item.getValue());
@@ -195,9 +200,9 @@ public class TradeWindow extends Window {
 	 */
 	private void populate(final HashMap<ListingMenuItem, Integer> trading, final HashMap<ListingMenuItem, Integer> notTrading, HashMap<Item, Integer> toPopulateFrom) {
 		for (final Entry<Item, Integer> entry : toPopulateFrom.entrySet()) {
-			
+
 			final ListingMenuItem listingMenuItem = new ListingMenuItem(
-				entry.getKey(), 
+				entry.getKey(),
 				new Button(
 					entry.getKey().getSingular(true),
 					defaultFont,
@@ -215,21 +220,21 @@ public class TradeWindow extends Window {
 					Color.GREEN,
 					Color.WHITE,
 					UIRef.BL
-				), 
+				),
 				null
 			);
-			
+
 			notTrading.put(
-				listingMenuItem, 
+				listingMenuItem,
 				entry.getValue()
 			);
 		}
 	}
-	
-	
+
+
 	private void changeList(final Item key, final HashMap<ListingMenuItem, Integer> transferTo, final HashMap<ListingMenuItem, Integer> transferFrom, final boolean toTrade) {
 		final ListingMenuItem listingMenuItem = new ListingMenuItem(
-			key, 
+			key,
 			new Button(
 				key.getSingular(true),
 				defaultFont,
@@ -244,13 +249,13 @@ public class TradeWindow extends Window {
 					}
 				},
 				toTrade ? new Color(0.8f, 0.8f, 0.8f, 1f) : new Color(0.8f, 0.6f, 0.0f, 1f),
-				toTrade ? Color.GREEN : Color.ORANGE, 
+				toTrade ? Color.GREEN : Color.ORANGE,
 				Color.WHITE,
 				UIRef.BL
-			), 
+			),
 			null
 		);
-			
+
 		for (Entry<ListingMenuItem, Integer> entry : Lists.newArrayList(transferFrom.entrySet())) {
 			if (entry.getKey().item.sameAs(key)) {
 				if (transferFrom.get(entry.getKey()) == 1) {
@@ -258,7 +263,7 @@ public class TradeWindow extends Window {
 				} else {
 					transferFrom.put(entry.getKey(), transferFrom.get(entry.getKey()) - 1);
 				}
-				
+
 				boolean found = false;
 				for (Entry<ListingMenuItem, Integer> innerEntry : Lists.newArrayList(transferTo.entrySet())) {
 					if (innerEntry.getKey().item.sameAs(key)) {
@@ -271,12 +276,12 @@ public class TradeWindow extends Window {
 				if (!found) {
 					transferTo.put(listingMenuItem, 1);
 				}
-				
+
 				break;
 			}
 		}
 	}
-	
+
 
 	@Override
 	protected void internalWindowRender() {
@@ -284,17 +289,30 @@ public class TradeWindow extends Window {
 		buyerPanel.y = y;
 		buyerPanel.height = height - 50;
 		buyerPanel.width = length / 2 - 10;
-		
+
 		sellerPanel.x = x + length / 2 + 10;
 		sellerPanel.y = y;
 		sellerPanel.height = height - 50;
 		sellerPanel.width = length / 2 - 10;
-		
+
 		buyerPanel.render();
 		sellerPanel.render();
-		
-		boolean isTradeButtonClickable = active && (!proposeeItemsToTrade.isEmpty() || !proposerItemsToTrade.isEmpty());
-		
+
+		if (rejected) {
+			if (tradeRejectionTimer > 0f) {
+				tradeRejectionTimer = tradeRejectionTimer - 0.01f;
+				tradeButton.text = "Trade Rejected";
+				tradeButton.setIdleColor(Color.RED);
+			} else {
+				tradeButton.text = "Propose Trade";
+				tradeRejectionTimer = 1f;
+				rejected = false;
+				tradeButton.setIdleColor(Color.GREEN);
+			}
+		}
+
+		boolean isTradeButtonClickable = active && !rejected && (!proposeeItemsToTrade.isEmpty() || !proposerItemsToTrade.isEmpty());
+
 		tradeButton.render(
 			x + length/2,
 			y - height + 40,
@@ -316,5 +334,16 @@ public class TradeWindow extends Window {
 	public void leftClickReleased() {
 		buyerPanel.leftClickReleased();
 		sellerPanel.leftClickReleased();
+	}
+
+
+	@Override
+	protected void uponClose() {
+		if (proposer instanceof Individual) {
+			((Individual) proposer).ai.setCurrentTask(new Idle());
+		}
+		if (proposee instanceof Individual) {
+			((Individual) proposee).ai.setCurrentTask(new Idle());
+		}
 	}
 }

@@ -10,7 +10,7 @@ import bloodandmithril.character.Individual;
  * @author Matt
  */
 public class TradeProposalEvaluator {
-	
+
 	/**
 	 * Evaluates a trade proposal
 	 */
