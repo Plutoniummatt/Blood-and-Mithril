@@ -412,7 +412,9 @@ public class Elf extends Individual {
 								)
 							);
 
+							clearCommands();
 							ai.setCurrentTask(new Trading(id));
+							indi.clearCommands();
 							indi.ai.setCurrentTask(new Trading(indi.id));
 						}
 					}
