@@ -6,7 +6,6 @@ import java.util.HashMap;
 import bloodandmithril.util.Util;
 
 
-
 /**
  * Generates sawtooth like 1D function
  *
