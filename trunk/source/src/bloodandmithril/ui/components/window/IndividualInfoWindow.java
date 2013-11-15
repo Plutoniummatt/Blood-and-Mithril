@@ -110,4 +110,9 @@ public class IndividualInfoWindow extends Window {
 	@Override
 	public void leftClickReleased() {
 	}
+
+
+	@Override
+	protected void uponClose() {
+	}
 }
