@@ -83,6 +83,17 @@ public class Util {
 	}
 
 
+	/**
+	 * Reformats a string to be able to fit inside a text input box.
+	 */
+	public static String fitToTextInputBox(String toPara, int length, int currentBeginningIndex) {
+		return toPara.substring(currentBeginningIndex, Math.min(currentBeginningIndex + length / 9 - 3, toPara.length()));
+	}
+
+
+	/**
+	 * Reformats a string to be able to fit inside a window.
+	 */
 	public static String fitToWindow(String toPara, int length, int maxLines) {
 		String answer = "";
 		String toChop = toPara;

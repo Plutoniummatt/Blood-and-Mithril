@@ -245,4 +245,10 @@ public class BottomBar extends Component {
 	@Override
 	public void leftClickReleased() {
 	}
+
+
+	@Override
+	public boolean keyPressed(int keyCode) {
+		return false;
+	}
 }

@@ -20,8 +20,10 @@ import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
+import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
@@ -278,6 +280,8 @@ public class Fortress implements ApplicationListener, InputProcessor {
 			return false;
 		}
 
+		UserInterface.keyPressed(keycode);
+
 		if (keycode == Input.Keys.R) {
 			IndividualState state = new IndividualState(10f, 10f);
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
@@ -327,17 +331,17 @@ public class Fortress implements ApplicationListener, InputProcessor {
 		if (keycode == Input.Keys.I) {
 			UserInterface.renderAvailableInterfaces = !UserInterface.renderAvailableInterfaces;
 		}
-		
+
 		if (keycode == Input.Keys.B) {
 			UserInterface.renderComponentBoundaries = !UserInterface.renderComponentBoundaries;
 		}
 
-		if (keycode == Input.Keys.Y) {
-			SoundService.changeMusic(5f, SoundService.music3);
-		}
-
-		if (keycode == Input.Keys.U) {
-			SoundService.changeMusic(5f, SoundService.music1);
+		if (keycode == Input.Keys.F1) {
+			UserInterface.addLayeredComponent(new TextInputWindow(WIDTH / 2, HEIGHT/2, 250, 100, "Test", 250, 100, new Task() {
+				@Override
+				public void execute() {
+				}
+			}));
 		}
 
 		return false;

@@ -504,6 +504,25 @@ public class UserInterface {
 	}
 
 
+	public static boolean keyPressed(int keyCode) {
+		if (Fortress.paused) {
+			return false;
+		}
+
+		if (GameSaver.isSaving()) {
+			return false;
+		}
+
+		for (Component component : layeredComponents) {
+			if (component.active) {
+				return component.keyPressed(keyCode);
+			}
+		}
+
+		return false;
+	}
+
+
 	/**
 	 * Removes a layered component
 	 */

@@ -84,7 +84,7 @@ public class IndividualInfoWindow extends Window {
 			return;
 		}
 
-		String messageToDisplay = Util.fitToWindow(individual.getDescription(), length, (height - 250) / 25);
+		String messageToDisplay = Util.fitToWindow(individual.getDescription(), width, (height - 250) / 25);
 
 		defaultFont.setColor(active ? activeWhite : inactiveWhite);
 		defaultFont.drawMultiLine(Fortress.spriteBatch, messageToDisplay, x + 6, y - 195);
@@ -114,5 +114,11 @@ public class IndividualInfoWindow extends Window {
 
 	@Override
 	protected void uponClose() {
+	}
+
+
+	@Override
+	public boolean keyPressed(int keyCode) {
+		return false;
 	}
 }
