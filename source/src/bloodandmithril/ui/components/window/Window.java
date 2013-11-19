@@ -31,7 +31,7 @@ public abstract class Window extends Component {
 	public Color borderColor, backGroundColor;
 
 	/** Position of this window */
-	public int x, y, length, height, oldLength, oldHeight, mx, my, oldX, oldY, minLength, minHeight;
+	public int x, y, width, height, oldLength, oldHeight, mx, my, oldX, oldY, minLength, minHeight;
 
 	/** Whether or not this {@link Window} is currently being resized */
 	private boolean resizing = false;
@@ -57,7 +57,7 @@ public abstract class Window extends Component {
 	public Window(int x, int y, int length, int height, Color borderColor, Color backGroundColor, String title, boolean active, int minLength, int minHeight, boolean minimizable) {
 		this.x = x;
 		this.y = y;
-		this.length = length;
+		this.width = length;
 		this.height = height;
 		this.borderColor = borderColor;
 		this.backGroundColor = backGroundColor;
@@ -81,7 +81,7 @@ public abstract class Window extends Component {
 
 	/** Truncates the string based on length of window */
 	protected String truncate(String string) {
-		String answer = string.substring(0, length / 10 - 6 < 0 ? 0 : length / 10 - 6 > string.length() ? string.length() : length / 10 - 6);
+		String answer = string.substring(0, width / 10 - 6 < 0 ? 0 : width / 10 - 6 > string.length() ? string.length() : width / 10 - 6);
 		if (answer.length() < string.length()) {
 			answer = answer + "...";
 		}
@@ -159,7 +159,7 @@ public abstract class Window extends Component {
 	private boolean isWithin() {
 		int posX = Fortress.getMouseScreenX();
 		int posY = Fortress.getMouseScreenY();
-		return posX > x && posX < x + length && posY < y && posY > y - height;
+		return posX > x && posX < x + width && posY < y && posY > y - height;
 	}
 
 
@@ -170,7 +170,7 @@ public abstract class Window extends Component {
 		mx = Fortress.getMouseScreenX();
 		my = Fortress.getMouseScreenY();
 
-		if (mx > x && mx < x + length && my < y && my > y - 25) {
+		if (mx > x && mx < x + width && my < y && my > y - 25) {
 			positioning = true;
 		}
 	}
@@ -180,7 +180,7 @@ public abstract class Window extends Component {
 	private void loadButtons() {
 		closeButton = new Button(
 			UserInterface.uiTexture,
-			x + length - 9,
+			x + width - 9,
 			y - close.getRegionHeight() - top.getRegionHeight() + 5,
 			29,
 			0,
@@ -196,7 +196,7 @@ public abstract class Window extends Component {
 
 		minimizeButton = new Button(
 			UserInterface.uiTexture,
-			x + length - 26,
+			x + width - 26,
 			y - close.getRegionHeight() - top.getRegionHeight() + 5,
 			15,
 			0,
@@ -212,7 +212,7 @@ public abstract class Window extends Component {
 
 		resizeButton = new Button(
 			UserInterface.uiTexture,
-			x + length - 26,
+			x + width - 26,
 			y - height,
 			41,
 			0,
@@ -223,7 +223,7 @@ public abstract class Window extends Component {
 				public void execute() {
 					mx = Fortress.getMouseScreenX();
 					my = Fortress.getMouseScreenY();
-					oldLength = length;
+					oldLength = width;
 					oldHeight = height;
 					resizing = true;
 				}
@@ -249,8 +249,8 @@ public abstract class Window extends Component {
 		reposition();
 
 		Fortress.spriteBatch.begin();
-		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), length, height, active, backGroundColor);
-		renderBox(x, y, length, height, active, borderColor);
+		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), width, height, active, backGroundColor);
+		renderBox(x, y, width, height, active, borderColor);
 		renderSeparator();
 		renderWindowButtons();
 		renderTitle();
@@ -284,7 +284,7 @@ public abstract class Window extends Component {
 			if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
 				int calcualtedNewLength = oldLength + Fortress.getMouseScreenX() - mx;
 				int calcualtedNewHeight = oldHeight - Fortress.getMouseScreenY() + my;
-				length = calcualtedNewLength < minLength ? minLength : calcualtedNewLength;
+				width = calcualtedNewLength < minLength ? minLength : calcualtedNewLength;
 				height = calcualtedNewHeight < minHeight ? minHeight : calcualtedNewHeight;
 			} else {
 				resizing = false;
@@ -298,8 +298,8 @@ public abstract class Window extends Component {
 	 */
 	private void renderSeparator() {
 		Fortress.spriteBatch.draw(separatorEnd, x + left.getRegionWidth() + 4, y - 20);
-		Fortress.spriteBatch.draw(separatorBody, x + left.getRegionWidth() + 5, y - 21, length - 10, separatorBody.getRegionHeight());
-		Fortress.spriteBatch.draw(separatorEnd, x + length - 3, y - 20);
+		Fortress.spriteBatch.draw(separatorBody, x + left.getRegionWidth() + 5, y - 21, width - 10, separatorBody.getRegionHeight());
+		Fortress.spriteBatch.draw(separatorEnd, x + width - 3, y - 20);
 	}
 
 
@@ -324,7 +324,7 @@ public abstract class Window extends Component {
 		Fortress.spriteBatch.setShader(Shaders.filter);
 
 		closeButton.render(
-			x + length - 7,
+			x + width - 7,
 			y - close.getRegionHeight() - top.getRegionHeight() + 5,
 			active,
 			alpha
@@ -332,7 +332,7 @@ public abstract class Window extends Component {
 
 		if (minimizable) {
 			minimizeButton.render(
-				x + length - 24,
+				x + width - 24,
 				y - close.getRegionHeight() - top.getRegionHeight() + 5,
 				active,
 				alpha
@@ -340,7 +340,7 @@ public abstract class Window extends Component {
 		}
 
 		resizeButton.render(
-			x + length - 7,
+			x + width - 7,
 			y - height + 9,
 			active,
 			alpha

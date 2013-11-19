@@ -53,9 +53,11 @@ public abstract class Component {
 	public boolean closing;
 
 
-	/**
-	 * Called when left click
-	 */
+	/** Called when a key is pressed */
+	public abstract boolean keyPressed(int keyCode);
+
+
+	/** Called when left clicked */
 	public abstract boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy);
 
 
@@ -95,7 +97,7 @@ public abstract class Component {
 
 
 	/**
-	 * Renders the text box for this context menu
+	 * Renders the text box for this {@link Component}
 	 */
 	protected void renderBox(int x, int y, int length, int height, boolean active, Color borderColor) {
 		Shaders.filter.begin();

@@ -47,9 +47,9 @@ public class MainMenuWindow extends Window {
 	 */
 	@Override
 	protected void internalWindowRender() {
-		saveGame.render(length/2 + x, y - 26, active && !isSaving(), alpha);
-		options.render(length/2 + x, y - 46, active && !isSaving(), alpha);
-		saveAndExit.render(length/2 + x, y - 66, active && !isSaving(), alpha);
+		saveGame.render(width/2 + x, y - 26, active && !isSaving(), alpha);
+		options.render(width/2 + x, y - 46, active && !isSaving(), alpha);
+		saveAndExit.render(width/2 + x, y - 66, active && !isSaving(), alpha);
 	}
 
 
@@ -151,5 +151,11 @@ public class MainMenuWindow extends Window {
 
 	@Override
 	protected void uponClose() {
+	}
+
+
+	@Override
+	public boolean keyPressed(int keyCode) {
+		return false;
 	}
 }

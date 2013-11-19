@@ -175,6 +175,11 @@ public class TradeWindow extends Window {
 			protected String getExtraString(Entry<ListingMenuItem, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
+
+			@Override
+			public boolean keyPressed(int keyCode) {
+				return false;
+			}
 		};
 
 		sellerPanel = new ScrollableListingPanel(this) {
@@ -193,6 +198,11 @@ public class TradeWindow extends Window {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem, Integer> item) {
 				return Integer.toString(item.getValue());
+			}
+
+			@Override
+			public boolean keyPressed(int keyCode) {
+				return false;
 			}
 		};
 	}
@@ -291,12 +301,12 @@ public class TradeWindow extends Window {
 		buyerPanel.x = x;
 		buyerPanel.y = y;
 		buyerPanel.height = height - 50;
-		buyerPanel.width = length / 2 - 10;
+		buyerPanel.width = width / 2 - 10;
 
-		sellerPanel.x = x + length / 2 + 10;
+		sellerPanel.x = x + width / 2 + 10;
 		sellerPanel.y = y;
 		sellerPanel.height = height - 50;
-		sellerPanel.width = length / 2 - 10;
+		sellerPanel.width = width / 2 - 10;
 
 		buyerPanel.render();
 		sellerPanel.render();
@@ -317,7 +327,7 @@ public class TradeWindow extends Window {
 		boolean isTradeButtonClickable = active && !rejected && (!proposeeItemsToTrade.isEmpty() || !proposerItemsToTrade.isEmpty());
 
 		tradeButton.render(
-			x + length/2,
+			x + width/2,
 			y - height + 40,
 			isTradeButtonClickable,
 			alpha
@@ -348,5 +358,11 @@ public class TradeWindow extends Window {
 		if (proposee instanceof Individual) {
 			((Individual) proposee).ai.setCurrentTask(new Idle());
 		}
+	}
+
+
+	@Override
+	public boolean keyPressed(int keyCode) {
+		return false;
 	}
 }

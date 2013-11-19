@@ -105,7 +105,7 @@ public class InventoryWindow extends Window {
 
 		// Set the position and dimenstions of the panel
 		inventoryListingPanel.height = height;
-		inventoryListingPanel.width = length;
+		inventoryListingPanel.width = width;
 		inventoryListingPanel.x = x;
 		inventoryListingPanel.y = y;
 
@@ -144,7 +144,7 @@ public class InventoryWindow extends Window {
 		Fortress.spriteBatch.setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		Color color = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.4f * alpha);
-		shapeRenderer.filledRect(x + length - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
+		shapeRenderer.filledRect(x + width - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
 		shapeRenderer.end();
 	}
 
@@ -171,6 +171,11 @@ public class InventoryWindow extends Window {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem, Integer> item) {
 				return Integer.toString(item.getValue());
+			}
+
+			@Override
+			public boolean keyPressed(int keyCode) {
+				return false;
 			}
 		};
 	}
@@ -342,5 +347,11 @@ public class InventoryWindow extends Window {
 
 	@Override
 	protected void uponClose() {
+	}
+
+
+	@Override
+	public boolean keyPressed(int keyCode) {
+		return false;
 	}
 }

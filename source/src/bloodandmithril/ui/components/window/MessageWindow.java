@@ -48,7 +48,7 @@ public class MessageWindow extends Window {
 	protected void internalWindowRender() {
 		defaultFont.setColor(active ? new Color(messageColor.r, messageColor.g, messageColor.b, alpha) : new Color(messageColor.r, messageColor.g, messageColor.b, 0.6f * alpha));
 
-		String messageToDisplay = Util.fitToWindow(message, length, (height - 75) / 25);
+		String messageToDisplay = Util.fitToWindow(message, width, (height - 75) / 25);
 
 		defaultFont.drawMultiLine(Fortress.spriteBatch, messageToDisplay, x + 6, y - 25);
 	}
@@ -68,5 +68,11 @@ public class MessageWindow extends Window {
 
 	@Override
 	protected void uponClose() {
+	}
+
+
+	@Override
+	public boolean keyPressed(int keyCode) {
+		return false;
 	}
 }
