@@ -60,9 +60,10 @@ public class KeyMappings {
 		keyMap.put(Input.Keys.V, "v");
 		keyMap.put(Input.Keys.W, "w");
 		keyMap.put(Input.Keys.X, "x");
-		keyMap.put(Input.Keys.J, "y");
+		keyMap.put(Input.Keys.Y, "y");
 		keyMap.put(Input.Keys.Z, "z");
 		keyMap.put(Input.Keys.COMMA, ",");
 		keyMap.put(Input.Keys.PERIOD, ".");
+		keyMap.put(Input.Keys.SPACE, " ");
 	}
 }

@@ -17,9 +17,11 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
+import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.AnimationHelper;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Task;
@@ -355,6 +357,52 @@ public class Elf extends Individual {
 			null
 		);
 
+    final ContextMenu secondaryMenu = new ContextMenu(0, 0,
+      new ContextMenuItem(
+        "Change name",
+        new Task() {
+          @Override
+          public void execute() {
+            UserInterface.addLayeredComponent(
+              new TextInputWindow(
+                Fortress.WIDTH / 2 - 125,
+                Fortress.HEIGHT/2 + 50,
+                250,
+                100,
+                "Test",
+                250,
+                100,
+                new JITTask() {
+                  @Override
+                  public void execute(Object... args) {
+                    thisElf.id.nickName = args[0].toString();
+                  }
+                }
+              )
+            );
+          }
+        },
+        Color.WHITE,
+        getToolTipTextColor(),
+        Color.GRAY,
+        null
+      )
+    );
+    ContextMenuItem editMenuItem = new ContextMenuItem(
+      "Edit",
+      new Task() {
+        @Override
+        public void execute() {
+          secondaryMenu.x = Fortress.getMouseScreenX();
+          secondaryMenu.y = Fortress.getMouseScreenY();
+        }
+      },
+      Color.WHITE,
+      getToolTipTextColor(),
+      Color.GRAY,
+      secondaryMenu
+    );
+
 		ContextMenuItem inventoryMenuItem = new ContextMenuItem(
 			"Inventory",
 			new Task() {
@@ -430,7 +478,9 @@ public class Elf extends Individual {
 
 		if (controllable) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
+			contextMenuToReturn.addMenuItem(editMenuItem);
 		}
+
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
 
 		if (!(ai.getCurrentTask() instanceof Trading)) {
