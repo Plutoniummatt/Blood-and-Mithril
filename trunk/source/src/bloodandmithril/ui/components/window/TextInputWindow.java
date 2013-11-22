@@ -9,7 +9,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.TextInputFieldPanel;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.Task;
+import bloodandmithril.util.JITTask;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -28,7 +28,7 @@ public class TextInputWindow extends Window {
 	/**
 	 * Constructor
 	 */
-	public TextInputWindow(int x, int y, int length, int height, String title, int minLength, int minHeight, Task task) {
+	public TextInputWindow(int x, int y, int length, int height, String title, int minLength, int minHeight, JITTask task) {
 		super(x, y, length, height, title, true, minLength, minHeight, false);
 
 		this.confirmButton = new Button(
@@ -64,7 +64,9 @@ public class TextInputWindow extends Window {
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		confirmButton.click();
+		if (confirmButton.click(panel.getInputText())) {
+		  closing = true;
+		}
 	}
 
 

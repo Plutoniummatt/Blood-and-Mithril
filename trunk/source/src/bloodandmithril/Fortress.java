@@ -20,10 +20,8 @@ import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
-import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
@@ -53,7 +51,7 @@ import com.badlogic.gdx.math.Vector2;
  * <b><p> Building and Construction (Building construction and decontruction framework)                  </b></p>
  * <b><p> Combat (New animations, equipment framework + equipment animation framework)                   </b></p>
  * <b><p> Terraforming - Mining & Placing blocks                                                         </b></p>
- * <b><p> Text input (Renaming elves, setting save path etc)                                             </b></p>
+ * <b><p> Text input (Renaming elves, setting save path etc) DONE                                        </b></p>
  * <b><p> Multiple saved games (Huge refactors of current statics various everywhere)                    </b></p>
  * <b><p> At least 5 types of NPC                                                                        </b></p>
  * <b><p> Main menu screen                                                                               </b></p>
@@ -125,6 +123,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 		Component.load();
 		UserInterface.setup(WIDTH, HEIGHT);
 		Weather.setup();
+		KeyMappings.setup();
 	}
 
 
@@ -280,7 +279,9 @@ public class Fortress implements ApplicationListener, InputProcessor {
 			return false;
 		}
 
-		UserInterface.keyPressed(keycode);
+		if (UserInterface.keyPressed(keycode)) {
+		  return false;
+		}
 
 		if (keycode == Input.Keys.R) {
 			IndividualState state = new IndividualState(10f, 10f);
@@ -334,14 +335,6 @@ public class Fortress implements ApplicationListener, InputProcessor {
 
 		if (keycode == Input.Keys.B) {
 			UserInterface.renderComponentBoundaries = !UserInterface.renderComponentBoundaries;
-		}
-
-		if (keycode == Input.Keys.F1) {
-			UserInterface.addLayeredComponent(new TextInputWindow(WIDTH / 2, HEIGHT/2, 250, 100, "Test", 250, 100, new Task() {
-				@Override
-				public void execute() {
-				}
-			}));
 		}
 
 		return false;

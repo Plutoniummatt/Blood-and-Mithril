@@ -4,6 +4,7 @@ package bloodandmithril.ui.components;
 import bloodandmithril.Fortress;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface.UIRef;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
 
@@ -45,6 +46,7 @@ public class Button {
 
 	/** The task that this button will execute when pressed */
 	private final Task task;
+	private final JITTask jitTask;
 
 	/** The relative position this button is rendered from */
 	private UIRef ref;
@@ -62,6 +64,7 @@ public class Button {
 		this.height = height;
 		this.mouseClickSound = mouseClickedSound;
 		this.task = task;
+		this.jitTask = null;
 		this.idleColor = idle;
 		this.overColor = over;
 		this.downColor = down;
@@ -80,11 +83,32 @@ public class Button {
 		this.width = width;
 		this.height = height;
 		this.task = task;
+		this.jitTask = null;
 		this.idleColor = idle;
 		this.overColor = over;
 		this.downColor = down;
 		this.ref = ref;
 		this.mouseClickSound = null;
+	}
+
+
+	/**
+	 * Constructor for text button no sound
+	 */
+	public Button(String text, BitmapFont font, int offsetX, int offsetY, int width, int height, JITTask task, Color idle, Color over, Color down, UIRef ref) {
+	  this.text = text;
+	  this.font = font;
+	  this.offsetX = offsetX;
+	  this.offsetY = offsetY;
+	  this.width = width;
+	  this.height = height;
+	  this.task = null;
+	  this.jitTask = task;
+	  this.idleColor = idle;
+	  this.overColor = over;
+	  this.downColor = down;
+	  this.ref = ref;
+	  this.mouseClickSound = null;
 	}
 
 
@@ -98,6 +122,7 @@ public class Button {
 		this.height = height;
 		this.mouseClickSound = mouseClickedSound;
 		this.task = task;
+		this.jitTask = null;
 		this.ref = ref;
 		idle = new TextureRegion(buttonAtlas, atlasX, atlasY, width, height);
 		over = new TextureRegion(buttonAtlas, atlasX, atlasY + height, width, height);
@@ -256,10 +281,29 @@ public class Button {
 		  if (mouseClickSound != null) {
 		    mouseClickSound.play();
 		  }
-		  task.execute();
+		  if (task != null) {
+		    task.execute();
+		  }
 		  return true;
 		}
 		return false;
+	}
+
+
+	/**
+	 * Called when this button is clicked
+	 */
+	public boolean click(Object... args) {
+	  if (isMouseOver()) {
+	    if (mouseClickSound != null) {
+	      mouseClickSound.play();
+	    }
+	    if (jitTask != null) {
+	      jitTask.execute(args);
+	    }
+	    return true;
+	  }
+	  return false;
 	}
 
 
