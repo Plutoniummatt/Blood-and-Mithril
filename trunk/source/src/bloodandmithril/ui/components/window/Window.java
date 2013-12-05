@@ -310,7 +310,6 @@ public abstract class Window extends Component {
 		if (closing) {
 			if (alpha == 0f) {
 				windowsCopy.remove(this);
-				windowsCopy.remove(this);
 				uponClose();
 			}
 		}

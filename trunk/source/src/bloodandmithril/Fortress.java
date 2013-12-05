@@ -16,7 +16,7 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.prop.building.Furnace;
+import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -51,10 +51,13 @@ import com.badlogic.gdx.math.Vector2;
  * <b><p> Building and Construction (Building construction and decontruction framework)                  </b></p>
  * <b><p> Combat (New animations, equipment framework + equipment animation framework)                   </b></p>
  * <b><p> Terraforming - Mining & Placing blocks                                                         </b></p>
- * <b><p> Text input (Renaming elves, setting save path etc) DONE                                        </b></p>
  * <b><p> Multiple saved games (Huge refactors of current statics various everywhere)                    </b></p>
  * <b><p> At least 5 types of NPC                                                                        </b></p>
  * <b><p> Main menu screen                                                                               </b></p>
+ *
+ * DONE
+ *
+ * <b><p> Text input (Renaming elves, setting save path etc)                                             </b></p>
  *
  * @author Matt
  */
@@ -151,7 +154,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 
 	@Override
 	public void resize(int width, int height) {
-		// No resize suport atm
+		// No resize support ATM
 	}
 
 
@@ -325,7 +328,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 		if (keycode == Input.Keys.T) {
 			Individual individual = GameWorld.individuals.get(1);
 			if (individual != null) {
-				GameWorld.props.add(new Furnace(individual.state.position.x, individual.state.position.y));
+				GameWorld.props.add(new PineChest(individual.state.position.x, individual.state.position.y, true, 100f));
 			}
 		}
 

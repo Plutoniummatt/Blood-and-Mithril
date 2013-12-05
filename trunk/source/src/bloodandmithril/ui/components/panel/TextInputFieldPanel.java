@@ -68,7 +68,7 @@ public class TextInputFieldPanel extends Panel {
 
 		Fortress.spriteBatch.end();
 		Fortress.spriteBatch.begin();
-		Fonts.defaultFont.setColor(Color.ORANGE.r, Color.ORANGE.g, Color.ORANGE.b, parent.alpha);
+		Fonts.defaultFont.setColor(Color.ORANGE.r, Color.ORANGE.g, Color.ORANGE.b, parent.active ? parent.alpha : 0.4f * parent.alpha);
 		Fonts.defaultFont.draw(Fortress.spriteBatch, inputText == null ? "" : Util.fitToTextInputBox(inputText, width, currentBeginningIndex), x + 4, y - height + 16);
 	}
 

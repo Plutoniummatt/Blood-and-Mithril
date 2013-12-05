@@ -375,6 +375,12 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	/** Calculates the distance between this individual and the Vector2 parameter */
+	public float getDistanceFrom(Vector2 position) {
+		return state.position.cpy().sub(position).len();
+	}
+
+
 	/**
 	 * True if a {@link Tile#isPassable()}, taking into account the path
 	 */

@@ -12,6 +12,7 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeProposalEvaluator;
+import bloodandmithril.prop.building.Chest.ChestContainer;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -81,6 +82,10 @@ public class TradeWindow extends Window {
 		populate(proposerItemsToTrade, proposerItemsNotToTrade, proposer.getInventory());
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
 
+		if (proposee instanceof ChestContainer) {
+			tradeButton.text = "Transfer";
+		}
+
 		createPanels();
 	}
 
@@ -92,7 +97,11 @@ public class TradeWindow extends Window {
 
 		boolean proposalAccepted = false;
 
-		if (proposer instanceof Individual && proposee instanceof Individual) {
+		if (proposee instanceof ChestContainer) {
+			proposalAccepted = true;
+		}
+
+		if (proposer instanceof Individual && proposee instanceof Individual && !proposalAccepted) {
 			proposalAccepted = TradeProposalEvaluator.evaluate(
 				(Individual)proposer,
 				Lists.transform(Lists.newArrayList(proposerItemsToTrade.entrySet()), new Function<Entry<ListingMenuItem, Integer>, Item>() {
@@ -298,6 +307,19 @@ public class TradeWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
+
+		if (proposer instanceof Individual) {
+			if (proposee instanceof Individual) {
+				if (((Individual) proposee).state.position.cpy().sub(((Individual) proposer).state.position.cpy()).len() > 64) {
+					closing = true;
+				}
+			} else if (proposee instanceof ChestContainer) {
+				if (((ChestContainer) proposee).getPositionOfChest().cpy().sub(((Individual) proposer).state.position.cpy()).len() > 64) {
+					closing = true;
+				}
+			}
+		}
+
 		buyerPanel.x = x;
 		buyerPanel.y = y;
 		buyerPanel.height = height - 50;
@@ -317,7 +339,11 @@ public class TradeWindow extends Window {
 				tradeButton.text = "Trade Rejected";
 				tradeButton.setIdleColor(Color.RED);
 			} else {
-				tradeButton.text = "Propose Trade";
+				if (proposee instanceof ChestContainer) {
+					tradeButton.text = "Transfer";
+				} else {
+					tradeButton.text = "Propose Trade";
+				}
 				tradeRejectionTimer = 1f;
 				rejected = false;
 				tradeButton.setIdleColor(Color.GREEN);

@@ -1,17 +1,54 @@
 package bloodandmithril.prop.building;
 
+import bloodandmithril.item.Container;
+
+import com.badlogic.gdx.math.Vector2;
+
 /**
- * A chest, stores things
+ * A chest, stores things.
+ *
+ * This is an extension of {@link Building}
+ * This also contains a extension of {@link Container}, which is the actual inventory of the chest
  *
  * @author Matt
  */
 public abstract class Chest extends Building {
 
+	/** The inventory {@link Container} that backs this {@link Chest} */
+	protected Container container;
+
 	/**
 	 * Constructor
 	 */
-	protected Chest(float x, float y, int width, int height, boolean grounded) {
+	protected Chest(float x, float y, int width, int height, boolean grounded, float capacity) {
 		super(x, y, width, height, grounded);
-		// TODO Auto-generated constructor stub
+		setupContainer(capacity);
+	}
+
+
+	/**
+	 * Creates and sets up the {@link #container}
+	 */
+	private void setupContainer(float capacity) {
+		this.container = new ChestContainer(capacity);
+	}
+
+
+	/**
+	 * The {@link Container} that drives the inventory of this {@link Chest}
+	 */
+	public class ChestContainer extends Container {
+
+		/**
+		 * Constructor
+		 */
+		protected ChestContainer(float inventoryMassCapacity) {
+			super(inventoryMassCapacity, false);
+		}
+
+
+		public Vector2 getPositionOfChest() {
+			return position;
+		}
 	}
 }
