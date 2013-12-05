@@ -22,7 +22,7 @@ public class Equipper extends Container {
 	 * @param inventoryMassCapacity
 	 */
 	protected Equipper(float inventoryMassCapacity) {
-		super(inventoryMassCapacity);
+		super(inventoryMassCapacity, true);
 
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			availableEquipmentSlots.put(slot, true);

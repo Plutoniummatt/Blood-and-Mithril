@@ -87,8 +87,8 @@ public class Util {
 	 * Reformats a string to be able to fit inside a text input box.
 	 */
 	public static String fitToTextInputBox(String toPara, int length, int currentBeginningIndex) {
-		return toPara.substring(currentBeginningIndex, Math.min(currentBeginningIndex + length / 12 - 6, toPara.length())) +
-		       (currentBeginningIndex + length / 12 - 6 < toPara.length() ? "..." : "|");
+		return toPara.substring(currentBeginningIndex, Math.min(currentBeginningIndex + length / 12 - 3, toPara.length())) +
+		       (currentBeginningIndex + length / 12 - 3 < toPara.length() ? "..." : "|");
 	}
 
 

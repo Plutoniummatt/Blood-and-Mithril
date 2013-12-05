@@ -19,14 +19,18 @@ public class Container implements Serializable {
 	/** How much this {@link Container} can carry in mass */
 	protected float inventoryMassCapacity, currentLoad;
 
+	/** Whether this container can hold more than its capacity */
+	protected final boolean canExceedCapacity;
+
 	/** What this {@link Container} has in its inventory, maps an Item to the quantity of said item */
 	protected HashMap<Item, Integer> inventory = new HashMap<Item, Integer>();
 
 	/**
 	 * Protected constructor
 	 */
-	protected Container(float inventoryMassCapacity) {
+	protected Container(float inventoryMassCapacity, boolean canExceedCapacity) {
 		this.inventoryMassCapacity = inventoryMassCapacity;
+    this.canExceedCapacity = canExceedCapacity;
 	}
 
 
@@ -53,7 +57,7 @@ public class Container implements Serializable {
 					break;
 				}
 			}
-			
+
 			if (!stacked) {
 				copy.put(item, quantity);
 			}

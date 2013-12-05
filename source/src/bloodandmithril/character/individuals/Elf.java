@@ -6,20 +6,18 @@ import bloodandmithril.Fortress;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
-import bloodandmithril.ui.components.window.TradeWindow;
-import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
@@ -32,7 +30,6 @@ import bloodandmithril.world.GameWorld;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
 
 /**
  * Exceptional at:
@@ -357,51 +354,51 @@ public class Elf extends Individual {
 			null
 		);
 
-    final ContextMenu secondaryMenu = new ContextMenu(0, 0,
-      new ContextMenuItem(
-        "Change name",
-        new Task() {
-          @Override
-          public void execute() {
-            UserInterface.addLayeredComponent(
-              new TextInputWindow(
-                Fortress.WIDTH / 2 - 125,
-                Fortress.HEIGHT/2 + 50,
-                250,
-                100,
-                "Test",
-                250,
-                100,
-                new JITTask() {
-                  @Override
-                  public void execute(Object... args) {
-                    thisElf.id.nickName = args[0].toString();
-                  }
-                }
-              )
-            );
-          }
-        },
-        Color.WHITE,
-        getToolTipTextColor(),
-        Color.GRAY,
-        null
-      )
-    );
-    ContextMenuItem editMenuItem = new ContextMenuItem(
-      "Edit",
-      new Task() {
-        @Override
-        public void execute() {
-          secondaryMenu.x = Fortress.getMouseScreenX();
-          secondaryMenu.y = Fortress.getMouseScreenY();
-        }
-      },
-      Color.WHITE,
-      getToolTipTextColor(),
-      Color.GRAY,
-      secondaryMenu
-    );
+		final ContextMenu secondaryMenu = new ContextMenu(0, 0,
+			new ContextMenuItem(
+				"Change name",
+				new Task() {
+					@Override
+					public void execute() {
+						UserInterface.addLayeredComponent(
+							new TextInputWindow(
+								Fortress.WIDTH / 2 - 125,
+								Fortress.HEIGHT/2 + 50,
+								250,
+								100,
+								"Test",
+								250,
+								100,
+								new JITTask() {
+									@Override
+									public void execute(Object... args) {
+										thisElf.id.nickName = args[0].toString();
+									}
+								}
+							)
+						);
+					}
+				},
+				Color.WHITE,
+				getToolTipTextColor(),
+				Color.GRAY,
+				null
+			)
+		);
+		ContextMenuItem editMenuItem = new ContextMenuItem(
+			"Edit",
+			new Task() {
+				@Override
+				public void execute() {
+					secondaryMenu.x = Fortress.getMouseScreenX();
+					secondaryMenu.y = Fortress.getMouseScreenY();
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			secondaryMenu
+		);
 
 		ContextMenuItem inventoryMenuItem = new ContextMenuItem(
 			"Inventory",
@@ -434,36 +431,9 @@ public class Elf extends Individual {
 				public void execute() {
 					for (Individual indi : GameWorld.selectedIndividuals) {
 						if (indi != thisElf) {
-
-							for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
-								if (component instanceof Window) {
-									if (((Window)component).title.equals(id.getSimpleName() + " - Inventory") ||
-									((Window)component).title.equals(indi.id.getSimpleName() + " - Inventory")) {
-										UserInterface.removeLayeredComponent(component);
-									}
-								}
-							}
-
-							UserInterface.addLayeredComponent(
-								new TradeWindow(
-									Fortress.WIDTH / 2 - 350,
-									Fortress.HEIGHT / 2 + 100,
-									700,
-									200,
-									"Trade between " + indi.id.firstName + " and " + thisElf.id.firstName,
-									true,
-									700,
-									200,
-									true,
-									GameWorld.selectedIndividuals.iterator().next(),
-									thisElf
-								)
+							thisElf.ai.setCurrentTask(
+								new TradeWith(indi, thisElf)
 							);
-
-							clearCommands();
-							ai.setCurrentTask(new Trading(id));
-							indi.clearCommands();
-							indi.ai.setCurrentTask(new Trading(indi.id));
 						}
 					}
 				}
