@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Container;
@@ -133,7 +133,7 @@ public class InventoryWindow extends Window {
 				new Color(1f, 0f, 0f, 0.6f * alpha);
 
 		defaultFont.setColor(active ? activeColor : inactiveColor);
-		defaultFont.draw(Fortress.spriteBatch, truncate("Weight: " + String.format("%.2f", host.getCurrentLoad()) + "/" + String.format("%.2f", host.getMaxCapacity())), x + 6, y - height + 20);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate("Weight: " + String.format("%.2f", host.getCurrentLoad()) + "/" + String.format("%.2f", host.getMaxCapacity())), x + 6, y - height + 20);
 	}
 
 
@@ -141,7 +141,7 @@ public class InventoryWindow extends Window {
 	 * Renders the separator that separates the item listing from the quantity listing
 	 */
 	private void renderSeparator() {
-		Fortress.spriteBatch.setShader(Shaders.filter);
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		Color color = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.4f * alpha);
 		shapeRenderer.filledRect(x + width - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
@@ -199,8 +199,8 @@ public class InventoryWindow extends Window {
 				new Task() {
 					@Override
 					public void execute() {
-						menuToAddUnequipped.x = Fortress.getMouseScreenX();
-						menuToAddUnequipped.y = Fortress.getMouseScreenY();
+						menuToAddUnequipped.x = BloodAndMithrilClient.getMouseScreenX();
+						menuToAddUnequipped.y = BloodAndMithrilClient.getMouseScreenY();
 					}
 				},
 				eq ? new Color(0f, 0.6f, 0f, 1f) : new Color(0.8f, 0.8f, 0.8f, 1f),
@@ -220,8 +220,8 @@ public class InventoryWindow extends Window {
 				new Task() {
 					@Override
 					public void execute() {
-						menuToAddEquipped.x = Fortress.getMouseScreenX();
-						menuToAddEquipped.y = Fortress.getMouseScreenY();
+						menuToAddEquipped.x = BloodAndMithrilClient.getMouseScreenX();
+						menuToAddEquipped.y = BloodAndMithrilClient.getMouseScreenY();
 					}
 				},
 				eq ? new Color(0f, 0.6f, 0f, 1f) : new Color(0.8f, 0.8f, 0.8f, 1f),

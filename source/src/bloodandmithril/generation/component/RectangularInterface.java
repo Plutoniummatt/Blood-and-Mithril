@@ -1,6 +1,6 @@
 package bloodandmithril.generation.component;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.generation.component.Component.ComponentCreationCustomization;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.Room.RoomCreationCustomization;
@@ -262,8 +262,8 @@ public class RectangularInterface extends Interface {
 		UserInterface.shapeRenderer.setColor(color);
 
 		UserInterface.shapeRenderer.rect(
-			Fortress.worldToScreenX(boundaries.left * Topography.TILE_SIZE),
-			Fortress.worldToScreenY(boundaries.bottom * Topography.TILE_SIZE),
+			BloodAndMithrilClient.worldToScreenX(boundaries.left * Topography.TILE_SIZE),
+			BloodAndMithrilClient.worldToScreenY(boundaries.bottom * Topography.TILE_SIZE),
 			(boundaries.right - boundaries.left + 1) * Topography.TILE_SIZE,
 			(boundaries.top - boundaries.bottom + 1) * Topography.TILE_SIZE
 		);

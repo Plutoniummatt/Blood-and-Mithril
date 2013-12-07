@@ -5,7 +5,7 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
@@ -87,16 +87,16 @@ public class IndividualInfoWindow extends Window {
 		String messageToDisplay = Util.fitToWindow(individual.getDescription(), width, (height - 250) / 25);
 
 		defaultFont.setColor(active ? activeWhite : inactiveWhite);
-		defaultFont.drawMultiLine(Fortress.spriteBatch, messageToDisplay, x + 6, y - 195);
+		defaultFont.drawMultiLine(BloodAndMithrilClient.spriteBatch, messageToDisplay, x + 6, y - 195);
 	}
 
 
 	private boolean drawLine(String string, int yOff) {
 		if (y - yOff < y - height + 60) {
-			defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - yOff);
+			defaultFont.draw(BloodAndMithrilClient.spriteBatch, "...", x + 6, y - yOff);
 			return false;
 		} else {
-			defaultFont.draw(Fortress.spriteBatch, truncate(string), x + 6, y - yOff);
+			defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate(string), x + 6, y - yOff);
 			return true;
 		}
 	}

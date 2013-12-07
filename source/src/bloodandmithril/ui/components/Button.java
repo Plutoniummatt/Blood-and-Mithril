@@ -1,7 +1,7 @@
 package bloodandmithril.ui.components;
 
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.JITTask;
@@ -152,7 +152,7 @@ public class Button {
 		morph(vec);
 
 		if (idle == null) {
-			Fortress.spriteBatch.setShader(Shaders.text);
+			BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 			Color downColorToUse = active ? downColor : idle == null ? downColor.cpy() : downColor;
 			Color overColorToUse = active ? overColor : idle == null ? overColor.cpy() : overColor;
 			Color idleColorToUse = active ? idleColor : idle == null ? idleColor.cpy() : idleColor;
@@ -160,26 +160,26 @@ public class Button {
 			if (isMouseOver() && active) {
 				if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
 					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(Fortress.spriteBatch, text, vec.x, vec.y);
+					font.draw(BloodAndMithrilClient.spriteBatch, text, vec.x, vec.y);
 				} else {
 					font.setColor(overColorToUse.r, overColorToUse.g, overColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(Fortress.spriteBatch, text, vec.x, vec.y);
+					font.draw(BloodAndMithrilClient.spriteBatch, text, vec.x, vec.y);
 				}
 			} else {
 				font.setColor(idleColorToUse.r, idleColorToUse.g, idleColorToUse.b, alpha * (active ? 1f : 0.3f));
-				font.draw(Fortress.spriteBatch, text, vec.x, vec.y);
+				font.draw(BloodAndMithrilClient.spriteBatch, text, vec.x, vec.y);
 			}
 		} else {
-			Fortress.spriteBatch.setShader(Shaders.filter);
+			BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, alpha);
 			if (isMouseOver() && active) {
 				if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
-					Fortress.spriteBatch.draw(down, vec.x, vec.y);
+					BloodAndMithrilClient.spriteBatch.draw(down, vec.x, vec.y);
 				} else {
-					Fortress.spriteBatch.draw(over, vec.x, vec.y);
+					BloodAndMithrilClient.spriteBatch.draw(over, vec.x, vec.y);
 				}
 			} else {
-				Fortress.spriteBatch.draw(idle, vec.x, vec.y);
+				BloodAndMithrilClient.spriteBatch.draw(idle, vec.x, vec.y);
 			}
 		}
 	}
@@ -315,8 +315,8 @@ public class Button {
 		Vector2 vec = new Vector2();
 		morph(vec);
 
-		int mouseX = Fortress.getMouseScreenX();
-		int mouseY = Fortress.getMouseScreenY();
+		int mouseX = BloodAndMithrilClient.getMouseScreenX();
+		int mouseY = BloodAndMithrilClient.getMouseScreenY();
 
 		if (idle == null) {
 			return mouseX >= vec.x && mouseX <= vec.x + width && mouseY <= vec.y && mouseY >= vec.y - height;

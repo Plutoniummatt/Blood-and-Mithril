@@ -46,7 +46,7 @@ import com.badlogic.gdx.math.Vector2;
  * To-do before ALPHA release
  *
  * <b><p> Generation                                                                                     </b></p>
- * <b><p> Resource gathering and stockpiling (At least the following: farming, hunting, mining, foraging)</b></p>
+ * <b><p> Resource gathering (At least the following: farming, hunting, foraging)			 	 		 </b></p>
  * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
  * <b><p> Building and Construction (Building construction and decontruction framework)                  </b></p>
  * <b><p> Combat (New animations, equipment framework + equipment animation framework)                   </b></p>
@@ -54,14 +54,17 @@ import com.badlogic.gdx.math.Vector2;
  * <b><p> Multiple saved games (Huge refactors of current statics various everywhere)                    </b></p>
  * <b><p> At least 5 types of NPC                                                                        </b></p>
  * <b><p> Main menu screen                                                                               </b></p>
+ * <b><p> Networking (maybe)                                                                             </b></p>
  *
  * DONE
  *
  * <b><p> Text input (Renaming elves, setting save path etc)                                             </b></p>
+ * <b><p> Stockpiling                                              										 </b></p>
+ * <b><p> Trading	                                              										 </b></p>
  *
  * @author Matt
  */
-public class Fortress implements ApplicationListener, InputProcessor {
+public class BloodAndMithrilClient implements ApplicationListener, InputProcessor {
 
 	/** The maximum spread of individuals when going to location */
 	private static final float INDIVIDUAL_SPREAD = 600f;
@@ -99,6 +102,7 @@ public class Fortress implements ApplicationListener, InputProcessor {
 
 	@Override
 	public void create() {
+		// Load client-side resources
 		loadResources();
 
 		spriteBatch = new SpriteBatch();
@@ -106,18 +110,18 @@ public class Fortress implements ApplicationListener, InputProcessor {
 		cam = new OrthographicCamera(WIDTH, HEIGHT);
 		cam.setToOrtho(false, WIDTH, HEIGHT);
 
-		gameWorld = new GameWorld();
-
 		Gdx.input.setInputProcessor(this);
 
 		SoundService.changeMusic(2f, SoundService.music1);
 
+		// These should be server-side
+		gameWorld = new GameWorld();
 		GameLoader.load();
 	}
 
 
 	/**
-	 * Loads global resources
+	 * Loads global resources, client side
 	 */
 	private void loadResources() {
 		Fonts.loadFonts();

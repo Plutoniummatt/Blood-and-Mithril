@@ -1,26 +1,24 @@
 package bloodandmithril.character.individuals;
 
 import java.util.HashMap;
+import java.util.List;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.math.Vector2;
-
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.BoarAI;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.ui.KeyMappings;
-import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
-import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.GameWorld;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 /**
  * A Boar...
@@ -28,38 +26,38 @@ import bloodandmithril.world.GameWorld;
  * @author Matt
  */
 public class Boar extends Individual {
-	
+
 	private String biography = new String(
 		"Wild boar or wild pig (Sus scrofa) is a species of the pig genus Sus, " +
 		"part of the biological family Suidae. The species includes many subspecies. " +
 		"It is the wild ancestor of the domestic pig, an animal with which it freely hybridises."
 	);
-	
+
 	private static final String WALKING_RIGHT = "walkingRight";
 	private static final String WALKING_LEFT = "walkingLeft";
 	private static final String STANDING_RIGHT = "standingRight";
 	private static final String STANDING_LEFT = "standingLeft";
 
 	private static final long serialVersionUID = -5319279288781067263L;
-	
+
 	/** Animations */
 	private static HashMap<String, Animation> animations = new HashMap<String, Animation>();
-	
+
 	/** Current animation */
 	private String current;
-	
+
 	/**
 	 * Constructor
 	 */
 	public Boar(IndividualIdentifier id, IndividualState state) {
-		super(id, state, false, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120));
+		super(id, state, false, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), false);
 
 		this.ai = new BoarAI(this);
 
 		current = STANDING_RIGHT;
 	}
-	
-	
+
+
 	/**
 	 * Loads animations
 	 */
@@ -73,45 +71,45 @@ public class Boar extends Individual {
 
 	@Override
 	protected void internalRender() {
-		Fortress.spriteBatch.begin();
-		
+		BloodAndMithrilClient.spriteBatch.begin();
+
 		// Determine which shader we're using, normal, or highlighted
 		if (isMouseOver()) {
-			
+
 			Shaders.elfHighLight.begin();
 			Shaders.elfHighLight.setUniformi("hair", 0);
 			Shaders.elfHighLight.setUniformf("alpha", 1f);
 			Shaders.elfHighLight.end();
-			Fortress.spriteBatch.setShader(Shaders.elfHighLight);
-			Shaders.elfHighLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
+			BloodAndMithrilClient.spriteBatch.setShader(Shaders.elfHighLight);
+			Shaders.elfHighLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		} else {
-			
+
 			Shaders.elfDayLight.begin();
 			Shaders.elfDayLight.setUniformi("hair", 0);
 			Shaders.elfDayLight.setUniformf("alpha", 1f);
 			Shaders.elfDayLight.end();
-			Fortress.spriteBatch.setShader(Shaders.elfDayLight);
-			Shaders.elfDayLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
+			BloodAndMithrilClient.spriteBatch.setShader(Shaders.elfDayLight);
+			Shaders.elfDayLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		}
-		
+
 		// Draw the body
-		Fortress.spriteBatch.draw(
+		BloodAndMithrilClient.spriteBatch.draw(
 			animations.get(current).getKeyFrame(animationTimer, true),
 			state.position.x - animations.get(current).getKeyFrame(0f).getRegionWidth()/2,
 			state.position.y
 		);
-		
-		Fortress.spriteBatch.flush();
-		Fortress.spriteBatch.end();
+
+		BloodAndMithrilClient.spriteBatch.flush();
+		BloodAndMithrilClient.spriteBatch.end();
 	}
 
-	
+
 	@Override
 	protected void internalUpdate(float delta) {
 		updateAnimation();
 	}
 
-	
+
 	@Override
 	protected void respondToCommands() {
 		//Horizontal movement
@@ -139,8 +137,8 @@ public class Boar extends Individual {
 			}
 		}
 	}
-	
-	
+
+
 	/** What animation should we use? */
 	private void updateAnimation() {
 		if (state.velocity.x > 0) {
@@ -158,72 +156,26 @@ public class Boar extends Individual {
 		}
 	}
 
-	
+
 	@Override
 	public boolean isMouseOver() {
-		float x = Fortress.getMouseWorldX();
-		float y = Fortress.getMouseWorldY();
+		float x = BloodAndMithrilClient.getMouseWorldX();
+		float y = BloodAndMithrilClient.getMouseWorldY();
 
 		boolean ans = x >= state.position.x - width/2 && x <= state.position.x + width/2 && y >= state.position.y && y <= state.position.y + height;
 		return ans;
 	}
 
-	
+
 	@Override
 	public Color getToolTipTextColor() {
 		return Color.GREEN;
 	}
 
-	
+
 	@Override
-	public ContextMenu getContextMenu() {
-		final Individual thisBoar = this;
-		
-		ContextMenuItem attackItem = new ContextMenuItem(
-			"Attack", 
-			new Task() {
-				@Override
-				public void execute() {
-					// TODO Attack....
-				}
-			}, 
-			Color.WHITE,
-			Color.GREEN,
-			Color.GRAY, 
-			null
-		);
-		
-		
-		ContextMenuItem showInfoMenuItem = new ContextMenuItem(
-			"Show info",
-			new Task() {
-				@Override
-				public void execute() {
-					IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
-						thisBoar,
-						Fortress.getMouseScreenX(),
-						Fortress.getMouseScreenY(),
-						300,
-						320,
-						thisBoar.getClass().getSimpleName() + " - Info",
-						true,
-						250, 200
-					);
-					UserInterface.addLayeredComponentUnique(individualInfoWindow, id.id + " - Info");
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-		
-		ContextMenu contextMenuToReturn = new ContextMenu(0, 0);
-		
-		contextMenuToReturn.addMenuItem(attackItem);
-		contextMenuToReturn.addMenuItem(showInfoMenuItem);
-		
-		return contextMenuToReturn;
+	public List<ContextMenuItem> internalGetContextMenuItems() {
+		return Lists.newArrayList();
 	}
 
 

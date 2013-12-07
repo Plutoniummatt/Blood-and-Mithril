@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.collect.Lists;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
@@ -97,7 +97,7 @@ public abstract class ScrollableListingPanel extends Panel {
 
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * size);
 			scrollBarButtonLocationOld = scrollBarButtonLocation;
-			mouseLocYFrozen = Fortress.getMouseScreenY();
+			mouseLocYFrozen = BloodAndMithrilClient.getMouseScreenY();
 		}
 		
 		return false;
@@ -160,15 +160,15 @@ public abstract class ScrollableListingPanel extends Panel {
 					continue;
 				}
 				if (y - (i - (startingIndex == 0 ? 1 : startingIndex)) * 20 - 110 < y - height) {
-					defaultFont.draw(Fortress.spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
+					defaultFont.draw(BloodAndMithrilClient.spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
 					break;
 				}
 				item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, parent.active && UserInterface.contextMenus.isEmpty(), parent.alpha);
-				defaultFont.draw(Fortress.spriteBatch, getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
+				defaultFont.draw(BloodAndMithrilClient.spriteBatch, getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
 				i++;
 			}
 		}
-		Fortress.spriteBatch.flush();
+		BloodAndMithrilClient.spriteBatch.flush();
 	}
 
 	
@@ -184,7 +184,7 @@ public abstract class ScrollableListingPanel extends Panel {
 		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
 
 		if (Gdx.input.isButtonPressed(KeyMappings.leftClick) && scrollBarButtonLocationOld != null) {
-			scrollBarButtonLocation = Math.min(1, Math.max(0, scrollBarButtonLocationOld + (mouseLocYFrozen - Fortress.getMouseScreenY())/(height - 102)));
+			scrollBarButtonLocation = Math.min(1, Math.max(0, scrollBarButtonLocationOld + (mouseLocYFrozen - BloodAndMithrilClient.getMouseScreenY())/(height - 102)));
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * size);
 		}
 
@@ -208,10 +208,10 @@ public abstract class ScrollableListingPanel extends Panel {
 	 * True if the mouse is over the scroll button
 	 */
 	private boolean isMouseOverScrollButton(float scrollBarButtonPos) {
-		return	Fortress.getMouseScreenX() > x + width - 13 &&
-				Fortress.getMouseScreenX() < x + width + 4 &&
-				Fortress.getMouseScreenY() > scrollBarButtonPos - 10 &&
-				Fortress.getMouseScreenY() < scrollBarButtonPos + 10;
+		return	BloodAndMithrilClient.getMouseScreenX() > x + width - 13 &&
+				BloodAndMithrilClient.getMouseScreenX() < x + width + 4 &&
+				BloodAndMithrilClient.getMouseScreenY() > scrollBarButtonPos - 10 &&
+				BloodAndMithrilClient.getMouseScreenY() < scrollBarButtonPos + 10;
 	}
 	
 

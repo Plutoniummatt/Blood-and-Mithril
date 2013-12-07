@@ -6,7 +6,7 @@ import static java.lang.Math.pow;
 import java.util.ArrayList;
 import java.util.List;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
@@ -39,10 +39,10 @@ public class Weather {
 	private static TextureRegion sunGlowTexture = new TextureRegion(GameWorld.gameWorldTexture, 512, 1536, 512, 512);
 
 	/** Orbital radius of the moon around the {@link #celestialPivot} */
-	private static float celestialOrbitalRadius = Fortress.WIDTH * 3 / 4;
+	private static float celestialOrbitalRadius = BloodAndMithrilClient.WIDTH * 3 / 4;
 
 	/** The pivot around which the moon resolves */
-	private static Vector2 celestialPivot = new Vector2(Fortress.WIDTH/2, -Fortress.HEIGHT/2);
+	private static Vector2 celestialPivot = new Vector2(BloodAndMithrilClient.WIDTH/2, -BloodAndMithrilClient.HEIGHT/2);
 
 	/** The index to access {@link #moonPhases} with, updated between 11:00 and 13:00 */
 	private static int moonPhaseIndex = (int)(12f / 30f * WorldState.currentEpoch.dayOfMonth);
@@ -72,15 +72,15 @@ public class Weather {
 		float x = celestialPivot.x - celestialOrbitalRadius * (float)Math.sin((float)angle) - sunTexture.getRegionWidth()/2;
 		float y = celestialPivot.y - celestialOrbitalRadius * (float)Math.cos((float)angle) - sunTexture.getRegionHeight()/2;
 
-		Fortress.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.begin();
 		Shaders.sun.begin();
 		Shaders.sun.setUniformf("time", time);
 		Shaders.sun.end();
-		Fortress.spriteBatch.setShader(Shaders.sun);
-		Fortress.spriteBatch.draw(sunGlowTexture, x - 768, y - 768, 2048, 2048);
-		Fortress.spriteBatch.setShader(Shaders.pass);
-		Fortress.spriteBatch.draw(sunTexture, x, y);
-		Fortress.spriteBatch.end();
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.sun);
+		BloodAndMithrilClient.spriteBatch.draw(sunGlowTexture, x - 768, y - 768, 2048, 2048);
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
+		BloodAndMithrilClient.spriteBatch.draw(sunTexture, x, y);
+		BloodAndMithrilClient.spriteBatch.end();
 	}
 
 
@@ -97,10 +97,10 @@ public class Weather {
 		float x = celestialPivot.x - celestialOrbitalRadius * (float)Math.sin((float)angle) - moonPhases.get(moonPhaseIndex).getRegionWidth()/2;
 		float y = celestialPivot.y - celestialOrbitalRadius * (float)Math.cos((float)angle) - moonPhases.get(moonPhaseIndex).getRegionHeight()/2;
 
-		Fortress.spriteBatch.begin();
-		Fortress.spriteBatch.setShader(Shaders.moon);
-		Fortress.spriteBatch.draw(moonPhases.get(moonPhaseIndex), x, y);
-		Fortress.spriteBatch.end();
+		BloodAndMithrilClient.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.moon);
+		BloodAndMithrilClient.spriteBatch.draw(moonPhases.get(moonPhaseIndex), x, y);
+		BloodAndMithrilClient.spriteBatch.end();
 	}
 
 
@@ -128,7 +128,7 @@ public class Weather {
 		Color topColor = dayTopColor.cpy().mul(WorldState.currentEpoch.dayLight()).add(nightTopColor.cpy().mul(1f - WorldState.currentEpoch.dayLight())).mul(filter);
 		Color bottomColor = dayBottomColor.cpy().mul(WorldState.currentEpoch.dayLight()).add(nightBottomColor.cpy().mul(1f - WorldState.currentEpoch.dayLight())).mul(filter);
 
-		shapeRenderer.filledRect(0, 0, Fortress.WIDTH, Fortress.HEIGHT, bottomColor, bottomColor, topColor, topColor);
+		shapeRenderer.filledRect(0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, bottomColor, bottomColor, topColor, topColor);
 		shapeRenderer.end();
 
 		shapeRenderer.begin(ShapeType.FilledCircle);

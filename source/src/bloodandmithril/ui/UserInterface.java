@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
@@ -114,14 +114,14 @@ public class UserInterface {
 		Button pauseButton = new Button("Pause", defaultFont, -32, 4, 55, 16, new Task() {
 			@Override
 			public void execute() {
-				Fortress.paused = true;
+				BloodAndMithrilClient.paused = true;
 			}
 		}, Color.WHITE, Color.GREEN, Color.WHITE, UIRef.TR);
 
 		unpauseButton = new Button("Unpause", defaultFont, 0, 0, 75, 16, new Task() {
 			@Override
 			public void execute() {
-				Fortress.paused = false;
+				BloodAndMithrilClient.paused = false;
 			}
 		}, Color.WHITE, Color.GREEN, Color.WHITE, UIRef.M);
 
@@ -147,15 +147,15 @@ public class UserInterface {
 
 
 	/**
-	 * Renders the coordinates of the {@link Fortress#cam} used in
-	 * {@link Fortress} at the bottom left of the screen.
+	 * Renders the coordinates of the {@link BloodAndMithrilClient#cam} used in
+	 * {@link BloodAndMithrilClient} at the bottom left of the screen.
 	 */
 	public static void render() {
 
 		//Individual sprites (Selected arrow, movement arrow etc)
 		renderIndividualUISprites();
 
-		Fortress.spriteBatch.setShader(Shaders.text);
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
 
 		if ("true".equals(System.getProperty("debug"))) {
@@ -170,9 +170,9 @@ public class UserInterface {
 		renderLayeredComponents();
 		renderContextMenus();
 
-		Fortress.spriteBatch.setShader(Shaders.text);
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
-		Fortress.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.begin();
 		if (System.getProperty("debug").equals("true")) {
 			renderDebugText();
 		}
@@ -180,7 +180,7 @@ public class UserInterface {
 		renderUIText();
 		renderButtons();
 
-		Fortress.spriteBatch.end();
+		BloodAndMithrilClient.spriteBatch.end();
 
 		renderPauseScreen();
 		renderSavingScreen();
@@ -198,8 +198,8 @@ public class UserInterface {
 				shapeRenderer.begin(ShapeType.FilledRectangle);
 				shapeRenderer.setColor(new Color(0f, 1f, 0f, 0.15f));
 				shapeRenderer.filledRect(
-					Fortress.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
-					Fortress.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
+					BloodAndMithrilClient.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
+					BloodAndMithrilClient.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
 					(comp.boundaries.right - comp.boundaries.left + 1) * Topography.TILE_SIZE,
 					(comp.boundaries.top - comp.boundaries.bottom + 1) * Topography.TILE_SIZE
 				);
@@ -208,8 +208,8 @@ public class UserInterface {
 				shapeRenderer.begin(ShapeType.Rectangle);
 				shapeRenderer.setColor(new Color(1f, 1f, 1f, 0.5f));
 				shapeRenderer.rect(
-					Fortress.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
-					Fortress.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
+					BloodAndMithrilClient.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
+					BloodAndMithrilClient.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
 					(comp.boundaries.right - comp.boundaries.left + 1) * Topography.TILE_SIZE,
 					(comp.boundaries.top - comp.boundaries.bottom + 1) * Topography.TILE_SIZE
 				);
@@ -224,8 +224,8 @@ public class UserInterface {
 	 * Renders a small rectangle to indicate the current tile the mouse is over
 	 */
 	private static void renderMouseOverTileHighlightBox() {
-		float x = Fortress.worldToScreenX(Topography.TILE_SIZE * Topography.convertToWorldTileCoord(Fortress.getMouseWorldX()));
-		float y = Fortress.worldToScreenY(Topography.TILE_SIZE * Topography.convertToWorldTileCoord(Fortress.getMouseWorldY()));
+		float x = BloodAndMithrilClient.worldToScreenX(Topography.TILE_SIZE * Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldX()));
+		float y = BloodAndMithrilClient.worldToScreenY(Topography.TILE_SIZE * Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY()));
 
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -263,33 +263,33 @@ public class UserInterface {
 	/** Darkens the screen by 80% and draws "Saving..." on the screen if the game is being saved */
 	private static void renderSavingScreen() {
 		if (GameSaver.isSaving()) {
-			Fortress.spriteBatch.begin();
+			BloodAndMithrilClient.spriteBatch.begin();
 			Gdx.gl.glEnable(GL10.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.8f));
-			shapeRenderer.filledRect(0, 0, Fortress.WIDTH, Fortress.HEIGHT);
+			shapeRenderer.filledRect(0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
 			shapeRenderer.end();
 			savingButton.render(true, 1f);
 			Gdx.gl.glDisable(GL10.GL_BLEND);
-			Fortress.spriteBatch.end();
+			BloodAndMithrilClient.spriteBatch.end();
 		}
 	}
 
 
 	/** Darkens the screen by 50% and draws an "unpause" button on the screen if the game is paused */
 	private static void renderPauseScreen() {
-		if (Fortress.paused) {
-			Fortress.spriteBatch.begin();
+		if (BloodAndMithrilClient.paused) {
+			BloodAndMithrilClient.spriteBatch.begin();
 			Gdx.gl.glEnable(GL10.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.5f));
-			shapeRenderer.filledRect(0, 0, Fortress.WIDTH, Fortress.HEIGHT);
+			shapeRenderer.filledRect(0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
 			shapeRenderer.end();
 			unpauseButton.render(true, 1f);
 			Gdx.gl.glDisable(GL10.GL_BLEND);
-			Fortress.spriteBatch.end();
+			BloodAndMithrilClient.spriteBatch.end();
 		}
 	}
 
@@ -312,8 +312,8 @@ public class UserInterface {
 				if (indi.controllable) {
 					Vector2 centre = new Vector2(indi.state.position.x, indi.state.position.y + indi.height / 2);
 
-					centre.x = Fortress.worldToScreenX(centre.x);
-					centre.y = Fortress.worldToScreenY(centre.y);
+					centre.x = BloodAndMithrilClient.worldToScreenX(centre.x);
+					centre.y = BloodAndMithrilClient.worldToScreenY(centre.y);
 
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
 						indi.select();
@@ -339,8 +339,8 @@ public class UserInterface {
 		if (Gdx.input.isButtonPressed(KeyMappings.leftClick) && initialDragCoordinates != null && !Gdx.input.isKeyPressed(KeyMappings.cameraDrag)) {
 			shapeRenderer.begin(ShapeType.Rectangle);
 			shapeRenderer.setColor(Color.GREEN);
-			float width = Fortress.getMouseScreenX() - initialDragCoordinates.x;
-			float height = Fortress.getMouseScreenY() - initialDragCoordinates.y;
+			float width = BloodAndMithrilClient.getMouseScreenX() - initialDragCoordinates.x;
+			float height = BloodAndMithrilClient.getMouseScreenY() - initialDragCoordinates.y;
 			shapeRenderer.rect(initialDragCoordinates.x, initialDragCoordinates.y, width, height);
 			shapeRenderer.end();
 		}
@@ -348,7 +348,7 @@ public class UserInterface {
 
 
 	private static void renderIndividualUISprites() {
-		Fortress.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.begin();
 		for (Individual indi : GameWorld.individuals.values()) {
 			if (indi.isSelected()) {
 				AITask currentTask = indi.ai.getCurrentTask();
@@ -358,26 +358,26 @@ public class UserInterface {
 				}
 			}
 			indi.renderArrows();
-			Fortress.spriteBatch.flush();
+			BloodAndMithrilClient.spriteBatch.flush();
 		}
-		Fortress.spriteBatch.end();
+		BloodAndMithrilClient.spriteBatch.end();
 	}
 
 
 	/** Any text that is rendered on UI */
 	private static void renderUIText() {
 		defaultFont.setColor(Color.WHITE);
-		defaultFont.draw(Fortress.spriteBatch, "Time: " + WorldState.currentEpoch.getTimeString(), 5, Gdx.graphics.getHeight() - 5);
-		defaultFont.draw(Fortress.spriteBatch, "Date: " + WorldState.currentEpoch.getDateString(), 5, Gdx.graphics.getHeight() - 25);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Time: " + WorldState.currentEpoch.getTimeString(), 5, Gdx.graphics.getHeight() - 5);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Date: " + WorldState.currentEpoch.getDateString(), 5, Gdx.graphics.getHeight() - 25);
 	}
 
 
 	/** Debug text */
 	private static void renderDebugText() {
 		defaultFont.setColor(Color.YELLOW);
-		defaultFont.draw(Fortress.spriteBatch, Float.toString(Topography.convertToWorldTileCoord(Fortress.getMouseWorldX())) + ", " + Float.toString(Topography.convertToWorldTileCoord(Fortress.getMouseWorldY())), Fortress.getMouseScreenX() - 35, Fortress.getMouseScreenY() - 35);
-		defaultFont.draw(Fortress.spriteBatch, "Mouse World Coords: " + Fortress.getMouseWorldX() + ", " + Fortress.getMouseWorldY(), 5, 72);
-		defaultFont.draw(Fortress.spriteBatch, "Centre of screen Coords: " + Float.toString(Fortress.cam.position.x) + ", " + Float.toString(Fortress.cam.position.y) + ", " + Float.toString(Fortress.cam.zoom), 5, 52);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, Float.toString(Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldX())) + ", " + Float.toString(Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY())), BloodAndMithrilClient.getMouseScreenX() - 35, BloodAndMithrilClient.getMouseScreenY() - 35);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Mouse World Coords: " + BloodAndMithrilClient.getMouseWorldX() + ", " + BloodAndMithrilClient.getMouseWorldY(), 5, 72);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Centre of screen Coords: " + Float.toString(BloodAndMithrilClient.cam.position.x) + ", " + Float.toString(BloodAndMithrilClient.cam.position.y) + ", " + Float.toString(BloodAndMithrilClient.cam.zoom), 5, 52);
 
 		int chunksInMemory = 0;
 		for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> entry : Topography.chunkMap.chunkMap.entrySet()) {
@@ -385,12 +385,12 @@ public class UserInterface {
 		}
 
 		defaultFont.setColor(Color.GREEN);
-		defaultFont.draw(Fortress.spriteBatch, "Number of chunks in memory: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 55);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of chunks in memory: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 55);
 
-		defaultFont.draw(Fortress.spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, Gdx.graphics.getHeight() - 125);
-		defaultFont.draw(Fortress.spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoaderImpl.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);
-		defaultFont.draw(Fortress.spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, Gdx.graphics.getHeight() - 165);
-		defaultFont.draw(Fortress.spriteBatch, "Number of tasks queued in Pathfinding thread: " + Integer.toString(AIProcessor.pathFinderTasks.size()), 5, Gdx.graphics.getHeight() - 185);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, Gdx.graphics.getHeight() - 125);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoaderImpl.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, Gdx.graphics.getHeight() - 165);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of tasks queued in Pathfinding thread: " + Integer.toString(AIProcessor.pathFinderTasks.size()), 5, Gdx.graphics.getHeight() - 185);
 
 		defaultFont.setColor(Color.CYAN);
 	}
@@ -435,7 +435,7 @@ public class UserInterface {
 	 */
 	private static void renderButtons() {
 		for (Entry<String, Button> buttonEntry : buttons.entrySet()) {
-			buttonEntry.getValue().render(!Fortress.paused && !GameSaver.isSaving(), 1f);
+			buttonEntry.getValue().render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		}
 	}
 
@@ -454,7 +454,7 @@ public class UserInterface {
 	public static boolean leftClick() {
 		boolean clicked = false;
 
-		if (Fortress.paused) {
+		if (BloodAndMithrilClient.paused) {
 			clicked = unpauseButton.click();
 			return false;
 		}
@@ -487,7 +487,7 @@ public class UserInterface {
 			if (!iterator.hasNext()) {
 				clicked = menu.leftClick(contextMenuCopy, null) || clicked;
 			}
-			if (!menu.isInside(Fortress.getMouseScreenX(), Fortress.getMouseScreenY())) {
+			if (!menu.isInside(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY())) {
 				contextMenuCopy.remove(menu);
 			}
 		}
@@ -495,7 +495,7 @@ public class UserInterface {
 		contextMenus = contextMenuCopy;
 
 		if (!clicked && !Gdx.input.isKeyPressed(KeyMappings.cameraDrag)) {
-			initialDragCoordinates = new Vector2(Fortress.getMouseScreenX(), Fortress.getMouseScreenY());
+			initialDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 		} else {
 			initialDragCoordinates = null;
 		}
@@ -505,7 +505,7 @@ public class UserInterface {
 
 
 	public static boolean keyPressed(int keyCode) {
-		if (Fortress.paused) {
+		if (BloodAndMithrilClient.paused) {
 			return false;
 		}
 
@@ -535,12 +535,12 @@ public class UserInterface {
 	 * Called when right mouse button is clicked
 	 */
 	public static void rightClick() {
-		if (Fortress.paused || GameSaver.isSaving()) {
+		if (BloodAndMithrilClient.paused || GameSaver.isSaving()) {
 			return;
 		}
 
 		contextMenus.clear();
-		ContextMenu newMenu = new ContextMenu(Fortress.getMouseScreenX(), Fortress.getMouseScreenY());
+		ContextMenu newMenu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 
 		if (!layeredComponents.isEmpty()) {
 			ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
@@ -563,8 +563,8 @@ public class UserInterface {
 						new Task() {
 							@Override
 							public void execute() {
-								secondaryMenu.x = Fortress.getMouseScreenX();
-								secondaryMenu.y = Fortress.getMouseScreenY();
+								secondaryMenu.x = BloodAndMithrilClient.getMouseScreenX();
+								secondaryMenu.y = BloodAndMithrilClient.getMouseScreenY();
 							}
 						},
 						Color.WHITE,
@@ -585,8 +585,8 @@ public class UserInterface {
 						new Task() {
 							@Override
 							public void execute() {
-								secondaryMenu.x = Fortress.getMouseScreenX();
-								secondaryMenu.y = Fortress.getMouseScreenY();
+								secondaryMenu.x = BloodAndMithrilClient.getMouseScreenX();
+								secondaryMenu.y = BloodAndMithrilClient.getMouseScreenY();
 							}
 						},
 						Color.WHITE,

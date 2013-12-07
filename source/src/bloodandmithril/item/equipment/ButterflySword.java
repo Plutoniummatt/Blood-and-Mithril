@@ -1,6 +1,6 @@
 package bloodandmithril.item.equipment;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -40,8 +40,8 @@ public class ButterflySword extends OneHandedWeapon {
 		return new MessageWindow(
 			"The blade of a butterfly sword is roughly as long as a human forearm, which allows for easy concealment inside loose sleeves or boots, and allows greater maneuverability when spinning and rotating during close-quarters fighting.",
 			Color.ORANGE,
-			Fortress.getMouseScreenX(),
-			Fortress.getMouseScreenY(),
+			BloodAndMithrilClient.getMouseScreenX(),
+			BloodAndMithrilClient.getMouseScreenY(),
 			350,
 			200,
 			"Butterfly Sword",
@@ -64,6 +64,6 @@ public class ButterflySword extends OneHandedWeapon {
 
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
-		Fortress.spriteBatch.draw(GameWorld.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 10 : 10), position.y - 7, flipX ? texture.getRegionWidth() - 10 : 10, 7, texture.getRegionWidth(), texture.getRegionHeight(), 1f, 1f, angle, 419, 587, 47, 12, flipX, false);
+		BloodAndMithrilClient.spriteBatch.draw(GameWorld.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 10 : 10), position.y - 7, flipX ? texture.getRegionWidth() - 10 : 10, 7, texture.getRegionWidth(), texture.getRegionHeight(), 1f, 1f, angle, 419, 587, 47, 12, flipX, false);
 	}
 }

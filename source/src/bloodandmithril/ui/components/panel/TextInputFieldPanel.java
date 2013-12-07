@@ -3,7 +3,7 @@ package bloodandmithril.ui.components.panel;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
@@ -66,10 +66,10 @@ public class TextInputFieldPanel extends Panel {
 		Component.shapeRenderer.rect(x, y - height, width, 22);
 		Component.shapeRenderer.end();
 
-		Fortress.spriteBatch.end();
-		Fortress.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.end();
+		BloodAndMithrilClient.spriteBatch.begin();
 		Fonts.defaultFont.setColor(Color.ORANGE.r, Color.ORANGE.g, Color.ORANGE.b, parent.active ? parent.alpha : 0.4f * parent.alpha);
-		Fonts.defaultFont.draw(Fortress.spriteBatch, inputText == null ? "" : Util.fitToTextInputBox(inputText, width, currentBeginningIndex), x + 4, y - height + 16);
+		Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, inputText == null ? "" : Util.fitToTextInputBox(inputText, width, currentBeginningIndex), x + 4, y - height + 16);
 	}
 
 

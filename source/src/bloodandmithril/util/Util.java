@@ -2,7 +2,7 @@ package bloodandmithril.util;
 
 import java.util.Random;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.util.datastructure.Wrapper;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -42,7 +42,7 @@ public class Util {
 
 
 	public static void draw(TextureRegion region, float x, float y, float angle) {
-		Fortress.spriteBatch.draw(region, x, y, 0, 0, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, angle);
+		BloodAndMithrilClient.spriteBatch.draw(region, x, y, 0, 0, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, angle);
 	}
 
 

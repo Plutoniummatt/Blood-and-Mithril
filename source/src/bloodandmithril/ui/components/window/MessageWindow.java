@@ -5,7 +5,7 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Util;
@@ -50,7 +50,7 @@ public class MessageWindow extends Window {
 
 		String messageToDisplay = Util.fitToWindow(message, width, (height - 75) / 25);
 
-		defaultFont.drawMultiLine(Fortress.spriteBatch, messageToDisplay, x + 6, y - 25);
+		defaultFont.drawMultiLine(BloodAndMithrilClient.spriteBatch, messageToDisplay, x + 6, y - 25);
 	}
 
 

@@ -1,28 +1,20 @@
 package bloodandmithril.character.individuals;
 
 import java.util.HashMap;
+import java.util.List;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.task.Idle;
-import bloodandmithril.character.ai.task.TradeWith;
-import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.ui.KeyMappings;
-import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
-import bloodandmithril.ui.components.window.IndividualInfoWindow;
-import bloodandmithril.ui.components.window.InventoryWindow;
-import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.AnimationHelper;
-import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.GameWorld;
@@ -30,6 +22,7 @@ import bloodandmithril.world.GameWorld;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 /**
  * Exceptional at:
@@ -95,7 +88,7 @@ public class Elf extends Individual {
 	 * Constructor
 	 */
 	public Elf(IndividualIdentifier id, IndividualState state, boolean controllable, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity) {
-		super(id, state, controllable, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120));
+		super(id, state, controllable, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), true);
 		this.female = female;
 		this.hairColorR = hairColor.r;
 		this.hairColorG = hairColor.g;
@@ -136,7 +129,7 @@ public class Elf extends Individual {
 
 	@Override
 	protected void internalRender() {
-		Fortress.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.begin();
 
 		// Determine which shader we're using, normal, or highlighted
 		if (isMouseOver()) {
@@ -147,8 +140,8 @@ public class Elf extends Individual {
 			Shaders.elfHighLight.setUniformf("alpha", 1f);
 			Shaders.elfHighLight.setUniformf("hairColor", hairColorR, hairColorG, hairColorB);
 			Shaders.elfHighLight.end();
-			Fortress.spriteBatch.setShader(Shaders.elfHighLight);
-			Shaders.elfHighLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
+			BloodAndMithrilClient.spriteBatch.setShader(Shaders.elfHighLight);
+			Shaders.elfHighLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		} else {
 
 			Shaders.elfDayLight.begin();
@@ -157,27 +150,27 @@ public class Elf extends Individual {
 			Shaders.elfDayLight.setUniformf("alpha", 1f);
 			Shaders.elfDayLight.setUniformf("hairColor", hairColorR, hairColorG, hairColorB);
 			Shaders.elfDayLight.end();
-			Fortress.spriteBatch.setShader(Shaders.elfDayLight);
-			Shaders.elfDayLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
+			BloodAndMithrilClient.spriteBatch.setShader(Shaders.elfDayLight);
+			Shaders.elfDayLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		}
 
 		// Draw the body
-		Fortress.spriteBatch.draw(
+		BloodAndMithrilClient.spriteBatch.draw(
 			animations.get(current + (female ? "F" : "M")).getKeyFrame(animationTimer, true),
 			state.position.x - animations.get(current + (female ? "F" : "M")).getKeyFrame(0f).getRegionWidth()/2,
 			state.position.y
 		);
-		Fortress.spriteBatch.end();
+		BloodAndMithrilClient.spriteBatch.end();
 
 		// Change draw mode to hair
-		Fortress.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.begin();
 		Shaders.elfHighLight.setUniformi("hair", 1);
 		Shaders.elfDayLight.setUniformi("hair", 1);
-		Shaders.elfDayLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
-		Shaders.elfHighLight.setUniformMatrix("u_projTrans", Fortress.cam.combined);
+		Shaders.elfDayLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+		Shaders.elfHighLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 
 		// Draw the hair
-		Fortress.spriteBatch.draw(
+		BloodAndMithrilClient.spriteBatch.draw(
 			hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(animationTimer, true),
 			state.position.x - hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(0f).getRegionWidth()/2,
 			state.position.y
@@ -195,8 +188,8 @@ public class Elf extends Individual {
 			}
 		}
 
-		Fortress.spriteBatch.flush();
-		Fortress.spriteBatch.end();
+		BloodAndMithrilClient.spriteBatch.flush();
+		BloodAndMithrilClient.spriteBatch.end();
 	}
 
 
@@ -278,8 +271,8 @@ public class Elf extends Individual {
 
 	@Override
 	public boolean isMouseOver() {
-		float x = Fortress.getMouseWorldX();
-		float y = Fortress.getMouseWorldY();
+		float x = BloodAndMithrilClient.getMouseWorldX();
+		float y = BloodAndMithrilClient.getMouseWorldY();
 
 		boolean ans = x >= state.position.x - width/2 && x <= state.position.x + width/2 && y >= state.position.y && y <= state.position.y + height;
 		return ans;
@@ -293,175 +286,8 @@ public class Elf extends Individual {
 
 
 	@Override
-	public ContextMenu getContextMenu() {
-		final Individual thisElf = this;
-
-		ContextMenuItem controlOrReleaseMenuItem = thisElf.selected ?
-			new ContextMenuItem(
-				"Deselect",
-				new Task() {
-					@Override
-					public void execute() {
-						thisElf.selected = false;
-						GameWorld.selectedIndividuals.remove(thisElf);
-						clearCommands();
-						ai.setToAuto(false);
-					}
-				},
-				Color.WHITE,
-				getToolTipTextColor(),
-				Color.GRAY,
-				null
-			) :
-
-			new ContextMenuItem(
-				"Select",
-				new Task() {
-					@Override
-					public void execute() {
-						thisElf.selected = true;
-						GameWorld.selectedIndividuals.add(thisElf);
-						ai.setToManual();
-					}
-				},
-				Color.WHITE,
-				getToolTipTextColor(),
-				Color.GRAY,
-				null
-			);
-
-		ContextMenuItem showInfoMenuItem = new ContextMenuItem(
-			"Show info",
-			new Task() {
-				@Override
-				public void execute() {
-					IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
-						thisElf,
-						Fortress.getMouseScreenX(),
-						Fortress.getMouseScreenY(),
-						300,
-						320,
-						id.getSimpleName() + " - Info",
-						true,
-						250, 200
-					);
-					UserInterface.addLayeredComponentUnique(individualInfoWindow, id.getSimpleName() + " - Info");
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-
-		final ContextMenu secondaryMenu = new ContextMenu(0, 0,
-			new ContextMenuItem(
-				"Change name",
-				new Task() {
-					@Override
-					public void execute() {
-						UserInterface.addLayeredComponent(
-							new TextInputWindow(
-								Fortress.WIDTH / 2 - 125,
-								Fortress.HEIGHT/2 + 50,
-								250,
-								100,
-								"Test",
-								250,
-								100,
-								new JITTask() {
-									@Override
-									public void execute(Object... args) {
-										thisElf.id.nickName = args[0].toString();
-									}
-								}
-							)
-						);
-					}
-				},
-				Color.WHITE,
-				getToolTipTextColor(),
-				Color.GRAY,
-				null
-			)
-		);
-		ContextMenuItem editMenuItem = new ContextMenuItem(
-			"Edit",
-			new Task() {
-				@Override
-				public void execute() {
-					secondaryMenu.x = Fortress.getMouseScreenX();
-					secondaryMenu.y = Fortress.getMouseScreenY();
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			secondaryMenu
-		);
-
-		ContextMenuItem inventoryMenuItem = new ContextMenuItem(
-			"Inventory",
-			new Task() {
-				@Override
-				public void execute() {
-					InventoryWindow inventoryWindow = new InventoryWindow(
-						thisElf,
-						Fortress.getMouseScreenX(),
-						Fortress.getMouseScreenY(),
-						(id.getSimpleName() + " - Inventory").length() * 10 + 50,
-						200,
-						id.getSimpleName() + " - Inventory",
-						true,
-						150, 150
-					);
-					UserInterface.addLayeredComponentUnique(inventoryWindow, id.getSimpleName() + " - Inventory");
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-
-		ContextMenuItem tradeMenuItem = new ContextMenuItem(
-			"Trade with",
-			new Task() {
-				@Override
-				public void execute() {
-					for (Individual indi : GameWorld.selectedIndividuals) {
-						if (indi != thisElf) {
-							thisElf.ai.setCurrentTask(
-								new TradeWith(indi, thisElf)
-							);
-						}
-					}
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-
-		ContextMenu contextMenuToReturn = new ContextMenu(0, 0);
-
-		if (controllable) {
-			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
-			contextMenuToReturn.addMenuItem(editMenuItem);
-		}
-
-		contextMenuToReturn.addMenuItem(showInfoMenuItem);
-
-		if (!(ai.getCurrentTask() instanceof Trading)) {
-			contextMenuToReturn.addMenuItem(inventoryMenuItem);
-		}
-
-		if (!GameWorld.selectedIndividuals.isEmpty() && GameWorld.selectedIndividuals.size() == 1 && !GameWorld.selectedIndividuals.contains(thisElf)) {
-			contextMenuToReturn.addMenuItem(tradeMenuItem);
-		}
-
-		return contextMenuToReturn;
+	public List<ContextMenuItem> internalGetContextMenuItems() {
+		return Lists.newArrayList();
 	}
 
 
