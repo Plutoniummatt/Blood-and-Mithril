@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.topography.Topography;
@@ -91,8 +91,8 @@ public class Path implements Serializable {
 	public void render() {
 		TreeMap<Integer, WayPoint> waypointsCopy = new TreeMap<Integer, WayPoint>(waypoints);
 		for (Entry<Integer, WayPoint> entry : waypointsCopy.entrySet()) {
-			float x = Fortress.worldToScreenX(entry.getValue().waypoint.x);
-			float y = Fortress.worldToScreenY(entry.getValue().waypoint.y);
+			float x = BloodAndMithrilClient.worldToScreenX(entry.getValue().waypoint.x);
+			float y = BloodAndMithrilClient.worldToScreenY(entry.getValue().waypoint.y);
 			
 			UserInterface.shapeRenderer.begin(ShapeType.FilledCircle);
 			UserInterface.shapeRenderer.filledCircle(x, y, 3);
@@ -101,8 +101,8 @@ public class Path implements Serializable {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			Entry<Integer, WayPoint> ceilingEntry = waypointsCopy.ceilingEntry(entry.getKey() + 1);
 			if (ceilingEntry != null) {
-				float x2 = Fortress.worldToScreenX(ceilingEntry.getValue().waypoint.x);
-				float y2 = Fortress.worldToScreenY(ceilingEntry.getValue().waypoint.y);
+				float x2 = BloodAndMithrilClient.worldToScreenX(ceilingEntry.getValue().waypoint.x);
+				float y2 = BloodAndMithrilClient.worldToScreenY(ceilingEntry.getValue().waypoint.y);
 				UserInterface.shapeRenderer.line(x, y, x2, y2);
 			}
 			UserInterface.shapeRenderer.end();

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.lwjgl.opengl.GL11;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
@@ -177,13 +177,13 @@ public class Chunk {
 		Topography.atlas.bind();
 		if (foreGround) {
 			Shaders.pass.begin();
-			Shaders.pass.setUniformMatrix("u_projTrans", Fortress.cam.combined);
+			Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 			Shaders.pass.setUniformi("u_texture", 0);
 			fMesh.render(Shaders.pass, GL11.GL_QUADS);
 			Shaders.pass.end();
 		} else {
 			Shaders.pass.begin();
-			Shaders.pass.setUniformMatrix("u_projTrans", Fortress.cam.combined);
+			Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 			Shaders.pass.setUniformi("u_texture", 0);
 			bMesh.render(Shaders.pass, GL11.GL_QUADS);
 			Shaders.pass.end();
@@ -194,8 +194,8 @@ public class Chunk {
 			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			UserInterface.shapeRenderer.begin(ShapeType.Rectangle);
 			UserInterface.shapeRenderer.setColor(new Color(1f, 0.5f, 1f, 0.15f));
-			float x = Fortress.worldToScreenX(fData.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
-			float y = Fortress.worldToScreenY(fData.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
+			float x = BloodAndMithrilClient.worldToScreenX(fData.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
+			float y = BloodAndMithrilClient.worldToScreenY(fData.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
 			UserInterface.shapeRenderer.rect(x, y, Topography.CHUNK_SIZE * Topography.TILE_SIZE, Topography.CHUNK_SIZE * Topography.TILE_SIZE);
 			UserInterface.shapeRenderer.end();
 			Gdx.gl.glDisable(GL10.GL_BLEND);

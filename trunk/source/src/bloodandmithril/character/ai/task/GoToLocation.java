@@ -3,7 +3,7 @@ package bloodandmithril.character.ai.task;
 import java.util.Map.Entry;
 
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path;
@@ -116,10 +116,10 @@ public class GoToLocation extends AITask {
 			float endY = nextPoint.waypoint.y;
 
 			UserInterface.shapeRenderer.line(
-				Fortress.worldToScreenX(startX),
-				Fortress.worldToScreenY(startY),
-				Fortress.worldToScreenX(endX),
-				Fortress.worldToScreenY(endY)
+				BloodAndMithrilClient.worldToScreenX(startX),
+				BloodAndMithrilClient.worldToScreenY(startY),
+				BloodAndMithrilClient.worldToScreenX(endX),
+				BloodAndMithrilClient.worldToScreenY(endY)
 			);
 
 			UserInterface.shapeRenderer.end();
@@ -135,9 +135,9 @@ public class GoToLocation extends AITask {
 	public void renderFinalWayPoint() {
 		if (!path.isEmpty()) {
 			Vector2 waypoint = path.getWayPoints().lastEntry().getValue().waypoint;
-			Fortress.spriteBatch.setShader(Shaders.pass);
-			Shaders.pass.setUniformMatrix("u_projTrans", Fortress.cam.combined);
-			Fortress.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
+			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
+			Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+			BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
 		}
 	}
 

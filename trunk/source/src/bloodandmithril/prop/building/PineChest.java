@@ -1,8 +1,9 @@
 package bloodandmithril.prop.building;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
@@ -32,13 +33,13 @@ public class PineChest extends Chest {
 
 	@Override
 	public void render() {
-		Fortress.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
+		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
 	}
 
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(Fortress.getMouseScreenX(), Fortress.getMouseScreenY());
+		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 
 		menu.addMenuItem(
 			new ContextMenuItem(
@@ -50,8 +51,8 @@ public class PineChest extends Chest {
 							new MessageWindow(
 								"A chest made from pine",
 								Color.ORANGE,
-								Fortress.WIDTH/2 - 250,
-								Fortress.HEIGHT/2 + 125,
+								BloodAndMithrilClient.WIDTH/2 - 250,
+								BloodAndMithrilClient.HEIGHT/2 + 125,
 								500,
 								250,
 								"Wooden chest",
@@ -69,7 +70,8 @@ public class PineChest extends Chest {
 			)
 		);
 
-		if (GameWorld.selectedIndividuals.size() == 1) {
+		if (GameWorld.selectedIndividuals.size() == 1 &&
+		  !(GameWorld.selectedIndividuals.iterator().next().ai.getCurrentTask() instanceof Trading)) {
 			final Individual selected = GameWorld.selectedIndividuals.iterator().next();
 			ContextMenuItem openChestMenuItem = new ContextMenuItem(
 				"Open",

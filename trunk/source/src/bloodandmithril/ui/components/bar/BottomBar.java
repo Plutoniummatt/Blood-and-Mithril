@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -105,8 +105,8 @@ public class BottomBar extends Component {
 		}
 
 		ContextMenu newMenu = new ContextMenu(
-			Fortress.getMouseScreenX(),
-			Fortress.getMouseScreenY() + (size + 3) * 22
+			BloodAndMithrilClient.getMouseScreenX(),
+			BloodAndMithrilClient.getMouseScreenY() + (size + 3) * 22
 		);
 
 		for (ContextMenuItem item : items) {
@@ -199,8 +199,8 @@ public class BottomBar extends Component {
 		if (existing == null) {
 			windowsCopy.add(
 				new MainMenuWindow(
-					Fortress.WIDTH/2 - 100,
-					Fortress.HEIGHT/2 + 55,
+					BloodAndMithrilClient.WIDTH/2 - 100,
+					BloodAndMithrilClient.HEIGHT/2 + 55,
 					200,
 					110,
 					"Main menu",
@@ -222,8 +222,8 @@ public class BottomBar extends Component {
 	 * True if mouse coords are inside the {@link BottomBar}
 	 */
 	private boolean isWithin() {
-		int x = Fortress.getMouseScreenX();
-		int y = Fortress.getMouseScreenY();
+		int x = BloodAndMithrilClient.getMouseScreenX();
+		int y = BloodAndMithrilClient.getMouseScreenY();
 		return x >= 0 && x <= Gdx.graphics.getWidth() && y >= 0 && y <= 50;
 	}
 
@@ -233,12 +233,12 @@ public class BottomBar extends Component {
 	 */
 	@Override
 	protected void internalComponentRender() {
-		Fortress.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.begin();
 		renderRectangle(0, 34, Gdx.graphics.getWidth(), 34, true, Color.BLACK);
 		renderBox(-left.getRegionWidth(), 32, Gdx.graphics.getWidth(), 34, true, Color.DARK_GRAY);
-		mainMenu.render(!Fortress.paused && !GameSaver.isSaving(), 1f);
-		windows.render(!Fortress.paused && !GameSaver.isSaving(), 1f);
-		Fortress.spriteBatch.end();
+		mainMenu.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
+		windows.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
+		BloodAndMithrilClient.spriteBatch.end();
 	}
 
 

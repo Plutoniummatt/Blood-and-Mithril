@@ -3,7 +3,7 @@ package bloodandmithril.ui.components;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Logger;
@@ -103,15 +103,15 @@ public abstract class Component {
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? borderColor.a * alpha : borderColor.a * 0.4f * alpha);
 		Shaders.filter.end();
-		Fortress.spriteBatch.setShader(Shaders.filter);
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
 
-		Fortress.spriteBatch.draw(topLeft, x, y);
-		Fortress.spriteBatch.draw(topRight, x + topLeft.getRegionWidth() + length, y);
-		Fortress.spriteBatch.draw(bottomLeft, x, y - height - bottom.getRegionHeight());
-		Fortress.spriteBatch.draw(bottomRight, x + topLeft.getRegionWidth() + length, y - height - bottom.getRegionHeight());
+		BloodAndMithrilClient.spriteBatch.draw(topLeft, x, y);
+		BloodAndMithrilClient.spriteBatch.draw(topRight, x + topLeft.getRegionWidth() + length, y);
+		BloodAndMithrilClient.spriteBatch.draw(bottomLeft, x, y - height - bottom.getRegionHeight());
+		BloodAndMithrilClient.spriteBatch.draw(bottomRight, x + topLeft.getRegionWidth() + length, y - height - bottom.getRegionHeight());
 
 
-		Fortress.spriteBatch.draw(
+		BloodAndMithrilClient.spriteBatch.draw(
 			top,
 			x  + topLeft.getRegionWidth(),
 			y,
@@ -119,7 +119,7 @@ public abstract class Component {
 			top.getRegionHeight()
 		);
 
-		Fortress.spriteBatch.draw(
+		BloodAndMithrilClient.spriteBatch.draw(
 			bottom,
 			x + topLeft.getRegionWidth(),
 			y - height - bottomLeft.getRegionHeight(),
@@ -127,7 +127,7 @@ public abstract class Component {
 			bottom.getRegionHeight()
 		);
 
-		Fortress.spriteBatch.draw(
+		BloodAndMithrilClient.spriteBatch.draw(
 			left,
 			x,
 			y - height,
@@ -135,7 +135,7 @@ public abstract class Component {
 			height
 		);
 
-		Fortress.spriteBatch.draw(
+		BloodAndMithrilClient.spriteBatch.draw(
 			right,
 			x + topLeft.getRegionWidth() + length,
 			y - height,

@@ -40,6 +40,18 @@ public class Logger {
 	/**
 	 * Prints a debug message
 	 */
+	public static void networkDebug(String message, LogLevel level) {
+		if (System.getProperty("generationDebug") != null && LogLevel.valueOf(System.getProperty("networkDebug")).value >= level.value) {
+			System.out.println(message);
+		} else if (level == LogLevel.OVERRIDE) {
+			System.out.println(message);
+		}
+	}
+
+
+	/**
+	 * Prints a debug message
+	 */
 	public static void saverDebug(String message, LogLevel level) {
 		if (System.getProperty("saverDebug") != null && LogLevel.valueOf(System.getProperty("generalDebug")).value >= level.value) {
 			System.out.println(message);
@@ -63,7 +75,7 @@ public class Logger {
 	 * @author Matt
 	 */
 	public enum LogLevel {
-		TRACE(4), DEBUG(3), INFO(2), WARN(1);
+		TRACE(4), DEBUG(3), INFO(2), WARN(1), OVERRIDE(0);
 		public final int value;
 
 		private LogLevel(int value) {

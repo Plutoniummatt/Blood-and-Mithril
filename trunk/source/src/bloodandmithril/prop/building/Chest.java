@@ -7,12 +7,12 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * A chest, stores things.
  *
- * This is an extension of {@link Building}
+ * This is an extension of {@link Construction}
  * This also contains a extension of {@link Container}, which is the actual inventory of the chest
  *
  * @author Matt
  */
-public abstract class Chest extends Building {
+public abstract class Chest extends Construction {
 
 	/** The inventory {@link Container} that backs this {@link Chest} */
 	protected Container container;

@@ -5,7 +5,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Task;
@@ -63,7 +63,7 @@ public class ContextMenu extends Component {
 	@Override
 	protected void internalComponentRender() {
 
-		Fortress.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.begin();
 		int maxHeight = 20 * (menuItems.size() + 1);
 		int maxLength = 0;
 		for (ContextMenuItem item : menuItems) {
@@ -82,7 +82,7 @@ public class ContextMenu extends Component {
 			i++;
 		}
 
-		Fortress.spriteBatch.end();
+		BloodAndMithrilClient.spriteBatch.end();
 	}
 
 
@@ -99,7 +99,7 @@ public class ContextMenu extends Component {
 				copy.add(item.menu);
 			}
 		}
-		return isInside(Fortress.getMouseScreenX(), Fortress.getMouseScreenY());
+		return isInside(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 	}
 
 

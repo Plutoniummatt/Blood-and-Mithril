@@ -12,7 +12,6 @@ public class ChunkMap {
 	/** The chunk map - an array list of columns */
 	public ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Chunk>> chunkMap;
 
-	
 	/**
 	 * Constructor
 	 */
@@ -20,7 +19,7 @@ public class ChunkMap {
 		chunkMap = new ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Chunk>>();
 	}
 
-	
+
 	/**
 	 * Puts a column of chunks into the chunkMap
 	 */
@@ -28,7 +27,7 @@ public class ChunkMap {
 		chunkMap.put(x, chunks);
 	}
 
-	
+
 	/**
 	 * @param chunkX - x-world chunk coord
 	 * @param chunkY - y-world chunk coord
@@ -41,8 +40,8 @@ public class ChunkMap {
 			return chunkMap.get(chunkX).get(chunkY) != null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param x - x-world coord
 	 * @param y - y-world coord
@@ -51,11 +50,11 @@ public class ChunkMap {
 	public boolean doesChunkExist(float x, float y) {
 		int chunkX = Topography.convertToChunkCoord(x);
 		int chunkY = Topography.convertToChunkCoord(y);
-		
+
 		return doesChunkExist(chunkX, chunkY);
 	}
-	
-	
+
+
 	/**
 	 * @param x - x-world chunk coord
 	 * @param y - y-world chunk coord
@@ -65,7 +64,7 @@ public class ChunkMap {
 		return doesChunkExist(location.x, location.y);
 	}
 
-	
+
 	/**
 	 * @param chunkX - the x chunk coordinate of the chunk column you want to get.
 	 * @return the column of chunks you wanted.
@@ -74,7 +73,7 @@ public class ChunkMap {
 		return chunkMap.get(chunkX);
 	}
 
-	
+
 	/**
 	 * Adds a chunk to the chunkMap
 	 */

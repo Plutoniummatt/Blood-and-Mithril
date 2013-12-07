@@ -1,6 +1,6 @@
 package bloodandmithril.persistence;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.persistence.character.IndividualLoader;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.world.Epoch;
@@ -40,8 +40,8 @@ public class GameLoader {
 	private static void loadCameraPosition() {
 		Vector2 savedCameraPosition = ParameterPersistenceService.getParameters().getSavedCameraPosition();
 		if (savedCameraPosition != null) {
-			Fortress.cam.position.x = savedCameraPosition.x;
-			Fortress.cam.position.y = savedCameraPosition.y;
+			BloodAndMithrilClient.cam.position.x = savedCameraPosition.x;
+			BloodAndMithrilClient.cam.position.y = savedCameraPosition.y;
 		}
 	}
 }

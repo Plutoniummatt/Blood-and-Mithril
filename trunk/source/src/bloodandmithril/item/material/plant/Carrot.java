@@ -1,6 +1,6 @@
 package bloodandmithril.item.material.plant;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
@@ -50,8 +50,8 @@ public class Carrot extends Item implements Consumable {
 		return new MessageWindow(
 			"The carrot is a root vegetable, usually orange in color. It has a crisp texture when fresh.",
 			Color.ORANGE,
-			Fortress.getMouseScreenX(),
-			Fortress.getMouseScreenY(),
+			BloodAndMithrilClient.getMouseScreenX(),
+			BloodAndMithrilClient.getMouseScreenY(),
 			350,
 			200,
 			"Carrot",

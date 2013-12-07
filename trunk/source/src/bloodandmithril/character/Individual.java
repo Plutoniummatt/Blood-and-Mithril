@@ -2,22 +2,33 @@ package bloodandmithril.character;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.window.IndividualInfoWindow;
+import bloodandmithril.ui.components.window.InventoryWindow;
+import bloodandmithril.ui.components.window.TextInputWindow;
+import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
+import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
@@ -28,6 +39,7 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 /**
  * Class representing a character, PC or NPC.
@@ -45,6 +57,9 @@ public abstract class Individual extends Equipper {
 
 	/** The AI responsible for this character */
 	public ArtificialIntelligence ai;
+
+	/** Whether this {@link Individual} can trade */
+	public boolean canTradeWith;
 
 	/** Whether or not this character is able to be controlled by the player */
 	public boolean controllable;
@@ -91,7 +106,7 @@ public abstract class Individual extends Equipper {
 	/**
 	 * Constructor
 	 */
-	protected Individual(IndividualIdentifier id, IndividualState state, boolean controllable, float aiDelay, float inventoryMassCapacity, int width, int height, int safetyHeight, Box interactionBox) {
+	protected Individual(IndividualIdentifier id, IndividualState state, boolean controllable, float aiDelay, float inventoryMassCapacity, int width, int height, int safetyHeight, Box interactionBox, boolean canTradeWith) {
 		super(inventoryMassCapacity);
 		this.id = id;
 		this.state = state;
@@ -101,6 +116,7 @@ public abstract class Individual extends Equipper {
 		this.height = height;
 		this.safetyHeight = safetyHeight;
 		this.interactionBox = interactionBox;
+		this.canTradeWith = canTradeWith;
 	}
 
 
@@ -122,9 +138,9 @@ public abstract class Individual extends Equipper {
 	/** Renders any decorations for UI */
 	public void renderArrows() {
 		if (isSelected()) {
-			Fortress.spriteBatch.setShader(Shaders.pass);
-			Shaders.pass.setUniformMatrix("u_projTrans", Fortress.cam.combined);
-			Fortress.spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + height);
+			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
+			Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+			BloodAndMithrilClient.spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + height);
 		}
 	}
 
@@ -411,6 +427,199 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	/** Constructs a {@link ContextMenu} */
+	public ContextMenu getContextMenu() {
+		ContextMenu contextMenuToReturn = new ContextMenu(0, 0);
+
+		final Individual thisIndividual = this;
+
+		ContextMenuItem controlOrReleaseMenuItem = thisIndividual.selected ?
+		new ContextMenuItem(
+			"Deselect",
+			new Task() {
+				@Override
+				public void execute() {
+					thisIndividual.selected = false;
+					GameWorld.selectedIndividuals.remove(thisIndividual);
+					clearCommands();
+					ai.setToAuto(false);
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		) :
+
+		new ContextMenuItem(
+			"Select",
+			new Task() {
+				@Override
+				public void execute() {
+					thisIndividual.selected = true;
+					GameWorld.selectedIndividuals.add(thisIndividual);
+					ai.setToManual();
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+
+		ContextMenuItem showInfoMenuItem = new ContextMenuItem(
+			"Show info",
+			new Task() {
+				@Override
+				public void execute() {
+					IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
+						thisIndividual,
+						BloodAndMithrilClient.getMouseScreenX(),
+						BloodAndMithrilClient.getMouseScreenY(),
+						300,
+						320,
+						id.getSimpleName() + " - Info",
+						true,
+						250, 200
+					);
+					UserInterface.addLayeredComponentUnique(individualInfoWindow, id.getSimpleName() + " - Info");
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+
+
+		final ContextMenu secondaryMenu = new ContextMenu(0, 0,
+			new ContextMenuItem(
+				"Change name",
+				new Task() {
+					@Override
+					public void execute() {
+						UserInterface.addLayeredComponent(
+							new TextInputWindow(
+								BloodAndMithrilClient.WIDTH / 2 - 125,
+								BloodAndMithrilClient.HEIGHT/2 + 50,
+								250,
+								100,
+								"Test",
+								250,
+								100,
+								new JITTask() {
+									@Override
+									public void execute(Object... args) {
+										thisIndividual.id.nickName = args[0].toString();
+									}
+								}
+							)
+						);
+					}
+				},
+				Color.WHITE,
+				getToolTipTextColor(),
+				Color.GRAY,
+				null
+			)
+		);
+
+		ContextMenuItem editMenuItem = new ContextMenuItem(
+			"Edit",
+			new Task() {
+				@Override
+				public void execute() {
+					secondaryMenu.x = BloodAndMithrilClient.getMouseScreenX();
+					secondaryMenu.y = BloodAndMithrilClient.getMouseScreenY();
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			secondaryMenu
+		);
+
+		ContextMenuItem inventoryMenuItem = new ContextMenuItem(
+			"Inventory",
+			new Task() {
+				@Override
+				public void execute() {
+					InventoryWindow inventoryWindow = new InventoryWindow(
+						thisIndividual,
+						BloodAndMithrilClient.getMouseScreenX(),
+						BloodAndMithrilClient.getMouseScreenY(),
+						(id.getSimpleName() + " - Inventory").length() * 10 + 50,
+						200,
+						id.getSimpleName() + " - Inventory",
+						true,
+						150, 150
+					);
+					UserInterface.addLayeredComponentUnique(inventoryWindow, id.getSimpleName() + " - Inventory");
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+
+		ContextMenuItem tradeMenuItem = new ContextMenuItem(
+			"Trade with",
+			new Task() {
+				@Override
+				public void execute() {
+					for (Individual indi : GameWorld.selectedIndividuals) {
+						if (indi != thisIndividual) {
+							indi.ai.setCurrentTask(
+								new TradeWith(indi, thisIndividual)
+							);
+						}
+					}
+
+					for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
+						if (component instanceof Window) {
+							if (((Window)component).title.equals(id.getSimpleName() + " - Inventory")) {
+								UserInterface.layeredComponents.remove(component);
+							}
+						}
+					}
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+
+		if (controllable) {
+			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
+			contextMenuToReturn.addMenuItem(editMenuItem);
+
+			if (!(ai.getCurrentTask() instanceof Trading)) {
+				contextMenuToReturn.addMenuItem(inventoryMenuItem);
+			}
+		}
+
+		contextMenuToReturn.addMenuItem(showInfoMenuItem);
+
+		if (!GameWorld.selectedIndividuals.isEmpty() &&
+			 GameWorld.selectedIndividuals.size() == 1 &&
+			!GameWorld.selectedIndividuals.contains(thisIndividual) &&
+		     GameWorld.selectedIndividuals.iterator().next().canTradeWith &&
+		   !(ai.getCurrentTask() instanceof Trading) &&
+		   !(GameWorld.selectedIndividuals.iterator().next().ai.getCurrentTask() instanceof Trading) &&
+		     canTradeWith) {
+			contextMenuToReturn.addMenuItem(tradeMenuItem);
+		}
+
+		for (ContextMenuItem item : internalGetContextMenuItems()) {
+			contextMenuToReturn.addMenuItem(item);
+		}
+
+		return contextMenuToReturn;
+	}
+
+
 	/**
 	 * A condition that applies to a character
 	 *
@@ -455,7 +664,7 @@ public abstract class Individual extends Equipper {
 
 
 	/** Constructs a implementation-specific {@link ContextMenu} */
-	public abstract ContextMenu getContextMenu();
+	protected abstract List<ContextMenuItem> internalGetContextMenuItems();
 
 
 	/** Gets the description for this {@link Individual} */

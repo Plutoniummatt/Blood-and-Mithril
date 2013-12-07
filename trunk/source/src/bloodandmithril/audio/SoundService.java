@@ -1,7 +1,7 @@
 package bloodandmithril.audio;
 
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -29,7 +29,7 @@ public class SoundService {
 	
 	/** Returns the pan value in relation to camera location */
 	public static float getPan(Vector2 location) {
-		float panValue = (location.x - Fortress.cam.position.x) / (Fortress.WIDTH / 2);
+		float panValue = (location.x - BloodAndMithrilClient.cam.position.x) / (BloodAndMithrilClient.WIDTH / 2);
 		
 		if (panValue > 0f) {
 			return Math.min(panValue, 1f);
@@ -78,10 +78,10 @@ public class SoundService {
 	
 	/** Reutns the volume in relation to camera location */
 	public static float getVolumne(Vector2 location) {
-		Vector2 camPos = new Vector2(Fortress.cam.position.x, Fortress.cam.position.y);
+		Vector2 camPos = new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y);
 		
 		float distance = Math.abs(location.cpy().sub(camPos).len());
-		float volume = Math.max(1f - distance / Fortress.WIDTH, 0f);
+		float volume = Math.max(1f - distance / BloodAndMithrilClient.WIDTH, 0f);
 		
 		return volume;
 	}

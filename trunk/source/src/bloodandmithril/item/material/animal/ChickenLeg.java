@@ -1,6 +1,6 @@
 package bloodandmithril.item.material.animal;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.item.Consumable;
@@ -41,8 +41,8 @@ public class ChickenLeg extends Item implements Consumable {
 			MessageWindow messageWindow = new MessageWindow(
 				"Elves are vegans, they do not eat meat.",
 				Color.RED,
-				Fortress.getMouseScreenX(),
-				Fortress.getMouseScreenY(),
+				BloodAndMithrilClient.getMouseScreenX(),
+				BloodAndMithrilClient.getMouseScreenY(),
 				470,
 				120,
 				"Info",
@@ -63,8 +63,8 @@ public class ChickenLeg extends Item implements Consumable {
 		return new MessageWindow(
 			"A chicken leg, this is dark meat and is the lower part of the leg.",
 			Color.ORANGE,
-			Fortress.getMouseScreenX(),
-			Fortress.getMouseScreenY(),
+			BloodAndMithrilClient.getMouseScreenX(),
+			BloodAndMithrilClient.getMouseScreenY(),
 			350,
 			200,
 			"Chicken leg",

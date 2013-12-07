@@ -1,22 +1,22 @@
 package bloodandmithril.prop.building;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.prop.Prop;
 
 /**
- * A building
+ * A Construction
  *
  * @author Matt
  */
-public abstract class Building extends Prop {
+public abstract class Construction extends Prop {
 
-	/** Dimensions of this {@link Building} */
+	/** Dimensions of this {@link Construction} */
 	protected final int width, height;
 
 	/**
 	 * Constructor
 	 */
-	protected Building(float x, float y, int width, int height, boolean grounded) {
+	protected Construction(float x, float y, int width, int height, boolean grounded) {
 		super(x, y, grounded);
 		this.width = width;
 		this.height = height;
@@ -25,8 +25,8 @@ public abstract class Building extends Prop {
 
 	@Override
 	public boolean isMouseOver() {
-		float mx = Fortress.getMouseWorldX();
-		float my = Fortress.getMouseWorldY();
+		float mx = BloodAndMithrilClient.getMouseWorldX();
+		float my = BloodAndMithrilClient.getMouseWorldY();
 
 		return mx > position.x - width/2 && mx < position.x + width/2 && my > position.y && my < position.y + height;
 	}

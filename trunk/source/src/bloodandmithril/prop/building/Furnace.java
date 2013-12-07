@@ -1,7 +1,7 @@
 package bloodandmithril.prop.building;
 
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
-public class Furnace extends Building {
+public class Furnace extends Construction {
 
 	/** {@link TextureRegion} of the {@link Furnace} */
 	private static TextureRegion furnace = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 57, 68);
@@ -40,7 +40,7 @@ public class Furnace extends Building {
 	@Override
 	public ContextMenu getContextMenu() {
 
-		ContextMenu menu = new ContextMenu(Fortress.getMouseScreenX(), Fortress.getMouseScreenY(),
+		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(),
 			new ContextMenuItem(
 				"Oh hai I'm a furnace!",
 				new Task() {
@@ -50,8 +50,8 @@ public class Furnace extends Building {
 							new MessageWindow(
 								"You clicked me",
 								Color.ORANGE,
-								Fortress.getMouseScreenX(),
-								Fortress.getMouseScreenY(),
+								BloodAndMithrilClient.getMouseScreenX(),
+								BloodAndMithrilClient.getMouseScreenY(),
 								350,
 								200,
 								"Furnace",
@@ -77,6 +77,6 @@ public class Furnace extends Building {
 	public void render() {
 		float alpha = 0.9f + 0.01f * (Util.getRandom().nextBoolean() ? -1f : 1f);
 		light.color.a = alpha < 0.8f ? 0.8f : alpha > 1f ? 1f : alpha;
-		Fortress.spriteBatch.draw(furnace, position.x - width / 2, position.y);
+		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
 	}
 }

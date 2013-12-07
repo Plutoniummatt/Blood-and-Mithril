@@ -7,7 +7,7 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -67,8 +67,8 @@ public class MainMenuWindow extends Window {
 				new MessageWindow(
 					"This is the options window",
 					Color.ORANGE,
-					Fortress.WIDTH/2 - 150,
-					Fortress.HEIGHT/2 + 100,
+					BloodAndMithrilClient.WIDTH/2 - 150,
+					BloodAndMithrilClient.HEIGHT/2 + 100,
 					300,
 					200,
 					"Options",

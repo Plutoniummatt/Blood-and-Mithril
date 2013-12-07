@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -157,8 +157,8 @@ public abstract class Window extends Component {
 
 	/** True if mouse is within the window */
 	private boolean isWithin() {
-		int posX = Fortress.getMouseScreenX();
-		int posY = Fortress.getMouseScreenY();
+		int posX = BloodAndMithrilClient.getMouseScreenX();
+		int posY = BloodAndMithrilClient.getMouseScreenY();
 		return posX > x && posX < x + width && posY < y && posY > y - height;
 	}
 
@@ -167,8 +167,8 @@ public abstract class Window extends Component {
 	private void determinePositioning() {
 		oldX = x;
 		oldY = y;
-		mx = Fortress.getMouseScreenX();
-		my = Fortress.getMouseScreenY();
+		mx = BloodAndMithrilClient.getMouseScreenX();
+		my = BloodAndMithrilClient.getMouseScreenY();
 
 		if (mx > x && mx < x + width && my < y && my > y - 25) {
 			positioning = true;
@@ -221,8 +221,8 @@ public abstract class Window extends Component {
 			new Task() {
 				@Override
 				public void execute() {
-					mx = Fortress.getMouseScreenX();
-					my = Fortress.getMouseScreenY();
+					mx = BloodAndMithrilClient.getMouseScreenX();
+					my = BloodAndMithrilClient.getMouseScreenY();
 					oldLength = width;
 					oldHeight = height;
 					resizing = true;
@@ -248,20 +248,20 @@ public abstract class Window extends Component {
 		resize();
 		reposition();
 
-		Fortress.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.begin();
 		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), width, height, active, backGroundColor);
 		renderBox(x, y, width, height, active, borderColor);
 		renderSeparator();
 		renderWindowButtons();
 		renderTitle();
-		Fortress.spriteBatch.end();
+		BloodAndMithrilClient.spriteBatch.end();
 
-		Fortress.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.begin();
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		internalWindowRender();
 		Gdx.gl.glDisable(GL10.GL_BLEND);
-		Fortress.spriteBatch.end();
+		BloodAndMithrilClient.spriteBatch.end();
 	}
 
 
@@ -269,8 +269,8 @@ public abstract class Window extends Component {
 	private void reposition() {
 		if (positioning) {
 			if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
-				x = oldX + Fortress.getMouseScreenX() - mx;
-				y = oldY + Fortress.getMouseScreenY() - my;
+				x = oldX + BloodAndMithrilClient.getMouseScreenX() - mx;
+				y = oldY + BloodAndMithrilClient.getMouseScreenY() - my;
 			} else {
 				positioning = false;
 			}
@@ -282,8 +282,8 @@ public abstract class Window extends Component {
 	private void resize() {
 		if (resizing) {
 			if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
-				int calcualtedNewLength = oldLength + Fortress.getMouseScreenX() - mx;
-				int calcualtedNewHeight = oldHeight - Fortress.getMouseScreenY() + my;
+				int calcualtedNewLength = oldLength + BloodAndMithrilClient.getMouseScreenX() - mx;
+				int calcualtedNewHeight = oldHeight - BloodAndMithrilClient.getMouseScreenY() + my;
 				width = calcualtedNewLength < minLength ? minLength : calcualtedNewLength;
 				height = calcualtedNewHeight < minHeight ? minHeight : calcualtedNewHeight;
 			} else {
@@ -297,9 +297,9 @@ public abstract class Window extends Component {
 	 * Renders the separator that separates the body of the window from the head
 	 */
 	private void renderSeparator() {
-		Fortress.spriteBatch.draw(separatorEnd, x + left.getRegionWidth() + 4, y - 20);
-		Fortress.spriteBatch.draw(separatorBody, x + left.getRegionWidth() + 5, y - 21, width - 10, separatorBody.getRegionHeight());
-		Fortress.spriteBatch.draw(separatorEnd, x + width - 3, y - 20);
+		BloodAndMithrilClient.spriteBatch.draw(separatorEnd, x + left.getRegionWidth() + 4, y - 20);
+		BloodAndMithrilClient.spriteBatch.draw(separatorBody, x + left.getRegionWidth() + 5, y - 21, width - 10, separatorBody.getRegionHeight());
+		BloodAndMithrilClient.spriteBatch.draw(separatorEnd, x + width - 3, y - 20);
 	}
 
 
@@ -320,7 +320,7 @@ public abstract class Window extends Component {
 	 * Renders the window buttons of this {@link Window}
 	 */
 	private void renderWindowButtons() {
-		Fortress.spriteBatch.setShader(Shaders.filter);
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
 
 		closeButton.render(
 			x + width - 7,
@@ -351,13 +351,13 @@ public abstract class Window extends Component {
 	 * Render the title of this window
 	 */
 	private void renderTitle() {
-		Fortress.spriteBatch.setShader(Shaders.text);
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		if (active) {
 			defaultFont.setColor(1f, 1f, 1f, 1f * alpha);
 		} else {
 			defaultFont.setColor(0.5f, 0.5f, 0.5f, 0.7f * alpha);
 		}
-		defaultFont.draw(Fortress.spriteBatch, truncate(title), x + 6, y - 3);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate(title), x + 6, y - 3);
 		defaultFont.setColor(1f, 1f, 1f, 1f);
 	}
 }

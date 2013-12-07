@@ -1,16 +1,14 @@
 package bloodandmithril.character.ai.task;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.building.Chest.ChestContainer;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.ui.components.window.Window;
-import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
@@ -41,12 +39,10 @@ public class TradeWith extends CompositeAITask {
 			location = ((Individual) proposee).state.position;
 		}
 
-		currentTask = new GoToLocation(
-			proposer,
-			new WayPoint(location, 40f),
-			false,
-			40f,
-			true
+		currentTask = new GoToMovingLocation(
+			proposer.id,
+			location,
+			50f
 		);
 
 		appendTask(
@@ -68,13 +64,18 @@ public class TradeWith extends CompositeAITask {
 
 				@Override
 				public void execute() {
+
 					if (proposee instanceof Individual) {
-						Individual indi = (Individual)proposee;
+						Individual proposeeCasted = (Individual)proposee;
+
+						if (proposer.getDistanceFrom(proposeeCasted.state.position) > 64f) {
+							return;
+						}
 
 						for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
 							if (component instanceof Window) {
 								if (((Window)component).title.equals(proposer.id.getSimpleName() + " - Inventory") ||
-								((Window)component).title.equals(indi.id.getSimpleName() + " - Inventory")) {
+								((Window)component).title.equals(proposeeCasted.id.getSimpleName() + " - Inventory")) {
 									UserInterface.removeLayeredComponent(component);
 								}
 							}
@@ -82,42 +83,50 @@ public class TradeWith extends CompositeAITask {
 
 						UserInterface.addLayeredComponentUnique(
 							new TradeWindow(
-								Fortress.WIDTH / 2 - 350,
-								Fortress.HEIGHT / 2 + 100,
+								BloodAndMithrilClient.WIDTH / 2 - 350,
+								BloodAndMithrilClient.HEIGHT / 2 + 100,
 								700,
 								200,
-								"Trade between " + indi.id.firstName + " and " + proposer.id.firstName,
+								"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName,
 								true,
 								700,
 								200,
 								true,
-								GameWorld.selectedIndividuals.iterator().next(),
-								proposer
+								proposer,
+								proposeeCasted
 							),
-							"Trade between " + indi.id.firstName + " and " + proposer.id.firstName
+							"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName
 						);
 
 						proposer.clearCommands();
 						proposer.ai.setCurrentTask(new Trading(proposer.id));
-						indi.clearCommands();
-						indi.ai.setCurrentTask(new Trading(indi.id));
+						proposeeCasted.clearCommands();
+						proposeeCasted.ai.setCurrentTask(new Trading(proposeeCasted.id));
 					} else if (proposee instanceof ChestContainer) {
+
+						if (proposer.getDistanceFrom(((ChestContainer)proposee).getPositionOfChest()) > 64f) {
+							return;
+						}
+
 						UserInterface.addLayeredComponentUnique(
 							new TradeWindow(
-								Fortress.WIDTH/2 - 350,
-								Fortress.HEIGHT/2 + 100,
+								BloodAndMithrilClient.WIDTH/2 - 350,
+								BloodAndMithrilClient.HEIGHT/2 + 100,
 								700,
 								200,
-								GameWorld.selectedIndividuals.iterator().next().id.getSimpleName() + " interacting with pine chest",
+								proposer.id.getSimpleName() + " interacting with pine chest",
 								true,
 								700,
 								200,
 								true,
-								GameWorld.selectedIndividuals.iterator().next(),
+								proposer,
 								proposee
 							),
-							GameWorld.selectedIndividuals.iterator().next().id.getSimpleName() + " interacting with pine chest"
+							proposer.id.getSimpleName() + " interacting with pine chest"
 						);
+
+						proposer.clearCommands();
+						proposer.ai.setCurrentTask(new Trading(proposer.id));
 					}
 				}
 			}

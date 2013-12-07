@@ -1,6 +1,6 @@
 package bloodandmithril.item.material.mineral;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -57,8 +57,8 @@ public class YellowSand extends Item {
 		return new MessageWindow(
 			"Sand is a naturally occurring granular material composed of finely divided rock and mineral particles.",
 			Color.ORANGE,
-			Fortress.getMouseScreenX(),
-			Fortress.getMouseScreenY(),
+			BloodAndMithrilClient.getMouseScreenX(),
+			BloodAndMithrilClient.getMouseScreenY(),
 			350,
 			200,
 			"Sand",

@@ -1,6 +1,6 @@
 package bloodandmithril.item.equipment;
 
-import bloodandmithril.Fortress;
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -40,8 +40,8 @@ public class Broadsword extends OneHandedWeapon {
 		return new MessageWindow(
 			"Broadswords are heavy military swords, contrasting with rapier, the light sword worn with civilian dress. Since the blade of the rapier had become narrow and thrust-oriented, the heavier blades became known as Broadsword",
 			Color.ORANGE,
-			Fortress.getMouseScreenX(),
-			Fortress.getMouseScreenY(),
+			BloodAndMithrilClient.getMouseScreenX(),
+			BloodAndMithrilClient.getMouseScreenY(),
 			350,
 			200,
 			"Broadsword",
@@ -64,6 +64,6 @@ public class Broadsword extends OneHandedWeapon {
 
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
-		Fortress.spriteBatch.draw(GameWorld.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 13 : 13), position.y - 7, flipX ? texture.getRegionWidth() - 13 : 13, 7, texture.getRegionWidth(), texture.getRegionHeight(), 1f, 1f, angle, 417, 621, 52, 11, flipX, false);
+		BloodAndMithrilClient.spriteBatch.draw(GameWorld.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 13 : 13), position.y - 7, flipX ? texture.getRegionWidth() - 13 : 13, 7, texture.getRegionWidth(), texture.getRegionHeight(), 1f, 1f, angle, 417, 621, 52, 11, flipX, false);
 	}
 }
