@@ -10,6 +10,7 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
@@ -115,8 +116,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		SoundService.changeMusic(2f, SoundService.music1);
 
 		// These should be server-side
-		gameWorld = new GameWorld();
+		gameWorld = new GameWorld(false);
 		GameLoader.load();
+
+		if ("false".equals(System.getProperty("server"))) {
+			ClientServerInterface.setupAndConnect();
+		}
 	}
 
 
@@ -124,6 +129,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Loads global resources, client side
 	 */
 	private void loadResources() {
+		GameWorld.setup();
 		Fonts.loadFonts();
 		Individual.setup();
 		Shaders.setup();
@@ -456,7 +462,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
 		if (!paused && delta < LAG_SPIKE_TOLERANCE && !GameSaver.isSaving()) {
 			Shaders.updateShaderUniforms();
-			gameWorld.update(delta);
+			gameWorld.update(delta, (int) cam.position.x, (int) cam.position.y);
 		}
 
 		leftDoubleClickTimer += delta;

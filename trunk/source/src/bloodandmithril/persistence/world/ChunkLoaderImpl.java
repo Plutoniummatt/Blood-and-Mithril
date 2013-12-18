@@ -16,13 +16,13 @@ import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ZipHelper;
 import bloodandmithril.util.Logger;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.topography.Chunk;
-import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Chunk.ChunkData;
+import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.Gdx;
 
@@ -84,7 +84,7 @@ public class ChunkLoaderImpl implements ChunkLoader {
 
 
 	@Override
-	public void load(final Topography topography, final int chunkX, final int chunkY) {
+	public boolean load(final Topography topography, final int chunkX, final int chunkY) {
 		if (loaderThread.isAlive()) {
 			if (chunksInQueue.get(chunkX, chunkY) == null) {
 				loaderTasks.add(new Task() {
@@ -94,6 +94,9 @@ public class ChunkLoaderImpl implements ChunkLoader {
 					}
 				});
 				chunksInQueue.put(chunkX, chunkY, true);
+				return true;
+			} else {
+				return false;
 			}
 		} else {
 			throw new RuntimeException("Something has caused the chunk loading thread to terminate");
