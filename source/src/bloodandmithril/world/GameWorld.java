@@ -37,19 +37,10 @@ public class GameWorld {
 	public static float GRAVITY = 1200;
 
 	/** Topography of the game world */
-	private final Topography topography;
-
-	/** Textures */
-	public static final Texture gameWorldTexture = new Texture(Gdx.files.internal("data/image/gameWorld.png"));
-	public static final Texture individualTexture = new Texture(Gdx.files.internal("data/image/character/individual.png"));
+	public static Topography topography;
 
 	/** Lights */
 	public static List<Light> lights = new ArrayList<Light>();
-
-	/** The frame buffer used for tiles */
-	private static FrameBuffer fBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
-	private static FrameBuffer bBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
-	private static FrameBuffer bBufferLit = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 
 	/** {@link Individual} that are selected for manual control */
 	public static HashSet<Individual> selectedIndividuals = new HashSet<Individual>();
@@ -59,12 +50,30 @@ public class GameWorld {
 
 	public static ArrayList<Prop> props = new ArrayList<>();
 
+	/** Textures */
+	public static Texture gameWorldTexture;
+	public static Texture individualTexture;
+
+	/** The frame buffer used for tiles */
+	private static FrameBuffer fBuffer;
+	private static FrameBuffer bBuffer;
+	private static FrameBuffer bBufferLit;
+
 
 	/**
 	 * Constructor
 	 */
-	public GameWorld() {
-		topography = new Topography();
+	public GameWorld(boolean server) {
+		topography = new Topography(server);
+	}
+
+
+	public static void setup() {
+		gameWorldTexture = new Texture(Gdx.files.internal("data/image/gameWorld.png"));
+		individualTexture = new Texture(Gdx.files.internal("data/image/character/individual.png"));
+		fBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
+		bBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
+		bBufferLit = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
 	}
@@ -74,8 +83,6 @@ public class GameWorld {
 	 * Renders the game world
 	 */
 	public void render(int camX, int camY) {
-		topography.loadOrGenerateNullChunks(camX, camY);
-
 		bBuffer.begin();
 		topography.renderBackGround(camX, camY);
 		BloodAndMithrilClient.spriteBatch.begin();
@@ -99,7 +106,9 @@ public class GameWorld {
 	/**
 	 * Updates the game world
 	 */
-	public void update(float delta) {
+	@SuppressWarnings("unused")
+	public void update(float delta, int camX, int camY) {
+		topography.loadOrGenerateNullChunksAccordingToCam(camX, camY);
 		float d = 1f/60f;
 		WorldState.currentEpoch.incrementTime(d / 60f);
 
@@ -107,7 +116,7 @@ public class GameWorld {
 			indi.update(d);
 		}
 
-		Topography.saveAndFlushUnneededChunks((int) BloodAndMithrilClient.cam.position.x, (int) BloodAndMithrilClient.cam.position.y);
+//		Topography.saveAndFlushUnneededChunks((int) BloodAndMithrilClient.cam.position.x, (int) BloodAndMithrilClient.cam.position.y);
 		Topography.executeBackLog();
 	}
 

@@ -5,12 +5,14 @@ import java.util.concurrent.BlockingQueue;
 
 import org.lwjgl.opengl.Display;
 
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.persistence.world.ChunkSaver;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -34,7 +36,7 @@ public class Topography {
 	public static final int CHUNK_SIZE = 20;
 
 	/** The texture atlas containing all textures for tiles */
-	public static final Texture atlas = new Texture(Gdx.files.internal("data/image/textureAtlas.png"));
+	public static Texture atlas;
 
 	/** The texture coordinate increment representing one tile in the texture atlas. (1/128) */
 	public static final float textureCoordinateQuantization = 0.0078125f;
@@ -48,11 +50,23 @@ public class Topography {
 	/** Any non-main thread topography tasks queued here */
 	private static BlockingQueue<Task> topographyTasks = new ArrayBlockingQueue<Task>(500000);
 
+	/** True if hosted as a server */
+	private final boolean server;
+
+	/** The current chunk coordinates that have already been requested for generation */
+	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> requestedForGeneration = new ConcurrentDualKeyHashMap<>();
+
 
 	/**
 	 * @param generator - The type of generator to use
 	 */
-	public Topography() {
+	public Topography(boolean server) {
+
+		this.server = server;
+		if (!server) {
+			 atlas = new Texture(Gdx.files.internal("data/image/textureAtlas.png"));
+		}
+
 		try {
 			this.chunkLoader = new ChunkLoaderImpl();
 		} catch (Exception e) {
@@ -297,7 +311,7 @@ public class Topography {
 	/**
 	 * Generates/Loads any missing chunks
 	 */
-	public void loadOrGenerateNullChunks(int camX, int camY) {
+	public void loadOrGenerateNullChunksAccordingToCam(int camX, int camY) {
 
 		int bottomLeftX = convertToChunkCoord((float)(camX - Display.getWidth() / 2));
 		int bottomLeftY = convertToChunkCoord((float)(camY - Display.getHeight() / 2));
@@ -307,12 +321,23 @@ public class Topography {
 		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
 			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {
 				if (chunkMap.get(chunkX) == null || chunkMap.get(chunkX).get(chunkY) == null) {
-
-					//Attempt to load the chunk from disk - If chunk does not exist, it will be generated
-					chunkLoader.load(this, chunkX, chunkY);
+					if (server) {
+						loadOrGenerateChunk(chunkX, chunkY);
+					} else {
+						if (requestedForGeneration.get(chunkX, chunkY) == null || !requestedForGeneration.get(chunkX, chunkY)) {
+							ClientServerInterface.sendGenerateChunkRequest(chunkX, chunkY);
+							requestedForGeneration.put(chunkX, chunkY, true);
+						}
+					}
 				}
 			}
 		}
+	}
+
+
+	public boolean loadOrGenerateChunk(int chunkX, int chunkY) {
+		//Attempt to load the chunk from disk - If chunk does not exist, it will be generated
+		return chunkLoader.load(this, chunkX, chunkY);
 	}
 
 
