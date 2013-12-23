@@ -46,7 +46,7 @@ public class Ping implements Request {
 		private Pong() {}
 
 		@Override
-		public void Acknowledge() {
+		public void acknowledge() {
 			System.out.println("The ping is: " + Long.toString(System.currentTimeMillis() - ping) + " ms");
 		}
 	}

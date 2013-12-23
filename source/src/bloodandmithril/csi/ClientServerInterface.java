@@ -9,6 +9,8 @@ import bloodandmithril.csi.GenerateChunk.GenerateChunkResponse;
 import bloodandmithril.csi.Ping.Pong;
 import bloodandmithril.csi.SynchronizeIndividual.IndividualSyncRequest;
 import bloodandmithril.csi.SynchronizeIndividual.SynchronizeIndividualResponse;
+import bloodandmithril.persistence.world.ChunkLoaderImpl;
+import bloodandmithril.util.Task;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.DebugTile;
@@ -51,7 +53,7 @@ public class ClientServerInterface {
 		client.start();
 
 		try {
-			client.connect(5000, "10.44.8.38", 42685);
+			client.connect(5000, "192.168.2.6", 42685);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -61,11 +63,18 @@ public class ClientServerInterface {
 
 		client.addListener(new Listener() {
 			@Override
-			public void received(Connection connection, Object object) {
-				if (object instanceof Response) {
-					Response response = (Response) object;
-					response.Acknowledge();
-				}
+			public void received(Connection connection, final Object object) {
+				ChunkLoaderImpl.loaderTasks.add(
+					new Task() {
+						@Override
+						public void execute() {
+							if (object instanceof Response) {
+								Response response = (Response) object;
+								response.acknowledge();
+							}
+						}
+					}
+				);
 			}
 		});
 	}

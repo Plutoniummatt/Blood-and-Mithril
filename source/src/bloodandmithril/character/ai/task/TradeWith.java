@@ -47,6 +47,7 @@ public class TradeWith extends CompositeAITask {
 
 		appendTask(
 			new AITask(proposer.id) {
+				private static final long serialVersionUID = 4644624691451364142L;
 
 				@Override
 				public void uponCompletion() {
