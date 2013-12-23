@@ -106,7 +106,6 @@ public class GameWorld {
 	/**
 	 * Updates the game world
 	 */
-	@SuppressWarnings("unused")
 	public void update(float delta, int camX, int camY) {
 		topography.loadOrGenerateNullChunksAccordingToCam(camX, camY);
 		float d = 1f/60f;

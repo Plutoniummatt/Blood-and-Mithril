@@ -60,7 +60,7 @@ public class SynchronizeIndividual implements Request {
 		}
 
 		@Override
-		public void Acknowledge() {
+		public void acknowledge() {
 			if (t instanceof IndividualState) {
 				System.out.println(((IndividualState) t).position);
 			}

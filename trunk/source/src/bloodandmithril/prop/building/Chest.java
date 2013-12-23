@@ -38,6 +38,8 @@ public abstract class Chest extends Construction {
 	 * The {@link Container} that drives the inventory of this {@link Chest}
 	 */
 	public class ChestContainer extends Container {
+		private static final long serialVersionUID = 3061765937846818271L;
+
 
 		/**
 		 * Constructor

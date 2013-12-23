@@ -13,7 +13,8 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 public class GoToMovingLocation extends AITask {
-
+	private static final long serialVersionUID = 3940840091194740269L;
+	
 	/** The changing destination */
 	private final Vector2 destination;
 	private final float tolerance;

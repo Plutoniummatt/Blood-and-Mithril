@@ -1,6 +1,8 @@
 package bloodandmithril.server;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
@@ -28,7 +30,12 @@ import com.esotericsoftware.kryonet.Server;
 public class BloodAndMithrilServer {
 
 	private static GameWorld gameWorld;
-
+	
+	private static ExecutorService newCachedThreadPool;
+	
+	/**
+	 * Entry point for the server
+	 */
 	public static void main(String[] args) {
 
 		Server server = new Server(65536, 65536);
@@ -39,26 +46,26 @@ public class BloodAndMithrilServer {
 		} catch (IOException e) {
 			Logger.networkDebug(e.getMessage(), LogLevel.WARN);
 		}
+		
+		newCachedThreadPool = Executors.newCachedThreadPool();
 
 		ClientServerInterface.registerClasses(server.getKryo());
 		server.getKryo().setInstantiatorStrategy(new StdInstantiatorStrategy());
 
 		server.addListener(new Listener() {
 			@Override
-			public void received(Connection connection, Object object) {
+			public void received(final Connection connection, final Object object) {
 				if (object instanceof Request) {
-
-					// Cast to Request
-					Request request = (Request) object;
-
-					try {
-						Thread.sleep(152);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
-					// Send response
-					connection.sendTCP(request.respond());
+					newCachedThreadPool.execute(new Runnable() {
+						@Override
+						public void run() {
+							// Cast to Request
+							Request request = (Request) object;
+							
+							// Send response
+							connection.sendTCP(request.respond());
+						}
+					});
 				}
 			}
 		});
@@ -66,6 +73,7 @@ public class BloodAndMithrilServer {
 		start();
 	}
 
+	
 	private static void start() {
 
 		// Configurations
@@ -80,7 +88,6 @@ public class BloodAndMithrilServer {
 
 
 	private static class GameServer implements ApplicationListener {
-
 
 		@Override
 		public void create() {

@@ -9,5 +9,5 @@ package bloodandmithril.csi;
 public interface Response {
 
 	/** Acknowledges the response */
-	public void Acknowledge();
+	public void acknowledge();
 }

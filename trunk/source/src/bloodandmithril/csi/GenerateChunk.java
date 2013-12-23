@@ -64,7 +64,7 @@ public class GenerateChunk implements Request {
 		}
 
 		@Override
-		public void Acknowledge() {
+		public void acknowledge() {
 			Chunk received = new Chunk(fData, bData);
 			Topography.chunkMap.addChunk(fData.xChunkCoord, fData.yChunkCoord, received);
 			Logger.networkDebug("Received chunk: [" + fData.xChunkCoord + "," + fData.yChunkCoord +"]" , LogLevel.INFO);
