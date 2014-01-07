@@ -25,18 +25,21 @@ public class TextInputWindow extends Window {
 
 	private final Button confirmButton;
 
+	private final boolean closeUponButtonClick;
+
 	/**
 	 * Constructor
 	 */
-	public TextInputWindow(int x, int y, int length, int height, String title, int minLength, int minHeight, JITTask task) {
+	public TextInputWindow(int x, int y, int length, int height, String title, int minLength, int minHeight, JITTask task, String buttonText, boolean closeUponButtonClick) {
 		super(x, y, length, height, title, true, minLength, minHeight, false);
+		this.closeUponButtonClick = closeUponButtonClick;
 
 		this.confirmButton = new Button(
-			"Confirm",
+			buttonText,
 			Fonts.defaultFont,
 			0,
 			0,
-			70,
+			buttonText.length() * 10,
 			16,
 			task,
 			Color.WHITE,
@@ -65,7 +68,7 @@ public class TextInputWindow extends Window {
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		if (confirmButton.click(panel.getInputText())) {
-		  closing = true;
+		  closing = closeUponButtonClick || closing;
 		}
 	}
 

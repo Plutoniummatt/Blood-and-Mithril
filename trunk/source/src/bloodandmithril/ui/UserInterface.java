@@ -91,9 +91,7 @@ public class UserInterface {
 	 * @param WIDTH - initial window width
 	 * @param HEIGHT - initial window height
 	 */
-	public static void setup(int WIDTH, int HEIGHT) {
-		UICamera = new OrthographicCamera(WIDTH, HEIGHT);
-		UICamera.setToOrtho(false, WIDTH, HEIGHT);
+	public static void setup() {
 		loadBars();
 		loadButtons();
 	}
@@ -177,7 +175,9 @@ public class UserInterface {
 			renderDebugText();
 		}
 
-		renderUIText();
+		if (BloodAndMithrilClient.gameWorld != null) {
+			renderUIText();
+		}
 		renderButtons();
 
 		BloodAndMithrilClient.spriteBatch.end();
@@ -287,7 +287,11 @@ public class UserInterface {
 			shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.5f));
 			shapeRenderer.filledRect(0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
 			shapeRenderer.end();
-			unpauseButton.render(true, 1f);
+
+			if (unpauseButton != null) {
+				unpauseButton.render(true, 1f);
+			}
+
 			Gdx.gl.glDisable(GL10.GL_BLEND);
 			BloodAndMithrilClient.spriteBatch.end();
 		}
@@ -455,7 +459,9 @@ public class UserInterface {
 		boolean clicked = false;
 
 		if (BloodAndMithrilClient.paused) {
-			clicked = unpauseButton.click();
+			if (unpauseButton != null) {
+				clicked = unpauseButton.click();
+			}
 			return false;
 		}
 
@@ -478,7 +484,9 @@ public class UserInterface {
 					break;
 				}
 			}
-			layeredComponents = windowsCopy;
+			if (windowsCopy.size() > layeredComponents.size()) {
+				layeredComponents = windowsCopy;
+			}
 		}
 
 		Iterator<ContextMenu> iterator = contextMenus.iterator();
@@ -612,7 +620,6 @@ public class UserInterface {
 			}
 		}
 		layeredComponents.addLast(toAdd);
-
 	}
 
 

@@ -504,7 +504,7 @@ public abstract class Individual extends Equipper {
 								BloodAndMithrilClient.HEIGHT/2 + 50,
 								250,
 								100,
-								"Test",
+								"Rename",
 								250,
 								100,
 								new JITTask() {
@@ -512,7 +512,9 @@ public abstract class Individual extends Equipper {
 									public void execute(Object... args) {
 										thisIndividual.id.nickName = args[0].toString();
 									}
-								}
+								},
+								"Confirm",
+								true
 							)
 						);
 					}
