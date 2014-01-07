@@ -100,6 +100,7 @@ public class MainMenuWindow extends Window {
 			new Task() {
 				@Override
 				public void execute() {
+					// TODO server-side
 					save(false);
 				}
 			},

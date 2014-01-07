@@ -6,8 +6,12 @@ import java.util.Deque;
 import java.util.List;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.ui.UserInterface.UIRef;
+import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.util.Fonts;
+import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 
 import com.badlogic.gdx.graphics.Color;
@@ -22,6 +26,9 @@ public class MessageWindow extends Window {
 	/** Message displayed by this window */
 	private final String message;
 	private final Color messageColor;
+
+	/** A clickable button for this window */
+	private Button button;
 
 	/**
 	 * Constructor
@@ -44,6 +51,30 @@ public class MessageWindow extends Window {
 	}
 
 
+	/**
+	 * Overloaded constructor - uses default colors, has a button
+	 */
+	public MessageWindow(String message, Color messageColor, int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Task buttonAction) {
+		super(x, y, length, height, title, active, minLength, minHeight, false);
+		this.message = message;
+		this.messageColor = messageColor;
+
+		this.button = new Button(
+			"Confirm",
+			Fonts.defaultFont,
+			0,
+			0,
+			70,
+			16,
+			buttonAction,
+			Color.WHITE,
+			Color.GREEN,
+			Color.WHITE,
+			UIRef.BL
+		);
+	}
+
+
 	@Override
 	protected void internalWindowRender() {
 		defaultFont.setColor(active ? new Color(messageColor.r, messageColor.g, messageColor.b, alpha) : new Color(messageColor.r, messageColor.g, messageColor.b, 0.6f * alpha));
@@ -51,12 +82,16 @@ public class MessageWindow extends Window {
 		String messageToDisplay = Util.fitToWindow(message, width, (height - 75) / 25);
 
 		defaultFont.drawMultiLine(BloodAndMithrilClient.spriteBatch, messageToDisplay, x + 6, y - 25);
+
+		if (button != null) {
+			button.render(x + width/2, y - height + 30, active, alpha);
+		}
 	}
 
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		//Do nothing
+		button.click();
 	}
 
 

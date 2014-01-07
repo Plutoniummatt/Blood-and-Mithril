@@ -51,7 +51,6 @@ public class Button {
 	/** The relative position this button is rendered from */
 	private UIRef ref;
 
-
 	/**
 	 * Constructor for text button
 	 */
@@ -152,6 +151,7 @@ public class Button {
 		morph(vec);
 
 		if (idle == null) {
+
 			BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 			Color downColorToUse = active ? downColor : idle == null ? downColor.cpy() : downColor;
 			Color overColorToUse = active ? overColor : idle == null ? overColor.cpy() : overColor;

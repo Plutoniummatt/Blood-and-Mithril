@@ -1,5 +1,7 @@
 package bloodandmithril;
 
+import java.io.IOException;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
@@ -15,14 +17,20 @@ import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.plant.Carrot;
-import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.UserInterface.UIRef;
+import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
+import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.ui.components.window.TextInputWindow;
+import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
@@ -39,6 +47,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -55,7 +64,7 @@ import com.badlogic.gdx.math.Vector2;
  * <b><p> Multiple saved games (Huge refactors of current statics various everywhere)                    </b></p>
  * <b><p> At least 5 types of NPC                                                                        </b></p>
  * <b><p> Main menu screen                                                                               </b></p>
- * <b><p> Networking (maybe)                                                                             </b></p>
+ * <b><p> Networking                                                                                     </b></p>
  *
  * DONE
  *
@@ -95,7 +104,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private int camDragX, camDragY, oldCamX, oldCamY;
 
 	/** True if game is paused */
-	public static boolean paused = true;
+	public static boolean paused = false;
 
 	/** The current timer for double clicking */
 	private float leftDoubleClickTimer = 0f;
@@ -114,14 +123,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Gdx.input.setInputProcessor(this);
 
 		SoundService.changeMusic(2f, SoundService.music1);
-
-		// These should be server-side
-		gameWorld = new GameWorld(false);
-		GameLoader.load();
-
-		if ("false".equals(System.getProperty("server"))) {
-			ClientServerInterface.setupAndConnect();
-		}
 	}
 
 
@@ -134,9 +135,91 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Individual.setup();
 		Shaders.setup();
 		Component.load();
-		UserInterface.setup(WIDTH, HEIGHT);
 		Weather.setup();
 		KeyMappings.setup();
+
+		UserInterface.UICamera = new OrthographicCamera(WIDTH, HEIGHT);
+		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
+
+		Button button = new Button(
+			"Connect",
+			Fonts.defaultFont,
+			0,
+			8,
+			80,
+			16,
+			new Task() {
+				@Override
+				public void execute() {
+					UserInterface.addLayeredComponent(
+						new TextInputWindow(
+							BloodAndMithrilClient.WIDTH / 2 - 125,
+							BloodAndMithrilClient.HEIGHT/2 + 50,
+							250,
+							100,
+							"Enter IP",
+							250,
+							100,
+							new JITTask() {
+								@Override
+								public void execute(Object... args) {
+									try {
+										ClientServerInterface.setupAndConnect(args[0].toString());
+										gameWorld = new GameWorld(false);
+										UserInterface.buttons.remove("connect");
+										UserInterface.setup();
+										for (Component component : UserInterface.layeredComponents) {
+											if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
+												component.closing = true;
+											}
+										}
+									} catch (IOException e) {
+										for (Component component : UserInterface.layeredComponents) {
+											component.active = false;
+										}
+										UserInterface.addLayeredComponent(
+											new MessageWindow(
+												"Failed to connect",
+												Color.RED,
+												WIDTH/2 - 150,
+												HEIGHT/2 + 50,
+												300,
+												100,
+												"Error",
+												true,
+												300,
+												100,
+												new Task() {
+													@Override
+													public void execute() {
+														for (Component component : UserInterface.layeredComponents) {
+															if (component instanceof Window && ((Window) component).title.equals("Error")) {
+																component.closing = true;
+															} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
+																component.active = true;
+															}
+														}
+													}
+												}
+											)
+										);
+									}
+								}
+							},
+							"Connect",
+							false
+						)
+					);
+					UserInterface.buttons.remove("connect");
+				}
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.WHITE,
+			UIRef.M
+		);
+
+		UserInterface.buttons.put("connect",button);
 	}
 
 
@@ -144,7 +227,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public void render() {
 
 		// Update
-		update(Gdx.graphics.getDeltaTime());
+		if (gameWorld != null) {
+			update(Gdx.graphics.getDeltaTime());
+		}
 
 		// Camera --------------------- /
 		cam.update();
@@ -157,8 +242,23 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		// Rendering --------------------- /
-		gameWorld.render((int) cam.position.x, (int) cam.position.y);
+		if (gameWorld == null) {
+			renderMainMenu();
+		} else {
+			gameWorld.render((int) cam.position.x, (int) cam.position.y);
+		}
 		UserInterface.render();
+	}
+
+
+	/**
+	 * Renders the main menu
+	 */
+	private void renderMainMenu() {
+		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
+		UserInterface.shapeRenderer.setColor(Color.BLACK);
+		UserInterface.shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT);
+		UserInterface.shapeRenderer.end();
 	}
 
 

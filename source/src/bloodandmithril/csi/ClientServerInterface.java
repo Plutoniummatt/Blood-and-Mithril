@@ -47,17 +47,12 @@ public class ClientServerInterface {
 
 	/**
 	 * Sets up the client and attempt to connect to the server
+	 * @throws IOException
 	 */
-	public static void setupAndConnect() {
+	public static void setupAndConnect(String ip) throws IOException {
 		client = new Client(65536, 65536);
 		client.start();
-
-		try {
-			client.connect(5000, "192.168.2.6", 42685);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		client.connect(5000, ip, 42685);
 		registerClasses(client.getKryo());
 		client.getKryo().setInstantiatorStrategy(new StdInstantiatorStrategy());
 
