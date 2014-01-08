@@ -48,4 +48,10 @@ public class Ping implements Request {
 			BloodAndMithrilClient.ping = ping;
 		}
 	}
+
+
+	@Override
+	public boolean tcp() {
+		return false;
+	}
 }

@@ -86,7 +86,7 @@ public class ClientServerInterface {
 	public static void setupAndConnect(String ip) throws IOException {
 		client = new Client(65536, 65536);
 		client.start();
-		client.connect(5000, ip, 42685);
+		client.connect(5000, ip, 42685, 42686);
 		registerClasses(client.getKryo());
 		client.getKryo().setInstantiatorStrategy(new StdInstantiatorStrategy());
 
@@ -145,16 +145,16 @@ public class ClientServerInterface {
 
 
 	public static void sendSynchronizeIndividualRequest(int id) {
-		client.sendTCP(new SynchronizeIndividual(id));
+		client.sendUDP(new SynchronizeIndividual(id));
 	}
 
 
 	public static void sendSynchronizeIndividualRequest() {
-		client.sendTCP(new SynchronizeIndividual());
+		client.sendUDP(new SynchronizeIndividual());
 	}
 
 	public static void ping() {
-		client.sendTCP(new Ping());
+		client.sendUDP(new Ping());
 	}
 
 	/**
