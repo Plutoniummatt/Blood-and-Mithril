@@ -45,7 +45,7 @@ public class Ping implements Request {
 
 		@Override
 		public void acknowledge() {
-			BloodAndMithrilClient.ping = ping;
+			BloodAndMithrilClient.ping = System.currentTimeMillis() - ping;
 		}
 	}
 
