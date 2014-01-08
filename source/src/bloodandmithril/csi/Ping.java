@@ -1,5 +1,7 @@
 package bloodandmithril.csi;
 
+import bloodandmithril.BloodAndMithrilClient;
+
 /**
  * A simple Ping request
  *
@@ -41,13 +43,9 @@ public class Ping implements Request {
 			this.ping = ping;
 		}
 
-		/** Kryo constructor */
-		@SuppressWarnings("unused")
-		private Pong() {}
-
 		@Override
 		public void acknowledge() {
-			System.out.println("The ping is: " + Long.toString(System.currentTimeMillis() - ping) + " ms");
+			BloodAndMithrilClient.ping = ping;
 		}
 	}
 }

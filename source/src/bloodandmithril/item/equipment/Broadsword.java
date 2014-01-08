@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Broadsword extends OneHandedWeapon {
 	private static final long serialVersionUID = -8932319773500235186L;
 
-	private static final TextureRegion texture = new TextureRegion(GameWorld.individualTexture, 417, 621, 52, 11);
+	public static TextureRegion texture;
 
 	/**
 	 * Constructor

@@ -6,8 +6,8 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.util.Logger;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.Task;
 
 
 /**
@@ -28,7 +28,7 @@ public class AIProcessor {
 	 * Sets up this class
 	 */
 	public static void setup() {
-		if (aiThread == null) {
+		if (aiThread == null && "true".equals(System.getProperty("server"))) {
 			aiThread = new Thread(new Runnable() {
 
 				@Override
@@ -59,7 +59,7 @@ public class AIProcessor {
 			aiThread.start();
 		}
 
-		if (pathFinderThread == null) {
+		if (pathFinderThread == null && "true".equals(System.getProperty("server"))) {
 			pathFinderThread = new Thread(new Runnable() {
 
 				@Override

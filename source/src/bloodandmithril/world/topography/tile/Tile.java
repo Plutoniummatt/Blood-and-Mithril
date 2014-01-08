@@ -266,7 +266,7 @@ public abstract class Tile implements Serializable {
 		public DebugTile() {
 			super(false);
 			if (!"true".equals(System.getProperty("debug"))) {
-				throw new RuntimeException();
+				throw new RuntimeException("Attemping to create a debug tile, but debug mode is off");
 			}
 		}
 

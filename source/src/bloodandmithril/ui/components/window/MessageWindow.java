@@ -91,7 +91,9 @@ public class MessageWindow extends Window {
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		button.click();
+		if (button != null) {
+			button.click();
+		}
 	}
 
 

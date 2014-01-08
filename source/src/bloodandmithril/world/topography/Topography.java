@@ -298,7 +298,7 @@ public class Topography {
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
 
-;		return chunkMap.get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
+		return chunkMap.get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 	}
 
 
