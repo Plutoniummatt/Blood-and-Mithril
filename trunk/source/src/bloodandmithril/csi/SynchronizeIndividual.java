@@ -73,12 +73,14 @@ public class SynchronizeIndividual implements Request {
 
 		@Override
 		public void acknowledge() {
-			if (this.individual == null) {
+			if (this.individual != null) {
+				syncSingleIndividual();
+			}
+			
+			if (this.individuals != null) {
 				for (Integer id : individuals) {
 					ClientServerInterface.sendSynchronizeIndividualRequest(id);
 				}
-			} else {
-				syncSingleIndividual();
 			}
 		}
 
