@@ -86,16 +86,14 @@ public class SynchronizeIndividual implements Request {
 
 		private void syncSingleIndividual() {
 			Individual removed = GameWorld.individuals.remove(individual.id.id);
-			if (removed != null) {
-				GameWorld.individuals.put(individual.id.id, individual);
-				if (GameWorld.selectedIndividuals.remove(removed)) {
-					individual.selected = true;
-					GameWorld.selectedIndividuals.add(individual);
-				} else {
-					individual.selected = false;
-				}
-				Logger.networkDebug("Received data for individual: " + individual.id.getSimpleName(), LogLevel.TRACE);
+			GameWorld.individuals.put(individual.id.id, individual);
+			if (GameWorld.selectedIndividuals.remove(removed)) {
+				individual.selected = true;
+				GameWorld.selectedIndividuals.add(individual);
+			} else {
+				individual.selected = false;
 			}
+			Logger.networkDebug("Received data for individual: " + individual.id.getSimpleName(), LogLevel.TRACE);
 		}
 	}
 
