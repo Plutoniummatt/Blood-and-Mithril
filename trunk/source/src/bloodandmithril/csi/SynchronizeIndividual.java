@@ -1,6 +1,6 @@
 package bloodandmithril.csi;
 
-import java.util.Map;
+import java.util.Set;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.util.Logger;
@@ -36,7 +36,7 @@ public class SynchronizeIndividual implements Request {
 	@Override
 	public Response respond() {
 		if (id == -1) {
-			return new SynchronizeIndividualResponse(GameWorld.individuals);
+			return new SynchronizeIndividualResponse(GameWorld.individuals.keySet());
 		}
 		return new SynchronizeIndividualResponse(GameWorld.individuals.get(id));
 	}
@@ -51,7 +51,7 @@ public class SynchronizeIndividual implements Request {
 
 		private final Individual individual;
 
-		private final Map<Integer, Individual> individuals;
+		private final Set<Integer> individuals;
 
 		/**
 		 * Synchronize single individual
@@ -64,7 +64,7 @@ public class SynchronizeIndividual implements Request {
 		/**
 		 * Synchronize all individuals
 		 */
-		public SynchronizeIndividualResponse(Map<Integer, Individual> individuals) {
+		public SynchronizeIndividualResponse(Set<Integer> individuals) {
 			this.individual = null;
 			this.individuals = individuals;
 		}
@@ -72,27 +72,25 @@ public class SynchronizeIndividual implements Request {
 		@Override
 		public void acknowledge() {
 			if (this.individual == null) {
-				GameWorld.selectedIndividuals.clear();
-				for (Individual indi : individuals.values()) {
-					if (GameWorld.individuals.get(indi.id.id) != null && GameWorld.individuals.get(indi.id.id).selected) {
-						indi.selected = true;
-						GameWorld.selectedIndividuals.add(indi);
-					} else {
-						indi.selected = false;
-					}
+				for (Integer id : individuals) {
+					ClientServerInterface.sendSynchronizeIndividualRequest(id);
 				}
-				GameWorld.individuals.clear();
-				GameWorld.individuals.putAll(individuals);
-				Logger.networkDebug("Synchronized individuals", LogLevel.TRACE);
 			} else {
-				Individual removed = GameWorld.individuals.remove(individual.id.id);
-				if (removed != null) {
-					GameWorld.individuals.put(individual.id.id, individual);
-					if (GameWorld.selectedIndividuals.remove(removed)) {
-						GameWorld.selectedIndividuals.add(individual);
-					}
-					Logger.networkDebug("Received data for individual: " + individual.id.getSimpleName(), LogLevel.TRACE);
+				syncSingleIndividual();
+			}
+		}
+
+		private void syncSingleIndividual() {
+			Individual removed = GameWorld.individuals.remove(individual.id.id);
+			if (removed != null) {
+				GameWorld.individuals.put(individual.id.id, individual);
+				if (GameWorld.selectedIndividuals.remove(removed)) {
+					individual.selected = true;
+					GameWorld.selectedIndividuals.add(individual);
+				} else {
+					individual.selected = false;
 				}
+				Logger.networkDebug("Received data for individual: " + individual.id.getSimpleName(), LogLevel.TRACE);
 			}
 		}
 	}
