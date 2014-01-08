@@ -3,6 +3,8 @@ package bloodandmithril.csi;
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.util.Logger;
+import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.GameWorld;
 
 /**
@@ -81,7 +83,7 @@ public class SynchronizeIndividual implements Request {
 				}
 				GameWorld.individuals.clear();
 				GameWorld.individuals.putAll(individuals);
-				System.out.println("Synchronized individuals");
+				Logger.networkDebug("Synchronized individuals", LogLevel.TRACE);
 			} else {
 				Individual removed = GameWorld.individuals.remove(individual.id.id);
 				if (removed != null) {
@@ -89,9 +91,15 @@ public class SynchronizeIndividual implements Request {
 					if (GameWorld.selectedIndividuals.remove(removed)) {
 						GameWorld.selectedIndividuals.add(individual);
 					}
-					System.out.println("Received data for individual: " + individual.id.getSimpleName());
+					Logger.networkDebug("Received data for individual: " + individual.id.getSimpleName(), LogLevel.TRACE);
 				}
 			}
 		}
+	}
+
+
+	@Override
+	public boolean tcp() {
+		return false;
 	}
 }

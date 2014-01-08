@@ -70,4 +70,10 @@ public class GenerateChunk implements Request {
 			Logger.networkDebug("Received chunk: [" + fData.xChunkCoord + "," + fData.yChunkCoord +"]" , LogLevel.INFO);
 		}
 	}
+
+
+	@Override
+	public boolean tcp() {
+		return true;
+	}
 }

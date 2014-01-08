@@ -7,7 +7,10 @@ package bloodandmithril.csi;
  * @author Matt
  */
 public interface Request {
-	
+
 	/** Respond to the request */
 	public Response respond();
+
+	/** Whether this request uses the TCP protocol */
+	public boolean tcp();
 }
