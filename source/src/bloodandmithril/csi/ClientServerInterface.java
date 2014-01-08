@@ -178,6 +178,8 @@ public class ClientServerInterface {
 		kryo.register(BrickTile.class);
 		kryo.register(YellowBrickTile.class);
 		kryo.register(YellowBrickPlatform.class);
+		kryo.register(Ping.class);
+		kryo.register(Pong.class);
 		kryo.register(DebugTile.class);
 		kryo.register(EmptyTile.class);
 		kryo.register(GlassTile.class);
