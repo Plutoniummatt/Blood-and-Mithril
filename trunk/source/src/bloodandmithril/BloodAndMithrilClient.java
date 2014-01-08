@@ -1,6 +1,7 @@
 package bloodandmithril;
 
-import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.Individual;
@@ -10,27 +11,14 @@ import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Boar;
-import bloodandmithril.character.individuals.Elf;
-import bloodandmithril.character.individuals.Names;
-import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.item.equipment.Broadsword;
-import bloodandmithril.item.equipment.ButterflySword;
-import bloodandmithril.item.material.animal.ChickenLeg;
-import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.UserInterface.UIRef;
-import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.TextInputWindow;
-import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
@@ -110,6 +98,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private float leftDoubleClickTimer = 0f;
 	private float rightDoubleClickTimer = 0f;
 
+	private final Color bottomLeftColor = new Color(0f, 0f, 0f, 1f);
+	private final Color bottomRightColor = new Color(0f, 0f, 0f, 1f);
+	private final Color topLeftColor = new Color(0f, 0f, 0f, 1f);
+	private final Color topRightColor = new Color(0f, 0f, 0f, 1f);
+
+	private float time = 0f;
+
+	public static ExecutorService newCachedThreadPool;
+
+	public static long ping = 0;
+
 	@Override
 	public void create() {
 		// Load client-side resources
@@ -123,6 +122,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Gdx.input.setInputProcessor(this);
 
 		SoundService.changeMusic(2f, SoundService.music1);
+
+		newCachedThreadPool = Executors.newCachedThreadPool();
 	}
 
 
@@ -141,85 +142,19 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		UserInterface.UICamera = new OrthographicCamera(WIDTH, HEIGHT);
 		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
 
-		Button button = new Button(
-			"Connect",
-			Fonts.defaultFont,
-			0,
-			8,
-			80,
-			16,
-			new Task() {
-				@Override
-				public void execute() {
-					UserInterface.addLayeredComponent(
-						new TextInputWindow(
-							BloodAndMithrilClient.WIDTH / 2 - 125,
-							BloodAndMithrilClient.HEIGHT/2 + 50,
-							250,
-							100,
-							"Enter IP",
-							250,
-							100,
-							new JITTask() {
-								@Override
-								public void execute(Object... args) {
-									try {
-										ClientServerInterface.setupAndConnect(args[0].toString());
-										gameWorld = new GameWorld(false);
-										UserInterface.buttons.remove("connect");
-										UserInterface.setup();
-										for (Component component : UserInterface.layeredComponents) {
-											if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
-												component.closing = true;
-											}
-										}
-									} catch (IOException e) {
-										for (Component component : UserInterface.layeredComponents) {
-											component.active = false;
-										}
-										UserInterface.addLayeredComponent(
-											new MessageWindow(
-												"Failed to connect",
-												Color.RED,
-												WIDTH/2 - 150,
-												HEIGHT/2 + 50,
-												300,
-												100,
-												"Error",
-												true,
-												300,
-												100,
-												new Task() {
-													@Override
-													public void execute() {
-														for (Component component : UserInterface.layeredComponents) {
-															if (component instanceof Window && ((Window) component).title.equals("Error")) {
-																component.closing = true;
-															} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
-																component.active = true;
-															}
-														}
-													}
-												}
-											)
-										);
-									}
-								}
-							},
-							"Connect",
-							false
-						)
-					);
-					UserInterface.buttons.remove("connect");
-				}
-			},
-			Color.WHITE,
-			Color.GREEN,
-			Color.WHITE,
-			UIRef.M
+		UserInterface.layeredComponents.add(
+			new MainMenuWindow(
+				BloodAndMithrilClient.WIDTH/2 - 100,
+				BloodAndMithrilClient.HEIGHT/2 + 55,
+				200,
+				110,
+				"Main menu",
+				true,
+				200,
+				110,
+				false
+			)
 		);
-
-		UserInterface.buttons.put("connect",button);
 	}
 
 
@@ -243,7 +178,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		// Rendering --------------------- /
 		if (gameWorld == null) {
-			renderMainMenu();
+			renderMainMenuBackDrop();
 		} else {
 			gameWorld.render((int) cam.position.x, (int) cam.position.y);
 		}
@@ -254,10 +189,26 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	/**
 	 * Renders the main menu
 	 */
-	private void renderMainMenu() {
+	private void renderMainMenuBackDrop() {
+		time += 0.01f;
+
+		bottomLeftColor.r = (float)Math.pow(Math.sin(time * 0.6), 2);
+		bottomRightColor.r = (float)Math.pow(Math.cos(time * 1.2), 2);
+		topLeftColor.r = (float)Math.pow(Math.sin(time * 0.87 + 2.4f), 2);
+		topRightColor.r = (float)Math.pow(Math.sin(time * 0.14 - 0.5f), 2);
+
+		bottomLeftColor.g = 0.5f * (float)Math.pow(Math.sin(time * 1.77), 2);
+		bottomRightColor.g = 0.3f * (float)Math.pow(Math.cos(time * 1.65), 2);
+		topLeftColor.g = 0.7f * (float)Math.pow(Math.sin(time * 0.24 + 1.4f), 2);
+		topRightColor.g = 0.8f * (float)Math.pow(Math.sin(time * 0.555 - 2.5f), 2);
+
+		bottomLeftColor.b = 0.2f * (float)Math.pow(Math.sin(time * 5.77), 2);
+		bottomRightColor.b = 0.9f * (float)Math.pow(Math.cos(time * 3.65), 2);
+		topLeftColor.b = 0.5f * (float)Math.pow(Math.sin(time * 6.24 + 1.4f), 2);
+		topRightColor.b = 0.2f * (float)Math.pow(Math.sin(time * 2.555 - 2.5f), 2);
+
 		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
-		UserInterface.shapeRenderer.setColor(Color.BLACK);
-		UserInterface.shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT);
+		UserInterface.shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT, bottomLeftColor, bottomRightColor, topRightColor, topLeftColor);
 		UserInterface.shapeRenderer.end();
 	}
 
@@ -394,31 +345,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;
-		}
-
-		if (keycode == Input.Keys.R) {
-			IndividualState state = new IndividualState(10f, 10f);
-			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
-			state.velocity = new Vector2(0, 0);
-			state.acceleration = new Vector2(0, 0);
-
-			IndividualIdentifier id = Names.getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
-			id.nickName = "Elfie";
-
-			Elf elf = new Elf(
-				id, state, true, true,
-				new Color(0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 1),
-				new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
-				Util.getRandom().nextInt(4),
-				20f
-			);
-
-			elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
-			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
-			elf.giveItem(new ButterflySword(100), 1);
-			elf.giveItem(new Broadsword(100), 1);
-
-			GameWorld.individuals.put(elf.id.id, elf);
 		}
 
 		if (keycode == Input.Keys.U) {

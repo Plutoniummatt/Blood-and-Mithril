@@ -2,7 +2,11 @@ package bloodandmithril.item;
 
 
 import bloodandmithril.item.Equipper.EquipmentSlot;
+import bloodandmithril.item.equipment.Broadsword;
+import bloodandmithril.item.equipment.ButterflySword;
+import bloodandmithril.world.GameWorld;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -14,6 +18,13 @@ public abstract class Equipable extends Item {
 	private static final long serialVersionUID = 6029877977431123172L;
 
 	public final EquipmentSlot slot;
+
+
+	public static void setup() {
+		ButterflySword.texture = new TextureRegion(GameWorld.individualTexture, 419, 587, 47, 12);
+		Broadsword.texture = new TextureRegion(GameWorld.individualTexture, 417, 621, 52, 11);
+	}
+
 
 	/**
 	 * Protected constructor

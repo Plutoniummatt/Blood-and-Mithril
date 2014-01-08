@@ -2,6 +2,7 @@ package bloodandmithril.character.ai.task;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.building.Chest.ChestContainer;
@@ -46,91 +47,108 @@ public class TradeWith extends CompositeAITask {
 		);
 
 		appendTask(
-			new AITask(proposer.id) {
-				private static final long serialVersionUID = 4644624691451364142L;
+			new Trade(hostId, proposer, proposee)
+		);
+	}
 
-				@Override
-				public void uponCompletion() {
+
+	public static class Trade extends AITask {
+
+		private final Individual proposer;
+
+		private final Container proposee;
+
+		private static final long serialVersionUID = 4644624691451364142L;
+
+		/**
+		 * Constructor
+		 */
+		protected Trade(IndividualIdentifier hostId, Individual proposer, Container proposee) {
+			super(hostId);
+			this.proposer = proposer;
+			this.proposee = proposee;
+		}
+
+		@Override
+		public void uponCompletion() {
+		}
+
+		@Override
+		public boolean isComplete() {
+			return proposer.ai.getCurrentTask() instanceof Trading;
+		}
+
+		@Override
+		public String getDescription() {
+			return "Trading";
+		}
+
+		@Override
+		public void execute() {
+
+			if (proposee instanceof Individual) {
+				Individual proposeeCasted = (Individual)proposee;
+
+				if (proposer.getDistanceFrom(proposeeCasted.state.position) > 64f) {
+					return;
 				}
 
-				@Override
-				public boolean isComplete() {
-					return proposer.ai.getCurrentTask() instanceof Trading;
-				}
-
-				@Override
-				public String getDescription() {
-					return "Trading";
-				}
-
-				@Override
-				public void execute() {
-
-					if (proposee instanceof Individual) {
-						Individual proposeeCasted = (Individual)proposee;
-
-						if (proposer.getDistanceFrom(proposeeCasted.state.position) > 64f) {
-							return;
+				for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
+					if (component instanceof Window) {
+						if (((Window)component).title.equals(proposer.id.getSimpleName() + " - Inventory") ||
+						((Window)component).title.equals(proposeeCasted.id.getSimpleName() + " - Inventory")) {
+							UserInterface.removeLayeredComponent(component);
 						}
-
-						for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
-							if (component instanceof Window) {
-								if (((Window)component).title.equals(proposer.id.getSimpleName() + " - Inventory") ||
-								((Window)component).title.equals(proposeeCasted.id.getSimpleName() + " - Inventory")) {
-									UserInterface.removeLayeredComponent(component);
-								}
-							}
-						}
-
-						UserInterface.addLayeredComponentUnique(
-							new TradeWindow(
-								BloodAndMithrilClient.WIDTH / 2 - 350,
-								BloodAndMithrilClient.HEIGHT / 2 + 100,
-								700,
-								200,
-								"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName,
-								true,
-								700,
-								200,
-								true,
-								proposer,
-								proposeeCasted
-							),
-							"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName
-						);
-
-						proposer.clearCommands();
-						proposer.ai.setCurrentTask(new Trading(proposer.id));
-						proposeeCasted.clearCommands();
-						proposeeCasted.ai.setCurrentTask(new Trading(proposeeCasted.id));
-					} else if (proposee instanceof ChestContainer) {
-
-						if (proposer.getDistanceFrom(((ChestContainer)proposee).getPositionOfChest()) > 64f) {
-							return;
-						}
-
-						UserInterface.addLayeredComponentUnique(
-							new TradeWindow(
-								BloodAndMithrilClient.WIDTH/2 - 350,
-								BloodAndMithrilClient.HEIGHT/2 + 100,
-								700,
-								200,
-								proposer.id.getSimpleName() + " interacting with pine chest",
-								true,
-								700,
-								200,
-								true,
-								proposer,
-								proposee
-							),
-							proposer.id.getSimpleName() + " interacting with pine chest"
-						);
-
-						proposer.clearCommands();
-						proposer.ai.setCurrentTask(new Trading(proposer.id));
 					}
 				}
+
+				UserInterface.addLayeredComponentUnique(
+					new TradeWindow(
+						BloodAndMithrilClient.WIDTH / 2 - 350,
+						BloodAndMithrilClient.HEIGHT / 2 + 100,
+						700,
+						200,
+						"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName,
+						true,
+						700,
+						200,
+						true,
+						proposer,
+						proposeeCasted
+					),
+					"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName
+				);
+
+				proposer.clearCommands();
+				proposer.ai.setCurrentTask(new Trading(proposer.id));
+				proposeeCasted.clearCommands();
+				proposeeCasted.ai.setCurrentTask(new Trading(proposeeCasted.id));
+			} else if (proposee instanceof ChestContainer) {
+
+				if (proposer.getDistanceFrom(((ChestContainer)proposee).getPositionOfChest()) > 64f) {
+					return;
+				}
+
+				UserInterface.addLayeredComponentUnique(
+					new TradeWindow(
+						BloodAndMithrilClient.WIDTH/2 - 350,
+						BloodAndMithrilClient.HEIGHT/2 + 100,
+						700,
+						200,
+						proposer.id.getSimpleName() + " interacting with pine chest",
+						true,
+						700,
+						200,
+						true,
+						proposer,
+						proposee
+					),
+					proposer.id.getSimpleName() + " interacting with pine chest"
+				);
+
+				proposer.clearCommands();
+				proposer.ai.setCurrentTask(new Trading(proposer.id));
 			}
-		);
+		}
 	}
 }

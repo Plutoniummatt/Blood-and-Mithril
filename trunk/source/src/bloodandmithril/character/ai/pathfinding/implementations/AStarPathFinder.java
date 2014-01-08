@@ -13,13 +13,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-
 import bloodandmithril.character.ai.pathfinding.Path;
-import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.util.Logger;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.topography.Topography;
@@ -56,7 +55,7 @@ public class AStarPathFinder extends PathFinder {
 			}
 		}
 	};
-	
+
 	/** Used for sorting {@link Node}s in ascending order by H */
 	private static Comparator<DualKeyEntry<Integer, Integer, Node>> heuristicComparator = new Comparator<DualKeyEntry<Integer, Integer, Node>>() {
 		@Override
@@ -117,7 +116,7 @@ public class AStarPathFinder extends PathFinder {
 				List<DualKeyEntry<Integer, Integer, Node>> closedNodeEntries = closedNodes.getAllEntries();
 				Collections.sort(closedNodeEntries, heuristicComparator);
 				DualKeyEntry<Integer, Integer, Node> closestEntry = closedNodeEntries.get(0);
-				
+
 				return extractPath(closestEntry.value, 0, forceTolerance);
 			}
 
@@ -130,13 +129,13 @@ public class AStarPathFinder extends PathFinder {
 			}
 
 			Node destination = null;
-			
+
 			try {
 				destination = processOpenNodeGround(entry.value, finishNode, height, safeHeight);
 			} catch (UndiscoveredPathNotification e) {
 				Logger.aiDebug("Detected undiscovered region", LogLevel.DEBUG);
 			}
-			
+
 			if (destination != null) {
 				Logger.aiDebug("Extracting path, begining from: " + destination.toString(), LogLevel.DEBUG);
 				destinationFound = true;
@@ -179,7 +178,7 @@ public class AStarPathFinder extends PathFinder {
 			Node previousNode = closedNodes.get(finalNode.parentX, finalNode.parentY);
 			Vector2 previousVector = new Vector2(previousNode.x, previousNode.y);
 			float distance = Math.abs(previousVector.sub(new Vector2(finalNode.x, finalNode.y)).len());
-			
+
 			if (distance < forceTolerance) {
 				return extractPath(previousNode, finalTolerance, forceTolerance);
 			} else {
@@ -411,7 +410,7 @@ public class AStarPathFinder extends PathFinder {
 	 *
 	 * @author Matt
 	 */
-	private class Node implements Serializable {
+	public class Node implements Serializable {
 		private static final long serialVersionUID = 3817098095133274007L;
 
 		/** {@link Node} coordinates */

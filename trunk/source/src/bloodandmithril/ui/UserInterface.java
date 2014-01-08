@@ -373,6 +373,7 @@ public class UserInterface {
 		defaultFont.setColor(Color.WHITE);
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Time: " + WorldState.currentEpoch.getTimeString(), 5, Gdx.graphics.getHeight() - 5);
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Date: " + WorldState.currentEpoch.getDateString(), 5, Gdx.graphics.getHeight() - 25);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Ping: " + BloodAndMithrilClient.ping, 5, Gdx.graphics.getHeight() - 45);
 	}
 
 

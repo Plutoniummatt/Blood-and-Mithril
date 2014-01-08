@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 public class ButterflySword extends OneHandedWeapon {
 	private static final long serialVersionUID = -8932319773500235186L;
 
-	private static final TextureRegion texture = new TextureRegion(GameWorld.individualTexture, 419, 587, 47, 12);
+	public static TextureRegion texture;
 
 	/**
 	 * Constructor

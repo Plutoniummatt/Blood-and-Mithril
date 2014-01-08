@@ -1,7 +1,8 @@
 package bloodandmithril.csi;
 
+import java.util.Map;
+
 import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.IndividualState;
 import bloodandmithril.world.GameWorld;
 
 /**
@@ -14,35 +15,28 @@ public class SynchronizeIndividual implements Request {
 	/** ID of the individual to sync */
 	private final int id;
 
-	/** Type of request */
-	private final IndividualSyncRequest request;
-
 	/**
 	 * Constructor
 	 */
-	public SynchronizeIndividual(int id, IndividualSyncRequest request) {
+	public SynchronizeIndividual(int id) {
 		this.id = id;
-		this.request = request;
+	}
+
+
+	/**
+	 * Synchronize all individuals
+	 */
+	public SynchronizeIndividual() {
+		this.id = -1;
 	}
 
 
 	@Override
 	public Response respond() {
-		switch (request) {
-		case STATE:
-			return new SynchronizeIndividualResponse<IndividualState>(GameWorld.individuals.get(id).state);
-		default:
-			throw new IllegalStateException("Unrecognised request");
+		if (id == -1) {
+			return new SynchronizeIndividualResponse(GameWorld.individuals);
 		}
-	}
-
-
-	/**
-	 * Information request type
-	 * @author Matt
-	 */
-	public enum IndividualSyncRequest {
-		STATE
+		return new SynchronizeIndividualResponse(GameWorld.individuals.get(id));
 	}
 
 
@@ -51,18 +45,52 @@ public class SynchronizeIndividual implements Request {
 	 *
 	 * @author Matt
 	 */
-	public static class SynchronizeIndividualResponse<T> implements Response {
+	public static class SynchronizeIndividualResponse implements Response {
 
-		public final T t;
+		private final Individual individual;
 
-		public SynchronizeIndividualResponse(T t) {
-			this.t = t;
+		private final Map<Integer, Individual> individuals;
+
+		/**
+		 * Synchronize single individual
+		 */
+		public SynchronizeIndividualResponse(Individual individual) {
+			this.individual = individual;
+			this.individuals = null;
+		}
+
+		/**
+		 * Synchronize all individuals
+		 */
+		public SynchronizeIndividualResponse(Map<Integer, Individual> individuals) {
+			this.individual = null;
+			this.individuals = individuals;
 		}
 
 		@Override
 		public void acknowledge() {
-			if (t instanceof IndividualState) {
-				System.out.println(((IndividualState) t).position);
+			if (this.individual == null) {
+				GameWorld.selectedIndividuals.clear();
+				for (Individual indi : individuals.values()) {
+					if (GameWorld.individuals.get(indi.id.id) != null && GameWorld.individuals.get(indi.id.id).selected) {
+						indi.selected = true;
+						GameWorld.selectedIndividuals.add(indi);
+					} else {
+						indi.selected = false;
+					}
+				}
+				GameWorld.individuals.clear();
+				GameWorld.individuals.putAll(individuals);
+				System.out.println("Synchronized individuals");
+			} else {
+				Individual removed = GameWorld.individuals.remove(individual.id.id);
+				if (removed != null) {
+					GameWorld.individuals.put(individual.id.id, individual);
+					if (GameWorld.selectedIndividuals.remove(removed)) {
+						GameWorld.selectedIndividuals.add(individual);
+					}
+					System.out.println("Received data for individual: " + individual.id.getSimpleName());
+				}
 			}
 		}
 	}

@@ -1,16 +1,48 @@
 package bloodandmithril.csi;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
+import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.character.Individual;
+import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.Individual.IndividualState;
+import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.character.ai.implementations.ElfAI;
+import bloodandmithril.character.ai.pathfinding.Path;
+import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
+import bloodandmithril.character.ai.task.CompositeAITask;
+import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.character.ai.task.GoToMovingLocation;
+import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.ai.task.MineTile.Mine;
+import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.ai.task.TradeWith.Trade;
+import bloodandmithril.character.ai.task.Trading;
+import bloodandmithril.character.ai.task.Wait;
+import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.csi.GenerateChunk.GenerateChunkResponse;
 import bloodandmithril.csi.Ping.Pong;
-import bloodandmithril.csi.SynchronizeIndividual.IndividualSyncRequest;
 import bloodandmithril.csi.SynchronizeIndividual.SynchronizeIndividualResponse;
+import bloodandmithril.item.Equipable;
+import bloodandmithril.item.Equipper.EquipmentSlot;
+import bloodandmithril.item.equipment.Broadsword;
+import bloodandmithril.item.equipment.ButterflySword;
+import bloodandmithril.item.equipment.OneHandedWeapon;
+import bloodandmithril.item.material.animal.ChickenLeg;
+import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.util.datastructure.DualKeyHashMap;
+import bloodandmithril.world.Epoch;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.DebugTile;
@@ -45,6 +77,8 @@ public class ClientServerInterface {
 	/** The client */
 	private static Client client;
 
+	private static Thread clientThread;
+
 	/**
 	 * Sets up the client and attempt to connect to the server
 	 * @throws IOException
@@ -59,19 +93,49 @@ public class ClientServerInterface {
 		client.addListener(new Listener() {
 			@Override
 			public void received(Connection connection, final Object object) {
-				ChunkLoaderImpl.loaderTasks.add(
-					new Task() {
-						@Override
-						public void execute() {
-							if (object instanceof Response) {
+				if (object instanceof GenerateChunkResponse) {
+					ChunkLoaderImpl.loaderTasks.add(
+						new Task() {
+							@Override
+							public void execute() {
+								if (object instanceof Response) {
+									Response response = (Response) object;
+									response.acknowledge();
+								}
+							}
+						}
+					);
+				} else if (object instanceof SynchronizeIndividualResponse) {
+					BloodAndMithrilClient.newCachedThreadPool.execute(
+						new Runnable() {
+							@Override
+							public void run() {
 								Response response = (Response) object;
 								response.acknowledge();
 							}
 						}
-					}
-				);
+					);
+				}
 			}
 		});
+
+		clientThread = new Thread(
+			new Runnable() {
+				@Override
+				public void run() {
+					while(client.isConnected()) {
+						try {
+							Thread.sleep(100);
+							sendSynchronizeIndividualRequest();
+							ping();
+						} catch (InterruptedException e) {
+						}
+					}
+				}
+			}
+		);
+
+		clientThread.start();
 	}
 
 
@@ -80,6 +144,19 @@ public class ClientServerInterface {
 	}
 
 
+	public static void sendSynchronizeIndividualRequest(int id) {
+		client.sendTCP(new SynchronizeIndividual(id));
+	}
+
+
+	public static void sendSynchronizeIndividualRequest() {
+		client.sendTCP(new SynchronizeIndividual());
+	}
+
+	public static void ping() {
+		client.sendTCP(new Ping());
+	}
+
 	/**
 	 * Registers all request classes
 	 */
@@ -87,7 +164,6 @@ public class ClientServerInterface {
 		kryo.register(Request.class);
 		kryo.register(Ping.class);
 		kryo.register(Pong.class);
-		kryo.register(IndividualSyncRequest.class);
 		kryo.register(IndividualState.class);
 		kryo.register(SynchronizeIndividual.class);
 		kryo.register(SynchronizeIndividualResponse.class);
@@ -114,5 +190,40 @@ public class ClientServerInterface {
 		kryo.register(StoneTile.class);
 		kryo.register(GraniteTile.class);
 		kryo.register(SandStoneTile.class);
+		kryo.register(ConcurrentHashMap.class);
+		kryo.register(Elf.class);
+		kryo.register(ElfAI.class);
+		kryo.register(AITask.class);
+		kryo.register(Idle.class);
+		kryo.register(GoToLocation.class);
+		kryo.register(GoToMovingLocation.class);
+		kryo.register(CompositeAITask.class);
+		kryo.register(MineTile.class);
+		kryo.register(TradeWith.class);
+		kryo.register(Mine.class);
+		kryo.register(Trading.class);
+		kryo.register(Trade.class);
+		kryo.register(Wait.class);
+		kryo.register(Individual.class);
+		kryo.register(IndividualIdentifier.class);
+		kryo.register(IndividualState.class);
+		kryo.register(Epoch.class);
+		kryo.register(ArtificialIntelligence.class);
+		kryo.register(ArtificialIntelligence.AIMode.class);
+		kryo.register(HashMap.class);
+		kryo.register(EquipmentSlot.class);
+		kryo.register(OneHandedWeapon.class);
+		kryo.register(Equipable.class);
+		kryo.register(Broadsword.class);
+		kryo.register(ButterflySword.class);
+		kryo.register(Box.class);
+		kryo.register(ChickenLeg.class);
+		kryo.register(Carrot.class);
+		kryo.register(Path.class);
+		kryo.register(WayPoint.class);
+		kryo.register(TreeMap.class);
+		kryo.register(AStarPathFinder.class);
+		kryo.register(AStarPathFinder.Node.class);
+		kryo.register(DualKeyHashMap.class);
 	}
 }

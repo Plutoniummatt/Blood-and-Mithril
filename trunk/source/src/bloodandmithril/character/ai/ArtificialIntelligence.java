@@ -44,7 +44,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/** Adds an item to the AI processing thread to await execution */
 	public void update() {
 		AIProcessor.setup();
-		if (AIProcessor.aiThread.isAlive()) {
+		if (AIProcessor.aiThread != null && AIProcessor.aiThread.isAlive()) {
 			if (mode == AIMode.AUTO) {
 				AIProcessor.aiThreadTasks.add(new Task() {
 					@Override
@@ -74,7 +74,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 					}
 				}
 			}
-		} else {
+		} else if ("true".equals(System.getProperty("server"))) {
 			throw new RuntimeException("Something has caused the AI thread to terminate");
 		}
 	}

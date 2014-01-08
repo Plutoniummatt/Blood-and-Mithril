@@ -1,19 +1,25 @@
 package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.persistence.GameSaver.isSaving;
-import static bloodandmithril.persistence.GameSaver.save;
 import static bloodandmithril.util.Fonts.defaultFont;
 
+import java.io.IOException;
 import java.util.Deque;
 import java.util.List;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.util.Fonts;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
+import bloodandmithril.world.GameWorld;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -21,7 +27,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class MainMenuWindow extends Window {
 
-	private Button saveGame, options, saveAndExit;
+	private Button connect, options, exit;
 
 	/**
 	 * Constructor
@@ -47,9 +53,9 @@ public class MainMenuWindow extends Window {
 	 */
 	@Override
 	protected void internalWindowRender() {
-		saveGame.render(width/2 + x, y - 26, active && !isSaving(), alpha);
+		connect.render(width/2 + x, y - 26, active && !isSaving() && BloodAndMithrilClient.gameWorld == null, alpha);
 		options.render(width/2 + x, y - 46, active && !isSaving(), alpha);
-		saveAndExit.render(width/2 + x, y - 66, active && !isSaving(), alpha);
+		exit.render(width/2 + x, y - 66, active && !isSaving(), alpha);
 	}
 
 
@@ -58,8 +64,8 @@ public class MainMenuWindow extends Window {
 	 */
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		saveGame.click();
-		saveAndExit.click();
+		connect.click();
+		exit.click();
 
 		if (options.click()) {
 			this.active = false;
@@ -90,24 +96,88 @@ public class MainMenuWindow extends Window {
 	 * Loads all buttons
 	 */
 	private void loadButtons() {
-		saveGame = new Button(
-			"Save",
-			defaultFont,
+		connect = new Button(
+			"Connect",
+			Fonts.defaultFont,
 			0,
-			0,
-			40,
+			8,
+			80,
 			16,
 			new Task() {
 				@Override
 				public void execute() {
-					// TODO server-side
-					save(false);
+					if (BloodAndMithrilClient.gameWorld != null) {
+						return;
+					}
+
+					UserInterface.addLayeredComponent(
+						new TextInputWindow(
+							BloodAndMithrilClient.WIDTH / 2 - 125,
+							BloodAndMithrilClient.HEIGHT/2 + 50,
+							250,
+							100,
+							"Enter IP",
+							250,
+							100,
+							new JITTask() {
+								@Override
+								public void execute(Object... args) {
+									try {
+										ClientServerInterface.setupAndConnect(args[0].toString());
+										BloodAndMithrilClient.gameWorld = new GameWorld(false);
+										UserInterface.buttons.remove("connect");
+										UserInterface.setup();
+										for (Component component : UserInterface.layeredComponents) {
+											if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
+												component.closing = true;
+											} else if (component instanceof MainMenuWindow) {
+												component.closing = true;
+											}
+										}
+									} catch (IOException e) {
+										for (Component component : UserInterface.layeredComponents) {
+											component.active = false;
+										}
+										UserInterface.addLayeredComponent(
+											new MessageWindow(
+												"Failed to connect",
+												Color.RED,
+												BloodAndMithrilClient.WIDTH/2 - 150,
+												BloodAndMithrilClient.HEIGHT/2 + 50,
+												300,
+												100,
+												"Error",
+												true,
+												300,
+												100,
+												new Task() {
+													@Override
+													public void execute() {
+														for (Component component : UserInterface.layeredComponents) {
+															if (component instanceof Window && ((Window) component).title.equals("Error")) {
+																component.closing = true;
+															} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
+																component.active = true;
+															}
+														}
+													}
+												}
+											)
+										);
+									}
+								}
+							},
+							"Connect",
+							false
+						)
+					);
+					UserInterface.buttons.remove("connect");
 				}
 			},
 			Color.ORANGE,
 			Color.GREEN,
 			Color.GRAY,
-			UIRef.BL
+			UIRef.M
 		);
 
 		options = new Button(
@@ -129,18 +199,18 @@ public class MainMenuWindow extends Window {
 		);
 
 
-		saveAndExit = new Button(
-			"Save and Exit",
+		exit = new Button(
+			"Exit",
 			defaultFont,
 			0,
 			0,
-			130,
+			40,
 			16,
 			new Task() {
 				@Override
 				public void execute() {
-					save(true);
-			}
+					Gdx.app.exit();
+				}
 			},
 			Color.ORANGE,
 			Color.GREEN,
