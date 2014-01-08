@@ -2,6 +2,7 @@ package bloodandmithril.csi;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,6 +44,7 @@ import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Epoch;
+import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.DebugTile;
@@ -213,6 +215,7 @@ public class ClientServerInterface {
 		kryo.register(ArtificialIntelligence.class);
 		kryo.register(ArtificialIntelligence.AIMode.class);
 		kryo.register(HashMap.class);
+		kryo.register(HashSet.class);
 		kryo.register(EquipmentSlot.class);
 		kryo.register(OneHandedWeapon.class);
 		kryo.register(Equipable.class);
@@ -227,5 +230,6 @@ public class ClientServerInterface {
 		kryo.register(AStarPathFinder.class);
 		kryo.register(AStarPathFinder.Node.class);
 		kryo.register(DualKeyHashMap.class);
+		kryo.register(GameWorld.individuals.keySet().getClass());
 	}
 }

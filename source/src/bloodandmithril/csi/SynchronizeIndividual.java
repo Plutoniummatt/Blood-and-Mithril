@@ -7,6 +7,8 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.GameWorld;
 
+import com.google.common.collect.Sets;
+
 /**
  * Synchronizes an {@link Individual}
  *
@@ -36,7 +38,7 @@ public class SynchronizeIndividual implements Request {
 	@Override
 	public Response respond() {
 		if (id == -1) {
-			return new SynchronizeIndividualResponse(GameWorld.individuals.keySet());
+			return new SynchronizeIndividualResponse(Sets.newHashSet(GameWorld.individuals.keySet()));
 		}
 		return new SynchronizeIndividualResponse(GameWorld.individuals.get(id));
 	}
