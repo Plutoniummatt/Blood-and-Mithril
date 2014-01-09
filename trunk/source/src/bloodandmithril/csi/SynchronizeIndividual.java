@@ -40,6 +40,7 @@ public class SynchronizeIndividual implements Request {
 		if (id == -1) {
 			return new SynchronizeIndividualResponse(Sets.newHashSet(GameWorld.individuals.keySet()));
 		}
+		Logger.networkDebug("Respoding with individual" , LogLevel.TRACE);
 		return new SynchronizeIndividualResponse(GameWorld.individuals.get(id));
 	}
 
@@ -76,7 +77,7 @@ public class SynchronizeIndividual implements Request {
 			if (this.individual != null) {
 				syncSingleIndividual();
 			}
-			
+
 			if (this.individuals != null) {
 				for (Integer id : individuals) {
 					ClientServerInterface.sendSynchronizeIndividualRequest(id);
