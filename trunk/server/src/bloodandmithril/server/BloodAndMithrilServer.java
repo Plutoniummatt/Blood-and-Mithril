@@ -51,7 +51,7 @@ public class BloodAndMithrilServer {
 	 */
 	public static void main(String[] args) {
 
-		Server server = new Server(1048576, 1048576);
+		final Server server = new Server(1048576, 1048576);
 		server.start();
 
 		try {
@@ -77,9 +77,22 @@ public class BloodAndMithrilServer {
 
 							// Send response
 							if (request.tcp()) {
-								connection.sendTCP(request.respond());
+								if (request.notifyOthers()) {
+									for (Connection c : server.getConnections()) {
+										c.sendTCP(request.respond());
+									}
+								} else {
+									connection.sendTCP(request.respond());
+								}
 							} else {
-								connection.sendUDP(request.respond());
+								if (request.notifyOthers()) {
+									for (Connection c : server.getConnections()) {
+										c.sendUDP(request.respond());
+									}
+								} else {
+									connection.sendUDP(request.respond());
+								}
+								Logger.networkDebug("Responding to " + request.getClass().getSimpleName() + " from " + connection.getRemoteAddressTCP(), LogLevel.TRACE);
 							}
 						}
 					});
@@ -148,7 +161,7 @@ public class BloodAndMithrilServer {
 		public boolean keyDown(int keycode) {
 			if (keycode == Input.Keys.R) {
 				IndividualState state = new IndividualState(10f, 10f);
-				state.position = new Vector2(0, 1000);
+				state.position = new Vector2(0, 200);
 				state.velocity = new Vector2(0, 0);
 				state.acceleration = new Vector2(0, 0);
 

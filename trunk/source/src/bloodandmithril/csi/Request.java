@@ -13,4 +13,7 @@ public interface Request {
 
 	/** Whether this request uses the TCP protocol */
 	public boolean tcp();
+
+	/** Whether the server needs to notify all connected clients when responding */
+	public boolean notifyOthers();
 }

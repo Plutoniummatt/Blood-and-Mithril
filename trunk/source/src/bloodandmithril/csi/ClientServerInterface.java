@@ -1,6 +1,7 @@
 package bloodandmithril.csi;
 
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
@@ -12,6 +13,7 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.Individual.IndividualState;
+import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.implementations.ElfAI;
@@ -29,9 +31,16 @@ import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Elf;
-import bloodandmithril.csi.GenerateChunk.GenerateChunkResponse;
-import bloodandmithril.csi.Ping.Pong;
-import bloodandmithril.csi.SynchronizeIndividual.SynchronizeIndividualResponse;
+import bloodandmithril.csi.requests.DestroyTile;
+import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
+import bloodandmithril.csi.requests.GenerateChunk;
+import bloodandmithril.csi.requests.GenerateChunk.GenerateChunkResponse;
+import bloodandmithril.csi.requests.IndividualSelection;
+import bloodandmithril.csi.requests.MoveIndividual;
+import bloodandmithril.csi.requests.Ping;
+import bloodandmithril.csi.requests.Ping.Pong;
+import bloodandmithril.csi.requests.SynchronizeIndividual;
+import bloodandmithril.csi.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
 import bloodandmithril.item.equipment.Broadsword;
@@ -40,12 +49,15 @@ import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
+import bloodandmithril.util.Logger;
+import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.topography.Chunk.ChunkData;
+import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.DebugTile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -91,6 +103,15 @@ public class ClientServerInterface {
 		client.connect(5000, ip, 42685, 42686);
 		registerClasses(client.getKryo());
 		client.getKryo().setInstantiatorStrategy(new StdInstantiatorStrategy());
+		client.getUpdateThread().setUncaughtExceptionHandler(
+			new UncaughtExceptionHandler() {
+				@Override
+				public void uncaughtException(Thread thread, Throwable throwable) {
+					thread.start();
+					Logger.networkDebug(throwable.getMessage(), LogLevel.WARN);
+				}
+			}
+		);
 
 		client.addListener(new Listener() {
 			@Override
@@ -108,6 +129,34 @@ public class ClientServerInterface {
 						}
 					);
 				} else if (object instanceof SynchronizeIndividualResponse) {
+					BloodAndMithrilClient.newCachedThreadPool.execute(
+						new Runnable() {
+							@Override
+							public void run() {
+								Response response = (Response) object;
+								response.acknowledge();
+							}
+						}
+					);
+				} else if (object instanceof DestroyTileResponse) {
+					Topography.addTask(new Task() {
+						@Override
+						public void execute() {
+							Response response = (Response) object;
+							response.acknowledge();
+						}
+					});
+				} else if (object instanceof MoveIndividual || object instanceof IndividualSelection) {
+					AIProcessor.aiThreadTasks.add(
+						new Task() {
+							@Override
+							public void execute() {
+								Response response = (Response) object;
+								response.acknowledge();
+							}
+						}
+					);
+				} else if (object instanceof Response) {
 					BloodAndMithrilClient.newCachedThreadPool.execute(
 						new Runnable() {
 							@Override
@@ -140,23 +189,32 @@ public class ClientServerInterface {
 		clientThread.start();
 	}
 
-
 	public static void sendGenerateChunkRequest(int x, int y) {
 		client.sendTCP(new GenerateChunk(x, y));
 	}
-
 
 	public static void sendSynchronizeIndividualRequest(int id) {
 		client.sendUDP(new SynchronizeIndividual(id));
 	}
 
-
 	public static void sendSynchronizeIndividualRequest() {
 		client.sendUDP(new SynchronizeIndividual());
 	}
 
+	public static void sendDestroyTileRequest(float worldX, float worldY, boolean foreground) {
+		client.sendTCP(new DestroyTile(worldX, worldY, foreground));
+	}
+
 	public static void ping() {
 		client.sendUDP(new Ping());
+	}
+
+	public static void individualSelection(int id, boolean select) {
+		client.sendTCP(new IndividualSelection(id, select));
+	}
+
+	public static void moveIndividual(int id, Vector2 destinationCoordinates) {
+		client.sendTCP(new MoveIndividual(id, destinationCoordinates));
 	}
 
 	/**
@@ -231,5 +289,11 @@ public class ClientServerInterface {
 		kryo.register(AStarPathFinder.Node.class);
 		kryo.register(DualKeyHashMap.class);
 		kryo.register(GameWorld.individuals.keySet().getClass());
+		kryo.register(DestroyTile.class);
+		kryo.register(DestroyTileResponse.class);
+		kryo.register(IndividualSelection.class);
+		kryo.register(IndividualSelection.SelectIndividualResponse.class);
+		kryo.register(MoveIndividual.class);
+		kryo.register(MoveIndividual.MoveIndividualResponse.class);
 	}
 }
