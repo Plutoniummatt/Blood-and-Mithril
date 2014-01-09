@@ -11,6 +11,12 @@ import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Boar;
+import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.character.individuals.Names;
+import bloodandmithril.item.equipment.Broadsword;
+import bloodandmithril.item.equipment.ButterflySword;
+import bloodandmithril.item.material.animal.ChickenLeg;
+import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.KeyMappings;
@@ -345,6 +351,31 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;
+		}
+
+		if (keycode == Input.Keys.R) {
+			IndividualState state = new IndividualState(10f, 10f);
+			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
+			state.velocity = new Vector2(0, 0);
+			state.acceleration = new Vector2(0, 0);
+
+			IndividualIdentifier id = Names.getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
+			id.nickName = "Elfie";
+
+			Elf elf = new Elf(
+				id, state, true, true,
+				new Color(0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 1),
+				new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
+				Util.getRandom().nextInt(4),
+				20f
+			);
+
+			elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
+			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
+			elf.giveItem(new ButterflySword(100), 1);
+			elf.giveItem(new Broadsword(100), 1);
+
+			GameWorld.individuals.put(elf.id.id, elf);
 		}
 
 		if (keycode == Input.Keys.U) {

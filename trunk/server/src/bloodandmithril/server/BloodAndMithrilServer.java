@@ -108,7 +108,7 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public void create() {
-			gameWorld = new GameWorld(true);
+			gameWorld = new GameWorld(false);
 			GameLoader.load();
 
 			Gdx.input.setInputProcessor(this);

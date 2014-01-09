@@ -63,8 +63,8 @@ public class GameWorld {
 	/**
 	 * Constructor
 	 */
-	public GameWorld(boolean server) {
-		topography = new Topography(server);
+	public GameWorld(boolean client) {
+		topography = new Topography(client);
 	}
 
 
