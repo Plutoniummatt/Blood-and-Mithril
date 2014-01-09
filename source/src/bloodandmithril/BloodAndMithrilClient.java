@@ -13,6 +13,7 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
@@ -29,8 +30,6 @@ import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.GameWorld.Light;
-import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -254,6 +253,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			UserInterface.rightClick();
 		}
 
+		if (!Gdx.input.isKeyPressed(Input.Keys.A)) {
+			ClientServerInterface.sendDestroyTileRequest(getMouseWorldX(), getMouseWorldY(), true);
+		}
+
 		if (UserInterface.contextMenus.isEmpty()) {
 			for (Individual indi : GameWorld.selectedIndividuals) {
 				indi.walking = !doubleClick;
@@ -261,18 +264,27 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
 				} else {
 					float spread = Math.min(indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
-					AIProcessor.sendPathfindingRequest(
-						indi,
-						new WayPoint(
-							new Vector2(
+					if ("true".equals(System.getProperty("server"))) {
+						AIProcessor.sendPathfindingRequest(
+							indi,
+							new WayPoint(
+								new Vector2(
+									getMouseWorldX() + spread,
+									getMouseWorldY()
+								)
+							),
+							false,
+							150f,
+							Gdx.input.isKeyPressed(KeyMappings.forceMove) ? false : true
+						);
+					} else {
+						ClientServerInterface.moveIndividual(
+							indi.id.id, new Vector2(
 								getMouseWorldX() + spread,
 								getMouseWorldY()
 							)
-						),
-						false,
-						150f,
-						Gdx.input.isKeyPressed(KeyMappings.forceMove) ? false : true
-					);
+						);
+					}
 				}
 			}
 		}
@@ -303,24 +315,36 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				if (doubleClick) {
 					for (Individual indi : GameWorld.individuals.values()) {
 						if (indi.controllable) {
-							indi.deselect(false);
-							GameWorld.selectedIndividuals.remove(indi);
+							if ("true".equals(System.getProperty("server"))) {
+								indi.deselect(false);
+								GameWorld.selectedIndividuals.remove(indi);
+							} else {
+								ClientServerInterface.individualSelection(indi.id.id, false);
+							}
 						}
 					}
-					GameWorld.selectedIndividuals.clear();
+					if ("true".equals(System.getProperty("server"))) {
+						GameWorld.selectedIndividuals.clear();
+					}
 				}
 
 			} else {
 				for (Individual indi : GameWorld.individuals.values()) {
 					if (indi.controllable) {
-						indi.deselect(false);
-						GameWorld.selectedIndividuals.remove(indi);
+						if ("true".equals(System.getProperty("server"))) {
+							indi.deselect(false);
+							GameWorld.selectedIndividuals.remove(indi);
+						}
 					}
 				}
 
 				if (individualClicked.controllable) {
-					GameWorld.selectedIndividuals.add(individualClicked);
-					individualClicked.select();
+					if ("true".equals(System.getProperty("server"))) {
+						GameWorld.selectedIndividuals.add(individualClicked);
+						individualClicked.select();
+					} else {
+						ClientServerInterface.individualSelection(individualClicked.id.id, true);
+					}
 				}
 
 			}
@@ -335,10 +359,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					1f
 				)
 			);
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.V)) {
-			Topography.changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickPlatform.class);
 		}
 	}
 

@@ -6,6 +6,7 @@ import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -101,15 +102,16 @@ public class MineTile extends CompositeAITask {
 					new Task() {
 						@Override
 						public void execute() {
-							Tile deletedTile = Topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
-							if (deletedTile != null) {
+							Tile tileToBeDeleted = Topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
+							ClientServerInterface.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true);
+							if (tileToBeDeleted != null) {
 								SoundService.pickAxe.play(
 									SoundService.getVolumne(tileCoordinate),
 									1f,
 									SoundService.getPan(tileCoordinate)
 								);
 
-								((Equipper)host).giveItem(deletedTile.mine(), 1);
+								((Equipper)host).giveItem(tileToBeDeleted.mine(), 1);
 								InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
 
 									@Override

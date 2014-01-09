@@ -1,6 +1,8 @@
-package bloodandmithril.csi;
+package bloodandmithril.csi.requests;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.csi.Request;
+import bloodandmithril.csi.Response;
 
 /**
  * A simple Ping request
@@ -27,7 +29,7 @@ public class Ping implements Request {
 
 
 	/**
-	 * The {@link Response} to {@link bloodandmithril.csi.Ping}
+	 * The {@link Response} to {@link bloodandmithril.csi.requests.Ping}
 	 *
 	 * @author Matt
 	 */
@@ -52,6 +54,12 @@ public class Ping implements Request {
 
 	@Override
 	public boolean tcp() {
+		return false;
+	}
+
+
+	@Override
+	public boolean notifyOthers() {
 		return false;
 	}
 }

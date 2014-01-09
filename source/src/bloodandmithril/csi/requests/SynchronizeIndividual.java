@@ -1,8 +1,11 @@
-package bloodandmithril.csi;
+package bloodandmithril.csi.requests;
 
 import java.util.Set;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.csi.Request;
+import bloodandmithril.csi.Response;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.GameWorld;
@@ -40,7 +43,6 @@ public class SynchronizeIndividual implements Request {
 		if (id == -1) {
 			return new SynchronizeIndividualResponse(Sets.newHashSet(GameWorld.individuals.keySet()));
 		}
-		Logger.networkDebug("Respoding with individual" , LogLevel.TRACE);
 		return new SynchronizeIndividualResponse(GameWorld.individuals.get(id));
 	}
 
@@ -101,6 +103,12 @@ public class SynchronizeIndividual implements Request {
 
 	@Override
 	public boolean tcp() {
+		return false;
+	}
+
+
+	@Override
+	public boolean notifyOthers() {
 		return false;
 	}
 }

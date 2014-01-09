@@ -1,5 +1,7 @@
-package bloodandmithril.csi;
+package bloodandmithril.csi.requests;
 
+import bloodandmithril.csi.Request;
+import bloodandmithril.csi.Response;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.GameWorld;
@@ -75,5 +77,11 @@ public class GenerateChunk implements Request {
 	@Override
 	public boolean tcp() {
 		return true;
+	}
+
+
+	@Override
+	public boolean notifyOthers() {
+		return false;
 	}
 }
