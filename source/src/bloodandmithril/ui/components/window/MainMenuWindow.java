@@ -9,6 +9,7 @@ import java.util.List;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -123,8 +124,14 @@ public class MainMenuWindow extends Window {
 								@Override
 								public void execute(Object... args) {
 									try {
-										ClientServerInterface.setupAndConnect(args[0].toString());
-										BloodAndMithrilClient.gameWorld = new GameWorld(false);
+										if (args[0].toString().equals("local")) {
+											BloodAndMithrilClient.gameWorld = new GameWorld(true);
+											GameLoader.load();
+										} else {
+											ClientServerInterface.setupAndConnect(args[0].toString());
+											BloodAndMithrilClient.gameWorld = new GameWorld(true);
+										}
+
 										UserInterface.buttons.remove("connect");
 										UserInterface.setup();
 										for (Component component : UserInterface.layeredComponents) {

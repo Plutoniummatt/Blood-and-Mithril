@@ -51,7 +51,7 @@ public class Topography {
 	private static BlockingQueue<Task> topographyTasks = new ArrayBlockingQueue<Task>(500000);
 
 	/** True if hosted as a server */
-	private final boolean server;
+	private final boolean client;
 
 	/** The current chunk coordinates that have already been requested for generation */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> requestedForGeneration = new ConcurrentDualKeyHashMap<>();
@@ -60,10 +60,10 @@ public class Topography {
 	/**
 	 * @param generator - The type of generator to use
 	 */
-	public Topography(boolean server) {
+	public Topography(boolean client) {
 
-		this.server = server;
-		if (!server) {
+		this.client = client;
+		if (client) {
 			 atlas = new Texture(Gdx.files.internal("data/image/textureAtlas.png"));
 		}
 
@@ -321,13 +321,13 @@ public class Topography {
 		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
 			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {
 				if (chunkMap.get(chunkX) == null || chunkMap.get(chunkX).get(chunkY) == null) {
-					if (server) {
-						loadOrGenerateChunk(chunkX, chunkY);
-					} else {
+					if (client && "false".equals(System.getProperty("server"))) {
 						if (requestedForGeneration.get(chunkX, chunkY) == null || !requestedForGeneration.get(chunkX, chunkY)) {
 							ClientServerInterface.sendGenerateChunkRequest(chunkX, chunkY);
 							requestedForGeneration.put(chunkX, chunkY, true);
 						}
+					} else {
+						loadOrGenerateChunk(chunkX, chunkY);
 					}
 				}
 			}
