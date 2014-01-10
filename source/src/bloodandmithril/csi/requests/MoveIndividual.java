@@ -1,15 +1,16 @@
 package bloodandmithril.csi.requests;
 
+import java.util.List;
+
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.world.GameWorld;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 /**
  * {@link Request} to move an {@link Individual}
@@ -22,17 +23,21 @@ public class MoveIndividual implements Request {
 	/** Coordinates of the destination */
 	public final Vector2 destinationCoordinates;
 
+	/** Whether or not to force move */
+	private final boolean forceMove;
+
 	/**
 	 * Constructor
 	 */
-	public MoveIndividual(int individualId, Vector2 destinationCoordinates) {
+	public MoveIndividual(int individualId, Vector2 destinationCoordinates, boolean forceMove) {
 		this.individualId = individualId;
 		this.destinationCoordinates = destinationCoordinates;
+		this.forceMove = forceMove;
 	}
 
 
 	@Override
-	public Response respond() {
+	public List<Response> respond() {
 		Individual individual = GameWorld.individuals.get(individualId);
 		if (individual != null && individual.selected) {
 			AIProcessor.sendPathfindingRequest(
@@ -40,10 +45,11 @@ public class MoveIndividual implements Request {
 				new WayPoint(destinationCoordinates),
 				false,
 				150f,
-				Gdx.input.isKeyPressed(KeyMappings.forceMove) ? false : true
+				!forceMove
 			);
 		}
-		return new MoveIndividualResponse();
+		Response response = new MoveIndividualResponse();
+		return Lists.newArrayList(response);
 	}
 
 

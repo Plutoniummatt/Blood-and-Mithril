@@ -11,7 +11,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.TradeProposalEvaluator;
+import bloodandmithril.item.TradeService;
 import bloodandmithril.prop.building.Chest.ChestContainer;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -34,15 +34,15 @@ import com.google.common.collect.Maps;
 public class TradeWindow extends Window {
 
 	/** Panels of involved traders */
-	private ScrollableListingPanel buyerPanel;
-	private ScrollableListingPanel sellerPanel;
+	private ScrollableListingPanel<Item> buyerPanel;
+	private ScrollableListingPanel<Item> sellerPanel;
 
 	/** Listings of items to display */
-	private final HashMap<ListingMenuItem, Integer> proposerItemsToTrade = Maps.newHashMap();
-	private final HashMap<ListingMenuItem, Integer> proposerItemsNotToTrade = Maps.newHashMap();
+	private final HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade = Maps.newHashMap();
+	private final HashMap<ListingMenuItem<Item>, Integer> proposerItemsNotToTrade = Maps.newHashMap();
 
-	private final HashMap<ListingMenuItem, Integer> proposeeItemsToTrade = Maps.newHashMap();
-	private final HashMap<ListingMenuItem, Integer> proposeeItemsNotToTrade = Maps.newHashMap();
+	private final HashMap<ListingMenuItem<Item>, Integer> proposeeItemsToTrade = Maps.newHashMap();
+	private final HashMap<ListingMenuItem<Item>, Integer> proposeeItemsNotToTrade = Maps.newHashMap();
 
 	/** Traders */
 	private final Container proposer, proposee;
@@ -102,26 +102,26 @@ public class TradeWindow extends Window {
 		}
 
 		if (proposer instanceof Individual && proposee instanceof Individual && !proposalAccepted) {
-			proposalAccepted = TradeProposalEvaluator.evaluate(
+			proposalAccepted = TradeService.evaluate(
 				(Individual)proposer,
-				Lists.transform(Lists.newArrayList(proposerItemsToTrade.entrySet()), new Function<Entry<ListingMenuItem, Integer>, Item>() {
+				Lists.transform(Lists.newArrayList(proposerItemsToTrade.entrySet()), new Function<Entry<ListingMenuItem<Item>, Integer>, Item>() {
 					@Override
-					public Item apply(Entry<ListingMenuItem, Integer> input) {
-						return input.getKey().item;
+					public Item apply(Entry<ListingMenuItem<Item>, Integer> input) {
+						return input.getKey().t;
 					}
 				}),
 				(Individual)proposee,
-				Lists.transform(Lists.newArrayList(proposeeItemsToTrade.entrySet()), new Function<Entry<ListingMenuItem, Integer>, Item>() {
+				Lists.transform(Lists.newArrayList(proposeeItemsToTrade.entrySet()), new Function<Entry<ListingMenuItem<Item>, Integer>, Item>() {
 					@Override
-					public Item apply(Entry<ListingMenuItem, Integer> input) {
-						return input.getKey().item;
+					public Item apply(Entry<ListingMenuItem<Item>, Integer> input) {
+						return input.getKey().t;
 					}
 				})
 			);
 		}
 
 		if (proposalAccepted) {
-			finalizeTrade();
+			TradeService.transferItems(proposerItemsToTrade, proposer, proposeeItemsToTrade, proposee);
 			refresh();
 		} else {
 			rejectTradeProposal();
@@ -132,7 +132,7 @@ public class TradeWindow extends Window {
 	/**
 	 * Refreshes this window and syncs it with the trader inventories
 	 */
-	private void refresh() {
+	public void refresh() {
 		proposerItemsToTrade.clear();
 		proposeeItemsToTrade.clear();
 		proposerItemsNotToTrade.clear();
@@ -151,26 +151,11 @@ public class TradeWindow extends Window {
 	}
 
 
-	/**
-	 * The trade proposal was accepted by the proposee, this method transfers the {@link Item}s and finalizes the trade
-	 */
-	private void finalizeTrade() {
-		for (Entry<ListingMenuItem, Integer> proposerToTradeItem : proposerItemsToTrade.entrySet()) {
-			proposer.takeItem(proposerToTradeItem.getKey().item, proposerToTradeItem.getValue());
-			proposee.giveItem(proposerToTradeItem.getKey().item, proposerToTradeItem.getValue());
-		}
-		for (Entry<ListingMenuItem, Integer> proposeeToTradeItem : proposeeItemsToTrade.entrySet()) {
-			proposee.takeItem(proposeeToTradeItem.getKey().item, proposeeToTradeItem.getValue());
-			proposer.giveItem(proposeeToTradeItem.getKey().item, proposeeToTradeItem.getValue());
-		}
-	}
-
-
 	private void createPanels() {
-		buyerPanel = new ScrollableListingPanel(this) {
+		buyerPanel = new ScrollableListingPanel<Item>(this) {
 
 			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem, Integer>> listings) {
+			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(proposerItemsToTrade);
 				listings.add(proposerItemsNotToTrade);
 			}
@@ -181,7 +166,7 @@ public class TradeWindow extends Window {
 			}
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem, Integer> item) {
+			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
 
@@ -191,10 +176,10 @@ public class TradeWindow extends Window {
 			}
 		};
 
-		sellerPanel = new ScrollableListingPanel(this) {
+		sellerPanel = new ScrollableListingPanel<Item>(this) {
 
 			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem, Integer>> listings) {
+			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(proposeeItemsToTrade);
 				listings.add(proposeeItemsNotToTrade);
 			}
@@ -205,7 +190,7 @@ public class TradeWindow extends Window {
 			}
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem, Integer> item) {
+			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
 
@@ -220,10 +205,10 @@ public class TradeWindow extends Window {
 	/**
 	 * Populates a listing
 	 */
-	private void populate(final HashMap<ListingMenuItem, Integer> trading, final HashMap<ListingMenuItem, Integer> notTrading, HashMap<Item, Integer> toPopulateFrom) {
+	private void populate(final HashMap<ListingMenuItem<Item>, Integer> trading, final HashMap<ListingMenuItem<Item>, Integer> notTrading, HashMap<Item, Integer> toPopulateFrom) {
 		for (final Entry<Item, Integer> entry : toPopulateFrom.entrySet()) {
 
-			final ListingMenuItem listingMenuItem = new ListingMenuItem(
+			final ListingMenuItem<Item> listingMenuItem = new ListingMenuItem<Item>(
 				entry.getKey(),
 				new Button(
 					entry.getKey().getSingular(true),
@@ -254,8 +239,8 @@ public class TradeWindow extends Window {
 	}
 
 
-	private void changeList(final Item key, final HashMap<ListingMenuItem, Integer> transferTo, final HashMap<ListingMenuItem, Integer> transferFrom, final boolean toTrade) {
-		final ListingMenuItem listingMenuItem = new ListingMenuItem(
+	private void changeList(final Item key, final HashMap<ListingMenuItem<Item>, Integer> transferTo, final HashMap<ListingMenuItem<Item>, Integer> transferFrom, final boolean toTrade) {
+		final ListingMenuItem<Item> listingMenuItem = new ListingMenuItem<Item>(
 			key,
 			new Button(
 				key.getSingular(true),
@@ -278,8 +263,8 @@ public class TradeWindow extends Window {
 			null
 		);
 
-		for (Entry<ListingMenuItem, Integer> entry : Lists.newArrayList(transferFrom.entrySet())) {
-			if (entry.getKey().item.sameAs(key)) {
+		for (Entry<ListingMenuItem<Item>, Integer> entry : Lists.newArrayList(transferFrom.entrySet())) {
+			if (entry.getKey().t.sameAs(key)) {
 				if (transferFrom.get(entry.getKey()) == 1) {
 					transferFrom.remove(entry.getKey());
 				} else {
@@ -287,8 +272,8 @@ public class TradeWindow extends Window {
 				}
 
 				boolean found = false;
-				for (Entry<ListingMenuItem, Integer> innerEntry : Lists.newArrayList(transferTo.entrySet())) {
-					if (innerEntry.getKey().item.sameAs(key)) {
+				for (Entry<ListingMenuItem<Item>, Integer> innerEntry : Lists.newArrayList(transferTo.entrySet())) {
+					if (innerEntry.getKey().t.sameAs(key)) {
 						transferTo.remove(innerEntry.getKey());
 						transferTo.put(listingMenuItem, innerEntry.getValue() + 1);
 						found = true;

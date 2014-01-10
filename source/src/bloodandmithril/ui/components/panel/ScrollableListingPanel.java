@@ -10,11 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.google.common.collect.Lists;
-
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.KeyMappings;
@@ -22,31 +17,36 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.collect.Lists;
 
 /**
  * A panel that displays a listing of clickable menu items
  *
  * @author Matt
  */
-public abstract class ScrollableListingPanel extends Panel {
+public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Panel {
 
 	/** Datastructure that backs this listing panel */
-	private final List<HashMap<ListingMenuItem, Integer>> listings = Lists.newArrayList();
-	
+	private final List<HashMap<ListingMenuItem<T>, Integer>> listings = Lists.newArrayList();
+
 	/** The current starting index for which the inventory listing is rendered */
 	private int startingIndex = 0;
-	
+
 	/** The position of the scroll bar button, 0f is top of list, 1f is bottom of list */
 	private float scrollBarButtonLocation = 0f;
 
 	/** Used for scroll processing */
 	private Float scrollBarButtonLocationOld = null;
 	private float mouseLocYFrozen;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -54,35 +54,35 @@ public abstract class ScrollableListingPanel extends Panel {
 		super(parent);
 		onSetup(listings);
 	}
-	
-	
+
+
 	/**
 	 * Returns a string that will be rendered at an offset from the right edge of the panel, see {@link #getExtraStringOffset()}
 	 */
-	protected abstract String getExtraString(Entry<ListingMenuItem, Integer> item);
-	
-	
+	protected abstract String getExtraString(Entry<ListingMenuItem<T>, Integer> item);
+
+
 	/**
 	 * Returns the offset value at which {@link #getExtraString(Entry, int)} will be rendered from the right edge of the {@link Panel}
 	 */
 	protected abstract int getExtraStringOffset();
-	
-	
+
+
 	/**
 	 * Populates the datastructure {@link #listings}
 	 */
-	protected abstract void onSetup(List<HashMap<ListingMenuItem, Integer>> listings);
-	
-	
+	protected abstract void onSetup(List<HashMap<ListingMenuItem<T>, Integer>> listings);
+
+
 	@Override
 	public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		int size = 0;
-		for (Map<ListingMenuItem, Integer> listing : listings) {
+		for (Map<ListingMenuItem<T>, Integer> listing : listings) {
 			size += listing.size();
 		}
-		
-		for (HashMap<ListingMenuItem, Integer> listing : listings) {
-			for(Entry<ListingMenuItem, Integer> item : Lists.newArrayList(listing.entrySet())) {
+
+		for (HashMap<ListingMenuItem<T>, Integer> listing : listings) {
+			for(Entry<ListingMenuItem<T>, Integer> item : Lists.newArrayList(listing.entrySet())) {
 				if (item.getKey().button.click() && item.getKey().menu == null) {
 					copy.clear();
 				}
@@ -99,35 +99,35 @@ public abstract class ScrollableListingPanel extends Panel {
 			scrollBarButtonLocationOld = scrollBarButtonLocation;
 			mouseLocYFrozen = BloodAndMithrilClient.getMouseScreenY();
 		}
-		
+
 		return false;
 	}
 
-	
+
 	@Override
 	public void leftClickReleased() {
 		scrollBarButtonLocationOld = null;
 	}
 
-	
+
 	@Override
 	public void render() {
 		// Render the scroll bar
 		renderScrollBar();
-		
+
 		// Render the scroll bar button
 		renderScrollBarButton();
-		
+
 		// Render the listings
-		renderInventoryItems();		
+		renderInventoryItems();
 	}
-	
-	
+
+
 	/**
 	 * Renders the scroll bar
 	 */
 	private void renderScrollBar() {
-		Window p = ((Window) parent);
+		Window p = (Window) parent;
 		Color scrollBarColor = p.active ? new Color(p.borderColor.r, p.borderColor.g, p.borderColor.b, p.alpha * 0.5f) : new Color(p.borderColor.r, p.borderColor.g, p.borderColor.b, p.borderColor.a * 0.2f * p.alpha);
 		Component.shapeRenderer.begin(ShapeType.FilledRectangle);
 		Component.shapeRenderer.setColor(scrollBarColor);
@@ -135,26 +135,26 @@ public abstract class ScrollableListingPanel extends Panel {
 		Component.shapeRenderer.filledRect(x + width - 6, y + 52 - height, 3, height - 102);
 		Component.shapeRenderer.filledRect(x + width - 6, y + 22 - height, 3, 30, Color.CLEAR, Color.CLEAR, scrollBarColor, scrollBarColor);
 	}
-	
-	
+
+
 	/**
 	 * Renders the inventory listing
 	 */
 	private void renderInventoryItems() {
 		// Render the equipped items first
 		int i = 0;
-		for (Map<ListingMenuItem, Integer> listing : listings) {
-			
-			List<Entry<ListingMenuItem, Integer>> entrySet = Lists.newArrayList(listing.entrySet());
-			
-			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem, Integer>>() {
+		for (Map<ListingMenuItem<T>, Integer> listing : listings) {
+
+			List<Entry<ListingMenuItem<T>, Integer>> entrySet = Lists.newArrayList(listing.entrySet());
+
+			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, Integer>>() {
 				@Override
-				public int compare(Entry<ListingMenuItem, Integer> o1, Entry<ListingMenuItem, Integer> o2) {
-					return o1.getKey().item.getClass().getName().compareTo(o2.getKey().item.getClass().getName());
+				public int compare(Entry<ListingMenuItem<T>, Integer> o1, Entry<ListingMenuItem<T>, Integer> o2) {
+					return o1.getKey().t.getClass().getName().compareTo(o2.getKey().t.getClass().getName());
 				}
 			});
-			
-			for(Entry<ListingMenuItem, Integer> item : entrySet) {
+
+			for(Entry<ListingMenuItem<T>, Integer> item : entrySet) {
 				if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
 					i++;
 					continue;
@@ -171,16 +171,16 @@ public abstract class ScrollableListingPanel extends Panel {
 		BloodAndMithrilClient.spriteBatch.flush();
 	}
 
-	
+
 	/**
 	 * Renders the scroll bar button
 	 */
 	private void renderScrollBarButton() {
 		int size = 0;
-		for (Map<ListingMenuItem, Integer> listing : listings) {
+		for (Map<ListingMenuItem<T>, Integer> listing : listings) {
 			size += listing.size();
 		}
-		
+
 		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
 
 		if (Gdx.input.isButtonPressed(KeyMappings.leftClick) && scrollBarButtonLocationOld != null) {
@@ -202,8 +202,8 @@ public abstract class ScrollableListingPanel extends Panel {
 		Component.shapeRenderer.filledRect(x + width - 8, scrollBarButtonPos - 7.5f, 7, 15);
 		Component.shapeRenderer.end();
 	}
-	
-	
+
+
 	/**
 	 * True if the mouse is over the scroll button
 	 */
@@ -213,32 +213,28 @@ public abstract class ScrollableListingPanel extends Panel {
 				BloodAndMithrilClient.getMouseScreenY() > scrollBarButtonPos - 10 &&
 				BloodAndMithrilClient.getMouseScreenY() < scrollBarButtonPos + 10;
 	}
-	
+
 
 	/**
 	 * An item to be displayed within this {@link InventoryWindow}
 	 *
 	 * @author Matt
 	 */
-	public static class ListingMenuItem extends ContextMenuItem implements Comparable<ListingMenuItem> {
+	public static class ListingMenuItem<T extends Comparable<T>> extends ContextMenuItem implements Comparable<ListingMenuItem<T>> {
 
-		public Item item;
+		public T t;
 
 		/**
 		 * Constructor which takes an {@link Item}
 		 */
-		public ListingMenuItem(Item item, Button button, ContextMenu menu) {
+		public ListingMenuItem(T t, Button button, ContextMenu menu) {
 			super(button, menu);
-			this.item = item;
+			this.t = t;
 		}
 
 		@Override
-		public int compareTo(ListingMenuItem o) {
-			if (item.value == o.item.value) {
-				return item.getClass().getSimpleName().compareTo(o.item.getClass().getSimpleName());
-			} else {
-				return item.value > o.item.value ? 1 : -1;
-			}
+		public int compareTo(ListingMenuItem<T> o) {
+			return t.compareTo(o.t);
 		}
 	}
 }

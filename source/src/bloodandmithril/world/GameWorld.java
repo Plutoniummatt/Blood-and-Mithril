@@ -48,7 +48,7 @@ public class GameWorld {
 	/** Every {@link Individual} that exists */
 	public static ConcurrentHashMap<Integer, Individual> individuals = new ConcurrentHashMap<>();
 
-	public static ArrayList<Prop> props = new ArrayList<>();
+	public static ConcurrentHashMap<Integer, Prop> props = new ConcurrentHashMap<>();
 
 	/** Textures */
 	public static Texture gameWorldTexture;
@@ -88,7 +88,7 @@ public class GameWorld {
 		BloodAndMithrilClient.spriteBatch.begin();
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-		for (Prop prop : props) {
+		for (Prop prop : props.values()) {
 			prop.render();
 		}
 		BloodAndMithrilClient.spriteBatch.end();

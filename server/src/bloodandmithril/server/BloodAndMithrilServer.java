@@ -12,6 +12,7 @@ import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
+import bloodandmithril.csi.Response;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
@@ -52,6 +53,7 @@ public class BloodAndMithrilServer {
 	public static void main(String[] args) {
 
 		final Server server = new Server(1048576, 1048576);
+		ClientServerInterface.registerClasses(server.getKryo());
 		server.start();
 
 		try {
@@ -62,7 +64,6 @@ public class BloodAndMithrilServer {
 
 		newCachedThreadPool = Executors.newCachedThreadPool();
 
-		ClientServerInterface.registerClasses(server.getKryo());
 		server.getKryo().setInstantiatorStrategy(new StdInstantiatorStrategy());
 
 		server.addListener(new Listener() {
@@ -78,19 +79,27 @@ public class BloodAndMithrilServer {
 							// Send response
 							if (request.tcp()) {
 								if (request.notifyOthers()) {
-									for (Connection c : server.getConnections()) {
-										c.sendTCP(request.respond());
+									for (Response response : request.respond()) {
+										for (Connection c : server.getConnections()) {
+											c.sendTCP(response);
+										}
 									}
 								} else {
-									connection.sendTCP(request.respond());
+									for (Response response : request.respond()) {
+										connection.sendTCP(response);
+									}
 								}
 							} else {
 								if (request.notifyOthers()) {
-									for (Connection c : server.getConnections()) {
-										c.sendUDP(request.respond());
+									for (Response response : request.respond()) {
+										for (Connection c : server.getConnections()) {
+											c.sendUDP(response);
+										}
 									}
 								} else {
-									connection.sendUDP(request.respond());
+									for (Response response : request.respond()) {
+										connection.sendUDP(response);
+									}
 								}
 								Logger.networkDebug("Responding to " + request.getClass().getSimpleName() + " from " + connection.getRemoteAddressTCP(), LogLevel.TRACE);
 							}

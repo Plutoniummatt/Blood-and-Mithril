@@ -38,8 +38,8 @@ import com.google.common.collect.Maps;
 public class InventoryWindow extends Window {
 
 	/** Inventory listing maps */
-	HashMap<ListingMenuItem, Integer> equippedItemsToDisplay = Maps.newHashMap();
-	HashMap<ListingMenuItem, Integer> nonEquippedItemsToDisplay = Maps.newHashMap();
+	HashMap<ListingMenuItem<Item>, Integer> equippedItemsToDisplay = Maps.newHashMap();
+	HashMap<ListingMenuItem<Item>, Integer> nonEquippedItemsToDisplay = Maps.newHashMap();
 
 	/** The {@link Container} that is the host of this {@link InventoryWindow} */
 	public Equipper host;
@@ -156,9 +156,9 @@ public class InventoryWindow extends Window {
 		populateList(equippedItems, true);
 		populateList(nonEquippedItems, false);
 
-		inventoryListingPanel = new ScrollableListingPanel(this) {
+		inventoryListingPanel = new ScrollableListingPanel<Item>(this) {
 			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem, Integer>> listings) {
+			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(equippedItemsToDisplay);
 				listings.add(nonEquippedItemsToDisplay);
 			}
@@ -169,7 +169,7 @@ public class InventoryWindow extends Window {
 			}
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem, Integer> item) {
+			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
 
@@ -232,12 +232,12 @@ public class InventoryWindow extends Window {
 
 			if (eq) {
 				this.equippedItemsToDisplay.put(
-					new ListingMenuItem(item.getKey(), equippedButton, menuToAddEquipped),
+					new ListingMenuItem<Item>(item.getKey(), equippedButton, menuToAddEquipped),
 					item.getValue()
 				);
 			} else {
 				this.nonEquippedItemsToDisplay.put(
-					new ListingMenuItem(item.getKey(), inventoryButton, menuToAddUnequipped),
+					new ListingMenuItem<Item>(item.getKey(), inventoryButton, menuToAddUnequipped),
 					item.getValue()
 				);
 			}

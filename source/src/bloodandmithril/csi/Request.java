@@ -1,5 +1,7 @@
 package bloodandmithril.csi;
 
+import java.util.List;
+
 
 /**
  * A generic request used for client/server communication
@@ -9,7 +11,7 @@ package bloodandmithril.csi;
 public interface Request {
 
 	/** Respond to the request */
-	public Response respond();
+	public List<Response> respond();
 
 	/** Whether this request uses the TCP protocol */
 	public boolean tcp();

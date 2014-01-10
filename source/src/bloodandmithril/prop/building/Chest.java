@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 public abstract class Chest extends Construction {
 
 	/** The inventory {@link Container} that backs this {@link Chest} */
-	protected Container container;
+	public Container container;
 
 	/**
 	 * Constructor
@@ -30,7 +30,7 @@ public abstract class Chest extends Construction {
 	 * Creates and sets up the {@link #container}
 	 */
 	private void setupContainer(float capacity) {
-		this.container = new ChestContainer(capacity);
+		this.container = new ChestContainer(capacity, id);
 	}
 
 
@@ -40,12 +40,15 @@ public abstract class Chest extends Construction {
 	public class ChestContainer extends Container {
 		private static final long serialVersionUID = 3061765937846818271L;
 
+		/** Id of the prop this chest belongs to */
+		public int propId;
 
 		/**
 		 * Constructor
 		 */
-		protected ChestContainer(float inventoryMassCapacity) {
+		protected ChestContainer(float inventoryMassCapacity, int propId) {
 			super(inventoryMassCapacity, false);
+			this.propId = propId;
 		}
 
 

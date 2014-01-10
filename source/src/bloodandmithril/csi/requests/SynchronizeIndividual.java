@@ -1,5 +1,6 @@
 package bloodandmithril.csi.requests;
 
+import java.util.List;
 import java.util.Set;
 
 import bloodandmithril.character.Individual;
@@ -10,6 +11,7 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.GameWorld;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -39,11 +41,14 @@ public class SynchronizeIndividual implements Request {
 
 
 	@Override
-	public Response respond() {
+	public List<Response> respond() {
+		Response response;
 		if (id == -1) {
-			return new SynchronizeIndividualResponse(Sets.newHashSet(GameWorld.individuals.keySet()));
+			response = new SynchronizeIndividualResponse(Sets.newHashSet(GameWorld.individuals.keySet()));
+			return Lists.newArrayList(response);
 		}
-		return new SynchronizeIndividualResponse(GameWorld.individuals.get(id));
+		response = new SynchronizeIndividualResponse(GameWorld.individuals.get(id));
+		return Lists.newArrayList(response);
 	}
 
 
