@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.csi.requests.CSITrade.TradeEntity;
+import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.building.Chest.ChestContainer;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 
@@ -58,7 +58,7 @@ public class TradeService {
 				proposeeEntity = TradeEntity.PROP;
 				proposeeId = ((ChestContainer) proposer).propId;
 			}
-			ClientServerInterface.trade(proposerItemsToTrade, proposerEntity, proposerId, proposeeItemsToTrade, proposeeEntity, proposeeId);
+			ClientServerInterface.transferItems(proposerItemsToTrade, proposerEntity, proposerId, proposeeItemsToTrade, proposeeEntity, proposeeId);
 		}
 	}
 }

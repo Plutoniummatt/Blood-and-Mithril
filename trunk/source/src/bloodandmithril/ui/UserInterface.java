@@ -315,6 +315,10 @@ public class UserInterface {
 
 			for (Individual indi : GameWorld.individuals.values()) {
 				if (indi.controllable) {
+					if (indi.selected) {
+						continue;
+					}
+
 					Vector2 centre = new Vector2(indi.state.position.x, indi.state.position.y + indi.height / 2);
 
 					centre.x = BloodAndMithrilClient.worldToScreenX(centre.x);

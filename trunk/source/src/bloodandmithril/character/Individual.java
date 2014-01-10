@@ -14,6 +14,7 @@ import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -571,10 +572,14 @@ public abstract class Individual extends Equipper {
 				@Override
 				public void execute() {
 					for (Individual indi : GameWorld.selectedIndividuals) {
-						if (indi != thisIndividual) {
-							indi.ai.setCurrentTask(
-								new TradeWith(indi, thisIndividual)
-							);
+						if (ClientServerInterface.isServer()) {
+							if (indi != thisIndividual) {
+								indi.ai.setCurrentTask(
+									new TradeWith(indi, thisIndividual)
+								);
+							}
+						} else {
+							ClientServerInterface.tradeWithIndividual(proposer, proposee)
 						}
 					}
 
