@@ -1,5 +1,7 @@
 package bloodandmithril.csi.requests;
 
+import java.util.List;
+
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.util.Logger;
@@ -8,6 +10,8 @@ import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
+
+import com.google.common.collect.Lists;
 
 /**
  * Sends a {@link Request} to generate a {@link Chunk}
@@ -30,9 +34,9 @@ public class GenerateChunk implements Request {
 
 
 	@Override
-	public Response respond() {
+	public List<Response> respond() {
 		if (!Topography.chunkMap.doesChunkExist(x, y) && GameWorld.topography.loadOrGenerateChunk(x, y)) {
-			GenerateChunkResponse response = null;
+			Response response = null;
 
 			do {
 				if (Topography.chunkMap.doesChunkExist(x, y)) {
@@ -42,11 +46,12 @@ public class GenerateChunk implements Request {
 				}
 			} while (!Topography.chunkMap.doesChunkExist(x, y) || response == null);
 
-			return response;
+			return Lists.newArrayList(response);
 		} else {
 			ChunkData fData = Topography.chunkMap.get(x).get(y).getChunkData(true);
 			ChunkData bData = Topography.chunkMap.get(x).get(y).getChunkData(false);
-			return new GenerateChunkResponse(fData, bData);
+			Response response = new GenerateChunkResponse(fData, bData);
+			return Lists.newArrayList(response);
 		}
 	}
 

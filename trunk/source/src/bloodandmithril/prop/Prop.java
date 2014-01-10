@@ -1,6 +1,7 @@
 package bloodandmithril.prop;
 
 
+import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.ui.components.ContextMenu;
 
 import com.badlogic.gdx.math.Vector2;
@@ -11,6 +12,9 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 public abstract class Prop {
+
+	/** id of this prop */
+	public int id;
 
 	/** The location of this {@link Prop} */
 	protected Vector2 position;
@@ -23,6 +27,7 @@ public abstract class Prop {
 	 */
 	protected Prop(float x, float y, boolean grounded) {
 		position = new Vector2(x, y);
+		this.id = ParameterPersistenceService.getParameters().getNextPropId();
 		this.grounded = grounded;
 	}
 

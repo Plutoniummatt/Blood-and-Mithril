@@ -31,6 +31,8 @@ import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.csi.requests.CSITrade;
+import bloodandmithril.csi.requests.CSITrade.TradeEntity;
 import bloodandmithril.csi.requests.DestroyTile;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.GenerateChunk;
@@ -43,12 +45,14 @@ import bloodandmithril.csi.requests.SynchronizeIndividual;
 import bloodandmithril.csi.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
+import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
+import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
@@ -75,6 +79,7 @@ import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
 import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -99,16 +104,22 @@ public class ClientServerInterface {
 	 */
 	public static void setupAndConnect(String ip) throws IOException {
 		client = new Client(65536, 65536);
+		registerClasses(client.getKryo());
 		client.start();
 		client.connect(5000, ip, 42685, 42686);
-		registerClasses(client.getKryo());
 		client.getKryo().setInstantiatorStrategy(new StdInstantiatorStrategy());
 		client.getUpdateThread().setUncaughtExceptionHandler(
 			new UncaughtExceptionHandler() {
 				@Override
 				public void uncaughtException(Thread thread, Throwable throwable) {
-					thread.start();
-					Logger.networkDebug(throwable.getMessage(), LogLevel.WARN);
+					client.stop();
+					client.start();
+					try {
+						client.reconnect();
+					} catch (IOException e) {
+						Gdx.app.exit();
+					}
+					Logger.networkDebug(throwable.getMessage(), LogLevel.TRACE);
 				}
 			}
 		);
@@ -189,32 +200,48 @@ public class ClientServerInterface {
 		clientThread.start();
 	}
 
-	public static void sendGenerateChunkRequest(int x, int y) {
+	public static synchronized void sendGenerateChunkRequest(int x, int y) {
 		client.sendTCP(new GenerateChunk(x, y));
 	}
 
-	public static void sendSynchronizeIndividualRequest(int id) {
+	public static synchronized void sendSynchronizeIndividualRequest(int id) {
 		client.sendUDP(new SynchronizeIndividual(id));
 	}
 
-	public static void sendSynchronizeIndividualRequest() {
+	public static synchronized void sendSynchronizeIndividualRequest() {
 		client.sendUDP(new SynchronizeIndividual());
 	}
 
-	public static void sendDestroyTileRequest(float worldX, float worldY, boolean foreground) {
+	public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground) {
 		client.sendTCP(new DestroyTile(worldX, worldY, foreground));
 	}
 
-	public static void ping() {
+	public static synchronized void ping() {
 		client.sendUDP(new Ping());
 	}
 
-	public static void individualSelection(int id, boolean select) {
+	public static synchronized void individualSelection(int id, boolean select) {
 		client.sendTCP(new IndividualSelection(id, select));
 	}
 
-	public static void moveIndividual(int id, Vector2 destinationCoordinates) {
-		client.sendTCP(new MoveIndividual(id, destinationCoordinates));
+	public static synchronized void moveIndividual(int id, Vector2 destinationCoordinates, boolean forceMove) {
+		client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove));
+	}
+
+	public static synchronized void trade(
+			HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTransfer,
+			TradeEntity proposerEntityType, int proposerId,
+			HashMap<ListingMenuItem<Item>, Integer> proposeeItemsToTransfer,
+			TradeEntity proposeeEntityType, int proposeeId
+	) {
+		client.sendTCP(
+			new bloodandmithril.csi.requests.CSITrade(
+				proposerItemsToTransfer,
+				proposerEntityType, proposerId,
+				proposeeItemsToTransfer,
+				proposeeEntityType, proposeeId
+			)
+		);
 	}
 
 	/**
@@ -295,5 +322,7 @@ public class ClientServerInterface {
 		kryo.register(IndividualSelection.SelectIndividualResponse.class);
 		kryo.register(MoveIndividual.class);
 		kryo.register(MoveIndividual.MoveIndividualResponse.class);
+		kryo.register(CSITrade.class);
+		kryo.register(CSITrade.CSITradeResponse.class);
 	}
 }

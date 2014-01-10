@@ -11,7 +11,7 @@ import bloodandmithril.ui.components.window.Window;
  *
  * @author Matt
  */
-public abstract class Item implements Serializable {
+public abstract class Item implements Serializable, Comparable<Item> {
 	private static final long serialVersionUID = -7733840667288631158L;
 
 	/** The mass of this item */
@@ -43,4 +43,13 @@ public abstract class Item implements Serializable {
 
 	/** Returns true if two {@link Item}s have identical attributes */
 	public abstract boolean sameAs(Item other);
+
+	@Override
+	public int compareTo(Item o) {
+		if (value == o.value) {
+			return getClass().getSimpleName().compareTo(o.getClass().getSimpleName());
+		} else {
+			return value > o.value ? 1 : -1;
+		}
+	}
 }

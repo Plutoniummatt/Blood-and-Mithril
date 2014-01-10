@@ -3,8 +3,8 @@ package bloodandmithril.persistence;
 import java.io.Serializable;
 import java.util.Random;
 
-
 import bloodandmithril.character.Individual.IndividualIdentifier;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Epoch;
 
 import com.badlogic.gdx.math.Vector2;
@@ -20,6 +20,7 @@ public class Parameters implements Serializable {
 	private int structureKeyCounter = 0;
 	private int initialSeed = 0;
 	private int individualIdCounter = 0;
+	private int propIdCounter = 0;
 
 	private Vector2 camera;
 	private Epoch currentEpoch;
@@ -49,6 +50,15 @@ public class Parameters implements Serializable {
 	public synchronized int getNextIndividualId() {
 		individualIdCounter++;
 		return individualIdCounter;
+	}
+
+
+	/**
+	 * Returns the next unique identifier to use for {@link Prop}
+	 */
+	public synchronized int getNextPropId() {
+		propIdCounter++;
+		return propIdCounter;
 	}
 
 

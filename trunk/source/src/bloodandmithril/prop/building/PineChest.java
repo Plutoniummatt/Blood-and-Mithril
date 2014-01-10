@@ -26,7 +26,6 @@ public class PineChest extends Chest {
 	 * Constructor
 	 */
 	public PineChest(float x, float y, boolean grounded, float capacity) {
-		// TODO - New width/height
 		super(x, y, 57, 68, grounded, capacity);
 	}
 

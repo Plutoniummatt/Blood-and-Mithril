@@ -42,6 +42,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Sets;
 
 /**
  * Main game class, containing the loops
@@ -258,7 +259,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (UserInterface.contextMenus.isEmpty()) {
-			for (Individual indi : GameWorld.selectedIndividuals) {
+			for (Individual indi : Sets.newHashSet(GameWorld.selectedIndividuals)) {
 				indi.walking = !doubleClick;
 				if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 					indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
@@ -275,14 +276,15 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							),
 							false,
 							150f,
-							Gdx.input.isKeyPressed(KeyMappings.forceMove) ? false : true
+							!Gdx.input.isKeyPressed(KeyMappings.forceMove)
 						);
 					} else {
 						ClientServerInterface.moveIndividual(
 							indi.id.id, new Vector2(
 								getMouseWorldX() + spread,
 								getMouseWorldY()
-							)
+							),
+							!Gdx.input.isKeyPressed(KeyMappings.forceMove)
 						);
 					}
 				}
@@ -330,10 +332,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			} else {
 				for (Individual indi : GameWorld.individuals.values()) {
-					if (indi.controllable) {
+					if (indi.controllable && indi.id.id != individualClicked.id.id) {
 						if ("true".equals(System.getProperty("server"))) {
 							indi.deselect(false);
 							GameWorld.selectedIndividuals.remove(indi);
+						} else {
+							ClientServerInterface.individualSelection(indi.id.id, false);
 						}
 					}
 				}
@@ -415,7 +419,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (keycode == Input.Keys.T) {
 			Individual individual = GameWorld.individuals.get(1);
 			if (individual != null) {
-				GameWorld.props.add(new PineChest(individual.state.position.x, individual.state.position.y, true, 100f));
+				PineChest pineChest = new PineChest(individual.state.position.x, individual.state.position.y, true, 100f);
+				GameWorld.props.put(pineChest.id, pineChest);
 			}
 		}
 

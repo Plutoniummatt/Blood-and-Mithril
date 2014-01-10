@@ -93,31 +93,36 @@ public class TradeWith extends CompositeAITask {
 					return;
 				}
 
-				for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
-					if (component instanceof Window) {
-						if (((Window)component).title.equals(proposer.id.getSimpleName() + " - Inventory") ||
-						((Window)component).title.equals(proposeeCasted.id.getSimpleName() + " - Inventory")) {
-							UserInterface.removeLayeredComponent(component);
+				if ("true".equals(System.getProperty("client"))) {
+					for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
+						if (component instanceof Window) {
+							if (((Window)component).title.equals(proposer.id.getSimpleName() + " - Inventory") ||
+									((Window)component).title.equals(proposeeCasted.id.getSimpleName() + " - Inventory")) {
+								UserInterface.removeLayeredComponent(component);
+							}
 						}
 					}
-				}
 
-				UserInterface.addLayeredComponentUnique(
-					new TradeWindow(
-						BloodAndMithrilClient.WIDTH / 2 - 350,
-						BloodAndMithrilClient.HEIGHT / 2 + 100,
-						700,
-						200,
-						"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName,
-						true,
-						700,
-						200,
-						true,
-						proposer,
-						proposeeCasted
-					),
-					"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName
-				);
+					UserInterface.addLayeredComponentUnique(
+						new TradeWindow(
+							BloodAndMithrilClient.WIDTH / 2 - 350,
+							BloodAndMithrilClient.HEIGHT / 2 + 100,
+							700,
+							200,
+							"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName,
+							true,
+							700,
+							200,
+							true,
+							proposer,
+							proposeeCasted
+						),
+						"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName
+					);
+				} else {
+					// TODO send response to client to remove inventory windows
+					// TODO send response to client to open trade window
+				}
 
 				proposer.clearCommands();
 				proposer.ai.setCurrentTask(new Trading(proposer.id));
@@ -129,7 +134,8 @@ public class TradeWith extends CompositeAITask {
 					return;
 				}
 
-				UserInterface.addLayeredComponentUnique(
+				if ("true".equals(System.getProperty("client"))) {
+					UserInterface.addLayeredComponentUnique(
 					new TradeWindow(
 						BloodAndMithrilClient.WIDTH/2 - 350,
 						BloodAndMithrilClient.HEIGHT/2 + 100,
@@ -142,9 +148,12 @@ public class TradeWith extends CompositeAITask {
 						true,
 						proposer,
 						proposee
-					),
-					proposer.id.getSimpleName() + " interacting with pine chest"
-				);
+						),
+						proposer.id.getSimpleName() + " interacting with pine chest"
+					);
+				} else {
+					// TODO send response to client to open trade window
+				}
 
 				proposer.clearCommands();
 				proposer.ai.setCurrentTask(new Trading(proposer.id));

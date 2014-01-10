@@ -15,6 +15,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.StructureMap;
 import bloodandmithril.generation.component.Interface;
@@ -320,8 +321,12 @@ public class UserInterface {
 					centre.y = BloodAndMithrilClient.worldToScreenY(centre.y);
 
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
-						indi.select();
-						GameWorld.selectedIndividuals.add(indi);
+						if ("true".equals(System.getProperty("server"))) {
+							indi.select();
+							GameWorld.selectedIndividuals.add(indi);
+						} else {
+							ClientServerInterface.individualSelection(indi.id.id, true);
+						}
 					}
 				}
 			}
@@ -587,7 +592,7 @@ public class UserInterface {
 			}
 		}
 
-		for (final Prop prop : GameWorld.props) {
+		for (final Prop prop : GameWorld.props.values()) {
 			if (prop.isMouseOver()) {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
 				newMenu.getMenuItems().add(
