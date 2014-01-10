@@ -255,7 +255,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			UserInterface.rightClick();
 		}
 
-		if (!Gdx.input.isKeyPressed(Input.Keys.A)) {
+		if (!Gdx.input.isKeyPressed(Input.Keys.A) && !ClientServerInterface.isServer()) {
 			ClientServerInterface.sendDestroyTileRequest(getMouseWorldX(), getMouseWorldY(), true);
 		}
 

@@ -21,9 +21,9 @@ import bloodandmithril.world.GameWorld;
 import com.google.common.collect.Lists;
 
 /**
- * A {@link Request} for trade
+ * A {@link Request} for transfer of items between two {@link Container}s
  */
-public class CSITrade implements Request {
+public class TransferItems implements Request {
 
 	private final HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTransfer;
 	private final HashMap<ListingMenuItem<Item>, Integer> proposeeItemsToTransfer;
@@ -35,7 +35,7 @@ public class CSITrade implements Request {
 	/**
 	 * Constructor
 	 */
-	public CSITrade(
+	public TransferItems(
 		HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTransfer,
 		TradeEntity proposerEntityType, int proposerId,
 		HashMap<ListingMenuItem<Item>, Integer> proposeeItemsToTransfer,
@@ -87,7 +87,7 @@ public class CSITrade implements Request {
 		}
 
 		TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
-		response.add(new CSITradeResponse());
+		response.add(new TransferItemsResponse());
 
 		return response;
 	}
@@ -105,7 +105,7 @@ public class CSITrade implements Request {
 	}
 
 
-	public static class CSITradeResponse implements Response {
+	public static class TransferItemsResponse implements Response {
 		@Override
 		public void acknowledge() {
 			// Need to notify all clients to refresh inventory windows and trade windows

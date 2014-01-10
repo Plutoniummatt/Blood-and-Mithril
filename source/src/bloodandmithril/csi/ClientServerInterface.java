@@ -31,18 +31,20 @@ import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Elf;
-import bloodandmithril.csi.requests.CSITrade;
-import bloodandmithril.csi.requests.CSITrade.TradeEntity;
+import bloodandmithril.csi.requests.CSITradeWith;
 import bloodandmithril.csi.requests.DestroyTile;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.GenerateChunk;
 import bloodandmithril.csi.requests.GenerateChunk.GenerateChunkResponse;
 import bloodandmithril.csi.requests.IndividualSelection;
 import bloodandmithril.csi.requests.MoveIndividual;
+import bloodandmithril.csi.requests.OpenTradeWindow;
 import bloodandmithril.csi.requests.Ping;
 import bloodandmithril.csi.requests.Ping.Pong;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
 import bloodandmithril.csi.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
+import bloodandmithril.csi.requests.TransferItems;
+import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
 import bloodandmithril.item.Item;
@@ -52,6 +54,7 @@ import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
+import bloodandmithril.prop.building.Chest.ChestContainer;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -222,6 +225,14 @@ public class ClientServerInterface {
 		client.sendUDP(new Ping());
 	}
 
+	public static synchronized void tradeWithIndividual(Individual proposer, Individual proposee) {
+		client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.INDIVIDUAL, proposee.id.id));
+	}
+
+	public static synchronized void tradeWithProp(Individual proposer, ChestContainer proposee) {
+		client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.PROP, proposee.propId));
+	}
+
 	public static synchronized void individualSelection(int id, boolean select) {
 		client.sendTCP(new IndividualSelection(id, select));
 	}
@@ -230,14 +241,20 @@ public class ClientServerInterface {
 		client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove));
 	}
 
-	public static synchronized void trade(
+	public static synchronized void openTradeWindow(int proposerId, TradeEntity proposee, int proposeeId) {
+		client.sendTCP(
+			new OpenTradeWindow(proposerId, proposee, proposeeId)
+		);
+	}
+
+	public static synchronized void transferItems(
 			HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTransfer,
 			TradeEntity proposerEntityType, int proposerId,
 			HashMap<ListingMenuItem<Item>, Integer> proposeeItemsToTransfer,
 			TradeEntity proposeeEntityType, int proposeeId
 	) {
 		client.sendTCP(
-			new bloodandmithril.csi.requests.CSITrade(
+			new bloodandmithril.csi.requests.TransferItems(
 				proposerItemsToTransfer,
 				proposerEntityType, proposerId,
 				proposeeItemsToTransfer,
@@ -340,7 +357,10 @@ public class ClientServerInterface {
 		kryo.register(IndividualSelection.SelectIndividualResponse.class);
 		kryo.register(MoveIndividual.class);
 		kryo.register(MoveIndividual.MoveIndividualResponse.class);
-		kryo.register(CSITrade.class);
-		kryo.register(CSITrade.CSITradeResponse.class);
+		kryo.register(TransferItems.class);
+		kryo.register(TransferItems.TransferItemsResponse.class);
+		kryo.register(OpenTradeWindow.class);
+		kryo.register(OpenTradeWindow.OpenTradeWindowResponse.class);
+		kryo.register(TransferItems.TradeEntity.class);
 	}
 }

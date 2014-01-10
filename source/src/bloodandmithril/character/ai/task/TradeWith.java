@@ -5,7 +5,9 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Chest.ChestContainer;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -95,34 +97,9 @@ public class TradeWith extends CompositeAITask {
 				}
 
 				if (ClientServerInterface.isClient()) {
-					for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
-						if (component instanceof Window) {
-							if (((Window)component).title.equals(proposer.id.getSimpleName() + " - Inventory") ||
-									((Window)component).title.equals(proposeeCasted.id.getSimpleName() + " - Inventory")) {
-								UserInterface.removeLayeredComponent(component);
-							}
-						}
-					}
-
-					UserInterface.addLayeredComponentUnique(
-						new TradeWindow(
-							BloodAndMithrilClient.WIDTH / 2 - 350,
-							BloodAndMithrilClient.HEIGHT / 2 + 100,
-							700,
-							200,
-							"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName,
-							true,
-							700,
-							200,
-							true,
-							proposer,
-							proposeeCasted
-						),
-						"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName
-					);
+					openTradeWindowWithIndividual(proposer, proposeeCasted);
 				} else {
-					// TODO send response to client to remove inventory windows
-					// TODO send response to client to open trade window
+					ClientServerInterface.openTradeWindow(proposer.id.id, TradeEntity.INDIVIDUAL, proposeeCasted.id.id);
 				}
 
 				proposer.clearCommands();
@@ -136,29 +113,69 @@ public class TradeWith extends CompositeAITask {
 				}
 
 				if (ClientServerInterface.isClient()) {
-					UserInterface.addLayeredComponentUnique(
-					new TradeWindow(
-						BloodAndMithrilClient.WIDTH/2 - 350,
-						BloodAndMithrilClient.HEIGHT/2 + 100,
-						700,
-						200,
-						proposer.id.getSimpleName() + " interacting with pine chest",
-						true,
-						700,
-						200,
-						true,
-						proposer,
-						proposee
-						),
-						proposer.id.getSimpleName() + " interacting with pine chest"
-					);
+					openTradeWindowWithProp(proposer, proposee);
 				} else {
-					// TODO send response to client to open trade window
+					ClientServerInterface.openTradeWindow(proposer.id.id, TradeEntity.PROP, ((ChestContainer) proposee).propId);
 				}
 
 				proposer.clearCommands();
 				proposer.ai.setCurrentTask(new Trading(proposer.id));
 			}
 		}
+	}
+
+
+	/**
+	 * Opens a {@link TradeWindow} with a {@link Prop} that has a {@link Container}
+	 */
+	public static void openTradeWindowWithProp(Individual proposer, Container prop) {
+		UserInterface.addLayeredComponentUnique(
+		new TradeWindow(
+			BloodAndMithrilClient.WIDTH/2 - 350,
+			BloodAndMithrilClient.HEIGHT/2 + 100,
+			700,
+			200,
+			proposer.id.getSimpleName() + " interacting with pine chest",
+			true,
+			700,
+			200,
+			true,
+			proposer,
+			prop
+			),
+			proposer.id.getSimpleName() + " interacting with pine chest"
+		);
+	}
+
+
+	/**
+	 * Opens a {@link TradeWindow} with another {@link Individual}
+	 */
+	public static void openTradeWindowWithIndividual(Individual proposer, Individual proposeeCasted) {
+		for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
+			if (component instanceof Window) {
+				if (((Window)component).title.equals(proposer.id.getSimpleName() + " - Inventory") ||
+						((Window)component).title.equals(proposeeCasted.id.getSimpleName() + " - Inventory")) {
+					UserInterface.removeLayeredComponent(component);
+				}
+			}
+		}
+
+		UserInterface.addLayeredComponentUnique(
+			new TradeWindow(
+				BloodAndMithrilClient.WIDTH / 2 - 350,
+				BloodAndMithrilClient.HEIGHT / 2 + 100,
+				700,
+				200,
+				"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName,
+				true,
+				700,
+				200,
+				true,
+				proposer,
+				proposeeCasted
+			),
+			"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName
+		);
 	}
 }
