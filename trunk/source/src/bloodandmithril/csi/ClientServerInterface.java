@@ -98,6 +98,8 @@ public class ClientServerInterface {
 
 	private static Thread clientThread;
 
+	private static boolean isClient, isServer;
+
 	/**
 	 * Sets up the client and attempt to connect to the server
 	 * @throws IOException
@@ -242,6 +244,22 @@ public class ClientServerInterface {
 				proposeeEntityType, proposeeId
 			)
 		);
+	}
+
+	public static boolean isServer() {
+		return isServer;
+	}
+
+	public static boolean isClient() {
+		return isClient;
+	}
+
+	public static synchronized void setServer(boolean isServer) {
+		ClientServerInterface.isServer = isServer;
+	}
+
+	public static synchronized void setClient(boolean isClient) {
+		ClientServerInterface.isClient = isClient;
 	}
 
 	/**

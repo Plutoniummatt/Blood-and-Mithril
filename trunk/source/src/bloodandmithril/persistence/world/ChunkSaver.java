@@ -11,8 +11,8 @@ import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ZipHelper;
 import bloodandmithril.util.Logger;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
@@ -139,7 +139,7 @@ public class ChunkSaver {
 	 * Saves a chunk to disk and flush it from memory
 	 */
 	public static void saveAndFlushChunk(final int x, final int y) {
-		if (chunksInQueue.get(x, y) == null && System.getProperty("chunkSaving") != null && System.getProperty("chunkSaving").equals("true")) {
+		if (chunksInQueue.get(x, y) == null && "true".equals(System.getProperty("chunkSaving"))) {
 			GameSaver.saverTasks.add(new Task() {
 				@Override
 				public void execute() {

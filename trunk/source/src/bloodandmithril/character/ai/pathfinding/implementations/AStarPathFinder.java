@@ -16,6 +16,7 @@ import java.util.List;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
@@ -370,14 +371,16 @@ public class AStarPathFinder extends PathFinder {
 
 
 	private void changeToDebugTile(final float x, final float y) {
-		if ("TRACE".equals(System.getProperty("aiDebug"))) {
-			Topography.addTask(new Task() {
-				@Override
-				public void execute() {
-					Topography.changeTile(x, y, false, DebugTile.class);
-				}
-			});
+		if (ClientServerInterface.isServer() || ClientServerInterface.isClient()) {
+			return;
 		}
+
+		Topography.addTask(new Task() {
+			@Override
+			public void execute() {
+				Topography.changeTile(x, y, false, DebugTile.class);
+			}
+		});
 	}
 
 

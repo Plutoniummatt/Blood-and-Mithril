@@ -125,6 +125,7 @@ public class MainMenuWindow extends Window {
 								public void execute(Object... args) {
 									try {
 										if (args[0].toString().equals("local")) {
+											ClientServerInterface.setServer(true);
 											BloodAndMithrilClient.gameWorld = new GameWorld(true);
 											GameLoader.load();
 										} else {

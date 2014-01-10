@@ -2,7 +2,6 @@ package bloodandmithril.util;
 
 
 import bloodandmithril.BloodAndMithrilClient;
-import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.WorldState;
 
@@ -19,7 +18,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 public class Shaders {
 
 	public static ShaderProgram pass = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/pass.fp"));
-	
+
 	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/sun.fp"));
 
 	public static ShaderProgram shadow = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/shadow.fp"));
@@ -79,7 +78,7 @@ public class Shaders {
 		defaultBackGroundTiles.end();
 
 		defaultForeGroundTiles.begin();
-		defaultForeGroundTiles.setUniformf("debugSwitch", System.getProperty("seeAll") != null && System.getProperty("seeAll").equals("true") ? 1f : 0f);
+		defaultForeGroundTiles.setUniformf("debugSwitch", "true".equals(System.getProperty("seeAll")) ? 1f : 0f);
 		defaultForeGroundTiles.end();
 	}
 }
