@@ -8,6 +8,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Wait;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
@@ -74,7 +75,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 					}
 				}
 			}
-		} else if ("true".equals(System.getProperty("server"))) {
+		} else if (ClientServerInterface.isServer()) {
 			throw new RuntimeException("Something has caused the AI thread to terminate");
 		}
 	}

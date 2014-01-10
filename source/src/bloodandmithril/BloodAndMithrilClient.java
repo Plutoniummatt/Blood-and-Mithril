@@ -74,7 +74,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static final float INDIVIDUAL_SPREAD = 600f;
 
 	/** See {@link #update(float)}, if delta is greater than this value, skip the update frame */
-	private static final float LAG_SPIKE_TOLERANCE = Float.parseFloat(System.getProperty("lagSpikeTolerance"));
+	private static final float LAG_SPIKE_TOLERANCE = 0.1f;
 
 	/** The tolerance for double clicking */
 	private static final float DOUBLE_CLICK_TIME = 0.2f;
@@ -119,6 +119,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public void create() {
 		// Load client-side resources
 		loadResources();
+		ClientServerInterface.setClient(true);
 
 		spriteBatch = new SpriteBatch();
 
@@ -265,7 +266,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
 				} else {
 					float spread = Math.min(indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
-					if ("true".equals(System.getProperty("server"))) {
+					if (ClientServerInterface.isServer()) {
 						AIProcessor.sendPathfindingRequest(
 							indi,
 							new WayPoint(
@@ -317,7 +318,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				if (doubleClick) {
 					for (Individual indi : GameWorld.individuals.values()) {
 						if (indi.controllable) {
-							if ("true".equals(System.getProperty("server"))) {
+							if (ClientServerInterface.isServer()) {
 								indi.deselect(false);
 								GameWorld.selectedIndividuals.remove(indi);
 							} else {
@@ -325,7 +326,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							}
 						}
 					}
-					if ("true".equals(System.getProperty("server"))) {
+					if (ClientServerInterface.isServer()) {
 						GameWorld.selectedIndividuals.clear();
 					}
 				}
@@ -333,7 +334,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			} else {
 				for (Individual indi : GameWorld.individuals.values()) {
 					if (indi.controllable && indi.id.id != individualClicked.id.id) {
-						if ("true".equals(System.getProperty("server"))) {
+						if (ClientServerInterface.isServer()) {
 							indi.deselect(false);
 							GameWorld.selectedIndividuals.remove(indi);
 						} else {
@@ -343,7 +344,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				}
 
 				if (individualClicked.controllable) {
-					if ("true".equals(System.getProperty("server"))) {
+					if (ClientServerInterface.isServer()) {
 						GameWorld.selectedIndividuals.add(individualClicked);
 						individualClicked.select();
 					} else {

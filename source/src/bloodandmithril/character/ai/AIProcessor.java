@@ -5,6 +5,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
@@ -28,7 +29,7 @@ public class AIProcessor {
 	 * Sets up this class
 	 */
 	public static void setup() {
-		if (aiThread == null && "true".equals(System.getProperty("server"))) {
+		if (aiThread == null && ClientServerInterface.isServer()) {
 			aiThread = new Thread(new Runnable() {
 
 				@Override
@@ -59,7 +60,7 @@ public class AIProcessor {
 			aiThread.start();
 		}
 
-		if (pathFinderThread == null && "true".equals(System.getProperty("server"))) {
+		if (pathFinderThread == null && ClientServerInterface.isServer()) {
 			pathFinderThread = new Thread(new Runnable() {
 
 				@Override

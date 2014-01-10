@@ -131,6 +131,7 @@ public class BloodAndMithrilServer {
 		@Override
 		public void create() {
 			gameWorld = new GameWorld(false);
+			ClientServerInterface.setServer(true);
 			GameLoader.load();
 
 			Gdx.input.setInputProcessor(this);
@@ -149,7 +150,7 @@ public class BloodAndMithrilServer {
 			// Do not update if game is paused
 			// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
 			float delta = Gdx.graphics.getDeltaTime();
-			if (delta < Float.parseFloat(System.getProperty("lagSpikeTolerance")) && !GameSaver.isSaving()) {
+			if (delta < 0.1f && !GameSaver.isSaving()) {
 				gameWorld.update(delta, 0, 0); //TODO
 			}
 		}

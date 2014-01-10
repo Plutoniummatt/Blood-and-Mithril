@@ -157,7 +157,7 @@ public class UserInterface {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
 
-		if ("true".equals(System.getProperty("debug")) && "true".equals(System.getProperty("server"))) {
+		if ("true".equals(System.getProperty("debug")) && ClientServerInterface.isServer()) {
 			renderComponentInterfaces();
 			if (renderComponentBoundaries) {
 				renderComponentBoundaries();
@@ -321,7 +321,7 @@ public class UserInterface {
 					centre.y = BloodAndMithrilClient.worldToScreenY(centre.y);
 
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
-						if ("true".equals(System.getProperty("server"))) {
+						if (ClientServerInterface.isServer()) {
 							indi.select();
 							GameWorld.selectedIndividuals.add(indi);
 						} else {
@@ -390,7 +390,7 @@ public class UserInterface {
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Centre of screen Coords: " + Float.toString(BloodAndMithrilClient.cam.position.x) + ", " + Float.toString(BloodAndMithrilClient.cam.position.y) + ", " + Float.toString(BloodAndMithrilClient.cam.zoom), 5, 52);
 
 		int chunksInMemory = 0;
-		if ("true".equals(System.getProperty("server"))) {
+		if (ClientServerInterface.isServer()) {
 			for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> entry : Topography.chunkMap.chunkMap.entrySet()) {
 				chunksInMemory = chunksInMemory + entry.getValue().size();
 			}

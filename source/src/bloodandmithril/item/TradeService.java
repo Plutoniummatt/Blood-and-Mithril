@@ -30,7 +30,7 @@ public class TradeService {
 	 * The trade proposal was accepted by the proposee, this method transfers the {@link Item}s and finalizes the trade
 	 */
 	public synchronized static void transferItems(HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade, Container proposer, HashMap<ListingMenuItem<Item>, Integer> proposeeItemsToTrade, Container proposee) {
-		if ("true".equals(System.getProperty("server"))) {
+		if (ClientServerInterface.isServer()) {
 			for (Entry<ListingMenuItem<Item>, Integer> proposerToTradeItem : proposerItemsToTrade.entrySet()) {
 				proposer.takeItem(proposerToTradeItem.getKey().t, proposerToTradeItem.getValue());
 				proposee.giveItem(proposerToTradeItem.getKey().t, proposerToTradeItem.getValue());

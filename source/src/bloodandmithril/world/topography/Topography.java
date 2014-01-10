@@ -321,7 +321,7 @@ public class Topography {
 		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
 			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {
 				if (chunkMap.get(chunkX) == null || chunkMap.get(chunkX).get(chunkY) == null) {
-					if (client && "false".equals(System.getProperty("server"))) {
+					if (client && !ClientServerInterface.isServer()) {
 						if (requestedForGeneration.get(chunkX, chunkY) == null || !requestedForGeneration.get(chunkX, chunkY)) {
 							ClientServerInterface.sendGenerateChunkRequest(chunkX, chunkY);
 							requestedForGeneration.put(chunkX, chunkY, true);

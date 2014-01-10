@@ -283,7 +283,7 @@ public class GameWorld {
 			}
 
 			//Render foreground tiles
-			if (System.getProperty("seeAll").equals("true")) {
+			if ("true".equals(System.getProperty("seeAll"))) {
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 			} else {

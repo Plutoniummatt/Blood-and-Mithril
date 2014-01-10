@@ -4,6 +4,7 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.building.Chest.ChestContainer;
 import bloodandmithril.ui.UserInterface;
@@ -93,7 +94,7 @@ public class TradeWith extends CompositeAITask {
 					return;
 				}
 
-				if ("true".equals(System.getProperty("client"))) {
+				if (ClientServerInterface.isClient()) {
 					for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
 						if (component instanceof Window) {
 							if (((Window)component).title.equals(proposer.id.getSimpleName() + " - Inventory") ||
@@ -134,7 +135,7 @@ public class TradeWith extends CompositeAITask {
 					return;
 				}
 
-				if ("true".equals(System.getProperty("client"))) {
+				if (ClientServerInterface.isClient()) {
 					UserInterface.addLayeredComponentUnique(
 					new TradeWindow(
 						BloodAndMithrilClient.WIDTH/2 - 350,
