@@ -579,7 +579,7 @@ public abstract class Individual extends Equipper {
 								);
 							}
 						} else {
-							ClientServerInterface.tradeWithIndividual(proposer, proposee)
+							ClientServerInterface.tradeWithIndividual(indi, thisIndividual);
 						}
 					}
 

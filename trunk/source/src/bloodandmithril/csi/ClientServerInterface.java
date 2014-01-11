@@ -2,10 +2,15 @@ package bloodandmithril.csi;
 
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
@@ -31,7 +36,9 @@ import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.CSITradeWith;
+import bloodandmithril.csi.requests.CSITradeWith.CSITradeWithResponse;
 import bloodandmithril.csi.requests.DestroyTile;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.GenerateChunk;
@@ -54,7 +61,6 @@ import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
-import bloodandmithril.prop.building.Chest.ChestContainer;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -87,7 +93,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive;
 import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
 
 /**
  * The CSI
@@ -102,7 +110,11 @@ public class ClientServerInterface {
 	private static Thread clientThread;
 
 	private static boolean isClient, isServer;
-
+	
+	public static ExecutorService serverThread;
+	
+	public static Server server;
+	
 	/**
 	 * Sets up the client and attempt to connect to the server
 	 * @throws IOException
@@ -117,71 +129,82 @@ public class ClientServerInterface {
 			new UncaughtExceptionHandler() {
 				@Override
 				public void uncaughtException(Thread thread, Throwable throwable) {
-					client.stop();
-					client.start();
-					try {
-						client.reconnect();
-					} catch (IOException e) {
-						Gdx.app.exit();
-					}
-					Logger.networkDebug(throwable.getMessage(), LogLevel.TRACE);
+					Logger.networkDebug(throwable.getMessage(), LogLevel.WARN);
+					throwable.printStackTrace();
+					Gdx.app.exit();
 				}
 			}
 		);
 
 		client.addListener(new Listener() {
+			
 			@Override
 			public void received(Connection connection, final Object object) {
-				if (object instanceof GenerateChunkResponse) {
-					ChunkLoaderImpl.loaderTasks.add(
-						new Task() {
-							@Override
-							public void execute() {
-								if (object instanceof Response) {
-									Response response = (Response) object;
+				if (object instanceof KeepAlive) {
+					return;
+				}
+			
+				Responses resp = (Responses) object;
+				
+				if (resp.executeInSingleThread()) {
+					for (final Response response : resp.responses) {
+						try {
+							response.acknowledge();
+						} catch (Throwable t) {
+							throw new RuntimeException(t);
+						}
+					}
+				}
+				
+				for (final Response response : resp.responses) {
+					if (response instanceof GenerateChunkResponse) {
+						ChunkLoaderImpl.loaderTasks.add(
+							new Task() {
+								@Override
+								public void execute() {
 									response.acknowledge();
 								}
 							}
-						}
-					);
-				} else if (object instanceof SynchronizeIndividualResponse) {
-					BloodAndMithrilClient.newCachedThreadPool.execute(
-						new Runnable() {
-							@Override
-							public void run() {
-								Response response = (Response) object;
-								response.acknowledge();
+						);
+					} else if (response instanceof SynchronizeIndividualResponse) {
+						BloodAndMithrilClient.newCachedThreadPool.execute(
+							new Runnable() {
+								@Override
+								public void run() {
+									response.acknowledge();
+								}
 							}
-						}
-					);
-				} else if (object instanceof DestroyTileResponse) {
-					Topography.addTask(new Task() {
-						@Override
-						public void execute() {
-							Response response = (Response) object;
-							response.acknowledge();
-						}
-					});
-				} else if (object instanceof MoveIndividual || object instanceof IndividualSelection) {
-					AIProcessor.aiThreadTasks.add(
-						new Task() {
+						);
+					} else if (response instanceof DestroyTileResponse) {
+						Topography.addTask(new Task() {
 							@Override
 							public void execute() {
-								Response response = (Response) object;
 								response.acknowledge();
 							}
-						}
-					);
-				} else if (object instanceof Response) {
-					BloodAndMithrilClient.newCachedThreadPool.execute(
-						new Runnable() {
-							@Override
-							public void run() {
-								Response response = (Response) object;
-								response.acknowledge();
+						});
+					} else if (response instanceof MoveIndividual || response instanceof IndividualSelection) {
+						AIProcessor.aiThreadTasks.add(
+							new Task() {
+								@Override
+								public void execute() {
+									response.acknowledge();
+								}
 							}
-						}
-					);
+						);
+					} else if (response instanceof Response) {
+						BloodAndMithrilClient.newCachedThreadPool.execute(
+							new Runnable() {
+								@Override
+								public void run() {
+									try {
+										response.acknowledge();
+									} catch (Throwable t) {
+										throw new RuntimeException(t);
+									}
+								}
+							}
+						);
+					}
 				}
 			}
 		});
@@ -207,50 +230,95 @@ public class ClientServerInterface {
 
 	public static synchronized void sendGenerateChunkRequest(int x, int y) {
 		client.sendTCP(new GenerateChunk(x, y));
+		Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
 	}
 
 	public static synchronized void sendSynchronizeIndividualRequest(int id) {
 		client.sendUDP(new SynchronizeIndividual(id));
+		Logger.networkDebug("Sending sync individual request for " + id, LogLevel.TRACE);
 	}
 
 	public static synchronized void sendSynchronizeIndividualRequest() {
 		client.sendUDP(new SynchronizeIndividual());
+		Logger.networkDebug("Sending chunk generation request for all", LogLevel.TRACE);
 	}
 
 	public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground) {
 		client.sendTCP(new DestroyTile(worldX, worldY, foreground));
+		Logger.networkDebug("Sending destroy tile request", LogLevel.DEBUG);
 	}
 
 	public static synchronized void ping() {
 		client.sendUDP(new Ping());
+		Logger.networkDebug("Sending ping request", LogLevel.TRACE);
 	}
 
 	public static synchronized void tradeWithIndividual(Individual proposer, Individual proposee) {
-		client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.INDIVIDUAL, proposee.id.id));
+		client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.INDIVIDUAL, proposee.id.id, client.getID()));
+		Logger.networkDebug("Sending trade with individual request", LogLevel.DEBUG);
 	}
 
-	public static synchronized void tradeWithProp(Individual proposer, ChestContainer proposee) {
-		client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.PROP, proposee.propId));
+	public static synchronized void tradeWithProp(Individual proposer, int propId) {
+		client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.PROP, propId, client.getID()));
+		Logger.networkDebug("Sending trade with prop request", LogLevel.DEBUG);
 	}
 
 	public static synchronized void individualSelection(int id, boolean select) {
 		client.sendTCP(new IndividualSelection(id, select));
+		Logger.networkDebug("Sending individual selection request", LogLevel.DEBUG);
 	}
 
 	public static synchronized void moveIndividual(int id, Vector2 destinationCoordinates, boolean forceMove) {
 		client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove));
+		Logger.networkDebug("Sending move individual request", LogLevel.DEBUG);
 	}
 
 	public static synchronized void openTradeWindow(int proposerId, TradeEntity proposee, int proposeeId) {
 		client.sendTCP(
 			new OpenTradeWindow(proposerId, proposee, proposeeId)
 		);
+		Logger.networkDebug("Sending open trade window request", LogLevel.DEBUG);
+	}
+	
+	public static synchronized void openTradeWindowNotification(int proposerId, TradeEntity proposee, int proposeeId, int connectionId) {
+		sendNotification(
+			connectionId, 
+			true,
+			new OpenTradeWindow.OpenTradeWindowResponse(
+				proposerId, 
+				proposee, 
+				proposeeId
+			)
+		);
+	}
+	
+	private static synchronized void sendNotification(final int connectionId, final boolean tcp, final Response... responses) {
+		serverThread.execute(
+			new Runnable() {
+				@Override
+				public void run() {
+					for (Connection connection : server.getConnections()) {
+						if (connectionId == connection.getID()) {
+							Responses resp = new Responses(false, new LinkedList<Response>());
+							for (Response response : responses) {
+								resp.responses.add(response);
+							}
+							if (tcp) {
+								connection.sendTCP(resp);
+							} else {
+								connection.sendUDP(resp);
+							}
+						}
+					}
+				}
+			}
+		);
 	}
 
 	public static synchronized void transferItems(
-			HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTransfer,
+			HashMap<Item, Integer> proposerItemsToTransfer,
 			TradeEntity proposerEntityType, int proposerId,
-			HashMap<ListingMenuItem<Item>, Integer> proposeeItemsToTransfer,
+			HashMap<Item, Integer> proposeeItemsToTransfer,
 			TradeEntity proposeeEntityType, int proposeeId
 	) {
 		client.sendTCP(
@@ -283,6 +351,8 @@ public class ClientServerInterface {
 	 * Registers all request classes
 	 */
 	public static void registerClasses(Kryo kryo) {
+		kryo.setReferences(true);
+		
 		kryo.register(Request.class);
 		kryo.register(Ping.class);
 		kryo.register(Pong.class);
@@ -362,5 +432,13 @@ public class ClientServerInterface {
 		kryo.register(OpenTradeWindow.class);
 		kryo.register(OpenTradeWindow.OpenTradeWindowResponse.class);
 		kryo.register(TransferItems.TradeEntity.class);
+		kryo.register(CSITradeWith.class);
+		kryo.register(CSITradeWithResponse.class);
+		kryo.register(ListingMenuItem.class);
+		kryo.register(List.class);
+		kryo.register(ArrayList.class);
+		kryo.register(LinkedList.class);
+		kryo.register(ArrayDeque.class);
+		kryo.register(Responses.class);
 	}
 }

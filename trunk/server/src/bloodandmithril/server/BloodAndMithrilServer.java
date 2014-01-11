@@ -1,7 +1,6 @@
 package bloodandmithril.server;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
@@ -12,7 +11,6 @@ import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
@@ -45,14 +43,13 @@ public class BloodAndMithrilServer {
 
 	private static GameWorld gameWorld;
 
-	private static ExecutorService newCachedThreadPool;
-
 	/**
 	 * Entry point for the server
 	 */
 	public static void main(String[] args) {
 
-		final Server server = new Server(1048576, 1048576);
+		ClientServerInterface.server = new Server(1048576, 1048576);
+		final Server server = ClientServerInterface.server;
 		ClientServerInterface.registerClasses(server.getKryo());
 		server.start();
 
@@ -62,7 +59,7 @@ public class BloodAndMithrilServer {
 			Logger.networkDebug(e.getMessage(), LogLevel.WARN);
 		}
 
-		newCachedThreadPool = Executors.newCachedThreadPool();
+		ClientServerInterface.serverThread = Executors.newCachedThreadPool();
 
 		server.getKryo().setInstantiatorStrategy(new StdInstantiatorStrategy());
 
@@ -70,7 +67,7 @@ public class BloodAndMithrilServer {
 			@Override
 			public void received(final Connection connection, final Object object) {
 				if (object instanceof Request) {
-					newCachedThreadPool.execute(new Runnable() {
+					ClientServerInterface.serverThread.execute(new Runnable() {
 						@Override
 						public void run() {
 							// Cast to Request
@@ -79,27 +76,19 @@ public class BloodAndMithrilServer {
 							// Send response
 							if (request.tcp()) {
 								if (request.notifyOthers()) {
-									for (Response response : request.respond()) {
-										for (Connection c : server.getConnections()) {
-											c.sendTCP(response);
-										}
+									for (Connection c : server.getConnections()) {
+										c.sendTCP(request.respond());
 									}
 								} else {
-									for (Response response : request.respond()) {
-										connection.sendTCP(response);
-									}
+									connection.sendTCP(request.respond());
 								}
 							} else {
 								if (request.notifyOthers()) {
-									for (Response response : request.respond()) {
-										for (Connection c : server.getConnections()) {
-											c.sendUDP(response);
-										}
+									for (Connection c : server.getConnections()) {
+										c.sendUDP(request.respond());
 									}
 								} else {
-									for (Response response : request.respond()) {
-										connection.sendUDP(response);
-									}
+									connection.sendUDP(request.respond());
 								}
 								Logger.networkDebug("Responding to " + request.getClass().getSimpleName() + " from " + connection.getRemoteAddressTCP(), LogLevel.TRACE);
 							}

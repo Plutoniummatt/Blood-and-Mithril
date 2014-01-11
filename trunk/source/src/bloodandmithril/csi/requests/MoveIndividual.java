@@ -1,16 +1,16 @@
 package bloodandmithril.csi.requests;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
+import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
 
 /**
  * {@link Request} to move an {@link Individual}
@@ -37,7 +37,7 @@ public class MoveIndividual implements Request {
 
 
 	@Override
-	public List<Response> respond() {
+	public Responses respond() {
 		Individual individual = GameWorld.individuals.get(individualId);
 		if (individual != null && individual.selected) {
 			AIProcessor.sendPathfindingRequest(
@@ -48,8 +48,11 @@ public class MoveIndividual implements Request {
 				!forceMove
 			);
 		}
+		
 		Response response = new MoveIndividualResponse();
-		return Lists.newArrayList(response);
+		Responses responses = new Response.Responses(false, new LinkedList<Response>());
+		responses.responses.add(response);
+		return responses;
 	}
 
 

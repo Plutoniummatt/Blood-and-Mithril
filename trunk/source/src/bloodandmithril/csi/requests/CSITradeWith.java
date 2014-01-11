@@ -1,18 +1,17 @@
 package bloodandmithril.csi.requests;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
+import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Chest;
 import bloodandmithril.world.GameWorld;
-
-import com.google.common.collect.Lists;
 
 /**
  * Request to tell the server that an {@link Individual} would like to {@link TradeWith} something.
@@ -22,20 +21,22 @@ public class CSITradeWith implements Request {
 	private final int proposerId;
 	private final TradeEntity proposee;
 	private final int proposeeId;
+	private final int connectionId;
 
 	/**
 	 * Constructor
 	 */
-	public CSITradeWith(int proposerId, TradeEntity proposee, int proposeeId) {
+	public CSITradeWith(int proposerId, TradeEntity proposee, int proposeeId, int connectionId) {
 		this.proposerId = proposerId;
 		this.proposee = proposee;
 		this.proposeeId = proposeeId;
+		this.connectionId = connectionId;
 	}
 
 
 	@Override
-	public List<Response> respond() {
-		List<Response> response = Lists.newArrayList();
+	public Responses respond() {
+		Responses response = new Response.Responses(false, new LinkedList<Response>());
 
 		Individual proposer = GameWorld.individuals.get(proposerId);
 		Container proposee = null;
@@ -50,7 +51,7 @@ public class CSITradeWith implements Request {
 		}
 
 		proposer.ai.setCurrentTask(
-			new TradeWith(proposer, proposee)
+			new TradeWith(proposer, proposee, connectionId)
 		);
 
 		return response;

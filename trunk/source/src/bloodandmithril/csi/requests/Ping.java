@@ -1,12 +1,11 @@
 package bloodandmithril.csi.requests;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
-
-import com.google.common.collect.Lists;
+import bloodandmithril.csi.Response.Responses;
 
 /**
  * A simple Ping request
@@ -27,9 +26,11 @@ public class Ping implements Request {
 
 
 	@Override
-	public List<Response> respond() {
+	public Responses respond() {
 		Response response = new Pong(ping);
-		return Lists.newArrayList(response);
+		Responses responses = new Response.Responses(false, new LinkedList<Response>());
+		responses.responses.add(response);
+		return responses;
 	}
 
 

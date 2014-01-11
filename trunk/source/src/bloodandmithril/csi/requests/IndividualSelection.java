@@ -1,13 +1,12 @@
 package bloodandmithril.csi.requests;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
+import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.world.GameWorld;
-
-import com.google.common.collect.Lists;
 
 /**
  * {@link Request} to select/deselect an {@link Individual}
@@ -30,7 +29,7 @@ public class IndividualSelection implements Request {
 
 
 	@Override
-	public List<Response> respond() {
+	public Responses respond() {
 		Individual individual = GameWorld.individuals.get(individualId);
 		if (select) {
 			individual.select();
@@ -42,7 +41,9 @@ public class IndividualSelection implements Request {
 			GameWorld.selectedIndividuals.remove(individual);
 		}
 		Response response = new SelectIndividualResponse(individualId, select);
-		return Lists.newArrayList(response);
+		Responses responses = new Response.Responses(false, new LinkedList<Response>());
+		responses.responses.add(response);
+		return responses;
 	}
 
 

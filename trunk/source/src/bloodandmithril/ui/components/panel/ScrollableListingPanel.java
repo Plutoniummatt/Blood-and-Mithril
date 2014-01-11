@@ -35,7 +35,7 @@ import com.google.common.collect.Lists;
 public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Panel {
 
 	/** Datastructure that backs this listing panel */
-	private final List<HashMap<ListingMenuItem<T>, Integer>> listings = Lists.newArrayList();
+	private List<HashMap<ListingMenuItem<T>, Integer>> listings = Lists.newArrayList();
 
 	/** The current starting index for which the inventory listing is rendered */
 	private int startingIndex = 0;
@@ -53,6 +53,14 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	public ScrollableListingPanel(Component parent) {
 		super(parent);
 		onSetup(listings);
+	}
+	
+	
+	/**
+	 * Refreshes this {@link Panel}
+	 */
+	public void refresh(List<HashMap<ListingMenuItem<T>, Integer>> listings) {
+		this.listings = listings;
 	}
 
 
@@ -143,7 +151,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	private void renderInventoryItems() {
 		// Render the equipped items first
 		int i = 0;
-		for (Map<ListingMenuItem<T>, Integer> listing : listings) {
+		for (Map<ListingMenuItem<T>, Integer> listing : Lists.newArrayList(listings)) {
 
 			List<Entry<ListingMenuItem<T>, Integer>> entrySet = Lists.newArrayList(listing.entrySet());
 

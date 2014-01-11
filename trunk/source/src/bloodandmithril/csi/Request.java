@@ -1,6 +1,6 @@
 package bloodandmithril.csi;
 
-import java.util.List;
+import bloodandmithril.csi.Response.Responses;
 
 
 /**
@@ -11,7 +11,7 @@ import java.util.List;
 public interface Request {
 
 	/** Respond to the request */
-	public List<Response> respond();
+	public Responses respond();
 
 	/** Whether this request uses the TCP protocol */
 	public boolean tcp();

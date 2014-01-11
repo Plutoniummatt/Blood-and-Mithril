@@ -172,7 +172,7 @@ public class UserInterface {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
 		BloodAndMithrilClient.spriteBatch.begin();
-		if (System.getProperty("debug").equals("true")) {
+		if ("true".equals(System.getProperty("debug"))) {
 			renderDebugText();
 		}
 
