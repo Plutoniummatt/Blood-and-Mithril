@@ -100,5 +100,10 @@ public class OpenTradeWindow implements Request {
 				}
 			}
 		}
+		
+		@Override
+		public int forClient() {
+			return -1;
+		}
 	}
 }

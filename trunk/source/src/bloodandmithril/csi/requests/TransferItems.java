@@ -29,6 +29,7 @@ public class TransferItems implements Request {
 	private final TradeEntity proposeeEntityType;
 	private final int proposerId;
 	private final int proposeeId;
+	private final int client;
 
 	/**
 	 * Constructor
@@ -37,13 +38,15 @@ public class TransferItems implements Request {
 		HashMap<Item, Integer> proposerItemsToTransfer,
 		TradeEntity proposerEntityType, int proposerId,
 		HashMap<Item, Integer> proposeeItemsToTransfer,
-		TradeEntity proposeeEntityType, int proposeeId) {
+		TradeEntity proposeeEntityType, int proposeeId,
+		int client) {
 		this.proposerItemsToTransfer = proposerItemsToTransfer;
 		this.proposerEntityType = proposerEntityType;
 		this.proposerId = proposerId;
 		this.proposeeItemsToTransfer = proposeeItemsToTransfer;
 		this.proposeeEntityType = proposeeEntityType;
 		this.proposeeId = proposeeId;
+		this.client = client;
 	}
 
 
@@ -86,7 +89,7 @@ public class TransferItems implements Request {
 		}
 
 		TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
-		response.responses.add(new TransferItemsResponse());
+		response.responses.add(new TransferItemsResponse(client));
 
 		return response;
 	}
@@ -105,6 +108,15 @@ public class TransferItems implements Request {
 
 
 	public static class TransferItemsResponse implements Response {
+		public final int client;
+		
+		/**
+		 * Constructor
+		 */
+		public TransferItemsResponse(int client) {
+			this.client = client;
+		}
+		
 		@Override
 		public void acknowledge() {
 			// Need to notify all clients to refresh inventory windows and trade windows
@@ -115,6 +127,11 @@ public class TransferItems implements Request {
 					((InventoryWindow) component).refresh();
 				}
 			}
+		}
+		
+		@Override
+		public int forClient() {
+			return -1;
 		}
 	}
 

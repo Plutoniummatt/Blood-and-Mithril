@@ -440,10 +440,13 @@ public abstract class Individual extends Equipper {
 			new Task() {
 				@Override
 				public void execute() {
-					thisIndividual.selected = false;
-					GameWorld.selectedIndividuals.remove(thisIndividual);
-					clearCommands();
-					ai.setToAuto(false);
+					if (ClientServerInterface.isServer()) {
+						thisIndividual.deselect(false);
+						GameWorld.selectedIndividuals.remove(thisIndividual);
+						clearCommands();
+					} else {
+						ClientServerInterface.individualSelection(thisIndividual.id.id, false);
+					}
 				}
 			},
 			Color.WHITE,
@@ -457,9 +460,12 @@ public abstract class Individual extends Equipper {
 			new Task() {
 				@Override
 				public void execute() {
-					thisIndividual.selected = true;
-					GameWorld.selectedIndividuals.add(thisIndividual);
-					ai.setToManual();
+					if (ClientServerInterface.isServer()) {
+						GameWorld.selectedIndividuals.add(thisIndividual);
+						thisIndividual.select();
+					} else {
+						ClientServerInterface.individualSelection(thisIndividual.id.id, true);
+					}
 				}
 			},
 			Color.WHITE,

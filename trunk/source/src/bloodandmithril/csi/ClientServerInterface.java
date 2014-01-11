@@ -148,15 +148,17 @@ public class ClientServerInterface {
 				
 				if (resp.executeInSingleThread()) {
 					for (final Response response : resp.responses) {
-						try {
-							response.acknowledge();
-						} catch (Throwable t) {
-							throw new RuntimeException(t);
+						if (response.forClient() != -1 && response.forClient() != client.getID()) {
+							continue;
 						}
+						response.acknowledge();
 					}
 				}
 				
 				for (final Response response : resp.responses) {
+					if (response.forClient() != -1 && response.forClient() != client.getID()) {
+						continue;
+					}
 					if (response instanceof GenerateChunkResponse) {
 						ChunkLoaderImpl.loaderTasks.add(
 							new Task() {
@@ -326,7 +328,8 @@ public class ClientServerInterface {
 				proposerItemsToTransfer,
 				proposerEntityType, proposerId,
 				proposeeItemsToTransfer,
-				proposeeEntityType, proposeeId
+				proposeeEntityType, proposeeId,
+				client.getID()
 			)
 		);
 	}

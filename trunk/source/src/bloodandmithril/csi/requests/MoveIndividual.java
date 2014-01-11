@@ -72,5 +72,10 @@ public class MoveIndividual implements Request {
 		@Override
 		public void acknowledge() {
 		}
+		
+		@Override
+		public int forClient() {
+			return -1;
+		}
 	}
 }
