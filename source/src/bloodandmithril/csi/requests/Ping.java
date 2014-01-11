@@ -55,6 +55,11 @@ public class Ping implements Request {
 		public void acknowledge() {
 			BloodAndMithrilClient.ping = System.currentTimeMillis() - ping;
 		}
+		
+		@Override
+		public int forClient() {
+			return -1;
+		}
 	}
 
 

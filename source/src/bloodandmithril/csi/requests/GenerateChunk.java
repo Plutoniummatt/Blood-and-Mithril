@@ -79,6 +79,11 @@ public class GenerateChunk implements Request {
 			Topography.chunkMap.addChunk(fData.xChunkCoord, fData.yChunkCoord, received);
 			Logger.networkDebug("Received chunk: [" + fData.xChunkCoord + "," + fData.yChunkCoord +"]" , LogLevel.INFO);
 		}
+		
+		@Override
+		public int forClient() {
+			return -1;
+		}
 	}
 
 

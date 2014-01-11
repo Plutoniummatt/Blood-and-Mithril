@@ -13,6 +13,9 @@ public interface Response {
 	/** Acknowledges the response */
 	public void acknowledge();
 	
+	/** If this returns anything other than -1, then only the client with the specified ID will {@link #acknowledge()} this {@link Response} */
+	public int forClient();
+	
 	public static class Responses {
 		public LinkedList<Response> responses;
 		private boolean executeInSingleThread;

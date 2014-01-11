@@ -88,5 +88,10 @@ public class IndividualSelection implements Request {
 				GameWorld.selectedIndividuals.remove(individual);
 			}
 		}
+		
+		@Override
+		public int forClient() {
+			return -1;
+		}
 	}
 }

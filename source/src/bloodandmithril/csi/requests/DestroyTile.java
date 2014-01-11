@@ -42,7 +42,7 @@ public class DestroyTile implements Request {
 	}
 
 
-	public class DestroyTileResponse implements Response {
+	public static class DestroyTileResponse implements Response {
 
 		public final float worldX, worldY;
 		public final boolean foreground;
@@ -56,6 +56,11 @@ public class DestroyTile implements Request {
 		@Override
 		public void acknowledge() {
 			Topography.deleteTile(worldX, worldY, foreground);
+		}
+		
+		@Override
+		public int forClient() {
+			return -1;
 		}
 	}
 

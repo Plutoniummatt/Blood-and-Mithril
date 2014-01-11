@@ -75,5 +75,10 @@ public class CSITradeWith implements Request {
 		public void acknowledge() {
 			// Do nothing
 		}
+
+		@Override
+		public int forClient() {
+			return -1;
+		}
 	}
 }

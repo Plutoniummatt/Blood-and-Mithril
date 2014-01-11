@@ -95,6 +95,11 @@ public class SynchronizeIndividual implements Request {
 				}
 			}
 		}
+		
+		@Override
+		public int forClient() {
+			return -1;
+		}
 
 		private void syncSingleIndividual() {
 			Individual removed = GameWorld.individuals.remove(individual.id.id);
