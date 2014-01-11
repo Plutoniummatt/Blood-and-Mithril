@@ -1,17 +1,17 @@
 package bloodandmithril.csi.requests;
 
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Set;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
+import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.GameWorld;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -41,14 +41,18 @@ public class SynchronizeIndividual implements Request {
 
 
 	@Override
-	public List<Response> respond() {
+	public Responses respond() {
+		Responses responses = new Response.Responses(false, new LinkedList<Response>());
+		
 		Response response;
 		if (id == -1) {
 			response = new SynchronizeIndividualResponse(Sets.newHashSet(GameWorld.individuals.keySet()));
-			return Lists.newArrayList(response);
+			responses.responses.add(response);
+			return responses;
 		}
 		response = new SynchronizeIndividualResponse(GameWorld.individuals.get(id));
-		return Lists.newArrayList(response);
+		responses.responses.add(response);
+		return responses;
 	}
 
 

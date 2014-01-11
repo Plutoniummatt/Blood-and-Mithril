@@ -1,17 +1,16 @@
 package bloodandmithril.csi.requests;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
+import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Chest;
 import bloodandmithril.world.GameWorld;
-
-import com.google.common.collect.Lists;
 
 /**
  * {@link Request} to open a trade window
@@ -33,17 +32,17 @@ public class OpenTradeWindow implements Request {
 
 
 	@Override
-	public List<Response> respond() {
-		List<Response> response = Lists.newArrayList();
+	public Responses respond() {
+		Responses responses = new Response.Responses(false, new LinkedList<Response>());
 
-		response.add(
+		responses.responses.add(
 			new SynchronizeIndividual.SynchronizeIndividualResponse(
 				GameWorld.individuals.get(proposerId)
 			)
 		);
 
 		if (proposee == TradeEntity.INDIVIDUAL) {
-			response.add(
+			responses.responses.add(
 				new SynchronizeIndividual.SynchronizeIndividualResponse(
 					GameWorld.individuals.get(proposerId)
 				)
@@ -52,7 +51,7 @@ public class OpenTradeWindow implements Request {
 			// TODO sync prop
 		}
 
-		response.add(
+		responses.responses.add(
 			new OpenTradeWindowResponse(
 				proposerId,
 				proposee,
@@ -60,7 +59,7 @@ public class OpenTradeWindow implements Request {
 			)
 		);
 
-		return response;
+		return responses;
 	}
 
 

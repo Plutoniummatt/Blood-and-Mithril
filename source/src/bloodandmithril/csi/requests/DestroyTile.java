@@ -1,13 +1,12 @@
 package bloodandmithril.csi.requests;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
+import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
-
-import com.google.common.collect.Lists;
 
 /**
  * A {@link Request} to destroy a {@link Tile} from {@link Topography}
@@ -28,10 +27,12 @@ public class DestroyTile implements Request {
 
 
 	@Override
-	public List<Response> respond() {
+	public Responses respond() {
 		Topography.deleteTile(worldX, worldY, foreground);
 		Response destroyTileResponse = new DestroyTileResponse(worldX, worldY, foreground);
-		return Lists.newArrayList(destroyTileResponse);
+		Responses responses = new Response.Responses(false, new LinkedList<Response>());
+		responses.responses.add(destroyTileResponse);
+		return responses;
 	}
 
 

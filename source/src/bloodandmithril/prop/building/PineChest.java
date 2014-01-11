@@ -4,6 +4,7 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.Trading;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
@@ -77,9 +78,19 @@ public class PineChest extends Chest {
 				new Task() {
 					@Override
 					public void execute() {
-						selected.ai.setCurrentTask(
-							new TradeWith(selected, container)
-						);
+						if (ClientServerInterface.isServer()) {
+							if (ClientServerInterface.isServer()) {
+								selected.ai.setCurrentTask(
+									new TradeWith(selected, container)
+								);
+							} else {
+								ChestContainer chestContainer = (ChestContainer) container;
+								ClientServerInterface.tradeWithProp(selected, chestContainer.propId);
+							}
+						} else {
+							ChestContainer chestContainer = (ChestContainer) container;
+							ClientServerInterface.tradeWithProp(selected, chestContainer.propId);
+						}
 					}
 				},
 				Color.WHITE,

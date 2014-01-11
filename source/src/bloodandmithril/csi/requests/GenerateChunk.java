@@ -1,17 +1,16 @@
 package bloodandmithril.csi.requests;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
+import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
-
-import com.google.common.collect.Lists;
 
 /**
  * Sends a {@link Request} to generate a {@link Chunk}
@@ -34,7 +33,7 @@ public class GenerateChunk implements Request {
 
 
 	@Override
-	public List<Response> respond() {
+	public Responses respond() {
 		if (!Topography.chunkMap.doesChunkExist(x, y) && GameWorld.topography.loadOrGenerateChunk(x, y)) {
 			Response response = null;
 
@@ -46,12 +45,16 @@ public class GenerateChunk implements Request {
 				}
 			} while (!Topography.chunkMap.doesChunkExist(x, y) || response == null);
 
-			return Lists.newArrayList(response);
+			Responses responses = new Response.Responses(false, new LinkedList<Response>());
+			responses.responses.add(response);
+			return responses;
 		} else {
 			ChunkData fData = Topography.chunkMap.get(x).get(y).getChunkData(true);
 			ChunkData bData = Topography.chunkMap.get(x).get(y).getChunkData(false);
 			Response response = new GenerateChunkResponse(fData, bData);
-			return Lists.newArrayList(response);
+			Responses responses = new Response.Responses(false, new LinkedList<Response>());
+			responses.responses.add(response);
+			return responses;
 		}
 	}
 

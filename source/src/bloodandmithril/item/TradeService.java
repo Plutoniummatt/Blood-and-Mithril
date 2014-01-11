@@ -8,7 +8,6 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.building.Chest.ChestContainer;
-import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 
 /**
  * Evaluates a trade proposal.
@@ -29,15 +28,15 @@ public class TradeService {
 	/**
 	 * The trade proposal was accepted by the proposee, this method transfers the {@link Item}s and finalizes the trade
 	 */
-	public synchronized static void transferItems(HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade, Container proposer, HashMap<ListingMenuItem<Item>, Integer> proposeeItemsToTrade, Container proposee) {
+	public synchronized static void transferItems(HashMap<Item, Integer> proposerItemsToTrade, Container proposer, HashMap<Item, Integer> proposeeItemsToTrade, Container proposee) {
 		if (ClientServerInterface.isServer()) {
-			for (Entry<ListingMenuItem<Item>, Integer> proposerToTradeItem : proposerItemsToTrade.entrySet()) {
-				proposer.takeItem(proposerToTradeItem.getKey().t, proposerToTradeItem.getValue());
-				proposee.giveItem(proposerToTradeItem.getKey().t, proposerToTradeItem.getValue());
+			for (Entry<Item, Integer> proposerToTradeItem : proposerItemsToTrade.entrySet()) {
+				proposer.takeItem(proposerToTradeItem.getKey(), proposerToTradeItem.getValue());
+				proposee.giveItem(proposerToTradeItem.getKey(), proposerToTradeItem.getValue());
 			}
-			for (Entry<ListingMenuItem<Item>, Integer> proposeeToTradeItem : proposeeItemsToTrade.entrySet()) {
-				proposee.takeItem(proposeeToTradeItem.getKey().t, proposeeToTradeItem.getValue());
-				proposer.giveItem(proposeeToTradeItem.getKey().t, proposeeToTradeItem.getValue());
+			for (Entry<Item, Integer> proposeeToTradeItem : proposeeItemsToTrade.entrySet()) {
+				proposee.takeItem(proposeeToTradeItem.getKey(), proposeeToTradeItem.getValue());
+				proposer.giveItem(proposeeToTradeItem.getKey(), proposeeToTradeItem.getValue());
 			}
 		} else {
 			TradeEntity proposerEntity, proposeeEntity;
@@ -53,10 +52,10 @@ public class TradeService {
 
 			if (proposee instanceof Individual) {
 				proposeeEntity = TradeEntity.INDIVIDUAL;
-				proposeeId = ((Individual) proposer).id.id;
+				proposeeId = ((Individual) proposee).id.id;
 			} else {
 				proposeeEntity = TradeEntity.PROP;
-				proposeeId = ((ChestContainer) proposer).propId;
+				proposeeId = ((ChestContainer) proposee).propId;
 			}
 			ClientServerInterface.transferItems(proposerItemsToTrade, proposerEntity, proposerId, proposeeItemsToTrade, proposeeEntity, proposeeId);
 		}

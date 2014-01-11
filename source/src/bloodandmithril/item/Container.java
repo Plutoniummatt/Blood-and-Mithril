@@ -38,7 +38,7 @@ public class Container implements Serializable {
 	 * @param item to put
 	 * @param quantity of item to put
 	 */
-	public void giveItem(Item item, int quantity) {
+	public synchronized void giveItem(Item item, int quantity) {
 		if (quantity <= 0) {
 			Logger.generalDebug("Can not give " + quantity + " items", LogLevel.WARN);
 			return;
@@ -72,7 +72,7 @@ public class Container implements Serializable {
 	 * Takes a number of items
 	 * @return the number of items taken.
 	 */
-	public int takeItem(Item item, int quantity) {
+	public synchronized int takeItem(Item item, int quantity) {
 		if (quantity <= 0) {
 			Logger.generalDebug("Can not take " + quantity + " items", LogLevel.WARN);
 			return 0;

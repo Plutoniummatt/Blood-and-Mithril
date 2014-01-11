@@ -12,6 +12,7 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeService;
+import bloodandmithril.prop.building.Chest;
 import bloodandmithril.prop.building.Chest.ChestContainer;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -20,6 +21,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Task;
+import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Function;
@@ -45,7 +47,7 @@ public class TradeWindow extends Window {
 	private final HashMap<ListingMenuItem<Item>, Integer> proposeeItemsNotToTrade = Maps.newHashMap();
 
 	/** Traders */
-	private final Container proposer, proposee;
+	private Container proposer, proposee;
 
 	/** Used to process trade rejections */
 	private boolean rejected = false;
@@ -121,7 +123,17 @@ public class TradeWindow extends Window {
 		}
 
 		if (proposalAccepted) {
-			TradeService.transferItems(proposerItemsToTrade, proposer, proposeeItemsToTrade, proposee);
+			HashMap<Item, Integer> proposerItemsToTransfer = Maps.newHashMap();
+			for (Entry<ListingMenuItem<Item>, Integer> entry : proposerItemsToTrade.entrySet()) {
+				proposerItemsToTransfer.put(entry.getKey().t, entry.getValue());
+			}
+			
+			HashMap<Item, Integer> proposeeItemsToTransfer = Maps.newHashMap();
+			for (Entry<ListingMenuItem<Item>, Integer> entry : proposeeItemsToTrade.entrySet()) {
+				proposeeItemsToTransfer.put(entry.getKey().t, entry.getValue());
+			}
+			
+			TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
 			refresh();
 		} else {
 			rejectTradeProposal();
@@ -132,7 +144,16 @@ public class TradeWindow extends Window {
 	/**
 	 * Refreshes this window and syncs it with the trader inventories
 	 */
+	@SuppressWarnings("unchecked")
 	public void refresh() {
+		proposer = GameWorld.individuals.get(((Individual) proposer).id.id);
+		
+		if (proposee instanceof ChestContainer) {
+			proposee = ((Chest) GameWorld.props.get(((ChestContainer) proposee).propId)).container;
+		} else {
+			proposee = GameWorld.individuals.get(((Individual) proposee).id.id);
+		}
+		
 		proposerItemsToTrade.clear();
 		proposeeItemsToTrade.clear();
 		proposerItemsNotToTrade.clear();
@@ -140,6 +161,9 @@ public class TradeWindow extends Window {
 
 		populate(proposerItemsToTrade, proposerItemsNotToTrade, proposer.getInventory());
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
+
+		buyerPanel.refresh(Lists.newArrayList(proposerItemsToTrade, proposerItemsNotToTrade));
+		sellerPanel.refresh(Lists.newArrayList(proposeeItemsToTrade, proposeeItemsNotToTrade));
 	}
 
 
