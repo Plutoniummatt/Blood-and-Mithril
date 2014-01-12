@@ -33,9 +33,8 @@ public class IndividualSelection implements Request {
 		Individual individual = GameWorld.individuals.get(individualId);
 		if (select) {
 			individual.select();
-			if (!GameWorld.selectedIndividuals.remove(individual)) {
-				GameWorld.selectedIndividuals.add(individual);
-			}
+			GameWorld.selectedIndividuals.remove(individual);
+			GameWorld.selectedIndividuals.add(individual);
 		} else {
 			individual.deselect(false);
 			GameWorld.selectedIndividuals.remove(individual);
@@ -80,9 +79,8 @@ public class IndividualSelection implements Request {
 			Individual individual = GameWorld.individuals.get(individualId);
 			if (select) {
 				individual.select();
-				if (!GameWorld.selectedIndividuals.remove(individual)) {
-					GameWorld.selectedIndividuals.add(individual);
-				}
+				GameWorld.selectedIndividuals.remove(individual);
+				GameWorld.selectedIndividuals.add(individual);
 			} else {
 				individual.deselect(false);
 				GameWorld.selectedIndividuals.remove(individual);

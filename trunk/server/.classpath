@@ -8,6 +8,8 @@
 	<classpathentry kind="lib" path="/Client/libs/gdx-backend-lwjgl.jar" sourcepath="/Client/libs/gdx-backend-lwjgl-sources.jar"/>
 	<classpathentry kind="lib" path="/Client/libs/gdx-natives.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Trunk"/>
-	<classpathentry kind="lib" path="/Trunk/libs/kryonet-2.21-all.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/kryonet"/>
+	<classpathentry kind="lib" path="/kryonet/lib/objenesis-1.2.jar"/>
+	<classpathentry kind="lib" path="/Trunk/libs/kryo-debug-2.20.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

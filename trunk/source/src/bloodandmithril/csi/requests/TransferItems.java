@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
@@ -25,7 +26,6 @@ public class TransferItems implements Request {
 
 	private final HashMap<Item, Integer> proposerItemsToTransfer;
 	private final HashMap<Item, Integer> proposeeItemsToTransfer;
-	private final TradeEntity proposerEntityType;
 	private final TradeEntity proposeeEntityType;
 	private final int proposerId;
 	private final int proposeeId;
@@ -35,13 +35,10 @@ public class TransferItems implements Request {
 	 * Constructor
 	 */
 	public TransferItems(
-		HashMap<Item, Integer> proposerItemsToTransfer,
-		TradeEntity proposerEntityType, int proposerId,
-		HashMap<Item, Integer> proposeeItemsToTransfer,
-		TradeEntity proposeeEntityType, int proposeeId,
+		HashMap<Item, Integer> proposerItemsToTransfer, int proposerId,
+		HashMap<Item, Integer> proposeeItemsToTransfer, TradeEntity proposeeEntityType, int proposeeId,
 		int client) {
 		this.proposerItemsToTransfer = proposerItemsToTransfer;
-		this.proposerEntityType = proposerEntityType;
 		this.proposerId = proposerId;
 		this.proposeeItemsToTransfer = proposeeItemsToTransfer;
 		this.proposeeEntityType = proposeeEntityType;
@@ -54,28 +51,18 @@ public class TransferItems implements Request {
 	public Responses respond() {
 		Responses response = new Responses(true, new LinkedList<Response>());
 		
-		Container proposer, proposee;
+		Individual proposer;
+		Container proposee;
 
-		switch(proposerEntityType) {
-		case INDIVIDUAL:
-			proposer = GameWorld.individuals.get(proposerId);
-			response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse((Individual)proposer));
-		break;
-
-		case PROP:
-			Prop prop = GameWorld.props.get(proposerId);
-			proposer = ((Chest) prop).container;
-			// TODO Add prop sync to response list
-		break;
-
-		default:
-			throw new RuntimeException("Unknown Entity");
-		}
+		proposer = GameWorld.individuals.get(proposerId);
+		proposer.ai.setCurrentTask(new Idle());
+		response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse((Individual)proposer));
 
 		switch(proposeeEntityType) {
 		case INDIVIDUAL:
 			proposee = GameWorld.individuals.get(proposeeId);
 			response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse((Individual)proposee));
+			((Individual) proposee).ai.setCurrentTask(new Idle());
 			break;
 
 		case PROP:
@@ -90,7 +77,7 @@ public class TransferItems implements Request {
 
 		TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
 		response.responses.add(new TransferItemsResponse(client));
-
+		
 		return response;
 	}
 
@@ -135,6 +122,25 @@ public class TransferItems implements Request {
 		}
 	}
 
+	
+	public static class RefreshWindowsResponse implements Response {
+		@Override
+		public void acknowledge() {
+			for (Component component : UserInterface.layeredComponents) {
+				if (component instanceof TradeWindow) {
+					((TradeWindow) component).refresh();
+				} else if (component instanceof InventoryWindow) {
+					((InventoryWindow) component).refresh();
+				}
+			}
+		}
+
+		@Override
+		public int forClient() {
+			return -1;
+		}
+	}
+	
 
 	public enum TradeEntity {
 		INDIVIDUAL, PROP

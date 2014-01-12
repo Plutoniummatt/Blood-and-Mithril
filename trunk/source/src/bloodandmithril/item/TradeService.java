@@ -39,16 +39,10 @@ public class TradeService {
 				proposer.giveItem(proposeeToTradeItem.getKey(), proposeeToTradeItem.getValue());
 			}
 		} else {
-			TradeEntity proposerEntity, proposeeEntity;
+			TradeEntity proposeeEntity;
 			int proposerId, proposeeId;
 
-			if (proposer instanceof Individual) {
-				proposerEntity = TradeEntity.INDIVIDUAL;
-				proposerId = ((Individual) proposer).id.id;
-			} else {
-				proposerEntity = TradeEntity.PROP;
-				proposerId = ((ChestContainer) proposer).propId;
-			}
+			proposerId = ((Individual) proposer).id.id;
 
 			if (proposee instanceof Individual) {
 				proposeeEntity = TradeEntity.INDIVIDUAL;
@@ -57,7 +51,7 @@ public class TradeService {
 				proposeeEntity = TradeEntity.PROP;
 				proposeeId = ((ChestContainer) proposee).propId;
 			}
-			ClientServerInterface.transferItems(proposerItemsToTrade, proposerEntity, proposerId, proposeeItemsToTrade, proposeeEntity, proposeeId);
+			ClientServerInterface.transferItems(proposerItemsToTrade, proposerId, proposeeItemsToTrade, proposeeEntity, proposeeId);
 		}
 	}
 }

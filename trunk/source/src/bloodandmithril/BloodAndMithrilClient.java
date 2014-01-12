@@ -255,15 +255,15 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			UserInterface.rightClick();
 		}
 
-		if (!Gdx.input.isKeyPressed(Input.Keys.A) && !ClientServerInterface.isServer()) {
-			ClientServerInterface.sendDestroyTileRequest(getMouseWorldX(), getMouseWorldY(), true);
-		}
-
 		if (UserInterface.contextMenus.isEmpty()) {
 			for (Individual indi : Sets.newHashSet(GameWorld.selectedIndividuals)) {
 				indi.walking = !doubleClick;
 				if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-					indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
+					if (ClientServerInterface.isServer()) {
+						indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
+					} else {
+						ClientServerInterface.sendMineTileRequest(indi.id.id, new Vector2(getMouseWorldX(), getMouseWorldY()));
+					}
 				} else {
 					float spread = Math.min(indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
 					if (ClientServerInterface.isServer()) {

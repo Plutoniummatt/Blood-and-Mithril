@@ -195,4 +195,15 @@ public class Boar extends Individual {
 	protected SpacialConfiguration getOneHandedWeaponSpacialConfigration() {
 		return null;
 	}
+
+
+	@Override
+	protected void internalCopyFrom(Individual other) {
+		if (!(other instanceof Boar)) {
+			throw new RuntimeException("Cannot cast " + other.getClass().getSimpleName() + " to Boar.");
+		}
+		
+		this.biography = ((Boar) other).biography;
+		this.current = ((Boar) other).current;
+	}
 }

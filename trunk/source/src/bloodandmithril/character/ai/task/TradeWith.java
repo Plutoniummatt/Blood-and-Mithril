@@ -146,9 +146,9 @@ public class TradeWith extends CompositeAITask {
 				}
 
 				proposer.clearCommands();
-				proposer.ai.setCurrentTask(new Trading(proposer.id));
+				proposer.ai.setCurrentTask(new Trading(proposer.id, ((Individual) proposee).id.id, TradeEntity.INDIVIDUAL));
 				proposeeCasted.clearCommands();
-				proposeeCasted.ai.setCurrentTask(new Trading(proposeeCasted.id));
+				proposeeCasted.ai.setCurrentTask(new Trading(proposeeCasted.id, proposer.id.id, TradeEntity.INDIVIDUAL));
 			} else if (proposee instanceof ChestContainer) {
 
 				if (proposer.getDistanceFrom(((ChestContainer)proposee).getPositionOfChest()) > 64f) {
@@ -162,7 +162,7 @@ public class TradeWith extends CompositeAITask {
 				}
 
 				proposer.clearCommands();
-				proposer.ai.setCurrentTask(new Trading(proposer.id));
+				proposer.ai.setCurrentTask(new Trading(proposer.id, ((ChestContainer) proposee).propId, TradeEntity.PROP));
 			}
 		}
 	}
@@ -210,7 +210,7 @@ public class TradeWith extends CompositeAITask {
 				BloodAndMithrilClient.HEIGHT / 2 + 100,
 				700,
 				200,
-				"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName,
+				"Trade between " + proposer.id.firstName + " and " + proposeeCasted.id.firstName,
 				true,
 				700,
 				200,

@@ -3,6 +3,11 @@ package bloodandmithril.character.ai.task;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.csi.requests.TransferItems.TradeEntity;
+import bloodandmithril.item.Container;
+import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.building.Chest;
+import bloodandmithril.world.GameWorld;
 
 /**
  * An {@link AITask} which indicates an {@link Individual} is trading
@@ -12,11 +17,25 @@ import bloodandmithril.character.ai.AITask;
 public class Trading extends AITask {
 	private static final long serialVersionUID = 6325569855563214762L;
 
+	private final Individual proposer;
+	private final Container proposee;
+	private Prop prop;
+	private TradeEntity entity;
+	
 	/**
 	 * Constructor
 	 */
-	public Trading(IndividualIdentifier hostId) {
+	public Trading(IndividualIdentifier hostId, int otherId, TradeEntity entity) {
 		super(hostId);
+		this.entity = entity;
+		this.proposer = GameWorld.individuals.get(hostId.id);
+		
+		if (entity == TradeEntity.INDIVIDUAL) {
+			this.proposee = GameWorld.individuals.get(otherId);
+		} else {
+			prop = GameWorld.props.get(otherId);
+			this.proposee = ((Chest) prop).container;
+		}
 	}
 
 
@@ -28,7 +47,11 @@ public class Trading extends AITask {
 
 	@Override
 	public boolean isComplete() {
-		return false;
+		if (entity == TradeEntity.INDIVIDUAL) {
+			return proposer.state.position.cpy().sub(((Individual) proposee).state.position.cpy()).len() > 64;
+		} else {
+			return proposer.state.position.cpy().sub((prop).position.cpy()).len() > 64;
+		}
 	}
 
 

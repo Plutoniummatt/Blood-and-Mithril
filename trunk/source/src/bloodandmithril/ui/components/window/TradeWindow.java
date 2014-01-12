@@ -9,11 +9,12 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeService;
-import bloodandmithril.prop.building.Chest;
 import bloodandmithril.prop.building.Chest.ChestContainer;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -134,6 +135,17 @@ public class TradeWindow extends Window {
 			}
 			
 			TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
+			
+			if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
+				for (Component component : UserInterface.layeredComponents) {
+					if (component instanceof InventoryWindow) {
+						((InventoryWindow) component).refresh();
+					} else if (component instanceof TradeWindow) {
+						((TradeWindow) component).refresh();
+					}
+				}
+			}
+			
 			refresh();
 		} else {
 			rejectTradeProposal();
@@ -147,12 +159,6 @@ public class TradeWindow extends Window {
 	@SuppressWarnings("unchecked")
 	public void refresh() {
 		proposer = GameWorld.individuals.get(((Individual) proposer).id.id);
-		
-		if (proposee instanceof ChestContainer) {
-			proposee = ((Chest) GameWorld.props.get(((ChestContainer) proposee).propId)).container;
-		} else {
-			proposee = GameWorld.individuals.get(((Individual) proposee).id.id);
-		}
 		
 		proposerItemsToTrade.clear();
 		proposeeItemsToTrade.clear();
@@ -387,11 +393,15 @@ public class TradeWindow extends Window {
 
 	@Override
 	protected void uponClose() {
-		if (proposer instanceof Individual) {
-			((Individual) proposer).ai.setCurrentTask(new Idle());
-		}
-		if (proposee instanceof Individual) {
-			((Individual) proposee).ai.setCurrentTask(new Idle());
+		if (ClientServerInterface.isServer()) {
+			if (proposer instanceof Individual) {
+				((Individual) proposer).ai.setCurrentTask(new Idle());
+			}
+			if (proposee instanceof Individual) {
+				((Individual) proposee).ai.setCurrentTask(new Idle());
+			}
+		} else {
+			TradeService.transferItems(new HashMap<Item, Integer>(), proposer, new HashMap<Item, Integer>(), proposee);
 		}
 	}
 

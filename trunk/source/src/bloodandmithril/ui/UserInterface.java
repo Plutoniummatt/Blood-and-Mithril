@@ -315,21 +315,25 @@ public class UserInterface {
 
 			for (Individual indi : GameWorld.individuals.values()) {
 				if (indi.controllable) {
-					if (indi.selected) {
-						continue;
-					}
 
 					Vector2 centre = new Vector2(indi.state.position.x, indi.state.position.y + indi.height / 2);
 
 					centre.x = BloodAndMithrilClient.worldToScreenX(centre.x);
 					centre.y = BloodAndMithrilClient.worldToScreenY(centre.y);
-
+					
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
 						if (ClientServerInterface.isServer()) {
 							indi.select();
 							GameWorld.selectedIndividuals.add(indi);
 						} else {
 							ClientServerInterface.individualSelection(indi.id.id, true);
+						}
+					} else if (GameWorld.selectedIndividuals.contains(indi)) {
+						if (ClientServerInterface.isServer()) {
+							indi.deselect(false);
+							GameWorld.selectedIndividuals.remove(indi);
+						} else {
+							ClientServerInterface.individualSelection(indi.id.id, false);
 						}
 					}
 				}
@@ -496,7 +500,7 @@ public class UserInterface {
 					break;
 				}
 			}
-			if (windowsCopy.size() > layeredComponents.size()) {
+			if (windowsCopy.size() >= layeredComponents.size()) {
 				layeredComponents = windowsCopy;
 			}
 		}

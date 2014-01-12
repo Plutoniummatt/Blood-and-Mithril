@@ -31,9 +31,6 @@ public class GoToLocation extends AITask {
 	/** The {@link Path} this {@link GoToLocation} {@link AITask} will follow */
 	private final Path path;
 
-	/** The {@link PathFinder} */
-	private final PathFinder pathFinder = new AStarPathFinder();
-
 	/** Whether or not to fly */
 	private final boolean fly;
 
@@ -48,6 +45,8 @@ public class GoToLocation extends AITask {
 		this.fly = fly;
 
 		int blockspan = host.height/Topography.TILE_SIZE + (host.height % Topography.TILE_SIZE == 0 ? 0 : 1) - 1;
+		
+		PathFinder pathFinder = new AStarPathFinder();
 
 		this.path = fly ?
 			pathFinder.findShortestPathAir(new WayPoint(host.state.position), destination):

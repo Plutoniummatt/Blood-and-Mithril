@@ -103,28 +103,40 @@ public class MineTile extends CompositeAITask {
 						@Override
 						public void execute() {
 							Tile tileToBeDeleted = Topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
-							ClientServerInterface.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true);
-							if (tileToBeDeleted != null) {
-								SoundService.pickAxe.play(
-									SoundService.getVolumne(tileCoordinate),
-									1f,
-									SoundService.getPan(tileCoordinate)
-								);
+							
+							if (!ClientServerInterface.isServer()) {
+								ClientServerInterface.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true, hostId.id);
+							}
+							
+							if (tileToBeDeleted != null && !(tileToBeDeleted instanceof EmptyTile)) {
+								if (ClientServerInterface.isClient()) {
+									SoundService.pickAxe.play(
+										SoundService.getVolumne(tileCoordinate),
+										1f,
+										SoundService.getPan(tileCoordinate)
+									);
+								}
 
 								((Equipper)host).giveItem(tileToBeDeleted.mine(), 1);
-								InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
-
-									@Override
-									public boolean apply(Component input) {
-										if (input instanceof Window) {
-											return ((Window) input).title.equals(hostId.getSimpleName() + " - Inventory");
+								
+								if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
+									InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
+										
+										@Override
+										public boolean apply(Component input) {
+											if (input instanceof Window) {
+												return ((Window) input).title.equals(hostId.getSimpleName() + " - Inventory");
+											}
+											return false;
 										}
-										return false;
+									}, null);
+									
+									if (existingInventoryWindow != null) {
+										existingInventoryWindow.refresh();
 									}
-								}, null);
-
-								if (existingInventoryWindow != null) {
-									existingInventoryWindow.refresh();
+								} else if (ClientServerInterface.isServer()) {
+									Topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
+									ClientServerInterface.sendTileMinedNotification(hostId.id, -1, tileCoordinate, true);
 								}
 							}
 						}

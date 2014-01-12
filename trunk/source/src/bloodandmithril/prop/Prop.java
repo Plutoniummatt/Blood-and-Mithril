@@ -17,7 +17,7 @@ public abstract class Prop {
 	public int id;
 
 	/** The location of this {@link Prop} */
-	protected Vector2 position;
+	public Vector2 position;
 
 	/** True if this {@link Prop} must be placed on the ground */
 	protected final boolean grounded;

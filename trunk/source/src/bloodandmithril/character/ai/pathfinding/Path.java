@@ -3,6 +3,7 @@ package bloodandmithril.character.ai.pathfinding;
 import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.ai.ArtificialIntelligence;
@@ -22,7 +23,7 @@ public class Path implements Serializable {
 	private static final long serialVersionUID = -2569430046328226956L;
 	
 	/** {@link WayPoint}s associated with this {@link Path} */
-	private TreeMap<Integer, WayPoint> waypoints = new TreeMap<Integer, WayPoint>();
+	private ConcurrentSkipListMap<Integer, WayPoint> waypoints = new ConcurrentSkipListMap<Integer, WayPoint>();
 	
 	/**
 	 * Constructor
@@ -144,7 +145,7 @@ public class Path implements Serializable {
 	
 	
 	/** Returns the {@link TreeMap} containing the waypoints */
-	public synchronized TreeMap<Integer, WayPoint> getWayPoints() {
+	public synchronized ConcurrentSkipListMap<Integer, WayPoint> getWayPoints() {
 		return waypoints;
 	}
 	

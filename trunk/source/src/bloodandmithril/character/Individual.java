@@ -1,7 +1,6 @@
 package bloodandmithril.character;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -25,12 +24,13 @@ import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
-import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.WorldState;
@@ -40,7 +40,7 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Class representing a character, PC or NPC.
@@ -56,6 +56,9 @@ public abstract class Individual extends Equipper {
 	/** State of this character */
 	public IndividualState state;
 
+	/** Which actions are currently active */
+	protected Commands activeCommands = new Commands();
+	
 	/** The AI responsible for this character */
 	public ArtificialIntelligence ai;
 
@@ -68,9 +71,6 @@ public abstract class Individual extends Equipper {
 	/** Whether or not this character is currently selected */
 	public boolean selected;
 
-	/** Which actions are currently active */
-	protected HashMap<String, Boolean> commands = new HashMap<String, Boolean>();
-
 	/** Width and Height of the individual */
 	public int width, height;
 
@@ -81,7 +81,7 @@ public abstract class Individual extends Equipper {
 	protected float animationTimer;
 
 	/** Time between sending AI to be processed by the AI processing thread */
-	private final float aITaskDelay;
+	private float aITaskDelay;
 
 	/** The 'reaction' time of the AI instance controlling this {@link Individual} */
 	private float aiReactionTimer;
@@ -119,7 +119,50 @@ public abstract class Individual extends Equipper {
 		this.interactionBox = interactionBox;
 		this.canTradeWith = canTradeWith;
 	}
+	
+	
+	public void copyFrom(Individual other) {
+		this.ai = other.ai;
+		this.aiReactionTimer = other.aiReactionTimer;
+		this.aITaskDelay = other.aITaskDelay;
+		this.animationTimer = other.animationTimer;
+		this.availableEquipmentSlots = other.availableEquipmentSlots;
+		this.canExceedCapacity = other.canExceedCapacity;
+		this.activeCommands = other.activeCommands;
+		this.controllable = other.controllable;
+		this.currentLoad = other.currentLoad;
+		this.equippedItems = other.equippedItems;
+		this.height = other.height;
+		this.id = other.id;
+		this.interactionBox = other.interactionBox;
+		this.inventoryMassCapacity = other.inventoryMassCapacity;
+		this.jumpedOff = other.jumpedOff;
+		this.safetyHeight = other.safetyHeight;
+		this.selected = other.selected;
+		this.state = other.state;
+		this.steppingUp = other.steppingUp;
+		this.steps = other.steps;
+		this.walking = other.walking;
+		this.width = other.width;
 
+		if (!(Sets.difference(inventory.entrySet(), other.inventory.entrySet()).isEmpty())) {
+			for (Component component : UserInterface.layeredComponents) {
+				if (component instanceof TradeWindow) {
+					((TradeWindow) component).refresh();
+				} else if (component instanceof InventoryWindow) {
+					((InventoryWindow) component).refresh();
+				}
+			}
+		}
+		
+		this.inventory = other.inventory;
+		
+		internalCopyFrom(other);
+	}
+
+	
+	protected abstract void internalCopyFrom(Individual other);
+	
 
 	/**
 	 * Setups up all individual resources
@@ -180,13 +223,17 @@ public abstract class Individual extends Equipper {
 
 	/** Clears all commands */
 	public synchronized void clearCommands() {
-		commands.clear();
+		activeCommands.clear();
 	}
 
 
 	/** Handles commands */
 	public synchronized void sendCommand(int keyCode, boolean val) {
-		commands.put(Integer.toString(keyCode), val);
+		if (val) {
+			activeCommands.activate(Integer.toString(keyCode));
+		} else {
+			activeCommands.deactivate(Integer.toString(keyCode));
+		}
 	}
 
 
@@ -230,7 +277,7 @@ public abstract class Individual extends Equipper {
 
 	/** Is this individual the current one? */
 	public boolean isSelected() {
-		return GameWorld.selectedIndividuals.contains(this) && selected;
+		return GameWorld.selectedIndividuals.contains(this);
 	}
 
 
@@ -517,7 +564,11 @@ public abstract class Individual extends Equipper {
 								new JITTask() {
 									@Override
 									public void execute(Object... args) {
-										thisIndividual.id.nickName = args[0].toString();
+										if (ClientServerInterface.isServer()) {
+											thisIndividual.id.nickName = args[0].toString();
+										} else {
+											ClientServerInterface.changeNickName(thisIndividual.id.id, args[0].toString());
+										}
 									}
 								},
 								"Confirm",
@@ -588,14 +639,6 @@ public abstract class Individual extends Equipper {
 							ClientServerInterface.tradeWithIndividual(indi, thisIndividual);
 						}
 					}
-
-					for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
-						if (component instanceof Window) {
-							if (((Window)component).title.equals(id.getSimpleName() + " - Inventory")) {
-								UserInterface.layeredComponents.remove(component);
-							}
-						}
-					}
 				}
 			},
 			Color.WHITE,
@@ -607,10 +650,7 @@ public abstract class Individual extends Equipper {
 		if (controllable) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
 			contextMenuToReturn.addMenuItem(editMenuItem);
-
-			if (!(ai.getCurrentTask() instanceof Trading)) {
-				contextMenuToReturn.addMenuItem(inventoryMenuItem);
-			}
+			contextMenuToReturn.addMenuItem(inventoryMenuItem);
 		}
 
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
@@ -652,7 +692,7 @@ public abstract class Individual extends Equipper {
 	 * @return true if a command is currently active
 	 */
 	public synchronized boolean isCommandActive(int keycode) {
-		return commands.get(Integer.toString(keycode)) == null ? false : commands.get(Integer.toString(keycode));
+		return activeCommands.isActive(Integer.toString(keycode));
 	}
 
 

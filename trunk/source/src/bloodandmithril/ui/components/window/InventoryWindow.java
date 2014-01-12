@@ -25,7 +25,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
-import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -342,8 +341,6 @@ public class InventoryWindow extends Window {
 	public void refresh() {
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();
-		
-		host = GameWorld.individuals.get(((Individual) host).id.id);
 		
 		buildItems(host.getEquipped(), host.getInventory());
 	}
