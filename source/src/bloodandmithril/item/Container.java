@@ -20,7 +20,7 @@ public class Container implements Serializable {
 	protected float inventoryMassCapacity, currentLoad;
 
 	/** Whether this container can hold more than its capacity */
-	protected final boolean canExceedCapacity;
+	protected boolean canExceedCapacity;
 
 	/** What this {@link Container} has in its inventory, maps an Item to the quantity of said item */
 	protected HashMap<Item, Integer> inventory = new HashMap<Item, Integer>();
@@ -48,7 +48,7 @@ public class Container implements Serializable {
 
 		if (inventory.isEmpty()) {
 			copy.put(item, quantity);
-		} else  {
+		} else {
 			boolean stacked = false;
 			for (Entry<Item, Integer> entry : inventory.entrySet()) {
 				if (item.sameAs(entry.getKey())) {

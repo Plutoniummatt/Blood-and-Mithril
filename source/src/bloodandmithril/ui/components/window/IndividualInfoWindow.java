@@ -10,6 +10,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Util;
+import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -21,7 +22,7 @@ import com.badlogic.gdx.graphics.Color;
 public class IndividualInfoWindow extends Window {
 
 	/** The {@link Individual} this window displays info for */
-	private final Individual individual;
+	private Individual individual;
 
 	/**
 	 * Constructor
@@ -48,6 +49,8 @@ public class IndividualInfoWindow extends Window {
 		Color inactiveGreen = new Color(0.45f, 0f, 0.32f, 0.6f * alpha);
 		Color activeWhite = new Color(1f, 1f, 1f, 1f * alpha);
 		Color inactiveWhite = new Color(1f, 1f, 1f, 0.6f * alpha);
+		
+		this.individual = GameWorld.individuals.get(individual.id.id);
 
 		defaultFont.setColor(active ? activeGreen : inactiveGreen);
 		if (!drawLine("Name: ", 25)) {

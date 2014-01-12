@@ -102,13 +102,11 @@ public class SynchronizeIndividual implements Request {
 		}
 
 		private void syncSingleIndividual() {
-			Individual removed = GameWorld.individuals.remove(individual.id.id);
-			GameWorld.individuals.put(individual.id.id, individual);
-			if (GameWorld.selectedIndividuals.remove(removed)) {
-				individual.selected = true;
-				GameWorld.selectedIndividuals.add(individual);
+			Individual got = GameWorld.individuals.get(individual.id.id);
+			if (got == null) {
+				GameWorld.individuals.put(individual.id.id, individual);
 			} else {
-				individual.selected = false;
+				got.copyFrom(individual);
 			}
 			Logger.networkDebug("Received data for individual: " + individual.id.getSimpleName(), LogLevel.TRACE);
 		}
@@ -117,7 +115,7 @@ public class SynchronizeIndividual implements Request {
 
 	@Override
 	public boolean tcp() {
-		return false;
+		return true;
 	}
 
 

@@ -63,16 +63,16 @@ public class Elf extends Individual {
 	private static final long serialVersionUID = -5566954059579973505L;
 
 	/** Hair color of this {@link Elf} */
-	private final float hairColorR, hairColorG, hairColorB;
+	private float hairColorR, hairColorG, hairColorB;
 
 	/** Eye color of this {@link Elf} */
-	private final float eyeColorR, eyeColorG, eyeColorB;
+	private float eyeColorR, eyeColorG, eyeColorB;
 
 	/** Stylish */
-	private final int hairStyle;
+	private int hairStyle;
 
 	/** True if female */
-	private final boolean female;
+	private boolean female;
 
 	/** Animations */
 	private static DualKeyHashMap<String, Integer, Animation> hairAnimations = new DualKeyHashMap<String, Integer, Animation>();
@@ -361,5 +361,25 @@ public class Elf extends Individual {
 				}
 		}
 		return null;
+	}
+
+
+	@Override
+	protected void internalCopyFrom(Individual other) {
+		if (!(other instanceof Elf)) {
+			throw new RuntimeException("Cannot cast " + other.getClass().getSimpleName() + " to Elf.");
+		}
+		
+		this.hairColorB = ((Elf) other).hairColorB;
+		this.hairColorG = ((Elf) other).hairColorG;
+		this.hairColorR = ((Elf) other).hairColorR;
+		this.eyeColorB = ((Elf) other).eyeColorB;
+		this.eyeColorG = ((Elf) other).eyeColorG;
+		this.eyeColorR = ((Elf) other).eyeColorR;
+		this.hairStyle = ((Elf) other).hairStyle;
+		this.female = ((Elf) other).female;
+		this.current = ((Elf) other).current;
+		this.currentHair = ((Elf) other).currentHair;
+		this.biography = ((Elf) other).biography;
 	}
 }

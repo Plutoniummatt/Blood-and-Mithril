@@ -77,6 +77,12 @@ public class AIProcessor {
 				}
 
 				private void processItems(final int n) {
+					
+					// StackOverflow
+					if (n > 50) {
+						return;
+					}
+					
 					if (pathFinderTasks.isEmpty()) {
 						Logger.aiDebug("Processed " + n + " pathfinder items", LogLevel.TRACE);
 					} else {

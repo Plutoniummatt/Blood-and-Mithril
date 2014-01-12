@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
@@ -39,10 +40,13 @@ import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.CSITradeWith;
 import bloodandmithril.csi.requests.CSITradeWith.CSITradeWithResponse;
+import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
+import bloodandmithril.csi.requests.ChangeNickName;
 import bloodandmithril.csi.requests.DestroyTile;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.GenerateChunk;
 import bloodandmithril.csi.requests.GenerateChunk.GenerateChunkResponse;
+import bloodandmithril.csi.requests.CSIMineTile;
 import bloodandmithril.csi.requests.IndividualSelection;
 import bloodandmithril.csi.requests.MoveIndividual;
 import bloodandmithril.csi.requests.OpenTradeWindow;
@@ -51,6 +55,7 @@ import bloodandmithril.csi.requests.Ping.Pong;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
 import bloodandmithril.csi.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
 import bloodandmithril.csi.requests.TransferItems;
+import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
@@ -59,6 +64,7 @@ import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.material.animal.ChickenLeg;
+import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
@@ -66,6 +72,7 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
@@ -88,12 +95,10 @@ import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
 import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
@@ -107,7 +112,7 @@ public class ClientServerInterface {
 	/** The client */
 	private static Client client;
 
-	private static Thread clientThread;
+	public static Thread individualSyncThread;
 
 	private static boolean isClient, isServer;
 	
@@ -131,7 +136,6 @@ public class ClientServerInterface {
 				public void uncaughtException(Thread thread, Throwable throwable) {
 					Logger.networkDebug(throwable.getMessage(), LogLevel.WARN);
 					throwable.printStackTrace();
-					Gdx.app.exit();
 				}
 			}
 		);
@@ -140,7 +144,7 @@ public class ClientServerInterface {
 			
 			@Override
 			public void received(Connection connection, final Object object) {
-				if (object instanceof KeepAlive) {
+				if (!(object instanceof Responses)) {
 					return;
 				}
 			
@@ -210,24 +214,6 @@ public class ClientServerInterface {
 				}
 			}
 		});
-
-		clientThread = new Thread(
-			new Runnable() {
-				@Override
-				public void run() {
-					while(client.isConnected()) {
-						try {
-							Thread.sleep(100);
-							sendSynchronizeIndividualRequest();
-							ping();
-						} catch (InterruptedException e) {
-						}
-					}
-				}
-			}
-		);
-
-		clientThread.start();
 	}
 
 	public static synchronized void sendGenerateChunkRequest(int x, int y) {
@@ -242,10 +228,10 @@ public class ClientServerInterface {
 
 	public static synchronized void sendSynchronizeIndividualRequest() {
 		client.sendUDP(new SynchronizeIndividual());
-		Logger.networkDebug("Sending chunk generation request for all", LogLevel.TRACE);
+		Logger.networkDebug("Sending individual sync request for all", LogLevel.TRACE);
 	}
 
-	public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground) {
+	public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground, int individualId) {
 		client.sendTCP(new DestroyTile(worldX, worldY, foreground));
 		Logger.networkDebug("Sending destroy tile request", LogLevel.DEBUG);
 	}
@@ -274,12 +260,38 @@ public class ClientServerInterface {
 		client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove));
 		Logger.networkDebug("Sending move individual request", LogLevel.DEBUG);
 	}
+	
+	public static synchronized void changeNickName(int id, String toChangeTo) {
+		client.sendTCP(new ChangeNickName(id, toChangeTo));
+		Logger.networkDebug("Sending change individual nickname request", LogLevel.DEBUG);
+	}
+	
+	public static synchronized void sendMineTileRequest(int individualId, Vector2 location) {
+		client.sendTCP(new CSIMineTile(individualId, location));
+		Logger.networkDebug("Sending mine tile request", LogLevel.DEBUG);
+	}
 
 	public static synchronized void openTradeWindow(int proposerId, TradeEntity proposee, int proposeeId) {
 		client.sendTCP(
 			new OpenTradeWindow(proposerId, proposee, proposeeId)
 		);
 		Logger.networkDebug("Sending open trade window request", LogLevel.DEBUG);
+	}
+	
+	public static synchronized void sendTileMinedNotification(int individualId, int connectionId, Vector2 location, boolean foreGround) {
+		sendNotification(
+			connectionId, 
+			true, 
+			new DestroyTileResponse(location.x, location.y, foreGround)
+		);
+	}
+	
+	public static synchronized void sendRefreshWindowsNotification() {
+		sendNotification(
+			-1, 
+			true, 
+			new TransferItems.RefreshWindowsResponse()
+		);
 	}
 	
 	public static synchronized void openTradeWindowNotification(int proposerId, TradeEntity proposee, int proposeeId, int connectionId) {
@@ -294,12 +306,34 @@ public class ClientServerInterface {
 		);
 	}
 	
+	public static synchronized void sendIndividualSyncNotification(int id) {
+		sendNotification(
+			-1, 
+			false, 
+			new SynchronizeIndividualResponse(GameWorld.individuals.get(id))
+		);
+	}
+	
 	private static synchronized void sendNotification(final int connectionId, final boolean tcp, final Response... responses) {
 		serverThread.execute(
 			new Runnable() {
 				@Override
 				public void run() {
 					for (Connection connection : server.getConnections()) {
+						if (connectionId == -1) {
+							Responses resp = new Responses(false, new LinkedList<Response>());
+							for (Response response : responses) {
+								resp.responses.add(response);
+							}
+							if (tcp) {
+								connection.sendTCP(resp);
+							} else {
+								connection.sendUDP(resp);
+							}
+							
+							continue;
+						}
+						
 						if (connectionId == connection.getID()) {
 							Responses resp = new Responses(false, new LinkedList<Response>());
 							for (Response response : responses) {
@@ -318,15 +352,13 @@ public class ClientServerInterface {
 	}
 
 	public static synchronized void transferItems(
-			HashMap<Item, Integer> proposerItemsToTransfer,
-			TradeEntity proposerEntityType, int proposerId,
+			HashMap<Item, Integer> proposerItemsToTransfer, int proposerId,
 			HashMap<Item, Integer> proposeeItemsToTransfer,
 			TradeEntity proposeeEntityType, int proposeeId
 	) {
 		client.sendTCP(
 			new bloodandmithril.csi.requests.TransferItems(
-				proposerItemsToTransfer,
-				proposerEntityType, proposerId,
+				proposerItemsToTransfer, proposerId,
 				proposeeItemsToTransfer,
 				proposeeEntityType, proposeeId,
 				client.getID()
@@ -356,6 +388,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 		
+		kryo.register(Commands.class);
 		kryo.register(Request.class);
 		kryo.register(Ping.class);
 		kryo.register(Pong.class);
@@ -443,5 +476,11 @@ public class ClientServerInterface {
 		kryo.register(LinkedList.class);
 		kryo.register(ArrayDeque.class);
 		kryo.register(Responses.class);
+		kryo.register(ChangeNickName.class);
+		kryo.register(ChangeNickNameResponse.class);
+		kryo.register(ConcurrentSkipListMap.class);
+		kryo.register(CSIMineTile.class);
+		kryo.register(RefreshWindowsResponse.class);
+		kryo.register(YellowSand.class);
 	}
 }

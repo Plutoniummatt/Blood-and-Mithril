@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
+import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.Individual.IndividualState;
 import bloodandmithril.character.individuals.Elf;
@@ -100,6 +101,25 @@ public class BloodAndMithrilServer {
 				}
 			}
 		});
+		
+		ClientServerInterface.individualSyncThread = new Thread(
+			new Runnable() {
+				@Override
+				public void run() {
+					while (ClientServerInterface.server.getUpdateThread().isAlive()) {
+						try {
+							Thread.sleep(100);
+							for (Individual individual : GameWorld.individuals.values()) {
+								ClientServerInterface.sendIndividualSyncNotification(individual.id.id);
+							}
+						} catch (InterruptedException e) {
+						}
+					}
+				}
+			}
+		);
+
+		ClientServerInterface.individualSyncThread.start();
 
 		start();
 	}
