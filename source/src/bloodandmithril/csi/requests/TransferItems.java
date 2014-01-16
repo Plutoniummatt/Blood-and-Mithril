@@ -130,7 +130,7 @@ public class TransferItems implements Request {
 
 		@Override
 		public boolean notifyOthers() {
-			return false;
+			return true;
 		}
 	}
 
