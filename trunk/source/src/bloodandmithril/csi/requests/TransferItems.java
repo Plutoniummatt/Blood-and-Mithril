@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import bloodandmithril.character.Individual;
-import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
@@ -50,19 +50,17 @@ public class TransferItems implements Request {
 	@Override
 	public Responses respond() {
 		Responses response = new Responses(true, new LinkedList<Response>());
-		
+
 		Individual proposer;
 		Container proposee;
 
 		proposer = GameWorld.individuals.get(proposerId);
-		proposer.ai.setCurrentTask(new Idle());
-		response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse((Individual)proposer));
+		response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(proposer, System.currentTimeMillis()));
 
 		switch(proposeeEntityType) {
 		case INDIVIDUAL:
 			proposee = GameWorld.individuals.get(proposeeId);
-			response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse((Individual)proposee));
-			((Individual) proposee).ai.setCurrentTask(new Idle());
+			response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse((Individual)proposee, System.currentTimeMillis()));
 			break;
 
 		case PROP:
@@ -77,7 +75,7 @@ public class TransferItems implements Request {
 
 		TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
 		response.responses.add(new TransferItemsResponse(client));
-		
+
 		return response;
 	}
 
@@ -96,33 +94,47 @@ public class TransferItems implements Request {
 
 	public static class TransferItemsResponse implements Response {
 		public final int client;
-		
+
 		/**
 		 * Constructor
 		 */
 		public TransferItemsResponse(int client) {
 			this.client = client;
 		}
-		
+
 		@Override
 		public void acknowledge() {
 			// Need to notify all clients to refresh inventory windows and trade windows
-			for (Component component : UserInterface.layeredComponents) {
-				if (component instanceof TradeWindow) {
-					((TradeWindow) component).refresh();
-				} else if (component instanceof InventoryWindow) {
-					((InventoryWindow) component).refresh();
-				}
-			}
+			ClientServerInterface.sendRefreshItemWindows();
 		}
-		
+
 		@Override
 		public int forClient() {
 			return -1;
 		}
 	}
 
-	
+
+	public static class RefreshWindows implements Request {
+		@Override
+		public Responses respond() {
+			Responses responses = new Responses(false, new LinkedList<Response>());
+			responses.responses.add(new RefreshWindowsResponse());
+			return responses;
+		}
+
+		@Override
+		public boolean tcp() {
+			return true;
+		}
+
+		@Override
+		public boolean notifyOthers() {
+			return false;
+		}
+	}
+
+
 	public static class RefreshWindowsResponse implements Response {
 		@Override
 		public void acknowledge() {
@@ -140,7 +152,7 @@ public class TransferItems implements Request {
 			return -1;
 		}
 	}
-	
+
 
 	public enum TradeEntity {
 		INDIVIDUAL, PROP

@@ -45,7 +45,7 @@ public class BloodAndMithrilServer {
 
 	private static GameWorld gameWorld;
 
-	/**
+	/**0
 	 * Entry point for the server
 	 */
 	public static void main(String[] args) {
@@ -101,7 +101,7 @@ public class BloodAndMithrilServer {
 				}
 			}
 		});
-		
+
 		ClientServerInterface.individualSyncThread = new Thread(
 			new Runnable() {
 				@Override

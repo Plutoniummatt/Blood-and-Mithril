@@ -43,14 +43,14 @@ public class SynchronizeIndividual implements Request {
 	@Override
 	public Responses respond() {
 		Responses responses = new Response.Responses(false, new LinkedList<Response>());
-		
+
 		Response response;
 		if (id == -1) {
 			response = new SynchronizeIndividualResponse(Sets.newHashSet(GameWorld.individuals.keySet()));
 			responses.responses.add(response);
 			return responses;
 		}
-		response = new SynchronizeIndividualResponse(GameWorld.individuals.get(id));
+		response = new SynchronizeIndividualResponse(GameWorld.individuals.get(id), System.currentTimeMillis());
 		responses.responses.add(response);
 		return responses;
 	}
@@ -67,11 +67,15 @@ public class SynchronizeIndividual implements Request {
 
 		private final Set<Integer> individuals;
 
+		private final long timeStamp;
+
 		/**
 		 * Synchronize single individual
 		 */
-		public SynchronizeIndividualResponse(Individual individual) {
+		public SynchronizeIndividualResponse(Individual individual, long timeStamp) {
 			this.individual = individual;
+			this.timeStamp = timeStamp;
+
 			this.individuals = null;
 		}
 
@@ -79,8 +83,10 @@ public class SynchronizeIndividual implements Request {
 		 * Synchronize all individuals
 		 */
 		public SynchronizeIndividualResponse(Set<Integer> individuals) {
-			this.individual = null;
 			this.individuals = individuals;
+
+			this.individual = null;
+			this.timeStamp = -1;
 		}
 
 		@Override
@@ -95,7 +101,7 @@ public class SynchronizeIndividual implements Request {
 				}
 			}
 		}
-		
+
 		@Override
 		public int forClient() {
 			return -1;
@@ -106,6 +112,10 @@ public class SynchronizeIndividual implements Request {
 			if (got == null) {
 				GameWorld.individuals.put(individual.id.id, individual);
 			} else {
+				if (timeStamp < got.getTimeStamp()) {
+					// Received snapshot is older than the most recently updated snapshot
+					return;
+				}
 				got.copyFrom(individual);
 			}
 			Logger.networkDebug("Received data for individual: " + individual.id.getSimpleName(), LogLevel.TRACE);
@@ -115,7 +125,7 @@ public class SynchronizeIndividual implements Request {
 
 	@Override
 	public boolean tcp() {
-		return true;
+		return false;
 	}
 
 

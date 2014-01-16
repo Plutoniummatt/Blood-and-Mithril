@@ -127,7 +127,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 		renderScrollBarButton();
 
 		// Render the listings
-		renderInventoryItems();
+		renderListing();
 	}
 
 
@@ -148,7 +148,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	/**
 	 * Renders the inventory listing
 	 */
-	private void renderInventoryItems() {
+	private void renderListing() {
 		// Render the equipped items first
 		int i = 0;
 		for (Map<ListingMenuItem<T>, Integer> listing : Lists.newArrayList(listings)) {

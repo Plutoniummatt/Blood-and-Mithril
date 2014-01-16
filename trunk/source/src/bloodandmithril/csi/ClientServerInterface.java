@@ -38,23 +38,30 @@ import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.csi.Response.Responses;
+import bloodandmithril.csi.requests.CSIMineTile;
 import bloodandmithril.csi.requests.CSITradeWith;
 import bloodandmithril.csi.requests.CSITradeWith.CSITradeWithResponse;
-import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
 import bloodandmithril.csi.requests.ChangeNickName;
+import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
+import bloodandmithril.csi.requests.ClientConnected;
 import bloodandmithril.csi.requests.DestroyTile;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.GenerateChunk;
 import bloodandmithril.csi.requests.GenerateChunk.GenerateChunkResponse;
-import bloodandmithril.csi.requests.CSIMineTile;
 import bloodandmithril.csi.requests.IndividualSelection;
 import bloodandmithril.csi.requests.MoveIndividual;
 import bloodandmithril.csi.requests.OpenTradeWindow;
 import bloodandmithril.csi.requests.Ping;
 import bloodandmithril.csi.requests.Ping.Pong;
+import bloodandmithril.csi.requests.RequestClientList;
+import bloodandmithril.csi.requests.RequestClientList.RequestClientListResponse;
+import bloodandmithril.csi.requests.SendChatMessage;
+import bloodandmithril.csi.requests.SendChatMessage.Message;
+import bloodandmithril.csi.requests.SendChatMessage.SendChatMessageResponse;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
 import bloodandmithril.csi.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
 import bloodandmithril.csi.requests.TransferItems;
+import bloodandmithril.csi.requests.TransferItems.RefreshWindows;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Equipable;
@@ -71,6 +78,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
@@ -101,6 +109,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.google.common.collect.Maps;
 
 /**
  * The CSI
@@ -110,21 +119,27 @@ import com.esotericsoftware.kryonet.Server;
 public class ClientServerInterface {
 
 	/** The client */
-	private static Client client;
+	public static Client client;
 
 	public static Thread individualSyncThread;
 
 	private static boolean isClient, isServer;
-	
+
 	public static ExecutorService serverThread;
-	
+
 	public static Server server;
-	
+
+	public static HashMap<Integer, String> connectedPlayers = Maps.newHashMap();
+
+	public static String clientName;
+
 	/**
 	 * Sets up the client and attempt to connect to the server
 	 * @throws IOException
 	 */
 	public static void setupAndConnect(String ip) throws IOException {
+		clientName = Util.randomOneOf("Vindi", "Bhaal", "Mach", "Snake", "Mega", "Maller", "Protey", "Legion", "Tengu", "Loki");
+
 		client = new Client(65536, 65536);
 		registerClasses(client.getKryo());
 		client.start();
@@ -141,15 +156,15 @@ public class ClientServerInterface {
 		);
 
 		client.addListener(new Listener() {
-			
+
 			@Override
 			public void received(Connection connection, final Object object) {
 				if (!(object instanceof Responses)) {
 					return;
 				}
-			
+
 				Responses resp = (Responses) object;
-				
+
 				if (resp.executeInSingleThread()) {
 					for (final Response response : resp.responses) {
 						if (response.forClient() != -1 && response.forClient() != client.getID()) {
@@ -158,7 +173,7 @@ public class ClientServerInterface {
 						response.acknowledge();
 					}
 				}
-				
+
 				for (final Response response : resp.responses) {
 					if (response.forClient() != -1 && response.forClient() != client.getID()) {
 						continue;
@@ -197,7 +212,7 @@ public class ClientServerInterface {
 								}
 							}
 						);
-					} else if (response instanceof Response) {
+					} else {
 						BloodAndMithrilClient.newCachedThreadPool.execute(
 							new Runnable() {
 								@Override
@@ -214,11 +229,31 @@ public class ClientServerInterface {
 				}
 			}
 		});
+
+		client.sendTCP(new ClientConnected(client.getID(), clientName));
+		sendRequestConnectedPlayerNames();
+	}
+
+	public static synchronized void sendChatMessage(String message) {
+		client.sendTCP(
+			new SendChatMessage(
+				new Message(
+					clientName,
+					message
+				)
+			)
+		);
+		Logger.networkDebug("Sending chat message", LogLevel.DEBUG);
 	}
 
 	public static synchronized void sendGenerateChunkRequest(int x, int y) {
 		client.sendTCP(new GenerateChunk(x, y));
 		Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
+	}
+
+	public static synchronized void sendRequestConnectedPlayerNames() {
+		client.sendTCP(new RequestClientList());
+		Logger.networkDebug("Sending client name list request", LogLevel.DEBUG);
 	}
 
 	public static synchronized void sendSynchronizeIndividualRequest(int id) {
@@ -231,7 +266,7 @@ public class ClientServerInterface {
 		Logger.networkDebug("Sending individual sync request for all", LogLevel.TRACE);
 	}
 
-	public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground, int individualId) {
+	public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground) {
 		client.sendTCP(new DestroyTile(worldX, worldY, foreground));
 		Logger.networkDebug("Sending destroy tile request", LogLevel.DEBUG);
 	}
@@ -260,15 +295,20 @@ public class ClientServerInterface {
 		client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove));
 		Logger.networkDebug("Sending move individual request", LogLevel.DEBUG);
 	}
-	
+
 	public static synchronized void changeNickName(int id, String toChangeTo) {
 		client.sendTCP(new ChangeNickName(id, toChangeTo));
 		Logger.networkDebug("Sending change individual nickname request", LogLevel.DEBUG);
 	}
-	
+
 	public static synchronized void sendMineTileRequest(int individualId, Vector2 location) {
 		client.sendTCP(new CSIMineTile(individualId, location));
 		Logger.networkDebug("Sending mine tile request", LogLevel.DEBUG);
+	}
+
+	public static synchronized void sendRefreshItemWindows() {
+		client.sendTCP(new RefreshWindows());
+		Logger.networkDebug("Sending item window refresh request", LogLevel.DEBUG);
 	}
 
 	public static synchronized void openTradeWindow(int proposerId, TradeEntity proposee, int proposeeId) {
@@ -277,43 +317,43 @@ public class ClientServerInterface {
 		);
 		Logger.networkDebug("Sending open trade window request", LogLevel.DEBUG);
 	}
-	
-	public static synchronized void sendTileMinedNotification(int individualId, int connectionId, Vector2 location, boolean foreGround) {
+
+	public static synchronized void sendTileMinedNotification(int connectionId, Vector2 location, boolean foreGround) {
 		sendNotification(
-			connectionId, 
-			true, 
+			connectionId,
+			true,
 			new DestroyTileResponse(location.x, location.y, foreGround)
 		);
 	}
-	
+
 	public static synchronized void sendRefreshWindowsNotification() {
 		sendNotification(
-			-1, 
-			true, 
+			-1,
+			true,
 			new TransferItems.RefreshWindowsResponse()
 		);
 	}
-	
+
 	public static synchronized void openTradeWindowNotification(int proposerId, TradeEntity proposee, int proposeeId, int connectionId) {
 		sendNotification(
-			connectionId, 
+			connectionId,
 			true,
 			new OpenTradeWindow.OpenTradeWindowResponse(
-				proposerId, 
-				proposee, 
+				proposerId,
+				proposee,
 				proposeeId
 			)
 		);
 	}
-	
+
 	public static synchronized void sendIndividualSyncNotification(int id) {
 		sendNotification(
-			-1, 
-			false, 
-			new SynchronizeIndividualResponse(GameWorld.individuals.get(id))
+			-1,
+			false,
+			new SynchronizeIndividualResponse(GameWorld.individuals.get(id), System.currentTimeMillis())
 		);
 	}
-	
+
 	private static synchronized void sendNotification(final int connectionId, final boolean tcp, final Response... responses) {
 		serverThread.execute(
 			new Runnable() {
@@ -330,10 +370,10 @@ public class ClientServerInterface {
 							} else {
 								connection.sendUDP(resp);
 							}
-							
+
 							continue;
 						}
-						
+
 						if (connectionId == connection.getID()) {
 							Responses resp = new Responses(false, new LinkedList<Response>());
 							for (Response response : responses) {
@@ -387,7 +427,7 @@ public class ClientServerInterface {
 	 */
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
-		
+
 		kryo.register(Commands.class);
 		kryo.register(Request.class);
 		kryo.register(Ping.class);
@@ -465,6 +505,7 @@ public class ClientServerInterface {
 		kryo.register(MoveIndividual.MoveIndividualResponse.class);
 		kryo.register(TransferItems.class);
 		kryo.register(TransferItems.TransferItemsResponse.class);
+		kryo.register(TransferItems.RefreshWindows.class);
 		kryo.register(OpenTradeWindow.class);
 		kryo.register(OpenTradeWindow.OpenTradeWindowResponse.class);
 		kryo.register(TransferItems.TradeEntity.class);
@@ -482,5 +523,11 @@ public class ClientServerInterface {
 		kryo.register(CSIMineTile.class);
 		kryo.register(RefreshWindowsResponse.class);
 		kryo.register(YellowSand.class);
+		kryo.register(RequestClientList.class);
+		kryo.register(RequestClientListResponse.class);
+		kryo.register(ClientConnected.class);
+		kryo.register(SendChatMessage.class);
+		kryo.register(SendChatMessageResponse.class);
+		kryo.register(Message.class);
 	}
 }

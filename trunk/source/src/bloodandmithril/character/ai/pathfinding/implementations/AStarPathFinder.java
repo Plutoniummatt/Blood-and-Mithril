@@ -201,7 +201,7 @@ public class AStarPathFinder extends PathFinder {
 			answer.addWayPointReversed(new WayPoint(convertToWorldCoord(workingNode.x, workingNode.y, true), 0f));
 		}
 
-		int size = answer.getWayPoints().size();
+		int size = answer.getSize();
 		if (!answer.isEmpty() && size > 2) {
 			answer.getAndRemoveNextWayPoint();
 			answer.getNextPoint().tolerance = TILE_SIZE/2;

@@ -19,5 +19,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/kryonet"/>
 	<classpathentry kind="lib" path="/kryonet/lib/objenesis-1.2.jar"/>
 	<classpathentry kind="lib" path="libs/kryo-debug-2.20.jar" sourcepath="C:/Users/Matt/Desktop/kryo-2.20-sources.jar"/>
+	<classpathentry kind="lib" path="libs/commons-lang3-3.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

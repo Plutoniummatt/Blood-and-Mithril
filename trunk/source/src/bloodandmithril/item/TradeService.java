@@ -31,12 +31,22 @@ public class TradeService {
 	public synchronized static void transferItems(HashMap<Item, Integer> proposerItemsToTrade, Container proposer, HashMap<Item, Integer> proposeeItemsToTrade, Container proposee) {
 		if (ClientServerInterface.isServer()) {
 			for (Entry<Item, Integer> proposerToTradeItem : proposerItemsToTrade.entrySet()) {
-				proposer.takeItem(proposerToTradeItem.getKey(), proposerToTradeItem.getValue());
-				proposee.giveItem(proposerToTradeItem.getKey(), proposerToTradeItem.getValue());
+				proposee.giveItem(
+					proposerToTradeItem.getKey(),
+					proposer.takeItem(
+						proposerToTradeItem.getKey(),
+						proposerToTradeItem.getValue()
+					)
+				);
 			}
 			for (Entry<Item, Integer> proposeeToTradeItem : proposeeItemsToTrade.entrySet()) {
-				proposee.takeItem(proposeeToTradeItem.getKey(), proposeeToTradeItem.getValue());
-				proposer.giveItem(proposeeToTradeItem.getKey(), proposeeToTradeItem.getValue());
+				proposer.giveItem(
+					proposeeToTradeItem.getKey(),
+					proposee.takeItem(
+						proposeeToTradeItem.getKey(),
+						proposeeToTradeItem.getValue()
+					)
+				);
 			}
 		} else {
 			TradeEntity proposeeEntity;

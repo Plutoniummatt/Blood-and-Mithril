@@ -313,6 +313,10 @@ public class UserInterface {
 			float top = Math.max(diagCorner1.y, diagCorner2.y);
 			float bottom = Math.min(diagCorner1.y, diagCorner2.y);
 
+			if (right - left < 3 || top - bottom < 3) {
+				return;
+			}
+
 			for (Individual indi : GameWorld.individuals.values()) {
 				if (indi.controllable) {
 
@@ -320,7 +324,7 @@ public class UserInterface {
 
 					centre.x = BloodAndMithrilClient.worldToScreenX(centre.x);
 					centre.y = BloodAndMithrilClient.worldToScreenY(centre.y);
-					
+
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
 						if (ClientServerInterface.isServer()) {
 							indi.select();

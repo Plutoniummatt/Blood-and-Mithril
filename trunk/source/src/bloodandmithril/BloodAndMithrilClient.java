@@ -58,12 +58,12 @@ import com.google.common.collect.Sets;
  * <b><p> Multiple saved games (Huge refactors of current statics various everywhere)                    </b></p>
  * <b><p> At least 5 types of NPC                                                                        </b></p>
  * <b><p> Main menu screen                                                                               </b></p>
- * <b><p> Networking                                                                                     </b></p>
+ * <b><p> Stockpiling                                              										 </b></p>
  *
  * DONE
  *
+ * <b><p> Networking                                                                                     </b></p>
  * <b><p> Text input (Renaming elves, setting save path etc)                                             </b></p>
- * <b><p> Stockpiling                                              										 </b></p>
  * <b><p> Trading	                                              										 </b></p>
  *
  * @author Matt
@@ -108,8 +108,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private final Color bottomRightColor = new Color(0f, 0f, 0f, 1f);
 	private final Color topLeftColor = new Color(0f, 0f, 0f, 1f);
 	private final Color topRightColor = new Color(0f, 0f, 0f, 1f);
-
-	private float time = 0f;
 
 	public static ExecutorService newCachedThreadPool;
 
@@ -197,23 +195,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Renders the main menu
 	 */
 	private void renderMainMenuBackDrop() {
-		time += 0.01f;
-
-		bottomLeftColor.r = (float)Math.pow(Math.sin(time * 0.6), 2);
-		bottomRightColor.r = (float)Math.pow(Math.cos(time * 1.2), 2);
-		topLeftColor.r = (float)Math.pow(Math.sin(time * 0.87 + 2.4f), 2);
-		topRightColor.r = (float)Math.pow(Math.sin(time * 0.14 - 0.5f), 2);
-
-		bottomLeftColor.g = 0.5f * (float)Math.pow(Math.sin(time * 1.77), 2);
-		bottomRightColor.g = 0.3f * (float)Math.pow(Math.cos(time * 1.65), 2);
-		topLeftColor.g = 0.7f * (float)Math.pow(Math.sin(time * 0.24 + 1.4f), 2);
-		topRightColor.g = 0.8f * (float)Math.pow(Math.sin(time * 0.555 - 2.5f), 2);
-
-		bottomLeftColor.b = 0.2f * (float)Math.pow(Math.sin(time * 5.77), 2);
-		bottomRightColor.b = 0.9f * (float)Math.pow(Math.cos(time * 3.65), 2);
-		topLeftColor.b = 0.5f * (float)Math.pow(Math.sin(time * 6.24 + 1.4f), 2);
-		topRightColor.b = 0.2f * (float)Math.pow(Math.sin(time * 2.555 - 2.5f), 2);
-
 		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
 		UserInterface.shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT, bottomLeftColor, bottomRightColor, topRightColor, topLeftColor);
 		UserInterface.shapeRenderer.end();
