@@ -1,9 +1,8 @@
 package bloodandmithril.character.ai.pathfinding;
 
 import java.io.Serializable;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.ai.ArtificialIntelligence;
@@ -12,6 +11,7 @@ import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 
 /**
@@ -21,135 +21,136 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Path implements Serializable {
 	private static final long serialVersionUID = -2569430046328226956L;
-	
+
 	/** {@link WayPoint}s associated with this {@link Path} */
-	private ConcurrentSkipListMap<Integer, WayPoint> waypoints = new ConcurrentSkipListMap<Integer, WayPoint>();
-	
-	/**
-	 * Constructor
-	 */
-	public Path(WayPoint... wayPoints) {
-		int i = 0;
-		for (WayPoint wayPoint : wayPoints) {
-			if (wayPoint.waypoint != null) {
-				waypoints.put(i, wayPoint);
-			}
-			i++;
-		}
-	}
-	
-	
+	private final LinkedList<WayPoint> waypoints = new LinkedList<WayPoint>();
+
 	/**
 	 * True if location is part of this {@link Path}
 	 */
 	public synchronized boolean isPartOfPathGroundAndIsNext(Vector2 location) {
 		Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
-		if (!waypoints.isEmpty() && waypoints.firstEntry().getValue().waypoint.equals(flooredCoords)) {
+		if (!waypoints.isEmpty() && waypoints.getFirst().waypoint.equals(flooredCoords)) {
 			return true;
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
-	 * True if location is directly above the next waypoing in the {@link Path}
+	 * True if location is directly above the next waypoint in the {@link Path}
 	 */
 	public synchronized boolean isDirectlyAboveNext(Vector2 location) {
 		Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
 		if (location.y < 0) {
-			flooredCoords = Topography.convertToWorldCoord(location.x, location.y + 1, true);	
+			flooredCoords = Topography.convertToWorldCoord(location.x, location.y + 1, true);
 		}
-		if (!waypoints.isEmpty() && 
-			waypoints.firstEntry().getValue().waypoint.x == flooredCoords.x && 
-			waypoints.firstEntry().getValue().waypoint.y < flooredCoords.y) {
+		if (!waypoints.isEmpty() &&
+			waypoints.getFirst().waypoint.x == flooredCoords.x &&
+			waypoints.getFirst().waypoint.y < flooredCoords.y) {
 			return true;
 		}
 		return false;
 	}
-	
-	
-	/** Adds a {@link WayPoint} to this {@link Path} */
-	public synchronized void addWayPoint(WayPoint wayPoint) {
-		waypoints.put(waypoints.lastEntry() == null ? 1 : waypoints.lastEntry().getKey() + 1, wayPoint);
-	}
-	
-	
+
+
 	/** Adds a {@link WayPoint} to this {@link Path} at the beginning */
 	public synchronized void addWayPointReversed(WayPoint wayPoint) {
-		waypoints.put(waypoints.isEmpty() ? 1 : waypoints.firstKey() - 1, wayPoint);
+		waypoints.addFirst(wayPoint);
 	}
-	
-	
+
+
 	/** Clears all {@link WayPoint}s of this {@link Path} */
 	public synchronized void clear() {
 		waypoints.clear();
 	}
-	
-	
+
+
 	/**
 	 * Renders all the waypoint of this {@link Path}
 	 */
 	public void render() {
-		TreeMap<Integer, WayPoint> waypointsCopy = new TreeMap<Integer, WayPoint>(waypoints);
-		for (Entry<Integer, WayPoint> entry : waypointsCopy.entrySet()) {
-			float x = BloodAndMithrilClient.worldToScreenX(entry.getValue().waypoint.x);
-			float y = BloodAndMithrilClient.worldToScreenY(entry.getValue().waypoint.y);
-			
-			UserInterface.shapeRenderer.begin(ShapeType.FilledCircle);
-			UserInterface.shapeRenderer.filledCircle(x, y, 3);
-			UserInterface.shapeRenderer.end();
-			
-			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			Entry<Integer, WayPoint> ceilingEntry = waypointsCopy.ceilingEntry(entry.getKey() + 1);
-			if (ceilingEntry != null) {
-				float x2 = BloodAndMithrilClient.worldToScreenX(ceilingEntry.getValue().waypoint.x);
-				float y2 = BloodAndMithrilClient.worldToScreenY(ceilingEntry.getValue().waypoint.y);
-				UserInterface.shapeRenderer.line(x, y, x2, y2);
-			}
-			UserInterface.shapeRenderer.end();
+		LinkedList<WayPoint> waypointsCopy = Lists.newLinkedList(waypoints);
+		Iterator<WayPoint> waypointsIterator = waypointsCopy.iterator();
+
+		WayPoint current;
+		if (waypointsIterator.hasNext()) {
+			current = waypointsIterator.next();
+		} else {
+			return;
 		}
+
+		float x = BloodAndMithrilClient.worldToScreenX(current.waypoint.x);
+		float y = BloodAndMithrilClient.worldToScreenY(current.waypoint.y);
+
+		UserInterface.shapeRenderer.begin(ShapeType.FilledCircle);
+		UserInterface.shapeRenderer.filledCircle(x, y, 3);
+		UserInterface.shapeRenderer.end();
+
+		do {
+			x = BloodAndMithrilClient.worldToScreenX(current.waypoint.x);
+			y = BloodAndMithrilClient.worldToScreenY(current.waypoint.y);
+
+			if (waypointsIterator.hasNext()) {
+				current = waypointsIterator.next();
+
+				float x2 = BloodAndMithrilClient.worldToScreenX(current.waypoint.x);
+				float y2 = BloodAndMithrilClient.worldToScreenY(current.waypoint.y);
+
+				UserInterface.shapeRenderer.begin(ShapeType.Line);
+				UserInterface.shapeRenderer.line(x, y, x2, y2);
+				UserInterface.shapeRenderer.end();
+
+				UserInterface.shapeRenderer.begin(ShapeType.FilledCircle);
+				UserInterface.shapeRenderer.filledCircle(x2, y2, 3);
+				UserInterface.shapeRenderer.end();
+			}
+		} while (waypointsIterator.hasNext());
 	}
-	
-	
+
+
 	/**
 	 * @return true if this {@link Path} contains no {@link WayPoint}s
 	 */
 	public boolean isEmpty() {
 		return waypoints.isEmpty();
 	}
-	
-	
-	/**
-	 * Adds a {@link WayPoint} at the specified position in the path, returning the {@link WayPoint} that has been replaced, if it existed.
-	 */
-	public synchronized WayPoint putWayPoint(int position, WayPoint wayPoint) {
-		return waypoints.put(position, wayPoint);
-	}
-	
-	
+
+
 	/**
 	 * @return the next {@link WayPoint} in this {@link Path}
 	 */
 	public synchronized WayPoint getNextPoint() {
-		Entry<Integer, WayPoint> first = waypoints.firstEntry();
-		return first == null ? null : first.getValue();
+		if (waypoints.isEmpty()) {
+			return null;
+		}
+
+		return waypoints.getFirst();
 	}
-	
-	
+
+
 	/**
 	 * @return the WayPoint that was removed
 	 */
 	public synchronized WayPoint getAndRemoveNextWayPoint() {
-		return waypoints.remove(waypoints.firstKey());
+		return waypoints.remove();
 	}
-	
-	
-	/** Returns the {@link TreeMap} containing the waypoints */
-	public synchronized ConcurrentSkipListMap<Integer, WayPoint> getWayPoints() {
-		return waypoints;
+
+
+	/** Returns the destination waypoint */
+	public WayPoint getDestinationWayPoint() {
+		if (waypoints.isEmpty()) {
+			return null;
+		}
+		return waypoints.getLast();
 	}
-	
-	
+
+
+	public int getSize() {
+		return waypoints.size();
+	}
+
+
 	/**
 	 * WayPoint for {@link ArtificialIntelligence} to reach
 	 *
@@ -158,14 +159,20 @@ public class Path implements Serializable {
 	public static class WayPoint implements Serializable {
 		private static final long serialVersionUID = -8432865748395952201L;
 
+		/** The coordinate of the waypoint */
+		public Vector2 waypoint;
+
+		/** The tolerance distance of the waypoint */
+		public float tolerance;
+
 		/**
-		 * Constructor 
+		 * Constructor
 		 */
 		public WayPoint(Vector2 waypoint, float tolerance) {
 			this.waypoint = waypoint;
 			this.tolerance = tolerance;
 		}
-		
+
 		/**
 		 * Constructor that sets {@link #tolerance} to 0
 		 */
@@ -173,11 +180,5 @@ public class Path implements Serializable {
 			this.waypoint = waypoint;
 			this.tolerance = 0f;
 		}
-		
-		/** The coordinate of the waypoint */
-		public Vector2 waypoint;
-		
-		/** The tolerance distance of the waypoint */
-		public float tolerance;
 	}
 }

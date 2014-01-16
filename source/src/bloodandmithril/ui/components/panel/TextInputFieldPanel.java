@@ -73,6 +73,11 @@ public class TextInputFieldPanel extends Panel {
 	}
 
 
+	public void clear() {
+		inputText = "";
+	}
+
+
 	@Override
 	public boolean keyPressed(int keyCode) {
 

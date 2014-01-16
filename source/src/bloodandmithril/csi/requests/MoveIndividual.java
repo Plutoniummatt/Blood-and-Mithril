@@ -48,7 +48,7 @@ public class MoveIndividual implements Request {
 				!forceMove
 			);
 		}
-		
+
 		Response response = new MoveIndividualResponse();
 		Responses responses = new Response.Responses(false, new LinkedList<Response>());
 		responses.responses.add(response);
@@ -58,7 +58,7 @@ public class MoveIndividual implements Request {
 
 	@Override
 	public boolean tcp() {
-		return true;
+		return false;
 	}
 
 
@@ -72,7 +72,7 @@ public class MoveIndividual implements Request {
 		@Override
 		public void acknowledge() {
 		}
-		
+
 		@Override
 		public int forClient() {
 			return -1;

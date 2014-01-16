@@ -12,6 +12,7 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.window.ChatWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Task;
@@ -35,13 +36,21 @@ public class BottomBar extends Component {
 		}, UIRef.BL
 	);
 
-
 	private final Button windows = new Button(UserInterface.uiTexture, 85, 16, 103, 0, 50, 32,
 		new Task() {
 			@Override
 			public void execute() {
 			}
 		}, UIRef.BL
+	);
+
+	private final Button chat = new Button(UserInterface.uiTexture, 145, 16, 103, 0, 50, 32,
+		new Task() {
+			@Override
+			public void execute() {
+			}
+		},
+		UIRef.BL
 	);
 
 
@@ -61,6 +70,11 @@ public class BottomBar extends Component {
 			return true;
 		}
 
+		if (chat.click()) {
+			chatClicked();
+			return true;
+		}
+
 		if (active && isWithin()) {
 			return true;
 		} else if (isWithin()) {
@@ -72,6 +86,24 @@ public class BottomBar extends Component {
 			active = false;
 			return false;
 		}
+	}
+
+
+	/**
+	 * Called when the cat button is clicked
+	 */
+	private void chatClicked() {
+		for (Component component : UserInterface.layeredComponents) {
+			if (component instanceof ChatWindow) {
+				((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
+				((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
+				((ChatWindow) component).minimized = false;
+				((ChatWindow) component).active = true;
+				return;
+			}
+		}
+
+		UserInterface.addLayeredComponent(new ChatWindow(BloodAndMithrilClient.WIDTH/2 - 250, BloodAndMithrilClient.HEIGHT/2 + 150, 500, 300, true, 300, 250));
 	}
 
 
@@ -238,6 +270,7 @@ public class BottomBar extends Component {
 		renderBox(-left.getRegionWidth(), 32, Gdx.graphics.getWidth(), 34, true, Color.DARK_GRAY);
 		mainMenu.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		windows.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
+		chat.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		BloodAndMithrilClient.spriteBatch.end();
 	}
 

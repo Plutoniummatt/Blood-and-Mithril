@@ -18,13 +18,11 @@ import bloodandmithril.item.Equipper;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
-import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
@@ -40,7 +38,6 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Sets;
 
 /**
  * Class representing a character, PC or NPC.
@@ -50,6 +47,9 @@ import com.google.common.collect.Sets;
 public abstract class Individual extends Equipper {
 	private static final long serialVersionUID = 2821835360311044658L;
 
+	/** Timestamp, used for synchronizing with server */
+	private long timeStamp;
+
 	/** Identifier of this character */
 	public IndividualIdentifier id;
 
@@ -58,7 +58,7 @@ public abstract class Individual extends Equipper {
 
 	/** Which actions are currently active */
 	protected Commands activeCommands = new Commands();
-	
+
 	/** The AI responsible for this character */
 	public ArtificialIntelligence ai;
 
@@ -119,8 +119,8 @@ public abstract class Individual extends Equipper {
 		this.interactionBox = interactionBox;
 		this.canTradeWith = canTradeWith;
 	}
-	
-	
+
+
 	public void copyFrom(Individual other) {
 		this.ai = other.ai;
 		this.aiReactionTimer = other.aiReactionTimer;
@@ -144,25 +144,25 @@ public abstract class Individual extends Equipper {
 		this.steps = other.steps;
 		this.walking = other.walking;
 		this.width = other.width;
-
-		if (!(Sets.difference(inventory.entrySet(), other.inventory.entrySet()).isEmpty())) {
-			for (Component component : UserInterface.layeredComponents) {
-				if (component instanceof TradeWindow) {
-					((TradeWindow) component).refresh();
-				} else if (component instanceof InventoryWindow) {
-					((InventoryWindow) component).refresh();
-				}
-			}
-		}
-		
+		this.timeStamp = other.timeStamp;
 		this.inventory = other.inventory;
-		
+
 		internalCopyFrom(other);
 	}
 
-	
+
+	public synchronized long getTimeStamp() {
+		return timeStamp;
+	}
+
+
+	public synchronized void setTimeStamp(long timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+
 	protected abstract void internalCopyFrom(Individual other);
-	
+
 
 	/**
 	 * Setups up all individual resources

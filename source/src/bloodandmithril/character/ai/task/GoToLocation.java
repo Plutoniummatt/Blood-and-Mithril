@@ -1,14 +1,11 @@
 package bloodandmithril.character.ai.task;
 
-import java.util.Map.Entry;
-
-
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path;
-import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
@@ -45,21 +42,12 @@ public class GoToLocation extends AITask {
 		this.fly = fly;
 
 		int blockspan = host.height/Topography.TILE_SIZE + (host.height % Topography.TILE_SIZE == 0 ? 0 : 1) - 1;
-		
+
 		PathFinder pathFinder = new AStarPathFinder();
 
 		this.path = fly ?
 			pathFinder.findShortestPathAir(new WayPoint(host.state.position), destination):
 			pathFinder.findShortestPathGround(new WayPoint(host.state.position), destination, blockspan, safe ? host.safetyHeight : 1000, forceTolerance);
-	}
-
-
-	/**
-	 * See {@link Path#addWayPoint(WayPoint)}
-	 */
-	public synchronized void addNewWayPoint(Vector2 location, int radius) {
-		Vector2 waypointLocation = PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(location, radius);
-		path.addWayPoint(new WayPoint(waypointLocation));
 	}
 
 
@@ -133,7 +121,10 @@ public class GoToLocation extends AITask {
 	 */
 	public void renderFinalWayPoint() {
 		if (!path.isEmpty()) {
-			Vector2 waypoint = path.getWayPoints().lastEntry().getValue().waypoint;
+			Vector2 waypoint = path.getDestinationWayPoint().waypoint;
+			if (waypoint == null) {
+				return;
+			}
 			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 			Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 			BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
@@ -189,17 +180,18 @@ public class GoToLocation extends AITask {
 	@Override
 	public boolean isComplete() {
 		Individual host = GameWorld.individuals.get(hostId.id);
-		Entry<Integer, WayPoint> lastEntry = path.getWayPoints().lastEntry();
-		
+
 		boolean finalWayPointCheck = false;
-		
-		if (lastEntry != null) {
-			WayPoint finalWayPoint = lastEntry.getValue();
+
+		WayPoint finalWayPoint = path.getDestinationWayPoint();
+
+		if (finalWayPoint == null) {
+			return path.isEmpty() || finalWayPointCheck;
+		} else {
 			float distance = Math.abs(host.state.position.cpy().sub(finalWayPoint.waypoint).len());
 			finalWayPointCheck = distance < finalWayPoint.tolerance;
 		}
-		
-		
+
 		return path.isEmpty() || finalWayPointCheck;
 	}
 

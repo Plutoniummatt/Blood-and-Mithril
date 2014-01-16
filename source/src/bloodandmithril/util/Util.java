@@ -51,6 +51,7 @@ public class Util {
 	 */
 	@SafeVarargs
 	public static <T> T randomOneOf(T... objects) {
+		random.setSeed(System.currentTimeMillis());
 		return objects[random.nextInt(objects.length)];
 	}
 

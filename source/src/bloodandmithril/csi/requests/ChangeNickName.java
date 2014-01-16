@@ -10,15 +10,15 @@ import bloodandmithril.world.GameWorld;
 
 /**
  * {@link Request} to change an {@link Individual}'s nickname
- * 
+ *
  * @author Matt
  */
 public class ChangeNickName implements Request {
-	
+
 	/** ID of the {@link Individual} to change name nick for */
 	private final int individualId;
-	private String toChangeTo;
-	
+	private final String toChangeTo;
+
 	/**
 	 * Constructor
 	 */
@@ -26,7 +26,7 @@ public class ChangeNickName implements Request {
 		this.individualId = individualId;
 		this.toChangeTo = toChangeTo;
 	}
-	
+
 
 	@Override
 	public Responses respond() {
@@ -34,25 +34,25 @@ public class ChangeNickName implements Request {
 		if (individual != null) {
 			individual.id.nickName = toChangeTo;
 		}
-		
+
 		Responses responses = new Responses(false, new LinkedList<Response>());
 		responses.responses.add(new ChangeNickNameResponse());
 		return responses;
 	}
 
-	
+
 	@Override
 	public boolean tcp() {
-		return false;
+		return true;
 	}
 
-	
+
 	@Override
 	public boolean notifyOthers() {
 		return false;
 	}
-	
-	
+
+
 	public static class ChangeNickNameResponse implements Response {
 		@Override
 		public void acknowledge() {
