@@ -118,6 +118,7 @@ public class MineTile extends CompositeAITask {
 								}
 
 								((Equipper)host).giveItem(tileToBeDeleted.mine(), 1);
+								ClientServerInterface.sendRefreshItemWindows();
 
 								if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
 									InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
