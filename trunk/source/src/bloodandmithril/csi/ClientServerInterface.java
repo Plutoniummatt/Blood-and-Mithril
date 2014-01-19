@@ -122,20 +122,19 @@ import com.google.common.collect.Maps;
  */
 public class ClientServerInterface {
 
-	/** The client */
+	private static boolean isClient, isServer;
+	
 	public static Client client;
 
+	public static Server server;
+	
 	public static Thread syncThread;
 
-	private static boolean isClient, isServer;
-
+	public static String clientName;
+	
 	public static ExecutorService serverThread;
 
-	public static Server server;
-
 	public static HashMap<Integer, String> connectedPlayers = Maps.newHashMap();
-
-	public static String clientName;
 
 	/**
 	 * Sets up the client and attempt to connect to the server

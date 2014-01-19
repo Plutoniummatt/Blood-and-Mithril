@@ -44,7 +44,7 @@ public class BottomBar extends Component {
 		}, UIRef.BL
 	);
 
-	private final Button chat = new Button(UserInterface.uiTexture, 145, 16, 103, 0, 50, 32,
+	private final Button chat = new Button(UserInterface.uiTexture, 145, 16, 153, 0, 50, 32,
 		new Task() {
 			@Override
 			public void execute() {
@@ -54,9 +54,7 @@ public class BottomBar extends Component {
 	);
 
 
-	/**
-	 * Called upon left click
-	 */
+	/** Called upon left click */
 	@Override
 	public boolean leftClick(List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 
@@ -89,9 +87,7 @@ public class BottomBar extends Component {
 	}
 
 
-	/**
-	 * Called when the cat button is clicked
-	 */
+	/** Called when the cat button is clicked */
 	private void chatClicked() {
 		for (Component component : UserInterface.layeredComponents) {
 			if (component instanceof ChatWindow) {
@@ -108,9 +104,7 @@ public class BottomBar extends Component {
 
 
 
-	/**
-	 * Called when the windows button is clicked
-	 */
+	/** Called when the windows button is clicked */
 	private void windowsClicked(List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		copy.clear();
 		int size = 0;
@@ -213,10 +207,7 @@ public class BottomBar extends Component {
 	}
 
 
-
-	/**
-	 * Called when the {@link #mainMenu} button is clicked
-	 */
+	/** Called when the {@link #mainMenu} button is clicked */
 	private void mainMenuClicked(final Deque<Component> windowsCopy) {
 		// Check if the main menu is already open
 		Component existing = null;
@@ -250,9 +241,7 @@ public class BottomBar extends Component {
 	}
 
 
-	/**
-	 * True if mouse coords are inside the {@link BottomBar}
-	 */
+	/** True if mouse coords are inside the {@link BottomBar} */
 	private boolean isWithin() {
 		int x = BloodAndMithrilClient.getMouseScreenX();
 		int y = BloodAndMithrilClient.getMouseScreenY();
@@ -260,9 +249,7 @@ public class BottomBar extends Component {
 	}
 
 
-	/**
-	 * Renders this {@link BottomBar}
-	 */
+	/** Renders this {@link BottomBar} */
 	@Override
 	protected void internalComponentRender() {
 		BloodAndMithrilClient.spriteBatch.begin();
