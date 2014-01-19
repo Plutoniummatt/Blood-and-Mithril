@@ -298,7 +298,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			if (individualClicked == null) {
 				if (doubleClick) {
 					for (Individual indi : GameWorld.individuals.values()) {
-						if (indi.controllable) {
+						if (indi.isControllable()) {
 							if (ClientServerInterface.isServer()) {
 								indi.deselect(false);
 								GameWorld.selectedIndividuals.remove(indi);
@@ -314,7 +314,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			} else {
 				for (Individual indi : GameWorld.individuals.values()) {
-					if (indi.controllable && indi.id.id != individualClicked.id.id) {
+					if (indi.isControllable() && indi.id.id != individualClicked.id.id) {
 						if (ClientServerInterface.isServer()) {
 							indi.deselect(false);
 							GameWorld.selectedIndividuals.remove(indi);
@@ -324,7 +324,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					}
 				}
 
-				if (individualClicked.controllable) {
+				if (individualClicked.isControllable()) {
 					if (ClientServerInterface.isServer()) {
 						GameWorld.selectedIndividuals.add(individualClicked);
 						individualClicked.select();
@@ -354,6 +354,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (GameSaver.isSaving()) {
 			return false;
 		}
+		
+		if (keycode == Input.Keys.I) {
+			GameSaver.save(false);
+		}
+		
 
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;

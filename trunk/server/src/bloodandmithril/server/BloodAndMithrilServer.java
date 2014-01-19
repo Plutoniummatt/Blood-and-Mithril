@@ -102,11 +102,13 @@ public class BloodAndMithrilServer {
 			}
 		});
 
-		ClientServerInterface.individualSyncThread = new Thread(
+		ClientServerInterface.syncThread = new Thread(
 			new Runnable() {
+				int counter = 0;
 				@Override
 				public void run() {
 					while (ClientServerInterface.server.getUpdateThread().isAlive()) {
+						counter++;
 						try {
 							Thread.sleep(100);
 							for (Individual individual : GameWorld.individuals.values()) {
@@ -114,12 +116,17 @@ public class BloodAndMithrilServer {
 							}
 						} catch (InterruptedException e) {
 						}
+						
+						if (counter == 100) {
+							ClientServerInterface.sendSyncWorldStateNotification();
+							counter = 0;
+						}
 					}
 				}
 			}
 		);
 
-		ClientServerInterface.individualSyncThread.start();
+		ClientServerInterface.syncThread.start();
 
 		start();
 	}

@@ -58,8 +58,11 @@ import bloodandmithril.csi.requests.RequestClientList.RequestClientListResponse;
 import bloodandmithril.csi.requests.SendChatMessage;
 import bloodandmithril.csi.requests.SendChatMessage.Message;
 import bloodandmithril.csi.requests.SendChatMessage.SendChatMessageResponse;
+import bloodandmithril.csi.requests.SetAIIdle;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
 import bloodandmithril.csi.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
+import bloodandmithril.csi.requests.SynchronizeWorldState.SynchronizeWorldStateResponse;
+import bloodandmithril.csi.requests.SynchronizeWorldState;
 import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindows;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
@@ -84,6 +87,7 @@ import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
@@ -121,7 +125,7 @@ public class ClientServerInterface {
 	/** The client */
 	public static Client client;
 
-	public static Thread individualSyncThread;
+	public static Thread syncThread;
 
 	private static boolean isClient, isServer;
 
@@ -172,6 +176,7 @@ public class ClientServerInterface {
 						}
 						response.acknowledge();
 					}
+					return;
 				}
 
 				for (final Response response : resp.responses) {
@@ -231,6 +236,7 @@ public class ClientServerInterface {
 		});
 
 		client.sendTCP(new ClientConnected(client.getID(), clientName));
+		client.sendTCP(new SynchronizeWorldState());
 		sendRequestConnectedPlayerNames();
 	}
 
@@ -274,6 +280,11 @@ public class ClientServerInterface {
 	public static synchronized void ping() {
 		client.sendUDP(new Ping());
 		Logger.networkDebug("Sending ping request", LogLevel.TRACE);
+	}
+	
+	public static synchronized void clearAITask(int individualId) {
+		client.sendUDP(new SetAIIdle(individualId));
+		Logger.networkDebug("Sending request to clear AI task", LogLevel.TRACE);
 	}
 
 	public static synchronized void tradeWithIndividual(Individual proposer, Individual proposee) {
@@ -322,6 +333,7 @@ public class ClientServerInterface {
 		sendNotification(
 			connectionId,
 			true,
+			false,
 			new DestroyTileResponse(location.x, location.y, foreGround)
 		);
 	}
@@ -330,6 +342,7 @@ public class ClientServerInterface {
 		sendNotification(
 			-1,
 			true,
+			false,
 			new TransferItems.RefreshWindowsResponse()
 		);
 	}
@@ -338,6 +351,7 @@ public class ClientServerInterface {
 		sendNotification(
 			connectionId,
 			true,
+			false,
 			new OpenTradeWindow.OpenTradeWindowResponse(
 				proposerId,
 				proposee,
@@ -345,23 +359,45 @@ public class ClientServerInterface {
 			)
 		);
 	}
+	
+	public static synchronized void sendGiveItemNotification(int individualId, Item item, int quantity) {
+		GameWorld.individuals.get(individualId).giveItem(item, quantity);
+		sendNotification(
+			-1,
+			true,
+			true, 
+			new SynchronizeIndividualResponse(GameWorld.individuals.get(individualId), System.currentTimeMillis()),
+			new TransferItems.RefreshWindowsResponse()
+		);
+	}
+	
+	
+	public static synchronized void sendSyncWorldStateNotification() {
+		sendNotification(
+			-1, 
+			false, 
+			false, 
+			new SynchronizeWorldStateResponse(WorldState.currentEpoch)
+		);
+	}
 
 	public static synchronized void sendIndividualSyncNotification(int id) {
 		sendNotification(
 			-1,
 			false,
+			false,
 			new SynchronizeIndividualResponse(GameWorld.individuals.get(id), System.currentTimeMillis())
 		);
 	}
 
-	private static synchronized void sendNotification(final int connectionId, final boolean tcp, final Response... responses) {
+	private static synchronized void sendNotification(final int connectionId, final boolean tcp, final boolean executeInSingleThread, final Response... responses) {
 		serverThread.execute(
 			new Runnable() {
 				@Override
 				public void run() {
 					for (Connection connection : server.getConnections()) {
 						if (connectionId == -1) {
-							Responses resp = new Responses(false, new LinkedList<Response>());
+							Responses resp = new Responses(executeInSingleThread, new LinkedList<Response>());
 							for (Response response : responses) {
 								resp.responses.add(response);
 							}
@@ -375,7 +411,7 @@ public class ClientServerInterface {
 						}
 
 						if (connectionId == connection.getID()) {
-							Responses resp = new Responses(false, new LinkedList<Response>());
+							Responses resp = new Responses(executeInSingleThread, new LinkedList<Response>());
 							for (Response response : responses) {
 								resp.responses.add(response);
 							}
@@ -529,5 +565,8 @@ public class ClientServerInterface {
 		kryo.register(SendChatMessage.class);
 		kryo.register(SendChatMessageResponse.class);
 		kryo.register(Message.class);
+		kryo.register(SetAIIdle.class);
+		kryo.register(SynchronizeWorldState.class);
+		kryo.register(SynchronizeWorldStateResponse.class);
 	}
 }
