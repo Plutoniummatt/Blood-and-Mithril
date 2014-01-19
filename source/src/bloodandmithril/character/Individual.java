@@ -10,7 +10,6 @@ import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.TradeWith;
-import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.csi.ClientServerInterface;
@@ -67,7 +66,7 @@ public abstract class Individual extends Equipper {
 
 	/** Whether or not this character is able to be controlled by the player */
 	public boolean controllable;
-
+	
 	/** Whether or not this character is currently selected */
 	public boolean selected;
 
@@ -162,11 +161,15 @@ public abstract class Individual extends Equipper {
 
 
 	protected abstract void internalCopyFrom(Individual other);
+	
+	
+	/** Determines whether this {@link Individual} is controllable */
+	public boolean isControllable() {
+		return controllable;
+	}
 
 
-	/**
-	 * Setups up all individual resources
-	 */
+	/** Setups up all individual resources */
 	public static void setup() {
 		Elf.loadAnimations();
 		Boar.loadAnimations();
@@ -647,7 +650,7 @@ public abstract class Individual extends Equipper {
 			null
 		);
 
-		if (controllable) {
+		if (isControllable()) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
 			contextMenuToReturn.addMenuItem(editMenuItem);
 			contextMenuToReturn.addMenuItem(inventoryMenuItem);
@@ -659,8 +662,6 @@ public abstract class Individual extends Equipper {
 			 GameWorld.selectedIndividuals.size() == 1 &&
 			!GameWorld.selectedIndividuals.contains(thisIndividual) &&
 		     GameWorld.selectedIndividuals.iterator().next().canTradeWith &&
-		   !(ai.getCurrentTask() instanceof Trading) &&
-		   !(GameWorld.selectedIndividuals.iterator().next().ai.getCurrentTask() instanceof Trading) &&
 		     canTradeWith) {
 			contextMenuToReturn.addMenuItem(tradeMenuItem);
 		}

@@ -1,5 +1,6 @@
 package bloodandmithril.util.datastructure;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -10,7 +11,8 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
-public class Commands {
+public class Commands implements Serializable {
+	private static final long serialVersionUID = 6218069030001141634L;
 	
 	/** We use a list here, the number of commands should be quite minimal */
 	LinkedList<String> activeCommands = Lists.newLinkedList();

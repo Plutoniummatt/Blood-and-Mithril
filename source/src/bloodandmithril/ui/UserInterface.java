@@ -318,7 +318,7 @@ public class UserInterface {
 			}
 
 			for (Individual indi : GameWorld.individuals.values()) {
-				if (indi.controllable) {
+				if (indi.isControllable()) {
 
 					Vector2 centre = new Vector2(indi.state.position.x, indi.state.position.y + indi.height / 2);
 

@@ -401,7 +401,10 @@ public class TradeWindow extends Window {
 				((Individual) proposee).ai.setCurrentTask(new Idle());
 			}
 		} else {
-			TradeService.transferItems(new HashMap<Item, Integer>(), proposer, new HashMap<Item, Integer>(), proposee);
+			ClientServerInterface.clearAITask(((Individual)proposer).id.id);
+			if (proposee instanceof Individual) {
+				ClientServerInterface.clearAITask(((Individual)proposee).id.id);
+			}
 		}
 	}
 
