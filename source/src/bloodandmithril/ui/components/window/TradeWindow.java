@@ -48,7 +48,8 @@ public class TradeWindow extends Window {
 	private final HashMap<ListingMenuItem<Item>, Integer> proposeeItemsNotToTrade = Maps.newHashMap();
 
 	/** Traders */
-	private Container proposer, proposee;
+	private Container proposer;
+	private final Container proposee;
 
 	/** Used to process trade rejections */
 	private boolean rejected = false;
@@ -128,14 +129,14 @@ public class TradeWindow extends Window {
 			for (Entry<ListingMenuItem<Item>, Integer> entry : proposerItemsToTrade.entrySet()) {
 				proposerItemsToTransfer.put(entry.getKey().t, entry.getValue());
 			}
-			
+
 			HashMap<Item, Integer> proposeeItemsToTransfer = Maps.newHashMap();
 			for (Entry<ListingMenuItem<Item>, Integer> entry : proposeeItemsToTrade.entrySet()) {
 				proposeeItemsToTransfer.put(entry.getKey().t, entry.getValue());
 			}
-			
+
 			TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
-			
+
 			if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
 				for (Component component : UserInterface.layeredComponents) {
 					if (component instanceof InventoryWindow) {
@@ -145,7 +146,7 @@ public class TradeWindow extends Window {
 					}
 				}
 			}
-			
+
 			refresh();
 		} else {
 			rejectTradeProposal();
@@ -159,7 +160,7 @@ public class TradeWindow extends Window {
 	@SuppressWarnings("unchecked")
 	public void refresh() {
 		proposer = GameWorld.individuals.get(((Individual) proposer).id.id);
-		
+
 		proposerItemsToTrade.clear();
 		proposeeItemsToTrade.clear();
 		proposerItemsNotToTrade.clear();
@@ -401,9 +402,9 @@ public class TradeWindow extends Window {
 				((Individual) proposee).ai.setCurrentTask(new Idle());
 			}
 		} else {
-			ClientServerInterface.clearAITask(((Individual)proposer).id.id);
+			ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposer).id.id);
 			if (proposee instanceof Individual) {
-				ClientServerInterface.clearAITask(((Individual)proposee).id.id);
+				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposee).id.id);
 			}
 		}
 	}

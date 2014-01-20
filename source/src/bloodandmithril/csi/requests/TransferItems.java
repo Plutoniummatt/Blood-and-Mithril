@@ -105,7 +105,7 @@ public class TransferItems implements Request {
 		@Override
 		public void acknowledge() {
 			// Need to notify all clients to refresh inventory windows and trade windows
-			ClientServerInterface.sendRefreshItemWindows();
+			ClientServerInterface.SendRequest.sendRefreshItemWindowsRequest();
 		}
 
 		@Override

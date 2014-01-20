@@ -97,7 +97,7 @@ public class SynchronizeIndividual implements Request {
 
 			if (this.individuals != null) {
 				for (Integer id : individuals) {
-					ClientServerInterface.sendSynchronizeIndividualRequest(id);
+					ClientServerInterface.SendRequest.sendSynchronizeIndividualRequest(id);
 				}
 			}
 		}

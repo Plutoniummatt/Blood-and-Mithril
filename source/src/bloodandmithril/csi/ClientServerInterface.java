@@ -44,6 +44,7 @@ import bloodandmithril.csi.requests.CSITradeWith.CSITradeWithResponse;
 import bloodandmithril.csi.requests.ChangeNickName;
 import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
 import bloodandmithril.csi.requests.ClientConnected;
+import bloodandmithril.csi.requests.ConsumeItem;
 import bloodandmithril.csi.requests.DestroyTile;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.EquipOrUnequipItem;
@@ -68,6 +69,7 @@ import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindows;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
+import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
 import bloodandmithril.item.Item;
@@ -237,163 +239,9 @@ public class ClientServerInterface {
 
 		client.sendTCP(new ClientConnected(client.getID(), clientName));
 		client.sendTCP(new SynchronizeWorldState());
-		sendRequestConnectedPlayerNames();
+		SendRequest.sendRequestConnectedPlayerNamesRequest();
 	}
 
-	public static synchronized void sendChatMessage(String message) {
-		client.sendTCP(
-			new SendChatMessage(
-				new Message(
-					clientName,
-					message
-				)
-			)
-		);
-		Logger.networkDebug("Sending chat message", LogLevel.DEBUG);
-	}
-
-	public static synchronized void sendGenerateChunkRequest(int x, int y) {
-		client.sendTCP(new GenerateChunk(x, y));
-		Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void sendEquipOrUnequipItem(boolean equip, Equipable equipable, int individualId) {
-		client.sendTCP(new EquipOrUnequipItem(equip, equipable, individualId));
-		Logger.networkDebug("Sending equip/unequip request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void sendRequestConnectedPlayerNames() {
-		client.sendTCP(new RequestClientList());
-		Logger.networkDebug("Sending client name list request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void sendSynchronizeIndividualRequest(int id) {
-		client.sendUDP(new SynchronizeIndividual(id));
-		Logger.networkDebug("Sending sync individual request for " + id, LogLevel.TRACE);
-	}
-
-	public static synchronized void sendSynchronizeIndividualRequest() {
-		client.sendUDP(new SynchronizeIndividual());
-		Logger.networkDebug("Sending individual sync request for all", LogLevel.TRACE);
-	}
-
-	public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground) {
-		client.sendTCP(new DestroyTile(worldX, worldY, foreground));
-		Logger.networkDebug("Sending destroy tile request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void ping() {
-		client.sendUDP(new Ping());
-		Logger.networkDebug("Sending ping request", LogLevel.TRACE);
-	}
-
-	public static synchronized void clearAITask(int individualId) {
-		client.sendUDP(new SetAIIdle(individualId));
-		Logger.networkDebug("Sending request to clear AI task", LogLevel.TRACE);
-	}
-
-	public static synchronized void tradeWithIndividual(Individual proposer, Individual proposee) {
-		client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.INDIVIDUAL, proposee.id.id, client.getID()));
-		Logger.networkDebug("Sending trade with individual request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void tradeWithProp(Individual proposer, int propId) {
-		client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.PROP, propId, client.getID()));
-		Logger.networkDebug("Sending trade with prop request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void individualSelection(int id, boolean select) {
-		client.sendTCP(new IndividualSelection(id, select));
-		Logger.networkDebug("Sending individual selection request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void moveIndividual(int id, Vector2 destinationCoordinates, boolean forceMove) {
-		client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove));
-		Logger.networkDebug("Sending move individual request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void changeNickName(int id, String toChangeTo) {
-		client.sendTCP(new ChangeNickName(id, toChangeTo));
-		Logger.networkDebug("Sending change individual nickname request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void sendMineTileRequest(int individualId, Vector2 location) {
-		client.sendTCP(new CSIMineTile(individualId, location));
-		Logger.networkDebug("Sending mine tile request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void sendRefreshItemWindows() {
-		client.sendTCP(new RefreshWindows());
-		Logger.networkDebug("Sending item window refresh request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void openTradeWindow(int proposerId, TradeEntity proposee, int proposeeId) {
-		client.sendTCP(
-			new OpenTradeWindow(proposerId, proposee, proposeeId)
-		);
-		Logger.networkDebug("Sending open trade window request", LogLevel.DEBUG);
-	}
-
-	public static synchronized void sendTileMinedNotification(int connectionId, Vector2 location, boolean foreGround) {
-		sendNotification(
-			connectionId,
-			true,
-			false,
-			new DestroyTileResponse(location.x, location.y, foreGround)
-		);
-	}
-
-	public static synchronized void sendRefreshWindowsNotification() {
-		sendNotification(
-			-1,
-			true,
-			false,
-			new TransferItems.RefreshWindowsResponse()
-		);
-	}
-
-	public static synchronized void openTradeWindowNotification(int proposerId, TradeEntity proposee, int proposeeId, int connectionId) {
-		sendNotification(
-			connectionId,
-			true,
-			false,
-			new OpenTradeWindow.OpenTradeWindowResponse(
-				proposerId,
-				proposee,
-				proposeeId
-			)
-		);
-	}
-
-	public static synchronized void sendGiveItemNotification(int individualId, Item item, int quantity) {
-		GameWorld.individuals.get(individualId).giveItem(item, quantity);
-		sendNotification(
-			-1,
-			true,
-			true,
-			new SynchronizeIndividualResponse(GameWorld.individuals.get(individualId), System.currentTimeMillis()),
-			new TransferItems.RefreshWindowsResponse()
-		);
-	}
-
-
-	public static synchronized void sendSyncWorldStateNotification() {
-		sendNotification(
-			-1,
-			false,
-			false,
-			new SynchronizeWorldStateResponse(WorldState.currentEpoch)
-		);
-	}
-
-	public static synchronized void sendIndividualSyncNotification(int id) {
-		sendNotification(
-			-1,
-			false,
-			false,
-			new SynchronizeIndividualResponse(GameWorld.individuals.get(id), System.currentTimeMillis())
-		);
-	}
 
 	private static synchronized void sendNotification(final int connectionId, final boolean tcp, final boolean executeInSingleThread, final Response... responses) {
 		serverThread.execute(
@@ -429,21 +277,6 @@ public class ClientServerInterface {
 					}
 				}
 			}
-		);
-	}
-
-	public static synchronized void transferItems(
-			HashMap<Item, Integer> proposerItemsToTransfer, int proposerId,
-			HashMap<Item, Integer> proposeeItemsToTransfer,
-			TradeEntity proposeeEntityType, int proposeeId
-	) {
-		client.sendTCP(
-			new bloodandmithril.csi.requests.TransferItems(
-				proposerItemsToTransfer, proposerId,
-				proposeeItemsToTransfer,
-				proposeeEntityType, proposeeId,
-				client.getID()
-			)
 		);
 	}
 
@@ -574,5 +407,199 @@ public class ClientServerInterface {
 		kryo.register(SynchronizeWorldState.class);
 		kryo.register(SynchronizeWorldStateResponse.class);
 		kryo.register(EquipOrUnequipItem.class);
+		kryo.register(ConsumeItem.class);
+	}
+
+
+	/**
+	 * Send a {@link Request} to the {@link Server}
+	 *
+	 * @author Matt
+	 */
+	public static class SendRequest {
+		public static synchronized void sendGenerateChunkRequest(int x, int y) {
+			client.sendTCP(new GenerateChunk(x, y));
+			Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendConsumeItemRequest(Consumable consumable, int individualId) {
+			client.sendTCP(new ConsumeItem(consumable, individualId));
+			Logger.networkDebug("Sending item consumption request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendEquipOrUnequipItemRequest(boolean equip, Equipable equipable, int individualId) {
+			client.sendTCP(new EquipOrUnequipItem(equip, equipable, individualId));
+			Logger.networkDebug("Sending equip/unequip request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendRequestConnectedPlayerNamesRequest() {
+			client.sendTCP(new RequestClientList());
+			Logger.networkDebug("Sending client name list request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendSynchronizeIndividualRequest(int id) {
+			client.sendUDP(new SynchronizeIndividual(id));
+			Logger.networkDebug("Sending sync individual request for " + id, LogLevel.TRACE);
+		}
+
+		public static synchronized void sendSynchronizeIndividualRequest() {
+			client.sendUDP(new SynchronizeIndividual());
+			Logger.networkDebug("Sending individual sync request for all", LogLevel.TRACE);
+		}
+
+		public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground) {
+			client.sendTCP(new DestroyTile(worldX, worldY, foreground));
+			Logger.networkDebug("Sending destroy tile request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendPingRequest() {
+			client.sendUDP(new Ping());
+			Logger.networkDebug("Sending ping request", LogLevel.TRACE);
+		}
+
+		public static synchronized void sendClearAITaskRequest(int individualId) {
+			client.sendUDP(new SetAIIdle(individualId));
+			Logger.networkDebug("Sending request to clear AI task", LogLevel.TRACE);
+		}
+
+		public static synchronized void sendTradeWithIndividualRequest(Individual proposer, Individual proposee) {
+			client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.INDIVIDUAL, proposee.id.id, client.getID()));
+			Logger.networkDebug("Sending trade with individual request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendTradeWithPropRequest(Individual proposer, int propId) {
+			client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.PROP, propId, client.getID()));
+			Logger.networkDebug("Sending trade with prop request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendIndividualSelectionRequest(int id, boolean select) {
+			client.sendTCP(new IndividualSelection(id, select));
+			Logger.networkDebug("Sending individual selection request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendMoveIndividualRequest(int id, Vector2 destinationCoordinates, boolean forceMove) {
+			client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove));
+			Logger.networkDebug("Sending move individual request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendChangeNickNameRequest(int id, String toChangeTo) {
+			client.sendTCP(new ChangeNickName(id, toChangeTo));
+			Logger.networkDebug("Sending change individual nickname request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendMineTileRequest(int individualId, Vector2 location) {
+			client.sendTCP(new CSIMineTile(individualId, location));
+			Logger.networkDebug("Sending mine tile request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendRefreshItemWindowsRequest() {
+			client.sendTCP(new RefreshWindows());
+			Logger.networkDebug("Sending item window refresh request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendOpenTradeWindowRequest(int proposerId, TradeEntity proposee, int proposeeId) {
+			client.sendTCP(new OpenTradeWindow(proposerId, proposee, proposeeId));
+			Logger.networkDebug("Sending open trade window request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendTransferItemsRequest(
+				HashMap<Item, Integer> proposerItemsToTransfer, int proposerId,
+				HashMap<Item, Integer> proposeeItemsToTransfer, TradeEntity proposeeEntityType, int proposeeId) {
+
+			client.sendTCP(
+				new bloodandmithril.csi.requests.TransferItems(
+					proposerItemsToTransfer, proposerId,
+					proposeeItemsToTransfer,
+					proposeeEntityType, proposeeId,
+					client.getID()
+				)
+			);
+		}
+	}
+
+
+	/**
+	 * Send a notification to a {@link Client}
+	 *
+	 * @author Matt
+	 */
+	public static class SendNotification {
+		public static synchronized void notifyChatMessage(String message) {
+			client.sendTCP(
+				new SendChatMessage(
+					new Message(
+						clientName,
+						message
+					)
+				)
+			);
+			Logger.networkDebug("Sending chat message", LogLevel.DEBUG);
+		}
+
+
+		public static synchronized void notifyTileMined(int connectionId, Vector2 location, boolean foreGround) {
+			sendNotification(
+				connectionId,
+				true,
+				false,
+				new DestroyTileResponse(location.x, location.y, foreGround)
+			);
+		}
+
+
+		public static synchronized void notifyRefreshItemWindows() {
+			sendNotification(
+				-1,
+				true,
+				false,
+				new TransferItems.RefreshWindowsResponse()
+			);
+		}
+
+
+		public static synchronized void notifyTradeWindowOpen(int proposerId, TradeEntity proposee, int proposeeId, int connectionId) {
+			sendNotification(
+				connectionId,
+				true,
+				false,
+				new OpenTradeWindow.OpenTradeWindowResponse(
+					proposerId,
+					proposee,
+					proposeeId
+				)
+			);
+		}
+
+
+		public static synchronized void notifyGiveItem(int individualId, Item item, int quantity) {
+			GameWorld.individuals.get(individualId).giveItem(item, quantity);
+			sendNotification(
+				-1,
+				true,
+				true,
+				new SynchronizeIndividualResponse(GameWorld.individuals.get(individualId), System.currentTimeMillis()),
+				new TransferItems.RefreshWindowsResponse()
+			);
+		}
+
+
+		public static synchronized void notifySyncWorldState() {
+			sendNotification(
+				-1,
+				false,
+				false,
+				new SynchronizeWorldStateResponse(WorldState.currentEpoch)
+			);
+		}
+
+
+		public static synchronized void notifyIndividualSync(int id) {
+			sendNotification(
+				-1,
+				false,
+				false,
+				new SynchronizeIndividualResponse(GameWorld.individuals.get(id), System.currentTimeMillis())
+			);
+		}
 	}
 }

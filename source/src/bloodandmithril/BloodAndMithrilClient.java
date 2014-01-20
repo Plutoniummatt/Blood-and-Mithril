@@ -245,7 +245,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					if (ClientServerInterface.isServer()) {
 						indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
 					} else {
-						ClientServerInterface.sendMineTileRequest(indi.id.id, new Vector2(getMouseWorldX(), getMouseWorldY()));
+						ClientServerInterface.SendRequest.sendMineTileRequest(indi.id.id, new Vector2(getMouseWorldX(), getMouseWorldY()));
 					}
 				} else {
 					float spread = Math.min(indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
@@ -263,7 +263,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							!Gdx.input.isKeyPressed(KeyMappings.forceMove)
 						);
 					} else {
-						ClientServerInterface.moveIndividual(
+						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
 							indi.id.id, new Vector2(
 								getMouseWorldX() + spread,
 								getMouseWorldY()
@@ -305,7 +305,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 								indi.deselect(false);
 								GameWorld.selectedIndividuals.remove(indi);
 							} else {
-								ClientServerInterface.individualSelection(indi.id.id, false);
+								ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.id.id, false);
 							}
 						}
 					}
@@ -321,7 +321,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							indi.deselect(false);
 							GameWorld.selectedIndividuals.remove(indi);
 						} else {
-							ClientServerInterface.individualSelection(indi.id.id, false);
+							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.id.id, false);
 						}
 					}
 				}
@@ -331,7 +331,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						GameWorld.selectedIndividuals.add(individualClicked);
 						individualClicked.select();
 					} else {
-						ClientServerInterface.individualSelection(individualClicked.id.id, true);
+						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(individualClicked.id.id, true);
 					}
 				}
 
