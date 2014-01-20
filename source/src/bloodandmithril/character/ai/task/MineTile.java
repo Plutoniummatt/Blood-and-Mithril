@@ -117,8 +117,10 @@ public class MineTile extends CompositeAITask {
 								}
 
 								if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
-									InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
+									Topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
+									host.giveItem(tileToBeDeleted.mine(), 1);
 
+									InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
 										@Override
 										public boolean apply(Component input) {
 											if (input instanceof Window) {
@@ -133,8 +135,8 @@ public class MineTile extends CompositeAITask {
 									}
 								} else if (ClientServerInterface.isServer()) {
 									Topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
-									ClientServerInterface.SendNotification.notifyGiveItem(host.id.id, tileToBeDeleted.mine(), 1);
 									ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true);
+									ClientServerInterface.SendNotification.notifyGiveItem(host.id.id, tileToBeDeleted.mine(), 1);
 								}
 							}
 						}
