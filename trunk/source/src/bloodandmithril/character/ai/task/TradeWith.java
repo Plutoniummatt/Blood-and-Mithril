@@ -27,27 +27,27 @@ import com.google.common.collect.Lists;
  */
 public class TradeWith extends CompositeAITask {
 	private static final long serialVersionUID = -4098496856332182431L;
-	
+
 	/**
 	 * Overloaded constructor
 	 */
 	public TradeWith(final Individual proposer, final Container proposee, int connectionId) {
 		super(proposer.id, "Trading");
-		
+
 		Vector2 location = null;
-		
+
 		if (proposee instanceof ChestContainer) {
 			location = ((ChestContainer) proposee).getPositionOfChest();
 		} else if (proposee instanceof Individual) {
 			location = ((Individual) proposee).state.position;
 		}
-		
+
 		currentTask = new GoToMovingLocation(
 			proposer.id,
 			location,
 			50f
 		);
-		
+
 		if (ClientServerInterface.isServer()) {
 			appendTask(
 				new Trade(hostId, proposer, proposee, connectionId)
@@ -78,7 +78,7 @@ public class TradeWith extends CompositeAITask {
 			location,
 			50f
 		);
-		
+
 		appendTask(
 			new Trade(hostId, proposer, proposee)
 		);
@@ -90,7 +90,7 @@ public class TradeWith extends CompositeAITask {
 		private final Individual proposer;
 
 		private final Container proposee;
-		
+
 		private final int connectionId;
 
 		private static final long serialVersionUID = 4644624691451364142L;
@@ -104,7 +104,7 @@ public class TradeWith extends CompositeAITask {
 			this.proposee = proposee;
 			this.connectionId = connectionId;
 		}
-		
+
 		/**
 		 * Constructor
 		 */
@@ -140,7 +140,7 @@ public class TradeWith extends CompositeAITask {
 				}
 
 				if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
-					ClientServerInterface.openTradeWindowNotification(proposer.id.id, TradeEntity.INDIVIDUAL, ((Individual) proposee).id.id, connectionId);
+					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.id.id, TradeEntity.INDIVIDUAL, ((Individual) proposee).id.id, connectionId);
 				} else if (ClientServerInterface.isClient()) {
 					openTradeWindowWithIndividual(proposer, proposeeCasted);
 				}
@@ -156,7 +156,7 @@ public class TradeWith extends CompositeAITask {
 				}
 
 				if (ClientServerInterface.isServer()) {
-					ClientServerInterface.openTradeWindowNotification(proposer.id.id, TradeEntity.PROP, ((ChestContainer) proposee).propId, connectionId);
+					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.id.id, TradeEntity.PROP, ((ChestContainer) proposee).propId, connectionId);
 				} else if (ClientServerInterface.isClient()) {
 					openTradeWindowWithProp(proposer, proposee);
 				}

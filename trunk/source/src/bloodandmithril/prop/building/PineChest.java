@@ -85,11 +85,11 @@ public class PineChest extends Chest {
 								);
 							} else {
 								ChestContainer chestContainer = (ChestContainer) container;
-								ClientServerInterface.tradeWithProp(selected, chestContainer.propId);
+								ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
 							}
 						} else {
 							ChestContainer chestContainer = (ChestContainer) container;
-							ClientServerInterface.tradeWithProp(selected, chestContainer.propId);
+							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
 						}
 					}
 				},

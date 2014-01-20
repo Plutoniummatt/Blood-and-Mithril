@@ -112,13 +112,13 @@ public class BloodAndMithrilServer {
 						try {
 							Thread.sleep(100);
 							for (Individual individual : GameWorld.individuals.values()) {
-								ClientServerInterface.sendIndividualSyncNotification(individual.id.id);
+								ClientServerInterface.SendNotification.notifyIndividualSync(individual.id.id);
 							}
 						} catch (InterruptedException e) {
 						}
 
 						if (counter >= 100) {
-							ClientServerInterface.sendSyncWorldStateNotification();
+							ClientServerInterface.SendNotification.notifySyncWorldState();
 							counter = 0;
 						}
 					}

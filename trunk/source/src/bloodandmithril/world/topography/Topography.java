@@ -323,7 +323,7 @@ public class Topography {
 				if (chunkMap.get(chunkX) == null || chunkMap.get(chunkX).get(chunkY) == null) {
 					if (client && !ClientServerInterface.isServer()) {
 						if (requestedForGeneration.get(chunkX, chunkY) == null || !requestedForGeneration.get(chunkX, chunkY)) {
-							ClientServerInterface.sendGenerateChunkRequest(chunkX, chunkY);
+							ClientServerInterface.SendRequest.sendGenerateChunkRequest(chunkX, chunkY);
 							requestedForGeneration.put(chunkX, chunkY, true);
 						}
 					} else {

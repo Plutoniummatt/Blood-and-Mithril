@@ -66,7 +66,7 @@ public abstract class Individual extends Equipper {
 
 	/** Whether or not this character is able to be controlled by the player */
 	public boolean controllable;
-	
+
 	/** Whether or not this character is currently selected */
 	public boolean selected;
 
@@ -161,8 +161,8 @@ public abstract class Individual extends Equipper {
 
 
 	protected abstract void internalCopyFrom(Individual other);
-	
-	
+
+
 	/** Determines whether this {@link Individual} is controllable */
 	public boolean isControllable() {
 		return controllable;
@@ -495,7 +495,7 @@ public abstract class Individual extends Equipper {
 						GameWorld.selectedIndividuals.remove(thisIndividual);
 						clearCommands();
 					} else {
-						ClientServerInterface.individualSelection(thisIndividual.id.id, false);
+						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, false);
 					}
 				}
 			},
@@ -514,7 +514,7 @@ public abstract class Individual extends Equipper {
 						GameWorld.selectedIndividuals.add(thisIndividual);
 						thisIndividual.select();
 					} else {
-						ClientServerInterface.individualSelection(thisIndividual.id.id, true);
+						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, true);
 					}
 				}
 			},
@@ -570,7 +570,7 @@ public abstract class Individual extends Equipper {
 										if (ClientServerInterface.isServer()) {
 											thisIndividual.id.nickName = args[0].toString();
 										} else {
-											ClientServerInterface.changeNickName(thisIndividual.id.id, args[0].toString());
+											ClientServerInterface.SendRequest.sendChangeNickNameRequest(thisIndividual.id.id, args[0].toString());
 										}
 									}
 								},
@@ -639,7 +639,7 @@ public abstract class Individual extends Equipper {
 								);
 							}
 						} else {
-							ClientServerInterface.tradeWithIndividual(indi, thisIndividual);
+							ClientServerInterface.SendRequest.sendTradeWithIndividualRequest(indi, thisIndividual);
 						}
 					}
 				}

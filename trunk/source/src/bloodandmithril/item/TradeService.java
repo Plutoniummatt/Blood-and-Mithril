@@ -61,7 +61,7 @@ public class TradeService {
 				proposeeEntity = TradeEntity.PROP;
 				proposeeId = ((ChestContainer) proposee).propId;
 			}
-			ClientServerInterface.transferItems(proposerItemsToTrade, proposerId, proposeeItemsToTrade, proposeeEntity, proposeeId);
+			ClientServerInterface.SendRequest.sendTransferItemsRequest(proposerItemsToTrade, proposerId, proposeeItemsToTrade, proposeeEntity, proposeeId);
 		}
 	}
 }

@@ -67,7 +67,7 @@ public class ChatWindow extends Window {
 
 		textInputPanel = new TextInputFieldPanel(this);
 
-		ClientServerInterface.sendRequestConnectedPlayerNames();
+		ClientServerInterface.SendRequest.sendRequestConnectedPlayerNamesRequest();
 	}
 
 
@@ -176,7 +176,7 @@ public class ChatWindow extends Window {
 
 		if (keyCode == Input.Keys.ENTER) {
 			if (!StringUtils.isEmpty(textInputPanel.getInputText())) {
-				ClientServerInterface.sendChatMessage(textInputPanel.getInputText());
+				ClientServerInterface.SendNotification.notifyChatMessage(textInputPanel.getInputText());
 				textInputPanel.clear();
 			}
 		}

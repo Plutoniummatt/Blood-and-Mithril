@@ -271,8 +271,12 @@ public class InventoryWindow extends Window {
 					new Task() {
 						@Override
 						public void execute() {
-							if (item instanceof Consumable && host instanceof Individual && ((Consumable)item).consume((Individual)host)) {
-								host.takeItem(item, 1);
+							if (ClientServerInterface.isServer()) {
+								if (item instanceof Consumable && host instanceof Individual && ((Consumable)item).consume((Individual)host)) {
+									host.takeItem(item, 1);
+								}
+							} else {
+								ClientServerInterface.SendRequest.sendConsumeItemRequest((Consumable)item, ((Individual)host).id.id);
 							}
 							refresh();
 						}
@@ -310,7 +314,7 @@ public class InventoryWindow extends Window {
 							if (ClientServerInterface.isServer()) {
 								host.unequip((Equipable)item);
 							} else {
-								ClientServerInterface.sendEquipOrUnequipItem(false, (Equipable)item, ((Individual)host).id.id);
+								ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(false, (Equipable)item, ((Individual)host).id.id);
 							}
 							refresh();
 						}
@@ -329,7 +333,7 @@ public class InventoryWindow extends Window {
 							if (ClientServerInterface.isServer()) {
 								host.equip((Equipable)item);
 							} else {
-								ClientServerInterface.sendEquipOrUnequipItem(true, (Equipable)item, ((Individual)host).id.id);
+								ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(true, (Equipable)item, ((Individual)host).id.id);
 							}
 							refresh();
 						}
