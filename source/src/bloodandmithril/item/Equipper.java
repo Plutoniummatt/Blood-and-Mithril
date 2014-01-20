@@ -93,12 +93,21 @@ public class Equipper extends Container {
 	 * Equip an {@link Item}
 	 */
 	public void unequip(Equipable item) {
-		if (equippedItems.containsKey(item)) {
-			equippedItems.remove(item);
-			inventory.put(item, (inventory.get(item) == null ? 0 : inventory.get(item)) + 1);
-			availableEquipmentSlots.put(item.slot, true);
-			refreshCurrentLoad();
+		Equipable toUnequip = null;
+		for (Item equipped : equippedItems.keySet()) {
+			if (equipped.sameAs(item)) {
+				toUnequip = (Equipable)equipped;
+			}
 		}
+
+		if (toUnequip == null) {
+			return;
+		}
+
+		equippedItems.remove(toUnequip);
+		inventory.put(toUnequip, (inventory.get(toUnequip) == null ? 0 : inventory.get(toUnequip)) + 1);
+		availableEquipmentSlots.put(toUnequip.slot, true);
+		refreshCurrentLoad();
 	}
 
 

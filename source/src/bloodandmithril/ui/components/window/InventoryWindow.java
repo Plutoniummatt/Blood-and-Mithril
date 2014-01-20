@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Equipable;
@@ -306,7 +307,11 @@ public class InventoryWindow extends Window {
 					new Task() {
 						@Override
 						public void execute() {
-							host.unequip((Equipable)item);
+							if (ClientServerInterface.isServer()) {
+								host.unequip((Equipable)item);
+							} else {
+								ClientServerInterface.sendEquipOrUnequipItem(false, (Equipable)item, ((Individual)host).id.id);
+							}
 							refresh();
 						}
 					},
@@ -321,7 +326,11 @@ public class InventoryWindow extends Window {
 					new Task() {
 						@Override
 						public void execute() {
-							host.equip((Equipable)item);
+							if (ClientServerInterface.isServer()) {
+								host.equip((Equipable)item);
+							} else {
+								ClientServerInterface.sendEquipOrUnequipItem(true, (Equipable)item, ((Individual)host).id.id);
+							}
 							refresh();
 						}
 					},
@@ -341,7 +350,7 @@ public class InventoryWindow extends Window {
 	public void refresh() {
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();
-		
+
 		buildItems(host.getEquipped(), host.getInventory());
 	}
 

@@ -14,6 +14,7 @@ import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.item.Equipable;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
@@ -143,6 +144,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Component.load();
 		Weather.setup();
 		KeyMappings.setup();
+		Equipable.setup();
 
 		UserInterface.UICamera = new OrthographicCamera(WIDTH, HEIGHT);
 		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
@@ -354,11 +356,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (GameSaver.isSaving()) {
 			return false;
 		}
-		
-		if (keycode == Input.Keys.I) {
-			GameSaver.save(false);
-		}
-		
 
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;

@@ -116,8 +116,8 @@ public class BloodAndMithrilServer {
 							}
 						} catch (InterruptedException e) {
 						}
-						
-						if (counter == 100) {
+
+						if (counter >= 100) {
 							ClientServerInterface.sendSyncWorldStateNotification();
 							counter = 0;
 						}
@@ -190,7 +190,7 @@ public class BloodAndMithrilServer {
 		public boolean keyDown(int keycode) {
 			if (keycode == Input.Keys.R) {
 				IndividualState state = new IndividualState(10f, 10f);
-				state.position = new Vector2(0, 200);
+				state.position = new Vector2(0, 500);
 				state.velocity = new Vector2(0, 0);
 				state.acceleration = new Vector2(0, 0);
 
