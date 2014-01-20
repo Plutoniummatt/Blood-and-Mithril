@@ -116,8 +116,6 @@ public class MineTile extends CompositeAITask {
 									);
 								}
 
-								ClientServerInterface.SendNotification.notifyGiveItem(host.id.id, tileToBeDeleted.mine(), 1);
-
 								if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
 									InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
 
@@ -135,6 +133,7 @@ public class MineTile extends CompositeAITask {
 									}
 								} else if (ClientServerInterface.isServer()) {
 									Topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
+									ClientServerInterface.SendNotification.notifyGiveItem(host.id.id, tileToBeDeleted.mine(), 1);
 									ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true);
 								}
 							}
