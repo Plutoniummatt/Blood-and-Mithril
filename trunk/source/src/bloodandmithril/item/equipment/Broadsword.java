@@ -64,6 +64,22 @@ public class Broadsword extends OneHandedWeapon {
 
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
-		BloodAndMithrilClient.spriteBatch.draw(GameWorld.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 13 : 13), position.y - 7, flipX ? texture.getRegionWidth() - 13 : 13, 7, texture.getRegionWidth(), texture.getRegionHeight(), 1f, 1f, angle, 417, 621, 52, 11, flipX, false);
+		BloodAndMithrilClient.spriteBatch.draw(
+			GameWorld.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 13 : 13),
+			position.y - 7,
+			flipX ? texture.getRegionWidth() - 13 : 13,
+			7,
+			texture.getRegionWidth(),
+			texture.getRegionHeight(),
+			1f,
+			1f,
+			angle,
+			417,
+			621,
+			52,
+			11,
+			flipX,
+			false
+		);
 	}
 }

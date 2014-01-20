@@ -44,7 +44,7 @@ public class GameWorld {
 
 	/** {@link Individual} that are selected for manual control */
 	public static HashSet<Individual> selectedIndividuals = new HashSet<Individual>();
-	
+
 	/** Every {@link Individual} that exists */
 	public static ConcurrentHashMap<Integer, Individual> individuals = new ConcurrentHashMap<>();
 
@@ -204,7 +204,7 @@ public class GameWorld {
 					indi.render();
 				}
 			} catch (NullPointerException e) {
-				Logger.generalDebug("Nullpointer whilst rendering individual", LogLevel.WARN);
+				Logger.generalDebug("Nullpointer whilst rendering individual", LogLevel.WARN, e);
 			}
 		}
 	}

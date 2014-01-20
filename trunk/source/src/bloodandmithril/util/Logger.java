@@ -20,9 +20,12 @@ public class Logger {
 	/**
 	 * Prints a debug message
 	 */
-	public static void generalDebug(String message, LogLevel level) {
+	public static void generalDebug(String message, LogLevel level, Exception... es) {
 		if (System.getProperty("generalDebug") != null && LogLevel.valueOf(System.getProperty("generalDebug")).value >= level.value) {
 			System.out.println(message);
+			for (Exception e : es) {
+				e.printStackTrace();
+			}
 		}
 	}
 

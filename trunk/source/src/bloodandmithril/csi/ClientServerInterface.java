@@ -46,6 +46,7 @@ import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
 import bloodandmithril.csi.requests.ClientConnected;
 import bloodandmithril.csi.requests.DestroyTile;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
+import bloodandmithril.csi.requests.EquipOrUnequipItem;
 import bloodandmithril.csi.requests.GenerateChunk;
 import bloodandmithril.csi.requests.GenerateChunk.GenerateChunkResponse;
 import bloodandmithril.csi.requests.IndividualSelection;
@@ -61,8 +62,8 @@ import bloodandmithril.csi.requests.SendChatMessage.SendChatMessageResponse;
 import bloodandmithril.csi.requests.SetAIIdle;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
 import bloodandmithril.csi.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
-import bloodandmithril.csi.requests.SynchronizeWorldState.SynchronizeWorldStateResponse;
 import bloodandmithril.csi.requests.SynchronizeWorldState;
+import bloodandmithril.csi.requests.SynchronizeWorldState.SynchronizeWorldStateResponse;
 import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindows;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
@@ -123,15 +124,15 @@ import com.google.common.collect.Maps;
 public class ClientServerInterface {
 
 	private static boolean isClient, isServer;
-	
+
 	public static Client client;
 
 	public static Server server;
-	
+
 	public static Thread syncThread;
 
 	public static String clientName;
-	
+
 	public static ExecutorService serverThread;
 
 	public static HashMap<Integer, String> connectedPlayers = Maps.newHashMap();
@@ -256,6 +257,11 @@ public class ClientServerInterface {
 		Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
 	}
 
+	public static synchronized void sendEquipOrUnequipItem(boolean equip, Equipable equipable, int individualId) {
+		client.sendTCP(new EquipOrUnequipItem(equip, equipable, individualId));
+		Logger.networkDebug("Sending equip/unequip request", LogLevel.DEBUG);
+	}
+
 	public static synchronized void sendRequestConnectedPlayerNames() {
 		client.sendTCP(new RequestClientList());
 		Logger.networkDebug("Sending client name list request", LogLevel.DEBUG);
@@ -280,7 +286,7 @@ public class ClientServerInterface {
 		client.sendUDP(new Ping());
 		Logger.networkDebug("Sending ping request", LogLevel.TRACE);
 	}
-	
+
 	public static synchronized void clearAITask(int individualId) {
 		client.sendUDP(new SetAIIdle(individualId));
 		Logger.networkDebug("Sending request to clear AI task", LogLevel.TRACE);
@@ -358,24 +364,24 @@ public class ClientServerInterface {
 			)
 		);
 	}
-	
+
 	public static synchronized void sendGiveItemNotification(int individualId, Item item, int quantity) {
 		GameWorld.individuals.get(individualId).giveItem(item, quantity);
 		sendNotification(
 			-1,
 			true,
-			true, 
+			true,
 			new SynchronizeIndividualResponse(GameWorld.individuals.get(individualId), System.currentTimeMillis()),
 			new TransferItems.RefreshWindowsResponse()
 		);
 	}
-	
-	
+
+
 	public static synchronized void sendSyncWorldStateNotification() {
 		sendNotification(
-			-1, 
-			false, 
-			false, 
+			-1,
+			false,
+			false,
 			new SynchronizeWorldStateResponse(WorldState.currentEpoch)
 		);
 	}
@@ -567,5 +573,6 @@ public class ClientServerInterface {
 		kryo.register(SetAIIdle.class);
 		kryo.register(SynchronizeWorldState.class);
 		kryo.register(SynchronizeWorldStateResponse.class);
+		kryo.register(EquipOrUnequipItem.class);
 	}
 }

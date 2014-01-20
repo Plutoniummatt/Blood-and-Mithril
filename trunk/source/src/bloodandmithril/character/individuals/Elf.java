@@ -369,7 +369,7 @@ public class Elf extends Individual {
 		if (!(other instanceof Elf)) {
 			throw new RuntimeException("Cannot cast " + other.getClass().getSimpleName() + " to Elf.");
 		}
-		
+
 		this.hairColorB = ((Elf) other).hairColorB;
 		this.hairColorG = ((Elf) other).hairColorG;
 		this.hairColorR = ((Elf) other).hairColorR;
