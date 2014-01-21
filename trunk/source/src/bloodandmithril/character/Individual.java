@@ -20,6 +20,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
+import bloodandmithril.ui.components.window.IndividualStatusWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.JITTask;
@@ -678,6 +679,30 @@ public abstract class Individual extends Equipper {
 			null
 		);
 
+		ContextMenuItem showStatusWindowItem = new ContextMenuItem(
+			"Status",
+			new Task() {
+				@Override
+				public void execute() {
+					UserInterface.addLayeredComponent(
+						new IndividualStatusWindow(
+							thisIndividual,
+							BloodAndMithrilClient.WIDTH/2 - 200,
+							BloodAndMithrilClient.HEIGHT/2 + 200,
+							400,
+							400,
+							id.getSimpleName() + " - Status",
+							true
+						)
+					);
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+
 		if (isControllable()) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
 			contextMenuToReturn.addMenuItem(editMenuItem);
@@ -685,6 +710,7 @@ public abstract class Individual extends Equipper {
 		}
 
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
+		contextMenuToReturn.addMenuItem(showStatusWindowItem);
 
 		if (!GameWorld.selectedIndividuals.isEmpty() &&
 			 GameWorld.selectedIndividuals.size() == 1 &&
@@ -707,16 +733,30 @@ public abstract class Individual extends Equipper {
 	 *
 	 * @author Matt
 	 */
-	public static interface Condition {
+	public static abstract class Condition implements Comparable<Condition> {
 
 		/** Affect the character suffering from this condition */
-		public void affect(Individual affected, float delta);
+		public abstract void affect(Individual affected, float delta);
 
 		/** Infect another character */
-		public void infect(Individual infected, float delta);
+		public abstract void infect(Individual infected, float delta);
 
 		/** Whether this condition can be removed */
-		public boolean isExpired();
+		public abstract boolean isExpired();
+
+		/** Whether this condition is detrimental to the individual */
+		public abstract boolean isNegative();
+
+		/** Gets the help text describing this condition */
+		public abstract String getHelpText();
+
+		/** The severity of this condition */
+		public abstract String getName();
+
+		@Override
+		public int compareTo(Condition other) {
+			return getClass().getSimpleName().compareTo(other.getClass().getSimpleName());
+		}
 	}
 
 

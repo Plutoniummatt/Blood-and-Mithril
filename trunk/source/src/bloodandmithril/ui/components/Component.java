@@ -91,7 +91,7 @@ public abstract class Component {
 	/**
 	 * Initiates resources
 	 */
-	public static void load() {
+	public static void setup() {
 		Logger.generalDebug("UI Elements loaded", LogLevel.DEBUG);
 	}
 

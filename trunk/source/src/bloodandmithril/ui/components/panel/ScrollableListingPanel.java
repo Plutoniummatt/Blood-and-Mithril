@@ -54,8 +54,8 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 		super(parent);
 		onSetup(listings);
 	}
-	
-	
+
+
 	/**
 	 * Refreshes this {@link Panel}
 	 */
@@ -244,5 +244,10 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 		public int compareTo(ListingMenuItem<T> o) {
 			return t.compareTo(o.t);
 		}
+	}
+
+
+	public List<HashMap<ListingMenuItem<T>, Integer>> getListings() {
+		return listings;
 	}
 }

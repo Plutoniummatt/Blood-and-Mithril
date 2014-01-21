@@ -402,8 +402,10 @@ public class TradeWindow extends Window {
 				((Individual) proposee).ai.setCurrentTask(new Idle());
 			}
 		} else {
-			ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposer).id.id);
-			if (proposee instanceof Individual) {
+			if (GameWorld.selectedIndividuals.contains(proposer)) {
+				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposer).id.id);
+			}
+			if (proposee instanceof Individual && GameWorld.selectedIndividuals.contains(proposee)) {
 				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposee).id.id);
 			}
 		}

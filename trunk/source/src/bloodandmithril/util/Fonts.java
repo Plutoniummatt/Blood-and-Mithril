@@ -18,7 +18,7 @@ public class Fonts {
 	/**
 	 * Loads all fonts
 	 */
-	public static void loadFonts() {
+	public static void setup() {
 		// Default font
 		FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("data/fonts/default.ttf"));
 

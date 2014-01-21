@@ -3,7 +3,7 @@ package bloodandmithril.character.conditions;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.Condition;
 
-public class Poison implements Condition {
+public class Poison extends Condition {
 
 	/** The health/second being drained */
 	public float toxicity;
@@ -32,5 +32,40 @@ public class Poison implements Condition {
 	@Override
 	public boolean isExpired() {
 		return toxicity <= 0;
+	}
+
+
+	@Override
+	public boolean isNegative() {
+		return true;
+	}
+
+
+	@Override
+	public String getHelpText() {
+		return "Poisoned, the toxic effects will be detrimental to the general well-being of this individual, and can lead to fatal consequences";
+	}
+
+	@Override
+	public String getName() {
+		String severity;
+
+		int sev = Math.round(toxicity * 100)/10;
+		switch (sev) {
+			case 0:		severity = "Mildly"; break;
+			case 1:		severity = "Mildly"; break;
+			case 2:		severity = "Mildly"; break;
+			case 3:		severity = "Moderately"; break;
+			case 4:		severity = "Moderately"; break;
+			case 5:		severity = "Strongly"; break;
+			case 6:		severity = "Strongly"; break;
+			case 7:		severity = "Strongly"; break;
+			case 8:		severity = "Acutely"; break;
+			case 9:		severity = "Acutely"; break;
+			case 10:	severity = "Acutely"; break;
+			default: 	severity = "Extremely"; break;
+		}
+
+		return severity + " poisoned";
 	}
 }
