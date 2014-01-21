@@ -755,11 +755,7 @@ public abstract class Individual extends Equipper {
 
 		@Override
 		public int compareTo(Condition other) {
-			int compare = getClass().getSimpleName().compareTo(other.getClass().getSimpleName());
-			if (compare == 0) {
-				return new Integer(hashCode()).compareTo(other.hashCode());
-			}
-			return compare;
+			return getClass().getSimpleName().compareTo(other.getClass().getSimpleName());
 		}
 	}
 
@@ -787,6 +783,16 @@ public abstract class Individual extends Equipper {
 		} else {
 			state.health = state.health + amount;
 		}
+	}
+
+
+	public synchronized void addCondition(Condition condition) {
+		for (Condition existing : Sets.newHashSet(state.currentConditions)) {
+			if (condition.getClass().equals(existing.getClass())) {
+				return;
+			}
+		}
+		state.currentConditions.add(condition);
 	}
 
 
