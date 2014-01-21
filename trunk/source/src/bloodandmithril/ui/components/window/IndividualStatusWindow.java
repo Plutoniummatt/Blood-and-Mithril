@@ -92,7 +92,7 @@ public class IndividualStatusWindow extends Window {
 			case 8:		vital = "Normal"; break;
 			case 9:		vital = "Strong"; break;
 			case 10:	vital = "Very strong"; break;
-		default : throw new RuntimeException("Health percentage is not correct");
+			default : throw new RuntimeException("Health percentage is not correct");
 		}
 
 		if (!drawLine(truncate(vital), 45)) {

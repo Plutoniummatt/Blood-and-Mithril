@@ -18,7 +18,7 @@ public class Poison extends Condition {
 
 	@Override
 	public void affect(Individual affected , float delta) {
-		affected.state.health = affected.state.health - delta * toxicity;
+		affected.damage(delta * toxicity);
 		toxicity = toxicity - persistence * delta <= 0 ? 0 : toxicity - persistence * delta;
 	}
 
