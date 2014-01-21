@@ -755,7 +755,11 @@ public abstract class Individual extends Equipper {
 
 		@Override
 		public int compareTo(Condition other) {
-			return getClass().getSimpleName().compareTo(other.getClass().getSimpleName());
+			int compare = getClass().getSimpleName().compareTo(other.getClass().getSimpleName());
+			if (compare == 0) {
+				return new Integer(hashCode()).compareTo(other.hashCode());
+			}
+			return compare;
 		}
 	}
 
