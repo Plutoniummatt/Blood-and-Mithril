@@ -139,10 +139,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	private void loadResources() {
 		GameWorld.setup();
-		Fonts.loadFonts();
+		Fonts.setup();
 		Individual.setup();
 		Shaders.setup();
-		Component.load();
+		Component.setup();
 		Weather.setup();
 		KeyMappings.setup();
 		Equipable.setup();
@@ -151,7 +151,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		UserInterface.UICamera = new OrthographicCamera(WIDTH, HEIGHT);
 		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
 
-		UserInterface.layeredComponents.add(
+		UserInterface.addLayeredComponent(
 			new MainMenuWindow(
 				BloodAndMithrilClient.WIDTH/2 - 100,
 				BloodAndMithrilClient.HEIGHT/2 + 55,
