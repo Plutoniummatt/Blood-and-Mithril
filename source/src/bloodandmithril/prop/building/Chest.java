@@ -1,6 +1,7 @@
 package bloodandmithril.prop.building;
 
 import bloodandmithril.item.Container;
+import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -22,14 +23,6 @@ public abstract class Chest extends Construction {
 	 */
 	protected Chest(float x, float y, int width, int height, boolean grounded, float capacity) {
 		super(x, y, width, height, grounded);
-		setupContainer(capacity);
-	}
-
-
-	/**
-	 * Creates and sets up the {@link #container}
-	 */
-	private void setupContainer(float capacity) {
 		this.container = new ChestContainer(capacity, id);
 	}
 
@@ -37,7 +30,7 @@ public abstract class Chest extends Construction {
 	/**
 	 * The {@link Container} that drives the inventory of this {@link Chest}
 	 */
-	public class ChestContainer extends Container {
+	public static class ChestContainer extends Container {
 		private static final long serialVersionUID = 3061765937846818271L;
 
 		/** Id of the prop this chest belongs to */
@@ -53,7 +46,7 @@ public abstract class Chest extends Construction {
 
 
 		public Vector2 getPositionOfChest() {
-			return position;
+			return GameWorld.props.get(propId).position;
 		}
 	}
 }

@@ -37,6 +37,8 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Class representing a character, PC or NPC.
@@ -185,8 +187,16 @@ public abstract class Individual extends Equipper {
 	/** Renders any decorations for UI */
 	public void renderArrows() {
 		if (isSelected()) {
-			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-			Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+			BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
+
+			Shaders.filter.setUniformf("color",
+				(float)Math.sin(Math.PI * (1f - state.health/state.maxHealth) / 2),
+				(float)Math.cos(Math.PI * (1f - state.health/state.maxHealth) / 2),
+				0f,
+				1f
+			);
+
+			Shaders.filter.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 			BloodAndMithrilClient.spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + height);
 		}
 	}
@@ -275,6 +285,24 @@ public abstract class Individual extends Equipper {
 		respondToCommands();
 
 		kinetics(delta);
+
+		if (ClientServerInterface.isServer()) {
+			conditions(delta);
+		}
+	}
+
+
+	/**
+	 * Update how this {@link Individual} is affected by its {@link Condition}s
+	 */
+	private void conditions(float delta) {
+		for (Condition condition : Lists.newArrayList(state.currentConditions)) {
+			if (condition.isExpired()) {
+				state.currentConditions.remove(condition);
+			} else {
+				condition.affect(this, delta);
+			}
+		}
 	}
 
 
@@ -682,10 +710,13 @@ public abstract class Individual extends Equipper {
 	public static interface Condition {
 
 		/** Affect the character suffering from this condition */
-		public void affect(Individual effected);
+		public void affect(Individual affected, float delta);
 
 		/** Infect another character */
-		public void infect(Individual infected);
+		public void infect(Individual infected, float delta);
+
+		/** Whether this condition can be removed */
+		public boolean isExpired();
 	}
 
 
@@ -745,7 +776,7 @@ public abstract class Individual extends Equipper {
 		public Vector2 position;
 		public Vector2 velocity;
 		public Vector2 acceleration;
-		public Set<Condition> currentConditions;
+		public Set<Condition> currentConditions = Sets.newHashSet();
 
 		/**
 		 * Constructor

@@ -48,7 +48,11 @@ public class OpenTradeWindow implements Request {
 				)
 			);
 		} else {
-			// TODO sync prop
+			responses.responses.add(
+				new SynchronizePropRequest.SynchronizePropResponse(
+					GameWorld.props.get(proposeeId)
+				)
+			);
 		}
 
 		responses.responses.add(

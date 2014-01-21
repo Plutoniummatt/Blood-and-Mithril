@@ -8,6 +8,8 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.Individual.IndividualState;
+import bloodandmithril.character.conditions.Poison;
+import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.csi.ClientServerInterface;
@@ -19,9 +21,12 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
+import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -117,6 +122,12 @@ public class BloodAndMithrilServer {
 						} catch (InterruptedException e) {
 						}
 
+						if (counter % 10 == 0) {
+						  for (Prop prop : GameWorld.props.values()) {
+						    ClientServerInterface.SendNotification.notifySyncProp(prop);
+						  }
+						}
+
 						if (counter >= 100) {
 							ClientServerInterface.SendNotification.notifySyncWorldState();
 							counter = 0;
@@ -188,6 +199,33 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public boolean keyDown(int keycode) {
+
+	    if (keycode == Input.Keys.P) {
+	      GameWorld.individuals.get(1).state.currentConditions.add(new Poison(0.1f, 0.005f));
+	    }
+
+	    if (keycode == Input.Keys.T) {
+	      Individual individual = GameWorld.individuals.get(1);
+	      if (individual != null) {
+	        PineChest pineChest = new PineChest(individual.state.position.x, individual.state.position.y, true, 100f);
+	        GameWorld.props.put(pineChest.id, pineChest);
+	      }
+	    }
+
+	    if (keycode == Input.Keys.U) {
+	      IndividualState state = new IndividualState(10f, 10f);
+	      state.position = new Vector2(0, 500);
+	      state.velocity = new Vector2(0, 0);
+	      state.acceleration = new Vector2(0, 0);
+
+	      IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
+	      id.nickName = "Unknown";
+
+	      Boar boar = new Boar(id, state);
+
+	      GameWorld.individuals.put(boar.id.id, boar);
+	    }
+
 			if (keycode == Input.Keys.R) {
 				IndividualState state = new IndividualState(10f, 10f);
 				state.position = new Vector2(0, 500);

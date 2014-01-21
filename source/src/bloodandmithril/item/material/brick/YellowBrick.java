@@ -1,58 +1,53 @@
-package bloodandmithril.item.material.mineral;
+package bloodandmithril.item.material.brick;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
-import bloodandmithril.world.topography.tile.tiles.sedimentary.YellowSandTile;
+import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * Yellow Sand, obtained as a result of mining {@link YellowSandTile}
+ * {@link Item} representing {@link YellowBrickTile}
  *
  * @author Matt
  */
-public class YellowSand extends Item {
-	private static final long serialVersionUID = -7756119539773387265L;
-
+public class YellowBrick extends Item {
+	private static final long serialVersionUID = -7756119539482746265L;
 
 	/**
 	 * Constructor
 	 */
-	public YellowSand() {
-		super(10f, false, 1);
+	public YellowBrick() {
+		super(10f, false, 10);
 	}
 
 
 	@Override
 	public String getSingular(boolean firstCap) {
 		if (firstCap) {
-			return "Sand";
+			return "Yellow bricks";
 		}
-		return "sand";
+		return "yellow bricks";
 	}
-
 
 	@Override
 	public String getPlural(boolean firstCap) {
-		if (firstCap) {
-			return "Sand";
-		}
-		return "sand";
+		return getSingular(firstCap);
 	}
 
 
 	@Override
 	public Window getInfoWindow() {
 		return new MessageWindow(
-			"Sand is a naturally occurring granular material composed of finely divided rock and mineral particles.",
+			"Yellow colored bricks",
 			Color.ORANGE,
 			BloodAndMithrilClient.getMouseScreenX(),
 			BloodAndMithrilClient.getMouseScreenY(),
 			350,
 			200,
-			"Sand",
+			"Yellow Bricks",
 			true,
 			100,
 			100
@@ -62,6 +57,6 @@ public class YellowSand extends Item {
 
 	@Override
 	public boolean sameAs(Item other) {
-		return other instanceof YellowSand;
+		return other instanceof YellowBrick;
 	}
 }
