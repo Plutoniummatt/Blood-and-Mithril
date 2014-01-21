@@ -768,6 +768,24 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	public synchronized void damage(float amount) {
+		if (state.health <= 0f) {
+			state.health = 0f;
+		} else {
+			state.health = state.health - amount;
+		}
+	}
+
+
+	public synchronized void heal(float amount) {
+		if (state.health > state.maxHealth) {
+			state.health = state.maxHealth;
+		} else {
+			state.health = state.health + amount;
+		}
+	}
+
+
 	/** Renders this character */
 	protected abstract void internalRender();
 

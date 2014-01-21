@@ -201,7 +201,7 @@ public class BloodAndMithrilServer {
 		public boolean keyDown(int keycode) {
 
 	    if (keycode == Input.Keys.P) {
-	      GameWorld.individuals.get(1).state.currentConditions.add(new Poison(0.1f, 0.005f));
+	      GameWorld.individuals.get(1).state.currentConditions.add(new Poison(1f, 0.1f));
 	    }
 
 	    if (keycode == Input.Keys.T) {
