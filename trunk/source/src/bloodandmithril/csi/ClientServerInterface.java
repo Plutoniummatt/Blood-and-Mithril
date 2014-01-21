@@ -22,6 +22,7 @@ import bloodandmithril.character.Individual.IndividualState;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.character.ai.implementations.BoarAI;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -36,6 +37,8 @@ import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.ai.task.Wait;
+import bloodandmithril.character.conditions.Poison;
+import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.CSIMineTile;
@@ -63,6 +66,8 @@ import bloodandmithril.csi.requests.SendChatMessage.SendChatMessageResponse;
 import bloodandmithril.csi.requests.SetAIIdle;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
 import bloodandmithril.csi.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
+import bloodandmithril.csi.requests.SynchronizePropRequest;
+import bloodandmithril.csi.requests.SynchronizePropRequest.SynchronizePropResponse;
 import bloodandmithril.csi.requests.SynchronizeWorldState;
 import bloodandmithril.csi.requests.SynchronizeWorldState.SynchronizeWorldStateResponse;
 import bloodandmithril.csi.requests.TransferItems;
@@ -80,6 +85,9 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
+import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.building.Chest.ChestContainer;
+import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -408,6 +416,13 @@ public class ClientServerInterface {
 		kryo.register(SynchronizeWorldStateResponse.class);
 		kryo.register(EquipOrUnequipItem.class);
 		kryo.register(ConsumeItem.class);
+		kryo.register(Poison.class);
+		kryo.register(Boar.class);
+		kryo.register(BoarAI.class);
+		kryo.register(SynchronizePropRequest.class);
+		kryo.register(SynchronizePropResponse.class);
+		kryo.register(PineChest.class);
+		kryo.register(ChestContainer.class);
 	}
 
 
@@ -543,6 +558,16 @@ public class ClientServerInterface {
 				true,
 				false,
 				new DestroyTileResponse(location.x, location.y, foreGround)
+			);
+		}
+
+
+		public static synchronized void notifySyncProp(Prop prop) {
+			sendNotification(
+				-1,
+				false,
+				false,
+				new SynchronizePropRequest.SynchronizePropResponse(prop)
 			);
 		}
 

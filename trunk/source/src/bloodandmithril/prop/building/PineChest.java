@@ -5,6 +5,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
@@ -21,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class PineChest extends Chest {
 
 	/** {@link TextureRegion} of the {@link PineChest} TODO - New texture */
-	private static TextureRegion pineChest = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 57, 68);
+	public static TextureRegion pineChest;
 
 	/**
 	 * Constructor
@@ -103,5 +104,15 @@ public class PineChest extends Chest {
 		}
 
 		return menu;
+	}
+
+
+	@Override
+	public void synchronize(Prop other) {
+		if (other instanceof PineChest) {
+			this.container.synchronize(((PineChest)other).container);
+		} else {
+			throw new RuntimeException("Can not synchronize Pine Chest with " + other.getClass().getSimpleName());
+		}
 	}
 }

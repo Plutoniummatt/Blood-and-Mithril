@@ -2,8 +2,11 @@ package bloodandmithril.prop;
 
 
 import bloodandmithril.persistence.ParameterPersistenceService;
+import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.world.GameWorld;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -43,6 +46,13 @@ public abstract class Prop {
 	/** Called when this {@link Prop} has been right clicked */
 	public abstract boolean rightClick();
 
+	/** Synchronizes this prop with another */
+	public abstract void synchronize(Prop other);
+
 	/** Get the right-click {@link ContextMenu} */
 	public abstract ContextMenu getContextMenu();
+
+	public static void setup() {
+		PineChest.pineChest = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 57, 68);
+	}
 }

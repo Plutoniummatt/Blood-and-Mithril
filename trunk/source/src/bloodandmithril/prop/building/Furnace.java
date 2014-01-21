@@ -2,6 +2,7 @@ package bloodandmithril.prop.building;
 
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
@@ -78,5 +79,10 @@ public class Furnace extends Construction {
 		float alpha = 0.9f + 0.01f * (Util.getRandom().nextBoolean() ? -1f : 1f);
 		light.color.a = alpha < 0.8f ? 0.8f : alpha > 1f ? 1f : alpha;
 		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
+	}
+
+
+	@Override
+	public void synchronize(Prop other) {
 	}
 }

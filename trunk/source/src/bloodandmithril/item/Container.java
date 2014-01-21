@@ -30,7 +30,22 @@ public class Container implements Serializable {
 	 */
 	protected Container(float inventoryMassCapacity, boolean canExceedCapacity) {
 		this.inventoryMassCapacity = inventoryMassCapacity;
-    this.canExceedCapacity = canExceedCapacity;
+		this.canExceedCapacity = canExceedCapacity;
+	}
+
+
+	/**
+	 * Synchronizes this container with another
+	 */
+	public void synchronize(Container other) {
+		this.inventory.clear();
+		this.inventory.putAll(other.inventory);
+
+		this.inventoryMassCapacity = other.inventoryMassCapacity;
+		this.currentLoad = other.currentLoad;
+		this.canExceedCapacity = other.canExceedCapacity;
+
+		refreshCurrentLoad();
 	}
 
 

@@ -1,6 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.brick;
 
 import bloodandmithril.item.Item;
+import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.world.topography.tile.tiles.BrickTile;
 
 public class YellowBrickTile extends BrickTile {
@@ -34,7 +35,6 @@ public class YellowBrickTile extends BrickTile {
 
 	@Override
 	public Item mine() {
-		// TODO Auto-generated method stub
-		return null;
+		return new YellowBrick();
 	}
 }

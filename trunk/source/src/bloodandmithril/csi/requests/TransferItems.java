@@ -66,7 +66,7 @@ public class TransferItems implements Request {
 		case PROP:
 			Prop prop = GameWorld.props.get(proposerId);
 			proposee = ((Chest) prop).container;
-			// TODO Add prop sync to response list
+			response.responses.add(new SynchronizePropRequest.SynchronizePropResponse(prop));
 			break;
 
 		default:

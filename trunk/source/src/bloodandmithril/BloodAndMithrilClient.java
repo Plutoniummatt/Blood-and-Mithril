@@ -20,6 +20,7 @@ import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
@@ -145,6 +146,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Weather.setup();
 		KeyMappings.setup();
 		Equipable.setup();
+		Prop.setup();
 
 		UserInterface.UICamera = new OrthographicCamera(WIDTH, HEIGHT);
 		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
