@@ -7,6 +7,8 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.conditions.Hunger;
+import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.OneHandedWeapon;
@@ -233,6 +235,23 @@ public class Elf extends Individual {
 	@Override
 	protected void internalUpdate(float delta) {
 		updateAnimation();
+		updateVitals(delta);
+	}
+
+
+	private void updateVitals(float delta) {
+		heal(delta * state.healthRegen);
+
+		decreaseHunger(delta * 0.0004f);
+		decreaseThirst(delta * 0.0006f);
+
+		if (state.hunger < 0.75f) {
+			addCondition(new Hunger(this));
+		}
+
+		if (state.thirst < 0.75f) {
+			addCondition(new Thirst(this));
+		}
 	}
 
 

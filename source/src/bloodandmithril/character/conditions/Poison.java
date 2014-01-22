@@ -68,4 +68,9 @@ public class Poison extends Condition {
 
 		return severity + " poisoned";
 	}
+
+
+	@Override
+	public void uponExpiry() {
+	}
 }
