@@ -35,14 +35,12 @@ import com.google.common.collect.Lists;
  */
 public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Panel {
 
-	/**
-	 * Comparator used to sort the listing
-	 */
+	/** Comparator used to sort the listing */
 	private final Comparator<HashMap<ListingMenuItem<T>, Integer>> comparator = new Comparator<HashMap<ListingMenuItem<T>, Integer>>() {
 		@Override
 		public int compare(HashMap<ListingMenuItem<T>, Integer> o1, HashMap<ListingMenuItem<T>, Integer> o2) {
 			if (!o1.isEmpty() && !o2.isEmpty()) {
-				return o1.entrySet().iterator().next().getKey().t.compareTo(o2.entrySet().iterator().next().getKey().t);
+				return o1.entrySet().iterator().next().getKey().compareTo(o2.entrySet().iterator().next().getKey());
 			}
 			return 0;
 		}

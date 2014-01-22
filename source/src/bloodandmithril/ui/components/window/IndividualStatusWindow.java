@@ -81,7 +81,7 @@ public class IndividualStatusWindow extends Window {
 		int category = Math.round(percentageHealth)/10;
 		String vital;
 		switch(category) {
-			case 0:		vital = "Dead"; break;
+			case 0:		vital = "Near death"; break;
 			case 1:		vital = "Near death"; break;
 			case 2:		vital = "Very weak"; break;
 			case 3:		vital = "Weak"; break;
@@ -93,6 +93,10 @@ public class IndividualStatusWindow extends Window {
 			case 9:		vital = "Strong"; break;
 			case 10:	vital = "Very strong"; break;
 			default : throw new RuntimeException("Health percentage is not correct");
+		}
+
+		if (percentageHealth == 0f) {
+			vital = "Dead";
 		}
 
 		if (!drawLine(truncate(vital), 45)) {

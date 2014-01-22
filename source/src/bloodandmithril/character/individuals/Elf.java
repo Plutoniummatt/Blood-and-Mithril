@@ -238,7 +238,7 @@ public class Elf extends Individual {
 		updateAnimation();
 
 		if (ClientServerInterface.isServer()) {
-			updateVitals(delta);
+			updateVitals(delta * 10f);
 		}
 	}
 
@@ -246,8 +246,8 @@ public class Elf extends Individual {
 	private void updateVitals(float delta) {
 		heal(delta * state.healthRegen);
 
-		decreaseHunger(delta * 0.0004f);
-		decreaseThirst(delta * 0.0006f);
+		decreaseHunger(0.000004f);
+		decreaseThirst(0.000012f);
 
 		if (state.hunger < 0.75f) {
 			addCondition(new Hunger(this));
