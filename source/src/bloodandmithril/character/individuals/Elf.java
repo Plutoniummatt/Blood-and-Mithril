@@ -238,7 +238,7 @@ public class Elf extends Individual {
 		updateAnimation();
 
 		if (ClientServerInterface.isServer()) {
-			updateVitals(delta * 10f);
+			updateVitals(delta);
 		}
 	}
 
