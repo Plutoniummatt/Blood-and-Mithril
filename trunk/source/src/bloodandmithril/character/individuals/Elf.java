@@ -9,6 +9,7 @@ import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.OneHandedWeapon;
@@ -235,7 +236,10 @@ public class Elf extends Individual {
 	@Override
 	protected void internalUpdate(float delta) {
 		updateAnimation();
-		updateVitals(delta);
+
+		if (ClientServerInterface.isServer()) {
+			updateVitals(delta);
+		}
 	}
 
 
