@@ -37,7 +37,9 @@ import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.ai.task.Wait;
+import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Poison;
+import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.csi.Response.Responses;
@@ -360,6 +362,7 @@ public class ClientServerInterface {
 		kryo.register(GraniteTile.class);
 		kryo.register(HashMap.class);
 		kryo.register(HashSet.class);
+		kryo.register(Hunger.class);
 		kryo.register(Idle.class);
 		kryo.register(Individual.class);
 		kryo.register(IndividualIdentifier.class);
@@ -401,6 +404,7 @@ public class ClientServerInterface {
 		kryo.register(SynchronizePropResponse.class);
 		kryo.register(SynchronizeWorldState.class);
 		kryo.register(SynchronizeWorldStateResponse.class);
+		kryo.register(Thirst.class);
 		kryo.register(Tile.class);
 		kryo.register(Tile.Orientation.class);
 		kryo.register(Tile[].class);
