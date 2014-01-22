@@ -13,11 +13,13 @@ import java.io.Serializable;
  */
 public class Epoch implements Serializable {
 	private static final long serialVersionUID = -5123582798866732144L;
-	
+
+	/** Length of one day, in real minutes */
+	private static final float lengthOfDay = 90;
+
 	private float timeOfDay;
 	public int dayOfMonth, monthOfYear, year;
-	
-	
+
 	/**
 	 * Constructor
 	 */
@@ -27,8 +29,8 @@ public class Epoch implements Serializable {
 		monthOfYear = month;
 		this.year = year;
 	}
-	
-	
+
+
 	/**
 	 * @param delta - To increment
 	 */
@@ -37,10 +39,10 @@ public class Epoch implements Serializable {
 			timeOfDay = 0;
 			incrementDay();
 		}
-		timeOfDay += delta;
+		timeOfDay += 24 * delta / lengthOfDay;
 	}
-	
-	
+
+
 	/**
 	 * Increments the day
 	 */
@@ -52,16 +54,16 @@ public class Epoch implements Serializable {
 			dayOfMonth++;
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the time of day
 	 */
 	public float getTime() {
 		return timeOfDay;
 	}
-	
-	
+
+
 	/**
 	 * Increments the month.
 	 */
@@ -73,7 +75,7 @@ public class Epoch implements Serializable {
 			monthOfYear++;
 		}
 	}
-	
+
 
 	/**
 	 * @return the current time of day as a string
@@ -83,16 +85,16 @@ public class Epoch implements Serializable {
 		String minute = (int)((timeOfDay - (float)floor(timeOfDay)) * 60f) < 10 ? "0" + Integer.toString((int)((timeOfDay - (float)floor(timeOfDay)) * 60f)) : Integer.toString((int)((timeOfDay - (float)floor(timeOfDay)) * 60f));
 		return hour + ":" + minute;
 	}
-	
-	
+
+
 	/**
 	 * @return the current date as a string
 	 */
 	public String getDateString() {
 		return Integer.toString(dayOfMonth) + "/" + Integer.toString(monthOfYear) + "/" + Integer.toString(year);
 	}
-	
-	
+
+
 	/**
 	 * @return the daylight alpha
 	 */

@@ -391,6 +391,13 @@ public class UserInterface {
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Time: " + WorldState.currentEpoch.getTimeString(), 5, Gdx.graphics.getHeight() - 5);
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Date: " + WorldState.currentEpoch.getDateString(), 5, Gdx.graphics.getHeight() - 25);
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Ping: " + BloodAndMithrilClient.ping, 5, Gdx.graphics.getHeight() - 45);
+
+		Individual individual = GameWorld.individuals.get(1);
+		if (individual != null) {
+			defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Health: " + individual.state.health, 5, Gdx.graphics.getHeight() - 100);
+			defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Hunger: " + individual.state.hunger, 5, Gdx.graphics.getHeight() - 120);
+			defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Thirst: " + individual.state.thirst, 5, Gdx.graphics.getHeight() - 140);
+		}
 	}
 
 
