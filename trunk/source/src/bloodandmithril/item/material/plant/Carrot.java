@@ -40,7 +40,7 @@ public class Carrot extends Item implements Consumable {
 
 	@Override
 	public boolean consume(Individual consumer) {
-		consumer.id.nickName = "Carrot Eater";
+		consumer.increaseHunger(0.05f);
 		return true;
 	}
 

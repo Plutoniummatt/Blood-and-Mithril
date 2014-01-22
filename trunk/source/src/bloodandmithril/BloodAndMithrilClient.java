@@ -368,6 +368,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (keycode == Input.Keys.R) {
 			IndividualState state = new IndividualState(10f, 10f);
+			state.stamina = 1f;
+			state.staminaRegen = 1f;
+			state.hunger = 1f;
+			state.thirst = 1f;
+			state.healthRegen = 0.01f;
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);

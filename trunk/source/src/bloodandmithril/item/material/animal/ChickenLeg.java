@@ -54,6 +54,7 @@ public class ChickenLeg extends Item implements Consumable {
 			UserInterface.addLayeredComponent(messageWindow);
 			return false;
 		}
+		consumer.increaseHunger(0.15f);
 		return true;
 	}
 

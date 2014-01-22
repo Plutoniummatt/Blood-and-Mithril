@@ -299,6 +299,7 @@ public abstract class Individual extends Equipper {
 	private void conditions(float delta) {
 		for (Condition condition : Lists.newArrayList(state.currentConditions)) {
 			if (condition.isExpired()) {
+				condition.uponExpiry();
 				state.currentConditions.remove(condition);
 			} else {
 				condition.affect(this, delta);
@@ -744,6 +745,9 @@ public abstract class Individual extends Equipper {
 		/** Whether this condition can be removed */
 		public abstract boolean isExpired();
 
+		/** Called when expired */
+		public abstract void uponExpiry();
+
 		/** Whether this condition is detrimental to the individual */
 		public abstract boolean isNegative();
 
@@ -768,8 +772,26 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	public synchronized void decreaseThirst(float amount) {
+		if (state.thirst - amount <= 0f) {
+			state.thirst = 0f;
+		} else {
+			state.thirst = state.thirst - amount;
+		}
+	}
+
+
+	public synchronized void increaseThirst(float amount) {
+		if (state.thirst + amount > 1f) {
+			state.thirst = 1f;
+		} else {
+			state.thirst = state.thirst + amount;
+		}
+	}
+
+
 	public synchronized void damage(float amount) {
-		if (state.health <= 0f) {
+		if (state.health - amount <= 0f) {
 			state.health = 0f;
 		} else {
 			state.health = state.health - amount;
@@ -778,10 +800,46 @@ public abstract class Individual extends Equipper {
 
 
 	public synchronized void heal(float amount) {
-		if (state.health > state.maxHealth) {
+		if (state.health + amount > state.maxHealth) {
 			state.health = state.maxHealth;
 		} else {
 			state.health = state.health + amount;
+		}
+	}
+
+
+	public synchronized void increaseHunger(float amount) {
+		if (state.hunger + amount >= 1f) {
+			state.hunger = 1f;
+		} else {
+			state.hunger = state.hunger + amount;
+		}
+	}
+
+
+	public synchronized void decreaseHunger(float amount) {
+		if (state.hunger - amount <= 0f) {
+			state.hunger = 0f;
+		} else {
+			state.hunger = state.hunger - amount;
+		}
+	}
+
+
+	public synchronized void increaseStamina(float amount) {
+		if (state.stamina + amount >= 1f) {
+			state.stamina = 1f;
+		} else {
+			state.stamina = state.stamina + amount;
+		}
+	}
+
+
+	public synchronized void decreaseStamina(float amount) {
+		if (state.stamina - amount <= 0f) {
+			state.stamina = 0f;
+		} else {
+			state.stamina = state.stamina - amount;
 		}
 	}
 
@@ -793,6 +851,16 @@ public abstract class Individual extends Equipper {
 			}
 		}
 		state.currentConditions.add(condition);
+	}
+
+
+	public synchronized void changeStaminaRegen(float newValue) {
+		state.staminaRegen = newValue;
+	}
+
+
+	public synchronized void changeHealthRegen(float newValue) {
+		state.healthRegen = newValue;
 	}
 
 
@@ -840,7 +908,7 @@ public abstract class Individual extends Equipper {
 	public static class IndividualState implements Serializable {
 		private static final long serialVersionUID = 3678630824613212498L;
 
-		public float health, maxHealth;
+		public float health, maxHealth, healthRegen, stamina, staminaRegen, hunger, thirst;
 		public Vector2 position;
 		public Vector2 velocity;
 		public Vector2 acceleration;
