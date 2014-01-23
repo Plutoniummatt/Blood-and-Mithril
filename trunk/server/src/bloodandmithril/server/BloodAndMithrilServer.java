@@ -248,10 +248,10 @@ public class BloodAndMithrilServer {
 					20f
 				);
 
-				elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
-				elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
-				elf.giveItem(new ButterflySword(100), 1);
-				elf.giveItem(new Broadsword(100), 1);
+				elf.giveItem(new Carrot());
+				elf.giveItem(new ChickenLeg());
+				elf.giveItem(new ButterflySword(100));
+				elf.giveItem(new Broadsword(100));
 
 				GameWorld.individuals.put(elf.id.id, elf);
 			}

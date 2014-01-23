@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import bloodandmithril.util.Logger;
-import bloodandmithril.util.Logger.LogLevel;
-
 
 /**
  * A container that contains {@link Item}s
@@ -53,28 +50,23 @@ public class Container implements Serializable {
 	 * @param item to put
 	 * @param quantity of item to put
 	 */
-	public synchronized void giveItem(Item item, int quantity) {
-		if (quantity <= 0) {
-			Logger.generalDebug("Can not give " + quantity + " items", LogLevel.WARN);
-			return;
-		}
-
+	public synchronized void giveItem(Item item) {
 		HashMap<Item, Integer> copy = new HashMap<Item, Integer>(inventory);
 
 		if (inventory.isEmpty()) {
-			copy.put(item, quantity);
+			copy.put(item, 1);
 		} else {
 			boolean stacked = false;
 			for (Entry<Item, Integer> entry : inventory.entrySet()) {
 				if (item.sameAs(entry.getKey())) {
-					copy.put(entry.getKey(), entry.getValue() + quantity);
+					copy.put(entry.getKey(), entry.getValue() + 1);
 					stacked = true;
 					break;
 				}
 			}
 
 			if (!stacked) {
-				copy.put(item, quantity);
+				copy.put(item, 1);
 			}
 		}
 
@@ -87,23 +79,18 @@ public class Container implements Serializable {
 	 * Takes a number of items
 	 * @return the number of items taken.
 	 */
-	public synchronized int takeItem(Item item, int quantity) {
-		if (quantity <= 0) {
-			Logger.generalDebug("Can not take " + quantity + " items", LogLevel.WARN);
-			return 0;
-		}
-
+	public synchronized int takeItem(Item item) {
 		int taken = 0;
 		HashMap<Item, Integer> copy = new HashMap<Item, Integer>(inventory);
 		for (Entry<Item, Integer> entry : inventory.entrySet()) {
 			if (item.sameAs(entry.getKey())) {
-				if (entry.getValue() - quantity <= 0) {
+				if (entry.getValue() - 1 <= 0) {
 					taken = entry.getValue();
 					copy.remove(entry.getKey());
 					break;
 				}
-				copy.put(entry.getKey(), entry.getValue() - quantity);
-				taken = quantity;
+				copy.put(entry.getKey(), entry.getValue() - 1);
+				taken = 1;
 				break;
 			}
 		}

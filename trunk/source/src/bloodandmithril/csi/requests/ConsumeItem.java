@@ -36,7 +36,7 @@ public class ConsumeItem implements Request {
 		Individual individual = GameWorld.individuals.get(individualId);
 
 		if (consumable.consume(individual)) {
-			individual.takeItem((Item)consumable, 1);
+			individual.takeItem((Item)consumable);
 		}
 
 		responses.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual, System.currentTimeMillis()));

@@ -597,8 +597,8 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyGiveItem(int individualId, Item item, int quantity) {
-			GameWorld.individuals.get(individualId).giveItem(item, quantity);
+		public static synchronized void notifyGiveItem(int individualId, Item item) {
+			GameWorld.individuals.get(individualId).giveItem(item);
 			sendNotification(
 				-1,
 				true,
