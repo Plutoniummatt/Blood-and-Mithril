@@ -316,17 +316,19 @@ public class InventoryWindow extends Window {
 								new JITTask() {
 									@Override
 									public void execute(Object... args) {
-										host.takeItem(item);
-										Bottle newBottle = ((Bottle) item).clone();
-										newBottle.drink(Float.parseFloat((String)args[0]), (Individual)host);
-										host.giveItem(newBottle);
+										if (ClientServerInterface.isServer()) {
+											host.takeItem(item);
+											Bottle newBottle = ((Bottle) item).clone();
+											newBottle.drink(Float.parseFloat((String)args[0]), (Individual)host);
+											host.giveItem(newBottle);
+											refresh();
+										}
 									}
 								},
 								"Drink",
 								true
 							)
 						);
-						refresh();
 					}
 				},
 				new Color(0.8f, 0.8f, 0.8f, 1f),
