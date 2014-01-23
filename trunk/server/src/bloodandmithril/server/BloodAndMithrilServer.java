@@ -245,7 +245,7 @@ public class BloodAndMithrilServer {
 				id.nickName = "Elfie";
 
 				Elf elf = new Elf(
-					id, state, true, true,
+					id, state, Gdx.input.isKeyPressed(Input.Keys.Q), true,
 					new Color(0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 1),
 					new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
 					Util.getRandom().nextInt(4),
