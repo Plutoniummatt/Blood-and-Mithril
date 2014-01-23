@@ -185,7 +185,7 @@ public class BloodAndMithrilServer {
 			// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
 			float delta = Gdx.graphics.getDeltaTime();
 			if (delta < 0.1f && !GameSaver.isSaving()) {
-				gameWorld.update(delta, 0, 0); //TODO
+				gameWorld.update(0, 0);
 			}
 		}
 

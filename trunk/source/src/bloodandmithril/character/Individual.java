@@ -12,6 +12,7 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.character.skill.Skills;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.equipment.OneHandedWeapon;
@@ -106,6 +107,9 @@ public abstract class Individual extends Equipper {
 	/** Part of the step-up processing */
 	private int steps = 0;
 
+	/** {@link Skills}s of this {@link Individual} */
+	private Skills skills = new Skills();
+
 	/**
 	 * Constructor
 	 */
@@ -148,8 +152,14 @@ public abstract class Individual extends Equipper {
 		this.width = other.width;
 		this.timeStamp = other.timeStamp;
 		this.inventory = other.inventory;
+		this.skills = other.skills;
 
 		internalCopyFrom(other);
+	}
+
+
+	public Skills getSkills() {
+		return skills;
 	}
 
 
@@ -744,7 +754,8 @@ public abstract class Individual extends Equipper {
 	 *
 	 * @author Matt
 	 */
-	public static abstract class Condition implements Comparable<Condition> {
+	public static abstract class Condition implements Comparable<Condition>, Serializable {
+		private static final long serialVersionUID = -1125485475556985426L;
 
 		/** Affect the character suffering from this condition */
 		public abstract void affect(Individual affected, float delta);

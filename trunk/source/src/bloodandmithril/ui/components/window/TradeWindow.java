@@ -25,7 +25,6 @@ import bloodandmithril.util.Task;
 import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -105,22 +104,24 @@ public class TradeWindow extends Window {
 			proposalAccepted = true;
 		}
 
+
 		if (proposer instanceof Individual && proposee instanceof Individual && !proposalAccepted) {
+			HashMap<Item, Integer> tradeThis = Maps.newHashMap();
+			HashMap<Item, Integer> forThis = Maps.newHashMap();
+
+			for (Entry<ListingMenuItem<Item>, Integer> entry : proposerItemsToTrade.entrySet()) {
+				tradeThis.put(entry.getKey().t, entry.getValue());
+			}
+
+			for (Entry<ListingMenuItem<Item>, Integer> entry : proposeeItemsToTrade.entrySet()) {
+				forThis.put(entry.getKey().t, entry.getValue());
+			}
+
 			proposalAccepted = TradeService.evaluate(
 				(Individual)proposer,
-				Lists.transform(Lists.newArrayList(proposerItemsToTrade.entrySet()), new Function<Entry<ListingMenuItem<Item>, Integer>, Item>() {
-					@Override
-					public Item apply(Entry<ListingMenuItem<Item>, Integer> input) {
-						return input.getKey().t;
-					}
-				}),
+				tradeThis,
 				(Individual)proposee,
-				Lists.transform(Lists.newArrayList(proposeeItemsToTrade.entrySet()), new Function<Entry<ListingMenuItem<Item>, Integer>, Item>() {
-					@Override
-					public Item apply(Entry<ListingMenuItem<Item>, Integer> input) {
-						return input.getKey().t;
-					}
-				})
+				forThis
 			);
 		}
 

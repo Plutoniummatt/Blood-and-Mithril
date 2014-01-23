@@ -389,7 +389,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			id.nickName = "Elfie";
 
 			Elf elf = new Elf(
-				id, state, true, true,
+				id, state, Gdx.input.isKeyPressed(Input.Keys.Q), true,
 				new Color(0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 1),
 				new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
 				Util.getRandom().nextInt(4),
@@ -559,7 +559,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
 		if (!paused && delta < LAG_SPIKE_TOLERANCE && !GameSaver.isSaving()) {
 			Shaders.updateShaderUniforms();
-			gameWorld.update(delta, (int) cam.position.x, (int) cam.position.y);
+			gameWorld.update((int) cam.position.x, (int) cam.position.y);
 		}
 
 		leftDoubleClickTimer += delta;

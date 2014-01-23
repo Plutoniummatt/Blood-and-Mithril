@@ -106,7 +106,7 @@ public class GameWorld {
 	/**
 	 * Updates the game world
 	 */
-	public void update(float delta, int camX, int camY) {
+	public void update(int camX, int camY) {
 		topography.loadOrGenerateNullChunksAccordingToCam(camX, camY);
 		float d = 1f/60f;
 		WorldState.currentEpoch.incrementTime(d);
