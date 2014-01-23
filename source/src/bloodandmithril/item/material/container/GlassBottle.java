@@ -29,7 +29,7 @@ public class GlassBottle extends Bottle {
 			content = " of " + containedLiquid.getSimpleName() + " (" + String.format("%.2f", amount) + "/" + String.format("%.2f", maxAmount) + ")";
 		}
 
-		return firstCap ? "G" : "g" + "lass bottle" + content;
+		return (firstCap ? "G" : "g") + "lass bottle" + content;
 	}
 
 

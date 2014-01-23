@@ -246,8 +246,8 @@ public class Elf extends Individual {
 	private void updateVitals(float delta) {
 		heal(delta * state.healthRegen);
 
-		decreaseHunger(0.000000066f);
-		decreaseThirst(0.0000002f);
+		decreaseHunger(0.000001f);
+		decreaseThirst(0.000003f);
 
 		if (state.hunger < 0.75f) {
 			addCondition(new Hunger(this));
