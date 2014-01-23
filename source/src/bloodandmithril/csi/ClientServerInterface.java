@@ -87,6 +87,7 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.container.Bottle;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.material.liquid.Liquid.Empty;
 import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.item.material.plant.Carrot;
@@ -354,6 +355,7 @@ public class ClientServerInterface {
 		kryo.register(DualKeyHashMap.class);
 		kryo.register(Elf.class);
 		kryo.register(ElfAI.class);
+		kryo.register(Empty.class);
 		kryo.register(EmptyTile.class);
 		kryo.register(Epoch.class);
 		kryo.register(Equipable.class);

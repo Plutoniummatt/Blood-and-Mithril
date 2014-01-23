@@ -3,6 +3,7 @@ package bloodandmithril.item.material.container;
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.material.liquid.Liquid.Empty;
 
 /**
  * Bottle made from Glass
@@ -31,7 +32,7 @@ public abstract class Bottle extends Item {
 		if (this.amount - amount <= 0f) {
 			toReturn = this.amount;
 			this.amount = 0f;
-			this.containedLiquid = null;
+			this.containedLiquid = Empty.class;
 		} else {
 			toReturn = amount;
 			this.amount = this.amount - amount;
