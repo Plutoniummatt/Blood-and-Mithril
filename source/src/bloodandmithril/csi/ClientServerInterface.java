@@ -84,6 +84,10 @@ import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.material.animal.ChickenLeg;
+import bloodandmithril.item.material.container.Bottle;
+import bloodandmithril.item.material.container.GlassBottle;
+import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
@@ -321,6 +325,7 @@ public class ClientServerInterface {
 		kryo.register(AStarPathFinder.Node.class);
 		kryo.register(Boar.class);
 		kryo.register(BoarAI.class);
+		kryo.register(Bottle.class);
 		kryo.register(Box.class);
 		kryo.register(BrickTile.class);
 		kryo.register(Broadsword.class);
@@ -356,6 +361,7 @@ public class ClientServerInterface {
 		kryo.register(GameWorld.individuals.keySet().getClass());
 		kryo.register(GenerateChunk.class);
 		kryo.register(GenerateChunkResponse.class);
+		kryo.register(GlassBottle.class);
 		kryo.register(GlassTile.class);
 		kryo.register(GoToLocation.class);
 		kryo.register(GoToMovingLocation.class);
@@ -372,6 +378,7 @@ public class ClientServerInterface {
 		kryo.register(LinkedList.class);
 		kryo.register(List.class);
 		kryo.register(ListingMenuItem.class);
+		kryo.register(Liquid.class);
 		kryo.register(Message.class);
 		kryo.register(Mine.class);
 		kryo.register(MineTile.class);
@@ -419,6 +426,7 @@ public class ClientServerInterface {
 		kryo.register(TreeMap.class);
 		kryo.register(Vector2.class);
 		kryo.register(Wait.class);
+		kryo.register(Water.class);
 		kryo.register(WayPoint.class);
 		kryo.register(YellowBrickPlatform.class);
 		kryo.register(YellowBrickTile.class);
