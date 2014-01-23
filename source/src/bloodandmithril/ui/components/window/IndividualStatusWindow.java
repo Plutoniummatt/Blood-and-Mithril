@@ -161,8 +161,8 @@ public class IndividualStatusWindow extends Window {
 
 	private void refreshLisitng(final Individual individual, List<HashMap<ListingMenuItem<Condition>, Integer>> listings) {
 		listings.clear();
+		HashMap<ListingMenuItem<Condition>, Integer> map = Maps.newHashMap();
 		for (final Condition condition : Lists.newArrayList(individual.state.currentConditions)) {
-			HashMap<ListingMenuItem<Condition>, Integer> map = Maps.newHashMap();
 			map.put(
 				new ListingMenuItem<Condition>(
 					condition,
@@ -217,7 +217,7 @@ public class IndividualStatusWindow extends Window {
 				),
 				0
 			);
-			listings.add(map);
 		}
+		listings.add(map);
 	}
 }
