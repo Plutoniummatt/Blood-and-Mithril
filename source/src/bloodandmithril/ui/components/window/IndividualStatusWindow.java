@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.Condition;
+import bloodandmithril.character.skill.Skills;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -19,10 +20,12 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Task;
+import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Shows the status of an {@link Individual}
@@ -32,8 +35,30 @@ import com.google.common.collect.Maps;
 public class IndividualStatusWindow extends Window {
 
 	private final Individual individual;
-
 	private ScrollableListingPanel<Condition> conditionsPanel;
+	private float time, identificationTime;
+	private String vitals;
+	private boolean identified, identifying;
+
+	private final Button identify = new Button(
+		"Identify",
+		Fonts.defaultFont,
+		0,
+		0,
+		80,
+		16,
+		new Task() {
+			@Override
+			public void execute() {
+				identifying = true;
+				identified = false;
+			}
+		},
+		Color.GREEN,
+		Color.WHITE,
+		Color.GRAY,
+		UIRef.BL
+	);
 
 	/** Constructor */
 	public IndividualStatusWindow(final Individual individual, int x, int y, int length, int height, String title, boolean active) {
@@ -65,6 +90,10 @@ public class IndividualStatusWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
+		if (identifying) {
+			time = time + 1f/60f;
+		}
+
 		Color activeTitle = new Color(0.6f, 0f, 0.4f, 1f * alpha);
 		Color inactiveTitle = new Color(0.45f, 0f, 0.32f, 0.6f * alpha);
 		Color activeWhite = new Color(1f, 1f, 1f, 1f * alpha);
@@ -79,27 +108,41 @@ public class IndividualStatusWindow extends Window {
 
 		float percentageHealth = 100 * (individual.state.health/individual.state.maxHealth);
 		int category = Math.round(percentageHealth)/10;
-		String vital;
-		switch(category) {
-			case 0:		vital = "Near death"; break;
-			case 1:		vital = "Near death"; break;
-			case 2:		vital = "Very weak"; break;
-			case 3:		vital = "Weak"; break;
-			case 4:		vital = "Weak"; break;
-			case 5:		vital = "Not so good"; break;
-			case 6:		vital = "Not so good"; break;
-			case 7:		vital = "Normal"; break;
-			case 8:		vital = "Normal"; break;
-			case 9:		vital = "Strong"; break;
-			case 10:	vital = "Very strong"; break;
-			default : throw new RuntimeException("Health percentage is not correct");
-		}
 
 		if (percentageHealth == 0f) {
-			vital = "Dead";
+			vitals = "Dead";
+		} else if (individual.isControllable()) {
+			setVitalsString(category);
+		} else {
+			float highestObservationSkill = 0;
+			if (!individual.isControllable()) {
+				for (Individual indi : Sets.newHashSet(GameWorld.individuals.values())) {
+					int skill = indi.getSkills().getObservation();
+					if (skill > highestObservationSkill) {
+						highestObservationSkill = skill;
+					}
+				}
+			}
+
+			identificationTime = (1 - highestObservationSkill/Skills.MAX_LEVEL) * 10f;
+
+			if (time > identificationTime || individual.isControllable()) {
+				identified = true;
+				identifying = false;
+				time = 0f;
+				setVitalsString(category);
+			} else {
+				if (!identified) {
+					vitals = "Unknown";
+				}
+			}
 		}
 
-		if (!drawLine(truncate(vital), 45)) {
+		if (identifying) {
+			vitals = "Identifying...";
+		}
+
+		if (!drawLine(truncate(vitals), 45)) {
 			return;
 		}
 
@@ -110,6 +153,25 @@ public class IndividualStatusWindow extends Window {
 
 		BloodAndMithrilClient.spriteBatch.flush();
 		renderConditionsPanel();
+		identify.render(x + width - 50, y - 37, !GameWorld.selectedIndividuals.isEmpty() && active, alpha);
+	}
+
+
+	private void setVitalsString(int category) {
+		switch(category) {
+			case 0:		vitals = "Near death"; break;
+			case 1:		vitals = "Near death"; break;
+			case 2:		vitals = "Extremely weak"; break;
+			case 3:		vitals = "Very Weak"; break;
+			case 4:		vitals = "Weak"; break;
+			case 5:		vitals = "Not so good"; break;
+			case 6:		vitals = "Adequate"; break;
+			case 7:		vitals = "Normal"; break;
+			case 8:		vitals = "Strong"; break;
+			case 9:		vitals = "Very Strong"; break;
+			case 10:	vitals = "Extremely strong"; break;
+			default : throw new RuntimeException("Health percentage is not correct");
+		}
 	}
 
 
@@ -128,6 +190,9 @@ public class IndividualStatusWindow extends Window {
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		conditionsPanel.leftClick(copy, windowsCopy);
+		if (!GameWorld.selectedIndividuals.isEmpty()) {
+			identify.click();
+		}
 	}
 
 

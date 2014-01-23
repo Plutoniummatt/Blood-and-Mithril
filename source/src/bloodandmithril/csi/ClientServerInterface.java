@@ -42,6 +42,7 @@ import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.character.skill.Skills;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.CSIMineTile;
 import bloodandmithril.csi.requests.CSITradeWith;
@@ -412,6 +413,7 @@ public class ClientServerInterface {
 		kryo.register(SendChatMessage.class);
 		kryo.register(SendChatMessageResponse.class);
 		kryo.register(SetAIIdle.class);
+		kryo.register(Skills.class);
 		kryo.register(SoilTile.class);
 		kryo.register(StandardSoilTile.class);
 		kryo.register(StoneTile.class);

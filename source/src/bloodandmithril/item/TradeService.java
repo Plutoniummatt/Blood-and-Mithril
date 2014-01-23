@@ -1,10 +1,10 @@
 package bloodandmithril.item;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.skill.Skills;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.building.Chest.ChestContainer;
@@ -19,9 +19,30 @@ public class TradeService {
 	/**
 	 * Evaluates a trade proposal
 	 */
-	public static boolean evaluate(Individual proposer, List<Item> tradeThis, Individual proposee, List<Item> forThis) {
-		// TODO - Evaluate trade proposal
-		return true;
+	public static boolean evaluate(Individual proposer, HashMap<Item, Integer> tradeThis, Individual proposee, HashMap<Item, Integer> forThis) {
+
+		if (proposee.isControllable()) {
+			return true;
+		}
+
+		float proposerActualValue = 0, proposeeActualValue = 0;
+
+		for (Entry<Item, Integer> entry : tradeThis.entrySet()) {
+			proposerActualValue = proposerActualValue + entry.getValue() * entry.getKey().value;
+		}
+
+		for (Entry<Item, Integer> entry : forThis.entrySet()) {
+			proposeeActualValue = proposeeActualValue + entry.getValue() * entry.getKey().value;
+		}
+
+		float proposerEffectiveValue = ((float)proposer.getSkills().getTrading()/(float)Skills.MAX_LEVEL + 1f)/2f * proposerActualValue;
+		float proposeeEffectiveValue = ((float)proposee.getSkills().getTrading()/(float)Skills.MAX_LEVEL + 1f)/2f * proposeeActualValue;
+
+		if (proposerEffectiveValue > proposeeEffectiveValue) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 
