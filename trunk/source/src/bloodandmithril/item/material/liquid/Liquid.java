@@ -24,4 +24,15 @@ public abstract class Liquid {
 			return "The liquid that keeps you alive.";
 		}
 	}
+
+	/** Empty */
+	public static class Empty extends Liquid {
+		@Override
+		public void drink(float amount, Individual affected) {
+		}
+		@Override
+		public String getDescription() {
+			return "Empty";
+		}
+	}
 }
