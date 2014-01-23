@@ -276,25 +276,12 @@ public class InventoryWindow extends Window {
 			);
 
 			ContextMenu contextMenu = new ContextMenu(x, y,
-				new ContextMenuItem(
-					"Show info",
-					new Task() {
-						@Override
-						public void execute() {
-							UserInterface.addLayeredComponent(item.getInfoWindow());
-						}
-					},
-					new Color(0.8f, 0.8f, 0.8f, 1f),
-					Color.GREEN,
-					Color.WHITE,
-					null
-				)
+				InventoryItemContextMenuConstructor.showInfo(item)
 			);
 
 			if (host instanceof Individual) {
 				contextMenu.addMenuItem(consume);
 			}
-
 			return contextMenu;
 		}
 
@@ -338,20 +325,9 @@ public class InventoryWindow extends Window {
 				Color.WHITE,
 				null
 			);
+
 			ContextMenu contextMenu = new ContextMenu(x, y,
-				new ContextMenuItem(
-					"Show info",
-					new Task() {
-						@Override
-						public void execute() {
-							UserInterface.addLayeredComponent(item.getInfoWindow());
-						}
-					},
-					new Color(0.8f, 0.8f, 0.8f, 1f),
-					Color.GREEN,
-					Color.WHITE,
-					null
-				)
+				InventoryItemContextMenuConstructor.showInfo(item)
 			);
 
 			if (host instanceof Individual) {
@@ -401,24 +377,14 @@ public class InventoryWindow extends Window {
 			);
 
 			return new ContextMenu(x, y,
-				new ContextMenuItem(
-					"Show info",
-					new Task() {
-						@Override
-						public void execute() {
-							UserInterface.addLayeredComponent(item.getInfoWindow());
-						}
-					},
-					new Color(0.8f, 0.8f, 0.8f, 1f),
-					Color.GREEN,
-					Color.WHITE,
-					null
-				),
+				InventoryItemContextMenuConstructor.showInfo(item),
 				equipUnequip
 			);
 		}
 
-		return null;
+		return new ContextMenu(x, y,
+			InventoryItemContextMenuConstructor.showInfo(item)
+		);
 	}
 
 
@@ -439,5 +405,24 @@ public class InventoryWindow extends Window {
 	@Override
 	public boolean keyPressed(int keyCode) {
 		return false;
+	}
+
+
+	private static class InventoryItemContextMenuConstructor {
+		private static ContextMenuItem showInfo(final Item item) {
+			return new ContextMenuItem(
+				"Show info",
+				new Task() {
+					@Override
+					public void execute() {
+						UserInterface.addLayeredComponent(item.getInfoWindow());
+					}
+				},
+				new Color(0.8f, 0.8f, 0.8f, 1f),
+				Color.GREEN,
+				Color.WHITE,
+				null
+			);
+		}
 	}
 }

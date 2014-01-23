@@ -94,6 +94,7 @@ import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
+import bloodandmithril.item.misc.Currency;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Chest.ChestContainer;
@@ -351,6 +352,7 @@ public class ClientServerInterface {
 		kryo.register(CSIMineTile.class);
 		kryo.register(CSITradeWith.class);
 		kryo.register(CSITradeWithResponse.class);
+		kryo.register(Currency.class);
 		kryo.register(DeathCap.class);
 		kryo.register(DebugTile.class);
 		kryo.register(DestroyTile.class);
