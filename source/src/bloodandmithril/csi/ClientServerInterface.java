@@ -52,6 +52,7 @@ import bloodandmithril.csi.requests.ClientConnected;
 import bloodandmithril.csi.requests.ConsumeItem;
 import bloodandmithril.csi.requests.DestroyTile;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
+import bloodandmithril.csi.requests.DrinkLiquid;
 import bloodandmithril.csi.requests.EquipOrUnequipItem;
 import bloodandmithril.csi.requests.GenerateChunk;
 import bloodandmithril.csi.requests.GenerateChunk.GenerateChunkResponse;
@@ -72,6 +73,7 @@ import bloodandmithril.csi.requests.SynchronizePropRequest;
 import bloodandmithril.csi.requests.SynchronizePropRequest.SynchronizePropResponse;
 import bloodandmithril.csi.requests.SynchronizeWorldState;
 import bloodandmithril.csi.requests.SynchronizeWorldState.SynchronizeWorldStateResponse;
+import bloodandmithril.csi.requests.ToggleWalkRun;
 import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindows;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
@@ -91,6 +93,7 @@ import bloodandmithril.item.material.liquid.Liquid.Empty;
 import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.item.material.plant.Carrot;
+import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Chest.ChestContainer;
@@ -348,9 +351,11 @@ public class ClientServerInterface {
 		kryo.register(CSIMineTile.class);
 		kryo.register(CSITradeWith.class);
 		kryo.register(CSITradeWithResponse.class);
+		kryo.register(DeathCap.class);
 		kryo.register(DebugTile.class);
 		kryo.register(DestroyTile.class);
 		kryo.register(DestroyTileResponse.class);
+		kryo.register(DrinkLiquid.class);
 		kryo.register(DryDirtTile.class);
 		kryo.register(DualKeyHashMap.class);
 		kryo.register(Elf.class);
@@ -419,6 +424,7 @@ public class ClientServerInterface {
 		kryo.register(Tile.Orientation.class);
 		kryo.register(Tile[].class);
 		kryo.register(Tile[][].class);
+		kryo.register(ToggleWalkRun.class);
 		kryo.register(Trade.class);
 		kryo.register(TradeWith.class);
 		kryo.register(Trading.class);
@@ -457,6 +463,16 @@ public class ClientServerInterface {
 		public static synchronized void sendEquipOrUnequipItemRequest(boolean equip, Equipable equipable, int individualId) {
 			client.sendTCP(new EquipOrUnequipItem(equip, equipable, individualId));
 			Logger.networkDebug("Sending equip/unequip request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendRunWalkRequest(int individualId, boolean walk) {
+			client.sendTCP(new ToggleWalkRun(individualId, walk));
+			Logger.networkDebug("Sending run/walk request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendDrinkLiquidRequest(int individualId, Bottle bottleToDrinkFrom, float amount) {
+			client.sendTCP(new DrinkLiquid(individualId, bottleToDrinkFrom, amount));
+			Logger.networkDebug("Sending drink liquid request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendRequestConnectedPlayerNamesRequest() {

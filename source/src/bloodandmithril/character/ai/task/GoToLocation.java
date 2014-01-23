@@ -151,7 +151,7 @@ public class GoToLocation extends AITask {
 		}
 
 		if (reached) {
-			host.sendCommand(KeyMappings.walk, host.walking);
+			host.sendCommand(KeyMappings.walk, host.getWalking());
 			if (!host.isCommandActive(KeyMappings.moveRight) && wayPoint.waypoint.x > host.state.position.x) {
 				host.sendCommand(KeyMappings.moveRight, true);
 				host.sendCommand(KeyMappings.moveLeft, false);

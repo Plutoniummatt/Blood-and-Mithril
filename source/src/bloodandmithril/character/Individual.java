@@ -98,7 +98,7 @@ public abstract class Individual extends Equipper {
 	public int safetyHeight;
 
 	/** True if this {@link Individual} is walking */
-	public boolean walking = true;
+	private boolean walking = true;
 
 	/** True if this {@link Individual} is currently stepping up */
 	public boolean steppingUp;
@@ -160,6 +160,16 @@ public abstract class Individual extends Equipper {
 
 	public synchronized void setTimeStamp(long timeStamp) {
 		this.timeStamp = timeStamp;
+	}
+
+
+	public boolean getWalking() {
+		return walking;
+	}
+
+
+	public synchronized void setWalking(boolean walking) {
+		this.walking = walking;
 	}
 
 
