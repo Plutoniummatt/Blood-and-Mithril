@@ -18,6 +18,8 @@ import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
+import bloodandmithril.item.material.container.GlassBottle;
+import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
@@ -248,10 +250,17 @@ public class BloodAndMithrilServer {
 					20f
 				);
 
-				elf.giveItem(new Carrot());
-				elf.giveItem(new ChickenLeg());
-				elf.giveItem(new ButterflySword(100));
-				elf.giveItem(new Broadsword(100));
+	      for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+	        elf.giveItem(new Carrot());
+	      }
+	      for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+	        elf.giveItem(new ChickenLeg());
+	      }
+	      for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+	        elf.giveItem(new GlassBottle(Water.class, 1f));
+	      }
+	      elf.giveItem(new ButterflySword(100));
+	      elf.giveItem(new Broadsword(100));
 
 				GameWorld.individuals.put(elf.id.id, elf);
 			}
