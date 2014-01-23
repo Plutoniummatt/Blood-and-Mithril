@@ -153,7 +153,7 @@ public class IndividualStatusWindow extends Window {
 
 		BloodAndMithrilClient.spriteBatch.flush();
 		renderConditionsPanel();
-		identify.render(x + width - 50, y - 37, !GameWorld.selectedIndividuals.isEmpty() && active, alpha);
+		identify.render(x + width - 50, y - 37, !GameWorld.selectedIndividuals.isEmpty() && active && !individual.isControllable(), alpha);
 	}
 
 
@@ -190,7 +190,7 @@ public class IndividualStatusWindow extends Window {
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		conditionsPanel.leftClick(copy, windowsCopy);
-		if (!GameWorld.selectedIndividuals.isEmpty()) {
+		if (!GameWorld.selectedIndividuals.isEmpty() && !individual.isControllable()) {
 			identify.click();
 		}
 	}
