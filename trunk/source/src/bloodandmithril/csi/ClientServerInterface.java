@@ -336,6 +336,7 @@ public class ClientServerInterface {
 		kryo.register(ChestContainer.class);
 		kryo.register(ChickenLeg.class);
 		kryo.register(ChunkData.class);
+		kryo.register(Class.class);
 		kryo.register(ClearGlassTile.class);
 		kryo.register(ClientConnected.class);
 		kryo.register(Commands.class);
