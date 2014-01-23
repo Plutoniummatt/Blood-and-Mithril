@@ -35,8 +35,8 @@ public class Equipper extends Container {
 	 * @param quantity of item to put
 	 */
 	@Override
-	public void giveItem(Item item, int quantity) {
-		super.giveItem(item, quantity);
+	public void giveItem(Item item) {
+		super.giveItem(item);
 		refreshCurrentLoad();
 	}
 
@@ -46,8 +46,8 @@ public class Equipper extends Container {
 	 * @return the number of items taken.
 	 */
 	@Override
-	public int takeItem(Item item, int quantity) {
-		int taken = super.takeItem(item, quantity);
+	public int takeItem(Item item) {
+		int taken = super.takeItem(item);
 		refreshCurrentLoad();
 		return taken;
 	}
@@ -72,7 +72,7 @@ public class Equipper extends Container {
 		}
 
 		if (availableEquipmentSlots.get(item.slot)) {
-			takeItem(item, 1);
+			takeItem(item);
 			equippedItems.put(item, 1);
 			availableEquipmentSlots.put(item.slot, false);
 			refreshCurrentLoad();

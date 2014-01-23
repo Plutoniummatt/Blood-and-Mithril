@@ -18,6 +18,8 @@ import bloodandmithril.item.Equipable;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
+import bloodandmithril.item.material.container.GlassBottle;
+import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
@@ -388,10 +390,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				20f
 			);
 
-			elf.giveItem(new Carrot(), Util.getRandom().nextInt(50));
-			elf.giveItem(new ChickenLeg(), Util.getRandom().nextInt(50));
-			elf.giveItem(new ButterflySword(100), 1);
-			elf.giveItem(new Broadsword(100), 1);
+			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+				elf.giveItem(new Carrot());
+			}
+			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+				elf.giveItem(new ChickenLeg());
+			}
+			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+				elf.giveItem(new GlassBottle(Water.class, 1f));
+			}
+			elf.giveItem(new ButterflySword(100));
+			elf.giveItem(new Broadsword(100));
 
 			GameWorld.individuals.put(elf.id.id, elf);
 		}

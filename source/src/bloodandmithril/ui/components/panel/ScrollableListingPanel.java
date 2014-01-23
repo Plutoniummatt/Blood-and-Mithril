@@ -35,17 +35,6 @@ import com.google.common.collect.Lists;
  */
 public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Panel {
 
-	/** Comparator used to sort the listing */
-	private final Comparator<HashMap<ListingMenuItem<T>, Integer>> comparator = new Comparator<HashMap<ListingMenuItem<T>, Integer>>() {
-		@Override
-		public int compare(HashMap<ListingMenuItem<T>, Integer> o1, HashMap<ListingMenuItem<T>, Integer> o2) {
-			if (!o1.isEmpty() && !o2.isEmpty()) {
-				return o1.entrySet().iterator().next().getKey().compareTo(o2.entrySet().iterator().next().getKey());
-			}
-			return 0;
-		}
-	};
-
 	/** Datastructure that backs this listing panel */
 	private List<HashMap<ListingMenuItem<T>, Integer>> listings = Lists.newArrayList();
 
@@ -158,14 +147,12 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 
 
 	/**
-	 * Renders the inventory listing
+	 * Renders the listing
 	 */
 	private void renderListing() {
 		// Render the equipped items first
 		int i = 0;
 		ArrayList<HashMap<ListingMenuItem<T>, Integer>> newArrayList = Lists.newArrayList(listings);
-
-		Collections.sort(newArrayList, comparator);
 
 		for (Map<ListingMenuItem<T>, Integer> listing : newArrayList) {
 
