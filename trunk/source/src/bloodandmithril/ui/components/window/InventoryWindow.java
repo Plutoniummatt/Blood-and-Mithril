@@ -322,6 +322,8 @@ public class InventoryWindow extends Window {
 											newBottle.drink(Float.parseFloat((String)args[0]), (Individual)host);
 											host.giveItem(newBottle);
 											refresh();
+										} else {
+											ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).id.id, (Bottle)item, Float.parseFloat((String)args[0]));
 										}
 									}
 								},

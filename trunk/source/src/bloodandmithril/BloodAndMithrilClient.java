@@ -21,6 +21,7 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
+import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.PineChest;
@@ -247,7 +248,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (UserInterface.contextMenus.isEmpty()) {
 			for (Individual indi : Sets.newHashSet(GameWorld.selectedIndividuals)) {
-				indi.walking = !doubleClick;
+				if (ClientServerInterface.isServer()) {
+					indi.setWalking(!doubleClick);
+				} else {
+					ClientServerInterface.SendRequest.sendRunWalkRequest(indi.id.id, !doubleClick);
+				}
 				if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 					if (ClientServerInterface.isServer()) {
 						indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
@@ -392,6 +397,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 				elf.giveItem(new Carrot());
+			}
+			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+				elf.giveItem(new DeathCap(false));
 			}
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 				elf.giveItem(new ChickenLeg());
