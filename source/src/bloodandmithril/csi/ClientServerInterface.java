@@ -49,6 +49,7 @@ import bloodandmithril.csi.requests.CSIMineTile;
 import bloodandmithril.csi.requests.CSITradeWith;
 import bloodandmithril.csi.requests.CSITradeWith.CSITradeWithResponse;
 import bloodandmithril.csi.requests.ChangeFactionControlPassword;
+import bloodandmithril.csi.requests.ChangeFactionControlPassword.RefreshFactionWindow;
 import bloodandmithril.csi.requests.ChangeNickName;
 import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
 import bloodandmithril.csi.requests.ClientConnected;
@@ -409,6 +410,7 @@ public class ClientServerInterface {
 		kryo.register(Ping.class);
 		kryo.register(Poison.class);
 		kryo.register(Pong.class);
+		kryo.register(RefreshFactionWindow.class);
 		kryo.register(RefreshWindowsResponse.class);
 		kryo.register(Request.class);
 		kryo.register(RequestClientList.class);
