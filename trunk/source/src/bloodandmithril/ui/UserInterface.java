@@ -542,7 +542,7 @@ public class UserInterface {
 		}
 
 		for (Component component : layeredComponents) {
-			if (component.active) {
+			if (component.active && !(component instanceof BottomBar)) {
 				return component.keyPressed(keyCode);
 			}
 		}

@@ -173,18 +173,18 @@ public class TradeWith extends CompositeAITask {
 	 */
 	public static void openTradeWindowWithProp(Individual proposer, Container prop) {
 		UserInterface.addLayeredComponentUnique(
-		new TradeWindow(
-			BloodAndMithrilClient.WIDTH/2 - 350,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			700,
-			200,
-			proposer.id.getSimpleName() + " interacting with pine chest",
-			true,
-			700,
-			200,
-			true,
-			proposer,
-			prop
+			new TradeWindow(
+				BloodAndMithrilClient.WIDTH/2 - 450,
+				BloodAndMithrilClient.HEIGHT/2 + 150,
+				900,
+				300,
+				proposer.id.getSimpleName() + " interacting with pine chest",
+				true,
+				900,
+				300,
+				true,
+				proposer,
+				prop
 			),
 			proposer.id.getSimpleName() + " interacting with pine chest"
 		);
@@ -206,14 +206,14 @@ public class TradeWith extends CompositeAITask {
 
 		UserInterface.addLayeredComponentUnique(
 			new TradeWindow(
-				BloodAndMithrilClient.WIDTH / 2 - 350,
-				BloodAndMithrilClient.HEIGHT / 2 + 100,
-				700,
-				200,
+				BloodAndMithrilClient.WIDTH / 2 - 450,
+				BloodAndMithrilClient.HEIGHT / 2 + 150,
+				900,
+				300,
 				"Trade between " + proposer.id.firstName + " and " + proposeeCasted.id.firstName,
 				true,
-				700,
-				200,
+				900,
+				300,
 				true,
 				proposer,
 				proposeeCasted

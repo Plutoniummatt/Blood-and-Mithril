@@ -10,7 +10,7 @@ public class Faction {
 
 	public final String name;
 	public final int factionId;
-	public String controlPassword = "11";
+	public String controlPassword = "";
 	public static final int NPC = 0;
 
 	/**

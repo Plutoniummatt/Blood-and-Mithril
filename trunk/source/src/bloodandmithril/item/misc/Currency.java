@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 /**
  * Class representing currency
  *
- * @author Copyright (c) CHP Consulting Ltd. 2014
+ * @author Matt
  */
 public class Currency extends Item {
 

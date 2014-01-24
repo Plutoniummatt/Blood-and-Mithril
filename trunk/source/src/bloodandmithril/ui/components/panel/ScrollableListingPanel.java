@@ -161,7 +161,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, Integer>>() {
 				@Override
 				public int compare(Entry<ListingMenuItem<T>, Integer> o1, Entry<ListingMenuItem<T>, Integer> o2) {
-					return o1.getKey().t.getClass().getName().compareTo(o2.getKey().t.getClass().getName());
+					return o1.getKey().t.compareTo(o2.getKey().t);
 				}
 			});
 

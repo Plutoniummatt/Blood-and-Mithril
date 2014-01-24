@@ -581,8 +581,8 @@ public abstract class Individual extends Equipper {
 				public void execute() {
 					IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
 						thisIndividual,
-						BloodAndMithrilClient.getMouseScreenX(),
-						BloodAndMithrilClient.getMouseScreenY(),
+						BloodAndMithrilClient.WIDTH/2 - 150,
+						BloodAndMithrilClient.HEIGHT/2 + 160,
 						300,
 						320,
 						id.getSimpleName() + " - Info",
@@ -659,8 +659,8 @@ public abstract class Individual extends Equipper {
 				public void execute() {
 					InventoryWindow inventoryWindow = new InventoryWindow(
 						thisIndividual,
-						BloodAndMithrilClient.getMouseScreenX(),
-						BloodAndMithrilClient.getMouseScreenY(),
+						BloodAndMithrilClient.WIDTH/2 - ((id.getSimpleName() + " - Inventory").length() * 10 + 50)/2,
+						BloodAndMithrilClient.HEIGHT/2 + 100,
 						(id.getSimpleName() + " - Inventory").length() * 10 + 50,
 						200,
 						id.getSimpleName() + " - Inventory",

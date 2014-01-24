@@ -31,7 +31,6 @@ import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
-import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
@@ -372,18 +371,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;
-		}
-
-		if (keycode == Input.Keys.R) {
-			UserInterface.addLayeredComponent(new FactionsWindow(
-				WIDTH/2 - 100,
-				HEIGHT/2 + 100,
-				200,
-				200,
-				true,
-				200,
-				200
-			));
 		}
 
 		if (keycode == Input.Keys.R) {
