@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.window;
 
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,8 @@ import bloodandmithril.util.Task;
 import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -61,8 +64,8 @@ public class FactionsWindow extends Window {
 			@Override
 			protected void onSetup(final List<HashMap<ListingMenuItem<String>, Integer>> listings) {
 				listings.clear();
-				HashMap<ListingMenuItem<String>, Integer> map = buildMap();
-				listings.add(map);
+				listings.add(buildMap(true));
+				listings.add(buildMap(false));
 			}
 		};
 	}
@@ -104,15 +107,32 @@ public class FactionsWindow extends Window {
 
 	public void refreshWindow() {
 		factionsPanel.getListings().clear();
-		factionsPanel.getListings().add(buildMap());
+		factionsPanel.getListings().add(buildMap(true));
+		factionsPanel.getListings().add(buildMap(false));
 	}
 
 
-	private HashMap<ListingMenuItem<String>, Integer> buildMap() {
+	private HashMap<ListingMenuItem<String>, Integer> buildMap(boolean controlled) {
 		HashMap<ListingMenuItem<String>, Integer> map = Maps.newHashMap();
 
-		for (final Faction faction : Lists.newLinkedList(GameWorld.factions.values())) {
+		Collection<Faction> newList = Lists.newLinkedList(GameWorld.factions.values());
+		if (controlled) {
+			newList = Collections2.filter(newList, new Predicate<Faction>() {
+				@Override
+				public boolean apply(Faction input) {
+					return BloodAndMithrilClient.controlledFactions.contains(input.factionId);
+				}
+			});
+		} else {
+			newList = Collections2.filter(newList, new Predicate<Faction>() {
+				@Override
+				public boolean apply(Faction input) {
+					return !BloodAndMithrilClient.controlledFactions.contains(input.factionId);
+				}
+			});
+		}
 
+		for (final Faction faction : newList) {
 			ContextMenu.ContextMenuItem control = new ContextMenu.ContextMenuItem(
 				"Control",
 				new Task() {
@@ -123,6 +143,7 @@ public class FactionsWindow extends Window {
 							if (ClientServerInterface.isClient() && !ClientServerInterface.isServer()) {
 								ClientServerInterface.SendRequest.sendSynchronizeFactionsRequest();
 							}
+							refreshWindow();
 						} else {
 							UserInterface.addLayeredComponent(
 								new TextInputWindow(
@@ -142,6 +163,7 @@ public class FactionsWindow extends Window {
 													ClientServerInterface.SendRequest.sendSynchronizeFactionsRequest();
 												}
 											}
+											refreshWindow();
 										}
 									},
 									"Control",
@@ -149,7 +171,6 @@ public class FactionsWindow extends Window {
 								)
 							);
 						}
-						refreshWindow();
 					}
 				},
 				Color.WHITE,
@@ -222,8 +243,8 @@ public class FactionsWindow extends Window {
 							menu.y = BloodAndMithrilClient.getMouseScreenY();
 						}
 					},
+					BloodAndMithrilClient.controlledFactions.contains(faction.factionId) ? Color.GREEN : Color.ORANGE,
 					Color.YELLOW,
-					Color.GREEN,
 					Color.WHITE,
 					UIRef.BL
 				),
