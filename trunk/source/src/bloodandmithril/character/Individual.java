@@ -68,8 +68,8 @@ public abstract class Individual extends Equipper {
 	/** Whether this {@link Individual} can trade */
 	public boolean canTradeWith;
 
-	/** Whether or not this character is able to be controlled by the player */
-	public boolean controllable;
+	/** The faction this {@link Individual} belongs to */
+	private int factionId;
 
 	/** Whether or not this character is currently selected */
 	public boolean selected;
@@ -113,11 +113,11 @@ public abstract class Individual extends Equipper {
 	/**
 	 * Constructor
 	 */
-	protected Individual(IndividualIdentifier id, IndividualState state, boolean controllable, float aiDelay, float inventoryMassCapacity, int width, int height, int safetyHeight, Box interactionBox, boolean canTradeWith) {
+	protected Individual(IndividualIdentifier id, IndividualState state, int factionId, float aiDelay, float inventoryMassCapacity, int width, int height, int safetyHeight, Box interactionBox, boolean canTradeWith) {
 		super(inventoryMassCapacity);
 		this.id = id;
 		this.state = state;
-		this.controllable = controllable;
+		this.factionId = factionId;
 		this.aITaskDelay = aiDelay;
 		this.width = width;
 		this.height = height;
@@ -135,7 +135,7 @@ public abstract class Individual extends Equipper {
 		this.availableEquipmentSlots = other.availableEquipmentSlots;
 		this.canExceedCapacity = other.canExceedCapacity;
 		this.activeCommands = other.activeCommands;
-		this.controllable = other.controllable;
+		this.factionId = other.factionId;
 		this.currentLoad = other.currentLoad;
 		this.equippedItems = other.equippedItems;
 		this.height = other.height;
@@ -188,7 +188,7 @@ public abstract class Individual extends Equipper {
 
 	/** Determines whether this {@link Individual} is controllable */
 	public boolean isControllable() {
-		return controllable;
+		return BloodAndMithrilClient.controlledFactions.contains(factionId);
 	}
 
 
@@ -938,9 +938,14 @@ public abstract class Individual extends Equipper {
 		/**
 		 * Constructor
 		 */
-		public IndividualState(float health, float maxHealth) {
+		public IndividualState(float health, float maxHealth, float healthRegen, float stamina, float staminaRegen, float hunger, float thirst) {
 			this.health = health;
 			this.maxHealth = maxHealth;
+			this.healthRegen = healthRegen;
+			this.stamina = stamina;
+			this.staminaRegen = staminaRegen;
+			this.hunger = hunger;
+			this.thirst = thirst;
 		}
 	}
 

@@ -40,6 +40,7 @@ import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.conditions.Thirst;
+import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.skill.Skills;
@@ -47,6 +48,7 @@ import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.CSIMineTile;
 import bloodandmithril.csi.requests.CSITradeWith;
 import bloodandmithril.csi.requests.CSITradeWith.CSITradeWithResponse;
+import bloodandmithril.csi.requests.ChangeFactionControlPassword;
 import bloodandmithril.csi.requests.ChangeNickName;
 import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
 import bloodandmithril.csi.requests.ClientConnected;
@@ -68,6 +70,8 @@ import bloodandmithril.csi.requests.SendChatMessage;
 import bloodandmithril.csi.requests.SendChatMessage.Message;
 import bloodandmithril.csi.requests.SendChatMessage.SendChatMessageResponse;
 import bloodandmithril.csi.requests.SetAIIdle;
+import bloodandmithril.csi.requests.SynchronizeFaction;
+import bloodandmithril.csi.requests.SynchronizeFaction.SynchronizeFactionResponse;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
 import bloodandmithril.csi.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
 import bloodandmithril.csi.requests.SynchronizePropRequest;
@@ -337,6 +341,7 @@ public class ClientServerInterface {
 		kryo.register(Broadsword.class);
 		kryo.register(ButterflySword.class);
 		kryo.register(Carrot.class);
+		kryo.register(ChangeFactionControlPassword.class);
 		kryo.register(ChangeNickName.class);
 		kryo.register(ChangeNickNameResponse.class);
 		kryo.register(ChestContainer.class);
@@ -369,6 +374,7 @@ public class ClientServerInterface {
 		kryo.register(Equipable.class);
 		kryo.register(EquipmentSlot.class);
 		kryo.register(EquipOrUnequipItem.class);
+		kryo.register(Faction.class);
 		kryo.register(GameWorld.individuals.keySet().getClass());
 		kryo.register(GenerateChunk.class);
 		kryo.register(GenerateChunkResponse.class);
@@ -417,6 +423,8 @@ public class ClientServerInterface {
 		kryo.register(SoilTile.class);
 		kryo.register(StandardSoilTile.class);
 		kryo.register(StoneTile.class);
+		kryo.register(SynchronizeFaction.class);
+		kryo.register(SynchronizeFactionResponse.class);
 		kryo.register(SynchronizeIndividual.class);
 		kryo.register(SynchronizeIndividualResponse.class);
 		kryo.register(SynchronizePropRequest.class);
@@ -509,6 +517,11 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending request to clear AI task", LogLevel.TRACE);
 		}
 
+		public static synchronized void sendSynchronizeFactionsRequest() {
+			client.sendTCP(new SynchronizeFaction());
+			Logger.networkDebug("Sending synchronize faction request", LogLevel.DEBUG);
+		}
+
 		public static synchronized void sendTradeWithIndividualRequest(Individual proposer, Individual proposee) {
 			client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.INDIVIDUAL, proposee.id.id, client.getID()));
 			Logger.networkDebug("Sending trade with individual request", LogLevel.DEBUG);
@@ -542,6 +555,11 @@ public class ClientServerInterface {
 		public static synchronized void sendRefreshItemWindowsRequest() {
 			client.sendTCP(new RefreshWindows());
 			Logger.networkDebug("Sending item window refresh request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendChangeFactionControlPasswordRequest(int factionId, String newPassword) {
+			client.sendTCP(new ChangeFactionControlPassword(factionId, newPassword));
+			Logger.networkDebug("Sending change faction control password request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendOpenTradeWindowRequest(int proposerId, TradeEntity proposee, int proposeeId) {
@@ -580,7 +598,16 @@ public class ClientServerInterface {
 					)
 				)
 			);
-			Logger.networkDebug("Sending chat message", LogLevel.DEBUG);
+		}
+
+
+		public static synchronized void notifySyncFaction(Faction faction) {
+			sendNotification(
+				-1,
+				false,
+				true,
+				new SynchronizeFactionResponse(faction)
+			);
 		}
 
 
