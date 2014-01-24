@@ -106,7 +106,7 @@ public class InventoryWindow extends Window {
 	@Override
 	protected void internalWindowRender() {
 
-		// Set the position and dimenstions of the panel
+		// Set the position and dimensions of the panel
 		inventoryListingPanel.height = height;
 		inventoryListingPanel.width = width;
 		inventoryListingPanel.x = x;

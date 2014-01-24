@@ -1,5 +1,6 @@
 package bloodandmithril;
 
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -10,6 +11,7 @@ import bloodandmithril.character.Individual.IndividualState;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
@@ -29,6 +31,7 @@ import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
+import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
@@ -89,10 +92,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static final float DOUBLE_CLICK_TIME = 0.2f;
 
 	/** Resolution x */
-	public static int WIDTH = Integer.parseInt(System.getProperty("resX"));
+	public static final int WIDTH = Integer.parseInt(System.getProperty("resX"));
 
 	/** Resolution y */
-	public static int HEIGHT = Integer.parseInt(System.getProperty("resY"));
+	public static final int HEIGHT = Integer.parseInt(System.getProperty("resY"));
 
 	/** 'THE' SpriteBatch */
 	public static SpriteBatch spriteBatch;
@@ -113,12 +116,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private float leftDoubleClickTimer = 0f;
 	private float rightDoubleClickTimer = 0f;
 
-	private final Color bottomLeftColor = new Color(0f, 0f, 0f, 1f);
-	private final Color bottomRightColor = new Color(0f, 0f, 0f, 1f);
-	private final Color topLeftColor = new Color(0f, 0f, 0f, 1f);
-	private final Color topRightColor = new Color(0f, 0f, 0f, 1f);
-
+	/** Client-side threadpool */
 	public static ExecutorService newCachedThreadPool;
+
+	public static final Set<Integer> controlledFactions = Sets.newHashSet();
 
 	public static long ping = 0;
 
@@ -176,7 +177,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public void render() {
-
 		// Update
 		if (gameWorld != null) {
 			update(Gdx.graphics.getDeltaTime());
@@ -207,7 +207,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	private void renderMainMenuBackDrop() {
 		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
-		UserInterface.shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT, bottomLeftColor, bottomRightColor, topRightColor, topLeftColor);
+		UserInterface.shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT, Color.BLACK, Color.BLACK, Color.BLACK,Color.BLACK);
 		UserInterface.shapeRenderer.end();
 	}
 
@@ -375,12 +375,19 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (keycode == Input.Keys.R) {
-			IndividualState state = new IndividualState(10f, 10f);
-			state.stamina = 1f;
-			state.staminaRegen = 1f;
-			state.hunger = 1f;
-			state.thirst = 1f;
-			state.healthRegen = 0.01f;
+			UserInterface.addLayeredComponent(new FactionsWindow(
+				WIDTH/2 - 100,
+				HEIGHT/2 + 100,
+				200,
+				200,
+				true,
+				200,
+				200
+			));
+		}
+
+		if (keycode == Input.Keys.R) {
+			IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
@@ -389,7 +396,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			id.nickName = "Elfie";
 
 			Elf elf = new Elf(
-				id, state, Gdx.input.isKeyPressed(Input.Keys.Q), true,
+				id, state, Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
 				new Color(0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 1),
 				new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
 				Util.getRandom().nextInt(4),
@@ -418,7 +425,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (keycode == Input.Keys.U) {
-			IndividualState state = new IndividualState(10f, 10f);
+			IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);

@@ -90,8 +90,8 @@ public class Elf extends Individual {
 	/**
 	 * Constructor
 	 */
-	public Elf(IndividualIdentifier id, IndividualState state, boolean controllable, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity) {
-		super(id, state, controllable, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), true);
+	public Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity) {
+		super(id, state, factionId, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), true);
 		this.female = female;
 		this.hairColorR = hairColor.r;
 		this.hairColorG = hairColor.g;

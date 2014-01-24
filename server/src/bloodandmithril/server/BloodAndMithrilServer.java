@@ -9,6 +9,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.Individual.IndividualState;
 import bloodandmithril.character.conditions.Poison;
+import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
@@ -130,6 +131,10 @@ public class BloodAndMithrilServer {
 						  for (Prop prop : GameWorld.props.values()) {
 						    ClientServerInterface.SendNotification.notifySyncProp(prop);
 						  }
+
+						  for (Faction faction : GameWorld.factions.values()) {
+						    ClientServerInterface.SendNotification.notifySyncFaction(faction);
+						  }
 						}
 
 						if (counter >= 100) {
@@ -165,6 +170,10 @@ public class BloodAndMithrilServer {
 		@Override
 		public void create() {
 			gameWorld = new GameWorld(false);
+
+			GameWorld.factions.put(0, new Faction("NPC", 0));
+	    GameWorld.factions.put(1, new Faction("Elves", 1));
+
 			ClientServerInterface.setServer(true);
 			GameLoader.load();
 
@@ -217,7 +226,7 @@ public class BloodAndMithrilServer {
 	    }
 
 	    if (keycode == Input.Keys.U) {
-	      IndividualState state = new IndividualState(10f, 10f);
+	      IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
 	      state.position = new Vector2(0, 500);
 	      state.velocity = new Vector2(0, 0);
 	      state.acceleration = new Vector2(0, 0);
@@ -231,12 +240,7 @@ public class BloodAndMithrilServer {
 	    }
 
 			if (keycode == Input.Keys.R) {
-				IndividualState state = new IndividualState(10f, 10f);
-	      state.stamina = 1f;
-	      state.staminaRegen = 1f;
-	      state.hunger = 1f;
-	      state.thirst = 1f;
-	      state.healthRegen = 0.01f;
+			  IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
 				state.position = new Vector2(0, 500);
 				state.velocity = new Vector2(0, 0);
 				state.acceleration = new Vector2(0, 0);
@@ -245,7 +249,7 @@ public class BloodAndMithrilServer {
 				id.nickName = "Elfie";
 
 				Elf elf = new Elf(
-					id, state, Gdx.input.isKeyPressed(Input.Keys.Q), true,
+					id, state, Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
 					new Color(0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 1),
 					new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
 					Util.getRandom().nextInt(4),

@@ -7,6 +7,7 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.BoarAI;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.faction.Faction;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.util.AnimationHelper;
@@ -50,7 +51,7 @@ public class Boar extends Individual {
 	 * Constructor
 	 */
 	public Boar(IndividualIdentifier id, IndividualState state) {
-		super(id, state, false, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), false);
+		super(id, state, Faction.NPC, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), false);
 
 		this.ai = new BoarAI(this);
 
@@ -202,7 +203,7 @@ public class Boar extends Individual {
 		if (!(other instanceof Boar)) {
 			throw new RuntimeException("Cannot cast " + other.getClass().getSimpleName() + " to Boar.");
 		}
-		
+
 		this.biography = ((Boar) other).biography;
 		this.current = ((Boar) other).current;
 	}

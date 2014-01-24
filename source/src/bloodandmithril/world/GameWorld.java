@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.faction.Faction;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -48,7 +49,11 @@ public class GameWorld {
 	/** Every {@link Individual} that exists */
 	public static ConcurrentHashMap<Integer, Individual> individuals = new ConcurrentHashMap<>();
 
+	/** Every {@link Prop} that exists */
 	public static ConcurrentHashMap<Integer, Prop> props = new ConcurrentHashMap<>();
+
+	/** Every {@link Prop} that exists */
+	public static ConcurrentHashMap<Integer, Faction> factions = new ConcurrentHashMap<>();
 
 	/** Textures */
 	public static Texture gameWorldTexture;
