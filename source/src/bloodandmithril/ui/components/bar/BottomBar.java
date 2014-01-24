@@ -13,6 +13,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.ChatWindow;
+import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Task;
@@ -53,6 +54,15 @@ public class BottomBar extends Component {
 		UIRef.BL
 	);
 
+	private final Button factions = new Button(UserInterface.uiTexture, 205, 16, 153, 0, 50, 32,
+		new Task() {
+			@Override
+			public void execute() {
+			}
+		},
+		UIRef.BL
+	);
+
 
 	/** Called upon left click */
 	@Override
@@ -73,6 +83,10 @@ public class BottomBar extends Component {
 			return true;
 		}
 
+		if (factions.click()) {
+			factionsClicked();
+		}
+
 		if (active && isWithin()) {
 			return true;
 		} else if (isWithin()) {
@@ -87,7 +101,33 @@ public class BottomBar extends Component {
 	}
 
 
-	/** Called when the cat button is clicked */
+	/** Called when the factions button is clicked */
+	private void factionsClicked() {
+		for (Component component : UserInterface.layeredComponents) {
+			if (component instanceof FactionsWindow) {
+				((FactionsWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((FactionsWindow) component).width/2;
+				((FactionsWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((FactionsWindow) component).height/2;
+				((FactionsWindow) component).minimized = false;
+				((FactionsWindow) component).active = true;
+				return;
+			}
+		}
+
+		UserInterface.addLayeredComponent(
+			new FactionsWindow(
+				BloodAndMithrilClient.WIDTH/2 - 125,
+				BloodAndMithrilClient.HEIGHT/2 + 150,
+				250,
+				300,
+				true,
+				250,
+				300
+			)
+		);
+	}
+
+
+	/** Called when the chat button is clicked */
 	private void chatClicked() {
 		for (Component component : UserInterface.layeredComponents) {
 			if (component instanceof ChatWindow) {
@@ -99,7 +139,17 @@ public class BottomBar extends Component {
 			}
 		}
 
-		UserInterface.addLayeredComponent(new ChatWindow(BloodAndMithrilClient.WIDTH/2 - 250, BloodAndMithrilClient.HEIGHT/2 + 150, 500, 300, true, 300, 250));
+		UserInterface.addLayeredComponent(
+			new ChatWindow(
+				BloodAndMithrilClient.WIDTH/2 - 250,
+				BloodAndMithrilClient.HEIGHT/2 + 150,
+				500,
+				300,
+				true,
+				300,
+				250
+			)
+		);
 	}
 
 
@@ -258,6 +308,7 @@ public class BottomBar extends Component {
 		mainMenu.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		windows.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		chat.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
+		factions.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		BloodAndMithrilClient.spriteBatch.end();
 	}
 
