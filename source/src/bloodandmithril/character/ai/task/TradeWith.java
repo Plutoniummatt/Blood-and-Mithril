@@ -42,11 +42,11 @@ public class TradeWith extends CompositeAITask {
 			location = ((Individual) proposee).state.position;
 		}
 
-		currentTask = new GoToMovingLocation(
+		setCurrentTask(new GoToMovingLocation(
 			proposer.id,
 			location,
 			50f
-		);
+		));
 
 		if (ClientServerInterface.isServer()) {
 			appendTask(
@@ -73,11 +73,11 @@ public class TradeWith extends CompositeAITask {
 			location = ((Individual) proposee).state.position;
 		}
 
-		currentTask = new GoToMovingLocation(
+		setCurrentTask(new GoToMovingLocation(
 			proposer.id,
 			location,
 			50f
-		);
+		));
 
 		appendTask(
 			new Trade(hostId, proposer, proposee)

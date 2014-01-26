@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 public class GlassBottle extends Bottle {
+	private static final long serialVersionUID = 3427844446930493119L;
 
 	/**
 	 * Constructor

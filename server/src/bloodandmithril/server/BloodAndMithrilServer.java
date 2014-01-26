@@ -48,15 +48,15 @@ import com.esotericsoftware.kryonet.Server;
 
 /**
  * Entry point class for the remote game server
- *
+ * 
  * @author Matt
  */
 public class BloodAndMithrilServer {
 
 	private static GameWorld gameWorld;
 
-	/**0
-	 * Entry point for the server
+	/**
+	 * 0 Entry point for the server
 	 */
 	public static void main(String[] args) {
 
@@ -115,6 +115,7 @@ public class BloodAndMithrilServer {
 		ClientServerInterface.syncThread = new Thread(
 			new Runnable() {
 				int counter = 0;
+
 				@Override
 				public void run() {
 					while (ClientServerInterface.server.getUpdateThread().isAlive()) {
@@ -125,18 +126,18 @@ public class BloodAndMithrilServer {
 								ClientServerInterface.SendNotification.notifyIndividualSync(individual.id.id);
 							}
 						} catch (InterruptedException e) {
+							Logger.generalDebug(e.getMessage(), LogLevel.WARN, e);
 						}
-
 						if (counter % 10 == 0) {
-						  for (Prop prop : GameWorld.props.values()) {
-						    ClientServerInterface.SendNotification.notifySyncProp(prop);
-						  }
-
-						  for (Faction faction : GameWorld.factions.values()) {
-						    ClientServerInterface.SendNotification.notifySyncFaction(faction);
-						  }
+							for (Prop prop : GameWorld.props.values()) {
+								ClientServerInterface.SendNotification.notifySyncProp(prop);
+							}
+	
+							for (Faction faction : GameWorld.factions.values()) {
+								ClientServerInterface.SendNotification.notifySyncFaction(faction);
+							}
 						}
-
+	
 						if (counter >= 100) {
 							ClientServerInterface.SendNotification.notifySyncWorldState();
 							counter = 0;
@@ -151,7 +152,6 @@ public class BloodAndMithrilServer {
 		start();
 	}
 
-
 	private static void start() {
 
 		// Configurations
@@ -164,7 +164,6 @@ public class BloodAndMithrilServer {
 		new LwjglApplication(new GameServer(), cfg);
 	}
 
-
 	private static class GameServer implements ApplicationListener, InputProcessor {
 
 		@Override
@@ -172,7 +171,7 @@ public class BloodAndMithrilServer {
 			gameWorld = new GameWorld(false);
 
 			GameWorld.factions.put(0, new Faction("NPC", 0));
-	    GameWorld.factions.put(1, new Faction("Elves", 1));
+			GameWorld.factions.put(1, new Faction("Elves", 1));
 
 			ClientServerInterface.setServer(true);
 			GameLoader.load();
@@ -180,67 +179,75 @@ public class BloodAndMithrilServer {
 			Gdx.input.setInputProcessor(this);
 		}
 
-
+		
 		@Override
 		public void resize(int width, int height) {
 		}
-
+		
 
 		@Override
 		public void render() {
 			GameSaver.update();
 
 			// Do not update if game is paused
-			// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
+			// Do not update if FPS is lower than tolerance threshold, otherwise
+			// bad things can happen, like teleporting
 			float delta = Gdx.graphics.getDeltaTime();
 			if (delta < 0.1f && !GameSaver.isSaving()) {
 				gameWorld.update(0, 0);
 			}
 		}
 
+		
 		@Override
 		public void pause() {
 		}
 
+		
 		@Override
 		public void resume() {
 		}
 
+		
 		@Override
 		public void dispose() {
 		}
 
+		
 		@Override
 		public boolean keyDown(int keycode) {
 
-	    if (keycode == Input.Keys.P) {
-	      GameWorld.individuals.get(1).addCondition(new Poison(1f, 0.1f));
-	    }
+			if (keycode == Input.Keys.P) {
+				GameWorld.individuals.get(1).addCondition(new Poison(1f, 0.1f));
+			}
 
-	    if (keycode == Input.Keys.T) {
-	      Individual individual = GameWorld.individuals.get(1);
-	      if (individual != null) {
-	        PineChest pineChest = new PineChest(individual.state.position.x, individual.state.position.y, true, 100f);
-	        GameWorld.props.put(pineChest.id, pineChest);
-	      }
-	    }
+			if (keycode == Input.Keys.T) {
+				Individual individual = GameWorld.individuals.get(1);
+				if (individual != null) {
+					PineChest pineChest = new PineChest(
+						individual.state.position.x,
+						individual.state.position.y, true, 100f
+					);
+					GameWorld.props.put(pineChest.id, pineChest);
+				}
+			}
 
-	    if (keycode == Input.Keys.U) {
-	      IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
-	      state.position = new Vector2(0, 500);
-	      state.velocity = new Vector2(0, 0);
-	      state.acceleration = new Vector2(0, 0);
+			if (keycode == Input.Keys.U) {
+				IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
+				state.position = new Vector2(0, 500);
+				state.velocity = new Vector2(0, 0);
+				state.acceleration = new Vector2(0, 0);
 
-	      IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
-	      id.nickName = "Unknown";
+				IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
+				id.nickName = "Unknown";
 
-	      Boar boar = new Boar(id, state);
+				Boar boar = new Boar(id, state);
 
-	      GameWorld.individuals.put(boar.id.id, boar);
-	    }
+				GameWorld.individuals.put(boar.id.id, boar);
+			}
 
 			if (keycode == Input.Keys.R) {
-			  IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
+				IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
 				state.position = new Vector2(0, 500);
 				state.velocity = new Vector2(0, 0);
 				state.acceleration = new Vector2(0, 0);
@@ -249,66 +256,77 @@ public class BloodAndMithrilServer {
 				id.nickName = "Elfie";
 
 				Elf elf = new Elf(
-					id, state, Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
-					new Color(0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 1),
-					new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
-					Util.getRandom().nextInt(4),
+					id, 
+					state,
+					Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1,
+					true, 
+					new Color(0.5f + 0.5f * Util.getRandom().nextFloat(), 0.5f + 0.5f * Util.getRandom().nextFloat(), 0.5f + 0.5f * Util.getRandom().nextFloat(), 1), 
+					new Color(0.2f + 0.4f * Util.getRandom().nextFloat(), 0.2f + 0.3f * Util.getRandom().nextFloat(), 0.5f + 0.3f * Util.getRandom().nextFloat(), 1), 
+					Util.getRandom().nextInt(4), 
 					20f
 				);
 
-	      for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-	        elf.giveItem(new Carrot());
-	      }
-	      for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-	        elf.giveItem(new DeathCap(false));
-	      }
-	      for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-	        elf.giveItem(new ChickenLeg());
-	      }
-	      for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-	        elf.giveItem(new GlassBottle(Water.class, 1f));
-	      }
-	      for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
-	        elf.giveItem(new Currency());
-	      }
-	      elf.giveItem(new ButterflySword(100));
-	      elf.giveItem(new Broadsword(100));
+				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+					elf.giveItem(new Carrot());
+				}
+				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+					elf.giveItem(new DeathCap(false));
+				}
+				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+					elf.giveItem(new ChickenLeg());
+				}
+				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+					elf.giveItem(new GlassBottle(Water.class, 1f));
+				}
+				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
+					elf.giveItem(new Currency());
+				}
+				elf.giveItem(new ButterflySword(100));
+				elf.giveItem(new Broadsword(100));
 
 				GameWorld.individuals.put(elf.id.id, elf);
 			}
 			return false;
 		}
 
+		
 		@Override
 		public boolean keyUp(int keycode) {
 			return false;
 		}
 
+		
 		@Override
 		public boolean keyTyped(char character) {
 			return false;
 		}
 
+		
 		@Override
-		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		public boolean touchDown(int screenX, int screenY, int pointer,
+				int button) {
 			return false;
 		}
 
+		
 		@Override
 		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 			return false;
 		}
 
+		
 		@Override
 		public boolean touchDragged(int screenX, int screenY, int pointer) {
 			return false;
 		}
 
+		
 		@Override
 		public boolean mouseMoved(int screenX, int screenY) {
 			return false;
 		}
 
+		
 		@Override
 		public boolean scrolled(int amount) {
 			return false;

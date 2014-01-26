@@ -3,6 +3,7 @@ package bloodandmithril.character.ai.pathfinding;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.ai.ArtificialIntelligence;
@@ -23,7 +24,7 @@ public class Path implements Serializable {
 	private static final long serialVersionUID = -2569430046328226956L;
 
 	/** {@link WayPoint}s associated with this {@link Path} */
-	private final LinkedList<WayPoint> waypoints = new LinkedList<WayPoint>();
+	private ConcurrentLinkedDeque<WayPoint> waypoints;
 
 	/**
 	 * True if location is part of this {@link Path}
@@ -52,8 +53,26 @@ public class Path implements Serializable {
 		}
 		return false;
 	}
+	
+	
+	/** Public no-arg constructor */
+	public Path() {
+		 this.waypoints = new ConcurrentLinkedDeque<WayPoint>();
+	}
+	
+	
+	/** Private constructor, see {@link #copy()} */
+	private Path(ConcurrentLinkedDeque<WayPoint> waypoints){
+		this.waypoints = waypoints;
+	}
+	
+	
+	/** Copies this path, must be synchronized */
+	public synchronized Path copy() {
+		return new Path(new ConcurrentLinkedDeque<>(this.waypoints));
+	}
 
-
+	
 	/** Adds a {@link WayPoint} to this {@link Path} at the beginning */
 	public synchronized void addWayPointReversed(WayPoint wayPoint) {
 		waypoints.addFirst(wayPoint);

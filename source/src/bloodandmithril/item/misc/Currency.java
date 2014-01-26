@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 public class Currency extends Item {
-
+	private static final long serialVersionUID = -7059495735666011863L;
 
 	/**
 	 * Constructor

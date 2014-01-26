@@ -207,4 +207,12 @@ public class Boar extends Individual {
 		this.biography = ((Boar) other).biography;
 		this.current = ((Boar) other).current;
 	}
+
+
+	@Override
+	public Individual copy() {
+		Boar boar = new Boar(id, state);
+		boar.copyFrom(this);
+		return boar;
+	}
 }

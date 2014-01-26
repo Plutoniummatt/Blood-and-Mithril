@@ -405,4 +405,12 @@ public class Elf extends Individual {
 		this.currentHair = ((Elf) other).currentHair;
 		this.biography = ((Elf) other).biography;
 	}
+
+
+	@Override
+	public Individual copy() {
+		Elf elf = new Elf(id, state, factionId, female, new Color(hairColorR, hairColorG, hairColorB, 1f), new Color(eyeColorR, eyeColorG, eyeColorB, 1f), hairStyle, inventoryMassCapacity);
+		elf.copyFrom(this);
+		return elf;
+	}
 }

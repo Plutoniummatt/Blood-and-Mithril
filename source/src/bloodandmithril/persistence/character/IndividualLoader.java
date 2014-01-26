@@ -26,11 +26,5 @@ public class IndividualLoader {
 		} catch (Exception e) {
 			Logger.loaderDebug("Failed to load individuals", LogLevel.WARN);
 		}
-
-		for (Individual indi : GameWorld.individuals.values()) {
-			if (indi.selected) {
-				GameWorld.selectedIndividuals.add(indi);
-			}
-		}
 	}
 }

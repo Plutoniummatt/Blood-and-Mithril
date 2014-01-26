@@ -11,7 +11,8 @@ import bloodandmithril.item.material.liquid.Liquid.Empty;
  * @author Copyright (c) CHP Consulting Ltd. 2014
  */
 public abstract class Bottle extends Item {
-
+	private static final long serialVersionUID = 5895479054869624858L;
+	
 	protected Class<? extends Liquid> containedLiquid;
 	protected float amount;
 	protected final float maxAmount;

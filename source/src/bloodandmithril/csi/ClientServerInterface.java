@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
 
@@ -92,6 +93,7 @@ import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.material.animal.ChickenLeg;
+import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.container.Bottle;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.liquid.Liquid;
@@ -353,6 +355,7 @@ public class ClientServerInterface {
 		kryo.register(ClientConnected.class);
 		kryo.register(Commands.class);
 		kryo.register(CompositeAITask.class);
+		kryo.register(ConcurrentLinkedDeque.class);
 		kryo.register(ConcurrentHashMap.class);
 		kryo.register(ConcurrentSkipListMap.class);
 		kryo.register(ConsumeItem.class);
@@ -451,6 +454,7 @@ public class ClientServerInterface {
 		kryo.register(Wait.class);
 		kryo.register(Water.class);
 		kryo.register(WayPoint.class);
+		kryo.register(YellowBrick.class);
 		kryo.register(YellowBrickPlatform.class);
 		kryo.register(YellowBrickTile.class);
 		kryo.register(YellowSand.class);

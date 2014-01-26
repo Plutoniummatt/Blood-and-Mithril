@@ -18,7 +18,7 @@ public class CompositeAITask extends AITask {
 	private final ArrayDeque<AITask> tasks = new ArrayDeque<>();
 
 	/** Current task of this {@link CompositeAITask} */
-	protected AITask currentTask;
+	private AITask currentTask;
 
 	/** Description of this {@link CompositeAITask} */
 	private final String description;
@@ -34,7 +34,7 @@ public class CompositeAITask extends AITask {
 			this.tasks.addLast(task);
 		}
 
-		currentTask = this.tasks.poll();
+		setCurrentTask(this.tasks.poll());
 	}
 
 
@@ -55,22 +55,22 @@ public class CompositeAITask extends AITask {
 	 */
 	@Override
 	public boolean isComplete() {
-		return currentTask == null;
+		return getCurrentTask() == null;
 	}
-
+	
 
 	/**
 	 * @see bloodandmithril.character.ai.AITask#execute()
 	 */
 	@Override
 	public void execute() {
-		if (currentTask.isComplete()) {
-			currentTask.uponCompletion();
-			currentTask = tasks.poll();
+		if (getCurrentTask().isComplete()) {
+			getCurrentTask().uponCompletion();
+			setCurrentTask(tasks.poll());
 		}
 
-		if (currentTask != null) {
-			currentTask.execute();
+		if (getCurrentTask() != null) {
+			getCurrentTask().execute();
 		}
 	}
 
@@ -83,5 +83,15 @@ public class CompositeAITask extends AITask {
 
 	@Override
 	public void uponCompletion() {
+	}
+
+
+	public AITask getCurrentTask() {
+		return currentTask;
+	}
+
+
+	public void setCurrentTask(AITask currentTask) {
+		this.currentTask = currentTask;
 	}
 }
