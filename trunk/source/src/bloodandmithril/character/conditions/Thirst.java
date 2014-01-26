@@ -9,7 +9,8 @@ import bloodandmithril.character.Individual.Condition;
  * @author Matt
  */
 public class Thirst extends Condition {
-
+	private static final long serialVersionUID = -3232484824763914755L;
+	
 	private final Individual affected;
 	private final float oldStaminaRegen;
 

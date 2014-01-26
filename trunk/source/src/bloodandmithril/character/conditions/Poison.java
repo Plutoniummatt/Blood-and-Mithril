@@ -4,6 +4,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.Condition;
 
 public class Poison extends Condition {
+	private static final long serialVersionUID = 1741945471582031402L;
 
 	/** The health/second being drained */
 	public float toxicity;

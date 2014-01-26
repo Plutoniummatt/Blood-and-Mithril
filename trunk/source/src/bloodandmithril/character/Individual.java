@@ -69,10 +69,7 @@ public abstract class Individual extends Equipper {
 	public boolean canTradeWith;
 
 	/** The faction this {@link Individual} belongs to */
-	private int factionId;
-
-	/** Whether or not this character is currently selected */
-	public boolean selected;
+	protected int factionId;
 
 	/** Width and Height of the individual */
 	public int width, height;
@@ -127,7 +124,7 @@ public abstract class Individual extends Equipper {
 	}
 
 
-	public void copyFrom(Individual other) {
+	public synchronized void copyFrom(Individual other) {
 		this.ai = other.ai;
 		this.aiReactionTimer = other.aiReactionTimer;
 		this.aITaskDelay = other.aITaskDelay;
@@ -144,7 +141,6 @@ public abstract class Individual extends Equipper {
 		this.inventoryMassCapacity = other.inventoryMassCapacity;
 		this.jumpedOff = other.jumpedOff;
 		this.safetyHeight = other.safetyHeight;
-		this.selected = other.selected;
 		this.state = other.state;
 		this.steppingUp = other.steppingUp;
 		this.steps = other.steps;
@@ -156,6 +152,9 @@ public abstract class Individual extends Equipper {
 
 		internalCopyFrom(other);
 	}
+	
+	
+	public abstract Individual copy();
 
 
 	public Skills getSkills() {
@@ -225,14 +224,12 @@ public abstract class Individual extends Equipper {
 
 	/** Select this {@link Individual} */
 	public void select() {
-		selected = true;
 		ai.setToManual();
 	}
 
 
 	/** Deselect this {@link Individual} */
 	public void deselect(boolean clearTask) {
-		selected = false;
 		ai.setToAuto(clearTask);
 	}
 
@@ -534,7 +531,7 @@ public abstract class Individual extends Equipper {
 
 		final Individual thisIndividual = this;
 
-		ContextMenuItem controlOrReleaseMenuItem = thisIndividual.selected ?
+		ContextMenuItem controlOrReleaseMenuItem = GameWorld.selectedIndividuals.contains(thisIndividual) ?
 		new ContextMenuItem(
 			"Deselect",
 			new Task() {

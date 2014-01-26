@@ -9,7 +9,8 @@ import bloodandmithril.character.Individual.Condition;
  * @author Matt
  */
 public class Hunger extends Condition {
-
+	private static final long serialVersionUID = 6876432751800675014L;
+	
 	private final Individual affected;
 	private final float oldHealthRegen;
 

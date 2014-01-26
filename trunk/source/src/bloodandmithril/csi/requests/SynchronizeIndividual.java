@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.task.CompositeAITask;
+import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
@@ -73,7 +76,20 @@ public class SynchronizeIndividual implements Request {
 		 * Synchronize single individual
 		 */
 		public SynchronizeIndividualResponse(Individual individual, long timeStamp) {
-			this.individual = individual;
+			this.individual = individual.copy();
+			
+			// Handle AITasks with Paths explicitly, these guys cause ConcurrentModificationExceptions and nasty NPE's even with
+			// ConcurrentLinkedDeque's
+			AITask current = this.individual.ai.getCurrentTask();
+			if (current instanceof GoToLocation) {
+				((GoToLocation) current).setPath(((GoToLocation) current).getPath().copy());
+			} else if (current instanceof CompositeAITask) {
+				AITask currentTask = ((CompositeAITask) current).getCurrentTask();
+				if (currentTask instanceof GoToLocation) {
+					((GoToLocation) currentTask).setPath(((GoToLocation) currentTask).getPath().copy());
+				}
+			}
+			
 			this.timeStamp = timeStamp;
 
 			this.individuals = null;
@@ -84,7 +100,6 @@ public class SynchronizeIndividual implements Request {
 		 */
 		public SynchronizeIndividualResponse(Set<Integer> individuals) {
 			this.individuals = individuals;
-
 			this.individual = null;
 			this.timeStamp = -1;
 		}

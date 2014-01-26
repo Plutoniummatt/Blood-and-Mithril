@@ -26,7 +26,7 @@ public class GoToLocation extends AITask {
 	private static final long serialVersionUID = -4121947217713585991L;
 
 	/** The {@link Path} this {@link GoToLocation} {@link AITask} will follow */
-	private final Path path;
+	private Path path;
 
 	/** Whether or not to fly */
 	private final boolean fly;
@@ -193,6 +193,21 @@ public class GoToLocation extends AITask {
 		}
 
 		return path.isEmpty() || finalWayPointCheck;
+	}
+	
+	
+	public WayPoint getDestinationWayPoint() {
+		return path.getDestinationWayPoint();
+	}
+	
+	
+	public void setPath(Path path) {
+		this.path = path;
+	}
+	
+	
+	public synchronized Path getPath() {
+		return path;
 	}
 
 

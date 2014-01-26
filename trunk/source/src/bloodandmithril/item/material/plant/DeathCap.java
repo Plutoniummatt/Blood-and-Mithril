@@ -17,7 +17,8 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 public class DeathCap extends Item implements Consumable {
-
+	private static final long serialVersionUID = -7125731448429674227L;
+	
 	private final boolean cooked;
 
 	/**

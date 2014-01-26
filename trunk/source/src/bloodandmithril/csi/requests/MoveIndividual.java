@@ -39,7 +39,7 @@ public class MoveIndividual implements Request {
 	@Override
 	public Responses respond() {
 		Individual individual = GameWorld.individuals.get(individualId);
-		if (individual != null && individual.selected) {
+		if (individual != null && GameWorld.selectedIndividuals.contains(individual)) {
 			AIProcessor.sendPathfindingRequest(
 					individual,
 				new WayPoint(destinationCoordinates),
