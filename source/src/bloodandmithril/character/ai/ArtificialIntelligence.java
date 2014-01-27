@@ -82,13 +82,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 
 	/** Clears current task and sets to to manual control */
-	public void setToManual() {
+	public synchronized void setToManual() {
 		mode = AIMode.MANUAL;
 	}
 
 
 	/** Clears current task */
-	public void setToAuto(boolean clearTask) {
+	public synchronized void setToAuto(boolean clearTask) {
 		mode = AIMode.AUTO;
 		if (clearTask) {
 			currentTask = new Idle();
@@ -141,15 +141,15 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 		if (Util.getRandom().nextBoolean() && getCurrentTask() instanceof Idle) {
 			AIProcessor.sendPathfindingRequest(
-				host, 
+				host,
 				new WayPoint(
 					new Vector2(
-						host.state.position.x + (0.5f - Util.getRandom().nextFloat()) * distance, 
+						host.state.position.x + (0.5f - Util.getRandom().nextFloat()) * distance,
 						host.state.position.y + host.height / 2
 					)
-				), 
-				fly, 
-				0f, 
+				),
+				fly,
+				0f,
 				true
 			);
 		} else if (currentTask instanceof Idle) {

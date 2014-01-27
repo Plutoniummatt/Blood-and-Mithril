@@ -77,12 +77,12 @@ public class AIProcessor {
 				}
 
 				private void processItems(final int n) {
-					
+
 					// StackOverflow
 					if (n > 50) {
 						return;
 					}
-					
+
 					if (pathFinderTasks.isEmpty()) {
 						Logger.aiDebug("Processed " + n + " pathfinder items", LogLevel.TRACE);
 					} else {
@@ -107,7 +107,9 @@ public class AIProcessor {
 			new Task() {
 				@Override
 				public void execute() {
-					host.ai.setCurrentTask(new GoToLocation(host, destination, fly, forceTolerance, safe));
+					synchronized (host) {
+						host.ai.setCurrentTask(new GoToLocation(host, destination, fly, forceTolerance, safe));
+					}
 				}
 			}
 		);
