@@ -16,8 +16,9 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.ui.components.window.ChatWindow;
-import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
 
 import com.badlogic.gdx.graphics.Color;
@@ -84,22 +85,28 @@ public class RequestClientList implements Request {
 							BloodAndMithrilClient.getMouseScreenX(),
 							BloodAndMithrilClient.getMouseScreenY(),
 							new ContextMenu.ContextMenuItem(
-								"Show info",
+								"Change name",
 								new Task() {
 									@Override
 									public void execute() {
 										UserInterface.addLayeredComponent(
-											new MessageWindow(
-												"TODO",
-												Color.CYAN,
-												BloodAndMithrilClient.getMouseScreenX(),
-												BloodAndMithrilClient.getMouseScreenY(),
-												300,
-												150,
-												"TODO",
-												true,
-												300,
-												150
+											new TextInputWindow(
+												BloodAndMithrilClient.WIDTH / 2 - 125,
+												BloodAndMithrilClient.HEIGHT/2 + 50,
+												250,
+												100,
+												"Change name",
+												250,
+												100,
+												new JITTask() {
+													@Override
+													public void execute(Object... args) {
+														ClientServerInterface.clientName = args[0].toString();
+														ClientServerInterface.SendRequest.sendRequestConnectedPlayerNamesRequest();
+													}
+												},
+												"Change",
+												true
 											)
 										);
 									}

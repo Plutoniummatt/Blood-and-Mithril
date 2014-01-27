@@ -48,7 +48,7 @@ import com.esotericsoftware.kryonet.Server;
 
 /**
  * Entry point class for the remote game server
- * 
+ *
  * @author Matt
  */
 public class BloodAndMithrilServer {
@@ -76,6 +76,12 @@ public class BloodAndMithrilServer {
 		server.getKryo().setInstantiatorStrategy(new StdInstantiatorStrategy());
 
 		server.addListener(new Listener() {
+
+			@Override
+			public void disconnected (Connection connection) {
+				ClientServerInterface.SendNotification.notifySyncPlayerList();
+			}
+
 			@Override
 			public void received(final Connection connection, final Object object) {
 				if (object instanceof Request) {
@@ -132,12 +138,12 @@ public class BloodAndMithrilServer {
 							for (Prop prop : GameWorld.props.values()) {
 								ClientServerInterface.SendNotification.notifySyncProp(prop);
 							}
-	
+
 							for (Faction faction : GameWorld.factions.values()) {
 								ClientServerInterface.SendNotification.notifySyncFaction(faction);
 							}
 						}
-	
+
 						if (counter >= 100) {
 							ClientServerInterface.SendNotification.notifySyncWorldState();
 							counter = 0;
@@ -179,11 +185,11 @@ public class BloodAndMithrilServer {
 			Gdx.input.setInputProcessor(this);
 		}
 
-		
+
 		@Override
 		public void resize(int width, int height) {
 		}
-		
+
 
 		@Override
 		public void render() {
@@ -198,22 +204,22 @@ public class BloodAndMithrilServer {
 			}
 		}
 
-		
+
 		@Override
 		public void pause() {
 		}
 
-		
+
 		@Override
 		public void resume() {
 		}
 
-		
+
 		@Override
 		public void dispose() {
 		}
 
-		
+
 		@Override
 		public boolean keyDown(int keycode) {
 
@@ -256,13 +262,13 @@ public class BloodAndMithrilServer {
 				id.nickName = "Elfie";
 
 				Elf elf = new Elf(
-					id, 
+					id,
 					state,
 					Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1,
-					true, 
-					new Color(0.5f + 0.5f * Util.getRandom().nextFloat(), 0.5f + 0.5f * Util.getRandom().nextFloat(), 0.5f + 0.5f * Util.getRandom().nextFloat(), 1), 
-					new Color(0.2f + 0.4f * Util.getRandom().nextFloat(), 0.2f + 0.3f * Util.getRandom().nextFloat(), 0.5f + 0.3f * Util.getRandom().nextFloat(), 1), 
-					Util.getRandom().nextInt(4), 
+					true,
+					new Color(0.5f + 0.5f * Util.getRandom().nextFloat(), 0.5f + 0.5f * Util.getRandom().nextFloat(), 0.5f + 0.5f * Util.getRandom().nextFloat(), 1),
+					new Color(0.2f + 0.4f * Util.getRandom().nextFloat(), 0.2f + 0.3f * Util.getRandom().nextFloat(), 0.5f + 0.3f * Util.getRandom().nextFloat(), 1),
+					Util.getRandom().nextInt(4),
 					20f
 				);
 
@@ -289,44 +295,44 @@ public class BloodAndMithrilServer {
 			return false;
 		}
 
-		
+
 		@Override
 		public boolean keyUp(int keycode) {
 			return false;
 		}
 
-		
+
 		@Override
 		public boolean keyTyped(char character) {
 			return false;
 		}
 
-		
+
 		@Override
 		public boolean touchDown(int screenX, int screenY, int pointer,
 				int button) {
 			return false;
 		}
 
-		
+
 		@Override
 		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 			return false;
 		}
 
-		
+
 		@Override
 		public boolean touchDragged(int screenX, int screenY, int pointer) {
 			return false;
 		}
 
-		
+
 		@Override
 		public boolean mouseMoved(int screenX, int screenY) {
 			return false;
 		}
 
-		
+
 		@Override
 		public boolean scrolled(int amount) {
 			return false;

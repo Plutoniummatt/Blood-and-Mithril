@@ -77,19 +77,22 @@ public class SynchronizeIndividual implements Request {
 		 */
 		public SynchronizeIndividualResponse(Individual individual, long timeStamp) {
 			this.individual = individual.copy();
-			
+
 			// Handle AITasks with Paths explicitly, these guys cause ConcurrentModificationExceptions and nasty NPE's even with
 			// ConcurrentLinkedDeque's
 			AITask current = this.individual.ai.getCurrentTask();
-			if (current instanceof GoToLocation) {
-				((GoToLocation) current).setPath(((GoToLocation) current).getPath().copy());
-			} else if (current instanceof CompositeAITask) {
-				AITask currentTask = ((CompositeAITask) current).getCurrentTask();
-				if (currentTask instanceof GoToLocation) {
-					((GoToLocation) currentTask).setPath(((GoToLocation) currentTask).getPath().copy());
+
+			synchronized (current) {
+				if (current instanceof GoToLocation) {
+					((GoToLocation) current).setPath(((GoToLocation) current).getPath().copy());
+				} else if (current instanceof CompositeAITask) {
+					AITask currentTask = ((CompositeAITask) current).getCurrentTask();
+					if (currentTask instanceof GoToLocation) {
+						((GoToLocation) currentTask).setPath(((GoToLocation) currentTask).getPath().copy());
+					}
 				}
 			}
-			
+
 			this.timeStamp = timeStamp;
 
 			this.individuals = null;

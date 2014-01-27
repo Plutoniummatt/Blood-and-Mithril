@@ -2,6 +2,7 @@ package bloodandmithril.csi;
 
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.net.InetAddress;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,7 +112,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
-import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
@@ -143,6 +143,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -171,7 +172,7 @@ public class ClientServerInterface {
 	 * @throws IOException
 	 */
 	public static void setupAndConnect(String ip) throws IOException {
-		clientName = Util.randomOneOf("Vindi", "Bhaal", "Mach", "Snake", "Mega", "Maller", "Protey", "Legion", "Tengu", "Loki");
+		clientName = InetAddress.getLocalHost().getHostName();
 
 		client = new Client(65536, 65536);
 		registerClasses(client.getKryo());
@@ -603,6 +604,20 @@ public class ClientServerInterface {
 						message
 					)
 				)
+			);
+		}
+
+
+		public static synchronized void notifySyncPlayerList() {
+			List<String> names = Lists.newArrayList();
+			for (Connection connection : ClientServerInterface.server.getConnections()) {
+				names.add(ClientServerInterface.connectedPlayers.get(connection.getID()));
+			}
+			sendNotification(
+				-1,
+				true,
+				false,
+				new RequestClientListResponse(names)
 			);
 		}
 

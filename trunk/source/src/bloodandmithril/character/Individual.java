@@ -152,8 +152,8 @@ public abstract class Individual extends Equipper {
 
 		internalCopyFrom(other);
 	}
-	
-	
+
+
 	public abstract Individual copy();
 
 

@@ -194,19 +194,19 @@ public class GoToLocation extends AITask {
 
 		return path.isEmpty() || finalWayPointCheck;
 	}
-	
-	
+
+
 	public WayPoint getDestinationWayPoint() {
 		return path.getDestinationWayPoint();
 	}
-	
-	
+
+
 	public void setPath(Path path) {
 		this.path = path;
 	}
-	
-	
-	public synchronized Path getPath() {
+
+
+	public Path getPath() {
 		return path;
 	}
 
