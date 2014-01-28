@@ -55,7 +55,7 @@ public class IndividualInfoWindow extends Window {
 		}
 
 		defaultFont.setColor(active ? activeWhite : inactiveWhite);
-		if (!drawLine(truncate(individual.id.getSimpleName()), 45)) {
+		if (!drawLine(truncate(individual.getId().getSimpleName()), 45)) {
 			return;
 		}
 
@@ -65,7 +65,7 @@ public class IndividualInfoWindow extends Window {
 		}
 
 		defaultFont.setColor(active ? activeWhite : inactiveWhite);
-		if (!drawLine(truncate(individual.id.nickName), 95)) {
+		if (!drawLine(truncate(individual.getId().getNickName()), 95)) {
 			return;
 		}
 

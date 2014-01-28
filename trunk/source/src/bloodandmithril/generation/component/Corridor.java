@@ -80,7 +80,7 @@ public class Corridor extends Component {
 	 * Stem a set of {@link Stairs} from this {@link Corridor}
 	 */
 	@SuppressWarnings("rawtypes")
-  private Component stemStairs(ComponentCreationCustomization custom) {
+	private Component stemStairs(ComponentCreationCustomization custom) {
 		StairsCreationCustomization stairsCustomization = (StairsCreationCustomization) custom;
 
 		stairsCustomization.stemRight = innerBoundaries.left == ((RectangularInterface)existingInterfaces.get(0)).boundaries.left;

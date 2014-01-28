@@ -32,18 +32,18 @@ public class TradeWith extends CompositeAITask {
 	 * Overloaded constructor
 	 */
 	public TradeWith(final Individual proposer, final Container proposee, int connectionId) {
-		super(proposer.id, "Trading");
+		super(proposer.getId(), "Trading");
 
 		Vector2 location = null;
 
 		if (proposee instanceof ChestContainer) {
 			location = ((ChestContainer) proposee).getPositionOfChest();
 		} else if (proposee instanceof Individual) {
-			location = ((Individual) proposee).state.position;
+			location = ((Individual) proposee).getState().position;
 		}
 
 		setCurrentTask(new GoToMovingLocation(
-			proposer.id,
+			proposer.getId(),
 			location,
 			50f
 		));
@@ -63,18 +63,18 @@ public class TradeWith extends CompositeAITask {
 	 * Constructor
 	 */
 	public TradeWith(final Individual proposer, final Container proposee) {
-		super(proposer.id, "Trading");
+		super(proposer.getId(), "Trading");
 
 		Vector2 location = null;
 
 		if (proposee instanceof ChestContainer) {
 			location = ((ChestContainer) proposee).getPositionOfChest();
 		} else if (proposee instanceof Individual) {
-			location = ((Individual) proposee).state.position;
+			location = ((Individual) proposee).getState().position;
 		}
 
 		setCurrentTask(new GoToMovingLocation(
-			proposer.id,
+			proposer.getId(),
 			location,
 			50f
 		));
@@ -121,7 +121,7 @@ public class TradeWith extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return proposer.ai.getCurrentTask() instanceof Trading;
+			return proposer.getAI().getCurrentTask() instanceof Trading;
 		}
 
 		@Override
@@ -135,20 +135,20 @@ public class TradeWith extends CompositeAITask {
 			if (proposee instanceof Individual) {
 				Individual proposeeCasted = (Individual)proposee;
 
-				if (proposer.getDistanceFrom(proposeeCasted.state.position) > 64f) {
+				if (proposer.getDistanceFrom(proposeeCasted.getState().position) > 64f) {
 					return;
 				}
 
 				if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
-					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.id.id, TradeEntity.INDIVIDUAL, ((Individual) proposee).id.id, connectionId);
+					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.getId().getId(), TradeEntity.INDIVIDUAL, ((Individual) proposee).getId().getId(), connectionId);
 				} else if (ClientServerInterface.isClient()) {
 					openTradeWindowWithIndividual(proposer, proposeeCasted);
 				}
 
 				proposer.clearCommands();
-				proposer.ai.setCurrentTask(new Trading(proposer.id, ((Individual) proposee).id.id, TradeEntity.INDIVIDUAL));
+				proposer.getAI().setCurrentTask(new Trading(proposer.getId(), ((Individual) proposee).getId().getId(), TradeEntity.INDIVIDUAL));
 				proposeeCasted.clearCommands();
-				proposeeCasted.ai.setCurrentTask(new Trading(proposeeCasted.id, proposer.id.id, TradeEntity.INDIVIDUAL));
+				proposeeCasted.getAI().setCurrentTask(new Trading(proposeeCasted.getId(), proposer.getId().getId(), TradeEntity.INDIVIDUAL));
 			} else if (proposee instanceof ChestContainer) {
 
 				if (proposer.getDistanceFrom(((ChestContainer)proposee).getPositionOfChest()) > 64f) {
@@ -156,13 +156,13 @@ public class TradeWith extends CompositeAITask {
 				}
 
 				if (ClientServerInterface.isServer()) {
-					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.id.id, TradeEntity.PROP, ((ChestContainer) proposee).propId, connectionId);
+					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.getId().getId(), TradeEntity.PROP, ((ChestContainer) proposee).propId, connectionId);
 				} else if (ClientServerInterface.isClient()) {
 					openTradeWindowWithProp(proposer, proposee);
 				}
 
 				proposer.clearCommands();
-				proposer.ai.setCurrentTask(new Trading(proposer.id, ((ChestContainer) proposee).propId, TradeEntity.PROP));
+				proposer.getAI().setCurrentTask(new Trading(proposer.getId(), ((ChestContainer) proposee).propId, TradeEntity.PROP));
 			}
 		}
 	}
@@ -178,7 +178,7 @@ public class TradeWith extends CompositeAITask {
 				BloodAndMithrilClient.HEIGHT/2 + 150,
 				900,
 				300,
-				proposer.id.getSimpleName() + " interacting with pine chest",
+				proposer.getId().getSimpleName() + " interacting with pine chest",
 				true,
 				900,
 				300,
@@ -186,7 +186,7 @@ public class TradeWith extends CompositeAITask {
 				proposer,
 				prop
 			),
-			proposer.id.getSimpleName() + " interacting with pine chest"
+			proposer.getId().getSimpleName() + " interacting with pine chest"
 		);
 	}
 
@@ -197,8 +197,8 @@ public class TradeWith extends CompositeAITask {
 	public static void openTradeWindowWithIndividual(Individual proposer, Individual proposeeCasted) {
 		for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
 			if (component instanceof Window) {
-				if (((Window)component).title.equals(proposer.id.getSimpleName() + " - Inventory") ||
-						((Window)component).title.equals(proposeeCasted.id.getSimpleName() + " - Inventory")) {
+				if (((Window)component).title.equals(proposer.getId().getSimpleName() + " - Inventory") ||
+						((Window)component).title.equals(proposeeCasted.getId().getSimpleName() + " - Inventory")) {
 					UserInterface.removeLayeredComponent(component);
 				}
 			}
@@ -210,7 +210,7 @@ public class TradeWith extends CompositeAITask {
 				BloodAndMithrilClient.HEIGHT / 2 + 150,
 				900,
 				300,
-				"Trade between " + proposer.id.firstName + " and " + proposeeCasted.id.firstName,
+				"Trade between " + proposer.getId().getFirstName() + " and " + proposeeCasted.getId().getFirstName(),
 				true,
 				900,
 				300,
@@ -218,7 +218,7 @@ public class TradeWith extends CompositeAITask {
 				proposer,
 				proposeeCasted
 			),
-			"Trade between " + proposeeCasted.id.firstName + " and " + proposer.id.firstName
+			"Trade between " + proposeeCasted.getId().getFirstName() + " and " + proposer.getId().getFirstName()
 		);
 	}
 }

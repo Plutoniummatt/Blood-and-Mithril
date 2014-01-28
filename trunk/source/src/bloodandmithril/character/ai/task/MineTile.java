@@ -42,7 +42,7 @@ public class MineTile extends CompositeAITask {
 	 */
 	public MineTile(Individual host, Vector2 coordinate) {
 		super(
-			host.id,
+			host.getId(),
 			"Mining",
 			new GoToLocation(
 				host,
@@ -53,7 +53,7 @@ public class MineTile extends CompositeAITask {
 			)
 		);
 
-		appendTask(this.new Mine(host.id));
+		appendTask(this.new Mine(host.getId()));
 
 		this.tileCoordinate = coordinate;
 	}
@@ -94,7 +94,7 @@ public class MineTile extends CompositeAITask {
 
 		@Override
 		public void execute() {
-			final Individual host = GameWorld.individuals.get(hostId.id);
+			final Individual host = GameWorld.individuals.get(hostId.getId());
 
 			if (host.interactionBox.isWithinBox(tileCoordinate)) {
 				Topography.addTask(
@@ -136,7 +136,7 @@ public class MineTile extends CompositeAITask {
 								} else if (ClientServerInterface.isServer()) {
 									Topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
 									ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true);
-									ClientServerInterface.SendNotification.notifyGiveItem(host.id.id, tileToBeDeleted.mine());
+									ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine());
 								}
 							}
 						}

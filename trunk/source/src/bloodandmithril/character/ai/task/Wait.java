@@ -25,14 +25,14 @@ public class Wait extends AITask {
 	 * Constructor
 	 */
 	public Wait(Individual host, float time) {
-		super(host.id);
+		super(host.getId());
 		this.time = time;
 	}
 
 
 	@Override
 	public void execute() {
-		GameWorld.individuals.get(hostId.id).clearCommands();
+		GameWorld.individuals.get(hostId.getId()).clearCommands();
 		if (time < 0f) {
 			complete = true;
 			return;

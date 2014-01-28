@@ -106,7 +106,7 @@ public class IndividualStatusWindow extends Window {
 
 		defaultFont.setColor(active ? activeWhite : inactiveWhite);
 
-		float percentageHealth = 100 * (individual.state.health/individual.state.maxHealth);
+		float percentageHealth = 100 * (individual.getState().health/individual.getState().maxHealth);
 		int category = Math.round(percentageHealth)/10;
 
 		if (percentageHealth == 0f) {
@@ -227,7 +227,7 @@ public class IndividualStatusWindow extends Window {
 	private void refreshLisitng(final Individual individual, List<HashMap<ListingMenuItem<Condition>, Integer>> listings) {
 		listings.clear();
 		HashMap<ListingMenuItem<Condition>, Integer> map = Maps.newHashMap();
-		for (final Condition condition : Lists.newArrayList(individual.state.currentConditions)) {
+		for (final Condition condition : Lists.newArrayList(individual.getState().currentConditions)) {
 			map.put(
 				new ListingMenuItem<Condition>(
 					condition,

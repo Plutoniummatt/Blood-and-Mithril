@@ -12,6 +12,8 @@ import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.equipment.Broadsword;
+import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
@@ -55,6 +57,8 @@ public class Elf extends Individual {
 	private static final String WALKING_RIGHT_HAIR = "walkingRightHair";
 	private static final String STANDING_LEFT_HAIR = "standingLeftHair";
 	private static final String STANDING_RIGHT_HAIR = "standingRightHair";
+	private static final String ONEHANDEDWEAPONSWING_LEFT_1_HAIR = "oneHandedWeaponSwingLeft";
+	private static final String ONEHANDEDWEAPONSWING_RIGHT_1_HAIR = "oneHandedWeaponSwingLeft";
 
 	private static final String RUNNING_RIGHT = "runningRight";
 	private static final String RUNNING_LEFT = "runningLeft";
@@ -62,6 +66,8 @@ public class Elf extends Individual {
 	private static final String WALKING_LEFT = "walkingLeft";
 	private static final String STANDING_RIGHT = "standingRight";
 	private static final String STANDING_LEFT = "standingLeft";
+	private static final String ONEHANDEDWEAPONSWING_1_LEFT = "oneHandedWeaponSwingLeft";
+	private static final String ONEHANDEDWEAPONSWING_1_RIGHT = "oneHandedWeaponSwingLeft";
 
 	private static final long serialVersionUID = -5566954059579973505L;
 
@@ -160,8 +166,8 @@ public class Elf extends Individual {
 		// Draw the body
 		BloodAndMithrilClient.spriteBatch.draw(
 			animations.get(current + (female ? "F" : "M")).getKeyFrame(animationTimer, true),
-			state.position.x - animations.get(current + (female ? "F" : "M")).getKeyFrame(0f).getRegionWidth()/2,
-			state.position.y
+			getState().position.x - animations.get(current + (female ? "F" : "M")).getKeyFrame(0f).getRegionWidth()/2,
+			getState().position.y
 		);
 		BloodAndMithrilClient.spriteBatch.end();
 
@@ -175,8 +181,8 @@ public class Elf extends Individual {
 		// Draw the hair
 		BloodAndMithrilClient.spriteBatch.draw(
 			hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(animationTimer, true),
-			state.position.x - hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(0f).getRegionWidth()/2,
-			state.position.y
+			getState().position.x - hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(0f).getRegionWidth()/2,
+			getState().position.y
 		);
 
 		// Render equipped items
@@ -186,7 +192,7 @@ public class Elf extends Individual {
 			if (equipped instanceof OneHandedWeapon) {
 				SpacialConfiguration config = getOneHandedWeaponSpacialConfigration();
 				if (config != null) {
-					toRender.render(config.position.add(state.position), config.orientation, config.flipX);
+					toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
 				}
 			}
 		}
@@ -200,7 +206,7 @@ public class Elf extends Individual {
 	private void updateAnimation() {
 
 		// If we're moving to the right
-		if (state.velocity.x > 0) {
+		if (getState().velocity.x > 0) {
 			// If walking, and current animatin is not walking right, then set animations to walking right
 			if (isCommandActive(KeyMappings.walk) && !current.equals(WALKING_RIGHT)) {
 				current = WALKING_RIGHT;
@@ -214,7 +220,7 @@ public class Elf extends Individual {
 			}
 
 		// Same for if we're moving left
-		} else if (state.velocity.x < 0) {
+		} else if (getState().velocity.x < 0) {
 			if (isCommandActive(KeyMappings.walk) && !current.equals(WALKING_LEFT)) {
 				current = WALKING_LEFT;
 				currentHair = WALKING_LEFT_HAIR;
@@ -226,7 +232,7 @@ public class Elf extends Individual {
 			}
 
 		// Otherwise we're standing still, if current animation is not standing left or right, then set current to standing left/right depending on which direction we were facing before.
-		} else if (state.velocity.x == 0 && !current.equals(STANDING_LEFT) && !current.equals(STANDING_RIGHT)) {
+		} else if (getState().velocity.x == 0 && !current.equals(STANDING_LEFT) && !current.equals(STANDING_RIGHT)) {
 			current = current.equals(WALKING_RIGHT) || current.equals(RUNNING_RIGHT) ? STANDING_RIGHT : STANDING_LEFT;
 			currentHair = currentHair.equals(WALKING_RIGHT_HAIR) || currentHair.equals(RUNNING_RIGHT_HAIR) ? STANDING_RIGHT_HAIR : STANDING_LEFT_HAIR;
 		}
@@ -244,16 +250,16 @@ public class Elf extends Individual {
 
 
 	private void updateVitals(float delta) {
-		heal(delta * state.healthRegen);
+		heal(delta * getState().healthRegen);
 
 		decreaseHunger(0.000001f);
 		decreaseThirst(0.000003f);
 
-		if (state.hunger < 0.75f) {
+		if (getState().hunger < 0.75f) {
 			addCondition(new Hunger(this));
 		}
 
-		if (state.thirst < 0.75f) {
+		if (getState().thirst < 0.75f) {
 			addCondition(new Thirst(this));
 		}
 	}
@@ -262,22 +268,22 @@ public class Elf extends Individual {
 	@Override
 	protected void respondToCommands() {
 		//Horizontal movement
-		if (Math.abs(state.velocity.y) < 5f) {
+		if (Math.abs(getState().velocity.y) < 5f) {
 			if (isCommandActive(KeyMappings.moveLeft) && (canStepUp(-2) || !obstructed(-2))) {
 				if (isCommandActive(KeyMappings.walk)) {
-					state.velocity.x = -30f;
+					getState().velocity.x = -30f;
 				} else {
-					state.velocity.x = -80f;
+					getState().velocity.x = -80f;
 				}
 			} else if (isCommandActive(KeyMappings.moveRight) && (canStepUp(2) || !obstructed(2))) {
 				if (isCommandActive(KeyMappings.walk)) {
-					state.velocity.x = 30f;
+					getState().velocity.x = 30f;
 				} else {
-					state.velocity.x = 80f;
+					getState().velocity.x = 80f;
 				}
 			} else {
-				state.velocity.x = 0f;
-				state.acceleration.x = 0f;
+				getState().velocity.x = 0f;
+				getState().acceleration.x = 0f;
 
 				int offset = isCommandActive(KeyMappings.moveRight) ? 2 : isCommandActive(KeyMappings.moveLeft) ? -2 : 0;
 				if (obstructed(offset) && !canStepUp(offset) && !(ai.getCurrentTask() instanceof Idle)) {
@@ -297,7 +303,7 @@ public class Elf extends Individual {
 		float x = BloodAndMithrilClient.getMouseWorldX();
 		float y = BloodAndMithrilClient.getMouseWorldY();
 
-		boolean ans = x >= state.position.x - width/2 && x <= state.position.x + width/2 && y >= state.position.y && y <= state.position.y + height;
+		boolean ans = x >= getState().position.x - width/2 && x <= getState().position.x + width/2 && y >= getState().position.y && y <= getState().position.y + height;
 		return ans;
 	}
 
@@ -409,8 +415,21 @@ public class Elf extends Individual {
 
 	@Override
 	public Individual copy() {
-		Elf elf = new Elf(id, state, factionId, female, new Color(hairColorR, hairColorG, hairColorB, 1f), new Color(eyeColorR, eyeColorG, eyeColorB, 1f), hairStyle, inventoryMassCapacity);
+		Elf elf = new Elf(getId(), getState(), factionId, female, new Color(hairColorR, hairColorG, hairColorB, 1f), new Color(eyeColorR, eyeColorG, eyeColorB, 1f), hairStyle, inventoryMassCapacity);
 		elf.copyFrom(this);
 		return elf;
+	}
+
+
+	@Override
+	public float getCurrentAttackRange() {
+		for (Item equipped : equippedItems.keySet()) {
+			if (equipped instanceof ButterflySword) {
+				return 32f;
+			} else if (equipped instanceof Broadsword) {
+				return 40f;
+			}
+		}
+		return 16f;
 	}
 }

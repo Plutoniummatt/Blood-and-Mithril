@@ -50,7 +50,7 @@ public class CSITradeWith implements Request {
 			}
 		}
 
-		proposer.ai.setCurrentTask(
+		proposer.getAI().setCurrentTask(
 			new TradeWith(proposer, proposee, connectionId)
 		);
 

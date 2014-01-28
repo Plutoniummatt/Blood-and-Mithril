@@ -32,7 +32,7 @@ public class ChangeNickName implements Request {
 	public Responses respond() {
 		Individual individual = GameWorld.individuals.get(individualId);
 		if (individual != null) {
-			individual.id.nickName = toChangeTo;
+			individual.getId().setNickName(toChangeTo);
 		}
 
 		Responses responses = new Responses(false, new LinkedList<Response>());

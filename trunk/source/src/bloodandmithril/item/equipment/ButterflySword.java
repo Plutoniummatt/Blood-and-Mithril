@@ -1,9 +1,11 @@
 package bloodandmithril.item.equipment;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.character.Individual;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.Util;
 import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
@@ -65,5 +67,11 @@ public class ButterflySword extends OneHandedWeapon {
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
 		BloodAndMithrilClient.spriteBatch.draw(GameWorld.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 10 : 10), position.y - 7, flipX ? texture.getRegionWidth() - 10 : 10, 7, texture.getRegionWidth(), texture.getRegionHeight(), 1f, 1f, angle, 419, 587, 47, 12, flipX, false);
+	}
+
+
+	@Override
+	public void affect(Individual victim) {
+		victim.damage(Util.getRandom().nextFloat() * 7f);
 	}
 }

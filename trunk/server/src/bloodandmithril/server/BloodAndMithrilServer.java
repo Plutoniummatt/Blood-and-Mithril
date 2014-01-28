@@ -129,7 +129,7 @@ public class BloodAndMithrilServer {
 						try {
 							Thread.sleep(100);
 							for (Individual individual : GameWorld.individuals.values()) {
-								ClientServerInterface.SendNotification.notifyIndividualSync(individual.id.id);
+								ClientServerInterface.SendNotification.notifyIndividualSync(individual.getId().getId());
 							}
 						} catch (InterruptedException e) {
 							Logger.generalDebug(e.getMessage(), LogLevel.WARN, e);
@@ -231,8 +231,8 @@ public class BloodAndMithrilServer {
 				Individual individual = GameWorld.individuals.get(1);
 				if (individual != null) {
 					PineChest pineChest = new PineChest(
-						individual.state.position.x,
-						individual.state.position.y, true, 100f
+						individual.getState().position.x,
+						individual.getState().position.y, true, 100f
 					);
 					GameWorld.props.put(pineChest.id, pineChest);
 				}
@@ -245,11 +245,11 @@ public class BloodAndMithrilServer {
 				state.acceleration = new Vector2(0, 0);
 
 				IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
-				id.nickName = "Unknown";
+				id.setNickName("Unknown");
 
 				Boar boar = new Boar(id, state);
 
-				GameWorld.individuals.put(boar.id.id, boar);
+				GameWorld.individuals.put(boar.getId().getId(), boar);
 			}
 
 			if (keycode == Input.Keys.R) {
@@ -259,7 +259,7 @@ public class BloodAndMithrilServer {
 				state.acceleration = new Vector2(0, 0);
 
 				IndividualIdentifier id = Names.getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
-				id.nickName = "Elfie";
+				id.setNickName("Elfie");
 
 				Elf elf = new Elf(
 					id,
@@ -290,7 +290,7 @@ public class BloodAndMithrilServer {
 				elf.giveItem(new ButterflySword(100));
 				elf.giveItem(new Broadsword(100));
 
-				GameWorld.individuals.put(elf.id.id, elf);
+				GameWorld.individuals.put(elf.getId().getId(), elf);
 			}
 			return false;
 		}

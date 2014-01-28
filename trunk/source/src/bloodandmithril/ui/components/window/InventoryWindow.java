@@ -264,7 +264,7 @@ public class InventoryWindow extends Window {
 								host.takeItem(item);
 							}
 						} else {
-							ClientServerInterface.SendRequest.sendConsumeItemRequest((Consumable)item, ((Individual)host).id.id);
+							ClientServerInterface.SendRequest.sendConsumeItemRequest((Consumable)item, ((Individual)host).getId().getId());
 						}
 						refresh();
 					}
@@ -310,7 +310,7 @@ public class InventoryWindow extends Window {
 											host.giveItem(newBottle);
 											refresh();
 										} else {
-											ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).id.id, (Bottle)item, Float.parseFloat((String)args[0]));
+											ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (Bottle)item, Float.parseFloat((String)args[0]));
 										}
 									}
 								},
@@ -346,7 +346,7 @@ public class InventoryWindow extends Window {
 						if (ClientServerInterface.isServer()) {
 							host.unequip((Equipable)item);
 						} else {
-							ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(false, (Equipable)item, ((Individual)host).id.id);
+							ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(false, (Equipable)item, ((Individual)host).getId().getId());
 						}
 						refresh();
 					}
@@ -365,7 +365,7 @@ public class InventoryWindow extends Window {
 						if (ClientServerInterface.isServer()) {
 							host.equip((Equipable)item);
 						} else {
-							ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(true, (Equipable)item, ((Individual)host).id.id);
+							ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(true, (Equipable)item, ((Individual)host).getId().getId());
 						}
 						refresh();
 					}

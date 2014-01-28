@@ -15,6 +15,8 @@ import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipper;
+import bloodandmithril.item.Item;
+import bloodandmithril.item.equipment.Affector;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.ui.UserInterface;
@@ -54,19 +56,19 @@ public abstract class Individual extends Equipper {
 	private long timeStamp;
 
 	/** Identifier of this character */
-	public IndividualIdentifier id;
+	private IndividualIdentifier id;
 
 	/** State of this character */
-	public IndividualState state;
+	private IndividualState state;
 
 	/** Which actions are currently active */
 	protected Commands activeCommands = new Commands();
 
 	/** The AI responsible for this character */
-	public ArtificialIntelligence ai;
+	protected ArtificialIntelligence ai;
 
 	/** Whether this {@link Individual} can trade */
-	public boolean canTradeWith;
+	public final boolean canTradeWith;
 
 	/** The faction this {@link Individual} belongs to */
 	protected int factionId;
@@ -106,6 +108,9 @@ public abstract class Individual extends Equipper {
 
 	/** {@link Skills}s of this {@link Individual} */
 	private Skills skills = new Skills();
+
+	/** Whether or not this {@link Individual} is attacking */
+	private boolean attacking;
 
 	/**
 	 * Constructor
@@ -154,34 +159,46 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	/** Implementation-specific copy method of this {@link Individual} */
 	public abstract Individual copy();
 
 
+	/** Returns the {@link ArtificialIntelligence} implementation of this {@link Individual} */
+	public ArtificialIntelligence getAI() {
+		return ai;
+	}
+
+	/** Returns the {@link IndividualState} of this {@link Individual} */
+	public IndividualState getState() {
+		return state;
+	}
+
+	/** Returns the {@link Skills} of this {@link Individual} */
 	public Skills getSkills() {
 		return skills;
 	}
 
-
+	/** The {@link #timeStamp} is used for client-server synchronization, if the received timeStamp is older than the current, it will be rejected */
 	public synchronized long getTimeStamp() {
 		return timeStamp;
 	}
 
-
+	/** See {@link #getTimeStamp()} */
 	public synchronized void setTimeStamp(long timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 
-
+	/** True if this {@link Individual} is currently {@link #walking} */
 	public boolean getWalking() {
 		return walking;
 	}
 
-
+	/** See {@link #getWalking()} */
 	public synchronized void setWalking(boolean walking) {
 		this.walking = walking;
 	}
 
-
+	/** See {@link #copy()} */
 	protected abstract void internalCopyFrom(Individual other);
 
 
@@ -918,6 +935,26 @@ public abstract class Individual extends Equipper {
 	protected abstract SpacialConfiguration getOneHandedWeaponSpacialConfigration();
 
 
+	/** The attack range of this individual, dependent on the weapons and any other variables */
+	public abstract float getCurrentAttackRange();
+
+
+	/** Attack. */
+	public void attack(Individual victim) {
+		for (Item item : equippedItems.keySet()) {
+			if (item instanceof Affector) {
+				((Affector) item).affect(victim);
+				attacking = true;
+			}
+		}
+	}
+
+
+	public boolean isAttacking() {
+		return attacking;
+	}
+
+
 	/**
 	 * The current state of the character
 	 *
@@ -947,6 +984,11 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	public IndividualIdentifier getId() {
+		return id;
+	}
+
+
 	/**
 	 * Uniquely identifies a character.
 	 *
@@ -955,10 +997,10 @@ public abstract class Individual extends Equipper {
 	public static class IndividualIdentifier implements Serializable {
 		private static final long serialVersionUID = 468971814825676707L;
 
-		public String firstName, lastName;
-		public String nickName;
-		public Epoch birthday;
-		public int id;
+		private final String firstName, lastName;
+		private String nickName;
+		private final Epoch birthday;
+		private final int id;
 
 		/**
 		 * Constructor
@@ -973,10 +1015,35 @@ public abstract class Individual extends Equipper {
 
 		/** Gets the simple first name + last name representation of this {@link IndividualIdentifier} */
 		public String getSimpleName() {
-			if (lastName.equals("")) {
-				return firstName;
+			if (getLastName().equals("")) {
+				return getFirstName();
 			}
-			return firstName + " " + lastName;
+			return getFirstName() + " " + getLastName();
+		}
+
+
+		public int getId() {
+			return id;
+		}
+
+
+		public String getNickName() {
+			return nickName;
+		}
+
+
+		public void setNickName(String nickName) {
+			this.nickName = nickName;
+		}
+
+
+		public String getFirstName() {
+			return firstName;
+		}
+
+
+		public String getLastName() {
+			return lastName;
 		}
 	}
 }

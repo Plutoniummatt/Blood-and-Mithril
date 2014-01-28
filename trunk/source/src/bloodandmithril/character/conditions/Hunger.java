@@ -10,7 +10,7 @@ import bloodandmithril.character.Individual.Condition;
  */
 public class Hunger extends Condition {
 	private static final long serialVersionUID = 6876432751800675014L;
-	
+
 	private final Individual affected;
 	private final float oldHealthRegen;
 
@@ -19,19 +19,19 @@ public class Hunger extends Condition {
 	 */
 	public Hunger(Individual affected) {
 		this.affected = affected;
-		this.oldHealthRegen = affected.state.healthRegen;
+		this.oldHealthRegen = affected.getState().healthRegen;
 		affected.changeHealthRegen(oldHealthRegen * 0.5f);
 	}
 
 
 	@Override
 	public void affect(Individual affected, float delta) {
-		if (affected.state.hunger == 0f) {
+		if (affected.getState().hunger == 0f) {
 			affected.damage(delta * 0.01f);
-			if (affected.state.healthRegen != 0f) {
+			if (affected.getState().healthRegen != 0f) {
 				affected.changeHealthRegen(0f);
 			}
-		} else if (affected.state.healthRegen == 0f) {
+		} else if (affected.getState().healthRegen == 0f) {
 			affected.changeHealthRegen(oldHealthRegen);
 		}
 	}
@@ -45,7 +45,7 @@ public class Hunger extends Condition {
 
 	@Override
 	public boolean isExpired() {
-		return affected.state.hunger > 0.75f;
+		return affected.getState().hunger > 0.75f;
 	}
 
 
@@ -63,7 +63,7 @@ public class Hunger extends Condition {
 
 	@Override
 	public String getName() {
-		int h = Math.round(affected.state.hunger * 10f);
+		int h = Math.round(affected.getState().hunger * 10f);
 		switch (h) {
 			case 0: return "Starving";
 			case 1: return "Ravenous";

@@ -72,7 +72,7 @@ public class PineChest extends Chest {
 		);
 
 		if (GameWorld.selectedIndividuals.size() == 1 &&
-		  !(GameWorld.selectedIndividuals.iterator().next().ai.getCurrentTask() instanceof Trading)) {
+		  !(GameWorld.selectedIndividuals.iterator().next().getAI().getCurrentTask() instanceof Trading)) {
 			final Individual selected = GameWorld.selectedIndividuals.iterator().next();
 			ContextMenuItem openChestMenuItem = new ContextMenuItem(
 				"Open",
@@ -81,7 +81,7 @@ public class PineChest extends Chest {
 					public void execute() {
 						if (ClientServerInterface.isServer()) {
 							if (ClientServerInterface.isServer()) {
-								selected.ai.setCurrentTask(
+								selected.getAI().setCurrentTask(
 									new TradeWith(selected, container)
 								);
 							} else {

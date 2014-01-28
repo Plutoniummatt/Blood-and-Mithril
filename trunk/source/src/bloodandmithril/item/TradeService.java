@@ -69,11 +69,11 @@ public class TradeService {
 			TradeEntity proposeeEntity;
 			int proposerId, proposeeId;
 
-			proposerId = ((Individual) proposer).id.id;
+			proposerId = ((Individual) proposer).getId().getId();
 
 			if (proposee instanceof Individual) {
 				proposeeEntity = TradeEntity.INDIVIDUAL;
-				proposeeId = ((Individual) proposee).id.id;
+				proposeeId = ((Individual) proposee).getId().getId();
 			} else {
 				proposeeEntity = TradeEntity.PROP;
 				proposeeId = ((ChestContainer) proposee).propId;

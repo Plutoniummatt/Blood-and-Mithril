@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class GoToMovingLocation extends AITask {
 	private static final long serialVersionUID = 3940840091194740269L;
-	
+
 	/** The changing destination */
 	private final Vector2 destination;
 	private final float tolerance;
@@ -29,7 +29,7 @@ public class GoToMovingLocation extends AITask {
 		this.tolerance = tolerance;
 
 		currentGoToLocation = new GoToLocation(
-			GameWorld.individuals.get(hostId.id),
+			GameWorld.individuals.get(hostId.getId()),
 			new WayPoint(destination),
 			false,
 			150f,
@@ -46,7 +46,7 @@ public class GoToMovingLocation extends AITask {
 
 	@Override
 	public boolean isComplete() {
-		return GameWorld.individuals.get(hostId.id).getDistanceFrom(destination) < tolerance;
+		return GameWorld.individuals.get(hostId.getId()).getDistanceFrom(destination) < tolerance;
 	}
 
 
@@ -60,7 +60,7 @@ public class GoToMovingLocation extends AITask {
 		currentGoToLocation.execute();
 		if (currentGoToLocation.isComplete()) {
 			currentGoToLocation = new GoToLocation(
-				GameWorld.individuals.get(hostId.id),
+				GameWorld.individuals.get(hostId.getId()),
 				new WayPoint(destination),
 				false,
 				150f,
