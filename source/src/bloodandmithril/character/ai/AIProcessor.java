@@ -108,7 +108,7 @@ public class AIProcessor {
 				@Override
 				public void execute() {
 					synchronized (host) {
-						host.ai.setCurrentTask(new GoToLocation(host, destination, fly, forceTolerance, safe));
+						host.getAI().setCurrentTask(new GoToLocation(host, destination, fly, forceTolerance, safe));
 					}
 				}
 			}

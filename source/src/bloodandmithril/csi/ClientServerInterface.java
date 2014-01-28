@@ -530,12 +530,12 @@ public class ClientServerInterface {
 		}
 
 		public static synchronized void sendTradeWithIndividualRequest(Individual proposer, Individual proposee) {
-			client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.INDIVIDUAL, proposee.id.id, client.getID()));
+			client.sendTCP(new CSITradeWith(proposer.getId().getId(), TradeEntity.INDIVIDUAL, proposee.getId().getId(), client.getID()));
 			Logger.networkDebug("Sending trade with individual request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendTradeWithPropRequest(Individual proposer, int propId) {
-			client.sendTCP(new CSITradeWith(proposer.id.id, TradeEntity.PROP, propId, client.getID()));
+			client.sendTCP(new CSITradeWith(proposer.getId().getId(), TradeEntity.PROP, propId, client.getID()));
 			Logger.networkDebug("Sending trade with prop request", LogLevel.DEBUG);
 		}
 

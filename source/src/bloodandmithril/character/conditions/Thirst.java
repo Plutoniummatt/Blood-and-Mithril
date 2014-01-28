@@ -10,7 +10,7 @@ import bloodandmithril.character.Individual.Condition;
  */
 public class Thirst extends Condition {
 	private static final long serialVersionUID = -3232484824763914755L;
-	
+
 	private final Individual affected;
 	private final float oldStaminaRegen;
 
@@ -19,14 +19,14 @@ public class Thirst extends Condition {
 	 */
 	public Thirst(Individual affected) {
 		this.affected = affected;
-		this.oldStaminaRegen = affected.state.staminaRegen;
+		this.oldStaminaRegen = affected.getState().staminaRegen;
 		affected.changeStaminaRegen(oldStaminaRegen * 0.5f);
 	}
 
 
 	@Override
 	public void affect(Individual affected, float delta) {
-		if (affected.state.thirst == 0f) {
+		if (affected.getState().thirst == 0f) {
 			affected.damage(delta * 0.03f);
 		}
 	}
@@ -40,7 +40,7 @@ public class Thirst extends Condition {
 
 	@Override
 	public boolean isExpired() {
-		return affected.state.thirst > 0.75f;
+		return affected.getState().thirst > 0.75f;
 	}
 
 
@@ -58,7 +58,7 @@ public class Thirst extends Condition {
 
 	@Override
 	public String getName() {
-		int h = Math.round(affected.state.thirst * 10f);
+		int h = Math.round(affected.getState().thirst * 10f);
 		switch (h) {
 			case 0: return "Dying of thirst";
 			case 1: return "Extremely thirsty";

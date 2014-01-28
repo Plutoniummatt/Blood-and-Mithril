@@ -8,7 +8,7 @@ import bloodandmithril.item.Equipper.EquipmentSlot;
  *
  * @author Matt
  */
-public abstract class OneHandedWeapon extends Equipable {
+public abstract class OneHandedWeapon extends Equipable implements Affector {
 	private static final long serialVersionUID = 2320214226123580597L;
 
 	/**

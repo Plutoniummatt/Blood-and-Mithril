@@ -34,7 +34,6 @@ public class SynchronizeIndividual implements Request {
 		this.id = id;
 	}
 
-
 	/**
 	 * Synchronize all individuals
 	 */
@@ -80,7 +79,7 @@ public class SynchronizeIndividual implements Request {
 
 			// Handle AITasks with Paths explicitly, these guys cause ConcurrentModificationExceptions and nasty NPE's even with
 			// ConcurrentLinkedDeque's
-			AITask current = this.individual.ai.getCurrentTask();
+			AITask current = this.individual.getAI().getCurrentTask();
 
 			synchronized (current) {
 				if (current instanceof GoToLocation) {
@@ -126,9 +125,9 @@ public class SynchronizeIndividual implements Request {
 		}
 
 		private void syncSingleIndividual() {
-			Individual got = GameWorld.individuals.get(individual.id.id);
+			Individual got = GameWorld.individuals.get(individual.getId().getId());
 			if (got == null) {
-				GameWorld.individuals.put(individual.id.id, individual);
+				GameWorld.individuals.put(individual.getId().getId(), individual);
 			} else {
 				if (timeStamp < got.getTimeStamp()) {
 					// Received snapshot is older than the most recently updated snapshot
@@ -136,7 +135,7 @@ public class SynchronizeIndividual implements Request {
 				}
 				got.copyFrom(individual);
 			}
-			Logger.networkDebug("Received data for individual: " + individual.id.getSimpleName(), LogLevel.TRACE);
+			Logger.networkDebug("Received data for individual: " + individual.getId().getSimpleName(), LogLevel.TRACE);
 		}
 	}
 

@@ -320,7 +320,7 @@ public class UserInterface {
 			for (Individual indi : GameWorld.individuals.values()) {
 				if (indi.isControllable()) {
 
-					Vector2 centre = new Vector2(indi.state.position.x, indi.state.position.y + indi.height / 2);
+					Vector2 centre = new Vector2(indi.getState().position.x, indi.getState().position.y + indi.height / 2);
 
 					centre.x = BloodAndMithrilClient.worldToScreenX(centre.x);
 					centre.y = BloodAndMithrilClient.worldToScreenY(centre.y);
@@ -330,14 +330,14 @@ public class UserInterface {
 							indi.select();
 							GameWorld.selectedIndividuals.add(indi);
 						} else {
-							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.id.id, true);
+							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), true);
 						}
 					} else if (GameWorld.selectedIndividuals.contains(indi)) {
 						if (ClientServerInterface.isServer()) {
 							indi.deselect(false);
 							GameWorld.selectedIndividuals.remove(indi);
 						} else {
-							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.id.id, false);
+							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 						}
 					}
 				}
@@ -372,7 +372,7 @@ public class UserInterface {
 		BloodAndMithrilClient.spriteBatch.begin();
 		for (Individual indi : GameWorld.individuals.values()) {
 			if (indi.isSelected()) {
-				AITask currentTask = indi.ai.getCurrentTask();
+				AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
 					shapeRenderer.setColor(Color.WHITE);
 					((GoToLocation)currentTask).renderFinalWayPoint();
@@ -587,7 +587,7 @@ public class UserInterface {
 				final ContextMenu secondaryMenu = indi.getContextMenu();
 				newMenu.getMenuItems().add(
 					new ContextMenuItem(
-						indi.id.getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",
+						indi.getId().getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",
 						new Task() {
 							@Override
 							public void execute() {

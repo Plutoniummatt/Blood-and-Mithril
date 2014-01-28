@@ -176,8 +176,8 @@ public class GameWorld {
 		private static Predicate<Individual> onPlatform = new Predicate<Individual>() {
 			@Override
 			public boolean apply(Individual input) {
-				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
-					Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
+				if (Topography.getTile(input.getState().position.x, input.getState().position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
+					Topography.getTile(input.getState().position.x, input.getState().position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
 					return true;
 				} else {
 					return false;
@@ -189,8 +189,8 @@ public class GameWorld {
 		private static Predicate<Individual> offPlatform = new Predicate<Individual>() {
 			@Override
 			public boolean apply(Individual input) {
-				if (Topography.getTile(input.state.position.x, input.state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
-						Topography.getTile(input.state.position.x, input.state.position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
+				if (Topography.getTile(input.getState().position.x, input.getState().position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
+						Topography.getTile(input.getState().position.x, input.getState().position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
 					return false;
 				} else {
 					return true;

@@ -38,7 +38,7 @@ public class GoToLocation extends AITask {
 	 * Constructor
 	 */
 	public GoToLocation(Individual host, WayPoint destination, boolean fly, float forceTolerance, boolean safe) {
-		super(host.id);
+		super(host.getId());
 		this.fly = fly;
 
 		int blockspan = host.height/Topography.TILE_SIZE + (host.height % Topography.TILE_SIZE == 0 ? 0 : 1) - 1;
@@ -46,8 +46,8 @@ public class GoToLocation extends AITask {
 		PathFinder pathFinder = new AStarPathFinder();
 
 		this.path = fly ?
-			pathFinder.findShortestPathAir(new WayPoint(host.state.position), destination):
-			pathFinder.findShortestPathGround(new WayPoint(host.state.position), destination, blockspan, safe ? host.safetyHeight : 1000, forceTolerance);
+			pathFinder.findShortestPathAir(new WayPoint(host.getState().position), destination):
+			pathFinder.findShortestPathGround(new WayPoint(host.getState().position), destination, blockspan, safe ? host.safetyHeight : 1000, forceTolerance);
 	}
 
 
@@ -97,8 +97,8 @@ public class GoToLocation extends AITask {
 
 		if (nextPoint != null && nextPoint.waypoint != null) {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			float startX = GameWorld.individuals.get(hostId.id).state.position.x;
-			float startY = GameWorld.individuals.get(hostId.id).state.position.y;
+			float startX = GameWorld.individuals.get(hostId.getId()).getState().position.x;
+			float startY = GameWorld.individuals.get(hostId.getId()).getState().position.y;
 			float endX = nextPoint.waypoint.x;
 			float endY = nextPoint.waypoint.y;
 
@@ -136,27 +136,27 @@ public class GoToLocation extends AITask {
 	 * Goes to a {@link WayPoint} in the {@link #path}, removing it upon arrival
 	 */
 	private void goToWayPoint(WayPoint wayPoint, int stuckTolerance) {
-		Individual host = GameWorld.individuals.get(hostId.id);
+		Individual host = GameWorld.individuals.get(hostId.getId());
 
 		// If we're outside WayPoint.tolerance, then move toward WayPoint.wayPoint
 		boolean reached;
 		if (wayPoint.tolerance == 0f) {
-			if (host.state.position.y < 0f) {
-				reached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(new Vector2(host.state.position.x, host.state.position.y + 1), true));
+			if (host.getState().position.y < 0f) {
+				reached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(new Vector2(host.getState().position.x, host.getState().position.y + 1), true));
 			} else {
-				reached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(host.state.position, true));
+				reached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(host.getState().position, true));
 			}
 		} else {
-			reached = Math.abs(wayPoint.waypoint.cpy().sub(host.state.position).len()) > wayPoint.tolerance;
+			reached = Math.abs(wayPoint.waypoint.cpy().sub(host.getState().position).len()) > wayPoint.tolerance;
 		}
 
 		if (reached) {
 			host.sendCommand(KeyMappings.walk, host.getWalking());
-			if (!host.isCommandActive(KeyMappings.moveRight) && wayPoint.waypoint.x > host.state.position.x) {
+			if (!host.isCommandActive(KeyMappings.moveRight) && wayPoint.waypoint.x > host.getState().position.x) {
 				host.sendCommand(KeyMappings.moveRight, true);
 				host.sendCommand(KeyMappings.moveLeft, false);
 				stuckCounter++;
-			} else if (!host.isCommandActive(KeyMappings.moveLeft) && wayPoint.waypoint.x < host.state.position.x) {
+			} else if (!host.isCommandActive(KeyMappings.moveLeft) && wayPoint.waypoint.x < host.getState().position.x) {
 				host.sendCommand(KeyMappings.moveRight, false);
 				host.sendCommand(KeyMappings.moveLeft, true);
 				stuckCounter++;
@@ -179,7 +179,7 @@ public class GoToLocation extends AITask {
 	 */
 	@Override
 	public boolean isComplete() {
-		Individual host = GameWorld.individuals.get(hostId.id);
+		Individual host = GameWorld.individuals.get(hostId.getId());
 
 		boolean finalWayPointCheck = false;
 
@@ -188,7 +188,7 @@ public class GoToLocation extends AITask {
 		if (finalWayPoint == null) {
 			return path.isEmpty() || finalWayPointCheck;
 		} else {
-			float distance = Math.abs(host.state.position.cpy().sub(finalWayPoint.waypoint).len());
+			float distance = Math.abs(host.getState().position.cpy().sub(finalWayPoint.waypoint).len());
 			finalWayPointCheck = distance < finalWayPoint.tolerance;
 		}
 
@@ -213,7 +213,7 @@ public class GoToLocation extends AITask {
 
 	@Override
 	public void uponCompletion() {
-		Individual host = GameWorld.individuals.get(hostId.id);
+		Individual host = GameWorld.individuals.get(hostId.getId());
 
 		host.sendCommand(KeyMappings.moveRight, false);
 		host.sendCommand(KeyMappings.moveLeft, false);

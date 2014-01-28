@@ -251,13 +251,13 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				if (ClientServerInterface.isServer()) {
 					indi.setWalking(!doubleClick);
 				} else {
-					ClientServerInterface.SendRequest.sendRunWalkRequest(indi.id.id, !doubleClick);
+					ClientServerInterface.SendRequest.sendRunWalkRequest(indi.getId().getId(), !doubleClick);
 				}
 				if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 					if (ClientServerInterface.isServer()) {
-						indi.ai.setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
+						indi.getAI().setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
 					} else {
-						ClientServerInterface.SendRequest.sendMineTileRequest(indi.id.id, new Vector2(getMouseWorldX(), getMouseWorldY()));
+						ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
 					}
 				} else {
 					float spread = Math.min(indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
@@ -276,7 +276,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						);
 					} else {
 						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
-							indi.id.id, new Vector2(
+							indi.getId().getId(), new Vector2(
 								getMouseWorldX() + spread,
 								getMouseWorldY()
 							),
@@ -317,7 +317,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 								indi.deselect(false);
 								GameWorld.selectedIndividuals.remove(indi);
 							} else {
-								ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.id.id, false);
+								ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 							}
 						}
 					}
@@ -328,12 +328,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			} else {
 				for (Individual indi : GameWorld.individuals.values()) {
-					if (indi.isControllable() && indi.id.id != individualClicked.id.id) {
+					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId()) {
 						if (ClientServerInterface.isServer()) {
 							indi.deselect(false);
 							GameWorld.selectedIndividuals.remove(indi);
 						} else {
-							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.id.id, false);
+							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 						}
 					}
 				}
@@ -343,7 +343,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						GameWorld.selectedIndividuals.add(individualClicked);
 						individualClicked.select();
 					} else {
-						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(individualClicked.id.id, true);
+						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(individualClicked.getId().getId(), true);
 					}
 				}
 
@@ -380,7 +380,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			state.acceleration = new Vector2(0, 0);
 
 			IndividualIdentifier id = Names.getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
-			id.nickName = "Elfie";
+			id.setNickName("Elfie");
 
 			Elf elf = new Elf(
 				id, state, Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
@@ -408,7 +408,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			elf.giveItem(new ButterflySword(100));
 			elf.giveItem(new Broadsword(100));
 
-			GameWorld.individuals.put(elf.id.id, elf);
+			GameWorld.individuals.put(elf.getId().getId(), elf);
 		}
 
 		if (keycode == Input.Keys.U) {
@@ -418,17 +418,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			state.acceleration = new Vector2(0, 0);
 
 			IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
-			id.nickName = "Unknown";
+			id.setNickName("Unknown");
 
 			Boar boar = new Boar(id, state);
 
-			GameWorld.individuals.put(boar.id.id, boar);
+			GameWorld.individuals.put(boar.getId().getId(), boar);
 		}
 
 		if (keycode == Input.Keys.T) {
 			Individual individual = GameWorld.individuals.get(1);
 			if (individual != null) {
-				PineChest pineChest = new PineChest(individual.state.position.x, individual.state.position.y, true, 100f);
+				PineChest pineChest = new PineChest(individual.getState().position.x, individual.getState().position.y, true, 100f);
 				GameWorld.props.put(pineChest.id, pineChest);
 			}
 		}

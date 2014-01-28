@@ -38,7 +38,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 * Constructor, starts the AI processing thread if it has not been started.
 	 */
 	public ArtificialIntelligence(Individual host) {
-		this.hostId = host.id;
+		this.hostId = host.getId();
 	}
 
 
@@ -111,13 +111,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 	/** Calculates the distance from an individual */
 	protected float distanceFrom(Individual other) {
-		return GameWorld.individuals.get(hostId.id).state.position.cpy().sub(other.state.position).len();
+		return GameWorld.individuals.get(hostId.getId()).getState().position.cpy().sub(other.getState().position).len();
 	}
 
 
-	/** Calculates the disance to a location */
+	/** Calculates the distance to a location */
 	protected float distanceFrom(Vector2 location) {
-		return GameWorld.individuals.get(hostId.id).state.position.cpy().sub(location).len();
+		return GameWorld.individuals.get(hostId.getId()).getState().position.cpy().sub(location).len();
 	}
 
 
@@ -137,15 +137,15 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 * @param distance - The maximum distance from the hosts current position that the host wanders.
 	 */
 	public void wander(float distance, boolean fly) {
-		Individual host = GameWorld.individuals.get(hostId.id);
+		Individual host = GameWorld.individuals.get(hostId.getId());
 
 		if (Util.getRandom().nextBoolean() && getCurrentTask() instanceof Idle) {
 			AIProcessor.sendPathfindingRequest(
 				host,
 				new WayPoint(
 					new Vector2(
-						host.state.position.x + (0.5f - Util.getRandom().nextFloat()) * distance,
-						host.state.position.y + host.height / 2
+						host.getState().position.x + (0.5f - Util.getRandom().nextFloat()) * distance,
+						host.getState().position.y + host.height / 2
 					)
 				),
 				fly,
@@ -166,8 +166,8 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 */
 	public void goToIndividual(Individual individual, float tolerance, boolean fly) {
 		if (distanceFrom(individual) > tolerance) {
-			Individual host = GameWorld.individuals.get(hostId.id);
-			setCurrentTask(new GoToLocation(host, new WayPoint(individual.state.position), fly, individual.width * 2, true));
+			Individual host = GameWorld.individuals.get(hostId.getId());
+			setCurrentTask(new GoToLocation(host, new WayPoint(individual.getState().position), fly, individual.width * 2, true));
 		}
 	}
 }

@@ -53,7 +53,7 @@ public class Boar extends Individual {
 	public Boar(IndividualIdentifier id, IndividualState state) {
 		super(id, state, Faction.NPC, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), false);
 
-		this.ai = new BoarAI(this);
+		ai = new BoarAI(this);
 
 		current = STANDING_RIGHT;
 	}
@@ -96,8 +96,8 @@ public class Boar extends Individual {
 		// Draw the body
 		BloodAndMithrilClient.spriteBatch.draw(
 			animations.get(current).getKeyFrame(animationTimer, true),
-			state.position.x - animations.get(current).getKeyFrame(0f).getRegionWidth()/2,
-			state.position.y
+			getState().position.x - animations.get(current).getKeyFrame(0f).getRegionWidth()/2,
+			getState().position.y
 		);
 
 		BloodAndMithrilClient.spriteBatch.flush();
@@ -114,22 +114,22 @@ public class Boar extends Individual {
 	@Override
 	protected void respondToCommands() {
 		//Horizontal movement
-		if (Math.abs(state.velocity.y) < 5f) {
+		if (Math.abs(getState().velocity.y) < 5f) {
 			if (isCommandActive(KeyMappings.moveLeft) && (canStepUp(-2) || !obstructed(-2))) {
 				if (isCommandActive(KeyMappings.walk)) {
-					state.velocity.x = -30f;
+					getState().velocity.x = -30f;
 				}
 			} else if (isCommandActive(KeyMappings.moveRight) && (canStepUp(2) || !obstructed(2))) {
 				if (isCommandActive(KeyMappings.walk)) {
-					state.velocity.x = 30f;
+					getState().velocity.x = 30f;
 				}
 			} else {
-				state.velocity.x = 0f;
-				state.acceleration.x = 0f;
+				getState().velocity.x = 0f;
+				getState().acceleration.x = 0f;
 
 				int offset = isCommandActive(KeyMappings.moveRight) ? 2 : isCommandActive(KeyMappings.moveLeft) ? -2 : 0;
-				if (obstructed(offset) && !canStepUp(offset) && !(ai.getCurrentTask() instanceof Idle)) {
-					ai.setCurrentTask(new Idle());
+				if (obstructed(offset) && !canStepUp(offset) && !(getAI().getCurrentTask() instanceof Idle)) {
+					getAI().setCurrentTask(new Idle());
 				}
 
 				sendCommand(KeyMappings.moveRight, false);
@@ -142,17 +142,17 @@ public class Boar extends Individual {
 
 	/** What animation should we use? */
 	private void updateAnimation() {
-		if (state.velocity.x > 0) {
+		if (getState().velocity.x > 0) {
 			if (isCommandActive(KeyMappings.walk) && !current.equals(WALKING_RIGHT)) {
 				current = WALKING_RIGHT;
 				animationTimer = 0f;
 			}
-		} else if (state.velocity.x < 0) {
+		} else if (getState().velocity.x < 0) {
 			if (isCommandActive(KeyMappings.walk) && !current.equals(WALKING_LEFT)) {
 				current = WALKING_LEFT;
 				animationTimer = 0f;
 			}
-		} else if (state.velocity.x == 0 && !current.equals(STANDING_LEFT) && !current.equals(STANDING_RIGHT)) {
+		} else if (getState().velocity.x == 0 && !current.equals(STANDING_LEFT) && !current.equals(STANDING_RIGHT)) {
 			current = current.equals(WALKING_RIGHT) ? STANDING_RIGHT : STANDING_LEFT;
 		}
 	}
@@ -163,7 +163,7 @@ public class Boar extends Individual {
 		float x = BloodAndMithrilClient.getMouseWorldX();
 		float y = BloodAndMithrilClient.getMouseWorldY();
 
-		boolean ans = x >= state.position.x - width/2 && x <= state.position.x + width/2 && y >= state.position.y && y <= state.position.y + height;
+		boolean ans = x >= getState().position.x - width/2 && x <= getState().position.x + width/2 && y >= getState().position.y && y <= getState().position.y + height;
 		return ans;
 	}
 
@@ -211,8 +211,14 @@ public class Boar extends Individual {
 
 	@Override
 	public Individual copy() {
-		Boar boar = new Boar(id, state);
+		Boar boar = new Boar(getId(), getState());
 		boar.copyFrom(this);
 		return boar;
+	}
+
+
+	@Override
+	public float getCurrentAttackRange() {
+		return 25f;
 	}
 }

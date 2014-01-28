@@ -20,16 +20,16 @@ public class Trading extends AITask {
 	private final Individual proposer;
 	private final Container proposee;
 	private Prop prop;
-	private TradeEntity entity;
-	
+	private final TradeEntity entity;
+
 	/**
 	 * Constructor
 	 */
 	public Trading(IndividualIdentifier hostId, int otherId, TradeEntity entity) {
 		super(hostId);
 		this.entity = entity;
-		this.proposer = GameWorld.individuals.get(hostId.id);
-		
+		this.proposer = GameWorld.individuals.get(hostId.getId());
+
 		if (entity == TradeEntity.INDIVIDUAL) {
 			this.proposee = GameWorld.individuals.get(otherId);
 		} else {
@@ -48,9 +48,9 @@ public class Trading extends AITask {
 	@Override
 	public boolean isComplete() {
 		if (entity == TradeEntity.INDIVIDUAL) {
-			return proposer.state.position.cpy().sub(((Individual) proposee).state.position.cpy()).len() > 64;
+			return proposer.getState().position.cpy().sub(((Individual) proposee).getState().position.cpy()).len() > 64;
 		} else {
-			return proposer.state.position.cpy().sub((prop).position.cpy()).len() > 64;
+			return proposer.getState().position.cpy().sub(prop.position.cpy()).len() > 64;
 		}
 	}
 

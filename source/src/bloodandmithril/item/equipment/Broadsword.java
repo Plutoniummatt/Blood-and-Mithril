@@ -1,9 +1,11 @@
 package bloodandmithril.item.equipment;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.character.Individual;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.Util;
 import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
@@ -81,5 +83,11 @@ public class Broadsword extends OneHandedWeapon {
 			flipX,
 			false
 		);
+	}
+
+
+	@Override
+	public void affect(Individual victim) {
+		victim.damage(Util.getRandom().nextFloat() * 10f);
 	}
 }

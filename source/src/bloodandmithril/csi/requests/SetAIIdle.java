@@ -16,8 +16,8 @@ import bloodandmithril.world.GameWorld;
  * @author Matt
  */
 public class SetAIIdle implements Request {
-	
-	private int individualId;
+
+	private final int individualId;
 
 	/**
 	 * Constructor
@@ -25,22 +25,22 @@ public class SetAIIdle implements Request {
 	public SetAIIdle(int individualId) {
 		this.individualId = individualId;
 	}
-	
-	
+
+
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(false, new LinkedList<Response>());
-		GameWorld.individuals.get(individualId).ai.setToAuto(true);
+		GameWorld.individuals.get(individualId).getAI().setToAuto(true);
 		return responses;
 	}
 
-	
+
 	@Override
 	public boolean tcp() {
 		return false;
 	}
 
-	
+
 	@Override
 	public boolean notifyOthers() {
 		return false;

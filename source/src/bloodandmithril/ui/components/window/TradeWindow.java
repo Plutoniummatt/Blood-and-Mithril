@@ -160,7 +160,7 @@ public class TradeWindow extends Window {
 	 */
 	@SuppressWarnings("unchecked")
 	public void refresh() {
-		proposer = GameWorld.individuals.get(((Individual) proposer).id.id);
+		proposer = GameWorld.individuals.get(((Individual) proposer).getId().getId());
 
 		proposerItemsToTrade.clear();
 		proposeeItemsToTrade.clear();
@@ -327,11 +327,11 @@ public class TradeWindow extends Window {
 
 		if (proposer instanceof Individual) {
 			if (proposee instanceof Individual) {
-				if (((Individual) proposee).state.position.cpy().sub(((Individual) proposer).state.position.cpy()).len() > 64) {
+				if (((Individual) proposee).getState().position.cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
 					closing = true;
 				}
 			} else if (proposee instanceof ChestContainer) {
-				if (((ChestContainer) proposee).getPositionOfChest().cpy().sub(((Individual) proposer).state.position.cpy()).len() > 64) {
+				if (((ChestContainer) proposee).getPositionOfChest().cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
 					closing = true;
 				}
 			}
@@ -397,17 +397,17 @@ public class TradeWindow extends Window {
 	protected void uponClose() {
 		if (ClientServerInterface.isServer()) {
 			if (proposer instanceof Individual) {
-				((Individual) proposer).ai.setCurrentTask(new Idle());
+				((Individual) proposer).getAI().setCurrentTask(new Idle());
 			}
 			if (proposee instanceof Individual) {
-				((Individual) proposee).ai.setCurrentTask(new Idle());
+				((Individual) proposee).getAI().setCurrentTask(new Idle());
 			}
 		} else {
 			if (GameWorld.selectedIndividuals.contains(proposer)) {
-				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposer).id.id);
+				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposer).getId().getId());
 			}
 			if (proposee instanceof Individual && GameWorld.selectedIndividuals.contains(proposee)) {
-				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposee).id.id);
+				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposee).getId().getId());
 			}
 		}
 	}
