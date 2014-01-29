@@ -17,7 +17,7 @@ public abstract class Construction extends Prop {
 	 * Constructor
 	 */
 	protected Construction(float x, float y, int width, int height, boolean grounded) {
-		super(x, y, grounded);
+		super(x, y, grounded, true);
 		this.width = width;
 		this.height = height;
 	}

@@ -17,6 +17,9 @@ import com.badlogic.gdx.math.Vector2;
  */
 public abstract class Prop {
 
+	/** Whether or not this prop will be rendered as part of the background */
+	public final boolean backGround;
+
 	/** id of this prop */
 	public int id;
 
@@ -29,8 +32,9 @@ public abstract class Prop {
 	/**
 	 * Constructor
 	 */
-	protected Prop(float x, float y, boolean grounded) {
+	protected Prop(float x, float y, boolean grounded, boolean backGround) {
 		position = new Vector2(x, y);
+		this.backGround = backGround;
 		this.id = ParameterPersistenceService.getParameters().getNextPropId();
 		this.grounded = grounded;
 	}

@@ -94,13 +94,23 @@ public class GameWorld {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		for (Prop prop : props.values()) {
-			prop.render();
+			if (prop.backGround) {
+				prop.render();
+			}
 		}
 		BloodAndMithrilClient.spriteBatch.end();
 		bBuffer.end();
 
 		fBuffer.begin();
 		topography.renderForeGround(camX, camY);
+		BloodAndMithrilClient.spriteBatch.begin();
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
+		for (Prop prop : props.values()) {
+			if (!prop.backGround) {
+				prop.render();
+			}
+		}
+		BloodAndMithrilClient.spriteBatch.end();
 		IndividualRenderer.renderIndividuals();
 		fBuffer.end();
 
