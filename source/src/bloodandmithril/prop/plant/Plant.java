@@ -1,6 +1,7 @@
 package bloodandmithril.prop.plant;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.item.Harvestable;
 import bloodandmithril.prop.Prop;
 
 /**
@@ -8,7 +9,7 @@ import bloodandmithril.prop.Prop;
  *
  * @author Matt
  */
-public abstract class Plant extends Prop {
+public abstract class Plant extends Harvestable {
 
 	/** Dimensions of this {@link Plant} */
 	protected final int width, height;

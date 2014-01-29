@@ -1,8 +1,12 @@
 package bloodandmithril.prop.plant;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.item.Harvestable;
+import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.UserInterface;
@@ -48,6 +52,7 @@ public class Carrot extends Plant {
 	@Override
 	public ContextMenu getContextMenu() {
 		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
+		final Harvestable thisCarrot = this;
 
 		menu.addMenuItem(
 			new ContextMenuItem(
@@ -87,10 +92,13 @@ public class Carrot extends Plant {
 					new Task() {
 						@Override
 						public void execute() {
+							Individual individual = GameWorld.selectedIndividuals.iterator().next();
 							if (ClientServerInterface.isServer()) {
-
+								individual.getAI().setCurrentTask(
+									new Harvest(individual, thisCarrot)
+								);
 							} else {
-
+								ClientServerInterface.SendRequest.sendHarvestRequest(individual.getId().getId(), id);
 							}
 						}
 					},
@@ -103,5 +111,11 @@ public class Carrot extends Plant {
 		}
 
 		return menu;
+	}
+
+
+	@Override
+	public Item harvest() {
+		return new bloodandmithril.item.material.plant.Carrot();
 	}
 }
