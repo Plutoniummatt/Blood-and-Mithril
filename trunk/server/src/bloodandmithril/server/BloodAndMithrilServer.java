@@ -238,6 +238,14 @@ public class BloodAndMithrilServer {
 				}
 			}
 
+			if (keycode == Input.Keys.N) {
+				Individual individual = GameWorld.individuals.get(1);
+				if (individual != null) {
+					bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
+					GameWorld.props.put(carrot.id, carrot);
+				}
+			}
+
 			if (keycode == Input.Keys.U) {
 				IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
 				state.position = new Vector2(0, 500);

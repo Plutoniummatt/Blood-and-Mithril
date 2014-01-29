@@ -34,6 +34,8 @@ import bloodandmithril.character.ai.task.Attack.Strike;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.GoToMovingLocation;
+import bloodandmithril.character.ai.task.Harvest;
+import bloodandmithril.character.ai.task.Harvest.HarvestItem;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.ai.task.MineTile.Mine;
@@ -59,6 +61,7 @@ import bloodandmithril.csi.requests.ChangeNickName;
 import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
 import bloodandmithril.csi.requests.ClientConnected;
 import bloodandmithril.csi.requests.ConsumeItem;
+import bloodandmithril.csi.requests.DestroyPropNotification;
 import bloodandmithril.csi.requests.DestroyTile;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.DrinkLiquid;
@@ -76,6 +79,7 @@ import bloodandmithril.csi.requests.SendAttackRequest;
 import bloodandmithril.csi.requests.SendChatMessage;
 import bloodandmithril.csi.requests.SendChatMessage.Message;
 import bloodandmithril.csi.requests.SendChatMessage.SendChatMessageResponse;
+import bloodandmithril.csi.requests.SendHarvestRequest;
 import bloodandmithril.csi.requests.SetAIIdle;
 import bloodandmithril.csi.requests.SynchronizeFaction;
 import bloodandmithril.csi.requests.SynchronizeFaction.SynchronizeFactionResponse;
@@ -93,6 +97,7 @@ import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
+import bloodandmithril.item.Harvestable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
@@ -337,6 +342,11 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(HarvestItem.class);
+		kryo.register(SendHarvestRequest.class);
+		kryo.register(Harvest.class);
+		kryo.register(DestroyPropNotification.class);
+		kryo.register(Harvestable.class);
 		kryo.register(AITask.class);
 		kryo.register(AStarPathFinder.Node.class);
 		kryo.register(AStarPathFinder.class);
@@ -489,6 +499,11 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
 		}
 
+		public static synchronized void sendHarvestRequest(int individualId, int propId) {
+			client.sendTCP(new SendHarvestRequest(individualId, propId));
+			Logger.networkDebug("Sending harvest request", LogLevel.DEBUG);
+		}
+
 		public static synchronized void sendConsumeItemRequest(Consumable consumable, int individualId) {
 			client.sendTCP(new ConsumeItem(consumable, individualId));
 			Logger.networkDebug("Sending item consumption request", LogLevel.DEBUG);
@@ -624,6 +639,16 @@ public class ClientServerInterface {
 						message
 					)
 				)
+			);
+		}
+
+
+		public static synchronized void notifyRemoveProp(int propId) {
+			sendNotification(
+				-1,
+				true,
+				true,
+				new DestroyPropNotification(propId)
 			);
 		}
 
