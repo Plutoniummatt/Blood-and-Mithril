@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class Carrot extends Item implements Consumable {
 	private static final long serialVersionUID = 3714624810622084079L;
-
+	public static final String description = "The carrot is a root vegetable, usually orange in color. It has a crisp texture when fresh.";
 
 	/**
 	 * Constructor
@@ -48,7 +48,7 @@ public class Carrot extends Item implements Consumable {
 	@Override
 	public Window getInfoWindow() {
 		return new MessageWindow(
-			"The carrot is a root vegetable, usually orange in color. It has a crisp texture when fresh.",
+			description,
 			Color.ORANGE,
 			BloodAndMithrilClient.getMouseScreenX(),
 			BloodAndMithrilClient.getMouseScreenY(),
@@ -68,5 +68,47 @@ public class Carrot extends Item implements Consumable {
 			return true;
 		}
 		return false;
+	}
+
+
+	public static class CarrotSeed extends Seed {
+
+		/**
+		 * Constructor
+		 */
+		protected CarrotSeed(float mass, boolean equippable, long value) {
+			super(mass, equippable, value);
+		}
+
+		@Override
+		public String getSingular(boolean firstCap) {
+			return firstCap ? "Carrot seed" : "carrot seed";
+		}
+
+		@Override
+		public String getPlural(boolean firstCap) {
+			return firstCap ? "Carrot seeds" : "carrot seeds";
+		}
+
+		@Override
+		public Window getInfoWindow() {
+			return new MessageWindow(
+				"Seed of a carrot",
+				Color.ORANGE,
+				BloodAndMithrilClient.getMouseScreenX(),
+				BloodAndMithrilClient.getMouseScreenY(),
+				350,
+				200,
+				"Carrot seed",
+				true,
+				100,
+				100
+			);
+		}
+
+		@Override
+		public boolean sameAs(Item other) {
+			return other instanceof CarrotSeed;
+		}
 	}
 }

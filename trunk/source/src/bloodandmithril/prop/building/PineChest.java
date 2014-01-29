@@ -5,6 +5,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -50,7 +51,7 @@ public class PineChest extends Chest {
 					public void execute() {
 						UserInterface.addLayeredComponent(
 							new MessageWindow(
-								"A chest made from pine",
+								Carrot.description,
 								Color.ORANGE,
 								BloodAndMithrilClient.WIDTH/2 - 250,
 								BloodAndMithrilClient.HEIGHT/2 + 125,

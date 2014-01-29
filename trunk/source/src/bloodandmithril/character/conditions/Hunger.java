@@ -83,4 +83,9 @@ public class Hunger extends Condition {
 	public void uponExpiry() {
 		affected.changeHealthRegen(oldHealthRegen);
 	}
+
+
+	@Override
+	public void stack(Condition condition) {
+	}
 }

@@ -3,6 +3,7 @@ package bloodandmithril.prop;
 
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.building.PineChest;
+import bloodandmithril.prop.plant.Carrot;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.world.GameWorld;
 
@@ -54,5 +55,6 @@ public abstract class Prop {
 
 	public static void setup() {
 		PineChest.pineChest = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 57, 68);
+		Carrot.carrot = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 16, 24);
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.TradeWith;
@@ -16,8 +17,8 @@ import bloodandmithril.character.skill.Skills;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.equipment.Affector;
 import bloodandmithril.item.equipment.OneHandedWeapon;
+import bloodandmithril.item.equipment.Weapon;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -738,14 +739,52 @@ public abstract class Individual extends Equipper {
 			null
 		);
 
+		ContextMenuItem attackMenuItem = new ContextMenuItem(
+			"Attack",
+			new Task() {
+				@Override
+				public void execute() {
+					for (Individual indi : GameWorld.selectedIndividuals) {
+						if (ClientServerInterface.isServer()) {
+							if (indi != thisIndividual) {
+								indi.ai.setCurrentTask(
+									new Attack(indi, thisIndividual)
+								);
+							}
+						} else {
+							ClientServerInterface.SendRequest.sendAttackRequest(indi, thisIndividual);
+						}
+					}
+				}
+			},
+			Color.RED,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+
+
+
+
 		if (isControllable()) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
-			contextMenuToReturn.addMenuItem(editMenuItem);
-			contextMenuToReturn.addMenuItem(inventoryMenuItem);
+		}
+
+		if (!GameWorld.selectedIndividuals.isEmpty() &&
+			 GameWorld.selectedIndividuals.size() == 1 &&
+			!GameWorld.selectedIndividuals.contains(thisIndividual) &&
+		     GameWorld.selectedIndividuals.iterator().next().canTradeWith) {
+			contextMenuToReturn.addMenuItem(attackMenuItem);
 		}
 
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
 		contextMenuToReturn.addMenuItem(showStatusWindowItem);
+
+		if (isControllable()) {
+			contextMenuToReturn.addMenuItem(inventoryMenuItem);
+			contextMenuToReturn.addMenuItem(editMenuItem);
+		}
+
 
 		if (!GameWorld.selectedIndividuals.isEmpty() &&
 			 GameWorld.selectedIndividuals.size() == 1 &&
@@ -782,6 +821,9 @@ public abstract class Individual extends Equipper {
 
 		/** Called when expired */
 		public abstract void uponExpiry();
+
+		/** Called when the condition is added to an individual who already has this condition */
+		public abstract void stack(Condition condition);
 
 		/** Whether this condition is detrimental to the individual */
 		public abstract boolean isNegative();
@@ -882,6 +924,7 @@ public abstract class Individual extends Equipper {
 	public synchronized void addCondition(Condition condition) {
 		for (Condition existing : Sets.newHashSet(state.currentConditions)) {
 			if (condition.getClass().equals(existing.getClass())) {
+				existing.stack(condition);
 				return;
 			}
 		}
@@ -942,8 +985,8 @@ public abstract class Individual extends Equipper {
 	/** Attack. */
 	public void attack(Individual victim) {
 		for (Item item : equippedItems.keySet()) {
-			if (item instanceof Affector) {
-				((Affector) item).affect(victim);
+			if (item instanceof Weapon) {
+				((Weapon) item).affect(victim);
 				attacking = true;
 			}
 		}

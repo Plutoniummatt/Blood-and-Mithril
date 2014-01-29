@@ -57,19 +57,19 @@ import com.google.common.collect.Sets;
  *
  * To-do before ALPHA release
  *
- * <b><p> Generation                                                                                     </b></p>
  * <b><p> Resource gathering (At least the following: farming, hunting, foraging)			 	 		 </b></p>
- * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
  * <b><p> Building and Construction (Building construction and decontruction framework)                  </b></p>
- * <b><p> Combat (New animations, equipment framework + equipment animation framework)                   </b></p>
  * <b><p> Multiple saved games (Huge refactors of current statics various everywhere)                    </b></p>
  * <b><p> At least 5 types of NPC                                                                        </b></p>
+ * <b><p> Main menu screen                                                                               </b></p>
  *
  * IN PROGRESS
  *
+ * <b><p> Combat (New animations, equipment framework + equipment animation framework)                   </b></p>
  * <b><p> Terraforming - Mining & Placing blocks                                                         </b></p>
+ * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
+ * <b><p> Generation                                                                                     </b></p>
  * <b><p> Stockpiling                                              										 </b></p>
- * <b><p> Main menu screen                                                                               </b></p>
  *
  * DONE
  *
@@ -430,6 +430,14 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			if (individual != null) {
 				PineChest pineChest = new PineChest(individual.getState().position.x, individual.getState().position.y, true, 100f);
 				GameWorld.props.put(pineChest.id, pineChest);
+			}
+		}
+
+		if (keycode == Input.Keys.N) {
+			Individual individual = GameWorld.individuals.get(1);
+			if (individual != null) {
+				bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
+				GameWorld.props.put(carrot.id, carrot);
 			}
 		}
 

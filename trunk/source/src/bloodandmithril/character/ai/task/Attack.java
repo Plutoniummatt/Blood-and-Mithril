@@ -20,7 +20,7 @@ public class Attack extends CompositeAITask {
 		setCurrentTask(new GoToMovingLocation(
 			host.getId(),
 			tobeAttacked.getState().position,
-			50f
+			host.getCurrentAttackRange()
 		));
 
 		appendTask(new Strike(host, tobeAttacked));
@@ -60,6 +60,7 @@ public class Attack extends CompositeAITask {
 		@Override
 		public void execute() {
 			GameWorld.individuals.get(hostId.getId()).attack(tobeAttacked);
+			GameWorld.individuals.get(hostId.getId()).clearCommands();
 			attacked = true;
 		}
 	}

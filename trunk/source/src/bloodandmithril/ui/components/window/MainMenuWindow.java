@@ -8,6 +8,7 @@ import java.util.Deque;
 import java.util.List;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.character.faction.Faction;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.ui.UserInterface;
@@ -125,6 +126,9 @@ public class MainMenuWindow extends Window {
 								public void execute(Object... args) {
 									try {
 										if (args[0].toString().equals("local")) {
+											GameWorld.factions.put(0, new Faction("NPC", 0));
+											GameWorld.factions.put(1, new Faction("Elves", 1));
+
 											ClientServerInterface.setServer(true);
 											BloodAndMithrilClient.gameWorld = new GameWorld(true);
 											GameLoader.load();
