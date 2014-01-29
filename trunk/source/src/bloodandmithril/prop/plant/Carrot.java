@@ -8,7 +8,6 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Harvestable;
 import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
@@ -22,11 +21,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /**
  * The {@link Prop} equivalent to {@link bloodandmithril.item.material.plant.Carrot}
  *
- * @author Matt
+ * @author Matt000000
  */
 public class Carrot extends Plant {
 
-	/** {@link TextureRegion} of the {@link PineChest} TODO - texture */
+	/** {@link TextureRegion} of the {@link Carrot} */
 	public static TextureRegion carrot;
 
 	/**
