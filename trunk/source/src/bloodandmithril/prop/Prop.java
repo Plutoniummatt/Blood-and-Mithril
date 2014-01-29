@@ -59,6 +59,6 @@ public abstract class Prop {
 
 	public static void setup() {
 		PineChest.pineChest = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 57, 68);
-		Carrot.carrot = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 16, 24);
+		Carrot.carrot = new TextureRegion(GameWorld.gameWorldTexture, 350, 243, 16, 17);
 	}
 }
