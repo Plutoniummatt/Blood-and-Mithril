@@ -78,4 +78,9 @@ public class Thirst extends Condition {
 	public void uponExpiry() {
 		affected.changeStaminaRegen(oldStaminaRegen);
 	}
+
+
+	@Override
+	public void stack(Condition condition) {
+	}
 }

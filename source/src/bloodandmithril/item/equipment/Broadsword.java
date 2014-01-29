@@ -2,6 +2,7 @@ package bloodandmithril.item.equipment;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -88,6 +89,7 @@ public class Broadsword extends OneHandedWeapon {
 
 	@Override
 	public void affect(Individual victim) {
-		victim.damage(Util.getRandom().nextFloat() * 10f);
+		victim.damage(Util.getRandom().nextFloat() * 5f);
+		victim.addCondition(new Bleeding(0.03f));
 	}
 }

@@ -57,8 +57,6 @@ public class Elf extends Individual {
 	private static final String WALKING_RIGHT_HAIR = "walkingRightHair";
 	private static final String STANDING_LEFT_HAIR = "standingLeftHair";
 	private static final String STANDING_RIGHT_HAIR = "standingRightHair";
-	private static final String ONEHANDEDWEAPONSWING_LEFT_1_HAIR = "oneHandedWeaponSwingLeft";
-	private static final String ONEHANDEDWEAPONSWING_RIGHT_1_HAIR = "oneHandedWeaponSwingLeft";
 
 	private static final String RUNNING_RIGHT = "runningRight";
 	private static final String RUNNING_LEFT = "runningLeft";
@@ -66,8 +64,6 @@ public class Elf extends Individual {
 	private static final String WALKING_LEFT = "walkingLeft";
 	private static final String STANDING_RIGHT = "standingRight";
 	private static final String STANDING_LEFT = "standingLeft";
-	private static final String ONEHANDEDWEAPONSWING_1_LEFT = "oneHandedWeaponSwingLeft";
-	private static final String ONEHANDEDWEAPONSWING_1_RIGHT = "oneHandedWeaponSwingLeft";
 
 	private static final long serialVersionUID = -5566954059579973505L;
 
@@ -213,7 +209,7 @@ public class Elf extends Individual {
 				currentHair = WALKING_RIGHT_HAIR;
 				animationTimer = 0f;
 			} else if (!isCommandActive(KeyMappings.walk) && !current.equals(RUNNING_RIGHT)) {
-				// Otherwise if running, and current animatin is not running right, then set animations to running right
+				// Otherwise if running, and current animation is not running right, then set animations to running right
 				current = RUNNING_RIGHT;
 				currentHair = RUNNING_RIGHT_HAIR;
 				animationTimer = 0f;

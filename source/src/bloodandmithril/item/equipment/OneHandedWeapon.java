@@ -4,11 +4,11 @@ import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
 
 /**
- * An {@link Equipable} weapon
+ * A one-handed {@link Equipable} {@link Weapon}
  *
  * @author Matt
  */
-public abstract class OneHandedWeapon extends Equipable implements Affector {
+public abstract class OneHandedWeapon extends Weapon {
 	private static final long serialVersionUID = 2320214226123580597L;
 
 	/**

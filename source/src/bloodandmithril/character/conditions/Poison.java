@@ -3,6 +3,11 @@ package bloodandmithril.character.conditions;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.Condition;
 
+/**
+ * Drains health. curable with antidote TODO
+ *
+ * @author Matt
+ */
 public class Poison extends Condition {
 	private static final long serialVersionUID = 1741945471582031402L;
 
@@ -10,7 +15,7 @@ public class Poison extends Condition {
 	public float toxicity;
 
 	/** The decline in toxicity, per second */
-	private final float persistence;
+	private float persistence;
 
 	public Poison(float toxicity, float persistence) {
 		this.toxicity = toxicity;
@@ -73,5 +78,16 @@ public class Poison extends Condition {
 
 	@Override
 	public void uponExpiry() {
+	}
+
+
+	@Override
+	public void stack(Condition condition) {
+		if (!(condition instanceof Poison)) {
+			throw new RuntimeException("Cannot stack " + condition.getClass().getSimpleName() + " with Poison");
+		}
+
+		this.persistence = ((Poison)condition).persistence * ((Poison)condition).toxicity/this.toxicity + this.persistence;
+		this.toxicity = ((Poison)condition).toxicity + this.persistence;
 	}
 }

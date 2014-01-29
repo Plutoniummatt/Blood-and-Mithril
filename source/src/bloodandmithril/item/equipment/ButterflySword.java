@@ -2,6 +2,7 @@ package bloodandmithril.item.equipment;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -72,6 +73,7 @@ public class ButterflySword extends OneHandedWeapon {
 
 	@Override
 	public void affect(Individual victim) {
-		victim.damage(Util.getRandom().nextFloat() * 7f);
+		victim.damage(Util.getRandom().nextFloat() * 3f);
+		victim.addCondition(new Bleeding(0.06f));
 	}
 }
