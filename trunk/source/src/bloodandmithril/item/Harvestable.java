@@ -13,7 +13,7 @@ public abstract class Harvestable extends Prop {
 	 * Constructor
 	 */
 	protected Harvestable(float x, float y, boolean grounded) {
-		super(x, y, grounded);
+		super(x, y, grounded, false);
 	}
 
 	/** Returns the item that harvesting this {@link Harvestable} provides */

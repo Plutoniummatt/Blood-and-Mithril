@@ -23,7 +23,7 @@ public abstract class RigidBody extends Prop {
 	 * Constructor
 	 */
 	protected RigidBody(float x, float y, boolean collidable, float collisionRadius) {
-		super(x, y, false);
+		super(x, y, false, true);
 		this.collidable = collidable;
 		this.collisionRadius = collisionRadius;
 	}
