@@ -105,6 +105,7 @@ public class GameWorld {
 		topography.renderForeGround(camX, camY);
 		BloodAndMithrilClient.spriteBatch.begin();
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
+		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		for (Prop prop : props.values()) {
 			if (!prop.backGround) {
 				prop.render();
