@@ -246,7 +246,7 @@ public class InventoryWindow extends Window {
 			}
 
 			minLength = minLength < inventoryButton.width + 100 ? inventoryButton.width + 100 : minLength;
-			this.width = minLength;
+			this.width = width < minLength ? minLength : width;
 		}
 	}
 
