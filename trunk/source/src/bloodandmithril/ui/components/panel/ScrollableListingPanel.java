@@ -90,20 +90,36 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 			size += listing.size();
 		}
 
-		for (HashMap<ListingMenuItem<T>, Integer> listing : listings) {
-			for(Entry<ListingMenuItem<T>, Integer> item : Lists.newArrayList(listing.entrySet())) {
+		int i = 0;
+		ArrayList<HashMap<ListingMenuItem<T>, Integer>> newArrayList = Lists.newArrayList(listings);
+		for (Map<ListingMenuItem<T>, Integer> listing : newArrayList) {
+
+			List<Entry<ListingMenuItem<T>, Integer>> entrySet = Lists.newArrayList(listing.entrySet());
+
+			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, Integer>>() {
+				@Override
+				public int compare(Entry<ListingMenuItem<T>, Integer> o1, Entry<ListingMenuItem<T>, Integer> o2) {
+					return o1.getKey().t.compareTo(o2.getKey().t);
+				}
+			});
+
+			for(Entry<ListingMenuItem<T>, Integer> item : entrySet) {
+				if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
+					i++;
+					continue;
+				}
 				if (item.getKey().button.click() && item.getKey().menu == null) {
 					copy.clear();
 				}
 				if (item.getKey().menu != null && item.getKey().button.isMouseOver()) {
 					copy.add(item.getKey().menu);
 				}
+				i++;
 			}
 		}
 
 		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
 		if (isMouseOverScrollButton(scrollBarButtonPos)) {
-
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * size);
 			scrollBarButtonLocationOld = scrollBarButtonLocation;
 			mouseLocYFrozen = BloodAndMithrilClient.getMouseScreenY();
