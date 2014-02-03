@@ -126,8 +126,8 @@ public class MainMenuWindow extends Window {
 								public void execute(Object... args) {
 									try {
 										if (args[0].toString().equals("local")) {
-											GameWorld.factions.put(0, new Faction("NPC", 0));
-											GameWorld.factions.put(1, new Faction("Elves", 1));
+											GameWorld.factions.put(0, new Faction("NPC", 0, false));
+											GameWorld.factions.put(1, new Faction("Elves", 1, true));
 
 											ClientServerInterface.setServer(true);
 											BloodAndMithrilClient.gameWorld = new GameWorld(true);

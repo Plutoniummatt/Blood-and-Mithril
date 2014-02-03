@@ -222,7 +222,9 @@ public class FactionsWindow extends Window {
 			);
 
 			if (!BloodAndMithrilClient.controlledFactions.contains(faction.factionId)) {
-				menu.addMenuItem(control);
+				if (faction.controllable) {
+					menu.addMenuItem(control);
+				}
 			} else {
 				menu.addMenuItem(changePassword);
 			}
@@ -244,11 +246,11 @@ public class FactionsWindow extends Window {
 						}
 					},
 					BloodAndMithrilClient.controlledFactions.contains(faction.factionId) ? Color.GREEN : Color.ORANGE,
-					Color.CYAN,
+					Color.ORANGE,
 					Color.WHITE,
 					UIRef.BL
 				),
-				menu
+				faction.controllable ? menu : null
 		    );
 			map.put(menuItem, faction.factionId);
 		}
