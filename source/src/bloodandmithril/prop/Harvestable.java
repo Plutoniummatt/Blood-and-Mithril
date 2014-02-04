@@ -1,6 +1,6 @@
-package bloodandmithril.item;
+package bloodandmithril.prop;
 
-import bloodandmithril.prop.Prop;
+import bloodandmithril.item.Item;
 
 /**
  * Interface for harvesting
@@ -18,4 +18,7 @@ public abstract class Harvestable extends Prop {
 
 	/** Returns the item that harvesting this {@link Harvestable} provides */
 	public abstract Item harvest();
+
+	/** True if the prop is destroyed upon being harvested */
+	public abstract boolean destroyUponHarvest();
 }
