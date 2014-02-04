@@ -6,7 +6,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.item.Harvestable;
+import bloodandmithril.prop.Harvestable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
@@ -94,7 +94,9 @@ public class Harvest extends CompositeAITask {
 
 			if (host.interactionBox.isWithinBox(harvestable.position)) {
 				if (GameWorld.props.containsKey(harvestable.id)) {
-					GameWorld.props.remove(harvestable.id);
+					if (harvestable.destroyUponHarvest()) {
+						GameWorld.props.remove(harvestable.id);
+					}
 
 					if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
 						ClientServerInterface.SendNotification.notifyRemoveProp(harvestable.id);

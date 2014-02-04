@@ -1,7 +1,7 @@
 package bloodandmithril.prop.plant;
 
 import bloodandmithril.BloodAndMithrilClient;
-import bloodandmithril.item.Harvestable;
+import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 
 /**

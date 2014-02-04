@@ -7,7 +7,7 @@ import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.item.Harvestable;
+import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.GameWorld;
 

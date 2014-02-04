@@ -5,8 +5,8 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.item.Harvestable;
 import bloodandmithril.item.Item;
+import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /**
  * The {@link Prop} equivalent to {@link bloodandmithril.item.material.plant.Carrot}
  *
- * @author Matt000000
+ * @author Matt
  */
 public class Carrot extends Plant {
 
@@ -116,5 +116,11 @@ public class Carrot extends Plant {
 	@Override
 	public Item harvest() {
 		return new bloodandmithril.item.material.plant.Carrot();
+	}
+
+
+	@Override
+	public boolean destroyUponHarvest() {
+		return true;
 	}
 }
