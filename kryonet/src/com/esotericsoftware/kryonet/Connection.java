@@ -26,7 +26,7 @@ public class Connection {
 	UdpConnection udp;
 	InetSocketAddress udpRemoteAddress;
 	private Listener[] listeners = {};
-	private final Object listenerLock = new Object();
+	private Object listenerLock = new Object();
 	private int lastPingID;
 	private long lastPingSendTime;
 	private int returnTripTime;
@@ -300,14 +300,9 @@ public class Connection {
 		tcp.idleThreshold = idleThreshold;
 	}
 
-	@Override
-  public String toString () {
+	public String toString () {
 		if (name != null) return name;
 		return "Connection " + id;
-	}
-
-	public String getName() {
-	  return name;
 	}
 
 	void setConnected (boolean isConnected) {

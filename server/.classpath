@@ -9,7 +9,7 @@
 	<classpathentry kind="lib" path="/Client/libs/gdx-natives.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Trunk"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/kryonet"/>
-	<classpathentry kind="lib" path="/kryonet/lib/objenesis-1.2.jar"/>
 	<classpathentry kind="lib" path="/Trunk/libs/kryo-debug-2.20.jar"/>
+	<classpathentry kind="lib" path="/kryonet/lib/kryo-2.23.1-SNAPSHOT-all-debug.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

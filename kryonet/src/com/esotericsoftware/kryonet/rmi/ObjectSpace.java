@@ -14,7 +14,9 @@ import com.esotericsoftware.kryo.util.IntMap;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.kryonet.FrameworkMessage;
+import com.esotericsoftware.kryonet.KryoNetException;
 import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.util.ObjectIntMap;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -50,6 +52,7 @@ public class ObjectSpace {
 	static private final HashMap<Class, CachedMethod[]> methodCache = new HashMap();
 
 	final IntMap idToObject = new IntMap();
+	final ObjectIntMap objectToID = new ObjectIntMap();
 	Connection[] connections = {};
 	final Object connectionsLock = new Object();
 	Executor executor;
@@ -114,16 +117,20 @@ public class ObjectSpace {
 	 * <p>
 	 * If a connection is added to multiple ObjectSpaces, the same object ID should not be registered in more than one of those
 	 * ObjectSpaces.
+	 * @param objectID Must not be Integer.MAX_VALUE.
 	 * @see #getRemoteObject(Connection, int, Class...) */
 	public void register (int objectID, Object object) {
+		if (objectID == Integer.MAX_VALUE) throw new IllegalArgumentException("objectID cannot be Integer.MAX_VALUE.");
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
 		idToObject.put(objectID, object);
+		objectToID.put(object, objectID);
 		if (TRACE) trace("kryonet", "Object registered with ObjectSpace as " + objectID + ": " + object);
 	}
 
 	/** Removes an object. The remote end of the ObjectSpace's connections will no longer be able to access it. */
 	public void remove (int objectID) {
 		Object object = idToObject.remove(objectID);
+		if (object != null) objectToID.remove(object, 0);
 		if (TRACE) trace("kryonet", "Object " + objectID + " removed from ObjectSpace: " + object);
 	}
 
@@ -132,6 +139,7 @@ public class ObjectSpace {
 		if (!idToObject.containsValue(object, true)) return;
 		int objectID = idToObject.findKey(object, true, -1);
 		idToObject.remove(objectID);
+		objectToID.remove(object, 0);
 		if (TRACE) trace("kryonet", "Object " + objectID + " removed from ObjectSpace: " + object);
 	}
 
@@ -209,10 +217,10 @@ public class ObjectSpace {
 			if (transmitExceptions)
 				result = ex.getCause();
 			else
-				throw new RuntimeException("Error invoking method: " + method.getDeclaringClass().getName() + "." + method.getName(),
+				throw new KryoNetException("Error invoking method: " + method.getDeclaringClass().getName() + "." + method.getName(),
 					ex);
 		} catch (Exception ex) {
-			throw new RuntimeException("Error invoking method: " + method.getDeclaringClass().getName() + "." + method.getName(), ex);
+			throw new KryoNetException("Error invoking method: " + method.getDeclaringClass().getName() + "." + method.getName(), ex);
 		}
 
 		if (responseID == 0) return;
@@ -339,14 +347,14 @@ public class ObjectSpace {
 					return connection;
 				} else {
 					// Should never happen, for debugging purposes only
-					throw new RuntimeException("Invocation handler could not find RemoteObject method. Check ObjectSpace.java");
+					throw new KryoNetException("Invocation handler could not find RemoteObject method. Check ObjectSpace.java");
 				}
 			} else if (method.getDeclaringClass() == Object.class) {
 				if (method.getName().equals("toString")) return "<proxy>";
 				try {
 					return method.invoke(proxy, args);
 				} catch (Exception ex) {
-					throw new RuntimeException(ex);
+					throw new KryoNetException(ex);
 				}
 			}
 
@@ -430,7 +438,7 @@ public class ObjectSpace {
 						responseCondition.await(remaining, TimeUnit.MILLISECONDS);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
-						throw new RuntimeException(e);
+						throw new KryoNetException(e);
 					} finally {
 						lock.unlock();
 					}
@@ -584,6 +592,24 @@ public class ObjectSpace {
 		return null;
 	}
 
+	/** Returns the first ID registered for the specified object with any of the ObjectSpaces the specified connection belongs to,
+	 * or Integer.MAX_VALUE if not found. */
+	static int getRegisteredID (Connection connection, Object object) {
+		ObjectSpace[] instances = ObjectSpace.instances;
+		for (int i = 0, n = instances.length; i < n; i++) {
+			ObjectSpace objectSpace = instances[i];
+			// Check if the connection is in this ObjectSpace.
+			Connection[] connections = objectSpace.connections;
+			for (int j = 0; j < connections.length; j++) {
+				if (connections[j] != connection) continue;
+				// Find an ID with the object.
+				int id = objectSpace.objectToID.get(object, Integer.MAX_VALUE);
+				if (id != Integer.MAX_VALUE) return id;
+			}
+		}
+		return Integer.MAX_VALUE;
+	}
+
 	/** Registers the classes needed to use ObjectSpaces. This should be called before any connections are opened.
 	 * @see Kryo#register(Class, Serializer) */
 	static public void registerClasses (final Kryo kryo) {
@@ -625,5 +651,23 @@ public class ObjectSpace {
 	static class CachedMethod {
 		Method method;
 		Serializer[] serializers;
+	}
+
+	/** Serializes an object registered with an ObjectSpace so the receiving side gets a {@link RemoteObject} proxy rather than the
+	 * bytes for the serialized object.
+	 * @author Nathan Sweet <misc@n4te.com> */
+	static public class RemoteObjectSerializer extends Serializer {
+		public void write (Kryo kryo, Output output, Object object) {
+			Connection connection = (Connection)kryo.getContext().get("connection");
+			int id = getRegisteredID(connection, object);
+			if (id == Integer.MAX_VALUE) throw new KryoNetException("Object not found in an ObjectSpace: " + object);
+			output.writeInt(id, true);
+		}
+
+		public Object read (Kryo kryo, Input input, Class type) {
+			int objectID = input.readInt(true);
+			Connection connection = (Connection)kryo.getContext().get("connection");
+			return ObjectSpace.getRemoteObject(connection, objectID, type);
+		}
 	}
 }
