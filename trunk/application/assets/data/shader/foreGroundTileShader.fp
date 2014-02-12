@@ -12,6 +12,7 @@ uniform sampler2D u_texture2;
 
 uniform vec2 resolution;
 uniform vec4 color;
+uniform float penetration;
 
 //sample from the 1D distance map
 float sample(vec2 coord, float r) {
@@ -47,7 +48,7 @@ float illumination() {
 	if (center == 1) {
 		sum += 0;
 	} else {
-		sum += 1 - (r - sample2(1-tc))/0.07;
+		sum += 1 - (r - sample2(1-tc))/penetration;
 	}
 	
 	//sum of 1.0 -> in light, 0.0 -> in shadow

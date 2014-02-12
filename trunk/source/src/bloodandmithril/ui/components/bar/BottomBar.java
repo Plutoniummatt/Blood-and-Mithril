@@ -5,6 +5,7 @@ import java.util.Deque;
 import java.util.List;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -15,6 +16,7 @@ import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.ChatWindow;
 import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
+import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Task;
 
@@ -54,7 +56,7 @@ public class BottomBar extends Component {
 		UIRef.BL
 	);
 
-	private final Button factions = new Button(UserInterface.uiTexture, 205, 16, 153, 0, 50, 32,
+	private final Button factions = new Button(UserInterface.uiTexture, 205, 16, 203, 0, 50, 32,
 		new Task() {
 			@Override
 			public void execute() {
@@ -129,27 +131,44 @@ public class BottomBar extends Component {
 
 	/** Called when the chat button is clicked */
 	private void chatClicked() {
-		for (Component component : UserInterface.layeredComponents) {
-			if (component instanceof ChatWindow) {
-				((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
-				((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
-				((ChatWindow) component).minimized = false;
-				((ChatWindow) component).active = true;
-				return;
+		if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
+			UserInterface.addLayeredComponent(
+			new MessageWindow(
+					"Chat is unavailable during single player",
+					Color.ORANGE,
+					BloodAndMithrilClient.WIDTH/2 - 175,
+					BloodAndMithrilClient.HEIGHT/2 + 100,
+					350,
+					200,
+					"Chat",
+					true,
+					100,
+					100
+				)
+			);
+		} else {
+			for (Component component : UserInterface.layeredComponents) {
+				if (component instanceof ChatWindow) {
+					((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
+					((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
+					((ChatWindow) component).minimized = false;
+					((ChatWindow) component).active = true;
+					return;
+				}
 			}
+	
+			UserInterface.addLayeredComponent(
+				new ChatWindow(
+					BloodAndMithrilClient.WIDTH/2 - 250,
+					BloodAndMithrilClient.HEIGHT/2 + 150,
+					500,
+					300,
+					true,
+					300,
+					250
+				)
+			);
 		}
-
-		UserInterface.addLayeredComponent(
-			new ChatWindow(
-				BloodAndMithrilClient.WIDTH/2 - 250,
-				BloodAndMithrilClient.HEIGHT/2 + 150,
-				500,
-				300,
-				true,
-				300,
-				250
-			)
-		);
 	}
 
 

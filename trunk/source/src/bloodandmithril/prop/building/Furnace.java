@@ -8,9 +8,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Task;
-import bloodandmithril.util.Util;
-import bloodandmithril.world.GameWorld;
-import bloodandmithril.world.GameWorld.Light;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,18 +20,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Furnace extends Construction {
 
 	/** {@link TextureRegion} of the {@link Furnace} */
-	private static TextureRegion furnace = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 57, 68);
-
-	/** Furnace lighting */
-	private final Light light;
+	public static TextureRegion furnace;
 
 	/**
 	 * Constructor
 	 */
 	public Furnace(float x, float y) {
-		super(x, y, 57, 68, true);
-		light = new Light(300, x + 10, y + 32, Color.ORANGE, 0.2f);
-		GameWorld.lights.add(light);
+		super(x, y, 57, 68, false);
 	}
 
 
@@ -76,8 +68,6 @@ public class Furnace extends Construction {
 
 	@Override
 	public void render() {
-		float alpha = 0.9f + 0.01f * (Util.getRandom().nextBoolean() ? -1f : 1f);
-		light.color.a = alpha < 0.8f ? 0.8f : alpha > 1f ? 1f : alpha;
 		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
 	}
 
