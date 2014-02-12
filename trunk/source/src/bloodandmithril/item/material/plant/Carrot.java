@@ -72,6 +72,7 @@ public class Carrot extends Item implements Consumable {
 
 
 	public static class CarrotSeed extends Seed {
+		private static final long serialVersionUID = -3918937697003306522L;
 
 		/**
 		 * Constructor

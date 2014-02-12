@@ -9,6 +9,7 @@ import bloodandmithril.item.Equipper.EquipmentSlot;
  * @author Matt
  */
 public abstract class Weapon extends Equipable implements Affector {
+	private static final long serialVersionUID = -1099406999441510716L;
 
 	/**
 	 * Constructor

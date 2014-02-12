@@ -1,71 +1,56 @@
 package bloodandmithril.prop.plant;
 
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.plant.Felberry;
+import bloodandmithril.item.material.plant.Felberries;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.components.ContextMenu;
 
 /**
- * The {@link Prop} that grows {@link Felberry}
+ * The {@link Prop} that grows {@link Felberries}
  *
  * @author Matt
  */
 public class FelberryBush extends Plant {
+	
+	private int berries = 10;
 
 	/**
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
+	 * Constructor
 	 */
-	protected FelberryBush(float x, float y, int width, int height) {
-		super(x, y, width, height);
-		// TODO Auto-generated constructor stub
+	public FelberryBush(float x, float y) {
+		super(x, y, 48, 32);
 	}
 
-	/**
-	 * @see bloodandmithril.prop.Harvestable#harvest()
-	 */
+	
 	@Override
 	public Item harvest() {
-		// TODO Auto-generated method stub
-		return null;
+		if (berries > 0) {
+			berries--;
+			return new Felberries();
+		} else {
+			return null;
+		}
 	}
 
-	/**
-	 * @see bloodandmithril.prop.Harvestable#destroyUponHarvest()
-	 */
+	
 	@Override
 	public boolean destroyUponHarvest() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	/**
-	 * @see bloodandmithril.prop.Prop#render()
-	 */
+	
 	@Override
 	public void render() {
-		// TODO Auto-generated method stub
-
 	}
 
-	/**
-	 * @see bloodandmithril.prop.Prop#synchronize(bloodandmithril.prop.Prop)
-	 */
+	
 	@Override
 	public void synchronize(Prop other) {
-		// TODO Auto-generated method stub
-
 	}
 
-	/**
-	 * @see bloodandmithril.prop.Prop#getContextMenu()
-	 */
+	
 	@Override
 	public ContextMenu getContextMenu() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

@@ -10,6 +10,7 @@ import bloodandmithril.world.GameWorld;
  * @author Matt
  */
 public class Attack extends CompositeAITask {
+	private static final long serialVersionUID = 8988728685586897479L;
 
 	/**
 	 * Constructor
@@ -28,7 +29,8 @@ public class Attack extends CompositeAITask {
 
 
 	public static class Strike extends AITask {
-
+		private static final long serialVersionUID = 2202041223279146589L;
+		
 		private final Individual tobeAttacked;
 		private boolean attacked = false;
 

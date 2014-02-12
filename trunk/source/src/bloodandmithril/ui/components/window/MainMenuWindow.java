@@ -50,9 +50,6 @@ public class MainMenuWindow extends Window {
 	}
 
 
-	/**
-	 * @see bloodandmithril.ui.components.window.Window#internalWindowRender()
-	 */
 	@Override
 	protected void internalWindowRender() {
 		connect.render(width/2 + x, y - 26, active && !isSaving() && BloodAndMithrilClient.gameWorld == null, alpha);
@@ -61,9 +58,6 @@ public class MainMenuWindow extends Window {
 	}
 
 
-	/**
-	 * @see bloodandmithril.ui.components.window.Window#internalLeftClick(java.util.List)
-	 */
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		connect.click();
