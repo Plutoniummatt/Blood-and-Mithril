@@ -49,4 +49,14 @@ public abstract class Plant extends Harvestable {
 		}
 		return true;
 	}
+
+
+	/**
+	 * The growth stage of a {@link Plant}
+	 *
+	 * @author Matt
+	 */
+	public enum GrowthStage {
+		PLANTED, GERMINATED, UNRIPE, RIPE, WILTING, DEAD
+	}
 }
