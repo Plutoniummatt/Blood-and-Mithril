@@ -389,7 +389,7 @@ public class InventoryWindow extends Window {
 
 
 	/** Refreshes this {@link InventoryWindow} */
-	public void refresh() {
+	public synchronized void refresh() {
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();
 

@@ -52,7 +52,7 @@ public class SynchronizeIndividual implements Request {
 			responses.responses.add(response);
 			return responses;
 		}
-		response = new SynchronizeIndividualResponse(GameWorld.individuals.get(id), System.currentTimeMillis());
+		response = new SynchronizeIndividualResponse(id, System.currentTimeMillis());
 		responses.responses.add(response);
 		return responses;
 	}
@@ -65,35 +65,20 @@ public class SynchronizeIndividual implements Request {
 	 */
 	public static class SynchronizeIndividualResponse implements Response {
 
-		private final Individual individual;
+		private Individual individual;
 
 		private final Set<Integer> individuals;
 
 		private final long timeStamp;
 
+		private Integer individualId;
+
 		/**
 		 * Synchronize single individual
 		 */
-		public SynchronizeIndividualResponse(Individual individual, long timeStamp) {
-			this.individual = individual.copy();
-
-			// Handle AITasks with Paths explicitly, these guys cause ConcurrentModificationExceptions and nasty NPE's even with
-			// ConcurrentLinkedDeque's
-			AITask current = this.individual.getAI().getCurrentTask();
-
-			synchronized (current) {
-				if (current instanceof GoToLocation) {
-					((GoToLocation) current).setPath(((GoToLocation) current).getPath().copy());
-				} else if (current instanceof CompositeAITask) {
-					AITask currentTask = ((CompositeAITask) current).getCurrentTask();
-					if (currentTask instanceof GoToLocation) {
-						((GoToLocation) currentTask).setPath(((GoToLocation) currentTask).getPath().copy());
-					}
-				}
-			}
-
+		public SynchronizeIndividualResponse(int individualId, long timeStamp) {
+			this.individualId = individualId;
 			this.timeStamp = timeStamp;
-
 			this.individuals = null;
 		}
 
@@ -102,13 +87,13 @@ public class SynchronizeIndividual implements Request {
 		 */
 		public SynchronizeIndividualResponse(Set<Integer> individuals) {
 			this.individuals = individuals;
-			this.individual = null;
+			this.individualId = null;
 			this.timeStamp = -1;
 		}
 
 		@Override
 		public void acknowledge() {
-			if (this.individual != null) {
+			if (this.individualId != null) {
 				syncSingleIndividual();
 			}
 
@@ -136,6 +121,28 @@ public class SynchronizeIndividual implements Request {
 				got.copyFrom(individual);
 			}
 			Logger.networkDebug("Received data for individual: " + individual.getId().getSimpleName(), LogLevel.TRACE);
+		}
+
+		@Override
+		public void prepare() {
+			if (this.individualId != null) {
+				this.individual = GameWorld.individuals.get(individualId).copy();
+				
+				// Handle AITasks with Paths explicitly, these guys cause ConcurrentModificationExceptions and nasty NPE's even with
+				// ConcurrentLinkedDeque's
+				AITask current = this.individual.getAI().getCurrentTask();
+				
+				synchronized (current) {
+					if (current instanceof GoToLocation) {
+						((GoToLocation) current).setPath(((GoToLocation) current).getPath().copy());
+					} else if (current instanceof CompositeAITask) {
+						AITask currentTask = ((CompositeAITask) current).getCurrentTask();
+						if (currentTask instanceof GoToLocation) {
+							((GoToLocation) currentTask).setPath(((GoToLocation) currentTask).getPath().copy());
+						}
+					}
+				}
+			}
 		}
 	}
 

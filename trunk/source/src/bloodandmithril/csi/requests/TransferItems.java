@@ -55,12 +55,12 @@ public class TransferItems implements Request {
 		Container proposee;
 
 		proposer = GameWorld.individuals.get(proposerId);
-		response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(proposer, System.currentTimeMillis()));
+		response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(proposer.getId().getId(), System.currentTimeMillis()));
 
 		switch(proposeeEntityType) {
 		case INDIVIDUAL:
 			proposee = GameWorld.individuals.get(proposeeId);
-			response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse((Individual)proposee, System.currentTimeMillis()));
+			response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(((Individual)proposee).getId().getId(), System.currentTimeMillis()));
 			break;
 
 		case PROP:
@@ -112,6 +112,10 @@ public class TransferItems implements Request {
 		public int forClient() {
 			return -1;
 		}
+
+		@Override
+		public void prepare() {
+		}
 	}
 
 
@@ -150,6 +154,10 @@ public class TransferItems implements Request {
 		@Override
 		public int forClient() {
 			return -1;
+		}
+
+		@Override
+		public void prepare() {
 		}
 	}
 

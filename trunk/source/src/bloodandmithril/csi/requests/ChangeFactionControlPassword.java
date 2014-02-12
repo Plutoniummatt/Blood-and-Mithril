@@ -70,5 +70,9 @@ public class ChangeFactionControlPassword implements Request {
 		public int forClient() {
 			return -1;
 		}
+
+		@Override
+		public void prepare() {
+		}
 	}
 }

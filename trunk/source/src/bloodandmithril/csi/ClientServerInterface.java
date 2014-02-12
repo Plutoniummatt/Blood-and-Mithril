@@ -295,6 +295,7 @@ public class ClientServerInterface {
 						if (connectionId == -1) {
 							Responses resp = new Responses(executeInSingleThread, new LinkedList<Response>());
 							for (Response response : responses) {
+								response.prepare();
 								resp.responses.add(response);
 							}
 							if (tcp) {
@@ -309,6 +310,7 @@ public class ClientServerInterface {
 						if (connectionId == connection.getID()) {
 							Responses resp = new Responses(executeInSingleThread, new LinkedList<Response>());
 							for (Response response : responses) {
+								response.prepare();
 								resp.responses.add(response);
 							}
 							if (tcp) {
@@ -614,6 +616,17 @@ public class ClientServerInterface {
 			client.sendTCP(new OpenTradeWindow(proposerId, proposee, proposeeId));
 			Logger.networkDebug("Sending open trade window request", LogLevel.DEBUG);
 		}
+		
+		public static synchronized void sendChatMessage(String message) {
+			client.sendTCP(
+				new SendChatMessage(
+					new Message(
+						clientName,
+						message
+					)
+				)
+			);
+		}
 
 		public static synchronized void sendTransferItemsRequest(
 				HashMap<Item, Integer> proposerItemsToTransfer, int proposerId,
@@ -637,18 +650,6 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendNotification {
-		public static synchronized void notifyChatMessage(String message) {
-			client.sendTCP(
-				new SendChatMessage(
-					new Message(
-						clientName,
-						message
-					)
-				)
-			);
-		}
-
-
 		public static synchronized void notifyRemoveProp(int propId) {
 			sendNotification(
 				-1,
@@ -733,7 +734,7 @@ public class ClientServerInterface {
 				-1,
 				true,
 				true,
-				new SynchronizeIndividualResponse(GameWorld.individuals.get(individualId), System.currentTimeMillis()),
+				new SynchronizeIndividualResponse(individualId, System.currentTimeMillis()),
 				new TransferItems.RefreshWindowsResponse()
 			);
 		}
@@ -754,7 +755,7 @@ public class ClientServerInterface {
 				-1,
 				false,
 				false,
-				new SynchronizeIndividualResponse(GameWorld.individuals.get(id), System.currentTimeMillis())
+				new SynchronizeIndividualResponse(id, System.currentTimeMillis())
 			);
 		}
 	}

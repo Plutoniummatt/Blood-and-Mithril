@@ -63,5 +63,9 @@ public class ChangeNickName implements Request {
 		public int forClient() {
 			return -1;
 		}
+
+		@Override
+		public void prepare() {
+		}
 	}
 }

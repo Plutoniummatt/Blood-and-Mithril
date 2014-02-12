@@ -176,7 +176,7 @@ public class ChatWindow extends Window {
 
 		if (keyCode == Input.Keys.ENTER) {
 			if (!StringUtils.isEmpty(textInputPanel.getInputText())) {
-				ClientServerInterface.SendNotification.notifyChatMessage(textInputPanel.getInputText());
+				ClientServerInterface.SendRequest.sendChatMessage(textInputPanel.getInputText());
 				textInputPanel.clear();
 			}
 		}

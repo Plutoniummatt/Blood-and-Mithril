@@ -28,4 +28,9 @@ public class DestroyPropNotification implements Response {
 	public int forClient() {
 		return -1;
 	}
+
+
+	@Override
+	public void prepare() {
+	}
 }
