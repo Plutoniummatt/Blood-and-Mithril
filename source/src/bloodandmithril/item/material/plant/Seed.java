@@ -8,6 +8,7 @@ import bloodandmithril.item.Item;
  * @author Matt
  */
 public abstract class Seed extends Item {
+	private static final long serialVersionUID = -6248381190070613796L;
 
 	/**
 	 * Constructor

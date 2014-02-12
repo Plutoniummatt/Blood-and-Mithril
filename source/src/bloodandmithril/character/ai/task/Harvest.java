@@ -6,6 +6,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.item.Item;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -103,7 +104,10 @@ public class Harvest extends CompositeAITask {
 					}
 
 					if (ClientServerInterface.isClient() && ClientServerInterface.isServer()) {
-						GameWorld.individuals.get(hostId.getId()).giveItem(harvestable.harvest());
+						Item harvested = harvestable.harvest();
+						if (harvested != null) {
+							GameWorld.individuals.get(hostId.getId()).giveItem(harvested);
+						}
 						InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
 							@Override
 							public boolean apply(Component input) {
@@ -118,7 +122,10 @@ public class Harvest extends CompositeAITask {
 							existingInventoryWindow.refresh();
 						}
 					} else if (ClientServerInterface.isServer()) {
-						ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), harvestable.harvest());
+						Item harvested = harvestable.harvest();
+						if (harvested != null) {
+							ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), harvested);
+						}
 					}
 				}
 			}

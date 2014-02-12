@@ -112,6 +112,7 @@ import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
+import bloodandmithril.item.material.plant.Felberries;
 import bloodandmithril.item.material.plant.Seed;
 import bloodandmithril.item.misc.Currency;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
@@ -119,6 +120,7 @@ import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Chest.ChestContainer;
 import bloodandmithril.prop.building.PineChest;
+import bloodandmithril.prop.plant.FelberryBush;
 import bloodandmithril.prop.plant.Plant;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Logger;
@@ -342,6 +344,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(FelberryBush.class);
+		kryo.register(Felberries.class);
 		kryo.register(HarvestItem.class);
 		kryo.register(SendHarvestRequest.class);
 		kryo.register(Harvest.class);
