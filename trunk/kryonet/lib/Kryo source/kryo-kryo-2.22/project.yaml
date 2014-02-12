@@ -1,5 +1,0 @@
-name: kryo
-version: 2.22
----
-Build.build(project);
-Build.oneJAR(project);
