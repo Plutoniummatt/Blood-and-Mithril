@@ -180,8 +180,15 @@ public class Elf extends Individual {
 			getState().position.x - hairAnimations.get(currentHair + (female ? "F" : "M"), hairStyle).getKeyFrame(0f).getRegionWidth()/2,
 			getState().position.y
 		);
+		BloodAndMithrilClient.spriteBatch.end();
+
 
 		// Render equipped items
+		BloodAndMithrilClient.spriteBatch.begin();
+		Shaders.elfHighLight.setUniformi("hair", 0);
+		Shaders.elfDayLight.setUniformi("hair", 0);
+		Shaders.elfDayLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+		Shaders.elfHighLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		for (Item equipped : equippedItems.keySet()) {
 			Equipable toRender = (Equipable) equipped;
 
@@ -203,7 +210,7 @@ public class Elf extends Individual {
 
 		// If we're moving to the right
 		if (getState().velocity.x > 0) {
-			// If walking, and current animatin is not walking right, then set animations to walking right
+			// If walking, and current animation is not walking right, then set animations to walking right
 			if (isCommandActive(KeyMappings.walk) && !current.equals(WALKING_RIGHT)) {
 				current = WALKING_RIGHT;
 				currentHair = WALKING_RIGHT_HAIR;
