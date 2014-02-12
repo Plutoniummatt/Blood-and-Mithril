@@ -159,7 +159,7 @@ public class TradeWindow extends Window {
 	 * Refreshes this window and syncs it with the trader inventories
 	 */
 	@SuppressWarnings("unchecked")
-	public void refresh() {
+	public synchronized void refresh() {
 		proposer = GameWorld.individuals.get(((Individual) proposer).getId().getId());
 
 		proposerItemsToTrade.clear();

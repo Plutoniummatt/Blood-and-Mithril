@@ -39,7 +39,7 @@ public class ConsumeItem implements Request {
 			individual.takeItem((Item)consumable);
 		}
 
-		responses.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual, System.currentTimeMillis()));
+		responses.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual.getId().getId(), System.currentTimeMillis()));
 		responses.responses.add(new TransferItems.RefreshWindowsResponse());
 
 		return responses;

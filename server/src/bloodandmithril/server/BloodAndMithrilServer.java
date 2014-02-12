@@ -15,6 +15,7 @@ import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
+import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
@@ -95,6 +96,9 @@ public class BloodAndMithrilServer {
 							if (request.tcp()) {
 								if (request.notifyOthers()) {
 									Responses responseToSend = request.respond();
+									for (Response response : responseToSend.responses) {
+										response.prepare();
+									}
 									for (Connection c : server.getConnections()) {
 										c.sendTCP(responseToSend);
 									}
@@ -104,6 +108,9 @@ public class BloodAndMithrilServer {
 							} else {
 								if (request.notifyOthers()) {
 									Responses responseToSend = request.respond();
+									for (Response response : responseToSend.responses) {
+										response.prepare();
+									}
 									for (Connection c : server.getConnections()) {
 										c.sendUDP(responseToSend);
 									}

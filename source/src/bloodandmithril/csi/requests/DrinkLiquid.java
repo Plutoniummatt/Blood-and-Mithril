@@ -42,7 +42,7 @@ public class DrinkLiquid implements Request {
 		}
 
 		Responses responses = new Responses(true, new LinkedList<Response>());
-		responses.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual, System.currentTimeMillis()));
+		responses.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual.getId().getId(), System.currentTimeMillis()));
 		responses.responses.add(new TransferItems.RefreshWindowsResponse());
 		return responses;
 	}

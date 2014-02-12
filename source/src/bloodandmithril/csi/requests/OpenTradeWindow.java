@@ -37,14 +37,14 @@ public class OpenTradeWindow implements Request {
 
 		responses.responses.add(
 			new SynchronizeIndividual.SynchronizeIndividualResponse(
-				GameWorld.individuals.get(proposerId), System.currentTimeMillis()
+				proposerId, System.currentTimeMillis()
 			)
 		);
 
 		if (proposee == TradeEntity.INDIVIDUAL) {
 			responses.responses.add(
 				new SynchronizeIndividual.SynchronizeIndividualResponse(
-					GameWorld.individuals.get(proposerId), System.currentTimeMillis()
+					proposerId, System.currentTimeMillis()
 				)
 			);
 		} else {
@@ -108,6 +108,10 @@ public class OpenTradeWindow implements Request {
 		@Override
 		public int forClient() {
 			return -1;
+		}
+
+		@Override
+		public void prepare() {
 		}
 	}
 }
