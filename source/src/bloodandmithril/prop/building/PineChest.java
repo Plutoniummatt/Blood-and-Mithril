@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class PineChest extends Chest {
 
-	/** {@link TextureRegion} of the {@link PineChest} TODO - New texture */
+	/** {@link TextureRegion} of the {@link PineChest} */
 	public static TextureRegion pineChest;
 
 	/**

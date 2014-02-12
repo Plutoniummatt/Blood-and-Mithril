@@ -155,7 +155,7 @@ public class TradeWith extends CompositeAITask {
 					return;
 				}
 
-				if (ClientServerInterface.isServer()) {
+				if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
 					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.getId().getId(), TradeEntity.PROP, ((ChestContainer) proposee).propId, connectionId);
 				} else if (ClientServerInterface.isClient()) {
 					openTradeWindowWithProp(proposer, proposee);

@@ -2,6 +2,7 @@ package bloodandmithril.prop.building;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.world.GameWorld.Depth;
 
 /**
  * A Construction
@@ -17,7 +18,7 @@ public abstract class Construction extends Prop {
 	 * Constructor
 	 */
 	protected Construction(float x, float y, int width, int height, boolean grounded) {
-		super(x, y, grounded, true);
+		super(x, y, grounded, Depth.MIDDLEGROUND);
 		this.width = width;
 		this.height = height;
 	}

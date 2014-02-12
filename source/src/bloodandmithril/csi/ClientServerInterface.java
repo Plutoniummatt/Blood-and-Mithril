@@ -131,6 +131,7 @@ import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.GameWorld.Depth;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
@@ -344,6 +345,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Depth.class);
 		kryo.register(FelberryBush.class);
 		kryo.register(Felberries.class);
 		kryo.register(HarvestItem.class);

@@ -2,10 +2,12 @@ package bloodandmithril.prop;
 
 
 import bloodandmithril.persistence.ParameterPersistenceService;
+import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.prop.plant.Carrot;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.GameWorld.Depth;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -18,7 +20,7 @@ import com.badlogic.gdx.math.Vector2;
 public abstract class Prop {
 
 	/** Whether or not this prop will be rendered as part of the background */
-	public final boolean backGround;
+	public final Depth depth;
 
 	/** id of this prop */
 	public int id;
@@ -32,9 +34,9 @@ public abstract class Prop {
 	/**
 	 * Constructor
 	 */
-	protected Prop(float x, float y, boolean grounded, boolean backGround) {
+	protected Prop(float x, float y, boolean grounded, Depth depth) {
 		position = new Vector2(x, y);
-		this.backGround = backGround;
+		this.depth = depth;
 		this.id = ParameterPersistenceService.getParameters().getNextPropId();
 		this.grounded = grounded;
 	}
@@ -58,7 +60,8 @@ public abstract class Prop {
 	public abstract ContextMenu getContextMenu();
 
 	public static void setup() {
-		PineChest.pineChest = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 57, 68);
+		Furnace.furnace = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 57, 68);
+		PineChest.pineChest = new TextureRegion(GameWorld.gameWorldTexture, 407, 206, 47, 37);
 		Carrot.carrot = new TextureRegion(GameWorld.gameWorldTexture, 350, 243, 16, 17);
 	}
 }
