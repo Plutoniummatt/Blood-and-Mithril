@@ -67,12 +67,41 @@ public class Furnace extends Construction {
 
 
 	@Override
-	public void render() {
+	public void synchronize(Prop other) {
+	}
+
+
+	@Override
+	protected void renderPlanned() {
+	}
+
+
+	@Override
+	protected void renderScaffolded() {
 		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
 	}
 
 
 	@Override
-	public void synchronize(Prop other) {
+	protected void renderPhase1() {
+		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
+	}
+
+
+	@Override
+	protected void renderPhase2() {
+		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
+	}
+
+
+	@Override
+	protected void renderPhase3() {
+		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
+	}
+
+
+	@Override
+	protected void renderComplete() {
+		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
 	}
 }

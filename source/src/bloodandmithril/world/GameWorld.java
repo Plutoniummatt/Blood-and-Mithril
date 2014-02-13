@@ -115,7 +115,7 @@ public class GameWorld {
 		}
 		BloodAndMithrilClient.spriteBatch.end();
 		mBuffer.end();
-		
+
 		fBuffer.begin();
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		topography.renderForeGround(camX, camY);
@@ -263,43 +263,43 @@ public class GameWorld {
 			}
 
 			for (Light light : tempLights) {
-				
+
 				//Draw foreground to occlusion map
 				light.fOcclusion.begin();
 				BloodAndMithrilClient.spriteBatch.begin();
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 				Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				BloodAndMithrilClient.spriteBatch.draw(
-					fBuffer.getColorBufferTexture(), 
-					0f, 
-					0f, 
-					BloodAndMithrilClient.WIDTH, 
-					BloodAndMithrilClient.HEIGHT, 
-					(int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2, 
-					(int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, 
-					light.size, 
-					light.size, 
-					false, 
+					fBuffer.getColorBufferTexture(),
+					0f,
+					0f,
+					BloodAndMithrilClient.WIDTH,
+					BloodAndMithrilClient.HEIGHT,
+					(int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,
+					(int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2,
+					light.size,
+					light.size,
+					false,
 					false
 				);
 				BloodAndMithrilClient.spriteBatch.end();
 				light.fOcclusion.end();
-				
+
 				light.mOcclusion.begin();
 				BloodAndMithrilClient.spriteBatch.begin();
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 				Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				BloodAndMithrilClient.spriteBatch.draw(
-					mBuffer.getColorBufferTexture(), 
-					0f, 
-					0f, 
-					BloodAndMithrilClient.WIDTH, 
-					BloodAndMithrilClient.HEIGHT, 
-					(int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2, 
-					(int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, 
-					light.size, 
-					light.size, 
-					false, 
+					mBuffer.getColorBufferTexture(),
+					0f,
+					0f,
+					BloodAndMithrilClient.WIDTH,
+					BloodAndMithrilClient.HEIGHT,
+					(int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,
+					(int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2,
+					light.size,
+					light.size,
+					false,
 					false
 				);
 				BloodAndMithrilClient.spriteBatch.end();
@@ -313,7 +313,7 @@ public class GameWorld {
 				BloodAndMithrilClient.spriteBatch.draw(light.fOcclusion.getColorBufferTexture(), 0f, 0f, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, light.size, light.size, false, false);
 				BloodAndMithrilClient.spriteBatch.end();
 				light.fShadowMap.end();
-				
+
 				light.mShadowMap.begin();
 				BloodAndMithrilClient.spriteBatch.begin();
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.shadowMap);
@@ -340,7 +340,7 @@ public class GameWorld {
 			}
 			bBufferLit.end();
 
-			//Render the background tiles
+			//Render the background
 			BloodAndMithrilClient.spriteBatch.setShader(Shaders.black);
 			Shaders.black.setUniformf("color", new Color(0f, 0f, 0f, 1f));
 			BloodAndMithrilClient.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
@@ -379,7 +379,7 @@ public class GameWorld {
 				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a * 0.5f);
 				BloodAndMithrilClient.spriteBatch.draw(light.mOcclusion.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size);
 			}
-			
+
 			//Render foreground without lighting
 			if ("true".equals(System.getProperty("seeAll"))) {
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
@@ -390,7 +390,7 @@ public class GameWorld {
 				Shaders.black.setUniformf("color", new Color(color, color, color, 1f));
 				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 			}
-			
+
 			//Render the foreground, affected by lighting
 			for (Light light : tempLights) {
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.defaultForeGroundTiles);
@@ -406,7 +406,7 @@ public class GameWorld {
 			//End rendering----------------------------------//
 		}
 	}
-	
+
 
 	public enum Depth {
 		BACKGROUND, FOREGOUND, MIDDLEGROUND

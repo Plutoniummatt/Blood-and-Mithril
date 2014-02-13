@@ -88,11 +88,10 @@ public class GoToLocation extends AITask {
 	/**
 	 * Renders the {@link #path} as well as the current trajectory
 	 *
-	 * Use with care, due to the inefficiency of this method, it is deprecated
+	 * Use with care, due to the inefficiency of this method, it is deprecated, intended for debugging purposes only
 	 */
 	@Deprecated
 	public void renderPath() {
-
 		WayPoint nextPoint = path.getNextPoint();
 
 		if (nextPoint != null && nextPoint.waypoint != null) {
@@ -193,11 +192,6 @@ public class GoToLocation extends AITask {
 		}
 
 		return path.isEmpty() || finalWayPointCheck;
-	}
-
-
-	public WayPoint getDestinationWayPoint() {
-		return path.getDestinationWayPoint();
 	}
 
 
