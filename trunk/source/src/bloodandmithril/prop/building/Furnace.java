@@ -26,7 +26,7 @@ public class Furnace extends Construction {
 	 * Constructor
 	 */
 	public Furnace(float x, float y) {
-		super(x, y, 57, 68, false);
+		super(x, y, 49, 76, false);
 	}
 
 
@@ -72,36 +72,7 @@ public class Furnace extends Construction {
 
 
 	@Override
-	protected void renderPlanned() {
-	}
-
-
-	@Override
-	protected void renderScaffolded() {
-		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
-	}
-
-
-	@Override
-	protected void renderPhase1() {
-		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
-	}
-
-
-	@Override
-	protected void renderPhase2() {
-		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
-	}
-
-
-	@Override
-	protected void renderPhase3() {
-		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
-	}
-
-
-	@Override
-	protected void renderComplete() {
+	protected void internalRender(float constructionProgress) {
 		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
 	}
 }

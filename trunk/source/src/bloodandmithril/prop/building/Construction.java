@@ -14,9 +14,8 @@ public abstract class Construction extends Prop {
 	/** Dimensions of this {@link Construction} */
 	protected final int width, height;
 
-	/** The current stage of construction */
-	//TODO - This should not be defaulted to complete
-	private ConstructionStage constructionStage = ConstructionStage.COMPLETE;
+	/** The current progress of construction */
+	private float constructionProgress;
 
 	/**
 	 * Constructor
@@ -39,31 +38,9 @@ public abstract class Construction extends Prop {
 
 	@Override
 	public void render() {
-		switch (constructionStage) {
-			case PLANNED:
-				renderPlanned();
-				break;
-			case SCAFFOLDED:
-				renderScaffolded();
-				break;
-			case PHASE1:
-				renderPhase1();
-				break;
-			case PHASE2:
-				renderPhase2();
-				break;
-			case PHASE3:
-				renderPhase3();
-				break;
-			case COMPLETE:
-				renderComplete();
-				break;
-
-			default:
-				break;
-		}
+		internalRender(constructionProgress);
 	}
-
+	
 
 	@Override
 	public boolean leftClick() {
@@ -86,44 +63,22 @@ public abstract class Construction extends Prop {
 	/**
 	 * See {@link #constructionStage}
 	 */
-	public ConstructionStage getConstructionStage() {
-		return constructionStage;
+	public float getConstructionStage() {
+		return constructionProgress;
 	}
 
 
 	/**
 	 * See {@link #constructionStage}
 	 */
-	public void setConstructionStage(ConstructionStage constructionStage) {
-		this.constructionStage = constructionStage;
+	public void setConstructionStage(float constructionProgress) {
+		this.constructionProgress = constructionProgress;
 	}
-
-
-	/** Rendering */
-	protected abstract void renderPlanned();
-
-	/** Rendering */
-	protected abstract void renderScaffolded();
-
-	/** Rendering */
-	protected abstract void renderPhase1();
-
-	/** Rendering */
-	protected abstract void renderPhase2();
-
-	/** Rendering */
-	protected abstract void renderPhase3();
-
-	/** Rendering */
-	protected abstract void renderComplete();
-
-
+	
+	
 	/**
-	 * Stages of construction
-	 *
-	 * @author Matt
+	 * Renders this {@link Construction} based on {@link #constructionProgress}
 	 */
-	public static enum ConstructionStage {
-		PLANNED, SCAFFOLDED, PHASE1, PHASE2, PHASE3, COMPLETE
-	}
+	protected abstract void internalRender(float constructionProgress);
+
 }
