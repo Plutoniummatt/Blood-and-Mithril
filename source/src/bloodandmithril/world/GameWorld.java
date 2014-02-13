@@ -83,7 +83,7 @@ public class GameWorld {
 		mBufferLit = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		bBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		bBufferLit = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
-		gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
+		gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
 	}
 

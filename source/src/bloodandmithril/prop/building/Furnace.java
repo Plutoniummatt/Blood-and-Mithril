@@ -35,16 +35,16 @@ public class Furnace extends Construction {
 
 		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(),
 			new ContextMenuItem(
-				"Oh hai I'm a furnace!",
+				"Show info",
 				new Task() {
 					@Override
 					public void execute() {
 						UserInterface.addLayeredComponent(
 							new MessageWindow(
-								"You clicked me",
+								"A furnace, able to achieve temperatures hot enough to melt most metals",
 								Color.ORANGE,
-								BloodAndMithrilClient.getMouseScreenX(),
-								BloodAndMithrilClient.getMouseScreenY(),
+								BloodAndMithrilClient.WIDTH/2 - 175,
+								BloodAndMithrilClient.HEIGHT/2 + 100,
 								350,
 								200,
 								"Furnace",
