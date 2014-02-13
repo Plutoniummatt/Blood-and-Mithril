@@ -1,6 +1,7 @@
 package bloodandmithril.character;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -111,8 +112,9 @@ public abstract class Individual extends Equipper {
 	private Skills skills = new Skills();
 
 	/** Whether or not this {@link Individual} is attacking */
+	//TODO reset when attack animation finishes
 	private boolean attacking;
-	
+
 	/** WHich client number this {@link Individual} is selected by */
 	private Set<Integer> selectedByClient = Sets.newHashSet();
 
@@ -133,6 +135,9 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	/**
+	 * Copies all fields onto this individual from another
+	 */
 	public synchronized void copyFrom(Individual other) {
 		this.ai = other.ai;
 		this.selectedByClient = other.selectedByClient;
@@ -254,7 +259,7 @@ public abstract class Individual extends Equipper {
 	/** Deselect this {@link Individual} */
 	public void deselect(boolean clearTask, int id) {
 		selectedByClient.remove(id);
-		
+
 		if (selectedByClient.isEmpty()) {
 			ai.setToAuto(clearTask);
 		}
@@ -295,6 +300,9 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	/**
+	 * No longer jumping off, set {@link #jumpOff} to null, to signify that this individual is not trying to jump off any tile
+	 */
 	public synchronized void setJumpOffToNull() {
 		jumpOff = null;
 		jumpedOff = false;
@@ -930,6 +938,10 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	/**
+	 * Add a {@link Condition} to this {@link Individual}, if there is already an existing {@link Condition}
+	 * that is of the same class as the condition trying to be added, stack them by calling {@link Condition#stack(Condition)}
+	 */
 	public synchronized void addCondition(Condition condition) {
 		for (Condition existing : Sets.newHashSet(state.currentConditions)) {
 			if (condition.getClass().equals(existing.getClass())) {
@@ -1002,6 +1014,9 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	/**
+	 * True if currently attacking
+	 */
 	public boolean isAttacking() {
 		return attacking;
 	}
@@ -1036,11 +1051,18 @@ public abstract class Individual extends Equipper {
 	}
 
 
+	/**
+	 * Returns the {@link IndividualIdentifier} of this {@link Individual}
+	 */
 	public IndividualIdentifier getId() {
 		return id;
 	}
 
 
+	/**
+	 * Returns a {@link HashSet} containing client ID's of all clients that have this
+	 * {@link Individual} selected
+	 */
 	public Set<Integer> getSelectedByClient() {
 		return selectedByClient;
 	}

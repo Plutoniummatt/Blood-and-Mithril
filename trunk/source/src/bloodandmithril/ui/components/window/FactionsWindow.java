@@ -246,7 +246,7 @@ public class FactionsWindow extends Window {
 						}
 					},
 					BloodAndMithrilClient.controlledFactions.contains(faction.factionId) ? Color.GREEN : Color.ORANGE,
-					Color.ORANGE,
+					Color.GREEN,
 					Color.WHITE,
 					UIRef.BL
 				),

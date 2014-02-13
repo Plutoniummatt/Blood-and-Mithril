@@ -34,12 +34,6 @@ public class PineChest extends Chest {
 
 
 	@Override
-	public void render() {
-		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
-	}
-
-
-	@Override
 	public ContextMenu getContextMenu() {
 		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 
@@ -115,5 +109,40 @@ public class PineChest extends Chest {
 		} else {
 			throw new RuntimeException("Can not synchronize Pine Chest with " + other.getClass().getSimpleName());
 		}
+	}
+
+
+	@Override
+	protected void renderPlanned() {
+	}
+
+
+	@Override
+	protected void renderScaffolded() {
+		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
+	}
+
+
+	@Override
+	protected void renderPhase1() {
+		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
+	}
+
+
+	@Override
+	protected void renderPhase2() {
+		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
+	}
+
+
+	@Override
+	protected void renderPhase3() {
+		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
+	}
+
+
+	@Override
+	protected void renderComplete() {
+		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
 	}
 }
