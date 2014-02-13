@@ -60,8 +60,8 @@ public abstract class Prop {
 	public abstract ContextMenu getContextMenu();
 
 	public static void setup() {
-		Furnace.furnace = new TextureRegion(GameWorld.gameWorldTexture, 350, 175, 57, 68);
-		PineChest.pineChest = new TextureRegion(GameWorld.gameWorldTexture, 407, 206, 47, 37);
+		Furnace.furnace = new TextureRegion(GameWorld.gameWorldTexture, 451, 175, 49, 76);
+		PineChest.pineChest = new TextureRegion(GameWorld.gameWorldTexture, 407, 206, 44, 35);
 		Carrot.carrot = new TextureRegion(GameWorld.gameWorldTexture, 350, 243, 16, 17);
 	}
 }

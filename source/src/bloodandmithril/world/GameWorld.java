@@ -105,6 +105,7 @@ public class GameWorld {
 
 		mBuffer.begin();
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		topography.renderForeGround(camX, camY);
 		BloodAndMithrilClient.spriteBatch.begin();
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
@@ -351,11 +352,16 @@ public class GameWorld {
 			for (Light light: tempLights) {
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.shadow);
 				Shaders.shadow.setUniformf("resolution", light.fOcclusion.getWidth(), light.fOcclusion.getHeight());
-				Shaders.shadow.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a/20f);
-				Shaders.shadow.setUniformf("intensity", light.intensity * 0.2f);
+				
+				Shaders.shadow.setUniformf("color", light.color.r, light.color.g, light.color.b, 0.4f * light.color.a/20f);
+				Shaders.shadow.setUniformf("intensity", light.intensity);
 				BloodAndMithrilClient.spriteBatch.draw(light.mShadowMap.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size, 0, 0, light.size, 1, false, true);
-				Shaders.shadow.setUniformf("intensity", light.intensity * 0.8f);
+				BloodAndMithrilClient.spriteBatch.flush();
+				
+				Shaders.shadow.setUniformf("color", light.color.r, light.color.g, light.color.b, 0.7f * light.color.a/20f);
+				Shaders.shadow.setUniformf("intensity", light.intensity);
 				BloodAndMithrilClient.spriteBatch.draw(light.fShadowMap.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size, 0, 0, light.size, 1, false, true);
+				BloodAndMithrilClient.spriteBatch.flush();
 			}
 
 			//Render middleground without lighting
@@ -375,7 +381,7 @@ public class GameWorld {
 				light.mShadowMap.getColorBufferTexture().bind(1);
 				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 				Shaders.defaultForeGroundTiles.setUniformi("u_texture2", 1);
-				Shaders.defaultForeGroundTiles.setUniformf("penetration", 0.10f);
+				Shaders.defaultForeGroundTiles.setUniformf("penetration", 0.15f);
 				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a * 0.5f);
 				BloodAndMithrilClient.spriteBatch.draw(light.mOcclusion.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size);
 			}

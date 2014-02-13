@@ -29,7 +29,7 @@ public class PineChest extends Chest {
 	 * Constructor
 	 */
 	public PineChest(float x, float y, boolean grounded, float capacity) {
-		super(x, y, 57, 68, grounded, capacity);
+		super(x, y, 35, 44, grounded, capacity);
 	}
 
 
@@ -113,36 +113,7 @@ public class PineChest extends Chest {
 
 
 	@Override
-	protected void renderPlanned() {
-	}
-
-
-	@Override
-	protected void renderScaffolded() {
-		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
-	}
-
-
-	@Override
-	protected void renderPhase1() {
-		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
-	}
-
-
-	@Override
-	protected void renderPhase2() {
-		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
-	}
-
-
-	@Override
-	protected void renderPhase3() {
-		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
-	}
-
-
-	@Override
-	protected void renderComplete() {
-		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
+	protected void internalRender(float constructionProgress) {
+		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);		
 	}
 }

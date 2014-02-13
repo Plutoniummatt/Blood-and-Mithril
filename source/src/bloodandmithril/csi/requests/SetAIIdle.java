@@ -30,7 +30,12 @@ public class SetAIIdle implements Request {
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(false, new LinkedList<Response>());
-		GameWorld.individuals.get(individualId).getAI().setToAuto(true);
+		Individual individual = GameWorld.individuals.get(individualId);
+		if (individual.getSelectedByClient().isEmpty()) {
+			individual.getAI().setToAuto(true);
+		} else {
+			individual.getAI().setCurrentTask(new Idle());
+		}
 		return responses;
 	}
 
