@@ -112,6 +112,9 @@ public abstract class Individual extends Equipper {
 
 	/** Whether or not this {@link Individual} is attacking */
 	private boolean attacking;
+	
+	/** WHich client number this {@link Individual} is selected by */
+	private Set<Integer> selectedByClient = Sets.newHashSet();
 
 	/**
 	 * Constructor
@@ -132,6 +135,7 @@ public abstract class Individual extends Equipper {
 
 	public synchronized void copyFrom(Individual other) {
 		this.ai = other.ai;
+		this.selectedByClient = other.selectedByClient;
 		this.aiReactionTimer = other.aiReactionTimer;
 		this.aITaskDelay = other.aITaskDelay;
 		this.animationTimer = other.animationTimer;
@@ -241,14 +245,19 @@ public abstract class Individual extends Equipper {
 
 
 	/** Select this {@link Individual} */
-	public void select() {
+	public void select(int id) {
 		ai.setToManual();
+		selectedByClient.add(id);
 	}
 
 
 	/** Deselect this {@link Individual} */
-	public void deselect(boolean clearTask) {
-		ai.setToAuto(clearTask);
+	public void deselect(boolean clearTask, int id) {
+		selectedByClient.remove(id);
+		
+		if (selectedByClient.isEmpty()) {
+			ai.setToAuto(clearTask);
+		}
 	}
 
 
@@ -556,7 +565,7 @@ public abstract class Individual extends Equipper {
 				@Override
 				public void execute() {
 					if (ClientServerInterface.isServer()) {
-						thisIndividual.deselect(false);
+						thisIndividual.deselect(false, 0);
 						GameWorld.selectedIndividuals.remove(thisIndividual);
 						clearCommands();
 					} else {
@@ -577,7 +586,7 @@ public abstract class Individual extends Equipper {
 				public void execute() {
 					if (ClientServerInterface.isServer()) {
 						GameWorld.selectedIndividuals.add(thisIndividual);
-						thisIndividual.select();
+						thisIndividual.select(0);
 					} else {
 						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, true);
 					}
@@ -1029,6 +1038,11 @@ public abstract class Individual extends Equipper {
 
 	public IndividualIdentifier getId() {
 		return id;
+	}
+
+
+	public Set<Integer> getSelectedByClient() {
+		return selectedByClient;
 	}
 
 

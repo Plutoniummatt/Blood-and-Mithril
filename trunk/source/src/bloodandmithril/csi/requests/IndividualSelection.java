@@ -19,12 +19,15 @@ public class IndividualSelection implements Request {
 	/** true if selecting, otherwise false */
 	public final boolean select;
 
+	private int clientId;
+
 	/**
 	 * Constructor
 	 */
-	public IndividualSelection(int individualId, boolean select) {
+	public IndividualSelection(int individualId, boolean select, int clientId) {
 		this.individualId = individualId;
 		this.select = select;
+		this.clientId = clientId;
 	}
 
 
@@ -32,11 +35,11 @@ public class IndividualSelection implements Request {
 	public Responses respond() {
 		Individual individual = GameWorld.individuals.get(individualId);
 		if (select) {
-			individual.select();
+			individual.select(clientId);
 			GameWorld.selectedIndividuals.remove(individual);
 			GameWorld.selectedIndividuals.add(individual);
 		} else {
-			individual.deselect(false);
+			individual.deselect(false, clientId);
 			GameWorld.selectedIndividuals.remove(individual);
 		}
 		Response response = new SelectIndividualResponse(individualId, select);
@@ -78,11 +81,11 @@ public class IndividualSelection implements Request {
 		public void acknowledge() {
 			Individual individual = GameWorld.individuals.get(individualId);
 			if (select) {
-				individual.select();
+				individual.select(0);
 				GameWorld.selectedIndividuals.remove(individual);
 				GameWorld.selectedIndividuals.add(individual);
 			} else {
-				individual.deselect(false);
+				individual.deselect(false, 0);
 				GameWorld.selectedIndividuals.remove(individual);
 			}
 		}

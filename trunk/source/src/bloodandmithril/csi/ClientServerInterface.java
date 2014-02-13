@@ -583,7 +583,7 @@ public class ClientServerInterface {
 		}
 
 		public static synchronized void sendIndividualSelectionRequest(int id, boolean select) {
-			client.sendTCP(new IndividualSelection(id, select));
+			client.sendTCP(new IndividualSelection(id, select, client.getID()));
 			Logger.networkDebug("Sending individual selection request", LogLevel.DEBUG);
 		}
 

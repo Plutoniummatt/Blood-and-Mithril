@@ -315,7 +315,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					for (Individual indi : GameWorld.individuals.values()) {
 						if (indi.isControllable()) {
 							if (ClientServerInterface.isServer()) {
-								indi.deselect(false);
+								indi.deselect(false, 0);
 								GameWorld.selectedIndividuals.remove(indi);
 							} else {
 								ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
@@ -331,7 +331,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				for (Individual indi : GameWorld.individuals.values()) {
 					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId()) {
 						if (ClientServerInterface.isServer()) {
-							indi.deselect(false);
+							indi.deselect(false, 0);
 							GameWorld.selectedIndividuals.remove(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
@@ -342,7 +342,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				if (individualClicked.isControllable()) {
 					if (ClientServerInterface.isServer()) {
 						GameWorld.selectedIndividuals.add(individualClicked);
-						individualClicked.select();
+						individualClicked.select(0);
 					} else {
 						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(individualClicked.getId().getId(), true);
 					}
