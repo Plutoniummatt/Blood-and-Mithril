@@ -375,8 +375,8 @@ public class GameWorld {
 				light.mShadowMap.getColorBufferTexture().bind(1);
 				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 				Shaders.defaultForeGroundTiles.setUniformi("u_texture2", 1);
-				Shaders.defaultForeGroundTiles.setUniformf("penetration", 0.13f);
-				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a);
+				Shaders.defaultForeGroundTiles.setUniformf("penetration", 0.10f);
+				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a * 0.5f);
 				BloodAndMithrilClient.spriteBatch.draw(light.mOcclusion.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size);
 			}
 			
