@@ -11,6 +11,7 @@ import bloodandmithril.ui.components.panel.TextInputFieldPanel;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.JITTask;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -27,11 +28,14 @@ public class TextInputWindow extends Window {
 
 	private final boolean closeUponButtonClick;
 
+	private JITTask task;
+
 	/**
 	 * Constructor
 	 */
 	public TextInputWindow(int x, int y, int length, int height, String title, int minLength, int minHeight, JITTask task, String buttonText, boolean closeUponButtonClick) {
 		super(x, y, length, height, title, true, minLength, minHeight, false);
+		this.task = task;
 		this.closeUponButtonClick = closeUponButtonClick;
 
 		this.confirmButton = new Button(
@@ -85,6 +89,10 @@ public class TextInputWindow extends Window {
 
 	@Override
 	public boolean keyPressed(int keyCode) {
+		if (keyCode == Input.Keys.ENTER) {
+			task.execute(panel.getInputText());
+		}
+		
 		return panel.keyPressed(keyCode);
 	}
 }
