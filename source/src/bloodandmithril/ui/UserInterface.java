@@ -327,14 +327,14 @@ public class UserInterface {
 
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
 						if (ClientServerInterface.isServer()) {
-							indi.select();
+							indi.select(0);
 							GameWorld.selectedIndividuals.add(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), true);
 						}
 					} else if (GameWorld.selectedIndividuals.contains(indi)) {
 						if (ClientServerInterface.isServer()) {
-							indi.deselect(false);
+							indi.deselect(false, 0);
 							GameWorld.selectedIndividuals.remove(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);

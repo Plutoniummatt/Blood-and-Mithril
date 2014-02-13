@@ -32,7 +32,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	protected AITask currentTask = new Idle();
 
 	/** {@link AIMode} */
-	public AIMode mode = AIMode.AUTO;
+	private AIMode mode = AIMode.AUTO;
 
 	/**
 	 * Constructor, starts the AI processing thread if it has not been started.

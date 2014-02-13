@@ -81,6 +81,12 @@ public class BloodAndMithrilServer {
 			@Override
 			public void disconnected (Connection connection) {
 				ClientServerInterface.SendNotification.notifySyncPlayerList();
+				
+				for (Individual indi : GameWorld.individuals.values()) {
+					if (indi.getSelectedByClient().remove(connection.getID())) {
+						indi.deselect(false, connection.getID());
+					}
+				}
 			}
 
 			@Override
