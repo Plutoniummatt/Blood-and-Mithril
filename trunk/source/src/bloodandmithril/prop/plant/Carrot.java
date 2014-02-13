@@ -32,7 +32,7 @@ public class Carrot extends Plant {
 	 * Constructor
 	 */
 	public Carrot(float x, float y) {
-		super(x, y, 16, 17);
+		super(x, y, 12, 17);
 	}
 
 
