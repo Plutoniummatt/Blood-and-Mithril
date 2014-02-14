@@ -110,4 +110,9 @@ public class PineChest extends ConstructionWithContainer {
 	protected void internalRender(float constructionProgress) {
 		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);		
 	}
+
+
+	@Override
+	public void update(float delta) {
+	}
 }

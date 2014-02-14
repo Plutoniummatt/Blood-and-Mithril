@@ -53,4 +53,9 @@ public class FelberryBush extends Plant {
 	public ContextMenu getContextMenu() {
 		return null;
 	}
+
+
+	@Override
+	public void update(float delta) {
+	}
 }

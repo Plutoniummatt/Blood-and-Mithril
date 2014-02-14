@@ -36,7 +36,7 @@ public class Util {
 	/**
 	 * @return - The global instance of random.
 	 */
-	public synchronized static Random getRandom() {
+	public static Random getRandom() {
 		return random;
 	}
 

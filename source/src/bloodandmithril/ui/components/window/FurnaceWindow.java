@@ -17,6 +17,7 @@ import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
 
 import com.badlogic.gdx.graphics.Color;
@@ -30,6 +31,9 @@ public class FurnaceWindow extends TradeWindow {
 
 	/** The {@link Furnace} backing this {@link FurnaceWindow} */
 	private final Furnace furnace;
+	
+	/** The {@link TextInputWindow} that is responsible for changing the furnace temperature */
+	private TextInputWindow temperatureInputWindow;
 
 	/** Button that ignites the furnace */
 	private final Button igniteButton = new Button(
@@ -37,12 +41,126 @@ public class FurnaceWindow extends TradeWindow {
 		defaultFont,
 		0,
 		0,
-		90,
+		60,
 		16,
 		new Task() {
 			@Override
 			public void execute() {
 				ignite();
+			}
+		},
+		Color.GREEN,
+		Color.ORANGE,
+		Color.WHITE,
+		UIRef.BL
+	);
+	
+	/** Button that changes temperature of the furnace */
+	private final Button changeTemperatureButton = new Button(
+		"Change temperature",
+		defaultFont,
+		0,
+		0,
+		180,
+		16,
+		new Task() {
+			@Override
+			public void execute() {
+				temperatureInputWindow = new TextInputWindow(
+					BloodAndMithrilClient.WIDTH / 2 - 125,
+					BloodAndMithrilClient.HEIGHT/2 + 50,
+					250,
+					100,
+					"Change temperature",
+					250,
+					100,
+					new JITTask() {
+						@Override
+						public void execute(Object... args) {
+							try {
+								float newTemp = Float.parseFloat(args[0].toString());
+								if (!furnace.isBurning()) {
+									UserInterface.addLayeredComponent(
+										new MessageWindow(
+											"Furnace is not burning",
+											Color.RED,
+											BloodAndMithrilClient.WIDTH/2 - 150,
+											BloodAndMithrilClient.HEIGHT/2 + 50,
+											300,
+											100,
+											"Furnace",
+											true,
+											300,
+											100
+										)
+									);
+									return;
+								}
+								
+								if (newTemp > Furnace.maxTemp) {
+									UserInterface.addLayeredComponent(
+										new MessageWindow(
+											"Temperature too high",
+											Color.RED,
+											BloodAndMithrilClient.WIDTH/2 - 150,
+											BloodAndMithrilClient.HEIGHT/2 + 50,
+											300,
+											100,
+											"Too hot",
+											true,
+											300,
+											100
+										)
+									);
+									return;
+								}
+
+								if (newTemp < Furnace.minTemp) {
+									UserInterface.addLayeredComponent(
+										new MessageWindow(
+											"Temperature too low",
+											Color.RED,
+											BloodAndMithrilClient.WIDTH/2 - 150,
+											BloodAndMithrilClient.HEIGHT/2 + 50,
+											300,
+											100,
+											"Too cold",
+											true,
+											300,
+											100
+											)
+										);
+									return;
+								}
+
+								furnace.setTemperature(newTemp);
+								furnace.setCombustionDurationRemaining(furnace.getCombustionDurationRemaining() * (Furnace.minTemp / newTemp));
+							} catch (Exception e) {
+								UserInterface.addLayeredComponent(
+									new MessageWindow(
+										"Invalid temperature",
+										Color.RED,
+										BloodAndMithrilClient.WIDTH/2 - 150,
+										BloodAndMithrilClient.HEIGHT/2 + 50,
+										300,
+										100,
+										"Error",
+										true,
+										300,
+										100
+									)
+								);
+							}
+						}
+					},
+					"Change",
+					true,
+					String.format("%.1f", furnace.getTemperature())
+				);
+				
+				UserInterface.addLayeredComponent(
+					temperatureInputWindow
+				);
 			}
 		},
 		Color.GREEN,
@@ -67,16 +185,60 @@ public class FurnaceWindow extends TradeWindow {
 		igniteButton.render(
 			x + width/2,
 			y - height + 65,
-			!furnace.isBurning(),
+			!furnace.isBurning() && active && isProposeeItemsEmpty(),
+			alpha
+		);
+		
+		changeTemperatureButton.render(
+			x + width/2,
+			y - height + 90,
+			furnace.isBurning() && active,
 			alpha
 		);
 	}
 	
 	
 	@Override
+	protected void uponClose() {
+		super.uponClose();
+		
+		if (temperatureInputWindow != null) {
+			temperatureInputWindow.closing = true;
+		}
+	}
+	
+	
+	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		super.internalLeftClick(copy, windowsCopy);
-		igniteButton.click();
+		
+		if (isProposeeItemsEmpty()) {
+			igniteButton.click();
+		}
+		
+		if (furnace.isBurning()) {
+			changeTemperatureButton.click();
+		}
+	}
+	
+	
+	/**
+	 * Renders the listing panels
+	 */
+	@Override
+	protected void renderListingPanels() {
+		buyerPanel.x = x;
+		buyerPanel.y = y;
+		buyerPanel.height = height - 70;
+		buyerPanel.width = width / 2 - 10;
+
+		sellerPanel.x = x + width / 2 + 10;
+		sellerPanel.y = y;
+		sellerPanel.height = height - 70;
+		sellerPanel.width = width / 2 - 10;
+
+		buyerPanel.render();
+		sellerPanel.render();
 	}
 
 
@@ -111,7 +273,7 @@ public class FurnaceWindow extends TradeWindow {
 				return;
 			}
 			
-			furnace.setCombustionDuration(finalDuration);
+			furnace.setCombustionDurationRemaining(finalDuration);
 			furnace.ignite();
 		} else {
 			//TODO send request to ignite furnace
