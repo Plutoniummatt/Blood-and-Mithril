@@ -58,8 +58,8 @@ public class DeathCap extends Item implements Consumable {
 		return new MessageWindow(
 			"The death cap is a toxic fungus, the toxins breakdown once cooked, and is widely used in cuisine across the land.",
 			Color.ORANGE,
-			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY(),
+			BloodAndMithrilClient.WIDTH/2 - 175,
+			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
 			"Death cap",
@@ -76,5 +76,11 @@ public class DeathCap extends Item implements Consumable {
 			return cooked == ((DeathCap)other).cooked;
 		}
 		return false;
+	}
+
+
+	@Override
+	public Item combust(float temperature, float time) {
+		return this;
 	}
 }

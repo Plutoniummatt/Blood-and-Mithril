@@ -43,8 +43,8 @@ public class YellowBrick extends Item {
 		return new MessageWindow(
 			"Yellow colored bricks",
 			Color.ORANGE,
-			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY(),
+			BloodAndMithrilClient.WIDTH/2 - 175,
+			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
 			"Yellow Bricks",
@@ -58,5 +58,11 @@ public class YellowBrick extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof YellowBrick;
+	}
+
+
+	@Override
+	public Item combust(float temperature, float time) {
+		return this;
 	}
 }

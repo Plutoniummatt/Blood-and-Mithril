@@ -40,8 +40,8 @@ public class Currency extends Item {
 		return new MessageWindow(
 			"The most widely used form of currency, can be used for trade as a substitution for items.",
 			Color.ORANGE,
-			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY(),
+			BloodAndMithrilClient.WIDTH/2 - 175,
+			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
 			"Coin",
@@ -55,5 +55,11 @@ public class Currency extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof Currency;
+	}
+
+
+	@Override
+	public Item combust(float temperature, float time) {
+		return this;
 	}
 }

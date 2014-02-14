@@ -48,8 +48,8 @@ public class YellowSand extends Item {
 		return new MessageWindow(
 			"Sand is a naturally occurring granular material composed of finely divided rock and mineral particles.",
 			Color.ORANGE,
-			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY(),
+			BloodAndMithrilClient.WIDTH/2 - 175,
+			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
 			"Sand",
@@ -63,5 +63,11 @@ public class YellowSand extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof YellowSand;
+	}
+
+
+	@Override
+	public Item combust(float temperature, float time) {
+		return this;
 	}
 }

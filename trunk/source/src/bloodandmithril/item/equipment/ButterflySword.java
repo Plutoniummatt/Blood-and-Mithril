@@ -43,8 +43,8 @@ public class ButterflySword extends OneHandedWeapon {
 		return new MessageWindow(
 			"The blade of a butterfly sword is roughly as long as a human forearm, which allows for easy concealment inside loose sleeves or boots, and allows greater maneuverability when spinning and rotating during close-quarters fighting.",
 			Color.ORANGE,
-			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY(),
+			BloodAndMithrilClient.WIDTH/2 - 175,
+			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
 			"Butterfly Sword",
@@ -75,5 +75,11 @@ public class ButterflySword extends OneHandedWeapon {
 	public void affect(Individual victim) {
 		victim.damage(Util.getRandom().nextFloat() * 3f);
 		victim.addCondition(new Bleeding(0.06f));
+	}
+
+
+	@Override
+	public Item combust(float temperature, float time) {
+		return this;
 	}
 }

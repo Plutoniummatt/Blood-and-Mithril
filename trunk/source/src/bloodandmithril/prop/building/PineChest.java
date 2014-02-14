@@ -74,14 +74,9 @@ public class PineChest extends ConstructionWithContainer {
 					@Override
 					public void execute() {
 						if (ClientServerInterface.isServer()) {
-							if (ClientServerInterface.isServer()) {
-								selected.getAI().setCurrentTask(
-									new TradeWith(selected, container)
-								);
-							} else {
-								ConstructionContainer chestContainer = (ConstructionContainer) container;
-								ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
-							}
+							selected.getAI().setCurrentTask(
+								new TradeWith(selected, container)
+							);
 						} else {
 							ConstructionContainer chestContainer = (ConstructionContainer) container;
 							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);

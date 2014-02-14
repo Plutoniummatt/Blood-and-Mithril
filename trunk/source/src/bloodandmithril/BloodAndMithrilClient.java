@@ -21,6 +21,7 @@ import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.container.GlassBottle;
+import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
@@ -392,6 +393,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 				elf.giveItem(new Carrot());
+			}
+			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+				elf.giveItem(new Coal());
 			}
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 				elf.giveItem(new DeathCap(false));

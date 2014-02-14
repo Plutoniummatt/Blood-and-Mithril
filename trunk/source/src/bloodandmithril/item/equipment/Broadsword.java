@@ -43,8 +43,8 @@ public class Broadsword extends OneHandedWeapon {
 		return new MessageWindow(
 			"Broadswords are heavy military swords, contrasting with rapier, the light sword worn with civilian dress. Since the blade of the rapier had become narrow and thrust-oriented, the heavier blades became known as Broadsword",
 			Color.ORANGE,
-			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY(),
+			BloodAndMithrilClient.WIDTH/2 - 175,
+			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
 			"Broadsword",
@@ -91,5 +91,11 @@ public class Broadsword extends OneHandedWeapon {
 	public void affect(Individual victim) {
 		victim.damage(Util.getRandom().nextFloat() * 5f);
 		victim.addCondition(new Bleeding(0.03f));
+	}
+
+
+	@Override
+	public Item combust(float temperature, float time) {
+		return this;
 	}
 }
