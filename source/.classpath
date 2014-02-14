@@ -16,9 +16,9 @@
 	<classpathentry kind="lib" path="libs/base64coder/target/base64coder.jar" sourcepath="libs/base64coder/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
 	<classpathentry kind="lib" path="libs/guava-15.0.jar" sourcepath="libs/guava-15.0-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/kryonet"/>
 	<classpathentry kind="lib" path="libs/kryo-debug-2.20.jar" sourcepath="C:/Users/Matt/Desktop/kryo-2.20-sources.jar"/>
 	<classpathentry kind="lib" path="libs/commons-lang3-3.2.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Kryonet"/>
-	<classpathentry kind="lib" path="/Kryonet/lib/kryo-2.23.1-SNAPSHOT-all-debug.jar"/>
+	<classpathentry kind="lib" path="/kryonet/lib/kryo-2.23.1-SNAPSHOT-all-debug.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
