@@ -41,8 +41,8 @@ public class ChickenLeg extends Item implements Consumable {
 			MessageWindow messageWindow = new MessageWindow(
 				"Elves are vegans, they do not eat meat.",
 				Color.RED,
-				BloodAndMithrilClient.getMouseScreenX(),
-				BloodAndMithrilClient.getMouseScreenY(),
+				BloodAndMithrilClient.WIDTH/2 - 175,
+				BloodAndMithrilClient.HEIGHT/2 + 100,
 				470,
 				120,
 				"Info",
@@ -82,5 +82,11 @@ public class ChickenLeg extends Item implements Consumable {
 			return true;
 		}
 		return false;
+	}
+
+
+	@Override
+	public Item combust(float temperature, float time) {
+		return this;
 	}
 }

@@ -9,10 +9,13 @@ import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
+import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
+import bloodandmithril.ui.components.window.FurnaceWindow;
 import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
@@ -171,22 +174,44 @@ public class TradeWith extends CompositeAITask {
 	/**
 	 * Opens a {@link TradeWindow} with a {@link Prop} that has a {@link Container}
 	 */
-	public static void openTradeWindowWithProp(Individual proposer, Container prop) {
-		UserInterface.addLayeredComponentUnique(
-			new TradeWindow(
-				BloodAndMithrilClient.WIDTH/2 - 450,
-				BloodAndMithrilClient.HEIGHT/2 + 150,
-				900,
-				300,
-				proposer.getId().getSimpleName() + " interacting with pine chest",
-				true,
-				900,
-				300,
-				proposer,
-				prop
-			),
-			proposer.getId().getSimpleName() + " interacting with pine chest"
-		);
+	public static void openTradeWindowWithProp(Individual proposer, Container constructionContainer) {
+		if (constructionContainer instanceof ConstructionContainer) {
+			
+			Prop prop = GameWorld.props.get(((ConstructionContainer) constructionContainer).propId);
+			if (prop instanceof Furnace) {
+				UserInterface.addLayeredComponentUnique(
+					new FurnaceWindow(
+						BloodAndMithrilClient.WIDTH/2 - 450,
+						BloodAndMithrilClient.HEIGHT/2 + 150,
+						900,
+						300,
+						proposer.getId().getSimpleName() + " interacting with container",
+						true,
+						900,
+						300,
+						proposer,
+						(Furnace) prop
+					),
+					proposer.getId().getSimpleName() + " interacting with container"
+				);
+			} else {
+				UserInterface.addLayeredComponentUnique(
+					new TradeWindow(
+						BloodAndMithrilClient.WIDTH/2 - 450,
+						BloodAndMithrilClient.HEIGHT/2 + 150,
+						900,
+						300,
+						proposer.getId().getSimpleName() + " interacting with container",
+						true,
+						900,
+						300,
+						proposer,
+						constructionContainer
+					),
+					proposer.getId().getSimpleName() + " interacting with container"
+				);
+			}
+		}
 	}
 
 

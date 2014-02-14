@@ -2,6 +2,10 @@ package bloodandmithril.prop.building;
 
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.ai.task.Trading;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -10,6 +14,7 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
+import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -72,8 +77,10 @@ public class Furnace extends ConstructionWithContainer {
 				Color.GREEN,
 				Color.GRAY,
 				null
-			),
-		new ContextMenuItem(
+			)
+		);
+		
+		ContextMenuItem changeTempItem = new ContextMenuItem(
 			"Change temperature",
 			new Task() {
 				@Override
@@ -93,7 +100,7 @@ public class Furnace extends ConstructionWithContainer {
 									try {
 										float newTemp = Float.parseFloat(args[0].toString());
 
-										if (newTemp > maxTemp) {
+										if (burning && newTemp > maxTemp) {
 											UserInterface.addLayeredComponent(
 												new MessageWindow(
 													"Temperature too high",
@@ -111,7 +118,7 @@ public class Furnace extends ConstructionWithContainer {
 											return;
 										}
 
-										if (newTemp < minTemp) {
+										if (burning && newTemp < minTemp) {
 											UserInterface.addLayeredComponent(
 												new MessageWindow(
 													"Temperature too low",
@@ -160,9 +167,37 @@ public class Furnace extends ConstructionWithContainer {
 			Color.GREEN,
 			Color.GRAY,
 			null
-			)
 		);
-
+		
+		if (GameWorld.selectedIndividuals.size() == 1 && !(GameWorld.selectedIndividuals.iterator().next().getAI().getCurrentTask() instanceof Trading)) {
+			final Individual selected = GameWorld.selectedIndividuals.iterator().next();
+			ContextMenuItem openChestMenuItem = new ContextMenuItem(
+				"Open furnace",
+				new Task() {
+					@Override
+					public void execute() {
+						if (ClientServerInterface.isServer()) {
+							selected.getAI().setCurrentTask(
+								new TradeWith(selected, container)
+							);
+						} else {
+							ConstructionContainer chestContainer = (ConstructionContainer) container;
+							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
+						}
+					}
+				},
+				Color.WHITE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			);
+			menu.addMenuItem(openChestMenuItem);
+		}
+		
+		if (!burning) {
+			menu.addMenuItem(changeTempItem);
+		}
+		
 		return menu;
 	}
 
@@ -183,6 +218,7 @@ public class Furnace extends ConstructionWithContainer {
 	 */
 	public void ignite() {
 		burning = true;
+		temperature = 1400f;
 	}
 
 

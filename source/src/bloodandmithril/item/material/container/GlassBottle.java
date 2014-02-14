@@ -1,6 +1,7 @@
 package bloodandmithril.item.material.container;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.item.Item;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -46,8 +47,8 @@ public class GlassBottle extends Bottle {
 			return new MessageWindow(
 				containedLiquid.newInstance().getDescription(),
 				Color.WHITE,
-				BloodAndMithrilClient.getMouseScreenX(),
-				BloodAndMithrilClient.getMouseScreenY(),
+				BloodAndMithrilClient.WIDTH/2 - 175,
+				BloodAndMithrilClient.HEIGHT/2 + 100,
 				300,
 				200,
 				containedLiquid.getSimpleName(),
@@ -64,5 +65,11 @@ public class GlassBottle extends Bottle {
 	@Override
 	public Bottle clone() {
 		return new GlassBottle(containedLiquid, amount);
+	}
+
+
+	@Override
+	public Item combust(float temperature, float time) {
+		return this;
 	}
 }

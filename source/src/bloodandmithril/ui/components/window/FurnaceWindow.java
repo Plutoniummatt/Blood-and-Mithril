@@ -2,15 +2,21 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.util.Fonts.defaultFont;
 
+import java.util.Deque;
+import java.util.List;
 import java.util.Map.Entry;
 
+import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.Fuel;
 import bloodandmithril.prop.building.Furnace;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
+import bloodandmithril.ui.components.Component;
+import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Task;
 
 import com.badlogic.gdx.graphics.Color;
@@ -31,7 +37,7 @@ public class FurnaceWindow extends TradeWindow {
 		defaultFont,
 		0,
 		0,
-		130,
+		90,
 		16,
 		new Task() {
 			@Override
@@ -60,10 +66,17 @@ public class FurnaceWindow extends TradeWindow {
 
 		igniteButton.render(
 			x + width/2,
-			y - height + 20,
-			furnace.isBurning(),
+			y - height + 65,
+			!furnace.isBurning(),
 			alpha
 		);
+	}
+	
+	
+	@Override
+	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		super.internalLeftClick(copy, windowsCopy);
+		igniteButton.click();
 	}
 
 
@@ -79,6 +92,25 @@ public class FurnaceWindow extends TradeWindow {
 					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue() * (Furnace.minTemp / furnace.getTemperature());
 				}
 			}
+			
+			if (finalDuration == 0f) {
+				UserInterface.addLayeredComponent(
+					new MessageWindow(
+						"No fuel added to furnace",
+						Color.RED,
+						BloodAndMithrilClient.WIDTH/2 - 175,
+						BloodAndMithrilClient.HEIGHT/2 + 100,
+						350,
+						200,
+						"Furnace",
+						true,
+						100,
+						100
+					)
+				);
+				return;
+			}
+			
 			furnace.setCombustionDuration(finalDuration);
 			furnace.ignite();
 		} else {

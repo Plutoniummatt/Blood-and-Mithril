@@ -50,8 +50,8 @@ public class Carrot extends Item implements Consumable {
 		return new MessageWindow(
 			description,
 			Color.ORANGE,
-			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY(),
+			BloodAndMithrilClient.WIDTH/2 - 175,
+			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
 			"Carrot",
@@ -96,8 +96,8 @@ public class Carrot extends Item implements Consumable {
 			return new MessageWindow(
 				"Seed of a carrot",
 				Color.ORANGE,
-				BloodAndMithrilClient.getMouseScreenX(),
-				BloodAndMithrilClient.getMouseScreenY(),
+				BloodAndMithrilClient.WIDTH/2 - 175,
+				BloodAndMithrilClient.HEIGHT/2 + 100,
 				350,
 				200,
 				"Carrot seed",
@@ -111,5 +111,16 @@ public class Carrot extends Item implements Consumable {
 		public boolean sameAs(Item other) {
 			return other instanceof CarrotSeed;
 		}
+
+		@Override
+		public Item combust(float temperature, float time) {
+			return this;
+		}
+	}
+
+
+	@Override
+	public Item combust(float temperature, float time) {
+		return this;
 	}
 }
