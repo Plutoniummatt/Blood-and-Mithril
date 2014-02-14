@@ -91,7 +91,7 @@ public abstract class Component implements Serializable {
 		// Stem and generate stemmed component
 		Component stemmedComponent = internalStem(with, custom);
 
-		// Clear and regenerate interfaces again, strictly speaking this isn't necessary, it is merely more convenient for devs
+		// Clear and regenerate interfaces again, strictly speaking this isn't necessary, it is merely more convenient for development
 		availableInterfaces.clear();
 		generateInterfaces();
 

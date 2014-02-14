@@ -17,9 +17,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * A {@link Chest} made from pine
+ * A {@link ConstructionWithContainer} made from pine
  */
-public class PineChest extends Chest {
+public class PineChest extends ConstructionWithContainer {
 
 	/** {@link TextureRegion} of the {@link PineChest} */
 	public static TextureRegion pineChest;
@@ -79,11 +79,11 @@ public class PineChest extends Chest {
 									new TradeWith(selected, container)
 								);
 							} else {
-								ChestContainer chestContainer = (ChestContainer) container;
+								ConstructionContainer chestContainer = (ConstructionContainer) container;
 								ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
 							}
 						} else {
-							ChestContainer chestContainer = (ChestContainer) container;
+							ConstructionContainer chestContainer = (ConstructionContainer) container;
 							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
 						}
 					}

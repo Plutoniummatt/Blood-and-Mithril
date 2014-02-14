@@ -63,7 +63,7 @@ public abstract class Construction extends Prop {
 	/**
 	 * See {@link #constructionStage}
 	 */
-	public float getConstructionStage() {
+	public float getConstructionProgress() {
 		return constructionProgress;
 	}
 
@@ -71,7 +71,7 @@ public abstract class Construction extends Prop {
 	/**
 	 * See {@link #constructionStage}
 	 */
-	public void setConstructionStage(float constructionProgress) {
+	public void setConstructionProgress(float constructionProgress) {
 		this.constructionProgress = constructionProgress;
 	}
 	

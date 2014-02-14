@@ -32,8 +32,9 @@ public class TextInputFieldPanel extends Panel {
 	/**
 	 * Constructor
 	 */
-	public TextInputFieldPanel(Component parent) {
+	public TextInputFieldPanel(Component parent, String defaultText) {
 		super(parent);
+		this.inputText = defaultText;
 	}
 
 

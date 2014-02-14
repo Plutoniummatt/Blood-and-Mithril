@@ -28,12 +28,12 @@ public class TextInputWindow extends Window {
 
 	private final boolean closeUponButtonClick;
 
-	private JITTask task;
+	private final JITTask task;
 
 	/**
 	 * Constructor
 	 */
-	public TextInputWindow(int x, int y, int length, int height, String title, int minLength, int minHeight, JITTask task, String buttonText, boolean closeUponButtonClick) {
+	public TextInputWindow(int x, int y, int length, int height, String title, int minLength, int minHeight, JITTask task, String buttonText, boolean closeUponButtonClick, String defaultText) {
 		super(x, y, length, height, title, true, minLength, minHeight, false);
 		this.task = task;
 		this.closeUponButtonClick = closeUponButtonClick;
@@ -52,7 +52,7 @@ public class TextInputWindow extends Window {
 			UIRef.BL
 		);
 
-		this.panel = new TextInputFieldPanel(this);
+		this.panel = new TextInputFieldPanel(this, defaultText);
 	}
 
 
@@ -92,7 +92,7 @@ public class TextInputWindow extends Window {
 		if (keyCode == Input.Keys.ENTER) {
 			task.execute(panel.getInputText());
 		}
-		
+
 		return panel.keyPressed(keyCode);
 	}
 }
