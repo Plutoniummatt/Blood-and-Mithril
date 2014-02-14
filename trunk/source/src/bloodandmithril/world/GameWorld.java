@@ -149,6 +149,10 @@ public class GameWorld {
 		for (Individual indi : individuals.values()) {
 			indi.update(d);
 		}
+		
+		for (Prop prop : props.values()) {
+			prop.update(d);
+		}
 
 		// Topography.saveAndFlushUnneededChunks((int) BloodAndMithrilClient.cam.position.x, (int) BloodAndMithrilClient.cam.position.y);
 		Topography.executeBackLog();
@@ -400,7 +404,7 @@ public class GameWorld {
 				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 				Shaders.defaultForeGroundTiles.setUniformi("u_texture2", 1);
 				Shaders.defaultForeGroundTiles.setUniformf("penetration", 0.10f);
-				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a * 0.8f);
+				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a * 0.8f * light.intensity);
 				BloodAndMithrilClient.spriteBatch.draw(light.mOcclusion.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size);
 			}
 
@@ -422,7 +426,7 @@ public class GameWorld {
 				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 				Shaders.defaultForeGroundTiles.setUniformi("u_texture2", 1);
 				Shaders.defaultForeGroundTiles.setUniformf("penetration", 0.07f);
-				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a);
+				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a * light.intensity);
 				BloodAndMithrilClient.spriteBatch.draw(light.fOcclusion.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size);
 			}
 

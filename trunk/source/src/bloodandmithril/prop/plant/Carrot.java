@@ -123,4 +123,9 @@ public class Carrot extends Plant {
 	public boolean destroyUponHarvest() {
 		return true;
 	}
+
+
+	@Override
+	public void update(float delta) {
+	}
 }

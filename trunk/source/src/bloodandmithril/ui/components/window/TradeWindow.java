@@ -36,8 +36,8 @@ import com.google.common.collect.Maps;
 public class TradeWindow extends Window {
 
 	/** Panels of involved traders */
-	private ScrollableListingPanel<Item> buyerPanel;
-	private ScrollableListingPanel<Item> sellerPanel;
+	protected ScrollableListingPanel<Item> buyerPanel;
+	protected ScrollableListingPanel<Item> sellerPanel;
 
 	/** Listings of items to display */
 	private final HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade = Maps.newHashMap();
@@ -86,7 +86,7 @@ public class TradeWindow extends Window {
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
 
 		if (proposee instanceof ConstructionContainer) {
-			tradeButton.text = "Transfer";
+			tradeButton.text = "Transfer Items";
 		}
 
 		createPanels();
@@ -337,18 +337,7 @@ public class TradeWindow extends Window {
 			}
 		}
 
-		buyerPanel.x = x;
-		buyerPanel.y = y;
-		buyerPanel.height = height - 50;
-		buyerPanel.width = width / 2 - 10;
-
-		sellerPanel.x = x + width / 2 + 10;
-		sellerPanel.y = y;
-		sellerPanel.height = height - 50;
-		sellerPanel.width = width / 2 - 10;
-
-		buyerPanel.render();
-		sellerPanel.render();
+		renderListingPanels();
 
 		if (rejected) {
 			if (tradeRejectionTimer > 0f) {
@@ -375,6 +364,30 @@ public class TradeWindow extends Window {
 			isTradeButtonClickable,
 			alpha
 		);
+	}
+	
+	
+	protected boolean isProposeeItemsEmpty() {
+		return (proposeeItemsToTrade.isEmpty() && !proposeeItemsNotToTrade.isEmpty());
+	}
+
+
+	/**
+	 * Renders the listing panels
+	 */
+	protected void renderListingPanels() {
+		buyerPanel.x = x;
+		buyerPanel.y = y;
+		buyerPanel.height = height - 50;
+		buyerPanel.width = width / 2 - 10;
+
+		sellerPanel.x = x + width / 2 + 10;
+		sellerPanel.y = y;
+		sellerPanel.height = height - 50;
+		sellerPanel.width = width / 2 - 10;
+
+		buyerPanel.render();
+		sellerPanel.render();
 	}
 
 

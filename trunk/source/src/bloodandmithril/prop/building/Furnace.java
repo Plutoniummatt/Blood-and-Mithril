@@ -11,10 +11,10 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.TextInputWindow;
-import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.Util;
 import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.GameWorld.Light;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -27,12 +27,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Furnace extends ConstructionWithContainer {
 
 	/** {@link TextureRegion} of the {@link Furnace} */
-	public static TextureRegion furnace;
+	public static TextureRegion furnace, furnaceBurning;
 
 	public static final float minTemp = 1400f, maxTemp = 2500f;
 
 	/** The duration which this furnace will combust, in seconds */
-	private float combustionDuration;
+	private float combustionDurationRemaining;
+	
+	/** The {@link Light} that will be rendered if this {@link Furnace} is lit */
+	private Light bottomLight; 
 
 	/** Temperature of the {@link Furnace} */
 	private float temperature;
@@ -80,95 +83,6 @@ public class Furnace extends ConstructionWithContainer {
 			)
 		);
 		
-		ContextMenuItem changeTempItem = new ContextMenuItem(
-			"Change temperature",
-			new Task() {
-				@Override
-				public void execute() {
-					UserInterface.addLayeredComponent(
-						new TextInputWindow(
-							BloodAndMithrilClient.WIDTH / 2 - 125,
-							BloodAndMithrilClient.HEIGHT/2 + 50,
-							250,
-							100,
-							"Change temperature",
-							250,
-							100,
-							new JITTask() {
-								@Override
-								public void execute(Object... args) {
-									try {
-										float newTemp = Float.parseFloat(args[0].toString());
-
-										if (burning && newTemp > maxTemp) {
-											UserInterface.addLayeredComponent(
-												new MessageWindow(
-													"Temperature too high",
-													Color.RED,
-													BloodAndMithrilClient.WIDTH/2 - 150,
-													BloodAndMithrilClient.HEIGHT/2 + 50,
-													300,
-													100,
-													"Too hot",
-													true,
-													300,
-													100
-												)
-											);
-											return;
-										}
-
-										if (burning && newTemp < minTemp) {
-											UserInterface.addLayeredComponent(
-												new MessageWindow(
-													"Temperature too low",
-													Color.RED,
-													BloodAndMithrilClient.WIDTH/2 - 150,
-													BloodAndMithrilClient.HEIGHT/2 + 50,
-													300,
-													100,
-													"Too cold",
-													true,
-													300,
-													100
-													)
-												);
-											return;
-										}
-
-										temperature = newTemp;
-										combustionDuration = combustionDuration * (minTemp / newTemp);
-									} catch (Exception e) {
-										UserInterface.addLayeredComponent(
-											new MessageWindow(
-												"Invalid temperature",
-												Color.RED,
-												BloodAndMithrilClient.WIDTH/2 - 150,
-												BloodAndMithrilClient.HEIGHT/2 + 50,
-												300,
-												100,
-												"Error",
-												true,
-												300,
-												100
-											)
-										);
-									}
-								}
-							},
-							"Change",
-							true,
-							String.format("%.1f", temperature)
-						)
-					);
-				}
-			},
-			Color.WHITE,
-			Color.GREEN,
-			Color.GRAY,
-			null
-		);
-		
 		if (GameWorld.selectedIndividuals.size() == 1 && !(GameWorld.selectedIndividuals.iterator().next().getAI().getCurrentTask() instanceof Trading)) {
 			final Individual selected = GameWorld.selectedIndividuals.iterator().next();
 			ContextMenuItem openChestMenuItem = new ContextMenuItem(
@@ -194,10 +108,6 @@ public class Furnace extends ConstructionWithContainer {
 			menu.addMenuItem(openChestMenuItem);
 		}
 		
-		if (!burning) {
-			menu.addMenuItem(changeTempItem);
-		}
-		
 		return menu;
 	}
 
@@ -205,7 +115,7 @@ public class Furnace extends ConstructionWithContainer {
 	@Override
 	public void synchronize(Prop other) {
 		if (other instanceof Furnace) {
-			this.temperature = ((Furnace) other).temperature;
+			this.setTemperature(((Furnace) other).getTemperature());
 			this.container.synchronize(((Furnace)other).container);
 		} else {
 			throw new RuntimeException("Can not synchronize Furnace with " + other.getClass().getSimpleName());
@@ -218,15 +128,28 @@ public class Furnace extends ConstructionWithContainer {
 	 */
 	public void ignite() {
 		burning = true;
-		temperature = 1400f;
+		setTemperature(1400f);
+		
+		bottomLight = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f);
+		
+		GameWorld.lights.add(bottomLight);
 	}
 
 
 	@Override
 	protected void internalRender(float constructionProgress) {
-		BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
+		if (burning) {
+			float intensity = 0.75f + 0.25f * Util.getRandom().nextFloat();
+			bottomLight.intensity = intensity;
+		}
+		
+		if (burning) {
+			BloodAndMithrilClient.spriteBatch.draw(furnaceBurning, position.x - width / 2, position.y);
+		} else {
+			BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
+		}
 	}
-
+	
 
 	/**
 	 * Returns the {@link #temperature} of this furnace.
@@ -236,17 +159,34 @@ public class Furnace extends ConstructionWithContainer {
 	}
 
 
-	public float getCombustionDuration() {
-		return combustionDuration;
+	public float getCombustionDurationRemaining() {
+		return combustionDurationRemaining;
 	}
 
 
-	public void setCombustionDuration(float combustionDuration) {
-		this.combustionDuration = combustionDuration;
+	public void setCombustionDurationRemaining(float combustionDurationRemaining) {
+		synchronized (this) {
+			this.combustionDurationRemaining = combustionDurationRemaining;
+		}
 	}
 
 
 	public boolean isBurning() {
 		return burning;
+	}
+
+
+	@Override
+	public void update(float delta) {
+		if (burning) {
+			synchronized (this) {
+				this.combustionDurationRemaining -= delta;
+			}
+		}
+	}
+
+
+	public void setTemperature(float temperature) {
+		this.temperature = temperature;
 	}
 }
