@@ -118,7 +118,7 @@ import bloodandmithril.item.misc.Currency;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.Chest.ChestContainer;
+import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.prop.plant.FelberryBush;
 import bloodandmithril.prop.plant.Plant;
@@ -379,7 +379,7 @@ public class ClientServerInterface {
 		kryo.register(ChangeFactionControlPassword.class);
 		kryo.register(ChangeNickName.class);
 		kryo.register(ChangeNickNameResponse.class);
-		kryo.register(ChestContainer.class);
+		kryo.register(ConstructionContainer.class);
 		kryo.register(ChickenLeg.class);
 		kryo.register(ChunkData.class);
 		kryo.register(Class.class);

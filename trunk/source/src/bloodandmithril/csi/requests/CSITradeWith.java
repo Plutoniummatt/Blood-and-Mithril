@@ -10,7 +10,7 @@ import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.Chest;
+import bloodandmithril.prop.building.ConstructionWithContainer;
 import bloodandmithril.world.GameWorld;
 
 /**
@@ -45,8 +45,8 @@ public class CSITradeWith implements Request {
 			proposee = GameWorld.individuals.get(proposeeId);
 		} else {
 			Prop prop = GameWorld.props.get(proposeeId);
-			if (prop instanceof Chest) {
-				proposee = ((Chest) prop).container;
+			if (prop instanceof ConstructionWithContainer) {
+				proposee = ((ConstructionWithContainer) prop).container;
 			}
 		}
 

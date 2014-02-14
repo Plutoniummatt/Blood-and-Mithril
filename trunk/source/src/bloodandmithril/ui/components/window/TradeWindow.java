@@ -13,7 +13,7 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeService;
-import bloodandmithril.prop.building.Chest.ChestContainer;
+import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -47,8 +47,8 @@ public class TradeWindow extends Window {
 	private final HashMap<ListingMenuItem<Item>, Integer> proposeeItemsNotToTrade = Maps.newHashMap();
 
 	/** Traders */
-	private Container proposer;
-	private final Container proposee;
+	protected Container proposer;
+	protected final Container proposee;
 
 	/** Used to process trade rejections */
 	private boolean rejected = false;
@@ -76,8 +76,8 @@ public class TradeWindow extends Window {
 	/**
 	 * Constructor
 	 */
-	public TradeWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, Container proposer, Container proposee) {
-		super(x, y, length, height, title, active, minLength, minHeight, minimizable);
+	public TradeWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Container proposer, Container proposee) {
+		super(x, y, length, height, title, active, minLength, minHeight, false);
 
 		this.proposer = proposer;
 		this.proposee = proposee;
@@ -85,7 +85,7 @@ public class TradeWindow extends Window {
 		populate(proposerItemsToTrade, proposerItemsNotToTrade, proposer.getInventory());
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
 
-		if (proposee instanceof ChestContainer) {
+		if (proposee instanceof ConstructionContainer) {
 			tradeButton.text = "Transfer";
 		}
 
@@ -100,7 +100,7 @@ public class TradeWindow extends Window {
 
 		boolean proposalAccepted = false;
 
-		if (proposee instanceof ChestContainer) {
+		if (proposee instanceof ConstructionContainer) {
 			proposalAccepted = true;
 		}
 
@@ -330,8 +330,8 @@ public class TradeWindow extends Window {
 				if (((Individual) proposee).getState().position.cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
 					closing = true;
 				}
-			} else if (proposee instanceof ChestContainer) {
-				if (((ChestContainer) proposee).getPositionOfChest().cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
+			} else if (proposee instanceof ConstructionContainer) {
+				if (((ConstructionContainer) proposee).getPositionOfChest().cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
 					closing = true;
 				}
 			}
@@ -356,7 +356,7 @@ public class TradeWindow extends Window {
 				tradeButton.text = "Trade Rejected";
 				tradeButton.setIdleColor(Color.RED);
 			} else {
-				if (proposee instanceof ChestContainer) {
+				if (proposee instanceof ConstructionContainer) {
 					tradeButton.text = "Transfer";
 				} else {
 					tradeButton.text = "Propose Trade";

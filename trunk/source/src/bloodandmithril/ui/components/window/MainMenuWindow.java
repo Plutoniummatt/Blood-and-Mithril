@@ -174,7 +174,8 @@ public class MainMenuWindow extends Window {
 								}
 							},
 							"Connect",
-							false
+							false,
+							""
 						)
 					);
 					UserInterface.buttons.remove("connect");

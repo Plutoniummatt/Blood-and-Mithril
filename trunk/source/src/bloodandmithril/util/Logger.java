@@ -7,11 +7,19 @@ package bloodandmithril.util;
  */
 public class Logger {
 
+	// Log levels
+	private static final LogLevel loaderDebug = LogLevel.WARN;
+	private static final LogLevel generalDebug = LogLevel.WARN;
+	private static final LogLevel generationDebug = LogLevel.WARN;
+	private static final LogLevel networkDebug = LogLevel.WARN;
+	private static final LogLevel saverDebug = LogLevel.WARN;
+	private static final LogLevel aiDebug = LogLevel.WARN;
+
 	/**
 	 * Prints a debug message
 	 */
 	public static void loaderDebug(String message, LogLevel level) {
-		if (System.getProperty("loaderDebug") != null && LogLevel.valueOf(System.getProperty("loaderDebug")).value >= level.value) {
+		if (loaderDebug.value >= level.value) {
 			System.out.println(message);
 		}
 	}
@@ -21,7 +29,7 @@ public class Logger {
 	 * Prints a debug message
 	 */
 	public static void generalDebug(String message, LogLevel level, Exception... es) {
-		if (System.getProperty("generalDebug") != null && LogLevel.valueOf(System.getProperty("generalDebug")).value >= level.value) {
+		if (generalDebug.value >= level.value) {
 			System.out.println(message);
 			for (Exception e : es) {
 				e.printStackTrace();
@@ -34,7 +42,7 @@ public class Logger {
 	 * Prints a debug message
 	 */
 	public static void generationDebug(String message, LogLevel level) {
-		if (System.getProperty("generationDebug") != null && LogLevel.valueOf(System.getProperty("generationDebug")).value >= level.value) {
+		if (generationDebug.value >= level.value) {
 			System.out.println(message);
 		}
 	}
@@ -44,7 +52,7 @@ public class Logger {
 	 * Prints a debug message
 	 */
 	public static void networkDebug(String message, LogLevel level) {
-		if (System.getProperty("generationDebug") != null && LogLevel.valueOf(System.getProperty("networkDebug")).value >= level.value) {
+		if (networkDebug.value >= level.value) {
 			System.out.println(message);
 		} else if (level == LogLevel.OVERRIDE) {
 			System.out.println(message);
@@ -56,7 +64,7 @@ public class Logger {
 	 * Prints a debug message
 	 */
 	public static void saverDebug(String message, LogLevel level) {
-		if (System.getProperty("saverDebug") != null && LogLevel.valueOf(System.getProperty("generalDebug")).value >= level.value) {
+		if (saverDebug.value >= level.value) {
 			System.out.println(message);
 		}
 	}
@@ -66,7 +74,7 @@ public class Logger {
 	 * Prints an AI debug message
 	 */
 	public static void aiDebug(String message, LogLevel level) {
-		if (System.getProperty("aiDebug") != null && LogLevel.valueOf(System.getProperty("aiDebug")).value >= level.value) {
+		if (aiDebug.value >= level.value) {
 			System.out.println(message);
 		}
 	}

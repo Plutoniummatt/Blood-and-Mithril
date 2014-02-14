@@ -8,7 +8,7 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.Chest.ChestContainer;
+import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.TradeWindow;
@@ -36,8 +36,8 @@ public class TradeWith extends CompositeAITask {
 
 		Vector2 location = null;
 
-		if (proposee instanceof ChestContainer) {
-			location = ((ChestContainer) proposee).getPositionOfChest();
+		if (proposee instanceof ConstructionContainer) {
+			location = ((ConstructionContainer) proposee).getPositionOfChest();
 		} else if (proposee instanceof Individual) {
 			location = ((Individual) proposee).getState().position;
 		}
@@ -67,8 +67,8 @@ public class TradeWith extends CompositeAITask {
 
 		Vector2 location = null;
 
-		if (proposee instanceof ChestContainer) {
-			location = ((ChestContainer) proposee).getPositionOfChest();
+		if (proposee instanceof ConstructionContainer) {
+			location = ((ConstructionContainer) proposee).getPositionOfChest();
 		} else if (proposee instanceof Individual) {
 			location = ((Individual) proposee).getState().position;
 		}
@@ -149,20 +149,20 @@ public class TradeWith extends CompositeAITask {
 				proposer.getAI().setCurrentTask(new Trading(proposer.getId(), ((Individual) proposee).getId().getId(), TradeEntity.INDIVIDUAL));
 				proposeeCasted.clearCommands();
 				proposeeCasted.getAI().setCurrentTask(new Trading(proposeeCasted.getId(), proposer.getId().getId(), TradeEntity.INDIVIDUAL));
-			} else if (proposee instanceof ChestContainer) {
+			} else if (proposee instanceof ConstructionContainer) {
 
-				if (proposer.getDistanceFrom(((ChestContainer)proposee).getPositionOfChest()) > 64f) {
+				if (proposer.getDistanceFrom(((ConstructionContainer)proposee).getPositionOfChest()) > 64f) {
 					return;
 				}
 
 				if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
-					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.getId().getId(), TradeEntity.PROP, ((ChestContainer) proposee).propId, connectionId);
+					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.getId().getId(), TradeEntity.PROP, ((ConstructionContainer) proposee).propId, connectionId);
 				} else if (ClientServerInterface.isClient()) {
 					openTradeWindowWithProp(proposer, proposee);
 				}
 
 				proposer.clearCommands();
-				proposer.getAI().setCurrentTask(new Trading(proposer.getId(), ((ChestContainer) proposee).propId, TradeEntity.PROP));
+				proposer.getAI().setCurrentTask(new Trading(proposer.getId(), ((ConstructionContainer) proposee).propId, TradeEntity.PROP));
 			}
 		}
 	}
@@ -182,7 +182,6 @@ public class TradeWith extends CompositeAITask {
 				true,
 				900,
 				300,
-				true,
 				proposer,
 				prop
 			),
@@ -214,7 +213,6 @@ public class TradeWith extends CompositeAITask {
 				true,
 				900,
 				300,
-				true,
 				proposer,
 				proposeeCasted
 			),

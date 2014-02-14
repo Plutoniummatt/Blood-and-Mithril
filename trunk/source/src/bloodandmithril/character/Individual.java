@@ -657,7 +657,8 @@ public abstract class Individual extends Equipper {
 									}
 								},
 								"Confirm",
-								true
+								true,
+								thisIndividual.id.nickName
 							)
 						);
 					}

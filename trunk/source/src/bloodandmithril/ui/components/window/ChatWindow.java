@@ -65,7 +65,7 @@ public class ChatWindow extends Window {
 			}
 		};
 
-		textInputPanel = new TextInputFieldPanel(this);
+		textInputPanel = new TextInputFieldPanel(this, "");
 
 		ClientServerInterface.SendRequest.sendRequestConnectedPlayerNamesRequest();
 	}

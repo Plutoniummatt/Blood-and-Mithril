@@ -59,7 +59,6 @@ import com.google.common.collect.Sets;
  * To-do before ALPHA release
  *
  * <b><p> Building and Construction (Building construction and decontruction framework)                  </b></p>
- * <b><p> Multiple saved games????????? (Huge refactors of current statics various everywhere)           </b></p>
  * <b><p> At least 5 types of NPC                                                                        </b></p>
  * <b><p> Main menu screen                                                                               </b></p>
  *
@@ -433,7 +432,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				GameWorld.props.put(pineChest.id, pineChest);
 			}
 		}
-		
+
 		if (keycode == Input.Keys.M) {
 			Individual individual = GameWorld.individuals.get(1);
 			if (individual != null) {

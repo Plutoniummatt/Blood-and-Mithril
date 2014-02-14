@@ -13,24 +13,24 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
-public abstract class Chest extends Construction {
+public abstract class ConstructionWithContainer extends Construction {
 
-	/** The inventory {@link Container} that backs this {@link Chest} */
+	/** The inventory {@link Container} that backs this {@link ConstructionWithContainer} */
 	public Container container;
 
 	/**
 	 * Constructor
 	 */
-	protected Chest(float x, float y, int width, int height, boolean grounded, float capacity) {
+	protected ConstructionWithContainer(float x, float y, int width, int height, boolean grounded, float capacity) {
 		super(x, y, width, height, grounded);
-		this.container = new ChestContainer(capacity, id);
+		this.container = new ConstructionContainer(capacity, id);
 	}
 
 
 	/**
-	 * The {@link Container} that drives the inventory of this {@link Chest}
+	 * The {@link Container} that drives the inventory of this {@link ConstructionWithContainer}
 	 */
-	public static class ChestContainer extends Container {
+	public static class ConstructionContainer extends Container {
 		private static final long serialVersionUID = 3061765937846818271L;
 
 		/** Id of the prop this chest belongs to */
@@ -39,7 +39,7 @@ public abstract class Chest extends Construction {
 		/**
 		 * Constructor
 		 */
-		protected ChestContainer(float inventoryMassCapacity, int propId) {
+		protected ConstructionContainer(float inventoryMassCapacity, int propId) {
 			super(inventoryMassCapacity, false);
 			this.propId = propId;
 		}

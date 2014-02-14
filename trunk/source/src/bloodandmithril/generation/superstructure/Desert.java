@@ -186,7 +186,6 @@ public class Desert extends SuperStructure {
 					break;
 				}
 			}
-
 			oododo = false;
 		}
 

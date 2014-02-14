@@ -12,7 +12,7 @@ import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.Chest;
+import bloodandmithril.prop.building.ConstructionWithContainer;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
@@ -65,7 +65,7 @@ public class TransferItems implements Request {
 
 		case PROP:
 			Prop prop = GameWorld.props.get(proposerId);
-			proposee = ((Chest) prop).container;
+			proposee = ((ConstructionWithContainer) prop).container;
 			response.responses.add(new SynchronizePropRequest.SynchronizePropResponse(prop));
 			break;
 

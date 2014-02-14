@@ -9,7 +9,7 @@ import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.Chest;
+import bloodandmithril.prop.building.ConstructionWithContainer;
 import bloodandmithril.world.GameWorld;
 
 /**
@@ -99,8 +99,8 @@ public class OpenTradeWindow implements Request {
 				TradeWith.openTradeWindowWithIndividual(proposer, proposee);
 			} else {
 				Prop proposee = GameWorld.props.get(proposeeId);
-				if (proposee instanceof Chest) {
-					TradeWith.openTradeWindowWithProp(proposer, ((Chest) proposee).container);
+				if (proposee instanceof ConstructionWithContainer) {
+					TradeWith.openTradeWindowWithProp(proposer, ((ConstructionWithContainer) proposee).container);
 				}
 			}
 		}

@@ -315,7 +315,8 @@ public class InventoryWindow extends Window {
 									}
 								},
 								"Drink",
-								true
+								true,
+								""
 							)
 						);
 					}

@@ -167,7 +167,8 @@ public class FactionsWindow extends Window {
 										}
 									},
 									"Control",
-									true
+									true,
+									""
 								)
 							);
 						}
@@ -204,7 +205,8 @@ public class FactionsWindow extends Window {
 									}
 								},
 								"Change",
-								true
+								true,
+								faction.controlPassword
 							)
 						);
 						refreshWindow();
