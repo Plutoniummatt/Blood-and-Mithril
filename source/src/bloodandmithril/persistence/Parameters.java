@@ -6,6 +6,7 @@ import java.util.Random;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Epoch;
+import bloodandmithril.world.GameWorld.Light;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -20,6 +21,7 @@ public class Parameters implements Serializable {
 	private int structureKeyCounter = 0;
 	private int initialSeed = 0;
 	private int individualIdCounter = 0;
+	private int lightCounter = 0;
 	private int propIdCounter = 0;
 
 	private Vector2 camera;
@@ -50,6 +52,15 @@ public class Parameters implements Serializable {
 	public synchronized int getNextIndividualId() {
 		individualIdCounter++;
 		return individualIdCounter;
+	}
+	
+	
+	/**
+	 * Returns the next unique identifier to use for {@link Light}
+	 */
+	public synchronized int getNextLightId() {
+		lightCounter++;
+		return lightCounter;
 	}
 
 

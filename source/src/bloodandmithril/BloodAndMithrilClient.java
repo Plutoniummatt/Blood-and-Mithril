@@ -27,6 +27,7 @@ import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
 import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.building.PineChest;
@@ -352,14 +353,19 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-			GameWorld.lights.add(
-				new Light(
-					750,
-					getMouseWorldX(), getMouseWorldY(),
-					Util.randomOneOf(Color.WHITE, Color.CYAN, Color.GREEN, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.YELLOW),
-					1f
-				)
+			
+			Light light = new Light(
+				750,
+				getMouseWorldX(), getMouseWorldY(),
+				Util.randomOneOf(Color.WHITE, Color.CYAN, Color.GREEN, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.YELLOW),
+				1f
 			);
+			
+			if (ClientServerInterface.isServer()) {
+				GameWorld.lights.put(ParameterPersistenceService.getParameters().getNextLightId(), light);
+			} else {
+				ClientServerInterface.SendRequest.sendAddLightRequest(light);
+			}
 		}
 	}
 

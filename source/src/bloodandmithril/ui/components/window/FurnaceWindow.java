@@ -3,6 +3,7 @@ package bloodandmithril.ui.components.window;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -17,8 +18,10 @@ import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.Util;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -134,10 +137,10 @@ public class FurnaceWindow extends TradeWindow {
 								}
 
 								if (ClientServerInterface.isServer()) {
+									furnace.setCombustionDurationRemaining(furnace.getCombustionDurationRemaining() * (furnace.getTemperature() / newTemp));
 									furnace.setTemperature(newTemp);
-									furnace.setCombustionDurationRemaining(furnace.getCombustionDurationRemaining() * (Furnace.minTemp / newTemp));
 								} else {
-									//TODO send request to change furnace temperature
+									ClientServerInterface.SendRequest.sendChangeFurnaceTemperatureRequest(furnace.id, newTemp);
 								}
 								
 							} catch (Exception e) {
@@ -185,6 +188,24 @@ public class FurnaceWindow extends TradeWindow {
 
 	@Override
 	protected void internalWindowRender() {
+		if (furnace.isBurning()) {
+			for (HashMap<ListingMenuItem<Item>, Integer> hashMap : proposeePanel.getListing()) {
+				for (Entry<ListingMenuItem<Item>, Integer> entry : hashMap.entrySet()) {
+					if (entry.getKey().t instanceof Fuel) {
+						entry.getKey().button.setDownColor(Util.Colors.DARK_RED);
+						entry.getKey().button.setOverColor(Util.Colors.DARK_RED);
+						entry.getKey().button.setIdleColor(Util.Colors.DARK_RED);
+						entry.getKey().button.setTask(new Task() {
+							@Override
+							public void execute() {
+								// Do nothing
+							}
+						});
+					}
+				}
+			}
+		}
+		
 		super.internalWindowRender();
 
 		igniteButton.render(
@@ -232,18 +253,18 @@ public class FurnaceWindow extends TradeWindow {
 	 */
 	@Override
 	protected void renderListingPanels() {
-		buyerPanel.x = x;
-		buyerPanel.y = y;
-		buyerPanel.height = height - 70;
-		buyerPanel.width = width / 2 - 10;
+		proposerPanel.x = x;
+		proposerPanel.y = y;
+		proposerPanel.height = height - 70;
+		proposerPanel.width = width / 2 - 10;
 
-		sellerPanel.x = x + width / 2 + 10;
-		sellerPanel.y = y;
-		sellerPanel.height = height - 70;
-		sellerPanel.width = width / 2 - 10;
+		proposeePanel.x = x + width / 2 + 10;
+		proposeePanel.y = y;
+		proposeePanel.height = height - 70;
+		proposeePanel.width = width / 2 - 10;
 
-		buyerPanel.render();
-		sellerPanel.render();
+		proposerPanel.render();
+		proposeePanel.render();
 	}
 
 
@@ -256,7 +277,7 @@ public class FurnaceWindow extends TradeWindow {
 			for (Entry<Item, Integer> entry : proposee.getInventory().entrySet()) {
 				Item item = entry.getKey();
 				if (item instanceof Fuel) {
-					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue() * (Furnace.minTemp / furnace.getTemperature());
+					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue() * (Furnace.minTemp / Furnace.minTemp);
 				}
 			}
 			
@@ -281,7 +302,7 @@ public class FurnaceWindow extends TradeWindow {
 			furnace.setCombustionDurationRemaining(finalDuration);
 			furnace.ignite();
 		} else {
-			//TODO send request to ignite furnace
+			ClientServerInterface.SendRequest.sendIgniteFurnaceRequest(furnace.id);
 		}
 	}
 }

@@ -20,6 +20,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
@@ -94,10 +95,10 @@ public class IndividualStatusWindow extends Window {
 			time = time + 1f/60f;
 		}
 
-		Color activeTitle = new Color(0.6f, 0f, 0.4f, 1f * alpha);
-		Color inactiveTitle = new Color(0.45f, 0f, 0.32f, 0.6f * alpha);
-		Color activeWhite = new Color(1f, 1f, 1f, 1f * alpha);
-		Color inactiveWhite = new Color(1f, 1f, 1f, 0.6f * alpha);
+		Color activeTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, alpha);
+		Color inactiveTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE_INACTIVE, alpha);
+		Color activeWhite = Colors.modulateAlpha(Color.WHITE, alpha);
+		Color inactiveWhite = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, 0.6f * alpha);
 
 		defaultFont.setColor(active ? activeTitle : inactiveTitle);
 		if (!drawLine("Vital signs: ", 25)) {
@@ -177,7 +178,7 @@ public class IndividualStatusWindow extends Window {
 
 
 	private void renderConditionsPanel() {
-		refreshLisitng(individual, conditionsPanel.getListings());
+		refreshLisitng(individual, conditionsPanel.getListing());
 
 		conditionsPanel.x = x;
 		conditionsPanel.y = y - 100;
@@ -274,7 +275,7 @@ public class IndividualStatusWindow extends Window {
 									);
 								}
 							},
-							new Color(0.8f, 0.8f, 0.8f, 1f),
+							Color.WHITE,
 							Color.GREEN,
 							Color.WHITE,
 							null

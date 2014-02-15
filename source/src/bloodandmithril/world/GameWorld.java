@@ -2,12 +2,12 @@ package bloodandmithril.world;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.faction.Faction;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -41,7 +41,7 @@ public class GameWorld {
 	public static Topography topography;
 
 	/** Lights */
-	public static List<Light> lights = new ArrayList<Light>();
+	public static ConcurrentHashMap<Integer, Light> lights = new ConcurrentHashMap<>();
 
 	/** {@link Individual} that are selected for manual control */
 	public static HashSet<Individual> selectedIndividuals = new HashSet<Individual>();
@@ -151,7 +151,9 @@ public class GameWorld {
 		}
 		
 		for (Prop prop : props.values()) {
-			prop.update(d);
+			if (ClientServerInterface.isServer()) {
+				prop.update(d);
+			}
 		}
 
 		// Topography.saveAndFlushUnneededChunks((int) BloodAndMithrilClient.cam.position.x, (int) BloodAndMithrilClient.cam.position.y);
@@ -192,10 +194,17 @@ public class GameWorld {
 			this.y = y;
 			this.color = color;
 			this.intensity = intensity;
-			fShadowMap = new FrameBuffer(Format.RGBA8888, size, 1, true);
-			mShadowMap = new FrameBuffer(Format.RGBA8888, size, 1, true);
-			fOcclusion = new FrameBuffer(Format.RGBA8888, size, size, true);
-			mOcclusion = new FrameBuffer(Format.RGBA8888, size, size, true);
+		}
+		
+		
+		@Override
+		public boolean equals(Object other) {
+			if (other instanceof Light) {
+				Light otherLight = (Light) other;
+				return this.x == otherLight.x && this.y == otherLight.y && this.color.equals(otherLight.color) && this.intensity == otherLight.intensity;
+			}
+			
+			return false;
 		}
 	}
 
@@ -260,7 +269,7 @@ public class GameWorld {
 			ArrayList<Light> tempLights = new ArrayList<GameWorld.Light>();
 
 			//Do not bother with lights that are off screen
-			for (Light light : lights) {
+			for (Light light : lights.values()) {
 				if (light.x - light.size < camX + BloodAndMithrilClient.WIDTH/2 &&
 					light.x + light.size > camX - BloodAndMithrilClient.WIDTH/2 &&
 					light.y - light.size < camY + BloodAndMithrilClient.HEIGHT/2 &&
@@ -270,6 +279,13 @@ public class GameWorld {
 			}
 
 			for (Light light : tempLights) {
+				
+				if (light.fOcclusion == null) {
+					light.fShadowMap = new FrameBuffer(Format.RGBA8888, light.size, 1, true);
+					light.mShadowMap = new FrameBuffer(Format.RGBA8888, light.size, 1, true);
+					light.fOcclusion = new FrameBuffer(Format.RGBA8888, light.size, light.size, true);
+					light.mOcclusion = new FrameBuffer(Format.RGBA8888, light.size, light.size, true);
+				}
 
 				//Draw foreground to occlusion map
 				light.fOcclusion.begin();

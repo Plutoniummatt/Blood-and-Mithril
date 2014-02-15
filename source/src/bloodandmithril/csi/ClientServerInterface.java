@@ -59,10 +59,12 @@ import bloodandmithril.csi.requests.ChangeFactionControlPassword;
 import bloodandmithril.csi.requests.ChangeFactionControlPassword.RefreshFactionWindow;
 import bloodandmithril.csi.requests.ChangeNickName;
 import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
+import bloodandmithril.csi.requests.ChangeFurnaceTemperature;
 import bloodandmithril.csi.requests.ClientConnected;
 import bloodandmithril.csi.requests.ConsumeItem;
 import bloodandmithril.csi.requests.DestroyPropNotification;
 import bloodandmithril.csi.requests.DestroyTile;
+import bloodandmithril.csi.requests.IgniteFurnaceRequest;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.DrinkLiquid;
 import bloodandmithril.csi.requests.EquipOrUnequipItem;
@@ -81,6 +83,9 @@ import bloodandmithril.csi.requests.SendChatMessage.Message;
 import bloodandmithril.csi.requests.SendChatMessage.SendChatMessageResponse;
 import bloodandmithril.csi.requests.SendHarvestRequest;
 import bloodandmithril.csi.requests.SetAIIdle;
+import bloodandmithril.csi.requests.AddLightRequest;
+import bloodandmithril.csi.requests.AddLightRequest.RemoveLightNotification;
+import bloodandmithril.csi.requests.AddLightRequest.SyncLightResponse;
 import bloodandmithril.csi.requests.SynchronizeFaction;
 import bloodandmithril.csi.requests.SynchronizeFaction.SynchronizeFactionResponse;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
@@ -106,6 +111,7 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.container.Bottle;
 import bloodandmithril.item.material.container.GlassBottle;
+import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Liquid.Empty;
 import bloodandmithril.item.material.liquid.Liquid.Water;
@@ -133,6 +139,7 @@ import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.GameWorld.Depth;
+import bloodandmithril.world.GameWorld.Light;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
@@ -153,6 +160,7 @@ import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
 import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -287,7 +295,7 @@ public class ClientServerInterface {
 	}
 
 
-	private static synchronized void sendNotification(final int connectionId, final boolean tcp, final boolean executeInSingleThread, final Response... responses) {
+	public static synchronized void sendNotification(final int connectionId, final boolean tcp, final boolean executeInSingleThread, final Response... responses) {
 		serverThread.execute(
 			new Runnable() {
 				@Override
@@ -348,6 +356,14 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(RemoveLightNotification.class);
+		kryo.register(Coal.class);
+		kryo.register(IgniteFurnaceRequest.class);
+		kryo.register(ChangeFurnaceTemperature.class);
+		kryo.register(Color.class);
+		kryo.register(Light.class);
+		kryo.register(AddLightRequest.class);
+		kryo.register(SyncLightResponse.class);
 		kryo.register(Furnace.class);
 		kryo.register(Depth.class);
 		kryo.register(FelberryBush.class);
@@ -508,6 +524,17 @@ public class ClientServerInterface {
 			client.sendTCP(new GenerateChunk(x, y));
 			Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
 		}
+		
+		
+		public static synchronized void sendChangeFurnaceTemperatureRequest(int furnaceId, float temperature) {
+			client.sendTCP(new ChangeFurnaceTemperature(furnaceId, temperature));
+			Logger.networkDebug("Sending change furnace temperature request", LogLevel.DEBUG);
+		}
+		
+		public static synchronized void sendAddLightRequest(Light light) {
+			client.sendTCP(new AddLightRequest(light.size, light.x, light.y, light.color, light.intensity));
+			Logger.networkDebug("Sending add light request", LogLevel.DEBUG);
+		}
 
 		public static synchronized void sendHarvestRequest(int individualId, int propId) {
 			client.sendTCP(new SendHarvestRequest(individualId, propId));
@@ -537,6 +564,11 @@ public class ClientServerInterface {
 		public static synchronized void sendRequestConnectedPlayerNamesRequest() {
 			client.sendTCP(new RequestClientList());
 			Logger.networkDebug("Sending client name list request", LogLevel.DEBUG);
+		}
+		
+		public static synchronized void sendIgniteFurnaceRequest(int furnaceId) {
+			client.sendTCP(new IgniteFurnaceRequest(furnaceId));
+			Logger.networkDebug("Sending ignite furnace request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendSynchronizeIndividualRequest(int id) {
@@ -660,6 +692,16 @@ public class ClientServerInterface {
 				new DestroyPropNotification(propId)
 			);
 		}
+		
+		
+		public static synchronized void notifyRemoveLight(int lightId) {
+			sendNotification(
+				-1,
+				true,
+				true,
+				new AddLightRequest.RemoveLightNotification(lightId)
+			);
+		}
 
 
 		public static synchronized void notifySyncPlayerList() {
@@ -758,6 +800,16 @@ public class ClientServerInterface {
 				false,
 				false,
 				new SynchronizeIndividualResponse(id, System.currentTimeMillis())
+			);
+		}
+
+
+		public static void notifySyncLight(int id, Light light) {
+			sendNotification(
+				-1,
+				false,
+				false,
+				new AddLightRequest.SyncLightResponse(id, light.size, light.x, light.y, light.color, light.intensity)
 			);
 		}
 	}

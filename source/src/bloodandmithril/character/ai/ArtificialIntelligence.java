@@ -153,7 +153,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 				true
 			);
 		} else if (currentTask instanceof Idle) {
-			setCurrentTask(new Wait(host, Util.getRandom().nextFloat() * 5f + 3f));
+			setCurrentTask(new Wait(host, Util.getRandom().nextFloat() * 3f + 1f));
 		}
 	}
 

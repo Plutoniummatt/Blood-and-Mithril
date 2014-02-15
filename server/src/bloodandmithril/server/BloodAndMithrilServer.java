@@ -1,6 +1,7 @@
 package bloodandmithril.server;
 
 import java.io.IOException;
+import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
@@ -21,6 +22,7 @@ import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.container.GlassBottle;
+import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
@@ -35,6 +37,7 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.GameWorld.Light;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -155,6 +158,10 @@ public class BloodAndMithrilServer {
 
 							for (Faction faction : GameWorld.factions.values()) {
 								ClientServerInterface.SendNotification.notifySyncFaction(faction);
+							}
+							
+							for (Entry<Integer, Light> entry : GameWorld.lights.entrySet()) {
+								ClientServerInterface.SendNotification.notifySyncLight(entry.getKey(), entry.getValue());
 							}
 						}
 
@@ -304,6 +311,9 @@ public class BloodAndMithrilServer {
 
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 					elf.giveItem(new Carrot());
+				}
+				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+					elf.giveItem(new Coal());
 				}
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 					elf.giveItem(new DeathCap(false));

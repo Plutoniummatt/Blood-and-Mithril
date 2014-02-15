@@ -28,6 +28,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -128,12 +129,12 @@ public class InventoryWindow extends Window {
 	 */
 	private void renderWeightIndicationText() {
 		Color activeColor = host.getCurrentLoad() < host.getMaxCapacity() ?
-				new Color(0.7f*host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, alpha) :
-				new Color(1f, 0f, 0f, alpha);
+				new Color(0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, alpha) :
+				Colors.modulateAlpha(Color.RED, alpha);
 
 		Color inactiveColor = host.getCurrentLoad() < host.getMaxCapacity() ?
 				new Color(0.7f*host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, 0.6f * alpha) :
-				new Color(1f, 0f, 0f, 0.6f * alpha);
+					Colors.modulateAlpha(Color.RED, 0.6f * alpha);
 
 		defaultFont.setColor(active ? activeColor : inactiveColor);
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate("Weight: " + String.format("%.2f", host.getCurrentLoad()) + "/" + String.format("%.2f", host.getMaxCapacity())), x + 6, y - height + 20);
@@ -146,7 +147,7 @@ public class InventoryWindow extends Window {
 	private void renderSeparator() {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
-		Color color = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.4f * alpha);
+		Color color = active ? Colors.modulateAlpha(borderColor, alpha) : Colors.modulateAlpha(borderColor, 0.4f * alpha);
 		shapeRenderer.filledRect(x + width - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
 		shapeRenderer.end();
 	}
@@ -206,7 +207,7 @@ public class InventoryWindow extends Window {
 						menuToAddUnequipped.y = BloodAndMithrilClient.getMouseScreenY();
 					}
 				},
-				eq ? new Color(0f, 0.6f, 0f, 1f) : new Color(0.8f, 0.8f, 0.8f, 1f),
+				eq ? Colors.UI_GRAY : Color.WHITE,
 				Color.GREEN,
 				Color.WHITE,
 				UIRef.BL
@@ -227,7 +228,7 @@ public class InventoryWindow extends Window {
 						menuToAddEquipped.y = BloodAndMithrilClient.getMouseScreenY();
 					}
 				},
-				eq ? new Color(0f, 0.6f, 0f, 1f) : new Color(0.8f, 0.8f, 0.8f, 1f),
+				eq ? Colors.UI_GRAY : Color.WHITE,
 				Color.GREEN,
 				Color.WHITE,
 				UIRef.BL
@@ -269,7 +270,7 @@ public class InventoryWindow extends Window {
 						refresh();
 					}
 				},
-				new Color(0.8f, 0.8f, 0.8f, 1f),
+				Color.WHITE,
 				Color.GREEN,
 				Color.WHITE,
 				null
@@ -321,7 +322,7 @@ public class InventoryWindow extends Window {
 						);
 					}
 				},
-				new Color(0.8f, 0.8f, 0.8f, 1f),
+				Colors.UI_GRAY,
 				Color.GREEN,
 				Color.WHITE,
 				null
@@ -352,7 +353,7 @@ public class InventoryWindow extends Window {
 						refresh();
 					}
 				},
-				new Color(0.8f, 0.8f, 0.8f, 1f),
+				Colors.UI_GRAY,
 				Color.GREEN,
 				Color.WHITE,
 				null
@@ -371,7 +372,7 @@ public class InventoryWindow extends Window {
 						refresh();
 					}
 				},
-				new Color(0.8f, 0.8f, 0.8f, 1f),
+				Colors.UI_GRAY,
 				Color.GREEN,
 				Color.WHITE,
 				null
@@ -419,7 +420,7 @@ public class InventoryWindow extends Window {
 						UserInterface.addLayeredComponent(item.getInfoWindow());
 					}
 				},
-				new Color(0.8f, 0.8f, 0.8f, 1f),
+				Colors.UI_GRAY,
 				Color.GREEN,
 				Color.WHITE,
 				null
