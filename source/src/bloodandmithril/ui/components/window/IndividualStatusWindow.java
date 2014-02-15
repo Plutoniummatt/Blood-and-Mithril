@@ -111,6 +111,7 @@ public class IndividualStatusWindow extends Window {
 
 		if (percentageHealth == 0f) {
 			vitals = "Dead";
+			identifying = false;
 		} else if (individual.isControllable()) {
 			setVitalsString(category);
 		} else {

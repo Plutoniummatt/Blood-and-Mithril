@@ -133,8 +133,13 @@ public class FurnaceWindow extends TradeWindow {
 									return;
 								}
 
-								furnace.setTemperature(newTemp);
-								furnace.setCombustionDurationRemaining(furnace.getCombustionDurationRemaining() * (Furnace.minTemp / newTemp));
+								if (ClientServerInterface.isServer()) {
+									furnace.setTemperature(newTemp);
+									furnace.setCombustionDurationRemaining(furnace.getCombustionDurationRemaining() * (Furnace.minTemp / newTemp));
+								} else {
+									//TODO send request to change furnace temperature
+								}
+								
 							} catch (Exception e) {
 								UserInterface.addLayeredComponent(
 									new MessageWindow(

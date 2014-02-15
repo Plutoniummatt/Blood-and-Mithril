@@ -28,6 +28,7 @@ import bloodandmithril.item.misc.Currency;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -248,6 +249,14 @@ public class BloodAndMithrilServer {
 						individual.getState().position.y, true, 100f
 					);
 					GameWorld.props.put(pineChest.id, pineChest);
+				}
+			}
+			
+			if (keycode == Input.Keys.M) {
+				Individual individual = GameWorld.individuals.get(1);
+				if (individual != null) {
+					Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
+					GameWorld.props.put(furnace.id, furnace);
 				}
 			}
 
