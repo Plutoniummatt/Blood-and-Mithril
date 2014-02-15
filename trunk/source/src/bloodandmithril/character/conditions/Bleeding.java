@@ -50,7 +50,7 @@ public class Bleeding extends Condition {
 
 	@Override
 	public String getHelpText() {
-		return null;
+		return "Bleeding, technically known as hemorrhaging, is the loss of blood escaping from the circulatory system.  Vital signs become weaker over time if bleeding is not stopped.";
 	}
 
 

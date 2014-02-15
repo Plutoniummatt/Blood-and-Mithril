@@ -119,6 +119,7 @@ import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
+import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.prop.plant.FelberryBush;
 import bloodandmithril.prop.plant.Plant;
@@ -347,6 +348,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Furnace.class);
 		kryo.register(Depth.class);
 		kryo.register(FelberryBush.class);
 		kryo.register(Felberries.class);
