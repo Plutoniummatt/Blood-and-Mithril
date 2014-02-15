@@ -10,6 +10,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -44,10 +45,10 @@ public class IndividualInfoWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		Color activeTitle = new Color(0.6f, 0f, 0.4f, 1f * alpha);
-		Color inactiveTitle = new Color(0.45f, 0f, 0.32f, 0.6f * alpha);
-		Color activeWhite = new Color(1f, 1f, 1f, 1f * alpha);
-		Color inactiveWhite = new Color(1f, 1f, 1f, 0.6f * alpha);
+		Color activeTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, alpha);
+		Color inactiveTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE_INACTIVE, alpha);
+		Color activeWhite = Colors.modulateAlpha(Color.WHITE, alpha);
+		Color inactiveWhite = Colors.modulateAlpha(Color.WHITE, 0.6f * alpha);
 
 		defaultFont.setColor(active ? activeTitle : inactiveTitle);
 		if (!drawLine("Name: ", 25)) {

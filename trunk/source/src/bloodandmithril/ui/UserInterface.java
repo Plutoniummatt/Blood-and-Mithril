@@ -54,6 +54,13 @@ import com.google.common.collect.Lists;
  */
 public class UserInterface {
 
+	private static final Color DARK_SCREEN_COLOR = new Color(0f, 0f, 0f, 0.8f);
+	private static final Color EXISTING_INTERFACE_COLOR = new Color(1f, 0.2f, 0f, 0.5f);
+	private static final Color AVAILABLE_INTERFACE_COLOR = new Color(0.2f, 1f, 0f, 0.5f);
+	private static final Color TILE_OVERLAY_COLOR = new Color(0f, 1f, 1f, 0.3f);
+	private static final Color COMPONENT_BOUNDARY_COLOR = new Color(1f, 1f, 1f, 0.5f);
+	private static final Color COMPONENT_FILL_COLOR = new Color(0f, 1f, 0f, 0.15f);
+
 	/** UI camera */
 	public static OrthographicCamera UICamera;
 
@@ -197,7 +204,7 @@ public class UserInterface {
 		for (Structure struct : StructureMap.structures.values()) {
 			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.components)) {
 				shapeRenderer.begin(ShapeType.FilledRectangle);
-				shapeRenderer.setColor(new Color(0f, 1f, 0f, 0.15f));
+				shapeRenderer.setColor(COMPONENT_FILL_COLOR);
 				shapeRenderer.filledRect(
 					BloodAndMithrilClient.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
 					BloodAndMithrilClient.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
@@ -207,7 +214,7 @@ public class UserInterface {
 				shapeRenderer.end();
 
 				shapeRenderer.begin(ShapeType.Rectangle);
-				shapeRenderer.setColor(new Color(1f, 1f, 1f, 0.5f));
+				shapeRenderer.setColor(COMPONENT_BOUNDARY_COLOR);
 				shapeRenderer.rect(
 					BloodAndMithrilClient.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
 					BloodAndMithrilClient.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
@@ -231,7 +238,7 @@ public class UserInterface {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
-		shapeRenderer.setColor(new Color(0f, 1f, 1f, 0.3f));
+		shapeRenderer.setColor(TILE_OVERLAY_COLOR);
 		shapeRenderer.filledRect(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE);
 		shapeRenderer.end();
 		Gdx.gl.glDisable(GL10.GL_BLEND);
@@ -239,20 +246,17 @@ public class UserInterface {
 
 
 	private static void renderComponentInterfaces() {
-		Color availableColor = new Color(0.2f, 1f, 0f, 0.5f);
-		Color existingColor = new Color(1f, 0.2f, 0f, 0.5f);
-
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : StructureMap.structures.values()) {
 			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.components)) {
 				if (renderAvailableInterfaces) {
 					for (Interface in : Lists.newArrayList(comp.availableInterfaces)) {
-						in.render(availableColor);
+						in.render(AVAILABLE_INTERFACE_COLOR);
 					}
 				} else {
 					for (Interface in : Lists.newArrayList(comp.existingInterfaces)) {
-						in.render(existingColor);
+						in.render(EXISTING_INTERFACE_COLOR);
 					}
 				}
 			}
@@ -268,7 +272,7 @@ public class UserInterface {
 			Gdx.gl.glEnable(GL10.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.8f));
+			shapeRenderer.setColor(DARK_SCREEN_COLOR);
 			shapeRenderer.filledRect(0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
 			shapeRenderer.end();
 			savingButton.render(true, 1f);
@@ -285,7 +289,7 @@ public class UserInterface {
 			Gdx.gl.glEnable(GL10.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
-			shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.5f));
+			shapeRenderer.setColor(DARK_SCREEN_COLOR);
 			shapeRenderer.filledRect(0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
 			shapeRenderer.end();
 

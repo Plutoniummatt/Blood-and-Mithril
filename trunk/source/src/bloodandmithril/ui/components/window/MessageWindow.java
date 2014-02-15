@@ -13,6 +13,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -77,7 +78,7 @@ public class MessageWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		defaultFont.setColor(active ? new Color(messageColor.r, messageColor.g, messageColor.b, alpha) : new Color(messageColor.r, messageColor.g, messageColor.b, 0.6f * alpha));
+		defaultFont.setColor(active ? Colors.modulateAlpha(messageColor, alpha) : Colors.modulateAlpha(messageColor, 0.6f * alpha));
 
 		String messageToDisplay = Util.fitToWindow(message, width, (height - 75) / 25);
 

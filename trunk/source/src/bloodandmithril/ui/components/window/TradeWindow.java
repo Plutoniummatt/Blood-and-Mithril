@@ -22,6 +22,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.GameWorld;
 
 import com.badlogic.gdx.graphics.Color;
@@ -36,8 +37,8 @@ import com.google.common.collect.Maps;
 public class TradeWindow extends Window {
 
 	/** Panels of involved traders */
-	protected ScrollableListingPanel<Item> buyerPanel;
-	protected ScrollableListingPanel<Item> sellerPanel;
+	protected ScrollableListingPanel<Item> proposerPanel;
+	protected ScrollableListingPanel<Item> proposeePanel;
 
 	/** Listings of items to display */
 	private final HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade = Maps.newHashMap();
@@ -170,8 +171,8 @@ public class TradeWindow extends Window {
 		populate(proposerItemsToTrade, proposerItemsNotToTrade, proposer.getInventory());
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
 
-		buyerPanel.refresh(Lists.newArrayList(proposerItemsToTrade, proposerItemsNotToTrade));
-		sellerPanel.refresh(Lists.newArrayList(proposeeItemsToTrade, proposeeItemsNotToTrade));
+		proposerPanel.refresh(Lists.newArrayList(proposerItemsToTrade, proposerItemsNotToTrade));
+		proposeePanel.refresh(Lists.newArrayList(proposeeItemsToTrade, proposeeItemsNotToTrade));
 	}
 
 
@@ -184,7 +185,7 @@ public class TradeWindow extends Window {
 
 
 	private void createPanels() {
-		buyerPanel = new ScrollableListingPanel<Item>(this) {
+		proposerPanel = new ScrollableListingPanel<Item>(this) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -208,7 +209,7 @@ public class TradeWindow extends Window {
 			}
 		};
 
-		sellerPanel = new ScrollableListingPanel<Item>(this) {
+		proposeePanel = new ScrollableListingPanel<Item>(this) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -255,7 +256,7 @@ public class TradeWindow extends Window {
 							changeList(entry.getKey(), trading, notTrading, false);
 						}
 					},
-					new Color(0.8f, 0.8f, 0.8f, 1f),
+					Colors.UI_GRAY,
 					Color.GREEN,
 					Color.WHITE,
 					UIRef.BL
@@ -287,7 +288,7 @@ public class TradeWindow extends Window {
 						changeList(key, transferFrom, transferTo, !toTrade);
 					}
 				},
-				toTrade ? new Color(0.8f, 0.8f, 0.8f, 1f) : new Color(0.8f, 0.6f, 0.0f, 1f),
+				toTrade ? Colors.UI_GRAY : Colors.UI_DARK_ORANGE,
 				toTrade ? Color.GREEN : Color.ORANGE,
 				Color.WHITE,
 				UIRef.BL
@@ -376,33 +377,33 @@ public class TradeWindow extends Window {
 	 * Renders the listing panels
 	 */
 	protected void renderListingPanels() {
-		buyerPanel.x = x;
-		buyerPanel.y = y;
-		buyerPanel.height = height - 50;
-		buyerPanel.width = width / 2 - 10;
+		proposerPanel.x = x;
+		proposerPanel.y = y;
+		proposerPanel.height = height - 50;
+		proposerPanel.width = width / 2 - 10;
 
-		sellerPanel.x = x + width / 2 + 10;
-		sellerPanel.y = y;
-		sellerPanel.height = height - 50;
-		sellerPanel.width = width / 2 - 10;
+		proposeePanel.x = x + width / 2 + 10;
+		proposeePanel.y = y;
+		proposeePanel.height = height - 50;
+		proposeePanel.width = width / 2 - 10;
 
-		buyerPanel.render();
-		sellerPanel.render();
+		proposerPanel.render();
+		proposeePanel.render();
 	}
 
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		buyerPanel.leftClick(copy, windowsCopy);
-		sellerPanel.leftClick(copy, windowsCopy);
+		proposerPanel.leftClick(copy, windowsCopy);
+		proposeePanel.leftClick(copy, windowsCopy);
 		tradeButton.click();
 	}
 
 
 	@Override
 	public void leftClickReleased() {
-		buyerPanel.leftClickReleased();
-		sellerPanel.leftClickReleased();
+		proposerPanel.leftClickReleased();
+		proposeePanel.leftClickReleased();
 	}
 
 

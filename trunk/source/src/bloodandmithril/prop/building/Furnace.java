@@ -6,6 +6,10 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.csi.requests.AddLightRequest;
+import bloodandmithril.csi.requests.SynchronizePropRequest;
+import bloodandmithril.csi.requests.TransferItems;
+import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -35,7 +39,10 @@ public class Furnace extends ConstructionWithContainer {
 	private float combustionDurationRemaining;
 	
 	/** The {@link Light} that will be rendered if this {@link Furnace} is lit */
-	private Light bottomLight; 
+	private Light light; 
+	
+	/** The ID of the {@link Light} that will be rendered if this {@link Furnace} is lit */
+	private int lightId;
 
 	/** Temperature of the {@link Furnace} */
 	private float temperature;
@@ -117,6 +124,10 @@ public class Furnace extends ConstructionWithContainer {
 		if (other instanceof Furnace) {
 			this.setTemperature(((Furnace) other).getTemperature());
 			this.container.synchronize(((Furnace)other).container);
+			this.burning = ((Furnace) other).burning;
+			this.combustionDurationRemaining = ((Furnace) other).combustionDurationRemaining;
+			this.lightId = ((Furnace) other).lightId;
+			this.light = GameWorld.lights.get(((Furnace) other).lightId);
 		} else {
 			throw new RuntimeException("Can not synchronize Furnace with " + other.getClass().getSimpleName());
 		}
@@ -126,21 +137,21 @@ public class Furnace extends ConstructionWithContainer {
 	/**
 	 * Ignites this furnace
 	 */
-	public void ignite() {
+	public synchronized void ignite() {
 		burning = true;
 		setTemperature(1400f);
 		
-		bottomLight = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f);
-		
-		GameWorld.lights.add(bottomLight);
+		lightId = ParameterPersistenceService.getParameters().getNextLightId();
+		light = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f);
+		GameWorld.lights.put(lightId, light);
 	}
 
 
 	@Override
 	protected void internalRender(float constructionProgress) {
-		if (burning) {
+		if (burning && light != null) {
 			float intensity = 0.75f + 0.25f * Util.getRandom().nextFloat();
-			bottomLight.intensity = intensity;
+			light.intensity = intensity;
 		}
 		
 		if (burning) {
@@ -164,7 +175,7 @@ public class Furnace extends ConstructionWithContainer {
 	}
 
 
-	public void setCombustionDurationRemaining(float combustionDurationRemaining) {
+	public synchronized void setCombustionDurationRemaining(float combustionDurationRemaining) {
 		synchronized (this) {
 			this.combustionDurationRemaining = combustionDurationRemaining;
 		}
@@ -181,12 +192,27 @@ public class Furnace extends ConstructionWithContainer {
 		if (burning) {
 			synchronized (this) {
 				this.combustionDurationRemaining -= delta;
+				System.out.println(combustionDurationRemaining);
+				if (this.combustionDurationRemaining <= 0f) {
+					burning = false;
+					GameWorld.lights.remove(lightId);
+					if (!ClientServerInterface.isClient()) {
+						ClientServerInterface.sendNotification(
+							-1, 
+							true, 
+							true, 
+							new AddLightRequest.RemoveLightNotification(lightId),
+							new SynchronizePropRequest.SynchronizePropResponse(this),
+							new TransferItems.RefreshWindowsResponse()
+						);
+					}
+				}
 			}
 		}
 	}
 
 
-	public void setTemperature(float temperature) {
+	public synchronized void setTemperature(float temperature) {
 		this.temperature = temperature;
 	}
 }

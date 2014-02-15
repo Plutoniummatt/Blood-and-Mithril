@@ -21,7 +21,7 @@ public class Coal extends Item implements Fuel {
 
 	@Override
 	public float getCombustionDuration() {
-		return 120;
+		return 60;
 	}
 
 	

@@ -106,9 +106,9 @@ public class FactionsWindow extends Window {
 
 
 	public void refreshWindow() {
-		factionsPanel.getListings().clear();
-		factionsPanel.getListings().add(buildMap(true));
-		factionsPanel.getListings().add(buildMap(false));
+		factionsPanel.getListing().clear();
+		factionsPanel.getListing().add(buildMap(true));
+		factionsPanel.getListing().add(buildMap(false));
 	}
 
 

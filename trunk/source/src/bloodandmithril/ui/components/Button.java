@@ -45,8 +45,8 @@ public class Button {
 	private final Sound mouseClickSound;
 
 	/** The task that this button will execute when pressed */
-	private final Task task;
 	private final JITTask jitTask;
+	private Task task;
 
 	/** The relative position this button is rendered from */
 	private UIRef ref;
@@ -134,11 +134,6 @@ public class Button {
 	 */
 	public Button(Texture buttonAtlas, int offsetX, int offsetY, int atlasX, int atlasY, int width, int height, Task task, UIRef ref) {
 		this(buttonAtlas, offsetX, offsetY, atlasX, atlasY, width, height, null, task, ref);
-	}
-
-
-	public void setIdleColor(Color color) {
-		this.idleColor = color;
 	}
 
 
@@ -323,5 +318,40 @@ public class Button {
 		} else {
 			return mouseX >= vec.x && mouseX <= vec.x + width && mouseY <= vec.y + height && mouseY >= vec.y;
 		}
+	}
+	
+	
+	public Color getIdle() {
+		return idleColor;
+	}
+	
+	
+	public Color getOverColor() {
+		return overColor;
+	}
+	
+	
+	public Color getDownColor() {
+		return downColor;
+	}
+	
+	
+	public void setOverColor(Color overColor) {
+		this.overColor = overColor;
+	}
+	
+	
+	public void setDownColor(Color downColor) {
+		this.downColor = downColor;
+	}
+	
+
+	public void setIdleColor(Color color) {
+		this.idleColor = color;
+	}
+	
+	
+	public void setTask(Task task) {
+		this.task = task;
 	}
 }

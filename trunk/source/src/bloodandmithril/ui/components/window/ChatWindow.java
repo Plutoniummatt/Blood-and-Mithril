@@ -19,6 +19,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.TextInputFieldPanel;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -143,7 +144,7 @@ public class ChatWindow extends Window {
 
 
 	private void renderSeparator() {
-		Color color = active ? new Color(borderColor.r, borderColor.g, borderColor.b, alpha) : new Color(borderColor.r, borderColor.g, borderColor.b, borderColor.a * 0.4f * alpha);
+		Color color = active ? Colors.modulateAlpha(borderColor, alpha) : Colors.modulateAlpha(borderColor, 0.4f * alpha);
 		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
 		UserInterface.shapeRenderer.filledRect(
 			x + width - 100,

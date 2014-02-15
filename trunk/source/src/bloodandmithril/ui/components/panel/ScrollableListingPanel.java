@@ -22,6 +22,7 @@ import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -153,7 +154,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	 */
 	private void renderScrollBar() {
 		Window p = (Window) parent;
-		Color scrollBarColor = p.active ? new Color(p.borderColor.r, p.borderColor.g, p.borderColor.b, p.alpha * 0.5f) : new Color(p.borderColor.r, p.borderColor.g, p.borderColor.b, p.borderColor.a * 0.2f * p.alpha);
+		Color scrollBarColor = p.active ? Colors.modulateAlpha(p.borderColor, 0.5f) : Colors.modulateAlpha(p.borderColor, 0.2f * p.alpha);
 		Component.shapeRenderer.begin(ShapeType.FilledRectangle);
 		Component.shapeRenderer.setColor(scrollBarColor);
 		Component.shapeRenderer.filledRect(x + width - 6, y - 50, 3, 30, scrollBarColor, scrollBarColor, Color.CLEAR, Color.CLEAR);
@@ -266,7 +267,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	}
 
 
-	public List<HashMap<ListingMenuItem<T>, Integer>> getListings() {
+	public List<HashMap<ListingMenuItem<T>, Integer>> getListing() {
 		return listings;
 	}
 }

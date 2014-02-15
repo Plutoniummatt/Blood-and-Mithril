@@ -8,6 +8,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.Shaders;
 
 import com.badlogic.gdx.Gdx;
@@ -156,11 +157,19 @@ public abstract class Component {
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		float a = active ? 0.7f : 0.3f;
-		shapeRenderer.filledRect(renderX, renderY - height - bottomLeft.getRegionHeight(), length, height,
-				new Color(backGroundColor.r, backGroundColor.g, backGroundColor.b, a * alpha),
-				new Color(backGroundColor.r, backGroundColor.g, backGroundColor.b, a * alpha),
-				new Color(backGroundColor.r, backGroundColor.g, backGroundColor.b, a * alpha),
-				new Color(backGroundColor.r, backGroundColor.g, backGroundColor.b, a * alpha));
+		Color color = Colors.modulateAlpha(backGroundColor, a * alpha);
+		
+		shapeRenderer.filledRect(
+			renderX, 
+			renderY - height - bottomLeft.getRegionHeight(), 
+			length, 
+			height, 
+			color, 
+			color, 
+			color, 
+			color
+		);
+		
 		shapeRenderer.flush();
 		shapeRenderer.end();
 
@@ -179,11 +188,19 @@ public abstract class Component {
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		float a = active ? 0.7f : 0.3f;
-		shapeRenderer.filledRect(renderX, renderY - height - bottomLeft.getRegionHeight(), length, height,
-				new Color(backGroundColor.r, backGroundColor.g, backGroundColor.b, a * alphaOverride),
-				new Color(backGroundColor.r, backGroundColor.g, backGroundColor.b, a * alphaOverride),
-				new Color(backGroundColor.r, backGroundColor.g, backGroundColor.b, a * alphaOverride),
-				new Color(backGroundColor.r, backGroundColor.g, backGroundColor.b, a * alphaOverride));
+		Color color = Colors.modulateAlpha(backGroundColor, a * alphaOverride);
+		
+		shapeRenderer.filledRect(
+			renderX, 
+			renderY - height - bottomLeft.getRegionHeight(), 
+			length, 
+			height,
+			color,
+			color,
+			color,
+			color
+		);
+		
 		shapeRenderer.flush();
 		shapeRenderer.end();
 
