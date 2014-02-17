@@ -52,9 +52,9 @@ public class MainMenuWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		connect.render(width/2 + x, y - 26, active && !isSaving() && BloodAndMithrilClient.gameWorld == null, alpha);
-		options.render(width/2 + x, y - 46, active && !isSaving(), alpha);
-		exit.render(width/2 + x, y - 66, active && !isSaving(), alpha);
+		connect.render(width/2 + x, y - 26, isActive() && !isSaving() && BloodAndMithrilClient.gameWorld == null, getAlpha());
+		options.render(width/2 + x, y - 46, isActive() && !isSaving(), getAlpha());
+		exit.render(width/2 + x, y - 66, isActive() && !isSaving(), getAlpha());
 	}
 
 
@@ -64,7 +64,7 @@ public class MainMenuWindow extends Window {
 		exit.click();
 
 		if (options.click()) {
-			this.active = false;
+			this.setActive(false);
 			windowsCopy.addLast(
 				new MessageWindow(
 					"This is the options window",
@@ -135,14 +135,14 @@ public class MainMenuWindow extends Window {
 										UserInterface.setup();
 										for (Component component : UserInterface.layeredComponents) {
 											if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
-												component.closing = true;
+												component.setClosing(true);
 											} else if (component instanceof MainMenuWindow) {
-												component.closing = true;
+												component.setClosing(true);
 											}
 										}
 									} catch (IOException e) {
 										for (Component component : UserInterface.layeredComponents) {
-											component.active = false;
+											component.setActive(false);
 										}
 										UserInterface.addLayeredComponent(
 											new MessageWindow(
@@ -161,9 +161,9 @@ public class MainMenuWindow extends Window {
 													public void execute() {
 														for (Component component : UserInterface.layeredComponents) {
 															if (component instanceof Window && ((Window) component).title.equals("Error")) {
-																component.closing = true;
+																component.setClosing(true);
 															} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
-																component.active = true;
+																component.setActive(true);
 															}
 														}
 													}

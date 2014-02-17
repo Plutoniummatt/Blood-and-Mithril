@@ -30,7 +30,7 @@ public class Caves extends SuperStructure {
 
 
 	@Override
-	protected void generateStructure(boolean generatingToRight) {
+	protected void internalGenerate(boolean generatingToRight) {
 	}
 
 

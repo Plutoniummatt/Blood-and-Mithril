@@ -58,18 +58,18 @@ public class TextInputFieldPanel extends Panel {
 	@Override
 	public void render() {
 		Component.shapeRenderer.begin(ShapeType.FilledRectangle);
-		Component.shapeRenderer.setColor(0f, 0f, 0f, parent.active ? 0.9f * parent.alpha: 0.4f * parent.alpha);
+		Component.shapeRenderer.setColor(0f, 0f, 0f, parent.isActive() ? 0.9f * parent.getAlpha(): 0.4f * parent.getAlpha());
 		Component.shapeRenderer.filledRect(x, y - height, width, 22);
 		Component.shapeRenderer.end();
 
 		Component.shapeRenderer.begin(ShapeType.Rectangle);
-		Component.shapeRenderer.setColor(1f, 1f, 1f, parent.active ? 0.9f * parent.alpha : 0.4f * parent.alpha);
+		Component.shapeRenderer.setColor(1f, 1f, 1f, parent.isActive() ? 0.9f * parent.getAlpha() : 0.4f * parent.getAlpha());
 		Component.shapeRenderer.rect(x, y - height, width, 22);
 		Component.shapeRenderer.end();
 
 		BloodAndMithrilClient.spriteBatch.end();
 		BloodAndMithrilClient.spriteBatch.begin();
-		Fonts.defaultFont.setColor(Color.ORANGE.r, Color.ORANGE.g, Color.ORANGE.b, parent.active ? parent.alpha : 0.4f * parent.alpha);
+		Fonts.defaultFont.setColor(Color.ORANGE.r, Color.ORANGE.g, Color.ORANGE.b, parent.isActive() ? parent.getAlpha() : 0.4f * parent.getAlpha());
 		Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, inputText == null ? "" : Util.fitToTextInputBox(inputText, width, currentBeginningIndex), x + 4, y - height + 16);
 	}
 

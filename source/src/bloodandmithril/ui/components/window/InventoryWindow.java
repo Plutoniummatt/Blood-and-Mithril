@@ -129,14 +129,14 @@ public class InventoryWindow extends Window {
 	 */
 	private void renderWeightIndicationText() {
 		Color activeColor = host.getCurrentLoad() < host.getMaxCapacity() ?
-				new Color(0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, alpha) :
-				Colors.modulateAlpha(Color.RED, alpha);
+				new Color(0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, getAlpha()) :
+				Colors.modulateAlpha(Color.RED, getAlpha());
 
 		Color inactiveColor = host.getCurrentLoad() < host.getMaxCapacity() ?
-				new Color(0.7f*host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, 0.6f * alpha) :
-					Colors.modulateAlpha(Color.RED, 0.6f * alpha);
+				new Color(0.7f*host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, 0.6f * getAlpha()) :
+					Colors.modulateAlpha(Color.RED, 0.6f * getAlpha());
 
-		defaultFont.setColor(active ? activeColor : inactiveColor);
+		defaultFont.setColor(isActive() ? activeColor : inactiveColor);
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate("Weight: " + String.format("%.2f", host.getCurrentLoad()) + "/" + String.format("%.2f", host.getMaxCapacity())), x + 6, y - height + 20);
 	}
 
@@ -147,7 +147,7 @@ public class InventoryWindow extends Window {
 	private void renderSeparator() {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
-		Color color = active ? Colors.modulateAlpha(borderColor, alpha) : Colors.modulateAlpha(borderColor, 0.4f * alpha);
+		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
 		shapeRenderer.filledRect(x + width - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
 		shapeRenderer.end();
 	}

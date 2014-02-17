@@ -8,8 +8,8 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -42,48 +42,43 @@ public abstract class Component {
 	protected static final TextureRegion resize			= new TextureRegion(UserInterface.uiTexture, 41, 0, 12, 12);
 
 	/** Utility {@link ShapeRenderer} for {@link Component}s */
-	public static ShapeRenderer shapeRenderer 		= new ShapeRenderer();
+	protected static ShapeRenderer shapeRenderer 		= new ShapeRenderer();
 
 	/** The alpha(transparent) value this {@link Component} should be rendered with */
-	public float alpha = 0f;
+	private float alpha = 0f;
 
 	/** True if this is the active {@link Component} */
-	public boolean active;
+	private boolean active;
 
 	/** True if this {@link Component} is currently fading out and will soon be closed */
-	public boolean closing;
-
+	private boolean closing;
 
 	/** Called when a key is pressed */
 	public abstract boolean keyPressed(int keyCode);
 
-
 	/** Called when left clicked */
 	public abstract boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy);
-
 
 	/** left click released method */
 	public abstract void leftClickReleased();
 
-
 	/** Component specific render */
 	protected abstract void internalComponentRender();
-
 
 	/**
 	 * Renders this {@link Component}
 	 */
 	public void render() {
-		if (closing) {
-			alpha = alpha - 0.08f > 0f ? alpha - 0.08f : 0f;
+		if (isClosing()) {
+			setAlpha(getAlpha() - 0.08f > 0f ? getAlpha() - 0.08f : 0f);
 		} else if (this instanceof Window) {
 			if (!((Window) this).minimized) {
-				alpha = alpha + 0.08f >= 1f ? 1f : alpha + 0.08f;
+				setAlpha(getAlpha() + 0.08f >= 1f ? 1f : getAlpha() + 0.08f);
 			} else {
-				alpha = alpha - 0.08f > 0f ? alpha - 0.08f : 0f;
+				setAlpha(getAlpha() - 0.08f > 0f ? getAlpha() - 0.08f : 0f);
 			}
 		} else {
-			alpha = alpha + 0.08f >= 1f ? 1f : alpha + 0.08f;
+			setAlpha(getAlpha() + 0.08f >= 1f ? 1f : getAlpha() + 0.08f);
 		}
 		internalComponentRender();
 	}
@@ -102,7 +97,7 @@ public abstract class Component {
 	 */
 	protected void renderBox(int x, int y, int length, int height, boolean active, Color borderColor) {
 		Shaders.filter.begin();
-		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? borderColor.a * alpha : borderColor.a * 0.4f * alpha);
+		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? borderColor.a * getAlpha() : borderColor.a * 0.4f * getAlpha());
 		Shaders.filter.end();
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
 
@@ -151,25 +146,25 @@ public abstract class Component {
 	 */
 	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor) {
 		shapeRenderer.begin(ShapeType.FilledRectangle);
-		shapeRenderer.setColor(1f, 0f, 0f, 0.5f * alpha);
+		shapeRenderer.setColor(1f, 0f, 0f, 0.5f * getAlpha());
 		shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		float a = active ? 0.7f : 0.3f;
-		Color color = Colors.modulateAlpha(backGroundColor, a * alpha);
-		
+		Color color = Colors.modulateAlpha(backGroundColor, a * getAlpha());
+
 		shapeRenderer.filledRect(
-			renderX, 
-			renderY - height - bottomLeft.getRegionHeight(), 
-			length, 
-			height, 
-			color, 
-			color, 
-			color, 
+			renderX,
+			renderY - height - bottomLeft.getRegionHeight(),
+			length,
+			height,
+			color,
+			color,
+			color,
 			color
 		);
-		
+
 		shapeRenderer.flush();
 		shapeRenderer.end();
 
@@ -189,21 +184,51 @@ public abstract class Component {
 
 		float a = active ? 0.7f : 0.3f;
 		Color color = Colors.modulateAlpha(backGroundColor, a * alphaOverride);
-		
+
 		shapeRenderer.filledRect(
-			renderX, 
-			renderY - height - bottomLeft.getRegionHeight(), 
-			length, 
+			renderX,
+			renderY - height - bottomLeft.getRegionHeight(),
+			length,
 			height,
 			color,
 			color,
 			color,
 			color
 		);
-		
+
 		shapeRenderer.flush();
 		shapeRenderer.end();
 
 		Gdx.gl.glDisable(GL10.GL_BLEND);
+	}
+
+
+	public boolean isActive() {
+		return active;
+	}
+
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+
+	public boolean isClosing() {
+		return closing;
+	}
+
+
+	public void setClosing(boolean closing) {
+		this.closing = closing;
+	}
+
+
+	public float getAlpha() {
+		return alpha;
+	}
+
+
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
 	}
 }

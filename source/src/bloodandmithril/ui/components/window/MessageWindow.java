@@ -78,14 +78,14 @@ public class MessageWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		defaultFont.setColor(active ? Colors.modulateAlpha(messageColor, alpha) : Colors.modulateAlpha(messageColor, 0.6f * alpha));
+		defaultFont.setColor(isActive() ? Colors.modulateAlpha(messageColor, getAlpha()) : Colors.modulateAlpha(messageColor, 0.6f * getAlpha()));
 
 		String messageToDisplay = Util.fitToWindow(message, width, (height - 75) / 25);
 
 		defaultFont.drawMultiLine(BloodAndMithrilClient.spriteBatch, messageToDisplay, x + 6, y - 25);
 
 		if (button != null) {
-			button.render(x + width/2, y - height + 30, active, alpha);
+			button.render(x + width/2, y - height + 30, isActive(), getAlpha());
 		}
 	}
 

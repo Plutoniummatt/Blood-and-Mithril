@@ -202,7 +202,7 @@ public class UserInterface {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : StructureMap.structures.values()) {
-			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.components)) {
+			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.getComponents())) {
 				shapeRenderer.begin(ShapeType.FilledRectangle);
 				shapeRenderer.setColor(COMPONENT_FILL_COLOR);
 				shapeRenderer.filledRect(
@@ -249,7 +249,7 @@ public class UserInterface {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : StructureMap.structures.values()) {
-			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.components)) {
+			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.getComponents())) {
 				if (renderAvailableInterfaces) {
 					for (Interface in : Lists.newArrayList(comp.availableInterfaces)) {
 						in.render(AVAILABLE_INTERFACE_COLOR);
@@ -324,7 +324,7 @@ public class UserInterface {
 			for (Individual indi : GameWorld.individuals.values()) {
 				if (indi.isControllable()) {
 
-					Vector2 centre = new Vector2(indi.getState().position.x, indi.getState().position.y + indi.height / 2);
+					Vector2 centre = new Vector2(indi.getState().position.x, indi.getState().position.y + indi.getHeight() / 2);
 
 					centre.x = BloodAndMithrilClient.worldToScreenX(centre.x);
 					centre.y = BloodAndMithrilClient.worldToScreenY(centre.y);
@@ -429,7 +429,7 @@ public class UserInterface {
 		ArrayDeque<Component> copy = new ArrayDeque<>(layeredComponents);
 		for (Component component : layeredComponents) {
 			if (component instanceof Window) {
-				if (!((Window)component).minimized || component.alpha > 0f) {
+				if (!((Window)component).minimized || component.getAlpha() > 0f) {
 					component.render();
 				}
 				((Window) component).close(copy);
@@ -448,10 +448,10 @@ public class UserInterface {
 		while (iterator.hasNext()) {
 			ContextMenu next = iterator.next();
 			if (iterator.hasNext()) {
-				next.active = false;
+				next.setActive(false);
 				next.render();
 			} else {
-				next.active = true;
+				next.setActive(true);
 				next.render();
 			}
 		}
@@ -546,7 +546,7 @@ public class UserInterface {
 		}
 
 		for (Component component : layeredComponents) {
-			if (component.active && !(component instanceof BottomBar)) {
+			if (component.isActive() && !(component instanceof BottomBar)) {
 				return component.keyPressed(keyCode);
 			}
 		}
@@ -640,7 +640,7 @@ public class UserInterface {
 	public static void addLayeredComponent(Component toAdd) {
 		for (Component component : layeredComponents) {
 			if (component instanceof Window) {
-				((Window)component).active = false;
+				((Window)component).setActive(false);
 			}
 		}
 		layeredComponents.addLast(toAdd);
@@ -663,7 +663,7 @@ public class UserInterface {
 		} else {
 			layeredComponents.remove(existing);
 			layeredComponents.addLast(existing);
-			existing.active = true;
+			existing.setActive(true);
 			existing.minimized = false;
 		}
 	}

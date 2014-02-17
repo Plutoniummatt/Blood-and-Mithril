@@ -65,14 +65,14 @@ public class TextInputWindow extends Window {
 
 		panel.render();
 
-		confirmButton.render(x + width/2, y - height + 25, active, alpha);
+		confirmButton.render(x + width/2, y - height + 25, isActive(), getAlpha());
 	}
 
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		if (confirmButton.click(panel.getInputText())) {
-		  closing = closeUponButtonClick || closing;
+		  setClosing(closeUponButtonClick || isClosing());
 		}
 	}
 

@@ -41,13 +41,13 @@ public class GoToLocation extends AITask {
 		super(host.getId());
 		this.fly = fly;
 
-		int blockspan = host.height/Topography.TILE_SIZE + (host.height % Topography.TILE_SIZE == 0 ? 0 : 1) - 1;
+		int blockspan = host.getHeight()/Topography.TILE_SIZE + (host.getHeight() % Topography.TILE_SIZE == 0 ? 0 : 1) - 1;
 
 		PathFinder pathFinder = new AStarPathFinder();
 
 		this.path = fly ?
 			pathFinder.findShortestPathAir(new WayPoint(host.getState().position), destination):
-			pathFinder.findShortestPathGround(new WayPoint(host.getState().position), destination, blockspan, safe ? host.safetyHeight : 1000, forceTolerance);
+			pathFinder.findShortestPathGround(new WayPoint(host.getState().position), destination, blockspan, safe ? host.getSafetyHeight() : 1000, forceTolerance);
 	}
 
 

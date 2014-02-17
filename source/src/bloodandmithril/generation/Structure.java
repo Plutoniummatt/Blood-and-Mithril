@@ -19,23 +19,26 @@ public abstract class Structure implements Serializable {
 	private static final long serialVersionUID = -5890196858721145717L;
 
 	/** The key used by this {@link Structure} in the {@link StructureMap} */
-	public int structureKey;
+	private int structureKey;
 
 	/** The number of chunks this structure has left to generate on it */
-	public int chunksLeftToBeGenerated = -1;
+	private int chunksLeftToBeGenerated = -1;
 
 	/** {@link Component}s on this {@link Structure} */
-	public List<Component> components = Lists.newArrayList();
+	private final List<Component> components = Lists.newArrayList();
 
 	/**
 	 * @return whether this {@link Structure} has finished generating.
+	 *
+	 * If it has, the structure can be deleted from the structure map.
 	 */
-	public boolean isFinishedGenerating() {
-		return chunksLeftToBeGenerated == 0;
+	public boolean allChunksGenerated() {
+		return getChunksLeftToBeGenerated() == 0;
 	}
 
 
 	/**
+	 * Calculates available unoccupied space for the structure.
 	 * Generates the structure.
 	 * Adds this Structure to the key maps.
 	 * Calculates chunks to generate.
@@ -45,7 +48,8 @@ public abstract class Structure implements Serializable {
 	 * @param generatingToRight - true if generating to the right
 	 */
 	public void generate(int startingChunkX, int startingChunkY, boolean generatingToRight) {
-		findSpaceAddToMapAndGenerate(startingChunkX, startingChunkY, generatingToRight);
+		findSpaceAndAddToMap(startingChunkX, startingChunkY, generatingToRight);
+		internalGenerate(generatingToRight);
 		calculateChunksToGenerate();
 	}
 
@@ -57,7 +61,7 @@ public abstract class Structure implements Serializable {
 	 * @param startingChunkY - the chunk coordinates to start generating the structure from
 	 * @param generatingToRight - true if generating to the right
 	 */
-	protected abstract void findSpaceAddToMapAndGenerate(int startingChunkX, int startingChunkY, boolean generatingToRight);
+	protected abstract void findSpaceAndAddToMap(int startingChunkX, int startingChunkY, boolean generatingToRight);
 
 
 	/**
@@ -71,7 +75,7 @@ public abstract class Structure implements Serializable {
 	/**
 	 * Generate the {@link Structure}.
 	 */
-	protected abstract void generateStructure(boolean generatingToRight);
+	protected abstract void internalGenerate(boolean generatingToRight);
 
 
 	/**
@@ -103,7 +107,7 @@ public abstract class Structure implements Serializable {
 
 		Tile fTile = null;
 
-		for (Component component : components) {
+		for (Component component : getComponents()) {
 
 			Tile foregroundTile = component.getForegroundTile(worldTileX, worldTileY);
 
@@ -138,7 +142,7 @@ public abstract class Structure implements Serializable {
 	 * @return - the {@link Tile} the {@link Structure} says it is.
 	 */
 	public Tile getBackgroundTile(int worldTileX, int worldTileY) {
-		for (Component component : components) {
+		for (Component component : getComponents()) {
 			Tile backgroundTile = component.getBackgroundTile(worldTileX, worldTileY);
 			if (backgroundTile != null) {
 				return backgroundTile;
@@ -152,5 +156,30 @@ public abstract class Structure implements Serializable {
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + " " + this.hashCode();
+	}
+
+
+	protected int getStructureKey() {
+		return structureKey;
+	}
+
+
+	protected void setStructureKey(int structureKey) {
+		this.structureKey = structureKey;
+	}
+
+
+	public int getChunksLeftToBeGenerated() {
+		return chunksLeftToBeGenerated;
+	}
+
+
+	public void setChunksLeftToBeGenerated(int chunksLeftToBeGenerated) {
+		this.chunksLeftToBeGenerated = chunksLeftToBeGenerated;
+	}
+
+
+	public List<Component> getComponents() {
+		return components;
 	}
 }

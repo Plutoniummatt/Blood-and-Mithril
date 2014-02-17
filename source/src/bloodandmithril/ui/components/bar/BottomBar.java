@@ -89,15 +89,15 @@ public class BottomBar extends Component {
 			factionsClicked();
 		}
 
-		if (active && isWithin()) {
+		if (isActive() && isWithin()) {
 			return true;
 		} else if (isWithin()) {
 			windowsCopy.remove(this);
 			windowsCopy.addLast(this);
-			active = true;
+			setActive(true);
 			return true;
 		} else {
-			active = false;
+			setActive(false);
 			return false;
 		}
 	}
@@ -110,7 +110,7 @@ public class BottomBar extends Component {
 				((FactionsWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((FactionsWindow) component).width/2;
 				((FactionsWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((FactionsWindow) component).height/2;
 				((FactionsWindow) component).minimized = false;
-				((FactionsWindow) component).active = true;
+				((FactionsWindow) component).setActive(true);
 				return;
 			}
 		}
@@ -152,7 +152,7 @@ public class BottomBar extends Component {
 					((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
 					((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
 					((ChatWindow) component).minimized = false;
-					((ChatWindow) component).active = true;
+					((ChatWindow) component).setActive(true);
 					return;
 				}
 			}
@@ -260,7 +260,7 @@ public class BottomBar extends Component {
 					public void execute() {
 						for (final Component component : windowsCopy) {
 							if (component instanceof Window) {
-								component.closing = true;
+								component.setClosing(true);
 							}
 						}
 					}
@@ -305,7 +305,7 @@ public class BottomBar extends Component {
 		} else {
 			windowsCopy.remove(existing);
 			windowsCopy.add(existing);
-			existing.active = true;
+			existing.setActive(true);
 		}
 	}
 

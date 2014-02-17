@@ -42,7 +42,7 @@ public class Plains extends SuperStructure {
 
 
 	@Override
-	protected void generateStructure(boolean generatingToRight) {
+	protected void internalGenerate(boolean generatingToRight) {
 		// generate the surface height across the structure.
 		int rightMostTile = (boundaries.right + 1) * Topography.CHUNK_SIZE - 1;
 		int leftMostTile = boundaries.left * Topography.CHUNK_SIZE;

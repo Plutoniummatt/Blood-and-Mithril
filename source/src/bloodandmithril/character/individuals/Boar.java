@@ -51,10 +51,8 @@ public class Boar extends Individual {
 	 * Constructor
 	 */
 	public Boar(IndividualIdentifier id, IndividualState state) {
-		super(id, state, Faction.NPC, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), false);
-
+		super(id, state, Faction.NPC, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120));
 		ai = new BoarAI(this);
-
 		current = STANDING_RIGHT;
 	}
 
@@ -163,7 +161,7 @@ public class Boar extends Individual {
 		float x = BloodAndMithrilClient.getMouseWorldX();
 		float y = BloodAndMithrilClient.getMouseWorldY();
 
-		boolean ans = x >= getState().position.x - width/2 && x <= getState().position.x + width/2 && y >= getState().position.y && y <= getState().position.y + height;
+		boolean ans = x >= getState().position.x - getWidth()/2 && x <= getState().position.x + getWidth()/2 && y >= getState().position.y && y <= getState().position.y + getHeight();
 		return ans;
 	}
 

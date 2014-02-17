@@ -65,17 +65,17 @@ public class Desert extends SuperStructure {
 		);
 	}
 
-	private static boolean oododo = true; //TODO WTF IS THIS SHIT MANNNNG
+	private static boolean desertGenerated = false; //TODO WTF IS THIS SHIT MANNNNG
 	@Override
-	protected void generateStructure(boolean generatingToRight) {
+	protected void internalGenerate(boolean generatingToRight) {
 		int rightMostTile = (boundaries.right + 1) * Topography.CHUNK_SIZE - 1;
 		int leftMostTile = boundaries.left * Topography.CHUNK_SIZE;
 
-		if (oododo) {
-			components.add(new Room(new Boundaries(4, -24, -4, 24), new Boundaries(-1, -19, 1, 19), structureKey));
+		if (!desertGenerated) {
+			getComponents().add(new Room(new Boundaries(4, -24, -4, 24), new Boundaries(-1, -19, 1, 19), getStructureKey()));
 
-			components.add(
-				components.get(0).stem(
+			getComponents().add(
+				getComponents().get(0).stem(
 					Stairs.class,
 					new StairsCreationCustomization(
 						Util.getRandom().nextBoolean(),
@@ -93,7 +93,7 @@ public class Desert extends SuperStructure {
 
 			Component stem = null;
 			while (stem == null) {
-				stem = components.get(1).stem(
+				stem = getComponents().get(1).stem(
 					Stairs.class,
 					new StairsCreationCustomization(
 						Util.getRandom().nextBoolean(),
@@ -108,11 +108,11 @@ public class Desert extends SuperStructure {
 					)
 				);
 			}
-			components.add(stem);
+			getComponents().add(stem);
 
 			Component stem2 = null;
 			while (stem2 == null) {
-				stem2 = components.get(2).stem(
+				stem2 = getComponents().get(2).stem(
 					Stairs.class,
 					new StairsCreationCustomization(
 						Util.getRandom().nextBoolean(),
@@ -127,11 +127,11 @@ public class Desert extends SuperStructure {
 					)
 				);
 			}
-			components.add(stem2);
+			getComponents().add(stem2);
 
 			Component stem3 = null;
 			while (stem3 == null) {
-				stem3 = components.get(3).stem(
+				stem3 = getComponents().get(3).stem(
 					Corridor.class,
 					new CorridorCreationCustomization(
 						Util.getRandom().nextBoolean(),
@@ -143,11 +143,11 @@ public class Desert extends SuperStructure {
 					)
 				);
 			}
-			components.add(stem3);
+			getComponents().add(stem3);
 
 			Component stem4 = null;
 			while (stem4 == null) {
-				stem4 = components.get(4).stem(
+				stem4 = getComponents().get(4).stem(
 					Room.class,
 					new RoomCreationCustomization(
 						Util.getRandom().nextBoolean(),
@@ -158,13 +158,13 @@ public class Desert extends SuperStructure {
 					)
 				);
 			}
-			components.add(stem4);
+			getComponents().add(stem4);
 
 			for (int i = 0; i < 10; i++) {
 				Component stem5 = null;
 				int attempts = 0;
 				while (stem5 == null && attempts < 10) {
-					stem5 = components.get(5 + i).stem(
+					stem5 = getComponents().get(5 + i).stem(
 						Stairs.class,
 						new StairsCreationCustomization(
 							Util.getRandom().nextBoolean(),
@@ -181,12 +181,12 @@ public class Desert extends SuperStructure {
 					attempts++;
 				}
 				if (stem5 != null) {
-					components.add(stem5);
+					getComponents().add(stem5);
 				} else {
 					break;
 				}
 			}
-			oododo = false;
+			desertGenerated = true;
 		}
 
 		generateSurface(generatingToRight, rightMostTile, leftMostTile);
@@ -219,11 +219,17 @@ public class Desert extends SuperStructure {
 		//fill surfaceHeight
 		if (generatingToRight) {
 			for (int x = leftMostTile; x <= rightMostTile; x++) {
-				StructureMap.surfaceHeight.put(x, (int)(startingHeight + desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(x, 1) - desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(leftMostTile, 1)));
+				StructureMap.surfaceHeight.put(
+					x,
+					(int)(startingHeight + desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(x, 1) - desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(leftMostTile, 1))
+				);
 			}
 		} else {
 			for (int x = rightMostTile; x >= leftMostTile; x--) {
-				StructureMap.surfaceHeight.put(x, (int)(startingHeight + desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(x, 1) - desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(rightMostTile, 1)));
+				StructureMap.surfaceHeight.put(
+					x,
+					(int)(startingHeight + desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(x, 1) - desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(rightMostTile, 1))
+				);
 			}
 		}
 	}
@@ -319,7 +325,7 @@ public class Desert extends SuperStructure {
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
 
-		for (Component thing : components) {
+		for (Component thing : getComponents()) {
 			if (thing.getBackgroundTile(worldTileX, worldTileY) != null) {
 				return thing.getBackgroundTile(worldTileX, worldTileY);
 			}

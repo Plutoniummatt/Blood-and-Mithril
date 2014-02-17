@@ -96,7 +96,7 @@ public class MineTile extends CompositeAITask {
 		public void execute() {
 			final Individual host = GameWorld.individuals.get(hostId.getId());
 
-			if (host.interactionBox.isWithinBox(tileCoordinate)) {
+			if (host.getInteractionBox().isWithinBox(tileCoordinate)) {
 				Topography.addTask(
 					new Task() {
 						@Override

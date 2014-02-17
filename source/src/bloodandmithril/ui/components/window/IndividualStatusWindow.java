@@ -95,17 +95,17 @@ public class IndividualStatusWindow extends Window {
 			time = time + 1f/60f;
 		}
 
-		Color activeTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, alpha);
-		Color inactiveTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE_INACTIVE, alpha);
-		Color activeWhite = Colors.modulateAlpha(Color.WHITE, alpha);
-		Color inactiveWhite = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, 0.6f * alpha);
+		Color activeTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, getAlpha());
+		Color inactiveTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE_INACTIVE, getAlpha());
+		Color activeWhite = Colors.modulateAlpha(Color.WHITE, getAlpha());
+		Color inactiveWhite = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, 0.6f * getAlpha());
 
-		defaultFont.setColor(active ? activeTitle : inactiveTitle);
+		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
 		if (!drawLine("Vital signs: ", 25)) {
 			return;
 		}
 
-		defaultFont.setColor(active ? activeWhite : inactiveWhite);
+		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
 
 		float percentageHealth = 100 * (individual.getState().health/individual.getState().maxHealth);
 		int category = Math.round(percentageHealth)/10;
@@ -148,14 +148,14 @@ public class IndividualStatusWindow extends Window {
 			return;
 		}
 
-		defaultFont.setColor(active ? activeTitle : inactiveTitle);
+		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
 		if (!drawLine("Conditions: ", 105)) {
 			return;
 		}
 
 		BloodAndMithrilClient.spriteBatch.flush();
 		renderConditionsPanel();
-		identify.render(x + width - 50, y - 37, !GameWorld.selectedIndividuals.isEmpty() && active && !individual.isControllable(), alpha);
+		identify.render(x + width - 50, y - 37, !GameWorld.selectedIndividuals.isEmpty() && isActive() && !individual.isControllable(), getAlpha());
 	}
 
 

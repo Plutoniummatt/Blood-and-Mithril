@@ -211,15 +211,15 @@ public class FurnaceWindow extends TradeWindow {
 		igniteButton.render(
 			x + width/2,
 			y - height + 65,
-			!furnace.isBurning() && active && isProposeeItemsEmpty(),
-			alpha
+			!furnace.isBurning() && isActive() && isProposeeItemsEmpty(),
+			getAlpha()
 		);
 		
 		changeTemperatureButton.render(
 			x + width/2,
 			y - height + 90,
-			furnace.isBurning() && active,
-			alpha
+			furnace.isBurning() && isActive(),
+			getAlpha()
 		);
 	}
 	
@@ -229,7 +229,7 @@ public class FurnaceWindow extends TradeWindow {
 		super.uponClose();
 		
 		if (temperatureInputWindow != null) {
-			temperatureInputWindow.closing = true;
+			temperatureInputWindow.setClosing(true);
 		}
 	}
 	

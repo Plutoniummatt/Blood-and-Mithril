@@ -262,7 +262,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
 					}
 				} else {
-					float spread = Math.min(indi.width * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
+					float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
 					if (ClientServerInterface.isServer()) {
 						AIProcessor.sendPathfindingRequest(
 							indi,

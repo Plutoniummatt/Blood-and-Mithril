@@ -154,7 +154,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	 */
 	private void renderScrollBar() {
 		Window p = (Window) parent;
-		Color scrollBarColor = p.active ? Colors.modulateAlpha(p.borderColor, 0.5f) : Colors.modulateAlpha(p.borderColor, 0.2f * p.alpha);
+		Color scrollBarColor = p.isActive() ? Colors.modulateAlpha(p.borderColor, 0.5f) : Colors.modulateAlpha(p.borderColor, 0.2f * p.getAlpha());
 		Component.shapeRenderer.begin(ShapeType.FilledRectangle);
 		Component.shapeRenderer.setColor(scrollBarColor);
 		Component.shapeRenderer.filledRect(x + width - 6, y - 50, 3, 30, scrollBarColor, scrollBarColor, Color.CLEAR, Color.CLEAR);
@@ -191,7 +191,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 					defaultFont.draw(BloodAndMithrilClient.spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
 					break;
 				}
-				item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, parent.active && UserInterface.contextMenus.isEmpty(), parent.alpha);
+				item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, parent.isActive() && UserInterface.contextMenus.isEmpty(), parent.getAlpha());
 				defaultFont.draw(BloodAndMithrilClient.spriteBatch, getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
 				i++;
 			}
@@ -216,15 +216,15 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * size);
 		}
 
-		if (parent.active) {
+		if (parent.isActive()) {
 			if (isMouseOverScrollButton(scrollBarButtonPos) ||
 					scrollBarButtonLocationOld != null) {
-				Component.shapeRenderer.setColor(0f, 1f, 0f, parent.alpha);
+				Component.shapeRenderer.setColor(0f, 1f, 0f, parent.getAlpha());
 			} else {
-				Component.shapeRenderer.setColor(1f, 1f, 1f, parent.alpha);
+				Component.shapeRenderer.setColor(1f, 1f, 1f, parent.getAlpha());
 			}
 		} else {
-			Component.shapeRenderer.setColor(0.5f, 0.5f, 0.5f, parent.alpha);
+			Component.shapeRenderer.setColor(0.5f, 0.5f, 0.5f, parent.getAlpha());
 		}
 
 		Component.shapeRenderer.filledRect(x + width - 8, scrollBarButtonPos - 7.5f, 7, 15);

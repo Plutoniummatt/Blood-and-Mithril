@@ -3,7 +3,6 @@ package bloodandmithril.prop.building;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
-import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -65,8 +64,7 @@ public class PineChest extends ConstructionWithContainer {
 			)
 		);
 
-		if (GameWorld.selectedIndividuals.size() == 1 &&
-		  !(GameWorld.selectedIndividuals.iterator().next().getAI().getCurrentTask() instanceof Trading)) {
+		if (GameWorld.selectedIndividuals.size() == 1) {
 			final Individual selected = GameWorld.selectedIndividuals.iterator().next();
 			ContextMenuItem openChestMenuItem = new ContextMenuItem(
 				"Open",
@@ -108,7 +106,7 @@ public class PineChest extends ConstructionWithContainer {
 
 	@Override
 	protected void internalRender(float constructionProgress) {
-		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);		
+		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
 	}
 
 

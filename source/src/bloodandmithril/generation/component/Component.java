@@ -105,7 +105,7 @@ public abstract class Component implements Serializable {
 	 * If overlap detected, do not add created interface to existing interfaces list.
 	 */
 	protected Component checkForOverlaps(Interface createdInterface, Component createdComponent) {
-		for (Component component : StructureMap.structures.get(structureKey).components) {
+		for (Component component : StructureMap.structures.get(structureKey).getComponents()) {
 			if (component == this) {
 				continue;
 			} else {
