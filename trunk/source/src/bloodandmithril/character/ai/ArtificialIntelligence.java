@@ -145,7 +145,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 				new WayPoint(
 					new Vector2(
 						host.getState().position.x + (0.5f - Util.getRandom().nextFloat()) * distance,
-						host.getState().position.y + host.height / 2
+						host.getState().position.y + host.getHeight() / 2
 					)
 				),
 				fly,
@@ -167,7 +167,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	public void goToIndividual(Individual individual, float tolerance, boolean fly) {
 		if (distanceFrom(individual) > tolerance) {
 			Individual host = GameWorld.individuals.get(hostId.getId());
-			setCurrentTask(new GoToLocation(host, new WayPoint(individual.getState().position), fly, individual.width * 2, true));
+			setCurrentTask(new GoToLocation(host, new WayPoint(individual.getState().position), fly, individual.getWidth() * 2, true));
 		}
 	}
 }

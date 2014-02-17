@@ -4,7 +4,6 @@ package bloodandmithril.prop.building;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
-import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.AddLightRequest;
 import bloodandmithril.csi.requests.SynchronizePropRequest;
@@ -37,10 +36,10 @@ public class Furnace extends ConstructionWithContainer {
 
 	/** The duration which this furnace will combust, in seconds */
 	private float combustionDurationRemaining;
-	
+
 	/** The {@link Light} that will be rendered if this {@link Furnace} is lit */
-	private Light light; 
-	
+	private Light light;
+
 	/** The ID of the {@link Light} that will be rendered if this {@link Furnace} is lit */
 	private int lightId;
 
@@ -89,8 +88,8 @@ public class Furnace extends ConstructionWithContainer {
 				null
 			)
 		);
-		
-		if (GameWorld.selectedIndividuals.size() == 1 && !(GameWorld.selectedIndividuals.iterator().next().getAI().getCurrentTask() instanceof Trading)) {
+
+		if (GameWorld.selectedIndividuals.size() == 1) {
 			final Individual selected = GameWorld.selectedIndividuals.iterator().next();
 			ContextMenuItem openChestMenuItem = new ContextMenuItem(
 				"Open furnace",
@@ -114,7 +113,7 @@ public class Furnace extends ConstructionWithContainer {
 			);
 			menu.addMenuItem(openChestMenuItem);
 		}
-		
+
 		return menu;
 	}
 
@@ -140,7 +139,7 @@ public class Furnace extends ConstructionWithContainer {
 	public synchronized void ignite() {
 		burning = true;
 		setTemperature(1400f);
-		
+
 		lightId = ParameterPersistenceService.getParameters().getNextLightId();
 		light = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f);
 		GameWorld.lights.put(lightId, light);
@@ -153,14 +152,14 @@ public class Furnace extends ConstructionWithContainer {
 			float intensity = 0.75f + 0.25f * Util.getRandom().nextFloat();
 			light.intensity = intensity;
 		}
-		
+
 		if (burning) {
 			BloodAndMithrilClient.spriteBatch.draw(furnaceBurning, position.x - width / 2, position.y);
 		} else {
 			BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
 		}
 	}
-	
+
 
 	/**
 	 * Returns the {@link #temperature} of this furnace.
@@ -198,9 +197,9 @@ public class Furnace extends ConstructionWithContainer {
 					GameWorld.lights.remove(lightId);
 					if (!ClientServerInterface.isClient()) {
 						ClientServerInterface.sendNotification(
-							-1, 
-							true, 
-							true, 
+							-1,
+							true,
+							true,
 							new AddLightRequest.RemoveLightNotification(lightId),
 							new SynchronizePropRequest.SynchronizePropResponse(this),
 							new TransferItems.RefreshWindowsResponse()

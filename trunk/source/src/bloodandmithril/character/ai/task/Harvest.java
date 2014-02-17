@@ -93,7 +93,7 @@ public class Harvest extends CompositeAITask {
 
 			Individual host = GameWorld.individuals.get(hostId.getId());
 
-			if (host.interactionBox.isWithinBox(harvestable.position)) {
+			if (host.getInteractionBox().isWithinBox(harvestable.position)) {
 				if (GameWorld.props.containsKey(harvestable.id)) {
 					if (harvestable.destroyUponHarvest()) {
 						GameWorld.props.remove(harvestable.id);

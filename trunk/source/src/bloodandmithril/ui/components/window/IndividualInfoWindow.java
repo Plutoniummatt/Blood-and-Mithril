@@ -45,49 +45,49 @@ public class IndividualInfoWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		Color activeTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, alpha);
-		Color inactiveTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE_INACTIVE, alpha);
-		Color activeWhite = Colors.modulateAlpha(Color.WHITE, alpha);
-		Color inactiveWhite = Colors.modulateAlpha(Color.WHITE, 0.6f * alpha);
+		Color activeTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, getAlpha());
+		Color inactiveTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE_INACTIVE, getAlpha());
+		Color activeWhite = Colors.modulateAlpha(Color.WHITE, getAlpha());
+		Color inactiveWhite = Colors.modulateAlpha(Color.WHITE, 0.6f * getAlpha());
 
-		defaultFont.setColor(active ? activeTitle : inactiveTitle);
+		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
 		if (!drawLine("Name: ", 25)) {
 			return;
 		}
 
-		defaultFont.setColor(active ? activeWhite : inactiveWhite);
+		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
 		if (!drawLine(truncate(individual.getId().getSimpleName()), 45)) {
 			return;
 		}
 
-		defaultFont.setColor(active ? activeTitle : inactiveTitle);
+		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
 		if (!drawLine("Nickname: ", 75)) {
 			return;
 		}
 
-		defaultFont.setColor(active ? activeWhite : inactiveWhite);
+		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
 		if (!drawLine(truncate(individual.getId().getNickName()), 95)) {
 			return;
 		}
 
-		defaultFont.setColor(active ? activeTitle : inactiveTitle);
+		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
 		if (!drawLine("Age: ", 125)) {
 			return;
 		}
 
-		defaultFont.setColor(active ? activeWhite : inactiveWhite);
+		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
 		if (!drawLine(truncate(Integer.toString(individual.getAge())), 145)) {
 			return;
 		}
 
-		defaultFont.setColor(active ? activeTitle : inactiveTitle);
+		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
 		if (!drawLine("Description: ", 175)) {
 			return;
 		}
 
 		String messageToDisplay = Util.fitToWindow(individual.getDescription(), width, (height - 250) / 25);
 
-		defaultFont.setColor(active ? activeWhite : inactiveWhite);
+		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
 		defaultFont.drawMultiLine(BloodAndMithrilClient.spriteBatch, messageToDisplay, x + 6, y - 195);
 	}
 

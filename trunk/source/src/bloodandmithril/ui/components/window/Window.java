@@ -62,7 +62,7 @@ public abstract class Window extends Component {
 		this.borderColor = borderColor;
 		this.backGroundColor = backGroundColor;
 		this.title = title;
-		this.active = active;
+		this.setActive(active);
 		this.minLength = minLength;
 		this.minHeight = minHeight;
 		this.minimizable = minimizable;
@@ -100,7 +100,7 @@ public abstract class Window extends Component {
 			if (isWithin()) {
 				
 				if (closeButton.click()) {
-					closing = true;
+					setClosing(true);
 					return false;
 				}
 
@@ -111,7 +111,7 @@ public abstract class Window extends Component {
 
 				resizeButton.click();
 
-				if (active) {
+				if (isActive()) {
 					internalLeftClick(copy, windowsCopy);
 					determinePositioning();
 					return true;
@@ -120,11 +120,11 @@ public abstract class Window extends Component {
 					windowsCopy.remove(this);
 					windowsCopy.addLast(this);
 					determinePositioning();
-					active = true;
+					setActive(true);
 					return true;
 				}
 			} else {
-				active = false;
+				setActive(false);
 				return false;
 			}
 		}
@@ -140,15 +140,15 @@ public abstract class Window extends Component {
 		}
 
 		if (UserInterface.contextMenus.isEmpty()) {
-			if (active && isWithin()) {
+			if (isActive() && isWithin()) {
 				return true;
 			} else if (isWithin()) {
 				windowsCopy.remove(this);
 				windowsCopy.addLast(this);
-				active = true;
+				setActive(true);
 				return true;
 			} else {
-				active = false;
+				setActive(false);
 				return false;
 			}
 		}
@@ -250,8 +250,8 @@ public abstract class Window extends Component {
 		reposition();
 
 		BloodAndMithrilClient.spriteBatch.begin();
-		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), width, height, active, backGroundColor);
-		renderBox(x, y, width, height, active, borderColor);
+		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), width, height, isActive(), backGroundColor);
+		renderBox(x, y, width, height, isActive(), borderColor);
 		renderSeparator();
 		renderWindowButtons();
 		renderTitle();
@@ -308,8 +308,8 @@ public abstract class Window extends Component {
 	 * Handles closing of this component
 	 */
 	public void close(ArrayDeque<Component> windowsCopy) {
-		if (closing) {
-			if (alpha == 0f) {
+		if (isClosing()) {
+			if (getAlpha() == 0f) {
 				windowsCopy.remove(this);
 				uponClose();
 			}
@@ -326,24 +326,24 @@ public abstract class Window extends Component {
 		closeButton.render(
 			x + width - 7,
 			y - close.getRegionHeight() - top.getRegionHeight() + 5,
-			active,
-			alpha
+			isActive(),
+			getAlpha()
 		);
 
 		if (minimizable) {
 			minimizeButton.render(
 				x + width - 24,
 				y - close.getRegionHeight() - top.getRegionHeight() + 5,
-				active,
-				alpha
+				isActive(),
+				getAlpha()
 			);
 		}
 
 		resizeButton.render(
 			x + width - 7,
 			y - height + 9,
-			active,
-			alpha
+			isActive(),
+			getAlpha()
 		);
 	}
 
@@ -353,10 +353,10 @@ public abstract class Window extends Component {
 	 */
 	private void renderTitle() {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
-		if (active) {
-			defaultFont.setColor(1f, 1f, 1f, 1f * alpha);
+		if (isActive()) {
+			defaultFont.setColor(1f, 1f, 1f, 1f * getAlpha());
 		} else {
-			defaultFont.setColor(0.5f, 0.5f, 0.5f, 0.7f * alpha);
+			defaultFont.setColor(0.5f, 0.5f, 0.5f, 0.7f * getAlpha());
 		}
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate(title), x + 6, y - 3);
 		defaultFont.setColor(1f, 1f, 1f, 1f);

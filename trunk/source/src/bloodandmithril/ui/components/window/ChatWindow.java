@@ -105,10 +105,10 @@ public class ChatWindow extends Window {
 		}
 
 		Fonts.defaultFont.setColor(
-			Color.CYAN.r * (active ? 1f : 0.4f),
-			Color.CYAN.g * (active ? 1f : 0.4f),
-			Color.CYAN.b * (active ? 1f : 0.4f),
-			alpha
+			Color.CYAN.r * (isActive() ? 1f : 0.4f),
+			Color.CYAN.g * (isActive() ? 1f : 0.4f),
+			Color.CYAN.b * (isActive() ? 1f : 0.4f),
+			getAlpha()
 		);
 
 		int lines = StringUtils.countMatches(string, "\n");
@@ -144,7 +144,7 @@ public class ChatWindow extends Window {
 
 
 	private void renderSeparator() {
-		Color color = active ? Colors.modulateAlpha(borderColor, alpha) : Colors.modulateAlpha(borderColor, 0.4f * alpha);
+		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
 		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
 		UserInterface.shapeRenderer.filledRect(
 			x + width - 100,

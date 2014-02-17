@@ -25,16 +25,13 @@ public abstract class SuperStructure extends Structure {
 	 * @param generatingToRight - true if generating to the right
 	 */
 	@Override
-	public void findSpaceAddToMapAndGenerate(int startingChunkX, int startingChunkY, boolean generatingToRight) {
+	protected void findSpaceAndAddToMap(int startingChunkX, int startingChunkY, boolean generatingToRight) {
 
 		// Find space for this super structure
 		boundaries = findSpace(startingChunkX, startingChunkY);
 
 		// Add to map
-		structureKey = addToStructureMap();
-
-		// Generate this SuperStructure
-		generateStructure(generatingToRight);
+		setStructureKey(addToStructureMap());
 	}
 
 
@@ -57,8 +54,8 @@ public abstract class SuperStructure extends Structure {
 	 */
 	@Override
 	protected void calculateChunksToGenerate() {
-		if (chunksLeftToBeGenerated == -1) {
-			chunksLeftToBeGenerated = (boundaries.top - boundaries.bottom + 1) * (boundaries.right - boundaries.left + 1);
+		if (getChunksLeftToBeGenerated() == -1) {
+			setChunksLeftToBeGenerated((boundaries.top - boundaries.bottom + 1) * (boundaries.right - boundaries.left + 1));
 		} else {
 			throw new RuntimeException("chunksLeftToBeGenerated has already been calculated");
 		}

@@ -39,7 +39,7 @@ public class Hills extends SuperStructure {
 
 
 	@Override
-	protected void generateStructure(boolean generatingToRight) {
+	protected void internalGenerate(boolean generatingToRight) {
 		SawToothGenerator surfaceGenerator = new SawToothGenerator(hillsMinHeight, hillsMaxHeight, 0, 0, 30);
 		
 		// generate the surface height across the structure.

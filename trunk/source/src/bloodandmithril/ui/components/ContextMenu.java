@@ -71,14 +71,14 @@ public class ContextMenu extends Component {
 		}
 		maxLength = maxLength * 10;
 
-		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), maxLength, maxHeight, active, backGroundColor);
-		renderBox(x, y, maxLength, maxHeight, active, borderColor);
+		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), maxLength, maxHeight, isActive(), backGroundColor);
+		renderBox(x, y, maxLength, maxHeight, isActive(), borderColor);
 
 		int i = 0;
 		Iterator<ContextMenuItem> iterator = menuItems.iterator();
 		while (iterator.hasNext()) {
 			ContextMenuItem next = iterator.next();
-			next.button.render(x + next.button.width/2 + 5, y - i * 20, active);
+			next.button.render(x + next.button.width/2 + 5, y - i * 20, isActive());
 			i++;
 		}
 

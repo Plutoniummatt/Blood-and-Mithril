@@ -64,22 +64,19 @@ public abstract class Individual extends Equipper {
 	private IndividualState state;
 
 	/** Which actions are currently active */
-	protected Commands activeCommands = new Commands();
+	private Commands activeCommands = new Commands();
 
 	/** The AI responsible for this character */
 	protected ArtificialIntelligence ai;
-
-	/** Whether this {@link Individual} can trade */
-	public final boolean canTradeWith;
 
 	/** The faction this {@link Individual} belongs to */
 	protected int factionId;
 
 	/** Width and Height of the individual */
-	public int width, height;
+	private int width, height;
 
 	/** The box definining the region where this {@link Individual} can interact with entities */
-	public Box interactionBox;
+	private Box interactionBox;
 
 	/** For animation frame timing */
 	protected float animationTimer;
@@ -97,13 +94,13 @@ public abstract class Individual extends Equipper {
 	private boolean jumpedOff = false;
 
 	/** Height at which it's deemed unsafe to fall to the ground */
-	public int safetyHeight;
+	private int safetyHeight;
 
 	/** True if this {@link Individual} is walking */
 	private boolean walking = true;
 
 	/** True if this {@link Individual} is currently stepping up */
-	public boolean steppingUp;
+	private boolean steppingUp;
 
 	/** Part of the step-up processing */
 	private int steps = 0;
@@ -121,7 +118,16 @@ public abstract class Individual extends Equipper {
 	/**
 	 * Constructor
 	 */
-	protected Individual(IndividualIdentifier id, IndividualState state, int factionId, float aiDelay, float inventoryMassCapacity, int width, int height, int safetyHeight, Box interactionBox, boolean canTradeWith) {
+	protected Individual(
+			IndividualIdentifier id,
+			IndividualState state,
+			int factionId,
+			float aiDelay,
+			float inventoryMassCapacity,
+			int width,
+			int height,
+			int safetyHeight,
+			Box interactionBox) {
 		super(inventoryMassCapacity);
 		this.id = id;
 		this.state = state;
@@ -131,7 +137,6 @@ public abstract class Individual extends Equipper {
 		this.height = height;
 		this.safetyHeight = safetyHeight;
 		this.interactionBox = interactionBox;
-		this.canTradeWith = canTradeWith;
 	}
 
 
@@ -150,9 +155,9 @@ public abstract class Individual extends Equipper {
 		this.factionId = other.factionId;
 		this.currentLoad = other.currentLoad;
 		this.equippedItems = other.equippedItems;
-		this.height = other.height;
+		this.height =  other.getHeight();
 		this.id = other.id;
-		this.interactionBox = other.interactionBox;
+		this.interactionBox = other.getInteractionBox();
 		this.inventoryMassCapacity = other.inventoryMassCapacity;
 		this.jumpedOff = other.jumpedOff;
 		this.safetyHeight = other.safetyHeight;
@@ -244,7 +249,7 @@ public abstract class Individual extends Equipper {
 			);
 
 			Shaders.filter.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-			BloodAndMithrilClient.spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + height);
+			BloodAndMithrilClient.spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight());
 		}
 	}
 
@@ -322,8 +327,8 @@ public abstract class Individual extends Equipper {
 		}
 
 		// Update interaction box location
-		interactionBox.position.x = state.position.x;
-		interactionBox.position.y = state.position.y + height / 2;
+		getInteractionBox().position.x = state.position.x;
+		getInteractionBox().position.y = state.position.y + getHeight() / 2;
 
 		aiReactionTimer += delta;
 		if (aiReactionTimer >= aITaskDelay) {
@@ -501,7 +506,7 @@ public abstract class Individual extends Equipper {
 	 * Determines during {@link #kinetics(float)} whether we can step up
 	 */
 	protected boolean canStepUp(int offsetX) {
-		int blockspan = height/Topography.TILE_SIZE + (height % Topography.TILE_SIZE == 0 ? 0 : 1);
+		int blockspan = getHeight()/Topography.TILE_SIZE + (getHeight() % Topography.TILE_SIZE == 0 ? 0 : 1);
 
 		for (int block = 1; block != blockspan + 1; block++) {
 			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE*block + Topography.TILE_SIZE/2)) {
@@ -514,7 +519,7 @@ public abstract class Individual extends Equipper {
 
 	/** Whether this {@link Individual} is obstructed by {@link Tile}s */
 	protected boolean obstructed(int offsetX) {
-		int blockspan = height/Topography.TILE_SIZE + (height % Topography.TILE_SIZE == 0 ? 0 : 1);
+		int blockspan = getHeight()/Topography.TILE_SIZE + (getHeight() % Topography.TILE_SIZE == 0 ? 0 : 1);
 		for (int block = 0; block != blockspan; block++) {
 			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE/2 + Topography.TILE_SIZE * block)) {
 				return true;
@@ -789,9 +794,7 @@ public abstract class Individual extends Equipper {
 		}
 
 		if (!GameWorld.selectedIndividuals.isEmpty() &&
-			 GameWorld.selectedIndividuals.size() == 1 &&
-			!GameWorld.selectedIndividuals.contains(thisIndividual) &&
-		     GameWorld.selectedIndividuals.iterator().next().canTradeWith) {
+			!GameWorld.selectedIndividuals.contains(thisIndividual)) {
 			contextMenuToReturn.addMenuItem(attackMenuItem);
 		}
 
@@ -806,9 +809,7 @@ public abstract class Individual extends Equipper {
 
 		if (!GameWorld.selectedIndividuals.isEmpty() &&
 			 GameWorld.selectedIndividuals.size() == 1 &&
-			!GameWorld.selectedIndividuals.contains(thisIndividual) &&
-		     GameWorld.selectedIndividuals.iterator().next().canTradeWith &&
-		     canTradeWith) {
+			!GameWorld.selectedIndividuals.contains(thisIndividual)) {
 			contextMenuToReturn.addMenuItem(tradeMenuItem);
 		}
 
@@ -1066,6 +1067,26 @@ public abstract class Individual extends Equipper {
 	 */
 	public Set<Integer> getSelectedByClient() {
 		return selectedByClient;
+	}
+
+
+	public int getSafetyHeight() {
+		return safetyHeight;
+	}
+
+
+	public Box getInteractionBox() {
+		return interactionBox;
+	}
+
+
+	public int getWidth() {
+		return width;
+	}
+
+
+	public int getHeight() {
+		return height;
 	}
 
 

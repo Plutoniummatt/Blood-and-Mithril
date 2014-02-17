@@ -119,10 +119,11 @@ public class StructureMap {
 		keyMapToUse.get(chunkX).remove(chunkY);
 		
 		// Decrement chunks left to be generated
-		structures.get(key).chunksLeftToBeGenerated--;
+		structures.get(key).setChunksLeftToBeGenerated(
+				structures.get(key).getChunksLeftToBeGenerated() - 1);
 		
 		// If that was the last chunk, delete the structure, no longer needed
-		if (structures.get(key).isFinishedGenerating()) {
+		if (structures.get(key).allChunksGenerated()) {
 			structures.remove(key);
 		}
 	}

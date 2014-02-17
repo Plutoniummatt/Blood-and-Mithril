@@ -329,11 +329,11 @@ public class TradeWindow extends Window {
 		if (proposer instanceof Individual) {
 			if (proposee instanceof Individual) {
 				if (((Individual) proposee).getState().position.cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
-					closing = true;
+					setClosing(true);
 				}
 			} else if (proposee instanceof ConstructionContainer) {
 				if (((ConstructionContainer) proposee).getPositionOfChest().cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
-					closing = true;
+					setClosing(true);
 				}
 			}
 		}
@@ -357,13 +357,13 @@ public class TradeWindow extends Window {
 			}
 		}
 
-		boolean isTradeButtonClickable = active && !rejected && (!proposeeItemsToTrade.isEmpty() || !proposerItemsToTrade.isEmpty());
+		boolean isTradeButtonClickable = isActive() && !rejected && (!proposeeItemsToTrade.isEmpty() || !proposerItemsToTrade.isEmpty());
 
 		tradeButton.render(
 			x + width/2,
 			y - height + 40,
 			isTradeButtonClickable,
-			alpha
+			getAlpha()
 		);
 	}
 	

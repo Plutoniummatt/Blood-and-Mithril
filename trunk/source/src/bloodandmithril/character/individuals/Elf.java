@@ -93,7 +93,7 @@ public class Elf extends Individual {
 	 * Constructor
 	 */
 	public Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity) {
-		super(id, state, factionId, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), true);
+		super(id, state, factionId, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120));
 		this.female = female;
 		this.hairColorR = hairColor.r;
 		this.hairColorG = hairColor.g;
@@ -306,7 +306,7 @@ public class Elf extends Individual {
 		float x = BloodAndMithrilClient.getMouseWorldX();
 		float y = BloodAndMithrilClient.getMouseWorldY();
 
-		boolean ans = x >= getState().position.x - width/2 && x <= getState().position.x + width/2 && y >= getState().position.y && y <= getState().position.y + height;
+		boolean ans = x >= getState().position.x - getWidth()/2 && x <= getState().position.x + getWidth()/2 && y >= getState().position.y && y <= getState().position.y + getHeight();
 		return ans;
 	}
 
