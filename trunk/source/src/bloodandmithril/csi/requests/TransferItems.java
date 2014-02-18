@@ -14,9 +14,6 @@ import bloodandmithril.item.TradeService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.ConstructionWithContainer;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.Component;
-import bloodandmithril.ui.components.window.InventoryWindow;
-import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.world.GameWorld;
 
 /**
@@ -142,13 +139,7 @@ public class TransferItems implements Request {
 	public static class RefreshWindowsResponse implements Response {
 		@Override
 		public void acknowledge() {
-			for (Component component : UserInterface.layeredComponents) {
-				if (component instanceof TradeWindow) {
-					((TradeWindow) component).refresh();
-				} else if (component instanceof InventoryWindow) {
-					((InventoryWindow) component).refresh();
-				}
-			}
+			UserInterface.refreshInventoryWindows();
 		}
 
 		@Override
