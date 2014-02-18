@@ -16,7 +16,6 @@ import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.ChatWindow;
 import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
-import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Task;
 
@@ -81,7 +80,7 @@ public class BottomBar extends Component {
 		}
 
 		if (chat.click()) {
-			chatClicked();
+			chatClicked(copy);
 			return true;
 		}
 
@@ -130,45 +129,66 @@ public class BottomBar extends Component {
 
 
 	/** Called when the chat button is clicked */
-	private void chatClicked() {
-		if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
-			UserInterface.addLayeredComponent(
-			new MessageWindow(
-					"Chat is unavailable during single player",
-					Color.ORANGE,
-					BloodAndMithrilClient.WIDTH/2 - 175,
-					BloodAndMithrilClient.HEIGHT/2 + 100,
-					350,
-					200,
-					"Chat",
-					true,
-					100,
-					100
-				)
-			);
-		} else {
-			for (Component component : UserInterface.layeredComponents) {
-				if (component instanceof ChatWindow) {
-					((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
-					((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
-					((ChatWindow) component).minimized = false;
-					((ChatWindow) component).setActive(true);
-					return;
-				}
-			}
-	
-			UserInterface.addLayeredComponent(
-				new ChatWindow(
-					BloodAndMithrilClient.WIDTH/2 - 250,
-					BloodAndMithrilClient.HEIGHT/2 + 150,
-					500,
-					300,
-					true,
-					300,
-					250
-				)
-			);
-		}
+	private void chatClicked(List<ContextMenu> copy) {
+
+		ContextMenu contextMenu = new ContextMenu(
+			BloodAndMithrilClient.getMouseScreenX(),
+			BloodAndMithrilClient.getMouseScreenY() + 44,
+			new ContextMenuItem(
+				"Show logs",
+				new Task() {
+					@Override
+					public void execute() {
+						//TODO
+					}
+				},
+				Color.ORANGE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			)
+		);
+
+		if (ClientServerInterface.isClient() && !ClientServerInterface.isServer())
+		contextMenu.addMenuItem(
+			new ContextMenuItem(
+				"Chat",
+				new Task() {
+					@Override
+					public void execute() {
+						for (Component component : UserInterface.layeredComponents) {
+							if (component instanceof ChatWindow) {
+								((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
+								((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
+								((ChatWindow) component).minimized = false;
+								((ChatWindow) component).setActive(true);
+								return;
+							}
+						}
+
+						UserInterface.addLayeredComponent(
+							new ChatWindow(
+								BloodAndMithrilClient.WIDTH/2 - 250,
+								BloodAndMithrilClient.HEIGHT/2 + 150,
+								500,
+								300,
+								true,
+								300,
+								250
+							)
+						);
+					}
+				},
+				Color.ORANGE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			)
+		);
+
+		copy.add(
+			contextMenu
+		);
 	}
 
 

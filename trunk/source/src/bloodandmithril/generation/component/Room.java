@@ -57,7 +57,7 @@ public class Room extends Component {
 		for (int x = innerBoundaries.right; x >= innerBoundaries.left; x--) {
 			boolean overlap = false;
 
-			for (Interface iface : existingInterfaces) {
+			for (Interface iface : getExistingInterfaces()) {
 				if (iface instanceof RectangularInterface) {
 					overlap = ((RectangularInterface) iface).boundaries.isWithin(x, y) || overlap;
 				}
@@ -67,7 +67,7 @@ public class Room extends Component {
 				if (mostRightAvailableX != null) {
 					RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(y, y, x + (x == innerBoundaries.right ? 0 : 2), mostRightAvailableX));
 					if (!(rectangularInterface.getWidth() <= 1)) {
-						availableInterfaces.add(rectangularInterface);
+						getAvailableInterfaces().add(rectangularInterface);
 					}
 					mostRightAvailableX = null;
 				}
@@ -78,7 +78,7 @@ public class Room extends Component {
 					if (x == innerBoundaries.left) {
 						RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(y, y, x, mostRightAvailableX));
 						if (!(rectangularInterface.getWidth() <= 1)) {
-							availableInterfaces.add(rectangularInterface);
+							getAvailableInterfaces().add(rectangularInterface);
 						}
 					}
 				}
@@ -93,7 +93,7 @@ public class Room extends Component {
 		for (int y = innerBoundaries.top; y >= innerBoundaries.bottom; y--) {
 			boolean overlap = false;
 
-			for (Interface iface : existingInterfaces) {
+			for (Interface iface : getExistingInterfaces()) {
 				if (iface instanceof RectangularInterface) {
 					overlap = ((RectangularInterface) iface).boundaries.isWithin(x, y) || overlap;
 				}
@@ -103,7 +103,7 @@ public class Room extends Component {
 				if (highestAvailableY != null) {
 					RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(highestAvailableY, y + (y == innerBoundaries.top ? 0 : 2), x, x));
 					if (!(rectangularInterface.getHeight() <= 1)) {
-						availableInterfaces.add(rectangularInterface);
+						getAvailableInterfaces().add(rectangularInterface);
 					}
 					highestAvailableY = null;
 				}
@@ -114,7 +114,7 @@ public class Room extends Component {
 					if (y == innerBoundaries.bottom) {
 						RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(highestAvailableY, y, x, x));
 						if (!(rectangularInterface.getHeight() <= 1)) {
-							availableInterfaces.add(rectangularInterface);
+							getAvailableInterfaces().add(rectangularInterface);
 						}
 					}
 				}
@@ -148,7 +148,7 @@ public class Room extends Component {
 		// Filter out the top interfaces.
 		// If we're stemming right, filter out left interfaces, if stemming left, filter out right interfaces
 		// If we're stemming up, filter out bottom
-		Collection<Interface> interfacesToUse = Collections2.filter(availableInterfaces, new Predicate<Interface>() {
+		Collection<Interface> interfacesToUse = Collections2.filter(getAvailableInterfaces(), new Predicate<Interface>() {
 			@Override
 			public boolean apply(Interface input) {
 				if (input instanceof RectangularInterface) {
@@ -176,12 +176,12 @@ public class Room extends Component {
 		// Vertical interface
 		if (((RectangularInterface)interfacesToUseList.get(interfaceIndex)).boundaries.left == ((RectangularInterface)interfacesToUseList.get(interfaceIndex)).boundaries.right) {
 			createdInterface = interfacesToUseList.get(interfaceIndex).createConnectedInterface(new RectangularInterfaceCustomization(stairsCustomization.corridorHeight - 1, 1, 0, 0));
-			createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, structureKey);
+			createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, getStructureKey());
 
 		// Bottom interface
 		} else {
 			createdInterface = interfacesToUseList.get(interfaceIndex).createConnectedInterface(new RectangularInterfaceCustomization(1, stairsCustomization.corridorHeight - 1, 0, 0));
-			createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, structureKey);
+			createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, getStructureKey());
 		}
 
 		// Check for overlaps
@@ -197,11 +197,11 @@ public class Room extends Component {
 		CorridorCreationCustomization corridorCustomization = (CorridorCreationCustomization) custom;
 
 		// Filter out any horizontal interfaces
-		Collection<Interface> verticalInterfacesCollection = Collections2.filter(availableInterfaces, verticalInterfacePredicate);
+		Collection<Interface> verticalInterfacesCollection = Collections2.filter(getAvailableInterfaces(), verticalInterfacePredicate);
 
 		// Determine whether to use left or right interfaces
 		if (corridorCustomization.stemRight) {
-			verticalInterfacesCollection = Collections2.filter(availableInterfaces, new Predicate<Interface>() {
+			verticalInterfacesCollection = Collections2.filter(getAvailableInterfaces(), new Predicate<Interface>() {
 				@Override
 				public boolean apply(Interface input) {
 					if (input instanceof RectangularInterface) {
@@ -213,7 +213,7 @@ public class Room extends Component {
 				}
 			});
 		} else {
-			verticalInterfacesCollection = Collections2.filter(availableInterfaces, new Predicate<Interface>() {
+			verticalInterfacesCollection = Collections2.filter(getAvailableInterfaces(), new Predicate<Interface>() {
 				@Override
 				public boolean apply(Interface input) {
 					if (input instanceof RectangularInterface) {
@@ -232,7 +232,7 @@ public class Room extends Component {
 
 		// Create the connected interface from an available one, then create the component from the created interface
 		Interface createdInterface = verticalInterfacesList.get(interfaceIndex).createConnectedInterface(new RectangularInterfaceCustomization(corridorCustomization.height - 1, 1, 0, 0));
-		Component createdComponent = createdInterface.createComponent(Corridor.class, corridorCustomization, structureKey);
+		Component createdComponent = createdInterface.createComponent(Corridor.class, corridorCustomization, getStructureKey());
 
 		// Check for overlaps
 		return checkForOverlaps(createdInterface, createdComponent);
@@ -241,7 +241,7 @@ public class Room extends Component {
 
 	@Override
 	public Tile getForegroundTile(int worldTileX, int worldTileY) {
-		if (boundaries.isWithin(worldTileX, worldTileY)) {
+		if (getBoundaries().isWithin(worldTileX, worldTileY)) {
 			if (innerBoundaries.isWithin(worldTileX, worldTileY)) {
 				return new Tile.EmptyTile();
 			} else {
@@ -259,7 +259,7 @@ public class Room extends Component {
 
 	@Override
 	public Tile getBackgroundTile(int worldTileX, int worldTileY) {
-		if (boundaries.isWithin(worldTileX, worldTileY)) {
+		if (getBoundaries().isWithin(worldTileX, worldTileY)) {
 			try {
 				return wallTile.newInstance();
 			} catch (Exception e) {

@@ -13,14 +13,6 @@ import bloodandmithril.util.Util;
  */
 public class BiomeDecider {
 	
-	
-	/**
-	 * Constructor
-	 */
-	public BiomeDecider() {
-	}
-	
-	
 	/**
 	 * Decides which biome to use.
 	 * 

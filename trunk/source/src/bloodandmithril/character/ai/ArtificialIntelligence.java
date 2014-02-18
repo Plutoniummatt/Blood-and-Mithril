@@ -26,7 +26,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	private static final long serialVersionUID = 272133135274740547L;
 
 	/** The unique identifier of the host, note we can't put a reference to host here, otherwise we would attempt to save a circular reference */
-	public IndividualIdentifier hostId;
+	private final IndividualIdentifier hostId;
 
 	/** The current {@link AITask} the {@link #host} is currently executing */
 	protected AITask currentTask = new Idle();

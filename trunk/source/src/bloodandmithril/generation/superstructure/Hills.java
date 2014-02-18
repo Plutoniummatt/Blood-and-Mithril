@@ -17,7 +17,7 @@ import bloodandmithril.world.topography.tile.Tile;
 
 /**
  * The structure of a hill surface to be stored and used to generate when needed.
- * 
+ *
  * @author Sam, Matt
  */
 public class Hills extends SuperStructure {
@@ -31,7 +31,7 @@ public class Hills extends SuperStructure {
 			startingChunkX,
 			startingChunkY,
 			(hillsMaxWidth - hillsMinWidth) / 2 + 1,
-			maxSurfaceHeight - (hillsMinHeight / Topography.CHUNK_SIZE) + 1,
+			maxSurfaceHeight - hillsMinHeight / Topography.CHUNK_SIZE + 1,
 			maxSurfaceHeight,
 			hillsMinHeight / Topography.CHUNK_SIZE - 1
 		);
@@ -41,10 +41,10 @@ public class Hills extends SuperStructure {
 	@Override
 	protected void internalGenerate(boolean generatingToRight) {
 		SawToothGenerator surfaceGenerator = new SawToothGenerator(hillsMinHeight, hillsMaxHeight, 0, 0, 30);
-		
+
 		// generate the surface height across the structure.
-		int rightMostTile = (boundaries.right + 1) * Topography.CHUNK_SIZE - 1;
-		int leftMostTile = boundaries.left * Topography.CHUNK_SIZE;
+		int rightMostTile = (getBoundaries().right + 1) * Topography.CHUNK_SIZE - 1;
+		int leftMostTile = getBoundaries().left * Topography.CHUNK_SIZE;
 		if (generatingToRight) {
 			for (int x = leftMostTile; x <= rightMostTile; x++) {
 				if (x == rightMostTile - 40) {
@@ -59,10 +59,10 @@ public class Hills extends SuperStructure {
 				}
 				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, StructureMap.surfaceHeight);
 			}
-		}		
+		}
 	}
-	
-	
+
+
 	@Override
 	protected Tile internalGetForegroundTile(int worldTileX, int worldTileY) {
 		if (worldTileY > StructureMap.surfaceHeight.get(worldTileX)) {
