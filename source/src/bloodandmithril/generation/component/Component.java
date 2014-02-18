@@ -23,16 +23,16 @@ public abstract class Component implements Serializable {
 	private static final long serialVersionUID = 7335059774362898508L;
 
 	/** Available {@link Interface}s of this {@link Component} */
-	public List<Interface> availableInterfaces = Lists.newArrayList();
+	private final List<Interface> availableInterfaces = Lists.newArrayList();
 
 	/** {@link Interface}s of existing stemmed {@link Component}s. */
-	public List<Interface> existingInterfaces = Lists.newArrayList();
+	private final List<Interface> existingInterfaces = Lists.newArrayList();
 
 	/** {@link Boundaries} of this {@link Component} */
-	public final Boundaries boundaries;
+	private final Boundaries boundaries;
 
 	/** The key of the {@link Structure} this {@link Component} exists on */
-	public final int structureKey;
+	private final int structureKey;
 
 	/** Predicate used to filter a collection of interfaces, leaving the vertical interfaces */
 	protected static Predicate<Interface> verticalInterfacePredicate = new Predicate<Interface>() {
@@ -85,14 +85,14 @@ public abstract class Component implements Serializable {
 	 */
 	public <T extends Component> Component stem(Class<T> with, ComponentCreationCustomization<T> custom) {
 		// Clear and regenerate interfaces
-		availableInterfaces.clear();
+		getAvailableInterfaces().clear();
 		generateInterfaces();
 
 		// Stem and generate stemmed component
 		Component stemmedComponent = internalStem(with, custom);
 
 		// Clear and regenerate interfaces again, strictly speaking this isn't necessary, it is merely more convenient for development
-		availableInterfaces.clear();
+		getAvailableInterfaces().clear();
 		generateInterfaces();
 
 		return stemmedComponent;
@@ -105,11 +105,11 @@ public abstract class Component implements Serializable {
 	 * If overlap detected, do not add created interface to existing interfaces list.
 	 */
 	protected Component checkForOverlaps(Interface createdInterface, Component createdComponent) {
-		for (Component component : StructureMap.structures.get(structureKey).getComponents()) {
+		for (Component component : StructureMap.structures.get(getStructureKey()).getComponents()) {
 			if (component == this) {
 				continue;
 			} else {
-				if (component.boundaries.doesOverlapWith(createdComponent.boundaries)) {
+				if (component.getBoundaries().doesOverlapWith(createdComponent.getBoundaries())) {
 					Logger.generationDebug("Overlap detected when stemming " + getClass().getSimpleName(), LogLevel.INFO);
 					return null;
 				}
@@ -117,11 +117,31 @@ public abstract class Component implements Serializable {
 		}
 
 		// Add created interface to existing interfaces of both components
-		existingInterfaces.add(createdInterface);
-		createdComponent.existingInterfaces.add(createdInterface);
+		getExistingInterfaces().add(createdInterface);
+		createdComponent.getExistingInterfaces().add(createdInterface);
 		createdComponent.generateInterfaces();
 
 		return createdComponent;
+	}
+
+
+	public List<Interface> getAvailableInterfaces() {
+		return availableInterfaces;
+	}
+
+
+	public List<Interface> getExistingInterfaces() {
+		return existingInterfaces;
+	}
+
+
+	public Boundaries getBoundaries() {
+		return boundaries;
+	}
+
+
+	public int getStructureKey() {
+		return structureKey;
 	}
 
 

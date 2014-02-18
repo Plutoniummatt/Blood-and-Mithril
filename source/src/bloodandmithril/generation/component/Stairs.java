@@ -61,7 +61,7 @@ public class Stairs extends Component {
 	public Tile getForegroundTile(int worldTileX, int worldTileY) {
 
 		// If we're within the boundaries, carry on, otherwise return null
-		if(boundaries.isWithin(worldTileX, worldTileY)) {
+		if(getBoundaries().isWithin(worldTileX, worldTileY)) {
 
 			// If we're on the stair line, create a stair tile and return it
 			if(worldTileY == slopeGradient * worldTileX + slopeConstant) {
@@ -109,7 +109,7 @@ public class Stairs extends Component {
 
 	@Override
 	public Tile getBackgroundTile(int worldTileX, int worldTileY) {
-		if(boundaries.isWithin(worldTileX, worldTileY)) {
+		if(getBoundaries().isWithin(worldTileX, worldTileY)) {
 			if (
 				worldTileY >= slopeGradient * worldTileX + slopeConstant - borderThickness &&
 				worldTileY <= slopeGradient * worldTileX + slopeConstant + corridorHeight + borderThickness
@@ -130,17 +130,17 @@ public class Stairs extends Component {
 
 	@Override
 	protected void generateInterfaces() {
-		generateVerticalInterfaces(boundaries.left);
-		generateVerticalInterfaces(boundaries.right);
+		generateVerticalInterfaces(getBoundaries().left);
+		generateVerticalInterfaces(getBoundaries().right);
 
-		generateHorizontalInterfaces(boundaries.top);
-		generateHorizontalInterfaces(boundaries.bottom);
+		generateHorizontalInterfaces(getBoundaries().top);
+		generateHorizontalInterfaces(getBoundaries().bottom);
 	}
 
 
 	private void generateVerticalInterfaces(int x) {
 		Integer top = null;
-		for (int y = boundaries.top; y >= boundaries.bottom; y--) {
+		for (int y = getBoundaries().top; y >= getBoundaries().bottom; y--) {
 			Tile foregroundTile = getForegroundTile(x, y);
 			if (foregroundTile != null) {
 				if (foregroundTile instanceof EmptyTile) {
@@ -149,7 +149,7 @@ public class Stairs extends Component {
 					}
 				} else {
 					if (top != null) {
-						availableInterfaces.add(new RectangularInterface(new Boundaries(top, y + 1, x, x)));
+						getAvailableInterfaces().add(new RectangularInterface(new Boundaries(top, y + 1, x, x)));
 						break;
 					}
 				}
@@ -159,7 +159,7 @@ public class Stairs extends Component {
 
 
 	private boolean doesNotIntersectWithExistingInterfaces(int x, int y) {
-		for (Interface iface : existingInterfaces) {
+		for (Interface iface : getExistingInterfaces()) {
 			if (((RectangularInterface) iface).boundaries.isWithin(x, y)) {
 				return false;
 			}
@@ -170,7 +170,7 @@ public class Stairs extends Component {
 
 	private void generateHorizontalInterfaces(int y) {
 		Integer right = null;
-		for (int x = boundaries.right; x >= boundaries.left; x--) {
+		for (int x = getBoundaries().right; x >= getBoundaries().left; x--) {
 			Tile foregroundTile = getForegroundTile(x, y);
 			if (foregroundTile != null) {
 				if (foregroundTile instanceof EmptyTile) {
@@ -179,7 +179,7 @@ public class Stairs extends Component {
 					}
 				} else {
 					if (right != null) {
-						availableInterfaces.add(new RectangularInterface(new Boundaries(y, y, x + 1, right)));
+						getAvailableInterfaces().add(new RectangularInterface(new Boundaries(y, y, x + 1, right)));
 						break;
 					}
 				}
@@ -208,14 +208,14 @@ public class Stairs extends Component {
 		final StairsCreationCustomization stairsCustomization = (StairsCreationCustomization)custom;
 
 		// If we're stemming right, filter out left interfaces, if stemming left, filter out right interfaces
-		Collection<Interface> interfacesToUse = Collections2.filter(availableInterfaces, new Predicate<Interface>() {
+		Collection<Interface> interfacesToUse = Collections2.filter(getAvailableInterfaces(), new Predicate<Interface>() {
 			@Override
 			public boolean apply(Interface input) {
 				if (input instanceof RectangularInterface) {
 					RectangularInterface iface = (RectangularInterface) input;
 
-					boolean isNotWrongVertical = stairsCustomization.stemRight ? !(iface.boundaries.right == boundaries.left) : !(iface.boundaries.left == boundaries.right);
-					boolean isNotWrongHorizontal = stairsCustomization.stemRight == stairsCustomization.slopeGradient > 0 ? !(iface.boundaries.top == boundaries.bottom) : !(iface.boundaries.bottom == boundaries.top);
+					boolean isNotWrongVertical = stairsCustomization.stemRight ? !(iface.boundaries.right == getBoundaries().left) : !(iface.boundaries.left == getBoundaries().right);
+					boolean isNotWrongHorizontal = stairsCustomization.stemRight == stairsCustomization.slopeGradient > 0 ? !(iface.boundaries.top == getBoundaries().bottom) : !(iface.boundaries.bottom == getBoundaries().top);
 
 					return isNotWrongVertical && isNotWrongHorizontal;
 				} else {
@@ -239,12 +239,12 @@ public class Stairs extends Component {
 		// Vertical interface
 		if (((RectangularInterface)interfacesToUseList.get(interfaceIndex)).boundaries.left == ((RectangularInterface)interfacesToUseList.get(interfaceIndex)).boundaries.right) {
 			createdInterface = interfacesToUseList.get(interfaceIndex).createConnectedInterface(new RectangularInterfaceCustomization(stairsCustomization.corridorHeight - 1, 1, 0, 0));
-			createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, structureKey);
+			createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, getStructureKey());
 
 		// Bottom interface
 		} else {
 			createdInterface = interfacesToUseList.get(interfaceIndex).createConnectedInterface(new RectangularInterfaceCustomization(1, stairsCustomization.corridorHeight - 1, 0, 0));
-			createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, structureKey);
+			createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, getStructureKey());
 		}
 
 		// Check for overlaps
@@ -257,28 +257,28 @@ public class Stairs extends Component {
 		CorridorCreationCustomization corridorCustomization = (CorridorCreationCustomization) custom;
 
 		// Filter out any horizontal interfaces
-		Collection<Interface> verticalInterfacesCollection = Collections2.filter(availableInterfaces, verticalInterfacePredicate);
+		Collection<Interface> verticalInterfacesCollection = Collections2.filter(getAvailableInterfaces(), verticalInterfacePredicate);
 
 		// Determine whether to use left or right interfaces
 		if (corridorCustomization.stemRight) {
-			verticalInterfacesCollection = Collections2.filter(availableInterfaces, new Predicate<Interface>() {
+			verticalInterfacesCollection = Collections2.filter(getAvailableInterfaces(), new Predicate<Interface>() {
 				@Override
 				public boolean apply(Interface input) {
 					if (input instanceof RectangularInterface) {
 						RectangularInterface iface = (RectangularInterface) input;
-						return iface.boundaries.left == iface.boundaries.right && iface.boundaries.right == boundaries.right;
+						return iface.boundaries.left == iface.boundaries.right && iface.boundaries.right == getBoundaries().right;
 					} else {
 						throw new RuntimeException();
 					}
 				}
 			});
 		} else {
-			verticalInterfacesCollection = Collections2.filter(availableInterfaces, new Predicate<Interface>() {
+			verticalInterfacesCollection = Collections2.filter(getAvailableInterfaces(), new Predicate<Interface>() {
 				@Override
 				public boolean apply(Interface input) {
 					if (input instanceof RectangularInterface) {
 						RectangularInterface iface = (RectangularInterface) input;
-						return iface.boundaries.left == iface.boundaries.right && iface.boundaries.left == boundaries.left;
+						return iface.boundaries.left == iface.boundaries.right && iface.boundaries.left == getBoundaries().left;
 					} else {
 						throw new RuntimeException();
 					}
@@ -295,7 +295,7 @@ public class Stairs extends Component {
 
 		// Create the connected interface from an available one, then create the component from the created interface
 		Interface createdInterface = verticalInterfacesList.get(interfaceIndex).createConnectedInterface(new RectangularInterfaceCustomization(corridorCustomization.height - 1, 1, 0, 0));
-		Component createdComponent = createdInterface.createComponent(Corridor.class, corridorCustomization, structureKey);
+		Component createdComponent = createdInterface.createComponent(Corridor.class, corridorCustomization, getStructureKey());
 
 		// Check for overlaps
 		return checkForOverlaps(createdInterface, createdComponent);

@@ -14,25 +14,25 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Sam, Matt
  */
 public class TerrainGenerator {
-	
+
 	/** Decides which biomes to generate */
 	BiomeDecider biomeDecider = new BiomeDecider();
 
 	public void generate(int x, int y) {
-		
+
 		// Makes arrays of tiles to work on. both for foreground and background
 		Tile[][] fTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
 		Tile[][] bTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
-		
+
 		// If there isn't a structure where the surface should be above the chunk we're generating, make the surface structure.
-		handleSurface(x);
-		
+		generateSurface(x);
+
 		// If there still isn't a structure on the chunk we're generating, it's either sky or underground.
-		handleSkyAndUnderground(x, y);
-		
+		generateAboveAndBelowSurface(x, y);
+
 		// Populate the tile arrays.
 		populateTileArrays(x, y, fTiles, bTiles);
-		
+
 		// Create the chunk and put it in the ChunkMap.
 		Chunk newChunk = new Chunk(fTiles, bTiles, x, y);
 		Topography.chunkMap.addChunk(x, y, newChunk);
@@ -48,8 +48,8 @@ public class TerrainGenerator {
 					bTiles[tileX][tileY] = StructureMap.getTile(x, y, Topography.convertToWorldTileCoord(x, tileX), Topography.convertToWorldTileCoord(y, tileY), false);
 				} catch (NullPointerException e) {
 					handleNPE(bTiles, tileX, tileY, e);
-				}				
-				
+				}
+
 				try {
 					// Get the foreground tile from the structure
 					fTiles[tileX][tileY] = StructureMap.getTile(x, y, Topography.convertToWorldTileCoord(x, tileX), Topography.convertToWorldTileCoord(y, tileY), true);
@@ -58,7 +58,7 @@ public class TerrainGenerator {
 				}
 			}
 		}
-		
+
 		// If the structure has finished generating, we can delete it from the StructureMap.
 		if (StructureMap.doesStructureExist(x, y, true)) {
 			StructureMap.structureDeletionCheck(x, y, true);
@@ -67,10 +67,10 @@ public class TerrainGenerator {
 
 
 	/** Handles the generation of non-surface structures */
-	private void handleSkyAndUnderground(int x, int y) {
+	private void generateAboveAndBelowSurface(int x, int y) {
 		if (!StructureMap.doesStructureExist(x, y, true)) {
 			if (y < maxSurfaceHeight) {
-				Caves caves = new Caves(); // TODO wat....
+				Caves caves = new Caves(); // TODO make this procedural, not hard coded
 				caves.generate(x, y, true);
 			}
 		}
@@ -78,17 +78,17 @@ public class TerrainGenerator {
 
 
 	/** Handles the generation of surface structures */
-	private void handleSurface(int x) {
+	private void generateSurface(int x) {
 		for (int tempX = x - maxStructureWidth; tempX <= x	+ maxStructureWidth; tempX++) {
 			boolean generatingToRight = tempX >= x;
-			
+
 			if (!StructureMap.doesStructureExist(tempX, maxSurfaceHeight, true) && !Topography.chunkMap.doesChunkExist(tempX, maxSurfaceHeight)) {
 				biomeDecider.decideAndGetBiome().generate(tempX, maxSurfaceHeight, generatingToRight);
 			}
 		}
 	}
 
-	
+
 	/** Handles a {@link NullPointerException} during generation */
 	private void handleNPE(Tile[][] bTiles, int tileX, int tileY, NullPointerException e) {
 		if (System.getProperty("debug").equals("true")) {

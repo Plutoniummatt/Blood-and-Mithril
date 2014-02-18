@@ -34,27 +34,27 @@ public class Corridor extends Component {
 	protected void generateInterfaces() {
 		//Left interface
 		boolean left = true;
-		for (Interface iface : existingInterfaces) {
+		for (Interface iface : getExistingInterfaces()) {
 			if(((RectangularInterface) iface).boundaries.left == innerBoundaries.left) {
 				left = false;
 			}
 		}
 
 		if (left) {
-			availableInterfaces.add(
+			getAvailableInterfaces().add(
 				new RectangularInterface(new Boundaries(innerBoundaries.top, innerBoundaries.bottom, innerBoundaries.left, innerBoundaries.left))
 			);
 		}
 
 		//Right interface
 		boolean right = true;
-		for (Interface iface : existingInterfaces) {
+		for (Interface iface : getExistingInterfaces()) {
 			if(((RectangularInterface) iface).boundaries.right == innerBoundaries.right) {
 				right = false;
 			}
 		}
 		if (right) {
-			availableInterfaces.add(
+			getAvailableInterfaces().add(
 				new RectangularInterface(new Boundaries(innerBoundaries.top, innerBoundaries.bottom, innerBoundaries.right, innerBoundaries.right))
 			);
 		}
@@ -83,11 +83,11 @@ public class Corridor extends Component {
 	private Component stemStairs(ComponentCreationCustomization custom) {
 		StairsCreationCustomization stairsCustomization = (StairsCreationCustomization) custom;
 
-		stairsCustomization.stemRight = innerBoundaries.left == ((RectangularInterface)existingInterfaces.get(0)).boundaries.left;
+		stairsCustomization.stemRight = innerBoundaries.left == ((RectangularInterface)getExistingInterfaces().get(0)).boundaries.left;
 
 		// Create the connected interface from an available one, then create the component from the created interface
-		Interface createdInterface = availableInterfaces.get(0).createConnectedInterface(new RectangularInterfaceCustomization(innerBoundaries.top - innerBoundaries.bottom, 1, 0, 0));
-		Component createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, structureKey);
+		Interface createdInterface = getAvailableInterfaces().get(0).createConnectedInterface(new RectangularInterfaceCustomization(innerBoundaries.top - innerBoundaries.bottom, 1, 0, 0));
+		Component createdComponent = createdInterface.createComponent(Stairs.class, stairsCustomization, getStructureKey());
 
 		// Check for overlaps
 		return checkForOverlaps(createdInterface, createdComponent);
@@ -101,11 +101,11 @@ public class Corridor extends Component {
 	private Component stemRoom(ComponentCreationCustomization custom) {
 		RoomCreationCustomization roomCustomization = (RoomCreationCustomization) custom;
 
-		roomCustomization.stemRight = innerBoundaries.left == ((RectangularInterface)existingInterfaces.get(0)).boundaries.left;
+		roomCustomization.stemRight = innerBoundaries.left == ((RectangularInterface)getExistingInterfaces().get(0)).boundaries.left;
 
 		// Create the connected interface from an available one, then create the component from the created interface
-		Interface createdInterface = availableInterfaces.get(0).createConnectedInterface(new RectangularInterfaceCustomization(roomCustomization.height, 1, 0, 0));
-		Component createdComponent = createdInterface.createComponent(Room.class, roomCustomization, structureKey);
+		Interface createdInterface = getAvailableInterfaces().get(0).createConnectedInterface(new RectangularInterfaceCustomization(roomCustomization.height, 1, 0, 0));
+		Component createdComponent = createdInterface.createComponent(Room.class, roomCustomization, getStructureKey());
 
 		// Check for overlaps
 		return checkForOverlaps(createdInterface, createdComponent);
@@ -115,7 +115,7 @@ public class Corridor extends Component {
 	@Override
 	public Tile getForegroundTile(int worldTileX, int worldTileY) {
 
-		if (boundaries.isWithin(worldTileX, worldTileY)) {
+		if (getBoundaries().isWithin(worldTileX, worldTileY)) {
 
 			if (innerBoundaries.isWithin(worldTileX, worldTileY)) {
 				return new Tile.EmptyTile();

@@ -154,7 +154,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	 */
 	private void renderScrollBar() {
 		Window p = (Window) parent;
-		Color scrollBarColor = p.isActive() ? Colors.modulateAlpha(p.borderColor, 0.5f) : Colors.modulateAlpha(p.borderColor, 0.2f * p.getAlpha());
+		Color scrollBarColor = p.isActive() ? Colors.modulateAlpha(p.borderColor, 0.5f * p.getAlpha()) : Colors.modulateAlpha(p.borderColor, 0.2f * p.getAlpha());
 		Component.shapeRenderer.begin(ShapeType.FilledRectangle);
 		Component.shapeRenderer.setColor(scrollBarColor);
 		Component.shapeRenderer.filledRect(x + width - 6, y - 50, 3, 30, scrollBarColor, scrollBarColor, Color.CLEAR, Color.CLEAR);

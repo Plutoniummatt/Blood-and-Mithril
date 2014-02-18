@@ -206,20 +206,20 @@ public class UserInterface {
 				shapeRenderer.begin(ShapeType.FilledRectangle);
 				shapeRenderer.setColor(COMPONENT_FILL_COLOR);
 				shapeRenderer.filledRect(
-					BloodAndMithrilClient.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
-					BloodAndMithrilClient.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
-					(comp.boundaries.right - comp.boundaries.left + 1) * Topography.TILE_SIZE,
-					(comp.boundaries.top - comp.boundaries.bottom + 1) * Topography.TILE_SIZE
+					BloodAndMithrilClient.worldToScreenX(comp.getBoundaries().left * Topography.TILE_SIZE),
+					BloodAndMithrilClient.worldToScreenY(comp.getBoundaries().bottom * Topography.TILE_SIZE),
+					(comp.getBoundaries().right - comp.getBoundaries().left + 1) * Topography.TILE_SIZE,
+					(comp.getBoundaries().top - comp.getBoundaries().bottom + 1) * Topography.TILE_SIZE
 				);
 				shapeRenderer.end();
 
 				shapeRenderer.begin(ShapeType.Rectangle);
 				shapeRenderer.setColor(COMPONENT_BOUNDARY_COLOR);
 				shapeRenderer.rect(
-					BloodAndMithrilClient.worldToScreenX(comp.boundaries.left * Topography.TILE_SIZE),
-					BloodAndMithrilClient.worldToScreenY(comp.boundaries.bottom * Topography.TILE_SIZE),
-					(comp.boundaries.right - comp.boundaries.left + 1) * Topography.TILE_SIZE,
-					(comp.boundaries.top - comp.boundaries.bottom + 1) * Topography.TILE_SIZE
+					BloodAndMithrilClient.worldToScreenX(comp.getBoundaries().left * Topography.TILE_SIZE),
+					BloodAndMithrilClient.worldToScreenY(comp.getBoundaries().bottom * Topography.TILE_SIZE),
+					(comp.getBoundaries().right - comp.getBoundaries().left + 1) * Topography.TILE_SIZE,
+					(comp.getBoundaries().top - comp.getBoundaries().bottom + 1) * Topography.TILE_SIZE
 				);
 				shapeRenderer.end();
 			}
@@ -251,11 +251,11 @@ public class UserInterface {
 		for (Structure struct : StructureMap.structures.values()) {
 			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.getComponents())) {
 				if (renderAvailableInterfaces) {
-					for (Interface in : Lists.newArrayList(comp.availableInterfaces)) {
+					for (Interface in : Lists.newArrayList(comp.getAvailableInterfaces())) {
 						in.render(AVAILABLE_INTERFACE_COLOR);
 					}
 				} else {
-					for (Interface in : Lists.newArrayList(comp.existingInterfaces)) {
+					for (Interface in : Lists.newArrayList(comp.getExistingInterfaces())) {
 						in.render(EXISTING_INTERFACE_COLOR);
 					}
 				}

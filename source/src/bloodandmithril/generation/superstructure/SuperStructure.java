@@ -14,7 +14,7 @@ public abstract class SuperStructure extends Structure {
 	private static final long serialVersionUID = -4187785116665052403L;
 
 	/** The edges of this SuperStructure */
-	public Boundaries boundaries;
+	private Boundaries boundaries;
 
 	/**
 	 * Finds Space for the structure.
@@ -28,7 +28,7 @@ public abstract class SuperStructure extends Structure {
 	protected void findSpaceAndAddToMap(int startingChunkX, int startingChunkY, boolean generatingToRight) {
 
 		// Find space for this super structure
-		boundaries = findSpace(startingChunkX, startingChunkY);
+		setBoundaries(findSpace(startingChunkX, startingChunkY));
 
 		// Add to map
 		setStructureKey(addToStructureMap());
@@ -44,7 +44,7 @@ public abstract class SuperStructure extends Structure {
 
 	@Override
 	protected int addToStructureMap() {
-		return StructureMap.addStructure(boundaries.left, boundaries.top, boundaries.right, boundaries.bottom, this, true);
+		return StructureMap.addStructure(getBoundaries().left, getBoundaries().top, getBoundaries().right, getBoundaries().bottom, this, true);
 	}
 
 
@@ -55,9 +55,19 @@ public abstract class SuperStructure extends Structure {
 	@Override
 	protected void calculateChunksToGenerate() {
 		if (getChunksLeftToBeGenerated() == -1) {
-			setChunksLeftToBeGenerated((boundaries.top - boundaries.bottom + 1) * (boundaries.right - boundaries.left + 1));
+			setChunksLeftToBeGenerated((getBoundaries().top - getBoundaries().bottom + 1) * (getBoundaries().right - getBoundaries().left + 1));
 		} else {
 			throw new RuntimeException("chunksLeftToBeGenerated has already been calculated");
 		}
+	}
+
+
+	protected Boundaries getBoundaries() {
+		return boundaries;
+	}
+
+
+	private void setBoundaries(Boundaries boundaries) {
+		this.boundaries = boundaries;
 	}
 }

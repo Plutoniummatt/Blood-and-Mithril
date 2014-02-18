@@ -68,8 +68,8 @@ public class Desert extends SuperStructure {
 	private static boolean desertGenerated = false; //TODO WTF IS THIS SHIT MANNNNG
 	@Override
 	protected void internalGenerate(boolean generatingToRight) {
-		int rightMostTile = (boundaries.right + 1) * Topography.CHUNK_SIZE - 1;
-		int leftMostTile = boundaries.left * Topography.CHUNK_SIZE;
+		int rightMostTile = (getBoundaries().right + 1) * Topography.CHUNK_SIZE - 1;
+		int leftMostTile = getBoundaries().left * Topography.CHUNK_SIZE;
 
 		if (!desertGenerated) {
 			getComponents().add(new Room(new Boundaries(4, -24, -4, 24), new Boundaries(-1, -19, 1, 19), getStructureKey()));
