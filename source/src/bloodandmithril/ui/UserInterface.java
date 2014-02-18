@@ -27,6 +27,8 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.bar.BottomBar;
+import bloodandmithril.ui.components.window.InventoryWindow;
+import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
@@ -110,6 +112,17 @@ public class UserInterface {
 	 */
 	private static void loadBars() {
 		layeredComponents.add(new BottomBar());
+	}
+
+
+	public static void refreshInventoryWindows() {
+		for (Component component : UserInterface.layeredComponents) {
+			if (component instanceof TradeWindow) {
+				((TradeWindow) component).refresh();
+			} else if (component instanceof InventoryWindow) {
+				((InventoryWindow) component).refresh();
+			}
+		}
 	}
 
 

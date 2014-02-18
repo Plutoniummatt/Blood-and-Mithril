@@ -203,6 +203,8 @@ public class Furnace extends ConstructionWithContainer {
 							new SynchronizePropRequest.SynchronizePropResponse(this),
 							new TransferItems.RefreshWindowsResponse()
 						);
+					} else {
+						UserInterface.refreshInventoryWindows();
 					}
 				}
 			}

@@ -22,8 +22,10 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * {@link Window} used for the {@link Furnace} to heat things
@@ -204,6 +206,34 @@ public class FurnaceWindow extends TradeWindow {
 					}
 				}
 			}
+
+			// Render burn progress bar
+			UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
+
+			int maxWidth = width / 2 + 5;
+
+			float max = 0f;
+			for (Entry<Item, Integer> entry : furnace.container.getInventory().entrySet()) {
+				Item item = entry.getKey();
+				if (item instanceof Fuel) {
+					max = max + ((Fuel)item).getCombustionDuration() * (Furnace.minTemp / furnace.getTemperature()) * entry.getValue();
+				}
+			}
+			float fraction = furnace.getCombustionDurationRemaining() / max;
+
+			Color alphaGreen = Colors.modulateAlpha(Color.GREEN, getAlpha());
+
+			UserInterface.shapeRenderer.filledRect(
+				x + width / 2 - 10,
+				y - 25,
+				fraction * maxWidth,
+				2,
+				alphaGreen,
+				alphaGreen,
+				alphaGreen,
+				alphaGreen
+			);
+			UserInterface.shapeRenderer.end();
 		}
 
 		super.internalWindowRender();
