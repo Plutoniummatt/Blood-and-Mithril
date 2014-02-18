@@ -191,7 +191,6 @@ public class Furnace extends ConstructionWithContainer {
 		if (burning) {
 			synchronized (this) {
 				this.combustionDurationRemaining -= delta;
-				System.out.println(combustionDurationRemaining);
 				if (this.combustionDurationRemaining <= 0f) {
 					burning = false;
 					GameWorld.lights.remove(lightId);
