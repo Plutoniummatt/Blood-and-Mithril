@@ -41,7 +41,7 @@ public class TradeWindow extends Window {
 	protected ScrollableListingPanel<Item> proposeePanel;
 
 	/** Listings of items to display */
-	private final HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade = Maps.newHashMap();
+	protected final HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade = Maps.newHashMap();
 	private final HashMap<ListingMenuItem<Item>, Integer> proposerItemsNotToTrade = Maps.newHashMap();
 
 	private final HashMap<ListingMenuItem<Item>, Integer> proposeeItemsToTrade = Maps.newHashMap();
@@ -366,10 +366,10 @@ public class TradeWindow extends Window {
 			getAlpha()
 		);
 	}
-	
-	
+
+
 	protected boolean isProposeeItemsEmpty() {
-		return (proposeeItemsToTrade.isEmpty() && !proposeeItemsNotToTrade.isEmpty());
+		return proposeeItemsToTrade.isEmpty() && !proposeeItemsNotToTrade.isEmpty();
 	}
 
 

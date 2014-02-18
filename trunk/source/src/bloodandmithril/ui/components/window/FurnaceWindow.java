@@ -34,7 +34,7 @@ public class FurnaceWindow extends TradeWindow {
 
 	/** The {@link Furnace} backing this {@link FurnaceWindow} */
 	private final Furnace furnace;
-	
+
 	/** The {@link TextInputWindow} that is responsible for changing the furnace temperature */
 	private TextInputWindow temperatureInputWindow;
 
@@ -57,7 +57,7 @@ public class FurnaceWindow extends TradeWindow {
 		Color.WHITE,
 		UIRef.BL
 	);
-	
+
 	/** Button that changes temperature of the furnace */
 	private final Button changeTemperatureButton = new Button(
 		"Change temperature",
@@ -99,7 +99,7 @@ public class FurnaceWindow extends TradeWindow {
 									);
 									return;
 								}
-								
+
 								if (newTemp > Furnace.maxTemp) {
 									UserInterface.addLayeredComponent(
 										new MessageWindow(
@@ -142,7 +142,7 @@ public class FurnaceWindow extends TradeWindow {
 								} else {
 									ClientServerInterface.SendRequest.sendChangeFurnaceTemperatureRequest(furnace.id, newTemp);
 								}
-								
+
 							} catch (Exception e) {
 								UserInterface.addLayeredComponent(
 									new MessageWindow(
@@ -165,7 +165,7 @@ public class FurnaceWindow extends TradeWindow {
 					true,
 					String.format("%.1f", furnace.getTemperature())
 				);
-				
+
 				UserInterface.addLayeredComponent(
 					temperatureInputWindow
 				);
@@ -205,7 +205,7 @@ public class FurnaceWindow extends TradeWindow {
 				}
 			}
 		}
-		
+
 		super.internalWindowRender();
 
 		igniteButton.render(
@@ -214,7 +214,7 @@ public class FurnaceWindow extends TradeWindow {
 			!furnace.isBurning() && isActive() && isProposeeItemsEmpty(),
 			getAlpha()
 		);
-		
+
 		changeTemperatureButton.render(
 			x + width/2,
 			y - height + 90,
@@ -222,32 +222,32 @@ public class FurnaceWindow extends TradeWindow {
 			getAlpha()
 		);
 	}
-	
-	
+
+
 	@Override
 	protected void uponClose() {
 		super.uponClose();
-		
+
 		if (temperatureInputWindow != null) {
 			temperatureInputWindow.setClosing(true);
 		}
 	}
-	
-	
+
+
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		super.internalLeftClick(copy, windowsCopy);
-		
+
 		if (isProposeeItemsEmpty()) {
 			igniteButton.click();
 		}
-		
+
 		if (furnace.isBurning()) {
 			changeTemperatureButton.click();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Renders the listing panels
 	 */
@@ -280,7 +280,7 @@ public class FurnaceWindow extends TradeWindow {
 					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue() * (Furnace.minTemp / Furnace.minTemp);
 				}
 			}
-			
+
 			if (finalDuration == 0f) {
 				UserInterface.addLayeredComponent(
 					new MessageWindow(
@@ -298,7 +298,7 @@ public class FurnaceWindow extends TradeWindow {
 				);
 				return;
 			}
-			
+
 			furnace.setCombustionDurationRemaining(finalDuration);
 			furnace.ignite();
 		} else {

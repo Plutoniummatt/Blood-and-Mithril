@@ -7,7 +7,10 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
+import bloodandmithril.item.material.Fuel;
 import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
+import bloodandmithril.prop.building.Furnace;
+import bloodandmithril.world.GameWorld;
 
 /**
  * Evaluates a trade proposal.
@@ -55,6 +58,16 @@ public class TradeService {
 				for (int i = proposerToTradeItem.getValue(); i > 0; i--) {
 					if (proposer.takeItem(proposerToTradeItem.getKey()) == 1) {
 						proposee.giveItem(proposerToTradeItem.getKey());
+					}
+				}
+				if (proposee instanceof ConstructionContainer && GameWorld.props.get(((ConstructionContainer) proposee).propId) instanceof Furnace) {
+					Furnace furnace = (Furnace) GameWorld.props.get(((ConstructionContainer) proposee).propId);
+
+					if (proposerToTradeItem.getKey() instanceof Fuel) {
+						Fuel fuel = (Fuel) proposerToTradeItem.getKey();
+						furnace.setCombustionDurationRemaining(
+							furnace.getCombustionDurationRemaining() + fuel.getCombustionDuration() * (Furnace.minTemp / furnace.getTemperature()) * proposerToTradeItem.getValue()
+						);
 					}
 				}
 			}
