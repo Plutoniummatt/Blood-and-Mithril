@@ -70,7 +70,7 @@ public class Desert extends SuperStructure {
 	protected void internalGenerate(boolean generatingToRight) {
 		int rightMostTile = (getBoundaries().right + 1) * Topography.CHUNK_SIZE - 1;
 		int leftMostTile = getBoundaries().left * Topography.CHUNK_SIZE;
-
+		
 		if (!desertGenerated) {
 			getComponents().add(new Room(new Boundaries(4, -24, -4, 24), new Boundaries(-1, -19, 1, 19), getStructureKey()));
 
@@ -186,6 +186,7 @@ public class Desert extends SuperStructure {
 					break;
 				}
 			}
+			
 			desertGenerated = true;
 		}
 
@@ -324,13 +325,6 @@ public class Desert extends SuperStructure {
 
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
-
-		for (Component thing : getComponents()) {
-			if (thing.getBackgroundTile(worldTileX, worldTileY) != null) {
-				return thing.getBackgroundTile(worldTileX, worldTileY);
-			}
-		}
-
 		if (worldTileY > StructureMap.surfaceHeight.get(worldTileX) - 2) {
 			return new Tile.EmptyTile();
 
