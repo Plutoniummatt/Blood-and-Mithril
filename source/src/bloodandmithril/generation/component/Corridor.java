@@ -1,5 +1,6 @@
 package bloodandmithril.generation.component;
 
+import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.generation.component.Room.RoomCreationCustomization;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
@@ -8,6 +9,10 @@ import bloodandmithril.world.topography.tile.Tile;
 
 /**
  * A Corridor, that may be used to connect other {@link Component}s
+ *
+ * Corridors are effectively just rectangles, single vertical 1-tile thick interfaces are generated on the
+ * left and right edges of the rectangle, no walls are present on the interface edges,
+ * but walls are present on both the top and bottom edges.
  *
  * @author Matt
  */
@@ -22,6 +27,12 @@ public class Corridor extends Component {
 
 	/**
 	 * Constructor
+	 *
+	 * @param innerBoundaries - The {@link Boundaries} that define the {@link Corridor}s inner walls.
+	 * @param ceilingThickness - The thickness (number of tiles) of the ceiling of the {@link Corridor}.
+	 * @param floorThickness - The thickness (number of tiles) of the floor of the {@link Corridor}.
+	 * @param tileType - The class of {@link Tile} that the {@link Corridor} is to be constructed from.
+	 * @param structureKey - The key of the {@link Structure} this {@link Corridor} exists on
 	 */
 	public Corridor(Boundaries innerBoundaries, int ceilingThickness, int floorThickness, Class<? extends Tile> tileType, int structureKey) {
 		super(new Boundaries(innerBoundaries.top + ceilingThickness, innerBoundaries.bottom - floorThickness, innerBoundaries.left, innerBoundaries.right), structureKey);

@@ -15,7 +15,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 /**
- * Stairs
+ * Stairs, these are sloped {@link Component}s similar to {@link Corridor}s....apart from these are well...sloped.
  *
  * @author Matt, Sam
  */
@@ -40,9 +40,9 @@ public class Stairs extends Component {
 
 
 	/**
-	 * @param slopeGradient - the gradient of the stairs
-	 * @param slopeConstant - stairs are along the line y = mx + c, this is c
-	 * @param boundaries - the {@link Boundaries} of these stairs.
+	 * @param slopeGradient - The gradient of the stairs
+	 * @param slopeConstant - Stairs are along the line y = mx + c, this is c
+	 * @param boundaries - The {@link Boundaries} bounding this entire section of {@link Stairs}.
 	 * @param tileType - the {@link Tile} type used as the main block for these stairs
 	 * @param stairType - the {@link Tile} type used as the steps on these stairs.
 	 */

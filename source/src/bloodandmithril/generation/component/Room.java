@@ -16,7 +16,9 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 /**
- * A room, with an outer boundary and an inner boundary.  The region in between is the wall.
+ * A {@link Room}, with outer {@link Boundaries} and an inner {@link Boundaries}.  The region in between is the wall.
+ *
+ * Interfaces are generated on all edges that are free of existing interfaces
  *
  * @author Matt
  */
