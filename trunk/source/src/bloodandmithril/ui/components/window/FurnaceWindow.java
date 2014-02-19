@@ -208,32 +208,7 @@ public class FurnaceWindow extends TradeWindow {
 			}
 
 			// Render burn progress bar
-			UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
-
-			int maxWidth = width / 2 + 5;
-
-			float max = 0f;
-			for (Entry<Item, Integer> entry : furnace.container.getInventory().entrySet()) {
-				Item item = entry.getKey();
-				if (item instanceof Fuel) {
-					max = max + ((Fuel)item).getCombustionDuration() * (Furnace.minTemp / furnace.getTemperature()) * entry.getValue();
-				}
-			}
-			float fraction = furnace.getCombustionDurationRemaining() / max;
-
-			Color alphaGreen = Colors.modulateAlpha(Color.GREEN, getAlpha());
-
-			UserInterface.shapeRenderer.filledRect(
-				x + width / 2 - 10,
-				y - 25,
-				fraction * maxWidth,
-				2,
-				alphaGreen,
-				alphaGreen,
-				alphaGreen,
-				alphaGreen
-			);
-			UserInterface.shapeRenderer.end();
+			renderBurnProgressBar();
 		}
 
 		super.internalWindowRender();
@@ -251,6 +226,39 @@ public class FurnaceWindow extends TradeWindow {
 			furnace.isBurning() && isActive(),
 			getAlpha()
 		);
+	}
+
+
+	/**
+	 * Renders the progress bar that indicates the current fuel burning status of the furnace
+	 */
+	private void renderBurnProgressBar() {
+		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
+
+		int maxWidth = width / 2 + 5;
+
+		float max = 0f;
+		for (Entry<Item, Integer> entry : furnace.container.getInventory().entrySet()) {
+			Item item = entry.getKey();
+			if (item instanceof Fuel) {
+				max = max + ((Fuel)item).getCombustionDuration() * (Furnace.minTemp / furnace.getTemperature()) * entry.getValue();
+			}
+		}
+		float fraction = furnace.getCombustionDurationRemaining() / max;
+
+		Color alphaGreen = Colors.modulateAlpha(Color.GREEN, getAlpha());
+
+		UserInterface.shapeRenderer.filledRect(
+			x + width / 2 - 10,
+			y - 25,
+			fraction * maxWidth,
+			2,
+			alphaGreen,
+			alphaGreen,
+			alphaGreen,
+			alphaGreen
+		);
+		UserInterface.shapeRenderer.end();
 	}
 
 

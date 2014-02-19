@@ -18,16 +18,18 @@ public class TerrainGenerator {
 	/** Decides which biomes to generate */
 	BiomeDecider biomeDecider = new BiomeDecider();
 
+	/**
+	 * Generates a chunk, based on passed in chunk coordinates
+	 */
 	public void generate(int x, int y) {
-
 		// Makes arrays of tiles to work on. both for foreground and background
 		Tile[][] fTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
 		Tile[][] bTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
 
-		// If there isn't a structure where the surface should be above the chunk we're generating, make the surface structure.
+		// If a structure does not exist where the surface should be, generate the surface structure.
 		generateSurface(x);
 
-		// If there still isn't a structure on the chunk we're generating, it's either sky or underground.
+		// If a structure still does not exist at the chunk coordinates being generated, it must be outside of the surface structure boundaries.
 		generateAboveAndBelowSurface(x, y);
 
 		// Populate the tile arrays.
@@ -72,6 +74,8 @@ public class TerrainGenerator {
 			if (y < maxSurfaceHeight) {
 				Caves caves = new Caves(); // TODO make this procedural, not hard coded
 				caves.generate(x, y, true);
+			} else {
+				// TODO above surface structure
 			}
 		}
 	}

@@ -61,7 +61,7 @@ public class BloodAndMithrilServer {
 	private static GameWorld gameWorld;
 
 	/**
-	 * 0 Entry point for the server
+	 * Entry point for the server
 	 */
 	public static void main(String[] args) {
 
@@ -85,7 +85,7 @@ public class BloodAndMithrilServer {
 			@Override
 			public void disconnected (Connection connection) {
 				ClientServerInterface.SendNotification.notifySyncPlayerList();
-				
+
 				for (Individual indi : GameWorld.individuals.values()) {
 					if (indi.getSelectedByClient().remove(connection.getID())) {
 						indi.deselect(false, connection.getID());
@@ -151,7 +151,7 @@ public class BloodAndMithrilServer {
 						} catch (InterruptedException e) {
 							Logger.generalDebug(e.getMessage(), LogLevel.WARN, e);
 						}
-						if (counter % 10 == 0) {
+						if (counter % 2 == 0) {
 							for (Prop prop : GameWorld.props.values()) {
 								ClientServerInterface.SendNotification.notifySyncProp(prop);
 							}
@@ -159,7 +159,7 @@ public class BloodAndMithrilServer {
 							for (Faction faction : GameWorld.factions.values()) {
 								ClientServerInterface.SendNotification.notifySyncFaction(faction);
 							}
-							
+
 							for (Entry<Integer, Light> entry : GameWorld.lights.entrySet()) {
 								ClientServerInterface.SendNotification.notifySyncLight(entry.getKey(), entry.getValue());
 							}
@@ -258,7 +258,7 @@ public class BloodAndMithrilServer {
 					GameWorld.props.put(pineChest.id, pineChest);
 				}
 			}
-			
+
 			if (keycode == Input.Keys.M) {
 				Individual individual = GameWorld.individuals.get(1);
 				if (individual != null) {
