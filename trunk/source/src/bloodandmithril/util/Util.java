@@ -181,7 +181,7 @@ public class Util {
 		public static final Color DARK_RED = new Color(0.5f, 0f, 0f, 1f);
 		public static final Color UI_DARK_ORANGE = new Color(0.8f, 0.6f, 0.0f, 1f);
 		public static final Color UI_GRAY = new Color(0.8f, 0.8f, 0.8f, 1f);
-		public static final Color UI_DARK_PURPLE = new Color(0.8f, 0.8f, 0.8f, 1f);
+		public static final Color UI_DARK_PURPLE = new Color(0.8f, 0f, 0.6f, 1f);
 		public static final Color UI_DARK_PURPLE_INACTIVE = new Color(0.45f, 0f, 0.32f, 0.6f);
 		
 		/**
