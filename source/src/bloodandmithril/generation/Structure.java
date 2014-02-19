@@ -108,7 +108,6 @@ public abstract class Structure implements Serializable {
 		Tile fTile = null;
 
 		for (Component component : getComponents()) {
-
 			Tile foregroundTile = component.getForegroundTile(worldTileX, worldTileY);
 
 			if (foregroundTile != null) {

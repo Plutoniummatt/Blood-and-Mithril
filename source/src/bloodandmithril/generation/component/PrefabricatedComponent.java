@@ -9,7 +9,8 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Matt
  */
 public abstract class PrefabricatedComponent extends Component {
-
+	private static final long serialVersionUID = 1029361927219136813L;
+	
 	private final ComponentBlueprint blueprint;
 
 	/**
@@ -23,15 +24,13 @@ public abstract class PrefabricatedComponent extends Component {
 
 	@Override
 	public Tile getForegroundTile(int worldTileX, int worldTileY) {
-		// TODO Auto-generated method stub
-		return null;
+		return blueprint.getForegroundTile(worldTileX - boundaries.left, worldTileY - boundaries.bottom);
 	}
 
 
 	@Override
 	public Tile getBackgroundTile(int worldTileX, int worldTileY) {
-		// TODO Auto-generated method stub
-		return null;
+		return blueprint.getBackgroundTile(worldTileX - boundaries.left, worldTileY - boundaries.bottom);
 	}
 
 
@@ -53,15 +52,21 @@ public abstract class PrefabricatedComponent extends Component {
 		}
 
 
-		public Tile getForegroundTile() {
-			// TODO
-			return null;
+		public Tile getForegroundTile(int x, int y) {
+			try {
+				return fTiles[x][y];
+			} catch (ArrayIndexOutOfBoundsException e) {
+				return null;
+			}
 		}
 
 
-		public Tile getBackgroundTile() {
-			// TODO
-			return null;
+		public Tile getBackgroundTile(int x, int y) {
+			try {
+				return bTiles[x][y];
+			} catch (ArrayIndexOutOfBoundsException e) {
+				return null;
+			}
 		}
 	}
 }

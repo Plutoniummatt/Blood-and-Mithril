@@ -29,7 +29,7 @@ public abstract class Component implements Serializable {
 	private final List<Interface> existingInterfaces = Lists.newArrayList();
 
 	/** {@link Boundaries} of this {@link Component} */
-	private final Boundaries boundaries;
+	protected final Boundaries boundaries;
 
 	/** The key of the {@link Structure} this {@link Component} exists on */
 	private final int structureKey;
