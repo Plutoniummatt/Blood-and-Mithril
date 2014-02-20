@@ -1,6 +1,7 @@
 package bloodandmithril.persistence;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.persistence.character.IndividualLoader;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.world.Epoch;
@@ -22,7 +23,9 @@ public class GameLoader {
 	public static void load() {
 		ChunkLoaderImpl.loadGenerationData();
 		IndividualLoader.loadAll();
-		loadCameraPosition();
+		if (ClientServerInterface.isClient()) {
+			loadCameraPosition();
+		}
 		loadCurrentEpoch();
 	}
 

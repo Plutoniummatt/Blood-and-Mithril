@@ -58,6 +58,7 @@ import com.esotericsoftware.kryonet.Server;
  */
 public class BloodAndMithrilServer {
 
+	public static final GameServer server = new GameServer();
 	private static GameWorld gameWorld;
 
 	/**
@@ -188,10 +189,10 @@ public class BloodAndMithrilServer {
 		cfg.height = 250;
 		cfg.resizable = true;
 
-		new LwjglApplication(new GameServer(), cfg);
+		new LwjglApplication(server, cfg);
 	}
 
-	private static class GameServer implements ApplicationListener, InputProcessor {
+	public static class GameServer implements ApplicationListener, InputProcessor {
 
 		@Override
 		public void create() {
@@ -244,6 +245,10 @@ public class BloodAndMithrilServer {
 		@Override
 		public boolean keyDown(int keycode) {
 
+			if (keycode == Input.Keys.K) {
+				GameSaver.save(false);
+			}
+			
 			if (keycode == Input.Keys.P) {
 				GameWorld.individuals.get(1).addCondition(new Poison(1f, 0.1f));
 			}
