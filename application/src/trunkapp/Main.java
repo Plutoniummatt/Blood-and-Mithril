@@ -12,6 +12,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
  * @author Matt
  */
 public class Main {
+	public static BloodAndMithrilClient client;
+	
 	public static void main(String[] args) {
 
 	  //Configurations
@@ -32,6 +34,7 @@ public class Main {
 		cfg.addIcon("data/image/icon.png", FileType.Internal);
 		cfg.addIcon("data/image/smallIcon.png", FileType.Internal);
 
-		new LwjglApplication(new BloodAndMithrilClient(), cfg);
+		client = new BloodAndMithrilClient();
+		new LwjglApplication(client, cfg);
 	}
 }

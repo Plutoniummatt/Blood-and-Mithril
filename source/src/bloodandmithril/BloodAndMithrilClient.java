@@ -375,7 +375,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (GameSaver.isSaving()) {
 			return false;
 		}
-
+		
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;
 		}

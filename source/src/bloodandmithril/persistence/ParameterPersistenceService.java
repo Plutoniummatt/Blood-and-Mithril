@@ -4,6 +4,7 @@ import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.persistence.PersistenceUtil.encode;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.WorldState;
@@ -45,7 +46,7 @@ public class ParameterPersistenceService {
 	/** Saves the {@link Parameters} */
 	public synchronized static void saveParameters() {
 		FileHandle file = Gdx.files.local(GameSaver.savePath + "/parameters.txt");
-		parameters.setSavedCameraPosition(new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y));
+		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y) : new Vector2());
 		parameters.setCurrentEpoch(WorldState.currentEpoch);
 		file.writeString(encode(parameters), false);
 	}
