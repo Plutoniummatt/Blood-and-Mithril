@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import bloodandmithril.BloodAndMithrilClient;
-import bloodandmithril.item.Item;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Button;
@@ -253,7 +252,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 		public T t;
 
 		/**
-		 * Constructor which takes an {@link Item}
+		 * Constructor
 		 */
 		public ListingMenuItem(T t, Button button, ContextMenu menu) {
 			super(button, menu);

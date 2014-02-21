@@ -170,8 +170,8 @@ public class Util {
 			return string.substring(0, index - 1);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Class to hold some static {@link Color}s
 	 *
@@ -182,15 +182,16 @@ public class Util {
 		public static final Color UI_DARK_ORANGE = new Color(0.8f, 0.6f, 0.0f, 1f);
 		public static final Color UI_GRAY = new Color(0.8f, 0.8f, 0.8f, 1f);
 		public static final Color UI_DARK_PURPLE = new Color(0.8f, 0f, 0.6f, 1f);
+		public static final Color UI_DARK_GREEN = new Color(0f, 0.5f, 0f, 1f);
 		public static final Color UI_DARK_PURPLE_INACTIVE = new Color(0.45f, 0f, 0.32f, 0.6f);
-		
+
 		/**
 		 * @return A {@link Color} with an adjusted alpha value.
 		 */
 		public static Color modulateAlpha(Color color, float alphaFactor) {
 			Color toReturn = new Color(color);
 			toReturn.a = toReturn.a * alphaFactor;
-			
+
 			return toReturn;
 		}
 	}

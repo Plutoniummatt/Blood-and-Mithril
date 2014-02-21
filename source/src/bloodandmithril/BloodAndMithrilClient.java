@@ -6,39 +6,22 @@ import java.util.concurrent.Executors;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.IndividualIdentifier;
-import bloodandmithril.character.Individual.IndividualState;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.MineTile;
-import bloodandmithril.character.faction.Faction;
-import bloodandmithril.character.individuals.Boar;
-import bloodandmithril.character.individuals.Elf;
-import bloodandmithril.character.individuals.Names;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipable;
-import bloodandmithril.item.equipment.Broadsword;
-import bloodandmithril.item.equipment.ButterflySword;
-import bloodandmithril.item.material.animal.ChickenLeg;
-import bloodandmithril.item.material.container.GlassBottle;
-import bloodandmithril.item.material.fuel.Coal;
-import bloodandmithril.item.material.liquid.Liquid.Water;
-import bloodandmithril.item.material.plant.Carrot;
-import bloodandmithril.item.material.plant.DeathCap;
-import bloodandmithril.item.misc.Currency;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
+import bloodandmithril.ui.components.window.DevWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
-import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.GameWorld.Light;
 import bloodandmithril.world.weather.Weather;
@@ -353,14 +336,14 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-			
+
 			Light light = new Light(
 				750,
 				getMouseWorldX(), getMouseWorldY(),
 				Util.randomOneOf(Color.WHITE, Color.CYAN, Color.GREEN, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.YELLOW),
 				1f
 			);
-			
+
 			if (ClientServerInterface.isServer()) {
 				GameWorld.lights.put(ParameterPersistenceService.getParameters().getNextLightId(), light);
 			} else {
@@ -375,96 +358,21 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (GameSaver.isSaving()) {
 			return false;
 		}
-		
+
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;
 		}
 
-		if (keycode == Input.Keys.R) {
-			IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
-			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
-			state.velocity = new Vector2(0, 0);
-			state.acceleration = new Vector2(0, 0);
-
-			IndividualIdentifier id = Names.getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
-			id.setNickName("Elfie");
-
-			Elf elf = new Elf(
-				id, state, Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
-				new Color(0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 1),
-				new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
-				Util.getRandom().nextInt(4),
-				20f
+		if (keycode == Input.Keys.D && ClientServerInterface.isServer()) {
+			UserInterface.addLayeredComponent(
+				new DevWindow(
+					WIDTH/2 - 250,
+					HEIGHT/2 + 150,
+					500,
+					300,
+					true
+				)
 			);
-
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new Carrot());
-			}
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new Coal());
-			}
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new DeathCap(false));
-			}
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new ChickenLeg());
-			}
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new GlassBottle(Water.class, 1f));
-			}
-			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
-				elf.giveItem(new Currency());
-			}
-			elf.giveItem(new ButterflySword(100));
-			elf.giveItem(new Broadsword(100));
-
-			GameWorld.individuals.put(elf.getId().getId(), elf);
-		}
-
-		if (keycode == Input.Keys.U) {
-			IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
-			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
-			state.velocity = new Vector2(0, 0);
-			state.acceleration = new Vector2(0, 0);
-
-			IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
-			id.setNickName("Unknown");
-
-			Boar boar = new Boar(id, state);
-
-			GameWorld.individuals.put(boar.getId().getId(), boar);
-		}
-
-		if (keycode == Input.Keys.T) {
-			Individual individual = GameWorld.individuals.get(1);
-			if (individual != null) {
-				PineChest pineChest = new PineChest(individual.getState().position.x, individual.getState().position.y, true, 100f);
-				GameWorld.props.put(pineChest.id, pineChest);
-			}
-		}
-
-		if (keycode == Input.Keys.M) {
-			Individual individual = GameWorld.individuals.get(1);
-			if (individual != null) {
-				Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-				GameWorld.props.put(furnace.id, furnace);
-			}
-		}
-
-		if (keycode == Input.Keys.N) {
-			Individual individual = GameWorld.individuals.get(1);
-			if (individual != null) {
-				bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
-				GameWorld.props.put(carrot.id, carrot);
-			}
-		}
-
-		if (keycode == Input.Keys.I) {
-			UserInterface.renderAvailableInterfaces = !UserInterface.renderAvailableInterfaces;
-		}
-
-		if (keycode == Input.Keys.B) {
-			UserInterface.renderComponentBoundaries = !UserInterface.renderComponentBoundaries;
 		}
 
 		return false;
