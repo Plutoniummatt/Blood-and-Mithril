@@ -10,27 +10,50 @@ import bloodandmithril.world.topography.tile.Tile;
  */
 public abstract class PrefabricatedComponent extends Component {
 	private static final long serialVersionUID = 1029361927219136813L;
-	
+
 	private final ComponentBlueprint blueprint;
+
+	private final boolean inverted;
 
 	/**
 	 * Constructor
 	 */
-	protected PrefabricatedComponent(ComponentBlueprint blueprint, Boundaries boundaries, int structureKey) {
+	protected PrefabricatedComponent(ComponentBlueprint blueprint, Boundaries boundaries, int structureKey, boolean inverted) {
 		super(boundaries, structureKey);
 		this.blueprint = blueprint;
+		this.inverted = inverted;
 	}
 
 
 	@Override
 	public Tile getForegroundTile(int worldTileX, int worldTileY) {
-		return blueprint.getForegroundTile(worldTileX - boundaries.left, worldTileY - boundaries.bottom);
+		if (inverted) {
+			return blueprint.getForegroundTile(
+				boundaries.right - worldTileX,
+				worldTileY - boundaries.bottom
+			);
+		} else {
+			return blueprint.getForegroundTile(
+				worldTileX - boundaries.left,
+				worldTileY - boundaries.bottom
+			);
+		}
 	}
 
 
 	@Override
 	public Tile getBackgroundTile(int worldTileX, int worldTileY) {
-		return blueprint.getBackgroundTile(worldTileX - boundaries.left, worldTileY - boundaries.bottom);
+		if (inverted) {
+			return blueprint.getBackgroundTile(
+				boundaries.right - worldTileX,
+				worldTileY - boundaries.bottom
+			);
+		} else {
+			return blueprint.getBackgroundTile(
+				worldTileX - boundaries.left,
+				worldTileY - boundaries.bottom
+			);
+		}
 	}
 
 
