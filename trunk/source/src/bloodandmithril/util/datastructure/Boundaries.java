@@ -3,7 +3,7 @@ package bloodandmithril.util.datastructure;
 import java.io.Serializable;
 
 /**
- * Stores 4 ints to be used as boundaries for a rectangle.
+ * Stores 4 ints (inclusive) to be used as boundaries for a rectangle.
  *
  * @author Sam, Matt
  */
