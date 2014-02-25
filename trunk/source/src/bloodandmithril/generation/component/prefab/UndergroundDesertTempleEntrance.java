@@ -13,16 +13,22 @@ import bloodandmithril.world.topography.tile.Tile;
  */
 public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 
+	private final Class<? extends Tile> backgroundTile;
+	private final Class<? extends Tile> wallTile;
+
 	/**
 	 * Constructor
 	 */
-	public UndergroundDesertTempleEntrance(int worldX, int worldY, int structureKey, boolean inverted) {
+	public UndergroundDesertTempleEntrance(int worldX, int worldY, int structureKey, boolean inverted, Class<? extends Tile> wallTile, Class<? extends Tile> backgroundTile) {
 		super(
 			blueprint(),
 			boundaries(worldX, worldY),
 			structureKey,
 			inverted
 		);
+
+		this.wallTile = wallTile;
+		this.backgroundTile = backgroundTile;
 	}
 
 
