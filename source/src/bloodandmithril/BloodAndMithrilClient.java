@@ -10,6 +10,7 @@ import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -24,6 +25,8 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.GameWorld.Light;
+import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -133,6 +136,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		GameWorld.setup();
 		Fonts.setup();
 		Individual.setup();
+		PrefabricatedComponent.setup();
 		Shaders.setup();
 		Component.setup();
 		Weather.setup();
@@ -338,7 +342,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (Gdx.input.isKeyPressed(Input.Keys.E)) {
 
 			Light light = new Light(
-				750,
+				550,
 				getMouseWorldX(), getMouseWorldY(),
 				Util.randomOneOf(Color.WHITE, Color.CYAN, Color.GREEN, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.YELLOW),
 				1f
@@ -361,6 +365,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;
+		}
+		
+		if (keycode == Input.Keys.J) {
+			Topography.changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickPlatform.class);
 		}
 
 		if (keycode == Input.Keys.D && ClientServerInterface.isServer()) {

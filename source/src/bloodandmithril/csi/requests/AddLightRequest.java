@@ -84,8 +84,13 @@ public class AddLightRequest implements Request {
 		@Override
 		public void acknowledge() {
 			Light light = new Light(size, x, y, color, intensity);
-			if (GameWorld.lights.replace(id, light) == null) {
+			if (GameWorld.lights.get(id) == null) {
 				GameWorld.lights.put(id, light);
+			} else {
+				GameWorld.lights.get(id).color = light.color;
+				GameWorld.lights.get(id).size = light.size;
+				GameWorld.lights.get(id).x = light.x;
+				GameWorld.lights.get(id).y = light.y;
 			}
 		}
 		

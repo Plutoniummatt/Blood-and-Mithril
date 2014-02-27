@@ -18,6 +18,7 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
+import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
@@ -205,6 +206,8 @@ public class BloodAndMithrilServer {
 			GameLoader.load();
 
 			Gdx.input.setInputProcessor(this);
+			
+			PrefabricatedComponent.setup();
 		}
 
 

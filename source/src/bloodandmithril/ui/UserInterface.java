@@ -265,11 +265,15 @@ public class UserInterface {
 			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.getComponents())) {
 				if (renderAvailableInterfaces) {
 					for (Interface in : Lists.newArrayList(comp.getAvailableInterfaces())) {
-						in.render(AVAILABLE_INTERFACE_COLOR);
+						if (in != null) {
+							in.render(AVAILABLE_INTERFACE_COLOR);
+						}
 					}
 				} else {
 					for (Interface in : Lists.newArrayList(comp.getExistingInterfaces())) {
-						in.render(EXISTING_INTERFACE_COLOR);
+						if (in != null) {
+							in.render(EXISTING_INTERFACE_COLOR);
+						}
 					}
 				}
 			}
@@ -392,6 +396,7 @@ public class UserInterface {
 				AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
 					shapeRenderer.setColor(Color.WHITE);
+					// ((GoToLocation)currentTask).renderPath();
 					((GoToLocation)currentTask).renderFinalWayPoint();
 				}
 			}

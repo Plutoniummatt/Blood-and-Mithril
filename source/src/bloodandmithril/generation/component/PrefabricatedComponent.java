@@ -1,5 +1,9 @@
 package bloodandmithril.generation.component;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 
@@ -13,7 +17,9 @@ public abstract class PrefabricatedComponent extends Component {
 
 	private final ComponentBlueprint blueprint;
 
-	private final boolean inverted;
+	protected final boolean inverted;
+	
+	public static Pixmap prefabPixmap;
 
 	/**
 	 * Constructor
@@ -22,6 +28,15 @@ public abstract class PrefabricatedComponent extends Component {
 		super(boundaries, structureKey);
 		this.blueprint = blueprint;
 		this.inverted = inverted;
+	}
+	
+	
+	/** Load textures */
+	public static void setup() {
+		Texture texture = new Texture(Gdx.files.internal("data/image/prefab.png"));
+		texture.getTextureData().prepare();
+		
+		prefabPixmap = texture.getTextureData().consumePixmap();
 	}
 
 
