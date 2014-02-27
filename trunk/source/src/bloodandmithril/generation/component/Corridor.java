@@ -165,11 +165,11 @@ public class Corridor extends Component {
 	 */
 	public static class CorridorCreationCustomization extends ComponentCreationCustomization<Corridor> {
 
-		boolean stemRight;
+		public boolean stemRight;
 
-		int ceilingThickness, floorThickness, length, height;
+		public int ceilingThickness, floorThickness, length, height;
 
-		Class<? extends Tile> tileType;
+		public Class<? extends Tile> tileType;
 
 		/**
 		 * Constructor

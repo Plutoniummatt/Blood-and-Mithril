@@ -19,6 +19,7 @@ import bloodandmithril.generation.component.Room;
 import bloodandmithril.generation.component.Room.RoomCreationCustomization;
 import bloodandmithril.generation.component.Stairs;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
+import bloodandmithril.generation.component.prefab.UndergroundDesertTempleEntrance;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.generation.patterns.UndergroundWithCaves;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
@@ -71,15 +72,33 @@ public class Desert extends SuperStructure {
 		int rightMostTile = (getBoundaries().right + 1) * Topography.CHUNK_SIZE - 1;
 		int leftMostTile = getBoundaries().left * Topography.CHUNK_SIZE;
 		
+		generateSurface(generatingToRight, rightMostTile, leftMostTile);
+		generateTransitionBase(generatingToRight, rightMostTile, leftMostTile);
+		generateSandBase(generatingToRight, rightMostTile, leftMostTile);
+		
 		if (!desertGenerated) {
-			getComponents().add(new Room(new Boundaries(4, -24, -4, 24), new Boundaries(-1, -19, 1, 19), getStructureKey()));
+			getComponents().add(new UndergroundDesertTempleEntrance(0, StructureMap.surfaceHeight.get(100) + 27, getStructureKey(), false, YellowBrickTile.class, YellowBrickTile.class));
 
+			getComponents().add(
+				getComponents().get(0).stem(
+					Corridor.class,
+					new CorridorCreationCustomization(
+						false, 
+						1, 
+						1, 
+						50, 
+						6, 
+						YellowBrickTile.class
+					)
+				)
+			);
+			
 			getComponents().add(
 				getComponents().get(0).stem(
 					Stairs.class,
 					new StairsCreationCustomization(
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextBoolean(),
+						false,
+						false,
 						Util.getRandom().nextBoolean(),
 						Util.getRandom().nextInt(30) + 20,
 						1,
@@ -93,7 +112,7 @@ public class Desert extends SuperStructure {
 
 			Component stem = null;
 			while (stem == null) {
-				stem = getComponents().get(1).stem(
+				stem = getComponents().get(2).stem(
 					Stairs.class,
 					new StairsCreationCustomization(
 						Util.getRandom().nextBoolean(),
@@ -112,7 +131,7 @@ public class Desert extends SuperStructure {
 
 			Component stem2 = null;
 			while (stem2 == null) {
-				stem2 = getComponents().get(2).stem(
+				stem2 = getComponents().get(3).stem(
 					Stairs.class,
 					new StairsCreationCustomization(
 						Util.getRandom().nextBoolean(),
@@ -131,7 +150,7 @@ public class Desert extends SuperStructure {
 
 			Component stem3 = null;
 			while (stem3 == null) {
-				stem3 = getComponents().get(3).stem(
+				stem3 = getComponents().get(4).stem(
 					Corridor.class,
 					new CorridorCreationCustomization(
 						Util.getRandom().nextBoolean(),
@@ -147,7 +166,7 @@ public class Desert extends SuperStructure {
 
 			Component stem4 = null;
 			while (stem4 == null) {
-				stem4 = getComponents().get(4).stem(
+				stem4 = getComponents().get(5).stem(
 					Room.class,
 					new RoomCreationCustomization(
 						Util.getRandom().nextBoolean(),
@@ -164,7 +183,7 @@ public class Desert extends SuperStructure {
 				Component stem5 = null;
 				int attempts = 0;
 				while (stem5 == null && attempts < 10) {
-					stem5 = getComponents().get(5 + i).stem(
+					stem5 = getComponents().get(6 + i).stem(
 						Stairs.class,
 						new StairsCreationCustomization(
 							Util.getRandom().nextBoolean(),
@@ -189,12 +208,6 @@ public class Desert extends SuperStructure {
 			
 			desertGenerated = true;
 		}
-
-		generateSurface(generatingToRight, rightMostTile, leftMostTile);
-
-		generateTransitionBase(generatingToRight, rightMostTile, leftMostTile);
-
-		generateSandBase(generatingToRight, rightMostTile, leftMostTile);
 	}
 
 
