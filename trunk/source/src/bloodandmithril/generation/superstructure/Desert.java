@@ -12,7 +12,6 @@ import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSu
 import java.util.HashMap;
 
 import bloodandmithril.generation.StructureMap;
-import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.Corridor;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.Room;
@@ -26,6 +25,7 @@ import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.generation.tools.SawToothGenerator;
 import bloodandmithril.persistence.ParameterPersistenceService;
+import bloodandmithril.util.Function;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.Topography;
@@ -81,111 +81,119 @@ public class Desert extends SuperStructure {
 
 			getComponents().add(
 				getComponents().get(0).stem(
+					this,
 					Corridor.class,
-					new CorridorCreationCustomization(
-						false, 
-						1, 
-						1, 
-						50, 
-						6, 
-						YellowBrickTile.class
-					)
+					new Function<CorridorCreationCustomization>() {
+						@Override
+						public CorridorCreationCustomization call() {
+							return new CorridorCreationCustomization(
+								false, 
+								1, 
+								1, 
+								50, 
+								6, 
+								YellowBrickTile.class
+							);
+						}
+					}
 				)
 			);
 			
-			getComponents().add(
-				getComponents().get(0).stem(
-					Stairs.class,
-					new StairsCreationCustomization(
-						false,
-						false,
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextInt(30) + 20,
-						1,
-						7,
-						3,
-						YellowBrickTile.class,
-						YellowBrickTile.class
-					)
-				)
-			);
-
-			Component stem = null;
-			while (stem == null) {
-				stem = getComponents().get(2).stem(
-					Stairs.class,
-					new StairsCreationCustomization(
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextInt(30) + 20,
-						1,
-						7,
-						3,
-						YellowBrickTile.class,
-						YellowBrickTile.class
-					)
-				);
-			}
-			getComponents().add(stem);
-
-			Component stem2 = null;
-			while (stem2 == null) {
-				stem2 = getComponents().get(3).stem(
-					Stairs.class,
-					new StairsCreationCustomization(
-						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextBoolean(),
-						true,
-						Util.getRandom().nextInt(30) + 20,
-						1,
-						7,
-						3,
-						YellowBrickTile.class,
-						YellowBrickTile.class
-					)
-				);
-			}
-			getComponents().add(stem2);
-
-			Component stem3 = null;
-			while (stem3 == null) {
-				stem3 = getComponents().get(4).stem(
-					Corridor.class,
-					new CorridorCreationCustomization(
-						Util.getRandom().nextBoolean(),
-						3,
-						3,
-						20 + Util.getRandom().nextInt(10),
-						7,
-						YellowBrickTile.class
-					)
-				);
-			}
-			getComponents().add(stem3);
-
-			Component stem4 = null;
-			while (stem4 == null) {
-				stem4 = getComponents().get(5).stem(
-					Room.class,
-					new RoomCreationCustomization(
-						Util.getRandom().nextBoolean(),
-						20 + Util.getRandom().nextInt(10),
-						20 + Util.getRandom().nextInt(10),
-						3,
-						YellowBrickTile.class
-					)
-				);
-			}
-			getComponents().add(stem4);
-
-			for (int i = 0; i < 10; i++) {
-				Component stem5 = null;
-				int attempts = 0;
-				while (stem5 == null && attempts < 10) {
-					stem5 = getComponents().get(6 + i).stem(
-						Stairs.class,
-						new StairsCreationCustomization(
+			getComponents().get(0).stem(
+				this,
+				Stairs.class,
+				new Function<StairsCreationCustomization>() {
+					@Override
+					public StairsCreationCustomization call() {
+						return new StairsCreationCustomization(
+							false,
+							false,
+							Util.getRandom().nextBoolean(),
+							Util.getRandom().nextInt(30) + 20,
+							1,
+							7,
+							3,
+							YellowBrickTile.class,
+							YellowBrickTile.class
+						);
+					}
+				}
+			).stem(
+				this,
+				Stairs.class,
+				new Function<StairsCreationCustomization>() {
+					@Override
+					public StairsCreationCustomization call() {
+						return new StairsCreationCustomization(
+							Util.getRandom().nextBoolean(),
+							Util.getRandom().nextBoolean(),
+							Util.getRandom().nextBoolean(),
+							Util.getRandom().nextInt(30) + 20,
+							1,
+							7,
+							3,
+							YellowBrickTile.class,
+							YellowBrickTile.class
+						);
+					}
+				}
+			).stem(
+				this,
+				Stairs.class,
+				new Function<StairsCreationCustomization>() {
+					@Override
+					public StairsCreationCustomization call() {
+						return new StairsCreationCustomization(
+							Util.getRandom().nextBoolean(),
+							Util.getRandom().nextBoolean(),
+							true,
+							Util.getRandom().nextInt(30) + 20,
+							1,
+							7,
+							3,
+							YellowBrickTile.class,
+							YellowBrickTile.class
+						);
+					}
+				}
+			).stem(
+				this,
+				Corridor.class,
+				new Function<CorridorCreationCustomization>() {
+					@Override
+					public CorridorCreationCustomization call() {
+						return new CorridorCreationCustomization(
+							Util.getRandom().nextBoolean(),
+							3,
+							3,
+							20 + Util.getRandom().nextInt(10),
+							7,
+							YellowBrickTile.class
+						);
+					}
+				}
+			).stem(
+				this,
+				Room.class,
+				new Function<RoomCreationCustomization>() {
+					@Override
+					public RoomCreationCustomization call() {
+						return new RoomCreationCustomization(
+							Util.getRandom().nextBoolean(),
+							20 + Util.getRandom().nextInt(10),
+							20 + Util.getRandom().nextInt(10),
+							3,
+							YellowBrickTile.class
+						);
+					}
+				}
+			).stem(
+				this,
+				Stairs.class,
+				new Function<StairsCreationCustomization>() {
+					@Override
+					public StairsCreationCustomization call() {
+						return new StairsCreationCustomization(
 							Util.getRandom().nextBoolean(),
 							Util.getRandom().nextBoolean(),
 							Util.getRandom().nextBoolean(),
@@ -195,16 +203,11 @@ public class Desert extends SuperStructure {
 							3,
 							YellowBrickTile.class,
 							YellowBrickTile.class
-						)
-					);
-					attempts++;
-				}
-				if (stem5 != null) {
-					getComponents().add(stem5);
-				} else {
-					break;
-				}
-			}
+						);
+					}
+				},
+				10
+			);
 			
 			desertGenerated = true;
 		}
