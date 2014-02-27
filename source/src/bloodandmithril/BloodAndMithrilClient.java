@@ -46,7 +46,7 @@ import com.google.common.collect.Sets;
  *
  * To-do before ALPHA release
  *
- * <b><p> Building and Construction (Building construction and decontruction framework)                  </b></p>
+ * <b><p> Prop and Construction (Prop construction and de-construction framework)                  		 </b></p>
  * <b><p> At least 5 types of NPC                                                                        </b></p>
  * <b><p> Main menu screen                                                                               </b></p>
  *
@@ -366,7 +366,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;
 		}
-		
+
 		if (keycode == Input.Keys.J) {
 			Topography.changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickPlatform.class);
 		}
