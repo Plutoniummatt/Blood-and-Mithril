@@ -6,6 +6,7 @@ import java.util.List;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.StructureMap;
 import bloodandmithril.generation.TerrainGenerator;
+import bloodandmithril.util.Function;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -83,19 +84,38 @@ public abstract class Component implements Serializable {
 	/**
 	 * Attempt to stem from this {@link Component}, another {@link Component}, returning the stemmed component if the attempt was successful, null otherwise
 	 */
-	public <T extends Component> Component stem(Class<T> with, ComponentCreationCustomization<T> custom) {
+	public <T extends Component> Component stem(Structure on, Class<T> with, Function<? extends ComponentCreationCustomization<T>> customFunction) {
 		// Clear and regenerate interfaces
 		getAvailableInterfaces().clear();
 		generateInterfaces();
 
 		// Stem and generate stemmed component
-		Component stemmedComponent = internalStem(with, custom);
+		Component stemmedComponent = internalStem(with, customFunction.call());
 
 		// Clear and regenerate interfaces again, strictly speaking this isn't necessary, it is merely more convenient for development
 		getAvailableInterfaces().clear();
 		generateInterfaces();
-
-		return stemmedComponent;
+		
+		if (stemmedComponent == null) {
+			return stem(on, with, customFunction);
+		} else {
+			on.getComponents().add(stemmedComponent);
+			return stemmedComponent;
+		}
+	}
+	
+	
+	/**
+	 * Attempt to stem from this {@link Component}, another {@link Component}, returning the stemmed component if the attempt was successful, null otherwise
+	 */
+	public <T extends Component> Component stem(Structure on, Class<T> with, Function<? extends ComponentCreationCustomization<T>> customFunction, int times) {
+		Component last = stem(on, with, customFunction);
+		
+		for (int i = 1; i < times; i++) {
+			last = last.stem(on, with, customFunction);
+		}
+		
+		return last;
 	}
 
 
