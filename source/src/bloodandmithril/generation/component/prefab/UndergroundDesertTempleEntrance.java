@@ -3,7 +3,6 @@ package bloodandmithril.generation.component.prefab;
 import java.util.Collection;
 
 import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 import bloodandmithril.generation.component.Component;
@@ -11,7 +10,6 @@ import bloodandmithril.generation.component.Corridor;
 import bloodandmithril.generation.component.Interface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.generation.component.RectangularInterface;
-import bloodandmithril.generation.component.Room;
 import bloodandmithril.generation.component.Stairs;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
