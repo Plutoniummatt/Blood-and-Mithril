@@ -90,13 +90,35 @@ public class Desert extends SuperStructure {
 								false, 
 								1, 
 								1, 
-								50, 
+								150, 
 								6, 
 								YellowBrickTile.class
 							);
 						}
 					}
 				)
+			);
+			
+			getComponents().get(1).stem(
+				this, 
+				Stairs.class, 
+				new Function<StairsCreationCustomization>() {
+					@Override
+					public StairsCreationCustomization call() {
+						return new StairsCreationCustomization(
+							Util.getRandom().nextBoolean(),
+							Util.getRandom().nextBoolean(),
+							Util.getRandom().nextBoolean(),
+							Util.getRandom().nextInt(10) + 10,
+							1,
+							6,
+							2,
+							YellowBrickTile.class,
+							YellowBrickTile.class
+						);
+					}
+				},
+				10
 			);
 			
 			getComponents().get(0).stem(
@@ -197,7 +219,7 @@ public class Desert extends SuperStructure {
 							Util.getRandom().nextBoolean(),
 							Util.getRandom().nextBoolean(),
 							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextInt(10) + 10,
+							Util.getRandom().nextInt(20) + 15,
 							1,
 							7,
 							3,
