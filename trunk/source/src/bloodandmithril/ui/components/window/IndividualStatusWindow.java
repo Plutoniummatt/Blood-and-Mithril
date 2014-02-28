@@ -98,7 +98,7 @@ public class IndividualStatusWindow extends Window {
 		Color activeTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, getAlpha());
 		Color inactiveTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE_INACTIVE, getAlpha());
 		Color activeWhite = Colors.modulateAlpha(Color.WHITE, getAlpha());
-		Color inactiveWhite = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, 0.6f * getAlpha());
+		Color inactiveWhite = Colors.modulateAlpha(Color.WHITE, 0.6f * getAlpha());
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
 		if (!drawLine("Vital signs: ", 25)) {
@@ -141,7 +141,7 @@ public class IndividualStatusWindow extends Window {
 		}
 
 		if (identifying) {
-			vitals = "Identifying...";
+			vitals = "Identifying..." + String.format("%.1f", time/identificationTime * 100) + "%";
 		}
 
 		if (!drawLine(truncate(vitals), 45)) {
@@ -153,8 +153,18 @@ public class IndividualStatusWindow extends Window {
 			return;
 		}
 
+		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
 		BloodAndMithrilClient.spriteBatch.flush();
-		renderConditionsPanel();
+		if (identified || individual.isControllable()) {
+			renderConditionsPanel();
+		} else if (identifying) {
+			if (!drawLine("Identifying..." + String.format("%.1f", time/identificationTime * 100) + "%", 125)) {
+				return;
+			}
+		} else if (!drawLine("Unknown", 125)) {
+			return;
+		}
+		
 		identify.render(x + width - 50, y - 37, !GameWorld.selectedIndividuals.isEmpty() && isActive() && !individual.isControllable(), getAlpha());
 	}
 
