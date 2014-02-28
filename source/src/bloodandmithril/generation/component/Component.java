@@ -85,13 +85,19 @@ public abstract class Component implements Serializable {
 	 * Attempt to stem from this {@link Component}, another {@link Component}, returning the stemmed component if the attempt was successful, null otherwise
 	 */
 	public <T extends Component> Component stem(Structure on, Class<T> with, Function<? extends ComponentCreationCustomization<T>> customFunction) {
-		return stem(on, with, customFunction, 0L);
+		return attemptStem(on, with, customFunction, 0);
 	}
 
 
-	private <T extends Component> Component stem(Structure on, Class<T> with, Function<? extends ComponentCreationCustomization<T>> customFunction, long attempts) {
+	/**
+	 * Attempt to stem a component on a structure, from this component.
+	 * 
+	 * 10 consecutive failed attempts will result in a {@link DummyComponent} being returned, thus breaking the component stem-chain
+	 */
+	private <T extends Component> Component attemptStem(Structure on, Class<T> with, Function<? extends ComponentCreationCustomization<T>> customFunction, int attempts) {
+		// If we've attempted to stem 10 times without success, give up and break the stem-chain
 		if (attempts >= 10) {
-			return new DummyComponent();
+			return DummyComponent.getInstance();
 		}
 		
 		// Clear and regenerate interfaces
@@ -105,9 +111,11 @@ public abstract class Component implements Serializable {
 		getAvailableInterfaces().clear();
 		generateInterfaces();
 		
+		// If it was not possible to stem a component, then try again, otherwise we can add the stemmed component to the component list on the structure
 		if (stemmedComponent == null) {
-			return stem(on, with, customFunction, attempts + 1);
+			return attemptStem(on, with, customFunction, attempts + 1);
 		} else {
+			// But only add the component if its not a dummy
 			if (!(stemmedComponent instanceof DummyComponent)) {
 				on.getComponents().add(stemmedComponent);
 			}
@@ -182,42 +190,5 @@ public abstract class Component implements Serializable {
 	 * @author Matt
 	 */
 	public static abstract class ComponentCreationCustomization<T extends Component> {
-	}
-	
-	
-	/**
-	 * Dummy {@link Component} used as a placeholder when a component can not be generated.
-	 *
-	 * @author Matt
-	 */
-	public static class DummyComponent extends Component {
-		private static final long serialVersionUID = -695818207182117732L;
-		
-		private DummyComponent() {
-			super(null, -1);
-		}
-
-		
-		@Override
-		public Tile getForegroundTile(int worldTileX, int worldTileY) {
-			throw new UnsupportedOperationException();
-		}
-
-		
-		@Override
-		public Tile getBackgroundTile(int worldTileX, int worldTileY) {
-			throw new UnsupportedOperationException();
-		}
-
-		
-		@Override
-		protected void generateInterfaces() {
-		}
-
-		
-		@Override
-		protected <T extends Component> Component internalStem(Class<T> with, ComponentCreationCustomization<T> custom) {
-			return new DummyComponent();
-		}
 	}
 }
