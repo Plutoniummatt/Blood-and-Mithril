@@ -85,6 +85,15 @@ public abstract class Component implements Serializable {
 	 * Attempt to stem from this {@link Component}, another {@link Component}, returning the stemmed component if the attempt was successful, null otherwise
 	 */
 	public <T extends Component> Component stem(Structure on, Class<T> with, Function<? extends ComponentCreationCustomization<T>> customFunction) {
+		return stem(on, with, customFunction, 0L);
+	}
+
+
+	private <T extends Component> Component stem(Structure on, Class<T> with, Function<? extends ComponentCreationCustomization<T>> customFunction, long attempts) {
+		if (attempts >= 10) {
+			return new DummyComponent();
+		}
+		
 		// Clear and regenerate interfaces
 		getAvailableInterfaces().clear();
 		generateInterfaces();
@@ -97,9 +106,11 @@ public abstract class Component implements Serializable {
 		generateInterfaces();
 		
 		if (stemmedComponent == null) {
-			return stem(on, with, customFunction);
+			return stem(on, with, customFunction, attempts + 1);
 		} else {
-			on.getComponents().add(stemmedComponent);
+			if (!(stemmedComponent instanceof DummyComponent)) {
+				on.getComponents().add(stemmedComponent);
+			}
 			return stemmedComponent;
 		}
 	}
@@ -171,5 +182,42 @@ public abstract class Component implements Serializable {
 	 * @author Matt
 	 */
 	public static abstract class ComponentCreationCustomization<T extends Component> {
+	}
+	
+	
+	/**
+	 * Dummy {@link Component} used as a placeholder when a component can not be generated.
+	 *
+	 * @author Matt
+	 */
+	public static class DummyComponent extends Component {
+		private static final long serialVersionUID = -695818207182117732L;
+		
+		private DummyComponent() {
+			super(null, -1);
+		}
+
+		
+		@Override
+		public Tile getForegroundTile(int worldTileX, int worldTileY) {
+			throw new UnsupportedOperationException();
+		}
+
+		
+		@Override
+		public Tile getBackgroundTile(int worldTileX, int worldTileY) {
+			throw new UnsupportedOperationException();
+		}
+
+		
+		@Override
+		protected void generateInterfaces() {
+		}
+
+		
+		@Override
+		protected <T extends Component> Component internalStem(Class<T> with, ComponentCreationCustomization<T> custom) {
+			return new DummyComponent();
+		}
 	}
 }
