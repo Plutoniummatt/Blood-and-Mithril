@@ -98,7 +98,7 @@ public class TerrainGenerator {
 		if (System.getProperty("debug").equals("true")) {
 			bTiles[tileX][tileY] = new Tile.DebugTile();
 		} else {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Got an NPE during generation", e);
 		}
 	}
 }
