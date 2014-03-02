@@ -77,7 +77,7 @@ public class Desert extends SuperStructure {
 		generateSandBase(generatingToRight, rightMostTile, leftMostTile);
 		
 		if (!desertGenerated) {
-			getComponents().add(new UndergroundDesertTempleEntrance(0, StructureMap.surfaceHeight.get(100) + 27, getStructureKey(), false, YellowBrickTile.class, YellowBrickTile.class));
+			getComponents().add(new UndergroundDesertTempleEntrance(0, StructureMap.surfaceHeight.get(100 - 27) + 27, getStructureKey(), false, YellowBrickTile.class, YellowBrickTile.class));
 
 			getComponents().add(
 				getComponents().get(0).stem(

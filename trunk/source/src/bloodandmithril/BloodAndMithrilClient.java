@@ -372,14 +372,15 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (keycode == Input.Keys.D && ClientServerInterface.isServer()) {
-			UserInterface.addLayeredComponent(
+			UserInterface.addLayeredComponentUnique(
 				new DevWindow(
 					WIDTH/2 - 250,
 					HEIGHT/2 + 150,
 					500,
 					300,
 					true
-				)
+				),
+				"Developer"
 			);
 		}
 

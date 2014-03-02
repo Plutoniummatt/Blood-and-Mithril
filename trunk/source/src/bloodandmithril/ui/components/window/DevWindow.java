@@ -37,6 +37,7 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.GameWorld.DynamicLightingPostRenderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -362,6 +363,58 @@ public class DevWindow extends Window {
 						@Override
 						public void execute() {
 							UserInterface.renderAvailableInterfaces = !UserInterface.renderAvailableInterfaces;
+						}
+					},
+					UserInterface.renderAvailableInterfaces ? Color.GREEN : Color.RED,
+					Color.WHITE,
+					Color.GREEN,
+					UIRef.BL
+				),
+				null
+			),
+			0
+		);
+		
+		newHashMap.put(
+			new ListingMenuItem<String>(
+				"",
+				new Button(
+					"See All",
+					Fonts.defaultFont,
+					0,
+					0,
+					310,
+					16,
+					new Task() {
+						@Override
+						public void execute() {
+							DynamicLightingPostRenderer.SEE_ALL = !DynamicLightingPostRenderer.SEE_ALL;
+						}
+					},
+					UserInterface.renderAvailableInterfaces ? Color.GREEN : Color.RED,
+					Color.WHITE,
+					Color.GREEN,
+					UIRef.BL
+				),
+				null
+			),
+			0
+		);
+		
+		newHashMap.put(
+			new ListingMenuItem<String>(
+				"",
+				new Button(
+					"Debug",
+					Fonts.defaultFont,
+					0,
+					0,
+					310,
+					16,
+					new Task() {
+						@Override
+						public void execute() {
+							UserInterface.DEBUG = !UserInterface.DEBUG;
 						}
 					},
 					UserInterface.renderAvailableInterfaces ? Color.GREEN : Color.RED,

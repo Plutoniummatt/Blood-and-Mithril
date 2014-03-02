@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.item.Item;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.datastructure.BinaryTree;
 import bloodandmithril.world.topography.ChunkMap;
 import bloodandmithril.world.topography.Topography;
@@ -265,7 +266,7 @@ public abstract class Tile implements Serializable {
 		 */
 		public DebugTile() {
 			super(false);
-			if (!"true".equals(System.getProperty("debug"))) {
+			if (!UserInterface.DEBUG) {
 				throw new RuntimeException("Attemping to create a debug tile, but debug mode is off");
 			}
 		}

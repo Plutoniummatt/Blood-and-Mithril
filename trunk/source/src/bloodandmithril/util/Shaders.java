@@ -3,6 +3,7 @@ package bloodandmithril.util;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.WorldState;
 
 import com.badlogic.gdx.Gdx;
@@ -78,7 +79,7 @@ public class Shaders {
 		defaultBackGroundTiles.end();
 
 		defaultForeGroundTiles.begin();
-		defaultForeGroundTiles.setUniformf("debugSwitch", "true".equals(System.getProperty("seeAll")) ? 1f : 0f);
+		defaultForeGroundTiles.setUniformf("debugSwitch", GameWorld.DynamicLightingPostRenderer.SEE_ALL ? 1f : 0f);
 		defaultForeGroundTiles.end();
 	}
 }

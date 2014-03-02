@@ -139,7 +139,7 @@ public class ChunkSaver {
 	 * Saves a chunk to disk and flush it from memory
 	 */
 	public static void saveAndFlushChunk(final int x, final int y) {
-		if (chunksInQueue.get(x, y) == null && "true".equals(System.getProperty("chunkSaving"))) {
+		if (chunksInQueue.get(x, y) == null) {
 			GameSaver.saverTasks.add(new Task() {
 				@Override
 				public void execute() {

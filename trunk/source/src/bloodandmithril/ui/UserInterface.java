@@ -89,6 +89,9 @@ public class UserInterface {
 
 	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
 	public static boolean renderAvailableInterfaces = true, renderComponentBoundaries = true;
+	
+	/** Whether to render debug UI */
+	public static boolean DEBUG = false;
 
 	/** Texture regions */
 	public static TextureRegion finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
@@ -177,7 +180,7 @@ public class UserInterface {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
 
-		if ("true".equals(System.getProperty("debug")) && ClientServerInterface.isServer()) {
+		if (DEBUG && ClientServerInterface.isServer()) {
 			renderComponentInterfaces();
 			if (renderComponentBoundaries) {
 				renderComponentBoundaries();
@@ -192,7 +195,7 @@ public class UserInterface {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
 		BloodAndMithrilClient.spriteBatch.begin();
-		if ("true".equals(System.getProperty("debug"))) {
+		if (DEBUG) {
 			renderDebugText();
 		}
 

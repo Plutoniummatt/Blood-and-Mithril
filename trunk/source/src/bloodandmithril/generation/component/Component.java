@@ -182,6 +182,78 @@ public abstract class Component implements Serializable {
 	public int getStructureKey() {
 		return structureKey;
 	}
+	
+	
+	protected void generateUnitThicknessHorizontalInterfaces(int y, int left, int right) {
+		Integer mostRightAvailableX = null;
+
+		for (int x = right; x >= left; x--) {
+			boolean overlap = false;
+
+			for (Interface iface : getExistingInterfaces()) {
+				if (iface instanceof RectangularInterface) {
+					overlap = ((RectangularInterface) iface).boundaries.isWithin(x, y) || overlap;
+				}
+			}
+
+			if (overlap) {
+				if (mostRightAvailableX != null) {
+					RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(y, y, x + (x == right ? 0 : 2), mostRightAvailableX));
+					if (!(rectangularInterface.getWidth() <= 1)) {
+						getAvailableInterfaces().add(rectangularInterface);
+					}
+					mostRightAvailableX = null;
+				}
+			} else {
+				if (mostRightAvailableX == null) {
+					mostRightAvailableX = x - (x == left || x == right ? 0 : 1);
+				} else {
+					if (x == left) {
+						RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(y, y, x, mostRightAvailableX));
+						if (!(rectangularInterface.getWidth() <= 1)) {
+							getAvailableInterfaces().add(rectangularInterface);
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	protected void generateUnitThicknessVerticalInterfaces(int x, int top, int bottom) {
+		Integer highestAvailableY = null;
+
+		for (int y = top; y >= bottom; y--) {
+			boolean overlap = false;
+
+			for (Interface iface : getExistingInterfaces()) {
+				if (iface instanceof RectangularInterface) {
+					overlap = ((RectangularInterface) iface).boundaries.isWithin(x, y) || overlap;
+				}
+			}
+
+			if (overlap) {
+				if (highestAvailableY != null) {
+					RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(highestAvailableY, y + (y == top ? 0 : 2), x, x));
+					if (!(rectangularInterface.getHeight() <= 1)) {
+						getAvailableInterfaces().add(rectangularInterface);
+					}
+					highestAvailableY = null;
+				}
+			} else {
+				if (highestAvailableY == null) {
+					highestAvailableY = y - (y == bottom || y == top ? 0 : 1);
+				} else {
+					if (y == bottom) {
+						RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(highestAvailableY, y, x, x));
+						if (!(rectangularInterface.getHeight() <= 1)) {
+							getAvailableInterfaces().add(rectangularInterface);
+						}
+					}
+				}
+			}
+		}
+	}
 
 
 	/**
