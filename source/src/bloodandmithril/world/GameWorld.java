@@ -264,7 +264,9 @@ public class GameWorld {
 	 *
 	 * @author Matt
 	 */
-	private static class DynamicLightingPostRenderer {
+	public static class DynamicLightingPostRenderer {
+		public static boolean SEE_ALL = false;
+
 		private static void render(float camX, float camY) {
 			ArrayList<Light> tempLights = new ArrayList<GameWorld.Light>();
 
@@ -400,7 +402,7 @@ public class GameWorld {
 			}
 
 			//Render middleground without lighting
-			if ("true".equals(System.getProperty("seeAll"))) {
+			if (SEE_ALL) {
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 				BloodAndMithrilClient.spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 			} else {
@@ -425,7 +427,7 @@ public class GameWorld {
 			}
 
 			//Render foreground without lighting
-			if ("true".equals(System.getProperty("seeAll"))) {
+			if (SEE_ALL) {
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 			} else {

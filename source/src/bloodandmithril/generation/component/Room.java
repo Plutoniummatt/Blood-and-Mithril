@@ -43,87 +43,17 @@ public class Room extends Component {
 	@Override
 	protected void generateInterfaces() {
 
-		generateVertialInterfaces(innerBoundaries.left);
+		generateUnitThicknessVerticalInterfaces(innerBoundaries.left, innerBoundaries.top, innerBoundaries.bottom);
 
-		generateVertialInterfaces(innerBoundaries.right);
+		generateUnitThicknessVerticalInterfaces(innerBoundaries.right, innerBoundaries.top, innerBoundaries.bottom);
 
-		generateHorizontalInterfaces(innerBoundaries.top);
+		generateUnitThicknessHorizontalInterfaces(innerBoundaries.top, innerBoundaries.left, innerBoundaries.right);
 
-		generateHorizontalInterfaces(innerBoundaries.bottom);
+		generateUnitThicknessHorizontalInterfaces(innerBoundaries.bottom, innerBoundaries.left, innerBoundaries.right);
 	}
 
 
-	private void generateHorizontalInterfaces(int y) {
-		Integer mostRightAvailableX = null;
-
-		for (int x = innerBoundaries.right; x >= innerBoundaries.left; x--) {
-			boolean overlap = false;
-
-			for (Interface iface : getExistingInterfaces()) {
-				if (iface instanceof RectangularInterface) {
-					overlap = ((RectangularInterface) iface).boundaries.isWithin(x, y) || overlap;
-				}
-			}
-
-			if (overlap) {
-				if (mostRightAvailableX != null) {
-					RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(y, y, x + (x == innerBoundaries.right ? 0 : 2), mostRightAvailableX));
-					if (!(rectangularInterface.getWidth() <= 1)) {
-						getAvailableInterfaces().add(rectangularInterface);
-					}
-					mostRightAvailableX = null;
-				}
-			} else {
-				if (mostRightAvailableX == null) {
-					mostRightAvailableX = x - (x == innerBoundaries.left || x == innerBoundaries.right ? 0 : 1);
-				} else {
-					if (x == innerBoundaries.left) {
-						RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(y, y, x, mostRightAvailableX));
-						if (!(rectangularInterface.getWidth() <= 1)) {
-							getAvailableInterfaces().add(rectangularInterface);
-						}
-					}
-				}
-			}
-		}
-	}
-
-
-	private void generateVertialInterfaces(int x) {
-		Integer highestAvailableY = null;
-
-		for (int y = innerBoundaries.top; y >= innerBoundaries.bottom; y--) {
-			boolean overlap = false;
-
-			for (Interface iface : getExistingInterfaces()) {
-				if (iface instanceof RectangularInterface) {
-					overlap = ((RectangularInterface) iface).boundaries.isWithin(x, y) || overlap;
-				}
-			}
-
-			if (overlap) {
-				if (highestAvailableY != null) {
-					RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(highestAvailableY, y + (y == innerBoundaries.top ? 0 : 2), x, x));
-					if (!(rectangularInterface.getHeight() <= 1)) {
-						getAvailableInterfaces().add(rectangularInterface);
-					}
-					highestAvailableY = null;
-				}
-			} else {
-				if (highestAvailableY == null) {
-					highestAvailableY = y - (y == innerBoundaries.bottom || y == innerBoundaries.top ? 0 : 1);
-				} else {
-					if (y == innerBoundaries.bottom) {
-						RectangularInterface rectangularInterface = new RectangularInterface(new Boundaries(highestAvailableY, y, x, x));
-						if (!(rectangularInterface.getHeight() <= 1)) {
-							getAvailableInterfaces().add(rectangularInterface);
-						}
-					}
-				}
-			}
-		}
-	}
-
+	
 
 	@Override
 	protected <T extends Component> Component internalStem(Class<T> with, ComponentCreationCustomization<T> custom) {
@@ -168,6 +98,10 @@ public class Room extends Component {
 		});
 
 		// Convert filtered collection into ArrayList, select an interface at random
+		if (interfacesToUse.size() == 0) {
+			return null;
+		}
+		
 		int interfaceIndex = Util.getRandom().nextInt(interfacesToUse.size());
 		List<Interface> interfacesToUseList = new ArrayList<>(interfacesToUse);
 

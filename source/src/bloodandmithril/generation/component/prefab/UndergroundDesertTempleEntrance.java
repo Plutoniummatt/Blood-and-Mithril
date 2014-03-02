@@ -9,7 +9,6 @@ import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.Corridor;
 import bloodandmithril.generation.component.Interface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
-import bloodandmithril.generation.component.RectangularInterface;
 import bloodandmithril.generation.component.Stairs;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
@@ -82,16 +81,16 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	protected void generateInterfaces() {
 		// Generate the bottom interface
 		if (inverted) {
-			getAvailableInterfaces().add(new RectangularInterface(new Boundaries(boundaries.top - 29, boundaries.top - 29, boundaries.right - 10, boundaries.right - 4)));
+			generateUnitThicknessHorizontalInterfaces(boundaries.top - 29, boundaries.right - 10, boundaries.right - 4);
 		} else {
-			getAvailableInterfaces().add(new RectangularInterface(new Boundaries(boundaries.top - 29, boundaries.top - 29, boundaries.left + 4, boundaries.left + 10)));
+			generateUnitThicknessHorizontalInterfaces(boundaries.top - 29, boundaries.left + 4, boundaries.left + 10);
 		}
 		
 		// Generate the side interface
 		if (inverted) {
-			getAvailableInterfaces().add(new RectangularInterface(new Boundaries(boundaries.top - 17, boundaries.top - 22, boundaries.right, boundaries.right)));
+			generateUnitThicknessVerticalInterfaces(boundaries.right, boundaries.top - 17, boundaries.top - 22);
 		} else {
-			getAvailableInterfaces().add(new RectangularInterface(new Boundaries(boundaries.top - 17, boundaries.top - 22, boundaries.left, boundaries.left)));
+			generateUnitThicknessVerticalInterfaces(boundaries.left, boundaries.top - 17, boundaries.top - 22);
 		}
 	}
 

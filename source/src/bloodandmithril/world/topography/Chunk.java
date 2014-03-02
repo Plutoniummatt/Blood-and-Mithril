@@ -189,7 +189,7 @@ public class Chunk {
 			Shaders.pass.end();
 		}
 
-		if ("true".equals(System.getProperty("debug"))) {
+		if (UserInterface.DEBUG) {
 			Gdx.gl.glEnable(GL10.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			UserInterface.shapeRenderer.begin(ShapeType.Rectangle);
