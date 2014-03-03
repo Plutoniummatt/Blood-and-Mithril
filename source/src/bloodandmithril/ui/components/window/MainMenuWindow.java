@@ -66,18 +66,7 @@ public class MainMenuWindow extends Window {
 		if (options.click()) {
 			this.setActive(false);
 			windowsCopy.addLast(
-				new MessageWindow(
-					"This is the options window",
-					Color.ORANGE,
-					BloodAndMithrilClient.WIDTH/2 - 150,
-					BloodAndMithrilClient.HEIGHT/2 + 100,
-					300,
-					200,
-					"Options",
-					true,
-					300,
-					200
-				)
+				new OptionsWindow()
 			);
 		}
 	}

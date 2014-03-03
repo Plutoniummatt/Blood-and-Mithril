@@ -1,6 +1,7 @@
 package trunkapp;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.persistence.ConfigPersistenceService;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -21,15 +22,8 @@ public class Main {
 		cfg.title = "Blood and Mithril";
 		cfg.useGL20 = true;
 		cfg.samples = 4;
-		try {
-			cfg.width = Integer.parseInt(System.getProperty("resX"));
-			cfg.height = Integer.parseInt(System.getProperty("resY"));
-		} catch (NumberFormatException e) {
-			throw new IllegalStateException("set -DresX and -DresY JVM Arguments as resolution");
-			//For exmaple:
-			//		-DresX=1900
-			//		-DresY=1000
-		}
+		cfg.width = ConfigPersistenceService.getConfig().getResX();
+		cfg.height = ConfigPersistenceService.getConfig().getResY();
 		cfg.resizable = false;
 		cfg.addIcon("data/image/icon.png", FileType.Internal);
 		cfg.addIcon("data/image/smallIcon.png", FileType.Internal);
