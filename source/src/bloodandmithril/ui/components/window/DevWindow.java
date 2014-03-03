@@ -34,7 +34,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
-import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.GameWorld.DynamicLightingPostRenderer;
@@ -169,7 +168,7 @@ public class DevWindow extends Window {
 			GameWorld.individuals.put(boar.getId().getId(), boar);
 			return true;
 		}
-
+		
 		return false;
 	}
 
@@ -177,6 +176,8 @@ public class DevWindow extends Window {
 	@Override
 	public void leftClickReleased() {
 		panel.leftClickReleased();
+		panel.getListing().clear();
+		panel.getListing().add(buildMap());
 	}
 
 
@@ -185,7 +186,7 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"",
+				"Spawn Elf - E",
 				new Button(
 					"Spawn Elf - E",
 					Fonts.defaultFont,
@@ -198,9 +199,9 @@ public class DevWindow extends Window {
 						public void execute() {
 						}
 					},
-					Colors.UI_DARK_GREEN,
-					Colors.UI_DARK_GREEN,
-					Colors.UI_DARK_GREEN,
+					Color.CYAN,
+					Color.CYAN,
+					Color.CYAN,
 					UIRef.BL
 				),
 				null
@@ -210,7 +211,7 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"",
+				"Spawn Boar - U",
 				new Button(
 					"Spawn Boar - U",
 					Fonts.defaultFont,
@@ -223,9 +224,9 @@ public class DevWindow extends Window {
 						public void execute() {
 						}
 					},
-					Colors.UI_DARK_GREEN,
-					Colors.UI_DARK_GREEN,
-					Colors.UI_DARK_GREEN,
+					Color.CYAN,
+					Color.CYAN,
+					Color.CYAN,
 					UIRef.BL
 				),
 				null
@@ -235,7 +236,7 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"",
+				"Spawn Chest on first individual",
 				new Button(
 					"Spawn Chest on first individual",
 					Fonts.defaultFont,
@@ -265,7 +266,7 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"",
+				"Spawn Furnace on first individual",
 				new Button(
 					"Spawn Furnace on first individual",
 					Fonts.defaultFont,
@@ -295,7 +296,7 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"",
+				"Spawn Carrot on first individual",
 				new Button(
 					"Spawn Carrot on first individual",
 					Fonts.defaultFont,
@@ -325,7 +326,7 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"",
+				"Render component boundaries",
 				new Button(
 					"Render component boundaries",
 					Fonts.defaultFont,
@@ -351,7 +352,7 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"",
+				"Render component interfaces",
 				new Button(
 					"Render component interfaces",
 					Fonts.defaultFont,
@@ -377,7 +378,7 @@ public class DevWindow extends Window {
 		
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"",
+				"See All",
 				new Button(
 					"See All",
 					Fonts.defaultFont,
@@ -391,7 +392,7 @@ public class DevWindow extends Window {
 							DynamicLightingPostRenderer.SEE_ALL = !DynamicLightingPostRenderer.SEE_ALL;
 						}
 					},
-					UserInterface.renderAvailableInterfaces ? Color.GREEN : Color.RED,
+					DynamicLightingPostRenderer.SEE_ALL ? Color.GREEN : Color.RED,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL
@@ -403,7 +404,7 @@ public class DevWindow extends Window {
 		
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"",
+				"Debug",
 				new Button(
 					"Debug",
 					Fonts.defaultFont,
@@ -417,7 +418,7 @@ public class DevWindow extends Window {
 							UserInterface.DEBUG = !UserInterface.DEBUG;
 						}
 					},
-					UserInterface.renderAvailableInterfaces ? Color.GREEN : Color.RED,
+					UserInterface.DEBUG ? Color.GREEN : Color.RED,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL
