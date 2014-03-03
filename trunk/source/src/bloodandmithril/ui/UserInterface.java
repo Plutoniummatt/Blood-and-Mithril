@@ -582,6 +582,18 @@ public class UserInterface {
 	public static void removeLayeredComponent(Component toRemove) {
 		layeredComponents.remove(toRemove);
 	}
+	
+	
+	/**
+	 * Removes a layered component
+	 */
+	public static void removeLayeredComponent(String title) {
+		for (Component component : layeredComponents) {
+			if (component instanceof Window && ((Window) component).title.equals(title)) {
+				component.setClosing(true);
+			}
+		}
+	}
 
 
 	/**

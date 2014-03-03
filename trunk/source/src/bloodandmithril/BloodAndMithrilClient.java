@@ -12,6 +12,7 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.item.Equipable;
+import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
@@ -79,10 +80,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static final float DOUBLE_CLICK_TIME = 0.2f;
 
 	/** Resolution x */
-	public static final int WIDTH = Integer.parseInt(System.getProperty("resX"));
+	public static final int WIDTH = ConfigPersistenceService.getConfig().getResX();
 
 	/** Resolution y */
-	public static final int HEIGHT = Integer.parseInt(System.getProperty("resY"));
+	public static final int HEIGHT = ConfigPersistenceService.getConfig().getResY();
 
 	/** 'THE' SpriteBatch */
 	public static SpriteBatch spriteBatch;
