@@ -363,7 +363,7 @@ public class Desert extends SuperStructure {
 
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
-		if (worldTileY > StructureMap.surfaceHeight.get(worldTileX) - 2) {
+		if (worldTileY > StructureMap.surfaceHeight.get(worldTileX)-1) {
 			return new Tile.EmptyTile();
 
 		} else if (worldTileY > transitionBase.get(worldTileX)) {

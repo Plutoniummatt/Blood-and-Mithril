@@ -1,6 +1,5 @@
 package bloodandmithril.util;
 
-
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.GameWorld;
@@ -19,6 +18,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 public class Shaders {
 
 	public static ShaderProgram pass = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/pass.fp"));
+	
+	public static ShaderProgram gaussian = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/gaussianBlur.fp"));
 
 	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/sun.fp"));
 
@@ -33,12 +34,16 @@ public class Shaders {
 	public static ShaderProgram text = SpriteBatch.createDefaultShader();
 
 	public static ShaderProgram dark = colorFilterShader(new Color(0.2f, 0.2f, 0.2f, 1f));
+	
+	public static ShaderProgram daylightShader = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/daylightShader.fp"));
 
 	public static ShaderProgram black = colorFilterShader(Color.BLACK);
-
+	
+	public static ShaderProgram foregroundDaylight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/daylightOcclusionShader.fp"));
+	
 	public static ShaderProgram filter = colorFilterShader();
 
-	public static ShaderProgram moon =  new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/moonShader.fp"));
+	public static ShaderProgram moon = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/moonShader.fp"));
 
 	public static ShaderProgram elfHighLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/elf/highLight.fp"));
 

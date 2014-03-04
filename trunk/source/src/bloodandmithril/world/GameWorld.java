@@ -64,6 +64,7 @@ public class GameWorld {
 	private static FrameBuffer mBuffer;
 	private static FrameBuffer mBufferLit;
 	private static FrameBuffer bBuffer;
+	private static FrameBuffer bBufferProcessed;
 	private static FrameBuffer bBufferLit;
 
 
@@ -82,6 +83,7 @@ public class GameWorld {
 		mBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		mBufferLit = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		bBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
+		bBufferProcessed = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		bBufferLit = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
@@ -104,10 +106,11 @@ public class GameWorld {
 		}
 		BloodAndMithrilClient.spriteBatch.end();
 		bBuffer.end();
-
+		
+		BackgroundBlur();
+		
 		mBuffer.begin();
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		topography.renderForeGround(camX, camY);
 		BloodAndMithrilClient.spriteBatch.begin();
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
@@ -135,6 +138,18 @@ public class GameWorld {
 		fBuffer.end();
 
 		DynamicLightingPostRenderer.render(camX, camY);
+	}
+
+	
+	private void BackgroundBlur() {
+		bBufferProcessed.begin();
+		BloodAndMithrilClient.spriteBatch.begin();
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.foregroundDaylight);
+		Shaders.foregroundDaylight.setUniformf("res", BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
+		BloodAndMithrilClient.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
+		BloodAndMithrilClient.spriteBatch.end();
+		bBufferProcessed.end();
 	}
 
 
@@ -431,9 +446,13 @@ public class GameWorld {
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 			} else {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.black);
-				float color = WorldState.currentEpoch.dayLight() * 0.15f;
-				Shaders.black.setUniformf("color", new Color(color, color, color, 1f));
+				float daylight = WorldState.currentEpoch.dayLight() * 0.90f + 0.10f;
+				Color color = new Color(daylight, daylight, daylight, 1f);
+				BloodAndMithrilClient.spriteBatch.setShader(Shaders.daylightShader);
+				bBufferProcessed.getColorBufferTexture().bind(1);
+				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
+				Shaders.daylightShader.setUniformf("daylight", color.r, color.g, color.b, color.a);
+				Shaders.daylightShader.setUniformi("u_texture2", 1);
 				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 			}
 

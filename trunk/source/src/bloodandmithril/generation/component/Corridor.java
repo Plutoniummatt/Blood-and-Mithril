@@ -146,7 +146,7 @@ public class Corridor extends Component {
 	@Override
 	public Tile getBackgroundTile(int worldTileX, int worldTileY) {
 
-		if (innerBoundaries.isWithin(worldTileX, worldTileY)) {
+		if (getBoundaries().isWithin(worldTileX, worldTileY)) {
 			try {
 				return tileType.newInstance();
 			} catch (Exception e) {
