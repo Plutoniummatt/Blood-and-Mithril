@@ -446,12 +446,32 @@ public class GameWorld {
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 			} else {
+				
+				double r;
+				double g;
+				double b;
+				float time = WorldState.currentEpoch.getTime();
+				
+				if (time < 10.0) {
+					r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 10.0), 2.0));
+					g = 0.1 + 1.2 * Math.exp(-0.150*Math.pow((time - 10.0), 2.0));
+					b = 0.1 + 1.2 * Math.exp(-0.200*Math.pow((time - 10.0), 2.0));
+				} else if (time >= 10 && time < 14) {
+					r = 1.3;
+					g = 1.3;
+					b = 1.3;
+				} else {
+					r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 14.0), 2.0));
+					g = 0.1 + 1.2 * Math.exp(-0.150*Math.pow((time - 14.0), 2.0));
+					b = 0.1 + 1.2 * Math.exp(-0.200*Math.pow((time - 14.0), 2.0));
+				}
+				
 				float daylight = WorldState.currentEpoch.dayLight() * 0.90f + 0.10f;
 				Color color = new Color(daylight, daylight, daylight, 1f);
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.daylightShader);
 				bBufferProcessed.getColorBufferTexture().bind(1);
 				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-				Shaders.daylightShader.setUniformf("daylight", color.r, color.g, color.b, color.a);
+				Shaders.daylightShader.setUniformf("daylight", (float)r, (float)g, (float)b, color.a);
 				Shaders.daylightShader.setUniformi("u_texture2", 1);
 				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 			}
