@@ -101,10 +101,10 @@ public class Epoch implements Serializable {
 	public float dayLight() {
 		if (timeOfDay > 0f && timeOfDay < 8f) {
 			return (float) exp(-pow(timeOfDay - 8f, 2));
-		} else if (timeOfDay > 6f && timeOfDay < 18f) {
+		} else if (timeOfDay > 8f && timeOfDay < 17f) {
 			return 1f;
 		} else {
-			return (float) exp(-pow(timeOfDay - 18f, 2));
+			return (float) exp(-pow(timeOfDay - 17f, 2));
 		}
 	}
 }

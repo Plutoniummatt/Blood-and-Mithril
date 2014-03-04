@@ -207,7 +207,7 @@ public class InventoryWindow extends Window {
 						menuToAddUnequipped.y = BloodAndMithrilClient.getMouseScreenY();
 					}
 				},
-				eq ? Colors.UI_GRAY : Color.WHITE,
+				eq ? Color.GREEN : Color.WHITE,
 				Color.GREEN,
 				Color.WHITE,
 				UIRef.BL
@@ -228,7 +228,7 @@ public class InventoryWindow extends Window {
 						menuToAddEquipped.y = BloodAndMithrilClient.getMouseScreenY();
 					}
 				},
-				eq ? Colors.UI_GRAY : Color.WHITE,
+				eq ? Color.GREEN : Color.WHITE,
 				Color.GREEN,
 				Color.WHITE,
 				UIRef.BL
