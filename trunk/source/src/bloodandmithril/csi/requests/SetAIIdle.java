@@ -1,12 +1,9 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.world.GameWorld;
 
@@ -29,7 +26,7 @@ public class SetAIIdle implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Responses(false, new LinkedList<Response>());
+		Responses responses = new Responses(false);
 		Individual individual = GameWorld.individuals.get(individualId);
 		if (individual.getSelectedByClient().isEmpty()) {
 			individual.getAI().setToAuto(true);

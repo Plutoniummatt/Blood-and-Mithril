@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
@@ -45,15 +43,15 @@ public class GenerateChunk implements Request {
 				}
 			} while (!Topography.chunkMap.doesChunkExist(x, y) || response == null);
 
-			Responses responses = new Response.Responses(false, new LinkedList<Response>());
-			responses.responses.add(response);
+			Responses responses = new Response.Responses(false);
+			responses.add(response);
 			return responses;
 		} else {
 			ChunkData fData = Topography.chunkMap.get(x).get(y).getChunkData(true);
 			ChunkData bData = Topography.chunkMap.get(x).get(y).getChunkData(false);
 			Response response = new GenerateChunkResponse(fData, bData);
-			Responses responses = new Response.Responses(false, new LinkedList<Response>());
-			responses.responses.add(response);
+			Responses responses = new Response.Responses(false);
+			responses.add(response);
 			return responses;
 		}
 	}

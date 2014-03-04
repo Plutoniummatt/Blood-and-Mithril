@@ -1,6 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
 import java.util.Set;
 
 import bloodandmithril.character.Individual;
@@ -44,16 +43,16 @@ public class SynchronizeIndividual implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Response.Responses(false, new LinkedList<Response>());
+		Responses responses = new Response.Responses(false);
 
 		Response response;
 		if (id == -1) {
 			response = new SynchronizeIndividualResponse(Sets.newHashSet(GameWorld.individuals.keySet()));
-			responses.responses.add(response);
+			responses.add(response);
 			return responses;
 		}
 		response = new SynchronizeIndividualResponse(id, System.currentTimeMillis());
-		responses.responses.add(response);
+		responses.add(response);
 		return responses;
 	}
 

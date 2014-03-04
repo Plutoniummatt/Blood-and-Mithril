@@ -1,10 +1,7 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 
 /**
@@ -32,7 +29,7 @@ public class ClientConnected implements Request {
 			id,
 			name
 		);
-		return new Responses(false, new LinkedList<Response>());
+		return new Responses(false);
 	}
 
 

@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.csi.Request;
@@ -36,7 +34,7 @@ public class CSITradeWith implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses response = new Response.Responses(false, new LinkedList<Response>());
+		Responses response = new Response.Responses(false);
 
 		Individual proposer = GameWorld.individuals.get(proposerId);
 		Container proposee = null;

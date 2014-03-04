@@ -1,9 +1,6 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
@@ -38,7 +35,7 @@ public class ChangeFurnaceTemperature implements Request {
 			throw new RuntimeException("Expected a furnace, but got a " + maybeFurnace.getClass().getSimpleName());
 		}
 		
-		return new Responses(false, new LinkedList<Response>());
+		return new Responses(false);
 	}
 
 	

@@ -108,7 +108,7 @@ public class BloodAndMithrilServer {
 							if (request.tcp()) {
 								if (request.notifyOthers()) {
 									Responses responseToSend = request.respond();
-									for (Response response : responseToSend.responses) {
+									for (Response response : responseToSend.getResponses()) {
 										response.prepare();
 									}
 									for (Connection c : server.getConnections()) {
@@ -120,7 +120,7 @@ public class BloodAndMithrilServer {
 							} else {
 								if (request.notifyOthers()) {
 									Responses responseToSend = request.respond();
-									for (Response response : responseToSend.responses) {
+									for (Response response : responseToSend.getResponses()) {
 										response.prepare();
 									}
 									for (Connection c : server.getConnections()) {

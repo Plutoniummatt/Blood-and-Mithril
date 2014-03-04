@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
@@ -24,9 +22,9 @@ public class SynchronizePropRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Responses(false, new LinkedList<Response>());
-		responses.responses.add(new SynchronizePropResponse(GameWorld.props.get(propId)));
-		responses.responses.add(new TransferItems.RefreshWindowsResponse());
+		Responses responses = new Responses(false);
+		responses.add(new SynchronizePropResponse(GameWorld.props.get(propId)));
+		responses.add(new TransferItems.RefreshWindowsResponse());
 		return responses;
 	}
 

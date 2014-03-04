@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
@@ -18,11 +16,11 @@ public class SynchronizeFaction implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Responses(true, new LinkedList<Response>());
+		Responses responses = new Responses(true);
 		for (Faction faction : GameWorld.factions.values()) {
-			responses.responses.add(new SynchronizeFactionResponse(faction));
+			responses.add(new SynchronizeFactionResponse(faction));
 		}
-		responses.responses.add(new ChangeFactionControlPassword.RefreshFactionWindow());
+		responses.add(new ChangeFactionControlPassword.RefreshFactionWindow());
 		return responses;
 	}
 

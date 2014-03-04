@@ -1,10 +1,8 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
 import java.util.Map.Entry;
 
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.Fuel;
@@ -43,7 +41,7 @@ public class IgniteFurnaceRequest implements Request {
 		} else {
 			throw new RuntimeException("Expected a furnace, but got a " + prop.getClass().getSimpleName());
 		}
-		return new Responses(false, new LinkedList<Response>());
+		return new Responses(false);
 	}
 
 	

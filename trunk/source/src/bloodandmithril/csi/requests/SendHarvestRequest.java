@@ -1,11 +1,8 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
@@ -46,7 +43,7 @@ public class SendHarvestRequest implements Request {
 			new Harvest(individual, harvestable)
 		);
 
-		return new Responses(false, new LinkedList<Response>());
+		return new Responses(false);
 	}
 
 

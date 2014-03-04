@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.csi.Request;
@@ -33,29 +31,29 @@ public class OpenTradeWindow implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Response.Responses(false, new LinkedList<Response>());
+		Responses responses = new Response.Responses(false);
 
-		responses.responses.add(
+		responses.add(
 			new SynchronizeIndividual.SynchronizeIndividualResponse(
 				proposerId, System.currentTimeMillis()
 			)
 		);
 
 		if (proposee == TradeEntity.INDIVIDUAL) {
-			responses.responses.add(
+			responses.add(
 				new SynchronizeIndividual.SynchronizeIndividualResponse(
 					proposerId, System.currentTimeMillis()
 				)
 			);
 		} else {
-			responses.responses.add(
+			responses.add(
 				new SynchronizePropRequest.SynchronizePropResponse(
 					GameWorld.props.get(proposeeId)
 				)
 			);
 		}
 
-		responses.responses.add(
+		responses.add(
 			new OpenTradeWindowResponse(
 				proposerId,
 				proposee,

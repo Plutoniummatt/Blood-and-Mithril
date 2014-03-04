@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
@@ -43,8 +41,8 @@ public class IndividualSelection implements Request {
 			GameWorld.selectedIndividuals.remove(individual);
 		}
 		Response response = new SelectIndividualResponse(individualId, select);
-		Responses responses = new Response.Responses(false, new LinkedList<Response>());
-		responses.responses.add(response);
+		Responses responses = new Response.Responses(false);
+		responses.add(response);
 		return responses;
 	}
 

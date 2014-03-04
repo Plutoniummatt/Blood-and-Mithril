@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
@@ -34,11 +32,11 @@ public class ChangeFactionControlPassword implements Request {
 	public Responses respond() {
 		GameWorld.factions.get(factionId).changeControlPassword(newPassword);
 
-		Responses responses = new Responses(true, new LinkedList<Response>());
+		Responses responses = new Responses(true);
 		for (Faction faction : GameWorld.factions.values()) {
-			responses.responses.add(new SynchronizeFactionResponse(faction));
+			responses.add(new SynchronizeFactionResponse(faction));
 		}
-		responses.responses.add(new RefreshFactionWindow());
+		responses.add(new RefreshFactionWindow());
 
 		return responses;
 	}
