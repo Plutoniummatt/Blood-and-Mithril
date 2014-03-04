@@ -1,7 +1,6 @@
 package bloodandmithril.csi.requests;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.ClientServerInterface;
@@ -46,24 +45,24 @@ public class TransferItems implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses response = new Responses(true, new LinkedList<Response>());
+		Responses response = new Responses(true);
 
 		Individual proposer;
 		Container proposee;
 
 		proposer = GameWorld.individuals.get(proposerId);
-		response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(proposer.getId().getId(), System.currentTimeMillis()));
+		response.add(new SynchronizeIndividual.SynchronizeIndividualResponse(proposer.getId().getId(), System.currentTimeMillis()));
 
 		switch(proposeeEntityType) {
 		case INDIVIDUAL:
 			proposee = GameWorld.individuals.get(proposeeId);
-			response.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(((Individual)proposee).getId().getId(), System.currentTimeMillis()));
+			response.add(new SynchronizeIndividual.SynchronizeIndividualResponse(((Individual)proposee).getId().getId(), System.currentTimeMillis()));
 			break;
 
 		case PROP:
 			Prop prop = GameWorld.props.get(proposerId);
 			proposee = ((ConstructionWithContainer) prop).container;
-			response.responses.add(new SynchronizePropRequest.SynchronizePropResponse(prop));
+			response.add(new SynchronizePropRequest.SynchronizePropResponse(prop));
 			break;
 
 		default:
@@ -71,7 +70,7 @@ public class TransferItems implements Request {
 		}
 
 		TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
-		response.responses.add(new TransferItemsResponse(client));
+		response.add(new TransferItemsResponse(client));
 
 		return response;
 	}
@@ -119,8 +118,8 @@ public class TransferItems implements Request {
 	public static class RefreshWindows implements Request {
 		@Override
 		public Responses respond() {
-			Responses responses = new Responses(false, new LinkedList<Response>());
-			responses.responses.add(new RefreshWindowsResponse());
+			Responses responses = new Responses(false);
+			responses.add(new RefreshWindowsResponse());
 			return responses;
 		}
 

@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
@@ -28,8 +26,8 @@ public class Ping implements Request {
 	@Override
 	public Responses respond() {
 		Response response = new Pong(ping);
-		Responses responses = new Response.Responses(false, new LinkedList<Response>());
-		responses.responses.add(response);
+		Responses responses = new Response.Responses(false);
+		responses.add(response);
 		return responses;
 	}
 

@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -50,8 +48,8 @@ public class MoveIndividual implements Request {
 		}
 
 		Response response = new MoveIndividualResponse();
-		Responses responses = new Response.Responses(false, new LinkedList<Response>());
-		responses.responses.add(response);
+		Responses responses = new Response.Responses(false);
+		responses.add(response);
 		return responses;
 	}
 

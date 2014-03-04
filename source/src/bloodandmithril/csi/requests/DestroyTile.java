@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
@@ -30,8 +28,8 @@ public class DestroyTile implements Request {
 	public Responses respond() {
 		Topography.deleteTile(worldX, worldY, foreground);
 		Response destroyTileResponse = new DestroyTileResponse(worldX, worldY, foreground);
-		Responses responses = new Response.Responses(false, new LinkedList<Response>());
-		responses.responses.add(destroyTileResponse);
+		Responses responses = new Response.Responses(false);
+		responses.add(destroyTileResponse);
 		return responses;
 	}
 

@@ -1,7 +1,6 @@
 package bloodandmithril.csi.requests;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import bloodandmithril.csi.ClientServerInterface;
@@ -32,14 +31,14 @@ public class RequestClientList implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Responses(false, new LinkedList<Response>());
+		Responses responses = new Responses(false);
 
 		List<String> names = Lists.newArrayList();
 		for (Connection connection : ClientServerInterface.server.getConnections()) {
 			names.add(ClientServerInterface.connectedPlayers.get(connection.getID()));
 		}
 
-		responses.responses.add(new RequestClientListResponse(names));
+		responses.add(new RequestClientListResponse(names));
 		return responses;
 	}
 

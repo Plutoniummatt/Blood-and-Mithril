@@ -1,11 +1,8 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.world.GameWorld;
 
@@ -35,7 +32,7 @@ public class SendAttackRequest implements Request {
 			)
 		);
 
-		Responses responses = new Responses(false, new LinkedList<Response>());
+		Responses responses = new Responses(false);
 		return responses;
 	}
 

@@ -224,7 +224,7 @@ public class ClientServerInterface {
 				Responses resp = (Responses) object;
 
 				if (resp.executeInSingleThread()) {
-					for (final Response response : resp.responses) {
+					for (final Response response : resp.getResponses()) {
 						if (response.forClient() != -1 && response.forClient() != client.getID()) {
 							continue;
 						}
@@ -233,7 +233,7 @@ public class ClientServerInterface {
 					return;
 				}
 
-				for (final Response response : resp.responses) {
+				for (final Response response : resp.getResponses()) {
 					if (response.forClient() != -1 && response.forClient() != client.getID()) {
 						continue;
 					}
@@ -302,10 +302,10 @@ public class ClientServerInterface {
 				public void run() {
 					for (Connection connection : server.getConnections()) {
 						if (connectionId == -1) {
-							Responses resp = new Responses(executeInSingleThread, new LinkedList<Response>());
+							Responses resp = new Responses(executeInSingleThread);
 							for (Response response : responses) {
 								response.prepare();
-								resp.responses.add(response);
+								resp.add(response);
 							}
 							if (tcp) {
 								connection.sendTCP(resp);
@@ -317,10 +317,10 @@ public class ClientServerInterface {
 						}
 
 						if (connectionId == connection.getID()) {
-							Responses resp = new Responses(executeInSingleThread, new LinkedList<Response>());
+							Responses resp = new Responses(executeInSingleThread);
 							for (Response response : responses) {
 								response.prepare();
-								resp.responses.add(response);
+								resp.add(response);
 							}
 							if (tcp) {
 								connection.sendTCP(resp);

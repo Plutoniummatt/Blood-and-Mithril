@@ -1,10 +1,7 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.material.container.Bottle;
 import bloodandmithril.item.material.liquid.Liquid;
@@ -41,9 +38,9 @@ public class DrinkLiquid implements Request {
 			individual.giveItem(newBottle);
 		}
 
-		Responses responses = new Responses(true, new LinkedList<Response>());
-		responses.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual.getId().getId(), System.currentTimeMillis()));
-		responses.responses.add(new TransferItems.RefreshWindowsResponse());
+		Responses responses = new Responses(true);
+		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual.getId().getId(), System.currentTimeMillis()));
+		responses.add(new TransferItems.RefreshWindowsResponse());
 		return responses;
 	}
 

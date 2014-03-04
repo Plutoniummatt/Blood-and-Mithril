@@ -1,6 +1,7 @@
 package bloodandmithril.csi;
 
 import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -20,16 +21,24 @@ public interface Response {
 	public void prepare();
 	
 	public static class Responses {
-		public LinkedList<Response> responses;
+		private LinkedList<Response> responses;
 		private boolean executeInSingleThread;
 		
-		public Responses(boolean executeInSingleThread, LinkedList<Response> responses) {
+		public Responses(boolean executeInSingleThread) {
 			this.executeInSingleThread = executeInSingleThread;
-			this.responses = responses;
+			this.responses = new LinkedList<Response>();
 		}
 		
 		public boolean executeInSingleThread() {
 			return executeInSingleThread;
+		}
+		
+		public List<Response> getResponses() {
+			return responses;
+		}
+
+		public void add(Response response) {
+			responses.add(response);
 		}
 	}
 }

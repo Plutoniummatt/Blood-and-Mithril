@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
@@ -35,8 +33,8 @@ public class ChangeNickName implements Request {
 			individual.getId().setNickName(toChangeTo);
 		}
 
-		Responses responses = new Responses(false, new LinkedList<Response>());
-		responses.responses.add(new ChangeNickNameResponse());
+		Responses responses = new Responses(false);
+		responses.add(new ChangeNickNameResponse());
 		return responses;
 	}
 

@@ -1,9 +1,6 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.world.GameWorld;
 
@@ -29,7 +26,7 @@ public class ToggleWalkRun implements Request {
 	@Override
 	public Responses respond() {
 		GameWorld.individuals.get(individualId).setWalking(walk);
-		return new Responses(false, new LinkedList<Response>());
+		return new Responses(false);
 	}
 
 

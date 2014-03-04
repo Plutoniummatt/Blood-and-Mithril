@@ -64,7 +64,7 @@ public class GameWorld {
 	private static FrameBuffer mBuffer;
 	private static FrameBuffer mBufferLit;
 	private static FrameBuffer bBuffer;
-	private static FrameBuffer bBufferProcessed;
+	private static FrameBuffer bBufferProcessedForDaylightShader;
 	private static FrameBuffer bBufferLit;
 
 
@@ -83,7 +83,7 @@ public class GameWorld {
 		mBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		mBufferLit = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		bBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
-		bBufferProcessed = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
+		bBufferProcessedForDaylightShader = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		bBufferLit = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
@@ -142,14 +142,14 @@ public class GameWorld {
 
 	
 	private void BackgroundBlur() {
-		bBufferProcessed.begin();
+		bBufferProcessedForDaylightShader.begin();
 		BloodAndMithrilClient.spriteBatch.begin();
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.foregroundDaylight);
 		Shaders.foregroundDaylight.setUniformf("res", BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
 		BloodAndMithrilClient.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 		BloodAndMithrilClient.spriteBatch.end();
-		bBufferProcessed.end();
+		bBufferProcessedForDaylightShader.end();
 	}
 
 
@@ -469,7 +469,7 @@ public class GameWorld {
 				float daylight = WorldState.currentEpoch.dayLight() * 0.90f + 0.10f;
 				Color color = new Color(daylight, daylight, daylight, 1f);
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.daylightShader);
-				bBufferProcessed.getColorBufferTexture().bind(1);
+				bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
 				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 				Shaders.daylightShader.setUniformf("daylight", (float)r, (float)g, (float)b, color.a);
 				Shaders.daylightShader.setUniformi("u_texture2", 1);

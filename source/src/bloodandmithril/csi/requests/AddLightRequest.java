@@ -1,7 +1,5 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.csi.Request;
@@ -40,9 +38,9 @@ public class AddLightRequest implements Request {
 	public Responses respond() {
 		int nextLightId = ParameterPersistenceService.getParameters().getNextLightId();
 		GameWorld.lights.put(nextLightId, new Light(size, x, y, color, intensity));
-		Responses responses = new Responses(false, new LinkedList<Response>());
+		Responses responses = new Responses(false);
 		
-		responses.responses.add(new SyncLightResponse(nextLightId, size, x, y, color, intensity));
+		responses.add(new SyncLightResponse(nextLightId, size, x, y, color, intensity));
 		return responses;
 	}
 	

@@ -1,10 +1,7 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
@@ -31,7 +28,7 @@ public class ConsumeItem implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Responses(true, new LinkedList<Response>());
+		Responses responses = new Responses(true);
 
 		Individual individual = GameWorld.individuals.get(individualId);
 
@@ -39,8 +36,8 @@ public class ConsumeItem implements Request {
 			individual.takeItem((Item)consumable);
 		}
 
-		responses.responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual.getId().getId(), System.currentTimeMillis()));
-		responses.responses.add(new TransferItems.RefreshWindowsResponse());
+		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual.getId().getId(), System.currentTimeMillis()));
+		responses.add(new TransferItems.RefreshWindowsResponse());
 
 		return responses;
 	}

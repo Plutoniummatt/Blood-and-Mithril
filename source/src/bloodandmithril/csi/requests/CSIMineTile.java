@@ -1,11 +1,8 @@
 package bloodandmithril.csi.requests;
 
-import java.util.LinkedList;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.csi.Request;
-import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.world.GameWorld;
 
@@ -37,7 +34,7 @@ public class CSIMineTile implements Request {
 			new MineTile(individual, location)
 		);
 
-		Responses responses = new Responses(false, new LinkedList<Response>());
+		Responses responses = new Responses(false);
 		return responses;
 	}
 
