@@ -10,7 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.zip.ZipFile;
 
-import bloodandmithril.generation.StructureMap;
+import bloodandmithril.generation.Structure;
+import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.TerrainGenerator;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.persistence.GameSaver;
@@ -107,39 +108,46 @@ public class ChunkLoaderImpl implements ChunkLoader {
 	/** Loads generation data */
 	public static void loadGenerationData() {
 
-		if (StructureMap.superStructureKeys == null) {
+		if (Structures.getSuperStructureKeys() == null) {
 			try {
-				StructureMap.superStructureKeys = decode(Gdx.files.local(GameSaver.savePath + "/world/superStructureKeys.txt"));
+				ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(GameSaver.savePath + "/world/superStructureKeys.txt"));
+				Structures.setSuperStructureKeys(keys);
 			} catch (Exception e) {
 				Logger.loaderDebug("Failed to load chunk super structure structure keys", LogLevel.WARN);
-				StructureMap.superStructureKeys = new ConcurrentHashMap<>();
+				ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> map = new ConcurrentHashMap<>();
+				Structures.setSuperStructureKeys(map);
 			}
 		}
 
-		if (StructureMap.subStructureKeys == null) {
+		if (Structures.getSubStructureKeys() == null) {
 			try {
-				StructureMap.subStructureKeys = decode(Gdx.files.local(GameSaver.savePath + "/world/subStructureKeys.txt"));
+				ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(GameSaver.savePath + "/world/subStructureKeys.txt"));
+				Structures.setSubStructureKeys(keys);
 			} catch (Exception e) {
 				Logger.loaderDebug("Failed to load chunk sub structure keys", LogLevel.WARN);
-				StructureMap.subStructureKeys = new ConcurrentHashMap<>();
+				ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> map = new ConcurrentHashMap<>();
+				Structures.setSubStructureKeys(map);
 			}
 		}
 
-		if (StructureMap.structures == null) {
+		if (Structures.getStructures() == null) {
 			try {
-				StructureMap.structures = decode(Gdx.files.local(GameSaver.savePath + "/world/structures.txt"));
+				ConcurrentHashMap<Integer, Structure> structures = decode(Gdx.files.local(GameSaver.savePath + "/world/structures.txt"));
+				Structures.setStructures(structures);
 			} catch (Exception e) {
 				Logger.loaderDebug("Failed to load structures", LogLevel.WARN);
-				StructureMap.structures = new ConcurrentHashMap<>();
+				Structures.setStructures(new ConcurrentHashMap<Integer, Structure>());
 			}
 		}
 
-		if (StructureMap.surfaceHeight == null) {
+		if (Structures.getSurfaceHeight() == null) {
 			try {
-				StructureMap.surfaceHeight = decode(Gdx.files.local(GameSaver.savePath + "/world/surfaceHeight.txt"));
+				HashMap<Integer, Integer> keys = decode(Gdx.files.local(GameSaver.savePath + "/world/surfaceHeight.txt"));
+				Structures.setSurfaceHeight(keys);
 			} catch (Exception e) {
 				Logger.loaderDebug("Failed to load surface height", LogLevel.WARN);
-				StructureMap.surfaceHeight = new HashMap<>();
+				HashMap<Integer, Integer> map = new HashMap<>();
+				Structures.setSurfaceHeight(map);
 			}
 		}
 

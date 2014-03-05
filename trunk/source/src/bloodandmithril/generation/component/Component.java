@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import bloodandmithril.generation.Structure;
-import bloodandmithril.generation.StructureMap;
+import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.TerrainGenerator;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.Logger;
@@ -144,7 +144,7 @@ public abstract class Component implements Serializable {
 	 * If overlap detected, do not add created interface to existing interfaces list.
 	 */
 	protected Component checkForOverlaps(Interface createdInterface, Component createdComponent) {
-		for (Component component : StructureMap.structures.get(getStructureKey()).getComponents()) {
+		for (Component component : Structures.get(getStructureKey()).getComponents()) {
 			if (component == this) {
 				continue;
 			} else {
@@ -164,26 +164,41 @@ public abstract class Component implements Serializable {
 	}
 
 
+	/**
+	 * See {@link #availableInterfaces}
+	 */
 	public List<Interface> getAvailableInterfaces() {
 		return availableInterfaces;
 	}
 
 
+	/**
+	 * See {@link #existingInterfaces}
+	 */
 	public List<Interface> getExistingInterfaces() {
 		return existingInterfaces;
 	}
 
 
+	/**
+	 * See {@link #boundaries}
+	 */
 	public Boundaries getBoundaries() {
 		return boundaries;
 	}
 
 
+	/**
+	 * Gets the unique key of the structure which this {@link Component} exists on
+	 */
 	public int getStructureKey() {
 		return structureKey;
 	}
 	
 	
+	/**
+	 * Generates horizontal {@link RectangularInterface}s, of unit thickness, which takes into account the {@link #existingInterfaces} 
+	 */
 	protected void generateUnitThicknessHorizontalInterfaces(int y, int left, int right) {
 		Integer mostRightAvailableX = null;
 
@@ -220,6 +235,9 @@ public abstract class Component implements Serializable {
 	}
 
 
+	/**
+	 * Generates vertical {@link RectangularInterface}s, of unit thickness, which takes into account the {@link #existingInterfaces} 
+	 */
 	protected void generateUnitThicknessVerticalInterfaces(int x, int top, int bottom) {
 		Integer highestAvailableY = null;
 

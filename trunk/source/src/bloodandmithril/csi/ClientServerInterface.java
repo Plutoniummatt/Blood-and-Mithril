@@ -356,62 +356,51 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
-		kryo.register(RemoveLightNotification.class);
-		kryo.register(Coal.class);
-		kryo.register(IgniteFurnaceRequest.class);
-		kryo.register(ChangeFurnaceTemperature.class);
-		kryo.register(Color.class);
-		kryo.register(Light.class);
 		kryo.register(AddLightRequest.class);
-		kryo.register(SyncLightResponse.class);
-		kryo.register(Furnace.class);
-		kryo.register(Depth.class);
-		kryo.register(FelberryBush.class);
-		kryo.register(Felberries.class);
-		kryo.register(HarvestItem.class);
-		kryo.register(SendHarvestRequest.class);
-		kryo.register(Harvest.class);
-		kryo.register(DestroyPropNotification.class);
-		kryo.register(Harvestable.class);
 		kryo.register(AITask.class);
-		kryo.register(AStarPathFinder.Node.class);
-		kryo.register(AStarPathFinder.class);
 		kryo.register(ArrayDeque.class);
 		kryo.register(ArrayList.class);
 		kryo.register(ArtificialIntelligence.AIMode.class);
 		kryo.register(ArtificialIntelligence.class);
+		kryo.register(AStarPathFinder.class);
+		kryo.register(AStarPathFinder.Node.class);
 		kryo.register(Attack.class);
+		kryo.register(Bleeding.class);
+		kryo.register(bloodandmithril.prop.plant.Carrot.class);
 		kryo.register(Boar.class);
 		kryo.register(BoarAI.class);
 		kryo.register(Bottle.class);
 		kryo.register(Box.class);
 		kryo.register(BrickTile.class);
-		kryo.register(Bleeding.class);
 		kryo.register(Broadsword.class);
 		kryo.register(ButterflySword.class);
-		kryo.register(CSIMineTile.class);
-		kryo.register(CSITradeWith.class);
-		kryo.register(CSITradeWithResponse.class);
-		kryo.register(bloodandmithril.prop.plant.Carrot.class);
 		kryo.register(Carrot.class);
 		kryo.register(ChangeFactionControlPassword.class);
+		kryo.register(ChangeFurnaceTemperature.class);
 		kryo.register(ChangeNickName.class);
 		kryo.register(ChangeNickNameResponse.class);
-		kryo.register(ConstructionContainer.class);
 		kryo.register(ChickenLeg.class);
 		kryo.register(ChunkData.class);
 		kryo.register(Class.class);
 		kryo.register(ClearGlassTile.class);
 		kryo.register(ClientConnected.class);
+		kryo.register(Coal.class);
+		kryo.register(Color.class);
 		kryo.register(Commands.class);
 		kryo.register(CompositeAITask.class);
 		kryo.register(ConcurrentHashMap.class);
 		kryo.register(ConcurrentLinkedDeque.class);
 		kryo.register(ConcurrentSkipListMap.class);
+		kryo.register(ConstructionContainer.class);
 		kryo.register(ConsumeItem.class);
+		kryo.register(CSIMineTile.class);
+		kryo.register(CSITradeWith.class);
+		kryo.register(CSITradeWithResponse.class);
 		kryo.register(Currency.class);
 		kryo.register(DeathCap.class);
 		kryo.register(DebugTile.class);
+		kryo.register(Depth.class);
+		kryo.register(DestroyPropNotification.class);
 		kryo.register(DestroyTile.class);
 		kryo.register(DestroyTileResponse.class);
 		kryo.register(DrinkLiquid.class);
@@ -422,10 +411,13 @@ public class ClientServerInterface {
 		kryo.register(Empty.class);
 		kryo.register(EmptyTile.class);
 		kryo.register(Epoch.class);
-		kryo.register(EquipOrUnequipItem.class);
 		kryo.register(Equipable.class);
 		kryo.register(EquipmentSlot.class);
+		kryo.register(EquipOrUnequipItem.class);
 		kryo.register(Faction.class);
+		kryo.register(Felberries.class);
+		kryo.register(FelberryBush.class);
+		kryo.register(Furnace.class);
 		kryo.register(GameWorld.individuals.keySet().getClass());
 		kryo.register(GenerateChunk.class);
 		kryo.register(GenerateChunkResponse.class);
@@ -434,15 +426,20 @@ public class ClientServerInterface {
 		kryo.register(GoToLocation.class);
 		kryo.register(GoToMovingLocation.class);
 		kryo.register(GraniteTile.class);
+		kryo.register(Harvest.class);
+		kryo.register(Harvestable.class);
+		kryo.register(HarvestItem.class);
 		kryo.register(HashMap.class);
 		kryo.register(HashSet.class);
 		kryo.register(Hunger.class);
 		kryo.register(Idle.class);
+		kryo.register(IgniteFurnaceRequest.class);
 		kryo.register(Individual.class);
 		kryo.register(IndividualIdentifier.class);
-		kryo.register(IndividualSelection.SelectIndividualResponse.class);
 		kryo.register(IndividualSelection.class);
+		kryo.register(IndividualSelection.SelectIndividualResponse.class);
 		kryo.register(IndividualState.class);
+		kryo.register(Light.class);
 		kryo.register(LinkedList.class);
 		kryo.register(Liquid.class);
 		kryo.register(List.class);
@@ -450,11 +447,11 @@ public class ClientServerInterface {
 		kryo.register(Message.class);
 		kryo.register(Mine.class);
 		kryo.register(MineTile.class);
-		kryo.register(MoveIndividual.MoveIndividualResponse.class);
 		kryo.register(MoveIndividual.class);
+		kryo.register(MoveIndividual.MoveIndividualResponse.class);
 		kryo.register(OneHandedWeapon.class);
-		kryo.register(OpenTradeWindow.OpenTradeWindowResponse.class);
 		kryo.register(OpenTradeWindow.class);
+		kryo.register(OpenTradeWindow.OpenTradeWindowResponse.class);
 		kryo.register(Path.class);
 		kryo.register(PineChest.class);
 		kryo.register(Ping.class);
@@ -463,16 +460,18 @@ public class ClientServerInterface {
 		kryo.register(Pong.class);
 		kryo.register(RefreshFactionWindow.class);
 		kryo.register(RefreshWindowsResponse.class);
+		kryo.register(RemoveLightNotification.class);
 		kryo.register(Request.class);
 		kryo.register(RequestClientList.class);
 		kryo.register(RequestClientListResponse.class);
 		kryo.register(Responses.class);
 		kryo.register(SandStoneTile.class);
-		kryo.register(Seed.class);
 		kryo.register(SeditmentaryTile.class);
+		kryo.register(Seed.class);
 		kryo.register(SendAttackRequest.class);
 		kryo.register(SendChatMessage.class);
 		kryo.register(SendChatMessageResponse.class);
+		kryo.register(SendHarvestRequest.class);
 		kryo.register(SetAIIdle.class);
 		kryo.register(Skills.class);
 		kryo.register(SoilTile.class);
@@ -487,19 +486,20 @@ public class ClientServerInterface {
 		kryo.register(SynchronizePropResponse.class);
 		kryo.register(SynchronizeWorldState.class);
 		kryo.register(SynchronizeWorldStateResponse.class);
+		kryo.register(SyncLightResponse.class);
 		kryo.register(Thirst.class);
-		kryo.register(Tile.Orientation.class);
 		kryo.register(Tile.class);
+		kryo.register(Tile.Orientation.class);
 		kryo.register(Tile[].class);
 		kryo.register(Tile[][].class);
 		kryo.register(ToggleWalkRun.class);
 		kryo.register(Trade.class);
 		kryo.register(TradeWith.class);
 		kryo.register(Trading.class);
+		kryo.register(TransferItems.class);
 		kryo.register(TransferItems.RefreshWindows.class);
 		kryo.register(TransferItems.TradeEntity.class);
 		kryo.register(TransferItems.TransferItemsResponse.class);
-		kryo.register(TransferItems.class);
 		kryo.register(TreeMap.class);
 		kryo.register(Vector2.class);
 		kryo.register(Wait.class);
@@ -804,7 +804,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static void notifySyncLight(int id, Light light) {
+		public static synchronized void notifySyncLight(int id, Light light) {
 			sendNotification(
 				-1,
 				false,

@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
 public abstract class Structure implements Serializable {
 	private static final long serialVersionUID = -5890196858721145717L;
 
-	/** The key used by this {@link Structure} in the {@link StructureMap} */
+	/** The key used by this {@link Structure} in the {@link Structures} */
 	private int structureKey;
 
 	/** The number of chunks this structure has left to generate on it */
@@ -65,9 +65,9 @@ public abstract class Structure implements Serializable {
 
 
 	/**
-	 * Adds a structure to the {@link StructureMap}.
+	 * Adds a structure to the {@link Structures}.
 	 *
-	 * @return - the key used by this structure on the {@link StructureMap}.
+	 * @return - the key used by this structure on the {@link Structures}.
 	 */
 	protected abstract int addToStructureMap();
 
@@ -158,26 +158,41 @@ public abstract class Structure implements Serializable {
 	}
 
 
+	/**
+	 * See {@link #structureKey}
+	 */
 	protected int getStructureKey() {
 		return structureKey;
 	}
 
 
+	/**
+	 * Sets the structure key of this structure
+	 */
 	protected void setStructureKey(int structureKey) {
 		this.structureKey = structureKey;
 	}
 
 
+	/**
+	 * See {@link #chunksLeftToBeGenerated}
+	 */
 	public int getChunksLeftToBeGenerated() {
 		return chunksLeftToBeGenerated;
 	}
 
 
+	/**
+	 * See {@link #chunksLeftToBeGenerated}
+	 */
 	public void setChunksLeftToBeGenerated(int chunksLeftToBeGenerated) {
 		this.chunksLeftToBeGenerated = chunksLeftToBeGenerated;
 	}
 
 
+	/**
+	 * @return the {@link #components} - list of all {@link Component}s on this {@link Structure}
+	 */
 	public List<Component> getComponents() {
 		return components;
 	}

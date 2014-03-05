@@ -5,7 +5,7 @@ import static bloodandmithril.generation.settings.GlobalGenerationSettings.hills
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.hillsMinHeight;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.hillsMinWidth;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSurfaceHeight;
-import bloodandmithril.generation.StructureMap;
+import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.generation.patterns.UndergroundWithCaves;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
@@ -50,14 +50,14 @@ public class Hills extends SuperStructure {
 				if (x == rightMostTile - 40) {
 					surfaceGenerator.setMaxSurface(hillsMinHeight);
 				}
-				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, StructureMap.surfaceHeight);
+				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, Structures.getSurfaceHeight());
 			}
 		} else {
 			for (int x = rightMostTile; x >= leftMostTile; x--) {
 				if (x == leftMostTile + 40) {
 					surfaceGenerator.setMaxSurface(hillsMinHeight);
 				}
-				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, StructureMap.surfaceHeight);
+				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, Structures.getSurfaceHeight());
 			}
 		}
 	}
@@ -65,7 +65,7 @@ public class Hills extends SuperStructure {
 
 	@Override
 	protected Tile internalGetForegroundTile(int worldTileX, int worldTileY) {
-		if (worldTileY > StructureMap.surfaceHeight.get(worldTileX)) {
+		if (worldTileY > Structures.getSurfaceHeight().get(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
 			return UndergroundWithCaves.getTile(worldTileX, worldTileY);
@@ -75,7 +75,7 @@ public class Hills extends SuperStructure {
 
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
-		if (worldTileY + 2 > StructureMap.surfaceHeight.get(worldTileX)) {
+		if (worldTileY + 2 > Structures.getSurfaceHeight().get(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
 			return Layers.getTile(worldTileX, worldTileY);
