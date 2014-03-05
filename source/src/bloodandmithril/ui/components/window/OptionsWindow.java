@@ -29,7 +29,7 @@ public class OptionsWindow extends Window {
 	 * Constructor
 	 */
 	public OptionsWindow() {
-		super(BloodAndMithrilClient.WIDTH/2 - 200, BloodAndMithrilClient.HEIGHT/2 + 125, 400, 250, "Options", true, 400, 250, false);
+		super(BloodAndMithrilClient.WIDTH/2 - 125, BloodAndMithrilClient.HEIGHT/2 + 125, 250, 350, "Options", true, 250, 350, false);
 		
 		this.changeRes = new Button(
 			"Change resolution", 
@@ -140,7 +140,7 @@ public class OptionsWindow extends Window {
 					);
 				}
 			}, 
-			Color.GREEN, 
+			Color.ORANGE, 
 			Color.WHITE, 
 			Color.GREEN, 
 			UIRef.BL

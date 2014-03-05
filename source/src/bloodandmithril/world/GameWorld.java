@@ -165,11 +165,6 @@ public class GameWorld {
 			indi.update(d);
 		}
 		
-		if (!GameWorld.lights.isEmpty()) {
-			GameWorld.lights.get(1).x = BloodAndMithrilClient.getMouseWorldX();
-			GameWorld.lights.get(1).y = BloodAndMithrilClient.getMouseWorldY();
-		}
-		
 		for (Prop prop : props.values()) {
 			if (ClientServerInterface.isServer()) {
 				prop.update(d);
@@ -404,6 +399,9 @@ public class GameWorld {
 			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			for (Light light : tempLights) {
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.defaultBackGroundTiles);
+				bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
+				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
+				Shaders.defaultBackGroundTiles.setUniformi("u_texture2", 1);
 				Shaders.defaultBackGroundTiles.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				Shaders.defaultBackGroundTiles.setUniformf("size", light.size);
 				Shaders.defaultBackGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a);

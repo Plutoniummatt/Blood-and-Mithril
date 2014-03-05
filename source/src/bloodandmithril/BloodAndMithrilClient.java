@@ -343,7 +343,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (Gdx.input.isKeyPressed(Input.Keys.E)) {
 
 			Light light = new Light(
-				550,
+				512,
 				getMouseWorldX(), getMouseWorldY(),
 				Util.randomOneOf(Color.WHITE, Color.CYAN, Color.GREEN, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.YELLOW),
 				1f
