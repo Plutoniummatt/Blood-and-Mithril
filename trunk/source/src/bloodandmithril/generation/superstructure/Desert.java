@@ -77,26 +77,24 @@ public class Desert extends SuperStructure {
 		generateSandBase(generatingToRight, rightMostTile, leftMostTile);
 		
 		if (!desertGenerated) {
-			getComponents().add(new UndergroundDesertTempleEntrance(0, StructureMap.surfaceHeight.get(100 - 27) + 27, getStructureKey(), false, YellowBrickTile.class, YellowBrickTile.class));
+			getComponents().add(new UndergroundDesertTempleEntrance(0, StructureMap.surfaceHeight.get(100 - 17) + 27, getStructureKey(), false, YellowBrickTile.class, YellowBrickTile.class));
 
-			getComponents().add(
-				getComponents().get(0).stem(
-					this,
-					Corridor.class,
-					new Function<CorridorCreationCustomization>() {
-						@Override
-						public CorridorCreationCustomization call() {
-							return new CorridorCreationCustomization(
-								false, 
-								1, 
-								1, 
-								150, 
-								6, 
-								YellowBrickTile.class
-							);
-						}
+			getComponents().get(0).stem(
+				this,
+				Corridor.class,
+				new Function<CorridorCreationCustomization>() {
+					@Override
+					public CorridorCreationCustomization call() {
+						return new CorridorCreationCustomization(
+							false, 
+							1, 
+							1, 
+							150, 
+							6, 
+							YellowBrickTile.class
+						);
 					}
-				)
+				}
 			);
 			
 			getComponents().get(1).stem(

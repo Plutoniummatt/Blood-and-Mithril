@@ -371,6 +371,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (keycode == Input.Keys.J) {
 			Topography.changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickPlatform.class);
 		}
+		
+		if (keycode == Input.Keys.L) {
+			Topography.deleteTile(getMouseWorldX(), getMouseWorldY(), false);
+		}
 
 		if (keycode == Input.Keys.D && ClientServerInterface.isServer()) {
 			UserInterface.addLayeredComponentUnique(
