@@ -154,6 +154,7 @@ import bloodandmithril.world.topography.tile.tiles.StoneTile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 import bloodandmithril.world.topography.tile.tiles.glass.ClearGlassTile;
+import bloodandmithril.world.topography.tile.tiles.glass.InterlacedWindowTile;
 import bloodandmithril.world.topography.tile.tiles.sedimentary.YellowSandTile;
 import bloodandmithril.world.topography.tile.tiles.soil.DryDirtTile;
 import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
@@ -356,6 +357,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(InterlacedWindowTile.class);
 		kryo.register(AddLightRequest.class);
 		kryo.register(AITask.class);
 		kryo.register(ArrayDeque.class);
