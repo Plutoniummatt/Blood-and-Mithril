@@ -145,8 +145,29 @@ public class GameWorld {
 		bBufferProcessedForDaylightShader.begin();
 		BloodAndMithrilClient.spriteBatch.begin();
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.foregroundDaylight);
-		Shaders.foregroundDaylight.setUniformf("res", BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.daylightOcclusion);
+		
+		double r;
+		double g;
+		double b;
+		float time = WorldState.currentEpoch.getTime();
+		
+		if (time < 10.0) {
+			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 10.0), 2.0));
+			g = 0.1 + 1.1 * Math.exp(-0.150*Math.pow((time - 10.0), 2.0));
+			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow((time - 10.0), 2.0));
+		} else if (time >= 10 && time < 14) {
+			r = 1.3;
+			g = 1.2;
+			b = 1.1;
+		} else {
+			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 14.0), 2.0));
+			g = 0.1 + 1.1 * Math.exp(-0.150*Math.pow((time - 14.0), 2.0));
+			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow((time - 14.0), 2.0));
+		}
+		
+		Shaders.daylightOcclusion.setUniformf("dl", (float)r, (float)g, (float)b, WorldState.currentEpoch.dayLight());
+		Shaders.daylightOcclusion.setUniformf("res", BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
 		BloodAndMithrilClient.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 		BloodAndMithrilClient.spriteBatch.end();
 		bBufferProcessedForDaylightShader.end();
@@ -368,6 +389,7 @@ public class GameWorld {
 			BloodAndMithrilClient.spriteBatch.begin();
 
 			bBufferLit.begin();
+			
 			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			
 			// Still render through the shader if no lights are present
@@ -464,31 +486,9 @@ public class GameWorld {
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 			} else {
-				double r;
-				double g;
-				double b;
-				float time = WorldState.currentEpoch.getTime();
-				
-				if (time < 10.0) {
-					r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 10.0), 2.0));
-					g = 0.1 + 1.2 * Math.exp(-0.150*Math.pow((time - 10.0), 2.0));
-					b = 0.1 + 1.2 * Math.exp(-0.200*Math.pow((time - 10.0), 2.0));
-				} else if (time >= 10 && time < 14) {
-					r = 1.3;
-					g = 1.3;
-					b = 1.3;
-				} else {
-					r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 14.0), 2.0));
-					g = 0.1 + 1.2 * Math.exp(-0.150*Math.pow((time - 14.0), 2.0));
-					b = 0.1 + 1.2 * Math.exp(-0.200*Math.pow((time - 14.0), 2.0));
-				}
-				
-				float daylight = WorldState.currentEpoch.dayLight() * 0.90f + 0.10f;
-				Color color = new Color(daylight, daylight, daylight, 1f);
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.daylightShader);
 				bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
 				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-				Shaders.daylightShader.setUniformf("daylight", (float)r, (float)g, (float)b, color.a);
 				Shaders.daylightShader.setUniformi("u_texture2", 1);
 				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 			}

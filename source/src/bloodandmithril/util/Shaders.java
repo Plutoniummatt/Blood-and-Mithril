@@ -37,7 +37,7 @@ public class Shaders {
 
 	public static ShaderProgram black = colorFilterShader(Color.BLACK);
 	
-	public static ShaderProgram foregroundDaylight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/daylightOcclusionShader.fp"));
+	public static ShaderProgram daylightOcclusion = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/daylightOcclusionShader.fp"));
 	
 	public static ShaderProgram filter = colorFilterShader();
 
