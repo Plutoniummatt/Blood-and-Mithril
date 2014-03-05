@@ -5,7 +5,7 @@ import static bloodandmithril.generation.settings.GlobalGenerationSettings.plain
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.plainsMaxWidth;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.plainsMinHeight;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.plainsMinWidth;
-import bloodandmithril.generation.StructureMap;
+import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.generation.patterns.UndergroundWithCaves;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
@@ -47,11 +47,11 @@ public class Plains extends SuperStructure {
 		int leftMostTile = getBoundaries().left * Topography.CHUNK_SIZE;
 		if (generatingToRight) {
 			for (int x = leftMostTile; x <= rightMostTile; x++) {
-				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, StructureMap.surfaceHeight);
+				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, Structures.getSurfaceHeight());
 			}
 		} else {
 			for (int x = rightMostTile; x >= leftMostTile; x--) {
-				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, StructureMap.surfaceHeight);
+				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, Structures.getSurfaceHeight());
 			}
 		}
 	}
@@ -59,7 +59,7 @@ public class Plains extends SuperStructure {
 
 	@Override
 	protected Tile internalGetForegroundTile(int worldTileX, int worldTileY) {
-		if (worldTileY > StructureMap.surfaceHeight.get(worldTileX)) {
+		if (worldTileY > Structures.getSurfaceHeight().get(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
 			return UndergroundWithCaves.getTile(worldTileX, worldTileY);
@@ -69,7 +69,7 @@ public class Plains extends SuperStructure {
 
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
-		if (worldTileY + 2> StructureMap.surfaceHeight.get(worldTileX)) {
+		if (worldTileY + 2> Structures.getSurfaceHeight().get(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
 			return Layers.getTile(worldTileX, worldTileY);

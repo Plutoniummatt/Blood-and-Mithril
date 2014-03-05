@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import bloodandmithril.generation.StructureMap;
+import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ZipHelper;
@@ -107,10 +107,10 @@ public class ChunkSaver {
 		FileHandle surfaceHeight = Gdx.files.local(GameSaver.savePath + "/world/surfaceHeight.txt");
 		FileHandle layers = Gdx.files.local(GameSaver.savePath + "/world/layers.txt");
 
-		superStructureKeys.writeString(encode(StructureMap.superStructureKeys), false);
-		subStructureKeys.writeString(encode(StructureMap.subStructureKeys), false);
-		structures.writeString(encode(StructureMap.structures), false);
-		surfaceHeight.writeString(encode(StructureMap.surfaceHeight), false);
+		superStructureKeys.writeString(encode(Structures.getSuperStructureKeys()), false);
+		subStructureKeys.writeString(encode(Structures.getSubStructureKeys()), false);
+		structures.writeString(encode(Structures.getStructures()), false);
+		surfaceHeight.writeString(encode(Structures.getSurfaceHeight()), false);
 		layers.writeString(encode(Layers.layers), false);
 	}
 

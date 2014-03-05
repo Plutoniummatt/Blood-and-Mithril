@@ -17,7 +17,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.Structure;
-import bloodandmithril.generation.StructureMap;
+import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.Interface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
@@ -217,7 +217,7 @@ public class UserInterface {
 	private static void renderComponentBoundaries() {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		for (Structure struct : StructureMap.structures.values()) {
+		for (Structure struct : Structures.getStructures().values()) {
 			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.getComponents())) {
 				shapeRenderer.begin(ShapeType.FilledRectangle);
 				shapeRenderer.setColor(COMPONENT_FILL_COLOR);
@@ -264,7 +264,7 @@ public class UserInterface {
 	private static void renderComponentInterfaces() {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		for (Structure struct : StructureMap.structures.values()) {
+		for (Structure struct : Structures.getStructures().values()) {
 			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.getComponents())) {
 				if (renderAvailableInterfaces) {
 					for (Interface in : Lists.newArrayList(comp.getAvailableInterfaces())) {

@@ -11,7 +11,7 @@ import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSu
 
 import java.util.HashMap;
 
-import bloodandmithril.generation.StructureMap;
+import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.Corridor;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.Room;
@@ -77,7 +77,7 @@ public class Desert extends SuperStructure {
 		generateSandBase(generatingToRight, rightMostTile, leftMostTile);
 		
 		if (!desertGenerated) {
-			getComponents().add(new UndergroundDesertTempleEntrance(0, StructureMap.surfaceHeight.get(100 - 17) + 27, getStructureKey(), false, YellowBrickTile.class, YellowBrickTile.class));
+			getComponents().add(new UndergroundDesertTempleEntrance(0, Structures.getSurfaceHeight().get(100 - 17) + 27, getStructureKey(), false, YellowBrickTile.class, YellowBrickTile.class));
 
 			getComponents().get(0).stem(
 				this,
@@ -240,14 +240,14 @@ public class Desert extends SuperStructure {
 
 		// set starting height
 		if (generatingToRight) {
-			if (StructureMap.surfaceHeight.get(leftMostTile - 1) != null) {
-				startingHeight = StructureMap.surfaceHeight.get(leftMostTile - 1);
+			if (Structures.getSurfaceHeight().get(leftMostTile - 1) != null) {
+				startingHeight = Structures.getSurfaceHeight().get(leftMostTile - 1);
 			} else {
 				startingHeight = defaultSurfaceHeight;
 			}
 		} else {
-			if (StructureMap.surfaceHeight.get(rightMostTile + 1) != null) {
-				startingHeight = StructureMap.surfaceHeight.get(rightMostTile + 1);
+			if (Structures.getSurfaceHeight().get(rightMostTile + 1) != null) {
+				startingHeight = Structures.getSurfaceHeight().get(rightMostTile + 1);
 			} else {
 				startingHeight = defaultSurfaceHeight;
 			}
@@ -256,14 +256,14 @@ public class Desert extends SuperStructure {
 		//fill surfaceHeight
 		if (generatingToRight) {
 			for (int x = leftMostTile; x <= rightMostTile; x++) {
-				StructureMap.surfaceHeight.put(
+				Structures.getSurfaceHeight().put(
 					x,
 					(int)(startingHeight + desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(x, 1) - desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(leftMostTile, 1))
 				);
 			}
 		} else {
 			for (int x = rightMostTile; x >= leftMostTile; x--) {
-				StructureMap.surfaceHeight.put(
+				Structures.getSurfaceHeight().put(
 					x,
 					(int)(startingHeight + desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(x, 1) - desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(rightMostTile, 1))
 				);
@@ -278,20 +278,20 @@ public class Desert extends SuperStructure {
 		HashMap<Integer, Integer> right = new HashMap<>();
 		SawToothGenerator transitionBaseGenerator = new SawToothGenerator(desertMaxTransitionDepth, desertMaxTransitionDepth + 20, 3, 2, 150);
 		if (generatingToRight) {
-			right.put(leftMostTile, StructureMap.surfaceHeight.get(leftMostTile));
+			right.put(leftMostTile, Structures.getSurfaceHeight().get(leftMostTile));
 			for (int x = leftMostTile + 1; x <= rightMostTile; x++) {
 				transitionBaseGenerator.generateSurfaceHeight(x, generatingToRight, right);
 			}
-			left.put(rightMostTile, StructureMap.surfaceHeight.get(rightMostTile));
+			left.put(rightMostTile, Structures.getSurfaceHeight().get(rightMostTile));
 			for (int x = rightMostTile - 1; x >= leftMostTile; x--) {
 				transitionBaseGenerator.generateSurfaceHeight(x, !generatingToRight, left);
 			}
 		} else {
-			left.put(rightMostTile, StructureMap.surfaceHeight.get(rightMostTile));
+			left.put(rightMostTile, Structures.getSurfaceHeight().get(rightMostTile));
 			for (int x = rightMostTile - 1; x >= leftMostTile; x--) {
 				transitionBaseGenerator.generateSurfaceHeight(x, generatingToRight, left);
 			}
-			right.put(leftMostTile, StructureMap.surfaceHeight.get(leftMostTile));
+			right.put(leftMostTile, Structures.getSurfaceHeight().get(leftMostTile));
 			for (int x = leftMostTile + 1; x <= rightMostTile; x++) {
 				transitionBaseGenerator.generateSurfaceHeight(x, !generatingToRight, right);
 			}
@@ -308,20 +308,20 @@ public class Desert extends SuperStructure {
 		HashMap<Integer, Integer> right = new HashMap<>();
 		SawToothGenerator sandBaseGenerator = new SawToothGenerator(desertMaxSandstoneDepth, desertMaxSandstoneDepth + 20, 2, 1, 100);
 		if (generatingToRight) {
-			right.put(leftMostTile + desertTransitionWidth, StructureMap.surfaceHeight.get(leftMostTile + desertTransitionWidth));
+			right.put(leftMostTile + desertTransitionWidth, Structures.getSurfaceHeight().get(leftMostTile + desertTransitionWidth));
 			for (int x = leftMostTile + desertTransitionWidth+ 1; x <= rightMostTile - desertTransitionWidth; x++) {
 				sandBaseGenerator.generateSurfaceHeight(x, generatingToRight, right);
 			}
-			left.put(rightMostTile - desertTransitionWidth, StructureMap.surfaceHeight.get(rightMostTile - desertTransitionWidth));
+			left.put(rightMostTile - desertTransitionWidth, Structures.getSurfaceHeight().get(rightMostTile - desertTransitionWidth));
 			for (int x = rightMostTile - desertTransitionWidth - 1; x >= leftMostTile + desertTransitionWidth; x--) {
 				sandBaseGenerator.generateSurfaceHeight(x, !generatingToRight, left);
 			}
 		} else {
-			left.put(rightMostTile - desertTransitionWidth, StructureMap.surfaceHeight.get(rightMostTile - desertTransitionWidth));
+			left.put(rightMostTile - desertTransitionWidth, Structures.getSurfaceHeight().get(rightMostTile - desertTransitionWidth));
 			for (int x = rightMostTile - desertTransitionWidth - 1; x >= leftMostTile + desertTransitionWidth; x--) {
 				sandBaseGenerator.generateSurfaceHeight(x, generatingToRight, left);
 			}
-			right.put(leftMostTile + desertTransitionWidth, StructureMap.surfaceHeight.get(leftMostTile + desertTransitionWidth));
+			right.put(leftMostTile + desertTransitionWidth, Structures.getSurfaceHeight().get(leftMostTile + desertTransitionWidth));
 			for (int x = leftMostTile + desertTransitionWidth+ 1; x <= rightMostTile - desertTransitionWidth; x++) {
 				sandBaseGenerator.generateSurfaceHeight(x, !generatingToRight, right);
 			}
@@ -335,7 +335,7 @@ public class Desert extends SuperStructure {
 	@Override
 	protected Tile internalGetForegroundTile(int worldTileX, int worldTileY) {
 
-		if (worldTileY > StructureMap.surfaceHeight.get(worldTileX)) {
+		if (worldTileY > Structures.getSurfaceHeight().get(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else if (worldTileY > transitionBase.get(worldTileX)) {
 			if (sandBase.get(worldTileX) == null) {
@@ -361,7 +361,7 @@ public class Desert extends SuperStructure {
 
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
-		if (worldTileY > StructureMap.surfaceHeight.get(worldTileX)-1) {
+		if (worldTileY > Structures.getSurfaceHeight().get(worldTileX)-1) {
 			return new Tile.EmptyTile();
 
 		} else if (worldTileY > transitionBase.get(worldTileX)) {

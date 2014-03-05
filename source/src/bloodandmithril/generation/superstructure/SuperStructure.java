@@ -1,12 +1,12 @@
 package bloodandmithril.generation.superstructure;
 
 import bloodandmithril.generation.Structure;
-import bloodandmithril.generation.StructureMap;
+import bloodandmithril.generation.Structures;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.ChunkMap;
 
 /**
- * A {@link SuperStructure} is a {@link Structure} that is generated on top of null positions in the {@link ChunkMap} and {@link StructureMap}.
+ * A {@link SuperStructure} is a {@link Structure} that is generated on top of null positions in the {@link ChunkMap} and {@link Structures}.
  *
  * @author Sam, Matt
  */
@@ -44,7 +44,7 @@ public abstract class SuperStructure extends Structure {
 
 	@Override
 	protected int addToStructureMap() {
-		return StructureMap.addStructure(getBoundaries().left, getBoundaries().top, getBoundaries().right, getBoundaries().bottom, this, true);
+		return Structures.addStructure(getBoundaries(), this, true);
 	}
 
 
@@ -62,11 +62,17 @@ public abstract class SuperStructure extends Structure {
 	}
 
 
+	/**
+	 * See {@link #boundaries}
+	 */
 	protected Boundaries getBoundaries() {
 		return boundaries;
 	}
 
 
+	/**
+	 * See {@link #boundaries}
+	 */
 	private void setBoundaries(Boundaries boundaries) {
 		this.boundaries = boundaries;
 	}
