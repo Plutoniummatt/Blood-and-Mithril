@@ -14,5 +14,5 @@ void main()
 	vec4 color = texture2D(u_texture, v_texCoords);
 	vec4 color2 = texture2D(u_texture2, v_texCoords);
 	
-	gl_FragColor = vec4(color.rgb * color2.a, color.a) * daylight;
+	gl_FragColor = vec4(color.rgb * color2.a, color.a) * vec4(daylight.rgb, 1.0);
 }

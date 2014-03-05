@@ -16,7 +16,7 @@ import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
-
+import bloodandmithril.world.topography.tile.tiles.glass.InterlacedWindowTile;
 
 /**
  * An implementations of {@link PrefabricatedComponent}s that is a representation of an entrance to underground temple-like annexes
@@ -61,7 +61,16 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 					} else {
 						fTiles[x][39 - y] = null;
 					}
-					bTiles[x][39 - y] = bPixel == Color.rgba8888(Color.BLACK) ? backgroundTile.newInstance() : null;
+					
+					if (bPixel == Color.rgba8888(Color.BLACK)) {
+						bTiles[x][39 - y] = backgroundTile.newInstance();
+					} else if (bPixel == Color.rgba8888(Color.GREEN)) {
+						bTiles[x][39 - y] = new InterlacedWindowTile();
+					} else if (bPixel == Color.rgba8888(Color.WHITE)) {
+						bTiles[x][39 - y] = new Tile.EmptyTile();
+					} else {
+						bTiles[x][39 - y] = null;
+					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}

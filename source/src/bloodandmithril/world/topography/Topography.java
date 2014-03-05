@@ -221,7 +221,7 @@ public class Topography {
 		int tileY = convertToTileCoord(worldY);
 
 		try {
-			if (getTile(worldX,  worldY, true) instanceof EmptyTile) {
+			if (getTile(worldX, worldY, foreGround) instanceof EmptyTile) {
 				return null;
 			}
 			Tile tile = chunkMap.get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
