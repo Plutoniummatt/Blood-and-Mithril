@@ -427,6 +427,32 @@ public class DevWindow extends Window {
 			),
 			0
 		);
+		
+		newHashMap.put(
+			new ListingMenuItem<String>(
+				"Render Topography",
+				new Button(
+					"Render Topography",
+					Fonts.defaultFont,
+					0,
+					0,
+					310,
+					16,
+					new Task() {
+						@Override
+						public void execute() {
+							UserInterface.RENDER_TOPOGRAPHY = !UserInterface.RENDER_TOPOGRAPHY;
+						}
+					},
+					UserInterface.RENDER_TOPOGRAPHY ? Color.GREEN : Color.RED,
+					Color.WHITE,
+					Color.GREEN,
+					UIRef.BL
+				),
+				null
+			),
+			0
+		);
 
 		return newHashMap;
 	}
