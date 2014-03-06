@@ -13,7 +13,7 @@ import bloodandmithril.world.topography.ChunkMap;
 public abstract class SuperStructure extends Structure {
 	private static final long serialVersionUID = -4187785116665052403L;
 
-	/** The edges of this SuperStructure */
+	/** The edges of this SuperStructure, in chunk coordinates */
 	private Boundaries boundaries;
 
 	/**
@@ -65,7 +65,7 @@ public abstract class SuperStructure extends Structure {
 	/**
 	 * See {@link #boundaries}
 	 */
-	protected Boundaries getBoundaries() {
+	public Boundaries getBoundaries() {
 		return boundaries;
 	}
 

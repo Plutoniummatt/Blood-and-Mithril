@@ -67,7 +67,7 @@ public class InventoryWindow extends Window {
 			boolean active,
 			int minLength,
 			int minHeight) {
-		super(x, y, length, height, borderColor, backGroundColor, title, active, minLength, minHeight, true);
+		super(x, y, length, height, borderColor, backGroundColor, title, active, minLength, minHeight, true, true);
 		this.host = host;
 		buildItems(host.getEquipped(), host.getInventory());
 	}
@@ -86,7 +86,7 @@ public class InventoryWindow extends Window {
 			boolean active,
 			int minLength,
 			int minHeight) {
-		super(x, y, length, height, title, active, minLength, minHeight, true);
+		super(x, y, length, height, title, active, minLength, minHeight, true, true);
 		this.host = host;
 		buildItems(host.getEquipped(), host.getInventory());
 	}

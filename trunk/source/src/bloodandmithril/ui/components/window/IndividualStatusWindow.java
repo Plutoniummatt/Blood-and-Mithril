@@ -63,7 +63,7 @@ public class IndividualStatusWindow extends Window {
 
 	/** Constructor */
 	public IndividualStatusWindow(final Individual individual, int x, int y, int length, int height, String title, boolean active) {
-		super(x, y, length, height, title, active, 400, 400, true);
+		super(x, y, length, height, title, active, 400, 400, true, true);
 		this.individual = individual;
 		this.conditionsPanel = new ScrollableListingPanel<Condition>(this) {
 			@Override

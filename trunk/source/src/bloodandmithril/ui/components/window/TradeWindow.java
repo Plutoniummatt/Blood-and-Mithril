@@ -78,7 +78,7 @@ public class TradeWindow extends Window {
 	 * Constructor
 	 */
 	public TradeWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Container proposer, Container proposee) {
-		super(x, y, length, height, title, active, minLength, minHeight, false);
+		super(x, y, length, height, title, active, minLength, minHeight, false, true);
 
 		this.proposer = proposer;
 		this.proposee = proposee;

@@ -1,5 +1,6 @@
 package bloodandmithril.world.topography;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.badlogic.gdx.math.Vector2;
@@ -71,6 +72,14 @@ public class ChunkMap {
 	 */
 	public ConcurrentHashMap<Integer, Chunk> get(int chunkX) {
 		return chunkMap.get(chunkX);
+	}
+	
+	
+	/**
+	 * See {@link #chunkMap}
+	 */
+	public Map<Integer, ConcurrentHashMap<Integer, Chunk>> getChunkMap() {
+		return chunkMap;
 	}
 
 

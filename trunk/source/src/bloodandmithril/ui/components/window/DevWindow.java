@@ -57,7 +57,7 @@ public class DevWindow extends Window {
 	 * Constructor
 	 */
 	public DevWindow(int x, int y, int length, int height, boolean active) {
-		super(x, y, length, height, "Developer", active, 500, 300, false);
+		super(x, y, length, height, "Developer", active, 500, 300, false, true);
 
 		panel = new ScrollableListingPanel<String>(this) {
 			@Override
