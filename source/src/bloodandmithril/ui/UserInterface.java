@@ -92,6 +92,9 @@ public class UserInterface {
 	
 	/** Whether to render debug UI */
 	public static boolean DEBUG = false;
+	
+	/** Whether to render debug UI */
+	public static boolean RENDER_TOPOGRAPHY = false;
 
 	/** Texture regions */
 	public static TextureRegion finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
@@ -208,6 +211,10 @@ public class UserInterface {
 
 		renderPauseScreen();
 		renderSavingScreen();
+		
+		if (RENDER_TOPOGRAPHY) {
+			TopographyDebugRenderer.render();
+		}
 	}
 
 
