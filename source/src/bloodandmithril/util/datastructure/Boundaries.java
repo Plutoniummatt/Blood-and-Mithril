@@ -111,6 +111,22 @@ public class Boundaries implements Serializable {
 	public boolean isWithin(Boundaries other) {
 		return left >= other.left && right <= other.right && bottom >= other.bottom && top <= other.top;
 	}
+	
+	
+	/**
+	 * @return The width of this {@link Boundaries}
+	 */
+	public int getWidth() {
+		return right - left + 1;
+	}
+	
+	
+	/**
+	 * @return The height of this {@link Boundaries}
+	 */
+	public int getHeight() {
+		return top - bottom + 1;
+	}
 
 
 	/**

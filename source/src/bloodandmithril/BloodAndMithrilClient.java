@@ -21,6 +21,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.DevWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
+import bloodandmithril.ui.components.window.TopographyWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
@@ -386,6 +387,13 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					true
 				),
 				"Developer"
+			);
+		}
+		
+		if (keycode == Input.Keys.P && ClientServerInterface.isServer()) {
+			UserInterface.addLayeredComponentUnique(
+				new TopographyWindow(),
+				"Topography"
 			);
 		}
 

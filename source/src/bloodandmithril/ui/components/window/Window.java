@@ -51,10 +51,13 @@ public abstract class Window extends Component {
 	/** Buttons for closing and minimizing this {@link Window} */
 	private Button closeButton, minimizeButton, resizeButton;
 
+	/** Whether or not this {@link Window} can be resized */
+	private boolean resizeable;
+
 	/**
 	 * Constructor
 	 */
-	public Window(int x, int y, int length, int height, Color borderColor, Color backGroundColor, String title, boolean active, int minLength, int minHeight, boolean minimizable) {
+	public Window(int x, int y, int length, int height, Color borderColor, Color backGroundColor, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable) {
 		this.x = x;
 		this.y = y;
 		this.width = length;
@@ -62,6 +65,7 @@ public abstract class Window extends Component {
 		this.borderColor = borderColor;
 		this.backGroundColor = backGroundColor;
 		this.title = title;
+		this.resizeable = resizeable;
 		this.setActive(active);
 		this.minLength = minLength;
 		this.minHeight = minHeight;
@@ -74,8 +78,8 @@ public abstract class Window extends Component {
 	/**
 	 * Overloaded contructor, uses default colors
 	 */
-	public Window(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable) {
-		this(x, y, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable);
+	public Window(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable) {
+		this(x, y, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable, resizeable);
 	}
 
 
@@ -109,7 +113,9 @@ public abstract class Window extends Component {
 					return true;
 				}
 
-				resizeButton.click();
+				if (resizeable) {
+					resizeButton.click();
+				}
 
 				if (isActive()) {
 					internalLeftClick(copy, windowsCopy);
@@ -339,12 +345,14 @@ public abstract class Window extends Component {
 			);
 		}
 
-		resizeButton.render(
-			x + width - 7,
-			y - height + 9,
-			isActive(),
-			getAlpha()
-		);
+		if (resizeable) {
+			resizeButton.render(
+				x + width - 7,
+				y - height + 9,
+				isActive(),
+				getAlpha()
+			);
+		}
 	}
 
 
