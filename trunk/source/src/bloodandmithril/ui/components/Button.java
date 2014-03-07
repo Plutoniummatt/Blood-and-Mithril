@@ -92,7 +92,7 @@ public class Button {
 
 
 	/**
-	 * Constructor for text button no sound
+	 * Constructor for text button no sound - with a {@link JITTask}
 	 */
 	public Button(String text, BitmapFont font, int offsetX, int offsetY, int width, int height, JITTask task, Color idle, Color over, Color down, UIRef ref) {
 	  this.text = text;
@@ -127,16 +127,16 @@ public class Button {
 		over = new TextureRegion(buttonAtlas, atlasX, atlasY + height, width, height);
 		down = new TextureRegion(buttonAtlas, atlasX, atlasY + 2 * height, width, height);
 	}
-
-
+	
+	
 	/**
 	 * Overloaded constructor, no sound required
 	 */
 	public Button(Texture buttonAtlas, int offsetX, int offsetY, int atlasX, int atlasY, int width, int height, Task task, UIRef ref) {
 		this(buttonAtlas, offsetX, offsetY, atlasX, atlasY, width, height, null, task, ref);
 	}
-
-
+	
+	
 	/**
 	 * Renders this button
 	 */

@@ -17,10 +17,6 @@ public class SoundService {
 
 	public static Music music1 = Gdx.audio.newMusic(Gdx.files.internal("data/music/music1.mp3"));
 	
-	public static Music music2 = Gdx.audio.newMusic(Gdx.files.internal("data/music/music2.mp3"));
-	
-	public static Music music3 = Gdx.audio.newMusic(Gdx.files.internal("data/music/music3.mp3"));
-	
 	public static Sound pickAxe = Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav"));
 	
 	private static Music current, next;
