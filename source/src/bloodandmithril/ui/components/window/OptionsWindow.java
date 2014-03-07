@@ -141,8 +141,8 @@ public class OptionsWindow extends Window {
 				}
 			}, 
 			Color.ORANGE, 
-			Color.WHITE, 
 			Color.GREEN, 
+			Color.WHITE, 
 			UIRef.BL
 		);
 	}
