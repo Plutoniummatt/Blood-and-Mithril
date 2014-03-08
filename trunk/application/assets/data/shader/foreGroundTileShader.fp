@@ -65,7 +65,7 @@ float illumination() {
 void main()
 {
 	float illumination = illumination();
-	vec3 sample = texture2D(u_texture, v_texCoords);
+	vec4 sample = texture2D(u_texture, v_texCoords);
 	gl_FragColor = vec4(
 		max(sample.r, sample.r * illumination),
 		max(sample.g, sample.g * illumination),
