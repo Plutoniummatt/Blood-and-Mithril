@@ -26,6 +26,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Chunk.ChunkData;
+import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.Gdx;
 
@@ -116,6 +117,8 @@ public class ChunkLoaderImpl implements ChunkLoader {
 		
 		if (!Domain.getWorlds().isEmpty()) {
 			for (Entry<Integer, World> world : Domain.getWorlds().entrySet()) {
+				Domain.addTopography(world.getKey(), new Topography(world.getKey()));
+				
 				try {
 					ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/superStructureKeys.txt"));
 					world.getValue().getTopography().getStructures().setSuperStructureKeys(keys);
@@ -175,7 +178,7 @@ public class ChunkLoaderImpl implements ChunkLoader {
 		Logger.loaderDebug("Loading chunk: x=" + chunkX + ", y=" + chunkY, LogLevel.DEBUG);
 
 		try {
-			ZipFile zipFile = new ZipFile(GameSaver.savePath + "/world/world" + Integer.toString(world.getWorldId()) + "chunkData.zip");
+			ZipFile zipFile = new ZipFile(GameSaver.savePath + "/world/world" + Integer.toString(world.getWorldId()) + "/chunkData.zip");
 
 			boolean newCol = world.getTopography().getChunkMap().get(chunkX) == null;
 			ConcurrentHashMap<Integer, Chunk> col = newCol ? new ConcurrentHashMap<Integer, Chunk>() : world.getTopography().getChunkMap().get(chunkX);
