@@ -65,4 +65,34 @@ public class World implements Serializable {
 	public int getWorldId() {
 		return worldId;
 	}
+
+
+	public Set<Integer> getIndividuals() {
+		return individuals;
+	}
+
+
+	public void setIndividuals(Set<Integer> individuals) {
+		this.individuals = individuals;
+	}
+
+
+	public Set<Integer> getProps() {
+		return props;
+	}
+
+
+	public void setProps(Set<Integer> props) {
+		this.props = props;
+	}
+
+
+	public Set<Integer> getLights() {
+		return lights;
+	}
+
+
+	public void setLights(Set<Integer> lights) {
+		this.lights = lights;
+	}
 }
