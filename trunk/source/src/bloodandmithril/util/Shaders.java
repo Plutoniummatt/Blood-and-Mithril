@@ -1,6 +1,5 @@
 package bloodandmithril.util;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.GameWorld;
 import bloodandmithril.world.WorldState;
@@ -77,7 +76,6 @@ public class Shaders {
 	public static void updateShaderUniforms() {
 		defaultBackGroundTiles.begin();
 		defaultBackGroundTiles.setUniformf("dayLight", WorldState.currentEpoch.dayLight());
-		defaultBackGroundTiles.setUniformf("lightSource", BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 		defaultBackGroundTiles.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		defaultBackGroundTiles.end();
 
