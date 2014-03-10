@@ -66,7 +66,6 @@ public class MineTile extends CompositeAITask {
 	 */
 	public class Mine extends AITask {
 		private static final long serialVersionUID = 7585777004625914828L;
-		private final Topography topography = Domain.getWorld(Domain.individuals.get(hostId).getWorldId()).getTopography();
 
 		/**
 		 * Constructor
@@ -84,7 +83,7 @@ public class MineTile extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return topography.getTile(tileCoordinate, true) instanceof EmptyTile;
+			return Domain.getWorld(Domain.individuals.get(hostId.getId()).getWorldId()).getTopography().getTile(tileCoordinate, true) instanceof EmptyTile;
 		}
 
 
@@ -95,6 +94,7 @@ public class MineTile extends CompositeAITask {
 
 		@Override
 		public void execute() {
+			final Topography topography = Domain.getWorld(Domain.individuals.get(hostId.getId()).getWorldId()).getTopography();
 			final Individual host = Domain.individuals.get(hostId.getId());
 
 			if (host.getInteractionBox().isWithinBox(tileCoordinate)) {

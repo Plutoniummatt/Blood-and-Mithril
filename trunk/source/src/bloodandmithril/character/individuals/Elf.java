@@ -23,6 +23,7 @@ import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.Color;
@@ -93,7 +94,28 @@ public class Elf extends Individual {
 	/**
 	 * Constructor
 	 */
-	public Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity, int worldId) {
+	public Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity, World world) {
+		super(id, state, factionId, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId());
+		this.female = female;
+		this.hairColorR = hairColor.r;
+		this.hairColorG = hairColor.g;
+		this.hairColorB = hairColor.b;
+		this.eyeColorR = eyeColor.r;
+		this.eyeColorG = eyeColor.g;
+		this.eyeColorB = eyeColor.b;
+		this.hairStyle = hairStyle;
+
+		this.ai = new ElfAI(this);
+
+		current = STANDING_RIGHT;
+		currentHair = STANDING_RIGHT_HAIR;
+	}
+	
+	
+	/**
+	 * Constructor
+	 */
+	private Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity, int worldId) {
 		super(id, state, factionId, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId);
 		this.female = female;
 		this.hairColorR = hairColor.r;

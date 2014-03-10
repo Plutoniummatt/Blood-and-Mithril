@@ -60,7 +60,7 @@ public class Domain {
 
 	/** Every {@link Prop} that exists */
 	public static ConcurrentHashMap<Integer, Faction> 		factions 				= new ConcurrentHashMap<>();
-
+	
 	/** Textures */
 	public static Texture gameWorldTexture;
 	public static Texture individualTexture;
@@ -202,21 +202,25 @@ public class Domain {
 	 * Updates the game world
 	 */
 	public void update(int camX, int camY) {
-		getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam(camX, camY);
-		float d = 1f/60f;
-		WorldState.currentEpoch.incrementTime(d);
+		if (getActiveWorld() != null) {
+			getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam(camX, camY);
+			
+			float d = 1f/60f;
+			
+			WorldState.currentEpoch.incrementTime(d);
 
-		for (Individual indi : individuals.values()) {
-			indi.update(d);
-		}
-		
-		for (Prop prop : props.values()) {
-			if (ClientServerInterface.isServer()) {
-				prop.update(d);
+			for (Individual indi : individuals.values()) {
+				indi.update(d);
 			}
+			
+			for (Prop prop : props.values()) {
+				if (ClientServerInterface.isServer()) {
+					prop.update(d);
+				}
+			}
+	
+			Topography.executeBackLog();
 		}
-
-		Topography.executeBackLog();
 	}
 
 

@@ -125,7 +125,7 @@ public class DevWindow extends Window {
 				new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
 				Util.getRandom().nextInt(4),
 				20f,
-				0
+				Domain.getActiveWorld()
 			);
 			
 			elf.getSkills().setObservation(55);
@@ -164,7 +164,7 @@ public class DevWindow extends Window {
 			IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
 			id.setNickName("Unknown");
 
-			Boar boar = new Boar(id, state, 0);
+			Boar boar = new Boar(id, state, Domain.getActiveWorld());
 
 			Domain.individuals.put(boar.getId().getId(), boar);
 			return true;

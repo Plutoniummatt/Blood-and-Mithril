@@ -52,7 +52,7 @@ public class Topography {
 	private final Structures structures;
 
 	/** The chunk loader. */
-	private final ChunkLoader chunkLoader = new ChunkLoaderImpl();
+	private static final ChunkLoader chunkLoader = new ChunkLoaderImpl();
 
 	/** Any non-main thread topography tasks queued here */
 	private static BlockingQueue<Task> topographyTasks = new ArrayBlockingQueue<Task>(500000);

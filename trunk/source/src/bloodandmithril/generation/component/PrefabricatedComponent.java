@@ -80,6 +80,8 @@ public abstract class PrefabricatedComponent extends Component {
 	 * @author Matt
 	 */
 	public static class ComponentBlueprint implements Serializable {
+		private static final long serialVersionUID = -5603987012800685781L;
+		
 		private final Tile[][] fTiles;
 		private final Tile[][] bTiles;
 
