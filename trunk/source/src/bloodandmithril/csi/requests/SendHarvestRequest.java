@@ -6,7 +6,7 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * A {@link Request} for an {@link Individual} to {@link Harvest} a {@link Harvestable}
@@ -29,8 +29,8 @@ public class SendHarvestRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = GameWorld.individuals.get(individualId);
-		Prop prop = GameWorld.props.get(propId);
+		Individual individual = Domain.individuals.get(individualId);
+		Prop prop = Domain.props.get(propId);
 		Harvestable harvestable = null;
 
 		if (!(prop instanceof Harvestable)) {

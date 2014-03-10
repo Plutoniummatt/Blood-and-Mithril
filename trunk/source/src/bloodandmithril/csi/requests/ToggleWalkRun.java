@@ -2,7 +2,7 @@ package bloodandmithril.csi.requests;
 
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Request} to toggle walk/run
@@ -25,7 +25,7 @@ public class ToggleWalkRun implements Request {
 
 	@Override
 	public Responses respond() {
-		GameWorld.individuals.get(individualId).setWalking(walk);
+		Domain.individuals.get(individualId).setWalking(walk);
 		return new Responses(false);
 	}
 

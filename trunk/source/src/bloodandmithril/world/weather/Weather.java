@@ -9,7 +9,7 @@ import java.util.List;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Epoch;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.WorldState;
 
 import com.badlogic.gdx.graphics.Color;
@@ -35,8 +35,8 @@ public class Weather {
 	/** Texture regions for various phases of the moon */
 	private static List<TextureRegion> moonPhases = new ArrayList<TextureRegion>();
 
-	private static TextureRegion sunTexture = new TextureRegion(GameWorld.gameWorldTexture, 0, 1536, 512, 512);
-	private static TextureRegion sunGlowTexture = new TextureRegion(GameWorld.gameWorldTexture, 512, 1536, 512, 512);
+	private static TextureRegion sunTexture = new TextureRegion(Domain.gameWorldTexture, 0, 1536, 512, 512);
+	private static TextureRegion sunGlowTexture = new TextureRegion(Domain.gameWorldTexture, 512, 1536, 512, 512);
 
 	/** Orbital radius of the moon around the {@link #celestialPivot} */
 	private static float celestialOrbitalRadius = BloodAndMithrilClient.WIDTH * 3 / 4;
@@ -136,14 +136,14 @@ public class Weather {
 	}
 
 
-	/** Populates {@link #moonPhases} with the required {@link TextureRegion}s from {@link GameWorld#gameWorldTexture} */
+	/** Populates {@link #moonPhases} with the required {@link TextureRegion}s from {@link Domain#gameWorldTexture} */
 	private static void populateMoonTextureRegions() {
 		int sideLength = 175;
 		for (int i = 0; i < 11; i++) {
-			moonPhases.add(new TextureRegion(GameWorld.gameWorldTexture, i * sideLength, 0, sideLength, sideLength));
+			moonPhases.add(new TextureRegion(Domain.gameWorldTexture, i * sideLength, 0, sideLength, sideLength));
 		}
 		for (int i = 0; i < 2; i++) {
-			moonPhases.add(new TextureRegion(GameWorld.gameWorldTexture, i * sideLength, 175, sideLength, sideLength));
+			moonPhases.add(new TextureRegion(Domain.gameWorldTexture, i * sideLength, 175, sideLength, sideLength));
 		}
 	}
 }

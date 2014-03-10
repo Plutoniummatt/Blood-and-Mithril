@@ -5,7 +5,7 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.material.container.Bottle;
 import bloodandmithril.item.material.liquid.Liquid;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * A {@link Request} to drink {@link Liquid}.
@@ -31,7 +31,7 @@ public class DrinkLiquid implements Request {
 	@Override
 	public Responses respond() {
 
-		Individual individual = GameWorld.individuals.get(individualId);
+		Individual individual = Domain.individuals.get(individualId);
 		if (individual.takeItem(bottleToDrinkFrom) == 1) {
 			Bottle newBottle = bottleToDrinkFrom.clone();
 			newBottle.drink(amount, individual);

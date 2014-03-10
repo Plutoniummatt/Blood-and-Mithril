@@ -5,7 +5,7 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Request} to consume a {@link Consumable}
@@ -30,7 +30,7 @@ public class ConsumeItem implements Request {
 	public Responses respond() {
 		Responses responses = new Responses(true);
 
-		Individual individual = GameWorld.individuals.get(individualId);
+		Individual individual = Domain.individuals.get(individualId);
 
 		if (consumable.consume(individual)) {
 			individual.takeItem((Item)consumable);

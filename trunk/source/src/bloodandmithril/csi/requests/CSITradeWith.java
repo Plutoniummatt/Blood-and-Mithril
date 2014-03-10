@@ -9,7 +9,7 @@ import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.ConstructionWithContainer;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * Request to tell the server that an {@link Individual} would like to {@link TradeWith} something.
@@ -36,13 +36,13 @@ public class CSITradeWith implements Request {
 	public Responses respond() {
 		Responses response = new Response.Responses(false);
 
-		Individual proposer = GameWorld.individuals.get(proposerId);
+		Individual proposer = Domain.individuals.get(proposerId);
 		Container proposee = null;
 
 		if (this.proposee == TradeEntity.INDIVIDUAL) {
-			proposee = GameWorld.individuals.get(proposeeId);
+			proposee = Domain.individuals.get(proposeeId);
 		} else {
-			Prop prop = GameWorld.props.get(proposeeId);
+			Prop prop = Domain.props.get(proposeeId);
 			if (prop instanceof ConstructionWithContainer) {
 				proposee = ((ConstructionWithContainer) prop).container;
 			}

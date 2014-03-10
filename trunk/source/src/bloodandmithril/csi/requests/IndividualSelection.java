@@ -4,7 +4,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Request} to select/deselect an {@link Individual}
@@ -31,14 +31,14 @@ public class IndividualSelection implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = GameWorld.individuals.get(individualId);
+		Individual individual = Domain.individuals.get(individualId);
 		if (select) {
 			individual.select(clientId);
-			GameWorld.selectedIndividuals.remove(individual);
-			GameWorld.selectedIndividuals.add(individual);
+			Domain.selectedIndividuals.remove(individual);
+			Domain.selectedIndividuals.add(individual);
 		} else {
 			individual.deselect(false, clientId);
-			GameWorld.selectedIndividuals.remove(individual);
+			Domain.selectedIndividuals.remove(individual);
 		}
 		Response response = new SelectIndividualResponse(individualId, select);
 		Responses responses = new Response.Responses(false);
@@ -77,14 +77,14 @@ public class IndividualSelection implements Request {
 
 		@Override
 		public void acknowledge() {
-			Individual individual = GameWorld.individuals.get(individualId);
+			Individual individual = Domain.individuals.get(individualId);
 			if (select) {
 				individual.select(0);
-				GameWorld.selectedIndividuals.remove(individual);
-				GameWorld.selectedIndividuals.add(individual);
+				Domain.selectedIndividuals.remove(individual);
+				Domain.selectedIndividuals.add(individual);
 			} else {
 				individual.deselect(false, 0);
-				GameWorld.selectedIndividuals.remove(individual);
+				Domain.selectedIndividuals.remove(individual);
 			}
 		}
 		

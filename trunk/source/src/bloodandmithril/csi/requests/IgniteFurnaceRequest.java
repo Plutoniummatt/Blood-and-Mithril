@@ -8,7 +8,7 @@ import bloodandmithril.item.Item;
 import bloodandmithril.item.material.Fuel;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 public class IgniteFurnaceRequest implements Request {
 
@@ -24,7 +24,7 @@ public class IgniteFurnaceRequest implements Request {
 	
 	@Override
 	public Responses respond() {
-		Prop prop = GameWorld.props.get(furnaceId);
+		Prop prop = Domain.props.get(furnaceId);
 		if (prop instanceof Furnace) {
 			float finalDuration = 0f;
 			for (Entry<Item, Integer> entry : ((Furnace) prop).container.getInventory().entrySet()) {

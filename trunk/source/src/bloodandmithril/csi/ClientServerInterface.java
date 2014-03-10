@@ -137,9 +137,9 @@ import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Epoch;
-import bloodandmithril.world.GameWorld;
-import bloodandmithril.world.GameWorld.Depth;
-import bloodandmithril.world.GameWorld.Light;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
+import bloodandmithril.world.Domain.Light;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
@@ -420,7 +420,7 @@ public class ClientServerInterface {
 		kryo.register(Felberries.class);
 		kryo.register(FelberryBush.class);
 		kryo.register(Furnace.class);
-		kryo.register(GameWorld.individuals.keySet().getClass());
+		kryo.register(Domain.individuals.keySet().getClass());
 		kryo.register(GenerateChunk.class);
 		kryo.register(GenerateChunkResponse.class);
 		kryo.register(GlassBottle.class);
@@ -775,7 +775,7 @@ public class ClientServerInterface {
 
 
 		public static synchronized void notifyGiveItem(int individualId, Item item) {
-			GameWorld.individuals.get(individualId).giveItem(item);
+			Domain.individuals.get(individualId).giveItem(item);
 			sendNotification(
 				-1,
 				true,

@@ -4,7 +4,7 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * A {@link Request} to change the temperature of a {@link Furnace}
@@ -27,7 +27,7 @@ public class ChangeFurnaceTemperature implements Request {
 	
 	@Override
 	public Responses respond() {
-		Prop maybeFurnace = GameWorld.props.get(propId);
+		Prop maybeFurnace = Domain.props.get(propId);
 		if (maybeFurnace instanceof Furnace) {
 			((Furnace) maybeFurnace).setCombustionDurationRemaining(((Furnace) maybeFurnace).getCombustionDurationRemaining() * (((Furnace) maybeFurnace).getTemperature() / newTemp));
 			((Furnace) maybeFurnace).setTemperature(newTemp);

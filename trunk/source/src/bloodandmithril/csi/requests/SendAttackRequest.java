@@ -4,7 +4,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Request} for an {@link Individual} to attack another
@@ -25,10 +25,10 @@ public class SendAttackRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		GameWorld.individuals.get(attackerId).getAI().setCurrentTask(
+		Domain.individuals.get(attackerId).getAI().setCurrentTask(
 			new Attack(
-				GameWorld.individuals.get(attackerId),
-				GameWorld.individuals.get(victimId)
+				Domain.individuals.get(attackerId),
+				Domain.individuals.get(victimId)
 			)
 		);
 

@@ -7,7 +7,7 @@ import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.ConstructionWithContainer;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * An {@link AITask} which indicates an {@link Individual} is trading
@@ -28,12 +28,12 @@ public class Trading extends AITask {
 	public Trading(IndividualIdentifier hostId, int otherId, TradeEntity entity) {
 		super(hostId);
 		this.entity = entity;
-		this.proposer = GameWorld.individuals.get(hostId.getId());
+		this.proposer = Domain.individuals.get(hostId.getId());
 
 		if (entity == TradeEntity.INDIVIDUAL) {
-			this.proposee = GameWorld.individuals.get(otherId);
+			this.proposee = Domain.individuals.get(otherId);
 		} else {
-			prop = GameWorld.props.get(otherId);
+			prop = Domain.props.get(otherId);
 			this.proposee = ((ConstructionWithContainer) prop).container;
 		}
 	}

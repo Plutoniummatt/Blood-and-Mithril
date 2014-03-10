@@ -1,7 +1,8 @@
 package bloodandmithril.world;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.BloodAndMithrilClient;
@@ -26,34 +27,36 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
- * Class representing the game world.
+ * Class representing the entire domain governing the game.
  *
  * @author Matt
  */
-public class GameWorld {
+public class Domain {
+	
+	/** The current active {@link World} */
+	private static World activeWorld;
 
-	/** Gravity */
-	public static float GRAVITY = 1200;
+	/** {@link World}s */
+	private static Map<Integer, World> 						worlds 					= Maps.newHashMap();
 
-	/** Topography of the game world */
-	public static Topography topography;
-
-	/** Lights */
-	public static ConcurrentHashMap<Integer, Light> lights = new ConcurrentHashMap<>();
+	/** All lights */
+	public static ConcurrentHashMap<Integer, Light> 		lights 					= new ConcurrentHashMap<>();
 
 	/** {@link Individual} that are selected for manual control */
-	public static HashSet<Individual> selectedIndividuals = new HashSet<Individual>();
+	public static Set<Individual> 							selectedIndividuals 	= Sets.newHashSet();
 
 	/** Every {@link Individual} that exists */
-	public static ConcurrentHashMap<Integer, Individual> individuals = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, Individual> 	individuals 			= new ConcurrentHashMap<>();
 
 	/** Every {@link Prop} that exists */
-	public static ConcurrentHashMap<Integer, Prop> props = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, Prop> 			props 					= new ConcurrentHashMap<>();
 
 	/** Every {@link Prop} that exists */
-	public static ConcurrentHashMap<Integer, Faction> factions = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Integer, Faction> 		factions 				= new ConcurrentHashMap<>();
 
 	/** Textures */
 	public static Texture gameWorldTexture;
@@ -71,22 +74,25 @@ public class GameWorld {
 	/**
 	 * Constructor
 	 */
-	public GameWorld(boolean client) {
-		topography = new Topography(client);
+	public Domain(boolean client) {
+		worlds.put(0, new World(new Topography(client), 1200f));
+		activeWorld = worlds.get(0);
 	}
 
 
 	public static void setup() {
 		gameWorldTexture = new Texture(Gdx.files.internal("data/image/gameWorld.png"));
 		individualTexture = new Texture(Gdx.files.internal("data/image/character/individual.png"));
+		
+		gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
+		
 		fBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		mBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		mBufferLit = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		bBuffer = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		bBufferProcessedForDaylightShader = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
 		bBufferLit = new FrameBuffer(Format.RGBA8888, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, true);
-		gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
 	}
 
 
@@ -95,7 +101,7 @@ public class GameWorld {
 	 */
 	public void render(int camX, int camY) {
 		bBuffer.begin();
-		topography.renderBackGround(camX, camY);
+		getActiveWorld().getTopography().renderBackGround(camX, camY);
 		BloodAndMithrilClient.spriteBatch.begin();
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
@@ -124,7 +130,7 @@ public class GameWorld {
 
 		fBuffer.begin();
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		topography.renderForeGround(camX, camY);
+		getActiveWorld().getTopography().renderForeGround(camX, camY);
 		BloodAndMithrilClient.spriteBatch.begin();
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
@@ -178,7 +184,7 @@ public class GameWorld {
 	 * Updates the game world
 	 */
 	public void update(int camX, int camY) {
-		topography.loadOrGenerateNullChunksAccordingToCam(camX, camY);
+		getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam(camX, camY);
 		float d = 1f/60f;
 		WorldState.currentEpoch.incrementTime(d);
 
@@ -192,16 +198,22 @@ public class GameWorld {
 			}
 		}
 
-		// Topography.saveAndFlushUnneededChunks((int) BloodAndMithrilClient.cam.position.x, (int) BloodAndMithrilClient.cam.position.y);
 		Topography.executeBackLog();
 	}
 
 
-	/**
-	 * @return returns the topography of the GameWorld.
-	 */
-	public Topography getTopography() {
-		return topography;
+	public static World getActiveWorld() {
+		return activeWorld;
+	}
+
+
+	public static void setActiveWorld(World activeWorldToSet) {
+		activeWorld = activeWorldToSet;
+	}
+	
+	
+	public static World getWorld(int id) {
+		return worlds.get(id);
 	}
 
 
@@ -310,7 +322,7 @@ public class GameWorld {
 		public static boolean SEE_ALL = false;
 
 		private static void render(float camX, float camY) {
-			ArrayList<Light> tempLights = new ArrayList<GameWorld.Light>();
+			ArrayList<Light> tempLights = new ArrayList<Domain.Light>();
 
 			//Do not bother with lights that are off screen
 			for (Light light : lights.values()) {

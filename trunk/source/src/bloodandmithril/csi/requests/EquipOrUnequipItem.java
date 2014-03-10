@@ -5,7 +5,7 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
 import bloodandmithril.item.Equipable;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * Send a {@link Request} to equip or unequip an item
@@ -30,7 +30,7 @@ public class EquipOrUnequipItem implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = GameWorld.individuals.get(individualId);
+		Individual individual = Domain.individuals.get(individualId);
 
 		if (equip) {
 			individual.equip(equipable);

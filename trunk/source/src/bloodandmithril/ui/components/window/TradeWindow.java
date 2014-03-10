@@ -23,7 +23,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
@@ -161,7 +161,7 @@ public class TradeWindow extends Window {
 	 */
 	@SuppressWarnings("unchecked")
 	public synchronized void refresh() {
-		proposer = GameWorld.individuals.get(((Individual) proposer).getId().getId());
+		proposer = Domain.individuals.get(((Individual) proposer).getId().getId());
 
 		proposerItemsToTrade.clear();
 		proposeeItemsToTrade.clear();
@@ -417,10 +417,10 @@ public class TradeWindow extends Window {
 				((Individual) proposee).getAI().setCurrentTask(new Idle());
 			}
 		} else {
-			if (GameWorld.selectedIndividuals.contains(proposer)) {
+			if (Domain.selectedIndividuals.contains(proposer)) {
 				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposer).getId().getId());
 			}
-			if (proposee instanceof Individual && GameWorld.selectedIndividuals.contains(proposee)) {
+			if (proposee instanceof Individual && Domain.selectedIndividuals.contains(proposee)) {
 				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposee).getId().getId());
 			}
 		}

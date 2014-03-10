@@ -14,7 +14,7 @@ import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -50,8 +50,8 @@ public class Boar extends Individual {
 	/**
 	 * Constructor
 	 */
-	public Boar(IndividualIdentifier id, IndividualState state) {
-		super(id, state, Faction.NPC, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120));
+	public Boar(IndividualIdentifier id, IndividualState state, int worldId) {
+		super(id, state, Faction.NPC, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId);
 		ai = new BoarAI(this);
 		current = STANDING_RIGHT;
 	}
@@ -61,10 +61,10 @@ public class Boar extends Individual {
 	 * Loads animations
 	 */
 	public static void loadAnimations() {
-		animations.put(STANDING_LEFT, AnimationHelper.makeAnimation(GameWorld.individualTexture, 768, 0, 64, 40, 1, 1));
-		animations.put(STANDING_RIGHT, AnimationHelper.makeAnimation(GameWorld.individualTexture, 704, 0, 64, 40, 1, 1));
-		animations.put(WALKING_LEFT, AnimationHelper.makeAnimation(GameWorld.individualTexture, 704, 80, 64, 40, 5, 0.17f));
-		animations.put(WALKING_RIGHT, AnimationHelper.makeAnimation(GameWorld.individualTexture, 704, 40, 64, 40, 5, 0.17f));
+		animations.put(STANDING_LEFT, AnimationHelper.makeAnimation(Domain.individualTexture, 768, 0, 64, 40, 1, 1));
+		animations.put(STANDING_RIGHT, AnimationHelper.makeAnimation(Domain.individualTexture, 704, 0, 64, 40, 1, 1));
+		animations.put(WALKING_LEFT, AnimationHelper.makeAnimation(Domain.individualTexture, 704, 80, 64, 40, 5, 0.17f));
+		animations.put(WALKING_RIGHT, AnimationHelper.makeAnimation(Domain.individualTexture, 704, 40, 64, 40, 5, 0.17f));
 	}
 
 
@@ -209,7 +209,7 @@ public class Boar extends Individual {
 
 	@Override
 	public Individual copy() {
-		Boar boar = new Boar(getId(), getState());
+		Boar boar = new Boar(getId(), getState(), getWorldId());
 		boar.copyFrom(this);
 		return boar;
 	}

@@ -3,7 +3,7 @@ package bloodandmithril.character.ai.task;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -29,7 +29,7 @@ public class GoToMovingLocation extends AITask {
 		this.tolerance = tolerance;
 
 		currentGoToLocation = new GoToLocation(
-			GameWorld.individuals.get(hostId.getId()),
+			Domain.individuals.get(hostId.getId()),
 			new WayPoint(destination),
 			false,
 			150f,
@@ -46,7 +46,7 @@ public class GoToMovingLocation extends AITask {
 
 	@Override
 	public boolean isComplete() {
-		return GameWorld.individuals.get(hostId.getId()).getDistanceFrom(destination) < tolerance;
+		return Domain.individuals.get(hostId.getId()).getDistanceFrom(destination) < tolerance;
 	}
 
 
@@ -60,7 +60,7 @@ public class GoToMovingLocation extends AITask {
 		currentGoToLocation.execute();
 		if (currentGoToLocation.isComplete()) {
 			currentGoToLocation = new GoToLocation(
-				GameWorld.individuals.get(hostId.getId()),
+				Domain.individuals.get(hostId.getId()),
 				new WayPoint(destination),
 				false,
 				150f,
