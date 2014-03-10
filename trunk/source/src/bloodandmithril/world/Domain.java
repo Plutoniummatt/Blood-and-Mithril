@@ -78,9 +78,13 @@ public class Domain {
 	 * Constructor
 	 */
 	public Domain() {
-		World world = new World(1200f);
-		getWorlds().put(world.getWorldId(), world);
-		activeWorld = world;
+		if (worlds.isEmpty()) {
+			World world = new World(1200f);
+			getWorlds().put(world.getWorldId(), world);
+			activeWorld = world;
+		} else {
+			activeWorld = worlds.get(1);
+		}
 	}
 	
 	

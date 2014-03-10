@@ -1,5 +1,7 @@
 package bloodandmithril.generation.component;
 
+import java.io.Serializable;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -77,7 +79,7 @@ public abstract class PrefabricatedComponent extends Component {
 	 *
 	 * @author Matt
 	 */
-	public static class ComponentBlueprint {
+	public static class ComponentBlueprint implements Serializable {
 		private final Tile[][] fTiles;
 		private final Tile[][] bTiles;
 

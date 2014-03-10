@@ -378,6 +378,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (keycode == Input.Keys.L) {
 			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), false);
 		}
+		
+		if (keycode == Input.Keys.S) {
+			GameSaver.save(false);
+		}
 
 		if (keycode == Input.Keys.D && ClientServerInterface.isServer()) {
 			UserInterface.addLayeredComponentUnique(
