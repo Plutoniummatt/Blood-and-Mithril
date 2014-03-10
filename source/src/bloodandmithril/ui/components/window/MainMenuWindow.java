@@ -113,8 +113,8 @@ public class MainMenuWindow extends Window {
 											Domain.factions.put(1, new Faction("Elves", 1, true));
 
 											ClientServerInterface.setServer(true);
-											BloodAndMithrilClient.gameWorld = new Domain();
 											GameLoader.load();
+											BloodAndMithrilClient.gameWorld = new Domain();
 										} else {
 											ClientServerInterface.setupAndConnect(args[0].toString());
 											BloodAndMithrilClient.gameWorld = new Domain();
