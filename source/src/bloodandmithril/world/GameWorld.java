@@ -213,23 +213,29 @@ public class GameWorld {
 	public static class Light {
 
 		/** World coords and size of this {@link Light} */
-		public float x, y;
+		public float x, y, spanBegin, spanEnd;
 		public int size;
 		public Color color;
 		public float intensity;
+		public boolean renderSwitch;
 
 		/** Various {@link FrameBuffer}s */
 		public FrameBuffer fOcclusion, mOcclusion, fShadowMap, mShadowMap;
 
 		/**
 		 * Constructor
+		 * 
+		 * SpanBegin - Counter-Clockwise, begining from the -ve x-axis, the begining angle of light span
+		 * spanEnd - Counter-Clockwise, from spanEnd, the span, 1f meaning 360 degrees.
 		 */
-		public Light(int size, float x, float y, Color color, float intensity) {
+		public Light(int size, float x, float y, Color color, float intensity, float spanBegin, float spanEnd) {
 			this.size = size;
 			this.x = x;
 			this.y = y;
 			this.color = color;
 			this.intensity = intensity;
+			this.spanBegin = spanBegin;
+			this.spanEnd = spanEnd;
 		}
 		
 		
@@ -324,6 +330,11 @@ public class GameWorld {
 					light.fOcclusion = new FrameBuffer(Format.RGBA8888, light.size, light.size, true);
 					light.mOcclusion = new FrameBuffer(Format.RGBA8888, light.size, light.size, true);
 				}
+				
+				if (light.renderSwitch) {
+					light.renderSwitch = !light.renderSwitch;
+					continue;
+				}
 
 				//Draw foreground to occlusion map
 				light.fOcclusion.begin();
@@ -363,6 +374,19 @@ public class GameWorld {
 					false,
 					false
 				);
+				BloodAndMithrilClient.spriteBatch.draw(
+					fBuffer.getColorBufferTexture(),
+					0f,
+					0f,
+					BloodAndMithrilClient.WIDTH,
+					BloodAndMithrilClient.HEIGHT,
+					(int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,
+					(int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2,
+					light.size,
+					light.size,
+					false,
+					false
+				);
 				BloodAndMithrilClient.spriteBatch.end();
 				light.mOcclusion.end();
 
@@ -371,6 +395,7 @@ public class GameWorld {
 				BloodAndMithrilClient.spriteBatch.begin();
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.shadowMap);
 				Shaders.shadowMap.setUniformf("resolution", light.fOcclusion.getWidth(), light.fOcclusion.getHeight());
+				Shaders.shadowMap.setUniformf("span", light.spanBegin, light.spanEnd);
 				BloodAndMithrilClient.spriteBatch.draw(light.fOcclusion.getColorBufferTexture(), 0f, 0f, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, light.size, light.size, false, false);
 				BloodAndMithrilClient.spriteBatch.end();
 				light.fShadowMap.end();
@@ -379,9 +404,12 @@ public class GameWorld {
 				BloodAndMithrilClient.spriteBatch.begin();
 				BloodAndMithrilClient.spriteBatch.setShader(Shaders.shadowMap);
 				Shaders.shadowMap.setUniformf("resolution", light.mOcclusion.getWidth(), light.mOcclusion.getHeight());
+				Shaders.shadowMap.setUniformf("span", light.spanBegin, light.spanEnd);
 				BloodAndMithrilClient.spriteBatch.draw(light.mOcclusion.getColorBufferTexture(), 0f, 0f, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, light.size, light.size, false, false);
 				BloodAndMithrilClient.spriteBatch.end();
 				light.mShadowMap.end();
+				
+				light.renderSwitch = !light.renderSwitch;
 			}
 
 			//Begin rendering----------------------------------//
@@ -398,7 +426,6 @@ public class GameWorld {
 				bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
 				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 				Shaders.defaultBackGroundTiles.setUniformi("u_texture2", 1);
-				Shaders.defaultBackGroundTiles.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				BloodAndMithrilClient.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
 				BloodAndMithrilClient.spriteBatch.flush();
 			}

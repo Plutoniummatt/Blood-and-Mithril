@@ -141,7 +141,7 @@ public class Furnace extends ConstructionWithContainer {
 		setTemperature(1400f);
 
 		lightId = ParameterPersistenceService.getParameters().getNextLightId();
-		light = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f);
+		light = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f, 0f, 1f);
 		GameWorld.lights.put(lightId, light);
 	}
 

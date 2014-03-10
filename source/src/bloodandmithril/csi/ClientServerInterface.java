@@ -534,7 +534,7 @@ public class ClientServerInterface {
 		}
 		
 		public static synchronized void sendAddLightRequest(Light light) {
-			client.sendTCP(new AddLightRequest(light.size, light.x, light.y, light.color, light.intensity));
+			client.sendTCP(new AddLightRequest(light.size, light.x, light.y, light.color, light.intensity, light.spanBegin, light.spanEnd));
 			Logger.networkDebug("Sending add light request", LogLevel.DEBUG);
 		}
 
@@ -811,7 +811,7 @@ public class ClientServerInterface {
 				-1,
 				false,
 				false,
-				new AddLightRequest.SyncLightResponse(id, light.size, light.x, light.y, light.color, light.intensity)
+				new AddLightRequest.SyncLightResponse(id, light.size, light.x, light.y, light.color, light.intensity, light.spanBegin, light.spanEnd)
 			);
 		}
 	}

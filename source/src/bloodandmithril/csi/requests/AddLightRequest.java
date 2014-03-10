@@ -20,27 +20,29 @@ public class AddLightRequest implements Request {
 	private float x;
 	private float y;
 	private Color color;
-	private float intensity;
+	private float intensity, spanBegin, spanEnd;
 
 	/**
 	 * Constructor
 	 */
-	public AddLightRequest(int size, float x, float y, Color color, float intensity) {
+	public AddLightRequest(int size, float x, float y, Color color, float intensity, float spanBegin, float spanEnd) {
 		this.size = size;
 		this.x = x;
 		this.y = y;
 		this.color = color;
 		this.intensity = intensity;
+		this.spanBegin = spanBegin;
+		this.spanEnd = spanEnd;
 	}
 
 	
 	@Override
 	public Responses respond() {
 		int nextLightId = ParameterPersistenceService.getParameters().getNextLightId();
-		GameWorld.lights.put(nextLightId, new Light(size, x, y, color, intensity));
+		GameWorld.lights.put(nextLightId, new Light(size, x, y, color, intensity, spanBegin, spanEnd));
 		Responses responses = new Responses(false);
 		
-		responses.add(new SyncLightResponse(nextLightId, size, x, y, color, intensity));
+		responses.add(new SyncLightResponse(nextLightId, size, x, y, color, intensity, spanBegin, spanEnd));
 		return responses;
 	}
 	
@@ -60,8 +62,7 @@ public class AddLightRequest implements Request {
 	public static class SyncLightResponse implements Response {
 
 		private int size;
-		private float x;
-		private float y;
+		private float x, y, spanBegin, spanEnd;
 		private Color color;
 		private float intensity;
 		private int id;
@@ -69,19 +70,21 @@ public class AddLightRequest implements Request {
 		/**
 		 * Constructor
 		 */
-		public SyncLightResponse(int id, int size, float x, float y, Color color, float intensity) {
+		public SyncLightResponse(int id, int size, float x, float y, Color color, float intensity, float spanBegin, float spanEnd) {
 			this.id = id;
 			this.size = size;
 			this.x = x;
 			this.y = y;
 			this.color = color;
 			this.intensity = intensity;
+			this.spanBegin = spanBegin;
+			this.spanEnd = spanEnd;
 		}
 
 		
 		@Override
 		public void acknowledge() {
-			Light light = new Light(size, x, y, color, intensity);
+			Light light = new Light(size, x, y, color, intensity, spanBegin, spanEnd);
 			if (GameWorld.lights.get(id) == null) {
 				GameWorld.lights.put(id, light);
 			} else {

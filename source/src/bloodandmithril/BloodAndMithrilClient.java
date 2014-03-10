@@ -346,7 +346,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				512,
 				getMouseWorldX(), getMouseWorldY(),
 				Util.randomOneOf(Color.WHITE, Color.CYAN, Color.GREEN, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.YELLOW),
-				1f
+				1f,
+				0.1f,
+				0.4f
 			);
 
 			if (ClientServerInterface.isServer()) {
