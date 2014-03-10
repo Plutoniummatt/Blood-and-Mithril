@@ -52,7 +52,7 @@ public class MainMenuWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		connect.render(width/2 + x, y - 26, isActive() && !isSaving() && BloodAndMithrilClient.gameWorld == null, getAlpha());
+		connect.render(width/2 + x, y - 26, isActive() && !isSaving() && BloodAndMithrilClient.domain == null, getAlpha());
 		options.render(width/2 + x, y - 46, isActive() && !isSaving(), getAlpha());
 		exit.render(width/2 + x, y - 66, isActive() && !isSaving(), getAlpha());
 	}
@@ -91,7 +91,7 @@ public class MainMenuWindow extends Window {
 			new Task() {
 				@Override
 				public void execute() {
-					if (BloodAndMithrilClient.gameWorld != null) {
+					if (BloodAndMithrilClient.domain != null) {
 						return;
 					}
 
@@ -114,10 +114,10 @@ public class MainMenuWindow extends Window {
 
 											ClientServerInterface.setServer(true);
 											GameLoader.load();
-											BloodAndMithrilClient.gameWorld = new Domain();
+											BloodAndMithrilClient.domain = new Domain();
 										} else {
 											ClientServerInterface.setupAndConnect(args[0].toString());
-											BloodAndMithrilClient.gameWorld = new Domain();
+											BloodAndMithrilClient.domain = new Domain();
 										}
 
 										UserInterface.buttons.remove("connect");

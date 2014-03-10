@@ -2,6 +2,7 @@ package bloodandmithril.generation;
 
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxStructureWidth;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSurfaceHeight;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.superstructure.Caves;
 import bloodandmithril.generation.tools.BiomeDecider;
 import bloodandmithril.ui.UserInterface;
@@ -97,7 +98,7 @@ public class TerrainGenerator {
 
 	/** Handles a {@link NullPointerException} during generation */
 	private void handleNPE(Tile[][] bTiles, int tileX, int tileY, NullPointerException e) {
-		if (UserInterface.DEBUG) {
+		if (!ClientServerInterface.isClient() && UserInterface.DEBUG) {
 			bTiles[tileX][tileY] = new Tile.DebugTile();
 		} else {
 			throw new RuntimeException("Got an NPE during generation", e);

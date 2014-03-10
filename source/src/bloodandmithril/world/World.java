@@ -50,7 +50,7 @@ public class World implements Serializable {
 	public Topography getTopography() {
 		return Domain.getTopography(worldId);
 	}
-
+	
 
 	public float getGravity() {
 		return gravity;

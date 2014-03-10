@@ -202,7 +202,7 @@ public class UserInterface {
 			renderDebugText();
 		}
 
-		if (BloodAndMithrilClient.gameWorld != null) {
+		if (BloodAndMithrilClient.domain != null) {
 			renderUIText();
 		}
 		renderButtons();

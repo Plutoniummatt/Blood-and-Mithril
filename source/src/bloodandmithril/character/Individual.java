@@ -400,7 +400,7 @@ public abstract class Individual extends Equipper {
 		state.position.add(state.velocity.cpy().mul(delta));
 
 		//Calculate velocity based on acceleration, including gravity
-		if (Math.abs((state.velocity.y - world.getGravity() * delta * delta)) < Topography.TILE_SIZE/2) {
+		if (Math.abs((state.velocity.y - world.getGravity() * delta) * delta) < Topography.TILE_SIZE/2) {
 			state.velocity.y = state.velocity.y - (steppingUp ? 0 : delta * world.getGravity());
 		} else {
 			state.velocity.y = state.velocity.y * 0.8f;
@@ -706,9 +706,9 @@ public abstract class Individual extends Equipper {
 					InventoryWindow inventoryWindow = new InventoryWindow(
 						thisIndividual,
 						BloodAndMithrilClient.WIDTH/2 - ((id.getSimpleName() + " - Inventory").length() * 10 + 50)/2,
-						BloodAndMithrilClient.HEIGHT/2 + 100,
+						BloodAndMithrilClient.HEIGHT/2 + 200,
 						(id.getSimpleName() + " - Inventory").length() * 10 + 50,
-						200,
+						400,
 						id.getSimpleName() + " - Inventory",
 						true,
 						150, 150

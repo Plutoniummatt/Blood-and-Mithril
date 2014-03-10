@@ -15,6 +15,7 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.Color;
@@ -47,11 +48,21 @@ public class Boar extends Individual {
 
 	/** Current animation */
 	private String current;
+	
+	/**
+	 * Constructor
+	 */
+	public Boar(IndividualIdentifier id, IndividualState state, World world) {
+		super(id, state, Faction.NPC, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId());
+		ai = new BoarAI(this);
+		current = STANDING_RIGHT;
+	}
+	
 
 	/**
 	 * Constructor
 	 */
-	public Boar(IndividualIdentifier id, IndividualState state, int worldId) {
+	private Boar(IndividualIdentifier id, IndividualState state, int worldId) {
 		super(id, state, Faction.NPC, 0.05f, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId);
 		ai = new BoarAI(this);
 		current = STANDING_RIGHT;

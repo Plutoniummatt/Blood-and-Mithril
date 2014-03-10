@@ -92,7 +92,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static OrthographicCamera cam;
 
 	/** The game world */
-	public static Domain gameWorld;
+	public static Domain domain;
 
 	/** For camera dragging */
 	private int camDragX, camDragY, oldCamX, oldCamY;
@@ -110,6 +110,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static final Set<Integer> controlledFactions = Sets.newHashSet();
 
 	public static long ping = 0;
+	
+	public static Thread updateThread;
 
 	@Override
 	public void create() {
@@ -127,6 +129,22 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		SoundService.changeMusic(2f, SoundService.music1);
 
 		newCachedThreadPool = Executors.newCachedThreadPool();
+		
+		updateThread = new Thread(new Runnable() {
+			long prevFrame = System.currentTimeMillis();
+			
+			@Override
+			public void run() {
+				while (true) {
+					if ((System.currentTimeMillis() - prevFrame) > 16) {
+						prevFrame = System.currentTimeMillis();
+						update(Gdx.graphics.getDeltaTime());
+					}
+				}
+			}
+		});
+		
+		updateThread.start();
 	}
 
 
@@ -167,11 +185,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public void render() {
-		// Update
-		if (gameWorld != null) {
-			update(Gdx.graphics.getDeltaTime());
+		if (!GameSaver.isSaving()) {
+			SoundService.update(Gdx.graphics.getDeltaTime());
+			Shaders.updateShaderUniforms();
 		}
-
+		
 		// Camera --------------------- /
 		cam.update();
 		UserInterface.update();
@@ -183,10 +201,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		// Rendering --------------------- /
-		if (gameWorld == null) {
+		if (domain == null) {
 			renderMainMenuBackDrop();
 		} else {
-			gameWorld.render((int) cam.position.x, (int) cam.position.y);
+			domain.render((int) cam.position.x, (int) cam.position.y);
 		}
 		UserInterface.render();
 	}
@@ -501,14 +519,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * constant.
 	 */
 	private void update(float delta) {
-		SoundService.update(delta);
 		GameSaver.update();
 
 		// Do not update if game is paused
 		// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-		if (!paused && delta < LAG_SPIKE_TOLERANCE && !GameSaver.isSaving()) {
-			Shaders.updateShaderUniforms();
-			gameWorld.update((int) cam.position.x, (int) cam.position.y);
+		if (!paused && delta < LAG_SPIKE_TOLERANCE && !GameSaver.isSaving() && domain != null) {
+			domain.update((int) cam.position.x, (int) cam.position.y);
 		}
 
 		leftDoubleClickTimer += delta;
