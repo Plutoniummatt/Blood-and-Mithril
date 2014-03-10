@@ -2,7 +2,7 @@ package bloodandmithril.prop.building;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.world.GameWorld.Depth;
+import bloodandmithril.world.Domain.Depth;
 
 /**
  * A Construction

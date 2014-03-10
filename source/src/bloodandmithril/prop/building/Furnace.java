@@ -16,8 +16,8 @@ import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
-import bloodandmithril.world.GameWorld;
-import bloodandmithril.world.GameWorld.Light;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Light;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -89,8 +89,8 @@ public class Furnace extends ConstructionWithContainer {
 			)
 		);
 
-		if (GameWorld.selectedIndividuals.size() == 1) {
-			final Individual selected = GameWorld.selectedIndividuals.iterator().next();
+		if (Domain.selectedIndividuals.size() == 1) {
+			final Individual selected = Domain.selectedIndividuals.iterator().next();
 			ContextMenuItem openChestMenuItem = new ContextMenuItem(
 				"Open furnace",
 				new Task() {
@@ -126,7 +126,7 @@ public class Furnace extends ConstructionWithContainer {
 			this.burning = ((Furnace) other).burning;
 			this.combustionDurationRemaining = ((Furnace) other).combustionDurationRemaining;
 			this.lightId = ((Furnace) other).lightId;
-			this.light = GameWorld.lights.get(((Furnace) other).lightId);
+			this.light = Domain.lights.get(((Furnace) other).lightId);
 		} else {
 			throw new RuntimeException("Can not synchronize Furnace with " + other.getClass().getSimpleName());
 		}
@@ -142,7 +142,7 @@ public class Furnace extends ConstructionWithContainer {
 
 		lightId = ParameterPersistenceService.getParameters().getNextLightId();
 		light = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f, 0f, 1f);
-		GameWorld.lights.put(lightId, light);
+		Domain.lights.put(lightId, light);
 	}
 
 
@@ -193,7 +193,7 @@ public class Furnace extends ConstructionWithContainer {
 				this.combustionDurationRemaining -= delta;
 				if (this.combustionDurationRemaining <= 0f) {
 					burning = false;
-					GameWorld.lights.remove(lightId);
+					Domain.lights.remove(lightId);
 					if (!ClientServerInterface.isClient()) {
 						ClientServerInterface.sendNotification(
 							-1,

@@ -10,7 +10,7 @@ import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.material.Fuel;
 import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
 import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * Evaluates a trade proposal.
@@ -60,8 +60,8 @@ public class TradeService {
 						proposee.giveItem(proposerToTradeItem.getKey());
 					}
 				}
-				if (proposee instanceof ConstructionContainer && GameWorld.props.get(((ConstructionContainer) proposee).propId) instanceof Furnace) {
-					Furnace furnace = (Furnace) GameWorld.props.get(((ConstructionContainer) proposee).propId);
+				if (proposee instanceof ConstructionContainer && Domain.props.get(((ConstructionContainer) proposee).propId) instanceof Furnace) {
+					Furnace furnace = (Furnace) Domain.props.get(((ConstructionContainer) proposee).propId);
 
 					if (proposerToTradeItem.getKey() instanceof Fuel) {
 						Fuel fuel = (Fuel) proposerToTradeItem.getKey();

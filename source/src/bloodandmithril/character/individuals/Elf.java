@@ -22,7 +22,7 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -92,8 +92,8 @@ public class Elf extends Individual {
 	/**
 	 * Constructor
 	 */
-	public Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity) {
-		super(id, state, factionId, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120));
+	public Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity, int worldId) {
+		super(id, state, factionId, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId);
 		this.female = female;
 		this.hairColorR = hairColor.r;
 		this.hairColorG = hairColor.g;
@@ -115,20 +115,20 @@ public class Elf extends Individual {
 	 */
 	public static void loadAnimations() {
 		for (int i = 0; i <=3; i++) {
-			hairAnimations.put(STANDING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 0, 64, 128, 1, 1));
-			hairAnimations.put(STANDING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 128, 64, 128, 1, 1));
-			hairAnimations.put(WALKING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 0, 64, 128, 1, 1));
-			hairAnimations.put(WALKING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 128, 64, 128, 1, 1));
-			hairAnimations.put(RUNNING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 256, 64, 128, 1, 1));
-			hairAnimations.put(RUNNING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(GameWorld.individualTexture, 448 + i * 64, 384, 64, 128, 1, 1));
+			hairAnimations.put(STANDING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 0, 64, 128, 1, 1));
+			hairAnimations.put(STANDING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 128, 64, 128, 1, 1));
+			hairAnimations.put(WALKING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 0, 64, 128, 1, 1));
+			hairAnimations.put(WALKING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 128, 64, 128, 1, 1));
+			hairAnimations.put(RUNNING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 256, 64, 128, 1, 1));
+			hairAnimations.put(RUNNING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 384, 64, 128, 1, 1));
 		}
 
-		animations.put(STANDING_LEFT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 128, 64, 128, 1, 1));
-		animations.put(STANDING_RIGHT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 0, 64, 128, 1, 1));
-		animations.put(WALKING_LEFT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 64, 128, 64, 128, 6, 0.17f));
-		animations.put(WALKING_RIGHT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 64, 0, 64, 128, 6, 0.17f));
-		animations.put(RUNNING_LEFT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 384, 64, 128, 7, 0.14f));
-		animations.put(RUNNING_RIGHT + "F", AnimationHelper.makeAnimation(GameWorld.individualTexture, 0, 256, 64, 128, 7, 0.14f));
+		animations.put(STANDING_LEFT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 128, 64, 128, 1, 1));
+		animations.put(STANDING_RIGHT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 0, 64, 128, 1, 1));
+		animations.put(WALKING_LEFT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 64, 128, 64, 128, 6, 0.17f));
+		animations.put(WALKING_RIGHT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 64, 0, 64, 128, 6, 0.17f));
+		animations.put(RUNNING_LEFT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 384, 64, 128, 7, 0.14f));
+		animations.put(RUNNING_RIGHT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 256, 64, 128, 7, 0.14f));
 	}
 
 
@@ -418,7 +418,7 @@ public class Elf extends Individual {
 
 	@Override
 	public Individual copy() {
-		Elf elf = new Elf(getId(), getState(), factionId, female, new Color(hairColorR, hairColorG, hairColorB, 1f), new Color(eyeColorR, eyeColorG, eyeColorB, 1f), hairStyle, inventoryMassCapacity);
+		Elf elf = new Elf(getId(), getState(), factionId, female, new Color(hairColorR, hairColorG, hairColorB, 1f), new Color(eyeColorR, eyeColorG, eyeColorB, 1f), hairStyle, inventoryMassCapacity, getWorldId());
 		elf.copyFrom(this);
 		return elf;
 	}

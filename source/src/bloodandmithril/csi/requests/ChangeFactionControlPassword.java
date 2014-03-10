@@ -8,7 +8,7 @@ import bloodandmithril.csi.requests.SynchronizeFaction.SynchronizeFactionRespons
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.FactionsWindow;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Request} to change the password to control a {@link Faction}
@@ -30,10 +30,10 @@ public class ChangeFactionControlPassword implements Request {
 
 	@Override
 	public Responses respond() {
-		GameWorld.factions.get(factionId).changeControlPassword(newPassword);
+		Domain.factions.get(factionId).changeControlPassword(newPassword);
 
 		Responses responses = new Responses(true);
-		for (Faction faction : GameWorld.factions.values()) {
+		for (Faction faction : Domain.factions.values()) {
 			responses.add(new SynchronizeFactionResponse(faction));
 		}
 		responses.add(new RefreshFactionWindow());

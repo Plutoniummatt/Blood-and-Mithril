@@ -12,7 +12,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 
 import com.google.common.base.Predicate;
@@ -79,7 +79,7 @@ public class Harvest extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return !GameWorld.props.containsKey(harvestable.id);
+			return !Domain.props.containsKey(harvestable.id);
 		}
 
 
@@ -91,12 +91,12 @@ public class Harvest extends CompositeAITask {
 		@Override
 		public void execute() {
 
-			Individual host = GameWorld.individuals.get(hostId.getId());
+			Individual host = Domain.individuals.get(hostId.getId());
 
 			if (host.getInteractionBox().isWithinBox(harvestable.position)) {
-				if (GameWorld.props.containsKey(harvestable.id)) {
+				if (Domain.props.containsKey(harvestable.id)) {
 					if (harvestable.destroyUponHarvest()) {
-						GameWorld.props.remove(harvestable.id);
+						Domain.props.remove(harvestable.id);
 					}
 
 					if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
@@ -106,7 +106,7 @@ public class Harvest extends CompositeAITask {
 					if (ClientServerInterface.isClient() && ClientServerInterface.isServer()) {
 						Item harvested = harvestable.harvest();
 						if (harvested != null) {
-							GameWorld.individuals.get(hostId.getId()).giveItem(harvested);
+							Domain.individuals.get(hostId.getId()).giveItem(harvested);
 						}
 						InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
 							@Override

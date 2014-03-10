@@ -10,7 +10,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Task;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -64,8 +64,8 @@ public class PineChest extends ConstructionWithContainer {
 			)
 		);
 
-		if (GameWorld.selectedIndividuals.size() == 1) {
-			final Individual selected = GameWorld.selectedIndividuals.iterator().next();
+		if (Domain.selectedIndividuals.size() == 1) {
+			final Individual selected = Domain.selectedIndividuals.iterator().next();
 			ContextMenuItem openChestMenuItem = new ContextMenuItem(
 				"Open",
 				new Task() {

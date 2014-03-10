@@ -12,7 +12,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Task;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -94,7 +94,7 @@ public class MineTile extends CompositeAITask {
 
 		@Override
 		public void execute() {
-			final Individual host = GameWorld.individuals.get(hostId.getId());
+			final Individual host = Domain.individuals.get(hostId.getId());
 
 			if (host.getInteractionBox().isWithinBox(tileCoordinate)) {
 				Topography.addTask(

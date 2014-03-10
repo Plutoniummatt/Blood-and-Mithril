@@ -5,7 +5,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * Sends a {@link Request} to make an {@link Individual}'s {@link AITask} {@link Idle}
@@ -27,7 +27,7 @@ public class SetAIIdle implements Request {
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(false);
-		Individual individual = GameWorld.individuals.get(individualId);
+		Individual individual = Domain.individuals.get(individualId);
 		if (individual.getSelectedByClient().isEmpty()) {
 			individual.getAI().setToAuto(true);
 		} else {

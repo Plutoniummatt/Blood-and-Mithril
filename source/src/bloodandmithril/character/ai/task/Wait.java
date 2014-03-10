@@ -2,7 +2,7 @@ package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link AITask} that instructs the {@link Individual} to wait for a specified amount of time
@@ -32,7 +32,7 @@ public class Wait extends AITask {
 
 	@Override
 	public void execute() {
-		GameWorld.individuals.get(hostId.getId()).clearCommands();
+		Domain.individuals.get(hostId.getId()).clearCommands();
 		if (time < 0f) {
 			complete = true;
 			return;

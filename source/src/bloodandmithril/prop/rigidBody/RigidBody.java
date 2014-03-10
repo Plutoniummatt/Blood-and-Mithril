@@ -2,7 +2,7 @@ package bloodandmithril.prop.rigidBody;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.world.GameWorld.Depth;
+import bloodandmithril.world.Domain.Depth;
 
 /**
  * A rigid body, able to move, bounce, and possibly collide with other collidable {@link RigidBody}s

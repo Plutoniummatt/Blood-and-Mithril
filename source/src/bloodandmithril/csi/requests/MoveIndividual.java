@@ -6,7 +6,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -36,8 +36,8 @@ public class MoveIndividual implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = GameWorld.individuals.get(individualId);
-		if (individual != null && GameWorld.selectedIndividuals.contains(individual)) {
+		Individual individual = Domain.individuals.get(individualId);
+		if (individual != null && Domain.selectedIndividuals.contains(individual)) {
 			AIProcessor.sendPathfindingRequest(
 					individual,
 				new WayPoint(destinationCoordinates),

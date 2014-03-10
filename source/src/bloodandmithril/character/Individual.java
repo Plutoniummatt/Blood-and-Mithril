@@ -35,7 +35,8 @@ import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.world.Epoch;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
@@ -59,6 +60,9 @@ public abstract class Individual extends Equipper {
 
 	/** Identifier of this character */
 	private IndividualIdentifier id;
+	
+	/** {@link World} id of this {@link Individual} */
+	private int worldId;
 
 	/** State of this character */
 	private IndividualState state;
@@ -127,7 +131,8 @@ public abstract class Individual extends Equipper {
 			int width,
 			int height,
 			int safetyHeight,
-			Box interactionBox) {
+			Box interactionBox,
+			int worldId) {
 		super(inventoryMassCapacity);
 		this.id = id;
 		this.state = state;
@@ -137,6 +142,7 @@ public abstract class Individual extends Equipper {
 		this.height = height;
 		this.safetyHeight = safetyHeight;
 		this.interactionBox = interactionBox;
+		this.setWorldId(worldId);
 	}
 
 
@@ -145,6 +151,7 @@ public abstract class Individual extends Equipper {
 	 */
 	public synchronized void copyFrom(Individual other) {
 		this.ai = other.ai;
+		this.setWorldId(other.getWorldId());
 		this.selectedByClient = other.selectedByClient;
 		this.aiReactionTimer = other.aiReactionTimer;
 		this.aITaskDelay = other.aITaskDelay;
@@ -342,7 +349,7 @@ public abstract class Individual extends Equipper {
 
 		respondToCommands();
 
-		kinetics(delta);
+		kinetics(delta, Domain.getWorld(getWorldId()));
 
 		if (ClientServerInterface.isServer()) {
 			conditions(delta);
@@ -367,14 +374,14 @@ public abstract class Individual extends Equipper {
 
 	/** Is this individual the current one? */
 	public boolean isSelected() {
-		return GameWorld.selectedIndividuals.contains(this);
+		return Domain.selectedIndividuals.contains(this);
 	}
 
 
 	/**
 	 * Handles standard kinematics
 	 */
-	protected void kinetics(float delta) {
+	protected void kinetics(float delta, World world) {
 		jumpOffLogic();
 
 		//Stepping up
@@ -392,8 +399,8 @@ public abstract class Individual extends Equipper {
 		state.position.add(state.velocity.cpy().mul(delta));
 
 		//Calculate velocity based on acceleration, including gravity
-		if (Math.abs((state.velocity.y - delta * GameWorld.GRAVITY) * delta) < Topography.TILE_SIZE/2) {
-			state.velocity.y = state.velocity.y - (steppingUp ? 0 : delta * GameWorld.GRAVITY);
+		if (Math.abs((state.velocity.y - world.getGravity() * delta * delta)) < Topography.TILE_SIZE/2) {
+			state.velocity.y = state.velocity.y - (steppingUp ? 0 : delta * world.getGravity());
 		} else {
 			state.velocity.y = state.velocity.y * 0.8f;
 		}
@@ -571,7 +578,7 @@ public abstract class Individual extends Equipper {
 
 		final Individual thisIndividual = this;
 
-		ContextMenuItem controlOrReleaseMenuItem = GameWorld.selectedIndividuals.contains(thisIndividual) ?
+		ContextMenuItem controlOrReleaseMenuItem = Domain.selectedIndividuals.contains(thisIndividual) ?
 		new ContextMenuItem(
 			"Deselect",
 			new Task() {
@@ -579,7 +586,7 @@ public abstract class Individual extends Equipper {
 				public void execute() {
 					if (ClientServerInterface.isServer()) {
 						thisIndividual.deselect(false, 0);
-						GameWorld.selectedIndividuals.remove(thisIndividual);
+						Domain.selectedIndividuals.remove(thisIndividual);
 						clearCommands();
 					} else {
 						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, false);
@@ -598,7 +605,7 @@ public abstract class Individual extends Equipper {
 				@Override
 				public void execute() {
 					if (ClientServerInterface.isServer()) {
-						GameWorld.selectedIndividuals.add(thisIndividual);
+						Domain.selectedIndividuals.add(thisIndividual);
 						thisIndividual.select(0);
 					} else {
 						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, true);
@@ -719,7 +726,7 @@ public abstract class Individual extends Equipper {
 			new Task() {
 				@Override
 				public void execute() {
-					for (Individual indi : GameWorld.selectedIndividuals) {
+					for (Individual indi : Domain.selectedIndividuals) {
 						if (ClientServerInterface.isServer()) {
 							if (indi != thisIndividual) {
 								indi.ai.setCurrentTask(
@@ -767,7 +774,7 @@ public abstract class Individual extends Equipper {
 			new Task() {
 				@Override
 				public void execute() {
-					for (Individual indi : GameWorld.selectedIndividuals) {
+					for (Individual indi : Domain.selectedIndividuals) {
 						if (ClientServerInterface.isServer()) {
 							if (indi != thisIndividual) {
 								indi.ai.setCurrentTask(
@@ -793,8 +800,8 @@ public abstract class Individual extends Equipper {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
 		}
 
-		if (!GameWorld.selectedIndividuals.isEmpty() &&
-			!GameWorld.selectedIndividuals.contains(thisIndividual)) {
+		if (!Domain.selectedIndividuals.isEmpty() &&
+			!Domain.selectedIndividuals.contains(thisIndividual)) {
 			contextMenuToReturn.addMenuItem(attackMenuItem);
 		}
 
@@ -807,9 +814,9 @@ public abstract class Individual extends Equipper {
 		}
 
 
-		if (!GameWorld.selectedIndividuals.isEmpty() &&
-			 GameWorld.selectedIndividuals.size() == 1 &&
-			!GameWorld.selectedIndividuals.contains(thisIndividual)) {
+		if (!Domain.selectedIndividuals.isEmpty() &&
+			 Domain.selectedIndividuals.size() == 1 &&
+			!Domain.selectedIndividuals.contains(thisIndividual)) {
 			contextMenuToReturn.addMenuItem(tradeMenuItem);
 		}
 
@@ -1087,6 +1094,16 @@ public abstract class Individual extends Equipper {
 
 	public int getHeight() {
 		return height;
+	}
+
+
+	public int getWorldId() {
+		return worldId;
+	}
+
+
+	public void setWorldId(int worldId) {
+		this.worldId = worldId;
 	}
 
 

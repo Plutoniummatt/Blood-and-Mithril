@@ -6,8 +6,8 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.persistence.ParameterPersistenceService;
-import bloodandmithril.world.GameWorld;
-import bloodandmithril.world.GameWorld.Light;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Light;
 
 /**
  * {@link Request} to synchronize a {@link Light}
@@ -39,7 +39,7 @@ public class AddLightRequest implements Request {
 	@Override
 	public Responses respond() {
 		int nextLightId = ParameterPersistenceService.getParameters().getNextLightId();
-		GameWorld.lights.put(nextLightId, new Light(size, x, y, color, intensity, spanBegin, spanEnd));
+		Domain.lights.put(nextLightId, new Light(size, x, y, color, intensity, spanBegin, spanEnd));
 		Responses responses = new Responses(false);
 		
 		responses.add(new SyncLightResponse(nextLightId, size, x, y, color, intensity, spanBegin, spanEnd));
@@ -85,13 +85,13 @@ public class AddLightRequest implements Request {
 		@Override
 		public void acknowledge() {
 			Light light = new Light(size, x, y, color, intensity, spanBegin, spanEnd);
-			if (GameWorld.lights.get(id) == null) {
-				GameWorld.lights.put(id, light);
+			if (Domain.lights.get(id) == null) {
+				Domain.lights.put(id, light);
 			} else {
-				GameWorld.lights.get(id).color = light.color;
-				GameWorld.lights.get(id).size = light.size;
-				GameWorld.lights.get(id).x = light.x;
-				GameWorld.lights.get(id).y = light.y;
+				Domain.lights.get(id).color = light.color;
+				Domain.lights.get(id).size = light.size;
+				Domain.lights.get(id).x = light.x;
+				Domain.lights.get(id).y = light.y;
 			}
 		}
 		
@@ -122,7 +122,7 @@ public class AddLightRequest implements Request {
 
 		@Override
 		public void acknowledge() {
-			GameWorld.lights.remove(lightId);
+			Domain.lights.remove(lightId);
 		}
 
 		

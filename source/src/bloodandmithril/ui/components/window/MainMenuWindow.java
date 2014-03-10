@@ -19,7 +19,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -109,15 +109,15 @@ public class MainMenuWindow extends Window {
 								public void execute(Object... args) {
 									try {
 										if (args[0].toString().equals("local")) {
-											GameWorld.factions.put(0, new Faction("NPC", 0, false));
-											GameWorld.factions.put(1, new Faction("Elves", 1, true));
+											Domain.factions.put(0, new Faction("NPC", 0, false));
+											Domain.factions.put(1, new Faction("Elves", 1, true));
 
 											ClientServerInterface.setServer(true);
-											BloodAndMithrilClient.gameWorld = new GameWorld(true);
+											BloodAndMithrilClient.gameWorld = new Domain(true);
 											GameLoader.load();
 										} else {
 											ClientServerInterface.setupAndConnect(args[0].toString());
-											BloodAndMithrilClient.gameWorld = new GameWorld(true);
+											BloodAndMithrilClient.gameWorld = new Domain(true);
 										}
 
 										UserInterface.buttons.remove("connect");

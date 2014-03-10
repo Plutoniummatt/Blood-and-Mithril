@@ -2,7 +2,7 @@ package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * An {@link AITask} that tells the host to attack something
@@ -61,8 +61,8 @@ public class Attack extends CompositeAITask {
 
 		@Override
 		public void execute() {
-			GameWorld.individuals.get(hostId.getId()).attack(tobeAttacked);
-			GameWorld.individuals.get(hostId.getId()).clearCommands();
+			Domain.individuals.get(hostId.getId()).attack(tobeAttacked);
+			Domain.individuals.get(hostId.getId()).clearCommands();
 			attacked = true;
 		}
 	}

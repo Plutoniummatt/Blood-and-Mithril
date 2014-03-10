@@ -6,7 +6,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
 
@@ -22,7 +22,7 @@ public class IndividualLoader {
 	 */
 	public static void loadAll() {
 		try {
-			GameWorld.individuals = decode(Gdx.files.local(GameSaver.savePath + "/world/individuals.txt"));
+			Domain.individuals = decode(Gdx.files.local(GameSaver.savePath + "/world/individuals.txt"));
 		} catch (Exception e) {
 			Logger.loaderDebug("Failed to load individuals", LogLevel.WARN);
 		}

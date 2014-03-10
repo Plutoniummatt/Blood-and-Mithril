@@ -1,7 +1,7 @@
 package bloodandmithril.prop.building;
 
 import bloodandmithril.item.Container;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -46,7 +46,7 @@ public abstract class ConstructionWithContainer extends Construction {
 
 
 		public Vector2 getPositionOfChest() {
-			return GameWorld.props.get(propId).position;
+			return Domain.props.get(propId).position;
 		}
 	}
 }

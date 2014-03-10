@@ -8,7 +8,7 @@ import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.ConstructionWithContainer;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Request} to open a trade window
@@ -48,7 +48,7 @@ public class OpenTradeWindow implements Request {
 		} else {
 			responses.add(
 				new SynchronizePropRequest.SynchronizePropResponse(
-					GameWorld.props.get(proposeeId)
+					Domain.props.get(proposeeId)
 				)
 			);
 		}
@@ -91,12 +91,12 @@ public class OpenTradeWindow implements Request {
 
 		@Override
 		public void acknowledge() {
-			Individual proposer = GameWorld.individuals.get(proposerId);
+			Individual proposer = Domain.individuals.get(proposerId);
 			if (proposeeEntity == TradeEntity.INDIVIDUAL) {
-				Individual proposee = GameWorld.individuals.get(proposeeId);
+				Individual proposee = Domain.individuals.get(proposeeId);
 				TradeWith.openTradeWindowWithIndividual(proposer, proposee);
 			} else {
-				Prop proposee = GameWorld.props.get(proposeeId);
+				Prop proposee = Domain.props.get(proposeeId);
 				if (proposee instanceof ConstructionWithContainer) {
 					TradeWith.openTradeWindowWithProp(proposer, ((ConstructionWithContainer) proposee).container);
 				}

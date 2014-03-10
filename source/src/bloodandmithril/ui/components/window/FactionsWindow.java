@@ -21,7 +21,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Predicate;
@@ -115,7 +115,7 @@ public class FactionsWindow extends Window {
 	private HashMap<ListingMenuItem<String>, Integer> buildMap(boolean controlled) {
 		HashMap<ListingMenuItem<String>, Integer> map = Maps.newHashMap();
 
-		Collection<Faction> newList = Lists.newLinkedList(GameWorld.factions.values());
+		Collection<Faction> newList = Lists.newLinkedList(Domain.factions.values());
 		if (controlled) {
 			newList = Collections2.filter(newList, new Predicate<Faction>() {
 				@Override

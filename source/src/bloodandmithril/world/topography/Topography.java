@@ -339,36 +339,4 @@ public class Topography {
 		//Attempt to load the chunk from disk - If chunk does not exist, it will be generated
 		return chunkLoader.load(this, chunkX, chunkY);
 	}
-
-
-	/**
-	 * Saves and flushes chunks from memory when they are too far from the screen coordinates
-	 */
-	public static void saveAndFlushUnneededChunks(int camX, int camY) {
-
-		int bottomLeftX = convertToChunkCoord((float)camX - Display.getWidth() / 2);
-		int bottomLeftY = convertToChunkCoord((float)camY - Display.getHeight() / 2);
-		int topRightX = bottomLeftX + convertToChunkCoord((float)Display.getWidth());
-		int topRightY = bottomLeftY + convertToChunkCoord((float)Display.getHeight());
-
-		int horizonDistance = 6;
-
-		for (int x = bottomLeftX - horizonDistance; x < topRightX + horizonDistance; x++) {
-			if (chunkMap.get(x) != null && chunkMap.get(x).get(topRightY + horizonDistance) != null) {
-				ChunkSaver.saveAndFlushChunk(x, topRightY + horizonDistance);
-			}
-			if (chunkMap.get(x) != null && chunkMap.get(x).get(bottomLeftY - horizonDistance) != null) {
-				ChunkSaver.saveAndFlushChunk(x, bottomLeftY - horizonDistance);
-
-			}
-		}
-		for (int y = bottomLeftY - horizonDistance + 1; y < topRightY + horizonDistance - 1; y++) {
-			if (chunkMap.get(topRightX + horizonDistance) != null && chunkMap.get(topRightX + horizonDistance).get(y) != null) {
-				ChunkSaver.saveAndFlushChunk(topRightX + horizonDistance, y);
-			}
-			if (chunkMap.get(bottomLeftX - horizonDistance) != null && chunkMap.get(bottomLeftX - horizonDistance).get(y) != null) {
-				ChunkSaver.saveAndFlushChunk(bottomLeftX - horizonDistance, y);
-			}
-		}
-	}
 }

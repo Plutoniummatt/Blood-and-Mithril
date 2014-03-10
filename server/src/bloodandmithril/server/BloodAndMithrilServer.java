@@ -37,8 +37,8 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
-import bloodandmithril.world.GameWorld;
-import bloodandmithril.world.GameWorld.Light;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Light;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -60,7 +60,7 @@ import com.esotericsoftware.kryonet.Server;
 public class BloodAndMithrilServer {
 
 	public static final GameServer server = new GameServer();
-	private static GameWorld gameWorld;
+	private static Domain gameWorld;
 
 	/**
 	 * Entry point for the server
@@ -88,7 +88,7 @@ public class BloodAndMithrilServer {
 			public void disconnected (Connection connection) {
 				ClientServerInterface.SendNotification.notifySyncPlayerList();
 
-				for (Individual indi : GameWorld.individuals.values()) {
+				for (Individual indi : Domain.individuals.values()) {
 					if (indi.getSelectedByClient().remove(connection.getID())) {
 						indi.deselect(false, connection.getID());
 					}
@@ -147,22 +147,22 @@ public class BloodAndMithrilServer {
 						counter++;
 						try {
 							Thread.sleep(100);
-							for (Individual individual : GameWorld.individuals.values()) {
+							for (Individual individual : Domain.individuals.values()) {
 								ClientServerInterface.SendNotification.notifyIndividualSync(individual.getId().getId());
 							}
 						} catch (InterruptedException e) {
 							Logger.generalDebug(e.getMessage(), LogLevel.WARN, e);
 						}
 						if (counter % 2 == 0) {
-							for (Prop prop : GameWorld.props.values()) {
+							for (Prop prop : Domain.props.values()) {
 								ClientServerInterface.SendNotification.notifySyncProp(prop);
 							}
 
-							for (Faction faction : GameWorld.factions.values()) {
+							for (Faction faction : Domain.factions.values()) {
 								ClientServerInterface.SendNotification.notifySyncFaction(faction);
 							}
 
-							for (Entry<Integer, Light> entry : GameWorld.lights.entrySet()) {
+							for (Entry<Integer, Light> entry : Domain.lights.entrySet()) {
 								ClientServerInterface.SendNotification.notifySyncLight(entry.getKey(), entry.getValue());
 							}
 						}
@@ -197,10 +197,10 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public void create() {
-			gameWorld = new GameWorld(false);
+			gameWorld = new Domain(false);
 
-			GameWorld.factions.put(0, new Faction("NPC", 0, false));
-			GameWorld.factions.put(1, new Faction("Elves", 1, true));
+			Domain.factions.put(0, new Faction("NPC", 0, false));
+			Domain.factions.put(1, new Faction("Elves", 1, true));
 
 			ClientServerInterface.setServer(true);
 			GameLoader.load();
@@ -253,33 +253,33 @@ public class BloodAndMithrilServer {
 			}
 			
 			if (keycode == Input.Keys.P) {
-				GameWorld.individuals.get(1).addCondition(new Poison(1f, 0.1f));
+				Domain.individuals.get(1).addCondition(new Poison(1f, 0.1f));
 			}
 
 			if (keycode == Input.Keys.T) {
-				Individual individual = GameWorld.individuals.get(1);
+				Individual individual = Domain.individuals.get(1);
 				if (individual != null) {
 					PineChest pineChest = new PineChest(
 						individual.getState().position.x,
 						individual.getState().position.y, true, 100f
 					);
-					GameWorld.props.put(pineChest.id, pineChest);
+					Domain.props.put(pineChest.id, pineChest);
 				}
 			}
 
 			if (keycode == Input.Keys.M) {
-				Individual individual = GameWorld.individuals.get(1);
+				Individual individual = Domain.individuals.get(1);
 				if (individual != null) {
 					Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-					GameWorld.props.put(furnace.id, furnace);
+					Domain.props.put(furnace.id, furnace);
 				}
 			}
 
 			if (keycode == Input.Keys.N) {
-				Individual individual = GameWorld.individuals.get(1);
+				Individual individual = Domain.individuals.get(1);
 				if (individual != null) {
 					bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
-					GameWorld.props.put(carrot.id, carrot);
+					Domain.props.put(carrot.id, carrot);
 				}
 			}
 
@@ -292,9 +292,9 @@ public class BloodAndMithrilServer {
 				IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
 				id.setNickName("Unknown");
 
-				Boar boar = new Boar(id, state);
+				Boar boar = new Boar(id, state, 0);
 
-				GameWorld.individuals.put(boar.getId().getId(), boar);
+				Domain.individuals.put(boar.getId().getId(), boar);
 			}
 
 			if (keycode == Input.Keys.R) {
@@ -314,7 +314,8 @@ public class BloodAndMithrilServer {
 					new Color(0.5f + 0.5f * Util.getRandom().nextFloat(), 0.5f + 0.5f * Util.getRandom().nextFloat(), 0.5f + 0.5f * Util.getRandom().nextFloat(), 1),
 					new Color(0.2f + 0.4f * Util.getRandom().nextFloat(), 0.2f + 0.3f * Util.getRandom().nextFloat(), 0.5f + 0.3f * Util.getRandom().nextFloat(), 1),
 					Util.getRandom().nextInt(4),
-					20f
+					20f,
+					0
 				);
 
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
@@ -338,7 +339,7 @@ public class BloodAndMithrilServer {
 				elf.giveItem(new ButterflySword(100));
 				elf.giveItem(new Broadsword(100));
 
-				GameWorld.individuals.put(elf.getId().getId(), elf);
+				Domain.individuals.put(elf.getId().getId(), elf);
 			}
 			return false;
 		}

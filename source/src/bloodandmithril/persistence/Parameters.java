@@ -6,7 +6,7 @@ import java.util.Random;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Epoch;
-import bloodandmithril.world.GameWorld.Light;
+import bloodandmithril.world.Domain.Light;
 
 import com.badlogic.gdx.math.Vector2;
 

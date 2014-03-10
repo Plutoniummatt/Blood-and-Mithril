@@ -7,7 +7,7 @@ import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Util;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -68,7 +68,7 @@ public class Broadsword extends OneHandedWeapon {
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
 		BloodAndMithrilClient.spriteBatch.draw(
-			GameWorld.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 13 : 13),
+			Domain.individualTexture, position.x - (flipX ? texture.getRegionWidth() - 13 : 13),
 			position.y - 7,
 			flipX ? texture.getRegionWidth() - 13 : 13,
 			7,

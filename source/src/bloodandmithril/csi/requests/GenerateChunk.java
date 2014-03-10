@@ -5,7 +5,7 @@ import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
@@ -32,7 +32,7 @@ public class GenerateChunk implements Request {
 
 	@Override
 	public Responses respond() {
-		if (!Topography.chunkMap.doesChunkExist(x, y) && GameWorld.topography.loadOrGenerateChunk(x, y)) {
+		if (!Topography.chunkMap.doesChunkExist(x, y) && Domain.getActiveWorld().getTopography().loadOrGenerateChunk(x, y)) {
 			Response response = null;
 
 			do {

@@ -4,7 +4,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Request} to change an {@link Individual}'s nickname
@@ -28,7 +28,7 @@ public class ChangeNickName implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = GameWorld.individuals.get(individualId);
+		Individual individual = Domain.individuals.get(individualId);
 		if (individual != null) {
 			individual.getId().setNickName(toChangeTo);
 		}

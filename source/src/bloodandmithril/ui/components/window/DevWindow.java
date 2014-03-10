@@ -35,8 +35,8 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
-import bloodandmithril.world.GameWorld;
-import bloodandmithril.world.GameWorld.DynamicLightingPostRenderer;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.DynamicLightingPostRenderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -124,7 +124,8 @@ public class DevWindow extends Window {
 				new Color(0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 1),
 				new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
 				Util.getRandom().nextInt(4),
-				20f
+				20f,
+				0
 			);
 			
 			elf.getSkills().setObservation(55);
@@ -150,7 +151,7 @@ public class DevWindow extends Window {
 			elf.giveItem(new ButterflySword(100));
 			elf.giveItem(new Broadsword(100));
 
-			GameWorld.individuals.put(elf.getId().getId(), elf);
+			Domain.individuals.put(elf.getId().getId(), elf);
 			return true;
 		}
 
@@ -163,9 +164,9 @@ public class DevWindow extends Window {
 			IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
 			id.setNickName("Unknown");
 
-			Boar boar = new Boar(id, state);
+			Boar boar = new Boar(id, state, 0);
 
-			GameWorld.individuals.put(boar.getId().getId(), boar);
+			Domain.individuals.put(boar.getId().getId(), boar);
 			return true;
 		}
 		
@@ -247,10 +248,10 @@ public class DevWindow extends Window {
 					new Task() {
 						@Override
 						public void execute() {
-							Individual individual = GameWorld.individuals.get(1);
+							Individual individual = Domain.individuals.get(1);
 							if (individual != null) {
 								PineChest pineChest = new PineChest(individual.getState().position.x, individual.getState().position.y, true, 100f);
-								GameWorld.props.put(pineChest.id, pineChest);
+								Domain.props.put(pineChest.id, pineChest);
 							}
 						}
 					},
@@ -277,10 +278,10 @@ public class DevWindow extends Window {
 					new Task() {
 						@Override
 						public void execute() {
-							Individual individual = GameWorld.individuals.get(1);
+							Individual individual = Domain.individuals.get(1);
 							if (individual != null) {
 								Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-								GameWorld.props.put(furnace.id, furnace);
+								Domain.props.put(furnace.id, furnace);
 							}
 						}
 					},
@@ -307,10 +308,10 @@ public class DevWindow extends Window {
 					new Task() {
 						@Override
 						public void execute() {
-							Individual individual = GameWorld.individuals.get(1);
+							Individual individual = Domain.individuals.get(1);
 							if (individual != null) {
 								bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
-								GameWorld.props.put(carrot.id, carrot);
+								Domain.props.put(carrot.id, carrot);
 							}
 						}
 					},

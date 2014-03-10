@@ -13,7 +13,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Task;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -82,8 +82,8 @@ public class Carrot extends Plant {
 			)
 		);
 
-		if (GameWorld.selectedIndividuals.size() == 1 &&
-		  !(GameWorld.selectedIndividuals.iterator().next().getAI().getCurrentTask() instanceof Trading)) {
+		if (Domain.selectedIndividuals.size() == 1 &&
+		  !(Domain.selectedIndividuals.iterator().next().getAI().getCurrentTask() instanceof Trading)) {
 
 			menu.addMenuItem(
 				new ContextMenuItem(
@@ -91,7 +91,7 @@ public class Carrot extends Plant {
 					new Task() {
 						@Override
 						public void execute() {
-							Individual individual = GameWorld.selectedIndividuals.iterator().next();
+							Individual individual = Domain.selectedIndividuals.iterator().next();
 							if (ClientServerInterface.isServer()) {
 								individual.getAI().setCurrentTask(
 									new Harvest(individual, thisCarrot)

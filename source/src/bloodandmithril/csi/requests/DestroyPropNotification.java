@@ -1,7 +1,7 @@
 package bloodandmithril.csi.requests;
 
 import bloodandmithril.csi.Response;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * A {@link Response} to notifiy clients that a prop has been removed
@@ -20,7 +20,7 @@ public class DestroyPropNotification implements Response {
 
 	@Override
 	public void acknowledge() {
-		GameWorld.props.remove(propId);
+		Domain.props.remove(propId);
 	}
 
 

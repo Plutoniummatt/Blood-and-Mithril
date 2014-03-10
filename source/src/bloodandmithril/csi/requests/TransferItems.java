@@ -13,7 +13,7 @@ import bloodandmithril.item.TradeService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.ConstructionWithContainer;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * A {@link Request} for transfer of items between two {@link Container}s
@@ -50,17 +50,17 @@ public class TransferItems implements Request {
 		Individual proposer;
 		Container proposee;
 
-		proposer = GameWorld.individuals.get(proposerId);
+		proposer = Domain.individuals.get(proposerId);
 		response.add(new SynchronizeIndividual.SynchronizeIndividualResponse(proposer.getId().getId(), System.currentTimeMillis()));
 
 		switch(proposeeEntityType) {
 		case INDIVIDUAL:
-			proposee = GameWorld.individuals.get(proposeeId);
+			proposee = Domain.individuals.get(proposeeId);
 			response.add(new SynchronizeIndividual.SynchronizeIndividualResponse(((Individual)proposee).getId().getId(), System.currentTimeMillis()));
 			break;
 
 		case PROP:
-			Prop prop = GameWorld.props.get(proposerId);
+			Prop prop = Domain.props.get(proposerId);
 			proposee = ((ConstructionWithContainer) prop).container;
 			response.add(new SynchronizePropRequest.SynchronizePropResponse(prop));
 			break;

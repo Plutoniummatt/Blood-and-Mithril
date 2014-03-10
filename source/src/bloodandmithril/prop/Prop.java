@@ -6,8 +6,8 @@ import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.prop.plant.Carrot;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.world.GameWorld;
-import bloodandmithril.world.GameWorld.Depth;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -63,9 +63,9 @@ public abstract class Prop {
 	public abstract void update(float delta);
 
 	public static void setup() {
-		Furnace.furnace = new TextureRegion(GameWorld.gameWorldTexture, 453, 176, 49, 76);
-		Furnace.furnaceBurning = new TextureRegion(GameWorld.gameWorldTexture, 503, 176, 49, 76);
-		PineChest.pineChest = new TextureRegion(GameWorld.gameWorldTexture, 408, 206, 44, 35);
-		Carrot.carrot = new TextureRegion(GameWorld.gameWorldTexture, 352, 176, 12, 17);
+		Furnace.furnace = new TextureRegion(Domain.gameWorldTexture, 453, 176, 49, 76);
+		Furnace.furnaceBurning = new TextureRegion(Domain.gameWorldTexture, 503, 176, 49, 76);
+		PineChest.pineChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);
+		Carrot.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 176, 12, 17);
 	}
 }

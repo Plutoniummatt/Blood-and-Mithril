@@ -4,7 +4,7 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * A {@link Request} to synchronize a {@link Prop}
@@ -23,7 +23,7 @@ public class SynchronizePropRequest implements Request {
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(false);
-		responses.add(new SynchronizePropResponse(GameWorld.props.get(propId)));
+		responses.add(new SynchronizePropResponse(Domain.props.get(propId)));
 		responses.add(new TransferItems.RefreshWindowsResponse());
 		return responses;
 	}
@@ -52,11 +52,11 @@ public class SynchronizePropRequest implements Request {
 
 		@Override
 		public void acknowledge() {
-			if (GameWorld.props.containsKey(prop.id)) {
-				Prop propToSync = GameWorld.props.get(prop.id);
+			if (Domain.props.containsKey(prop.id)) {
+				Prop propToSync = Domain.props.get(prop.id);
 				propToSync.synchronize(prop);
 			} else {
-				GameWorld.props.put(prop.id, prop);
+				Domain.props.put(prop.id, prop);
 			}
 		}
 

@@ -24,8 +24,8 @@ import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
-import bloodandmithril.world.GameWorld;
-import bloodandmithril.world.GameWorld.Light;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Light;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.weather.Weather;
@@ -92,7 +92,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static OrthographicCamera cam;
 
 	/** The game world */
-	public static GameWorld gameWorld;
+	public static Domain gameWorld;
 
 	/** For camera dragging */
 	private int camDragX, camDragY, oldCamX, oldCamY;
@@ -134,7 +134,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Loads global resources, client side
 	 */
 	private void loadResources() {
-		GameWorld.setup();
+		Domain.setup();
 		Fonts.setup();
 		Individual.setup();
 		PrefabricatedComponent.setup();
@@ -237,7 +237,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (UserInterface.contextMenus.isEmpty()) {
-			for (Individual indi : Sets.newHashSet(GameWorld.selectedIndividuals)) {
+			for (Individual indi : Sets.newHashSet(Domain.selectedIndividuals)) {
 				if (ClientServerInterface.isServer()) {
 					indi.setWalking(!doubleClick);
 				} else {
@@ -250,7 +250,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
 					}
 				} else {
-					float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (GameWorld.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
+					float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
 					if (ClientServerInterface.isServer()) {
 						AIProcessor.sendPathfindingRequest(
 							indi,
@@ -292,7 +292,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		Individual individualClicked = null;
-		for (Individual indi : GameWorld.individuals.values()) {
+		for (Individual indi : Domain.individuals.values()) {
 			if (indi.isMouseOver()) {
 				individualClicked = indi;
 			}
@@ -301,27 +301,27 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (!uiClicked) {
 			if (individualClicked == null) {
 				if (doubleClick) {
-					for (Individual indi : GameWorld.individuals.values()) {
+					for (Individual indi : Domain.individuals.values()) {
 						if (indi.isControllable()) {
 							if (ClientServerInterface.isServer()) {
 								indi.deselect(false, 0);
-								GameWorld.selectedIndividuals.remove(indi);
+								Domain.selectedIndividuals.remove(indi);
 							} else {
 								ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 							}
 						}
 					}
 					if (ClientServerInterface.isServer()) {
-						GameWorld.selectedIndividuals.clear();
+						Domain.selectedIndividuals.clear();
 					}
 				}
 
 			} else {
-				for (Individual indi : GameWorld.individuals.values()) {
+				for (Individual indi : Domain.individuals.values()) {
 					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId()) {
 						if (ClientServerInterface.isServer()) {
 							indi.deselect(false, 0);
-							GameWorld.selectedIndividuals.remove(indi);
+							Domain.selectedIndividuals.remove(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 						}
@@ -330,7 +330,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 				if (individualClicked.isControllable()) {
 					if (ClientServerInterface.isServer()) {
-						GameWorld.selectedIndividuals.add(individualClicked);
+						Domain.selectedIndividuals.add(individualClicked);
 						individualClicked.select(0);
 					} else {
 						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(individualClicked.getId().getId(), true);
@@ -352,7 +352,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			);
 
 			if (ClientServerInterface.isServer()) {
-				GameWorld.lights.put(ParameterPersistenceService.getParameters().getNextLightId(), light);
+				Domain.lights.put(ParameterPersistenceService.getParameters().getNextLightId(), light);
 			} else {
 				ClientServerInterface.SendRequest.sendAddLightRequest(light);
 			}

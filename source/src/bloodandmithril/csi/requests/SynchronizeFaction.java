@@ -4,7 +4,7 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.world.GameWorld;
+import bloodandmithril.world.Domain;
 
 /**
  * Synchronizes {@link Faction}s
@@ -17,7 +17,7 @@ public class SynchronizeFaction implements Request {
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(true);
-		for (Faction faction : GameWorld.factions.values()) {
+		for (Faction faction : Domain.factions.values()) {
 			responses.add(new SynchronizeFactionResponse(faction));
 		}
 		responses.add(new ChangeFactionControlPassword.RefreshFactionWindow());
@@ -47,11 +47,11 @@ public class SynchronizeFaction implements Request {
 
 		@Override
 		public void acknowledge() {
-			Faction fac = GameWorld.factions.get(faction.factionId);
+			Faction fac = Domain.factions.get(faction.factionId);
 			if (fac != null) {
 				fac.controlPassword = faction.controlPassword;
 			} else {
-				GameWorld.factions.put(faction.factionId, faction);
+				Domain.factions.put(faction.factionId, faction);
 			}
 		}
 
