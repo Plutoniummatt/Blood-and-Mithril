@@ -28,7 +28,6 @@ import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 
 import com.badlogic.gdx.Gdx;
-import com.google.common.collect.Maps;
 
 /**
  * An implementation of {@link ChunkLoader} using {@link Serializable}
