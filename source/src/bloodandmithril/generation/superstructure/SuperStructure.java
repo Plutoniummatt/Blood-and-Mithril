@@ -3,6 +3,7 @@ package bloodandmithril.generation.superstructure;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.util.datastructure.Boundaries;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.ChunkMap;
 
 /**
@@ -12,9 +13,17 @@ import bloodandmithril.world.topography.ChunkMap;
  */
 public abstract class SuperStructure extends Structure {
 	private static final long serialVersionUID = -4187785116665052403L;
-
+	
 	/** The edges of this SuperStructure, in chunk coordinates */
 	private Boundaries boundaries;
+	
+	/**
+	 * Constructor
+	 */
+	protected SuperStructure(int worldId) {
+		super(worldId);
+	}
+	
 
 	/**
 	 * Finds Space for the structure.
@@ -44,7 +53,7 @@ public abstract class SuperStructure extends Structure {
 
 	@Override
 	protected int addToStructureMap() {
-		return Structures.addStructure(getBoundaries(), this, true);
+		return Domain.getWorld(worldId).getTopography().getStructures().addStructure(getBoundaries(), this, true);
 	}
 
 

@@ -1,7 +1,6 @@
 package bloodandmithril.persistence.world;
 
-
-import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.World;
 
 /**
  * Interface for loading chunks from disk
@@ -16,5 +15,5 @@ public interface ChunkLoader {
 	 *
 	 * @return whether or not the load was successful
 	 */
-	public boolean load(Topography topography, int chunkX, int chunkY);
+	public boolean load(World world, int chunkX, int chunkY);
 }

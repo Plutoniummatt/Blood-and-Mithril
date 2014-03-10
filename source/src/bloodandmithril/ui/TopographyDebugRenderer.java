@@ -15,6 +15,7 @@ import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
 
@@ -59,7 +60,7 @@ public class TopographyDebugRenderer {
 		}
 		
 		UserInterface.shapeRenderer.setColor(Colors.modulateAlpha(Color.CYAN, 0.2f));
-		for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> outerEntry : Topography.chunkMap.getChunkMap().entrySet()) {
+		for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> outerEntry : Domain.getActiveWorld().getTopography().getChunkMap().getChunkMap().entrySet()) {
 			for (Entry<Integer, Chunk> innerEntry : outerEntry.getValue().entrySet()) {
 				UserInterface.shapeRenderer.rect(
 					outerEntry.getKey() * Topography.CHUNK_SIZE - topoX, 

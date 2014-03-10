@@ -197,7 +197,7 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public void create() {
-			gameWorld = new Domain(false);
+			gameWorld = new Domain();
 
 			Domain.factions.put(0, new Faction("NPC", 0, false));
 			Domain.factions.put(1, new Faction("Elves", 1, true));

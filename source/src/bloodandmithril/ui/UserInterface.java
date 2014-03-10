@@ -435,13 +435,13 @@ public class UserInterface {
 
 		int chunksInMemory = 0;
 		if (ClientServerInterface.isServer()) {
-			for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> entry : Topography.chunkMap.chunkMap.entrySet()) {
+			for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> entry : Domain.getActiveWorld().getTopography().getChunkMap().chunkMap.entrySet()) {
 				chunksInMemory = chunksInMemory + entry.getValue().size();
 			}
 		}
 
 		defaultFont.setColor(Color.GREEN);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of chunks in memory: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 55);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 55);
 
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, Gdx.graphics.getHeight() - 125);
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoaderImpl.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);

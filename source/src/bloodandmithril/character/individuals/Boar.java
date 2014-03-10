@@ -15,6 +15,7 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -112,12 +113,13 @@ public class Boar extends Individual {
 	@Override
 	protected void respondToCommands() {
 		//Horizontal movement
+		Topography topography = Domain.getWorld(getWorldId()).getTopography();
 		if (Math.abs(getState().velocity.y) < 5f) {
-			if (isCommandActive(KeyMappings.moveLeft) && (canStepUp(-2) || !obstructed(-2))) {
+			if (isCommandActive(KeyMappings.moveLeft) && (canStepUp(-2, topography) || !obstructed(-2, topography))) {
 				if (isCommandActive(KeyMappings.walk)) {
 					getState().velocity.x = -30f;
 				}
-			} else if (isCommandActive(KeyMappings.moveRight) && (canStepUp(2) || !obstructed(2))) {
+			} else if (isCommandActive(KeyMappings.moveRight) && (canStepUp(2, topography) || !obstructed(2, topography))) {
 				if (isCommandActive(KeyMappings.walk)) {
 					getState().velocity.x = 30f;
 				}
@@ -126,7 +128,7 @@ public class Boar extends Individual {
 				getState().acceleration.x = 0f;
 
 				int offset = isCommandActive(KeyMappings.moveRight) ? 2 : isCommandActive(KeyMappings.moveLeft) ? -2 : 0;
-				if (obstructed(offset) && !canStepUp(offset) && !(getAI().getCurrentTask() instanceof Idle)) {
+				if (obstructed(offset, topography) && !canStepUp(offset, topography) && !(getAI().getCurrentTask() instanceof Idle)) {
 					getAI().setCurrentTask(new Idle());
 				}
 

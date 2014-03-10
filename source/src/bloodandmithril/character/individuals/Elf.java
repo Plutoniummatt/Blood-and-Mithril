@@ -23,6 +23,7 @@ import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -271,14 +272,15 @@ public class Elf extends Individual {
 	@Override
 	protected void respondToCommands() {
 		//Horizontal movement
+		Topography topography = Domain.getWorld(getWorldId()).getTopography();
 		if (Math.abs(getState().velocity.y) < 5f) {
-			if (isCommandActive(KeyMappings.moveLeft) && (canStepUp(-2) || !obstructed(-2))) {
+			if (isCommandActive(KeyMappings.moveLeft) && (canStepUp(-2, topography) || !obstructed(-2, topography))) {
 				if (isCommandActive(KeyMappings.walk)) {
 					getState().velocity.x = -30f;
 				} else {
 					getState().velocity.x = -80f;
 				}
-			} else if (isCommandActive(KeyMappings.moveRight) && (canStepUp(2) || !obstructed(2))) {
+			} else if (isCommandActive(KeyMappings.moveRight) && (canStepUp(2, topography) || !obstructed(2, topography))) {
 				if (isCommandActive(KeyMappings.walk)) {
 					getState().velocity.x = 30f;
 				} else {
@@ -289,7 +291,7 @@ public class Elf extends Individual {
 				getState().acceleration.x = 0f;
 
 				int offset = isCommandActive(KeyMappings.moveRight) ? 2 : isCommandActive(KeyMappings.moveLeft) ? -2 : 0;
-				if (obstructed(offset) && !canStepUp(offset) && !(ai.getCurrentTask() instanceof Idle)) {
+				if (obstructed(offset, topography) && !canStepUp(offset, topography) && !(ai.getCurrentTask() instanceof Idle)) {
 					ai.setCurrentTask(new Idle());
 				}
 

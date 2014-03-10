@@ -522,8 +522,8 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendRequest {
-		public static synchronized void sendGenerateChunkRequest(int x, int y) {
-			client.sendTCP(new GenerateChunk(x, y));
+		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
+			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
 		}
 		
@@ -583,8 +583,8 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending individual sync request for all", LogLevel.TRACE);
 		}
 
-		public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground) {
-			client.sendTCP(new DestroyTile(worldX, worldY, foreground));
+		public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground, int worldId) {
+			client.sendTCP(new DestroyTile(worldX, worldY, foreground, worldId));
 			Logger.networkDebug("Sending destroy tile request", LogLevel.DEBUG);
 		}
 
@@ -730,12 +730,12 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyTileMined(int connectionId, Vector2 location, boolean foreGround) {
+		public static synchronized void notifyTileMined(int connectionId, Vector2 location, boolean foreGround, int worldId) {
 			sendNotification(
 				connectionId,
 				true,
 				false,
-				new DestroyTileResponse(location.x, location.y, foreGround)
+				new DestroyTileResponse(location.x, location.y, foreGround, worldId)
 			);
 		}
 

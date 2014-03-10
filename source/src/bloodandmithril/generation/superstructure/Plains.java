@@ -11,6 +11,7 @@ import bloodandmithril.generation.patterns.UndergroundWithCaves;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.generation.tools.SawToothGenerator;
 import bloodandmithril.util.datastructure.Boundaries;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 
@@ -25,6 +26,14 @@ public class Plains extends SuperStructure {
 
 	private final SawToothGenerator surfaceGenerator = new SawToothGenerator(plainsMinHeight, plainsMaxHeight, 3, 1, 30);
 
+	/**
+	 * Constructor
+	 */
+	public Plains(int worldId) {
+		super(worldId);
+	}
+	
+	
 	@Override
 	protected Boundaries findSpace(int startingChunkX, int startingChunkY) {
 		//calculates where the structure can go
@@ -35,23 +44,25 @@ public class Plains extends SuperStructure {
 			(plainsMaxWidth - plainsMinWidth) / 2 + 1,
 			maxSurfaceHeight - plainsMinHeight / Topography.CHUNK_SIZE + 1,
 			maxSurfaceHeight,
-			plainsMinHeight / Topography.CHUNK_SIZE - 1
+			plainsMinHeight / Topography.CHUNK_SIZE - 1,
+			Domain.getWorld(worldId).getTopography()
 		);
 	}
 
 
 	@Override
 	protected void internalGenerate(boolean generatingToRight) {
+		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
 		// generate the surface height across the structure.
 		int rightMostTile = (getBoundaries().right + 1) * Topography.CHUNK_SIZE - 1;
 		int leftMostTile = getBoundaries().left * Topography.CHUNK_SIZE;
 		if (generatingToRight) {
 			for (int x = leftMostTile; x <= rightMostTile; x++) {
-				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, Structures.getSurfaceHeight());
+				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, structures.getSurfaceHeight());
 			}
 		} else {
 			for (int x = rightMostTile; x >= leftMostTile; x--) {
-				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, Structures.getSurfaceHeight());
+				surfaceGenerator.generateSurfaceHeight(x, generatingToRight, structures.getSurfaceHeight());
 			}
 		}
 	}
@@ -59,7 +70,8 @@ public class Plains extends SuperStructure {
 
 	@Override
 	protected Tile internalGetForegroundTile(int worldTileX, int worldTileY) {
-		if (worldTileY > Structures.getSurfaceHeight().get(worldTileX)) {
+		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
+		if (worldTileY > structures.getSurfaceHeight().get(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
 			return UndergroundWithCaves.getTile(worldTileX, worldTileY);
@@ -69,7 +81,8 @@ public class Plains extends SuperStructure {
 
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
-		if (worldTileY + 2> Structures.getSurfaceHeight().get(worldTileX)) {
+		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
+		if (worldTileY + 2> structures.getSurfaceHeight().get(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
 			return Layers.getTile(worldTileX, worldTileY);

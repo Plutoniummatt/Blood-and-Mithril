@@ -1,7 +1,7 @@
 package bloodandmithril.world;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,7 +41,10 @@ public class Domain {
 	private static World activeWorld;
 
 	/** {@link World}s */
-	private static Map<Integer, World> 						worlds 					= Maps.newHashMap();
+	private static HashMap<Integer, World> 					worlds 					= Maps.newHashMap();
+	
+	/** {@link Topography}s */
+	private static HashMap<Integer, Topography>				topographies			= Maps.newHashMap();
 
 	/** All lights */
 	public static ConcurrentHashMap<Integer, Light> 		lights 					= new ConcurrentHashMap<>();
@@ -74,9 +77,20 @@ public class Domain {
 	/**
 	 * Constructor
 	 */
-	public Domain(boolean client) {
-		worlds.put(0, new World(new Topography(client), 1200f));
-		activeWorld = worlds.get(0);
+	public Domain() {
+		World world = new World(1200f);
+		getWorlds().put(world.getWorldId(), world);
+		activeWorld = world;
+	}
+	
+	
+	public static Topography getTopography(int id) {
+		return topographies.get(id);
+	}
+	
+	
+	public static Topography addTopography(int id, Topography topography) {
+		return topographies.put(id, topography);
 	}
 
 
@@ -213,7 +227,17 @@ public class Domain {
 	
 	
 	public static World getWorld(int id) {
-		return worlds.get(id);
+		return getWorlds().get(id);
+	}
+	
+	
+	public static HashMap<Integer, World> getWorlds() {
+		return worlds;
+	}
+
+
+	public static void setWorlds(HashMap<Integer, World> worlds) {
+		Domain.worlds = worlds;
 	}
 
 
@@ -274,8 +298,8 @@ public class Domain {
 		private static Predicate<Individual> onPlatform = new Predicate<Individual>() {
 			@Override
 			public boolean apply(Individual input) {
-				if (Topography.getTile(input.getState().position.x, input.getState().position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
-					Topography.getTile(input.getState().position.x, input.getState().position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
+				if (getActiveWorld().getTopography().getTile(input.getState().position.x, input.getState().position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
+						getActiveWorld().getTopography().getTile(input.getState().position.x, input.getState().position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
 					return true;
 				} else {
 					return false;
@@ -287,8 +311,8 @@ public class Domain {
 		private static Predicate<Individual> offPlatform = new Predicate<Individual>() {
 			@Override
 			public boolean apply(Individual input) {
-				if (Topography.getTile(input.getState().position.x, input.getState().position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
-						Topography.getTile(input.getState().position.x, input.getState().position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
+				if (getActiveWorld().getTopography().getTile(input.getState().position.x, input.getState().position.y - Topography.TILE_SIZE/2, true).isPlatformTile ||
+					getActiveWorld().getTopography().getTile(input.getState().position.x, input.getState().position.y - 3 * Topography.TILE_SIZE/2, true).isPlatformTile) {
 					return false;
 				} else {
 					return true;
