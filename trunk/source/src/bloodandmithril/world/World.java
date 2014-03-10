@@ -17,7 +17,8 @@ import bloodandmithril.world.topography.Topography;
  * @author Matt
  */
 public class World implements Serializable {
-	
+	private static final long serialVersionUID = -739119449225954631L;
+
 	/** Unique identifier of this {@link World} */
 	private final int worldId;
 	
