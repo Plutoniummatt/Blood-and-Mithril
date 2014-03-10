@@ -5,6 +5,7 @@ import java.util.List;
 
 import bloodandmithril.generation.component.Component;
 import bloodandmithril.world.topography.Chunk;
+import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -17,6 +18,9 @@ import com.google.common.collect.Lists;
  */
 public abstract class Structure implements Serializable {
 	private static final long serialVersionUID = -5890196858721145717L;
+	
+	/** Unique ID of the world that holds the {@link Topography} in which this {@link Structure} exists */
+	protected final int worldId;
 
 	/** The key used by this {@link Structure} in the {@link Structures} */
 	private int structureKey;
@@ -34,6 +38,14 @@ public abstract class Structure implements Serializable {
 	 */
 	public boolean allChunksGenerated() {
 		return getChunksLeftToBeGenerated() == 0;
+	}
+	
+	
+	/**
+	 * Constructor
+	 */
+	protected Structure(int worldId) {
+		this.worldId = worldId;
 	}
 
 

@@ -6,6 +6,7 @@ import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.generation.patterns.UndergroundWithCaves;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.util.datastructure.Boundaries;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
@@ -16,6 +17,14 @@ import bloodandmithril.world.topography.tile.Tile;
 public class Caves extends SuperStructure {
 	private static final long serialVersionUID = -9034605400597129907L;
 	
+	/**
+	 * Constructor
+	 */
+	public Caves(int worldId) {
+		super(worldId);
+	}
+	
+	
 	@Override
 	protected Boundaries findSpace(int startingChunkX, int startingChunkY) {
 		// Find space for the cave
@@ -24,7 +33,8 @@ public class Caves extends SuperStructure {
 			startingChunkX,
 			startingChunkY,
 			cavesMaxWidth,
-			cavesMaxHeight
+			cavesMaxHeight,
+			Domain.getWorld(worldId).getTopography()
 		);
 	}
 

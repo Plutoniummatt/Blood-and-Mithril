@@ -22,6 +22,7 @@ public class GameLoader {
 	 */
 	public static void load() {
 		ChunkLoaderImpl.loadGenerationData();
+		ChunkLoaderImpl.loadWorlds();
 		IndividualLoader.loadAll();
 		if (ClientServerInterface.isClient()) {
 			loadCameraPosition();

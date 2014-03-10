@@ -5,6 +5,7 @@ import bloodandmithril.generation.superstructure.Hills;
 import bloodandmithril.generation.superstructure.Plains;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.util.Util;
+import bloodandmithril.world.World;
 
 /**
  * A tool for deciding which Biome to use.
@@ -18,15 +19,15 @@ public class BiomeDecider {
 	 * 
 	 * @return - the Biome which was decided.
 	 */
-	public SuperStructure decideAndGetBiome() {
+	public SuperStructure decideAndGetBiome(World world) {
 		float biomeDecider = Util.getRandom().nextFloat();
 		
 		if (biomeDecider < 0.0f) {
-			return new Plains();
+			return new Plains(world.getWorldId());
 		} else if (biomeDecider < 0.0f) {
-			return new Hills();
+			return new Hills(world.getWorldId());
 		} else {
-			return new Desert();
+			return new Desert(world.getWorldId());
 		}
 	}
 }

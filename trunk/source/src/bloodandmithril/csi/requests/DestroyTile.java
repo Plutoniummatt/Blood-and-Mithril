@@ -3,6 +3,7 @@ package bloodandmithril.csi.requests;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 
@@ -13,21 +14,23 @@ public class DestroyTile implements Request {
 
 	public final float worldX, worldY;
 	public final boolean foreground;
+	private int worldId;
 
 	/**
 	 * Constructor
 	 */
-	public DestroyTile(float worldX, float worldY, boolean foreground) {
+	public DestroyTile(float worldX, float worldY, boolean foreground, int worldId) {
 		this.worldX = worldX;
 		this.worldY = worldY;
 		this.foreground = foreground;
+		this.worldId = worldId;
 	}
 
 
 	@Override
 	public Responses respond() {
-		Topography.deleteTile(worldX, worldY, foreground);
-		Response destroyTileResponse = new DestroyTileResponse(worldX, worldY, foreground);
+		Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground);
+		Response destroyTileResponse = new DestroyTileResponse(worldX, worldY, foreground, worldId);
 		Responses responses = new Response.Responses(false);
 		responses.add(destroyTileResponse);
 		return responses;
@@ -44,16 +47,18 @@ public class DestroyTile implements Request {
 
 		public final float worldX, worldY;
 		public final boolean foreground;
+		private int worldId;
 
-		public DestroyTileResponse(float worldX, float worldY, boolean foreground) {
+		public DestroyTileResponse(float worldX, float worldY, boolean foreground, int worldId) {
 			this.worldX = worldX;
 			this.worldY = worldY;
 			this.foreground = foreground;
+			this.worldId = worldId;
 		}
 
 		@Override
 		public void acknowledge() {
-			Topography.deleteTile(worldX, worldY, foreground);
+			Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground);
 		}
 		
 		@Override

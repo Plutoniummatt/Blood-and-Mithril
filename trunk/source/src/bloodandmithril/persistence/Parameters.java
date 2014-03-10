@@ -23,6 +23,7 @@ public class Parameters implements Serializable {
 	private int individualIdCounter = 0;
 	private int lightCounter = 0;
 	private int propIdCounter = 0;
+	private int worldIdCounter = 0;
 
 	private Vector2 camera;
 	private Epoch currentEpoch;
@@ -43,6 +44,15 @@ public class Parameters implements Serializable {
 	public synchronized int getNextStructureKey() {
 		structureKeyCounter++;
 		return structureKeyCounter;
+	}
+	
+	
+	/**
+	 * Returns the world id counter
+	 */
+	public synchronized int getNextWorldKey() {
+		worldIdCounter++;
+		return worldIdCounter;
 	}
 
 

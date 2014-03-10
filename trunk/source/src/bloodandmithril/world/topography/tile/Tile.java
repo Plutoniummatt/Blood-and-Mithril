@@ -191,9 +191,7 @@ public abstract class Tile implements Serializable {
 	 * @param chunkX - the chunk x-coordinate
 	 * @param chunkY - the chunk y-coordinate
 	 */
-	public void calculateOrientation(int chunkX, int chunkY, int x, int y, boolean foreGround) {
-
-		ChunkMap map = Topography.chunkMap;
+	public void calculateOrientation(int chunkX, int chunkY, int x, int y, boolean foreGround, ChunkMap map) {
 
 		Tile left;
 		Tile right;

@@ -1,6 +1,5 @@
 package bloodandmithril.generation.tools;
 
-import bloodandmithril.generation.Structures;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.Topography;
 
@@ -34,21 +33,22 @@ public class RectangularSpaceCalculator {
 			int maxStaticWidth, 
 			int minStaticWidth, 
 			int maxStaticHeight, 
-			int minStaticHeight) {
+			int minStaticHeight,
+			Topography topography) {
 
 		//left T shape
 
 	    int left = startingChunkX;
 	    int lTop = startingChunkY;
 	    int lBottom = startingChunkY;
-
-		while(!Structures.structureExists(left - 1, startingChunkY, superStructure) && !Topography.chunkMap.doesChunkExist(left - 1, startingChunkY) && left > startingChunkX - maxWidth && left > minStaticWidth) {
+	    
+		while(!topography.getStructures().structureExists(left - 1, startingChunkY, superStructure) && !topography.getChunkMap().doesChunkExist(left - 1, startingChunkY) && left > startingChunkX - maxWidth && left > minStaticWidth) {
 			left--;
 		}
-		while(!Structures.structureExists(left, lTop + 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, lTop + 1) && lTop < startingChunkY + maxHeight && lTop < maxStaticHeight) {
+		while(!topography.getStructures().structureExists(left, lTop + 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, lTop + 1) && lTop < startingChunkY + maxHeight && lTop < maxStaticHeight) {
 			lTop++;
 		}
-		while(!Structures.structureExists(left, lBottom - 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, lBottom - 1) && lBottom > startingChunkY - maxHeight && lBottom > minStaticHeight) {
+		while(!topography.getStructures().structureExists(left, lBottom - 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, lBottom - 1) && lBottom > startingChunkY - maxHeight && lBottom > minStaticHeight) {
 			lBottom--;
 		}
 
@@ -58,13 +58,13 @@ public class RectangularSpaceCalculator {
 	    int rTop = startingChunkY;
 	    int rBottom = startingChunkY;
 
-		while(!Structures.structureExists(right + 1, startingChunkY, superStructure) && !Topography.chunkMap.doesChunkExist(right + 1, startingChunkY) && right < startingChunkX + maxWidth && right < maxStaticWidth) {
+		while(!topography.getStructures().structureExists(right + 1, startingChunkY, superStructure) && !topography.getChunkMap().doesChunkExist(right + 1, startingChunkY) && right < startingChunkX + maxWidth && right < maxStaticWidth) {
 			right++;
 		}
-		while(!Structures.structureExists(left, rTop + 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, rTop + 1) && rTop < startingChunkY + maxHeight && rTop < maxStaticHeight) {
+		while(!topography.getStructures().structureExists(left, rTop + 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, rTop + 1) && rTop < startingChunkY + maxHeight && rTop < maxStaticHeight) {
 			rTop++;
 		}
-		while(!Structures.structureExists(left, rBottom - 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, rBottom - 1) && rBottom > startingChunkY - maxHeight && rBottom > minStaticHeight) {
+		while(!topography.getStructures().structureExists(left, rBottom - 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, rBottom - 1) && rBottom > startingChunkY - maxHeight && rBottom > minStaticHeight) {
 			rBottom--;
 		}
 
@@ -74,13 +74,13 @@ public class RectangularSpaceCalculator {
 	    int tLeft = startingChunkX;
 	    int tRight = startingChunkX;
 
-		while(!Structures.structureExists(startingChunkX, top + 1, superStructure) && !Topography.chunkMap.doesChunkExist(startingChunkX, top + 1) && top < startingChunkY + maxHeight && top < maxStaticHeight) {
+		while(!topography.getStructures().structureExists(startingChunkX, top + 1, superStructure) && !topography.getChunkMap().doesChunkExist(startingChunkX, top + 1) && top < startingChunkY + maxHeight && top < maxStaticHeight) {
 			top++;
 		}
-		while(!Structures.structureExists(tLeft - 1, top, superStructure) && !Topography.chunkMap.doesChunkExist(tLeft - 1, top) && tLeft > startingChunkX - maxWidth && tLeft > minStaticWidth) {
+		while(!topography.getStructures().structureExists(tLeft - 1, top, superStructure) && !topography.getChunkMap().doesChunkExist(tLeft - 1, top) && tLeft > startingChunkX - maxWidth && tLeft > minStaticWidth) {
 			tLeft--;
 		}
-		while(!Structures.structureExists(tRight + 1, top, superStructure) && !Topography.chunkMap.doesChunkExist(tRight + 1, top) && tRight < startingChunkX + maxWidth && tRight < maxStaticWidth) {
+		while(!topography.getStructures().structureExists(tRight + 1, top, superStructure) && !topography.getChunkMap().doesChunkExist(tRight + 1, top) && tRight < startingChunkX + maxWidth && tRight < maxStaticWidth) {
 			tRight++;
 		}
 
@@ -90,13 +90,13 @@ public class RectangularSpaceCalculator {
 	    int bLeft = startingChunkX;
 	    int bRight = startingChunkX;
 
-		while(!Structures.structureExists(startingChunkX, bottom - 1, superStructure) && !Topography.chunkMap.doesChunkExist(startingChunkX, bottom - 1) && bottom > startingChunkY - maxHeight && bottom > minStaticHeight) {
+		while(!topography.getStructures().structureExists(startingChunkX, bottom - 1, superStructure) && !topography.getChunkMap().doesChunkExist(startingChunkX, bottom - 1) && bottom > startingChunkY - maxHeight && bottom > minStaticHeight) {
 			bottom--;
 		}
-		while(!Structures.structureExists(bLeft - 1, bottom, superStructure) && !Topography.chunkMap.doesChunkExist(bLeft - 1, bottom) && bLeft > startingChunkX - maxWidth && bLeft > minStaticWidth) {
+		while(!topography.getStructures().structureExists(bLeft - 1, bottom, superStructure) && !topography.getChunkMap().doesChunkExist(bLeft - 1, bottom) && bLeft > startingChunkX - maxWidth && bLeft > minStaticWidth) {
 			bLeft--;
 		}
-		while(!Structures.structureExists(bRight + 1, bottom, superStructure) && !Topography.chunkMap.doesChunkExist(bRight + 1, bottom) && bRight < startingChunkX + maxWidth && bRight < maxStaticWidth) {
+		while(!topography.getStructures().structureExists(bRight + 1, bottom, superStructure) && !topography.getChunkMap().doesChunkExist(bRight + 1, bottom) && bRight < startingChunkX + maxWidth && bRight < maxStaticWidth) {
 			bRight++;
 		}
 
@@ -128,7 +128,8 @@ public class RectangularSpaceCalculator {
 			int maxWidth, 
 			int maxHeight, 
 			int maxStaticHeight, 
-			int minStaticHeight) {
+			int minStaticHeight,
+			Topography topography) {
 
 		//left T shape
 
@@ -136,13 +137,13 @@ public class RectangularSpaceCalculator {
 	    int lTop = startingChunkY;
 	    int lBottom = startingChunkY;
 
-		while(!Structures.structureExists(left - 1, startingChunkY, superStructure) && !Topography.chunkMap.doesChunkExist(left - 1, startingChunkY) && left > startingChunkX - maxWidth) {
+		while(!topography.getStructures().structureExists(left - 1, startingChunkY, superStructure) && !topography.getChunkMap().doesChunkExist(left - 1, startingChunkY) && left > startingChunkX - maxWidth) {
 			left--;
 		}
-		while(!Structures.structureExists(left, lTop + 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, lTop + 1) && lTop < startingChunkY + maxHeight && lTop < maxStaticHeight) {
+		while(!topography.getStructures().structureExists(left, lTop + 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, lTop + 1) && lTop < startingChunkY + maxHeight && lTop < maxStaticHeight) {
 			lTop++;
 		}
-		while(!Structures.structureExists(left, lBottom - 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, lBottom - 1) && lBottom > startingChunkY - maxHeight && lBottom > minStaticHeight) {
+		while(!topography.getStructures().structureExists(left, lBottom - 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, lBottom - 1) && lBottom > startingChunkY - maxHeight && lBottom > minStaticHeight) {
 			lBottom--;
 		}
 
@@ -152,13 +153,13 @@ public class RectangularSpaceCalculator {
 	    int rTop = startingChunkY;
 	    int rBottom = startingChunkY;
 
-		while(!Structures.structureExists(right + 1, startingChunkY, superStructure) && !Topography.chunkMap.doesChunkExist(right + 1, startingChunkY) && right < startingChunkX + maxWidth) {
+		while(!topography.getStructures().structureExists(right + 1, startingChunkY, superStructure) && !topography.getChunkMap().doesChunkExist(right + 1, startingChunkY) && right < startingChunkX + maxWidth) {
 			right++;
 		}
-		while(!Structures.structureExists(left, rTop + 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, rTop + 1) && rTop < startingChunkY + maxHeight && rTop < maxStaticHeight) {
+		while(!topography.getStructures().structureExists(left, rTop + 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, rTop + 1) && rTop < startingChunkY + maxHeight && rTop < maxStaticHeight) {
 			rTop++;
 		}
-		while(!Structures.structureExists(left, rBottom - 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, rBottom - 1) && rBottom > startingChunkY - maxHeight && rBottom > minStaticHeight) {
+		while(!topography.getStructures().structureExists(left, rBottom - 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, rBottom - 1) && rBottom > startingChunkY - maxHeight && rBottom > minStaticHeight) {
 			rBottom--;
 		}
 
@@ -168,13 +169,13 @@ public class RectangularSpaceCalculator {
 	    int tLeft = startingChunkX;
 	    int tRight = startingChunkX;
 
-		while(!Structures.structureExists(startingChunkX, top + 1, superStructure) && !Topography.chunkMap.doesChunkExist(startingChunkX, top + 1) && top < startingChunkY + maxHeight && top < maxStaticHeight) {
+		while(!topography.getStructures().structureExists(startingChunkX, top + 1, superStructure) && !topography.getChunkMap().doesChunkExist(startingChunkX, top + 1) && top < startingChunkY + maxHeight && top < maxStaticHeight) {
 			top++;
 		}
-		while(!Structures.structureExists(tLeft - 1, top, superStructure) && !Topography.chunkMap.doesChunkExist(tLeft - 1, top) && tLeft > startingChunkX - maxWidth) {
+		while(!topography.getStructures().structureExists(tLeft - 1, top, superStructure) && !topography.getChunkMap().doesChunkExist(tLeft - 1, top) && tLeft > startingChunkX - maxWidth) {
 			tLeft--;
 		}
-		while(!Structures.structureExists(tRight + 1, top, superStructure) && !Topography.chunkMap.doesChunkExist(tRight + 1, top) && tRight < startingChunkX + maxWidth) {
+		while(!topography.getStructures().structureExists(tRight + 1, top, superStructure) && !topography.getChunkMap().doesChunkExist(tRight + 1, top) && tRight < startingChunkX + maxWidth) {
 			tRight++;
 		}
 
@@ -184,13 +185,13 @@ public class RectangularSpaceCalculator {
 	    int bLeft = startingChunkX;
 	    int bRight = startingChunkX;
 
-		while(!Structures.structureExists(startingChunkX, bottom - 1, superStructure) && !Topography.chunkMap.doesChunkExist(startingChunkX, bottom - 1) && bottom > startingChunkY - maxHeight && bottom > minStaticHeight) {
+		while(!topography.getStructures().structureExists(startingChunkX, bottom - 1, superStructure) && !topography.getChunkMap().doesChunkExist(startingChunkX, bottom - 1) && bottom > startingChunkY - maxHeight && bottom > minStaticHeight) {
 			bottom--;
 		}
-		while(!Structures.structureExists(bLeft - 1, bottom, superStructure) && !Topography.chunkMap.doesChunkExist(bLeft - 1, bottom) && bLeft > startingChunkX - maxWidth) {
+		while(!topography.getStructures().structureExists(bLeft - 1, bottom, superStructure) && !topography.getChunkMap().doesChunkExist(bLeft - 1, bottom) && bLeft > startingChunkX - maxWidth) {
 			bLeft--;
 		}
-		while(!Structures.structureExists(bRight + 1, bottom, superStructure) && !Topography.chunkMap.doesChunkExist(bRight + 1, bottom) && bRight < startingChunkX + maxWidth) {
+		while(!topography.getStructures().structureExists(bRight + 1, bottom, superStructure) && !topography.getChunkMap().doesChunkExist(bRight + 1, bottom) && bRight < startingChunkX + maxWidth) {
 			bRight++;
 		}
 
@@ -221,7 +222,8 @@ public class RectangularSpaceCalculator {
 			int startingChunkX, 
 			int startingChunkY, 
 			int maxWidth, 
-			int maxHeight) {
+			int maxHeight,
+			Topography topography) {
 
 		//left T shape
 
@@ -229,13 +231,13 @@ public class RectangularSpaceCalculator {
 	    int lTop = startingChunkY;
 	    int lBottom = startingChunkY;
 
-		while(!Structures.structureExists(left - 1, startingChunkY, superStructure) && !Topography.chunkMap.doesChunkExist(left - 1, startingChunkY) && left > startingChunkX - maxWidth) {
+		while(!topography.getStructures().structureExists(left - 1, startingChunkY, superStructure) && !topography.getChunkMap().doesChunkExist(left - 1, startingChunkY) && left > startingChunkX - maxWidth) {
 			left--;
 		}
-		while(!Structures.structureExists(left, lTop + 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, lTop + 1) && lTop < startingChunkY + maxHeight) {
+		while(!topography.getStructures().structureExists(left, lTop + 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, lTop + 1) && lTop < startingChunkY + maxHeight) {
 			lTop++;
 		}
-		while(!Structures.structureExists(left, lBottom - 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, lBottom - 1) && lBottom > startingChunkY - maxHeight) {
+		while(!topography.getStructures().structureExists(left, lBottom - 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, lBottom - 1) && lBottom > startingChunkY - maxHeight) {
 			lBottom--;
 		}
 
@@ -245,13 +247,13 @@ public class RectangularSpaceCalculator {
 	    int rTop = startingChunkY;
 	    int rBottom = startingChunkY;
 
-		while(!Structures.structureExists(right + 1, startingChunkY, superStructure) && !Topography.chunkMap.doesChunkExist(right + 1, startingChunkY) && right < startingChunkX + maxWidth) {
+		while(!topography.getStructures().structureExists(right + 1, startingChunkY, superStructure) && !topography.getChunkMap().doesChunkExist(right + 1, startingChunkY) && right < startingChunkX + maxWidth) {
 			right++;
 		}
-		while(!Structures.structureExists(left, rTop + 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, rTop + 1) && rTop < startingChunkY + maxHeight) {
+		while(!topography.getStructures().structureExists(left, rTop + 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, rTop + 1) && rTop < startingChunkY + maxHeight) {
 			rTop++;
 		}
-		while(!Structures.structureExists(left, rBottom - 1, superStructure) && !Topography.chunkMap.doesChunkExist(left, rBottom - 1) && rBottom > startingChunkY - maxHeight) {
+		while(!topography.getStructures().structureExists(left, rBottom - 1, superStructure) && !topography.getChunkMap().doesChunkExist(left, rBottom - 1) && rBottom > startingChunkY - maxHeight) {
 			rBottom--;
 		}
 
@@ -261,13 +263,13 @@ public class RectangularSpaceCalculator {
 	    int tLeft = startingChunkX;
 	    int tRight = startingChunkX;
 
-		while(!Structures.structureExists(startingChunkX, top + 1, superStructure) && !Topography.chunkMap.doesChunkExist(startingChunkX, top + 1) && top < startingChunkY + maxHeight) {
+		while(!topography.getStructures().structureExists(startingChunkX, top + 1, superStructure) && !topography.getChunkMap().doesChunkExist(startingChunkX, top + 1) && top < startingChunkY + maxHeight) {
 			top++;
 		}
-		while(!Structures.structureExists(tLeft - 1, top, superStructure) && !Topography.chunkMap.doesChunkExist(tLeft - 1, top) && tLeft > startingChunkX - maxWidth) {
+		while(!topography.getStructures().structureExists(tLeft - 1, top, superStructure) && !topography.getChunkMap().doesChunkExist(tLeft - 1, top) && tLeft > startingChunkX - maxWidth) {
 			tLeft--;
 		}
-		while(!Structures.structureExists(tRight + 1, top, superStructure) && !Topography.chunkMap.doesChunkExist(tRight + 1, top) && tRight < startingChunkX + maxWidth) {
+		while(!topography.getStructures().structureExists(tRight + 1, top, superStructure) && !topography.getChunkMap().doesChunkExist(tRight + 1, top) && tRight < startingChunkX + maxWidth) {
 			tRight++;
 		}
 
@@ -277,13 +279,13 @@ public class RectangularSpaceCalculator {
 	    int bLeft = startingChunkX;
 	    int bRight = startingChunkX;
 
-		while(!Structures.structureExists(startingChunkX, bottom - 1, superStructure) && !Topography.chunkMap.doesChunkExist(startingChunkX, bottom - 1) && bottom > startingChunkY - maxHeight) {
+		while(!topography.getStructures().structureExists(startingChunkX, bottom - 1, superStructure) && !topography.getChunkMap().doesChunkExist(startingChunkX, bottom - 1) && bottom > startingChunkY - maxHeight) {
 			bottom--;
 		}
-		while(!Structures.structureExists(bLeft - 1, bottom, superStructure) && !Topography.chunkMap.doesChunkExist(bLeft - 1, bottom) && bLeft > startingChunkX - maxWidth) {
+		while(!topography.getStructures().structureExists(bLeft - 1, bottom, superStructure) && !topography.getChunkMap().doesChunkExist(bLeft - 1, bottom) && bLeft > startingChunkX - maxWidth) {
 			bLeft--;
 		}
-		while(!Structures.structureExists(bRight + 1, bottom, superStructure) && !Topography.chunkMap.doesChunkExist(bRight + 1, bottom) && bRight < startingChunkX + maxWidth) {
+		while(!topography.getStructures().structureExists(bRight + 1, bottom, superStructure) && !topography.getChunkMap().doesChunkExist(bRight + 1, bottom) && bRight < startingChunkX + maxWidth) {
 			bRight++;
 		}
 

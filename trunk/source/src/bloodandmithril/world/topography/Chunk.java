@@ -8,6 +8,8 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.Gdx;
@@ -45,9 +47,9 @@ public class Chunk {
 	/**
 	 * Constructor
 	 */
-	public Chunk(Tile[][] fTiles, Tile[][] bTiles, int x, int y) {
-		this.fData = new ChunkData(Util.clone2DArray(fTiles), x, y);
-		this.bData = new ChunkData(Util.clone2DArray(bTiles), x, y);
+	public Chunk(Tile[][] fTiles, Tile[][] bTiles, int x, int y, int worldId) {
+		this.fData = new ChunkData(Util.clone2DArray(fTiles), x, y, worldId);
+		this.bData = new ChunkData(Util.clone2DArray(bTiles), x, y, worldId);
 	}
 
 
@@ -214,10 +216,11 @@ public class Chunk {
 		/**
 		 * Constructor
 		 */
-		public ChunkData(Tile[][] tiles, int xChunkCoord, int yChunkCoord) {
+		public ChunkData(Tile[][] tiles, int xChunkCoord, int yChunkCoord, int worldId) {
 			this.tiles = tiles;
 			this.xChunkCoord = xChunkCoord;
 			this.yChunkCoord = yChunkCoord;
+			this.worldId = worldId;
 		}
 
 		/**
@@ -234,6 +237,9 @@ public class Chunk {
 
 		/** The y-coordinate of the bottom left corner of the chunk */
 		public int yChunkCoord;
+		
+		/** Unique id of the {@link World} this chunk data relates to */
+		public int worldId;
 	}
 
 
@@ -282,12 +288,12 @@ public class Chunk {
 		int chunkX = fData.xChunkCoord;
 		int chunkY = fData.yChunkCoord;
 
-		ChunkMap chunkMap = Topography.chunkMap;
+		ChunkMap chunkMap = Domain.getWorld(fData.worldId).getTopography().getChunkMap();
 
 		if (chunkMap.get(chunkX).get(chunkY + 1) != null) {
 			int x = 0;
 			for (Tile tile : chunkMap.get(chunkX).get(chunkY + 1).getRow(0, foreGround)) {
-				tile.calculateOrientation(chunkX, chunkY + 1, x, 0, foreGround);
+				tile.calculateOrientation(chunkX, chunkY + 1, x, 0, foreGround, chunkMap);
 				chunkMap.get(chunkX).get(chunkY + 1).repopulateTextureCoordinates(x, 0, foreGround);
 				x++;
 			}
@@ -297,7 +303,7 @@ public class Chunk {
 		if (chunkMap.get(chunkX).get(chunkY - 1) != null) {
 			int x = 0;
 			for (Tile tile : chunkMap.get(chunkX).get(chunkY - 1).getRow(Topography.CHUNK_SIZE - 1, foreGround)) {
-				tile.calculateOrientation(chunkX, chunkY - 1, x, Topography.CHUNK_SIZE - 1, foreGround);
+				tile.calculateOrientation(chunkX, chunkY - 1, x, Topography.CHUNK_SIZE - 1, foreGround, chunkMap);
 				chunkMap.get(chunkX).get(chunkY - 1).repopulateTextureCoordinates(x, Topography.CHUNK_SIZE - 1, foreGround);
 				x++;
 			}
@@ -307,7 +313,7 @@ public class Chunk {
 		if (chunkMap.get(chunkX - 1) != null && chunkMap.get(chunkX - 1).get(chunkY) != null) {
 			int y = 0;
 			for (Tile tile : chunkMap.get(chunkX - 1).get(chunkY).getColumn(Topography.CHUNK_SIZE - 1, foreGround)) {
-				tile.calculateOrientation(chunkX - 1, chunkY, Topography.CHUNK_SIZE - 1, y, foreGround);
+				tile.calculateOrientation(chunkX - 1, chunkY, Topography.CHUNK_SIZE - 1, y, foreGround, chunkMap);
 				chunkMap.get(chunkX - 1).get(chunkY).repopulateTextureCoordinates(Topography.CHUNK_SIZE - 1, y, foreGround);
 				y++;
 			}
@@ -317,7 +323,7 @@ public class Chunk {
 		if (chunkMap.get(chunkX + 1) != null && chunkMap.get(chunkX + 1).get(chunkY) != null) {
 			int y = 0;
 			for (Tile tile : chunkMap.get(chunkX + 1).get(chunkY).getColumn(0, foreGround)) {
-				tile.calculateOrientation(chunkX + 1, chunkY, 0, y, foreGround);
+				tile.calculateOrientation(chunkX + 1, chunkY, 0, y, foreGround, chunkMap);
 				chunkMap.get(chunkX + 1).get(chunkY).repopulateTextureCoordinates(0, y, foreGround);
 				y++;
 			}
@@ -326,7 +332,7 @@ public class Chunk {
 
 		for (int x = 0; x < Topography.CHUNK_SIZE; x++) {
 			for (int y = 0; y < Topography.CHUNK_SIZE; y++) {
-				chunkMap.get(chunkX).get(chunkY).getTile(x, y, foreGround).calculateOrientation(chunkX, chunkY, x, y, foreGround);
+				chunkMap.get(chunkX).get(chunkY).getTile(x, y, foreGround).calculateOrientation(chunkX, chunkY, x, y, foreGround, chunkMap);
 				chunkMap.get(chunkX).get(chunkY).repopulateTextureCoordinates(x, y, foreGround);
 			}
 		}
@@ -374,7 +380,7 @@ public class Chunk {
 	 */
 	private void recalculateOrientationsForTile(int x, int y, boolean foreGround) {
 
-		ChunkMap map = Topography.chunkMap;
+		ChunkMap map = Domain.getWorld(fData.worldId).getTopography().getChunkMap();
 
 		Tile left;
 		Tile right;
@@ -386,7 +392,7 @@ public class Chunk {
 			if (map.doesChunkExist(fData.xChunkCoord - 1, fData.yChunkCoord)) {
 				Chunk chunk = map.get(fData.xChunkCoord - 1).get(fData.yChunkCoord);
 				left = chunk.getTile(Topography.CHUNK_SIZE - 1, y, foreGround);
-				left.calculateOrientation(fData.xChunkCoord - 1, fData.yChunkCoord, Topography.CHUNK_SIZE - 1, y, foreGround);
+				left.calculateOrientation(fData.xChunkCoord - 1, fData.yChunkCoord, Topography.CHUNK_SIZE - 1, y, foreGround, map);
 
 				chunk.populateQuadVertexAttributes(
 					Topography.CHUNK_SIZE - 1,
@@ -403,7 +409,7 @@ public class Chunk {
 			}
 		} else {
 			left = map.get(fData.xChunkCoord).get(fData.yChunkCoord).getTile(x - 1, y, foreGround);
-			left.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x - 1, y, foreGround);
+			left.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x - 1, y, foreGround, map);
 
 			map.get(fData.xChunkCoord).get(fData.yChunkCoord).populateQuadVertexAttributes(
 				x - 1,
@@ -422,7 +428,7 @@ public class Chunk {
 			if (map.doesChunkExist(fData.xChunkCoord + 1, fData.yChunkCoord)) {
 				Chunk chunk = map.get(fData.xChunkCoord + 1).get(fData.yChunkCoord);
 				right = chunk.getTile(0, y, foreGround);
-				right.calculateOrientation(fData.xChunkCoord + 1, fData.yChunkCoord, 0, y, foreGround);
+				right.calculateOrientation(fData.xChunkCoord + 1, fData.yChunkCoord, 0, y, foreGround, map);
 
 				chunk.populateQuadVertexAttributes(
 					0,
@@ -439,7 +445,7 @@ public class Chunk {
 			}
 		} else {
 			right = map.get(fData.xChunkCoord).get(fData.yChunkCoord).getTile(x + 1, y, foreGround);
-			right.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x + 1, y, foreGround);
+			right.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x + 1, y, foreGround, map);
 
 			map.get(fData.xChunkCoord).get(fData.yChunkCoord).populateQuadVertexAttributes(
 				x + 1,
@@ -458,7 +464,7 @@ public class Chunk {
 			if (map.doesChunkExist(fData.xChunkCoord, fData.yChunkCoord + 1)) {
 				Chunk chunk = map.get(fData.xChunkCoord).get(fData.yChunkCoord + 1);
 				above = chunk.getTile(x, 0, foreGround);
-				above.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord + 1, x, 0, foreGround);
+				above.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord + 1, x, 0, foreGround, map);
 
 				chunk.populateQuadVertexAttributes(
 					x,
@@ -475,7 +481,7 @@ public class Chunk {
 			}
 		} else {
 			above = map.get(fData.xChunkCoord).get(fData.yChunkCoord).getTile(x, y + 1, foreGround);
-			above.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x, y + 1, foreGround);
+			above.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x, y + 1, foreGround, map);
 
 			map.get(fData.xChunkCoord).get(fData.yChunkCoord).populateQuadVertexAttributes(
 				x,
@@ -494,7 +500,7 @@ public class Chunk {
 			if (map.doesChunkExist(fData.xChunkCoord, fData.yChunkCoord - 1)) {
 				Chunk chunk = map.get(fData.xChunkCoord).get(fData.yChunkCoord - 1);
 				below = chunk.getTile(x, Topography.CHUNK_SIZE - 1, foreGround);
-				below.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord - 1, x, Topography.CHUNK_SIZE - 1, foreGround);
+				below.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord - 1, x, Topography.CHUNK_SIZE - 1, foreGround, map);
 
 				chunk.populateQuadVertexAttributes(
 					x,
@@ -511,7 +517,7 @@ public class Chunk {
 			}
 		} else {
 			below = map.get(fData.xChunkCoord).get(fData.yChunkCoord).getTile(x, y - 1, foreGround);
-			below.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x, y - 1, foreGround);
+			below.calculateOrientation(fData.xChunkCoord, fData.yChunkCoord, x, y - 1, foreGround, map);
 
 			map.get(fData.xChunkCoord).get(fData.yChunkCoord).populateQuadVertexAttributes(
 				x,
@@ -525,6 +531,6 @@ public class Chunk {
 			map.get(fData.xChunkCoord).get(fData.yChunkCoord).refreshMesh();
 		}
 
-		fData.tiles[x][y].calculateOrientation(fData.xChunkCoord,fData.yChunkCoord, x, y, foreGround);
+		fData.tiles[x][y].calculateOrientation(fData.xChunkCoord,fData.yChunkCoord, x, y, foreGround, map);
 	}
 }

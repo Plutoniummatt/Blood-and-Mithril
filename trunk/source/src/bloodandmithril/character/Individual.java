@@ -328,7 +328,7 @@ public abstract class Individual extends Equipper {
 
 		// If chunk has not yet been loaded, do not update
 		try {
-			Topography.getTile(state.position, true);
+			Domain.getWorld(worldId).getTopography().getTile(state.position, true);
 		} catch (NullPointerException e) {
 			return;
 		}
@@ -382,7 +382,8 @@ public abstract class Individual extends Equipper {
 	 * Handles standard kinematics
 	 */
 	protected void kinetics(float delta, World world) {
-		jumpOffLogic();
+		Topography topography = Domain.getWorld(getWorldId()).getTopography();
+		jumpOffLogic(topography);
 
 		//Stepping up
 		if (steppingUp) {
@@ -410,7 +411,7 @@ public abstract class Individual extends Equipper {
 		//If the position is not on an empty tile and is not a platform tile run the ground detection routine
 		//If the position is on a platform tile and if the tile below current position is not an empty tile, run ground detection routine
 		//If position below is a platform tile and the next waypoint is directly below current position, skip ground detection
-		if (groundDetectionCriteriaMet() && !steppingUp) {
+		if (groundDetectionCriteriaMet(topography) && !steppingUp) {
 			state.velocity.y = 0f;
 
 			if (state.position.y >= 0f) {
@@ -422,22 +423,22 @@ public abstract class Individual extends Equipper {
 			} else {
 				state.position.y = (int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE;
 			}
-		} else if (state.position.y == 0f && !(Topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
+		} else if (state.position.y == 0f && !(topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
 			state.velocity.y = 0f;
 		} else {
 			state.velocity.x = state.velocity.x * 0.9f;
 		}
 
 		//Wall check routine, only perform this if we're moving
-		if (state.velocity.x != 0 && obstructed(0)) {
-			if (canStepUp(0)) {
+		if (state.velocity.x != 0 && obstructed(0, topography)) {
+			if (canStepUp(0, topography)) {
 				if (!steppingUp) {
 					steppingUp = true;
 					steps = 0;
 				}
 			} else if (!steppingUp) {
 				boolean check = false;
-				while (obstructed(0)) {
+				while (obstructed(0, topography)) {
 					if (state.velocity.x > 0) {
  						state.position.x = state.position.x - 1;
 					} else {
@@ -457,9 +458,9 @@ public abstract class Individual extends Equipper {
 	/**
 	 * Whether we should be running ground detection
 	 */
-	protected boolean groundDetectionCriteriaMet() {
-		Tile currentTile = Topography.getTile(state.position.x, state.position.y, true);
-		Tile tileBelow = Topography.getTile(state.position.x, state.position.y - Topography.TILE_SIZE/2, true);
+	protected boolean groundDetectionCriteriaMet(Topography topography) {
+		Tile currentTile = topography.getTile(state.position.x, state.position.y, true);
+		Tile tileBelow = topography.getTile(state.position.x, state.position.y - Topography.TILE_SIZE/2, true);
 		return (!(currentTile instanceof Tile.EmptyTile) && !currentTile.isPlatformTile || currentTile.isPlatformTile && !(tileBelow instanceof EmptyTile)) &&
 			    !isToBeIgnored(state.position);
 	}
@@ -468,11 +469,11 @@ public abstract class Individual extends Equipper {
 	/**
 	 * Sets {@link #jumpOff} to null if we've passed it
 	 */
-	private void jumpOffLogic() {
+	private void jumpOffLogic(Topography topography) {
 		AITask currentTask = ai.getCurrentTask();
 		if (currentTask instanceof GoToLocation) {
 			if (((GoToLocation) currentTask).isAboveNext(state.position)) {
-				jumpOff();
+				jumpOff(topography);
 				jumpedOff = false;
 			}
 		}
@@ -502,8 +503,8 @@ public abstract class Individual extends Equipper {
 	/**
 	 * Jump off the tile this {@link Individual} is currently standing on, as long as its a platform
 	 */
-	public void jumpOff() {
-		if (Topography.getTile(state.position.x, state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile) {
+	public void jumpOff(Topography topography) {
+		if (topography.getTile(state.position.x, state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile) {
 			jumpOff = Topography.convertToWorldCoord(state.position.x, state.position.y - Topography.TILE_SIZE/2, false);
 		}
 	}
@@ -512,23 +513,23 @@ public abstract class Individual extends Equipper {
 	/**
 	 * Determines during {@link #kinetics(float)} whether we can step up
 	 */
-	protected boolean canStepUp(int offsetX) {
+	protected boolean canStepUp(int offsetX, Topography topography) {
 		int blockspan = getHeight()/Topography.TILE_SIZE + (getHeight() % Topography.TILE_SIZE == 0 ? 0 : 1);
 
 		for (int block = 1; block != blockspan + 1; block++) {
-			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE*block + Topography.TILE_SIZE/2)) {
+			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE*block + Topography.TILE_SIZE/2, topography)) {
 				return false;
 			}
 		}
-		return !isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE/2);
+		return !isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE/2, topography);
 	}
 
 
 	/** Whether this {@link Individual} is obstructed by {@link Tile}s */
-	protected boolean obstructed(int offsetX) {
+	protected boolean obstructed(int offsetX, Topography topography) {
 		int blockspan = getHeight()/Topography.TILE_SIZE + (getHeight() % Topography.TILE_SIZE == 0 ? 0 : 1);
 		for (int block = 0; block != blockspan; block++) {
-			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE/2 + Topography.TILE_SIZE * block)) {
+			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE/2 + Topography.TILE_SIZE * block, topography)) {
 				return true;
 			}
 		}
@@ -545,9 +546,9 @@ public abstract class Individual extends Equipper {
 	/**
 	 * True if a {@link Tile#isPassable()}, taking into account the path
 	 */
-	protected boolean isPassable(float x, float y) {
+	protected boolean isPassable(float x, float y, Topography topography) {
 		AITask current = ai.getCurrentTask();
-		Tile tile = Topography.getTile(x, y, true);
+		Tile tile = topography.getTile(x, y, true);
 
 		if (Topography.convertToWorldCoord(x, y, false).equals(jumpOff)) {
 			return true;

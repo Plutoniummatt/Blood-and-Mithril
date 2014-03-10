@@ -42,7 +42,7 @@ public class Harvest extends CompositeAITask {
 			"Mining",
 			new GoToLocation(
 				host,
-				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(harvestable.position, 10), 3 * Topography.TILE_SIZE),
+				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(harvestable.position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
 				false,
 				50f,
 				true

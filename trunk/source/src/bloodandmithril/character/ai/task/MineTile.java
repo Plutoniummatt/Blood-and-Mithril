@@ -46,7 +46,7 @@ public class MineTile extends CompositeAITask {
 			"Mining",
 			new GoToLocation(
 				host,
-				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10), 3 * Topography.TILE_SIZE),
+				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
 				false,
 				50f,
 				true
@@ -66,6 +66,7 @@ public class MineTile extends CompositeAITask {
 	 */
 	public class Mine extends AITask {
 		private static final long serialVersionUID = 7585777004625914828L;
+		private final Topography topography = Domain.getWorld(Domain.individuals.get(hostId).getWorldId()).getTopography();
 
 		/**
 		 * Constructor
@@ -83,7 +84,7 @@ public class MineTile extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return Topography.getTile(tileCoordinate, true) instanceof EmptyTile;
+			return topography.getTile(tileCoordinate, true) instanceof EmptyTile;
 		}
 
 
@@ -101,10 +102,10 @@ public class MineTile extends CompositeAITask {
 					new Task() {
 						@Override
 						public void execute() {
-							Tile tileToBeDeleted = Topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
+							Tile tileToBeDeleted = topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
 
 							if (!ClientServerInterface.isServer()) {
-								ClientServerInterface.SendRequest.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true);
+								ClientServerInterface.SendRequest.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true, host.getWorldId());
 							}
 
 							if (tileToBeDeleted != null && !(tileToBeDeleted instanceof EmptyTile)) {
@@ -117,7 +118,7 @@ public class MineTile extends CompositeAITask {
 								}
 
 								if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
-									Topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
+									topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
 									host.giveItem(tileToBeDeleted.mine());
 
 									InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
@@ -134,8 +135,8 @@ public class MineTile extends CompositeAITask {
 										existingInventoryWindow.refresh();
 									}
 								} else if (ClientServerInterface.isServer()) {
-									Topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
-									ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true);
+									topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
+									ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, host.getWorldId());
 									ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine());
 								}
 							}

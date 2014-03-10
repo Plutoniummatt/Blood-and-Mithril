@@ -138,6 +138,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Fonts.setup();
 		Individual.setup();
 		PrefabricatedComponent.setup();
+		Topography.setup();
 		Shaders.setup();
 		Component.setup();
 		Weather.setup();
@@ -371,11 +372,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (keycode == Input.Keys.J) {
-			Topography.changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickPlatform.class);
+			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickPlatform.class);
 		}
 		
 		if (keycode == Input.Keys.L) {
-			Topography.deleteTile(getMouseWorldX(), getMouseWorldY(), false);
+			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), false);
 		}
 
 		if (keycode == Input.Keys.D && ClientServerInterface.isServer()) {

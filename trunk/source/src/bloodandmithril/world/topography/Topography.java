@@ -6,13 +6,15 @@ import java.util.concurrent.BlockingQueue;
 import org.lwjgl.opengl.Display;
 
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.generation.Structures;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.persistence.world.ChunkLoaderImpl;
-import bloodandmithril.persistence.world.ChunkSaver;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -28,6 +30,9 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 public class Topography {
+	
+	/** Unique ID of the {@link World} that this {@link Topography} lives on */
+	private final int worldId;
 
 	/** The size of a single tile, in pixels (single dimension) */
 	public static final int TILE_SIZE = 16;
@@ -42,16 +47,15 @@ public class Topography {
 	public static final float textureCoordinateQuantization = 0.0078125f;
 
 	/** The chunk map of the topography. */
-	public static ChunkMap chunkMap;
+	private final ChunkMap chunkMap;
+	
+	private final Structures structures;
 
 	/** The chunk loader. */
-	private final ChunkLoader chunkLoader;
+	private final ChunkLoader chunkLoader = new ChunkLoaderImpl();
 
 	/** Any non-main thread topography tasks queued here */
 	private static BlockingQueue<Task> topographyTasks = new ArrayBlockingQueue<Task>(500000);
-
-	/** True if hosted as a server */
-	private final boolean client;
 
 	/** The current chunk coordinates that have already been requested for generation */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> requestedForGeneration = new ConcurrentDualKeyHashMap<>();
@@ -60,19 +64,10 @@ public class Topography {
 	/**
 	 * @param generator - The type of generator to use
 	 */
-	public Topography(boolean client) {
-
-		this.client = client;
-		if (client) {
-			 atlas = new Texture(Gdx.files.internal("data/image/textureAtlas.png"));
-		}
-
-		try {
-			this.chunkLoader = new ChunkLoaderImpl();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		chunkMap = new ChunkMap();
+	public Topography(int worldId) {
+		this.worldId = worldId;
+		this.chunkMap = new ChunkMap();
+		this.structures = new Structures();
 	}
 
 
@@ -106,9 +101,9 @@ public class Topography {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
-				if (chunkMap.get(x) != null && chunkMap.get(x).get(y) != null) {
-					chunkMap.get(x).get(y).checkMesh();
-					chunkMap.get(x).get(y).render(false);
+				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
+					getChunkMap().get(x).get(y).checkMesh();
+					getChunkMap().get(x).get(y).render(false);
 				}
 			}
 		}
@@ -127,9 +122,9 @@ public class Topography {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
-				if (chunkMap.get(x) != null && chunkMap.get(x).get(y) != null) {
-					chunkMap.get(x).get(y).checkMesh();
-					chunkMap.get(x).get(y).render(true);
+				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
+					getChunkMap().get(x).get(y).checkMesh();
+					getChunkMap().get(x).get(y).render(true);
 				}
 			}
 		}
@@ -137,13 +132,13 @@ public class Topography {
 
 
 	/** Get the lowest empty tile world coordinates */
-	public static Vector2 getLowestEmptyOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) {
+	public Vector2 getLowestEmptyOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) {
 		return getLowestEmptyTileOrPlatformTileWorldCoords(new Vector2(worldX, worldY), floor);
 	}
 
 
 	/** Get the lowest empty tile world coordinates */
-	public static Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) {
+	public Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) {
 		float x = worldCoords.x;
 		float y = worldCoords.y;
 
@@ -214,7 +209,7 @@ public class Topography {
 	 * @param worldX
 	 * @param worldY
 	 */
-	public static Tile deleteTile(float worldX, float worldY, boolean foreGround) {
+	public Tile deleteTile(float worldX, float worldY, boolean foreGround) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
@@ -224,8 +219,8 @@ public class Topography {
 			if (getTile(worldX, worldY, foreGround) instanceof EmptyTile) {
 				return null;
 			}
-			Tile tile = chunkMap.get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
-			chunkMap.get(chunkX).get(chunkY).deleteTile(tileX, tileY, foreGround);
+			Tile tile = getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
+			getChunkMap().get(chunkX).get(chunkY).deleteTile(tileX, tileY, foreGround);
 			Logger.generalDebug("Deleting tile at (" + convertToWorldTileCoord(chunkX, tileX) + ", " + convertToWorldTileCoord(chunkY, tileY) + "), World coord: (" + worldX + ", " + worldY + ")", LogLevel.TRACE);
 			return tile;
 
@@ -242,13 +237,13 @@ public class Topography {
 	 * @param worldX
 	 * @param worldY
 	 */
-	public static void changeTile(float worldX, float worldY, boolean foreGround, Class<? extends Tile> toChangeTo) {
+	public void changeTile(float worldX, float worldY, boolean foreGround, Class<? extends Tile> toChangeTo) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
 		try {
-			chunkMap.get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
+			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
 		} catch (NullPointerException e) {
 			Logger.generalDebug("can't change a null tile", LogLevel.WARN);
 		}
@@ -285,12 +280,17 @@ public class Topography {
 			return worldCoordinateIntegerized / TILE_SIZE / CHUNK_SIZE - 1;
 		}
 	}
+	
+	
+	public static void setup() {
+		atlas = new Texture(Gdx.files.internal("data/image/textureAtlas.png"));
+	}
 
 
 	/**
 	 * Gets a tile given the world coordinates
 	 */
-	public static Tile getTile(float worldX, float worldY, boolean foreGround) {
+	public Tile getTile(float worldX, float worldY, boolean foreGround) {
 
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
@@ -298,12 +298,12 @@ public class Topography {
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
 
-		return chunkMap.get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
+		return getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 	}
 
 
 	/** Overloaded method, see {@link #getTile(float, float)} */
-	public static Tile getTile(Vector2 location, boolean foreGround) {
+	public Tile getTile(Vector2 location, boolean foreGround) {
 		return getTile(location.x, location.y, foreGround);
 	}
 
@@ -320,10 +320,10 @@ public class Topography {
 
 		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
 			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {
-				if (chunkMap.get(chunkX) == null || chunkMap.get(chunkX).get(chunkY) == null) {
-					if (client && !ClientServerInterface.isServer()) {
+				if (getChunkMap().get(chunkX) == null || getChunkMap().get(chunkX).get(chunkY) == null) {
+					if (ClientServerInterface.isClient() && !ClientServerInterface.isServer()) {
 						if (requestedForGeneration.get(chunkX, chunkY) == null || !requestedForGeneration.get(chunkX, chunkY)) {
-							ClientServerInterface.SendRequest.sendGenerateChunkRequest(chunkX, chunkY);
+							ClientServerInterface.SendRequest.sendGenerateChunkRequest(chunkX, chunkY, worldId);
 							requestedForGeneration.put(chunkX, chunkY, true);
 						}
 					} else {
@@ -337,6 +337,16 @@ public class Topography {
 
 	public boolean loadOrGenerateChunk(int chunkX, int chunkY) {
 		//Attempt to load the chunk from disk - If chunk does not exist, it will be generated
-		return chunkLoader.load(this, chunkX, chunkY);
+		return chunkLoader.load(Domain.getWorld(worldId), chunkX, chunkY);
+	}
+
+
+	public ChunkMap getChunkMap() {
+		return chunkMap;
+	}
+
+
+	public Structures getStructures() {
+		return structures;
 	}
 }

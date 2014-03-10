@@ -46,8 +46,8 @@ public class GoToLocation extends AITask {
 		PathFinder pathFinder = new AStarPathFinder();
 
 		this.path = fly ?
-			pathFinder.findShortestPathAir(new WayPoint(host.getState().position), destination):
-			pathFinder.findShortestPathGround(new WayPoint(host.getState().position), destination, blockspan, safe ? host.getSafetyHeight() : 1000, forceTolerance);
+			pathFinder.findShortestPathAir(new WayPoint(host.getState().position), destination, Domain.getWorld(host.getWorldId())):
+			pathFinder.findShortestPathGround(new WayPoint(host.getState().position), destination, blockspan, safe ? host.getSafetyHeight() : 1000, forceTolerance, Domain.getWorld(host.getWorldId()));
 	}
 
 
