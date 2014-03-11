@@ -118,7 +118,7 @@ public class IndividualStatusWindow extends Window {
 		} else {
 			float highestObservationSkill = 0;
 			if (!individual.isControllable()) {
-				for (Individual indi : Sets.newHashSet(Domain.individuals.values())) {
+				for (Individual indi : Sets.newHashSet(Domain.getIndividuals().values())) {
 					int skill = indi.getSkills().getObservation();
 					if (skill > highestObservationSkill) {
 						highestObservationSkill = skill;
@@ -165,7 +165,7 @@ public class IndividualStatusWindow extends Window {
 			return;
 		}
 		
-		identify.render(x + width - 50, y - 37, !Domain.selectedIndividuals.isEmpty() && isActive() && !individual.isControllable(), getAlpha());
+		identify.render(x + width - 50, y - 37, !Domain.getSelectedIndividuals().isEmpty() && isActive() && !individual.isControllable(), getAlpha());
 	}
 
 
@@ -202,7 +202,7 @@ public class IndividualStatusWindow extends Window {
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		conditionsPanel.leftClick(copy, windowsCopy);
-		if (!Domain.selectedIndividuals.isEmpty() && !individual.isControllable()) {
+		if (!Domain.getSelectedIndividuals().isEmpty() && !individual.isControllable()) {
 			identify.click();
 		}
 	}

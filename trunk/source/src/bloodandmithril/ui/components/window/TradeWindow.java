@@ -161,7 +161,7 @@ public class TradeWindow extends Window {
 	 */
 	@SuppressWarnings("unchecked")
 	public synchronized void refresh() {
-		proposer = Domain.individuals.get(((Individual) proposer).getId().getId());
+		proposer = Domain.getIndividuals().get(((Individual) proposer).getId().getId());
 
 		proposerItemsToTrade.clear();
 		proposeeItemsToTrade.clear();
@@ -417,10 +417,10 @@ public class TradeWindow extends Window {
 				((Individual) proposee).getAI().setCurrentTask(new Idle());
 			}
 		} else {
-			if (Domain.selectedIndividuals.contains(proposer)) {
+			if (Domain.getSelectedIndividuals().contains(proposer)) {
 				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposer).getId().getId());
 			}
-			if (proposee instanceof Individual && Domain.selectedIndividuals.contains(proposee)) {
+			if (proposee instanceof Individual && Domain.getSelectedIndividuals().contains(proposee)) {
 				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposee).getId().getId());
 			}
 		}

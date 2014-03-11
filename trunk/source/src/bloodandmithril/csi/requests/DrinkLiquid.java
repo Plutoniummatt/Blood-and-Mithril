@@ -31,7 +31,7 @@ public class DrinkLiquid implements Request {
 	@Override
 	public Responses respond() {
 
-		Individual individual = Domain.individuals.get(individualId);
+		Individual individual = Domain.getIndividuals().get(individualId);
 		if (individual.takeItem(bottleToDrinkFrom) == 1) {
 			Bottle newBottle = bottleToDrinkFrom.clone();
 			newBottle.drink(amount, individual);

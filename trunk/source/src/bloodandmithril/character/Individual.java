@@ -374,7 +374,7 @@ public abstract class Individual extends Equipper {
 
 	/** Is this individual the current one? */
 	public boolean isSelected() {
-		return Domain.selectedIndividuals.contains(this);
+		return Domain.getSelectedIndividuals().contains(this);
 	}
 
 
@@ -579,7 +579,7 @@ public abstract class Individual extends Equipper {
 
 		final Individual thisIndividual = this;
 
-		ContextMenuItem controlOrReleaseMenuItem = Domain.selectedIndividuals.contains(thisIndividual) ?
+		ContextMenuItem controlOrReleaseMenuItem = Domain.getSelectedIndividuals().contains(thisIndividual) ?
 		new ContextMenuItem(
 			"Deselect",
 			new Task() {
@@ -587,7 +587,7 @@ public abstract class Individual extends Equipper {
 				public void execute() {
 					if (ClientServerInterface.isServer()) {
 						thisIndividual.deselect(false, 0);
-						Domain.selectedIndividuals.remove(thisIndividual);
+						Domain.getSelectedIndividuals().remove(thisIndividual);
 						clearCommands();
 					} else {
 						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, false);
@@ -606,7 +606,7 @@ public abstract class Individual extends Equipper {
 				@Override
 				public void execute() {
 					if (ClientServerInterface.isServer()) {
-						Domain.selectedIndividuals.add(thisIndividual);
+						Domain.getSelectedIndividuals().add(thisIndividual);
 						thisIndividual.select(0);
 					} else {
 						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, true);
@@ -727,7 +727,7 @@ public abstract class Individual extends Equipper {
 			new Task() {
 				@Override
 				public void execute() {
-					for (Individual indi : Domain.selectedIndividuals) {
+					for (Individual indi : Domain.getSelectedIndividuals()) {
 						if (ClientServerInterface.isServer()) {
 							if (indi != thisIndividual) {
 								indi.ai.setCurrentTask(
@@ -775,7 +775,7 @@ public abstract class Individual extends Equipper {
 			new Task() {
 				@Override
 				public void execute() {
-					for (Individual indi : Domain.selectedIndividuals) {
+					for (Individual indi : Domain.getSelectedIndividuals()) {
 						if (ClientServerInterface.isServer()) {
 							if (indi != thisIndividual) {
 								indi.ai.setCurrentTask(
@@ -801,8 +801,8 @@ public abstract class Individual extends Equipper {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
 		}
 
-		if (!Domain.selectedIndividuals.isEmpty() &&
-			!Domain.selectedIndividuals.contains(thisIndividual)) {
+		if (!Domain.getSelectedIndividuals().isEmpty() &&
+			!Domain.getSelectedIndividuals().contains(thisIndividual)) {
 			contextMenuToReturn.addMenuItem(attackMenuItem);
 		}
 
@@ -815,9 +815,9 @@ public abstract class Individual extends Equipper {
 		}
 
 
-		if (!Domain.selectedIndividuals.isEmpty() &&
-			 Domain.selectedIndividuals.size() == 1 &&
-			!Domain.selectedIndividuals.contains(thisIndividual)) {
+		if (!Domain.getSelectedIndividuals().isEmpty() &&
+			 Domain.getSelectedIndividuals().size() == 1 &&
+			!Domain.getSelectedIndividuals().contains(thisIndividual)) {
 			contextMenuToReturn.addMenuItem(tradeMenuItem);
 		}
 

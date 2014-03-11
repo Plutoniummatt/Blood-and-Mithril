@@ -29,8 +29,8 @@ public class SendHarvestRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.individuals.get(individualId);
-		Prop prop = Domain.props.get(propId);
+		Individual individual = Domain.getIndividuals().get(individualId);
+		Prop prop = Domain.getProps().get(propId);
 		Harvestable harvestable = null;
 
 		if (!(prop instanceof Harvestable)) {

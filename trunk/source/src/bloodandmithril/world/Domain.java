@@ -1,6 +1,5 @@
 package bloodandmithril.world;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,16 +8,15 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.graphics.DynamicLightingPostRenderer;
+import bloodandmithril.graphics.Light;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -41,37 +39,37 @@ public class Domain {
 	private static World activeWorld;
 
 	/** {@link World}s */
-	private static HashMap<Integer, World> 					worlds 					= Maps.newHashMap();
+	private static HashMap<Integer, World> 						worlds 					= Maps.newHashMap();
 	
 	/** {@link Topography}s */
-	private static HashMap<Integer, Topography>				topographies			= Maps.newHashMap();
+	private static HashMap<Integer, Topography>					topographies			= Maps.newHashMap();
 
 	/** All lights */
-	public static ConcurrentHashMap<Integer, Light> 		lights 					= new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Integer, Light> 			lights 					= new ConcurrentHashMap<>();
 
 	/** {@link Individual} that are selected for manual control */
-	public static Set<Individual> 							selectedIndividuals 	= Sets.newHashSet();
+	private static Set<Individual> 								selectedIndividuals 	= Sets.newHashSet();
 
 	/** Every {@link Individual} that exists */
-	public static ConcurrentHashMap<Integer, Individual> 	individuals 			= new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Integer, Individual> 		individuals 			= new ConcurrentHashMap<>();
 
 	/** Every {@link Prop} that exists */
-	public static ConcurrentHashMap<Integer, Prop> 			props 					= new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Integer, Prop> 			props 					= new ConcurrentHashMap<>();
 
 	/** Every {@link Prop} that exists */
-	public static ConcurrentHashMap<Integer, Faction> 		factions 				= new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
 	
 	/** Textures */
 	public static Texture gameWorldTexture;
 	public static Texture individualTexture;
 
 	/** The frame buffer used for tiles */
-	private static FrameBuffer fBuffer;
-	private static FrameBuffer mBuffer;
-	private static FrameBuffer mBufferLit;
-	private static FrameBuffer bBuffer;
-	private static FrameBuffer bBufferProcessedForDaylightShader;
-	private static FrameBuffer bBufferLit;
+	public static FrameBuffer fBuffer;
+	public static FrameBuffer mBuffer;
+	public static FrameBuffer mBufferLit;
+	public static FrameBuffer bBuffer;
+	public static FrameBuffer bBufferProcessedForDaylightShader;
+	public static FrameBuffer bBufferLit;
 
 
 	/**
@@ -123,7 +121,7 @@ public class Domain {
 		BloodAndMithrilClient.spriteBatch.begin();
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-		for (Prop prop : props.values()) {
+		for (Prop prop : getProps().values()) {
 			if (prop.depth == Depth.BACKGROUND) {
 				prop.render();
 			}
@@ -138,7 +136,7 @@ public class Domain {
 		BloodAndMithrilClient.spriteBatch.begin();
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-		for (Prop prop : props.values()) {
+		for (Prop prop : getProps().values()) {
 			if (prop.depth == Depth.MIDDLEGROUND) {
 				prop.render();
 			}
@@ -152,13 +150,13 @@ public class Domain {
 		BloodAndMithrilClient.spriteBatch.begin();
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-		for (Prop prop : props.values()) {
+		for (Prop prop : getProps().values()) {
 			if (prop.depth == Depth.FOREGOUND) {
 				prop.render();
 			}
 		}
 		BloodAndMithrilClient.spriteBatch.end();
-		IndividualRenderer.renderIndividuals();
+		IndividualPlatformFilteringRenderer.renderIndividuals();
 		fBuffer.end();
 
 		DynamicLightingPostRenderer.render(camX, camY);
@@ -209,11 +207,11 @@ public class Domain {
 			
 			WorldState.currentEpoch.incrementTime(d);
 
-			for (Individual indi : individuals.values()) {
+			for (Individual indi : getIndividuals().values()) {
 				indi.update(d);
 			}
 			
-			for (Prop prop : props.values()) {
+			for (Prop prop : getProps().values()) {
 				if (ClientServerInterface.isServer()) {
 					prop.update(d);
 				}
@@ -249,49 +247,53 @@ public class Domain {
 	}
 
 
-	/**
-	 * A light, holding data of the occlusion map and 1d shadow map
-	 *
-	 * @author Matt
-	 */
-	public static class Light {
+	public static ConcurrentHashMap<Integer, Light> getLights() {
+		return lights;
+	}
 
-		/** World coords and size of this {@link Light} */
-		public float x, y, spanBegin, spanEnd;
-		public int size;
-		public Color color;
-		public float intensity;
-		public boolean renderSwitch;
 
-		/** Various {@link FrameBuffer}s */
-		public FrameBuffer fOcclusion, mOcclusion, fShadowMap, mShadowMap;
+	public static void setLights(ConcurrentHashMap<Integer, Light> lights) {
+		Domain.lights = lights;
+	}
 
-		/**
-		 * Constructor
-		 * 
-		 * SpanBegin - Counter-Clockwise, begining from the -ve x-axis, the begining angle of light span
-		 * spanEnd - Counter-Clockwise, from spanEnd, the span, 1f meaning 360 degrees.
-		 */
-		public Light(int size, float x, float y, Color color, float intensity, float spanBegin, float spanEnd) {
-			this.size = size;
-			this.x = x;
-			this.y = y;
-			this.color = color;
-			this.intensity = intensity;
-			this.spanBegin = spanBegin;
-			this.spanEnd = spanEnd;
-		}
-		
-		
-		@Override
-		public boolean equals(Object other) {
-			if (other instanceof Light) {
-				Light otherLight = (Light) other;
-				return this.x == otherLight.x && this.y == otherLight.y && this.color.equals(otherLight.color) && this.intensity == otherLight.intensity;
-			}
-			
-			return false;
-		}
+
+	public static Set<Individual> getSelectedIndividuals() {
+		return selectedIndividuals;
+	}
+
+
+	public static void setSelectedIndividuals(Set<Individual> selectedIndividuals) {
+		Domain.selectedIndividuals = selectedIndividuals;
+	}
+
+
+	public static ConcurrentHashMap<Integer, Individual> getIndividuals() {
+		return individuals;
+	}
+
+
+	public static void setIndividuals(ConcurrentHashMap<Integer, Individual> individuals) {
+		Domain.individuals = individuals;
+	}
+
+
+	public static ConcurrentHashMap<Integer, Prop> getProps() {
+		return props;
+	}
+
+
+	public static void setProps(ConcurrentHashMap<Integer, Prop> props) {
+		Domain.props = props;
+	}
+
+
+	public static ConcurrentHashMap<Integer, Faction> getFactions() {
+		return factions;
+	}
+
+
+	public static void setFactions(ConcurrentHashMap<Integer, Faction> factions) {
+		Domain.factions = factions;
 	}
 
 
@@ -300,7 +302,7 @@ public class Domain {
 	 *
 	 * @author Matt
 	 */
-	private static class IndividualRenderer {
+	private static class IndividualPlatformFilteringRenderer {
 
 		/** {@link Predicate} for filtering out those that are NOT on platforms */
 		private static Predicate<Individual> onPlatform = new Predicate<Individual>() {
@@ -331,252 +333,16 @@ public class Domain {
 		/** Renders all individuals, ones that are on platforms are rendered first */
 		private static void renderIndividuals() {
 			try {
-				for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), onPlatform)) {
+				for (Individual indi : Collections2.filter(Lists.newArrayList(getIndividuals().values()), onPlatform)) {
 					indi.render();
 				}
 
-				for (Individual indi : Collections2.filter(Lists.newArrayList(individuals.values()), offPlatform)) {
+				for (Individual indi : Collections2.filter(Lists.newArrayList(getIndividuals().values()), offPlatform)) {
 					indi.render();
 				}
 			} catch (NullPointerException e) {
 				Logger.generalDebug("Nullpointer whilst rendering individual", LogLevel.WARN, e);
 			}
-		}
-	}
-
-
-	/**
-	 * Class to encapsulate post-rendering with dynamic lighting shaders.
-	 *
-	 * @author Matt
-	 */
-	public static class DynamicLightingPostRenderer {
-		public static boolean SEE_ALL = false;
-
-		private static void render(float camX, float camY) {
-			ArrayList<Light> tempLights = new ArrayList<Domain.Light>();
-
-			//Do not bother with lights that are off screen
-			for (Light light : lights.values()) {
-				if (light.x - light.size < camX + BloodAndMithrilClient.WIDTH/2 &&
-					light.x + light.size > camX - BloodAndMithrilClient.WIDTH/2 &&
-					light.y - light.size < camY + BloodAndMithrilClient.HEIGHT/2 &&
-					light.y + light.size > camY - BloodAndMithrilClient.HEIGHT/2) {
-					tempLights.add(light);
-				}
-			}
-
-			for (Light light : tempLights) {
-				
-				if (light.fOcclusion == null) {
-					light.fShadowMap = new FrameBuffer(Format.RGBA8888, light.size, 1, true);
-					light.mShadowMap = new FrameBuffer(Format.RGBA8888, light.size, 1, true);
-					light.fOcclusion = new FrameBuffer(Format.RGBA8888, light.size, light.size, true);
-					light.mOcclusion = new FrameBuffer(Format.RGBA8888, light.size, light.size, true);
-				}
-				
-				if (light.renderSwitch) {
-					light.renderSwitch = !light.renderSwitch;
-					continue;
-				}
-
-				//Draw foreground to occlusion map
-				light.fOcclusion.begin();
-				BloodAndMithrilClient.spriteBatch.begin();
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-				Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				BloodAndMithrilClient.spriteBatch.draw(
-					fBuffer.getColorBufferTexture(),
-					0f,
-					0f,
-					BloodAndMithrilClient.WIDTH,
-					BloodAndMithrilClient.HEIGHT,
-					(int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,
-					(int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2,
-					light.size,
-					light.size,
-					false,
-					false
-				);
-				BloodAndMithrilClient.spriteBatch.end();
-				light.fOcclusion.end();
-
-				light.mOcclusion.begin();
-				BloodAndMithrilClient.spriteBatch.begin();
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-				Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				BloodAndMithrilClient.spriteBatch.draw(
-					mBuffer.getColorBufferTexture(),
-					0f,
-					0f,
-					BloodAndMithrilClient.WIDTH,
-					BloodAndMithrilClient.HEIGHT,
-					(int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,
-					(int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2,
-					light.size,
-					light.size,
-					false,
-					false
-				);
-				BloodAndMithrilClient.spriteBatch.draw(
-					fBuffer.getColorBufferTexture(),
-					0f,
-					0f,
-					BloodAndMithrilClient.WIDTH,
-					BloodAndMithrilClient.HEIGHT,
-					(int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,
-					(int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2,
-					light.size,
-					light.size,
-					false,
-					false
-				);
-				BloodAndMithrilClient.spriteBatch.end();
-				light.mOcclusion.end();
-
-				//Calculate 1D shadow map
-				light.fShadowMap.begin();
-				BloodAndMithrilClient.spriteBatch.begin();
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.shadowMap);
-				Shaders.shadowMap.setUniformf("resolution", light.fOcclusion.getWidth(), light.fOcclusion.getHeight());
-				Shaders.shadowMap.setUniformf("span", light.spanBegin, light.spanEnd);
-				BloodAndMithrilClient.spriteBatch.draw(light.fOcclusion.getColorBufferTexture(), 0f, 0f, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, light.size, light.size, false, false);
-				BloodAndMithrilClient.spriteBatch.end();
-				light.fShadowMap.end();
-
-				light.mShadowMap.begin();
-				BloodAndMithrilClient.spriteBatch.begin();
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.shadowMap);
-				Shaders.shadowMap.setUniformf("resolution", light.mOcclusion.getWidth(), light.mOcclusion.getHeight());
-				Shaders.shadowMap.setUniformf("span", light.spanBegin, light.spanEnd);
-				BloodAndMithrilClient.spriteBatch.draw(light.mOcclusion.getColorBufferTexture(), 0f, 0f, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, light.size, light.size, false, false);
-				BloodAndMithrilClient.spriteBatch.end();
-				light.mShadowMap.end();
-				
-				light.renderSwitch = !light.renderSwitch;
-			}
-
-			//Begin rendering----------------------------------//
-			Weather.render();
-			BloodAndMithrilClient.spriteBatch.begin();
-
-			bBufferLit.begin();
-			
-			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			
-			// Still render through the shader if no lights are present
-			if (tempLights.isEmpty()) {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.defaultBackGroundTiles);
-				bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
-				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-				Shaders.defaultBackGroundTiles.setUniformi("u_texture2", 1);
-				BloodAndMithrilClient.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
-				BloodAndMithrilClient.spriteBatch.flush();
-			}
-			
-			for (Light light : tempLights) {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.defaultBackGroundTiles);
-				bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
-				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-				Shaders.defaultBackGroundTiles.setUniformi("u_texture2", 1);
-				Shaders.defaultBackGroundTiles.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-				Shaders.defaultBackGroundTiles.setUniformf("size", light.size);
-				Shaders.defaultBackGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a);
-				Shaders.defaultBackGroundTiles.setUniformf("lightSource", (int)BloodAndMithrilClient.worldToScreenX(light.x), (int)BloodAndMithrilClient.worldToScreenY(light.y));
-				BloodAndMithrilClient.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
-				BloodAndMithrilClient.spriteBatch.flush();
-			}
-			bBufferLit.end();
-			
-			mBufferLit.begin();
-			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			for (Light light : tempLights) {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.defaultBackGroundTiles);
-				bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
-				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-				Shaders.defaultBackGroundTiles.setUniformi("u_texture2", 1);
-				Shaders.defaultBackGroundTiles.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-				Shaders.defaultBackGroundTiles.setUniformf("size", light.size);
-				Shaders.defaultBackGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a);
-				Shaders.defaultBackGroundTiles.setUniformf("lightSource", (int)BloodAndMithrilClient.worldToScreenX(light.x), (int)BloodAndMithrilClient.worldToScreenY(light.y));
-				BloodAndMithrilClient.spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
-				BloodAndMithrilClient.spriteBatch.flush();
-			}
-			mBufferLit.end();
-
-			//Render the background
-			BloodAndMithrilClient.spriteBatch.setShader(Shaders.black);
-			Shaders.black.setUniformf("color", new Color(0f, 0f, 0f, 1f));
-			BloodAndMithrilClient.spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
-			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-			BloodAndMithrilClient.spriteBatch.draw(bBufferLit.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
-
-			//Render the light rays
-			for (Light light: tempLights) {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.shadow);
-				Shaders.shadow.setUniformf("resolution", light.fOcclusion.getWidth(), light.fOcclusion.getHeight());
-				
-				Shaders.shadow.setUniformf("color", light.color.r, light.color.g, light.color.b, 0.4f * light.color.a/20f);
-				Shaders.shadow.setUniformf("intensity", light.intensity);
-				BloodAndMithrilClient.spriteBatch.draw(light.mShadowMap.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size, 0, 0, light.size, 1, false, true);
-				BloodAndMithrilClient.spriteBatch.flush();
-				
-				Shaders.shadow.setUniformf("color", light.color.r, light.color.g, light.color.b, 0.7f * light.color.a/20f);
-				Shaders.shadow.setUniformf("intensity", light.intensity);
-				BloodAndMithrilClient.spriteBatch.draw(light.fShadowMap.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size, 0, 0, light.size, 1, false, true);
-				BloodAndMithrilClient.spriteBatch.flush();
-			}
-
-			//Render middleground without lighting
-			if (SEE_ALL) {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-				BloodAndMithrilClient.spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
-			} else {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.black);
-				float color = WorldState.currentEpoch.dayLight() * 0.15f;
-				Shaders.black.setUniformf("color", new Color(color, color, color, 1f));
-				BloodAndMithrilClient.spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
-				
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-				BloodAndMithrilClient.spriteBatch.draw(mBufferLit.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
-			}
-
-			//Render the middleground, affected by lighting
-			for (Light light : tempLights) {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.defaultForeGroundTiles);
-				light.mShadowMap.getColorBufferTexture().bind(1);
-				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-				Shaders.defaultForeGroundTiles.setUniformi("u_texture2", 1);
-				Shaders.defaultForeGroundTiles.setUniformf("penetration", 0.10f);
-				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a * 0.8f * light.intensity);
-				BloodAndMithrilClient.spriteBatch.draw(light.mOcclusion.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size);
-			}
-
-			//Render foreground without lighting
-			if (SEE_ALL) {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
-			} else {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.daylightShader);
-				bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
-				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-				Shaders.daylightShader.setUniformi("u_texture2", 1);
-				BloodAndMithrilClient.spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, 0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, false, true);
-			}
-
-			//Render the foreground, affected by lighting
-			for (Light light : tempLights) {
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.defaultForeGroundTiles);
-				light.fShadowMap.getColorBufferTexture().bind(1);
-				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
-				Shaders.defaultForeGroundTiles.setUniformi("u_texture2", 1);
-				Shaders.defaultForeGroundTiles.setUniformf("penetration", 0.07f);
-				Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a * light.intensity);
-				BloodAndMithrilClient.spriteBatch.draw(light.fOcclusion.getColorBufferTexture(),  (int)BloodAndMithrilClient.worldToScreenX(light.x) - light.size/2,  (int)BloodAndMithrilClient.worldToScreenY(light.y) - light.size/2, light.size, light.size);
-			}
-
-			BloodAndMithrilClient.spriteBatch.end();
-			//End rendering----------------------------------//
 		}
 	}
 

@@ -36,8 +36,8 @@ public class MoveIndividual implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.individuals.get(individualId);
-		if (individual != null && Domain.selectedIndividuals.contains(individual)) {
+		Individual individual = Domain.getIndividuals().get(individualId);
+		if (individual != null && Domain.getSelectedIndividuals().contains(individual)) {
 			AIProcessor.sendPathfindingRequest(
 					individual,
 				new WayPoint(destinationCoordinates),

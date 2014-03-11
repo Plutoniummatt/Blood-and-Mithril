@@ -17,7 +17,7 @@ public class SynchronizeFaction implements Request {
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(true);
-		for (Faction faction : Domain.factions.values()) {
+		for (Faction faction : Domain.getFactions().values()) {
 			responses.add(new SynchronizeFactionResponse(faction));
 		}
 		responses.add(new ChangeFactionControlPassword.RefreshFactionWindow());
@@ -47,11 +47,11 @@ public class SynchronizeFaction implements Request {
 
 		@Override
 		public void acknowledge() {
-			Faction fac = Domain.factions.get(faction.factionId);
+			Faction fac = Domain.getFactions().get(faction.factionId);
 			if (fac != null) {
 				fac.controlPassword = faction.controlPassword;
 			} else {
-				Domain.factions.put(faction.factionId, faction);
+				Domain.getFactions().put(faction.factionId, faction);
 			}
 		}
 

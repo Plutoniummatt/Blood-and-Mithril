@@ -348,7 +348,7 @@ public class UserInterface {
 				return;
 			}
 
-			for (Individual indi : Domain.individuals.values()) {
+			for (Individual indi : Domain.getIndividuals().values()) {
 				if (indi.isControllable()) {
 
 					Vector2 centre = new Vector2(indi.getState().position.x, indi.getState().position.y + indi.getHeight() / 2);
@@ -359,14 +359,14 @@ public class UserInterface {
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
 						if (ClientServerInterface.isServer()) {
 							indi.select(0);
-							Domain.selectedIndividuals.add(indi);
+							Domain.getSelectedIndividuals().add(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), true);
 						}
-					} else if (Domain.selectedIndividuals.contains(indi)) {
+					} else if (Domain.getSelectedIndividuals().contains(indi)) {
 						if (ClientServerInterface.isServer()) {
 							indi.deselect(false, 0);
-							Domain.selectedIndividuals.remove(indi);
+							Domain.getSelectedIndividuals().remove(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 						}
@@ -401,7 +401,7 @@ public class UserInterface {
 
 	private static void renderIndividualUISprites() {
 		BloodAndMithrilClient.spriteBatch.begin();
-		for (Individual indi : Domain.individuals.values()) {
+		for (Individual indi : Domain.getIndividuals().values()) {
 			if (indi.isSelected()) {
 				AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
@@ -626,7 +626,7 @@ public class UserInterface {
 			layeredComponents = windowsCopy;
 		}
 
-		for (final Individual indi : Domain.individuals.values()) {
+		for (final Individual indi : Domain.getIndividuals().values()) {
 			if (indi.isMouseOver()) {
 				final ContextMenu secondaryMenu = indi.getContextMenu();
 				newMenu.getMenuItems().add(
@@ -648,7 +648,7 @@ public class UserInterface {
 			}
 		}
 
-		for (final Prop prop : Domain.props.values()) {
+		for (final Prop prop : Domain.getProps().values()) {
 			if (prop.isMouseOver()) {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
 				newMenu.getMenuItems().add(

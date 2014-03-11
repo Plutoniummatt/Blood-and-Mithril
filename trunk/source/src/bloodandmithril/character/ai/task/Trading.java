@@ -28,12 +28,12 @@ public class Trading extends AITask {
 	public Trading(IndividualIdentifier hostId, int otherId, TradeEntity entity) {
 		super(hostId);
 		this.entity = entity;
-		this.proposer = Domain.individuals.get(hostId.getId());
+		this.proposer = Domain.getIndividuals().get(hostId.getId());
 
 		if (entity == TradeEntity.INDIVIDUAL) {
-			this.proposee = Domain.individuals.get(otherId);
+			this.proposee = Domain.getIndividuals().get(otherId);
 		} else {
-			prop = Domain.props.get(otherId);
+			prop = Domain.getProps().get(otherId);
 			this.proposee = ((ConstructionWithContainer) prop).container;
 		}
 	}

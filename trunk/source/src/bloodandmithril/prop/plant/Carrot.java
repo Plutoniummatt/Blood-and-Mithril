@@ -82,8 +82,8 @@ public class Carrot extends Plant {
 			)
 		);
 
-		if (Domain.selectedIndividuals.size() == 1 &&
-		  !(Domain.selectedIndividuals.iterator().next().getAI().getCurrentTask() instanceof Trading)) {
+		if (Domain.getSelectedIndividuals().size() == 1 &&
+		  !(Domain.getSelectedIndividuals().iterator().next().getAI().getCurrentTask() instanceof Trading)) {
 
 			menu.addMenuItem(
 				new ContextMenuItem(
@@ -91,7 +91,7 @@ public class Carrot extends Plant {
 					new Task() {
 						@Override
 						public void execute() {
-							Individual individual = Domain.selectedIndividuals.iterator().next();
+							Individual individual = Domain.getSelectedIndividuals().iterator().next();
 							if (ClientServerInterface.isServer()) {
 								individual.getAI().setCurrentTask(
 									new Harvest(individual, thisCarrot)

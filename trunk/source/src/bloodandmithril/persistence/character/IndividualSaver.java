@@ -21,6 +21,6 @@ public class IndividualSaver {
 	 */
 	public static void saveAll() {
 		FileHandle individuals = Gdx.files.local(GameSaver.savePath + "/world/individuals.txt");
-		individuals.writeString(encode(Domain.individuals), false);
+		individuals.writeString(encode(Domain.getIndividuals()), false);
 	}
 }

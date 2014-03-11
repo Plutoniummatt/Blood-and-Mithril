@@ -20,7 +20,7 @@ public class DestroyPropNotification implements Response {
 
 	@Override
 	public void acknowledge() {
-		Domain.props.remove(propId);
+		Domain.getProps().remove(propId);
 	}
 
 
