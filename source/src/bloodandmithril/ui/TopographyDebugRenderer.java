@@ -13,6 +13,7 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.superstructure.SuperStructure;
+import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
@@ -39,6 +40,8 @@ public class TopographyDebugRenderer {
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			if (struct instanceof SuperStructure) {
 				Boundaries boundaries = ((SuperStructure) struct).getBoundaries();
+				Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, Integer.toString(struct.getStructureKey()), boundaries.left + 10, boundaries.top - 10);
+				Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, Integer.toString(struct.getChunksLeftToBeGenerated()), boundaries.left + 10, boundaries.top - 30);
 				UserInterface.shapeRenderer.rect(
 					boundaries.left * Topography.CHUNK_SIZE - topoX, 
 					boundaries.bottom * Topography.CHUNK_SIZE - topoY, 

@@ -79,7 +79,7 @@ public class Harvest extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return !Domain.props.containsKey(harvestable.id);
+			return !Domain.getProps().containsKey(harvestable.id);
 		}
 
 
@@ -91,12 +91,12 @@ public class Harvest extends CompositeAITask {
 		@Override
 		public void execute() {
 
-			Individual host = Domain.individuals.get(hostId.getId());
+			Individual host = Domain.getIndividuals().get(hostId.getId());
 
 			if (host.getInteractionBox().isWithinBox(harvestable.position)) {
-				if (Domain.props.containsKey(harvestable.id)) {
+				if (Domain.getProps().containsKey(harvestable.id)) {
 					if (harvestable.destroyUponHarvest()) {
-						Domain.props.remove(harvestable.id);
+						Domain.getProps().remove(harvestable.id);
 					}
 
 					if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
@@ -106,7 +106,7 @@ public class Harvest extends CompositeAITask {
 					if (ClientServerInterface.isClient() && ClientServerInterface.isServer()) {
 						Item harvested = harvestable.harvest();
 						if (harvested != null) {
-							Domain.individuals.get(hostId.getId()).giveItem(harvested);
+							Domain.getIndividuals().get(hostId.getId()).giveItem(harvested);
 						}
 						InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
 							@Override

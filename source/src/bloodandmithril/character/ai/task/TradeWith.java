@@ -177,7 +177,7 @@ public class TradeWith extends CompositeAITask {
 	public static void openTradeWindowWithProp(Individual proposer, Container constructionContainer) {
 		if (constructionContainer instanceof ConstructionContainer) {
 			
-			Prop prop = Domain.props.get(((ConstructionContainer) constructionContainer).propId);
+			Prop prop = Domain.getProps().get(((ConstructionContainer) constructionContainer).propId);
 			if (prop instanceof Furnace) {
 				UserInterface.addLayeredComponentUnique(
 					new FurnaceWindow(

@@ -173,7 +173,7 @@ public abstract class Structure implements Serializable {
 	/**
 	 * See {@link #structureKey}
 	 */
-	protected int getStructureKey() {
+	public int getStructureKey() {
 		return structureKey;
 	}
 

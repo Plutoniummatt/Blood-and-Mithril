@@ -31,14 +31,14 @@ public class IndividualSelection implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.individuals.get(individualId);
+		Individual individual = Domain.getIndividuals().get(individualId);
 		if (select) {
 			individual.select(clientId);
-			Domain.selectedIndividuals.remove(individual);
-			Domain.selectedIndividuals.add(individual);
+			Domain.getSelectedIndividuals().remove(individual);
+			Domain.getSelectedIndividuals().add(individual);
 		} else {
 			individual.deselect(false, clientId);
-			Domain.selectedIndividuals.remove(individual);
+			Domain.getSelectedIndividuals().remove(individual);
 		}
 		Response response = new SelectIndividualResponse(individualId, select);
 		Responses responses = new Response.Responses(false);
@@ -77,14 +77,14 @@ public class IndividualSelection implements Request {
 
 		@Override
 		public void acknowledge() {
-			Individual individual = Domain.individuals.get(individualId);
+			Individual individual = Domain.getIndividuals().get(individualId);
 			if (select) {
 				individual.select(0);
-				Domain.selectedIndividuals.remove(individual);
-				Domain.selectedIndividuals.add(individual);
+				Domain.getSelectedIndividuals().remove(individual);
+				Domain.getSelectedIndividuals().add(individual);
 			} else {
 				individual.deselect(false, 0);
-				Domain.selectedIndividuals.remove(individual);
+				Domain.getSelectedIndividuals().remove(individual);
 			}
 		}
 		

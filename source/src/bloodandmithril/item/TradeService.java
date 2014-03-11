@@ -60,8 +60,8 @@ public class TradeService {
 						proposee.giveItem(proposerToTradeItem.getKey());
 					}
 				}
-				if (proposee instanceof ConstructionContainer && Domain.props.get(((ConstructionContainer) proposee).propId) instanceof Furnace) {
-					Furnace furnace = (Furnace) Domain.props.get(((ConstructionContainer) proposee).propId);
+				if (proposee instanceof ConstructionContainer && Domain.getProps().get(((ConstructionContainer) proposee).propId) instanceof Furnace) {
+					Furnace furnace = (Furnace) Domain.getProps().get(((ConstructionContainer) proposee).propId);
 
 					if (proposerToTradeItem.getKey() instanceof Fuel) {
 						Fuel fuel = (Fuel) proposerToTradeItem.getKey();

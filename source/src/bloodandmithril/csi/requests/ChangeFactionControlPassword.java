@@ -30,10 +30,10 @@ public class ChangeFactionControlPassword implements Request {
 
 	@Override
 	public Responses respond() {
-		Domain.factions.get(factionId).changeControlPassword(newPassword);
+		Domain.getFactions().get(factionId).changeControlPassword(newPassword);
 
 		Responses responses = new Responses(true);
-		for (Faction faction : Domain.factions.values()) {
+		for (Faction faction : Domain.getFactions().values()) {
 			responses.add(new SynchronizeFactionResponse(faction));
 		}
 		responses.add(new RefreshFactionWindow());

@@ -47,7 +47,7 @@ public class SynchronizeIndividual implements Request {
 
 		Response response;
 		if (id == -1) {
-			response = new SynchronizeIndividualResponse(Sets.newHashSet(Domain.individuals.keySet()));
+			response = new SynchronizeIndividualResponse(Sets.newHashSet(Domain.getIndividuals().keySet()));
 			responses.add(response);
 			return responses;
 		}
@@ -109,9 +109,9 @@ public class SynchronizeIndividual implements Request {
 		}
 
 		private void syncSingleIndividual() {
-			Individual got = Domain.individuals.get(individual.getId().getId());
+			Individual got = Domain.getIndividuals().get(individual.getId().getId());
 			if (got == null) {
-				Domain.individuals.put(individual.getId().getId(), individual);
+				Domain.getIndividuals().put(individual.getId().getId(), individual);
 			} else {
 				if (timeStamp < got.getTimeStamp()) {
 					// Received snapshot is older than the most recently updated snapshot
@@ -125,7 +125,7 @@ public class SynchronizeIndividual implements Request {
 		@Override
 		public void prepare() {
 			if (this.individualId != null) {
-				this.individual = Domain.individuals.get(individualId).copy();
+				this.individual = Domain.getIndividuals().get(individualId).copy();
 				
 				// Handle AITasks with Paths explicitly, these guys cause ConcurrentModificationExceptions and nasty NPE's even with
 				// ConcurrentLinkedDeque's

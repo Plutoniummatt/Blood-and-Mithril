@@ -13,6 +13,7 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
+import bloodandmithril.graphics.DynamicLightingPostRenderer;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
@@ -36,7 +37,6 @@ import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.DynamicLightingPostRenderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -151,7 +151,7 @@ public class DevWindow extends Window {
 			elf.giveItem(new ButterflySword(100));
 			elf.giveItem(new Broadsword(100));
 
-			Domain.individuals.put(elf.getId().getId(), elf);
+			Domain.getIndividuals().put(elf.getId().getId(), elf);
 			return true;
 		}
 
@@ -166,7 +166,7 @@ public class DevWindow extends Window {
 
 			Boar boar = new Boar(id, state, Domain.getActiveWorld());
 
-			Domain.individuals.put(boar.getId().getId(), boar);
+			Domain.getIndividuals().put(boar.getId().getId(), boar);
 			return true;
 		}
 		
@@ -248,10 +248,10 @@ public class DevWindow extends Window {
 					new Task() {
 						@Override
 						public void execute() {
-							Individual individual = Domain.individuals.get(1);
+							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
 								PineChest pineChest = new PineChest(individual.getState().position.x, individual.getState().position.y, true, 100f);
-								Domain.props.put(pineChest.id, pineChest);
+								Domain.getProps().put(pineChest.id, pineChest);
 							}
 						}
 					},
@@ -278,10 +278,10 @@ public class DevWindow extends Window {
 					new Task() {
 						@Override
 						public void execute() {
-							Individual individual = Domain.individuals.get(1);
+							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
 								Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-								Domain.props.put(furnace.id, furnace);
+								Domain.getProps().put(furnace.id, furnace);
 							}
 						}
 					},
@@ -308,10 +308,10 @@ public class DevWindow extends Window {
 					new Task() {
 						@Override
 						public void execute() {
-							Individual individual = Domain.individuals.get(1);
+							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
 								bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
-								Domain.props.put(carrot.id, carrot);
+								Domain.getProps().put(carrot.id, carrot);
 							}
 						}
 					},

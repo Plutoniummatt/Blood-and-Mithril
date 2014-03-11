@@ -25,10 +25,10 @@ public class SendAttackRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Domain.individuals.get(attackerId).getAI().setCurrentTask(
+		Domain.getIndividuals().get(attackerId).getAI().setCurrentTask(
 			new Attack(
-				Domain.individuals.get(attackerId),
-				Domain.individuals.get(victimId)
+				Domain.getIndividuals().get(attackerId),
+				Domain.getIndividuals().get(victimId)
 			)
 		);
 

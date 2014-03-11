@@ -39,7 +39,7 @@ public abstract class Window extends Component {
 	/** Whether or not this {@link Window} is currently being positioned */
 	private boolean positioning = false;
 
-	/** Whether or not this {@link Window} can be minimized*/
+	/** Whether or not this {@link Window} can be minimized */
 	public final boolean minimizable;
 
 	/** True if minimized */

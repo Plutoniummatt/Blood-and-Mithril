@@ -99,6 +99,7 @@ import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindows;
 import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
+import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
@@ -139,7 +140,6 @@ import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
-import bloodandmithril.world.Domain.Light;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
@@ -420,7 +420,7 @@ public class ClientServerInterface {
 		kryo.register(Felberries.class);
 		kryo.register(FelberryBush.class);
 		kryo.register(Furnace.class);
-		kryo.register(Domain.individuals.keySet().getClass());
+		kryo.register(Domain.getIndividuals().keySet().getClass());
 		kryo.register(GenerateChunk.class);
 		kryo.register(GenerateChunkResponse.class);
 		kryo.register(GlassBottle.class);
@@ -775,7 +775,7 @@ public class ClientServerInterface {
 
 
 		public static synchronized void notifyGiveItem(int individualId, Item item) {
-			Domain.individuals.get(individualId).giveItem(item);
+			Domain.getIndividuals().get(individualId).giveItem(item);
 			sendNotification(
 				-1,
 				true,

@@ -11,6 +11,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
+import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
@@ -25,7 +26,6 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Light;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.weather.Weather;
@@ -256,7 +256,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (UserInterface.contextMenus.isEmpty()) {
-			for (Individual indi : Sets.newHashSet(Domain.selectedIndividuals)) {
+			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
 				if (ClientServerInterface.isServer()) {
 					indi.setWalking(!doubleClick);
 				} else {
@@ -269,7 +269,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
 					}
 				} else {
-					float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.selectedIndividuals.size() - 1), INDIVIDUAL_SPREAD);
+					float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), INDIVIDUAL_SPREAD);
 					if (ClientServerInterface.isServer()) {
 						AIProcessor.sendPathfindingRequest(
 							indi,
@@ -311,7 +311,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		Individual individualClicked = null;
-		for (Individual indi : Domain.individuals.values()) {
+		for (Individual indi : Domain.getIndividuals().values()) {
 			if (indi.isMouseOver()) {
 				individualClicked = indi;
 			}
@@ -320,27 +320,27 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (!uiClicked) {
 			if (individualClicked == null) {
 				if (doubleClick) {
-					for (Individual indi : Domain.individuals.values()) {
+					for (Individual indi : Domain.getIndividuals().values()) {
 						if (indi.isControllable()) {
 							if (ClientServerInterface.isServer()) {
 								indi.deselect(false, 0);
-								Domain.selectedIndividuals.remove(indi);
+								Domain.getSelectedIndividuals().remove(indi);
 							} else {
 								ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 							}
 						}
 					}
 					if (ClientServerInterface.isServer()) {
-						Domain.selectedIndividuals.clear();
+						Domain.getSelectedIndividuals().clear();
 					}
 				}
 
 			} else {
-				for (Individual indi : Domain.individuals.values()) {
+				for (Individual indi : Domain.getIndividuals().values()) {
 					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId()) {
 						if (ClientServerInterface.isServer()) {
 							indi.deselect(false, 0);
-							Domain.selectedIndividuals.remove(indi);
+							Domain.getSelectedIndividuals().remove(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 						}
@@ -349,7 +349,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 				if (individualClicked.isControllable()) {
 					if (ClientServerInterface.isServer()) {
-						Domain.selectedIndividuals.add(individualClicked);
+						Domain.getSelectedIndividuals().add(individualClicked);
 						individualClicked.select(0);
 					} else {
 						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(individualClicked.getId().getId(), true);
@@ -371,7 +371,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			);
 
 			if (ClientServerInterface.isServer()) {
-				Domain.lights.put(ParameterPersistenceService.getParameters().getNextLightId(), light);
+				Domain.getLights().put(ParameterPersistenceService.getParameters().getNextLightId(), light);
 			} else {
 				ClientServerInterface.SendRequest.sendAddLightRequest(light);
 			}

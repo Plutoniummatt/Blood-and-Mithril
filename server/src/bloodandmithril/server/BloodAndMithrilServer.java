@@ -19,6 +19,7 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.generation.component.PrefabricatedComponent;
+import bloodandmithril.graphics.Light;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
@@ -38,7 +39,6 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Light;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -88,7 +88,7 @@ public class BloodAndMithrilServer {
 			public void disconnected (Connection connection) {
 				ClientServerInterface.SendNotification.notifySyncPlayerList();
 
-				for (Individual indi : Domain.individuals.values()) {
+				for (Individual indi : Domain.getIndividuals().values()) {
 					if (indi.getSelectedByClient().remove(connection.getID())) {
 						indi.deselect(false, connection.getID());
 					}
@@ -147,22 +147,22 @@ public class BloodAndMithrilServer {
 						counter++;
 						try {
 							Thread.sleep(100);
-							for (Individual individual : Domain.individuals.values()) {
+							for (Individual individual : Domain.getIndividuals().values()) {
 								ClientServerInterface.SendNotification.notifyIndividualSync(individual.getId().getId());
 							}
 						} catch (InterruptedException e) {
 							Logger.generalDebug(e.getMessage(), LogLevel.WARN, e);
 						}
 						if (counter % 2 == 0) {
-							for (Prop prop : Domain.props.values()) {
+							for (Prop prop : Domain.getProps().values()) {
 								ClientServerInterface.SendNotification.notifySyncProp(prop);
 							}
 
-							for (Faction faction : Domain.factions.values()) {
+							for (Faction faction : Domain.getFactions().values()) {
 								ClientServerInterface.SendNotification.notifySyncFaction(faction);
 							}
 
-							for (Entry<Integer, Light> entry : Domain.lights.entrySet()) {
+							for (Entry<Integer, Light> entry : Domain.getLights().entrySet()) {
 								ClientServerInterface.SendNotification.notifySyncLight(entry.getKey(), entry.getValue());
 							}
 						}
@@ -199,8 +199,8 @@ public class BloodAndMithrilServer {
 		public void create() {
 			gameWorld = new Domain();
 
-			Domain.factions.put(0, new Faction("NPC", 0, false));
-			Domain.factions.put(1, new Faction("Elves", 1, true));
+			Domain.getFactions().put(0, new Faction("NPC", 0, false));
+			Domain.getFactions().put(1, new Faction("Elves", 1, true));
 
 			ClientServerInterface.setServer(true);
 			GameLoader.load();
@@ -253,33 +253,33 @@ public class BloodAndMithrilServer {
 			}
 			
 			if (keycode == Input.Keys.P) {
-				Domain.individuals.get(1).addCondition(new Poison(1f, 0.1f));
+				Domain.getIndividuals().get(1).addCondition(new Poison(1f, 0.1f));
 			}
 
 			if (keycode == Input.Keys.T) {
-				Individual individual = Domain.individuals.get(1);
+				Individual individual = Domain.getIndividuals().get(1);
 				if (individual != null) {
 					PineChest pineChest = new PineChest(
 						individual.getState().position.x,
 						individual.getState().position.y, true, 100f
 					);
-					Domain.props.put(pineChest.id, pineChest);
+					Domain.getProps().put(pineChest.id, pineChest);
 				}
 			}
 
 			if (keycode == Input.Keys.M) {
-				Individual individual = Domain.individuals.get(1);
+				Individual individual = Domain.getIndividuals().get(1);
 				if (individual != null) {
 					Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-					Domain.props.put(furnace.id, furnace);
+					Domain.getProps().put(furnace.id, furnace);
 				}
 			}
 
 			if (keycode == Input.Keys.N) {
-				Individual individual = Domain.individuals.get(1);
+				Individual individual = Domain.getIndividuals().get(1);
 				if (individual != null) {
 					bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
-					Domain.props.put(carrot.id, carrot);
+					Domain.getProps().put(carrot.id, carrot);
 				}
 			}
 
@@ -294,7 +294,7 @@ public class BloodAndMithrilServer {
 
 				Boar boar = new Boar(id, state, Domain.getActiveWorld());
 
-				Domain.individuals.put(boar.getId().getId(), boar);
+				Domain.getIndividuals().put(boar.getId().getId(), boar);
 			}
 
 			if (keycode == Input.Keys.R) {
@@ -339,7 +339,7 @@ public class BloodAndMithrilServer {
 				elf.giveItem(new ButterflySword(100));
 				elf.giveItem(new Broadsword(100));
 
-				Domain.individuals.put(elf.getId().getId(), elf);
+				Domain.getIndividuals().put(elf.getId().getId(), elf);
 			}
 			return false;
 		}

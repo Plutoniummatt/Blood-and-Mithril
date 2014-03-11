@@ -29,7 +29,7 @@ public class CSIMineTile implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.individuals.get(individualId);
+		Individual individual = Domain.getIndividuals().get(individualId);
 		individual.getAI().setCurrentTask(
 			new MineTile(individual, location)
 		);

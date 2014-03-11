@@ -27,7 +27,7 @@ public class ChangeFurnaceTemperature implements Request {
 	
 	@Override
 	public Responses respond() {
-		Prop maybeFurnace = Domain.props.get(propId);
+		Prop maybeFurnace = Domain.getProps().get(propId);
 		if (maybeFurnace instanceof Furnace) {
 			((Furnace) maybeFurnace).setCombustionDurationRemaining(((Furnace) maybeFurnace).getCombustionDurationRemaining() * (((Furnace) maybeFurnace).getTemperature() / newTemp));
 			((Furnace) maybeFurnace).setTemperature(newTemp);

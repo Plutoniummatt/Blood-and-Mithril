@@ -29,7 +29,7 @@ public class GoToMovingLocation extends AITask {
 		this.tolerance = tolerance;
 
 		currentGoToLocation = new GoToLocation(
-			Domain.individuals.get(hostId.getId()),
+			Domain.getIndividuals().get(hostId.getId()),
 			new WayPoint(destination),
 			false,
 			150f,
@@ -46,7 +46,7 @@ public class GoToMovingLocation extends AITask {
 
 	@Override
 	public boolean isComplete() {
-		return Domain.individuals.get(hostId.getId()).getDistanceFrom(destination) < tolerance;
+		return Domain.getIndividuals().get(hostId.getId()).getDistanceFrom(destination) < tolerance;
 	}
 
 
@@ -60,7 +60,7 @@ public class GoToMovingLocation extends AITask {
 		currentGoToLocation.execute();
 		if (currentGoToLocation.isComplete()) {
 			currentGoToLocation = new GoToLocation(
-				Domain.individuals.get(hostId.getId()),
+				Domain.getIndividuals().get(hostId.getId()),
 				new WayPoint(destination),
 				false,
 				150f,

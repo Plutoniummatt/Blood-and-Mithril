@@ -64,8 +64,8 @@ public class PineChest extends ConstructionWithContainer {
 			)
 		);
 
-		if (Domain.selectedIndividuals.size() == 1) {
-			final Individual selected = Domain.selectedIndividuals.iterator().next();
+		if (Domain.getSelectedIndividuals().size() == 1) {
+			final Individual selected = Domain.getSelectedIndividuals().iterator().next();
 			ContextMenuItem openChestMenuItem = new ContextMenuItem(
 				"Open",
 				new Task() {

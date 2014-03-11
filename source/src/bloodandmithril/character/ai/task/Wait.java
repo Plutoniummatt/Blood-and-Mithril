@@ -32,7 +32,7 @@ public class Wait extends AITask {
 
 	@Override
 	public void execute() {
-		Domain.individuals.get(hostId.getId()).clearCommands();
+		Domain.getIndividuals().get(hostId.getId()).clearCommands();
 		if (time < 0f) {
 			complete = true;
 			return;

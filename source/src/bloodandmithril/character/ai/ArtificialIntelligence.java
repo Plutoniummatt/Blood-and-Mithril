@@ -111,13 +111,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 	/** Calculates the distance from an individual */
 	protected float distanceFrom(Individual other) {
-		return Domain.individuals.get(hostId.getId()).getState().position.cpy().sub(other.getState().position).len();
+		return Domain.getIndividuals().get(hostId.getId()).getState().position.cpy().sub(other.getState().position).len();
 	}
 
 
 	/** Calculates the distance to a location */
 	protected float distanceFrom(Vector2 location) {
-		return Domain.individuals.get(hostId.getId()).getState().position.cpy().sub(location).len();
+		return Domain.getIndividuals().get(hostId.getId()).getState().position.cpy().sub(location).len();
 	}
 
 
@@ -137,7 +137,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 * @param distance - The maximum distance from the hosts current position that the host wanders.
 	 */
 	public void wander(float distance, boolean fly) {
-		Individual host = Domain.individuals.get(hostId.getId());
+		Individual host = Domain.getIndividuals().get(hostId.getId());
 
 		if (Util.getRandom().nextBoolean() && getCurrentTask() instanceof Idle) {
 			AIProcessor.sendPathfindingRequest(
@@ -166,7 +166,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 */
 	public void goToIndividual(Individual individual, float tolerance, boolean fly) {
 		if (distanceFrom(individual) > tolerance) {
-			Individual host = Domain.individuals.get(hostId.getId());
+			Individual host = Domain.getIndividuals().get(hostId.getId());
 			setCurrentTask(new GoToLocation(host, new WayPoint(individual.getState().position), fly, individual.getWidth() * 2, true));
 		}
 	}
