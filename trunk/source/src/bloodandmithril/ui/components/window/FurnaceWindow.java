@@ -102,7 +102,7 @@ public class FurnaceWindow extends TradeWindow {
 									return;
 								}
 
-								if (newTemp > Furnace.maxTemp) {
+								if (newTemp > Furnace.MAX_TEMP) {
 									UserInterface.addLayeredComponent(
 										new MessageWindow(
 											"Temperature too high",
@@ -120,7 +120,7 @@ public class FurnaceWindow extends TradeWindow {
 									return;
 								}
 
-								if (newTemp < Furnace.minTemp) {
+								if (newTemp < Furnace.MIN_TEMP) {
 									UserInterface.addLayeredComponent(
 										new MessageWindow(
 											"Temperature too low",
@@ -193,17 +193,15 @@ public class FurnaceWindow extends TradeWindow {
 		if (furnace.isBurning()) {
 			for (HashMap<ListingMenuItem<Item>, Integer> hashMap : proposeePanel.getListing()) {
 				for (Entry<ListingMenuItem<Item>, Integer> entry : hashMap.entrySet()) {
-					if (entry.getKey().t instanceof Fuel) {
-						entry.getKey().button.setDownColor(Util.Colors.DARK_RED);
-						entry.getKey().button.setOverColor(Util.Colors.DARK_RED);
-						entry.getKey().button.setIdleColor(Util.Colors.DARK_RED);
-						entry.getKey().button.setTask(new Task() {
-							@Override
-							public void execute() {
-								// Do nothing
-							}
-						});
-					}
+					entry.getKey().button.setDownColor(Util.Colors.DARK_RED);
+					entry.getKey().button.setOverColor(Util.Colors.DARK_RED);
+					entry.getKey().button.setIdleColor(Util.Colors.DARK_RED);
+					entry.getKey().button.setTask(new Task() {
+						@Override
+						public void execute() {
+							// Do nothing
+						}
+					});
 				}
 			}
 
@@ -227,6 +225,12 @@ public class FurnaceWindow extends TradeWindow {
 			getAlpha()
 		);
 	}
+	
+	
+	@Override
+	protected boolean tradeButtonClickable() {
+		return !furnace.isBurning() && super.tradeButtonClickable();
+	}
 
 
 	/**
@@ -241,7 +245,7 @@ public class FurnaceWindow extends TradeWindow {
 		for (Entry<Item, Integer> entry : furnace.container.getInventory().entrySet()) {
 			Item item = entry.getKey();
 			if (item instanceof Fuel) {
-				max = max + ((Fuel)item).getCombustionDuration() * (Furnace.minTemp / furnace.getTemperature()) * entry.getValue();
+				max = max + ((Fuel)item).getCombustionDuration() * (Furnace.MIN_TEMP / furnace.getTemperature()) * entry.getValue();
 			}
 		}
 		float fraction = furnace.getCombustionDurationRemaining() / max;
@@ -315,7 +319,7 @@ public class FurnaceWindow extends TradeWindow {
 			for (Entry<Item, Integer> entry : proposee.getInventory().entrySet()) {
 				Item item = entry.getKey();
 				if (item instanceof Fuel) {
-					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue() * (Furnace.minTemp / Furnace.minTemp);
+					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue() * (Furnace.MIN_TEMP / Furnace.MIN_TEMP);
 				}
 			}
 

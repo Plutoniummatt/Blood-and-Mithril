@@ -83,7 +83,7 @@ public class Domain {
 	public static FrameBuffer bBufferProcessedForDaylightShader;
 	public static FrameBuffer bBufferLit;
 
-
+	
 	/**
 	 * Constructor
 	 */

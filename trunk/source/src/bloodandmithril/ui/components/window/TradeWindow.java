@@ -357,14 +357,17 @@ public class TradeWindow extends Window {
 			}
 		}
 
-		boolean isTradeButtonClickable = isActive() && !rejected && (!proposeeItemsToTrade.isEmpty() || !proposerItemsToTrade.isEmpty());
-
 		tradeButton.render(
 			x + width/2,
 			y - height + 40,
-			isTradeButtonClickable,
+			tradeButtonClickable(),
 			getAlpha()
 		);
+	}
+
+
+	protected boolean tradeButtonClickable() {
+		return isActive() && !rejected && (!proposeeItemsToTrade.isEmpty() || !proposerItemsToTrade.isEmpty());
 	}
 
 

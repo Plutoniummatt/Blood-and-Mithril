@@ -1,6 +1,37 @@
 package bloodandmithril.ui;
 
+import static bloodandmithril.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.BloodAndMithrilClient.cam;
+import static bloodandmithril.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.BloodAndMithrilClient.getMouseWorldX;
+import static bloodandmithril.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.BloodAndMithrilClient.paused;
+import static bloodandmithril.BloodAndMithrilClient.ping;
+import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.csi.ClientServerInterface.isServer;
+import static bloodandmithril.persistence.GameSaver.isSaving;
+import static bloodandmithril.ui.KeyMappings.cameraDrag;
+import static bloodandmithril.ui.KeyMappings.leftClick;
 import static bloodandmithril.util.Fonts.defaultFont;
+import static bloodandmithril.world.WorldState.currentEpoch;
+import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
+import static com.badlogic.gdx.Gdx.files;
+import static com.badlogic.gdx.Gdx.gl;
+import static com.badlogic.gdx.Gdx.input;
+import static com.badlogic.gdx.graphics.GL10.GL_BLEND;
+import static com.badlogic.gdx.graphics.GL10.GL_ONE_MINUS_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
+import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Rectangle;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -34,20 +65,16 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk;
-import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
 
 /**
  * Class representing UI
@@ -67,7 +94,7 @@ public class UserInterface {
 	public static OrthographicCamera UICamera;
 
 	/** List of {@link Button}s */
-	public static HashMap<String, Button> buttons = new HashMap<String, Button>();
+	public static HashMap<String, Button> buttons = newHashMap();
 
 	/** Unpause button */
 	private static Button unpauseButton, savingButton;
@@ -82,7 +109,7 @@ public class UserInterface {
 	public static ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	/** The texture atlas for other UI elements */
-	public static final Texture uiTexture = new Texture(Gdx.files.internal("data/image/ui.png"));
+	public static final Texture uiTexture = new Texture(files.internal("data/image/ui.png"));
 
 	/** Initial coordinates for the drag box, see {@link #renderDragBox()} */
 	private static Vector2 initialDragCoordinates = null;
@@ -180,10 +207,10 @@ public class UserInterface {
 		//Individual sprites (Selected arrow, movement arrow etc)
 		renderIndividualUISprites();
 
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
+		spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
 
-		if (DEBUG && ClientServerInterface.isServer()) {
+		if (DEBUG && isServer()) {
 			renderComponentInterfaces();
 			if (renderComponentBoundaries) {
 				renderComponentBoundaries();
@@ -195,9 +222,9 @@ public class UserInterface {
 		renderLayeredComponents();
 		renderContextMenus();
 
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
+		spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
-		BloodAndMithrilClient.spriteBatch.begin();
+		spriteBatch.begin();
 		if (DEBUG) {
 			renderDebugText();
 		}
@@ -207,7 +234,7 @@ public class UserInterface {
 		}
 		renderButtons();
 
-		BloodAndMithrilClient.spriteBatch.end();
+		spriteBatch.end();
 
 		renderPauseScreen();
 		renderSavingScreen();
@@ -222,32 +249,32 @@ public class UserInterface {
 	 * Renders the {@link Boundaries} of all {@link bloodandmithril.generation.component.Component}s
 	 */
 	private static void renderComponentBoundaries() {
-		Gdx.gl.glEnable(GL10.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL_BLEND);
+		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : Structures.getStructures().values()) {
-			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.getComponents())) {
-				shapeRenderer.begin(ShapeType.FilledRectangle);
+			for (bloodandmithril.generation.component.Component comp : newArrayList(struct.getComponents())) {
+				shapeRenderer.begin(FilledRectangle);
 				shapeRenderer.setColor(COMPONENT_FILL_COLOR);
 				shapeRenderer.filledRect(
-					BloodAndMithrilClient.worldToScreenX(comp.getBoundaries().left * Topography.TILE_SIZE),
-					BloodAndMithrilClient.worldToScreenY(comp.getBoundaries().bottom * Topography.TILE_SIZE),
-					(comp.getBoundaries().right - comp.getBoundaries().left + 1) * Topography.TILE_SIZE,
-					(comp.getBoundaries().top - comp.getBoundaries().bottom + 1) * Topography.TILE_SIZE
+					worldToScreenX(comp.getBoundaries().left * TILE_SIZE),
+					worldToScreenY(comp.getBoundaries().bottom * TILE_SIZE),
+					(comp.getBoundaries().right - comp.getBoundaries().left + 1) * TILE_SIZE,
+					(comp.getBoundaries().top - comp.getBoundaries().bottom + 1) * TILE_SIZE
 				);
 				shapeRenderer.end();
 
-				shapeRenderer.begin(ShapeType.Rectangle);
+				shapeRenderer.begin(Rectangle);
 				shapeRenderer.setColor(COMPONENT_BOUNDARY_COLOR);
 				shapeRenderer.rect(
-					BloodAndMithrilClient.worldToScreenX(comp.getBoundaries().left * Topography.TILE_SIZE),
-					BloodAndMithrilClient.worldToScreenY(comp.getBoundaries().bottom * Topography.TILE_SIZE),
-					(comp.getBoundaries().right - comp.getBoundaries().left + 1) * Topography.TILE_SIZE,
-					(comp.getBoundaries().top - comp.getBoundaries().bottom + 1) * Topography.TILE_SIZE
+					worldToScreenX(comp.getBoundaries().left * TILE_SIZE),
+					worldToScreenY(comp.getBoundaries().bottom * TILE_SIZE),
+					(comp.getBoundaries().right - comp.getBoundaries().left + 1) * TILE_SIZE,
+					(comp.getBoundaries().top - comp.getBoundaries().bottom + 1) * TILE_SIZE
 				);
 				shapeRenderer.end();
 			}
 		}
-		Gdx.gl.glDisable(GL10.GL_BLEND);
+		gl.glDisable(GL_BLEND);
 	}
 
 
@@ -255,32 +282,32 @@ public class UserInterface {
 	 * Renders a small rectangle to indicate the current tile the mouse is over
 	 */
 	private static void renderMouseOverTileHighlightBox() {
-		float x = BloodAndMithrilClient.worldToScreenX(Topography.TILE_SIZE * Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldX()));
-		float y = BloodAndMithrilClient.worldToScreenY(Topography.TILE_SIZE * Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY()));
+		float x = worldToScreenX(TILE_SIZE * convertToWorldTileCoord(getMouseWorldX()));
+		float y = worldToScreenY(TILE_SIZE * convertToWorldTileCoord(getMouseWorldY()));
 
-		Gdx.gl.glEnable(GL10.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		shapeRenderer.begin(ShapeType.FilledRectangle);
+		gl.glEnable(GL_BLEND);
+		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.begin(FilledRectangle);
 		shapeRenderer.setColor(TILE_OVERLAY_COLOR);
-		shapeRenderer.filledRect(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE);
+		shapeRenderer.filledRect(x, y, TILE_SIZE, TILE_SIZE);
 		shapeRenderer.end();
-		Gdx.gl.glDisable(GL10.GL_BLEND);
+		gl.glDisable(GL_BLEND);
 	}
 
 
 	private static void renderComponentInterfaces() {
-		Gdx.gl.glEnable(GL10.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL_BLEND);
+		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : Structures.getStructures().values()) {
-			for (bloodandmithril.generation.component.Component comp : Lists.newArrayList(struct.getComponents())) {
+			for (bloodandmithril.generation.component.Component comp : newArrayList(struct.getComponents())) {
 				if (renderAvailableInterfaces) {
-					for (Interface in : Lists.newArrayList(comp.getAvailableInterfaces())) {
+					for (Interface in : newArrayList(comp.getAvailableInterfaces())) {
 						if (in != null) {
 							in.render(AVAILABLE_INTERFACE_COLOR);
 						}
 					}
 				} else {
-					for (Interface in : Lists.newArrayList(comp.getExistingInterfaces())) {
+					for (Interface in : newArrayList(comp.getExistingInterfaces())) {
 						if (in != null) {
 							in.render(EXISTING_INTERFACE_COLOR);
 						}
@@ -288,44 +315,44 @@ public class UserInterface {
 				}
 			}
 		}
-		Gdx.gl.glDisable(GL10.GL_BLEND);
+		gl.glDisable(GL_BLEND);
 	}
 
 
 	/** Darkens the screen by 80% and draws "Saving..." on the screen if the game is being saved */
 	private static void renderSavingScreen() {
-		if (GameSaver.isSaving()) {
-			BloodAndMithrilClient.spriteBatch.begin();
-			Gdx.gl.glEnable(GL10.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if (isSaving()) {
+			spriteBatch.begin();
+			gl.glEnable(GL_BLEND);
+			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			shapeRenderer.setColor(DARK_SCREEN_COLOR);
-			shapeRenderer.filledRect(0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
+			shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT);
 			shapeRenderer.end();
 			savingButton.render(true, 1f);
-			Gdx.gl.glDisable(GL10.GL_BLEND);
-			BloodAndMithrilClient.spriteBatch.end();
+			gl.glDisable(GL_BLEND);
+			spriteBatch.end();
 		}
 	}
 
 
 	/** Darkens the screen by 50% and draws an "unpause" button on the screen if the game is paused */
 	private static void renderPauseScreen() {
-		if (BloodAndMithrilClient.paused) {
-			BloodAndMithrilClient.spriteBatch.begin();
-			Gdx.gl.glEnable(GL10.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if (paused) {
+			spriteBatch.begin();
+			gl.glEnable(GL_BLEND);
+			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			shapeRenderer.begin(ShapeType.FilledRectangle);
 			shapeRenderer.setColor(DARK_SCREEN_COLOR);
-			shapeRenderer.filledRect(0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT);
+			shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT);
 			shapeRenderer.end();
 
 			if (unpauseButton != null) {
 				unpauseButton.render(true, 1f);
 			}
 
-			Gdx.gl.glDisable(GL10.GL_BLEND);
-			BloodAndMithrilClient.spriteBatch.end();
+			gl.glDisable(GL_BLEND);
+			spriteBatch.end();
 		}
 	}
 
@@ -339,10 +366,10 @@ public class UserInterface {
 			Vector2 diagCorner1 = initialDragCoordinates.cpy();
 			Vector2 diagCorner2 = new Vector2(screenX, screenY);
 
-			float left = Math.min(diagCorner1.x, diagCorner2.x);
-			float right = Math.max(diagCorner1.x, diagCorner2.x);
-			float top = Math.max(diagCorner1.y, diagCorner2.y);
-			float bottom = Math.min(diagCorner1.y, diagCorner2.y);
+			float left = min(diagCorner1.x, diagCorner2.x);
+			float right = max(diagCorner1.x, diagCorner2.x);
+			float top = max(diagCorner1.y, diagCorner2.y);
+			float bottom = min(diagCorner1.y, diagCorner2.y);
 
 			if (right - left < 3 || top - bottom < 3) {
 				return;
@@ -353,18 +380,18 @@ public class UserInterface {
 
 					Vector2 centre = new Vector2(indi.getState().position.x, indi.getState().position.y + indi.getHeight() / 2);
 
-					centre.x = BloodAndMithrilClient.worldToScreenX(centre.x);
-					centre.y = BloodAndMithrilClient.worldToScreenY(centre.y);
+					centre.x = worldToScreenX(centre.x);
+					centre.y = worldToScreenY(centre.y);
 
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
-						if (ClientServerInterface.isServer()) {
+						if (isServer()) {
 							indi.select(0);
 							Domain.getSelectedIndividuals().add(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), true);
 						}
 					} else if (Domain.getSelectedIndividuals().contains(indi)) {
-						if (ClientServerInterface.isServer()) {
+						if (isServer()) {
 							indi.deselect(false, 0);
 							Domain.getSelectedIndividuals().remove(indi);
 						} else {
@@ -388,11 +415,11 @@ public class UserInterface {
 	 * Renders the drag-box
 	 */
 	private static void renderDragBox() {
-		if (Gdx.input.isButtonPressed(KeyMappings.leftClick) && initialDragCoordinates != null && !Gdx.input.isKeyPressed(KeyMappings.cameraDrag)) {
-			shapeRenderer.begin(ShapeType.Rectangle);
+		if (input.isButtonPressed(leftClick) && initialDragCoordinates != null && !input.isKeyPressed(cameraDrag)) {
+			shapeRenderer.begin(Rectangle);
 			shapeRenderer.setColor(Color.GREEN);
-			float width = BloodAndMithrilClient.getMouseScreenX() - initialDragCoordinates.x;
-			float height = BloodAndMithrilClient.getMouseScreenY() - initialDragCoordinates.y;
+			float width = getMouseScreenX() - initialDragCoordinates.x;
+			float height = getMouseScreenY() - initialDragCoordinates.y;
 			shapeRenderer.rect(initialDragCoordinates.x, initialDragCoordinates.y, width, height);
 			shapeRenderer.end();
 		}
@@ -400,7 +427,7 @@ public class UserInterface {
 
 
 	private static void renderIndividualUISprites() {
-		BloodAndMithrilClient.spriteBatch.begin();
+		spriteBatch.begin();
 		for (Individual indi : Domain.getIndividuals().values()) {
 			if (indi.isSelected()) {
 				AITask currentTask = indi.getAI().getCurrentTask();
@@ -411,27 +438,27 @@ public class UserInterface {
 				}
 			}
 			indi.renderArrows();
-			BloodAndMithrilClient.spriteBatch.flush();
+			spriteBatch.flush();
 		}
-		BloodAndMithrilClient.spriteBatch.end();
+		spriteBatch.end();
 	}
 
 
 	/** Any text that is rendered on UI */
 	private static void renderUIText() {
 		defaultFont.setColor(Color.WHITE);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Time: " + WorldState.currentEpoch.getTimeString(), 5, Gdx.graphics.getHeight() - 5);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Date: " + WorldState.currentEpoch.getDateString(), 5, Gdx.graphics.getHeight() - 25);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Ping: " + BloodAndMithrilClient.ping, 5, Gdx.graphics.getHeight() - 45);
+		defaultFont.draw(spriteBatch, "Time: " + currentEpoch.getTimeString(), 5, HEIGHT - 5);
+		defaultFont.draw(spriteBatch, "Date: " + currentEpoch.getDateString(), 5, HEIGHT - 25);
+		defaultFont.draw(spriteBatch, "Ping: " + ping, 5, HEIGHT - 45);
 	}
 
 
 	/** Debug text */
 	private static void renderDebugText() {
 		defaultFont.setColor(Color.YELLOW);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, Float.toString(Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldX())) + ", " + Float.toString(Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY())), BloodAndMithrilClient.getMouseScreenX() - 35, BloodAndMithrilClient.getMouseScreenY() - 35);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Mouse World Coords: " + BloodAndMithrilClient.getMouseWorldX() + ", " + BloodAndMithrilClient.getMouseWorldY(), 5, 72);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Centre of screen Coords: " + Float.toString(BloodAndMithrilClient.cam.position.x) + ", " + Float.toString(BloodAndMithrilClient.cam.position.y) + ", " + Float.toString(BloodAndMithrilClient.cam.zoom), 5, 52);
+		defaultFont.draw(spriteBatch, Integer.toString(convertToWorldTileCoord(getMouseWorldX())) + ", " + Float.toString(convertToWorldTileCoord(getMouseWorldY())), getMouseScreenX() - 35, getMouseScreenY() - 35);
+		defaultFont.draw(spriteBatch, "Mouse World Coords: " + getMouseWorldX() + ", " + getMouseWorldY(), 5, 72);
+		defaultFont.draw(spriteBatch, "Centre of screen Coords: " + Float.toString(cam.position.x) + ", " + Float.toString(cam.position.y) + ", " + Float.toString(cam.zoom), 5, 52);
 
 		int chunksInMemory = 0;
 		if (ClientServerInterface.isServer()) {
@@ -441,12 +468,11 @@ public class UserInterface {
 		}
 
 		defaultFont.setColor(Color.GREEN);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 55);
-
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, Gdx.graphics.getHeight() - 125);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoaderImpl.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, Gdx.graphics.getHeight() - 165);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, "Number of tasks queued in Pathfinding thread: " + Integer.toString(AIProcessor.pathFinderTasks.size()), 5, Gdx.graphics.getHeight() - 185);
+		defaultFont.draw(spriteBatch, "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 55);
+		defaultFont.draw(spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, Gdx.graphics.getHeight() - 125);
+		defaultFont.draw(spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoaderImpl.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);
+		defaultFont.draw(spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, Gdx.graphics.getHeight() - 165);
+		defaultFont.draw(spriteBatch, "Number of tasks queued in Pathfinding thread: " + Integer.toString(AIProcessor.pathFinderTasks.size()), 5, Gdx.graphics.getHeight() - 185);
 
 		defaultFont.setColor(Color.CYAN);
 	}

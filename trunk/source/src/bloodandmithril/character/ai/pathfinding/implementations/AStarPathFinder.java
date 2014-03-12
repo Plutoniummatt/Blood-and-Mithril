@@ -1,5 +1,10 @@
 package bloodandmithril.character.ai.pathfinding.implementations;
 
+import static bloodandmithril.csi.ClientServerInterface.isClient;
+import static bloodandmithril.csi.ClientServerInterface.isServer;
+import static bloodandmithril.util.Logger.aiDebug;
+import static bloodandmithril.util.Logger.LogLevel.DEBUG;
+import static bloodandmithril.util.Logger.LogLevel.INFO;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static java.lang.Math.abs;
@@ -13,9 +18,6 @@ import java.util.List;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
-import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.util.Logger;
-import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
@@ -104,7 +106,7 @@ public class AStarPathFinder extends PathFinder {
 		int finishY = round(finishCoords.y);
 
 		Node finishNode = new Node(finishX, finishY, null, null, null, safeHeight);
-		Logger.aiDebug("Destination: " + finishNode.toString(), LogLevel.DEBUG);
+		aiDebug("Destination: " + finishNode.toString(), DEBUG);
 
 		Node startNode = new Node(startX, startY, null, null, finishNode, safeHeight);
 		openNodes.put(startX, startY, startNode);
@@ -132,11 +134,11 @@ public class AStarPathFinder extends PathFinder {
 			try {
 				destination = processOpenNodeGround(entry.value, finishNode, height, safeHeight, world);
 			} catch (UndiscoveredPathNotification e) {
-				Logger.aiDebug("Detected undiscovered region", LogLevel.DEBUG);
+				aiDebug("Detected undiscovered region", DEBUG);
 			}
 
 			if (destination != null) {
-				Logger.aiDebug("Extracting path, begining from: " + destination.toString(), LogLevel.DEBUG);
+				aiDebug("Extracting path, begining from: " + destination.toString(), DEBUG);
 				destinationFound = true;
 				return extractPath(destination, finish.tolerance, forceTolerance, world);
 			}
@@ -195,7 +197,7 @@ public class AStarPathFinder extends PathFinder {
 				return new Path();
 			}
 
-			Logger.aiDebug("Adding node to path: " + workingNode.toString(), LogLevel.DEBUG);
+			aiDebug("Adding node to path: " + workingNode.toString(), DEBUG);
 			answer.addWayPointReversed(new WayPoint(convertToWorldCoord(workingNode.x, workingNode.y, true), 0f));
 		}
 
@@ -211,7 +213,7 @@ public class AStarPathFinder extends PathFinder {
 
 	/** Processes an open {@link Node} */
 	private Node processOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification {
-		Logger.aiDebug("Processing open node: " + toProcess.toString(), LogLevel.DEBUG);
+		aiDebug("Processing open node: " + toProcess.toString(), DEBUG);
 		openNodes.remove(toProcess.x, toProcess.y);
 		closedNodes.put(toProcess.x, toProcess.y, toProcess);
 		return processAdjascentNodesToOpenNodeGround(toProcess, destinationNode, height, safeHeight, world);
@@ -222,21 +224,21 @@ public class AStarPathFinder extends PathFinder {
 	private Node processAdjascentNodesToOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification {
 
 		// Left and right nodes, the tiles immediately to the left/right of the open node to process
-		Node leftNode = new Node(toProcess.x - Topography.TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
-		Node rightNode = new Node(toProcess.x + Topography.TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
+		Node leftNode = new Node(toProcess.x - TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
+		Node rightNode = new Node(toProcess.x + TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
 
 
 		if (isDestination(leftNode, destinationNode)) {
 			return leftNode;
 		}
 		int stepUpLeft = processAdjascent(leftNode, height, false, toProcess, destinationNode, safeHeight, world);
-		Node newLeftNode = new Node(leftNode.x, leftNode.y + stepUpLeft * Topography.TILE_SIZE, leftNode.parentX, leftNode.parentY, destinationNode, safeHeight);
+		Node newLeftNode = new Node(leftNode.x, leftNode.y + stepUpLeft * TILE_SIZE, leftNode.parentX, leftNode.parentY, destinationNode, safeHeight);
 		if (!isDestination(newLeftNode, destinationNode)) {
 			if (stepUpLeft < 2) {
 				addToOpenNodes(newLeftNode);
 			}
 		} else {
-			Logger.aiDebug("Destination found: " + leftNode.toString(), LogLevel.DEBUG);
+			aiDebug("Destination found: " + leftNode.toString(), DEBUG);
 			return newLeftNode;
 		}
 
@@ -244,13 +246,13 @@ public class AStarPathFinder extends PathFinder {
 			return rightNode;
 		}
 		int stepUpRight = processAdjascent(rightNode, height, true, toProcess, destinationNode, safeHeight, world);
-		Node newRightNode = new Node(rightNode.x, rightNode.y + stepUpRight * Topography.TILE_SIZE, rightNode.parentX, rightNode.parentY, destinationNode, safeHeight);
+		Node newRightNode = new Node(rightNode.x, rightNode.y + stepUpRight * TILE_SIZE, rightNode.parentX, rightNode.parentY, destinationNode, safeHeight);
 		if (!isDestination(newRightNode, destinationNode)) {
 			if (stepUpRight < 2) {
 				addToOpenNodes(newRightNode);
 			}
 		} else {
-			Logger.aiDebug("Destination found: " + rightNode.toString(), LogLevel.DEBUG);
+			aiDebug("Destination found: " + rightNode.toString(), DEBUG);
 			return newRightNode;
 		}
 
@@ -260,7 +262,7 @@ public class AStarPathFinder extends PathFinder {
 
 	/** Checks if a {@link Node} contains the same coordinates and another */
 	private boolean isDestination(final Node isThisDestination, final Node destinationNode) {
-		Logger.aiDebug("Checking if " + isThisDestination.toString() + " is the destination node: " + destinationNode.toString(), LogLevel.DEBUG);
+		aiDebug("Checking if " + isThisDestination.toString() + " is the destination node: " + destinationNode.toString(), DEBUG);
 		return isThisDestination.x.equals(destinationNode.x) && isThisDestination.y.equals(destinationNode.y);
 	}
 
@@ -284,7 +286,7 @@ public class AStarPathFinder extends PathFinder {
 				}
 				cascadeDownAndProcessPlatforms(to.x, to.y - TILE_SIZE, parent, destination, height, safeHeight, world);
 				changeToDebugTile(to.x, world.getTopography().getLowestEmptyOrPlatformTileWorldCoords(to.x, to.y, false).y, world);
-				return -round(to.y - world.getTopography().getLowestEmptyOrPlatformTileWorldCoords(to.x, to.y, false).y) / Topography.TILE_SIZE;
+				return -round(to.y - world.getTopography().getLowestEmptyOrPlatformTileWorldCoords(to.x, to.y, false).y) / TILE_SIZE;
 
 			// If the tile is not empty and not a platform, we check that all tiles above it (within specified height) are also empty, if so, we return 1, otherwise we return 2.
 			} else if (!tile.isPlatformTile) {
@@ -332,7 +334,7 @@ public class AStarPathFinder extends PathFinder {
 			tile = world.getTopography().getTile(x, y, true);
 			changeToDebugTile(x, y, world);
 		} catch (NullPointerException e) {
-			Logger.aiDebug("Null tile encountered, perhaps not yet generated", LogLevel.INFO);
+			aiDebug("Null tile encountered, perhaps not yet generated", INFO);
 			return;
 		}
 
@@ -369,7 +371,7 @@ public class AStarPathFinder extends PathFinder {
 
 
 	private void changeToDebugTile(final float x, final float y, final World world) {
-		if (ClientServerInterface.isServer() || ClientServerInterface.isClient()) {
+		if (isServer() || isClient()) {
 			return;
 		}
 

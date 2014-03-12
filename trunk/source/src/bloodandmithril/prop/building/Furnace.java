@@ -1,5 +1,7 @@
 package bloodandmithril.prop.building;
 
+import static bloodandmithril.csi.ClientServerInterface.isClient;
+import static bloodandmithril.ui.UserInterface.refreshInventoryWindows;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
@@ -29,9 +31,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Furnace extends ConstructionWithContainer {
 
 	/** {@link TextureRegion} of the {@link Furnace} */
-	public static TextureRegion furnace, furnaceBurning;
+	public static TextureRegion FURANCE, FURNACE_BURNING;
 
-	public static final float minTemp = 1400f, maxTemp = 2500f;
+	public static final float MIN_TEMP = 1400f, MAX_TEMP = 2500f;
 
 	/** The duration which this furnace will combust, in seconds */
 	private float combustionDurationRemaining;
@@ -153,9 +155,9 @@ public class Furnace extends ConstructionWithContainer {
 		}
 
 		if (burning) {
-			BloodAndMithrilClient.spriteBatch.draw(furnaceBurning, position.x - width / 2, position.y);
+			BloodAndMithrilClient.spriteBatch.draw(FURNACE_BURNING, position.x - width / 2, position.y);
 		} else {
-			BloodAndMithrilClient.spriteBatch.draw(furnace, position.x - width / 2, position.y);
+			BloodAndMithrilClient.spriteBatch.draw(FURANCE, position.x - width / 2, position.y);
 		}
 	}
 
@@ -193,7 +195,7 @@ public class Furnace extends ConstructionWithContainer {
 				if (this.combustionDurationRemaining <= 0f) {
 					burning = false;
 					Domain.getLights().remove(lightId);
-					if (!ClientServerInterface.isClient()) {
+					if (!isClient()) {
 						ClientServerInterface.sendNotification(
 							-1,
 							true,
@@ -203,7 +205,7 @@ public class Furnace extends ConstructionWithContainer {
 							new TransferItems.RefreshWindowsResponse()
 						);
 					} else {
-						UserInterface.refreshInventoryWindows();
+						refreshInventoryWindows();
 					}
 				}
 			}

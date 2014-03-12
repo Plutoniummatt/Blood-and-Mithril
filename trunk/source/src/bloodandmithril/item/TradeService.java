@@ -66,7 +66,7 @@ public class TradeService {
 					if (proposerToTradeItem.getKey() instanceof Fuel) {
 						Fuel fuel = (Fuel) proposerToTradeItem.getKey();
 						furnace.setCombustionDurationRemaining(
-							furnace.getCombustionDurationRemaining() + fuel.getCombustionDuration() * (Furnace.minTemp / furnace.getTemperature()) * proposerToTradeItem.getValue()
+							furnace.getCombustionDurationRemaining() + fuel.getCombustionDuration() * (Furnace.MIN_TEMP / furnace.getTemperature()) * proposerToTradeItem.getValue()
 						);
 					}
 				}

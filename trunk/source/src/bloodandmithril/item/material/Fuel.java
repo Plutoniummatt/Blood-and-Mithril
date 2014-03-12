@@ -10,6 +10,6 @@ import bloodandmithril.prop.building.Furnace;
  */
 public interface Fuel {
 
-	/** The duration which this {@link Fuel} will combust at a temperature of {@link Furnace#minTemp} */
+	/** The duration which this {@link Fuel} will combust at a temperature of {@link Furnace#MIN_TEMP} */
 	public float getCombustionDuration();
 }
