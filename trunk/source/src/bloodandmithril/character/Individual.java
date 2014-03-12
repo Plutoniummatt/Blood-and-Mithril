@@ -1,11 +1,29 @@
 package bloodandmithril.character;
 
+import static bloodandmithril.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.BloodAndMithrilClient.cam;
+import static bloodandmithril.BloodAndMithrilClient.controlledFactions;
+import static bloodandmithril.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.csi.ClientServerInterface.isServer;
+import static bloodandmithril.persistence.ParameterPersistenceService.getParameters;
+import static bloodandmithril.world.WorldState.currentEpoch;
+import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
+import static java.lang.Math.PI;
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Attack;
@@ -20,7 +38,6 @@ import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.equipment.Weapon;
-import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
@@ -37,14 +54,12 @@ import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
-import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -79,7 +94,7 @@ public abstract class Individual extends Equipper {
 	/** Width and Height of the individual */
 	private int width, height;
 
-	/** The box definining the region where this {@link Individual} can interact with entities */
+	/** The box defining the region where this {@link Individual} can interact with entities */
 	private Box interactionBox;
 
 	/** For animation frame timing */
@@ -226,7 +241,7 @@ public abstract class Individual extends Equipper {
 
 	/** Determines whether this {@link Individual} is controllable */
 	public boolean isControllable() {
-		return BloodAndMithrilClient.controlledFactions.contains(factionId);
+		return controlledFactions.contains(factionId);
 	}
 
 
@@ -246,17 +261,17 @@ public abstract class Individual extends Equipper {
 	/** Renders any decorations for UI */
 	public void renderArrows() {
 		if (isSelected()) {
-			BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
+			spriteBatch.setShader(Shaders.filter);
 
 			Shaders.filter.setUniformf("color",
-				(float)Math.sin(Math.PI * (1f - state.health/state.maxHealth) / 2),
-				(float)Math.cos(Math.PI * (1f - state.health/state.maxHealth) / 2),
+				(float)sin(PI * (1f - state.health/state.maxHealth) / 2),
+				(float)cos(PI * (1f - state.health/state.maxHealth) / 2),
 				0f,
 				1f
 			);
 
-			Shaders.filter.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-			BloodAndMithrilClient.spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight());
+			Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
+			spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight());
 		}
 	}
 
@@ -280,15 +295,15 @@ public abstract class Individual extends Equipper {
 
 	/** How old this {@link Individual} is */
 	public int getAge() {
-		int age = WorldState.currentEpoch.year - id.birthday.year;
+		int age = currentEpoch.year - id.birthday.year;
 
 		if (age == 0) {
 			return 0;
 		}
 
-		if (WorldState.currentEpoch.monthOfYear < id.birthday.monthOfYear) {
+		if (currentEpoch.monthOfYear < id.birthday.monthOfYear) {
 			age--;
-		} else if (WorldState.currentEpoch.monthOfYear == id.birthday.monthOfYear && WorldState.currentEpoch.dayOfMonth < id.birthday.dayOfMonth) {
+		} else if (currentEpoch.monthOfYear == id.birthday.monthOfYear && currentEpoch.dayOfMonth < id.birthday.dayOfMonth) {
 			age--;
 		}
 
@@ -351,7 +366,7 @@ public abstract class Individual extends Equipper {
 
 		kinetics(delta, Domain.getWorld(getWorldId()));
 
-		if (ClientServerInterface.isServer()) {
+		if (isServer()) {
 			conditions(delta);
 		}
 	}
@@ -361,7 +376,7 @@ public abstract class Individual extends Equipper {
 	 * Update how this {@link Individual} is affected by its {@link Condition}s
 	 */
 	private void conditions(float delta) {
-		for (Condition condition : Lists.newArrayList(state.currentConditions)) {
+		for (Condition condition : newArrayList(state.currentConditions)) {
 			if (condition.isExpired()) {
 				condition.uponExpiry();
 				state.currentConditions.remove(condition);
@@ -387,9 +402,9 @@ public abstract class Individual extends Equipper {
 
 		//Stepping up
 		if (steppingUp) {
-			if (steps >= Topography.TILE_SIZE) {
+			if (steps >= TILE_SIZE) {
 				steppingUp = false;
-				state.position.y += Topography.TILE_SIZE - steps;
+				state.position.y += TILE_SIZE - steps;
 			} else {
 				state.position.y = state.position.y + 3f;
 				steps += 3f;
@@ -400,7 +415,7 @@ public abstract class Individual extends Equipper {
 		state.position.add(state.velocity.cpy().mul(delta));
 
 		//Calculate velocity based on acceleration, including gravity
-		if (Math.abs((state.velocity.y - world.getGravity() * delta) * delta) < Topography.TILE_SIZE/2) {
+		if (abs((state.velocity.y - world.getGravity() * delta) * delta) < TILE_SIZE/2) {
 			state.velocity.y = state.velocity.y - (steppingUp ? 0 : delta * world.getGravity());
 		} else {
 			state.velocity.y = state.velocity.y * 0.8f;
@@ -415,13 +430,13 @@ public abstract class Individual extends Equipper {
 			state.velocity.y = 0f;
 
 			if (state.position.y >= 0f) {
-				if ((int)state.position.y % Topography.TILE_SIZE == 0) {
-					state.position.y = (int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE;
+				if ((int)state.position.y % TILE_SIZE == 0) {
+					state.position.y = (int)state.position.y / TILE_SIZE * TILE_SIZE;
 				} else {
-					state.position.y = (int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE + Topography.TILE_SIZE;
+					state.position.y = (int)state.position.y / TILE_SIZE * TILE_SIZE + TILE_SIZE;
 				}
 			} else {
-				state.position.y = (int)state.position.y / Topography.TILE_SIZE * Topography.TILE_SIZE;
+				state.position.y = (int)state.position.y / TILE_SIZE * TILE_SIZE;
 			}
 		} else if (state.position.y == 0f && !(topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
 			state.velocity.y = 0f;
@@ -460,7 +475,7 @@ public abstract class Individual extends Equipper {
 	 */
 	protected boolean groundDetectionCriteriaMet(Topography topography) {
 		Tile currentTile = topography.getTile(state.position.x, state.position.y, true);
-		Tile tileBelow = topography.getTile(state.position.x, state.position.y - Topography.TILE_SIZE/2, true);
+		Tile tileBelow = topography.getTile(state.position.x, state.position.y - TILE_SIZE/2, true);
 		return (!(currentTile instanceof Tile.EmptyTile) && !currentTile.isPlatformTile || currentTile.isPlatformTile && !(tileBelow instanceof EmptyTile)) &&
 			    !isToBeIgnored(state.position);
 	}
@@ -479,10 +494,10 @@ public abstract class Individual extends Equipper {
 		}
 
 		if (jumpOff != null) {
-			if (jumpedOff && !Topography.convertToWorldCoord(state.position, false).equals(jumpOff)) {
+			if (jumpedOff && !convertToWorldCoord(state.position, false).equals(jumpOff)) {
 				jumpedOff = false;
 				jumpOff = null;
-			} else if (Math.abs(Topography.convertToWorldCoord(state.position, false).cpy().sub(jumpOff).len()) > 2 * Topography.TILE_SIZE) {
+			} else if (Math.abs(convertToWorldCoord(state.position, false).cpy().sub(jumpOff).len()) > 2 * TILE_SIZE) {
 				jumpedOff = true;
 			}
 		}
@@ -494,7 +509,7 @@ public abstract class Individual extends Equipper {
 	 */
 	private boolean isToBeIgnored(Vector2 location) {
 		if (jumpOff != null) {
-			return Topography.convertToWorldCoord(location, false).equals(jumpOff) || Topography.convertToWorldCoord(location.x, location.y - 1, false).equals(jumpOff);
+			return convertToWorldCoord(location, false).equals(jumpOff) || convertToWorldCoord(location.x, location.y - 1, false).equals(jumpOff);
 		}
 		return false;
 	}
@@ -504,8 +519,8 @@ public abstract class Individual extends Equipper {
 	 * Jump off the tile this {@link Individual} is currently standing on, as long as its a platform
 	 */
 	public void jumpOff(Topography topography) {
-		if (topography.getTile(state.position.x, state.position.y - Topography.TILE_SIZE/2, true).isPlatformTile) {
-			jumpOff = Topography.convertToWorldCoord(state.position.x, state.position.y - Topography.TILE_SIZE/2, false);
+		if (topography.getTile(state.position.x, state.position.y - TILE_SIZE/2, true).isPlatformTile) {
+			jumpOff = convertToWorldCoord(state.position.x, state.position.y - TILE_SIZE/2, false);
 		}
 	}
 
@@ -514,22 +529,22 @@ public abstract class Individual extends Equipper {
 	 * Determines during {@link #kinetics(float)} whether we can step up
 	 */
 	protected boolean canStepUp(int offsetX, Topography topography) {
-		int blockspan = getHeight()/Topography.TILE_SIZE + (getHeight() % Topography.TILE_SIZE == 0 ? 0 : 1);
+		int blockspan = getHeight()/TILE_SIZE + (getHeight() % TILE_SIZE == 0 ? 0 : 1);
 
 		for (int block = 1; block != blockspan + 1; block++) {
-			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE*block + Topography.TILE_SIZE/2, topography)) {
+			if (!isPassable(state.position.x + offsetX, state.position.y + TILE_SIZE*block + TILE_SIZE/2, topography)) {
 				return false;
 			}
 		}
-		return !isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE/2, topography);
+		return !isPassable(state.position.x + offsetX, state.position.y + TILE_SIZE/2, topography);
 	}
 
 
 	/** Whether this {@link Individual} is obstructed by {@link Tile}s */
 	protected boolean obstructed(int offsetX, Topography topography) {
-		int blockspan = getHeight()/Topography.TILE_SIZE + (getHeight() % Topography.TILE_SIZE == 0 ? 0 : 1);
+		int blockspan = getHeight()/TILE_SIZE + (getHeight() % TILE_SIZE == 0 ? 0 : 1);
 		for (int block = 0; block != blockspan; block++) {
-			if (!isPassable(state.position.x + offsetX, state.position.y + Topography.TILE_SIZE/2 + Topography.TILE_SIZE * block, topography)) {
+			if (!isPassable(state.position.x + offsetX, state.position.y + TILE_SIZE/2 + TILE_SIZE * block, topography)) {
 				return true;
 			}
 		}
@@ -550,7 +565,7 @@ public abstract class Individual extends Equipper {
 		AITask current = ai.getCurrentTask();
 		Tile tile = topography.getTile(x, y, true);
 
-		if (Topography.convertToWorldCoord(x, y, false).equals(jumpOff)) {
+		if (convertToWorldCoord(x, y, false).equals(jumpOff)) {
 			return true;
 		}
 
@@ -562,7 +577,7 @@ public abstract class Individual extends Equipper {
 		//If we're on a platform and we're GoingToLocation, then check to see if the tile above is part of the path, if it is, then not passable, otherwise passable
 		if (tile.isPlatformTile) {
 			if (current instanceof GoToLocation) {
-				return !((GoToLocation)current).isPartOfPath(new Vector2(x, y + Topography.TILE_SIZE));
+				return !((GoToLocation)current).isPartOfPath(new Vector2(x, y + TILE_SIZE));
 			} else {
 				return true;
 			}
@@ -585,7 +600,7 @@ public abstract class Individual extends Equipper {
 			new Task() {
 				@Override
 				public void execute() {
-					if (ClientServerInterface.isServer()) {
+					if (isServer()) {
 						thisIndividual.deselect(false, 0);
 						Domain.getSelectedIndividuals().remove(thisIndividual);
 						clearCommands();
@@ -605,7 +620,7 @@ public abstract class Individual extends Equipper {
 			new Task() {
 				@Override
 				public void execute() {
-					if (ClientServerInterface.isServer()) {
+					if (isServer()) {
 						Domain.getSelectedIndividuals().add(thisIndividual);
 						thisIndividual.select(0);
 					} else {
@@ -626,8 +641,8 @@ public abstract class Individual extends Equipper {
 				public void execute() {
 					IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
 						thisIndividual,
-						BloodAndMithrilClient.WIDTH/2 - 150,
-						BloodAndMithrilClient.HEIGHT/2 + 160,
+						WIDTH/2 - 150,
+						HEIGHT/2 + 160,
 						300,
 						320,
 						id.getSimpleName() + " - Info",
@@ -652,8 +667,8 @@ public abstract class Individual extends Equipper {
 					public void execute() {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
-								BloodAndMithrilClient.WIDTH / 2 - 125,
-								BloodAndMithrilClient.HEIGHT/2 + 50,
+								WIDTH / 2 - 125,
+								HEIGHT/2 + 50,
 								250,
 								100,
 								"Rename",
@@ -662,7 +677,7 @@ public abstract class Individual extends Equipper {
 								new JITTask() {
 									@Override
 									public void execute(Object... args) {
-										if (ClientServerInterface.isServer()) {
+										if (isServer()) {
 											thisIndividual.id.nickName = args[0].toString();
 										} else {
 											ClientServerInterface.SendRequest.sendChangeNickNameRequest(thisIndividual.id.id, args[0].toString());
@@ -688,8 +703,8 @@ public abstract class Individual extends Equipper {
 			new Task() {
 				@Override
 				public void execute() {
-					secondaryMenu.x = BloodAndMithrilClient.getMouseScreenX();
-					secondaryMenu.y = BloodAndMithrilClient.getMouseScreenY();
+					secondaryMenu.x = getMouseScreenX();
+					secondaryMenu.y = getMouseScreenY();
 				}
 			},
 			Color.WHITE,
@@ -705,8 +720,8 @@ public abstract class Individual extends Equipper {
 				public void execute() {
 					InventoryWindow inventoryWindow = new InventoryWindow(
 						thisIndividual,
-						BloodAndMithrilClient.WIDTH/2 - ((id.getSimpleName() + " - Inventory").length() * 10 + 50)/2,
-						BloodAndMithrilClient.HEIGHT/2 + 200,
+						WIDTH/2 - ((id.getSimpleName() + " - Inventory").length() * 10 + 50)/2,
+						HEIGHT/2 + 200,
 						(id.getSimpleName() + " - Inventory").length() * 10 + 50,
 						400,
 						id.getSimpleName() + " - Inventory",
@@ -728,7 +743,7 @@ public abstract class Individual extends Equipper {
 				@Override
 				public void execute() {
 					for (Individual indi : Domain.getSelectedIndividuals()) {
-						if (ClientServerInterface.isServer()) {
+						if (isServer()) {
 							if (indi != thisIndividual) {
 								indi.ai.setCurrentTask(
 									new TradeWith(indi, thisIndividual)
@@ -754,8 +769,8 @@ public abstract class Individual extends Equipper {
 					UserInterface.addLayeredComponent(
 						new IndividualStatusWindow(
 							thisIndividual,
-							BloodAndMithrilClient.WIDTH/2 - 200,
-							BloodAndMithrilClient.HEIGHT/2 + 200,
+							WIDTH/2 - 200,
+							HEIGHT/2 + 200,
 							400,
 							400,
 							id.getSimpleName() + " - Status",
@@ -776,7 +791,7 @@ public abstract class Individual extends Equipper {
 				@Override
 				public void execute() {
 					for (Individual indi : Domain.getSelectedIndividuals()) {
-						if (ClientServerInterface.isServer()) {
+						if (isServer()) {
 							if (indi != thisIndividual) {
 								indi.ai.setCurrentTask(
 									new Attack(indi, thisIndividual)
@@ -953,7 +968,7 @@ public abstract class Individual extends Equipper {
 	 * that is of the same class as the condition trying to be added, stack them by calling {@link Condition#stack(Condition)}
 	 */
 	public synchronized void addCondition(Condition condition) {
-		for (Condition existing : Sets.newHashSet(state.currentConditions)) {
+		for (Condition existing : newHashSet(state.currentConditions)) {
 			if (condition.getClass().equals(existing.getClass())) {
 				existing.stack(condition);
 				return;
@@ -1044,7 +1059,7 @@ public abstract class Individual extends Equipper {
 		public Vector2 position;
 		public Vector2 velocity;
 		public Vector2 acceleration;
-		public Set<Condition> currentConditions = Sets.newHashSet();
+		public Set<Condition> currentConditions = newHashSet();
 
 		/**
 		 * Constructor
@@ -1128,7 +1143,7 @@ public abstract class Individual extends Equipper {
 			this.firstName = firstName;
 			this.lastName = lastName;
 			this.birthday = birthday;
-			this.id = ParameterPersistenceService.getParameters().getNextIndividualId();
+			this.id = getParameters().getNextIndividualId();
 		}
 
 
