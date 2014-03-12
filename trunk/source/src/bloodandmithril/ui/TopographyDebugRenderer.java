@@ -35,13 +35,14 @@ public class TopographyDebugRenderer {
 	 */
 	public static void render() {
 		UserInterface.shapeRenderer.begin(ShapeType.Rectangle);
+		BloodAndMithrilClient.spriteBatch.begin();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		for (Structure struct : Structures.getStructures().values()) {
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			if (struct instanceof SuperStructure) {
 				Boundaries boundaries = ((SuperStructure) struct).getBoundaries();
-				Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, Integer.toString(struct.getStructureKey()), boundaries.left + 10, boundaries.top - 10);
-				Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, Integer.toString(struct.getChunksLeftToBeGenerated()), boundaries.left + 10, boundaries.top - 30);
+				Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, Integer.toString(struct.getStructureKey()), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY + 10);
+				Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, struct.getClass().getSimpleName(), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY - 15);
 				UserInterface.shapeRenderer.rect(
 					boundaries.left * Topography.CHUNK_SIZE - topoX, 
 					boundaries.bottom * Topography.CHUNK_SIZE - topoY, 
@@ -61,7 +62,9 @@ public class TopographyDebugRenderer {
 				);
 			}
 		}
+		BloodAndMithrilClient.spriteBatch.end();
 		
+		Gdx.gl.glEnable(GL20.GL_BLEND);
 		UserInterface.shapeRenderer.setColor(Colors.modulateAlpha(Color.CYAN, 0.2f));
 		for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> outerEntry : Domain.getActiveWorld().getTopography().getChunkMap().getChunkMap().entrySet()) {
 			for (Entry<Integer, Chunk> innerEntry : outerEntry.getValue().entrySet()) {
