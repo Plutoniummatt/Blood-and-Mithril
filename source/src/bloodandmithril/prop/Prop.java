@@ -63,8 +63,8 @@ public abstract class Prop {
 	public abstract void update(float delta);
 
 	public static void setup() {
-		Furnace.furnace = new TextureRegion(Domain.gameWorldTexture, 453, 176, 49, 76);
-		Furnace.furnaceBurning = new TextureRegion(Domain.gameWorldTexture, 503, 176, 49, 76);
+		Furnace.FURANCE = new TextureRegion(Domain.gameWorldTexture, 453, 176, 49, 76);
+		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 503, 176, 49, 76);
 		PineChest.pineChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);
 		Carrot.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 176, 12, 17);
 	}

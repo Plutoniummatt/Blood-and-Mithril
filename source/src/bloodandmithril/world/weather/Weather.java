@@ -1,12 +1,21 @@
 package bloodandmithril.world.weather;
 
+import static bloodandmithril.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.world.Domain.gameWorldTexture;
+import static bloodandmithril.world.WorldState.currentEpoch;
+import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledCircle;
+import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.Math.PI;
+import static java.lang.Math.cos;
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
+import static java.lang.Math.sin;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
@@ -15,7 +24,6 @@ import bloodandmithril.world.WorldState;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -25,27 +33,27 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Weather {
 
-	private static ShapeRenderer shapeRenderer = new ShapeRenderer();
+	private static ShapeRenderer shapeRenderer 			= new ShapeRenderer();
 
-	private static Color dayTopColor = new Color(33f/150f, 169f/255f, 255f/255f, 1f);
-	private static Color dayBottomColor = new Color(0f, 144f/255f, 1f, 1f);
-	private static Color nightTopColor = new Color(87f/255f, 0f, 218f/255f, 1f);
-	private static Color nightBottomColor = new Color(33f/255f, 0f, 232f/255f, 1f);
+	private static Color dayTopColor 					= new Color(33f/150f, 169f/255f, 255f/255f, 1f);
+	private static Color dayBottomColor 				= new Color(0f, 144f/255f, 1f, 1f);
+	private static Color nightTopColor 					= new Color(87f/255f, 0f, 218f/255f, 1f);
+	private static Color nightBottomColor 				= new Color(33f/255f, 0f, 232f/255f, 1f);
 
 	/** Texture regions for various phases of the moon */
-	private static List<TextureRegion> moonPhases = new ArrayList<TextureRegion>();
+	private static List<TextureRegion> moonPhases 		= newArrayList();
 
-	private static TextureRegion sunTexture = new TextureRegion(Domain.gameWorldTexture, 0, 1536, 512, 512);
-	private static TextureRegion sunGlowTexture = new TextureRegion(Domain.gameWorldTexture, 512, 1536, 512, 512);
+	private static TextureRegion sunTexture 			= new TextureRegion(gameWorldTexture, 0, 1536, 512, 512);
+	private static TextureRegion sunGlowTexture 		= new TextureRegion(gameWorldTexture, 512, 1536, 512, 512);
 
 	/** Orbital radius of the moon around the {@link #celestialPivot} */
-	private static float celestialOrbitalRadius = BloodAndMithrilClient.WIDTH * 3 / 4;
+	private static float celestialOrbitalRadius 		= WIDTH * 3 / 4;
 
 	/** The pivot around which the moon resolves */
-	private static Vector2 celestialPivot = new Vector2(BloodAndMithrilClient.WIDTH/2, -BloodAndMithrilClient.HEIGHT/2);
+	private static Vector2 celestialPivot 				= new Vector2(WIDTH/2, -HEIGHT/2);
 
 	/** The index to access {@link #moonPhases} with, updated between 11:00 and 13:00 */
-	private static int moonPhaseIndex = (int)(12f / 30f * WorldState.currentEpoch.dayOfMonth);
+	private static int moonPhaseIndex 					= (int)(12f / 30f * currentEpoch.dayOfMonth);
 
 	/** Load resources */
 	public static void setup() {
@@ -67,48 +75,48 @@ public class Weather {
 	private static void renderSun() {
 		float time = WorldState.currentEpoch.getTime();
 
-		double angle = time < 12f ? Math.PI/2f + Math.PI * (time- 2f)/20f : Math.PI + Math.PI * (time - 12f)/20f;
+		double angle = time < 12f ? PI/2f + PI * (time- 2f)/20f : PI + PI * (time - 12f)/20f;
 
-		float x = celestialPivot.x - celestialOrbitalRadius * (float)Math.sin((float)angle) - sunTexture.getRegionWidth()/2;
-		float y = celestialPivot.y - celestialOrbitalRadius * (float)Math.cos((float)angle) - sunTexture.getRegionHeight()/2;
+		float x = celestialPivot.x - celestialOrbitalRadius * (float)sin((float)angle) - sunTexture.getRegionWidth()/2;
+		float y = celestialPivot.y - celestialOrbitalRadius * (float)cos((float)angle) - sunTexture.getRegionHeight()/2;
 
-		BloodAndMithrilClient.spriteBatch.begin();
+		spriteBatch.begin();
 		Shaders.sun.begin();
 		Shaders.sun.setUniformf("time", time);
 		Shaders.sun.end();
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.sun);
-		BloodAndMithrilClient.spriteBatch.draw(sunGlowTexture, x - 768, y - 768, 2048, 2048);
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-		BloodAndMithrilClient.spriteBatch.draw(sunTexture, x, y);
-		BloodAndMithrilClient.spriteBatch.end();
+		spriteBatch.setShader(Shaders.sun);
+		spriteBatch.draw(sunGlowTexture, x - 768, y - 768, 2048, 2048);
+		spriteBatch.setShader(Shaders.pass);
+		spriteBatch.draw(sunTexture, x, y);
+		spriteBatch.end();
 	}
 
 
 	/** Renders the moon */
 	private static void renderMoon() {
-		float time = WorldState.currentEpoch.getTime();
+		float time = currentEpoch.getTime();
 
 		if (time > 11f && time < 13f) {
-			moonPhaseIndex = (int)(12f / 30f * WorldState.currentEpoch.dayOfMonth);
+			moonPhaseIndex = (int)(12f / 30f * currentEpoch.dayOfMonth);
 		}
 
-		double angle = Math.PI + time < 12f ? Math.PI + Math.PI * time/24f : Math.PI * time/24f;
+		double angle = PI + time < 12f ? PI + PI * time/24f : PI * time/24f;
 
-		float x = celestialPivot.x - celestialOrbitalRadius * (float)Math.sin((float)angle) - moonPhases.get(moonPhaseIndex).getRegionWidth()/2;
-		float y = celestialPivot.y - celestialOrbitalRadius * (float)Math.cos((float)angle) - moonPhases.get(moonPhaseIndex).getRegionHeight()/2;
+		float x = celestialPivot.x - celestialOrbitalRadius * (float)sin((float)angle) - moonPhases.get(moonPhaseIndex).getRegionWidth()/2;
+		float y = celestialPivot.y - celestialOrbitalRadius * (float)cos((float)angle) - moonPhases.get(moonPhaseIndex).getRegionHeight()/2;
 
-		BloodAndMithrilClient.spriteBatch.begin();
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.moon);
-		BloodAndMithrilClient.spriteBatch.draw(moonPhases.get(moonPhaseIndex), x, y);
-		BloodAndMithrilClient.spriteBatch.end();
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.moon);
+		spriteBatch.draw(moonPhases.get(moonPhaseIndex), x, y);
+		spriteBatch.end();
 	}
 
 
 	/** Renders the sky */
 	private static void renderSky() {
-		shapeRenderer.begin(ShapeType.FilledRectangle);
+		shapeRenderer.begin(FilledRectangle);
 
-		float time = WorldState.currentEpoch.getTime();
+		float time = currentEpoch.getTime();
 		Color filter = new Color();
 
 		if (time < 10) {
@@ -125,13 +133,13 @@ public class Weather {
 			filter.b = (float) (0.1D + 1.2D * exp(-0.200*pow(time-14, 2)));
 		}
 
-		Color topColor = dayTopColor.cpy().mul(WorldState.currentEpoch.dayLight()).add(nightTopColor.cpy().mul(1f - WorldState.currentEpoch.dayLight())).mul(filter);
-		Color bottomColor = dayBottomColor.cpy().mul(WorldState.currentEpoch.dayLight()).add(nightBottomColor.cpy().mul(1f - WorldState.currentEpoch.dayLight())).mul(filter);
+		Color topColor = dayTopColor.cpy().mul(currentEpoch.dayLight()).add(nightTopColor.cpy().mul(1f - currentEpoch.dayLight())).mul(filter);
+		Color bottomColor = dayBottomColor.cpy().mul(currentEpoch.dayLight()).add(nightBottomColor.cpy().mul(1f - currentEpoch.dayLight())).mul(filter);
 
-		shapeRenderer.filledRect(0, 0, BloodAndMithrilClient.WIDTH, BloodAndMithrilClient.HEIGHT, bottomColor, bottomColor, topColor, topColor);
+		shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT, bottomColor, bottomColor, topColor, topColor);
 		shapeRenderer.end();
 
-		shapeRenderer.begin(ShapeType.FilledCircle);
+		shapeRenderer.begin(FilledCircle);
 		shapeRenderer.end();
 	}
 
@@ -140,10 +148,10 @@ public class Weather {
 	private static void populateMoonTextureRegions() {
 		int sideLength = 175;
 		for (int i = 0; i < 11; i++) {
-			moonPhases.add(new TextureRegion(Domain.gameWorldTexture, i * sideLength, 0, sideLength, sideLength));
+			moonPhases.add(new TextureRegion(gameWorldTexture, i * sideLength, 0, sideLength, sideLength));
 		}
 		for (int i = 0; i < 2; i++) {
-			moonPhases.add(new TextureRegion(Domain.gameWorldTexture, i * sideLength, 175, sideLength, sideLength));
+			moonPhases.add(new TextureRegion(gameWorldTexture, i * sideLength, 175, sideLength, sideLength));
 		}
 	}
 }
