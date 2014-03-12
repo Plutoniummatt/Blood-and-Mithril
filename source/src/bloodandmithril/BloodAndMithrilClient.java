@@ -80,10 +80,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static final float DOUBLE_CLICK_TIME = 0.2f;
 
 	/** Resolution x */
-	public static final int WIDTH = ConfigPersistenceService.getConfig().getResX();
+	public static int WIDTH = ConfigPersistenceService.getConfig().getResX();
 
 	/** Resolution y */
-	public static final int HEIGHT = ConfigPersistenceService.getConfig().getResY();
+	public static int HEIGHT = ConfigPersistenceService.getConfig().getResY();
 
 	/** 'THE' SpriteBatch */
 	public static SpriteBatch spriteBatch;
