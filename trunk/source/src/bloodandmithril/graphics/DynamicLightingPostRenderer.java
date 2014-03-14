@@ -50,7 +50,6 @@ public class DynamicLightingPostRenderer {
 		}
 
 		for (Light light : tempLights) {
-			
 			if (light.fOcclusion == null) {
 				light.fShadowMap = new FrameBuffer(RGBA8888, light.size, 1, true);
 				light.mShadowMap = new FrameBuffer(RGBA8888, light.size, 1, true);
@@ -173,6 +172,17 @@ public class DynamicLightingPostRenderer {
 		
 		mBufferLit.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
+		
+		// Still render through the shader if no lights are present
+		if (tempLights.isEmpty()) {
+			spriteBatch.setShader(Shaders.defaultBackGroundTiles);
+			bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
+			gl.glActiveTexture(GL10.GL_TEXTURE0);
+			Shaders.defaultBackGroundTiles.setUniformi("u_texture2", 1);
+			spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
+			spriteBatch.flush();
+		}
+		
 		for (Light light : tempLights) {
 			spriteBatch.setShader(Shaders.defaultBackGroundTiles);
 			bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
@@ -253,7 +263,7 @@ public class DynamicLightingPostRenderer {
 			light.fShadowMap.getColorBufferTexture().bind(1);
 			gl.glActiveTexture(GL_TEXTURE0);
 			Shaders.defaultForeGroundTiles.setUniformi("u_texture2", 1);
-			Shaders.defaultForeGroundTiles.setUniformf("penetration", 0.07f);
+			Shaders.defaultForeGroundTiles.setUniformf("penetration", 0.15f);
 			Shaders.defaultForeGroundTiles.setUniformf("color", light.color.r, light.color.g, light.color.b, light.color.a * light.intensity);
 			spriteBatch.draw(light.fOcclusion.getColorBufferTexture(),  (int)worldToScreenX(light.x) - light.size/2,  (int)worldToScreenY(light.y) - light.size/2, light.size, light.size);
 		}

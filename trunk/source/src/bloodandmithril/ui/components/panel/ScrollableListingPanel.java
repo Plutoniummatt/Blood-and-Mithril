@@ -1,6 +1,7 @@
 package bloodandmithril.ui.components.panel;
 
 import static bloodandmithril.util.Fonts.defaultFont;
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -172,7 +173,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 
 		for (Map<ListingMenuItem<T>, Integer> listing : newArrayList) {
 
-			List<Entry<ListingMenuItem<T>, Integer>> entrySet = Lists.newArrayList(listing.entrySet());
+			List<Entry<ListingMenuItem<T>, Integer>> entrySet = newArrayList(listing.entrySet());
 
 			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, Integer>>() {
 				@Override

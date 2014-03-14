@@ -62,7 +62,7 @@ public class YellowBrick extends Item {
 
 
 	@Override
-	public Item combust(float temperature, float time) {
+	public Item combust(float energy) {
 		return this;
 	}
 }

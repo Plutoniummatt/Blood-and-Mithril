@@ -80,7 +80,7 @@ public class DeathCap extends Item implements Consumable {
 
 
 	@Override
-	public Item combust(float temperature, float time) {
+	public Item combust(float energy) {
 		return this;
 	}
 }

@@ -1,4 +1,4 @@
-package bloodandmithril.item.misc;
+package bloodandmithril.item.material.plant;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
@@ -7,56 +7,46 @@ import bloodandmithril.ui.components.window.Window;
 
 import com.badlogic.gdx.graphics.Color;
 
-/**
- * Class representing currency
- *
- * @author Matt
- */
-public class Currency extends Item {
-	private static final long serialVersionUID = -7059495735666011863L;
+public class CarrotSeed extends Seed {
+	private static final long serialVersionUID = -3918937697003306522L;
 
 	/**
 	 * Constructor
 	 */
-	public Currency() {
-		super(0f, false, 1);
+	protected CarrotSeed(float mass, boolean equippable, long value) {
+		super(mass, equippable, value);
 	}
-
 
 	@Override
 	public String getSingular(boolean firstCap) {
-		return firstCap ? "Coin" : "coin";
+		return firstCap ? "Carrot seed" : "carrot seed";
 	}
-
 
 	@Override
 	public String getPlural(boolean firstCap) {
-		return firstCap ? "Coins" : "coins";
+		return firstCap ? "Carrot seeds" : "carrot seeds";
 	}
-
 
 	@Override
 	public Window getInfoWindow() {
 		return new MessageWindow(
-			"The most widely used form of currency, can be used for trade as a substitution for items.",
+			"Seed of a carrot",
 			Color.ORANGE,
 			BloodAndMithrilClient.WIDTH/2 - 175,
 			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
-			"Coin",
+			"Carrot seed",
 			true,
 			100,
 			100
 		);
 	}
 
-
 	@Override
 	public boolean sameAs(Item other) {
-		return other instanceof Currency;
+		return other instanceof CarrotSeed;
 	}
-
 
 	@Override
 	public Item combust(float energy) {

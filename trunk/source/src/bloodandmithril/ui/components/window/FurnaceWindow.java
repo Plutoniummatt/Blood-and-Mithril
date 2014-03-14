@@ -19,7 +19,6 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
-import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
@@ -60,124 +59,6 @@ public class FurnaceWindow extends TradeWindow {
 		UIRef.BL
 	);
 
-	/** Button that changes temperature of the furnace */
-	private final Button changeTemperatureButton = new Button(
-		"Change temperature",
-		defaultFont,
-		0,
-		0,
-		180,
-		16,
-		new Task() {
-			@Override
-			public void execute() {
-				temperatureInputWindow = new TextInputWindow(
-					BloodAndMithrilClient.WIDTH / 2 - 125,
-					BloodAndMithrilClient.HEIGHT/2 + 50,
-					250,
-					100,
-					"Change temperature",
-					250,
-					100,
-					new JITTask() {
-						@Override
-						public void execute(Object... args) {
-							try {
-								float newTemp = Float.parseFloat(args[0].toString());
-								if (!furnace.isBurning()) {
-									UserInterface.addLayeredComponent(
-										new MessageWindow(
-											"Furnace is not burning",
-											Color.RED,
-											BloodAndMithrilClient.WIDTH/2 - 150,
-											BloodAndMithrilClient.HEIGHT/2 + 50,
-											300,
-											100,
-											"Furnace",
-											true,
-											300,
-											100
-										)
-									);
-									return;
-								}
-
-								if (newTemp > Furnace.MAX_TEMP) {
-									UserInterface.addLayeredComponent(
-										new MessageWindow(
-											"Temperature too high",
-											Color.RED,
-											BloodAndMithrilClient.WIDTH/2 - 150,
-											BloodAndMithrilClient.HEIGHT/2 + 50,
-											300,
-											100,
-											"Too hot",
-											true,
-											300,
-											100
-										)
-									);
-									return;
-								}
-
-								if (newTemp < Furnace.MIN_TEMP) {
-									UserInterface.addLayeredComponent(
-										new MessageWindow(
-											"Temperature too low",
-											Color.RED,
-											BloodAndMithrilClient.WIDTH/2 - 150,
-											BloodAndMithrilClient.HEIGHT/2 + 50,
-											300,
-											100,
-											"Too cold",
-											true,
-											300,
-											100
-											)
-										);
-									return;
-								}
-
-								if (ClientServerInterface.isServer()) {
-									furnace.setCombustionDurationRemaining(furnace.getCombustionDurationRemaining() * (furnace.getTemperature() / newTemp));
-									furnace.setTemperature(newTemp);
-								} else {
-									ClientServerInterface.SendRequest.sendChangeFurnaceTemperatureRequest(furnace.id, newTemp);
-								}
-
-							} catch (Exception e) {
-								UserInterface.addLayeredComponent(
-									new MessageWindow(
-										"Invalid temperature",
-										Color.RED,
-										BloodAndMithrilClient.WIDTH/2 - 150,
-										BloodAndMithrilClient.HEIGHT/2 + 50,
-										300,
-										100,
-										"Error",
-										true,
-										300,
-										100
-									)
-								);
-							}
-						}
-					},
-					"Change",
-					true,
-					String.format("%.1f", furnace.getTemperature())
-				);
-
-				UserInterface.addLayeredComponent(
-					temperatureInputWindow
-				);
-			}
-		},
-		Color.GREEN,
-		Color.ORANGE,
-		Color.WHITE,
-		UIRef.BL
-	);
 
 	/**
 	 * Constructor
@@ -217,13 +98,6 @@ public class FurnaceWindow extends TradeWindow {
 			!furnace.isBurning() && isActive() && isProposeeItemsEmpty(),
 			getAlpha()
 		);
-
-		changeTemperatureButton.render(
-			x + width/2,
-			y - height + 90,
-			furnace.isBurning() && isActive(),
-			getAlpha()
-		);
 	}
 	
 	
@@ -245,7 +119,7 @@ public class FurnaceWindow extends TradeWindow {
 		for (Entry<Item, Integer> entry : furnace.container.getInventory().entrySet()) {
 			Item item = entry.getKey();
 			if (item instanceof Fuel) {
-				max = max + ((Fuel)item).getCombustionDuration() * (Furnace.MIN_TEMP / furnace.getTemperature()) * entry.getValue();
+				max = max + ((Fuel)item).getCombustionDuration() * entry.getValue();
 			}
 		}
 		float fraction = furnace.getCombustionDurationRemaining() / max;
@@ -280,12 +154,8 @@ public class FurnaceWindow extends TradeWindow {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		super.internalLeftClick(copy, windowsCopy);
 
-		if (isProposeeItemsEmpty()) {
+		if (isProposeeItemsEmpty() && !furnace.isBurning()) {
 			igniteButton.click();
-		}
-
-		if (furnace.isBurning()) {
-			changeTemperatureButton.click();
 		}
 	}
 
@@ -319,7 +189,7 @@ public class FurnaceWindow extends TradeWindow {
 			for (Entry<Item, Integer> entry : proposee.getInventory().entrySet()) {
 				Item item = entry.getKey();
 				if (item instanceof Fuel) {
-					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue() * (Furnace.MIN_TEMP / Furnace.MIN_TEMP);
+					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue();
 				}
 			}
 
