@@ -1,47 +1,51 @@
 package bloodandmithril.item.material.plant;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
-import com.badlogic.gdx.graphics.Color;
-
-/**
- * A Carrot
- *
- * @author Matt
- */
-public class Carrot extends Item implements Consumable {
-	private static final long serialVersionUID = 3714624810622084079L;
-	public static final String description = "The carrot is a root vegetable, usually orange in color. It has a crisp texture when fresh.";
-
+public class CookedCarrot extends Item implements Consumable {
+	private static final long serialVersionUID = -4630040294684060393L;
+	public static final String description = "A nicely cooked carrot, less crunchy than raw.  Increases stamina as well as hunger";
+	
 	/**
 	 * Constructor
 	 */
-	public Carrot() {
-		super(0.1f, false, 5);
+	public CookedCarrot() {
+		super(0.1f, false, 10);
 	}
-
-
+	
+	
+	@Override
+	public boolean sameAs(Item other) {
+		if (other instanceof CookedCarrot) {
+			return true;
+		}
+		return false;
+	}
+	
+	
 	@Override
 	public String getSingular(boolean firstCap) {
-		return firstCap ? "Carrot" : "carrot";
+		return firstCap ? "Cooked carrot" : "cooked carrot";
 	}
 
 
 	@Override
 	public String getPlural(boolean firstCap) {
-		return firstCap ? "Carrots" : "carrots";
+		return firstCap ? "Cooked carrots" : "cooked carrots";
 	}
 
 
 	@Override
 	public boolean consume(Individual consumer) {
 		consumer.increaseHunger(0.05f);
+		consumer.increaseStamina(0.10f);
 		return true;
 	}
 
@@ -64,20 +68,7 @@ public class Carrot extends Item implements Consumable {
 
 
 	@Override
-	public boolean sameAs(Item other) {
-		if (other instanceof Carrot) {
-			return true;
-		}
-		return false;
-	}
-
-
-	@Override
 	public Item combust(float energy) {
-		if (energy > 0f && energy < 10000f) {
-			return new CookedCarrot();
-		} else {
-			return new Ashes();
-		}
+		return null;
 	}
 }

@@ -399,7 +399,10 @@ public class TradeWindow extends Window {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		proposerPanel.leftClick(copy, windowsCopy);
 		proposeePanel.leftClick(copy, windowsCopy);
-		tradeButton.click();
+		
+		if (tradeButtonClickable()) {
+			tradeButton.click();
+		}
 	}
 
 

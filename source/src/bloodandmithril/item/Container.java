@@ -104,7 +104,7 @@ public class Container implements Serializable {
 	/**
 	 * @return the inventory
 	 */
-	public HashMap<Item, Integer> getInventory() {
+	public synchronized HashMap<Item, Integer> getInventory() {
 		return inventory;
 	}
 

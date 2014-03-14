@@ -2,6 +2,11 @@ package bloodandmithril.prop.building;
 
 import static bloodandmithril.csi.ClientServerInterface.isClient;
 import static bloodandmithril.ui.UserInterface.refreshInventoryWindows;
+import static com.google.common.collect.Maps.newHashMap;
+
+import java.util.Map.Entry;
+import java.util.Set;
+
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
@@ -10,6 +15,8 @@ import bloodandmithril.csi.requests.AddLightRequest;
 import bloodandmithril.csi.requests.SynchronizePropRequest;
 import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.graphics.Light;
+import bloodandmithril.item.Item;
+import bloodandmithril.item.material.Fuel;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -33,8 +40,6 @@ public class Furnace extends ConstructionWithContainer {
 	/** {@link TextureRegion} of the {@link Furnace} */
 	public static TextureRegion FURANCE, FURNACE_BURNING;
 
-	public static final float MIN_TEMP = 1400f, MAX_TEMP = 2500f;
-
 	/** The duration which this furnace will combust, in seconds */
 	private float combustionDurationRemaining;
 
@@ -43,9 +48,6 @@ public class Furnace extends ConstructionWithContainer {
 
 	/** The ID of the {@link Light} that will be rendered if this {@link Furnace} is lit */
 	private int lightId;
-
-	/** Temperature of the {@link Furnace} */
-	private float temperature;
 
 	/** True if burning */
 	private boolean burning;
@@ -122,7 +124,6 @@ public class Furnace extends ConstructionWithContainer {
 	@Override
 	public void synchronize(Prop other) {
 		if (other instanceof Furnace) {
-			this.setTemperature(((Furnace) other).getTemperature());
 			this.container.synchronize(((Furnace)other).container);
 			this.burning = ((Furnace) other).burning;
 			this.combustionDurationRemaining = ((Furnace) other).combustionDurationRemaining;
@@ -139,7 +140,6 @@ public class Furnace extends ConstructionWithContainer {
 	 */
 	public synchronized void ignite() {
 		burning = true;
-		setTemperature(1400f);
 
 		lightId = ParameterPersistenceService.getParameters().getNextLightId();
 		light = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f, 0f, 1f);
@@ -159,14 +159,6 @@ public class Furnace extends ConstructionWithContainer {
 		} else {
 			BloodAndMithrilClient.spriteBatch.draw(FURANCE, position.x - width / 2, position.y);
 		}
-	}
-
-
-	/**
-	 * Returns the {@link #temperature} of this furnace.
-	 */
-	public float getTemperature() {
-		return temperature;
 	}
 
 
@@ -195,6 +187,7 @@ public class Furnace extends ConstructionWithContainer {
 				if (this.combustionDurationRemaining <= 0f) {
 					burning = false;
 					Domain.getLights().remove(lightId);
+					combustItems();
 					if (!isClient()) {
 						ClientServerInterface.sendNotification(
 							-1,
@@ -213,7 +206,26 @@ public class Furnace extends ConstructionWithContainer {
 	}
 
 
-	public synchronized void setTemperature(float temperature) {
-		this.temperature = temperature;
+	/**
+	 * Transmutes all items in the {@link Furnace} according to {@link Item#combust(float, float)}
+	 */
+	private synchronized void combustItems() {
+		synchronized(container) {
+			Set<Entry<Item, Integer>> existing = newHashMap(container.getInventory()).entrySet();
+			container.getInventory().clear();
+			
+			float totalThermalEnergy = 0f;
+			for (Entry<Item, Integer> entry : existing) {
+				if (entry.getKey() instanceof Fuel) {
+					totalThermalEnergy = totalThermalEnergy + ((Fuel) (entry.getKey())).getEnergy() * entry.getValue();
+				}
+			}
+			
+			for (Entry<Item, Integer> entry : existing) {
+				for (int i = 0; i < entry.getValue(); i++) {
+					container.giveItem(entry.getKey().combust(totalThermalEnergy));
+				}
+			}
+		}
 	}
 }

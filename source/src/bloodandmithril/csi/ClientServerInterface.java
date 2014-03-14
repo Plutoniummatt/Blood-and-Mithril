@@ -59,7 +59,6 @@ import bloodandmithril.csi.requests.ChangeFactionControlPassword;
 import bloodandmithril.csi.requests.ChangeFactionControlPassword.RefreshFactionWindow;
 import bloodandmithril.csi.requests.ChangeNickName;
 import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
-import bloodandmithril.csi.requests.ChangeFurnaceTemperature;
 import bloodandmithril.csi.requests.ClientConnected;
 import bloodandmithril.csi.requests.ConsumeItem;
 import bloodandmithril.csi.requests.DestroyPropNotification;
@@ -116,8 +115,11 @@ import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Liquid.Empty;
 import bloodandmithril.item.material.liquid.Liquid.Water;
+import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.item.material.plant.Carrot;
+import bloodandmithril.item.material.plant.CarrotSeed;
+import bloodandmithril.item.material.plant.CookedCarrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.material.plant.Felberries;
 import bloodandmithril.item.material.plant.Seed;
@@ -357,6 +359,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Ashes.class);
 		kryo.register(InterlacedWindowTile.class);
 		kryo.register(AddLightRequest.class);
 		kryo.register(AITask.class);
@@ -377,8 +380,9 @@ public class ClientServerInterface {
 		kryo.register(Broadsword.class);
 		kryo.register(ButterflySword.class);
 		kryo.register(Carrot.class);
+		kryo.register(CarrotSeed.class);
+		kryo.register(CookedCarrot.class);
 		kryo.register(ChangeFactionControlPassword.class);
-		kryo.register(ChangeFurnaceTemperature.class);
 		kryo.register(ChangeNickName.class);
 		kryo.register(ChangeNickNameResponse.class);
 		kryo.register(ChickenLeg.class);
@@ -525,12 +529,6 @@ public class ClientServerInterface {
 		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
-		}
-		
-		
-		public static synchronized void sendChangeFurnaceTemperatureRequest(int furnaceId, float temperature) {
-			client.sendTCP(new ChangeFurnaceTemperature(furnaceId, temperature));
-			Logger.networkDebug("Sending change furnace temperature request", LogLevel.DEBUG);
 		}
 		
 		public static synchronized void sendAddLightRequest(Light light) {

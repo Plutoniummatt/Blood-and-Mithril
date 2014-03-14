@@ -1,53 +1,46 @@
-package bloodandmithril.item.material.fuel;
+package bloodandmithril.item.material.mineral;
 
 import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.Fuel;
-import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
-public class Coal extends Item implements Fuel {
-	private static final long serialVersionUID = 6399640412435082388L;
+public class Ashes extends Item {
+	private static final long serialVersionUID = 988154990456038686L;
+	public static final String description = "The residue of combustion, mostly consisting of metal oxides.";
 	
 	/**
 	 * Constructor
 	 */
-	public Coal() {
-		super(0.1f, false, 1);
-	}
-
-
-	@Override
-	public float getCombustionDuration() {
-		return 5;
+	public Ashes() {
+		super(0.2f, false, 0);
 	}
 
 	
 	@Override
 	public String getSingular(boolean firstCap) {
-		return firstCap ? "Coal" : "coal";
+		return "Ashes";
 	}
 
 	
 	@Override
 	public String getPlural(boolean firstCap) {
-		return firstCap ? "Coal" : "coal";
+		return "Ashes";
 	}
 
-
+	
 	@Override
 	public Window getInfoWindow() {
 		return new MessageWindow(
-			"Coal is a combustible black or brownish-black sedimentary rock usually occurring in rock strata in layers or veins called coal beds or coal seams",
+			description,
 			Color.ORANGE,
 			BloodAndMithrilClient.WIDTH/2 - 175,
 			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
-			"Carrot",
+			"Ashes",
 			true,
 			100,
 			100
@@ -57,18 +50,12 @@ public class Coal extends Item implements Fuel {
 	
 	@Override
 	public boolean sameAs(Item other) {
-		return other instanceof Coal;
+		return other instanceof Ashes;
 	}
 
 	
 	@Override
 	public Item combust(float energy) {
-		return new Ashes();
-	}
-
-
-	@Override
-	public float getEnergy() {
-		return 5000f;
+		return this;
 	}
 }

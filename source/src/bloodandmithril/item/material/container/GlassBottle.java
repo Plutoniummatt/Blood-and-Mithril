@@ -69,7 +69,7 @@ public class GlassBottle extends Bottle {
 
 
 	@Override
-	public Item combust(float temperature, float time) {
+	public Item combust(float energy) {
 		return this;
 	}
 }
