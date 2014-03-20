@@ -17,7 +17,6 @@ import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
 import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
 
-
 /**
  * A FUCKING TILE!
  *
@@ -167,7 +166,7 @@ public abstract class Tile implements Serializable {
 	 * @return an {@link Item} that is obtained when this {@link Tile} is mined. See {@link MineTile}
 	 */
 	public abstract Item mine();
-
+	
 
 	/**
 	 * @return true if {@link #isStair}

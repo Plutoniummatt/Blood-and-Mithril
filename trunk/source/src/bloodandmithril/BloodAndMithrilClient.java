@@ -27,7 +27,7 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
+import bloodandmithril.world.topography.tile.tiles.FluidTile;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -390,7 +390,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (keycode == Input.Keys.J) {
-			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickPlatform.class);
+			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, FluidTile.class);
 		}
 		
 		if (keycode == Input.Keys.L) {
