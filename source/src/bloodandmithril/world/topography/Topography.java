@@ -132,13 +132,13 @@ public class Topography {
 
 
 	/** Get the lowest empty tile world coordinates */
-	public Vector2 getLowestEmptyOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) {
+	public synchronized Vector2 getLowestEmptyOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) {
 		return getLowestEmptyTileOrPlatformTileWorldCoords(new Vector2(worldX, worldY), floor);
 	}
 
 
 	/** Get the lowest empty tile world coordinates */
-	public Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) {
+	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) {
 		float x = worldCoords.x;
 		float y = worldCoords.y;
 
@@ -209,7 +209,7 @@ public class Topography {
 	 * @param worldX
 	 * @param worldY
 	 */
-	public Tile deleteTile(float worldX, float worldY, boolean foreGround) {
+	public synchronized Tile deleteTile(float worldX, float worldY, boolean foreGround) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
@@ -237,7 +237,7 @@ public class Topography {
 	 * @param worldX
 	 * @param worldY
 	 */
-	public void changeTile(float worldX, float worldY, boolean foreGround, Class<? extends Tile> toChangeTo) {
+	public synchronized void changeTile(float worldX, float worldY, boolean foreGround, Class<? extends Tile> toChangeTo) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
@@ -290,7 +290,7 @@ public class Topography {
 	/**
 	 * Gets a tile given the world coordinates
 	 */
-	public Tile getTile(float worldX, float worldY, boolean foreGround) {
+	public synchronized Tile getTile(float worldX, float worldY, boolean foreGround) {
 
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
@@ -303,7 +303,7 @@ public class Topography {
 
 
 	/** Overloaded method, see {@link #getTile(float, float)} */
-	public Tile getTile(Vector2 location, boolean foreGround) {
+	public synchronized Tile getTile(Vector2 location, boolean foreGround) {
 		return getTile(location.x, location.y, foreGround);
 	}
 

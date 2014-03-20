@@ -11,6 +11,7 @@ import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.ParameterPersistenceService.getParameters;
 import static bloodandmithril.world.WorldState.currentEpoch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
@@ -569,7 +570,7 @@ public abstract class Individual extends Equipper {
 			return true;
 		}
 
-		//If we're on an empty tile, its obviously passable
+		//If we're on an empty tile it's obviously passable
 		if (tile instanceof EmptyTile) {
 			return true;
 		}

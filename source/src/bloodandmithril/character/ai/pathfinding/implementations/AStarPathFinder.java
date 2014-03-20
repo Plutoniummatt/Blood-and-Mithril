@@ -19,6 +19,7 @@ import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.World;
@@ -85,66 +86,71 @@ public class AStarPathFinder extends PathFinder {
 	 */
 	@Override
 	public Path findShortestPathGround(WayPoint start, WayPoint finish, int height, int safeHeight, float forceTolerance, World world) {
-		Vector2 startCoords = determineWayPointCoords(start.waypoint, false, false, world);
-		Vector2 finishCoords = determineWayPointCoords(finish.waypoint, false, true, world);
-
-		if (start.waypoint.y < 0) {
-			startCoords = determineWayPointCoords(new Vector2(start.waypoint.x, start.waypoint.y + 1), false, false, world);
-		}
-		if (finish.waypoint.y < 0) {
-			finishCoords = determineWayPointCoords(new Vector2(finish.waypoint.x, finish.waypoint.y + 1), false, true, world);
-		}
-
-		if (finishCoords == null) {
-			return new Path();
-		}
-
-		int startX = round(startCoords.x);
-		int startY = round(startCoords.y);
-
-		int finishX = round(finishCoords.x);
-		int finishY = round(finishCoords.y);
-
-		Node finishNode = new Node(finishX, finishY, null, null, null, safeHeight);
-		aiDebug("Destination: " + finishNode.toString(), DEBUG);
-
-		Node startNode = new Node(startX, startY, null, null, finishNode, safeHeight);
-		openNodes.put(startX, startY, startNode);
-
-		boolean destinationFound = false;
-		while(!destinationFound) {
-			if (openNodes.getAllEntries().isEmpty()) {
-				List<DualKeyEntry<Integer, Integer, Node>> closedNodeEntries = closedNodes.getAllEntries();
-				Collections.sort(closedNodeEntries, heuristicComparator);
-				DualKeyEntry<Integer, Integer, Node> closestEntry = closedNodeEntries.get(0);
-
-				return extractPath(closestEntry.value, 0, forceTolerance, world);
+		try {
+			Vector2 startCoords = determineWayPointCoords(start.waypoint, false, false, world);
+			Vector2 finishCoords = determineWayPointCoords(finish.waypoint, false, true, world);
+	
+			if (start.waypoint.y < 0) {
+				startCoords = determineWayPointCoords(new Vector2(start.waypoint.x, start.waypoint.y + 1), false, false, world);
 			}
-
-			List<DualKeyEntry<Integer, Integer, Node>> allEntries = openNodes.getAllEntries();
-			Collections.sort(allEntries, fComparator);
-			DualKeyEntry<Integer, Integer, Node> entry = allEntries.get(0);
-
-			if (entry.value.getF() > 9999999f) {
+			if (finish.waypoint.y < 0) {
+				finishCoords = determineWayPointCoords(new Vector2(finish.waypoint.x, finish.waypoint.y + 1), false, true, world);
+			}
+	
+			if (finishCoords == null) {
 				return new Path();
 			}
-
-			Node destination = null;
-
-			try {
-				destination = processOpenNodeGround(entry.value, finishNode, height, safeHeight, world);
-			} catch (UndiscoveredPathNotification e) {
-				aiDebug("Detected undiscovered region", DEBUG);
+	
+			int startX = round(startCoords.x);
+			int startY = round(startCoords.y);
+	
+			int finishX = round(finishCoords.x);
+			int finishY = round(finishCoords.y);
+	
+			Node finishNode = new Node(finishX, finishY, null, null, null, safeHeight);
+			aiDebug("Destination: " + finishNode.toString(), DEBUG);
+	
+			Node startNode = new Node(startX, startY, null, null, finishNode, safeHeight);
+			openNodes.put(startX, startY, startNode);
+	
+			boolean destinationFound = false;
+			while(!destinationFound) {
+				if (openNodes.getAllEntries().isEmpty()) {
+					List<DualKeyEntry<Integer, Integer, Node>> closedNodeEntries = closedNodes.getAllEntries();
+					Collections.sort(closedNodeEntries, heuristicComparator);
+					DualKeyEntry<Integer, Integer, Node> closestEntry = closedNodeEntries.get(0);
+	
+					return extractPath(closestEntry.value, 0, forceTolerance, world);
+				}
+	
+				List<DualKeyEntry<Integer, Integer, Node>> allEntries = openNodes.getAllEntries();
+				Collections.sort(allEntries, fComparator);
+				DualKeyEntry<Integer, Integer, Node> entry = allEntries.get(0);
+	
+				if (entry.value.getF() > 9999999f) {
+					return new Path();
+				}
+	
+				Node destination = null;
+	
+				try {
+					destination = processOpenNodeGround(entry.value, finishNode, height, safeHeight, world);
+				} catch (UndiscoveredPathNotification e) {
+					aiDebug("Detected undiscovered region", DEBUG);
+				}
+	
+				if (destination != null) {
+					aiDebug("Extracting path, begining from: " + destination.toString(), DEBUG);
+					destinationFound = true;
+					return extractPath(destination, finish.tolerance, forceTolerance, world);
+				}
 			}
-
-			if (destination != null) {
-				aiDebug("Extracting path, begining from: " + destination.toString(), DEBUG);
-				destinationFound = true;
-				return extractPath(destination, finish.tolerance, forceTolerance, world);
-			}
+	
+			throw new RuntimeException("Failed to find path");
+		} catch (NullPointerException e) {
+			aiDebug("NPE during pathfinding", LogLevel.DEBUG);
+			return new Path();
 		}
-
-		throw new RuntimeException("Failed to find path");
 	}
 
 
