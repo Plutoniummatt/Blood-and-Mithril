@@ -1,11 +1,10 @@
 package bloodandmithril.world.topography.tile.tiles;
 
 import bloodandmithril.item.Item;
-import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**
- * A special {@link Tile} that mimics (or attempts to) fluids.
+ * A special {@link FluidTile} that mimics (or attempts to) fluids.
  *
  * @author Matt
  */

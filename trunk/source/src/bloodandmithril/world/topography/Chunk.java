@@ -365,10 +365,18 @@ public class Chunk {
 			throw new RuntimeException(e);
 		}
 
+		changeTile(tileX, tileY, foreGround, newTile);
+	}
+	
+	
+	/**
+	 * Changes a tile on the chunk
+	 */
+	public void changeTile(int tileX, int tileY, boolean foreGround, Tile toChangeTo) {
 		if (foreGround) {
-			fData.tiles[tileX][tileY] = newTile;
+			fData.tiles[tileX][tileY] = toChangeTo;
 		} else {
-			bData.tiles[tileX][tileY] = newTile;
+			bData.tiles[tileX][tileY] = toChangeTo;
 		}
 		repopulateTextureCoordinates(tileX, tileY, foreGround);
 		calculateChunkOrientations(foreGround);

@@ -1,11 +1,12 @@
 package bloodandmithril.util.datastructure;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+
+import com.google.common.collect.Lists;
 
 
 /**
@@ -53,7 +54,7 @@ public class DualKeyHashMap<X, Y, V> implements Serializable {
 	 * Returns a {@link Collection} of {@link DualKeyEntry}s contained within {@link #data}
 	 */
 	public List<DualKeyEntry<X, Y, V>> getAllEntries() {
-		List<DualKeyEntry<X, Y, V>> entries = new ArrayList<DualKeyEntry<X, Y, V>>();
+		List<DualKeyEntry<X, Y, V>> entries = Lists.newLinkedList();
 		
 		for (Entry<X, HashMap<Y, V>> outerEntry : data.entrySet()) {
 			for (Entry<Y, V> innerEntry : outerEntry.getValue().entrySet()) {
