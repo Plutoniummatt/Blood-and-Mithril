@@ -248,6 +248,25 @@ public class Topography {
 			Logger.generalDebug("can't change a null tile", LogLevel.WARN);
 		}
 	}
+	
+	
+	/**
+	 * Changes a tile at this location
+	 *
+	 * @param worldX
+	 * @param worldY
+	 */
+	public synchronized void changeTile(float worldX, float worldY, boolean foreGround, Tile toChangeTo) {
+		int chunkX = convertToChunkCoord(worldX);
+		int chunkY = convertToChunkCoord(worldY);
+		int tileX = convertToTileCoord(worldX);
+		int tileY = convertToTileCoord(worldY);
+		try {
+			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
+		} catch (NullPointerException e) {
+			Logger.generalDebug("can't change a null tile", LogLevel.WARN);
+		}
+	}
 
 
 	/** Converts a world tile coord to a world coord, in the centre of the tile */
