@@ -1,7 +1,7 @@
 package bloodandmithril.prop;
 
+import static bloodandmithril.world.Domain.Depth.FOREGOUND;
 import bloodandmithril.item.Item;
-import bloodandmithril.world.Domain.Depth;
 
 /**
  * Interface for harvesting
@@ -14,7 +14,7 @@ public abstract class Harvestable extends Prop {
 	 * Constructor
 	 */
 	protected Harvestable(float x, float y, boolean grounded) {
-		super(x, y, grounded, Depth.FOREGOUND);
+		super(x, y, grounded, FOREGOUND);
 	}
 
 	/** Returns the item that harvesting this {@link Harvestable} provides */

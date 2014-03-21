@@ -1,22 +1,27 @@
 package bloodandmithril.ui.components;
 
+import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.ui.UserInterface.uiTexture;
+import static bloodandmithril.util.Logger.generalDebug;
+import static bloodandmithril.util.Logger.LogLevel.DEBUG;
+import static bloodandmithril.util.Util.Colors.modulateAlpha;
+import static com.badlogic.gdx.Gdx.gl;
+import static com.badlogic.gdx.graphics.GL10.GL_BLEND;
+import static com.badlogic.gdx.graphics.GL10.GL_ONE_MINUS_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
+
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.Window;
-import bloodandmithril.util.Logger;
-import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * A {@link UserInterface} Component.
@@ -25,24 +30,24 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  */
 public abstract class Component {
 
-	protected static final TextureRegion topLeft 		= new TextureRegion(UserInterface.uiTexture, 0, 8, 2, 2);
-	protected static final TextureRegion topRight 		= new TextureRegion(UserInterface.uiTexture, 12, 8, 2, 2);
-	protected static final TextureRegion bottomLeft 	= new TextureRegion(UserInterface.uiTexture, 0, 30, 2, 2);
-	protected static final TextureRegion bottomRight	= new TextureRegion(UserInterface.uiTexture, 12, 30, 2, 2);
+	protected static final TextureRegion topLeft 		= new TextureRegion(uiTexture, 0, 8, 2, 2);
+	protected static final TextureRegion topRight 		= new TextureRegion(uiTexture, 12, 8, 2, 2);
+	protected static final TextureRegion bottomLeft 	= new TextureRegion(uiTexture, 0, 30, 2, 2);
+	protected static final TextureRegion bottomRight	= new TextureRegion(uiTexture, 12, 30, 2, 2);
 
-	protected static final TextureRegion top			= new TextureRegion(UserInterface.uiTexture, 2, 8, 10, 2);
-	protected static final TextureRegion bottom			= new TextureRegion(UserInterface.uiTexture, 2, 30, 10, 2);
-	protected static final TextureRegion left			= new TextureRegion(UserInterface.uiTexture, 0, 10, 2, 20);
-	protected static final TextureRegion right			= new TextureRegion(UserInterface.uiTexture, 12, 10, 2, 20);
+	protected static final TextureRegion top			= new TextureRegion(uiTexture, 2, 8, 10, 2);
+	protected static final TextureRegion bottom			= new TextureRegion(uiTexture, 2, 30, 10, 2);
+	protected static final TextureRegion left			= new TextureRegion(uiTexture, 0, 10, 2, 20);
+	protected static final TextureRegion right			= new TextureRegion(uiTexture, 12, 10, 2, 20);
 
-	protected static final TextureRegion minimize		= new TextureRegion(UserInterface.uiTexture, 15, 0, 12, 12);
-	protected static final TextureRegion close			= new TextureRegion(UserInterface.uiTexture, 29, 0, 12, 12);
-	protected static final TextureRegion separatorBody	= new TextureRegion(UserInterface.uiTexture, 1, 32, 10, 2);
-	protected static final TextureRegion separatorEnd	= new TextureRegion(UserInterface.uiTexture, 0, 32, 1, 1);
-	protected static final TextureRegion resize			= new TextureRegion(UserInterface.uiTexture, 41, 0, 12, 12);
+	protected static final TextureRegion minimize		= new TextureRegion(uiTexture, 15, 0, 12, 12);
+	protected static final TextureRegion close			= new TextureRegion(uiTexture, 29, 0, 12, 12);
+	protected static final TextureRegion separatorBody	= new TextureRegion(uiTexture, 1, 32, 10, 2);
+	protected static final TextureRegion separatorEnd	= new TextureRegion(uiTexture, 0, 32, 1, 1);
+	protected static final TextureRegion resize			= new TextureRegion(uiTexture, 41, 0, 12, 12);
 
 	/** Utility {@link ShapeRenderer} for {@link Component}s */
-	protected static ShapeRenderer shapeRenderer 		= new ShapeRenderer();
+	protected static ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	/** The alpha(transparent) value this {@link Component} should be rendered with */
 	private float alpha = 0f;
@@ -88,7 +93,7 @@ public abstract class Component {
 	 * Initiates resources
 	 */
 	public static void setup() {
-		Logger.generalDebug("UI Elements loaded", LogLevel.DEBUG);
+		generalDebug("UI Elements loaded", DEBUG);
 	}
 
 
@@ -99,15 +104,15 @@ public abstract class Component {
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? borderColor.a * getAlpha() : borderColor.a * 0.4f * getAlpha());
 		Shaders.filter.end();
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
+		spriteBatch.setShader(Shaders.filter);
 
-		BloodAndMithrilClient.spriteBatch.draw(topLeft, x, y);
-		BloodAndMithrilClient.spriteBatch.draw(topRight, x + topLeft.getRegionWidth() + length, y);
-		BloodAndMithrilClient.spriteBatch.draw(bottomLeft, x, y - height - bottom.getRegionHeight());
-		BloodAndMithrilClient.spriteBatch.draw(bottomRight, x + topLeft.getRegionWidth() + length, y - height - bottom.getRegionHeight());
+		spriteBatch.draw(topLeft, x, y);
+		spriteBatch.draw(topRight, x + topLeft.getRegionWidth() + length, y);
+		spriteBatch.draw(bottomLeft, x, y - height - bottom.getRegionHeight());
+		spriteBatch.draw(bottomRight, x + topLeft.getRegionWidth() + length, y - height - bottom.getRegionHeight());
 
 
-		BloodAndMithrilClient.spriteBatch.draw(
+		spriteBatch.draw(
 			top,
 			x  + topLeft.getRegionWidth(),
 			y,
@@ -115,7 +120,7 @@ public abstract class Component {
 			top.getRegionHeight()
 		);
 
-		BloodAndMithrilClient.spriteBatch.draw(
+		spriteBatch.draw(
 			bottom,
 			x + topLeft.getRegionWidth(),
 			y - height - bottomLeft.getRegionHeight(),
@@ -123,7 +128,7 @@ public abstract class Component {
 			bottom.getRegionHeight()
 		);
 
-		BloodAndMithrilClient.spriteBatch.draw(
+		spriteBatch.draw(
 			left,
 			x,
 			y - height,
@@ -131,7 +136,7 @@ public abstract class Component {
 			height
 		);
 
-		BloodAndMithrilClient.spriteBatch.draw(
+		spriteBatch.draw(
 			right,
 			x + topLeft.getRegionWidth() + length,
 			y - height,
@@ -145,14 +150,14 @@ public abstract class Component {
 	 * Renders a rectangle
 	 */
 	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor) {
-		shapeRenderer.begin(ShapeType.FilledRectangle);
+		shapeRenderer.begin(FilledRectangle);
 		shapeRenderer.setColor(1f, 0f, 0f, 0.5f * getAlpha());
 		shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
-		Gdx.gl.glEnable(GL10.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL_BLEND);
+		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		float a = active ? 0.7f : 0.3f;
-		Color color = Colors.modulateAlpha(backGroundColor, a * getAlpha());
+		Color color = modulateAlpha(backGroundColor, a * getAlpha());
 
 		shapeRenderer.filledRect(
 			renderX,
@@ -168,7 +173,7 @@ public abstract class Component {
 		shapeRenderer.flush();
 		shapeRenderer.end();
 
-		Gdx.gl.glDisable(GL10.GL_BLEND);
+		gl.glDisable(GL_BLEND);
 	}
 
 
@@ -176,11 +181,11 @@ public abstract class Component {
 	 * Renders a rectangle
 	 */
 	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor, float alphaOverride) {
-		shapeRenderer.begin(ShapeType.FilledRectangle);
+		shapeRenderer.begin(FilledRectangle);
 		shapeRenderer.setColor(1f, 0f, 0f, 0.5f * alphaOverride);
 		shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
-		Gdx.gl.glEnable(GL10.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL_BLEND);
+		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		float a = active ? 0.7f : 0.3f;
 		Color color = Colors.modulateAlpha(backGroundColor, a * alphaOverride);
@@ -199,7 +204,7 @@ public abstract class Component {
 		shapeRenderer.flush();
 		shapeRenderer.end();
 
-		Gdx.gl.glDisable(GL10.GL_BLEND);
+		gl.glDisable(GL_BLEND);
 	}
 
 
