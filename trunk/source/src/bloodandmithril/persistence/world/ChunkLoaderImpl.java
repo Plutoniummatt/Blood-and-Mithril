@@ -41,13 +41,13 @@ public class ChunkLoaderImpl implements ChunkLoader {
 	private final Thread loaderThread;
 
 	/** The list of tasks the loader thread must execute */
-	public static final BlockingQueue<Task> loaderTasks = new ArrayBlockingQueue<Task>(5000);
+	public static final BlockingQueue<Task> loaderTasks = new ArrayBlockingQueue<>(5000);
 
 	/** The terrain generator */
 	private final TerrainGenerator generator = new TerrainGenerator();
 
 	/** The current chunk coordinates that is in the queue to be loaded/generated */
-	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<Integer, Integer, Boolean>();
+	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<>();
 
 	/**
 	 * Constructor

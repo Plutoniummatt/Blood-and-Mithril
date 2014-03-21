@@ -278,7 +278,7 @@ public class AStarPathFinder extends PathFinder {
 		Tile tile;
 
 		try {
-			tile = world.getTopography().getTile(to.x, to.y, true);
+			tile = world.getTopography().getTile((float)to.x, (float)to.y, true);
 
 			// If the tile is empty, we check if all tiles above it (within specified height) are also empty, if not, we return 2, otherwise, we return the vertical distance
 			// To the empty tile that is above the non-empty tile below the adjascent tile
@@ -286,7 +286,7 @@ public class AStarPathFinder extends PathFinder {
 				changeToDebugTile(to.x, to.y, world);
 				for (int i = 1; i <= height; i++) {
 					changeToDebugTile(to.x, to.y + i * TILE_SIZE, world);
-					if (!world.getTopography().getTile(to.x, to.y + i * TILE_SIZE, true).isPassable()) {
+					if (!world.getTopography().getTile((float)to.x, (float)to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
@@ -299,12 +299,12 @@ public class AStarPathFinder extends PathFinder {
 				// Note we're using height + 1 because we're stepping up
 				for (int i = 1; i <= height + 1; i++) {
 					changeToDebugTile(to.x, to.y + i * TILE_SIZE, world);
-					if (!world.getTopography().getTile(to.x, to.y + i * TILE_SIZE, true).isPassable()) {
+					if (!world.getTopography().getTile((float)to.x, (float)to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
 				changeToDebugTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, world);
-				if (!world.getTopography().getTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
+				if (!world.getTopography().getTile((float)to.x + (float)(right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
 					return 2;
 				}
 				return 1;
@@ -316,13 +316,13 @@ public class AStarPathFinder extends PathFinder {
 
 				for (int i = 1; i <= height + 1; i++) {
 					changeToDebugTile(to.x, to.y + i * TILE_SIZE, world);
-					if (!world.getTopography().getTile(to.x, to.y + i * TILE_SIZE, true).isPassable()) {
+					if (!world.getTopography().getTile((float)to.x, (float)to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
 
 				changeToDebugTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, world);
-				if (!world.getTopography().getTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
+				if (!world.getTopography().getTile((float)to.x + (float)(right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
 					return 2;
 				}
 				return 1;

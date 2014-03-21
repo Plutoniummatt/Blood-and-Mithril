@@ -1,5 +1,7 @@
 package bloodandmithril;
 
+import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
+
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,7 +29,7 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.tile.tiles.FluidTile;
+import bloodandmithril.world.topography.fluid.Water;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -112,6 +114,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static long ping = 0;
 	
 	public static Thread updateThread;
+	
+	private long topographyBacklogExecutionTimer;
 
 	@Override
 	public void create() {
@@ -144,6 +148,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			}
 		});
 		
+		updateThread.setName("Update thread");
 		updateThread.start();
 	}
 
@@ -188,6 +193,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (!GameSaver.isSaving()) {
 			SoundService.update(Gdx.graphics.getDeltaTime());
 			Shaders.updateShaderUniforms();
+		}
+		
+		// Topography backlog ---------- /
+		if (System.currentTimeMillis() - topographyBacklogExecutionTimer > 100) {
+			Topography.executeBackLog();
+			topographyBacklogExecutionTimer = System.currentTimeMillis();
 		}
 		
 		// Camera --------------------- /
@@ -390,7 +401,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (keycode == Input.Keys.J) {
-			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, FluidTile.class);
+			Domain.getActiveWorld().getTopography().getFluids().put(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY()), new Water(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY()), 16));
 		}
 		
 		if (keycode == Input.Keys.L) {

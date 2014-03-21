@@ -33,11 +33,15 @@ import bloodandmithril.graphics.Light;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.fluid.Fluid;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
 
 /**
@@ -71,6 +75,9 @@ public class Domain {
 	/** Every {@link Prop} that exists */
 	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
 	
+	/** Domain-specific {@link ShapeRenderer} */
+	public static ShapeRenderer 								shapeRenderer			= new ShapeRenderer();
+	
 	/** Textures */
 	public static Texture gameWorldTexture;
 	public static Texture individualTexture;
@@ -82,7 +89,8 @@ public class Domain {
 	public static FrameBuffer bBuffer;
 	public static FrameBuffer bBufferProcessedForDaylightShader;
 	public static FrameBuffer bBufferLit;
-
+	
+	private long topographyUpdateTimer;
 	
 	/**
 	 * Constructor
@@ -169,6 +177,16 @@ public class Domain {
 		}
 		spriteBatch.end();
 		IndividualPlatformFilteringRenderer.renderIndividuals();
+		
+		gl20.glEnable(GL20.GL_BLEND);
+		shapeRenderer.begin(ShapeType.FilledRectangle);
+		shapeRenderer.setProjectionMatrix(cam.combined);
+		for (DualKeyEntry<Integer, Integer, Fluid> fluid : getActiveWorld().getTopography().getFluids().getAllEntries()) {
+			fluid.value.render();
+		}
+		shapeRenderer.end();
+		gl20.glDisable(GL20.GL_BLEND);
+		
 		fBuffer.end();
 
 		DynamicLightingPostRenderer.render(camX, camY);
@@ -215,6 +233,11 @@ public class Domain {
 		if (getActiveWorld() != null) {
 			getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam(camX, camY);
 			
+			if (System.currentTimeMillis() - topographyUpdateTimer > 100) {
+				topographyUpdateTimer = System.currentTimeMillis();
+				getActiveWorld().getTopography().update();
+			}
+			
 			float d = 1f/60f;
 			
 			currentEpoch.incrementTime(d);
@@ -228,8 +251,6 @@ public class Domain {
 					prop.update(d);
 				}
 			}
-	
-			Topography.executeBackLog();
 		}
 	}
 
