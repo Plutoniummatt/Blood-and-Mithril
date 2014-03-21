@@ -13,8 +13,11 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
+import bloodandmithril.util.datastructure.DualKeyTreeMap;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.topography.fluid.Fluid;
+import bloodandmithril.world.topography.fluid.FluidDynamicsProcessor;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -49,6 +52,7 @@ public class Topography {
 	/** The chunk map of the topography. */
 	private final ChunkMap chunkMap;
 	
+	/** {@link Structures} that exist on this instance of {@link Topography} */
 	private final Structures structures;
 
 	/** The chunk loader. */
@@ -60,6 +64,10 @@ public class Topography {
 	/** The current chunk coordinates that have already been requested for generation */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> requestedForGeneration = new ConcurrentDualKeyHashMap<>();
 
+	/** {@link Fluid}s */
+	private final DualKeyTreeMap<Integer, Integer, Fluid> fluids = new DualKeyTreeMap<>();
+	
+	private final FluidDynamicsProcessor fluidDynamicsProcessor;
 
 	/**
 	 * @param generator - The type of generator to use
@@ -68,8 +76,9 @@ public class Topography {
 		this.worldId = worldId;
 		this.chunkMap = new ChunkMap();
 		this.structures = new Structures();
+		this.fluidDynamicsProcessor = new FluidDynamicsProcessor(this);
 	}
-
+	
 
 	/** Adds a task to be processed */
 	public static void addTask(Task task) {
@@ -86,6 +95,12 @@ public class Topography {
 				topographyTasks.poll().execute();
 			}
 		}
+	}
+	
+	
+	/** Updates the {@link Topography} */
+	public void update() {
+		fluidDynamicsProcessor.process();
 	}
 
 
@@ -242,6 +257,7 @@ public class Topography {
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
+		
 		try {
 			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
 		} catch (NullPointerException e) {
@@ -261,6 +277,7 @@ public class Topography {
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
+		
 		try {
 			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
 		} catch (NullPointerException e) {
@@ -319,6 +336,20 @@ public class Topography {
 
 		return getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 	}
+	
+	
+	/**
+	 * Gets a tile given the world tile coordinates
+	 */
+	public synchronized Tile getTile(int tileX, int tileY, boolean foreGround) {
+		int chunkX = convertToChunkCoord(convertToWorldCoord(tileX, false));
+		int chunkY = convertToChunkCoord(convertToWorldCoord(tileY, false));
+		
+		int chunkTileX = convertToTileCoord(convertToWorldCoord(tileX, false));
+		int chunkTileY = convertToTileCoord(convertToWorldCoord(tileY, false));
+		
+		return getChunkMap().get(chunkX).get(chunkY).getTile(chunkTileX, chunkTileY, foreGround);
+	}
 
 
 	/** Overloaded method, see {@link #getTile(float, float)} */
@@ -367,5 +398,10 @@ public class Topography {
 
 	public Structures getStructures() {
 		return structures;
+	}
+
+
+	public DualKeyTreeMap<Integer, Integer, Fluid> getFluids() {
+		return fluids;
 	}
 }
