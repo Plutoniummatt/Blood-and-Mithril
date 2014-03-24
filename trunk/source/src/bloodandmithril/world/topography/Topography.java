@@ -13,7 +13,7 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
-import bloodandmithril.util.datastructure.DualKeyTreeMap;
+import bloodandmithril.util.datastructure.ConcurrentDualKeySkipListMap;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.fluid.Fluid;
@@ -65,7 +65,7 @@ public class Topography {
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> requestedForGeneration = new ConcurrentDualKeyHashMap<>();
 
 	/** {@link Fluid}s */
-	private final DualKeyTreeMap<Integer, Integer, Fluid> fluids = new DualKeyTreeMap<>();
+	private final ConcurrentDualKeySkipListMap<Integer, Integer, Fluid> fluids = new ConcurrentDualKeySkipListMap<>();
 	
 	private final FluidDynamicsProcessor fluidDynamicsProcessor;
 
@@ -348,7 +348,11 @@ public class Topography {
 		int chunkTileX = convertToTileCoord(convertToWorldCoord(tileX, false));
 		int chunkTileY = convertToTileCoord(convertToWorldCoord(tileY, false));
 		
-		return getChunkMap().get(chunkX).get(chunkY).getTile(chunkTileX, chunkTileY, foreGround);
+		try {
+			return getChunkMap().get(chunkX).get(chunkY).getTile(chunkTileX, chunkTileY, foreGround);
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 
 
@@ -401,7 +405,7 @@ public class Topography {
 	}
 
 
-	public DualKeyTreeMap<Integer, Integer, Fluid> getFluids() {
+	public ConcurrentDualKeySkipListMap<Integer, Integer, Fluid> getFluids() {
 		return fluids;
 	}
 }

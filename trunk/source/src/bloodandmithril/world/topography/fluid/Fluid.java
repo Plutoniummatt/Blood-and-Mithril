@@ -87,6 +87,10 @@ public abstract class Fluid {
 
 
 	public void setDepth(int depth) {
-		this.depth = depth;
+		if (depth < 0) {
+			this.depth = 0;
+			return;
+		}
+		this.depth = depth > TILE_SIZE ? TILE_SIZE : depth;
 	}
 }

@@ -49,7 +49,7 @@ public class CarrotSeed extends Seed {
 	}
 
 	@Override
-	public Item combust(float energy) {
+	public Item combust(int heatLevel) {
 		return this;
 	}
 }

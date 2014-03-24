@@ -113,4 +113,18 @@ public class PineChest extends ConstructionWithContainer {
 	@Override
 	public void update(float delta) {
 	}
+
+
+	@Override
+	protected ContextMenu getConstructionContextMenu() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	protected ContextMenu getCompletedContextMenu() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

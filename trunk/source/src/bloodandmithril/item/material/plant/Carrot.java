@@ -73,8 +73,8 @@ public class Carrot extends Item implements Consumable {
 
 
 	@Override
-	public Item combust(float energy) {
-		if (energy > 0f && energy < 10000f) {
+	public Item combust(int heatLevel) {
+		if (heatLevel > 200 && heatLevel < 500f) {
 			return new CookedCarrot();
 		} else {
 			return new Ashes();

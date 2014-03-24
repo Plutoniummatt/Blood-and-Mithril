@@ -63,6 +63,7 @@ import bloodandmithril.csi.requests.ClientConnected;
 import bloodandmithril.csi.requests.ConsumeItem;
 import bloodandmithril.csi.requests.DestroyPropNotification;
 import bloodandmithril.csi.requests.DestroyTile;
+import bloodandmithril.csi.requests.FurnaceSmelt;
 import bloodandmithril.csi.requests.IgniteFurnaceRequest;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.DrinkLiquid;
@@ -569,6 +570,11 @@ public class ClientServerInterface {
 		public static synchronized void sendIgniteFurnaceRequest(int furnaceId) {
 			client.sendTCP(new IgniteFurnaceRequest(furnaceId));
 			Logger.networkDebug("Sending ignite furnace request", LogLevel.DEBUG);
+		}
+		
+		public static synchronized void sendFurnaceSmeltRequest(int furnaceId) {
+			client.sendTCP(new FurnaceSmelt(furnaceId));
+			Logger.networkDebug("Sending furnace smelt request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendSynchronizeIndividualRequest(int id) {

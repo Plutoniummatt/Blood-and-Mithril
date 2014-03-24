@@ -1,6 +1,7 @@
 package bloodandmithril.world.topography.fluid;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
@@ -37,8 +38,9 @@ public class FluidDynamicsProcessor {
 	 * Processes a single {@link Fluid}
 	 */
 	private void processSingleFluid(Fluid fluid) {
-		if (!processBottomSpace(fluid)) {
-			processSideSpaces(fluid);
+		if (processBottomSpace(fluid)) {
+			processSideSpace(fluid.getTileX() + 1, fluid);
+			processSideSpace(fluid.getTileX() - 1, fluid);
 		}
 	}
 
@@ -46,57 +48,35 @@ public class FluidDynamicsProcessor {
 	/**
 	 * Process the spaces to the left/right of the fluid
 	 */
-	private void processSideSpaces(Fluid fluid) {
-		Tile rightTile = topography.getTile(
-			fluid.getTileX() + 1, 
+	private void processSideSpace(int x, Fluid fluid) {
+		Tile sideTile = topography.getTile(
+			x, 
 			fluid.getTileY(), 
 			true
 		);
 		
-		Tile leftTile = topography.getTile(
-			fluid.getTileX() - 1, 
-			fluid.getTileY(), 
-			true
-		);
-		
-		if (rightTile.isPassable()) {
-			Fluid rightFluid = topography.getFluids().get(fluid.getTileX() + 1, fluid.getTileY());
-			if (rightFluid == null) {
-				if (fluid.getDepth() != 1) {
-					fluid.setDepth(fluid.getDepth() / 2);
-					Fluid copy = fluid.copy();
-					copy.setTileX(fluid.getTileX() + 1);
-					copy.setDepth(fluid.getDepth() - fluid.getDepth() / 2);
-					topography.getFluids().put(fluid.getTileX() + 1, fluid.getTileY(), copy);
-				}
+		if (sideTile != null && sideTile.isPassable()) {
+			Fluid sideFluid = topography.getFluids().get(x, fluid.getTileY());
+			if (sideFluid == null) {
+				Fluid copy = fluid.copy();
+				copy.setDepth(fluid.getDepth() / 2);
+				copy.setTileX(x);
+				topography.getFluids().put(x, fluid.getTileY(), copy);
+				
+				fluid.setDepth(fluid.getDepth() - fluid.getDepth() / 2);
 			} else {
-				if (rightFluid.getDepth() < fluid.getDepth()) {
-					fluid.setDepth(fluid.getDepth() - (fluid.getDepth() - rightFluid.getDepth())/2);
-					rightFluid.setDepth(rightFluid.getDepth() + (fluid.getDepth() - rightFluid.getDepth())/2);
-				} else if (rightFluid.getDepth() > fluid.getDepth()) {
-					fluid.setDepth(fluid.getDepth() + (rightFluid.getDepth() - fluid.getDepth())/2);
-					rightFluid.setDepth(rightFluid.getDepth() - (rightFluid.getDepth() - fluid.getDepth())/2);
-				}
-			}
-		}
-		
-		if (leftTile.isPassable()) {
-			Fluid leftFluid = topography.getFluids().get(fluid.getTileX() - 1, fluid.getTileY());
-			if (leftFluid == null) {
-				if (fluid.getDepth() != 1) {
-					fluid.setDepth(fluid.getDepth() / 2);
-					Fluid copy = fluid.copy();
-					copy.setTileX(fluid.getTileX() - 1);
-					copy.setDepth(fluid.getDepth() - fluid.getDepth() / 2);
-					topography.getFluids().put(fluid.getTileX() - 1, fluid.getTileY(), copy);
-				}
-			} else {
-				if (leftFluid.getDepth() < fluid.getDepth()) {
-					fluid.setDepth(fluid.getDepth() - (fluid.getDepth() - leftFluid.getDepth())/2);
-					leftFluid.setDepth(leftFluid.getDepth() + (fluid.getDepth() - leftFluid.getDepth())/2);
-				} else if (leftFluid.getDepth() > fluid.getDepth()) {
-					fluid.setDepth(fluid.getDepth() + (leftFluid.getDepth() - fluid.getDepth())/2);
-					leftFluid.setDepth(leftFluid.getDepth() - (leftFluid.getDepth() - fluid.getDepth())/2);
+				int sideDepth = sideFluid.getDepth();
+				int fluidDepth = fluid.getDepth();
+				
+				if (sideDepth + 1 < fluidDepth) {
+					sideFluid.setDepth((fluidDepth - sideDepth) / 2 + sideDepth);
+					fluid.setDepth(fluidDepth - (fluidDepth - sideDepth) / 2);
+				} else if (sideDepth + 1 == fluidDepth) {
+					sideFluid.setDepth(sideDepth + 1);
+					fluid.setDepth(fluidDepth - 1);
+				} else if (sideDepth > fluidDepth) {
+					sideFluid.setDepth(sideDepth - (fluidDepth - sideDepth) / 2);
+					fluid.setDepth((fluidDepth - sideDepth) / 2 + fluidDepth);
 				}
 			}
 		}
@@ -104,7 +84,7 @@ public class FluidDynamicsProcessor {
 
 
 	/**
-	 * Process the space below the fluid, returning true if a fluid could fall completely into the space below
+	 * Process the space below the fluid, returning true if the fluid is to spread sideways into adjacent tiles
 	 */
 	private boolean processBottomSpace(Fluid fluid) {
 		Tile tileBelow = topography.getTile(
@@ -120,21 +100,37 @@ public class FluidDynamicsProcessor {
 				topography.getFluids().remove(fluid.getTileX(), fluid.getTileY());
 				topography.getFluids().put(fluid.getTileX(), fluid.getTileY() - 1, fluid);
 				fluid.setTileY(fluid.getTileY() - 1);
-				return true;
+				return false;
 			} else {
-				if (fluidBelow.getDepth() == TILE_SIZE) {
+				int belowDepth = fluidBelow.getDepth();
+				int fluidDepth = fluid.getDepth();
+				
+				if (fluidBelow.getDepth() >= TILE_SIZE - 1) {
+					return true;
+				} else if (belowDepth + fluidDepth > TILE_SIZE) {
+					fluid.setDepth(belowDepth + fluidDepth - TILE_SIZE);
+					fluidBelow.setDepth(TILE_SIZE);
 					return false;
-				} else if (fluidBelow.getDepth() + fluid.getDepth() > TILE_SIZE) {
+				} else if (belowDepth + fluidDepth == TILE_SIZE) {
 					fluidBelow.setDepth(TILE_SIZE);
-					fluid.setDepth(fluidBelow.getDepth() + fluid.getDepth() - TILE_SIZE);
-					return true;
-				} else if (fluidBelow.getDepth() + fluid.getDepth() == TILE_SIZE) {
-					fluidBelow.setDepth(TILE_SIZE);
+					fluid.setDepth(0);
 					topography.getFluids().remove(fluid.getTileX(), fluid.getTileY());
-					return true;
+					return false;
+				} else if (belowDepth + fluidDepth < TILE_SIZE) {
+					fluidBelow.setDepth(belowDepth + fluidDepth);
+					topography.getFluids().remove(fluid.getTileX(), fluid.getTileY());
+					return false;
 				}
 			}
 		}
-		return false;
+		
+		return true;
+	}
+	
+	
+	public static void main(String[] args) {
+		for (char j = 0; j <= Byte.MAX_VALUE; j++) {
+			System.out.println(Character.toString(j));
+		}
 	}
 }
