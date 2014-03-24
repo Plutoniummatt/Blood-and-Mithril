@@ -45,7 +45,7 @@ public abstract class Item implements Serializable, Comparable<Item> {
 	public abstract boolean sameAs(Item other);
 
 	/** What this {@link Item} will turn into when combusted */
-	public abstract Item combust(float energy);
+	public abstract Item combust(int heatLevel);
 
 	@Override
 	public int compareTo(Item o) {

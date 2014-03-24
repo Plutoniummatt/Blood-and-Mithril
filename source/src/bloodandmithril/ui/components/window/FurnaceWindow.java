@@ -58,6 +58,26 @@ public class FurnaceWindow extends TradeWindow {
 		Color.WHITE,
 		UIRef.BL
 	);
+	
+	/** Button that begins the smelting process */
+	private final Button smeltButton = new Button(
+		"Smelt",
+		defaultFont,
+		0,
+		0,
+		70,
+		16,
+		new Task() {
+			@Override
+			public void execute() {
+				smelt();
+			}
+		},
+		Color.GREEN,
+		Color.ORANGE,
+		Color.WHITE,
+		UIRef.BL
+	);
 
 
 	/**
@@ -87,17 +107,26 @@ public class FurnaceWindow extends TradeWindow {
 			}
 
 			// Render burn progress bar
-			renderBurnProgressBar();
+			renderBurnProgressBars();
 		}
 
 		super.internalWindowRender();
 
-		igniteButton.render(
-			x + width/2,
-			y - height + 65,
-			!furnace.isBurning() && isActive() && isProposeeItemsEmpty(),
-			getAlpha()
-		);
+		if (!furnace.isBurning()) {
+			igniteButton.render(
+				x + width/2,
+				y - height + 65,
+				isActive() && isProposeeItemsEmpty(),
+				getAlpha()
+			);
+		} else {
+			smeltButton.render(
+				x + width/2,
+				y - height + 65,
+				!furnace.isSmelting() && isActive(),
+				getAlpha()
+			);
+		}
 	}
 	
 	
@@ -110,7 +139,7 @@ public class FurnaceWindow extends TradeWindow {
 	/**
 	 * Renders the progress bar that indicates the current fuel burning status of the furnace
 	 */
-	private void renderBurnProgressBar() {
+	private void renderBurnProgressBars() {
 		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
 
 		int maxWidth = width / 2 + 5;
@@ -122,20 +151,36 @@ public class FurnaceWindow extends TradeWindow {
 				max = max + ((Fuel)item).getCombustionDuration() * entry.getValue();
 			}
 		}
-		float fraction = furnace.getCombustionDurationRemaining() / max;
+		float fuelFraction = furnace.getCombustionDurationRemaining() / max;
+		float smeltingFraction = furnace.getSmeltingDurationRemaining() / max;
 
 		Color alphaGreen = Colors.modulateAlpha(Color.GREEN, getAlpha());
+		Color alphaRed = Colors.modulateAlpha(Color.RED, getAlpha());
 
+		// Fuel
 		UserInterface.shapeRenderer.filledRect(
 			x + width / 2 - 10,
 			y - 25,
-			fraction * maxWidth,
+			fuelFraction * maxWidth,
 			2,
 			alphaGreen,
 			alphaGreen,
 			alphaGreen,
 			alphaGreen
 		);
+		
+		// Smelting
+		UserInterface.shapeRenderer.filledRect(
+			x + width / 2 - 10,
+			y - 27,
+			smeltingFraction * maxWidth,
+			2,
+			alphaRed,
+			alphaRed,
+			alphaRed,
+			alphaRed
+		);
+		
 		UserInterface.shapeRenderer.end();
 	}
 
@@ -154,8 +199,12 @@ public class FurnaceWindow extends TradeWindow {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		super.internalLeftClick(copy, windowsCopy);
 
-		if (isProposeeItemsEmpty() && !furnace.isBurning()) {
-			igniteButton.click();
+		if (furnace.isBurning()) {
+			smeltButton.click();
+		} else {
+			if (isProposeeItemsEmpty()) {
+				igniteButton.click();
+			}
 		}
 	}
 
@@ -196,7 +245,38 @@ public class FurnaceWindow extends TradeWindow {
 			if (finalDuration == 0f) {
 				UserInterface.addLayeredComponent(
 					new MessageWindow(
-						"No fuel added to furnace",
+						"Add coal to the furnace before attemping to ignite",
+						Color.RED,
+						BloodAndMithrilClient.WIDTH/2 - 175,
+						BloodAndMithrilClient.HEIGHT/2 + 100,
+						350,
+						200,
+						"No coal",
+						true,
+						100,
+						100
+					)
+				);
+				return;
+			}
+
+			furnace.setCombustionDurationRemaining(finalDuration);
+			furnace.ignite();
+		} else {
+			ClientServerInterface.SendRequest.sendIgniteFurnaceRequest(furnace.id);
+		}
+	}
+	
+	
+	/**
+	 * Begins the smelting
+	 */
+	private void smelt() {
+		if (ClientServerInterface.isServer()) {
+			if (furnace.container.getInventory().isEmpty()) {
+				UserInterface.addLayeredComponent(
+					new MessageWindow(
+						"Can not smelt nothing",
 						Color.RED,
 						BloodAndMithrilClient.WIDTH/2 - 175,
 						BloodAndMithrilClient.HEIGHT/2 + 100,
@@ -211,10 +291,9 @@ public class FurnaceWindow extends TradeWindow {
 				return;
 			}
 
-			furnace.setCombustionDurationRemaining(finalDuration);
-			furnace.ignite();
+			furnace.smelt();
 		} else {
-			ClientServerInterface.SendRequest.sendIgniteFurnaceRequest(furnace.id);
+			ClientServerInterface.SendRequest.sendFurnaceSmeltRequest(furnace.id);
 		}
 	}
 }

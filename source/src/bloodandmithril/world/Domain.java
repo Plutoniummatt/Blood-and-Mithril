@@ -233,7 +233,7 @@ public class Domain {
 		if (getActiveWorld() != null) {
 			getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam(camX, camY);
 			
-			if (System.currentTimeMillis() - topographyUpdateTimer > 100) {
+			if (System.currentTimeMillis() - topographyUpdateTimer > 50) {
 				topographyUpdateTimer = System.currentTimeMillis();
 				getActiveWorld().getTopography().update();
 			}

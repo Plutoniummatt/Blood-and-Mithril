@@ -3,18 +3,18 @@ package bloodandmithril.util.datastructure;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 
 import com.google.common.collect.Lists;
 
-public class DualKeyTreeMap<X, Y, V> implements Serializable {
+public class ConcurrentDualKeySkipListMap<X, Y, V> implements Serializable {
 	private static final long serialVersionUID = -3302956434707116279L;
 
 	/** The underlying data structue */
-	private TreeMap<X, TreeMap<Y, V>> data = new TreeMap<X, TreeMap<Y, V>>();
+	private ConcurrentSkipListMap<X, ConcurrentSkipListMap<Y, V>> data = new ConcurrentSkipListMap<X, ConcurrentSkipListMap<Y, V>>();
 	
 	/**
 	 * @return the value enquired upon
@@ -29,7 +29,7 @@ public class DualKeyTreeMap<X, Y, V> implements Serializable {
 	 */
 	public V put(X x, Y y, V v) {
 		if (data.get(x) == null) {
-			data.put(x, new TreeMap<Y, V>());
+			data.put(x, new ConcurrentSkipListMap<Y, V>());
 		}
 		return data.get(x).put(y, v);
 	}
@@ -52,7 +52,7 @@ public class DualKeyTreeMap<X, Y, V> implements Serializable {
 	public List<DualKeyEntry<X, Y, V>> getAllEntries() {
 		List<DualKeyEntry<X, Y, V>> entries = Lists.newLinkedList();
 		
-		for (Entry<X, TreeMap<Y, V>> outerEntry : data.entrySet()) {
+		for (Entry<X, ConcurrentSkipListMap<Y, V>> outerEntry : data.entrySet()) {
 			for (Entry<Y, V> innerEntry : outerEntry.getValue().entrySet()) {
 				entries.add(new DualKeyEntry<X, Y, V>(outerEntry.getKey(), innerEntry.getKey(), innerEntry.getValue()));
 			}

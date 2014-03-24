@@ -274,6 +274,7 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Determines if we can move to an adjascent {@link Node} */
+	@SuppressWarnings("cast")
 	private int processAdjascent(final Node to, int height, boolean right, Node parent, Node destination, int safeHeight, World world) throws UndiscoveredPathNotification {
 		Tile tile;
 

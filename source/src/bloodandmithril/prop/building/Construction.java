@@ -2,6 +2,7 @@ package bloodandmithril.prop.building;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.world.Domain.Depth;
 
 /**
@@ -14,9 +15,12 @@ public abstract class Construction extends Prop {
 	/** Dimensions of this {@link Construction} */
 	protected final int width, height;
 
-	/** The current progress of construction */
+	/** Current construction progress, 1f means fully constructed */
 	private float constructionProgress;
-
+	
+	/** The rate at which this {@link Construction} is constructed, in units of /s */
+	private float constructionRate;
+	
 	/**
 	 * Constructor
 	 */
@@ -41,6 +45,26 @@ public abstract class Construction extends Prop {
 		internalRender(constructionProgress);
 	}
 	
+	
+	/**
+	 * Progresses the construction of this {@link Construction}, in time units measured in seconds
+	 */
+	public synchronized void construct(float time) {
+		if (constructionProgress >= 1f) {
+			finishConstruction();
+		} else {
+			constructionProgress += time * constructionRate;
+		}
+	}
+	
+	
+	/**
+	 * Finalise the construction
+	 */
+	private void finishConstruction() {
+		constructionProgress = 1f;
+	}
+
 
 	@Override
 	public boolean leftClick() {
@@ -58,7 +82,17 @@ public abstract class Construction extends Prop {
 		}
 		return true;
 	}
-
+	
+	
+	@Override
+	public ContextMenu getContextMenu() {
+		if (constructionProgress == 1f) {
+			return getCompletedContextMenu();
+		} else {
+			return getConstructionContextMenu();
+		}
+	}
+	
 
 	/**
 	 * See {@link #constructionStage}
@@ -76,9 +110,12 @@ public abstract class Construction extends Prop {
 	}
 	
 	
-	/**
-	 * Renders this {@link Construction} based on {@link #constructionProgress}
-	 */
+	/** Renders this {@link Construction} based on {@link #constructionProgress} */
 	protected abstract void internalRender(float constructionProgress);
-
+	
+	/** Get the context menu that will be displayed whilst this {@link Construction} is under construction */
+	protected abstract ContextMenu getConstructionContextMenu();
+	
+	/** Get the context menu that will be displayed once this {@link Construction} has finished being constructing */
+	protected abstract ContextMenu getCompletedContextMenu();
 }
