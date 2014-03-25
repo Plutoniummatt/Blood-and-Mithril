@@ -18,7 +18,6 @@ import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.fuel.Coal;
-import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -31,6 +30,9 @@ import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
  * A Furnace
@@ -43,7 +45,7 @@ public class Furnace extends ConstructionWithContainer {
 	public static TextureRegion FURANCE, FURNACE_BURNING;
 
 	/** The amount of time taken to smelt one batch of material, in seconds */
-	private static final float SMELTING_DURATION = 10f;
+	public static final float SMELTING_DURATION = 10f;
 	
 	/** The heat level of {@link Furnace}s */
 	private static final int HEAT_LEVEL = 2500;
@@ -111,8 +113,17 @@ public class Furnace extends ConstructionWithContainer {
 		}
 		
 		if (!container.getInventory().isEmpty()) {
-			smelting = true;
-			smeltingDurationRemaining = SMELTING_DURATION;
+			Optional<Item> notCoal = Iterables.tryFind(container.getInventory().keySet(), new Predicate<Item>() {
+				@Override
+				public boolean apply(Item item) {
+					return !(item instanceof Coal);
+				}
+			});
+			
+			if (notCoal.isPresent()) {
+				smelting = true;
+				smeltingDurationRemaining = SMELTING_DURATION;
+			}
 		}
 	}
 
@@ -155,7 +166,7 @@ public class Furnace extends ConstructionWithContainer {
 
 
 	@Override
-	public void update(float delta) {
+	public synchronized void update(float delta) {
 		if (burning) {
 			synchronized (this) {
 				this.combustionDurationRemaining -= delta;
@@ -164,7 +175,7 @@ public class Furnace extends ConstructionWithContainer {
 					smeltingDurationRemaining -= delta;
 				}
 				
-				if (this.smeltingDurationRemaining <= 0f) {
+				if (this.smeltingDurationRemaining <= 0f && smelting) {
 					smelting = false;
 					smeltItems();
 					if (!isClient()) {
@@ -172,7 +183,6 @@ public class Furnace extends ConstructionWithContainer {
 							-1,
 							true,
 							true,
-							new AddLightRequest.RemoveLightNotification(lightId),
 							new SynchronizePropRequest.SynchronizePropResponse(this),
 							new TransferItems.RefreshWindowsResponse()
 						);
@@ -184,6 +194,7 @@ public class Furnace extends ConstructionWithContainer {
 				if (this.combustionDurationRemaining <= 0f) {
 					burning = false;
 					smelting = false;
+					smeltItems();
 					Domain.getLights().remove(lightId);
 					if (!isClient()) {
 						ClientServerInterface.sendNotification(
@@ -211,10 +222,16 @@ public class Furnace extends ConstructionWithContainer {
 			Set<Entry<Item, Integer>> existing = newHashMap(container.getInventory()).entrySet();
 			container.getInventory().clear();
 			
+			
 			for (Entry<Item, Integer> entry : existing) {
 				for (int i = 0; i < entry.getValue(); i++) {
 					if (entry.getKey() instanceof Coal) {
-						container.giveItem(new Ashes());
+						if (isBurning()) {
+							combustionDurationRemaining -= ((Coal) entry.getKey()).getCombustionDuration();
+							container.giveItem(new Coal());
+						} else {
+							container.giveItem(entry.getKey().combust(HEAT_LEVEL));
+						}
 					} else {
 						container.giveItem(entry.getKey().combust(HEAT_LEVEL));
 					}
@@ -293,5 +310,15 @@ public class Furnace extends ConstructionWithContainer {
 		}
 
 		return menu;
+	}
+
+
+	@Override
+	protected void giveItemDecorator(Item item) {
+		if (item instanceof Coal) {
+			if (burning) {
+				this.combustionDurationRemaining += ((Coal) item).getCombustionDuration();
+			}
+		}
 	}
 }

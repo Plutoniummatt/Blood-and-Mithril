@@ -15,10 +15,10 @@ public abstract class Item implements Serializable, Comparable<Item> {
 	private static final long serialVersionUID = -7733840667288631158L;
 
 	/** The mass of this item */
-	public float mass;
+	public final float mass;
 
 	/** The value of this item */
-	public long value;
+	public final long value;
 
 	/** Whether this item can be equipped by an {@link Individual} */
 	public final boolean equippable;

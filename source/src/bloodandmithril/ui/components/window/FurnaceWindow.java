@@ -12,6 +12,7 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.Fuel;
+import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -94,15 +95,27 @@ public class FurnaceWindow extends TradeWindow {
 		if (furnace.isBurning()) {
 			for (HashMap<ListingMenuItem<Item>, Integer> hashMap : proposeePanel.getListing()) {
 				for (Entry<ListingMenuItem<Item>, Integer> entry : hashMap.entrySet()) {
-					entry.getKey().button.setDownColor(Util.Colors.DARK_RED);
-					entry.getKey().button.setOverColor(Util.Colors.DARK_RED);
-					entry.getKey().button.setIdleColor(Util.Colors.DARK_RED);
-					entry.getKey().button.setTask(new Task() {
-						@Override
-						public void execute() {
-							// Do nothing
-						}
-					});
+					if (entry.getKey().t instanceof Coal) {
+						entry.getKey().button.setDownColor(Color.GREEN);
+						entry.getKey().button.setOverColor(Color.GREEN);
+						entry.getKey().button.setIdleColor(Color.GREEN);
+						entry.getKey().button.setTask(new Task() {
+							@Override
+							public void execute() {
+								// Do nothing
+							}
+						});
+					} else if (furnace.isSmelting()) {
+						entry.getKey().button.setDownColor(Util.Colors.DARK_RED);
+						entry.getKey().button.setOverColor(Util.Colors.DARK_RED);
+						entry.getKey().button.setIdleColor(Util.Colors.DARK_RED);
+						entry.getKey().button.setTask(new Task() {
+							@Override
+							public void execute() {
+								// Do nothing
+							}
+						});
+					}
 				}
 			}
 
@@ -132,7 +145,7 @@ public class FurnaceWindow extends TradeWindow {
 	
 	@Override
 	protected boolean tradeButtonClickable() {
-		return !furnace.isBurning() && super.tradeButtonClickable();
+		return super.tradeButtonClickable() && !furnace.isSmelting();
 	}
 
 
@@ -152,7 +165,7 @@ public class FurnaceWindow extends TradeWindow {
 			}
 		}
 		float fuelFraction = furnace.getCombustionDurationRemaining() / max;
-		float smeltingFraction = furnace.getSmeltingDurationRemaining() / max;
+		float smeltingFraction = furnace.getSmeltingDurationRemaining() / Furnace.SMELTING_DURATION;
 
 		Color alphaGreen = Colors.modulateAlpha(Color.GREEN, getAlpha());
 		Color alphaRed = Colors.modulateAlpha(Color.RED, getAlpha());
@@ -170,16 +183,18 @@ public class FurnaceWindow extends TradeWindow {
 		);
 		
 		// Smelting
-		UserInterface.shapeRenderer.filledRect(
-			x + width / 2 - 10,
-			y - 27,
-			smeltingFraction * maxWidth,
-			2,
-			alphaRed,
-			alphaRed,
-			alphaRed,
-			alphaRed
-		);
+		if (furnace.isSmelting()) {
+			UserInterface.shapeRenderer.filledRect(
+				x + width / 2 - 10,
+				y - 28,
+				smeltingFraction * maxWidth,
+				2,
+				alphaRed,
+				alphaRed,
+				alphaRed,
+				alphaRed
+			);
+		}
 		
 		UserInterface.shapeRenderer.end();
 	}
