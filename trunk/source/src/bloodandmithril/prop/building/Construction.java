@@ -1,8 +1,17 @@
 package bloodandmithril.prop.building;
 
+import java.util.Map;
+
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.window.ScrollableListingWindow;
+import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain.Depth;
 
 /**
@@ -89,8 +98,39 @@ public abstract class Construction extends Prop {
 		if (constructionProgress == 1f) {
 			return getCompletedContextMenu();
 		} else {
-			ContextMenu menu = new ContextMenu(0, 0, null);
-			return getConstructionContextMenu();
+			ContextMenu menu = new ContextMenu(0, 0);
+			
+			final Map<Item, Integer> reqMaterials = getRequiredMaterials();
+			
+			menu.addMenuItem(
+				new ContextMenuItem(
+					"Required materials", 
+					new Task() {
+						@Override
+						public void execute() {
+							UserInterface.addLayeredComponent(new ScrollableListingWindow<>(
+								BloodAndMithrilClient.WIDTH / 2 - 250, 
+								BloodAndMithrilClient.HEIGHT / 2 + 250, 
+								500, 
+								500, 
+								"Required materials", 
+								true, 
+								500, 
+								300, 
+								true, 
+								true, 
+								reqMaterials
+							));
+						}
+					}, 
+					Color.WHITE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
+			
+			return menu;
 		}
 	}
 	
@@ -114,8 +154,8 @@ public abstract class Construction extends Prop {
 	/** Renders this {@link Construction} based on {@link #constructionProgress} */
 	protected abstract void internalRender(float constructionProgress);
 	
-	/** Get the context menu that will be displayed whilst this {@link Construction} is under construction */
-	protected abstract ContextMenu getConstructionContextMenu();
+	/** Get the required items to construct this {@link Construction} */
+	protected abstract Map<Item, Integer> getRequiredMaterials();
 	
 	/** Get the context menu that will be displayed once this {@link Construction} has finished being constructing */
 	protected abstract ContextMenu getCompletedContextMenu();
