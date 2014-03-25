@@ -4,6 +4,7 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -126,5 +127,11 @@ public class PineChest extends ConstructionWithContainer {
 	protected ContextMenu getCompletedContextMenu() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	protected void giveItemDecorator(Item item) {
+		// TODO Auto-generated method stub
 	}
 }

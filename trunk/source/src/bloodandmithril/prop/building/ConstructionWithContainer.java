@@ -1,6 +1,7 @@
 package bloodandmithril.prop.building;
 
 import bloodandmithril.item.Container;
+import bloodandmithril.item.Item;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.math.Vector2;
@@ -25,12 +26,18 @@ public abstract class ConstructionWithContainer extends Construction {
 		super(x, y, width, height, grounded);
 		this.container = new ConstructionContainer(capacity, id);
 	}
+	
+	
+	/**
+	 * Called after super.giveItem on the container.
+	 */
+	protected abstract void giveItemDecorator(Item item);
 
 
 	/**
 	 * The {@link Container} that drives the inventory of this {@link ConstructionWithContainer}
 	 */
-	public static class ConstructionContainer extends Container {
+	public class ConstructionContainer extends Container {
 		private static final long serialVersionUID = 3061765937846818271L;
 
 		/** Id of the prop this chest belongs to */
@@ -47,6 +54,13 @@ public abstract class ConstructionWithContainer extends Construction {
 
 		public Vector2 getPositionOfChest() {
 			return Domain.getProps().get(propId).position;
+		}
+		
+		
+		@Override
+		public synchronized void giveItem(Item item) {
+			super.giveItem(item);
+			giveItemDecorator(item);
 		}
 	}
 }

@@ -683,8 +683,8 @@ public class UserInterface {
 						new Task() {
 							@Override
 							public void execute() {
-								secondaryMenu.x = BloodAndMithrilClient.getMouseScreenX();
-								secondaryMenu.y = BloodAndMithrilClient.getMouseScreenY();
+								secondaryMenu.x = getMouseScreenX();
+								secondaryMenu.y = getMouseScreenY();
 							}
 						},
 						Color.WHITE,

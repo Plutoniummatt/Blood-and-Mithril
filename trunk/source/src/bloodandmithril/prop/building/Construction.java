@@ -89,6 +89,7 @@ public abstract class Construction extends Prop {
 		if (constructionProgress == 1f) {
 			return getCompletedContextMenu();
 		} else {
+			ContextMenu menu = new ContextMenu(0, 0, null);
 			return getConstructionContextMenu();
 		}
 	}
