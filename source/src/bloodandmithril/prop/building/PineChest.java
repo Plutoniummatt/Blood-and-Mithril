@@ -1,5 +1,7 @@
 package bloodandmithril.prop.building;
 
+import java.util.Map;
+
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
@@ -117,13 +119,6 @@ public class PineChest extends ConstructionWithContainer {
 
 
 	@Override
-	protected ContextMenu getConstructionContextMenu() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
 	protected ContextMenu getCompletedContextMenu() {
 		// TODO Auto-generated method stub
 		return null;
@@ -133,5 +128,12 @@ public class PineChest extends ConstructionWithContainer {
 	@Override
 	protected void giveItemDecorator(Item item) {
 		// TODO Auto-generated method stub
+	}
+
+
+	@Override
+	protected Map<Item, Integer> getRequiredMaterials() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

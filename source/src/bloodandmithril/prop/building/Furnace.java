@@ -5,6 +5,7 @@ import static bloodandmithril.csi.ClientServerInterface.isClient;
 import static bloodandmithril.ui.UserInterface.refreshInventoryWindows;
 import static com.google.common.collect.Maps.newHashMap;
 
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -247,13 +248,6 @@ public class Furnace extends ConstructionWithContainer {
 
 
 	@Override
-	protected ContextMenu getConstructionContextMenu() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
 	protected ContextMenu getCompletedContextMenu() {
 		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(),
 			new ContextMenuItem(
@@ -320,5 +314,12 @@ public class Furnace extends ConstructionWithContainer {
 				this.combustionDurationRemaining += ((Coal) item).getCombustionDuration();
 			}
 		}
+	}
+
+
+	@Override
+	protected Map<Item, Integer> getRequiredMaterials() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
