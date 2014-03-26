@@ -360,6 +360,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(FurnaceSmelt.class);
 		kryo.register(Ashes.class);
 		kryo.register(InterlacedWindowTile.class);
 		kryo.register(AddLightRequest.class);

@@ -40,6 +40,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
@@ -158,6 +159,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	private void loadResources() {
 		Domain.setup();
+		Domain.shapeRenderer = new ShapeRenderer();
 		Fonts.setup();
 		Individual.setup();
 		PrefabricatedComponent.setup();
@@ -395,7 +397,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (GameSaver.isSaving()) {
 			return false;
 		}
-
+		
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;
 		}

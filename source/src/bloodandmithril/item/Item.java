@@ -55,4 +55,9 @@ public abstract class Item implements Serializable, Comparable<Item> {
 			return value > o.value ? 1 : -1;
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return getSingular(true);
+	}
 }
