@@ -1,5 +1,7 @@
 package bloodandmithril.prop.building;
 
+import static com.google.common.collect.Maps.newHashMap;
+
 import java.util.Map;
 
 import bloodandmithril.BloodAndMithrilClient;
@@ -7,6 +9,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -133,7 +136,10 @@ public class PineChest extends ConstructionWithContainer {
 
 	@Override
 	protected Map<Item, Integer> getRequiredMaterials() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Item, Integer> map = newHashMap();
+		
+		map.put(new Carrot(), 20);
+		
+		return map;
 	}
 }

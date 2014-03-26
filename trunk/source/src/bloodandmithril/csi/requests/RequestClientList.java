@@ -68,7 +68,7 @@ public class RequestClientList implements Request {
 
 		@Override
 		public void acknowledge() {
-			for (Component component : UserInterface.layeredComponents) {
+			for (Component component : Lists.newLinkedList(UserInterface.layeredComponents)) {
 				if (component instanceof ChatWindow) {
 
 					List<HashMap<ListingMenuItem<String>, Integer>> listings;

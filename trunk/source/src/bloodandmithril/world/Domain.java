@@ -76,7 +76,7 @@ public class Domain {
 	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
 	
 	/** Domain-specific {@link ShapeRenderer} */
-	public static ShapeRenderer 								shapeRenderer			= new ShapeRenderer();
+	public static ShapeRenderer 								shapeRenderer;
 	
 	/** Textures */
 	public static Texture gameWorldTexture;

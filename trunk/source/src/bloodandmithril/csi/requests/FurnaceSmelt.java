@@ -27,10 +27,7 @@ public class FurnaceSmelt implements Request {
 	public Responses respond() {
 		Prop prop = Domain.getProps().get(furnaceId);
 		if (prop instanceof Furnace) {
-
-			if (!((Furnace) prop).isBurning()) {
-				((Furnace) prop).smelt();
-			}
+			((Furnace) prop).smelt();
 		} else {
 			throw new RuntimeException("Expected a furnace, but got a " + prop.getClass().getSimpleName());
 		}
