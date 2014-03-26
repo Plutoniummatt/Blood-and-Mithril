@@ -9,7 +9,6 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -136,10 +135,12 @@ public class PineChest extends ConstructionWithContainer {
 
 	@Override
 	protected Map<Item, Integer> getRequiredMaterials() {
-		Map<Item, Integer> map = newHashMap();
-		
-		map.put(new Carrot(), 20);
-		
-		return map;
+		return newHashMap();
+	}
+
+
+	@Override
+	public String getContextMenuLabel() {
+		return "Pine chest";
 	}
 }

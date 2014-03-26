@@ -83,12 +83,12 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class UserInterface {
 
-	private static final Color DARK_SCREEN_COLOR = new Color(0f, 0f, 0f, 0.8f);
-	private static final Color EXISTING_INTERFACE_COLOR = new Color(1f, 0.2f, 0f, 0.5f);
-	private static final Color AVAILABLE_INTERFACE_COLOR = new Color(0.2f, 1f, 0f, 0.5f);
-	private static final Color TILE_OVERLAY_COLOR = new Color(0f, 1f, 1f, 0.3f);
-	private static final Color COMPONENT_BOUNDARY_COLOR = new Color(1f, 1f, 1f, 0.5f);
-	private static final Color COMPONENT_FILL_COLOR = new Color(0f, 1f, 0f, 0.15f);
+	private static final Color DARK_SCREEN_COLOR 			= new Color(0f, 0f, 0f, 0.8f);
+	private static final Color EXISTING_INTERFACE_COLOR 	= new Color(1f, 0.2f, 0f, 0.5f);
+	private static final Color AVAILABLE_INTERFACE_COLOR 	= new Color(0.2f, 1f, 0f, 0.5f);
+	private static final Color TILE_OVERLAY_COLOR 			= new Color(0f, 1f, 1f, 0.3f);
+	private static final Color COMPONENT_BOUNDARY_COLOR 	= new Color(1f, 1f, 1f, 0.5f);
+	private static final Color COMPONENT_FILL_COLOR 		= new Color(0f, 1f, 0f, 0.15f);
 
 	/** UI camera */
 	public static OrthographicCamera UICamera;
@@ -124,9 +124,9 @@ public class UserInterface {
 	public static boolean RENDER_TOPOGRAPHY = false;
 
 	/** Texture regions */
-	public static TextureRegion finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
-	public static TextureRegion currentArrow = new TextureRegion(UserInterface.uiTexture, 0, 0, 11, 8);
-	public static TextureRegion followArrow = new TextureRegion(UserInterface.uiTexture, 0, 34, 11, 8);
+	public static TextureRegion finalWaypointTexture 	= new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
+	public static TextureRegion currentArrow 			= new TextureRegion(UserInterface.uiTexture, 0, 0, 11, 8);
+	public static TextureRegion followArrow 			= new TextureRegion(UserInterface.uiTexture, 0, 34, 11, 8);
 
 	/**
 	 * Steup for UI, makes everything it needs.
@@ -433,7 +433,7 @@ public class UserInterface {
 				AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
 					shapeRenderer.setColor(Color.WHITE);
-//					((GoToLocation)currentTask).renderPath();
+					// ((GoToLocation)currentTask).renderPath();
 					((GoToLocation)currentTask).renderFinalWayPoint();
 				}
 			}
@@ -679,7 +679,7 @@ public class UserInterface {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
 				newMenu.getMenuItems().add(
 					new ContextMenuItem(
-						prop.getClass().getSimpleName(),
+						prop.getContextMenuLabel(),
 						new Task() {
 							@Override
 							public void execute() {

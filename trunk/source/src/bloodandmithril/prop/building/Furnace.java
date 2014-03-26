@@ -326,4 +326,10 @@ public class Furnace extends ConstructionWithContainer {
 		
 		return map;
 	}
+
+
+	@Override
+	public String getContextMenuLabel() {
+		return getConstructionProgress() == 1 ? "Furnace" : "Furnace (Under construction)";
+	}
 }

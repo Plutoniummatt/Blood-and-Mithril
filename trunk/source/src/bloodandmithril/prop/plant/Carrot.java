@@ -128,4 +128,10 @@ public class Carrot extends Plant {
 	@Override
 	public void update(float delta) {
 	}
+
+
+	@Override
+	public String getContextMenuLabel() {
+		return "Carrot";
+	}
 }
