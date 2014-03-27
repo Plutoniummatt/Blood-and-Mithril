@@ -17,8 +17,6 @@ import bloodandmithril.ui.components.window.ChatWindow;
 import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.ui.components.window.Window;
-import bloodandmithril.util.Task;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
@@ -31,36 +29,22 @@ public class BottomBar extends Component {
 
 
 	private final Button mainMenu = new Button(UserInterface.uiTexture, 25, 16, 53, 0, 50, 32,
-		new Task() {
-			@Override
-			public void execute() {
-			}
-		}, UIRef.BL
+		() -> {}, 
+		UIRef.BL
 	);
 
 	private final Button windows = new Button(UserInterface.uiTexture, 85, 16, 103, 0, 50, 32,
-		new Task() {
-			@Override
-			public void execute() {
-			}
-		}, UIRef.BL
+		() -> {}, 
+		UIRef.BL
 	);
 
 	private final Button chat = new Button(UserInterface.uiTexture, 145, 16, 153, 0, 50, 32,
-		new Task() {
-			@Override
-			public void execute() {
-			}
-		},
+		() -> {},
 		UIRef.BL
 	);
 
 	private final Button factions = new Button(UserInterface.uiTexture, 205, 16, 203, 0, 50, 32,
-		new Task() {
-			@Override
-			public void execute() {
-			}
-		},
+		() -> {},
 		UIRef.BL
 	);
 
@@ -136,12 +120,7 @@ public class BottomBar extends Component {
 			BloodAndMithrilClient.getMouseScreenY() + 44,
 			new ContextMenuItem(
 				"Show logs",
-				new Task() {
-					@Override
-					public void execute() {
-						//TODO
-					}
-				},
+				() -> {},
 				Color.ORANGE,
 				Color.GREEN,
 				Color.GRAY,
@@ -153,17 +132,14 @@ public class BottomBar extends Component {
 		contextMenu.addMenuItem(
 			new ContextMenuItem(
 				"Chat",
-				new Task() {
-					@Override
-					public void execute() {
-						for (Component component : UserInterface.layeredComponents) {
-							if (component instanceof ChatWindow) {
-								((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
-								((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
-								((ChatWindow) component).minimized = false;
-								((ChatWindow) component).setActive(true);
-								return;
-							}
+				() -> {
+					for (Component component : UserInterface.layeredComponents) {
+						if (component instanceof ChatWindow) {
+							((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
+							((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
+							((ChatWindow) component).minimized = false;
+							((ChatWindow) component).setActive(true);
+							return;
 						}
 
 						UserInterface.addLayeredComponent(
@@ -204,11 +180,8 @@ public class BottomBar extends Component {
 					size++;
 					items.add(new ContextMenuItem(
 						((Window) component).title,
-						new Task() {
-							@Override
-							public void execute() {
-								((Window) component).minimized = false;
-							}
+						() -> {
+							((Window) component).minimized = false;
 						},
 						Color.WHITE,
 						Color.GREEN,
@@ -231,14 +204,11 @@ public class BottomBar extends Component {
 		newMenu.addMenuItem(
 			new ContextMenuItem(
 				"Show all",
-				new Task() {
-					@Override
-					public void execute() {
-						for (final Component component : windowsCopy) {
-							if (component instanceof Window) {
-								if (((Window) component).minimized) {
-									((Window) component).minimized = false;
-								}
+				() -> {
+					for (final Component component : windowsCopy) {
+						if (component instanceof Window) {
+							if (((Window) component).minimized) {
+								((Window) component).minimized = false;
 							}
 						}
 					}
@@ -253,18 +223,15 @@ public class BottomBar extends Component {
 		newMenu.addMenuItem(
 			new ContextMenuItem(
 				"Minimize all",
-				new Task() {
-					@Override
-						public void execute() {
-							for (final Component component : windowsCopy) {
-								if (component instanceof Window) {
-									if (((Window) component).minimizable) {
-										((Window) component).minimized = true;
-									}
-								}
+				() -> {
+					for (final Component component : windowsCopy) {
+						if (component instanceof Window) {
+							if (((Window) component).minimizable) {
+								((Window) component).minimized = true;
 							}
 						}
-					},
+					}
+				},
 				Color.ORANGE,
 				Color.GREEN,
 				Color.GRAY,
@@ -275,13 +242,10 @@ public class BottomBar extends Component {
 		newMenu.addMenuItem(
 			new ContextMenuItem(
 				"Close all",
-				new Task() {
-					@Override
-					public void execute() {
-						for (final Component component : windowsCopy) {
-							if (component instanceof Window) {
-								component.setClosing(true);
-							}
+				() -> {
+					for (final Component component : windowsCopy) {
+						if (component instanceof Window) {
+							component.setClosing(true);
 						}
 					}
 				},

@@ -1,7 +1,6 @@
 package bloodandmithril.csi;
 
 import java.io.IOException;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.InetAddress;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -125,7 +124,7 @@ import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.material.plant.Felberries;
 import bloodandmithril.item.material.plant.Seed;
 import bloodandmithril.item.misc.Currency;
-import bloodandmithril.persistence.world.ChunkLoaderImpl;
+import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
@@ -136,7 +135,6 @@ import bloodandmithril.prop.plant.Plant;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
@@ -208,12 +206,9 @@ public class ClientServerInterface {
 		client.connect(5000, ip, 42685, 42686);
 		client.getKryo().setInstantiatorStrategy(new StdInstantiatorStrategy());
 		client.getUpdateThread().setUncaughtExceptionHandler(
-			new UncaughtExceptionHandler() {
-				@Override
-				public void uncaughtException(Thread thread, Throwable throwable) {
-					Logger.networkDebug(throwable.getMessage(), LogLevel.WARN);
-					throwable.printStackTrace();
-				}
+			(thread, throwable) -> {
+				Logger.networkDebug(throwable.getMessage(), LogLevel.WARN);
+				throwable.printStackTrace();
 			}
 		);
 
@@ -242,49 +237,34 @@ public class ClientServerInterface {
 						continue;
 					}
 					if (response instanceof GenerateChunkResponse) {
-						ChunkLoaderImpl.loaderTasks.add(
-							new Task() {
-								@Override
-								public void execute() {
-									response.acknowledge();
-								}
+						ChunkLoader.loaderTasks.add(
+							() -> {
+								response.acknowledge();
 							}
 						);
 					} else if (response instanceof SynchronizeIndividualResponse) {
 						BloodAndMithrilClient.newCachedThreadPool.execute(
-							new Runnable() {
-								@Override
-								public void run() {
-									response.acknowledge();
-								}
+							() -> {
+								response.acknowledge();
 							}
 						);
 					} else if (response instanceof DestroyTileResponse) {
-						Topography.addTask(new Task() {
-							@Override
-							public void execute() {
-								response.acknowledge();
-							}
+						Topography.addTask(() -> {
+							response.acknowledge();
 						});
 					} else if (response instanceof MoveIndividual || response instanceof IndividualSelection) {
 						AIProcessor.aiThreadTasks.add(
-							new Task() {
-								@Override
-								public void execute() {
-									response.acknowledge();
-								}
+							() -> {
+								response.acknowledge();
 							}
 						);
 					} else {
 						BloodAndMithrilClient.newCachedThreadPool.execute(
-							new Runnable() {
-								@Override
-								public void run() {
-									try {
-										response.acknowledge();
-									} catch (Throwable t) {
-										throw new RuntimeException(t);
-									}
+							() -> {
+								try {
+									response.acknowledge();
+								} catch (Throwable t) {
+									throw new RuntimeException(t);
 								}
 							}
 						);
@@ -301,36 +281,33 @@ public class ClientServerInterface {
 
 	public static synchronized void sendNotification(final int connectionId, final boolean tcp, final boolean executeInSingleThread, final Response... responses) {
 		serverThread.execute(
-			new Runnable() {
-				@Override
-				public void run() {
-					for (Connection connection : server.getConnections()) {
-						if (connectionId == -1) {
-							Responses resp = new Responses(executeInSingleThread);
-							for (Response response : responses) {
-								response.prepare();
-								resp.add(response);
-							}
-							if (tcp) {
-								connection.sendTCP(resp);
-							} else {
-								connection.sendUDP(resp);
-							}
-
-							continue;
+			() -> {
+				for (Connection connection : server.getConnections()) {
+					if (connectionId == -1) {
+						Responses resp = new Responses(executeInSingleThread);
+						for (Response response : responses) {
+							response.prepare();
+							resp.add(response);
+						}
+						if (tcp) {
+							connection.sendTCP(resp);
+						} else {
+							connection.sendUDP(resp);
 						}
 
-						if (connectionId == connection.getID()) {
-							Responses resp = new Responses(executeInSingleThread);
-							for (Response response : responses) {
-								response.prepare();
-								resp.add(response);
-							}
-							if (tcp) {
-								connection.sendTCP(resp);
-							} else {
-								connection.sendUDP(resp);
-							}
+						continue;
+					}
+
+					if (connectionId == connection.getID()) {
+						Responses resp = new Responses(executeInSingleThread);
+						for (Response response : responses) {
+							response.prepare();
+							resp.add(response);
+						}
+						if (tcp) {
+							connection.sendTCP(resp);
+						} else {
+							connection.sendUDP(resp);
 						}
 					}
 				}
@@ -360,7 +337,6 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
-		kryo.register(FurnaceSmelt.class);
 		kryo.register(Ashes.class);
 		kryo.register(InterlacedWindowTile.class);
 		kryo.register(AddLightRequest.class);

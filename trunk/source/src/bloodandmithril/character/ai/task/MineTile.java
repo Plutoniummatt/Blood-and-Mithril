@@ -11,7 +11,6 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
-import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
@@ -98,47 +97,44 @@ public class MineTile extends CompositeAITask {
 			final Individual host = Domain.getIndividuals().get(hostId.getId());
 
 			if (host.getInteractionBox().isWithinBox(tileCoordinate)) {
-				Topography.addTask(
-					new Task() {
-						@Override
-						public void execute() {
-							Tile tileToBeDeleted = topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
+				Topography.addTask(() -> 
+					{
+						Tile tileToBeDeleted = topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
 
-							if (!ClientServerInterface.isServer()) {
-								ClientServerInterface.SendRequest.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true, host.getWorldId());
+						if (!ClientServerInterface.isServer()) {
+							ClientServerInterface.SendRequest.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true, host.getWorldId());
+						}
+
+						if (tileToBeDeleted != null && !(tileToBeDeleted instanceof EmptyTile)) {
+							if (ClientServerInterface.isClient()) {
+								SoundService.pickAxe.play(
+									SoundService.getVolumne(tileCoordinate),
+									1f,
+									SoundService.getPan(tileCoordinate)
+								);
 							}
 
-							if (tileToBeDeleted != null && !(tileToBeDeleted instanceof EmptyTile)) {
-								if (ClientServerInterface.isClient()) {
-									SoundService.pickAxe.play(
-										SoundService.getVolumne(tileCoordinate),
-										1f,
-										SoundService.getPan(tileCoordinate)
-									);
-								}
+							if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
+								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
+								host.giveItem(tileToBeDeleted.mine());
 
-								if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
-									topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
-									host.giveItem(tileToBeDeleted.mine());
-
-									InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
-										@Override
-										public boolean apply(Component input) {
-											if (input instanceof Window) {
-												return ((Window) input).title.equals(hostId.getSimpleName() + " - Inventory");
-											}
-											return false;
+								InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
+									@Override
+									public boolean apply(Component input) {
+										if (input instanceof Window) {
+											return ((Window) input).title.equals(hostId.getSimpleName() + " - Inventory");
 										}
-									}, null);
-
-									if (existingInventoryWindow != null) {
-										existingInventoryWindow.refresh();
+										return false;
 									}
-								} else if (ClientServerInterface.isServer()) {
-									topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
-									ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, host.getWorldId());
-									ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine());
+								}, null);
+
+								if (existingInventoryWindow != null) {
+									existingInventoryWindow.refresh();
 								}
+							} else if (ClientServerInterface.isServer()) {
+								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
+								ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, host.getWorldId());
+								ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine());
 							}
 						}
 					}

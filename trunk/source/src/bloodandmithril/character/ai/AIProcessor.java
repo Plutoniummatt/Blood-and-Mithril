@@ -30,28 +30,16 @@ public class AIProcessor {
 	 */
 	public static void setup() {
 		if (aiThread == null && ClientServerInterface.isServer()) {
-			aiThread = new Thread(new Runnable() {
+			aiThread = new Thread(() -> {
 
-				@Override
-				public void run() {
-					while (true) {
-						try {
-							Thread.sleep(5);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-							throw new RuntimeException("Something interrupted the AI thread");
-						}
-						processItems(0);
+				while (true) {
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+						throw new RuntimeException("Something interrupted the AI thread");
 					}
-				}
-
-				private void processItems(final int n) {
-					if (aiThreadTasks.isEmpty()) {
-						Logger.aiDebug("Processed " + n + " AI items", LogLevel.TRACE);
-					} else {
-						aiThreadTasks.poll().execute();
-						processItems(n + 1);
-					}
+					processItems(0);
 				}
 			});
 
@@ -97,6 +85,19 @@ public class AIProcessor {
 			pathFinderThread.start();
 		}
 	}
+	
+	
+	/**
+	 * Processes items in the AI thread
+	 */
+	private static void processItems(final int n) {
+		if (aiThreadTasks.isEmpty()) {
+			Logger.aiDebug("Processed " + n + " AI items", LogLevel.TRACE);
+		} else {
+			aiThreadTasks.poll().execute();
+			processItems(n + 1);
+		}
+	}
 
 
 	/**
@@ -104,12 +105,9 @@ public class AIProcessor {
 	 */
 	public static void sendPathfindingRequest(final Individual host, final WayPoint destination, final boolean fly, final float forceTolerance, final boolean safe) {
 		pathFinderTasks.add(
-			new Task() {
-				@Override
-				public void execute() {
-					synchronized (host) {
-						host.getAI().setCurrentTask(new GoToLocation(host, destination, fly, forceTolerance, safe));
-					}
+			() -> {
+				synchronized (host) {
+					host.getAI().setCurrentTask(new GoToLocation(host, destination, fly, forceTolerance, safe));
 				}
 			}
 		);

@@ -25,9 +25,7 @@ import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
-import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;
@@ -160,7 +158,7 @@ public class InventoryWindow extends Window {
 		populateList(equippedItems, true);
 		populateList(nonEquippedItems, false);
 
-		inventoryListingPanel = new ScrollableListingPanel<Item>(this) {
+		inventoryListingPanel = new ScrollableListingPanel<Item, Integer>(this) {
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(equippedItemsToDisplay);
@@ -200,12 +198,9 @@ public class InventoryWindow extends Window {
 				0,
 				item.getKey().getSingular(true).length() * 10,
 				16,
-				new Task() {
-					@Override
-					public void execute() {
-						menuToAddUnequipped.x = BloodAndMithrilClient.getMouseScreenX();
-						menuToAddUnequipped.y = BloodAndMithrilClient.getMouseScreenY();
-					}
+				() -> {
+					menuToAddUnequipped.x = BloodAndMithrilClient.getMouseScreenX();
+					menuToAddUnequipped.y = BloodAndMithrilClient.getMouseScreenY();
 				},
 				eq ? Color.GREEN : Color.WHITE,
 				Color.GREEN,
@@ -221,12 +216,9 @@ public class InventoryWindow extends Window {
 				0,
 				item.getKey().getSingular(true).length() * 10,
 				16,
-				new Task() {
-					@Override
-					public void execute() {
-						menuToAddEquipped.x = BloodAndMithrilClient.getMouseScreenX();
-						menuToAddEquipped.y = BloodAndMithrilClient.getMouseScreenY();
-					}
+				() -> {
+					menuToAddEquipped.x = BloodAndMithrilClient.getMouseScreenX();
+					menuToAddEquipped.y = BloodAndMithrilClient.getMouseScreenY();
 				},
 				eq ? Color.GREEN : Color.WHITE,
 				Color.GREEN,
@@ -257,18 +249,15 @@ public class InventoryWindow extends Window {
 		if (item instanceof Consumable) {
 			ContextMenuItem consume = new ContextMenuItem(
 				"Consume",
-				new Task() {
-					@Override
-					public void execute() {
-						if (ClientServerInterface.isServer()) {
-							if (item instanceof Consumable && host instanceof Individual && ((Consumable)item).consume((Individual)host)) {
-								host.takeItem(item);
-							}
-						} else {
-							ClientServerInterface.SendRequest.sendConsumeItemRequest((Consumable)item, ((Individual)host).getId().getId());
+				() -> {
+					if (ClientServerInterface.isServer()) {
+						if (item instanceof Consumable && host instanceof Individual && ((Consumable)item).consume((Individual)host)) {
+							host.takeItem(item);
 						}
-						refresh();
+					} else {
+						ClientServerInterface.SendRequest.sendConsumeItemRequest((Consumable)item, ((Individual)host).getId().getId());
 					}
+					refresh();
 				},
 				Color.WHITE,
 				Color.GREEN,
@@ -289,38 +278,32 @@ public class InventoryWindow extends Window {
 		if (item instanceof Bottle) {
 			ContextMenuItem drink = new ContextMenuItem(
 				"Drink",
-				new Task() {
-					@Override
-					public void execute() {
-						UserInterface.addLayeredComponent(
-							new TextInputWindow(
-								BloodAndMithrilClient.WIDTH / 2 - 125,
-								BloodAndMithrilClient.HEIGHT/2 + 50,
-								250,
-								100,
-								"Amount",
-								250,
-								100,
-								new JITTask() {
-									@Override
-									public void execute(Object... args) {
-										if (ClientServerInterface.isServer()) {
-											host.takeItem(item);
-											Bottle newBottle = ((Bottle) item).clone();
-											newBottle.drink(Float.parseFloat((String)args[0]), (Individual)host);
-											host.giveItem(newBottle);
-											refresh();
-										} else {
-											ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (Bottle)item, Float.parseFloat((String)args[0]));
-										}
-									}
-								},
-								"Drink",
-								true,
-								""
-							)
-						);
-					}
+				() -> {
+					UserInterface.addLayeredComponent(
+						new TextInputWindow(
+							BloodAndMithrilClient.WIDTH / 2 - 125,
+							BloodAndMithrilClient.HEIGHT/2 + 50,
+							250,
+							100,
+							"Amount",
+							250,
+							100,
+							args -> {
+								if (ClientServerInterface.isServer()) {
+									host.takeItem(item);
+									Bottle newBottle = ((Bottle) item).clone();
+									newBottle.drink(Float.parseFloat((String)args[0]), (Individual)host);
+									host.giveItem(newBottle);
+									refresh();
+								} else {
+									ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (Bottle)item, Float.parseFloat((String)args[0]));
+								}
+							},
+							"Drink",
+							true,
+							""
+						)
+					);
 				},
 				Colors.UI_GRAY,
 				Color.GREEN,
@@ -342,16 +325,13 @@ public class InventoryWindow extends Window {
 		if (item instanceof Equipable) {
 			ContextMenuItem equipUnequip = equipped ? new ContextMenuItem(
 				"Unequip",
-				new Task() {
-					@Override
-					public void execute() {
-						if (ClientServerInterface.isServer()) {
-							host.unequip((Equipable)item);
-						} else {
-							ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(false, (Equipable)item, ((Individual)host).getId().getId());
-						}
-						refresh();
+				() -> {
+					if (ClientServerInterface.isServer()) {
+						host.unequip((Equipable)item);
+					} else {
+						ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(false, (Equipable)item, ((Individual)host).getId().getId());
 					}
+					refresh();
 				},
 				Colors.UI_GRAY,
 				Color.GREEN,
@@ -361,16 +341,13 @@ public class InventoryWindow extends Window {
 
 			new ContextMenuItem(
 				"Equip",
-				new Task() {
-					@Override
-					public void execute() {
-						if (ClientServerInterface.isServer()) {
-							host.equip((Equipable)item);
-						} else {
-							ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(true, (Equipable)item, ((Individual)host).getId().getId());
-						}
-						refresh();
+				() -> {
+					if (ClientServerInterface.isServer()) {
+						host.equip((Equipable)item);
+					} else {
+						ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(true, (Equipable)item, ((Individual)host).getId().getId());
 					}
+					refresh();
 				},
 				Colors.UI_GRAY,
 				Color.GREEN,
@@ -414,11 +391,8 @@ public class InventoryWindow extends Window {
 		private static ContextMenuItem showInfo(final Item item) {
 			return new ContextMenuItem(
 				"Show info",
-				new Task() {
-					@Override
-					public void execute() {
-						UserInterface.addLayeredComponent(item.getInfoWindow());
-					}
+				() -> {
+					UserInterface.addLayeredComponent(item.getInfoWindow());
 				},
 				Colors.UI_GRAY,
 				Color.GREEN,

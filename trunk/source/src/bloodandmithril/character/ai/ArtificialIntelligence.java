@@ -11,7 +11,6 @@ import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
@@ -47,9 +46,8 @@ public abstract class ArtificialIntelligence implements Serializable {
 		AIProcessor.setup();
 		if (AIProcessor.aiThread != null && AIProcessor.aiThread.isAlive()) {
 			if (mode == AIMode.AUTO) {
-				AIProcessor.aiThreadTasks.add(new Task() {
-					@Override
-					public void execute() {
+				AIProcessor.aiThreadTasks.add(() ->
+					{
 						switch (mode) {
 						case AUTO:
 							determineCurrentTask();
@@ -58,7 +56,6 @@ public abstract class ArtificialIntelligence implements Serializable {
 							break;
 						default:
 							throw new IllegalStateException("AI Mode not recognised");
-						}
 					}
 				});
 			}

@@ -135,16 +135,13 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		newCachedThreadPool = Executors.newCachedThreadPool();
 		
-		updateThread = new Thread(new Runnable() {
+		updateThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
-			
-			@Override
-			public void run() {
-				while (true) {
-					if ((System.currentTimeMillis() - prevFrame) > 16) {
-						prevFrame = System.currentTimeMillis();
-						update(Gdx.graphics.getDeltaTime());
-					}
+		
+			while (true) {
+				if ((System.currentTimeMillis() - prevFrame) > 16) {
+					prevFrame = System.currentTimeMillis();
+					update(Gdx.graphics.getDeltaTime());
 				}
 			}
 		});
@@ -397,7 +394,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (GameSaver.isSaving()) {
 			return false;
 		}
-		
+
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;
 		}

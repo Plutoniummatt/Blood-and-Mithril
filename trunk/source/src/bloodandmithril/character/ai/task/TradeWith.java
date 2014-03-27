@@ -40,7 +40,7 @@ public class TradeWith extends CompositeAITask {
 		Vector2 location = null;
 
 		if (proposee instanceof ConstructionContainer) {
-			location = ((ConstructionContainer) proposee).getPositionOfChest();
+			location = ((ConstructionContainer) proposee).getPositionOfConstruction();
 		} else if (proposee instanceof Individual) {
 			location = ((Individual) proposee).getState().position;
 		}
@@ -71,7 +71,7 @@ public class TradeWith extends CompositeAITask {
 		Vector2 location = null;
 
 		if (proposee instanceof ConstructionContainer) {
-			location = ((ConstructionContainer) proposee).getPositionOfChest();
+			location = ((ConstructionContainer) proposee).getPositionOfConstruction();
 		} else if (proposee instanceof Individual) {
 			location = ((Individual) proposee).getState().position;
 		}
@@ -154,7 +154,7 @@ public class TradeWith extends CompositeAITask {
 				proposeeCasted.getAI().setCurrentTask(new Trading(proposeeCasted.getId(), proposer.getId().getId(), TradeEntity.INDIVIDUAL));
 			} else if (proposee instanceof ConstructionContainer) {
 
-				if (proposer.getDistanceFrom(((ConstructionContainer)proposee).getPositionOfChest()) > 64f) {
+				if (proposer.getDistanceFrom(((ConstructionContainer)proposee).getPositionOfConstruction()) > 64f) {
 					return;
 				}
 

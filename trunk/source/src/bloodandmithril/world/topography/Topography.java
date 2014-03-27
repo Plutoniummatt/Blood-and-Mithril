@@ -8,7 +8,6 @@ import org.lwjgl.opengl.Display;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.persistence.world.ChunkLoader;
-import bloodandmithril.persistence.world.ChunkLoaderImpl;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
@@ -56,7 +55,7 @@ public class Topography {
 	private final Structures structures;
 
 	/** The chunk loader. */
-	private static final ChunkLoader chunkLoader = new ChunkLoaderImpl();
+	private static final ChunkLoader chunkLoader = new ChunkLoader();
 
 	/** Any non-main thread topography tasks queued here */
 	private static BlockingQueue<Task> topographyTasks = new ArrayBlockingQueue<Task>(500000);

@@ -45,10 +45,8 @@ import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.IndividualStatusWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
-import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.world.Epoch;
@@ -597,16 +595,13 @@ public abstract class Individual extends Equipper {
 		ContextMenuItem controlOrReleaseMenuItem = Domain.getSelectedIndividuals().contains(thisIndividual) ?
 		new ContextMenuItem(
 			"Deselect",
-			new Task() {
-				@Override
-				public void execute() {
-					if (isServer()) {
-						thisIndividual.deselect(false, 0);
-						Domain.getSelectedIndividuals().remove(thisIndividual);
-						clearCommands();
-					} else {
-						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, false);
-					}
+			() -> {
+				if (isServer()) {
+					thisIndividual.deselect(false, 0);
+					Domain.getSelectedIndividuals().remove(thisIndividual);
+					clearCommands();
+				} else {
+					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, false);
 				}
 			},
 			Color.WHITE,
@@ -617,15 +612,12 @@ public abstract class Individual extends Equipper {
 
 		new ContextMenuItem(
 			"Select",
-			new Task() {
-				@Override
-				public void execute() {
-					if (isServer()) {
-						Domain.getSelectedIndividuals().add(thisIndividual);
-						thisIndividual.select(0);
-					} else {
-						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, true);
-					}
+			() -> {
+				if (isServer()) {
+					Domain.getSelectedIndividuals().add(thisIndividual);
+					thisIndividual.select(0);
+				} else {
+					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, true);
 				}
 			},
 			Color.WHITE,
@@ -636,21 +628,18 @@ public abstract class Individual extends Equipper {
 
 		ContextMenuItem showInfoMenuItem = new ContextMenuItem(
 			"Show info",
-			new Task() {
-				@Override
-				public void execute() {
-					IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
-						thisIndividual,
-						WIDTH/2 - 150,
-						HEIGHT/2 + 160,
-						300,
-						320,
-						id.getSimpleName() + " - Info",
-						true,
-						250, 200
-					);
-					UserInterface.addLayeredComponentUnique(individualInfoWindow, id.getSimpleName() + " - Info");
-				}
+			() -> {
+				IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
+					thisIndividual,
+					WIDTH/2 - 150,
+					HEIGHT/2 + 160,
+					300,
+					320,
+					id.getSimpleName() + " - Info",
+					true,
+					250, 200
+				);
+				UserInterface.addLayeredComponentUnique(individualInfoWindow, id.getSimpleName() + " - Info");
 			},
 			Color.WHITE,
 			getToolTipTextColor(),
@@ -662,34 +651,28 @@ public abstract class Individual extends Equipper {
 		final ContextMenu secondaryMenu = new ContextMenu(0, 0,
 			new ContextMenuItem(
 				"Change name",
-				new Task() {
-					@Override
-					public void execute() {
-						UserInterface.addLayeredComponent(
-							new TextInputWindow(
-								WIDTH / 2 - 125,
-								HEIGHT/2 + 50,
-								250,
-								100,
-								"Rename",
-								250,
-								100,
-								new JITTask() {
-									@Override
-									public void execute(Object... args) {
-										if (isServer()) {
-											thisIndividual.id.nickName = args[0].toString();
-										} else {
-											ClientServerInterface.SendRequest.sendChangeNickNameRequest(thisIndividual.id.id, args[0].toString());
-										}
-									}
-								},
-								"Confirm",
-								true,
-								thisIndividual.id.nickName
-							)
-						);
-					}
+				() -> {
+					UserInterface.addLayeredComponent(
+						new TextInputWindow(
+							WIDTH / 2 - 125,
+							HEIGHT/2 + 50,
+							250,
+							100,
+							"Rename",
+							250,
+							100,
+							args -> {
+								if (isServer()) {
+									thisIndividual.id.nickName = args[0].toString();
+								} else {
+									ClientServerInterface.SendRequest.sendChangeNickNameRequest(thisIndividual.id.id, args[0].toString());
+								}
+							},
+							"Confirm",
+							true,
+							thisIndividual.id.nickName
+						)
+					);
 				},
 				Color.WHITE,
 				getToolTipTextColor(),
@@ -700,12 +683,9 @@ public abstract class Individual extends Equipper {
 
 		ContextMenuItem editMenuItem = new ContextMenuItem(
 			"Edit",
-			new Task() {
-				@Override
-				public void execute() {
-					secondaryMenu.x = getMouseScreenX();
-					secondaryMenu.y = getMouseScreenY();
-				}
+			() -> {
+				secondaryMenu.x = getMouseScreenX();
+				secondaryMenu.y = getMouseScreenY();
 			},
 			Color.WHITE,
 			getToolTipTextColor(),
@@ -715,21 +695,18 @@ public abstract class Individual extends Equipper {
 
 		ContextMenuItem inventoryMenuItem = new ContextMenuItem(
 			"Inventory",
-			new Task() {
-				@Override
-				public void execute() {
-					InventoryWindow inventoryWindow = new InventoryWindow(
-						thisIndividual,
-						WIDTH/2 - ((id.getSimpleName() + " - Inventory").length() * 10 + 50)/2,
-						HEIGHT/2 + 200,
-						(id.getSimpleName() + " - Inventory").length() * 10 + 50,
-						400,
-						id.getSimpleName() + " - Inventory",
-						true,
-						150, 150
-					);
-					UserInterface.addLayeredComponentUnique(inventoryWindow, id.getSimpleName() + " - Inventory");
-				}
+			() -> {
+				InventoryWindow inventoryWindow = new InventoryWindow(
+					thisIndividual,
+					WIDTH/2 - ((id.getSimpleName() + " - Inventory").length() * 10 + 50)/2,
+					HEIGHT/2 + 200,
+					(id.getSimpleName() + " - Inventory").length() * 10 + 50,
+					400,
+					id.getSimpleName() + " - Inventory",
+					true,
+					150, 150
+				);
+				UserInterface.addLayeredComponentUnique(inventoryWindow, id.getSimpleName() + " - Inventory");
 			},
 			Color.WHITE,
 			getToolTipTextColor(),
@@ -739,19 +716,16 @@ public abstract class Individual extends Equipper {
 
 		ContextMenuItem tradeMenuItem = new ContextMenuItem(
 			"Trade with",
-			new Task() {
-				@Override
-				public void execute() {
-					for (Individual indi : Domain.getSelectedIndividuals()) {
-						if (isServer()) {
-							if (indi != thisIndividual) {
-								indi.ai.setCurrentTask(
-									new TradeWith(indi, thisIndividual)
-								);
-							}
-						} else {
-							ClientServerInterface.SendRequest.sendTradeWithIndividualRequest(indi, thisIndividual);
+			() -> {
+				for (Individual indi : Domain.getSelectedIndividuals()) {
+					if (isServer()) {
+						if (indi != thisIndividual) {
+							indi.ai.setCurrentTask(
+								new TradeWith(indi, thisIndividual)
+							);
 						}
+					} else {
+						ClientServerInterface.SendRequest.sendTradeWithIndividualRequest(indi, thisIndividual);
 					}
 				}
 			},
@@ -763,21 +737,18 @@ public abstract class Individual extends Equipper {
 
 		ContextMenuItem showStatusWindowItem = new ContextMenuItem(
 			"Status",
-			new Task() {
-				@Override
-				public void execute() {
-					UserInterface.addLayeredComponent(
-						new IndividualStatusWindow(
-							thisIndividual,
-							WIDTH/2 - 200,
-							HEIGHT/2 + 200,
-							400,
-							400,
-							id.getSimpleName() + " - Status",
-							true
-						)
-					);
-				}
+			() -> {
+				UserInterface.addLayeredComponent(
+					new IndividualStatusWindow(
+						thisIndividual,
+						WIDTH/2 - 200,
+						HEIGHT/2 + 200,
+						400,
+						400,
+						id.getSimpleName() + " - Status",
+						true
+					)
+				);
 			},
 			Color.WHITE,
 			getToolTipTextColor(),
@@ -787,19 +758,16 @@ public abstract class Individual extends Equipper {
 
 		ContextMenuItem attackMenuItem = new ContextMenuItem(
 			"Attack",
-			new Task() {
-				@Override
-				public void execute() {
-					for (Individual indi : Domain.getSelectedIndividuals()) {
-						if (isServer()) {
-							if (indi != thisIndividual) {
-								indi.ai.setCurrentTask(
-									new Attack(indi, thisIndividual)
-								);
-							}
-						} else {
-							ClientServerInterface.SendRequest.sendAttackRequest(indi, thisIndividual);
+			() -> {
+				for (Individual indi : Domain.getSelectedIndividuals()) {
+					if (isServer()) {
+						if (indi != thisIndividual) {
+							indi.ai.setCurrentTask(
+								new Attack(indi, thisIndividual)
+							);
 						}
+					} else {
+						ClientServerInterface.SendRequest.sendAttackRequest(indi, thisIndividual);
 					}
 				}
 			},

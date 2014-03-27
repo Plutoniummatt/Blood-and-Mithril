@@ -14,8 +14,6 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.util.Task;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -193,11 +191,7 @@ public abstract class Window extends Component {
 			0,
 			12,
 			12,
-			new Task() {
-				@Override
-				public void execute() {
-				}
-			},
+			() -> {},
 			UIRef.BL
 		);
 
@@ -209,11 +203,7 @@ public abstract class Window extends Component {
 			0,
 			12,
 			12,
-			new Task() {
-				@Override
-				public void execute() {
-				}
-			},
+			() -> {},
 			UIRef.BL
 		);
 
@@ -225,15 +215,12 @@ public abstract class Window extends Component {
 			0,
 			12,
 			12,
-			new Task() {
-				@Override
-				public void execute() {
-					mx = BloodAndMithrilClient.getMouseScreenX();
-					my = BloodAndMithrilClient.getMouseScreenY();
-					oldLength = width;
-					oldHeight = height;
-					resizing = true;
-				}
+			() -> {
+				mx = BloodAndMithrilClient.getMouseScreenX();
+				my = BloodAndMithrilClient.getMouseScreenY();
+				oldLength = width;
+				oldHeight = height;
+				resizing = true;
 			},
 			UIRef.BL
 		);

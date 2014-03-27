@@ -21,7 +21,6 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
@@ -37,8 +36,8 @@ import com.google.common.collect.Maps;
 public class TradeWindow extends Window {
 
 	/** Panels of involved traders */
-	protected ScrollableListingPanel<Item> proposerPanel;
-	protected ScrollableListingPanel<Item> proposeePanel;
+	protected ScrollableListingPanel<Item, Integer> proposerPanel;
+	protected ScrollableListingPanel<Item, Integer> proposeePanel;
 
 	/** Listings of items to display */
 	protected final HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade = Maps.newHashMap();
@@ -62,11 +61,8 @@ public class TradeWindow extends Window {
 		0,
 		130,
 		16,
-		new Task() {
-			@Override
-			public void execute() {
-				proposeTrade();
-			}
+		() -> {
+			proposeTrade();
 		},
 		Color.GREEN,
 		Color.ORANGE,
@@ -185,7 +181,7 @@ public class TradeWindow extends Window {
 
 
 	private void createPanels() {
-		proposerPanel = new ScrollableListingPanel<Item>(this) {
+		proposerPanel = new ScrollableListingPanel<Item, Integer>(this) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -209,7 +205,7 @@ public class TradeWindow extends Window {
 			}
 		};
 
-		proposeePanel = new ScrollableListingPanel<Item>(this) {
+		proposeePanel = new ScrollableListingPanel<Item, Integer>(this) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -250,11 +246,8 @@ public class TradeWindow extends Window {
 					0,
 					entry.getKey().getSingular(true).length() * 10,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-							changeList(entry.getKey(), trading, notTrading, false);
-						}
+					() -> {
+						changeList(entry.getKey(), trading, notTrading, false);
 					},
 					Colors.UI_GRAY,
 					Color.GREEN,
@@ -282,11 +275,8 @@ public class TradeWindow extends Window {
 				0,
 				key.getSingular(true).length() * 10,
 				16,
-				new Task() {
-					@Override
-					public void execute() {
-						changeList(key, transferFrom, transferTo, !toTrade);
-					}
+				() -> {
+					changeList(key, transferFrom, transferTo, !toTrade);
 				},
 				toTrade ? Colors.UI_GRAY : Colors.UI_DARK_ORANGE,
 				toTrade ? Color.GREEN : Color.ORANGE,
@@ -332,7 +322,7 @@ public class TradeWindow extends Window {
 					setClosing(true);
 				}
 			} else if (proposee instanceof ConstructionContainer) {
-				if (((ConstructionContainer) proposee).getPositionOfChest().cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
+				if (((ConstructionContainer) proposee).getPositionOfConstruction().cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
 					setClosing(true);
 				}
 			}

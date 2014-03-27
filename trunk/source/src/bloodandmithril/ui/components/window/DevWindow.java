@@ -33,7 +33,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
@@ -51,7 +50,7 @@ import com.google.common.collect.Maps;
  */
 public class DevWindow extends Window {
 
-	ScrollableListingPanel<String> panel;
+	ScrollableListingPanel<String, Object> panel;
 
 	/**
 	 * Constructor
@@ -59,9 +58,9 @@ public class DevWindow extends Window {
 	public DevWindow(int x, int y, int length, int height, boolean active) {
 		super(x, y, length, height, "Developer", active, 500, 300, false, true);
 
-		panel = new ScrollableListingPanel<String>(this) {
+		panel = new ScrollableListingPanel<String, Object>(this) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<String>, Integer> item) {
+			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
 				return "";
 			}
 
@@ -71,15 +70,14 @@ public class DevWindow extends Window {
 			}
 
 			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem<String>, Integer>> listings) {
-				HashMap<ListingMenuItem<String>, Integer> newHashMap = buildMap();
+			protected void onSetup(List<HashMap<ListingMenuItem<String>, Object>> listings) {
+				HashMap<ListingMenuItem<String>, Object> newHashMap = buildMap();
 
 				listings.add(newHashMap);
 			}
 
 			@Override
 			public boolean keyPressed(int keyCode) {
-				// TODO Auto-generated method stub
 				return false;
 			}
 		};
@@ -182,8 +180,8 @@ public class DevWindow extends Window {
 	}
 
 
-	private HashMap<ListingMenuItem<String>, Integer> buildMap() {
-		HashMap<ListingMenuItem<String>, Integer> newHashMap = Maps.newHashMap();
+	private HashMap<ListingMenuItem<String>, Object> buildMap() {
+		HashMap<ListingMenuItem<String>, Object> newHashMap = Maps.newHashMap();
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
@@ -195,11 +193,7 @@ public class DevWindow extends Window {
 					0,
 					130,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-						}
-					},
+					() -> {},
 					Color.CYAN,
 					Color.CYAN,
 					Color.CYAN,
@@ -220,11 +214,7 @@ public class DevWindow extends Window {
 					0,
 					130,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-						}
-					},
+					() -> {},
 					Color.CYAN,
 					Color.CYAN,
 					Color.CYAN,
@@ -245,14 +235,11 @@ public class DevWindow extends Window {
 					0,
 					310,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-							Individual individual = Domain.getIndividuals().get(1);
-							if (individual != null) {
-								PineChest pineChest = new PineChest(individual.getState().position.x, individual.getState().position.y, true, 100f);
-								Domain.getProps().put(pineChest.id, pineChest);
-							}
+					() -> {
+						Individual individual = Domain.getIndividuals().get(1);
+						if (individual != null) {
+							PineChest pineChest = new PineChest(individual.getState().position.x, individual.getState().position.y, true, 100f);
+							Domain.getProps().put(pineChest.id, pineChest);
 						}
 					},
 					Color.GREEN,
@@ -275,14 +262,12 @@ public class DevWindow extends Window {
 					0,
 					310,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-							Individual individual = Domain.getIndividuals().get(1);
-							if (individual != null) {
-								Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-								Domain.getProps().put(furnace.id, furnace);
-							}
+					() -> {
+						Individual individual = Domain.getIndividuals().get(1);
+						if (individual != null) {
+							Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
+							furnace.setConstructionProgress(1f);
+							Domain.getProps().put(furnace.id, furnace);
 						}
 					},
 					Color.GREEN,
@@ -305,14 +290,11 @@ public class DevWindow extends Window {
 					0,
 					310,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-							Individual individual = Domain.getIndividuals().get(1);
-							if (individual != null) {
-								bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
-								Domain.getProps().put(carrot.id, carrot);
-							}
+					() -> {
+						Individual individual = Domain.getIndividuals().get(1);
+						if (individual != null) {
+							bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
+							Domain.getProps().put(carrot.id, carrot);
 						}
 					},
 					Color.GREEN,
@@ -335,11 +317,8 @@ public class DevWindow extends Window {
 					0,
 					310,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-							UserInterface.renderComponentBoundaries = !UserInterface.renderComponentBoundaries;
-						}
+					() -> {
+						UserInterface.renderComponentBoundaries = !UserInterface.renderComponentBoundaries;
 					},
 					UserInterface.renderComponentBoundaries ? Color.GREEN : Color.RED,
 					Color.WHITE,
@@ -361,11 +340,8 @@ public class DevWindow extends Window {
 					0,
 					310,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-							UserInterface.renderAvailableInterfaces = !UserInterface.renderAvailableInterfaces;
-						}
+					() -> {
+						UserInterface.renderAvailableInterfaces = !UserInterface.renderAvailableInterfaces;
 					},
 					UserInterface.renderAvailableInterfaces ? Color.GREEN : Color.RED,
 					Color.WHITE,
@@ -387,11 +363,8 @@ public class DevWindow extends Window {
 					0,
 					310,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-							DynamicLightingPostRenderer.SEE_ALL = !DynamicLightingPostRenderer.SEE_ALL;
-						}
+					() -> {
+						DynamicLightingPostRenderer.SEE_ALL = !DynamicLightingPostRenderer.SEE_ALL;
 					},
 					DynamicLightingPostRenderer.SEE_ALL ? Color.GREEN : Color.RED,
 					Color.WHITE,
@@ -413,11 +386,8 @@ public class DevWindow extends Window {
 					0,
 					310,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-							UserInterface.DEBUG = !UserInterface.DEBUG;
-						}
+					() -> {
+						UserInterface.DEBUG = !UserInterface.DEBUG;
 					},
 					UserInterface.DEBUG ? Color.GREEN : Color.RED,
 					Color.WHITE,
@@ -439,11 +409,8 @@ public class DevWindow extends Window {
 					0,
 					310,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-							UserInterface.RENDER_TOPOGRAPHY = !UserInterface.RENDER_TOPOGRAPHY;
-						}
+					() -> {
+						UserInterface.RENDER_TOPOGRAPHY = !UserInterface.RENDER_TOPOGRAPHY;
 					},
 					UserInterface.RENDER_TOPOGRAPHY ? Color.GREEN : Color.RED,
 					Color.WHITE,

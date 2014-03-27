@@ -59,9 +59,6 @@ public abstract class Prop {
 	/** Get the right-click {@link ContextMenu} */
 	public abstract ContextMenu getContextMenu();
 	
-	/** Get the label for the context menu item which will describe this {@link Prop}  */
-	public abstract String getContextMenuLabel();
-	
 	/** Updates this prop */
 	public abstract void update(float delta);
 

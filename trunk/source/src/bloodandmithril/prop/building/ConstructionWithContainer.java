@@ -52,7 +52,7 @@ public abstract class ConstructionWithContainer extends Construction {
 		}
 
 
-		public Vector2 getPositionOfChest() {
+		public Vector2 getPositionOfConstruction() {
 			return Domain.getProps().get(propId).position;
 		}
 		

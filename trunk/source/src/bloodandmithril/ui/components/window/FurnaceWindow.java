@@ -20,7 +20,6 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 
@@ -48,11 +47,8 @@ public class FurnaceWindow extends TradeWindow {
 		0,
 		60,
 		16,
-		new Task() {
-			@Override
-			public void execute() {
-				ignite();
-			}
+		() -> {
+			ignite();
 		},
 		Color.GREEN,
 		Color.ORANGE,
@@ -68,11 +64,8 @@ public class FurnaceWindow extends TradeWindow {
 		0,
 		70,
 		16,
-		new Task() {
-			@Override
-			public void execute() {
-				smelt();
-			}
+		() -> {
+			smelt();
 		},
 		Color.GREEN,
 		Color.ORANGE,
@@ -99,22 +92,12 @@ public class FurnaceWindow extends TradeWindow {
 						entry.getKey().button.setDownColor(Color.GREEN);
 						entry.getKey().button.setOverColor(Color.GREEN);
 						entry.getKey().button.setIdleColor(Color.GREEN);
-						entry.getKey().button.setTask(new Task() {
-							@Override
-							public void execute() {
-								// Do nothing
-							}
-						});
+						entry.getKey().button.setTask(() -> {});
 					} else if (furnace.isSmelting()) {
 						entry.getKey().button.setDownColor(Util.Colors.DARK_RED);
 						entry.getKey().button.setOverColor(Util.Colors.DARK_RED);
 						entry.getKey().button.setIdleColor(Util.Colors.DARK_RED);
-						entry.getKey().button.setTask(new Task() {
-							@Override
-							public void execute() {
-								// Do nothing
-							}
-						});
+						entry.getKey().button.setTask(() -> {});
 					}
 				}
 			}

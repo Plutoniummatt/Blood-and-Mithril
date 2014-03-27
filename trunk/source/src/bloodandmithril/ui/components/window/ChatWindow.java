@@ -33,7 +33,7 @@ import com.google.common.collect.Lists;
  */
 public class ChatWindow extends Window {
 
-	public final ScrollableListingPanel<String> participants;
+	public final ScrollableListingPanel<String, Object> participants;
 
 	private final TextInputFieldPanel textInputPanel;
 
@@ -45,9 +45,9 @@ public class ChatWindow extends Window {
 	public ChatWindow(int x, int y, int length, int height, boolean active, int minLength, int minHeight) {
 		super(x, y, length, height, "Chat", active, minLength, minHeight, true, true);
 
-		participants = new ScrollableListingPanel<String>(this) {
+		participants = new ScrollableListingPanel<String, Object>(this) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<String>, Integer> item) {
+			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
 				return "";
 			}
 
@@ -57,7 +57,7 @@ public class ChatWindow extends Window {
 			}
 
 			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem<String>, Integer>> listings) {
+			protected void onSetup(List<HashMap<ListingMenuItem<String>, Object>> listings) {
 			}
 
 			@Override

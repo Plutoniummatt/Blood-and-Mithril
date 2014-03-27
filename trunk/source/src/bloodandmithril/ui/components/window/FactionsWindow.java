@@ -19,8 +19,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.JITTask;
-import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
@@ -36,7 +34,7 @@ import com.google.common.collect.Maps;
  */
 public class FactionsWindow extends Window {
 
-	private ScrollableListingPanel<String> factionsPanel;
+	private ScrollableListingPanel<String, Object> factionsPanel;
 
 	/**
 	 * Constructor
@@ -44,10 +42,10 @@ public class FactionsWindow extends Window {
 	public FactionsWindow(int x, int y, int length, int height, boolean active, int minLength, int minHeight) {
 		super(x, y, length, height, "Factions", active, minLength, minHeight, true, false);
 
-		factionsPanel = new ScrollableListingPanel<String>(this) {
+		factionsPanel = new ScrollableListingPanel<String, Object>(this) {
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<String>, Integer> item) {
+			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
 				return "";
 			}
 
@@ -62,7 +60,7 @@ public class FactionsWindow extends Window {
 			}
 
 			@Override
-			protected void onSetup(final List<HashMap<ListingMenuItem<String>, Integer>> listings) {
+			protected void onSetup(final List<HashMap<ListingMenuItem<String>, Object>> listings) {
 				listings.clear();
 				listings.add(buildMap(true));
 				listings.add(buildMap(false));
@@ -112,8 +110,8 @@ public class FactionsWindow extends Window {
 	}
 
 
-	private HashMap<ListingMenuItem<String>, Integer> buildMap(boolean controlled) {
-		HashMap<ListingMenuItem<String>, Integer> map = Maps.newHashMap();
+	private HashMap<ListingMenuItem<String>, Object> buildMap(boolean controlled) {
+		HashMap<ListingMenuItem<String>, Object> map = Maps.newHashMap();
 
 		Collection<Faction> newList = Lists.newLinkedList(Domain.getFactions().values());
 		if (controlled) {
@@ -135,43 +133,37 @@ public class FactionsWindow extends Window {
 		for (final Faction faction : newList) {
 			ContextMenu.ContextMenuItem control = new ContextMenu.ContextMenuItem(
 				"Control",
-				new Task() {
-					@Override
-					public void execute() {
-						if (StringUtils.isEmpty(faction.controlPassword)) {
-							BloodAndMithrilClient.controlledFactions.add(faction.factionId);
-							if (ClientServerInterface.isClient() && !ClientServerInterface.isServer()) {
-								ClientServerInterface.SendRequest.sendSynchronizeFactionsRequest();
-							}
-							refreshWindow();
-						} else {
-							UserInterface.addLayeredComponent(
-								new TextInputWindow(
-									BloodAndMithrilClient.WIDTH / 2 - 125,
-									BloodAndMithrilClient.HEIGHT/2 + 50,
-									250,
-									100,
-									"Enter password",
-									250,
-									100,
-									new JITTask() {
-										@Override
-										public void execute(Object... args) {
-											if (args[0].toString().equals(faction.controlPassword)) {
-												BloodAndMithrilClient.controlledFactions.add(faction.factionId);
-												if (ClientServerInterface.isClient() && !ClientServerInterface.isServer()) {
-													ClientServerInterface.SendRequest.sendSynchronizeFactionsRequest();
-												}
-											}
-											refreshWindow();
-										}
-									},
-									"Control",
-									true,
-									""
-								)
-							);
+				() -> {
+					if (StringUtils.isEmpty(faction.controlPassword)) {
+						BloodAndMithrilClient.controlledFactions.add(faction.factionId);
+						if (ClientServerInterface.isClient() && !ClientServerInterface.isServer()) {
+							ClientServerInterface.SendRequest.sendSynchronizeFactionsRequest();
 						}
+						refreshWindow();
+					} else {
+						UserInterface.addLayeredComponent(
+							new TextInputWindow(
+								BloodAndMithrilClient.WIDTH / 2 - 125,
+								BloodAndMithrilClient.HEIGHT/2 + 50,
+								250,
+								100,
+								"Enter password",
+								250,
+								100,
+								args -> {
+									if (args[0].toString().equals(faction.controlPassword)) {
+										BloodAndMithrilClient.controlledFactions.add(faction.factionId);
+										if (ClientServerInterface.isClient() && !ClientServerInterface.isServer()) {
+											ClientServerInterface.SendRequest.sendSynchronizeFactionsRequest();
+										}
+									}
+									refreshWindow();
+								},
+								"Control",
+								true,
+								""
+							)
+						);
 					}
 				},
 				Color.WHITE,
@@ -182,35 +174,29 @@ public class FactionsWindow extends Window {
 
 			ContextMenu.ContextMenuItem changePassword = new ContextMenu.ContextMenuItem(
 				"Change control password",
-				new Task() {
-					@Override
-					public void execute() {
-						UserInterface.addLayeredComponent(
-							new TextInputWindow(
-								BloodAndMithrilClient.WIDTH / 2 - 125,
-								BloodAndMithrilClient.HEIGHT/2 + 50,
-								250,
-								100,
-								"Change password",
-								250,
-								100,
-								new JITTask() {
-									@Override
-									public void execute(Object... args) {
-										if (ClientServerInterface.isServer()) {
-											faction.changeControlPassword(args[0].toString());
-										} else {
-											ClientServerInterface.SendRequest.sendChangeFactionControlPasswordRequest(faction.factionId, args[0].toString());
-										}
-									}
-								},
-								"Change",
-								true,
-								faction.controlPassword
-							)
-						);
-						refreshWindow();
-					}
+				() -> {
+					UserInterface.addLayeredComponent(
+						new TextInputWindow(
+							BloodAndMithrilClient.WIDTH / 2 - 125,
+							BloodAndMithrilClient.HEIGHT/2 + 50,
+							250,
+							100,
+							"Change password",
+							250,
+							100,
+							args -> {
+								if (ClientServerInterface.isServer()) {
+									faction.changeControlPassword(args[0].toString());
+								} else {
+									ClientServerInterface.SendRequest.sendChangeFactionControlPasswordRequest(faction.factionId, args[0].toString());
+								}
+							},
+							"Change",
+							true,
+							faction.controlPassword
+						)
+					);
+					refreshWindow();
 				},
 				Color.WHITE,
 				Color.GREEN,
@@ -240,12 +226,9 @@ public class FactionsWindow extends Window {
 					0,
 					faction.name.length() * 10,
 					16,
-					new Task() {
-						@Override
-						public void execute() {
-							menu.x = BloodAndMithrilClient.getMouseScreenX();
-							menu.y = BloodAndMithrilClient.getMouseScreenY();
-						}
+					() -> {
+						menu.x = BloodAndMithrilClient.getMouseScreenX();
+						menu.y = BloodAndMithrilClient.getMouseScreenY();
 					},
 					BloodAndMithrilClient.controlledFactions.contains(faction.factionId) ? Color.GREEN : Color.ORANGE,
 					Color.GREEN,
