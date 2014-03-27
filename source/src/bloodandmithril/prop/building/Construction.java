@@ -1,17 +1,20 @@
 package bloodandmithril.prop.building;
 
+import static com.google.common.collect.Maps.newHashMap;
+
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.ScrollableListingWindow;
-import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain.Depth;
 
 /**
@@ -29,6 +32,9 @@ public abstract class Construction extends Prop {
 	
 	/** The rate at which this {@link Construction} is constructed, in units of /s */
 	private float constructionRate;
+	
+	/**	The container that will store materials required to construct this {@link Construction} */
+	private Container materialsContainer;
 	
 	/**
 	 * Constructor
@@ -100,28 +106,25 @@ public abstract class Construction extends Prop {
 		} else {
 			ContextMenu menu = new ContextMenu(0, 0);
 			
-			final Map<Item, Integer> reqMaterials = getRequiredMaterials();
+			final Map<Item, String> reqMaterials = getConstructionMaterialStatus();
 			
 			menu.addMenuItem(
 				new ContextMenuItem(
 					"Required materials", 
-					new Task() {
-						@Override
-						public void execute() {
-							UserInterface.addLayeredComponent(new ScrollableListingWindow<>(
-								BloodAndMithrilClient.WIDTH / 2 - 250, 
-								BloodAndMithrilClient.HEIGHT / 2 + 250, 
-								500, 
-								500, 
-								"Required materials", 
-								true, 
-								500, 
-								300, 
-								true, 
-								true, 
-								reqMaterials
-							));
-						}
+					() -> {
+						UserInterface.addLayeredComponent(new ScrollableListingWindow<>(
+							BloodAndMithrilClient.WIDTH / 2 - 250, 
+							BloodAndMithrilClient.HEIGHT / 2 + 250, 
+							500, 
+							500, 
+							"Required materials", 
+							true, 
+							500, 
+							300, 
+							true, 
+							true, 
+							reqMaterials
+						));
 					}, 
 					Color.WHITE,
 					Color.GREEN,
@@ -150,6 +153,27 @@ public abstract class Construction extends Prop {
 		this.constructionProgress = constructionProgress;
 	}
 	
+	
+	/**
+	 * See {@link #materialsContainer}
+	 */
+	public Container getMaterialsContainer() {
+		return materialsContainer;
+	}
+	
+
+	/**
+	 * @return the amount of materials currently assigned to this construction, as well as the total required.
+	 */
+	private Map<Item, String> getConstructionMaterialStatus() {
+		Map<Item, String> map = newHashMap();
+		
+		for (Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
+			map.put(entry.getKey(), materialsContainer.getInventory().get(entry.getKey()) + "/" + entry.getValue());
+		}
+		
+		return map;
+	}
 	
 	/** Renders this {@link Construction} based on {@link #constructionProgress} */
 	protected abstract void internalRender(float constructionProgress);

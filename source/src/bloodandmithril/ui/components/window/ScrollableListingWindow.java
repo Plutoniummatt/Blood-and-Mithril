@@ -17,7 +17,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
 
 /**
@@ -25,17 +24,17 @@ import bloodandmithril.util.Util.Colors;
  *
  * @author Matt
  */
-public class ScrollableListingWindow<T extends Comparable<T>> extends Window {
+public class ScrollableListingWindow<T extends Comparable<T>, A extends Object> extends Window {
 
 	/**
 	 * The {@link ScrollableListingPanel} of this {@link ScrollableListingWindow}.
 	 */
-	private ScrollableListingPanel<T> listing;
+	private ScrollableListingPanel<T, A> listing;
 	
 	/**
 	 * Constructor
 	 */
-	public ScrollableListingWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, Map<T, Integer> map) {
+	public ScrollableListingWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, Map<T, A> map) {
 		super(x, y, length, height, title, active, minLength, minHeight, minimizable, resizeable);
 		buildListing(map);
 	}
@@ -44,11 +43,11 @@ public class ScrollableListingWindow<T extends Comparable<T>> extends Window {
 	/**
 	 * Builds the {@link ScrollableListingPanel} object
 	 */
-	private void buildListing(final Map<T, Integer> mapToBuildFrom) {
-		this.listing = new ScrollableListingPanel<T>(this) {
+	private void buildListing(final Map<T, A> mapToBuildFrom) {
+		this.listing = new ScrollableListingPanel<T, A>(this) {
 
 			@Override
-			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<T>, Integer> item) {
+			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<T>, A> item) {
 				return item.getValue().toString();
 			}
 
@@ -60,7 +59,7 @@ public class ScrollableListingWindow<T extends Comparable<T>> extends Window {
 			
 
 			@Override
-			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<T>, Integer>> listings) {
+			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<T>, A>> listings) {
 				populateListing(mapToBuildFrom, listings);
 			}
 
@@ -107,25 +106,21 @@ public class ScrollableListingWindow<T extends Comparable<T>> extends Window {
 	}
 	
 	
-	private void populateListing(final Map<T, Integer> mapToBuildFrom, List<HashMap<ScrollableListingPanel.ListingMenuItem<T>, Integer>> listings) {
-		HashMap<ScrollableListingPanel.ListingMenuItem<T>, Integer> map = newHashMap();
+	private void populateListing(final Map<T, A> mapToBuildFrom, List<HashMap<ScrollableListingPanel.ListingMenuItem<T>, A>> listings) {
+		HashMap<ScrollableListingPanel.ListingMenuItem<T>, A> map = newHashMap();
 		
-		for (Entry<T, Integer> tEntry : mapToBuildFrom.entrySet()) {
+		for (Entry<T, A> tEntry : mapToBuildFrom.entrySet()) {
 			map.put(
 				new ListingMenuItem<T>(
 					tEntry.getKey(), 
 					new Button(
-						tEntry.getKey().toString(), 
+						"", 
 						Fonts.defaultFont, 
 						0, 
 						0, 
 						tEntry.getKey().toString().length() * 10, 
 						16, 
-						new Task() {
-							@Override
-							public void execute() {
-							}
-						}, 
+						() -> {}, 
 						Colors.DARK_RED,
 						Color.GREEN,
 						Color.WHITE,

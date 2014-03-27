@@ -6,7 +6,7 @@ import java.util.concurrent.BlockingQueue;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.persistence.character.IndividualSaver;
-import bloodandmithril.persistence.world.ChunkLoaderImpl;
+import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.persistence.world.ChunkSaver;
 import bloodandmithril.util.Task;
 
@@ -52,11 +52,8 @@ public class GameSaver {
 
 		// Save parameters
 		saverTasks.add(
-			new Task() {
-				@Override
-				public void execute() {
-					ParameterPersistenceService.saveParameters();
-				}
+			() -> {
+				ParameterPersistenceService.saveParameters();
 			}
 		);
 		
@@ -65,12 +62,9 @@ public class GameSaver {
 		
 		// Save all individuals
 		saverTasks.add(
-			new Task() {
-				@Override
-				public void execute() {
-					IndividualSaver.saveAll();
-					saveCompleted();
-				}
+			() -> {
+				IndividualSaver.saveAll();
+				saveCompleted();
 			}
 		);
 	}
@@ -107,6 +101,6 @@ public class GameSaver {
 	 * @return true if there are outstanding tasks in AI thread, loader thread or pathfinding thread
 	 */
 	private static boolean outstandingTasks() {
-		return AIProcessor.aiThreadTasks.size() + AIProcessor.pathFinderTasks.size() + ChunkLoaderImpl.loaderTasks.size() != 0;
+		return AIProcessor.aiThreadTasks.size() + AIProcessor.pathFinderTasks.size() + ChunkLoader.loaderTasks.size() != 0;
 	}
 }

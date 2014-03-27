@@ -18,7 +18,6 @@ import bloodandmithril.csi.requests.SynchronizePropRequest;
 import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
@@ -26,7 +25,6 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
@@ -253,24 +251,21 @@ public class Furnace extends ConstructionWithContainer {
 		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(),
 			new ContextMenuItem(
 				"Show info",
-				new Task() {
-					@Override
-					public void execute() {
-						UserInterface.addLayeredComponent(
-							new MessageWindow(
-								"A furnace, able to achieve temperatures hot enough to melt most metals",
-								Color.ORANGE,
-								BloodAndMithrilClient.WIDTH/2 - 175,
-								BloodAndMithrilClient.HEIGHT/2 + 100,
-								350,
-								200,
-								"Furnace",
-								true,
-								350,
-								200
-							)
-						);
-					}
+				() -> {
+					UserInterface.addLayeredComponent(
+						new MessageWindow(
+							"A furnace, able to achieve temperatures hot enough to melt most metals",
+							Color.ORANGE,
+							BloodAndMithrilClient.WIDTH/2 - 175,
+							BloodAndMithrilClient.HEIGHT/2 + 100,
+							350,
+							200,
+							"Furnace",
+							true,
+							350,
+							200
+						)
+					);
 				},
 				Color.WHITE,
 				Color.GREEN,
@@ -283,17 +278,14 @@ public class Furnace extends ConstructionWithContainer {
 			final Individual selected = Domain.getSelectedIndividuals().iterator().next();
 			ContextMenuItem openChestMenuItem = new ContextMenuItem(
 				"Open furnace",
-				new Task() {
-					@Override
-					public void execute() {
-						if (ClientServerInterface.isServer()) {
-							selected.getAI().setCurrentTask(
-								new TradeWith(selected, container)
-							);
-						} else {
-							ConstructionContainer chestContainer = (ConstructionContainer) container;
-							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
-						}
+				() -> {
+					if (ClientServerInterface.isServer()) {
+						selected.getAI().setCurrentTask(
+							new TradeWith(selected, container)
+						);
+					} else {
+						ConstructionContainer chestContainer = (ConstructionContainer) container;
+						ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
 					}
 				},
 				Color.WHITE,
@@ -320,16 +312,7 @@ public class Furnace extends ConstructionWithContainer {
 
 	@Override
 	protected Map<Item, Integer> getRequiredMaterials() {
-		Map<Item, Integer> map = newHashMap();
-		
-		map.put(new YellowBrick(), 10);
-		
-		return map;
-	}
-
-
-	@Override
-	public String getContextMenuLabel() {
-		return getConstructionProgress() == 1 ? "Furnace" : "Furnace (Under construction)";
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

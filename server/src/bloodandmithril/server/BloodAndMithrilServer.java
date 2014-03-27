@@ -98,39 +98,36 @@ public class BloodAndMithrilServer {
 			@Override
 			public void received(final Connection connection, final Object object) {
 				if (object instanceof Request) {
-					ClientServerInterface.serverThread.execute(new Runnable() {
-						@Override
-						public void run() {
-							// Cast to Request
-							Request request = (Request) object;
+					ClientServerInterface.serverThread.execute(() -> {
+						// Cast to Request
+						Request request = (Request) object;
 
-							// Send response
-							if (request.tcp()) {
-								if (request.notifyOthers()) {
-									Responses responseToSend = request.respond();
-									for (Response response : responseToSend.getResponses()) {
-										response.prepare();
-									}
-									for (Connection c : server.getConnections()) {
-										c.sendTCP(responseToSend);
-									}
-								} else {
-									connection.sendTCP(request.respond());
+						// Send response
+						if (request.tcp()) {
+							if (request.notifyOthers()) {
+								Responses responseToSend = request.respond();
+								for (Response response : responseToSend.getResponses()) {
+									response.prepare();
+								}
+								for (Connection c : server.getConnections()) {
+									c.sendTCP(responseToSend);
 								}
 							} else {
-								if (request.notifyOthers()) {
-									Responses responseToSend = request.respond();
-									for (Response response : responseToSend.getResponses()) {
-										response.prepare();
-									}
-									for (Connection c : server.getConnections()) {
-										c.sendUDP(responseToSend);
-									}
-								} else {
-									connection.sendUDP(request.respond());
-								}
-								Logger.networkDebug("Responding to " + request.getClass().getSimpleName() + " from " + connection.getRemoteAddressTCP(), LogLevel.TRACE);
+								connection.sendTCP(request.respond());
 							}
+						} else {
+							if (request.notifyOthers()) {
+								Responses responseToSend = request.respond();
+								for (Response response : responseToSend.getResponses()) {
+									response.prepare();
+								}
+								for (Connection c : server.getConnections()) {
+									c.sendUDP(responseToSend);
+								}
+							} else {
+								connection.sendUDP(request.respond());
+							}
+							Logger.networkDebug("Responding to " + request.getClass().getSimpleName() + " from " + connection.getRemoteAddressTCP(), LogLevel.TRACE);
 						}
 					});
 				}
@@ -271,7 +268,6 @@ public class BloodAndMithrilServer {
 				Individual individual = Domain.getIndividuals().get(1);
 				if (individual != null) {
 					Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-					furnace.setConstructionProgress(1f);
 					Domain.getProps().put(furnace.id, furnace);
 				}
 			}

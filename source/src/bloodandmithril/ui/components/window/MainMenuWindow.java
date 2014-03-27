@@ -17,8 +17,6 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.JITTask;
-import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
@@ -88,87 +86,78 @@ public class MainMenuWindow extends Window {
 			8,
 			80,
 			16,
-			new Task() {
-				@Override
-				public void execute() {
-					if (BloodAndMithrilClient.domain != null) {
-						return;
-					}
+			() -> {
+				if (BloodAndMithrilClient.domain != null) {
+					return;
+				}
 
-					UserInterface.addLayeredComponent(
-						new TextInputWindow(
-							BloodAndMithrilClient.WIDTH / 2 - 125,
-							BloodAndMithrilClient.HEIGHT/2 + 50,
-							250,
-							100,
-							"Enter IP",
-							250,
-							100,
-							new JITTask() {
-								@Override
-								public void execute(Object... args) {
-									try {
-										if (args[0].toString().equals("local")) {
-											Domain.getFactions().put(0, new Faction("NPC", 0, false));
-											Domain.getFactions().put(1, new Faction("Elves", 1, true));
+				UserInterface.addLayeredComponent(
+					new TextInputWindow(
+						BloodAndMithrilClient.WIDTH / 2 - 125,
+						BloodAndMithrilClient.HEIGHT/2 + 50,
+						250,
+						100,
+						"Enter IP",
+						250,
+						100,
+						args -> {
+							try {
+								if (args[0].toString().equals("local")) {
+									Domain.getFactions().put(0, new Faction("NPC", 0, false));
+									Domain.getFactions().put(1, new Faction("Elves", 1, true));
 
-											ClientServerInterface.setServer(true);
-											GameLoader.load();
-											BloodAndMithrilClient.domain = new Domain();
-										} else {
-											ClientServerInterface.setupAndConnect(args[0].toString());
-											BloodAndMithrilClient.domain = new Domain();
-										}
+									ClientServerInterface.setServer(true);
+									GameLoader.load();
+									BloodAndMithrilClient.domain = new Domain();
+								} else {
+									ClientServerInterface.setupAndConnect(args[0].toString());
+									BloodAndMithrilClient.domain = new Domain();
+								}
 
-										UserInterface.buttons.remove("connect");
-										UserInterface.setup();
-										for (Component component : UserInterface.layeredComponents) {
-											if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
-												component.setClosing(true);
-											} else if (component instanceof MainMenuWindow) {
-												component.setClosing(true);
-											}
-										}
-									} catch (IOException e) {
-										for (Component component : UserInterface.layeredComponents) {
-											component.setActive(false);
-										}
-										UserInterface.addLayeredComponent(
-											new MessageWindow(
-												"Failed to connect",
-												Color.RED,
-												BloodAndMithrilClient.WIDTH/2 - 150,
-												BloodAndMithrilClient.HEIGHT/2 + 50,
-												300,
-												100,
-												"Error",
-												true,
-												300,
-												100,
-												new Task() {
-													@Override
-													public void execute() {
-														for (Component component : UserInterface.layeredComponents) {
-															if (component instanceof Window && ((Window) component).title.equals("Error")) {
-																component.setClosing(true);
-															} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
-																component.setActive(true);
-															}
-														}
-													}
-												}
-											)
-										);
+								UserInterface.buttons.remove("connect");
+								UserInterface.setup();
+								for (Component component : UserInterface.layeredComponents) {
+									if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
+										component.setClosing(true);
+									} else if (component instanceof MainMenuWindow) {
+										component.setClosing(true);
 									}
 								}
-							},
-							"Connect",
-							false,
-							""
-						)
-					);
-					UserInterface.buttons.remove("connect");
-				}
+							} catch (IOException e) {
+								for (Component component : UserInterface.layeredComponents) {
+									component.setActive(false);
+								}
+								UserInterface.addLayeredComponent(
+									new MessageWindow(
+										"Failed to connect",
+										Color.RED,
+										BloodAndMithrilClient.WIDTH/2 - 150,
+										BloodAndMithrilClient.HEIGHT/2 + 50,
+										300,
+										100,
+										"Error",
+										true,
+										300,
+										100,
+										() -> {
+											for (Component component : UserInterface.layeredComponents) {
+												if (component instanceof Window && ((Window) component).title.equals("Error")) {
+													component.setClosing(true);
+												} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
+													component.setActive(true);
+												}
+											}
+										}
+									)
+								);
+							}
+						},
+						"Connect",
+						false,
+						""
+					)
+				);
+				UserInterface.buttons.remove("connect");
 			},
 			Color.ORANGE,
 			Color.GREEN,
@@ -183,11 +172,7 @@ public class MainMenuWindow extends Window {
 			0,
 			70,
 			16,
-			new Task() {
-				@Override
-				public void execute() {
-				}
-			},
+			() -> {},
 			Color.ORANGE,
 			Color.GREEN,
 			Color.GRAY,
@@ -202,11 +187,8 @@ public class MainMenuWindow extends Window {
 			0,
 			40,
 			16,
-			new Task() {
-				@Override
-				public void execute() {
-					Gdx.app.exit();
-				}
+			() -> {
+				Gdx.app.exit();
 			},
 			Color.ORANGE,
 			Color.GREEN,

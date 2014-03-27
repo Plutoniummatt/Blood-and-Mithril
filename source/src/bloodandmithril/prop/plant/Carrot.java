@@ -12,7 +12,6 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
@@ -56,24 +55,21 @@ public class Carrot extends Plant {
 		menu.addMenuItem(
 			new ContextMenuItem(
 				"Show info",
-				new Task() {
-					@Override
-					public void execute() {
-						UserInterface.addLayeredComponent(
-							new MessageWindow(
-								bloodandmithril.item.material.plant.Carrot.description,
-								Color.ORANGE,
-								BloodAndMithrilClient.WIDTH/2 - 250,
-								BloodAndMithrilClient.HEIGHT/2 + 125,
-								500,
-								250,
-								"Carrot",
-								true,
-								300,
-								150
-							)
-						);
-					}
+				() -> {
+					UserInterface.addLayeredComponent(
+						new MessageWindow(
+							bloodandmithril.item.material.plant.Carrot.description,
+							Color.ORANGE,
+							BloodAndMithrilClient.WIDTH/2 - 250,
+							BloodAndMithrilClient.HEIGHT/2 + 125,
+							500,
+							250,
+							"Carrot",
+							true,
+							300,
+							150
+						)
+					);
 				},
 				Color.WHITE,
 				Color.GREEN,
@@ -88,17 +84,14 @@ public class Carrot extends Plant {
 			menu.addMenuItem(
 				new ContextMenuItem(
 					"Harvest",
-					new Task() {
-						@Override
-						public void execute() {
-							Individual individual = Domain.getSelectedIndividuals().iterator().next();
-							if (ClientServerInterface.isServer()) {
-								individual.getAI().setCurrentTask(
-									new Harvest(individual, thisCarrot)
-								);
-							} else {
-								ClientServerInterface.SendRequest.sendHarvestRequest(individual.getId().getId(), id);
-							}
+					() -> {
+						Individual individual = Domain.getSelectedIndividuals().iterator().next();
+						if (ClientServerInterface.isServer()) {
+							individual.getAI().setCurrentTask(
+								new Harvest(individual, thisCarrot)
+							);
+						} else {
+							ClientServerInterface.SendRequest.sendHarvestRequest(individual.getId().getId(), id);
 						}
 					},
 					Color.WHITE,
@@ -127,11 +120,5 @@ public class Carrot extends Plant {
 
 	@Override
 	public void update(float delta) {
-	}
-
-
-	@Override
-	public String getContextMenuLabel() {
-		return "Carrot";
 	}
 }

@@ -51,7 +51,7 @@ import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.Interface;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.persistence.world.ChunkLoaderImpl;
+import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -62,7 +62,6 @@ import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
@@ -83,12 +82,12 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class UserInterface {
 
-	private static final Color DARK_SCREEN_COLOR 			= new Color(0f, 0f, 0f, 0.8f);
-	private static final Color EXISTING_INTERFACE_COLOR 	= new Color(1f, 0.2f, 0f, 0.5f);
-	private static final Color AVAILABLE_INTERFACE_COLOR 	= new Color(0.2f, 1f, 0f, 0.5f);
-	private static final Color TILE_OVERLAY_COLOR 			= new Color(0f, 1f, 1f, 0.3f);
-	private static final Color COMPONENT_BOUNDARY_COLOR 	= new Color(1f, 1f, 1f, 0.5f);
-	private static final Color COMPONENT_FILL_COLOR 		= new Color(0f, 1f, 0f, 0.15f);
+	private static final Color DARK_SCREEN_COLOR = new Color(0f, 0f, 0f, 0.8f);
+	private static final Color EXISTING_INTERFACE_COLOR = new Color(1f, 0.2f, 0f, 0.5f);
+	private static final Color AVAILABLE_INTERFACE_COLOR = new Color(0.2f, 1f, 0f, 0.5f);
+	private static final Color TILE_OVERLAY_COLOR = new Color(0f, 1f, 1f, 0.3f);
+	private static final Color COMPONENT_BOUNDARY_COLOR = new Color(1f, 1f, 1f, 0.5f);
+	private static final Color COMPONENT_FILL_COLOR = new Color(0f, 1f, 0f, 0.15f);
 
 	/** UI camera */
 	public static OrthographicCamera UICamera;
@@ -124,9 +123,9 @@ public class UserInterface {
 	public static boolean RENDER_TOPOGRAPHY = false;
 
 	/** Texture regions */
-	public static TextureRegion finalWaypointTexture 	= new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
-	public static TextureRegion currentArrow 			= new TextureRegion(UserInterface.uiTexture, 0, 0, 11, 8);
-	public static TextureRegion followArrow 			= new TextureRegion(UserInterface.uiTexture, 0, 34, 11, 8);
+	public static TextureRegion finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
+	public static TextureRegion currentArrow = new TextureRegion(UserInterface.uiTexture, 0, 0, 11, 8);
+	public static TextureRegion followArrow = new TextureRegion(UserInterface.uiTexture, 0, 34, 11, 8);
 
 	/**
 	 * Steup for UI, makes everything it needs.
@@ -163,25 +162,51 @@ public class UserInterface {
 	 * Load the buttons
 	 */
 	private static void loadButtons() {
-		Button pauseButton = new Button("Pause", defaultFont, -32, 4, 55, 16, new Task() {
-			@Override
-			public void execute() {
+		Button pauseButton = new Button(
+			"Pause", 
+			defaultFont, 
+			-32, 
+			4, 
+			55, 
+			16, 
+			() -> {
 				BloodAndMithrilClient.paused = true;
-			}
-		}, Color.WHITE, Color.GREEN, Color.WHITE, UIRef.TR);
+			}, 
+			Color.WHITE, 
+			Color.GREEN, 
+			Color.WHITE, 
+			UIRef.TR
+		);
 
-		unpauseButton = new Button("Unpause", defaultFont, 0, 0, 75, 16, new Task() {
-			@Override
-			public void execute() {
+		unpauseButton = new Button(
+			"Unpause", 
+			defaultFont, 
+			0, 
+			0, 
+			75, 
+			16, 
+			() -> {
 				BloodAndMithrilClient.paused = false;
-			}
-		}, Color.WHITE, Color.GREEN, Color.WHITE, UIRef.M);
+			}, 
+			Color.WHITE, 
+			Color.GREEN, 
+			Color.WHITE, 
+			UIRef.M
+		);
 
-		savingButton = new Button("Saving...", defaultFont, 0, 0, 75, 16, new Task() {
-			@Override
-			public void execute() {
-			}
-		}, Color.WHITE, Color.WHITE, Color.WHITE, UIRef.M);
+		savingButton = new Button(
+			"Saving...", 
+			defaultFont, 
+			0, 
+			0, 
+			75, 
+			16, 
+			() -> {}, 
+			Color.WHITE, 
+			Color.WHITE, 
+			Color.WHITE, 
+			UIRef.M
+		);
 
 		buttons.put("pauseButton", pauseButton);
 	}
@@ -433,7 +458,7 @@ public class UserInterface {
 				AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
 					shapeRenderer.setColor(Color.WHITE);
-					// ((GoToLocation)currentTask).renderPath();
+//					((GoToLocation)currentTask).renderPath();
 					((GoToLocation)currentTask).renderFinalWayPoint();
 				}
 			}
@@ -470,7 +495,7 @@ public class UserInterface {
 		defaultFont.setColor(Color.GREEN);
 		defaultFont.draw(spriteBatch, "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 55);
 		defaultFont.draw(spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, Gdx.graphics.getHeight() - 125);
-		defaultFont.draw(spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoaderImpl.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);
+		defaultFont.draw(spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoader.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);
 		defaultFont.draw(spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, Gdx.graphics.getHeight() - 165);
 		defaultFont.draw(spriteBatch, "Number of tasks queued in Pathfinding thread: " + Integer.toString(AIProcessor.pathFinderTasks.size()), 5, Gdx.graphics.getHeight() - 185);
 
@@ -658,12 +683,9 @@ public class UserInterface {
 				newMenu.getMenuItems().add(
 					new ContextMenuItem(
 						indi.getId().getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",
-						new Task() {
-							@Override
-							public void execute() {
-								secondaryMenu.x = BloodAndMithrilClient.getMouseScreenX();
-								secondaryMenu.y = BloodAndMithrilClient.getMouseScreenY();
-							}
+						() -> {
+							secondaryMenu.x = BloodAndMithrilClient.getMouseScreenX();
+							secondaryMenu.y = BloodAndMithrilClient.getMouseScreenY();
 						},
 						Color.WHITE,
 						indi.getToolTipTextColor(),
@@ -679,13 +701,10 @@ public class UserInterface {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
 				newMenu.getMenuItems().add(
 					new ContextMenuItem(
-						prop.getContextMenuLabel(),
-						new Task() {
-							@Override
-							public void execute() {
-								secondaryMenu.x = getMouseScreenX();
-								secondaryMenu.y = getMouseScreenY();
-							}
+						prop.getClass().getSimpleName(),
+						() -> {
+							secondaryMenu.x = getMouseScreenX();
+							secondaryMenu.y = getMouseScreenY();
 						},
 						Color.WHITE,
 						Color.GREEN,

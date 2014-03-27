@@ -34,10 +34,10 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
-public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Panel {
+public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends Object> extends Panel {
 
 	/** Datastructure that backs this listing panel */
-	private List<HashMap<ListingMenuItem<T>, Integer>> listings = Lists.newArrayList();
+	private List<HashMap<ListingMenuItem<T>, A>> listings = Lists.newArrayList();
 
 	/** The current starting index for which the inventory listing is rendered */
 	private int startingIndex = 0;
@@ -61,7 +61,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	/**
 	 * Refreshes this {@link Panel}
 	 */
-	public void refresh(List<HashMap<ListingMenuItem<T>, Integer>> listings) {
+	public void refresh(List<HashMap<ListingMenuItem<T>, A>> listings) {
 		this.listings = listings;
 	}
 
@@ -69,7 +69,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	/**
 	 * Returns a string that will be rendered at an offset from the right edge of the panel, see {@link #getExtraStringOffset()}
 	 */
-	protected abstract String getExtraString(Entry<ListingMenuItem<T>, Integer> item);
+	protected abstract String getExtraString(Entry<ListingMenuItem<T>, A> item);
 
 
 	/**
@@ -81,30 +81,30 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	/**
 	 * Populates the datastructure {@link #listings}
 	 */
-	protected abstract void onSetup(List<HashMap<ListingMenuItem<T>, Integer>> listings);
+	protected abstract void onSetup(List<HashMap<ListingMenuItem<T>, A>> listings);
 
 
 	@Override
 	public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		int size = 0;
-		for (Map<ListingMenuItem<T>, Integer> listing : listings) {
+		for (Map<ListingMenuItem<T>, A> listing : listings) {
 			size += listing.size();
 		}
 
 		int i = 0;
-		ArrayList<HashMap<ListingMenuItem<T>, Integer>> newArrayList = Lists.newArrayList(listings);
-		for (Map<ListingMenuItem<T>, Integer> listing : newArrayList) {
+		ArrayList<HashMap<ListingMenuItem<T>, A>> newArrayList = Lists.newArrayList(listings);
+		for (Map<ListingMenuItem<T>, A> listing : newArrayList) {
 
-			List<Entry<ListingMenuItem<T>, Integer>> entrySet = Lists.newArrayList(listing.entrySet());
+			List<Entry<ListingMenuItem<T>, A>> entrySet = Lists.newArrayList(listing.entrySet());
 
-			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, Integer>>() {
+			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, A>>() {
 				@Override
-				public int compare(Entry<ListingMenuItem<T>, Integer> o1, Entry<ListingMenuItem<T>, Integer> o2) {
+				public int compare(Entry<ListingMenuItem<T>, A> o1, Entry<ListingMenuItem<T>, A> o2) {
 					return o1.getKey().t.compareTo(o2.getKey().t);
 				}
 			});
 
-			for(Entry<ListingMenuItem<T>, Integer> item : entrySet) {
+			for(Entry<ListingMenuItem<T>, A> item : entrySet) {
 				if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
 					i++;
 					continue;
@@ -169,20 +169,20 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	private void renderListing() {
 		// Render the equipped items first
 		int i = 0;
-		ArrayList<HashMap<ListingMenuItem<T>, Integer>> newArrayList = Lists.newArrayList(listings);
+		ArrayList<HashMap<ListingMenuItem<T>, A>> newArrayList = Lists.newArrayList(listings);
 
-		for (Map<ListingMenuItem<T>, Integer> listing : newArrayList) {
+		for (Map<ListingMenuItem<T>, A> listing : newArrayList) {
 
-			List<Entry<ListingMenuItem<T>, Integer>> entrySet = newArrayList(listing.entrySet());
+			List<Entry<ListingMenuItem<T>, A>> entrySet = newArrayList(listing.entrySet());
 
-			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, Integer>>() {
+			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, A>>() {
 				@Override
-				public int compare(Entry<ListingMenuItem<T>, Integer> o1, Entry<ListingMenuItem<T>, Integer> o2) {
+				public int compare(Entry<ListingMenuItem<T>, A> o1, Entry<ListingMenuItem<T>, A> o2) {
 					return o1.getKey().t.compareTo(o2.getKey().t);
 				}
 			});
 
-			for(Entry<ListingMenuItem<T>, Integer> item : entrySet) {
+			for(Entry<ListingMenuItem<T>, A> item : entrySet) {
 				if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
 					i++;
 					continue;
@@ -205,7 +205,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	 */
 	private void renderScrollBarButton() {
 		int size = 0;
-		for (Map<ListingMenuItem<T>, Integer> listing : listings) {
+		for (Map<ListingMenuItem<T>, A> listing : listings) {
 			size += listing.size();
 		}
 
@@ -267,7 +267,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>> extends Pa
 	}
 
 
-	public List<HashMap<ListingMenuItem<T>, Integer>> getListing() {
+	public List<HashMap<ListingMenuItem<T>, A>> getListing() {
 		return listings;
 	}
 }

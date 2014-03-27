@@ -18,7 +18,6 @@ import java.util.List;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
@@ -382,11 +381,8 @@ public class AStarPathFinder extends PathFinder {
 			return;
 		}
 
-		Topography.addTask(new Task() {
-			@Override
-			public void execute() {
-				world.getTopography().changeTile(x, y, false, DebugTile.class);
-			}
+		Topography.addTask(() -> {
+			world.getTopography().changeTile(x, y, false, DebugTile.class);
 		});
 	}
 

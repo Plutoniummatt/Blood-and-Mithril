@@ -14,7 +14,6 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.ui.components.window.ChatWindow;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.Task;
 
 import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.kryonet.Connection;
@@ -68,10 +67,10 @@ public class RequestClientList implements Request {
 
 		@Override
 		public void acknowledge() {
-			for (Component component : Lists.newLinkedList(UserInterface.layeredComponents)) {
+			for (Component component : UserInterface.layeredComponents) {
 				if (component instanceof ChatWindow) {
 
-					List<HashMap<ListingMenuItem<String>, Integer>> listings;
+					List<HashMap<ListingMenuItem<String>, Object>> listings;
 					listings = Lists.newArrayList();
 
 					for (String name : names) {
@@ -84,11 +83,7 @@ public class RequestClientList implements Request {
 								0,
 								name.length() * 10,
 								16,
-								new Task() {
-									@Override
-									public void execute() {
-									}
-								},
+								() -> {},
 								name.equals(ClientServerInterface.clientName) ? Color.GREEN : Color.ORANGE,
 								name.equals(ClientServerInterface.clientName) ? Color.GREEN : Color.ORANGE,
 								name.equals(ClientServerInterface.clientName) ? Color.GREEN : Color.ORANGE,
@@ -97,7 +92,7 @@ public class RequestClientList implements Request {
 							null
 						);
 
-						HashMap<ListingMenuItem<String>, Integer> map = Maps.newHashMap();
+						HashMap<ListingMenuItem<String>, Object> map = Maps.newHashMap();
 						map.put(item, 0);
 						listings.add(map);
 					}

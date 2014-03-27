@@ -1,7 +1,5 @@
 package bloodandmithril.prop.building;
 
-import static com.google.common.collect.Maps.newHashMap;
-
 import java.util.Map;
 
 import bloodandmithril.BloodAndMithrilClient;
@@ -14,7 +12,6 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
@@ -43,24 +40,21 @@ public class PineChest extends ConstructionWithContainer {
 		menu.addMenuItem(
 			new ContextMenuItem(
 				"Show info",
-				new Task() {
-					@Override
-					public void execute() {
-						UserInterface.addLayeredComponent(
-							new MessageWindow(
-								"A chest constructed mostly from pine, used to store items",
-								Color.ORANGE,
-								BloodAndMithrilClient.WIDTH/2 - 250,
-								BloodAndMithrilClient.HEIGHT/2 + 125,
-								500,
-								250,
-								"Wooden chest",
-								true,
-								300,
-								150
-							)
-						);
-					}
+				() -> {
+					UserInterface.addLayeredComponent(
+						new MessageWindow(
+							"A chest constructed mostly from pine, used to store items",
+							Color.ORANGE,
+							BloodAndMithrilClient.WIDTH/2 - 250,
+							BloodAndMithrilClient.HEIGHT/2 + 125,
+							500,
+							250,
+							"Wooden chest",
+							true,
+							300,
+							150
+						)
+					);
 				},
 				Color.WHITE,
 				Color.GREEN,
@@ -73,17 +67,14 @@ public class PineChest extends ConstructionWithContainer {
 			final Individual selected = Domain.getSelectedIndividuals().iterator().next();
 			ContextMenuItem openChestMenuItem = new ContextMenuItem(
 				"Open",
-				new Task() {
-					@Override
-					public void execute() {
-						if (ClientServerInterface.isServer()) {
-							selected.getAI().setCurrentTask(
-								new TradeWith(selected, container)
-							);
-						} else {
-							ConstructionContainer chestContainer = (ConstructionContainer) container;
-							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
-						}
+				() -> {
+					if (ClientServerInterface.isServer()) {
+						selected.getAI().setCurrentTask(
+							new TradeWith(selected, container)
+						);
+					} else {
+						ConstructionContainer chestContainer = (ConstructionContainer) container;
+						ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
 					}
 				},
 				Color.WHITE,
@@ -135,12 +126,7 @@ public class PineChest extends ConstructionWithContainer {
 
 	@Override
 	protected Map<Item, Integer> getRequiredMaterials() {
-		return newHashMap();
-	}
-
-
-	@Override
-	public String getContextMenuLabel() {
-		return "Pine chest";
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

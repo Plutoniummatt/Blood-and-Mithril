@@ -19,7 +19,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
@@ -36,7 +35,7 @@ import com.google.common.collect.Sets;
 public class IndividualStatusWindow extends Window {
 
 	private final Individual individual;
-	private ScrollableListingPanel<Condition> conditionsPanel;
+	private ScrollableListingPanel<Condition, Object> conditionsPanel;
 	private float time, identificationTime;
 	private String vitals;
 	private boolean identified, identifying;
@@ -48,12 +47,9 @@ public class IndividualStatusWindow extends Window {
 		0,
 		80,
 		16,
-		new Task() {
-			@Override
-			public void execute() {
-				identifying = true;
-				identified = false;
-			}
+		() -> {
+			identifying = true;
+			identified = false;
 		},
 		Color.GREEN,
 		Color.WHITE,
@@ -65,9 +61,9 @@ public class IndividualStatusWindow extends Window {
 	public IndividualStatusWindow(final Individual individual, int x, int y, int length, int height, String title, boolean active) {
 		super(x, y, length, height, title, active, 400, 400, true, true);
 		this.individual = individual;
-		this.conditionsPanel = new ScrollableListingPanel<Condition>(this) {
+		this.conditionsPanel = new ScrollableListingPanel<Condition, Object>(this) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Condition>, Integer> item) {
+			protected String getExtraString(Entry<ListingMenuItem<Condition>, Object> item) {
 				return "";
 			}
 
@@ -77,7 +73,7 @@ public class IndividualStatusWindow extends Window {
 			}
 
 			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem<Condition>, Integer>> listings) {
+			protected void onSetup(List<HashMap<ListingMenuItem<Condition>, Object>> listings) {
 				refreshLisitng(individual, listings);
 			}
 
@@ -236,9 +232,9 @@ public class IndividualStatusWindow extends Window {
 	}
 
 
-	private void refreshLisitng(final Individual individual, List<HashMap<ListingMenuItem<Condition>, Integer>> listings) {
+	private void refreshLisitng(final Individual individual, List<HashMap<ListingMenuItem<Condition>, Object>> listings) {
 		listings.clear();
-		HashMap<ListingMenuItem<Condition>, Integer> map = Maps.newHashMap();
+		HashMap<ListingMenuItem<Condition>, Object> map = Maps.newHashMap();
 		for (final Condition condition : Lists.newArrayList(individual.getState().currentConditions)) {
 			map.put(
 				new ListingMenuItem<Condition>(
@@ -250,12 +246,7 @@ public class IndividualStatusWindow extends Window {
 						0,
 						condition.getName().length() * 9,
 						16,
-						new Task() {
-							@Override
-							public void execute() {
-								// Do nothing, as a context menu will open
-							}
-						},
+						() -> {},
 						condition.isNegative() ? Color.RED : Color.GREEN,
 						Color.WHITE,
 						Color.GRAY,
@@ -266,24 +257,21 @@ public class IndividualStatusWindow extends Window {
 						BloodAndMithrilClient.getMouseScreenY(),
 						new ContextMenu.ContextMenuItem(
 							"Info",
-							new Task() {
-								@Override
-								public void execute() {
-									UserInterface.addLayeredComponent(
-										new MessageWindow(
-											condition.getHelpText(),
-											Color.YELLOW,
-											BloodAndMithrilClient.getMouseScreenX(),
-											BloodAndMithrilClient.getMouseScreenY(),
-											350,
-											200,
-											condition.getName(),
-											true,
-											350,
-											200
-										)
-									);
-								}
+							() -> {
+								UserInterface.addLayeredComponent(
+									new MessageWindow(
+										condition.getHelpText(),
+										Color.YELLOW,
+										BloodAndMithrilClient.getMouseScreenX(),
+										BloodAndMithrilClient.getMouseScreenY(),
+										350,
+										200,
+										condition.getName(),
+										true,
+										350,
+										200
+									)
+								);
 							},
 							Color.WHITE,
 							Color.GREEN,
