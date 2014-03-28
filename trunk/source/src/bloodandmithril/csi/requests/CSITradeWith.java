@@ -8,7 +8,6 @@ import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.ConstructionWithContainer;
 import bloodandmithril.world.Domain;
 
 /**
@@ -43,8 +42,8 @@ public class CSITradeWith implements Request {
 			proposee = Domain.getIndividuals().get(proposeeId);
 		} else {
 			Prop prop = Domain.getProps().get(proposeeId);
-			if (prop instanceof ConstructionWithContainer) {
-				proposee = ((ConstructionWithContainer) prop).container;
+			if (prop instanceof Container) {
+				proposee = (Container) prop;
 			}
 		}
 

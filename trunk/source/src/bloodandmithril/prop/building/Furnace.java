@@ -17,6 +17,8 @@ import bloodandmithril.csi.requests.AddLightRequest;
 import bloodandmithril.csi.requests.SynchronizePropRequest;
 import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.graphics.Light;
+import bloodandmithril.item.Container;
+import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.fuel.Coal;
@@ -40,7 +42,7 @@ import com.google.common.collect.Iterables;
  *
  * @author Matt
  */
-public class Furnace extends ConstructionWithContainer {
+public class Furnace extends Construction implements Container {
 
 	/** {@link TextureRegion} of the {@link Furnace} */
 	public static TextureRegion FURANCE, FURNACE_BURNING;
@@ -62,19 +64,23 @@ public class Furnace extends ConstructionWithContainer {
 
 	/** True if burning */
 	private boolean burning, smelting;
+	
+	/** The {@link Container} of this {@link Furnace} */
+	private ContainerImpl container;
 
 	/**
 	 * Constructor
 	 */
 	public Furnace(float x, float y) {
-		super(x, y, 49, 76, false, 500f);
+		super(x, y, 49, 76, false);
+		this.container = new ContainerImpl(500f, true);
 	}
 
 
 	@Override
-	public void synchronize(Prop other) {
+	public void synchronizeProp(Prop other) {
 		if (other instanceof Furnace) {
-			this.container.synchronize(((Furnace)other).container);
+			this.container.synchronizeContainer(((Furnace)other).container);
 			this.burning = ((Furnace) other).burning;
 			this.combustionDurationRemaining = ((Furnace) other).combustionDurationRemaining;
 			this.smeltingDurationRemaining = ((Furnace) other).smeltingDurationRemaining;
@@ -282,11 +288,10 @@ public class Furnace extends ConstructionWithContainer {
 				() -> {
 					if (ClientServerInterface.isServer()) {
 						selected.getAI().setCurrentTask(
-							new TradeWith(selected, container)
+							new TradeWith(selected, this)
 						);
 					} else {
-						ConstructionContainer chestContainer = (ConstructionContainer) container;
-						ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, chestContainer.propId);
+						ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
 					}
 				},
 				Color.WHITE,
@@ -302,21 +307,86 @@ public class Furnace extends ConstructionWithContainer {
 
 
 	@Override
-	protected void giveItemDecorator(Item item) {
-		if (item instanceof Coal) {
-			if (burning) {
-				this.combustionDurationRemaining += ((Coal) item).getCombustionDuration();
-			}
-		}
-	}
-
-
-	@Override
 	protected Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
 		
 		requiredItems.put(new YellowBrick(), 5);
 		
 		return requiredItems;
+	}
+
+
+	@Override
+	public void synchronizeContainer(Container other) {
+		if (getConstructionProgress() == 1f) {
+			container.synchronizeContainer(other);
+		} else {
+			super.synchronizeContainer(other);
+		}
+	}
+
+
+	@Override
+	public void giveItem(Item item) {
+		if (getConstructionProgress() == 1f) {
+			container.giveItem(item);
+			if (item instanceof Coal) {
+				if (burning) {
+					this.combustionDurationRemaining += ((Coal) item).getCombustionDuration();
+				}
+			}
+		} else {
+			super.giveItem(item);
+		}
+	}
+
+
+	@Override
+	public int takeItem(Item item) {
+		if (getConstructionProgress() == 1f) {
+			return container.takeItem(item);
+		} else {
+			return super.takeItem(item);
+		}
+	}
+
+
+	@Override
+	public Map<Item, Integer> getInventory() {
+		if (getConstructionProgress() == 1f) {
+			return container.getInventory();
+		} else {
+			return super.getInventory();
+		}
+	}
+
+
+	@Override
+	public float getMaxCapacity() {
+		if (getConstructionProgress() == 1f) {
+			return container.getMaxCapacity();
+		} else {
+			return super.getMaxCapacity();
+		}
+	}
+
+
+	@Override
+	public float getCurrentLoad() {
+		if (getConstructionProgress() == 1f) {
+			return container.getCurrentLoad();
+		} else {
+			return super.getCurrentLoad();
+		}
+	}
+
+
+	@Override
+	public boolean canExceedCapacity() {
+		if (getConstructionProgress() == 1f) {
+			return container.canExceedCapacity();
+		} else {
+			return super.canExceedCapacity();
+		}
 	}
 }

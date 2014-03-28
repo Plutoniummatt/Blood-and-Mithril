@@ -14,7 +14,7 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeService;
-import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -74,7 +74,7 @@ public class TradeWindow extends Window {
 	/**
 	 * Constructor
 	 */
-	public TradeWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Container proposer, Container proposee) {
+	public TradeWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Individual proposer, Container proposee) {
 		super(x, y, length, height, title, active, minLength, minHeight, false, true);
 
 		this.proposer = proposer;
@@ -83,7 +83,7 @@ public class TradeWindow extends Window {
 		populate(proposerItemsToTrade, proposerItemsNotToTrade, proposer.getInventory());
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
 
-		if (proposee instanceof ConstructionContainer) {
+		if (proposee instanceof Prop) {
 			tradeButton.text = "Transfer Items";
 		}
 
@@ -98,7 +98,7 @@ public class TradeWindow extends Window {
 
 		boolean proposalAccepted = false;
 
-		if (proposee instanceof ConstructionContainer) {
+		if (proposee instanceof Prop) {
 			proposalAccepted = true;
 		}
 
@@ -322,8 +322,8 @@ public class TradeWindow extends Window {
 				if (((Individual) proposee).getState().position.cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
 					setClosing(true);
 				}
-			} else if (proposee instanceof ConstructionContainer) {
-				if (((ConstructionContainer) proposee).getPositionOfConstruction().cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
+			} else if (proposee instanceof Prop) {
+				if (((Prop) proposee).position.cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
 					setClosing(true);
 				}
 			}
@@ -337,7 +337,7 @@ public class TradeWindow extends Window {
 				tradeButton.text = "Trade Rejected";
 				tradeButton.setIdleColor(Color.RED);
 			} else {
-				if (proposee instanceof ConstructionContainer) {
+				if (proposee instanceof Prop) {
 					tradeButton.text = "Transfer";
 				} else {
 					tradeButton.text = "Propose Trade";

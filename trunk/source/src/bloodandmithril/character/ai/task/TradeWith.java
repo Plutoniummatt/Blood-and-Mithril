@@ -8,7 +8,6 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -39,10 +38,10 @@ public class TradeWith extends CompositeAITask {
 
 		Vector2 location = null;
 
-		if (proposee instanceof ConstructionContainer) {
-			location = ((ConstructionContainer) proposee).getPositionOfConstruction();
-		} else if (proposee instanceof Individual) {
+		if (proposee instanceof Individual) {
 			location = ((Individual) proposee).getState().position;
+		} else {
+			location = ((Prop) proposee).position;
 		}
 
 		setCurrentTask(new GoToMovingLocation(
@@ -70,8 +69,8 @@ public class TradeWith extends CompositeAITask {
 
 		Vector2 location = null;
 
-		if (proposee instanceof ConstructionContainer) {
-			location = ((ConstructionContainer) proposee).getPositionOfConstruction();
+		if (proposee instanceof Prop) {
+			location = ((Prop) proposee).position;
 		} else if (proposee instanceof Individual) {
 			location = ((Individual) proposee).getState().position;
 		}
@@ -152,32 +151,31 @@ public class TradeWith extends CompositeAITask {
 				proposer.getAI().setCurrentTask(new Trading(proposer.getId(), ((Individual) proposee).getId().getId(), TradeEntity.INDIVIDUAL));
 				proposeeCasted.clearCommands();
 				proposeeCasted.getAI().setCurrentTask(new Trading(proposeeCasted.getId(), proposer.getId().getId(), TradeEntity.INDIVIDUAL));
-			} else if (proposee instanceof ConstructionContainer) {
+			} else if (proposee instanceof Prop) {
 
-				if (proposer.getDistanceFrom(((ConstructionContainer)proposee).getPositionOfConstruction()) > 64f) {
+				if (proposer.getDistanceFrom(((Prop)proposee).position) > 64f) {
 					return;
 				}
 
 				if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
-					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.getId().getId(), TradeEntity.PROP, ((ConstructionContainer) proposee).propId, connectionId);
+					ClientServerInterface.SendNotification.notifyTradeWindowOpen(proposer.getId().getId(), TradeEntity.PROP, ((Prop) proposee).id, connectionId);
 				} else if (ClientServerInterface.isClient()) {
 					openTradeWindowWithProp(proposer, proposee);
 				}
 
 				proposer.clearCommands();
-				proposer.getAI().setCurrentTask(new Trading(proposer.getId(), ((ConstructionContainer) proposee).propId, TradeEntity.PROP));
+				proposer.getAI().setCurrentTask(new Trading(proposer.getId(), ((Prop) proposee).id, TradeEntity.PROP));
 			}
 		}
 	}
 
 
 	/**
-	 * Opens a {@link TradeWindow} with a {@link Prop} that has a {@link Container}
+	 * Opens a {@link TradeWindow} with a {@link Prop}  is also a {@link Container}
 	 */
-	public static void openTradeWindowWithProp(Individual proposer, Container constructionContainer) {
-		if (constructionContainer instanceof ConstructionContainer) {
-			
-			Prop prop = Domain.getProps().get(((ConstructionContainer) constructionContainer).propId);
+	public static void openTradeWindowWithProp(Individual proposer, Container container) {
+		if (container instanceof Prop) {
+			Prop prop = Domain.getProps().get(((Prop) container).id);
 			if (prop instanceof Furnace) {
 				UserInterface.addLayeredComponentUnique(
 					new FurnaceWindow(
@@ -206,7 +204,7 @@ public class TradeWith extends CompositeAITask {
 						900,
 						300,
 						proposer,
-						constructionContainer
+						container
 					),
 					proposer.getId().getSimpleName() + " interacting with container"
 				);

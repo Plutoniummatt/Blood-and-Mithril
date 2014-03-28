@@ -6,7 +6,6 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.ConstructionWithContainer;
 import bloodandmithril.world.Domain;
 
 /**
@@ -34,7 +33,7 @@ public class Trading extends AITask {
 			this.proposee = Domain.getIndividuals().get(otherId);
 		} else {
 			prop = Domain.getProps().get(otherId);
-			this.proposee = ((ConstructionWithContainer) prop).container;
+			this.proposee = ((Container) prop);
 		}
 	}
 

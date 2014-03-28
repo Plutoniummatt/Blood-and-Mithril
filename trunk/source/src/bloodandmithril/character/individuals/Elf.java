@@ -212,7 +212,7 @@ public class Elf extends Individual {
 		Shaders.elfDayLight.setUniformi("hair", 0);
 		Shaders.elfDayLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		Shaders.elfHighLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-		for (Item equipped : equippedItems.keySet()) {
+		for (Item equipped : getEquipped().keySet()) {
 			Equipable toRender = (Equipable) equipped;
 
 			if (equipped instanceof OneHandedWeapon) {
@@ -442,7 +442,7 @@ public class Elf extends Individual {
 
 	@Override
 	public Individual copy() {
-		Elf elf = new Elf(getId(), getState(), factionId, female, new Color(hairColorR, hairColorG, hairColorB, 1f), new Color(eyeColorR, eyeColorG, eyeColorB, 1f), hairStyle, inventoryMassCapacity, getWorldId());
+		Elf elf = new Elf(getId(), getState(), factionId, female, new Color(hairColorR, hairColorG, hairColorB, 1f), new Color(eyeColorR, eyeColorG, eyeColorB, 1f), hairStyle, getMaxCapacity(), getWorldId());
 		elf.copyFrom(this);
 		return elf;
 	}
@@ -450,7 +450,7 @@ public class Elf extends Individual {
 
 	@Override
 	public float getCurrentAttackRange() {
-		for (Item equipped : equippedItems.keySet()) {
+		for (Item equipped : getEquipped().keySet()) {
 			if (equipped instanceof ButterflySword) {
 				return 32f;
 			} else if (equipped instanceof Broadsword) {

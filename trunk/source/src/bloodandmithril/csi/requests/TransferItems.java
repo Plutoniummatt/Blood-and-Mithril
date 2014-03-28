@@ -11,7 +11,6 @@ import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.ConstructionWithContainer;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.Domain;
 
@@ -61,7 +60,7 @@ public class TransferItems implements Request {
 
 		case PROP:
 			Prop prop = Domain.getProps().get(proposeeId);
-			proposee = ((ConstructionWithContainer) prop).container;
+			proposee = ((Container) prop);
 			response.add(new SynchronizePropRequest.SynchronizePropResponse(prop));
 			break;
 

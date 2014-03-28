@@ -6,8 +6,8 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
+import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.ConstructionWithContainer;
 import bloodandmithril.world.Domain;
 
 /**
@@ -97,8 +97,8 @@ public class OpenTradeWindow implements Request {
 				TradeWith.openTradeWindowWithIndividual(proposer, proposee);
 			} else {
 				Prop proposee = Domain.getProps().get(proposeeId);
-				if (proposee instanceof ConstructionWithContainer) {
-					TradeWith.openTradeWindowWithProp(proposer, ((ConstructionWithContainer) proposee).container);
+				if (proposee instanceof Prop && proposee instanceof Container) {
+					TradeWith.openTradeWindowWithProp(proposer, (Container) proposee);
 				}
 			}
 		}

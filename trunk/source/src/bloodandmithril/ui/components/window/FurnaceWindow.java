@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.character.Individual;
 import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.Fuel;
 import bloodandmithril.item.material.fuel.Coal;
@@ -77,8 +77,8 @@ public class FurnaceWindow extends TradeWindow {
 	/**
 	 * Constructor
 	 */
-	public FurnaceWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Container proposer, Furnace furnace) {
-		super(x, y, length, height, title, active, minLength, minHeight, proposer, furnace.container);
+	public FurnaceWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Individual proposer, Furnace furnace) {
+		super(x, y, length, height, title, active, minLength, minHeight, proposer, furnace);
 		this.furnace = furnace;
 	}
 
@@ -141,7 +141,7 @@ public class FurnaceWindow extends TradeWindow {
 		int maxWidth = width / 2 + 5;
 
 		float max = 0f;
-		for (Entry<Item, Integer> entry : furnace.container.getInventory().entrySet()) {
+		for (Entry<Item, Integer> entry : furnace.getInventory().entrySet()) {
 			Item item = entry.getKey();
 			if (item instanceof Fuel) {
 				max = max + ((Fuel)item).getCombustionDuration() * entry.getValue();
@@ -271,7 +271,7 @@ public class FurnaceWindow extends TradeWindow {
 	 */
 	private void smelt() {
 		if (ClientServerInterface.isServer()) {
-			if (furnace.container.getInventory().isEmpty()) {
+			if (furnace.getInventory().isEmpty()) {
 				UserInterface.addLayeredComponent(
 					new MessageWindow(
 						"Can not smelt nothing",

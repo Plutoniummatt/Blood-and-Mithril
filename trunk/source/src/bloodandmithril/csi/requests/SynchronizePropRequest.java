@@ -54,7 +54,7 @@ public class SynchronizePropRequest implements Request {
 		public void acknowledge() {
 			if (Domain.getProps().containsKey(prop.id)) {
 				Prop propToSync = Domain.getProps().get(prop.id);
-				propToSync.synchronize(prop);
+				propToSync.synchronizeProp(prop);
 			} else {
 				Domain.getProps().put(prop.id, prop);
 			}

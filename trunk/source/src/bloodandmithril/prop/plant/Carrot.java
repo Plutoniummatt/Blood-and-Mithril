@@ -42,7 +42,7 @@ public class Carrot extends Plant {
 
 
 	@Override
-	public void synchronize(Prop other) {
+	public void synchronizeProp(Prop other) {
 		// Don't need to synchronize a carrot
 	}
 
