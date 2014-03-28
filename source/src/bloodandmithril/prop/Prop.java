@@ -54,7 +54,7 @@ public abstract class Prop {
 	public abstract boolean rightClick();
 
 	/** Synchronizes this prop with another */
-	public abstract void synchronize(Prop other);
+	public abstract void synchronizeProp(Prop other);
 
 	/** Get the right-click {@link ContextMenu} */
 	public abstract ContextMenu getContextMenu();

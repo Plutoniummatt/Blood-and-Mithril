@@ -20,8 +20,10 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import bloodandmithril.character.ai.AITask;
@@ -34,7 +36,10 @@ import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.item.Container;
+import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
+import bloodandmithril.item.EquipperImpl;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.equipment.Weapon;
@@ -65,7 +70,7 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
-public abstract class Individual extends Equipper {
+public abstract class Individual implements Equipper, Serializable {
 	private static final long serialVersionUID = 2821835360311044658L;
 
 	/** Timestamp, used for synchronizing with server */
@@ -132,6 +137,9 @@ public abstract class Individual extends Equipper {
 	/** WHich client number this {@link Individual} is selected by */
 	private Set<Integer> selectedByClient = Sets.newHashSet();
 
+	/** Holds state of the equipment and inventory */
+	private EquipperImpl equipper;
+	
 	/**
 	 * Constructor
 	 */
@@ -146,7 +154,7 @@ public abstract class Individual extends Equipper {
 			int safetyHeight,
 			Box interactionBox,
 			int worldId) {
-		super(inventoryMassCapacity);
+		this.equipper = new EquipperImpl(inventoryMassCapacity);
 		this.id = id;
 		this.state = state;
 		this.factionId = factionId;
@@ -169,16 +177,11 @@ public abstract class Individual extends Equipper {
 		this.aiReactionTimer = other.aiReactionTimer;
 		this.aITaskDelay = other.aITaskDelay;
 		this.animationTimer = other.animationTimer;
-		this.availableEquipmentSlots = other.availableEquipmentSlots;
-		this.canExceedCapacity = other.canExceedCapacity;
 		this.activeCommands = other.activeCommands;
 		this.factionId = other.factionId;
-		this.currentLoad = other.currentLoad;
-		this.equippedItems = other.equippedItems;
 		this.height =  other.getHeight();
 		this.id = other.id;
 		this.interactionBox = other.getInteractionBox();
-		this.inventoryMassCapacity = other.inventoryMassCapacity;
 		this.jumpedOff = other.jumpedOff;
 		this.safetyHeight = other.safetyHeight;
 		this.state = other.state;
@@ -187,9 +190,10 @@ public abstract class Individual extends Equipper {
 		this.walking = other.walking;
 		this.width = other.width;
 		this.timeStamp = other.timeStamp;
-		this.inventory = other.inventory;
 		this.skills = other.skills;
-
+		synchronizeContainer(equipper);
+		synchronizeEquipper(equipper);
+		
 		internalCopyFrom(other);
 	}
 
@@ -552,7 +556,12 @@ public abstract class Individual extends Equipper {
 
 	/** Calculates the distance between this individual and the Vector2 parameter */
 	public float getDistanceFrom(Vector2 position) {
-		return state.position.cpy().sub(position).len();
+		try {
+			return state.position.cpy().sub(position).len();
+		} catch (Throwable a) {
+			a.printStackTrace();
+			throw new RuntimeException(a);
+		}
 	}
 
 
@@ -998,7 +1007,7 @@ public abstract class Individual extends Equipper {
 
 	/** Attack. */
 	public void attack(Individual victim) {
-		for (Item item : equippedItems.keySet()) {
+		for (Item item : equipper.getEquipped().keySet()) {
 			if (item instanceof Weapon) {
 				((Weapon) item).affect(victim);
 				attacking = true;
@@ -1012,6 +1021,78 @@ public abstract class Individual extends Equipper {
 	 */
 	public boolean isAttacking() {
 		return attacking;
+	}
+	
+
+	@Override
+	public void synchronizeContainer(Container other) {
+		equipper.synchronizeContainer(other);
+	}
+
+
+	@Override
+	public void giveItem(Item item) {
+		equipper.giveItem(item);
+	}
+
+
+	@Override
+	public int takeItem(Item item) {
+		return equipper.takeItem(item);
+	}
+
+
+	@Override
+	public Map<Item, Integer> getInventory() {
+		return equipper.getInventory();
+	}
+
+
+	@Override
+	public float getMaxCapacity() {
+		return equipper.getMaxCapacity();
+	}
+
+
+	@Override
+	public float getCurrentLoad() {
+		return equipper.getCurrentLoad();
+	}
+	
+	
+	@Override
+	public boolean canExceedCapacity() {
+		return equipper.canExceedCapacity();
+	}
+
+	
+	@Override
+	public Map<EquipmentSlot, Boolean> getAvailableEquipmentSlots() {
+		return equipper.getAvailableEquipmentSlots();
+	}
+	
+
+	@Override
+	public HashMap<Item, Integer> getEquipped() {
+		return equipper.getEquipped();
+	}
+	
+
+	@Override
+	public void equip(Equipable item) {
+		equipper.equip(item);
+	}
+
+
+	@Override
+	public void unequip(Equipable item) {
+		equipper.unequip(item);
+	}
+
+	
+	@Override
+	public void synchronizeEquipper(Equipper other) {
+		equipper.synchronizeEquipper(other);
 	}
 
 

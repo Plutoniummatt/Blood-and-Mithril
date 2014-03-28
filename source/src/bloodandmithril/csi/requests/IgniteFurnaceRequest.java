@@ -27,7 +27,7 @@ public class IgniteFurnaceRequest implements Request {
 		Prop prop = Domain.getProps().get(furnaceId);
 		if (prop instanceof Furnace) {
 			float finalDuration = 0f;
-			for (Entry<Item, Integer> entry : ((Furnace) prop).container.getInventory().entrySet()) {
+			for (Entry<Item, Integer> entry : ((Furnace) prop).getInventory().entrySet()) {
 				Item item = entry.getKey();
 				if (item instanceof Fuel) {
 					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue();

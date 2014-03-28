@@ -101,6 +101,7 @@ import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Container;
+import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
 import bloodandmithril.item.Item;
@@ -128,7 +129,6 @@ import bloodandmithril.item.misc.Currency;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.prop.plant.FelberryBush;
@@ -340,6 +340,7 @@ public class ClientServerInterface {
 
 		kryo.register(FurnaceSmelt.class);
 		kryo.register(Container.class);
+		kryo.register(ContainerImpl.class);
 		kryo.register(Ashes.class);
 		kryo.register(InterlacedWindowTile.class);
 		kryo.register(AddLightRequest.class);
@@ -378,7 +379,6 @@ public class ClientServerInterface {
 		kryo.register(ConcurrentHashMap.class);
 		kryo.register(ConcurrentLinkedDeque.class);
 		kryo.register(ConcurrentSkipListMap.class);
-		kryo.register(ConstructionContainer.class);
 		kryo.register(ConsumeItem.class);
 		kryo.register(CSIMineTile.class);
 		kryo.register(CSITradeWith.class);

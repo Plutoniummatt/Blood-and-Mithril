@@ -6,15 +6,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
+import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.ScrollableListingWindow;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 
 /**
@@ -22,7 +29,7 @@ import bloodandmithril.world.Domain.Depth;
  *
  * @author Matt
  */
-public abstract class Construction extends Prop {
+public abstract class Construction extends Prop implements Container {
 
 	/** Dimensions of this {@link Construction} */
 	protected final int width, height;
@@ -34,7 +41,7 @@ public abstract class Construction extends Prop {
 	private float constructionRate;
 	
 	/** The container used to store construction materials during the construction stage */
-	private Container materialContainer = new Container(1000, true);
+	private ContainerImpl materialContainer = new ContainerImpl(1000, true);
 	
 	/**
 	 * Constructor
@@ -133,6 +140,29 @@ public abstract class Construction extends Prop {
 				)
 			);
 			
+			
+			if (Domain.getSelectedIndividuals().size() == 1) {
+				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
+				ContextMenuItem openChestMenuItem = new ContextMenuItem(
+					"Transfer materials for construction",
+					() -> {
+						if (ClientServerInterface.isServer()) {
+							selected.getAI().setCurrentTask(
+								new TradeWith(selected, this)
+							);
+						} else {
+							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
+						}
+					},
+					Color.WHITE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				);
+
+				menu.addMenuItem(openChestMenuItem);
+			}
+			
 			return menu;
 		}
 	}
@@ -160,8 +190,30 @@ public abstract class Construction extends Prop {
 	private Map<Item, String> getConstructionMaterialStatus() {
 		Map<Item, String> map = newHashMap();
 		
-		for (Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
-			Integer numberOfItemsInMaterialContainer = materialContainer.getInventory().get(entry.getKey());
+		for (final Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
+			Integer numberOfItemsInMaterialContainer = Iterables.find(
+				materialContainer.getInventory().entrySet(),
+				new Predicate<Entry<Item, Integer>>() {
+					@Override
+					public boolean apply(Entry<Item, Integer> invEntry) {
+						return entry.getKey().sameAs(invEntry.getKey());
+					}
+				},
+				new Entry<Item, Integer>() {
+					@Override
+					public Item getKey() {
+						throw new UnsupportedOperationException();
+					}
+					@Override
+					public Integer getValue() {
+						return 0;
+					}
+					@Override
+					public Integer setValue(Integer arg0) {
+						throw new UnsupportedOperationException();
+					}
+				}
+			).getValue();
 			map.put(entry.getKey(), (numberOfItemsInMaterialContainer == null ? "0" : numberOfItemsInMaterialContainer.toString()) + "/" + entry.getValue().toString());
 		}
 		
@@ -183,4 +235,46 @@ public abstract class Construction extends Prop {
 	
 	/** Get the context menu that will be displayed once this {@link Construction} has finished being constructing */
 	protected abstract ContextMenu getCompletedContextMenu();
+	
+	
+	@Override
+	public void synchronizeContainer(Container other) {
+		materialContainer.synchronizeContainer(other);
+	}
+
+
+	@Override
+	public void giveItem(Item item) {
+		materialContainer.giveItem(item);
+	}
+
+
+	@Override
+	public int takeItem(Item item) {
+		return materialContainer.takeItem(item);
+	}
+
+
+	@Override
+	public Map<Item, Integer> getInventory() {
+		return materialContainer.getInventory();
+	}
+
+
+	@Override
+	public float getMaxCapacity() {
+		return materialContainer.getMaxCapacity();
+	}
+
+
+	@Override
+	public float getCurrentLoad() {
+		return materialContainer.getCurrentLoad();
+	}
+	
+	
+	@Override
+	public boolean canExceedCapacity() {
+		return materialContainer.canExceedCapacity();
+	}
 }

@@ -45,7 +45,7 @@ public class FelberryBush extends Plant {
 
 	
 	@Override
-	public void synchronize(Prop other) {
+	public void synchronizeProp(Prop other) {
 	}
 
 	

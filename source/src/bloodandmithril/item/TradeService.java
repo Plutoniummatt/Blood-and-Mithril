@@ -7,7 +7,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
-import bloodandmithril.prop.building.ConstructionWithContainer.ConstructionContainer;
+import bloodandmithril.prop.Prop;
 
 /**
  * Evaluates a trade proposal.
@@ -76,7 +76,7 @@ public class TradeService {
 				proposeeId = ((Individual) proposee).getId().getId();
 			} else {
 				proposeeEntity = TradeEntity.PROP;
-				proposeeId = ((ConstructionContainer) proposee).propId;
+				proposeeId = ((Prop) proposee).id;
 			}
 			ClientServerInterface.SendRequest.sendTransferItemsRequest(proposerItemsToTrade, proposerId, proposeeItemsToTrade, proposeeEntity, proposeeId);
 		}

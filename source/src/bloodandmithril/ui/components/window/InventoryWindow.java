@@ -12,7 +12,6 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Consumable;
-import bloodandmithril.item.Container;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
