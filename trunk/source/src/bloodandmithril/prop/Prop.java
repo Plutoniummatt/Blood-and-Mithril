@@ -61,6 +61,9 @@ public abstract class Prop {
 	
 	/** Updates this prop */
 	public abstract void update(float delta);
+	
+	/** Returns the label to use for the right click context menu */
+	public abstract String getContextMenuItemLabel();
 
 	public static void setup() {
 		Furnace.FURANCE = new TextureRegion(Domain.gameWorldTexture, 453, 176, 49, 76);

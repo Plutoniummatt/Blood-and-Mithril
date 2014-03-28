@@ -5,6 +5,7 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.Individual;
@@ -234,7 +235,7 @@ public class TradeWindow extends Window {
 	/**
 	 * Populates a listing
 	 */
-	private void populate(final HashMap<ListingMenuItem<Item>, Integer> trading, final HashMap<ListingMenuItem<Item>, Integer> notTrading, HashMap<Item, Integer> toPopulateFrom) {
+	private void populate(final HashMap<ListingMenuItem<Item>, Integer> trading, final HashMap<ListingMenuItem<Item>, Integer> notTrading, Map<Item, Integer> toPopulateFrom) {
 		for (final Entry<Item, Integer> entry : toPopulateFrom.entrySet()) {
 
 			final ListingMenuItem<Item> listingMenuItem = new ListingMenuItem<Item>(

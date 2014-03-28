@@ -701,7 +701,7 @@ public class UserInterface {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
 				newMenu.getMenuItems().add(
 					new ContextMenuItem(
-						prop.getClass().getSimpleName(),
+						prop.getContextMenuItemLabel(),
 						() -> {
 							secondaryMenu.x = getMouseScreenX();
 							secondaryMenu.y = getMouseScreenY();

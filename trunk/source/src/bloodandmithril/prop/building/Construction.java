@@ -33,8 +33,8 @@ public abstract class Construction extends Prop {
 	/** The rate at which this {@link Construction} is constructed, in units of /s */
 	private float constructionRate;
 	
-	/**	The container that will store materials required to construct this {@link Construction} */
-	private Container materialsContainer;
+	/** The container used to store construction materials during the construction stage */
+	private Container materialContainer = new Container(1000, true);
 	
 	/**
 	 * Constructor
@@ -112,7 +112,7 @@ public abstract class Construction extends Prop {
 				new ContextMenuItem(
 					"Required materials", 
 					() -> {
-						UserInterface.addLayeredComponent(new ScrollableListingWindow<>(
+						UserInterface.addLayeredComponent(new ScrollableListingWindow<Item, String>(
 							BloodAndMithrilClient.WIDTH / 2 - 250, 
 							BloodAndMithrilClient.HEIGHT / 2 + 250, 
 							500, 
@@ -153,14 +153,6 @@ public abstract class Construction extends Prop {
 		this.constructionProgress = constructionProgress;
 	}
 	
-	
-	/**
-	 * See {@link #materialsContainer}
-	 */
-	public Container getMaterialsContainer() {
-		return materialsContainer;
-	}
-	
 
 	/**
 	 * @return the amount of materials currently assigned to this construction, as well as the total required.
@@ -169,11 +161,19 @@ public abstract class Construction extends Prop {
 		Map<Item, String> map = newHashMap();
 		
 		for (Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
-			map.put(entry.getKey(), materialsContainer.getInventory().get(entry.getKey()) + "/" + entry.getValue());
+			Integer numberOfItemsInMaterialContainer = materialContainer.getInventory().get(entry.getKey());
+			map.put(entry.getKey(), (numberOfItemsInMaterialContainer == null ? "0" : numberOfItemsInMaterialContainer.toString()) + "/" + entry.getValue().toString());
 		}
 		
 		return map;
 	}
+	
+	
+	@Override
+	public String getContextMenuItemLabel() {
+		return getClass().getSimpleName() + (constructionProgress == 1f ? "" : " - Under construction (" + String.format("%.1f", constructionProgress * 100) + "%)");
+	}
+	
 	
 	/** Renders this {@link Construction} based on {@link #constructionProgress} */
 	protected abstract void internalRender(float constructionProgress);

@@ -100,6 +100,7 @@ import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Consumable;
+import bloodandmithril.item.Container;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper.EquipmentSlot;
 import bloodandmithril.item.Item;
@@ -337,6 +338,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(FurnaceSmelt.class);
+		kryo.register(Container.class);
 		kryo.register(Ashes.class);
 		kryo.register(InterlacedWindowTile.class);
 		kryo.register(AddLightRequest.class);

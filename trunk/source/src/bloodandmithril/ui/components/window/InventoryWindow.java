@@ -5,6 +5,7 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import bloodandmithril.BloodAndMithrilClient;
@@ -154,7 +155,7 @@ public class InventoryWindow extends Window {
 	/**
 	 * Builds the list of items to display
 	 */
-	private void buildItems(HashMap<Item, Integer> equippedItems, HashMap<Item, Integer> nonEquippedItems) {
+	private void buildItems(Map<Item, Integer> equippedItems, Map<Item, Integer> nonEquippedItems) {
 		populateList(equippedItems, true);
 		populateList(nonEquippedItems, false);
 
@@ -187,7 +188,7 @@ public class InventoryWindow extends Window {
 	 * @param listToPopulate
 	 * @param eq - true if equipped
 	 */
-	private void populateList(HashMap<Item, Integer> listToPopulate, boolean eq) {
+	private void populateList(Map<Item, Integer> listToPopulate, boolean eq) {
 		for(final Entry<Item, Integer> item : listToPopulate.entrySet()) {
 
 			final ContextMenu menuToAddUnequipped = determineMenu(item.getKey(), false);

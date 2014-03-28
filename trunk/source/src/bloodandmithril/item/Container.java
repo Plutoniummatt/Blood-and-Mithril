@@ -2,7 +2,9 @@ package bloodandmithril.item;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -20,12 +22,12 @@ public class Container implements Serializable {
 	protected boolean canExceedCapacity;
 
 	/** What this {@link Container} has in its inventory, maps an Item to the quantity of said item */
-	protected HashMap<Item, Integer> inventory = new HashMap<Item, Integer>();
+	protected Map<Item, Integer> inventory = new ConcurrentHashMap<>();
 
 	/**
-	 * Protected constructor
+	 * constructor
 	 */
-	protected Container(float inventoryMassCapacity, boolean canExceedCapacity) {
+	public Container(float inventoryMassCapacity, boolean canExceedCapacity) {
 		this.inventoryMassCapacity = inventoryMassCapacity;
 		this.canExceedCapacity = canExceedCapacity;
 	}
@@ -104,7 +106,7 @@ public class Container implements Serializable {
 	/**
 	 * @return the inventory
 	 */
-	public synchronized HashMap<Item, Integer> getInventory() {
+	public synchronized Map<Item, Integer> getInventory() {
 		return inventory;
 	}
 
