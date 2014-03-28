@@ -18,6 +18,7 @@ import bloodandmithril.csi.requests.SynchronizePropRequest;
 import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
@@ -312,7 +313,10 @@ public class Furnace extends ConstructionWithContainer {
 
 	@Override
 	protected Map<Item, Integer> getRequiredMaterials() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<Item, Integer> requiredItems = newHashMap();
+		
+		requiredItems.put(new YellowBrick(), 5);
+		
+		return requiredItems;
 	}
 }

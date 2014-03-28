@@ -266,7 +266,6 @@ public class DevWindow extends Window {
 						Individual individual = Domain.getIndividuals().get(1);
 						if (individual != null) {
 							Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-							furnace.setConstructionProgress(1f);
 							Domain.getProps().put(furnace.id, furnace);
 						}
 					},

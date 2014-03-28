@@ -114,7 +114,7 @@ public class ScrollableListingWindow<T extends Comparable<T>, A extends Object> 
 				new ListingMenuItem<T>(
 					tEntry.getKey(), 
 					new Button(
-						"", 
+						tEntry.getKey().toString(),
 						Fonts.defaultFont, 
 						0, 
 						0, 
