@@ -1,6 +1,8 @@
 package bloodandmithril.prop;
 
 
+import java.io.Serializable;
+
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.building.PineChest;
@@ -17,7 +19,8 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
-public abstract class Prop {
+public abstract class Prop implements Serializable {
+	private static final long serialVersionUID = -1659783923740689585L;
 
 	/** Whether or not this prop will be rendered as part of the background */
 	public final Depth depth;

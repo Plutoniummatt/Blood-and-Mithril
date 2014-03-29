@@ -3,6 +3,7 @@ package bloodandmithril.persistence;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.persistence.character.IndividualLoader;
+import bloodandmithril.persistence.prop.PropLoader;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldState;
@@ -24,6 +25,7 @@ public class GameLoader {
 		ChunkLoader.loadGenerationData();
 		ChunkLoader.loadWorlds();
 		IndividualLoader.loadAll();
+		PropLoader.loadAll();
 		if (ClientServerInterface.isClient()) {
 			loadCameraPosition();
 		}

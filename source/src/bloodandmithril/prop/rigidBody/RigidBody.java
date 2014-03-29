@@ -10,6 +10,7 @@ import bloodandmithril.world.Domain.Depth;
  * @author Matt
  */
 public abstract class RigidBody extends Prop {
+	private static final long serialVersionUID = 2944768397395915663L;
 
 	/** True if this {@link RigidBody} can collide with other Collidable {@link RigidBody}s as well as {@link Individual}s */
 	public boolean collidable;

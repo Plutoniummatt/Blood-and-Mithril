@@ -12,6 +12,7 @@ import com.google.common.collect.Iterables;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
@@ -31,6 +32,7 @@ import bloodandmithril.world.Domain.Depth;
  * @author Matt
  */
 public abstract class Construction extends Prop implements Container {
+	private static final long serialVersionUID = -7772373095960462479L;
 
 	/** Dimensions of this {@link Construction} */
 	protected final int width, height;
@@ -143,7 +145,7 @@ public abstract class Construction extends Prop implements Container {
 			
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-				ContextMenuItem openChestMenuItem = new ContextMenuItem(
+				ContextMenuItem openTransferItemsWindow = new ContextMenuItem(
 					"Transfer materials for construction",
 					() -> {
 						if (ClientServerInterface.isServer()) {
@@ -160,14 +162,35 @@ public abstract class Construction extends Prop implements Container {
 					null
 				);
 
-				menu.addMenuItem(openChestMenuItem);
+				menu.addMenuItem(openTransferItemsWindow);
+				
+				if (constructionProgress != 0f && canConstruct()) {
+					ContextMenuItem construct = new ContextMenuItem(
+						"Construct",
+						() -> {
+							if (ClientServerInterface.isServer()) {
+								((Individual) selected).getAI().setCurrentTask(new Construct(((Individual) selected), this));
+							} else {
+								ClientServerInterface.SendRequest.sendConstructRequest(((Individual) selected).getId().getId(), id);
+							}
+						},
+						Color.WHITE,
+						Color.GREEN,
+						Color.GRAY,
+						null
+					);
+
+					menu.addMenuItem(construct);
+				}
 			}
+			
+			
 			
 			return menu;
 		}
 	}
 	
-
+	
 	/**
 	 * See {@link #constructionStage}
 	 */

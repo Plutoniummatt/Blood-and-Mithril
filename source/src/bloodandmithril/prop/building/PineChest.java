@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * A {@link ConstructionWithContainer} made from pine
  */
 public class PineChest extends Construction implements Container {
+	private static final long serialVersionUID = -8935044324226731703L;
 
 	/** {@link TextureRegion} of the {@link PineChest} */
 	public static TextureRegion pineChest;

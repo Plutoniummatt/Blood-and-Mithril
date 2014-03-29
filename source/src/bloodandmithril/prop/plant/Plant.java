@@ -10,7 +10,8 @@ import bloodandmithril.prop.Prop;
  * @author Matt
  */
 public abstract class Plant extends Harvestable {
-
+	private static final long serialVersionUID = -4865430066854382581L;
+	
 	/** Dimensions of this {@link Plant} */
 	protected final int width, height;
 

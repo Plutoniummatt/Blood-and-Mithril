@@ -9,6 +9,7 @@ import bloodandmithril.item.Item;
  * @author Matt
  */
 public abstract class Harvestable extends Prop {
+	private static final long serialVersionUID = 2548436846590756693L;
 
 	/**
 	 * Constructor

@@ -24,6 +24,7 @@ import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
+import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.building.PineChest;
 import bloodandmithril.ui.UserInterface;
@@ -270,6 +271,7 @@ public class DevWindow extends Window {
 						Individual individual = Domain.getIndividuals().get(1);
 						if (individual != null) {
 							Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
+							furnace.setConstructionProgress(1f);
 							Domain.getProps().put(furnace.id, furnace);
 						}
 					},
@@ -414,6 +416,29 @@ public class DevWindow extends Window {
 					16,
 					() -> {
 						UserInterface.RENDER_TOPOGRAPHY = !UserInterface.RENDER_TOPOGRAPHY;
+					},
+					UserInterface.RENDER_TOPOGRAPHY ? Color.GREEN : Color.RED,
+					Color.WHITE,
+					Color.GREEN,
+					UIRef.BL
+				),
+				null
+			),
+			0
+		);
+		
+		newHashMap.put(			
+			new ListingMenuItem<String>(
+				"Save game",
+				new Button(
+					"Save game",
+					Fonts.defaultFont,
+					0,
+					0,
+					310,
+					16,
+					() -> {
+						GameSaver.save(false);
 					},
 					UserInterface.RENDER_TOPOGRAPHY ? Color.GREEN : Color.RED,
 					Color.WHITE,
