@@ -43,6 +43,7 @@ import com.google.common.collect.Iterables;
  * @author Matt
  */
 public class Furnace extends Construction implements Container {
+	private static final long serialVersionUID = 7693386784097531328L;
 
 	/** {@link TextureRegion} of the {@link Furnace} */
 	public static TextureRegion FURANCE, FURNACE_BURNING;
@@ -234,13 +235,16 @@ public class Furnace extends Construction implements Container {
 				for (int i = 0; i < entry.getValue(); i++) {
 					if (entry.getKey() instanceof Coal) {
 						if (isBurning()) {
-							combustionDurationRemaining -= ((Coal) entry.getKey()).getCombustionDuration();
 							container.giveItem(new Coal());
 						} else {
 							container.giveItem(entry.getKey().combust(HEAT_LEVEL));
 						}
 					} else {
-						container.giveItem(entry.getKey().combust(HEAT_LEVEL));
+						if (smelting) {
+							container.giveItem(entry.getKey().combust(HEAT_LEVEL));
+						} else {
+							container.giveItem(entry.getKey());
+						}
 					}
 				}
 			}

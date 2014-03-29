@@ -11,6 +11,7 @@ import bloodandmithril.ui.components.ContextMenu;
  * @author Matt
  */
 public class FelberryBush extends Plant {
+	private static final long serialVersionUID = -3584950382266050693L;
 	
 	private int berries = 10;
 

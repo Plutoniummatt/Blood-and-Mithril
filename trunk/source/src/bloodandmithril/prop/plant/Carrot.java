@@ -23,7 +23,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Matt
  */
 public class Carrot extends Plant {
-
+	private static final long serialVersionUID = -4581900482709094877L;
+	
 	/** {@link TextureRegion} of the {@link Carrot} */
 	public static TextureRegion carrot;
 

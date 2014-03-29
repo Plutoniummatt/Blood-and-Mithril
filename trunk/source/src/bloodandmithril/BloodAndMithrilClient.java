@@ -80,7 +80,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static final float LAG_SPIKE_TOLERANCE = 0.1f;
 
 	/** The tolerance for double clicking */
-	private static final float DOUBLE_CLICK_TIME = 0.2f;
+	private static final float DOUBLE_CLICK_TIME = 0.5f;
 
 	/** Resolution x */
 	public static int WIDTH = ConfigPersistenceService.getConfig().getResX();

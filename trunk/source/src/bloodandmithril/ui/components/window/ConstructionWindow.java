@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Construct;
+import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.prop.building.Construction;
 import bloodandmithril.ui.UserInterface;
@@ -18,6 +19,7 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.world.Domain;
 
 /**
  * An extension of {@link TradeWindow} for construction
@@ -54,6 +56,11 @@ public class ConstructionWindow extends TradeWindow {
 		this.construction = construction;
 	}
 
+
+	@Override
+	protected boolean tradeButtonClickable() {
+		return super.tradeButtonClickable() && construction.getConstructionProgress() == 0f;
+	}
 	
 	
 	@Override
@@ -103,6 +110,23 @@ public class ConstructionWindow extends TradeWindow {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		super.internalLeftClick(copy, windowsCopy);
 		constructButton.click();
+	}
+	
+	
+	
+	@Override
+	protected void uponClose() {
+		if (!(((Individual) proposer).getAI().getCurrentTask() instanceof Construct)) {
+			if (ClientServerInterface.isServer()) {
+				if (proposer instanceof Individual) {
+						((Individual) proposer).getAI().setCurrentTask(new Idle());
+				}
+			} else {
+				if (Domain.getSelectedIndividuals().contains(proposer)) {
+					ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposer).getId().getId());
+				}
+			}
+		}
 	}
 	
 	
