@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
 
+import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -17,14 +18,13 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.Util.Colors;
 
 /**
  * A window that simply displays a {@link ScrollableListingPanel}
  *
  * @author Matt
  */
-public class ScrollableListingWindow<T extends Comparable<T>, A extends Object> extends Window {
+public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends Object> extends Window implements Refreshable {
 
 	/**
 	 * The {@link ScrollableListingPanel} of this {@link ScrollableListingWindow}.
@@ -43,7 +43,7 @@ public class ScrollableListingWindow<T extends Comparable<T>, A extends Object> 
 	/**
 	 * Builds the {@link ScrollableListingPanel} object
 	 */
-	private void buildListing(final Map<T, A> mapToBuildFrom) {
+	protected void buildListing(final Map<T, A> mapToBuildFrom) {
 		this.listing = new ScrollableListingPanel<T, A>(this) {
 
 			@Override
@@ -121,7 +121,7 @@ public class ScrollableListingWindow<T extends Comparable<T>, A extends Object> 
 						tEntry.getKey().toString().length() * 10, 
 						16, 
 						() -> {}, 
-						Colors.DARK_RED,
+						Color.RED,
 						Color.GREEN,
 						Color.WHITE,
 						UIRef.BL

@@ -1,13 +1,8 @@
 package bloodandmithril.prop.building;
 
-import static com.google.common.collect.Maps.newHashMap;
-
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
@@ -20,7 +15,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
-import bloodandmithril.ui.components.window.ScrollableListingWindow;
+import bloodandmithril.ui.components.window.RequiredMaterialsWindow;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 
@@ -113,13 +108,11 @@ public abstract class Construction extends Prop implements Container {
 		} else {
 			ContextMenu menu = new ContextMenu(0, 0);
 			
-			final Map<Item, String> reqMaterials = getConstructionMaterialStatus();
-			
 			menu.addMenuItem(
 				new ContextMenuItem(
 					"Required materials", 
 					() -> {
-						UserInterface.addLayeredComponent(new ScrollableListingWindow<Item, String>(
+						UserInterface.addLayeredComponent(new RequiredMaterialsWindow(
 							BloodAndMithrilClient.WIDTH / 2 - 250, 
 							BloodAndMithrilClient.HEIGHT / 2 + 250, 
 							500, 
@@ -127,10 +120,9 @@ public abstract class Construction extends Prop implements Container {
 							"Required materials", 
 							true, 
 							500, 
-							300, 
-							true, 
-							true, 
-							reqMaterials
+							300,
+							materialContainer,
+							getRequiredMaterials()
 						));
 					}, 
 					Color.WHITE,
@@ -183,43 +175,6 @@ public abstract class Construction extends Prop implements Container {
 		this.constructionProgress = constructionProgress;
 	}
 	
-
-	/**
-	 * @return the amount of materials currently assigned to this construction, as well as the total required.
-	 */
-	private Map<Item, String> getConstructionMaterialStatus() {
-		Map<Item, String> map = newHashMap();
-		
-		for (final Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
-			Integer numberOfItemsInMaterialContainer = Iterables.find(
-				materialContainer.getInventory().entrySet(),
-				new Predicate<Entry<Item, Integer>>() {
-					@Override
-					public boolean apply(Entry<Item, Integer> invEntry) {
-						return entry.getKey().sameAs(invEntry.getKey());
-					}
-				},
-				new Entry<Item, Integer>() {
-					@Override
-					public Item getKey() {
-						throw new UnsupportedOperationException();
-					}
-					@Override
-					public Integer getValue() {
-						return 0;
-					}
-					@Override
-					public Integer setValue(Integer arg0) {
-						throw new UnsupportedOperationException();
-					}
-				}
-			).getValue();
-			map.put(entry.getKey(), (numberOfItemsInMaterialContainer == null ? "0" : numberOfItemsInMaterialContainer.toString()) + "/" + entry.getValue().toString());
-		}
-		
-		return map;
-	}
-	
 	
 	@Override
 	public String getContextMenuItemLabel() {
@@ -246,6 +201,15 @@ public abstract class Construction extends Prop implements Container {
 	@Override
 	public void giveItem(Item item) {
 		materialContainer.giveItem(item);
+		if (ClientServerInterface.isClient()) {
+			UserInterface.layeredComponents.stream().filter((component) -> {
+				return component instanceof RequiredMaterialsWindow;
+			}).forEach((component) -> {
+				((RequiredMaterialsWindow) component).refresh();
+			});
+		} else {
+			ClientServerInterface.SendNotification.notifyRefreshItemWindows();
+		}
 	}
 
 

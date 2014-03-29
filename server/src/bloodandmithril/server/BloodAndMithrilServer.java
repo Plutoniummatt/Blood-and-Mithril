@@ -23,6 +23,7 @@ import bloodandmithril.graphics.Light;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
+import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Liquid.Water;
@@ -333,6 +334,9 @@ public class BloodAndMithrilServer {
 				}
 				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 					elf.giveItem(new Currency());
+				}
+				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
+					elf.giveItem(new YellowBrick());
 				}
 				elf.giveItem(new ButterflySword(100));
 				elf.giveItem(new Broadsword(100));

@@ -58,8 +58,6 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.bar.BottomBar;
-import bloodandmithril.ui.components.window.InventoryWindow;
-import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -148,16 +146,14 @@ public class UserInterface {
 
 
 	public static void refreshInventoryWindows() {
-		for (Component component : UserInterface.layeredComponents) {
-			if (component instanceof TradeWindow) {
-				((TradeWindow) component).refresh();
-			} else if (component instanceof InventoryWindow) {
-				((InventoryWindow) component).refresh();
-			}
-		}
+		layeredComponents.stream().filter((component) -> {
+			return component instanceof Refreshable;
+		}).forEach((component) -> {
+			((Refreshable) component).refresh();
+		});
 	}
-
-
+	
+	
 	/**
 	 * Load the buttons
 	 */

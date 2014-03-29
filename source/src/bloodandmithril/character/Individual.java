@@ -191,8 +191,8 @@ public abstract class Individual implements Equipper, Serializable {
 		this.width = other.width;
 		this.timeStamp = other.timeStamp;
 		this.skills = other.skills;
-		synchronizeContainer(equipper);
-		synchronizeEquipper(equipper);
+		synchronizeContainer(other.equipper);
+		synchronizeEquipper(other.equipper);
 		
 		internalCopyFrom(other);
 	}

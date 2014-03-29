@@ -15,6 +15,7 @@ import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -34,7 +35,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
-public class TradeWindow extends Window {
+public class TradeWindow extends Window implements Refreshable {
 
 	/** Panels of involved traders */
 	protected ScrollableListingPanel<Item, Integer> proposerPanel;
@@ -157,6 +158,7 @@ public class TradeWindow extends Window {
 	 * Refreshes this window and syncs it with the trader inventories
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public synchronized void refresh() {
 		proposer = Domain.getIndividuals().get(((Individual) proposer).getId().getId());
 
