@@ -16,6 +16,7 @@ import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.container.Bottle;
+import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -37,7 +38,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
-public class InventoryWindow extends Window {
+public class InventoryWindow extends Window implements Refreshable {
 
 	/** Inventory listing maps */
 	HashMap<ListingMenuItem<Item>, Integer> equippedItemsToDisplay = Maps.newHashMap();
@@ -368,6 +369,7 @@ public class InventoryWindow extends Window {
 
 
 	/** Refreshes this {@link InventoryWindow} */
+	@Override
 	public synchronized void refresh() {
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();

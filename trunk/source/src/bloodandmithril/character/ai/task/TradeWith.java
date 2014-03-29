@@ -204,7 +204,7 @@ public class TradeWith extends CompositeAITask {
 						900,
 						300,
 						proposer,
-						container
+						(Container) prop
 					),
 					proposer.getId().getSimpleName() + " interacting with container"
 				);

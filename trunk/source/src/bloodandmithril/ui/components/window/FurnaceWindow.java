@@ -231,33 +231,33 @@ public class FurnaceWindow extends TradeWindow {
 	 * ignites the furnace
 	 */
 	private void ignite() {
+		float finalDuration = 0f;
+		for (Entry<Item, Integer> entry : proposee.getInventory().entrySet()) {
+			Item item = entry.getKey();
+			if (item instanceof Fuel) {
+				finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue();
+			}
+		}
+
+		if (finalDuration == 0f) {
+			UserInterface.addLayeredComponent(
+				new MessageWindow(
+					"Add coal to the furnace before attemping to ignite",
+					Color.RED,
+					BloodAndMithrilClient.WIDTH/2 - 175,
+					BloodAndMithrilClient.HEIGHT/2 + 100,
+					350,
+					200,
+					"No coal",
+					true,
+					100,
+					100
+				)
+			);
+			return;
+		}
+		
 		if (ClientServerInterface.isServer()) {
-			float finalDuration = 0f;
-			for (Entry<Item, Integer> entry : proposee.getInventory().entrySet()) {
-				Item item = entry.getKey();
-				if (item instanceof Fuel) {
-					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue();
-				}
-			}
-
-			if (finalDuration == 0f) {
-				UserInterface.addLayeredComponent(
-					new MessageWindow(
-						"Add coal to the furnace before attemping to ignite",
-						Color.RED,
-						BloodAndMithrilClient.WIDTH/2 - 175,
-						BloodAndMithrilClient.HEIGHT/2 + 100,
-						350,
-						200,
-						"No coal",
-						true,
-						100,
-						100
-					)
-				);
-				return;
-			}
-
 			furnace.setCombustionDurationRemaining(finalDuration);
 			furnace.ignite();
 		} else {

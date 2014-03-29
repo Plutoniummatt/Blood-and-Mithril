@@ -103,6 +103,7 @@ import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Equipable;
+import bloodandmithril.item.EquipperImpl;
 import bloodandmithril.item.Equipper.EquipmentSlot;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
@@ -338,6 +339,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(EquipperImpl.class);
 		kryo.register(FurnaceSmelt.class);
 		kryo.register(Container.class);
 		kryo.register(ContainerImpl.class);
