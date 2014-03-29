@@ -60,7 +60,7 @@ public class Attack extends CompositeAITask {
 
 
 		@Override
-		public void execute() {
+		public void execute(float delta) {
 			Domain.getIndividuals().get(hostId.getId()).attack(tobeAttacked);
 			Domain.getIndividuals().get(hostId.getId()).clearCommands();
 			attacked = true;

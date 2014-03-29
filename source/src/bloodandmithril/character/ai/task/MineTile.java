@@ -92,7 +92,7 @@ public class MineTile extends CompositeAITask {
 
 
 		@Override
-		public void execute() {
+		public void execute(float delta) {
 			final Topography topography = Domain.getWorld(Domain.getIndividuals().get(hostId.getId()).getWorldId()).getTopography();
 			final Individual host = Domain.getIndividuals().get(hostId.getId());
 

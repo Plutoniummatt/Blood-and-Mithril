@@ -20,7 +20,7 @@ public class Idle extends AITask {
 
 
 	@Override
-	public void execute() {
+	public void execute(float delta) {
 		//Do Nothing
 	}
 

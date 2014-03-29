@@ -38,7 +38,7 @@ public class PineChest extends Construction implements Container {
 	 * Constructor
 	 */
 	public PineChest(float x, float y, boolean grounded, float capacity) {
-		super(x, y, 35, 44, grounded);
+		super(x, y, 35, 44, grounded, 0.1f);
 		container = new ContainerImpl(capacity, true);
 	}
 

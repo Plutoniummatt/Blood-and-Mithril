@@ -30,7 +30,9 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.Attack.Strike;
+import bloodandmithril.character.ai.task.Construct.Constructing;
 import bloodandmithril.character.ai.task.CompositeAITask;
+import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Harvest;
@@ -59,6 +61,7 @@ import bloodandmithril.csi.requests.ChangeFactionControlPassword.RefreshFactionW
 import bloodandmithril.csi.requests.ChangeNickName;
 import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
 import bloodandmithril.csi.requests.ClientConnected;
+import bloodandmithril.csi.requests.ConstructionRequest;
 import bloodandmithril.csi.requests.ConsumeItem;
 import bloodandmithril.csi.requests.DestroyPropNotification;
 import bloodandmithril.csi.requests.DestroyTile;
@@ -339,6 +342,9 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Constructing.class);
+		kryo.register(Construct.class);
+		kryo.register(ConstructionRequest.class);
 		kryo.register(EquipperImpl.class);
 		kryo.register(FurnaceSmelt.class);
 		kryo.register(Container.class);
@@ -522,6 +528,11 @@ public class ClientServerInterface {
 		public static synchronized void sendHarvestRequest(int individualId, int propId) {
 			client.sendTCP(new SendHarvestRequest(individualId, propId));
 			Logger.networkDebug("Sending harvest request", LogLevel.DEBUG);
+		}
+		
+		public static synchronized void sendConstructRequest(int individualId, int propId) {
+			client.sendTCP(new ConstructionRequest(individualId, propId));
+			Logger.networkDebug("Sending construction request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendConsumeItemRequest(Consumable consumable, int individualId) {

@@ -34,5 +34,5 @@ public abstract class AITask implements Serializable {
 	public abstract void uponCompletion();
 
 	/** Execute the implementation of this task. */
-	public abstract void execute();
+	public abstract void execute(float delta);
 }

@@ -356,7 +356,7 @@ public abstract class Individual implements Equipper, Serializable {
 
 		aiReactionTimer += delta;
 		if (aiReactionTimer >= aITaskDelay) {
-			ai.update();
+			ai.update(delta);
 			aiReactionTimer = 0f;
 		}
 

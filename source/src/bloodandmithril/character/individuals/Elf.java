@@ -272,6 +272,8 @@ public class Elf extends Individual {
 		if (ClientServerInterface.isServer()) {
 			updateVitals(delta);
 		}
+		
+		System.out.println(getAI().getCurrentTask().getClass().getSimpleName());
 	}
 
 

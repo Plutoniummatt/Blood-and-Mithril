@@ -56,8 +56,8 @@ public class GoToMovingLocation extends AITask {
 
 
 	@Override
-	public void execute() {
-		currentGoToLocation.execute();
+	public void execute(float delta) {
+		currentGoToLocation.execute(delta);
 		if (currentGoToLocation.isComplete()) {
 			currentGoToLocation = new GoToLocation(
 				Domain.getIndividuals().get(hostId.getId()),
