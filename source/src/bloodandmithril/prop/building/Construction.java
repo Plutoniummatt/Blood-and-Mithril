@@ -1,8 +1,14 @@
 package bloodandmithril.prop.building;
 
+import static com.google.common.collect.Maps.newHashMap;
+
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
@@ -190,6 +196,34 @@ public abstract class Construction extends Prop implements Container {
 	
 	/** Get the context menu that will be displayed once this {@link Construction} has finished being constructing */
 	protected abstract ContextMenu getCompletedContextMenu();
+	
+	
+	/**
+	 * Whether or not construction of this {@link Construction} can take place.
+	 */
+	public boolean canConstruct() {
+		final Map<Item, Integer> requiredMaterials = getRequiredMaterials();
+		
+		newHashMap(requiredMaterials).entrySet().stream().forEach(new Consumer<Entry<Item, Integer>>() {
+			@Override
+			public void accept(Entry<Item, Integer> arg0) {
+				Entry<Item, Integer> existing = Iterables.tryFind(materialContainer.getInventory().entrySet(), new Predicate<Entry<Item, Integer>>() {
+					@Override
+					public boolean apply(Entry<Item, Integer> input) {
+						return input.getKey().sameAs(arg0.getKey());
+					}
+				}).orNull();
+				
+				if (existing != null) {
+					if (arg0.getValue() - existing.getValue() <= 0) {
+						requiredMaterials.remove(arg0.getKey());
+					}
+				}
+			}
+		});
+		
+		return requiredMaterials.isEmpty();
+	}
 	
 	
 	@Override

@@ -121,7 +121,7 @@ public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends
 						tEntry.getKey().toString().length() * 10, 
 						16, 
 						() -> {}, 
-						Color.RED,
+						Color.ORANGE,
 						Color.GREEN,
 						Color.WHITE,
 						UIRef.BL

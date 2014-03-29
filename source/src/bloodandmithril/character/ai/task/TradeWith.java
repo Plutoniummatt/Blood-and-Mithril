@@ -8,9 +8,11 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.building.Construction;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
+import bloodandmithril.ui.components.window.ConstructionWindow;
 import bloodandmithril.ui.components.window.FurnaceWindow;
 import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -176,6 +178,28 @@ public class TradeWith extends CompositeAITask {
 	public static void openTradeWindowWithProp(Individual proposer, Container container) {
 		if (container instanceof Prop) {
 			Prop prop = Domain.getProps().get(((Prop) container).id);
+			
+			if (prop instanceof Construction) {
+				if (((Construction) prop).getConstructionProgress() != 1f) {
+					UserInterface.addLayeredComponentUnique(
+						new ConstructionWindow(
+							BloodAndMithrilClient.WIDTH/2 - 450,
+							BloodAndMithrilClient.HEIGHT/2 + 150,
+							900,
+							300,
+							proposer.getId().getSimpleName() + " interacting with container",
+							true,
+							900,
+							300,
+							proposer,
+							(Construction) prop
+						),
+						proposer.getId().getSimpleName() + " interacting with container"
+					);
+					return;
+				}
+			}
+			
 			if (prop instanceof Furnace) {
 				UserInterface.addLayeredComponentUnique(
 					new FurnaceWindow(
