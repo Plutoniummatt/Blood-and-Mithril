@@ -68,7 +68,7 @@ public class GoToLocation extends AITask {
 
 
 	@Override
-	public void execute() {
+	public void execute(float delta) {
 		if (!path.isEmpty()) {
 			if (fly) {
 				// TODO Flying

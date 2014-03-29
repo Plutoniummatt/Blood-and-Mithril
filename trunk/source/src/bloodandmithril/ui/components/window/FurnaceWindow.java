@@ -140,13 +140,14 @@ public class FurnaceWindow extends TradeWindow {
 
 		int maxWidth = width / 2 + 5;
 
-		float max = 0f;
-		for (Entry<Item, Integer> entry : furnace.getInventory().entrySet()) {
-			Item item = entry.getKey();
-			if (item instanceof Fuel) {
-				max = max + ((Fuel)item).getCombustionDuration() * entry.getValue();
+		float max = (float) furnace.getInventory().entrySet().stream().mapToDouble(entry -> {
+			if (entry.getKey() instanceof Fuel) {
+				return ((Fuel)entry.getKey()).getCombustionDuration() * entry.getValue();
+			} else {
+				return 0D;
 			}
-		}
+		}).sum();
+		
 		float fuelFraction = furnace.getCombustionDurationRemaining() / max;
 		float smeltingFraction = furnace.getSmeltingDurationRemaining() / Furnace.SMELTING_DURATION;
 

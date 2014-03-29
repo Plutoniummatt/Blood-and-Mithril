@@ -47,10 +47,11 @@ public abstract class Construction extends Prop implements Container {
 	/**
 	 * Constructor
 	 */
-	protected Construction(float x, float y, int width, int height, boolean grounded) {
+	protected Construction(float x, float y, int width, int height, boolean grounded, float constructionRate) {
 		super(x, y, grounded, Depth.MIDDLEGROUND);
 		this.width = width;
 		this.height = height;
+		this.constructionRate = constructionRate;
 	}
 
 
@@ -73,10 +74,10 @@ public abstract class Construction extends Prop implements Container {
 	 * Progresses the construction of this {@link Construction}, in time units measured in seconds
 	 */
 	public synchronized void construct(float time) {
-		if (constructionProgress >= 1f) {
+		if (constructionProgress == 1f) {
 			finishConstruction();
-		} else {
-			constructionProgress += time * constructionRate;
+		} else if (canConstruct()) {
+			constructionProgress = constructionProgress + time * constructionRate >= 1f ? 1f : constructionProgress + time * constructionRate;
 		}
 	}
 	
@@ -86,6 +87,7 @@ public abstract class Construction extends Prop implements Container {
 	 */
 	private void finishConstruction() {
 		constructionProgress = 1f;
+		materialContainer.getInventory().clear();
 	}
 
 
@@ -229,6 +231,11 @@ public abstract class Construction extends Prop implements Container {
 	@Override
 	public void synchronizeContainer(Container other) {
 		materialContainer.synchronizeContainer(other);
+	}
+	
+	
+	public void synchronizeConstruction(Construction other) {
+		constructionProgress = other.getConstructionProgress();
 	}
 
 

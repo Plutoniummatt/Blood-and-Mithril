@@ -42,7 +42,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 
 	/** Adds an item to the AI processing thread to await execution */
-	public void update() {
+	public void update(float delta) {
 		AIProcessor.setup();
 		if (AIProcessor.aiThread != null && AIProcessor.aiThread.isAlive()) {
 			if (mode == AIMode.AUTO) {
@@ -62,7 +62,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 			if (currentTask != null) {
 				AITask taskToExecute = getCurrentTask();
-				taskToExecute.execute();
+				taskToExecute.execute(delta);
 				Logger.aiDebug(hostId.getSimpleName() + " is: " + taskToExecute.getDescription(), LogLevel.INFO);
 
 				if (currentTask.isComplete()) {

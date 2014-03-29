@@ -72,7 +72,7 @@ public class Furnace extends Construction implements Container {
 	 * Constructor
 	 */
 	public Furnace(float x, float y) {
-		super(x, y, 49, 76, false);
+		super(x, y, 49, 76, false, 0.1f);
 		this.container = new ContainerImpl(500f, true);
 	}
 

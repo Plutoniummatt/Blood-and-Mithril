@@ -89,7 +89,7 @@ public class Harvest extends CompositeAITask {
 
 
 		@Override
-		public void execute() {
+		public void execute(float delta) {
 
 			Individual host = Domain.getIndividuals().get(hostId.getId());
 

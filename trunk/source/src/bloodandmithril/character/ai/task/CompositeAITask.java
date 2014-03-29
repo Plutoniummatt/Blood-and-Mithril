@@ -63,14 +63,14 @@ public class CompositeAITask extends AITask {
 	 * @see bloodandmithril.character.ai.AITask#execute()
 	 */
 	@Override
-	public void execute() {
+	public void execute(float delta) {
 		if (getCurrentTask().isComplete()) {
 			getCurrentTask().uponCompletion();
 			setCurrentTask(tasks.poll());
 		}
 
 		if (getCurrentTask() != null) {
-			getCurrentTask().execute();
+			getCurrentTask().execute(delta);
 		}
 	}
 

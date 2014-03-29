@@ -5,6 +5,7 @@ import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.building.Construction;
 import bloodandmithril.world.Domain;
 
 /**
@@ -58,6 +59,9 @@ public class SynchronizePropRequest implements Request {
 				propToSync.synchronizeProp(prop);
 				if (propToSync instanceof Container) {
 					((Container) propToSync).synchronizeContainer((Container) prop);
+				}
+				if (propToSync instanceof Construction) {
+					((Construction) propToSync).synchronizeConstruction((Construction) prop);
 				}
 			} else {
 				Domain.getProps().put(prop.id, prop);
