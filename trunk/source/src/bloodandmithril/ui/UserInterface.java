@@ -126,7 +126,7 @@ public class UserInterface {
 	public static TextureRegion followArrow = new TextureRegion(UserInterface.uiTexture, 0, 34, 11, 8);
 
 	/**
-	 * Steup for UI, makes everything it needs.
+	 * Setup for UI, makes everything it needs.
 	 *
 	 * @param WIDTH - initial window width
 	 * @param HEIGHT - initial window height
@@ -471,9 +471,9 @@ public class UserInterface {
 		defaultFont.draw(spriteBatch, "Time: " + currentEpoch.getTimeString(), 5, HEIGHT - 5);
 		defaultFont.draw(spriteBatch, "Date: " + currentEpoch.getDateString(), 5, HEIGHT - 25);
 		defaultFont.draw(spriteBatch, "Ping: " + ping, 5, HEIGHT - 45);
+		defaultFont.draw(spriteBatch, "Framerate: " + String.format("%.1f", 1f/Gdx.graphics.getDeltaTime()), 5, HEIGHT - 65);
 	}
-
-
+	
 	/** Debug text */
 	private static void renderDebugText() {
 		defaultFont.setColor(Color.YELLOW);

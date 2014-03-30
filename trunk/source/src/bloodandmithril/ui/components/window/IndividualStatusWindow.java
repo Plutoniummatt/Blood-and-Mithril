@@ -10,6 +10,9 @@ import java.util.Map.Entry;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.Condition;
+import bloodandmithril.character.conditions.Exhaustion;
+import bloodandmithril.character.conditions.Hunger;
+import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -91,8 +94,8 @@ public class IndividualStatusWindow extends Window {
 			time = time + 1f/60f;
 		}
 
-		Color activeTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE, getAlpha());
-		Color inactiveTitle = Colors.modulateAlpha(Colors.UI_DARK_PURPLE_INACTIVE, getAlpha());
+		Color activeTitle = Colors.modulateAlpha(Color.YELLOW, getAlpha());
+		Color inactiveTitle = Colors.modulateAlpha(Color.ORANGE, getAlpha());
 		Color activeWhite = Colors.modulateAlpha(Color.WHITE, getAlpha());
 		Color inactiveWhite = Colors.modulateAlpha(Color.WHITE, 0.6f * getAlpha());
 
@@ -143,9 +146,23 @@ public class IndividualStatusWindow extends Window {
 		if (!drawLine(truncate(vitals), 45)) {
 			return;
 		}
+		
+		if (identified || individual.isControllable()) {
+			if (!drawLine(truncate(Hunger.getName(individual.getState().hunger)), 65)) {
+				return;
+			}
+			
+			if (!drawLine(truncate(Thirst.getName(individual.getState().thirst)), 85)) {
+				return;
+			}
+			
+			if (!drawLine(truncate(Exhaustion.getName(individual.getState().stamina)), 105)) {
+				return;
+			}
+		}
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
-		if (!drawLine("Conditions: ", 105)) {
+		if (!drawLine("Conditions: ", 135)) {
 			return;
 		}
 
@@ -154,10 +171,10 @@ public class IndividualStatusWindow extends Window {
 		if (identified || individual.isControllable()) {
 			renderConditionsPanel();
 		} else if (identifying) {
-			if (!drawLine("Identifying..." + String.format("%.1f", time/identificationTime * 100) + "%", 125)) {
+			if (!drawLine("Identifying..." + String.format("%.1f", time/identificationTime * 100) + "%", 155)) {
 				return;
 			}
-		} else if (!drawLine("Unknown", 125)) {
+		} else if (!drawLine("Unknown", 155)) {
 			return;
 		}
 		
@@ -187,9 +204,9 @@ public class IndividualStatusWindow extends Window {
 		refreshLisitng(individual, conditionsPanel.getListing());
 
 		conditionsPanel.x = x;
-		conditionsPanel.y = y - 100;
+		conditionsPanel.y = y - 120;
 		conditionsPanel.width = width;
-		conditionsPanel.height = height - 100;
+		conditionsPanel.height = height - 120;
 
 		conditionsPanel.render();
 	}

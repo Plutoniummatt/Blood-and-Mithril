@@ -228,11 +228,11 @@ public abstract class Individual implements Equipper, Serializable {
 	}
 
 	/** True if this {@link Individual} is currently {@link #walking} */
-	public boolean getWalking() {
+	public boolean isWalking() {
 		return walking;
 	}
 
-	/** See {@link #getWalking()} */
+	/** See {@link #isWalking()} */
 	public synchronized void setWalking(boolean walking) {
 		this.walking = walking;
 	}

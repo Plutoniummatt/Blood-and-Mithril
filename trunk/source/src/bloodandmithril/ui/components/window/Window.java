@@ -348,11 +348,7 @@ public abstract class Window extends Component {
 	 */
 	private void renderTitle() {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
-		if (isActive()) {
-			defaultFont.setColor(1f, 1f, 1f, 1f * getAlpha());
-		} else {
-			defaultFont.setColor(0.5f, 0.5f, 0.5f, 0.7f * getAlpha());
-		}
+		defaultFont.setColor(1f, 1f, 1f, 1f * getAlpha() * (isActive() ? 1f : 0.7f));
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate(title), x + 6, y - 3);
 		defaultFont.setColor(1f, 1f, 1f, 1f);
 	}
