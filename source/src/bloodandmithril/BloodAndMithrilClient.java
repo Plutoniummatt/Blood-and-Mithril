@@ -400,7 +400,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (keycode == Input.Keys.J) {
-			Domain.getActiveWorld().getTopography().getFluids().put(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY()), new Water(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY()), 16));
+			Domain.getActiveWorld().getTopography().getFluids().put(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY()), new Water(16));
 		}
 		
 		if (keycode == Input.Keys.L) {

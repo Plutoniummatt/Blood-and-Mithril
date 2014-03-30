@@ -12,11 +12,10 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
-import bloodandmithril.util.datastructure.ConcurrentDualKeySkipListMap;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
-import bloodandmithril.world.topography.fluid.Fluid;
 import bloodandmithril.world.topography.fluid.FluidDynamicsProcessor;
+import bloodandmithril.world.topography.fluid.FluidMap;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -62,9 +61,9 @@ public class Topography {
 
 	/** The current chunk coordinates that have already been requested for generation */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> requestedForGeneration = new ConcurrentDualKeyHashMap<>();
-
-	/** {@link Fluid}s */
-	private final ConcurrentDualKeySkipListMap<Integer, Integer, Fluid> fluids = new ConcurrentDualKeySkipListMap<>();
+	
+	/** {@link FluidMap} of this {@link Topography} */
+	private FluidMap fluidMap = new FluidMap();
 	
 	private final FluidDynamicsProcessor fluidDynamicsProcessor;
 
@@ -404,7 +403,7 @@ public class Topography {
 	}
 
 
-	public ConcurrentDualKeySkipListMap<Integer, Integer, Fluid> getFluids() {
-		return fluids;
+	public FluidMap getFluids() {
+		return fluidMap;
 	}
 }

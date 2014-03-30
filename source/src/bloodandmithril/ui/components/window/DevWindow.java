@@ -440,7 +440,7 @@ public class DevWindow extends Window {
 					() -> {
 						GameSaver.save(false);
 					},
-					UserInterface.RENDER_TOPOGRAPHY ? Color.GREEN : Color.RED,
+					Color.GREEN,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL
