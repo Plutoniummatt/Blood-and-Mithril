@@ -36,6 +36,11 @@ public class FluidDynamicsProcessor {
 
 
 	private void processSingleFluid(DualKeyEntry<Integer, Integer, Fluid> entry) {
+		if (entry.value.getDepth() < 0.01f) {
+			topography.getFluids().remove(entry.x, entry.y);
+			return;
+		}
+		
 		Fluid below = getFluid(entry.x, entry.y - 1);
 		if (below == null) {
 			if (isFlowable(entry.x, entry.y - 1)) {
@@ -46,10 +51,8 @@ public class FluidDynamicsProcessor {
 		} else {
 			if (entry.value.sub(below.add(entry.value).getDepth()).getDepth() < 4f) {
 				spread(entry);
-			} else {
-				if (entry.value.getDepth() == 0) {
-					topography.getFluids().remove(entry.x, entry.y);
-				}
+			} else if (entry.value.getDepth() < 1f) {
+				topography.getFluids().remove(entry.x, entry.y);
 			}
 		}
 	}
@@ -94,7 +97,11 @@ public class FluidDynamicsProcessor {
 
 
 	private boolean isFlowable(int x, int y) {
-		return topography.getTile(x, y, true).isPassable();
+		try {
+			return topography.getTile(x, y, true).isPassable();
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 	
 	
