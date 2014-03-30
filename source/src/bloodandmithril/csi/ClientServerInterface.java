@@ -45,6 +45,7 @@ import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.conditions.Bleeding;
+import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.conditions.Thirst;
@@ -342,6 +343,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Exhaustion.class);
 		kryo.register(Constructing.class);
 		kryo.register(Construct.class);
 		kryo.register(ConstructionRequest.class);

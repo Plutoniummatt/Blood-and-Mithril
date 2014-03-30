@@ -7,6 +7,7 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.csi.ClientServerInterface;
@@ -280,13 +281,31 @@ public class Elf extends Individual {
 
 		decreaseHunger(0.000001f);
 		decreaseThirst(0.000003f);
-
-		if (getState().hunger < 0.75f) {
-			addCondition(new Hunger(this));
+		
+		if (!isWalking()) {
+			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
+				decreaseStamina(0.001f);
+			} else {
+				increaseStamina(delta * getState().staminaRegen);
+			}
+		} else {
+			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
+				increaseStamina(delta * getState().staminaRegen / 2);
+			} else {
+				increaseStamina(0.002f);
+			}
 		}
 
+		if (getState().hunger < 0.75f) {
+			addCondition(new Hunger(getId().getId()));
+		}
+		
 		if (getState().thirst < 0.75f) {
-			addCondition(new Thirst(this));
+			addCondition(new Thirst(getId().getId()));
+		}
+		
+		if (getState().stamina < 0.75f) {
+			addCondition(new Exhaustion(getId().getId()));
 		}
 	}
 

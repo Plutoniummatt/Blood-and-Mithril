@@ -2,6 +2,7 @@ package bloodandmithril.character.conditions;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.Condition;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Condition} representing thirst
@@ -11,16 +12,16 @@ import bloodandmithril.character.Individual.Condition;
 public class Thirst extends Condition {
 	private static final long serialVersionUID = -3232484824763914755L;
 
-	private final Individual affected;
+	private final int affected;
 	private final float oldStaminaRegen;
 
 	/**
 	 * Constructor
 	 */
-	public Thirst(Individual affected) {
+	public Thirst(int affected) {
 		this.affected = affected;
-		this.oldStaminaRegen = affected.getState().staminaRegen;
-		affected.changeStaminaRegen(oldStaminaRegen * 0.5f);
+		this.oldStaminaRegen = Domain.getIndividuals().get(affected).getState().staminaRegen;
+		Domain.getIndividuals().get(affected).changeStaminaRegen(oldStaminaRegen * 0.5f);
 	}
 
 
@@ -40,7 +41,7 @@ public class Thirst extends Condition {
 
 	@Override
 	public boolean isExpired() {
-		return affected.getState().thirst > 0.75f;
+		return Domain.getIndividuals().get(affected).getState().thirst > 0.75f;
 	}
 
 
@@ -58,7 +59,15 @@ public class Thirst extends Condition {
 
 	@Override
 	public String getName() {
-		int h = Math.round(affected.getState().thirst * 10f);
+		return getName(Domain.getIndividuals().get(affected).getState().thirst);
+	}
+
+	
+	/**
+	 * See {@link Condition#getName()}
+	 */
+	public static String getName(float thirst) {
+		int h = Math.round(thirst * 10f);
 		switch (h) {
 			case 0: return "Dying of thirst";
 			case 1: return "Extremely thirsty";
@@ -69,14 +78,16 @@ public class Thirst extends Condition {
 			case 6: return "Thirsty";
 			case 7: return "Dry mouth";
 			case 8: return "Dry mouth";
+			case 9: return "Not thirsty";
+			case 10: return "Not thirsty";
 			default: throw new RuntimeException("Unexpected thirst level");
 		}
 	}
-
+	
 
 	@Override
 	public void uponExpiry() {
-		affected.changeStaminaRegen(oldStaminaRegen);
+		Domain.getIndividuals().get(affected).changeStaminaRegen(oldStaminaRegen);
 	}
 
 

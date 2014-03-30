@@ -2,6 +2,7 @@ package bloodandmithril.character.conditions;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.Condition;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Condition} representing Hunger
@@ -11,16 +12,16 @@ import bloodandmithril.character.Individual.Condition;
 public class Hunger extends Condition {
 	private static final long serialVersionUID = 6876432751800675014L;
 
-	private final Individual affected;
+	private final int affected;
 	private final float oldHealthRegen;
 
 	/**
 	 * Constructor
 	 */
-	public Hunger(Individual affected) {
+	public Hunger(int affected) {
 		this.affected = affected;
-		this.oldHealthRegen = affected.getState().healthRegen;
-		affected.changeHealthRegen(oldHealthRegen * 0.5f);
+		this.oldHealthRegen = Domain.getIndividuals().get(affected).getState().healthRegen;
+		Domain.getIndividuals().get(affected).changeHealthRegen(oldHealthRegen * 0.5f);
 	}
 
 
@@ -45,7 +46,7 @@ public class Hunger extends Condition {
 
 	@Override
 	public boolean isExpired() {
-		return affected.getState().hunger > 0.75f;
+		return Domain.getIndividuals().get(affected).getState().hunger > 0.75f;
 	}
 
 
@@ -63,7 +64,15 @@ public class Hunger extends Condition {
 
 	@Override
 	public String getName() {
-		int h = Math.round(affected.getState().hunger * 10f);
+		return getName(Domain.getIndividuals().get(affected).getState().hunger);
+	}
+		
+	
+	/**
+	 * See {@link Condition#getName()}
+	 */
+	public static String getName(float hunger) {
+		int h = Math.round(hunger * 10f);
 		switch (h) {
 			case 0: return "Starving";
 			case 1: return "Ravenous";
@@ -74,6 +83,8 @@ public class Hunger extends Condition {
 			case 6: return "Hungry";
 			case 7: return "Peckish";
 			case 8: return "Peckish";
+			case 9: return "Not hungry";
+			case 10: return "Not hungry";
 			default: throw new RuntimeException("Unexpected hunger level");
 		}
 	}
@@ -81,7 +92,7 @@ public class Hunger extends Condition {
 
 	@Override
 	public void uponExpiry() {
-		affected.changeHealthRegen(oldHealthRegen);
+		Domain.getIndividuals().get(affected).changeHealthRegen(oldHealthRegen);
 	}
 
 

@@ -56,7 +56,7 @@ public class Felberries extends Item implements Consumable {
 			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
-			"Carrot",
+			"Felberries",
 			true,
 			100,
 			100

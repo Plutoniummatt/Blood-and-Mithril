@@ -138,19 +138,20 @@ public class GoToLocation extends AITask {
 		Individual host = Domain.getIndividuals().get(hostId.getId());
 
 		// If we're outside WayPoint.tolerance, then move toward WayPoint.wayPoint
-		boolean reached;
+		boolean notReached;
 		if (wayPoint.tolerance == 0f) {
 			if (host.getState().position.y < 0f) {
-				reached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(new Vector2(host.getState().position.x, host.getState().position.y + 1), true));
+				notReached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(new Vector2(host.getState().position.x, host.getState().position.y + 1), true));
 			} else {
-				reached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(host.getState().position, true));
+				notReached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(host.getState().position, true));
 			}
 		} else {
-			reached = Math.abs(wayPoint.waypoint.cpy().sub(host.getState().position).len()) > wayPoint.tolerance;
+			notReached = Math.abs(wayPoint.waypoint.cpy().sub(host.getState().position).len()) > wayPoint.tolerance;
 		}
 
-		if (reached) {
-			host.sendCommand(KeyMappings.walk, host.getWalking());
+		if (notReached) {
+			host.sendCommand(KeyMappings.walk, host.isWalking() || host.getState().stamina == 0f);
+			host.setWalking(host.isWalking() || host.getState().stamina == 0f);
 			if (!host.isCommandActive(KeyMappings.moveRight) && wayPoint.waypoint.x > host.getState().position.x) {
 				host.sendCommand(KeyMappings.moveRight, true);
 				host.sendCommand(KeyMappings.moveLeft, false);
