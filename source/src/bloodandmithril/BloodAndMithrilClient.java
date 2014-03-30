@@ -29,6 +29,7 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.fluid.Blood;
 import bloodandmithril.world.topography.fluid.Water;
 import bloodandmithril.world.weather.Weather;
 
@@ -401,6 +402,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (keycode == Input.Keys.J) {
 			Domain.getActiveWorld().getTopography().getFluids().put(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY()), new Water(16));
+		}
+		if (keycode == Input.Keys.K) {
+			Domain.getActiveWorld().getTopography().getFluids().put(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY()), new Blood(16));
 		}
 		
 		if (keycode == Input.Keys.L) {
