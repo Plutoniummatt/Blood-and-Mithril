@@ -262,7 +262,21 @@ public class UserInterface {
 		
 		if (RENDER_TOPOGRAPHY) {
 			TopographyDebugRenderer.render();
+			renderFluidTileHighlights();
 		}
+	}
+	
+	
+	private static void renderFluidTileHighlights() {
+		shapeRenderer.begin(Rectangle);
+		shapeRenderer.setColor(Color.RED);
+		shapeRenderer.setProjectionMatrix(cam.combined);
+		Domain.getActiveWorld().getTopography().getFluids().getAllFluids().stream()
+		.forEach(entry -> {
+			shapeRenderer.rect(entry.x * TILE_SIZE, entry.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+		});
+		shapeRenderer.setProjectionMatrix(UICamera.combined);
+		shapeRenderer.end();
 	}
 
 
@@ -494,6 +508,7 @@ public class UserInterface {
 		defaultFont.draw(spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoader.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);
 		defaultFont.draw(spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, Gdx.graphics.getHeight() - 165);
 		defaultFont.draw(spriteBatch, "Number of tasks queued in Pathfinding thread: " + Integer.toString(AIProcessor.pathFinderTasks.size()), 5, Gdx.graphics.getHeight() - 185);
+		defaultFont.draw(spriteBatch, "Number of fluids on current topography: " + Integer.toString(Domain.getActiveWorld().getTopography().getFluids().getAllFluids().size()), 5, Gdx.graphics.getHeight() - 205);
 
 		defaultFont.setColor(Color.CYAN);
 	}

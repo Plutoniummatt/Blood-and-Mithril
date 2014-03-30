@@ -45,4 +45,9 @@ public class FluidMap implements Serializable {
 	public List<DualKeyEntry<Integer, Integer, Fluid>> getAllFluids() {
 		return fluids.getAllEntries();
 	}
+	
+	
+	public ConcurrentDualKeySkipListMap<Integer, Integer, Fluid> getData() {
+		return fluids;
+	}
 }
