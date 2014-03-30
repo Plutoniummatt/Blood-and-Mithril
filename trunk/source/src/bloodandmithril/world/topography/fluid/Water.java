@@ -10,19 +10,20 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 public class Water extends Fluid {
-
+	private static final long serialVersionUID = 6655685059114633586L;
+	
 	private static Color color = Colors.modulateAlpha(Colors.WATER, 0.85f);
 	
 	/**
 	 * Constructor
 	 */
-	public Water(int tileX, int tileY, int depth) {
-		super(tileX, tileY, depth, color);
+	public Water(float depth) {
+		super(depth, color);
 	}
 
 	
 	@Override
-	protected Fluid internalClone() {
-		return new Water(getTileX(), getTileY(), getDepth());
+	protected Fluid internalClone(float depth) {
+		return new Water(depth);
 	}
 }

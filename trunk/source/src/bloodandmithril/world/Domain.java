@@ -33,9 +33,7 @@ import bloodandmithril.graphics.Light;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.fluid.Fluid;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -181,9 +179,11 @@ public class Domain {
 		gl20.glEnable(GL20.GL_BLEND);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		shapeRenderer.setProjectionMatrix(cam.combined);
-		for (DualKeyEntry<Integer, Integer, Fluid> fluid : getActiveWorld().getTopography().getFluids().getAllEntries()) {
-			fluid.value.render();
-		}
+		
+		getActiveWorld().getTopography().getFluids().getAllFluids().stream().forEach(entry -> {
+			entry.value.render(entry.x, entry.y);
+		});
+		
 		shapeRenderer.end();
 		gl20.glDisable(GL20.GL_BLEND);
 		
@@ -233,7 +233,7 @@ public class Domain {
 		if (getActiveWorld() != null) {
 			getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam(camX, camY);
 			
-			if (System.currentTimeMillis() - topographyUpdateTimer > 50) {
+			if (System.currentTimeMillis() - topographyUpdateTimer > 30) {
 				topographyUpdateTimer = System.currentTimeMillis();
 				getActiveWorld().getTopography().update();
 			}
