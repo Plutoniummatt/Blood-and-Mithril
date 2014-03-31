@@ -20,7 +20,6 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
-import bloodandmithril.item.material.liquid.Liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
@@ -143,7 +142,7 @@ public class DevWindow extends Window {
 				elf.giveItem(new ChickenLeg());
 			}
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new GlassBottle(Water.class, 1f));
+				elf.giveItem(new GlassBottle(bloodandmithril.item.material.liquid.Water.class, 1f));
 			}
 			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 				elf.giveItem(new Currency());

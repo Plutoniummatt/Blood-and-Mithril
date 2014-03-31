@@ -1,34 +1,41 @@
 package bloodandmithril.world.topography.fluid;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.LinkedList;
 
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * Abstract class representing liquids
+ * Abstract class representing liquids that flow
  *
  * @author Matt
  */
-public abstract class Fluid implements Serializable {
+public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	private static final long serialVersionUID = 2940941435333092614L;
-
-	/** Color of this fluid */
-	private Color color;
 	
-	/** Depth of this fluid, can take value from 1 to {@link Topography#TILE_SIZE} */
 	private float depth;
+
+	/**
+	 * Protected constructor
+	 */
+	public Fluid(float depth, FluidFraction... fluids) {
+		this.depth = depth;
+		addAll(newArrayList(fluids));
+	}
+	
 	
 	/**
 	 * Protected constructor
 	 */
-	protected Fluid(float depth, Color color) {
-		this.setDepth(depth);
-		this.color = color;
+	public Fluid(float depth, Collection<FluidFraction> fluids) {
+		this.depth = depth;
+		addAll(fluids);
 	}
 	
 	
@@ -36,6 +43,12 @@ public abstract class Fluid implements Serializable {
 	 * Render this liquid
 	 */
 	public void render(int x, int y) {
+		Color color = new Color();
+		
+		stream().forEach(fluidFraction -> {
+			color.add(fluidFraction.getLiquid().getColor().mul(fluidFraction.getFraction()));
+		});
+		
 		Domain.shapeRenderer.setColor(color);
 		Domain.shapeRenderer.filledRect(
 			TILE_SIZE * x, 
@@ -47,16 +60,10 @@ public abstract class Fluid implements Serializable {
 	
 	
 	/**
-	 * Internal clone
-	 */
-	protected abstract Fluid internalClone(float depth);
-	
-	
-	/**
 	 * Returns a copy of this object
 	 */
 	public Fluid copy(float depth) {
-		return internalClone(depth);
+		return new Fluid(depth, this);
 	}
 
 
@@ -80,12 +87,48 @@ public abstract class Fluid implements Serializable {
 	public Fluid add(Fluid other) {
 		if (depth + other.depth > 16) {
 			float original = depth;
+			Fluid added = other.copy(16 - original);
+			recalculateFractions(added);
 			depth = 16;
-			return other.copy(16 - original);
+			return added;
 		} else {
+			recalculateFractions(other);
 			depth = depth + other.depth;
 			return other.copy(other.depth);
 		}
+	}
+
+	
+	private void recalculateFractions(final Fluid added) {
+		final float finalDepth = depth + added.depth;
+
+		//	For each FluidFraction in this fluid (FF1) {
+		//		For each FluidFraction in the fluid to be added (FF2) {
+		//			Filter out all fluid fractions that are not of the same Liquid as FF1
+		//			Mix the fraction of matching FF2 back to original FF1
+		//		}
+		//	}
+		stream().forEach(existingFraction -> {
+			added.stream().filter(addedFraction -> {
+				return addedFraction.getLiquid().getClass().equals(existingFraction.getLiquid().getClass()); 
+			}).forEach(fractionToBeAdded -> {
+				existingFraction.setFraction(((existingFraction.getFraction() * depth) + (fractionToBeAdded.getFraction() * added.depth)) / finalDepth);
+			});
+		});
+		
+		//	For each FluidFraction in fluid to add (FF2) {
+		//		For each FluidFraction in this fluid (FF1) {
+		//			Filter out all fluid fractions that are non-existent in all of FF2
+		//			Add the fraction of non-existent FF2 to the list of FF1
+		//		}
+		//	}
+		added.stream().filter(addedFraction -> {
+			return stream().noneMatch(existingFraction -> {
+				return addedFraction.getLiquid().getClass().equals(existingFraction.getLiquid().getClass());
+			});
+		}).forEach(newFraction -> {
+			super.add(FluidFraction.fluid(newFraction.getLiquid(), newFraction.getFraction() * added.depth / finalDepth));
+		});
 	}
 	
 	

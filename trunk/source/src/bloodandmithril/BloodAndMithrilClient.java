@@ -1,7 +1,5 @@
 package bloodandmithril;
 
-import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
-
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,6 +13,7 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Equipable;
+import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -29,8 +28,8 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.fluid.Blood;
-import bloodandmithril.world.topography.fluid.Water;
+import bloodandmithril.world.topography.fluid.Fluid;
+import bloodandmithril.world.topography.fluid.FluidFraction;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -400,15 +399,16 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		  return false;
 		}
 
-		if (keycode == Input.Keys.J) {
-			Domain.getActiveWorld().getTopography().getFluids().put(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY()), new Water(16));
-		}
-		if (keycode == Input.Keys.K) {
-			Domain.getActiveWorld().getTopography().getFluids().put(convertToWorldTileCoord(getMouseWorldX()), convertToWorldTileCoord(getMouseWorldY()), new Blood(16));
-		}
-		
 		if (keycode == Input.Keys.L) {
 			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), false);
+		}
+		
+		if (keycode == Input.Keys.J) {
+			Domain.getActiveWorld().getTopography().getFluids().put(
+				Topography.convertToWorldTileCoord(getMouseWorldX()), 
+				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				new Fluid(16, FluidFraction.fluid(new Water(), 1f))
+			);
 		}
 		
 		if (keycode == Input.Keys.S) {
