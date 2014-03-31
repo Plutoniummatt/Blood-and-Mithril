@@ -1,6 +1,6 @@
 package bloodandmithril.world.topography.fluid;
 
-import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
+import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import bloodandmithril.world.topography.Topography;
 
 /**
@@ -30,67 +30,82 @@ public class FluidDynamicsProcessor {
 			return e1.y.compareTo(e2.y);
 		})
 		.forEach(entry -> {
-			processSingleFluid(entry);
+			processSingleFluid(entry.x, entry.y, entry.value);
 		});
 	}
 
 
-	private void processSingleFluid(DualKeyEntry<Integer, Integer, Fluid> entry) {
-		if (entry.value.getDepth() < 0.01f) {
-			topography.getFluids().remove(entry.x, entry.y);
-			return;
-		}
+	/**
+	 * Processes a single fluid
+	 */
+	private void processSingleFluid(int x, int y, Fluid fluid) {
+		pressureCascade(x, y, fluid);
 		
-		Fluid below = getFluid(entry.x, entry.y - 1);
-		if (below == null) {
-			if (isFlowable(entry.x, entry.y - 1)) {
-				topography.getFluids().put(entry.x, entry.y - 1, topography.getFluids().remove(entry.x, entry.y));
+		if (isFlowable(x, y - 1)) {
+			Fluid below = getFluid(x, y - 1);
+			if (below == null) {
+				topography.getFluids().put(x, y - 1, fluid);
+				topography.getFluids().remove(x, y);
 			} else {
-				spread(entry);
+				if (below.getDepth() == TILE_SIZE) {
+					flowSideways(x, y, fluid);
+				} else if (TILE_SIZE - below.getDepth() >= fluid.getDepth()) {
+					below.add(fluid);
+					topography.getFluids().remove(x, y);
+				} else {
+					below.add(fluid.sub(TILE_SIZE - below.getDepth()));
+					if (below.getDepth() == TILE_SIZE) {
+						flowSideways(x, y, fluid);
+					}
+				}
 			}
 		} else {
-			if (entry.value.sub(below.add(entry.value).getDepth()).getDepth() < 4f) {
-				spread(entry);
-			} else if (entry.value.getDepth() < 1f) {
-				topography.getFluids().remove(entry.x, entry.y);
-			}
+			flowSideways(x, y, fluid);
 		}
 	}
-	
 
-	private void spread(DualKeyEntry<Integer, Integer, Fluid> entry) {
-		if (entry.value.getDepth() < 1) {
-			return;
-		}
+
+	/**
+	 * How do I sideways?
+	 */
+	private void flowSideways(int x, int y, Fluid fluid) {
+		float leftPressureGradient = calculatePressureGradient(x - 1, y, fluid);
+		float rightPressureGradient = calculatePressureGradient(x + 1, y, fluid);
 		
-		Fluid left = getFluid(entry.x - 1, entry.y);
-		Fluid right = getFluid(entry.x + 1, entry.y);
 		
-		if (left == null) {
-			if (isFlowable(entry.x - 1, entry.y)) {
-				Fluid sub = entry.value.sub(entry.value.getDepth() / 2);
-				if (sub.getDepth() != 0) {
-					topography.getFluids().put(entry.x - 1, entry.y, sub);
-				}
+	}
+
+
+	private float calculatePressureGradient(int x, int y, Fluid fluid) {
+		if (isFlowable(x, y)) {
+			Fluid adjacent = getFluid(x, y);
+			if (adjacent == null) {
+				return fluid.getPressure();
+			} else {
+				return fluid.getPressure() - adjacent.getPressure();
 			}
 		} else {
-			if (left.getDepth() < entry.value.getDepth()) {
-				float diff = entry.value.getDepth() - left.getDepth();
-				left.add(entry.value.sub(diff/2));
-			}
+			return 0f;
 		}
-		
-		if (right == null) {
-			if (isFlowable(entry.x + 1, entry.y)) {
-				Fluid sub = entry.value.sub(entry.value.getDepth() / 2);
-				if (sub.getDepth() != 0) {
-					topography.getFluids().put(entry.x + 1, entry.y, sub);
-				}
+	}
+
+
+	/**
+	 * Calculates pressure of a stack of {@link Fluid}s
+	 */
+	private void pressureCascade(int x, int y, Fluid fluid) {
+		if (getFluid(x, y + 1) == null) {
+			fluid.setPressure(fluid.getDepth());
+			Fluid bottom = getFluid(x, y - 1);
+			if (bottom != null) {
+				bottom.setPressure(fluid.getPressure() + bottom.getDepth());
+				pressureCascade(x, y - 1, bottom);
 			}
 		} else {
-			if (right.getDepth() < entry.value.getDepth()) {
-				float diff = entry.value.getDepth() - right.getDepth();
-				right.add(entry.value.sub(diff/2));
+			Fluid bottom = getFluid(x, y - 1);
+			if (bottom != null) {
+				bottom.setPressure(fluid.getPressure() + bottom.getDepth());
+				pressureCascade(x, y - 1, bottom);
 			}
 		}
 	}
