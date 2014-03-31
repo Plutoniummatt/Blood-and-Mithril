@@ -121,7 +121,7 @@ import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Liquid.Empty;
-import bloodandmithril.item.material.liquid.Liquid.Water;
+import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.item.material.plant.Carrot;

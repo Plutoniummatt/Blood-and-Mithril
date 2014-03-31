@@ -1,5 +1,9 @@
 package bloodandmithril.item.material.liquid;
 
+import java.io.Serializable;
+
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.Individual;
 
 /**
@@ -7,32 +11,36 @@ import bloodandmithril.character.Individual;
  *
  * @author Matt
  */
-public abstract class Liquid {
+public abstract class Liquid implements Serializable {
+	private static final long serialVersionUID = -317605951640204479L;
+	
+	protected Liquid() {}
 
 	public abstract void drink(float amount, Individual affected);
 
 	public abstract String getDescription();
 
-	/** Water, only quenches thirst */
-	public static class Water extends Liquid {
-		@Override
-		public void drink(float amount, Individual affected) {
-			affected.increaseThirst(amount);
-		}
-		@Override
-		public String getDescription() {
-			return "The liquid that keeps you alive.";
-		}
-	}
+	public abstract Color getColor();
 
 	/** Empty */
 	public static class Empty extends Liquid {
+		private static final long serialVersionUID = 6431065925729672809L;
+		
+		public Empty() {
+			super();
+		}
+		
 		@Override
 		public void drink(float amount, Individual affected) {
 		}
 		@Override
 		public String getDescription() {
 			return "Empty";
+		}
+
+		@Override
+		public Color getColor() {
+			return null;
 		}
 	}
 }
