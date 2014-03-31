@@ -19,13 +19,14 @@ import com.badlogic.gdx.graphics.Color;
 public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	private static final long serialVersionUID = 2940941435333092614L;
 	
-	private float depth;
+	private float depth, pressure;
 
 	/**
 	 * Protected constructor
 	 */
 	public Fluid(float depth, FluidFraction... fluids) {
 		this.depth = depth;
+		this.pressure = depth;
 		addAll(newArrayList(fluids));
 	}
 	
@@ -35,6 +36,7 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	 */
 	public Fluid(float depth, Collection<FluidFraction> fluids) {
 		this.depth = depth;
+		this.pressure = depth;
 		addAll(fluids);
 	}
 	
@@ -46,7 +48,7 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 		Color color = new Color();
 		
 		stream().forEach(fluidFraction -> {
-			color.add(fluidFraction.getLiquid().getColor().mul(fluidFraction.getFraction()));
+			color.add(fluidFraction.getLiquid().getColor().cpy().mul(fluidFraction.getFraction()));
 		});
 		
 		Domain.shapeRenderer.setColor(color);
@@ -63,6 +65,11 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	 * Returns a copy of this object
 	 */
 	public Fluid copy(float depth) {
+		return new Fluid(depth, this);
+	}
+	
+	
+	public Fluid copy() {
 		return new Fluid(depth, this);
 	}
 
@@ -85,11 +92,11 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	 * Add another fluid to this one, returning how much was added
 	 */
 	public Fluid add(Fluid other) {
-		if (depth + other.depth > 16) {
+		if (depth + other.depth > TILE_SIZE) {
 			float original = depth;
-			Fluid added = other.copy(16 - original);
+			Fluid added = other.copy(TILE_SIZE - original);
 			recalculateFractions(added);
-			depth = 16;
+			depth = TILE_SIZE;
 			return added;
 		} else {
 			recalculateFractions(other);
@@ -99,7 +106,7 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	}
 
 	
-	private void recalculateFractions(final Fluid added) {
+	public void recalculateFractions(final Fluid added) {
 		final float finalDepth = depth + added.depth;
 
 		//	For each FluidFraction in this fluid (FF1) {
@@ -144,5 +151,15 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 			depth = depth - amount;
 			return copy(amount);
 		}
+	}
+
+
+	public float getPressure() {
+		return pressure;
+	}
+
+
+	public void setPressure(float pressure) {
+		this.pressure = pressure;
 	}
 }

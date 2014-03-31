@@ -59,6 +59,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.bar.BottomBar;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
@@ -271,10 +272,14 @@ public class UserInterface {
 		shapeRenderer.begin(Rectangle);
 		shapeRenderer.setColor(Color.RED);
 		shapeRenderer.setProjectionMatrix(cam.combined);
+		spriteBatch.begin();
+		Fonts.defaultFont.setColor(Color.RED);
 		Domain.getActiveWorld().getTopography().getFluids().getAllFluids().stream()
 		.forEach(entry -> {
 			shapeRenderer.rect(entry.x * TILE_SIZE, entry.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+			Fonts.defaultFont.draw(spriteBatch, String.format("%.0f", entry.value.getPressure()), entry.x * TILE_SIZE, (entry.y + 1) * TILE_SIZE);
 		});
+		spriteBatch.end();
 		shapeRenderer.setProjectionMatrix(UICamera.combined);
 		shapeRenderer.end();
 	}

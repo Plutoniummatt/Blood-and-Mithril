@@ -5,7 +5,11 @@ import com.badlogic.gdx.graphics.Color;
 import bloodandmithril.character.Individual;
 import bloodandmithril.util.Util.Colors;
 
-/** Water, only quenches thirst */
+/**
+ * Water, only quenches thirst
+ *
+ * @author Matt
+ */
 public class Water extends Liquid {
 	private static final long serialVersionUID = -4641409972631236862L;
 
