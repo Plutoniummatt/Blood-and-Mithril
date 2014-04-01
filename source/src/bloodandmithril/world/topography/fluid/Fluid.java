@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Abstract class representing liquids that flow
@@ -20,6 +21,8 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	private static final long serialVersionUID = 2940941435333092614L;
 	
 	private float depth, pressure;
+	
+	public Vector2 force; // TODO remove
 
 	/**
 	 * Protected constructor
