@@ -6,6 +6,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.item.Item;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
@@ -32,6 +33,9 @@ public class World implements Serializable {
 	
 	/** {@link Light}s that are present on this {@link World} */
 	private Set<Integer> lights 		= Sets.newHashSet();
+	
+	/** {@link Item}s that are present on this {@link World} */
+	private Set<Integer> items			= Sets.newHashSet();
 	
 	/**
 	 * Constructor
@@ -71,18 +75,8 @@ public class World implements Serializable {
 	}
 
 
-	public void setIndividuals(Set<Integer> individuals) {
-		this.individuals = individuals;
-	}
-
-
 	public Set<Integer> getProps() {
 		return props;
-	}
-
-
-	public void setProps(Set<Integer> props) {
-		this.props = props;
 	}
 
 
@@ -91,7 +85,7 @@ public class World implements Serializable {
 	}
 
 
-	public void setLights(Set<Integer> lights) {
-		this.lights = lights;
+	public Set<Integer> getItems() {
+		return items;
 	}
 }

@@ -98,4 +98,10 @@ public class Broadsword extends OneHandedWeapon {
 	public Item combust(int heatLevel) {
 		return this;
 	}
+
+
+	@Override
+	public void render() {
+		
+	}
 }

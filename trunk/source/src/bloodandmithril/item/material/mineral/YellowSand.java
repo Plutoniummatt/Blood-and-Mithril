@@ -70,4 +70,10 @@ public class YellowSand extends Item {
 	public Item combust(int heatLevel) {
 		return this;
 	}
+
+
+	@Override
+	public void render() {
+		
+	}
 }

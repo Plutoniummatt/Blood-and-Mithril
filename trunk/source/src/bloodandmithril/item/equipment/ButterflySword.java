@@ -82,4 +82,10 @@ public class ButterflySword extends OneHandedWeapon {
 	public Item combust(int heatLevel) {
 		return this;
 	}
+
+
+	@Override
+	public void render() {
+		
+	}
 }

@@ -71,4 +71,10 @@ public class CookedCarrot extends Item implements Consumable {
 	public Item combust(int heatLevel) {
 		return null;
 	}
+
+
+	@Override
+	public void render() {
+		
+	}
 }

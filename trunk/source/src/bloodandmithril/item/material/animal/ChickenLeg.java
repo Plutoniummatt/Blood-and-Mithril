@@ -89,4 +89,10 @@ public class ChickenLeg extends Item implements Consumable {
 	public Item combust(int heatLevel) {
 		return this;
 	}
+
+
+	@Override
+	public void render() {
+		
+	}
 }
