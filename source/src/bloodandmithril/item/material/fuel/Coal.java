@@ -71,4 +71,10 @@ public class Coal extends Item implements Fuel {
 	public float getEnergy() {
 		return 5000f;
 	}
+
+
+	@Override
+	public void render() {
+		
+	}
 }

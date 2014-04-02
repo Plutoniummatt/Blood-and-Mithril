@@ -72,4 +72,10 @@ public class GlassBottle extends Bottle {
 	public Item combust(int heatLevel) {
 		return this;
 	}
+
+
+	@Override
+	public void render() {
+		
+	}
 }

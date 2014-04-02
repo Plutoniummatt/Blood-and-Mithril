@@ -80,4 +80,10 @@ public class Carrot extends Item implements Consumable {
 			return new Ashes();
 		}
 	}
+
+
+	@Override
+	public void render() {
+		
+	}
 }

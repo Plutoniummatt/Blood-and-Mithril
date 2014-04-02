@@ -27,9 +27,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.faction.Faction;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.graphics.DynamicLightingPostRenderer;
 import bloodandmithril.graphics.Light;
+import bloodandmithril.item.Container;
+import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
@@ -72,6 +73,9 @@ public class Domain {
 
 	/** Every {@link Prop} that exists */
 	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
+	
+	/** Every {@link Item} that exists that is not stored in a {@link Container} */
+	private static ConcurrentHashMap<Integer, Item> 			items	 				= new ConcurrentHashMap<>();
 	
 	/** Domain-specific {@link ShapeRenderer} */
 	public static ShapeRenderer shapeRenderer;
@@ -242,14 +246,16 @@ public class Domain {
 			
 			currentEpoch.incrementTime(d);
 
-			for (Individual indi : getIndividuals().values()) {
+			for (Individual indi : individuals.values()) {
 				indi.update(d);
 			}
 			
-			for (Prop prop : getProps().values()) {
-				if (ClientServerInterface.isServer()) {
-					prop.update(d);
-				}
+			for (Prop prop : props.values()) {
+				prop.update(d);
+			}
+			
+			for (Item item : items.values()) {
+				item.update(d);
 			}
 		}
 	}
@@ -327,6 +333,16 @@ public class Domain {
 
 	public static void setFactions(ConcurrentHashMap<Integer, Faction> factions) {
 		Domain.factions = factions;
+	}
+
+
+	public static ConcurrentHashMap<Integer, Item> getItems() {
+		return items;
+	}
+
+
+	public static void setItems(ConcurrentHashMap<Integer, Item> items) {
+		Domain.items = items;
 	}
 
 
