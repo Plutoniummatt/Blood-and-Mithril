@@ -2,10 +2,9 @@ package bloodandmithril.world.topography.fluid;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.Math.max;
 import static java.lang.Math.round;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
@@ -63,15 +62,33 @@ public class FluidDynamicsProcessor {
 	 * Processes a single fluid
 	 */
 	private void processSingleFluid(int x, int y, Fluid fluid) {
-		pressureCascade(x, y, fluid);
-		pressureFlow(x, y, fluid);
+		hydrostaticPressureCalculation(x, y, fluid);
+		hydrodynamicPressureCalculation(x, y, fluid);
+		
+		flow(x, y, fluid);
+	}
+
+
+	/**
+	 * Hydrodynamic pressure calculation method, takes into account neighbouring fluids. (left and right only)
+	 */
+	private void hydrodynamicPressureCalculation(int x, int y, Fluid fluid) {
+		Fluid left = getFluid(x - 1, y);
+		Fluid right = getFluid(x + 1, y);
+		
+		if (left == null || right == null) {
+			return;
+		} else {
+			float total = max(left.getPressure(), right.getPressure());
+			fluid.setPressure(fluid.getPressure() + total);
+		}
 	}
 
 
 	/**
 	 * How do I....flow?
 	 */
-	private void pressureFlow(int x, int y, Fluid fluid) {
+	private void flow(int x, int y, Fluid fluid) {
 		Vector2 netForce = calculateNetForceOn(x, y, fluid);
 		fluid.force = netForce; // TODO remove
 		
@@ -79,26 +96,23 @@ public class FluidDynamicsProcessor {
 			return;
 		}
 
-		List<Vector2> vecs = newArrayList(vectors);
-		
-		Collections.sort(vecs, (vec1, vec2) -> {
+		Vector2 directionToFlow = vectors.stream().max((vec1, vec2) -> {
 			float forceDotVec1 = netForce.dot(vec1);
 			float forceDotVec2 = netForce.dot(vec2);
 			
 			if (forceDotVec1 > forceDotVec2) {
-				return -1;
-			} else if (forceDotVec1 < forceDotVec2) {
 				return 1;
+			} else if (forceDotVec1 < forceDotVec2) {
+				return -1;
 			} else {
 				return 0;
 			}
-		});
+		}).get().cpy();
 
-		Vector2 directionToFlow = vecs.get(0).cpy();
-		float dotProduct = directionToFlow.dot(netForce);
+		float amountToFlow = directionToFlow.dot(netForce);
 		
-		directionToFlow.x = directionToFlow.x == 0f ? 0f : getMeAFuckingIntMate(directionToFlow.x);
-		directionToFlow.y = directionToFlow.y == 0f ? 0f : getMeAFuckingIntMate(directionToFlow.y);
+		directionToFlow.x = getNormalisedFloat(directionToFlow.x);
+		directionToFlow.y = getNormalisedFloat(directionToFlow.y);
 		
 		Fluid toFlowInto = getFluid(
 			x + round(directionToFlow.x), 
@@ -113,12 +127,12 @@ public class FluidDynamicsProcessor {
 			topography.getFluids().put(
 				x + round(directionToFlow.x), 
 				y + round(directionToFlow.y), 
-				fluid.sub(dotProduct)
+				fluid.sub(amountToFlow)
 			);
 		} else {
 			float max = TILE_SIZE - toFlowInto.getDepth();
-			if (max > dotProduct) {
-				toFlowInto.add(fluid.sub(dotProduct));
+			if (max > amountToFlow) {
+				toFlowInto.add(fluid.sub(amountToFlow));
 			} else {
 				toFlowInto.add(fluid.sub(max));
 			}
@@ -130,8 +144,17 @@ public class FluidDynamicsProcessor {
 	}
 	
 	
-	private float getMeAFuckingIntMate(float f) {
-		return f < 0f ? -1f : 1f;
+	/**
+	 * Returns either -1, 0 or 1, corresponding to f < 0, f == 0 and f > 0.
+	 */
+	private float getNormalisedFloat(float f) {
+		if (f == 0f) {
+			return 0f;
+		} else if (f < 0f) {
+			return -1f;
+		} else {
+			return 1f;
+		}
 	}
 	
 
@@ -171,16 +194,16 @@ public class FluidDynamicsProcessor {
 	
 
 	/**
-	 * Calculates pressure of a stack of {@link Fluid}s
+	 * Calculates pressure of a {@link Fluid} considering the stack of {@link Fluid}s above it, purely based on hydrostatic pressure created by gravity
 	 */
-	private void pressureCascade(int x, int y, Fluid fluid) {
+	private void hydrostaticPressureCalculation(int x, int y, Fluid fluid) {
 		if (getFluid(x, y + 1) == null) {
 			fluid.setPressure(0f);
 			Fluid bottom = getFluid(x, y - 1);
 			if (bottom != null) {
 				if (bottom.getDepth() == TILE_SIZE) {
 					bottom.setPressure(fluid.getDepth() + fluid.getPressure());
-					pressureCascade(x, y - 1, bottom);
+					hydrostaticPressureCalculation(x, y - 1, bottom);
 				} else {
 					bottom.setPressure(0);
 				}
@@ -189,7 +212,7 @@ public class FluidDynamicsProcessor {
 			Fluid bottom = getFluid(x, y - 1);
 			if (bottom != null) {
 				bottom.setPressure(fluid.getPressure() + bottom.getDepth());
-				pressureCascade(x, y - 1, bottom);
+				hydrostaticPressureCalculation(x, y - 1, bottom);
 			}
 		}
 	}
