@@ -32,6 +32,7 @@ public abstract class Item implements Serializable, Comparable<Item> {
 	/** The position and velocity of this item, if it exists on the world */
 	private Vector2 position, velocity;
 	
+	/** ID of this item, it should be null when stored inside a container, this is a dynamically changing field, it is not an immutable */
 	private Integer id;
 	
 	/**
@@ -63,6 +64,10 @@ public abstract class Item implements Serializable, Comparable<Item> {
 	
 	/** Update method, delta measured in seconds */
 	public void update(float delta) {
+		if (id == null) {
+			return;
+		}
+		
 		position.add(velocity.cpy().mul(delta));
 		
 		float gravity = Domain.getWorld(id).getGravity();
