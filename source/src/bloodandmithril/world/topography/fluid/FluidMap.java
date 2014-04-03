@@ -50,4 +50,14 @@ public class FluidMap implements Serializable {
 	public ConcurrentDualKeySkipListMap<Integer, Integer, Fluid> getData() {
 		return fluids;
 	}
+	
+	
+	public FluidMap deepCopy() {
+		FluidMap map = new FluidMap();
+		for (DualKeyEntry<Integer, Integer, Fluid> entry : getAllFluids()) {
+			map.put(entry.x, entry.y, entry.value.copy());
+		}
+		
+		return map;
+	}
 }

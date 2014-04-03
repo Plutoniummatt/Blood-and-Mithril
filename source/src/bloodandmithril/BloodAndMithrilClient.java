@@ -408,7 +408,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			Domain.getActiveWorld().getTopography().getFluids().put(
 				Topography.convertToWorldTileCoord(getMouseWorldX()), 
 				Topography.convertToWorldTileCoord(getMouseWorldY()), 
-				new Fluid(4, FluidFraction.fluid(new Water(), 1f))
+				new Fluid(16, FluidFraction.fluid(new Water(), 1f))
 			);
 		}
 		
@@ -416,7 +416,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			Domain.getActiveWorld().getTopography().getFluids().put(
 				Topography.convertToWorldTileCoord(getMouseWorldX()), 
 				Topography.convertToWorldTileCoord(getMouseWorldY()), 
-				new Fluid(6, FluidFraction.fluid(new Blood(), 1f))
+				new Fluid(16, FluidFraction.fluid(new Blood(), 1f))
 			);
 		}
 		
