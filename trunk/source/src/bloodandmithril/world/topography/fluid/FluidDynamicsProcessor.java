@@ -1,14 +1,8 @@
 package bloodandmithril.world.topography.fluid;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.lang.Math.max;
-import static java.lang.Math.round;
-
-import java.util.List;
-
-import com.badlogic.gdx.math.Vector2;
-
+import static java.lang.Math.min;
+import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.topography.Topography;
 
 /**
@@ -21,20 +15,15 @@ public class FluidDynamicsProcessor {
 	/** The {@link Topography} instance this processor is responsible for */
 	private Topography topography;
 	
-	/** Whether to reverse sort in the x-direction once y-direction has been sorted */
-	private boolean xComparatorReverse;
+	/** The frozen snapshot of the current state of the {@link FluidMap} */
+	private FluidMap currentSnapshot;
 	
-	private static final Vector2 TOP 			= new Vector2( 0f,  1f).nor();
-	private static final Vector2 TOPRIGHT 		= new Vector2( 1f,  1f).nor();
-	private static final Vector2 RIGHT 			= new Vector2( 1f,  0f).nor();
-	private static final Vector2 BOTTOMRIGHT 	= new Vector2( 1f, -1f).nor();
-	private static final Vector2 BOTTOM 		= new Vector2( 0f, -1f).nor();
-	private static final Vector2 BOTTOMLEFT 	= new Vector2(-1f, -1f).nor();
-	private static final Vector2 LEFT 			= new Vector2(-1f,  0f).nor();
-	private static final Vector2 TOPLEFT 		= new Vector2(-1f,  1f).nor();
+	/** Constants used */
+	private static final float MAX_DEPTH = TILE_SIZE;
+	private static final float MAX_COMPRESSION = TILE_SIZE * 0.02f;
+	private static final float MAX_FLOW = TILE_SIZE;
+	private static final float MIN_FLOW = 0.5f;
 	
-	private static List<Vector2> vectors		= newArrayList(TOP, TOPRIGHT, RIGHT, BOTTOMRIGHT, BOTTOM, BOTTOMLEFT, LEFT, TOPLEFT);
-
 	/**
 	 * Constructor
 	 */
@@ -47,176 +36,167 @@ public class FluidDynamicsProcessor {
 	 * Process all {@link Fluid}s on the {@link #topography}
 	 */
 	public void process() {
-		xComparatorReverse = !xComparatorReverse;
-		topography.getFluids().getAllFluids().stream()
+		currentSnapshot = topography.getFluids().deepCopy();
+		
+		System.out.println(currentSnapshot.getAllFluids().stream().mapToDouble(entry -> {
+			return entry.value.getDepth();
+		}).sum());
+		
+		currentSnapshot.getAllFluids().stream()
 		.sorted((e1, e2) -> {
-			return e1.y.compareTo(e2.y) == 0 ? (xComparatorReverse ? e2.x.compareTo(e1.x) : e1.x.compareTo(e2.x)) : e1.y.compareTo(e2.y);
+			return e1.y.compareTo(e2.y);
 		})
 		.forEach(entry -> {
-			processSingleFluid(entry.x, entry.y, entry.value);
+			processFluid(entry);
 		});
 	}
 
 
 	/**
-	 * Processes a single fluid
+	 * Process a single fluid
 	 */
-	private void processSingleFluid(int x, int y, Fluid fluid) {
-		hydrostaticPressureCalculation(x, y, fluid);
-		hydrodynamicPressureCalculation(x, y, fluid);
+	private void processFluid(DualKeyEntry<Integer, Integer, Fluid> entry) {
+		flow(entry.x, entry.y, entry.value);
 		
-		flow(x, y, fluid);
-	}
-
-
-	/**
-	 * Hydrodynamic pressure calculation method, takes into account neighbouring fluids. (left and right only)
-	 */
-	private void hydrodynamicPressureCalculation(int x, int y, Fluid fluid) {
-		Fluid left = getFluid(x - 1, y);
-		Fluid right = getFluid(x + 1, y);
-		
-		if (left == null || right == null) {
-			return;
-		} else {
-			float total = max(left.getPressure(), right.getPressure());
-			fluid.setPressure(fluid.getPressure() + total);
+		if (entry.value.getDepth() < 0.1f) {
+			topography.getFluids().remove(entry.x, entry.y);
 		}
 	}
 
 
 	/**
-	 * How do I....flow?
+	 * How do I flow?
 	 */
 	private void flow(int x, int y, Fluid fluid) {
-		Vector2 netForce = calculateNetForceOn(x, y, fluid);
-		fluid.force = netForce; // TODO remove
-		
-		if (netForce.len() == 0f) {
+		float flow = 0f;
+		float currentDepth = getSnapshotDepth(x, y);
+
+		// The block below this one
+		if (isFlowable(x, y - 1)) {
+			flow = stableStateFunction(currentDepth + getSnapshotDepth(x, y - 1)) - getSnapshotDepth(x, y - 1);
+			if (flow > MIN_FLOW) {
+				// Leads to smoother flow
+				flow = flow * 0.5f;
+			}
+			flow = constrain(flow, 0f, min(MAX_FLOW, currentDepth));
+
+			Fluid nextBelow = topography.getFluids().get(x, y - 1);
+			if (nextBelow == null) {
+				topography.getFluids().put(x, y - 1, topography.getFluids().get(x, y).sub(flow));
+			} else {
+				nextBelow.add(topography.getFluids().get(x, y).sub(flow));
+			}
+			currentDepth -= flow;
+		}
+
+		if (currentDepth <= 0f) {
 			return;
 		}
 
-		Vector2 directionToFlow = vectors.stream().max((vec1, vec2) -> {
-			float forceDotVec1 = netForce.dot(vec1);
-			float forceDotVec2 = netForce.dot(vec2);
-			
-			if (forceDotVec1 > forceDotVec2) {
-				return 1;
-			} else if (forceDotVec1 < forceDotVec2) {
-				return -1;
-			} else {
-				return 0;
+		// Left
+		if (isFlowable(x - 1, y)) {
+			// Equalise the amount of water in this block and its neighbour
+			flow = (getSnapshotDepth(x, y) - getSnapshotDepth(x - 1, y)) / 4f;
+			if (flow > MIN_FLOW) {
+				flow = flow * 0.5f;
 			}
-		}).get().cpy();
+			flow = constrain(flow, 0f, currentDepth);
 
-		float amountToFlow = directionToFlow.dot(netForce);
-		
-		directionToFlow.x = getNormalisedFloat(directionToFlow.x);
-		directionToFlow.y = getNormalisedFloat(directionToFlow.y);
-		
-		Fluid toFlowInto = getFluid(
-			x + round(directionToFlow.x), 
-			y + round(directionToFlow.y)
-		);
-		
-		if (toFlowInto == null) {
-			if (!isFlowable(round(x + directionToFlow.x), round(y + directionToFlow.y))) {
-				return;
-			}
-			
-			topography.getFluids().put(
-				x + round(directionToFlow.x), 
-				y + round(directionToFlow.y), 
-				fluid.sub(amountToFlow)
-			);
-		} else {
-			float max = TILE_SIZE - toFlowInto.getDepth();
-			if (max > amountToFlow) {
-				toFlowInto.add(fluid.sub(amountToFlow));
+			Fluid nextLeft = topography.getFluids().get(x - 1, y);
+			if (nextLeft == null) {
+				topography.getFluids().put(x - 1, y, topography.getFluids().get(x, y).sub(flow));
 			} else {
-				toFlowInto.add(fluid.sub(max));
+				nextLeft.add(topography.getFluids().get(x, y).sub(flow));
 			}
+			currentDepth -= flow;
 		}
-		
-		if (fluid.getDepth() == 0f) {
-			topography.getFluids().remove(x, y);
+
+		if (currentDepth <= 0f) {
+			return;
+		}
+
+		// Right
+		if (isFlowable(x + 1, y)) {
+			// Equalise the amount of water in this block and it's
+			// neighbour
+			flow = (getSnapshotDepth(x, y) - getSnapshotDepth(x + 1, y)) / 4f;
+			if (flow > MIN_FLOW) {
+				flow = flow * 0.5f;
+			}
+			flow = constrain(flow, 0f, currentDepth);
+
+			Fluid nextRight = topography.getFluids().get(x + 1, y);
+			if (nextRight == null) {
+				topography.getFluids().put(x + 1, y, topography.getFluids().get(x, y).sub(flow));
+			} else {
+				nextRight.add(topography.getFluids().get(x, y).sub(flow));
+			}
+			currentDepth -= flow;
+		}
+
+		if (currentDepth <= 0f) {
+			return;
+		}
+
+		// Up. Only compressed water flows upwards.
+		if (isFlowable(x, y + 1)) {
+			flow = currentDepth - stableStateFunction(currentDepth + getSnapshotDepth(x, y + 1));
+			if (flow > MIN_FLOW) {
+				flow = flow * 0.5f;
+			}
+			flow = constrain(flow, 0f, min(MAX_FLOW, currentDepth));
+
+			Fluid nextAbove = topography.getFluids().get(x, y + 1);
+			if (nextAbove == null) {
+				topography.getFluids().put(x, y + 1, topography.getFluids().get(x, y).sub(flow));
+			} else {
+				nextAbove.add(topography.getFluids().get(x, y).sub(flow));
+			}
+			currentDepth -= flow;
 		}
 	}
 	
 	
 	/**
-	 * Returns either -1, 0 or 1, corresponding to f < 0, f == 0 and f > 0.
+	 * Calculates the stable state between two vertically adjacent fluids by their total mass
 	 */
-	private float getNormalisedFloat(float f) {
-		if (f == 0f) {
+	private float stableStateFunction(float totalDepth) {
+		if (totalDepth <= TILE_SIZE) {
+			return TILE_SIZE;
+		} else if (totalDepth < 2f * MAX_DEPTH + MAX_COMPRESSION) {
+			return (MAX_DEPTH * MAX_DEPTH + totalDepth * MAX_COMPRESSION) / (MAX_DEPTH + MAX_COMPRESSION);
+		} else {
+			return (totalDepth + MAX_COMPRESSION) / 2f;
+		}
+	}
+	
+	
+	/**
+	 * Gets the depth of a fluid from the current frozen snapshot of the {@link FluidMap}
+	 */
+	private float getSnapshotDepth(int x, int y) {
+		Fluid fluid = currentSnapshot.get(x, y);
+		if (fluid == null) {
 			return 0f;
-		} else if (f < 0f) {
-			return -1f;
-		} else {
-			return 1f;
 		}
+		
+		return fluid.getDepth();
 	}
 	
 
 	/**
-	 * @return the resultant vector force being exerted on a fluid
+	 * Constrains a float between boundaries
 	 */
-	private Vector2 calculateNetForceOn(int x, int y, Fluid fluid) {
-		return new Vector2(
-			calculateForceFrom(x - 1, y, Direction.LEFT) - calculateForceFrom(x + 1, y, Direction.RIGHT),
-			calculateForceFrom(x, y - 1, Direction.BOTTOM) - calculateForceFrom(x, y + 1, Direction.TOP) - fluid.getDepth() // Last term for gravity
-		);
-	}
-	
-	
-	/**
-	 * @return the forced exerted from this tile.
-	 */
-	private float calculateForceFrom(int x, int y, Direction direction) {
-		if (isFlowable(x, y)) {
-			Fluid adjacent = getFluid(x, y);
-			if (adjacent == null) {
-				return 0f;
-			} else {
-				return adjacent.getPressure();
-			}
+	private float constrain(float f, float lower, float upper) {
+		if (f < lower) {
+			return lower;
+		} else if (f > upper) {
+			return upper;
 		} else {
-			switch (direction) {
-				case TOP:		return isFlowable(x, y - 2) ? calculateForceFrom(x, y - 2, Direction.BOTTOM) : 0f ;
-				case BOTTOM:	return isFlowable(x, y + 2) ? calculateForceFrom(x, y + 2, Direction.TOP) : 0f ;
-				case LEFT:		return isFlowable(x + 2, y) ? calculateForceFrom(x + 2, y, Direction.RIGHT) : 0f ;
-				case RIGHT:		return isFlowable(x - 2, y) ? calculateForceFrom(x - 2, y, Direction.LEFT) : 0f ;
-				default: throw new RuntimeException("Unrecognised direction");
-			}
+			return f;
 		}
 	}
-
 	
-
-	/**
-	 * Calculates pressure of a {@link Fluid} considering the stack of {@link Fluid}s above it, purely based on hydrostatic pressure created by gravity
-	 */
-	private void hydrostaticPressureCalculation(int x, int y, Fluid fluid) {
-		if (getFluid(x, y + 1) == null) {
-			fluid.setPressure(0f);
-			Fluid bottom = getFluid(x, y - 1);
-			if (bottom != null) {
-				if (bottom.getDepth() == TILE_SIZE) {
-					bottom.setPressure(fluid.getDepth() + fluid.getPressure());
-					hydrostaticPressureCalculation(x, y - 1, bottom);
-				} else {
-					bottom.setPressure(0);
-				}
-			}
-		} else {
-			Fluid bottom = getFluid(x, y - 1);
-			if (bottom != null) {
-				bottom.setPressure(fluid.getPressure() + bottom.getDepth());
-				hydrostaticPressureCalculation(x, y - 1, bottom);
-			}
-		}
-	}
-
 
 	/**
 	 * @return true if tile at specified location is passable, indicating that fluid can flow through it.
@@ -227,18 +207,5 @@ public class FluidDynamicsProcessor {
 		} catch (NullPointerException e) {
 			return false;
 		}
-	}
-	
-	
-	/**
-	 * @return the {@link Fluid} at the specified coordinates, if any.  Null otherwise.
-	 */
-	private Fluid getFluid(int x, int y) {
-		return topography.getFluids().get(x, y);
-	}
-	
-	
-	private enum Direction {
-		TOP, BOTTOM, LEFT, RIGHT
 	}
 }

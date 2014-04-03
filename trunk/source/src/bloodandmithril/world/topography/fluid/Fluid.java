@@ -2,12 +2,14 @@ package bloodandmithril.world.topography.fluid;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.Math.max;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
 
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -59,7 +61,7 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 			TILE_SIZE * x, 
 			TILE_SIZE * y, 
 			TILE_SIZE, 
-			getDepth()
+			max(Topography.TILE_SIZE, getDepth())
 		);
 	}
 	
@@ -95,17 +97,9 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	 * Add another fluid to this one, returning how much was added
 	 */
 	public Fluid add(Fluid other) {
-		if (depth + other.depth > TILE_SIZE) {
-			float original = depth;
-			Fluid added = other.copy(TILE_SIZE - original);
-			recalculateFractions(added);
-			depth = TILE_SIZE;
-			return added;
-		} else {
-			recalculateFractions(other);
-			depth = depth + other.depth;
-			return other.copy(other.depth);
-		}
+		recalculateFractions(other);
+		depth = depth + other.depth;
+		return other.copy(other.depth);
 	}
 
 	

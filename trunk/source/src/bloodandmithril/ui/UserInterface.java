@@ -27,7 +27,6 @@ import static com.badlogic.gdx.graphics.GL10.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL10.GL_ONE_MINUS_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Line;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Rectangle;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -265,7 +264,6 @@ public class UserInterface {
 		if (RENDER_TOPOGRAPHY) {
 			TopographyDebugRenderer.render();
 			renderFluidTileHighlights();
-//			renderFluidPressureVectors();
 		}
 	}
 	
@@ -286,31 +284,6 @@ public class UserInterface {
 		shapeRenderer.setProjectionMatrix(UICamera.combined);
 		shapeRenderer.end();
 		spriteBatch.setProjectionMatrix(UICamera.combined);
-	}
-	
-	
-	private static void renderFluidPressureVectors() {
-		shapeRenderer.begin(Line);
-		shapeRenderer.setColor(Color.WHITE);
-		shapeRenderer.setProjectionMatrix(cam.combined);
-		spriteBatch.begin();
-		spriteBatch.setProjectionMatrix(cam.combined);
-		Domain.getActiveWorld().getTopography().getFluids().getAllFluids().stream()
-		.forEach(entry -> {
-			Vector2 vec = entry.value.force;
-			if (vec != null) {
-				Fonts.defaultFont.draw(spriteBatch, String.format("%.0f", entry.value.force.len()), entry.x * TILE_SIZE, (entry.y + 1) * TILE_SIZE);
-				shapeRenderer.line(
-					2f* entry.x * TILE_SIZE, 
-					2f* entry.y * TILE_SIZE, 
-					2f* entry.x * TILE_SIZE + vec.x/2, 
-					2f* entry.y * TILE_SIZE + vec.y/2
-				);
-			}
-		});
-		spriteBatch.end();
-		shapeRenderer.setProjectionMatrix(UICamera.combined);
-		shapeRenderer.end();
 	}
 
 
