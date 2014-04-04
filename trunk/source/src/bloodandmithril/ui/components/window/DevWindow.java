@@ -4,6 +4,10 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.Function;
+
+
+
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
@@ -14,6 +18,7 @@ import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.graphics.DynamicLightingPostRenderer;
+import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
@@ -38,6 +43,10 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
+
+
+
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -249,8 +258,11 @@ public class DevWindow extends Window {
 								true, 
 								100f,
 								true,
-								item -> {
-									return item instanceof Key;
+								new Function<Item, Boolean>() {
+									@Override
+									public Boolean apply(Item item) {
+										return item instanceof Key;
+									}
 								}
 							);
 							

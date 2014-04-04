@@ -134,7 +134,7 @@ public class PineChest extends Construction implements Container {
 					() -> {
 						if (ClientServerInterface.isServer()) {
 							selected.getAI().setCurrentTask(
-								new LockUnlockContainer(selected, this, true)
+								new LockUnlockContainer(selected, this, false)
 							);
 						} else {
 							// TODO
