@@ -122,6 +122,10 @@ public abstract class Construction extends Prop implements Container {
 				new ContextMenuItem(
 					"Required materials", 
 					() -> {
+						if (getConstructionProgress() == 1f) {
+							return;
+						}
+						
 						UserInterface.addLayeredComponent(new RequiredMaterialsWindow(
 							BloodAndMithrilClient.WIDTH / 2 - 250, 
 							BloodAndMithrilClient.HEIGHT / 2 + 250, 
@@ -168,6 +172,10 @@ public abstract class Construction extends Prop implements Container {
 					ContextMenuItem construct = new ContextMenuItem(
 						"Construct",
 						() -> {
+							if (getConstructionProgress() == 1f) {
+								return;
+							}
+							
 							if (ClientServerInterface.isServer()) {
 								((Individual) selected).getAI().setCurrentTask(new Construct(((Individual) selected), this));
 							} else {
