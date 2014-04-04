@@ -173,4 +173,10 @@ public class EquipperImpl implements Equipper, Serializable {
 	public boolean lock(Item with) {
 		return false;
 	}
+
+
+	@Override
+	public boolean isLockable() {
+		return false;
+	}
 }

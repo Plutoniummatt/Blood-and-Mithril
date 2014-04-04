@@ -411,4 +411,10 @@ public class Furnace extends Construction implements Container {
 	public boolean lock(Item with) {
 		return false;
 	}
+
+
+	@Override
+	public boolean isLockable() {
+		return false;
+	}
 }

@@ -1043,6 +1043,12 @@ public abstract class Individual implements Equipper, Serializable {
 		return false;
 	}
 	
+	
+	@Override
+	public boolean isLockable() {
+		return false;
+	}
+	
 
 	@Override
 	public void synchronizeContainer(Container other) {

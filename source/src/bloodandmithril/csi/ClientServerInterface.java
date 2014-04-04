@@ -38,6 +38,8 @@ import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Harvest.HarvestItem;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.task.LockUnlockContainer;
+import bloodandmithril.character.ai.task.LockUnlockContainer.LockUnlock;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.ai.task.MineTile.Mine;
 import bloodandmithril.character.ai.task.TradeWith;
@@ -74,6 +76,7 @@ import bloodandmithril.csi.requests.EquipOrUnequipItem;
 import bloodandmithril.csi.requests.GenerateChunk;
 import bloodandmithril.csi.requests.GenerateChunk.GenerateChunkResponse;
 import bloodandmithril.csi.requests.IndividualSelection;
+import bloodandmithril.csi.requests.LockUnlockContainerRequest;
 import bloodandmithril.csi.requests.MoveIndividual;
 import bloodandmithril.csi.requests.OpenTradeWindow;
 import bloodandmithril.csi.requests.Ping;
@@ -343,6 +346,9 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(LockUnlock.class);
+		kryo.register(LockUnlockContainer.class);
+		kryo.register(LockUnlockContainerRequest.class);
 		kryo.register(Exhaustion.class);
 		kryo.register(Constructing.class);
 		kryo.register(Construct.class);
@@ -520,6 +526,11 @@ public class ClientServerInterface {
 		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
+		}
+		
+		public static synchronized void sendLockUnlockContainerRequest(int individualId, int containerId, boolean lock) {
+			client.sendTCP(new LockUnlockContainerRequest(individualId, containerId, lock));
+			Logger.networkDebug("Sending lock/unlock container request", LogLevel.DEBUG);
 		}
 		
 		public static synchronized void sendAddLightRequest(Light light) {

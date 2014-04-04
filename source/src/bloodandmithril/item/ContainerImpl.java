@@ -27,7 +27,7 @@ public class ContainerImpl implements Container, Serializable {
 	protected Map<Item, Integer> inventory = new ConcurrentHashMap<>();
 
 	/** Whether or not this {@link ContainerImpl} is locked */
-	private boolean locked;
+	private boolean locked, lockable;
 	
 	/** The function that determines if an {@link Item} can unlock this {@link ContainerImpl} */
 	private transient Function<Item, Boolean> unlockingFunction;
@@ -39,6 +39,7 @@ public class ContainerImpl implements Container, Serializable {
 		this.inventoryMassCapacity = inventoryMassCapacity;
 		this.canExceedCapacity = canExceedCapacity;
 		this.locked = false;
+		this.lockable = false;
 	}
 
 	
@@ -50,6 +51,7 @@ public class ContainerImpl implements Container, Serializable {
 		this.canExceedCapacity = canExceedCapacity;
 		this.locked = locked;
 		this.setUnlockingFunction(unlockingFunction);
+		this.lockable = true;
 	}
 
 
@@ -62,6 +64,7 @@ public class ContainerImpl implements Container, Serializable {
 		this.currentLoad = other.getCurrentLoad();
 		this.canExceedCapacity = (other.canExceedCapacity());
 		this.locked = other.isLocked();
+		this.lockable = other.isLockable();
 
 		refreshCurrentLoad();
 	}
@@ -185,5 +188,15 @@ public class ContainerImpl implements Container, Serializable {
 
 	public void setUnlockingFunction(Function<Item, Boolean> unlockingFunction) {
 		this.unlockingFunction = unlockingFunction;
+	}
+
+
+	public boolean isLockable() {
+		return lockable;
+	}
+
+
+	public void setLockable(boolean lockable) {
+		this.lockable = lockable;
 	}
 }
