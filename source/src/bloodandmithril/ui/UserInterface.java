@@ -263,11 +263,11 @@ public class UserInterface {
 		
 		if (RENDER_TOPOGRAPHY) {
 			TopographyDebugRenderer.render();
-			renderFluidTileHighlights();
 		}
 	}
 	
 	
+	@SuppressWarnings("unused")
 	private static void renderFluidTileHighlights() {
 		shapeRenderer.begin(Rectangle);
 		shapeRenderer.setColor(Color.RED);
