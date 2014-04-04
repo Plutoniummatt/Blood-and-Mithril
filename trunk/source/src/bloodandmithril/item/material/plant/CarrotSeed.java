@@ -2,6 +2,7 @@ package bloodandmithril.item.material.plant;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
@@ -13,8 +14,8 @@ public class CarrotSeed extends Seed {
 	/**
 	 * Constructor
 	 */
-	protected CarrotSeed(float mass, boolean equippable, long value) {
-		super(mass, equippable, value);
+	protected CarrotSeed() {
+		super(0.001f, false, ItemValues.CARROTSEED);
 	}
 
 	@Override

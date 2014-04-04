@@ -4,6 +4,7 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -23,7 +24,7 @@ public class Carrot extends Item implements Consumable {
 	 * Constructor
 	 */
 	public Carrot() {
-		super(0.1f, false, 5);
+		super(0.1f, false, ItemValues.CARROT);
 	}
 
 

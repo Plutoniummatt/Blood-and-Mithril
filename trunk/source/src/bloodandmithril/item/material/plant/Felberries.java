@@ -6,6 +6,7 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
@@ -23,7 +24,7 @@ public class Felberries extends Item implements Consumable {
 	 * Constructor
 	 */
 	public Felberries() {
-		super(0.1f, false, 3);
+		super(0.1f, false, ItemValues.FELBERRIES);
 	}
 
 

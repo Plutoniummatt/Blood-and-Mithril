@@ -2,6 +2,7 @@ package bloodandmithril.item.material.mineral;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.world.topography.tile.tiles.sedimentary.YellowSandTile;
@@ -21,7 +22,7 @@ public class YellowSand extends Item {
 	 * Constructor
 	 */
 	public YellowSand() {
-		super(10f, false, 1);
+		super(10f, false, ItemValues.YELLOWSAND);
 	}
 
 
