@@ -106,7 +106,7 @@ public class PineChest extends Construction implements Container {
 				);
 				menu.addMenuItem(openChestMenuItem);
 				
-				if (container.getUnlockingFunction() != null) {
+				if (container.isLockable()) {
 					ContextMenuItem lockChestMenuItem = new ContextMenuItem(
 						"Lock",
 						() -> {
@@ -115,7 +115,7 @@ public class PineChest extends Construction implements Container {
 									new LockUnlockContainer(selected, this, true)
 								);
 							} else {
-								// TODO
+								ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, true);
 							}
 						},
 						Color.WHITE,
@@ -137,7 +137,7 @@ public class PineChest extends Construction implements Container {
 								new LockUnlockContainer(selected, this, false)
 							);
 						} else {
-							// TODO
+							ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, false);
 						}
 					},
 					Color.WHITE,
@@ -278,6 +278,16 @@ public class PineChest extends Construction implements Container {
 	public boolean lock(Item with) {
 		if (getConstructionProgress() == 1f) {
 			return container.lock(with);
+		} else {
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean isLockable() {
+		if (getConstructionProgress() == 1f) {
+			return container.isLockable();
 		} else {
 			return false;
 		}

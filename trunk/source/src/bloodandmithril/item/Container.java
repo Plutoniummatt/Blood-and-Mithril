@@ -60,6 +60,12 @@ public interface Container {
 	
 	
 	/**
+	 * @return whether or not this {@link Container} is lockable.
+	 */
+	public boolean isLockable();
+	
+	
+	/**
 	 * Attempt to unlock this container
 	 */
 	public boolean unlock(Item with);

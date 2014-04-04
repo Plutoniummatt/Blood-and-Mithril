@@ -3,6 +3,7 @@ package bloodandmithril.server;
 import java.io.IOException;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
@@ -20,6 +21,7 @@ import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.Light;
+import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
@@ -259,7 +261,13 @@ public class BloodAndMithrilServer {
 				if (individual != null) {
 					PineChest pineChest = new PineChest(
 						individual.getState().position.x,
-						individual.getState().position.y, true, 100f
+						individual.getState().position.y, true, 100f, true,
+						new Function<Item, Boolean>() {
+							@Override
+							public Boolean apply(Item t) {
+								return true;
+							}
+						}
 					);
 					Domain.getProps().put(pineChest.id, pineChest);
 				}
