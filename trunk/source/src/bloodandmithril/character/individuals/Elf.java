@@ -284,7 +284,7 @@ public class Elf extends Individual {
 		
 		if (!isWalking()) {
 			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
-				decreaseStamina(0.001f);
+				decreaseStamina(0.0005f);
 			} else {
 				increaseStamina(delta * getState().staminaRegen);
 			}
@@ -292,7 +292,7 @@ public class Elf extends Individual {
 			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
 				increaseStamina(delta * getState().staminaRegen / 2);
 			} else {
-				increaseStamina(0.002f);
+				increaseStamina(0.001f);
 			}
 		}
 

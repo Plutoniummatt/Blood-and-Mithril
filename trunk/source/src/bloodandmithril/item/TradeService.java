@@ -35,8 +35,19 @@ public class TradeService {
 			proposeeActualValue = proposeeActualValue + entry.getValue() * entry.getKey().value;
 		}
 
+		// At max level, proposer effective value is 100%
+		// At min level, proposer effective value is 50%
+		// Example:
+		// Level 56 Trader trading 500g worth of items with
+		// Level ?? Trader for 400g worth of items
+		// ---------
+		// 56/100 * 500g = 280g proposerEffective
+		// Proposee will not accept this trade, as he is **effectively** losing out, even if in reality he is winning.
+		// ---------
+		// The minimum trade skill required for the trade to work, would be the lowest skill level that makes the effective
+		// value greater or equal to 400g.
 		float proposerEffectiveValue = ((float)proposer.getSkills().getTrading()/(float)Skills.MAX_LEVEL + 1f)/2f * proposerActualValue;
-		float proposeeEffectiveValue = ((float)proposee.getSkills().getTrading()/(float)Skills.MAX_LEVEL + 1f)/2f * proposeeActualValue;
+		float proposeeEffectiveValue = proposeeActualValue;
 
 		if (proposerEffectiveValue > proposeeEffectiveValue) {
 			return true;

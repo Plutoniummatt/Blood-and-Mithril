@@ -15,7 +15,7 @@ public class Skills implements Serializable {
 	/** Represents skill levels */
 	private int trading = 0;				// Better at trading, trade less for more
 	private int observation = 0;			// Better at identifying the status of an individual
-	private int constitution = 0;			// Resists being identified by individuals, more resilient to any form of damage
+	private int fitness = 0;				// Can run for longer
 
 	/**
 	 * Constructor
@@ -38,11 +38,11 @@ public class Skills implements Serializable {
 		this.observation = observation;
 	}
 
-	public synchronized int getConstitution() {
-		return constitution;
+	public int getFitness() {
+		return fitness;
 	}
 
-	public synchronized void setConstitution(int constitution) {
-		this.constitution = constitution;
+	public void setFitness(int fitness) {
+		this.fitness = fitness;
 	}
 }
