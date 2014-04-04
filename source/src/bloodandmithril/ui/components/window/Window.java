@@ -14,6 +14,7 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Shaders;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -314,13 +315,11 @@ public abstract class Window extends Component {
 	 * Renders the window buttons of this {@link Window}
 	 */
 	private void renderWindowButtons() {
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
-
 		closeButton.render(
 			x + width - 7,
 			y - close.getRegionHeight() - top.getRegionHeight() + 5,
 			isActive(),
-			getAlpha()
+			isActive() ? getAlpha() : getAlpha() * 0.5f
 		);
 
 		if (minimizable) {
@@ -328,7 +327,7 @@ public abstract class Window extends Component {
 				x + width - 24,
 				y - close.getRegionHeight() - top.getRegionHeight() + 5,
 				isActive(),
-				getAlpha()
+				isActive() ? getAlpha() : getAlpha() * 0.5f
 			);
 		}
 
@@ -337,7 +336,7 @@ public abstract class Window extends Component {
 				x + width - 7,
 				y - height + 9,
 				isActive(),
-				getAlpha()
+				isActive() ? getAlpha() : getAlpha() * 0.5f
 			);
 		}
 	}

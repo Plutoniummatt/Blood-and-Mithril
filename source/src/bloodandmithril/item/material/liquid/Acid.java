@@ -6,7 +6,7 @@ import bloodandmithril.util.Util.Colors;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * Blood.
+ * Acid.
  *
  * @author Matt
  */

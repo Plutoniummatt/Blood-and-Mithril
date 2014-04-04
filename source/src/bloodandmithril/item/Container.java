@@ -51,4 +51,22 @@ public interface Container {
 	 * @return whether or not this {@link Container} can exceed the max capacity.
 	 */
 	public boolean canExceedCapacity();
+	
+	
+	/**
+	 * @return whether or not this {@link Container} is locked.
+	 */
+	public boolean isLocked();
+	
+	
+	/**
+	 * Attempt to unlock this container
+	 */
+	public boolean unlock(Item with);
+	
+	
+	/**
+	 * Attempt to lock this container
+	 */
+	public boolean lock(Item with);
 }

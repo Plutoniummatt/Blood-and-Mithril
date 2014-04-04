@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.function.Function;
 
 /**
  * Default implementation of container.
@@ -26,12 +26,30 @@ public class ContainerImpl implements Container, Serializable {
 	/** What this {@link ContainerImpl} has in its inventory, maps an Item to the quantity of said item */
 	protected Map<Item, Integer> inventory = new ConcurrentHashMap<>();
 
+	/** Whether or not this {@link ContainerImpl} is locked */
+	private boolean locked;
+	
+	/** The function that determines if an {@link Item} can unlock this {@link ContainerImpl} */
+	private transient Function<Item, Boolean> unlockingFunction;
+
 	/**
-	 * constructor
+	 * Constructor for non-lockable container.
 	 */
 	public ContainerImpl(float inventoryMassCapacity, boolean canExceedCapacity) {
 		this.inventoryMassCapacity = inventoryMassCapacity;
 		this.canExceedCapacity = canExceedCapacity;
+		this.locked = false;
+	}
+
+	
+	/**
+	 * Constructor for a lockable container.
+	 */
+	public ContainerImpl(float inventoryMassCapacity, boolean canExceedCapacity, boolean locked, Function<Item, Boolean> unlockingFunction) {
+		this.inventoryMassCapacity = inventoryMassCapacity;
+		this.canExceedCapacity = canExceedCapacity;
+		this.locked = locked;
+		this.setUnlockingFunction(unlockingFunction);
 	}
 
 
@@ -43,6 +61,7 @@ public class ContainerImpl implements Container, Serializable {
 		this.inventoryMassCapacity = (other.getMaxCapacity());
 		this.currentLoad = other.getCurrentLoad();
 		this.canExceedCapacity = (other.canExceedCapacity());
+		this.locked = other.isLocked();
 
 		refreshCurrentLoad();
 	}
@@ -128,5 +147,43 @@ public class ContainerImpl implements Container, Serializable {
 	@Override
 	public boolean canExceedCapacity() {
 		return canExceedCapacity;
+	}
+
+
+	@Override
+	public boolean isLocked() {
+		return locked;
+	}
+
+
+	@Override
+	public boolean unlock(Item with) {
+		if (getUnlockingFunction().apply(with)) {
+			locked = false;
+			return true;
+		}
+		
+		return false;
+	}
+
+
+	@Override
+	public boolean lock(Item with) {
+		if (getUnlockingFunction().apply(with)) {
+			locked = true;
+			return true;
+		}
+		
+		return false;
+	}
+
+
+	public Function<Item, Boolean> getUnlockingFunction() {
+		return unlockingFunction;
+	}
+
+
+	public void setUnlockingFunction(Function<Item, Boolean> unlockingFunction) {
+		this.unlockingFunction = unlockingFunction;
 	}
 }
