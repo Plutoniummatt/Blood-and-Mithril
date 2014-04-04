@@ -135,7 +135,10 @@ public class TradeWith extends CompositeAITask {
 
 		@Override
 		public void execute(float delta) {
-
+			if (proposee.isLocked()) {
+				return;
+			}
+			
 			if (proposee instanceof Individual) {
 				Individual proposeeCasted = (Individual)proposee;
 
