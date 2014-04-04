@@ -753,12 +753,13 @@ public class UserInterface {
 	/** Adds a {@link Component} to {@link #layeredComponents}, checking if an existing one with the same title exists */
 	public static void addLayeredComponentUnique(Component toAdd, String title) {
 		Window existing = null;
-
+		
 		for (Component window : layeredComponents) {
-			if (window instanceof Window && ((Window)window).title.equals(title)) {
-				existing = (Window)window;
+			if (window instanceof Window) {
 				((Window) window).setActive(false);
-				break;
+				if (((Window)window).title.equals(title)) {
+					existing = (Window)window;
+				}
 			}
 		}
 
