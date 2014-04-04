@@ -45,4 +45,11 @@ public class Skills implements Serializable {
 	public void setFitness(int fitness) {
 		this.fitness = fitness;
 	}
+	
+	/**
+	 * @return the ratio of a skill level to that of the max skill level
+	 */
+	public static float getRatioToMax(int skillLevel) {
+		return (float) skillLevel / (float) MAX_LEVEL;
+	}
 }

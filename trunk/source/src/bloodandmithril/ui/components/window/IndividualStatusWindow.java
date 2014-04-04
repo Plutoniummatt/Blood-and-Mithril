@@ -115,7 +115,7 @@ public class IndividualStatusWindow extends Window {
 		} else if (individual.isControllable()) {
 			setVitalsString(category);
 		} else {
-			float highestObservationSkill = 0;
+			int highestObservationSkill = 0;
 			if (!individual.isControllable()) {
 				for (Individual indi : Sets.newHashSet(Domain.getIndividuals().values())) {
 					int skill = indi.getSkills().getObservation();
@@ -125,7 +125,7 @@ public class IndividualStatusWindow extends Window {
 				}
 			}
 
-			identificationTime = (1 - highestObservationSkill/Skills.MAX_LEVEL) * 10f;
+			identificationTime = (1 - Skills.getRatioToMax(highestObservationSkill)) * 10f;
 
 			if (time > identificationTime || individual.isControllable()) {
 				identified = true;
