@@ -5,6 +5,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
@@ -25,7 +26,7 @@ public class DeathCap extends Item implements Consumable {
 	 * Constructor
 	 */
 	public DeathCap(boolean cooked) {
-		super(0.01f, false, 5);
+		super(0.01f, false, ItemValues.DEATHCAP);
 		this.cooked = cooked;
 	}
 

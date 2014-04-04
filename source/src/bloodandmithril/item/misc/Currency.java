@@ -2,6 +2,7 @@ package bloodandmithril.item.misc;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
@@ -19,7 +20,7 @@ public class Currency extends Item {
 	 * Constructor
 	 */
 	public Currency() {
-		super(0f, false, 1);
+		super(0f, false, ItemValues.CURRENCY);
 	}
 
 

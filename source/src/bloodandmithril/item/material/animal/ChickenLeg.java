@@ -5,6 +5,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -18,7 +19,7 @@ public class ChickenLeg extends Item implements Consumable {
 	 * Constructor
 	 */
 	public ChickenLeg() {
-		super(0.25f, false, 15);
+		super(0.25f, false, ItemValues.CHICKENLEG);
 	}
 
 

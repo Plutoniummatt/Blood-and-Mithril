@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
@@ -15,7 +16,7 @@ public class Ashes extends Item {
 	 * Constructor
 	 */
 	public Ashes() {
-		super(0.2f, false, 0);
+		super(0.2f, false, ItemValues.ASHES);
 	}
 
 	

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.material.Fuel;
 import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.ui.components.window.MessageWindow;
@@ -16,7 +17,7 @@ public class Coal extends Item implements Fuel {
 	 * Constructor
 	 */
 	public Coal() {
-		super(0.1f, false, 1);
+		super(0.1f, false, ItemValues.COAL);
 	}
 
 

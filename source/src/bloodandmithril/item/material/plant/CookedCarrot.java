@@ -6,6 +6,7 @@ import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
@@ -17,7 +18,7 @@ public class CookedCarrot extends Item implements Consumable {
 	 * Constructor
 	 */
 	public CookedCarrot() {
-		super(0.1f, false, 10);
+		super(0.1f, false, ItemValues.COOKEDCARROT);
 	}
 	
 	

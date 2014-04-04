@@ -2,6 +2,7 @@ package bloodandmithril.item.material.brick;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
@@ -20,7 +21,7 @@ public class YellowBrick extends Item {
 	 * Constructor
 	 */
 	public YellowBrick() {
-		super(10f, false, 10);
+		super(10f, false, ItemValues.YELLOWBRICK);
 	}
 
 

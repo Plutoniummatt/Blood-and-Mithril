@@ -2,6 +2,7 @@ package bloodandmithril.item.material.container;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -20,7 +21,7 @@ public class GlassBottle extends Bottle {
 	 * Constructor
 	 */
 	public GlassBottle(Class<? extends Liquid> liquid, float amount) {
-		super(0.1f, amount, 1f, liquid, 20);
+		super(0.1f, amount, 1f, liquid, ItemValues.GLASSBOTTLE);
 	}
 
 
