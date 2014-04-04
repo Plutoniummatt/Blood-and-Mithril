@@ -4,6 +4,7 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
@@ -19,6 +20,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.world.Domain;
+import bloodandmithril.character.ai.task.LockUnlockContainer;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -41,6 +43,15 @@ public class PineChest extends Construction implements Container {
 	public PineChest(float x, float y, boolean grounded, float capacity) {
 		super(x, y, 35, 44, grounded, 0.1f);
 		container = new ContainerImpl(capacity, true);
+	}
+
+	
+	/**
+	 * Constructor for lockable {@link PineChest}
+	 */
+	public PineChest(float x, float y, boolean grounded, float capacity, boolean locked, Function<Item, Boolean> unlockingFunction) {
+		super(x, y, 35, 44, grounded, 0.1f);
+		container = new ContainerImpl(capacity, true, locked, unlockingFunction);
 	}
 
 
@@ -74,26 +85,68 @@ public class PineChest extends Construction implements Container {
 			)
 		);
 
-		if (Domain.getSelectedIndividuals().size() == 1) {
-			final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-			ContextMenuItem openChestMenuItem = new ContextMenuItem(
-				"Open",
-				() -> {
-					if (ClientServerInterface.isServer()) {
-						selected.getAI().setCurrentTask(
-							new TradeWith(selected, this)
-						);
-					} else {
-						ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
-					}
-				},
-				Color.WHITE,
-				Color.GREEN,
-				Color.GRAY,
-				null
-			);
-
-			menu.addMenuItem(openChestMenuItem);
+		if (!isLocked()) {
+			if (Domain.getSelectedIndividuals().size() == 1) {
+				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
+				ContextMenuItem openChestMenuItem = new ContextMenuItem(
+					"Open",
+					() -> {
+						if (ClientServerInterface.isServer()) {
+							selected.getAI().setCurrentTask(
+								new TradeWith(selected, this)
+							);
+						} else {
+							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
+						}
+					},
+					Color.WHITE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				);
+				menu.addMenuItem(openChestMenuItem);
+				
+				if (container.getUnlockingFunction() != null) {
+					ContextMenuItem lockChestMenuItem = new ContextMenuItem(
+						"Lock",
+						() -> {
+							if (ClientServerInterface.isServer()) {
+								selected.getAI().setCurrentTask(
+									new LockUnlockContainer(selected, this, true)
+								);
+							} else {
+								// TODO
+							}
+						},
+						Color.WHITE,
+						Color.GREEN,
+						Color.GRAY,
+						null
+					);
+					menu.addMenuItem(lockChestMenuItem);
+				}
+			}
+		} else {
+			if (Domain.getSelectedIndividuals().size() == 1) {
+				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
+				ContextMenuItem unlockChestMenuItem = new ContextMenuItem(
+					"Unlock",
+					() -> {
+						if (ClientServerInterface.isServer()) {
+							selected.getAI().setCurrentTask(
+								new LockUnlockContainer(selected, this, true)
+							);
+						} else {
+							// TODO
+						}
+					},
+					Color.WHITE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				);
+				menu.addMenuItem(unlockChestMenuItem);
+			}
 		}
 
 		return menu;
@@ -198,5 +251,35 @@ public class PineChest extends Construction implements Container {
 		map.put(new Carrot(), 10);
 		
 		return map;
+	}
+
+
+	@Override
+	public boolean isLocked() {
+		if (getConstructionProgress() == 1f) {
+			return container.isLocked();
+		} else {
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean unlock(Item with) {
+		if (getConstructionProgress() == 1f) {
+			return container.unlock(with);
+		} else {
+			return false;
+		}
+	}
+
+
+	@Override
+	public boolean lock(Item with) {
+		if (getConstructionProgress() == 1f) {
+			return container.lock(with);
+		} else {
+			return false;
+		}
 	}
 }

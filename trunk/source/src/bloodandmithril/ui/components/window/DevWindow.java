@@ -23,6 +23,7 @@ import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
+import bloodandmithril.item.misc.Key;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.building.PineChest;
@@ -242,7 +243,17 @@ public class DevWindow extends Window {
 					() -> {
 						Individual individual = Domain.getIndividuals().get(1);
 						if (individual != null) {
-							PineChest pineChest = new PineChest(individual.getState().position.x, individual.getState().position.y, true, 100f);
+							PineChest pineChest = new PineChest(
+								individual.getState().position.x, 
+								individual.getState().position.y, 
+								true, 
+								100f,
+								true,
+								item -> {
+									return item instanceof Key;
+								}
+							);
+							
 							Domain.getProps().put(pineChest.id, pineChest);
 						}
 					},

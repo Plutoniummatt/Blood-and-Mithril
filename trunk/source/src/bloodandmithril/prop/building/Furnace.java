@@ -393,4 +393,22 @@ public class Furnace extends Construction implements Container {
 			return super.canExceedCapacity();
 		}
 	}
+
+
+	@Override
+	public boolean isLocked() {
+		return false;
+	}
+
+
+	@Override
+	public boolean unlock(Item with) {
+		return false;
+	}
+
+
+	@Override
+	public boolean lock(Item with) {
+		return false;
+	}
 }

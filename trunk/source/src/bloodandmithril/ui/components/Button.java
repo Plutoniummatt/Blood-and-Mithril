@@ -1,6 +1,7 @@
 package bloodandmithril.ui.components;
 
 
+import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -155,26 +156,26 @@ public class Button {
 			if (isMouseOver() && active) {
 				if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
 					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(BloodAndMithrilClient.spriteBatch, text, vec.x, vec.y);
+					font.draw(spriteBatch, text, vec.x, vec.y);
 				} else {
 					font.setColor(overColorToUse.r, overColorToUse.g, overColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(BloodAndMithrilClient.spriteBatch, text, vec.x, vec.y);
+					font.draw(spriteBatch, text, vec.x, vec.y);
 				}
 			} else {
 				font.setColor(idleColorToUse.r, idleColorToUse.g, idleColorToUse.b, alpha * (active ? 1f : 0.3f));
-				font.draw(BloodAndMithrilClient.spriteBatch, text, vec.x, vec.y);
+				font.draw(spriteBatch, text, vec.x, vec.y);
 			}
 		} else {
-			BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
+			spriteBatch.setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, alpha);
 			if (isMouseOver() && active) {
 				if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
-					BloodAndMithrilClient.spriteBatch.draw(down, vec.x, vec.y);
+					spriteBatch.draw(down, vec.x, vec.y);
 				} else {
-					BloodAndMithrilClient.spriteBatch.draw(over, vec.x, vec.y);
+					spriteBatch.draw(over, vec.x, vec.y);
 				}
 			} else {
-				BloodAndMithrilClient.spriteBatch.draw(idle, vec.x, vec.y);
+				spriteBatch.draw(idle, vec.x, vec.y);
 			}
 		}
 	}

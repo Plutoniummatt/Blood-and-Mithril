@@ -184,8 +184,6 @@ public abstract class Construction extends Prop implements Container {
 				}
 			}
 			
-			
-			
 			return menu;
 		}
 	}

@@ -1023,6 +1023,26 @@ public abstract class Individual implements Equipper, Serializable {
 		return attacking;
 	}
 	
+	
+	@Override
+	public boolean unlock(Item with) {
+		// Do nothing
+		return false;
+	}
+	
+	
+	@Override
+	public boolean lock(Item with) {
+		// Do nothing
+		return false;
+	}
+	
+	
+	@Override
+	public boolean isLocked() {
+		return false;
+	}
+	
 
 	@Override
 	public void synchronizeContainer(Container other) {
