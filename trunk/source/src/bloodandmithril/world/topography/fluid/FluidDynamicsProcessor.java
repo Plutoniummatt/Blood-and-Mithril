@@ -2,6 +2,9 @@ package bloodandmithril.world.topography.fluid;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static java.lang.Math.min;
+import bloodandmithril.util.Logger;
+import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.topography.Topography;
 
@@ -20,9 +23,9 @@ public class FluidDynamicsProcessor {
 	
 	/** Constants used */
 	private static final float MAX_DEPTH = TILE_SIZE;
-	private static final float MAX_COMPRESSION = TILE_SIZE * 0.02f;
+	private static final float MAX_COMPRESSION = TILE_SIZE * 0.06f;
 	private static final float MAX_FLOW = TILE_SIZE;
-	private static final float MIN_FLOW = 0.5f;
+	private static final float DIFFUSION_COEFFICIENT = 100f;
 	
 	/**
 	 * Constructor
@@ -38,16 +41,16 @@ public class FluidDynamicsProcessor {
 	public void process() {
 		currentSnapshot = topography.getFluids().deepCopy();
 		
-		System.out.println(currentSnapshot.getAllFluids().stream().mapToDouble(entry -> {
-			return entry.value.getDepth();
-		}).sum());
-		
 		currentSnapshot.getAllFluids().stream()
 		.sorted((e1, e2) -> {
 			return e1.y.compareTo(e2.y);
 		})
 		.forEach(entry -> {
-			processFluid(entry);
+			try {
+				processFluid(entry);
+			} catch (NullPointerException e) {
+				Logger.generalDebug("NPE detected during fluid dynamics processing, probably concurrency related.", LogLevel.WARN);
+			}
 		});
 	}
 
@@ -56,10 +59,65 @@ public class FluidDynamicsProcessor {
 	 * Process a single fluid
 	 */
 	private void processFluid(DualKeyEntry<Integer, Integer, Fluid> entry) {
-		flow(entry.x, entry.y, entry.value);
+		synchronized (topography.getFluids()) {
+			diffuse(entry.x, entry.y, entry.value);
+		}
 		
-		if (entry.value.getDepth() < 0.1f) {
+		flow(entry.x, entry.y, entry.value);
+		if (entry.value.getDepth() < 0.02f) {
 			topography.getFluids().remove(entry.x, entry.y);
+		}
+	}
+
+	
+	/**
+	 * Handles diffusion.
+	 */
+	private void diffuse(Integer x, Integer y, Fluid fluid) {
+		// Diffusion downward
+		Fluid down = topography.getFluids().get(x, y - 1);
+		if (down != null) {
+			float exchangeAmount = min(fluid.getDepth() / DIFFUSION_COEFFICIENT, down.getDepth() / DIFFUSION_COEFFICIENT);
+			
+			topography.getFluids().get(x, y).add(topography.getFluids().get(x, y - 1).sub(exchangeAmount));
+			topography.getFluids().get(x, y - 1).add(topography.getFluids().get(x, y).sub(exchangeAmount));
+		}
+		
+		// Diffusion upward
+		Fluid up = topography.getFluids().get(x, y + 1);
+		if (up != null && up.getDepth() > 2f) {
+			float exchangeAmount = min(fluid.getDepth() / DIFFUSION_COEFFICIENT, up.getDepth() / DIFFUSION_COEFFICIENT);
+			topography.getFluids().get(x, y).add(topography.getFluids().get(x, y + 1).sub(exchangeAmount));
+			topography.getFluids().get(x, y + 1).add(topography.getFluids().get(x, y).sub(exchangeAmount));
+		}
+		
+		// Diffusion sideways
+		Fluid left = topography.getFluids().get(x - 1, y);
+		Fluid right = topography.getFluids().get(x + 1, y);
+		if (left != null && right != null) {
+			float exchangeAmount = min(min(fluid.getDepth() / DIFFUSION_COEFFICIENT, left.getDepth() / DIFFUSION_COEFFICIENT), right.getDepth()/DIFFUSION_COEFFICIENT);
+
+			if (Util.getRandom().nextBoolean()) {
+				topography.getFluids().get(x, y).add(topography.getFluids().get(x - 1, y).sub(exchangeAmount));
+				topography.getFluids().get(x - 1, y).add(topography.getFluids().get(x, y).sub(exchangeAmount));
+				
+				topography.getFluids().get(x, y).add(topography.getFluids().get(x + 1, y).sub(exchangeAmount));
+				topography.getFluids().get(x + 1, y).add(topography.getFluids().get(x, y).sub(exchangeAmount));
+			} else {
+				topography.getFluids().get(x, y).add(topography.getFluids().get(x + 1, y).sub(exchangeAmount));
+				topography.getFluids().get(x + 1, y).add(topography.getFluids().get(x, y).sub(exchangeAmount));
+				
+				topography.getFluids().get(x, y).add(topography.getFluids().get(x - 1, y).sub(exchangeAmount));
+				topography.getFluids().get(x - 1, y).add(topography.getFluids().get(x, y).sub(exchangeAmount));
+			}
+		} else if (left != null) {
+			float exchangeAmount = min(fluid.getDepth() / DIFFUSION_COEFFICIENT, left.getDepth() / DIFFUSION_COEFFICIENT);
+			topography.getFluids().get(x, y).add(topography.getFluids().get(x - 1, y).sub(exchangeAmount));
+			topography.getFluids().get(x - 1, y).add(topography.getFluids().get(x, y).sub(exchangeAmount));
+		} else if (right != null) {
+			float exchangeAmount = min(fluid.getDepth() / DIFFUSION_COEFFICIENT, right.getDepth() / DIFFUSION_COEFFICIENT);
+			topography.getFluids().get(x, y).add(topography.getFluids().get(x + 1, y).sub(exchangeAmount));
+			topography.getFluids().get(x + 1, y).add(topography.getFluids().get(x, y).sub(exchangeAmount));
 		}
 	}
 
@@ -74,10 +132,6 @@ public class FluidDynamicsProcessor {
 		// The block below this one
 		if (isFlowable(x, y - 1)) {
 			flow = stableStateFunction(currentDepth + getSnapshotDepth(x, y - 1)) - getSnapshotDepth(x, y - 1);
-			if (flow > MIN_FLOW) {
-				// Leads to smoother flow
-				flow = flow * 0.5f;
-			}
 			flow = constrain(flow, 0f, min(MAX_FLOW, currentDepth));
 
 			Fluid nextBelow = topography.getFluids().get(x, y - 1);
@@ -97,9 +151,6 @@ public class FluidDynamicsProcessor {
 		if (isFlowable(x - 1, y)) {
 			// Equalise the amount of water in this block and its neighbour
 			flow = (getSnapshotDepth(x, y) - getSnapshotDepth(x - 1, y)) / 4f;
-			if (flow > MIN_FLOW) {
-				flow = flow * 0.5f;
-			}
 			flow = constrain(flow, 0f, currentDepth);
 
 			Fluid nextLeft = topography.getFluids().get(x - 1, y);
@@ -120,9 +171,6 @@ public class FluidDynamicsProcessor {
 			// Equalise the amount of water in this block and it's
 			// neighbour
 			flow = (getSnapshotDepth(x, y) - getSnapshotDepth(x + 1, y)) / 4f;
-			if (flow > MIN_FLOW) {
-				flow = flow * 0.5f;
-			}
 			flow = constrain(flow, 0f, currentDepth);
 
 			Fluid nextRight = topography.getFluids().get(x + 1, y);
@@ -141,11 +189,8 @@ public class FluidDynamicsProcessor {
 		// Up. Only compressed water flows upwards.
 		if (isFlowable(x, y + 1)) {
 			flow = currentDepth - stableStateFunction(currentDepth + getSnapshotDepth(x, y + 1));
-			if (flow > MIN_FLOW) {
-				flow = flow * 0.5f;
-			}
 			flow = constrain(flow, 0f, min(MAX_FLOW, currentDepth));
-
+			
 			Fluid nextAbove = topography.getFluids().get(x, y + 1);
 			if (nextAbove == null) {
 				topography.getFluids().put(x, y + 1, topography.getFluids().get(x, y).sub(flow));

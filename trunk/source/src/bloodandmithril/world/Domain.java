@@ -184,9 +184,11 @@ public class Domain {
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		shapeRenderer.setProjectionMatrix(cam.combined);
 		
-		getActiveWorld().getTopography().getFluids().getAllFluids().stream().forEach(entry -> {
-			entry.value.render(entry.x, entry.y);
-		});
+		synchronized (getActiveWorld().getTopography().getFluids()) {
+			getActiveWorld().getTopography().getFluids().getAllFluids().stream().forEach(entry -> {
+				entry.value.render(entry.x, entry.y);
+			});
+		}
 		
 		shapeRenderer.end();
 		gl20.glDisable(GL20.GL_BLEND);
@@ -237,11 +239,6 @@ public class Domain {
 		if (getActiveWorld() != null) {
 			getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam(camX, camY);
 			
-			if (System.currentTimeMillis() - topographyUpdateTimer > 30) {
-				topographyUpdateTimer = System.currentTimeMillis();
-				getActiveWorld().getTopography().update();
-			}
-			
 			float d = 1f/60f;
 			
 			currentEpoch.incrementTime(d);
@@ -257,6 +254,14 @@ public class Domain {
 			for (Item item : items.values()) {
 				item.update(d);
 			}
+		}
+	}
+	
+	
+	public void updateFluids() {
+		if (System.currentTimeMillis() - topographyUpdateTimer > 10) {
+			topographyUpdateTimer = System.currentTimeMillis();
+			getActiveWorld().getTopography().update();
 		}
 	}
 

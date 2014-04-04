@@ -24,7 +24,7 @@ public class FluidMap implements Serializable {
 	}
 	
 	
-	public Fluid get(int x, int y) {
+	public synchronized Fluid get(int x, int y) {
 		return fluids.get(x, y);
 	}
 	
@@ -34,7 +34,7 @@ public class FluidMap implements Serializable {
 	}
 	
 	
-	public Fluid remove(int x, int y) {
+	public synchronized Fluid remove(int x, int y) {
 		return fluids.remove(x, y);
 	}
 	

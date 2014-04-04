@@ -13,7 +13,10 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Equipable;
+import bloodandmithril.item.material.liquid.Acid;
 import bloodandmithril.item.material.liquid.Blood;
+import bloodandmithril.item.material.liquid.CrudeOil;
+import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
@@ -31,6 +34,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.fluid.Fluid;
 import bloodandmithril.world.topography.fluid.FluidFraction;
+import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -115,7 +119,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static long ping = 0;
 	
-	public static Thread updateThread;
+	public static Thread updateThread, fluidThread;
 	
 	private long topographyBacklogExecutionTimer;
 
@@ -147,8 +151,21 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			}
 		});
 		
+		fluidThread = new Thread(() -> {
+			long prevFrame = System.currentTimeMillis();
+			
+			while (true) {
+				if ((System.currentTimeMillis() - prevFrame) > 10) {
+					updateFluids(Gdx.graphics.getDeltaTime());
+				}
+			}
+		});
+		
 		updateThread.setName("Update thread");
 		updateThread.start();
+		
+		fluidThread.setName("Fluid thread");
+		fluidThread.start();
 	}
 
 
@@ -401,14 +418,18 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (keycode == Input.Keys.L) {
-			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), false);
+			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), true);
+		}
+		
+		if (keycode == Input.Keys.P) {
+			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickTile.class);
 		}
 		
 		if (keycode == Input.Keys.J) {
 			Domain.getActiveWorld().getTopography().getFluids().put(
 				Topography.convertToWorldTileCoord(getMouseWorldX()), 
 				Topography.convertToWorldTileCoord(getMouseWorldY()), 
-				new Fluid(16, FluidFraction.fluid(new Water(), 1f))
+				new Fluid(FluidFraction.fluid(new Water(), 16f))
 			);
 		}
 		
@@ -416,7 +437,31 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			Domain.getActiveWorld().getTopography().getFluids().put(
 				Topography.convertToWorldTileCoord(getMouseWorldX()), 
 				Topography.convertToWorldTileCoord(getMouseWorldY()), 
-				new Fluid(16, FluidFraction.fluid(new Blood(), 1f))
+				new Fluid(FluidFraction.fluid(new Blood(), 64f))
+			);
+		}
+		
+		if (keycode == Input.Keys.H) {
+			Domain.getActiveWorld().getTopography().getFluids().put(
+				Topography.convertToWorldTileCoord(getMouseWorldX()), 
+				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				new Fluid(FluidFraction.fluid(new Acid(), 16f))
+			);
+		}
+		
+		if (keycode == Input.Keys.G) {
+			Domain.getActiveWorld().getTopography().getFluids().put(
+				Topography.convertToWorldTileCoord(getMouseWorldX()), 
+				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				new Fluid(FluidFraction.fluid(new CrudeOil(), 16f))
+			);
+		}
+		
+		if (keycode == Input.Keys.F) {
+			Domain.getActiveWorld().getTopography().getFluids().put(
+				Topography.convertToWorldTileCoord(getMouseWorldX()), 
+				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				new Fluid(FluidFraction.fluid(new Milk(), 16f))
 			);
 		}
 		
@@ -552,6 +597,16 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		leftDoubleClickTimer += delta;
 		rightDoubleClickTimer += delta;
+	}
+	
+	
+	/**
+	 * Fluid update method
+	 */
+	private void updateFluids(float delta) {
+		if (!paused && delta < LAG_SPIKE_TOLERANCE && !GameSaver.isSaving() && domain != null) {
+			domain.updateFluids();
+		}
 	}
 
 

@@ -256,6 +256,11 @@ public class Topography {
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
 		
+		getFluids().remove(
+			convertToWorldTileCoord(worldX), 
+			convertToWorldTileCoord(worldY)
+		);
+		
 		try {
 			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
 		} catch (NullPointerException e) {
@@ -275,6 +280,11 @@ public class Topography {
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
+		
+		getFluids().remove(
+			convertToWorldTileCoord(worldX), 
+			convertToWorldTileCoord(worldY)
+		);
 		
 		try {
 			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
