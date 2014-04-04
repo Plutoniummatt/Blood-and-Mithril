@@ -757,6 +757,7 @@ public class UserInterface {
 		for (Component window : layeredComponents) {
 			if (window instanceof Window && ((Window)window).title.equals(title)) {
 				existing = (Window)window;
+				((Window) window).setActive(false);
 				break;
 			}
 		}

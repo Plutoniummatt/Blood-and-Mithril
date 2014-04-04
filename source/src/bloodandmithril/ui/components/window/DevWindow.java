@@ -139,7 +139,7 @@ public class DevWindow extends Window {
 			
 			elf.getSkills().setObservation(55);
 
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(new Carrot());
 			}
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
