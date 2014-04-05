@@ -46,21 +46,9 @@ public abstract class Key extends Item {
 	 */
 	protected abstract String getDescription();
 
-
-	@Override
-	public boolean sameAs(Item other) {
-		// All keys are unique
-		return false;
-	}
-
 	
 	@Override
 	public Item combust(int heatLevel) {
 		return this;
-	}
-
-	
-	@Override
-	public void render() {
 	}
 }

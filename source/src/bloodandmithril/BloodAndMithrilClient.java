@@ -11,6 +11,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
+import bloodandmithril.graphics.DynamicLightingPostRenderer;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.material.liquid.Acid;
@@ -185,6 +186,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		KeyMappings.setup();
 		Equipable.setup();
 		Prop.setup();
+		DynamicLightingPostRenderer.setup();
 
 		UserInterface.UICamera = new OrthographicCamera(WIDTH, HEIGHT);
 		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);

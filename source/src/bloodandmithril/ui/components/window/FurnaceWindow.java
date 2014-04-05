@@ -209,26 +209,6 @@ public class FurnaceWindow extends TradeWindow {
 
 
 	/**
-	 * Renders the listing panels
-	 */
-	@Override
-	protected void renderListingPanels() {
-		proposerPanel.x = x;
-		proposerPanel.y = y;
-		proposerPanel.height = height - 70;
-		proposerPanel.width = width / 2 - 10;
-
-		proposeePanel.x = x + width / 2 + 10;
-		proposeePanel.y = y;
-		proposeePanel.height = height - 70;
-		proposeePanel.width = width / 2 - 10;
-
-		proposerPanel.render();
-		proposeePanel.render();
-	}
-
-
-	/**
 	 * ignites the furnace
 	 */
 	private void ignite() {

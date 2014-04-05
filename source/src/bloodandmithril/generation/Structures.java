@@ -159,6 +159,7 @@ public class Structures {
 					throw new RuntimeException("Overwriting structures is not allowed.");
 				}
 				structureKeys.get(x).put(y, structureKey);
+				System.out.println(x + ", " + y);
 			}
 		}
 		return structureKey;
