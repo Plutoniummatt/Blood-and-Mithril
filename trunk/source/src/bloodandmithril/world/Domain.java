@@ -87,10 +87,7 @@ public class Domain {
 	/** The frame buffer used for tiles */
 	public static FrameBuffer fBuffer;
 	public static FrameBuffer mBuffer;
-	public static FrameBuffer mBufferLit;
 	public static FrameBuffer bBuffer;
-	public static FrameBuffer bBufferProcessedForDaylightShader;
-	public static FrameBuffer bBufferLit;
 	
 	private long topographyUpdateTimer;
 	
@@ -127,10 +124,7 @@ public class Domain {
 		
 		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
 		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
-		mBufferLit 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
 		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
-		bBufferProcessedForDaylightShader 	= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
-		bBufferLit 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
 	}
 
 
@@ -150,8 +144,6 @@ public class Domain {
 		}
 		spriteBatch.end();
 		bBuffer.end();
-		
-		BackgroundBlur();
 		
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
@@ -199,39 +191,6 @@ public class Domain {
 	}
 
 	
-	private void BackgroundBlur() {
-		bBufferProcessedForDaylightShader.begin();
-		spriteBatch.begin();
-		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.daylightOcclusion);
-		
-		double r;
-		double g;
-		double b;
-		float time = currentEpoch.getTime();
-		
-		if (time < 10.0) {
-			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 10.0), 2.0));
-			g = 0.1 + 1.1 * Math.exp(-0.150*Math.pow((time - 10.0), 2.0));
-			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow((time - 10.0), 2.0));
-		} else if (time >= 10 && time < 14) {
-			r = 1.3;
-			g = 1.2;
-			b = 1.1;
-		} else {
-			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 14.0), 2.0));
-			g = 0.1 + 1.1 * Math.exp(-0.150*Math.pow((time - 14.0), 2.0));
-			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow((time - 14.0), 2.0));
-		}
-		
-		Shaders.daylightOcclusion.setUniformf("dl", (float)r, (float)g, (float)b, currentEpoch.dayLight());
-		Shaders.daylightOcclusion.setUniformf("res", WIDTH, HEIGHT);
-		spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
-		spriteBatch.end();
-		bBufferProcessedForDaylightShader.end();
-	}
-
-
 	/**
 	 * Updates the game world
 	 */

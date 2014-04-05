@@ -1,6 +1,7 @@
 package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.util.Fonts.defaultFont;
+import static java.lang.Math.min;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -40,6 +41,9 @@ public class TradeWindow extends Window implements Refreshable {
 	/** Panels of involved traders */
 	protected ScrollableListingPanel<Item, Integer> proposerPanel;
 	protected ScrollableListingPanel<Item, Integer> proposeePanel;
+	
+	protected ScrollableListingPanel<Item, Integer> proposerTradingPanel;
+	protected ScrollableListingPanel<Item, Integer> proposeeTradingPanel;
 
 	/** Listings of items to display */
 	protected final HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade = Maps.newHashMap();
@@ -170,8 +174,10 @@ public class TradeWindow extends Window implements Refreshable {
 		populate(proposerItemsToTrade, proposerItemsNotToTrade, proposer.getInventory());
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
 
-		proposerPanel.refresh(Lists.newArrayList(proposerItemsToTrade, proposerItemsNotToTrade));
-		proposeePanel.refresh(Lists.newArrayList(proposeeItemsToTrade, proposeeItemsNotToTrade));
+		proposerPanel.refresh(Lists.newArrayList(proposerItemsNotToTrade));
+		proposeePanel.refresh(Lists.newArrayList(proposeeItemsNotToTrade));
+		proposerTradingPanel.refresh(Lists.newArrayList(proposerItemsToTrade));
+		proposeeTradingPanel.refresh(Lists.newArrayList(proposeeItemsToTrade));
 	}
 
 
@@ -188,7 +194,6 @@ public class TradeWindow extends Window implements Refreshable {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
-				listings.add(proposerItemsToTrade);
 				listings.add(proposerItemsNotToTrade);
 			}
 
@@ -212,7 +217,6 @@ public class TradeWindow extends Window implements Refreshable {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
-				listings.add(proposeeItemsToTrade);
 				listings.add(proposeeItemsNotToTrade);
 			}
 
@@ -226,6 +230,54 @@ public class TradeWindow extends Window implements Refreshable {
 				return Integer.toString(item.getValue());
 			}
 
+			@Override
+			public boolean keyPressed(int keyCode) {
+				return false;
+			}
+		};
+		
+		proposerTradingPanel = new ScrollableListingPanel<Item, Integer>(this) {
+
+			@Override
+			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+				listings.add(proposerItemsToTrade);
+			}
+
+			@Override
+			protected int getExtraStringOffset() {
+				return 80;
+			}
+
+			
+			@Override
+			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+				return Integer.toString(item.getValue());
+			}
+			
+			@Override
+			public boolean keyPressed(int keyCode) {
+				return false;
+			}
+		};
+		
+		proposeeTradingPanel = new ScrollableListingPanel<Item, Integer>(this) {
+			
+			@Override
+			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+				listings.add(proposeeItemsToTrade);
+			}
+			
+			@Override
+			protected int getExtraStringOffset() {
+				return 80;
+			}
+			
+			
+			@Override
+			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+				return Integer.toString(item.getValue());
+			}
+			
 			@Override
 			public boolean keyPressed(int keyCode) {
 				return false;
@@ -373,18 +425,37 @@ public class TradeWindow extends Window implements Refreshable {
 	 * Renders the listing panels
 	 */
 	protected void renderListingPanels() {
+		int lineWidth = 23;
+		
 		proposerPanel.x = x;
-		proposerPanel.y = y;
-		proposerPanel.height = height - 50;
+		proposerPanel.y = y - (proposerItemsToTrade.isEmpty() ? 0 : ((1 + min(5,proposerItemsToTrade.size())) * lineWidth));
+		proposerPanel.height = height - 50 - (proposerItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposerItemsToTrade.size())) * lineWidth));
 		proposerPanel.width = width / 2 - 10;
 
 		proposeePanel.x = x + width / 2 + 10;
-		proposeePanel.y = y;
-		proposeePanel.height = height - 50;
+		proposeePanel.y = y - (proposeeItemsToTrade.isEmpty() ? 0 : ((1 + min(5,proposeeItemsToTrade.size())) * lineWidth));
+		proposeePanel.height = height - 50 - (proposeeItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposeeItemsToTrade.size())) * lineWidth));
 		proposeePanel.width = width / 2 - 10;
-
+		
+		proposerTradingPanel.x = x;
+		proposerTradingPanel.y = y;
+		proposerTradingPanel.height = 50 + (proposerItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposerItemsToTrade.size())) * lineWidth));
+		proposerTradingPanel.width = width / 2 - 10;
+		
+		proposeeTradingPanel.x = x + width / 2 + 10;
+		proposeeTradingPanel.y = y;
+		proposeeTradingPanel.height = 50 + (proposeeItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposeeItemsToTrade.size())) * lineWidth));
+		proposeeTradingPanel.width = width / 2 - 10;
+		
 		proposerPanel.render();
 		proposeePanel.render();
+		
+		if (!proposerItemsToTrade.isEmpty()) {
+			proposerTradingPanel.render();
+		}
+		if (!proposeeItemsToTrade.isEmpty()) {
+			proposeeTradingPanel.render();
+		}
 	}
 
 
@@ -392,6 +463,8 @@ public class TradeWindow extends Window implements Refreshable {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		proposerPanel.leftClick(copy, windowsCopy);
 		proposeePanel.leftClick(copy, windowsCopy);
+		proposerTradingPanel.leftClick(copy, windowsCopy);
+		proposeeTradingPanel.leftClick(copy, windowsCopy);
 		
 		if (tradeButtonClickable()) {
 			tradeButton.click();
@@ -403,6 +476,8 @@ public class TradeWindow extends Window implements Refreshable {
 	public void leftClickReleased() {
 		proposerPanel.leftClickReleased();
 		proposeePanel.leftClickReleased();
+		proposerTradingPanel.leftClickReleased();
+		proposeeTradingPanel.leftClickReleased();
 	}
 
 

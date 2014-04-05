@@ -10,6 +10,11 @@ import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 
 import com.google.common.collect.Lists;
 
+/**
+ * 2D version of a {@link ConcurrentSkipListMap}
+ * 
+ * @author Matt
+ */
 public class ConcurrentDualKeySkipListMap<X extends Serializable, Y extends Serializable, V extends Serializable> implements Serializable {
 	private static final long serialVersionUID = -3302956434707116279L;
 

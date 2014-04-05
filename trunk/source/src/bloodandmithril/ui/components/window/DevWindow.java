@@ -1,13 +1,12 @@
 package bloodandmithril.ui.components.window;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.function.Function;
-
-
-
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
@@ -28,7 +27,7 @@ import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
-import bloodandmithril.item.misc.Key;
+import bloodandmithril.item.misc.SkeletonKey;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.building.PineChest;
@@ -43,10 +42,6 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
-
-
-
-
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -138,7 +133,7 @@ public class DevWindow extends Window {
 			);
 			
 			elf.getSkills().setObservation(55);
-
+			
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(new Carrot());
 			}
@@ -261,7 +256,11 @@ public class DevWindow extends Window {
 								new Function<Item, Boolean>() {
 									@Override
 									public Boolean apply(Item item) {
-										return item instanceof Key;
+										if (item instanceof SkeletonKey) {
+											return ((SkeletonKey)item).match(newArrayList(1,2,3,4,5,6,7));
+										} else {
+											return false;
+										}
 									}
 								}
 							);
