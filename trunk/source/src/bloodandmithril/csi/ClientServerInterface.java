@@ -134,6 +134,7 @@ import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.material.plant.Felberries;
 import bloodandmithril.item.material.plant.Seed;
 import bloodandmithril.item.misc.Currency;
+import bloodandmithril.item.misc.SkeletonKey;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
@@ -346,6 +347,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(SkeletonKey.class);
 		kryo.register(LockUnlock.class);
 		kryo.register(LockUnlockContainer.class);
 		kryo.register(LockUnlockContainerRequest.class);
