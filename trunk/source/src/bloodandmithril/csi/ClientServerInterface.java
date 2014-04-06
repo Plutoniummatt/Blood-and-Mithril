@@ -121,6 +121,7 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.container.LiquidContainer;
 import bloodandmithril.item.material.container.GlassBottle;
+import bloodandmithril.item.material.container.WoodenBucket;
 import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Water;
@@ -133,6 +134,7 @@ import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.material.plant.Felberries;
 import bloodandmithril.item.material.plant.Seed;
 import bloodandmithril.item.misc.Currency;
+import bloodandmithril.item.misc.Key;
 import bloodandmithril.item.misc.SkeletonKey;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Harvestable;
@@ -346,6 +348,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(WoodenBucket.class);
+		kryo.register(Key.class);
 		kryo.register(SkeletonKey.class);
 		kryo.register(LockUnlock.class);
 		kryo.register(LockUnlockContainer.class);
