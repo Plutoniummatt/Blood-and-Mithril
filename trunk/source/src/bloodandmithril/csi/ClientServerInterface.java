@@ -119,11 +119,10 @@ import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.equipment.Weapon;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
-import bloodandmithril.item.material.container.Bottle;
+import bloodandmithril.item.material.container.LiquidContainer;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Liquid;
-import bloodandmithril.item.material.liquid.Liquid.Empty;
 import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.item.material.mineral.YellowSand;
@@ -374,7 +373,7 @@ public class ClientServerInterface {
 		kryo.register(bloodandmithril.prop.plant.Carrot.class);
 		kryo.register(Boar.class);
 		kryo.register(BoarAI.class);
-		kryo.register(Bottle.class);
+		kryo.register(LiquidContainer.class);
 		kryo.register(Box.class);
 		kryo.register(BrickTile.class);
 		kryo.register(Broadsword.class);
@@ -413,7 +412,6 @@ public class ClientServerInterface {
 		kryo.register(DualKeyHashMap.class);
 		kryo.register(Elf.class);
 		kryo.register(ElfAI.class);
-		kryo.register(Empty.class);
 		kryo.register(EmptyTile.class);
 		kryo.register(Epoch.class);
 		kryo.register(Equipable.class);
@@ -565,7 +563,7 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending run/walk request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendDrinkLiquidRequest(int individualId, Bottle bottleToDrinkFrom, float amount) {
+		public static synchronized void sendDrinkLiquidRequest(int individualId, LiquidContainer bottleToDrinkFrom, float amount) {
 			client.sendTCP(new DrinkLiquid(individualId, bottleToDrinkFrom, amount));
 			Logger.networkDebug("Sending drink liquid request", LogLevel.DEBUG);
 		}

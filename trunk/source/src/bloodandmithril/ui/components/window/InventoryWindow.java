@@ -15,7 +15,7 @@ import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.container.Bottle;
+import bloodandmithril.item.material.container.LiquidContainer;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -276,9 +276,9 @@ public class InventoryWindow extends Window implements Refreshable {
 			return contextMenu;
 		}
 
-		if (item instanceof Bottle) {
+		if (item instanceof LiquidContainer) {
 			ContextMenuItem drink = new ContextMenuItem(
-				"Drink",
+				"Drink from",
 				() -> {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
@@ -290,14 +290,25 @@ public class InventoryWindow extends Window implements Refreshable {
 							250,
 							100,
 							args -> {
-								if (ClientServerInterface.isServer()) {
-									host.takeItem(item);
-									Bottle newBottle = ((Bottle) item).clone();
-									newBottle.drink(Float.parseFloat((String)args[0]), (Individual)host);
-									host.giveItem(newBottle);
-									refresh();
-								} else {
-									ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (Bottle)item, Float.parseFloat((String)args[0]));
+								try {
+									float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
+									
+									if (amount < 0.01f) {
+										UserInterface.addMessage("Too little to drink", "It would be a waste of time to drink this little");
+										return;
+									}
+									
+									if (ClientServerInterface.isServer()) {
+										host.takeItem(item);
+										LiquidContainer newBottle = ((LiquidContainer) item).clone();
+										newBottle.drinkFrom(amount, (Individual)host);
+										host.giveItem(newBottle);
+										refresh();
+									} else {
+										ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (LiquidContainer)item, Float.parseFloat((String)args[0]));
+									}
+								} catch (NumberFormatException e) {
+									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 								}
 							},
 							"Drink",

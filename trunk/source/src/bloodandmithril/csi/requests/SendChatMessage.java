@@ -8,7 +8,7 @@ import bloodandmithril.ui.components.window.ChatWindow;
 /**
  * {@link Request} sent when a client sends a chat message
  *
- * @author Copyright (c) CHP Consulting Ltd. 2014
+ * @author Matt
  */
 public class SendChatMessage implements Request {
 

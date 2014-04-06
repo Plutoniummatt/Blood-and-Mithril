@@ -9,7 +9,7 @@ import bloodandmithril.world.Domain;
 /**
  * Synchronizes {@link Faction}s
  *
- * @author Copyright (c) CHP Consulting Ltd. 2014
+ * @author Matt
  */
 public class SynchronizeFaction implements Request {
 

@@ -13,7 +13,7 @@ import bloodandmithril.world.Domain;
 /**
  * {@link Request} to change the password to control a {@link Faction}
  *
- * @author Copyright (c) CHP Consulting Ltd. 2014
+ * @author Matt
  */
 public class ChangeFactionControlPassword implements Request {
 

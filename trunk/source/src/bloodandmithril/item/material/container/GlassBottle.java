@@ -1,35 +1,35 @@
 package bloodandmithril.item.material.container;
 
-import bloodandmithril.BloodAndMithrilClient;
+import static bloodandmithril.item.material.liquid.LiquidMixtureAnalyzer.getTitle;
+import static com.google.common.collect.Maps.newHashMap;
+
+import java.util.Map;
+
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.material.liquid.Liquid;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * A {@link Bottle} made from glass
  *
  * @author Matt
  */
-public class GlassBottle extends Bottle {
+public class GlassBottle extends LiquidContainer {
 	private static final long serialVersionUID = 3427844446930493119L;
 
 	/**
 	 * Constructor
 	 */
-	public GlassBottle(Class<? extends Liquid> liquid, float amount) {
-		super(0.1f, amount, 1f, liquid, ItemValues.GLASSBOTTLE);
+	public GlassBottle(Map<Class<? extends Liquid>, Float> containedLiquids) {
+		super(0.1f, 1f, containedLiquids, ItemValues.GLASSBOTTLE);
 	}
 
 
 	@Override
 	public String getSingular(boolean firstCap) {
 		String content = "";
-		if (containedLiquid != null && amount != 0f) {
-			content = " of " + containedLiquid.getSimpleName() + " (" + String.format("%.2f", amount) + "/" + String.format("%.2f", maxAmount) + ")";
+		if (!containedLiquids.isEmpty()) {
+			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";
 		}
 
 		return (firstCap ? "G" : "g") + "lass bottle" + content;
@@ -38,34 +38,13 @@ public class GlassBottle extends Bottle {
 
 	@Override
 	public String getPlural(boolean firstCap) {
-		return null;
+		return (firstCap ? "G" : "g") + "lass bottles";
 	}
 
 
 	@Override
-	public Window getInfoWindow() {
-		try {
-			return new MessageWindow(
-				containedLiquid.newInstance().getDescription(),
-				Color.WHITE,
-				BloodAndMithrilClient.WIDTH/2 - 175,
-				BloodAndMithrilClient.HEIGHT/2 + 100,
-				300,
-				200,
-				containedLiquid.getSimpleName(),
-				true,
-				300,
-				200
-			);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-
-	@Override
-	public Bottle clone() {
-		return new GlassBottle(containedLiquid, amount);
+	public LiquidContainer clone() {
+		return new GlassBottle(newHashMap(containedLiquids));
 	}
 
 
@@ -77,6 +56,17 @@ public class GlassBottle extends Bottle {
 
 	@Override
 	public void render() {
-		
+	}
+
+
+	@Override
+	protected String getContainerDescription() {
+		return "A bottle made from glass.";
+	}
+
+
+	@Override
+	protected String getCotainerTitle() {
+		return "Glass bottle";
 	}
 }
