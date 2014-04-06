@@ -187,7 +187,7 @@ public class Util {
 		
 		public static final Color WATER = new Color(0f, 0.3f, 1f, 0.7f);
 		public static final Color BLOOD = new Color(0.45f, 0.0f, 0f, 1f);
-		public static final Color ACID = new Color(0.0f, 0.8f, 0.3f, 0.8f);
+		public static final Color ACID = new Color(0.35f, 1f, 0f, 0.8f);
 		public static final Color MILK = new Color(1f, 0.98f, 0.96f, 1f);
 		public static final Color CRUDEOIL = new Color(0.08f, 0.035f, 0f, 1f);
 
