@@ -46,6 +46,7 @@ public abstract class LiquidContainer extends Item {
 					entry.getKey().newInstance().drink(entry.getValue(), affected);
 					containedLiquids.remove(entry.getKey());
 				} else {
+					System.out.println("Drinking " + entry.getValue() * fraction + " of " + entry.getKey().getSimpleName());
 					entry.getKey().newInstance().drink(entry.getValue() * fraction, affected);
 					containedLiquids.put(entry.getKey(), entry.getValue() * (1f - fraction));
 				}

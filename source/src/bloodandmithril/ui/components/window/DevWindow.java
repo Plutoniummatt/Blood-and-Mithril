@@ -25,6 +25,8 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
+import bloodandmithril.item.material.liquid.Blood;
+import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
@@ -151,7 +153,9 @@ public class DevWindow extends Window {
 			}
 			for (int i = Util.getRandom().nextInt(50) + 10; i > 0; i--) {
 				Map<Class<? extends Liquid>, Float> liquids = new HashMap<>();
-				liquids.put(Water.class, 1f);
+				liquids.put(Water.class, 0.3f);
+				liquids.put(Blood.class, 0.3f);
+				liquids.put(CrudeOil.class, 0.4f);
 				elf.giveItem(new GlassBottle(liquids));
 			}
 			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
