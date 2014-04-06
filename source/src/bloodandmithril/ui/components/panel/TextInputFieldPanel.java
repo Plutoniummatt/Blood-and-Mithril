@@ -70,7 +70,7 @@ public class TextInputFieldPanel extends Panel {
 		BloodAndMithrilClient.spriteBatch.end();
 		BloodAndMithrilClient.spriteBatch.begin();
 		Fonts.defaultFont.setColor(Color.ORANGE.r, Color.ORANGE.g, Color.ORANGE.b, parent.isActive() ? parent.getAlpha() : 0.4f * parent.getAlpha());
-		Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, inputText == null ? "" : Util.fitToTextInputBox(inputText, width, currentBeginningIndex), x + 4, y - height + 16);
+		Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, inputText == null ? "" : Util.fitToTextInputBox(inputText, width, currentBeginningIndex, true), x + 4, y - height + 16);
 	}
 
 

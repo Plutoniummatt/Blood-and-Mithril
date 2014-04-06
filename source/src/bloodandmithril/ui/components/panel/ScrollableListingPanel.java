@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.panel;
 
+import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -188,15 +189,22 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 					continue;
 				}
 				if (y - (i - (startingIndex == 0 ? 1 : startingIndex)) * 20 - 110 < y - height) {
-					defaultFont.draw(BloodAndMithrilClient.spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
+					defaultFont.draw(spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
 					break;
 				}
-				item.getKey().button.render(x + item.getKey().button.width/2 + 6, y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, parent.isActive() && UserInterface.contextMenus.isEmpty(), parent.getAlpha());
-				defaultFont.draw(BloodAndMithrilClient.spriteBatch, getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
+				
+				item.getKey().button.render(
+					x + item.getKey().button.width/2 + 6, 
+					y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, 
+					parent.isActive() && UserInterface.contextMenus.isEmpty(), parent.getAlpha(),
+					width - 35
+				);
+				
+				defaultFont.draw(spriteBatch, getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
 				i++;
 			}
 		}
-		BloodAndMithrilClient.spriteBatch.flush();
+		spriteBatch.flush();
 	}
 
 

@@ -151,8 +151,8 @@ public class FurnaceWindow extends TradeWindow {
 		float fuelFraction = furnace.getCombustionDurationRemaining() / max;
 		float smeltingFraction = furnace.getSmeltingDurationRemaining() / Furnace.SMELTING_DURATION;
 
-		Color alphaGreen = Colors.modulateAlpha(Color.GREEN, getAlpha());
-		Color alphaRed = Colors.modulateAlpha(Color.RED, getAlpha());
+		Color alphaGreen = Colors.modulateAlpha(Color.GREEN, isActive() ? getAlpha() : getAlpha() * 0.6f);
+		Color alphaRed = Colors.modulateAlpha(Color.RED, isActive() ? getAlpha() : getAlpha() * 0.6f);
 
 		// Fuel
 		UserInterface.shapeRenderer.filledRect(
