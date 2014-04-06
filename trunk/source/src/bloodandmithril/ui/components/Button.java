@@ -1,7 +1,7 @@
 package bloodandmithril.ui.components;
 
-
 import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.util.Util.fitToTextInputBox;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -141,7 +141,7 @@ public class Button {
 	/**
 	 * Renders this button
 	 */
-	public void render(boolean active, float alpha) {
+	public void render(boolean active, float alpha, int maxWidth) {
 
 		Vector2 vec = new Vector2();
 		morph(vec);
@@ -156,14 +156,14 @@ public class Button {
 			if (isMouseOver() && active) {
 				if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
 					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(spriteBatch, text, vec.x, vec.y);
+					font.draw(spriteBatch, maxWidth == 0 ? text : fitToTextInputBox(text, maxWidth, 0, false), vec.x, vec.y);
 				} else {
 					font.setColor(overColorToUse.r, overColorToUse.g, overColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(spriteBatch, text, vec.x, vec.y);
+					font.draw(spriteBatch,  maxWidth == 0 ? text : fitToTextInputBox(text, maxWidth, 0, false), vec.x, vec.y);
 				}
 			} else {
 				font.setColor(idleColorToUse.r, idleColorToUse.g, idleColorToUse.b, alpha * (active ? 1f : 0.3f));
-				font.draw(spriteBatch, text, vec.x, vec.y);
+				font.draw(spriteBatch,  maxWidth == 0 ? text : fitToTextInputBox(text, maxWidth, 0, false), vec.x, vec.y);
 			}
 		} else {
 			spriteBatch.setShader(Shaders.filter);
@@ -178,6 +178,11 @@ public class Button {
 				spriteBatch.draw(idle, vec.x, vec.y);
 			}
 		}
+	}
+	
+	
+	public void render(boolean active, float alpha) {
+		render(active, alpha, 0);
 	}
 
 
@@ -212,7 +217,7 @@ public class Button {
 
 
 	/**
-	 * Renders this button at an override location and whether or not this button is 'active', plus al alpha value
+	 * Renders this button at an override location and whether or not this button is 'active', plus an alpha value
 	 */
 	public void render(int x, int y, boolean active, float alpha) {
 		offsetX = x;
@@ -220,6 +225,18 @@ public class Button {
 		ref = UIRef.BL;
 
 		render(active, alpha);
+	}
+	
+	
+	/**
+	 * Renders this button at an override location and whether or not this button is 'active', plus an alpha value, and maximum width, truncating the rest
+	 */
+	public void render(int x, int y, boolean active, float alpha, int maxWidth) {
+		offsetX = x;
+		offsetY = y;
+		ref = UIRef.BL;
+		
+		render(active, alpha, maxWidth);
 	}
 
 

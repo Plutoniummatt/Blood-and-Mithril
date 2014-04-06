@@ -67,7 +67,7 @@ public abstract class LiquidContainer extends Item {
 				BloodAndMithrilClient.HEIGHT/2 + 100,
 				300,
 				200,
-				containedLiquids.isEmpty() ? getCotainerTitle() : getTitle(containedLiquids, getTotalAmount()),
+				containedLiquids.isEmpty() ? getCotainerTitle() : getCotainerTitle() + " of " + getTitle(containedLiquids, getTotalAmount()),
 				true,
 				300,
 				200

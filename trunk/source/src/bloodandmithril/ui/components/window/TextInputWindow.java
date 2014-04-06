@@ -91,9 +91,9 @@ public class TextInputWindow extends Window {
 	public boolean keyPressed(int keyCode) {
 		if (keyCode == Input.Keys.ENTER) {
 			task.execute(panel.getInputText());
+			setClosing(true);
 		}
 
-		setClosing(true);
 		return panel.keyPressed(keyCode);
 	}
 }

@@ -89,7 +89,7 @@ public class ConstructionWindow extends TradeWindow {
 
 		int maxWidth = width / 2 + 5;
 		float fraction = construction.getConstructionProgress();
-		Color alphaGreen = Colors.modulateAlpha(Color.GREEN, getAlpha());
+		Color alphaGreen = Colors.modulateAlpha(Color.GREEN, isActive() ? getAlpha() : getAlpha() * 0.6f);
 
 		UserInterface.shapeRenderer.filledRect(
 			x + width / 2 - 10,
