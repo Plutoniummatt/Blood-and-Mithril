@@ -25,7 +25,7 @@ public class FluidDynamicsProcessor {
 	private static final float MAX_DEPTH = TILE_SIZE;
 	private static final float MAX_COMPRESSION = TILE_SIZE * 0.06f;
 	private static final float MAX_FLOW = TILE_SIZE;
-	private static final float DIFFUSION_COEFFICIENT = 100f;
+	private static final float DIFFUSION_COEFFICIENT = 250f;
 	
 	/**
 	 * Constructor

@@ -1,5 +1,6 @@
 package bloodandmithril.prop.plant;
 
+import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Harvest;
@@ -38,7 +39,7 @@ public class Carrot extends Plant {
 
 	@Override
 	public void render() {
-		BloodAndMithrilClient.spriteBatch.draw(carrot, position.x - width / 2, position.y);
+		spriteBatch.draw(carrot, position.x - width / 2, position.y);
 	}
 
 
