@@ -93,6 +93,7 @@ public class TextInputWindow extends Window {
 			task.execute(panel.getInputText());
 		}
 
+		setClosing(true);
 		return panel.keyPressed(keyCode);
 	}
 }
