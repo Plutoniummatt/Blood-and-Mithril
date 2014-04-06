@@ -58,6 +58,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.ui.components.bar.BottomBar;
+import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
@@ -771,6 +772,24 @@ public class UserInterface {
 			existing.setActive(true);
 			existing.minimized = false;
 		}
+	}
+	
+	
+	public static void addMessage(String title, String message) {
+		addLayeredComponent(
+			new MessageWindow(
+				message, 
+				Color.ORANGE, 
+				WIDTH / 2 - 100, 
+				HEIGHT / 2 + 50, 
+				300, 
+				150, 
+				title, 
+				true, 
+				300, 
+				150
+			)
+		);
 	}
 
 

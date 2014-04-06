@@ -1,6 +1,8 @@
 package bloodandmithril.server;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
@@ -28,6 +30,7 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
+import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
@@ -338,7 +341,9 @@ public class BloodAndMithrilServer {
 					elf.giveItem(new ChickenLeg());
 				}
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-					elf.giveItem(new GlassBottle(Water.class, 1f));
+					Map<Class<? extends Liquid>, Float> liquids = new HashMap<>();
+					liquids.put(Water.class, 1f);
+					elf.giveItem(new GlassBottle(liquids));
 				}
 				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 					elf.giveItem(new Currency());

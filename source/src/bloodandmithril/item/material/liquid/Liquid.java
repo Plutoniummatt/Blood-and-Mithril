@@ -21,26 +21,4 @@ public abstract class Liquid implements Serializable {
 	public abstract String getDescription();
 
 	public abstract Color getColor();
-
-	/** Empty */
-	public static class Empty extends Liquid {
-		private static final long serialVersionUID = 6431065925729672809L;
-		
-		public Empty() {
-			super();
-		}
-		
-		@Override
-		public void drink(float amount, Individual affected) {
-		}
-		@Override
-		public String getDescription() {
-			return "Empty";
-		}
-
-		@Override
-		public Color getColor() {
-			return null;
-		}
-	}
 }

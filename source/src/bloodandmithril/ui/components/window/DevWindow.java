@@ -5,6 +5,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
@@ -24,6 +25,8 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
+import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
@@ -146,8 +149,10 @@ public class DevWindow extends Window {
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 				elf.giveItem(new ChickenLeg());
 			}
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new GlassBottle(bloodandmithril.item.material.liquid.Water.class, 1f));
+			for (int i = Util.getRandom().nextInt(50) + 10; i > 0; i--) {
+				Map<Class<? extends Liquid>, Float> liquids = new HashMap<>();
+				liquids.put(Water.class, 1f);
+				elf.giveItem(new GlassBottle(liquids));
 			}
 			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 				elf.giveItem(new Currency());

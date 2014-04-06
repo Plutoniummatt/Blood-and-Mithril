@@ -3,7 +3,7 @@ package bloodandmithril.csi.requests;
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.item.material.container.Bottle;
+import bloodandmithril.item.material.container.LiquidContainer;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.world.Domain;
 
@@ -15,13 +15,13 @@ import bloodandmithril.world.Domain;
 public class DrinkLiquid implements Request {
 
 	private final int individualId;
-	private final Bottle bottleToDrinkFrom;
+	private final LiquidContainer bottleToDrinkFrom;
 	private final float amount;
 
 	/**
 	 * Constructor
 	 */
-	public DrinkLiquid(int individualId, Bottle bottleToDrinkFrom, float amount) {
+	public DrinkLiquid(int individualId, LiquidContainer bottleToDrinkFrom, float amount) {
 		this.individualId = individualId;
 		this.bottleToDrinkFrom = bottleToDrinkFrom;
 		this.amount = amount;
@@ -33,8 +33,8 @@ public class DrinkLiquid implements Request {
 
 		Individual individual = Domain.getIndividuals().get(individualId);
 		if (individual.takeItem(bottleToDrinkFrom) == 1) {
-			Bottle newBottle = bottleToDrinkFrom.clone();
-			newBottle.drink(amount, individual);
+			LiquidContainer newBottle = bottleToDrinkFrom.clone();
+			newBottle.drinkFrom(amount, individual);
 			individual.giveItem(newBottle);
 		}
 

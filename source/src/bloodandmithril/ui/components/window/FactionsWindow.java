@@ -30,7 +30,7 @@ import com.google.common.collect.Maps;
 /**
  * Window that displays factions
  *
- * @author Copyright (c) CHP Consulting Ltd. 2014
+ * @author Matt
  */
 public class FactionsWindow extends Window {
 

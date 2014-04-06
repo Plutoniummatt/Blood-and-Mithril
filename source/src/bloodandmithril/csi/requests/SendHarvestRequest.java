@@ -11,7 +11,7 @@ import bloodandmithril.world.Domain;
 /**
  * A {@link Request} for an {@link Individual} to {@link Harvest} a {@link Harvestable}
  *
- * @author Copyright (c) CHP Consulting Ltd. 2014
+ * @author Matt
  */
 public class SendHarvestRequest implements Request {
 
