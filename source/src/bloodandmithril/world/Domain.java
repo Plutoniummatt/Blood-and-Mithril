@@ -160,8 +160,8 @@ public class Domain {
 
 		fBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
-		getActiveWorld().getTopography().renderForeGround(camX, camY);
 		spriteBatch.begin();
+		getActiveWorld().getTopography().renderForeGround(camX, camY);
 		spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
 		for (Prop prop : getProps().values()) {
@@ -169,8 +169,8 @@ public class Domain {
 				prop.render();
 			}
 		}
-		spriteBatch.end();
 		IndividualPlatformFilteringRenderer.renderIndividuals();
+		spriteBatch.end();
 		
 		gl20.glEnable(GL20.GL_BLEND);
 		shapeRenderer.begin(ShapeType.FilledRectangle);

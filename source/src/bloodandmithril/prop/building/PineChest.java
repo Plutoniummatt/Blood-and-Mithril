@@ -1,5 +1,6 @@
 package bloodandmithril.prop.building;
 
+import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.HashMap;
@@ -165,7 +166,7 @@ public class PineChest extends Construction implements Container {
 
 	@Override
 	protected void internalRender(float constructionProgress) {
-		BloodAndMithrilClient.spriteBatch.draw(pineChest, position.x - width / 2, position.y);
+		spriteBatch.draw(pineChest, position.x - width / 2, position.y);
 	}
 
 

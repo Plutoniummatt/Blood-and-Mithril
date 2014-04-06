@@ -158,7 +158,6 @@ public class Elf extends Individual {
 
 	@Override
 	protected void internalRender() {
-		BloodAndMithrilClient.spriteBatch.begin();
 
 		// Determine which shader we're using, normal, or highlighted
 		if (isMouseOver()) {
@@ -225,7 +224,6 @@ public class Elf extends Individual {
 		}
 
 		BloodAndMithrilClient.spriteBatch.flush();
-		BloodAndMithrilClient.spriteBatch.end();
 	}
 
 
