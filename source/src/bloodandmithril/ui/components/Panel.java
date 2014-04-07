@@ -29,7 +29,7 @@ public abstract class Panel extends Component {
 	/** Called when left mouse button is clicked */
 	@Override
 	public abstract boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy);
-
+	
 	/** Called when left click is released */
 	@Override
 	public abstract void leftClickReleased();

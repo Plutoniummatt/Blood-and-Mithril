@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.SendChatMessage.Message;
 import bloodandmithril.ui.UserInterface;

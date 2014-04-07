@@ -3,13 +3,13 @@ package bloodandmithril.character.individuals;
 import java.util.HashMap;
 import java.util.List;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Item;

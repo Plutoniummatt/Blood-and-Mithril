@@ -1,15 +1,15 @@
 package bloodandmithril.prop.building;
 
-import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.ContainerImpl;

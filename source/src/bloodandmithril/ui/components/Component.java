@@ -1,6 +1,6 @@
 package bloodandmithril.ui.components;
 
-import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.ui.UserInterface.uiTexture;
 import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.util.Logger.LogLevel.DEBUG;

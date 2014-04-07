@@ -1,5 +1,7 @@
 package bloodandmithril.world.topography.fluid;
 
+import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -31,6 +33,15 @@ public class FluidMap implements Serializable {
 	
 	public Fluid put(int x, int y, Fluid v) {
 		return fluids.put(x, y, v);
+	}
+	
+	
+	public Fluid put(float worldX, float worldY, Fluid v) {
+		return fluids.put(
+			convertToWorldTileCoord(worldX), 
+			convertToWorldTileCoord(worldY), 
+			v
+		);
 	}
 	
 	

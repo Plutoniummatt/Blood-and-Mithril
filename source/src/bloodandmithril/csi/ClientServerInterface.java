@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutorService;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.Individual.IndividualState;
@@ -55,6 +54,7 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.skill.Skills;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.CSIMineTile;
 import bloodandmithril.csi.requests.CSITradeWith;

@@ -1,8 +1,8 @@
 package bloodandmithril.item.material.animal;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;

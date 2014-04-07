@@ -2,8 +2,7 @@ package bloodandmithril.persistence;
 
 import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.persistence.PersistenceUtil.encode;
-
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;

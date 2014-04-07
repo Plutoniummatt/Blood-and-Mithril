@@ -2,7 +2,7 @@ package bloodandmithril.item.material.fuel;
 
 import com.badlogic.gdx.graphics.Color;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.material.Fuel;

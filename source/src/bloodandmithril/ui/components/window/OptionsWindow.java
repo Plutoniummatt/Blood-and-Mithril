@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;

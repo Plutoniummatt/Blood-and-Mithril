@@ -1,10 +1,10 @@
 package bloodandmithril.prop.plant;
 
-import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
-import bloodandmithril.BloodAndMithrilClient;
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Item;
 import bloodandmithril.prop.Harvestable;

@@ -5,7 +5,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Task;

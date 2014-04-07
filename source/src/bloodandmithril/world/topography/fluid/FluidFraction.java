@@ -18,10 +18,10 @@ public class FluidFraction implements Serializable {
 		this.depth = depth;
 	}
 	
-	public static FluidFraction fluid(Liquid liquid, float fraction) {
+	public static <T extends Liquid> FluidFraction fraction(T liquid, float fraction) {
 		return new FluidFraction(liquid, fraction);
 	}
-
+	
 	public Liquid getLiquid() {
 		return liquid;
 	}

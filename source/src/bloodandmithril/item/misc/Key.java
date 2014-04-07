@@ -2,7 +2,7 @@ package bloodandmithril.item.misc;
 
 import com.badlogic.gdx.graphics.Color;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.ui.UserInterface;
@@ -17,6 +17,7 @@ import bloodandmithril.ui.components.window.ChatWindow;
 import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.ui.components.window.Window;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 

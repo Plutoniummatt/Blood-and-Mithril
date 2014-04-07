@@ -1,10 +1,10 @@
 package bloodandmithril.graphics;
 
-import static bloodandmithril.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.BloodAndMithrilClient.WIDTH;
-import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
-import static bloodandmithril.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.world.Domain.fBuffer;                          
 import static bloodandmithril.world.Domain.mBuffer;                          
 import static bloodandmithril.world.Domain.bBuffer;                          

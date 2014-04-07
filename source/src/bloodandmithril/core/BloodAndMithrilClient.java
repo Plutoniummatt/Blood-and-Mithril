@@ -1,4 +1,4 @@
-package bloodandmithril;
+package bloodandmithril.core;
 
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -14,11 +14,6 @@ import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.DynamicLightingPostRenderer;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Equipable;
-import bloodandmithril.item.material.liquid.Acid;
-import bloodandmithril.item.material.liquid.Blood;
-import bloodandmithril.item.material.liquid.CrudeOil;
-import bloodandmithril.item.material.liquid.Milk;
-import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -26,16 +21,12 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
-import bloodandmithril.ui.components.window.DevWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.fluid.Fluid;
-import bloodandmithril.world.topography.fluid.FluidFraction;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -417,71 +408,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (UserInterface.keyPressed(keycode)) {
 		  return false;
-		}
-
-		if (keycode == Input.Keys.L) {
-			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), true);
-		}
-		
-		if (keycode == Input.Keys.P) {
-			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickTile.class);
-		}
-		
-		if (keycode == Input.Keys.J) {
-			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()), 
-				Topography.convertToWorldTileCoord(getMouseWorldY()), 
-				new Fluid(FluidFraction.fluid(new Water(), 16f))
-			);
-		}
-		
-		if (keycode == Input.Keys.K) {
-			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()), 
-				Topography.convertToWorldTileCoord(getMouseWorldY()), 
-				new Fluid(FluidFraction.fluid(new Blood(), 64f))
-			);
-		}
-		
-		if (keycode == Input.Keys.H) {
-			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()), 
-				Topography.convertToWorldTileCoord(getMouseWorldY()), 
-				new Fluid(FluidFraction.fluid(new Acid(), 16f))
-			);
-		}
-		
-		if (keycode == Input.Keys.G) {
-			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()), 
-				Topography.convertToWorldTileCoord(getMouseWorldY()), 
-				new Fluid(FluidFraction.fluid(new CrudeOil(), 16f))
-			);
-		}
-		
-		if (keycode == Input.Keys.F) {
-			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()), 
-				Topography.convertToWorldTileCoord(getMouseWorldY()), 
-				new Fluid(FluidFraction.fluid(new Milk(), 16f))
-			);
-		}
-		
-		if (keycode == Input.Keys.S) {
-			GameSaver.save(false);
-		}
-
-		if (keycode == Input.Keys.D && ClientServerInterface.isServer()) {
-			UserInterface.addLayeredComponentUnique(
-				new DevWindow(
-					WIDTH/2 - 250,
-					HEIGHT/2 + 150,
-					500,
-					300,
-					true
-				),
-				"Developer"
-			);
 		}
 
 		return false;

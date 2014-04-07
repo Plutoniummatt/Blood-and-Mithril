@@ -10,10 +10,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.ContainerImpl;

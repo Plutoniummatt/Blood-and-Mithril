@@ -3,6 +3,9 @@ package bloodandmithril.ui.components.window;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 
+
+
+
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -10,14 +13,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
-import bloodandmithril.BloodAndMithrilClient;
+
+
+
 import bloodandmithril.character.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.container.LiquidContainer;
+import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -30,8 +37,8 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
-
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.fluid.Fluid;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -298,7 +305,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
 									
 									if (amount < 0.01f) {
-										UserInterface.addMessage("Too little to drink", "It would be a waste of time to drink this little");
+										UserInterface.addMessage("Too little to drink", "It would be a waste of time to drink this little, enter a larger amount");
 										return;
 									}
 									
@@ -327,8 +334,8 @@ public class InventoryWindow extends Window implements Refreshable {
 				null
 			);
 			
-			ContextMenuItem empty = new ContextMenuItem(
-				"Empty content", 
+			ContextMenuItem emptyContainerContents = new ContextMenuItem(
+				"Separate", 
 				() -> {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
@@ -344,16 +351,20 @@ public class InventoryWindow extends Window implements Refreshable {
 									float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
 									
 									if (amount < 0.01f) {
-										UserInterface.addMessage("Too little to throw away", "Its too little to throw away");
+										UserInterface.addMessage("Too little to Separate", "Its too little to Separate, enter a larger amount");
 										return;
 									}
 									
 									if (ClientServerInterface.isServer()) {
 										host.takeItem(item);
 										LiquidContainer newBottle = ((LiquidContainer) item).clone();
-										newBottle.subtract(amount);
+										Map<Class<? extends Liquid>, Float> subtracted = newBottle.subtract(amount);
 										host.giveItem(newBottle);
-										Domain.getWorld(((Individual)host).getWorldId()).getTopography().getFluids();
+										Domain.getWorld(((Individual)host).getWorldId()).getTopography().getFluids().put(
+											((Individual)host).getState().position.x,
+											((Individual)host).getState().position.y,
+											new Fluid(subtracted)
+										);
 										refresh();
 									} else {
 										// TODO
@@ -362,7 +373,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 								}
 							},
-							"Drink",
+							"Separate",
 							true,
 							""
 						)
@@ -380,6 +391,9 @@ public class InventoryWindow extends Window implements Refreshable {
 
 			if (host instanceof Individual) {
 				contextMenu.addMenuItem(drink);
+				if (!((LiquidContainer)item).isEmpty()) {
+					contextMenu.addMenuItem(emptyContainerContents);
+				}
 			}
 
 			return contextMenu;
