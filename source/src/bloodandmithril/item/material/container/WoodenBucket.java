@@ -16,6 +16,9 @@ public class WoodenBucket extends LiquidContainer {
 	private static final long serialVersionUID = -4162891941797527242L;
 	
 	
+	/**
+	 * Constructor
+	 */
 	public WoodenBucket(Map<Class<? extends Liquid>, Float> containedLiquids) {
 		super(1f, 16f, containedLiquids, 50);
 	}

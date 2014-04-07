@@ -26,12 +26,12 @@ public class LiquidMixtureAnalyzer {
 		
 		if (list.get(0).getValue() > 0.75f * total) {
 			try {
-				return "Seems to contain mostly " + list.get(0).getKey().getSimpleName() + "; " + list.get(0).getKey().newInstance().getDescription();
+				return "mostly " + list.get(0).getKey().getSimpleName() + "; " + list.get(0).getKey().newInstance().getDescription();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		} else {
-			return "A mixture of different liquids... Impossible to tell without proper analysis.";
+			return "a mixture of different liquids... Impossible to tell without proper analysis.";
 		}
 	}
 	

@@ -57,11 +57,33 @@ public abstract class LiquidContainer extends Item {
 	}
 	
 	
+	public Map<Class<? extends Liquid>, Float> subtract(float amount) {
+		float fraction = amount/getTotalAmount();
+		Map<Class<? extends Liquid>, Float> subtracted = Maps.newHashMap();
+		
+		try {
+			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(containedLiquids).entrySet()) {
+				if (fraction >= 1f) {
+					containedLiquids.remove(entry.getKey());
+					subtracted.put(entry.getKey(), entry.getValue());
+				} else {
+					subtracted.put(entry.getKey(), entry.getValue() * fraction);
+					containedLiquids.put(entry.getKey(), entry.getValue() * (1f - fraction));
+				}
+			}
+			
+			return subtracted;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 	@Override
 	public Window getInfoWindow() {
 		try {
 			return new MessageWindow(
-				containedLiquids.isEmpty() ? getContainerDescription() : getDescription(containedLiquids, getTotalAmount()),
+				containedLiquids.isEmpty() ? getContainerDescription() : getContainerDescription() + " containing " + getDescription(containedLiquids, getTotalAmount()),
 				Color.ORANGE,
 				BloodAndMithrilClient.WIDTH/2 - 175,
 				BloodAndMithrilClient.HEIGHT/2 + 100,
