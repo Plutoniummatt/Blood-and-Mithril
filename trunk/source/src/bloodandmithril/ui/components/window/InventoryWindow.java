@@ -2,11 +2,13 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.util.Fonts.defaultFont;
 
+
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 
 import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
@@ -28,6 +30,8 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
+
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -306,6 +310,53 @@ public class InventoryWindow extends Window implements Refreshable {
 										refresh();
 									} else {
 										ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (LiquidContainer)item, Float.parseFloat((String)args[0]));
+									}
+								} catch (NumberFormatException e) {
+									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+								}
+							},
+							"Drink",
+							true,
+							""
+						)
+					);
+				},
+				Colors.UI_GRAY,
+				Color.GREEN,
+				Color.WHITE,
+				null
+			);
+			
+			ContextMenuItem empty = new ContextMenuItem(
+				"Empty content", 
+				() -> {
+					UserInterface.addLayeredComponent(
+						new TextInputWindow(
+							BloodAndMithrilClient.WIDTH / 2 - 125,
+							BloodAndMithrilClient.HEIGHT/2 + 50,
+							250,
+							100,
+							"Amount",
+							250,
+							100,
+							args -> {
+								try {
+									float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
+									
+									if (amount < 0.01f) {
+										UserInterface.addMessage("Too little to throw away", "Its too little to throw away");
+										return;
+									}
+									
+									if (ClientServerInterface.isServer()) {
+										host.takeItem(item);
+										LiquidContainer newBottle = ((LiquidContainer) item).clone();
+										newBottle.subtract(amount);
+										host.giveItem(newBottle);
+										Domain.getWorld(((Individual)host).getWorldId()).getTopography().getFluids();
+										refresh();
+									} else {
+										// TODO
 									}
 								} catch (NumberFormatException e) {
 									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
