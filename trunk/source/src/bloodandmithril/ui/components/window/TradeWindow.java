@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static java.lang.Math.min;
 
@@ -27,6 +29,8 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -302,7 +306,31 @@ public class TradeWindow extends Window implements Refreshable {
 					entry.getKey().getSingular(true).length() * 10,
 					16,
 					() -> {
-						changeList(entry.getKey(), trading, notTrading, false);
+						if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+							UserInterface.addLayeredComponent(
+								new TextInputWindow(
+									WIDTH / 2 - 125, 
+									HEIGHT / 2 + 100, 
+									250, 
+									100, 
+									"Enter quantity", 
+									250, 
+									100, 
+									args -> {
+										try {
+											changeList(entry.getKey(), Integer.parseInt(args[0].toString()), trading, notTrading, false);
+										} catch (NumberFormatException e) {
+											UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
+										}
+									}, 
+									"Confirm", 
+									true, 
+									"1"
+								)
+							);
+						} else {
+							changeList(entry.getKey(), 1, trading, notTrading, false);
+						}
 					},
 					Colors.UI_GRAY,
 					Color.GREEN,
@@ -311,7 +339,8 @@ public class TradeWindow extends Window implements Refreshable {
 				),
 				null
 			);
-
+			
+			
 			notTrading.put(
 				listingMenuItem,
 				entry.getValue()
@@ -320,7 +349,7 @@ public class TradeWindow extends Window implements Refreshable {
 	}
 
 
-	private void changeList(final Item key, final HashMap<ListingMenuItem<Item>, Integer> transferTo, final HashMap<ListingMenuItem<Item>, Integer> transferFrom, final boolean toTrade) {
+	private void changeList(final Item key, int numberToChange, final HashMap<ListingMenuItem<Item>, Integer> transferTo, final HashMap<ListingMenuItem<Item>, Integer> transferFrom, final boolean toTrade) {
 		final ListingMenuItem<Item> listingMenuItem = new ListingMenuItem<Item>(
 			key,
 			new Button(
@@ -331,7 +360,31 @@ public class TradeWindow extends Window implements Refreshable {
 				key.getSingular(true).length() * 10,
 				16,
 				() -> {
-					changeList(key, transferFrom, transferTo, !toTrade);
+					if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+						UserInterface.addLayeredComponent(
+							new TextInputWindow(
+								WIDTH / 2 - 125, 
+								HEIGHT / 2 + 100, 
+								250, 
+								100, 
+								"Enter quantity", 
+								250, 
+								100, 
+								args -> {
+									try {
+										changeList(key, Integer.parseInt(args[0].toString()), transferFrom, transferTo, !toTrade);
+									} catch (NumberFormatException e) {
+										UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
+									}
+								}, 
+								"Confirm", 
+								true, 
+								"1"
+							)
+						);
+					} else {
+						changeList(key, 1, transferFrom, transferTo, !toTrade);
+					}
 				},
 				toTrade ? Colors.UI_GRAY : Colors.UI_DARK_ORANGE,
 				toTrade ? Color.GREEN : Color.ORANGE,
@@ -343,23 +396,27 @@ public class TradeWindow extends Window implements Refreshable {
 
 		for (Entry<ListingMenuItem<Item>, Integer> entry : Lists.newArrayList(transferFrom.entrySet())) {
 			if (entry.getKey().t.sameAs(key)) {
-				if (transferFrom.get(entry.getKey()) == 1) {
+				int transferred = 0;
+				
+				if (transferFrom.get(entry.getKey()) <= numberToChange) {
+					transferred = entry.getValue();
 					transferFrom.remove(entry.getKey());
 				} else {
-					transferFrom.put(entry.getKey(), transferFrom.get(entry.getKey()) - 1);
+					transferred = numberToChange;
+					transferFrom.put(entry.getKey(), transferFrom.get(entry.getKey()) - numberToChange);
 				}
 
 				boolean found = false;
 				for (Entry<ListingMenuItem<Item>, Integer> innerEntry : Lists.newArrayList(transferTo.entrySet())) {
 					if (innerEntry.getKey().t.sameAs(key)) {
 						transferTo.remove(innerEntry.getKey());
-						transferTo.put(listingMenuItem, innerEntry.getValue() + 1);
+						transferTo.put(listingMenuItem, innerEntry.getValue() + transferred);
 						found = true;
 						break;
 					}
 				}
 				if (!found) {
-					transferTo.put(listingMenuItem, 1);
+					transferTo.put(listingMenuItem, transferred);
 				}
 
 				break;

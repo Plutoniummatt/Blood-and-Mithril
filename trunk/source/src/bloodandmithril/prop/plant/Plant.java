@@ -1,6 +1,6 @@
 package bloodandmithril.prop.plant;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 

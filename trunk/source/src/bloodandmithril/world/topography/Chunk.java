@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.lwjgl.opengl.GL11;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;

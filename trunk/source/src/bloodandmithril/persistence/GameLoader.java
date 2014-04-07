@@ -1,6 +1,6 @@
 package bloodandmithril.persistence;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.persistence.character.IndividualLoader;
 import bloodandmithril.persistence.prop.PropLoader;

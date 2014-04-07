@@ -1,8 +1,8 @@
 package bloodandmithril.world.weather;
 
-import static bloodandmithril.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.BloodAndMithrilClient.WIDTH;
-import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.world.Domain.gameWorldTexture;
 import static bloodandmithril.world.WorldState.currentEpoch;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledCircle;

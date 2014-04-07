@@ -3,7 +3,7 @@ package bloodandmithril.ui.components.panel;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;

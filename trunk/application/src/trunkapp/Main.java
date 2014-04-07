@@ -1,9 +1,15 @@
 package trunkapp;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.persistence.ConfigPersistenceService;
+import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.window.DevWindow;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -28,7 +34,26 @@ public class Main {
 		cfg.addIcon("data/image/icon.png", FileType.Internal);
 		cfg.addIcon("data/image/smallIcon.png", FileType.Internal);
 
-		client = new BloodAndMithrilClient();
+		client = new BloodAndMithrilClient() {
+			@Override
+			public boolean keyDown(int keycode) {
+				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && keycode == Input.Keys.D && ClientServerInterface.isServer() && args.length != 0 && args[0].equals("developer")) {
+					UserInterface.addLayeredComponentUnique(
+						new DevWindow(
+							WIDTH/2 - 250,
+							HEIGHT/2 + 150,
+							500,
+							300,
+							true
+						),
+						"Developer"
+					);
+				}
+
+				return super.keyDown(keycode);
+			}
+		};
+		
 		new LwjglApplication(client, cfg);
 	}
 }

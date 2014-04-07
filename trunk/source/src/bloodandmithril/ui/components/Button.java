@@ -1,8 +1,8 @@
 package bloodandmithril.ui.components;
 
-import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Util.fitToTextInputBox;
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.JITTask;

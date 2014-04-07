@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.topography.Topography;
 

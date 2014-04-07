@@ -3,11 +3,11 @@ package bloodandmithril.character.individuals;
 import java.util.HashMap;
 import java.util.List;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.BoarAI;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.faction.Faction;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
 import bloodandmithril.util.AnimationHelper;
@@ -82,8 +82,6 @@ public class Boar extends Individual {
 
 	@Override
 	protected void internalRender() {
-		BloodAndMithrilClient.spriteBatch.begin();
-
 		// Determine which shader we're using, normal, or highlighted
 		if (isMouseOver()) {
 
@@ -111,7 +109,6 @@ public class Boar extends Individual {
 		);
 
 		BloodAndMithrilClient.spriteBatch.flush();
-		BloodAndMithrilClient.spriteBatch.end();
 	}
 
 

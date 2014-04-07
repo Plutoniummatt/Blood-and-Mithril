@@ -2,8 +2,8 @@ package bloodandmithril.item.material.plant;
 
 import com.badlogic.gdx.graphics.Color;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;

@@ -2,7 +2,7 @@ package bloodandmithril.util;
 
 import java.util.Random;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.util.datastructure.Wrapper;
 
 import com.badlogic.gdx.graphics.Color;

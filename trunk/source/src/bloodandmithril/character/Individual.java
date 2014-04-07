@@ -1,12 +1,12 @@
 package bloodandmithril.character;
 
-import static bloodandmithril.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.BloodAndMithrilClient.WIDTH;
-import static bloodandmithril.BloodAndMithrilClient.cam;
-import static bloodandmithril.BloodAndMithrilClient.controlledFactions;
-import static bloodandmithril.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.cam;
+import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.ParameterPersistenceService.getParameters;
 import static bloodandmithril.world.WorldState.currentEpoch;

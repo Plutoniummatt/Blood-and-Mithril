@@ -7,7 +7,10 @@ import static java.lang.Math.min;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
@@ -21,7 +24,7 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	private static final long serialVersionUID = 2940941435333092614L;
 	
 	/**
-	 * Protected constructor
+	 * Constructor
 	 */
 	public Fluid(FluidFraction... fluids) {
 		addAll(newArrayList(fluids));
@@ -29,10 +32,28 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	
 	
 	/**
-	 * Protected constructor
+	 * Constructor
 	 */
 	public Fluid(Collection<FluidFraction> fluids) {
 		addAll(fluids);
+	}
+	
+	
+	/**
+	 * Constructor
+	 */
+	public Fluid(Map<Class<? extends Liquid>, Float> map) {
+		Collection<FluidFraction> fractions = newArrayList();
+		
+		try {
+			for (Entry<Class<? extends Liquid>, Float> entry : map.entrySet()) {
+				fractions.add(FluidFraction.fraction(entry.getKey().newInstance(), entry.getValue()));
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
+		addAll(fractions);
 	}
 	
 	
@@ -64,7 +85,7 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 		
 		Collection<FluidFraction> newFracs = newArrayList();
 		stream().forEach(toCopy -> {
-			newFracs.add(FluidFraction.fluid(toCopy.getLiquid(), toCopy.getDepth() * fraction));
+			newFracs.add(FluidFraction.fraction(toCopy.getLiquid(), toCopy.getDepth() * fraction));
 		});
 		
 		return new Fluid(newFracs);
@@ -77,7 +98,7 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	public synchronized Fluid copy() {
 		Collection<FluidFraction> newFracs = newArrayList();
 		stream().forEach(toCopy -> {
-			newFracs.add(FluidFraction.fluid(toCopy.getLiquid(), toCopy.getDepth()));
+			newFracs.add(FluidFraction.fraction(toCopy.getLiquid(), toCopy.getDepth()));
 		});
 		
 		return new Fluid(newFracs);

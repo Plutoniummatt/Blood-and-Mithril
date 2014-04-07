@@ -1,6 +1,6 @@
 package bloodandmithril.generation.component;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.generation.component.Component.ComponentCreationCustomization;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.Room.RoomCreationCustomization;

@@ -1,9 +1,9 @@
 package bloodandmithril.world;
 
-import static bloodandmithril.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.BloodAndMithrilClient.WIDTH;
-import static bloodandmithril.BloodAndMithrilClient.cam;
-import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.cam;
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.world.Domain.Depth.BACKGROUND;
 import static bloodandmithril.world.Domain.Depth.FOREGOUND;

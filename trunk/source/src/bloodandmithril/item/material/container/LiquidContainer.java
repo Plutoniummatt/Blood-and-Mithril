@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Maps;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.ui.components.window.MessageWindow;
@@ -57,6 +57,9 @@ public abstract class LiquidContainer extends Item {
 	}
 	
 	
+	/**
+	 * Subtract an amount from this {@link LiquidContainer}, returning a Map of the fluids subtracted.
+	 */
 	public Map<Class<? extends Liquid>, Float> subtract(float amount) {
 		float fraction = amount/getTotalAmount();
 		Map<Class<? extends Liquid>, Float> subtracted = Maps.newHashMap();
@@ -117,6 +120,11 @@ public abstract class LiquidContainer extends Item {
 	 */
 	protected float getTotalAmount() {
 		return (float) containedLiquids.values().stream().mapToDouble(f -> {return f;}).sum();
+	}
+	
+	
+	public boolean isEmpty() {
+		return getTotalAmount() == 0f;
 	}
 
 	

@@ -1,6 +1,8 @@
 package bloodandmithril.ui.components.window;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -9,7 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.Individual.IndividualState;
@@ -17,6 +18,7 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.DynamicLightingPostRenderer;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
@@ -25,9 +27,11 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
+import bloodandmithril.item.material.liquid.Acid;
 import bloodandmithril.item.material.liquid.Blood;
 import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
@@ -47,6 +51,10 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.fluid.Fluid;
+import bloodandmithril.world.topography.fluid.FluidFraction;
+import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -184,6 +192,54 @@ public class DevWindow extends Window {
 
 			Domain.getIndividuals().put(boar.getId().getId(), boar);
 			return true;
+		}
+		
+		if (keyCode == Input.Keys.L) {
+			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), true);
+		}
+		
+		if (keyCode == Input.Keys.P) {
+			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickTile.class);
+		}
+		
+		if (keyCode == Input.Keys.J) {
+			Domain.getActiveWorld().getTopography().getFluids().put(
+				Topography.convertToWorldTileCoord(getMouseWorldX()), 
+				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				new Fluid(FluidFraction.fraction(new Water(), 16f))
+			);
+		}
+		
+		if (keyCode == Input.Keys.K) {
+			Domain.getActiveWorld().getTopography().getFluids().put(
+				Topography.convertToWorldTileCoord(getMouseWorldX()), 
+				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				new Fluid(FluidFraction.fraction(new Blood(), 16f))
+			);
+		}
+		
+		if (keyCode == Input.Keys.H) {
+			Domain.getActiveWorld().getTopography().getFluids().put(
+				Topography.convertToWorldTileCoord(getMouseWorldX()), 
+				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				new Fluid(FluidFraction.fraction(new Acid(), 16f))
+			);
+		}
+		
+		if (keyCode == Input.Keys.G) {
+			Domain.getActiveWorld().getTopography().getFluids().put(
+				Topography.convertToWorldTileCoord(getMouseWorldX()), 
+				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				new Fluid(FluidFraction.fraction(new CrudeOil(), 16f))
+			);
+		}
+		
+		if (keyCode == Input.Keys.F) {
+			Domain.getActiveWorld().getTopography().getFluids().put(
+				Topography.convertToWorldTileCoord(getMouseWorldX()), 
+				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				new Fluid(FluidFraction.fraction(new Milk(), 16f))
+			);
 		}
 		
 		return false;

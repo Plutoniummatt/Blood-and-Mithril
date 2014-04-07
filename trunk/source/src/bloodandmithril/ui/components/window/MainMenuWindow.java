@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.faction.Faction;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.ui.UserInterface;

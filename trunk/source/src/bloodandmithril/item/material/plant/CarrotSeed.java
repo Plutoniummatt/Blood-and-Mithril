@@ -1,6 +1,6 @@
 package bloodandmithril.item.material.plant;
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;

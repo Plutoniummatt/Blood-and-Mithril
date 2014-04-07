@@ -1,6 +1,6 @@
 package bloodandmithril.prop.building;
 
-import static bloodandmithril.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.csi.ClientServerInterface.isClient;
 import static bloodandmithril.ui.UserInterface.refreshInventoryWindows;
 import static com.google.common.collect.Maps.newHashMap;
@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import bloodandmithril.BloodAndMithrilClient;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.AddLightRequest;
 import bloodandmithril.csi.requests.SynchronizePropRequest;

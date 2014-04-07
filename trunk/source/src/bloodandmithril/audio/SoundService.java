@@ -1,7 +1,7 @@
 package bloodandmithril.audio;
 
 
-import bloodandmithril.BloodAndMithrilClient;
+import bloodandmithril.core.BloodAndMithrilClient;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
