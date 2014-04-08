@@ -124,8 +124,11 @@ import bloodandmithril.item.material.container.LiquidContainer;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.container.WoodenBucket;
 import bloodandmithril.item.material.fuel.Coal;
+import bloodandmithril.item.material.liquid.Acid;
 import bloodandmithril.item.material.liquid.Blood;
+import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.item.material.mineral.YellowSand;
@@ -354,6 +357,9 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Milk.class);
+		kryo.register(CrudeOil.class);
+		kryo.register(Acid.class);
 		kryo.register(Blood.class);
 		kryo.register(ConcurrentDualKeySkipListMap.class);
 		kryo.register(FluidFraction.class);

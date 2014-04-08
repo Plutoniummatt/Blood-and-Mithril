@@ -18,4 +18,5 @@ public class ItemValues {
 	public static final int CARROTSEED = 1;
 	public static final int YELLOWBRICK = 2;
 	public static final int YELLOWSAND = 1;
+	public static final int WOODENBUCKET = 1;
 }

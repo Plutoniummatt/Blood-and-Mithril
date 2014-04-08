@@ -192,6 +192,10 @@ public abstract class LiquidContainer extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		if (other instanceof LiquidContainer) {
+			if (!other.getClass().equals(this.getClass())) {
+				return false;
+			}
+			
 			if (containedLiquids.size() != ((LiquidContainer)other).containedLiquids.size()) {
 				return false;
 			}

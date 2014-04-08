@@ -659,7 +659,7 @@ public abstract class Individual implements Equipper, Serializable {
 
 		final ContextMenu secondaryMenu = new ContextMenu(0, 0,
 			new MenuItem(
-				"Change name",
+				"Change nickname",
 				() -> {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
@@ -667,7 +667,7 @@ public abstract class Individual implements Equipper, Serializable {
 							HEIGHT/2 + 50,
 							250,
 							100,
-							"Rename",
+							"Change nickname",
 							250,
 							100,
 							args -> {
@@ -683,6 +683,36 @@ public abstract class Individual implements Equipper, Serializable {
 						)
 					);
 				},
+				Color.WHITE,
+				getToolTipTextColor(),
+				Color.GRAY,
+				null
+			),
+			new MenuItem(
+				"Update biography", 
+				() -> {
+					UserInterface.addLayeredComponent(
+						new TextInputWindow(
+							WIDTH / 2 - 125,
+							HEIGHT/2 + 50,
+							250,
+							100,
+							"Change biography",
+							250,
+							100,
+							args -> {
+								if (isServer()) {
+									thisIndividual.updateDescription(args[0].toString());
+								} else {
+									// TODO
+								}
+							},
+							"Confirm",
+							true,
+							thisIndividual.getDescription()
+						)
+					);
+				}, 
 				Color.WHITE,
 				getToolTipTextColor(),
 				Color.GRAY,
@@ -708,12 +738,12 @@ public abstract class Individual implements Equipper, Serializable {
 				InventoryWindow inventoryWindow = new InventoryWindow(
 					thisIndividual,
 					WIDTH/2 - ((id.getSimpleName() + " - Inventory").length() * 10 + 50)/2,
-					HEIGHT/2 + 200,
+					HEIGHT/2 + 150,
 					(id.getSimpleName() + " - Inventory").length() * 10 + 50,
-					400,
+					300,
 					id.getSimpleName() + " - Inventory",
 					true,
-					150, 150
+					150, 300
 				);
 				UserInterface.addLayeredComponentUnique(inventoryWindow, id.getSimpleName() + " - Inventory");
 			},

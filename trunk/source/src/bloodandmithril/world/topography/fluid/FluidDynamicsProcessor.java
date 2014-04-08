@@ -49,7 +49,7 @@ public class FluidDynamicsProcessor {
 			try {
 				processFluid(entry);
 			} catch (NullPointerException e) {
-				Logger.generalDebug("NPE detected during fluid dynamics processing, probably concurrency related.", LogLevel.WARN);
+				Logger.generalDebug("NPE detected during fluid dynamics processing, probably concurrency related.", LogLevel.TRACE);
 			}
 		});
 	}

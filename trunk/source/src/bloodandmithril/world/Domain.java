@@ -197,9 +197,9 @@ public class Domain {
 			}
 		}
 		spriteBatch.end();
+		getActiveWorld().getTopography().renderForeGround(camX, camY);
 		IndividualPlatformFilteringRenderer.renderIndividuals();
 		
-		getActiveWorld().getTopography().renderForeGround(camX, camY);
 		
 		gl20.glEnable(GL20.GL_BLEND);
 		shapeRenderer.begin(ShapeType.FilledRectangle);

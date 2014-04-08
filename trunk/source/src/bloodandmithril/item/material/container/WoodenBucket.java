@@ -1,10 +1,14 @@
 package bloodandmithril.item.material.container;
 
 import static bloodandmithril.item.material.liquid.LiquidMixtureAnalyzer.getTitle;
+import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import com.google.common.collect.Maps;
+
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.material.liquid.Liquid;
 
 /**
@@ -20,7 +24,15 @@ public class WoodenBucket extends LiquidContainer {
 	 * Constructor
 	 */
 	public WoodenBucket(Map<Class<? extends Liquid>, Float> containedLiquids) {
-		super(1f, 16f, containedLiquids, 50);
+		super(1f, 16f, containedLiquids, ItemValues.WOODENBUCKET);
+	}
+	
+	
+	/**
+	 * Constructor
+	 */
+	public WoodenBucket() {
+		super(1f, 16f, Maps.newHashMap(), 50);
 	}
 
 
@@ -38,7 +50,7 @@ public class WoodenBucket extends LiquidContainer {
 	
 	@Override
 	public LiquidContainer clone() {
-		return new WoodenBucket(containedLiquids);
+		return new WoodenBucket(newHashMap(containedLiquids));
 	}
 
 	

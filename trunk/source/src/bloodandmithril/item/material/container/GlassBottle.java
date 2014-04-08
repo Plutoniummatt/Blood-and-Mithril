@@ -21,7 +21,7 @@ public class GlassBottle extends LiquidContainer {
 	 * Constructor
 	 */
 	public GlassBottle(Map<Class<? extends Liquid>, Float> containedLiquids) {
-		super(0.1f, 1f, containedLiquids, ItemValues.GLASSBOTTLE);
+		super(0.1f, 2f, containedLiquids, ItemValues.GLASSBOTTLE);
 	}
 
 
