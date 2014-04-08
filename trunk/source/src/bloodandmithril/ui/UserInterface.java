@@ -3,6 +3,7 @@ package bloodandmithril.ui;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.cam;
+import static bloodandmithril.core.BloodAndMithrilClient.getCursorBoundTask;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
@@ -85,7 +86,7 @@ public class UserInterface {
 	private static final Color DARK_SCREEN_COLOR = new Color(0f, 0f, 0f, 0.8f);
 	private static final Color EXISTING_INTERFACE_COLOR = new Color(1f, 0.2f, 0f, 0.5f);
 	private static final Color AVAILABLE_INTERFACE_COLOR = new Color(0.2f, 1f, 0f, 0.5f);
-	private static final Color TILE_OVERLAY_COLOR = new Color(0f, 1f, 1f, 0.3f);
+	private static final Color MOUSE_OVER_TILE_BOX_COLOR = new Color(0f, 1f, 1f, 0.5f);
 	private static final Color COMPONENT_BOUNDARY_COLOR = new Color(1f, 1f, 1f, 0.5f);
 	private static final Color COMPONENT_FILL_COLOR = new Color(0f, 1f, 0f, 0.15f);
 
@@ -240,7 +241,27 @@ public class UserInterface {
 			}
 			renderMouseOverTileHighlightBox();
 		}
-
+		
+		if (getCursorBoundTask() != null) {
+			renderMouseOverTileHighlightBox();
+			spriteBatch.begin();
+			Fonts.defaultFont.setColor(Color.BLACK);
+			Fonts.defaultFont.draw(
+				spriteBatch, 
+				getCursorBoundTask().getShortDescription(), 
+				BloodAndMithrilClient.getMouseScreenX() + 20, 
+				BloodAndMithrilClient.getMouseScreenY() - 20 
+			);
+			Fonts.defaultFont.setColor(Color.WHITE);
+			Fonts.defaultFont.draw(
+				spriteBatch, 
+				getCursorBoundTask().getShortDescription(), 
+				BloodAndMithrilClient.getMouseScreenX() + 21, 
+				BloodAndMithrilClient.getMouseScreenY() - 21 
+			);
+			spriteBatch.end();
+		}
+		
 		renderDragBox();
 		renderLayeredComponents();
 		renderContextMenus();
@@ -330,9 +351,9 @@ public class UserInterface {
 
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		shapeRenderer.begin(FilledRectangle);
-		shapeRenderer.setColor(TILE_OVERLAY_COLOR);
-		shapeRenderer.filledRect(x, y, TILE_SIZE, TILE_SIZE);
+		shapeRenderer.begin(Rectangle);
+		shapeRenderer.setColor(MOUSE_OVER_TILE_BOX_COLOR);
+		shapeRenderer.rect(x, y, TILE_SIZE, TILE_SIZE);
 		shapeRenderer.end();
 		gl.glDisable(GL_BLEND);
 	}
