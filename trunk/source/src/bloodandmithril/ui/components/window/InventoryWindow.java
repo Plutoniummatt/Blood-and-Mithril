@@ -461,12 +461,10 @@ public class InventoryWindow extends Window implements Refreshable {
 				InventoryItemContextMenuConstructor.showInfo(item)
 			);
 
-			if (host instanceof Individual) {
+			if (host instanceof Individual && !((LiquidContainer)item).isEmpty()) {
 				contextMenu.addMenuItem(drink);
-				if (!((LiquidContainer)item).isEmpty()) {
-					contextMenu.addMenuItem(transferContainerContents);
-					contextMenu.addMenuItem(emptyContainerContents);
-				}
+				contextMenu.addMenuItem(transferContainerContents);
+				contextMenu.addMenuItem(emptyContainerContents);
 			}
 
 			return contextMenu;
