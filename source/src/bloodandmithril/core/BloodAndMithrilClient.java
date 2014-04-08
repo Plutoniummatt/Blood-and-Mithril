@@ -74,10 +74,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static final float INDIVIDUAL_SPREAD = 600f;
 
 	/** See {@link #update(float)}, if delta is greater than this value, skip the update frame */
-	private static final float LAG_SPIKE_TOLERANCE = 0.1f;
+	public static final float LAG_SPIKE_TOLERANCE = 0.1f;
 
 	/** The tolerance for double clicking */
-	private static final float DOUBLE_CLICK_TIME = 0.5f;
+	private static final float DOUBLE_CLICK_TIME = 0.25f;
 
 	/** Resolution x */
 	public static int WIDTH = ConfigPersistenceService.getConfig().getResX();
@@ -111,9 +111,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static long ping = 0;
 	
-	public static Thread updateThread, fluidThread;
+	public static Thread updateThread;
 	
 	private long topographyBacklogExecutionTimer;
+	
+	private static CursorBoundTask cursorBoundTask = null;
 
 	@Override
 	public void create() {
@@ -143,21 +145,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			}
 		});
 		
-		fluidThread = new Thread(() -> {
-			long prevFrame = System.currentTimeMillis();
-			
-			while (true) {
-				if ((System.currentTimeMillis() - prevFrame) > 10) {
-					updateFluids(Gdx.graphics.getDeltaTime());
-				}
-			}
-		});
 		
 		updateThread.setName("Update thread");
 		updateThread.start();
-		
-		fluidThread.setName("Fluid thread");
-		fluidThread.start();
 	}
 
 
@@ -323,6 +313,23 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Called upon left clicking
 	 */
 	private void leftClick(int screenX, int screenY) {
+		
+		if (getCursorBoundTask() != null) {
+			if (getCursorBoundTask().isWorldCoordinate()) {
+				getCursorBoundTask().execute(
+					(int) getMouseWorldX(), 
+					(int) getMouseWorldY()
+				);
+			} else {
+				getCursorBoundTask().execute(
+					(int) getMouseScreenX(), 
+					(int) getMouseScreenY()
+				);
+			}
+			
+			setCursorBoundTask(null);
+		}
+		
 		boolean doubleClick = leftDoubleClickTimer < DOUBLE_CLICK_TIME;
 		leftDoubleClickTimer = 0f;
 
@@ -527,16 +534,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		rightDoubleClickTimer += delta;
 	}
 	
-	
-	/**
-	 * Fluid update method
-	 */
-	private void updateFluids(float delta) {
-		if (!paused && delta < LAG_SPIKE_TOLERANCE && !GameSaver.isSaving() && domain != null) {
-			domain.updateFluids();
-		}
-	}
-
 
 	/**
 	 * Camera dragging processing
@@ -579,5 +576,15 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	public static float getMouseWorldY() {
 		return screenToWorldY(Gdx.graphics.getHeight() - Gdx.input.getY());
+	}
+
+
+	public static CursorBoundTask getCursorBoundTask() {
+		return cursorBoundTask;
+	}
+
+
+	public static void setCursorBoundTask(CursorBoundTask cursorBoundTask) {
+		BloodAndMithrilClient.cursorBoundTask = cursorBoundTask;
 	}
 }

@@ -10,9 +10,12 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.lwjgl.opengl.GL11;
+
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -22,6 +25,9 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	private static final long serialVersionUID = 2940941435333092614L;
+	
+	@SuppressWarnings("unused")
+	private Fluid() {}
 	
 	/**
 	 * Constructor
@@ -62,6 +68,8 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	 */
 	public synchronized void render(int x, int y) {
 		Color color = new Color();
+		
+		Gdx.gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
 		stream().forEach(fluidFraction -> {
 			color.add(fluidFraction.getLiquid().getColor().cpy().mul(fluidFraction.getDepth() / getDepth()));

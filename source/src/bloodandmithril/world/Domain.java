@@ -27,15 +27,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.faction.Faction;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.DynamicLightingPostRenderer;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
+import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.topography.Topography;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -91,6 +94,8 @@ public class Domain {
 	
 	private long topographyUpdateTimer;
 	
+	private static Thread fluidThread;
+	
 	/**
 	 * Constructor
 	 */
@@ -101,6 +106,29 @@ public class Domain {
 			activeWorld = world;
 		} else {
 			activeWorld = worlds.get(1);
+		}
+		
+		fluidThread = new Thread(() -> {
+			long prevFrame = System.currentTimeMillis();
+			
+			while (true) {
+				if ((System.currentTimeMillis() - prevFrame) > 10) {
+					updateFluids(Gdx.graphics.getDeltaTime());
+				}
+			}
+		});
+		
+		fluidThread.setName("Fluid thread");
+		fluidThread.start();
+	}
+	
+	
+	/**
+	 * Fluid update method
+	 */
+	private void updateFluids(float delta) {
+		if (!BloodAndMithrilClient.paused && delta < BloodAndMithrilClient.LAG_SPIKE_TOLERANCE && !GameSaver.isSaving()) {
+			updateFluids();
 		}
 	}
 	
@@ -161,7 +189,6 @@ public class Domain {
 		fBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
-		getActiveWorld().getTopography().renderForeGround(camX, camY);
 		spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
 		for (Prop prop : getProps().values()) {
@@ -169,8 +196,10 @@ public class Domain {
 				prop.render();
 			}
 		}
-		IndividualPlatformFilteringRenderer.renderIndividuals();
 		spriteBatch.end();
+		IndividualPlatformFilteringRenderer.renderIndividuals();
+		
+		getActiveWorld().getTopography().renderForeGround(camX, camY);
 		
 		gl20.glEnable(GL20.GL_BLEND);
 		shapeRenderer.begin(ShapeType.FilledRectangle);

@@ -30,7 +30,11 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
+import bloodandmithril.item.material.liquid.Acid;
+import bloodandmithril.item.material.liquid.Blood;
+import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
@@ -45,6 +49,8 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.fluid.Fluid;
+import bloodandmithril.world.topography.fluid.FluidFraction;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -153,6 +159,7 @@ public class BloodAndMithrilServer {
 							for (Individual individual : Domain.getIndividuals().values()) {
 								ClientServerInterface.SendNotification.notifyIndividualSync(individual.getId().getId());
 							}
+							
 						} catch (InterruptedException e) {
 							Logger.generalDebug(e.getMessage(), LogLevel.WARN, e);
 						}
@@ -167,6 +174,10 @@ public class BloodAndMithrilServer {
 
 							for (Entry<Integer, Light> entry : Domain.getLights().entrySet()) {
 								ClientServerInterface.SendNotification.notifySyncLight(entry.getKey(), entry.getValue());
+							}
+							
+							if (Domain.getActiveWorld() != null && Domain.getActiveWorld().getTopography() != null && Domain.getActiveWorld().getTopography().getFluids() != null) {
+								ClientServerInterface.SendNotification.notifySyncFluids();
 							}
 						}
 
@@ -200,13 +211,12 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public void create() {
-			gameWorld = new Domain();
-
 			Domain.getFactions().put(0, new Faction("NPC", 0, false));
 			Domain.getFactions().put(1, new Faction("Elves", 1, true));
 
 			ClientServerInterface.setServer(true);
 			GameLoader.load();
+			gameWorld = new Domain();
 
 			Gdx.input.setInputProcessor(this);
 			
@@ -253,6 +263,46 @@ public class BloodAndMithrilServer {
 
 			if (keycode == Input.Keys.K) {
 				GameSaver.save(false);
+			}
+			
+			if (keycode == Input.Keys.J) {
+				Domain.getActiveWorld().getTopography().getFluids().put(
+					0, 
+					50, 
+					new Fluid(FluidFraction.fraction(new Water(), 16f))
+				);
+			}
+			
+			if (keycode == Input.Keys.K) {
+				Domain.getActiveWorld().getTopography().getFluids().put(
+					0, 
+					50,
+					new Fluid(FluidFraction.fraction(new Blood(), 16f))
+				);
+			}
+			
+			if (keycode == Input.Keys.H) {
+				Domain.getActiveWorld().getTopography().getFluids().put(
+					0, 
+					50,
+					new Fluid(FluidFraction.fraction(new Acid(), 16f))
+				);
+			}
+			
+			if (keycode == Input.Keys.G) {
+				Domain.getActiveWorld().getTopography().getFluids().put(
+					0, 
+					50,
+					new Fluid(FluidFraction.fraction(new CrudeOil(), 16f))
+				);
+			}
+			
+			if (keycode == Input.Keys.F) {
+				Domain.getActiveWorld().getTopography().getFluids().put(
+					0, 
+					50,
+					new Fluid(FluidFraction.fraction(new Milk(), 16f))
+				);
 			}
 			
 			if (keycode == Input.Keys.P) {

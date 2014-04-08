@@ -177,6 +177,8 @@ public class Chunk {
 	 */
 	public void render(boolean foreGround) {
 		Topography.atlas.bind();
+		Gdx.gl.glEnable(GL10.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		if (foreGround) {
 			Shaders.pass.begin();
 			Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
@@ -192,16 +194,14 @@ public class Chunk {
 		}
 
 		if (UserInterface.DEBUG) {
-			Gdx.gl.glEnable(GL10.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			UserInterface.shapeRenderer.begin(ShapeType.Rectangle);
 			UserInterface.shapeRenderer.setColor(new Color(1f, 0.5f, 1f, 0.15f));
 			float x = BloodAndMithrilClient.worldToScreenX(fData.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
 			float y = BloodAndMithrilClient.worldToScreenY(fData.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
 			UserInterface.shapeRenderer.rect(x, y, Topography.CHUNK_SIZE * Topography.TILE_SIZE, Topography.CHUNK_SIZE * Topography.TILE_SIZE);
 			UserInterface.shapeRenderer.end();
-			Gdx.gl.glDisable(GL10.GL_BLEND);
 		}
+		Gdx.gl.glDisable(GL10.GL_BLEND);
 	}
 
 

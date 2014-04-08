@@ -319,6 +319,7 @@ public class TradeWindow extends Window implements Refreshable {
 									args -> {
 										try {
 											changeList(entry.getKey(), Integer.parseInt(args[0].toString()), trading, notTrading, false);
+											setActive(true);
 										} catch (NumberFormatException e) {
 											UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 										}
@@ -373,6 +374,7 @@ public class TradeWindow extends Window implements Refreshable {
 								args -> {
 									try {
 										changeList(key, Integer.parseInt(args[0].toString()), transferFrom, transferTo, !toTrade);
+										setActive(true);
 									} catch (NumberFormatException e) {
 										UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 									}
