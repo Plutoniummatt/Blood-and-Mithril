@@ -361,7 +361,12 @@ public class InventoryWindow extends Window implements Refreshable {
 												}
 											},
 											true
-										));
+										) {
+											@Override
+											public String getShortDescription() {
+												return "Discard contents";
+											}
+										});
 									} else {
 										// TODO
 									}

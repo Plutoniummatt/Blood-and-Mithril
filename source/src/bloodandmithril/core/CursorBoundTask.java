@@ -8,7 +8,7 @@ import bloodandmithril.util.Task;
  *
  * @author Matt
  */
-public class CursorBoundTask {
+public abstract class CursorBoundTask {
 	
 	private JITTask task;
 	private boolean isWorldCoordinate;
@@ -36,4 +36,10 @@ public class CursorBoundTask {
 	public boolean isWorldCoordinate() {
 		return isWorldCoordinate;
 	}
+	
+	
+	/**
+	 * @return the UI help text that will be displayed next to the cursor when this {@link CursorBoundTask} is bound to the cursor.
+	 */
+	public abstract String getShortDescription();
 }
