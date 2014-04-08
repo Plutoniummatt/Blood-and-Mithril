@@ -9,7 +9,7 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
@@ -186,7 +186,7 @@ public class Boar extends Individual {
 
 
 	@Override
-	public List<ContextMenuItem> internalGetContextMenuItems() {
+	public List<MenuItem> internalGetContextMenuItems() {
 		return Lists.newArrayList();
 	}
 

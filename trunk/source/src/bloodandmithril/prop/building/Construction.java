@@ -21,7 +21,7 @@ import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.RequiredMaterialsWindow;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
@@ -119,7 +119,7 @@ public abstract class Construction extends Prop implements Container {
 			ContextMenu menu = new ContextMenu(0, 0);
 			
 			menu.addMenuItem(
-				new ContextMenuItem(
+				new MenuItem(
 					"Required materials", 
 					() -> {
 						if (getConstructionProgress() == 1f) {
@@ -149,7 +149,7 @@ public abstract class Construction extends Prop implements Container {
 			
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-				ContextMenuItem openTransferItemsWindow = new ContextMenuItem(
+				MenuItem openTransferItemsWindow = new MenuItem(
 					"Transfer materials for construction",
 					() -> {
 						if (ClientServerInterface.isServer()) {
@@ -169,7 +169,7 @@ public abstract class Construction extends Prop implements Container {
 				menu.addMenuItem(openTransferItemsWindow);
 				
 				if (constructionProgress != 0f && canConstruct()) {
-					ContextMenuItem construct = new ContextMenuItem(
+					MenuItem construct = new MenuItem(
 						"Construct",
 						() -> {
 							if (getConstructionProgress() == 1f) {

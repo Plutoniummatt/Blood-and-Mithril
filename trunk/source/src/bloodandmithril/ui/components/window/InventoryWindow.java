@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
@@ -17,17 +18,19 @@ import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.container.LiquidContainer;
+import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.character.ai.task.DiscardLiquid;
@@ -44,8 +47,8 @@ import com.google.common.collect.Maps;
 public class InventoryWindow extends Window implements Refreshable {
 
 	/** Inventory listing maps */
-	HashMap<ListingMenuItem<Item>, Integer> equippedItemsToDisplay = Maps.newHashMap();
-	HashMap<ListingMenuItem<Item>, Integer> nonEquippedItemsToDisplay = Maps.newHashMap();
+	private HashMap<ListingMenuItem<Item>, Integer> equippedItemsToDisplay = Maps.newHashMap();
+	private HashMap<ListingMenuItem<Item>, Integer> nonEquippedItemsToDisplay = Maps.newHashMap();
 
 	/** The {@link Container} that is the host of this {@link InventoryWindow} */
 	public Equipper host;
@@ -251,7 +254,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	/** Determines which context menu to use */
 	private ContextMenu determineMenu(final Item item, boolean equipped) {
 		if (item instanceof Consumable) {
-			ContextMenuItem consume = new ContextMenuItem(
+			MenuItem consume = new MenuItem(
 				"Consume",
 				() -> {
 					if (ClientServerInterface.isServer()) {
@@ -280,7 +283,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		}
 
 		if (item instanceof LiquidContainer) {
-			ContextMenuItem drink = new ContextMenuItem(
+			MenuItem drink = new MenuItem(
 				"Drink from",
 				() -> {
 					UserInterface.addLayeredComponent(
@@ -326,7 +329,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				null
 			);
 			
-			ContextMenuItem emptyContainerContents = new ContextMenuItem(
+			MenuItem emptyContainerContents = new MenuItem(
 				"Discard", 
 				() -> {
 					UserInterface.addLayeredComponent(
@@ -340,10 +343,10 @@ public class InventoryWindow extends Window implements Refreshable {
 							100,
 							args -> {
 								try {
-									float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
+									float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
 									
 									if (amount < 0.01f) {
-										UserInterface.addMessage("Too little to Separate", "Its too little to Separate, enter a larger amount");
+										UserInterface.addMessage("Too little to discard", "Its too little to discard, enter a larger amount");
 										return;
 									}
 									
@@ -377,6 +380,82 @@ public class InventoryWindow extends Window implements Refreshable {
 				Color.WHITE,
 				null
 			);
+			
+			MenuItem transferContainerContents = new MenuItem(
+				"Transfer", 
+				() -> {
+					UserInterface.addLayeredComponent(
+						new TextInputWindow(
+							BloodAndMithrilClient.WIDTH / 2 - 125,
+							BloodAndMithrilClient.HEIGHT/2 + 50,
+							250,
+							100,
+							"Amount",
+							250,
+							100,
+							args -> {
+								try {
+									float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
+									if (amount < 0.01f) {
+										UserInterface.addMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
+										return;
+									}
+									
+									for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
+										if (listItem.t instanceof LiquidContainer) {
+											
+											if (listItem.t == item) {
+												listItem.button.setIdleColor(Colors.UI_DARK_GREEN);
+												listItem.button.setDownColor(Colors.UI_DARK_GREEN);
+												listItem.button.setOverColor(Colors.UI_DARK_GREEN);
+												listItem.menu = null;
+											} else {
+												listItem.button.setIdleColor(Color.ORANGE);
+												LiquidContainer toTransferTo = ((LiquidContainer)listItem.t).clone();
+												listItem.menu = null;
+												listItem.button.setTask(() -> {
+													if (isServer()) {
+														Individual individual = (Individual) host;
+														LiquidContainer container = (LiquidContainer) item;
+														individual.takeItem(container);
+														individual.takeItem(listItem.t);
+														LiquidContainer newBottle = ((LiquidContainer) container).clone();
+														Map<Class<? extends Liquid>, Float> subtracted = newBottle.subtract(amount);
+														Map<Class<? extends Liquid>, Float> remainder = toTransferTo.add(subtracted);
+														if (!remainder.isEmpty()) {
+															newBottle.add(remainder);
+														}
+														individual.giveItem(newBottle);
+														individual.giveItem(toTransferTo);
+														refresh();
+													} else {
+														// TODO
+													}
+												});
+											}
+										} else {
+											listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
+											listItem.button.setDownColor(Colors.UI_DARK_GRAY);
+											listItem.button.setOverColor(Colors.UI_DARK_GRAY);
+											listItem.menu = null;
+										}
+									}
+									
+								} catch (NumberFormatException e) {
+									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+								}
+							},
+							"Transfer",
+							true,
+							""
+						)
+					);
+				},
+				Colors.UI_GRAY,
+				Color.GREEN,
+				Color.WHITE,
+				null
+			);
 
 			ContextMenu contextMenu = new ContextMenu(x, y,
 				InventoryItemContextMenuConstructor.showInfo(item)
@@ -385,6 +464,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			if (host instanceof Individual) {
 				contextMenu.addMenuItem(drink);
 				if (!((LiquidContainer)item).isEmpty()) {
+					contextMenu.addMenuItem(transferContainerContents);
 					contextMenu.addMenuItem(emptyContainerContents);
 				}
 			}
@@ -393,7 +473,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		}
 
 		if (item instanceof Equipable) {
-			ContextMenuItem equipUnequip = equipped ? new ContextMenuItem(
+			MenuItem equipUnequip = equipped ? new MenuItem(
 				"Unequip",
 				() -> {
 					if (ClientServerInterface.isServer()) {
@@ -409,7 +489,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				null
 			) :
 
-			new ContextMenuItem(
+			new MenuItem(
 				"Equip",
 				() -> {
 					if (ClientServerInterface.isServer()) {
@@ -459,8 +539,8 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	private static class InventoryItemContextMenuConstructor {
-		private static ContextMenuItem showInfo(final Item item) {
-			return new ContextMenuItem(
+		private static MenuItem showInfo(final Item item) {
+			return new MenuItem(
 				"Show info",
 				() -> {
 					UserInterface.addLayeredComponent(item.getInfoWindow());

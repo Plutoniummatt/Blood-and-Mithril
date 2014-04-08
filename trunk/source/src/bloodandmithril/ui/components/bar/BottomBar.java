@@ -12,7 +12,7 @@ import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.ChatWindow;
 import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
@@ -119,7 +119,7 @@ public class BottomBar extends Component {
 		ContextMenu contextMenu = new ContextMenu(
 			BloodAndMithrilClient.getMouseScreenX(),
 			BloodAndMithrilClient.getMouseScreenY() + 44,
-			new ContextMenuItem(
+			new MenuItem(
 				"Show logs",
 				() -> {},
 				Color.ORANGE,
@@ -131,7 +131,7 @@ public class BottomBar extends Component {
 
 		if (ClientServerInterface.isClient() && !ClientServerInterface.isServer())
 		contextMenu.addMenuItem(
-			new ContextMenuItem(
+			new MenuItem(
 				"Chat",
 				() -> {
 					for (Component component : UserInterface.layeredComponents) {
@@ -174,12 +174,12 @@ public class BottomBar extends Component {
 	private void windowsClicked(List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		copy.clear();
 		int size = 0;
-		ArrayList<ContextMenuItem> items = new ArrayList<>();
+		ArrayList<MenuItem> items = new ArrayList<>();
 		for (final Component component : UserInterface.layeredComponents) {
 			if (component instanceof Window) {
 				if (((Window) component).minimized) {
 					size++;
-					items.add(new ContextMenuItem(
+					items.add(new MenuItem(
 						((Window) component).title,
 						() -> {
 							((Window) component).minimized = false;
@@ -198,12 +198,12 @@ public class BottomBar extends Component {
 			BloodAndMithrilClient.getMouseScreenY() + (size + 3) * 22
 		);
 
-		for (ContextMenuItem item : items) {
+		for (MenuItem item : items) {
 			newMenu.addMenuItem(item);
 		}
 
 		newMenu.addMenuItem(
-			new ContextMenuItem(
+			new MenuItem(
 				"Show all",
 				() -> {
 					for (final Component component : windowsCopy) {
@@ -222,7 +222,7 @@ public class BottomBar extends Component {
 		);
 
 		newMenu.addMenuItem(
-			new ContextMenuItem(
+			new MenuItem(
 				"Minimize all",
 				() -> {
 					for (final Component component : windowsCopy) {
@@ -241,7 +241,7 @@ public class BottomBar extends Component {
 		);
 
 		newMenu.addMenuItem(
-			new ContextMenuItem(
+			new MenuItem(
 				"Close all",
 				() -> {
 					for (final Component component : windowsCopy) {

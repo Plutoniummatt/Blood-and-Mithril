@@ -131,7 +131,7 @@ public class FactionsWindow extends Window {
 		}
 
 		for (final Faction faction : newList) {
-			ContextMenu.ContextMenuItem control = new ContextMenu.ContextMenuItem(
+			ContextMenu.MenuItem control = new ContextMenu.MenuItem(
 				"Control",
 				() -> {
 					if (StringUtils.isEmpty(faction.controlPassword)) {
@@ -172,7 +172,7 @@ public class FactionsWindow extends Window {
 				null
 			);
 
-			ContextMenu.ContextMenuItem changePassword = new ContextMenu.ContextMenuItem(
+			ContextMenu.MenuItem changePassword = new ContextMenu.MenuItem(
 				"Change control password",
 				() -> {
 					UserInterface.addLayeredComponent(

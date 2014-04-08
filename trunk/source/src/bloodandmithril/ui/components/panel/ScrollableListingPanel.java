@@ -19,7 +19,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -256,7 +256,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 	 *
 	 * @author Matt
 	 */
-	public static class ListingMenuItem<T extends Comparable<T>> extends ContextMenuItem implements Comparable<ListingMenuItem<T>> {
+	public static class ListingMenuItem<T extends Comparable<T>> extends MenuItem implements Comparable<ListingMenuItem<T>> {
 
 		public T t;
 

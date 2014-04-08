@@ -45,7 +45,7 @@ import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.equipment.Weapon;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.IndividualStatusWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
@@ -601,8 +601,8 @@ public abstract class Individual implements Equipper, Serializable {
 
 		final Individual thisIndividual = this;
 
-		ContextMenuItem controlOrReleaseMenuItem = Domain.getSelectedIndividuals().contains(thisIndividual) ?
-		new ContextMenuItem(
+		MenuItem controlOrReleaseMenuItem = Domain.getSelectedIndividuals().contains(thisIndividual) ?
+		new MenuItem(
 			"Deselect",
 			() -> {
 				if (isServer()) {
@@ -619,7 +619,7 @@ public abstract class Individual implements Equipper, Serializable {
 			null
 		) :
 
-		new ContextMenuItem(
+		new MenuItem(
 			"Select",
 			() -> {
 				if (isServer()) {
@@ -635,7 +635,7 @@ public abstract class Individual implements Equipper, Serializable {
 			null
 		);
 
-		ContextMenuItem showInfoMenuItem = new ContextMenuItem(
+		MenuItem showInfoMenuItem = new MenuItem(
 			"Show info",
 			() -> {
 				IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
@@ -658,7 +658,7 @@ public abstract class Individual implements Equipper, Serializable {
 
 
 		final ContextMenu secondaryMenu = new ContextMenu(0, 0,
-			new ContextMenuItem(
+			new MenuItem(
 				"Change name",
 				() -> {
 					UserInterface.addLayeredComponent(
@@ -690,7 +690,7 @@ public abstract class Individual implements Equipper, Serializable {
 			)
 		);
 
-		ContextMenuItem editMenuItem = new ContextMenuItem(
+		MenuItem editMenuItem = new MenuItem(
 			"Edit",
 			() -> {
 				secondaryMenu.x = getMouseScreenX();
@@ -702,7 +702,7 @@ public abstract class Individual implements Equipper, Serializable {
 			secondaryMenu
 		);
 
-		ContextMenuItem inventoryMenuItem = new ContextMenuItem(
+		MenuItem inventoryMenuItem = new MenuItem(
 			"Inventory",
 			() -> {
 				InventoryWindow inventoryWindow = new InventoryWindow(
@@ -723,7 +723,7 @@ public abstract class Individual implements Equipper, Serializable {
 			null
 		);
 
-		ContextMenuItem tradeMenuItem = new ContextMenuItem(
+		MenuItem tradeMenuItem = new MenuItem(
 			"Trade with",
 			() -> {
 				for (Individual indi : Domain.getSelectedIndividuals()) {
@@ -744,7 +744,7 @@ public abstract class Individual implements Equipper, Serializable {
 			null
 		);
 
-		ContextMenuItem showStatusWindowItem = new ContextMenuItem(
+		MenuItem showStatusWindowItem = new MenuItem(
 			"Status",
 			() -> {
 				UserInterface.addLayeredComponent(
@@ -765,7 +765,7 @@ public abstract class Individual implements Equipper, Serializable {
 			null
 		);
 
-		ContextMenuItem attackMenuItem = new ContextMenuItem(
+		MenuItem attackMenuItem = new MenuItem(
 			"Attack",
 			() -> {
 				for (Individual indi : Domain.getSelectedIndividuals()) {
@@ -813,7 +813,7 @@ public abstract class Individual implements Equipper, Serializable {
 			contextMenuToReturn.addMenuItem(tradeMenuItem);
 		}
 
-		for (ContextMenuItem item : internalGetContextMenuItems()) {
+		for (MenuItem item : internalGetContextMenuItems()) {
 			contextMenuToReturn.addMenuItem(item);
 		}
 
@@ -986,7 +986,7 @@ public abstract class Individual implements Equipper, Serializable {
 
 
 	/** Constructs a implementation-specific {@link ContextMenu} */
-	protected abstract List<ContextMenuItem> internalGetContextMenuItems();
+	protected abstract List<MenuItem> internalGetContextMenuItems();
 
 
 	/** Gets the description for this {@link Individual} */

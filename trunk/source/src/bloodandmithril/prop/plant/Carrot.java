@@ -11,7 +11,7 @@ import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.world.Domain;
 
@@ -55,7 +55,7 @@ public class Carrot extends Plant {
 		final Harvestable thisCarrot = this;
 
 		menu.addMenuItem(
-			new ContextMenuItem(
+			new MenuItem(
 				"Show info",
 				() -> {
 					UserInterface.addLayeredComponent(
@@ -84,7 +84,7 @@ public class Carrot extends Plant {
 		  !(Domain.getSelectedIndividuals().iterator().next().getAI().getCurrentTask() instanceof Trading)) {
 
 			menu.addMenuItem(
-				new ContextMenuItem(
+				new MenuItem(
 					"Harvest",
 					() -> {
 						Individual individual = Domain.getSelectedIndividuals().iterator().next();

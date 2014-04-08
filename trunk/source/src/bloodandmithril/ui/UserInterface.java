@@ -56,7 +56,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.bar.BottomBar;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -700,7 +700,7 @@ public class UserInterface {
 			if (indi.isMouseOver()) {
 				final ContextMenu secondaryMenu = indi.getContextMenu();
 				newMenu.getMenuItems().add(
-					new ContextMenuItem(
+					new MenuItem(
 						indi.getId().getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",
 						() -> {
 							secondaryMenu.x = BloodAndMithrilClient.getMouseScreenX();
@@ -719,7 +719,7 @@ public class UserInterface {
 			if (prop.isMouseOver()) {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
 				newMenu.getMenuItems().add(
-					new ContextMenuItem(
+					new MenuItem(
 						prop.getContextMenuItemLabel(),
 						() -> {
 							secondaryMenu.x = getMouseScreenX();
