@@ -26,7 +26,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
@@ -260,7 +260,7 @@ public class Furnace extends Construction implements Container {
 	@Override
 	protected ContextMenu getCompletedContextMenu() {
 		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(),
-			new ContextMenuItem(
+			new MenuItem(
 				"Show info",
 				() -> {
 					UserInterface.addLayeredComponent(
@@ -287,7 +287,7 @@ public class Furnace extends Construction implements Container {
 
 		if (Domain.getSelectedIndividuals().size() == 1) {
 			final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-			ContextMenuItem openChestMenuItem = new ContextMenuItem(
+			MenuItem openChestMenuItem = new MenuItem(
 				"Open furnace",
 				() -> {
 					if (ClientServerInterface.isServer()) {

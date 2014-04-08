@@ -261,7 +261,7 @@ public class BloodAndMithrilServer {
 		@Override
 		public boolean keyDown(int keycode) {
 
-			if (keycode == Input.Keys.K) {
+			if (keycode == Input.Keys.S) {
 				GameSaver.save(false);
 			}
 			

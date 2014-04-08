@@ -161,7 +161,9 @@ public class DevWindow extends Window {
 			}
 			for (int i = Util.getRandom().nextInt(50) + 10; i > 0; i--) {
 				Map<Class<? extends Liquid>, Float> liquids = new HashMap<>();
-				liquids.put(Blood.class, 16f);
+				if (Util.getRandom().nextBoolean()) {
+					liquids.put(Blood.class, 1f);
+				}
 				elf.giveItem(new GlassBottle(liquids));
 			}
 			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {

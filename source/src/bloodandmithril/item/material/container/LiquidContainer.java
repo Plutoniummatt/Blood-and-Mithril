@@ -2,6 +2,7 @@ package bloodandmithril.item.material.container;
 
 import static bloodandmithril.item.material.liquid.LiquidMixtureAnalyzer.getDescription;
 import static bloodandmithril.item.material.liquid.LiquidMixtureAnalyzer.getTitle;
+import static bloodandmithril.util.Util.round2dp;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,6 +28,8 @@ public abstract class LiquidContainer extends Item {
 	protected Map<Class<? extends Liquid>, Float> containedLiquids;
 	protected final float maxAmount;
 
+	private Map<Class<? extends Liquid>, Float> transformValues;
+
 	/**
 	 * Constructor
 	 */
@@ -48,7 +51,7 @@ public abstract class LiquidContainer extends Item {
 				} else {
 					System.out.println("Drinking " + entry.getValue() * fraction + " of " + entry.getKey().getSimpleName());
 					entry.getKey().newInstance().drink(entry.getValue() * fraction, affected);
-					containedLiquids.put(entry.getKey(), entry.getValue() * (1f - fraction));
+					containedLiquids.put(entry.getKey(), round2dp(entry.getValue() * (1f - fraction)));
 				}
 			}
 		} catch (Exception e) {
@@ -68,10 +71,16 @@ public abstract class LiquidContainer extends Item {
 			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(containedLiquids).entrySet()) {
 				if (fraction >= 1f) {
 					containedLiquids.remove(entry.getKey());
-					subtracted.put(entry.getKey(), entry.getValue());
+					subtracted.put(entry.getKey(), round2dp(entry.getValue()));
 				} else {
-					subtracted.put(entry.getKey(), entry.getValue() * fraction);
-					containedLiquids.put(entry.getKey(), entry.getValue() * (1f - fraction));
+					subtracted.put(entry.getKey(), round2dp(entry.getValue() * fraction));
+					containedLiquids.put(entry.getKey(), round2dp(entry.getValue() * (1f - fraction)));
+				}
+			}
+			
+			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(subtracted).entrySet()) {
+				if (entry.getValue() < 0.01f) {
+					subtracted.remove(entry);
 				}
 			}
 			
@@ -125,6 +134,58 @@ public abstract class LiquidContainer extends Item {
 	
 	public boolean isEmpty() {
 		return getTotalAmount() == 0f;
+	}
+	
+	
+	/**
+	 * @return the remaining capacity of this {@link LiquidContainer}
+	 */
+	public float getRemainingCapacity() {
+		return maxAmount - getTotalAmount();
+	}
+	
+	
+	/**
+	 * Adds a map of fluid-amounts to this liquid container, returning the remainder.
+	 */
+	public Map<Class<? extends Liquid>, Float> add(Map<Class<? extends Liquid>, Float> toAdd) {
+		float amountToAdd = (float) toAdd.entrySet().stream().mapToDouble(entry -> {
+			return entry.getValue();
+		}).sum();
+		
+		if (amountToAdd <= getRemainingCapacity()) {
+			for (Entry<Class<? extends Liquid>, Float> entryToAdd : toAdd.entrySet()) {
+				if (containedLiquids.containsKey(entryToAdd.getKey())) {
+					containedLiquids.put(entryToAdd.getKey(), round2dp(containedLiquids.get(entryToAdd.getKey()) + entryToAdd.getValue()));
+				} else {
+					containedLiquids.put(entryToAdd.getKey(), round2dp(entryToAdd.getValue()));
+				}
+			}
+			
+			return Maps.newHashMap();
+		} else {
+			float fractionOfAmountToAdd = getRemainingCapacity() / amountToAdd;
+			
+			for (Entry<Class<? extends Liquid>, Float> entryToAdd : toAdd.entrySet()) {
+				if (containedLiquids.containsKey(entryToAdd.getKey())) {
+					containedLiquids.put(entryToAdd.getKey(), round2dp(containedLiquids.get(entryToAdd.getKey()) + fractionOfAmountToAdd * entryToAdd.getValue()));
+				} else {
+					containedLiquids.put(entryToAdd.getKey(), round2dp(entryToAdd.getValue() * fractionOfAmountToAdd));
+				}
+			}
+			
+			transformValues = Maps.transformValues(toAdd, value -> {
+				return round2dp(value * (1-fractionOfAmountToAdd));
+			});
+			
+			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(transformValues).entrySet()) {
+				if (entry.getValue() < 0.01f) {
+					transformValues.remove(entry.getKey());
+				}
+			}
+			
+			return transformValues;
+		}
 	}
 
 	

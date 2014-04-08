@@ -18,7 +18,7 @@ import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.world.Domain;
 import bloodandmithril.character.ai.task.LockUnlockContainer;
@@ -61,7 +61,7 @@ public class PineChest extends Construction implements Container {
 		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 
 		menu.addMenuItem(
-			new ContextMenuItem(
+			new MenuItem(
 				"Show info",
 				() -> {
 					UserInterface.addLayeredComponent(
@@ -89,7 +89,7 @@ public class PineChest extends Construction implements Container {
 		if (!isLocked()) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-				ContextMenuItem openChestMenuItem = new ContextMenuItem(
+				MenuItem openChestMenuItem = new MenuItem(
 					"Open",
 					() -> {
 						if (ClientServerInterface.isServer()) {
@@ -108,7 +108,7 @@ public class PineChest extends Construction implements Container {
 				menu.addMenuItem(openChestMenuItem);
 				
 				if (container.isLockable()) {
-					ContextMenuItem lockChestMenuItem = new ContextMenuItem(
+					MenuItem lockChestMenuItem = new MenuItem(
 						"Lock",
 						() -> {
 							if (ClientServerInterface.isServer()) {
@@ -130,7 +130,7 @@ public class PineChest extends Construction implements Container {
 		} else {
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-				ContextMenuItem unlockChestMenuItem = new ContextMenuItem(
+				MenuItem unlockChestMenuItem = new MenuItem(
 					"Unlock",
 					() -> {
 						if (ClientServerInterface.isServer()) {

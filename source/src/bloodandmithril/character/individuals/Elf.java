@@ -17,7 +17,7 @@ import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.ui.KeyMappings;
-import bloodandmithril.ui.components.ContextMenu.ContextMenuItem;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
@@ -361,7 +361,7 @@ public class Elf extends Individual {
 
 
 	@Override
-	public List<ContextMenuItem> internalGetContextMenuItems() {
+	public List<MenuItem> internalGetContextMenuItems() {
 		return Lists.newArrayList();
 	}
 

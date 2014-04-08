@@ -4,6 +4,11 @@ import bloodandmithril.csi.Response;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.fluid.FluidMap;
 
+/**
+ * A {@link Response} that synchronizes the {@link FluidMap} on the active world.
+ *
+ * @author Matt
+ */
 public class SyncFluidsNotification implements Response {
 	
 	private FluidMap toSend;
