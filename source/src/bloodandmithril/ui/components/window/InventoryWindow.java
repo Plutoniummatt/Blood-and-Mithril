@@ -2,6 +2,7 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.util.Fonts.defaultFont;
+import static java.lang.Math.min;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -54,6 +55,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	public Equipper host;
 
 	/** The inventory listing panel, see {@link ScrollableListingPanel} */
+	private Panel equippedListingPanel;
 	private Panel inventoryListingPanel;
 
 	/**
@@ -100,29 +102,41 @@ public class InventoryWindow extends Window implements Refreshable {
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		inventoryListingPanel.leftClick(copy, windowsCopy);
+		equippedListingPanel.leftClick(copy, windowsCopy);
 	}
 
 
 	@Override
 	public void leftClickReleased() {
 		inventoryListingPanel.leftClickReleased();
+		equippedListingPanel.leftClickReleased();
 	}
 
 
 	@Override
 	protected void internalWindowRender() {
-
+		int lineWidth = 23;
+		
 		// Set the position and dimensions of the panel
-		inventoryListingPanel.height = height;
+		inventoryListingPanel.height = height - (equippedItemsToDisplay.isEmpty() ? 0 : ((1 + min(5,equippedItemsToDisplay.size())) * lineWidth)) - lineWidth;
 		inventoryListingPanel.width = width;
 		inventoryListingPanel.x = x;
-		inventoryListingPanel.y = y;
-
+		inventoryListingPanel.y = y - (equippedItemsToDisplay.isEmpty() ? 0 : ((1 + min(5,equippedItemsToDisplay.size())) * lineWidth));
+		
+		equippedListingPanel.height = 50 + (equippedItemsToDisplay.isEmpty() ? 0 : ((1 + min(5, equippedItemsToDisplay.size())) * lineWidth));
+		equippedListingPanel.width = width;
+		equippedListingPanel.x = x;
+		equippedListingPanel.y = y;
+		
 		// Render the separator
 		renderSeparator();
 
 		// Render the listing panel
 		inventoryListingPanel.render();
+		
+		if (!equippedItemsToDisplay.isEmpty()) {
+			equippedListingPanel.render();
+		}
 
 		// Render the weight indication text
 		renderWeightIndicationText();
@@ -168,8 +182,29 @@ public class InventoryWindow extends Window implements Refreshable {
 		inventoryListingPanel = new ScrollableListingPanel<Item, Integer>(this) {
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
-				listings.add(equippedItemsToDisplay);
 				listings.add(nonEquippedItemsToDisplay);
+			}
+
+			@Override
+			protected int getExtraStringOffset() {
+				return 80;
+			}
+
+			@Override
+			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+				return Integer.toString(item.getValue());
+			}
+
+			@Override
+			public boolean keyPressed(int keyCode) {
+				return false;
+			}
+		};
+		
+		equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this) {
+			@Override
+			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+				listings.add(equippedItemsToDisplay);
 			}
 
 			@Override
@@ -306,9 +341,9 @@ public class InventoryWindow extends Window implements Refreshable {
 									
 									if (ClientServerInterface.isServer()) {
 										host.takeItem(item);
-										LiquidContainer newBottle = ((LiquidContainer) item).clone();
-										newBottle.drinkFrom(amount, (Individual)host);
-										host.giveItem(newBottle);
+										LiquidContainer newContainer = ((LiquidContainer) item).clone();
+										newContainer.drinkFrom(amount, (Individual)host);
+										host.giveItem(newContainer);
 										refresh();
 									} else {
 										ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (LiquidContainer)item, Float.parseFloat((String)args[0]));
@@ -406,6 +441,12 @@ public class InventoryWindow extends Window implements Refreshable {
 										return;
 									}
 									
+									for (ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
+										listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
+										listItem.button.setDownColor(Colors.UI_DARK_GRAY);
+										listItem.button.setOverColor(Colors.UI_DARK_GRAY);
+										listItem.menu = null;
+									}
 									for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
 										if (listItem.t instanceof LiquidContainer) {
 											
@@ -416,6 +457,7 @@ public class InventoryWindow extends Window implements Refreshable {
 												listItem.menu = null;
 											} else {
 												listItem.button.setIdleColor(Color.ORANGE);
+												setActive(true);
 												LiquidContainer toTransferTo = ((LiquidContainer)listItem.t).clone();
 												listItem.menu = null;
 												listItem.button.setTask(() -> {
@@ -424,13 +466,13 @@ public class InventoryWindow extends Window implements Refreshable {
 														LiquidContainer container = (LiquidContainer) item;
 														individual.takeItem(container);
 														individual.takeItem(listItem.t);
-														LiquidContainer newBottle = ((LiquidContainer) container).clone();
-														Map<Class<? extends Liquid>, Float> subtracted = newBottle.subtract(amount);
+														LiquidContainer newContainer = ((LiquidContainer) container).clone();
+														Map<Class<? extends Liquid>, Float> subtracted = newContainer.subtract(amount);
 														Map<Class<? extends Liquid>, Float> remainder = toTransferTo.add(subtracted);
 														if (!remainder.isEmpty()) {
-															newBottle.add(remainder);
+															newContainer.add(remainder);
 														}
-														individual.giveItem(newBottle);
+														individual.giveItem(newContainer);
 														individual.giveItem(toTransferTo);
 														refresh();
 													} else {

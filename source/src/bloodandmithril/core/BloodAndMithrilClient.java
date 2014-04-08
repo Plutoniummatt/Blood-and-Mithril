@@ -314,22 +314,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	private void leftClick(int screenX, int screenY) {
 		
-		if (getCursorBoundTask() != null) {
-			if (getCursorBoundTask().isWorldCoordinate()) {
-				getCursorBoundTask().execute(
-					(int) getMouseWorldX(), 
-					(int) getMouseWorldY()
-				);
-			} else {
-				getCursorBoundTask().execute(
-					(int) getMouseScreenX(), 
-					(int) getMouseScreenY()
-				);
-			}
-			
-			setCursorBoundTask(null);
-		}
-		
 		boolean doubleClick = leftDoubleClickTimer < DOUBLE_CLICK_TIME;
 		leftDoubleClickTimer = 0f;
 
@@ -346,6 +330,22 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (!uiClicked) {
+			if (getCursorBoundTask() != null) {
+				if (getCursorBoundTask().isWorldCoordinate()) {
+					getCursorBoundTask().execute(
+						(int) getMouseWorldX(), 
+						(int) getMouseWorldY()
+					);
+				} else {
+					getCursorBoundTask().execute(
+						(int) getMouseScreenX(), 
+						(int) getMouseScreenY()
+					);
+				}
+				setCursorBoundTask(null);
+				return;
+			}
+			
 			if (individualClicked == null) {
 				if (doubleClick) {
 					for (Individual indi : Domain.getIndividuals().values()) {

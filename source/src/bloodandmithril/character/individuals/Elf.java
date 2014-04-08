@@ -90,7 +90,7 @@ public class Elf extends Individual {
 	private String current, currentHair;
 
 	/** Biography of this Elf */
-	private String biography = "Elves are cool";
+	private String biography = "";
 
 	/**
 	 * Constructor
