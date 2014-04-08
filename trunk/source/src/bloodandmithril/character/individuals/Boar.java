@@ -82,6 +82,8 @@ public class Boar extends Individual {
 
 	@Override
 	protected void internalRender() {
+		BloodAndMithrilClient.spriteBatch.begin();
+		
 		// Determine which shader we're using, normal, or highlighted
 		if (isMouseOver()) {
 
@@ -108,6 +110,7 @@ public class Boar extends Individual {
 			getState().position.y
 		);
 
+		BloodAndMithrilClient.spriteBatch.end();
 		BloodAndMithrilClient.spriteBatch.flush();
 	}
 

@@ -415,4 +415,9 @@ public class Topography {
 	public FluidMap getFluids() {
 		return fluidMap;
 	}
+	
+	
+	public void setFluids(FluidMap fluidMap) {
+		this.fluidMap = fluidMap;
+	}
 }

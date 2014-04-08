@@ -23,12 +23,13 @@ public class Construct extends CompositeAITask {
 			host.getId(), 
 			"Constructing", 
 			new GoToLocation(
-			host,
-			new WayPoint(construction.position, 32),
-			false,
-			32f,
-			true
-		));
+				host,
+				new WayPoint(construction.position, 32),
+				false,
+				32f,
+				true
+			)
+		);
 		
 		appendTask(new Constructing(hostId, construction.id));
 	}

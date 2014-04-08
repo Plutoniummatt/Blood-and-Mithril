@@ -2,29 +2,21 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.util.Fonts.defaultFont;
 
-
-
-
-
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
-
-
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.CursorBoundTask;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.container.LiquidContainer;
-import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -37,8 +29,8 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.fluid.Fluid;
+import bloodandmithril.util.JITTask;
+import bloodandmithril.character.ai.task.DiscardLiquid;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -335,7 +327,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			);
 			
 			ContextMenuItem emptyContainerContents = new ContextMenuItem(
-				"Separate", 
+				"Discard", 
 				() -> {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
@@ -356,16 +348,17 @@ public class InventoryWindow extends Window implements Refreshable {
 									}
 									
 									if (ClientServerInterface.isServer()) {
-										host.takeItem(item);
-										LiquidContainer newBottle = ((LiquidContainer) item).clone();
-										Map<Class<? extends Liquid>, Float> subtracted = newBottle.subtract(amount);
-										host.giveItem(newBottle);
-										Domain.getWorld(((Individual)host).getWorldId()).getTopography().getFluids().put(
-											((Individual)host).getState().position.x,
-											((Individual)host).getState().position.y,
-											new Fluid(subtracted)
-										);
-										refresh();
+										BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(
+											new JITTask() {
+												@Override
+												public void execute(Object... args) {
+													((Individual)host).getAI().setCurrentTask(
+														new DiscardLiquid((Individual)host, (int) args[0], (int) args[1], (LiquidContainer) item, amount)
+													);
+												}
+											},
+											true
+										));
 									} else {
 										// TODO
 									}
@@ -373,7 +366,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 								}
 							},
-							"Separate",
+							"Discard",
 							true,
 							""
 						)

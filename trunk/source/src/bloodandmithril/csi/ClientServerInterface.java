@@ -92,6 +92,7 @@ import bloodandmithril.csi.requests.SetAIIdle;
 import bloodandmithril.csi.requests.AddLightRequest;
 import bloodandmithril.csi.requests.AddLightRequest.RemoveLightNotification;
 import bloodandmithril.csi.requests.AddLightRequest.SyncLightResponse;
+import bloodandmithril.csi.requests.SyncFluidsNotification;
 import bloodandmithril.csi.requests.SynchronizeFaction;
 import bloodandmithril.csi.requests.SynchronizeFaction.SynchronizeFactionResponse;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
@@ -123,6 +124,7 @@ import bloodandmithril.item.material.container.LiquidContainer;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.container.WoodenBucket;
 import bloodandmithril.item.material.fuel.Coal;
+import bloodandmithril.item.material.liquid.Blood;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.mineral.Ashes;
@@ -148,6 +150,7 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
+import bloodandmithril.util.datastructure.ConcurrentDualKeySkipListMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
@@ -155,6 +158,9 @@ import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.fluid.Fluid;
+import bloodandmithril.world.topography.fluid.FluidFraction;
+import bloodandmithril.world.topography.fluid.FluidMap;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.DebugTile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -348,6 +354,12 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Blood.class);
+		kryo.register(ConcurrentDualKeySkipListMap.class);
+		kryo.register(FluidFraction.class);
+		kryo.register(Fluid.class);
+		kryo.register(FluidMap.class);
+		kryo.register(SyncFluidsNotification.class);
 		kryo.register(WoodenBucket.class);
 		kryo.register(Key.class);
 		kryo.register(SkeletonKey.class);
@@ -818,7 +830,17 @@ public class ClientServerInterface {
 				new SynchronizeIndividualResponse(id, System.currentTimeMillis())
 			);
 		}
+		
 
+		public static synchronized void notifySyncFluids() {
+			sendNotification(
+				-1,
+				false,
+				false,
+				new SyncFluidsNotification(Domain.getActiveWorld().getTopography().getFluids())
+			);
+		}
+		
 
 		public static synchronized void notifySyncLight(int id, Light light) {
 			sendNotification(
