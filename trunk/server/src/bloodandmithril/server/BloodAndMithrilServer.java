@@ -43,7 +43,7 @@ import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.prop.building.PineChest;
+import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
@@ -312,7 +312,7 @@ public class BloodAndMithrilServer {
 			if (keycode == Input.Keys.T) {
 				Individual individual = Domain.getIndividuals().get(1);
 				if (individual != null) {
-					PineChest pineChest = new PineChest(
+					WoodenChest pineChest = new WoodenChest(
 						individual.getState().position.x,
 						individual.getState().position.y, true, 100f, true,
 						new Function<Item, Boolean>() {

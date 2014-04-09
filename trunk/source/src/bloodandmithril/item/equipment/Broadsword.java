@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class Broadsword extends OneHandedWeapon {
+public class Broadsword extends OneHandedWeapon implements Smithable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
 	public static TextureRegion texture;
@@ -102,6 +102,12 @@ public class Broadsword extends OneHandedWeapon {
 
 	@Override
 	public void render() {
-		
+
+	}
+
+
+	@Override
+	public int getRequiredSmithingLevel() {
+		return 20;
 	}
 }

@@ -9,7 +9,7 @@ import bloodandmithril.util.Task;
  * @author Matt
  */
 public abstract class CursorBoundTask {
-	
+
 	private JITTask task;
 	private boolean isWorldCoordinate;
 
@@ -20,11 +20,11 @@ public abstract class CursorBoundTask {
 		this.task = task;
 		this.isWorldCoordinate = isWorldCoordinate;
 	}
-	
+
 
 	/**
 	 * Executes
-	 * 
+	 *
 	 * @param x - the x coordinate of the mouse, could either be world or screen coords.
 	 * @param y - the y coordinate of the mouse, could either be world or screen coords.
 	 */
@@ -36,8 +36,8 @@ public abstract class CursorBoundTask {
 	public boolean isWorldCoordinate() {
 		return isWorldCoordinate;
 	}
-	
-	
+
+
 	/**
 	 * @return the UI help text that will be displayed next to the cursor when this {@link CursorBoundTask} is bound to the cursor.
 	 */

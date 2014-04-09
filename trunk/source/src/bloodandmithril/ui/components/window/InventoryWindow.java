@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.DiscardLiquid;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.CursorBoundTask;
 import bloodandmithril.csi.ClientServerInterface;
@@ -30,11 +31,10 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.util.JITTask;
-import bloodandmithril.character.ai.task.DiscardLiquid;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -116,24 +116,24 @@ public class InventoryWindow extends Window implements Refreshable {
 	@Override
 	protected void internalWindowRender() {
 		int lineWidth = 23;
-		
+
 		// Set the position and dimensions of the panel
 		inventoryListingPanel.height = height - (equippedItemsToDisplay.isEmpty() ? 0 : ((1 + min(5,equippedItemsToDisplay.size())) * lineWidth)) - lineWidth;
 		inventoryListingPanel.width = width;
 		inventoryListingPanel.x = x;
 		inventoryListingPanel.y = y - (equippedItemsToDisplay.isEmpty() ? 0 : ((1 + min(5,equippedItemsToDisplay.size())) * lineWidth));
-		
+
 		equippedListingPanel.height = 50 + (equippedItemsToDisplay.isEmpty() ? 0 : ((1 + min(5, equippedItemsToDisplay.size())) * lineWidth));
 		equippedListingPanel.width = width;
 		equippedListingPanel.x = x;
 		equippedListingPanel.y = y;
-		
+
 		// Render the separator
 		renderSeparator();
 
 		// Render the listing panel
 		inventoryListingPanel.render();
-		
+
 		if (!equippedItemsToDisplay.isEmpty()) {
 			equippedListingPanel.render();
 		}
@@ -200,7 +200,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				return false;
 			}
 		};
-		
+
 		equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this) {
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -333,12 +333,12 @@ public class InventoryWindow extends Window implements Refreshable {
 							args -> {
 								try {
 									float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
-									
+
 									if (amount < 0.01f) {
 										UserInterface.addMessage("Too little to drink", "It would be a waste of time to drink this little, enter a larger amount");
 										return;
 									}
-									
+
 									if (ClientServerInterface.isServer()) {
 										host.takeItem(item);
 										LiquidContainer newContainer = ((LiquidContainer) item).clone();
@@ -363,9 +363,9 @@ public class InventoryWindow extends Window implements Refreshable {
 				Color.WHITE,
 				null
 			);
-			
+
 			MenuItem emptyContainerContents = new MenuItem(
-				"Discard", 
+				"Discard",
 				() -> {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
@@ -379,12 +379,12 @@ public class InventoryWindow extends Window implements Refreshable {
 							args -> {
 								try {
 									float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
-									
+
 									if (amount < 0.01f) {
 										UserInterface.addMessage("Too little to discard", "Its too little to discard, enter a larger amount");
 										return;
 									}
-									
+
 									if (ClientServerInterface.isServer()) {
 										BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(
 											new JITTask() {
@@ -420,9 +420,9 @@ public class InventoryWindow extends Window implements Refreshable {
 				Color.WHITE,
 				null
 			);
-			
+
 			MenuItem transferContainerContents = new MenuItem(
-				"Transfer", 
+				"Transfer",
 				() -> {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
@@ -440,7 +440,7 @@ public class InventoryWindow extends Window implements Refreshable {
 										UserInterface.addMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
 										return;
 									}
-									
+
 									for (ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
 										listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
 										listItem.button.setDownColor(Colors.UI_DARK_GRAY);
@@ -449,7 +449,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									}
 									for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
 										if (listItem.t instanceof LiquidContainer) {
-											
+
 											if (listItem.t == item) {
 												listItem.button.setIdleColor(Colors.UI_DARK_GREEN);
 												listItem.button.setDownColor(Colors.UI_DARK_GREEN);
@@ -466,7 +466,7 @@ public class InventoryWindow extends Window implements Refreshable {
 														LiquidContainer container = (LiquidContainer) item;
 														individual.takeItem(container);
 														individual.takeItem(listItem.t);
-														LiquidContainer newContainer = ((LiquidContainer) container).clone();
+														LiquidContainer newContainer = container.clone();
 														Map<Class<? extends Liquid>, Float> subtracted = newContainer.subtract(amount);
 														Map<Class<? extends Liquid>, Float> remainder = toTransferTo.add(subtracted);
 														if (!remainder.isEmpty()) {
@@ -487,7 +487,7 @@ public class InventoryWindow extends Window implements Refreshable {
 											listItem.menu = null;
 										}
 									}
-									
+
 								} catch (NumberFormatException e) {
 									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 								}

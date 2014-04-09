@@ -137,7 +137,7 @@ public class TransferItems implements Request {
 	public static class RefreshWindowsResponse implements Response {
 		@Override
 		public void acknowledge() {
-			UserInterface.refreshInventoryWindows();
+			UserInterface.refreshRefreshableWindows();
 		}
 
 		@Override

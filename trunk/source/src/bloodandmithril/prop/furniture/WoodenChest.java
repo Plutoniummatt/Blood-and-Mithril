@@ -1,58 +1,59 @@
-package bloodandmithril.prop.building;
+package bloodandmithril.prop.furniture;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.google.common.collect.Maps.newHashMap;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.building.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.world.Domain;
-import bloodandmithril.character.ai.task.LockUnlockContainer;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * A {@link ConstructionWithContainer} made from pine
+ * A chest made from wood
  */
-public class PineChest extends Construction implements Container {
+public class WoodenChest extends Construction implements Container {
 	private static final long serialVersionUID = -8935044324226731703L;
 
-	/** {@link TextureRegion} of the {@link PineChest} */
-	public static TextureRegion pineChest;
+	/** {@link TextureRegion} of the {@link WoodenChest} */
+	public static TextureRegion woodenChest;
 
-	/** The {@link Container} of this {@link PineChest} */
+	/** The {@link Container} of this {@link WoodenChest} */
 	private ContainerImpl container;
-	
+
 	/**
 	 * Constructor
 	 */
-	public PineChest(float x, float y, boolean grounded, float capacity) {
-		super(x, y, 44, 35, grounded, 0.1f);
+	public WoodenChest(float x, float y, boolean grounded, float capacity) {
+		super(x, y, 44, 35, grounded, 0f);
 		container = new ContainerImpl(capacity, true);
+		setConstructionProgress(1f);
 	}
 
-	
+
 	/**
-	 * Constructor for lockable {@link PineChest}
+	 * Constructor for lockable {@link WoodenChest}
 	 */
-	public PineChest(float x, float y, boolean grounded, float capacity, boolean locked, Function<Item, Boolean> unlockingFunction) {
+	public WoodenChest(float x, float y, boolean grounded, float capacity, boolean locked, Function<Item, Boolean> unlockingFunction) {
 		super(x, y, 44, 35, grounded, 0.1f);
 		container = new ContainerImpl(capacity, true, locked, unlockingFunction);
+		setConstructionProgress(1f);
 	}
 
 
@@ -66,7 +67,7 @@ public class PineChest extends Construction implements Container {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new MessageWindow(
-							"A chest constructed mostly from pine, used to store items",
+							"A chest constructed mostly from wood, used to store items",
 							Color.ORANGE,
 							BloodAndMithrilClient.WIDTH/2 - 250,
 							BloodAndMithrilClient.HEIGHT/2 + 125,
@@ -106,7 +107,7 @@ public class PineChest extends Construction implements Container {
 					null
 				);
 				menu.addMenuItem(openChestMenuItem);
-				
+
 				if (container.isLockable()) {
 					MenuItem lockChestMenuItem = new MenuItem(
 						"Lock",
@@ -156,17 +157,17 @@ public class PineChest extends Construction implements Container {
 
 	@Override
 	public void synchronizeProp(Prop other) {
-		if (other instanceof PineChest) {
-			this.container.synchronizeContainer(((PineChest)other).container);
+		if (other instanceof WoodenChest) {
+			this.container.synchronizeContainer(((WoodenChest)other).container);
 		} else {
-			throw new RuntimeException("Can not synchronize Pine Chest with " + other.getClass().getSimpleName());
+			throw new RuntimeException("Can not synchronize Wooden Chest with " + other.getClass().getSimpleName());
 		}
 	}
 
 
 	@Override
 	protected void internalRender(float constructionProgress) {
-		spriteBatch.draw(pineChest, position.x - width / 2, position.y);
+		spriteBatch.draw(woodenChest, position.x - width / 2, position.y);
 	}
 
 
@@ -247,11 +248,7 @@ public class PineChest extends Construction implements Container {
 
 	@Override
 	protected Map<Item, Integer> getRequiredMaterials() {
-		HashMap<Item, Integer> map = newHashMap();
-		
-		map.put(new Carrot(), 10);
-		
-		return map;
+		return newHashMap();
 	}
 
 

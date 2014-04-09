@@ -15,7 +15,7 @@ public class Skills implements Serializable {
 	/** Represents skill levels */
 	private int trading = 0;				// Better at trading, trade less for more
 	private int observation = 0;			// Better at identifying the status of an individual
-	private int fitness = 0;				// Can run for longer
+	private int smithing = 0;				// Blacksmithing
 
 	/**
 	 * Constructor
@@ -38,14 +38,14 @@ public class Skills implements Serializable {
 		this.observation = observation;
 	}
 
-	public int getFitness() {
-		return fitness;
+	public int getSmithing() {
+		return smithing;
 	}
 
-	public void setFitness(int fitness) {
-		this.fitness = fitness;
+	public void setSmithing(int smithing) {
+		this.smithing = smithing;
 	}
-	
+
 	/**
 	 * @return the ratio of a skill level to that of the max skill level
 	 */
