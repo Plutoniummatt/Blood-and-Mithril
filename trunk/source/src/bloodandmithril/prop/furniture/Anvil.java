@@ -1,11 +1,14 @@
 package bloodandmithril.prop.furniture;
 
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.Smith;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Item;
@@ -14,11 +17,11 @@ import bloodandmithril.prop.building.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
-import bloodandmithril.ui.components.window.AnvilWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * An iron anvil, used to smith metallic items
@@ -28,20 +31,24 @@ import com.badlogic.gdx.graphics.Color;
 public class Anvil extends Construction implements Container {
 	private static final long serialVersionUID = -2103140298239675830L;
 
+	/** {@link TextureRegion} of the {@link Anvil} */
+	public static TextureRegion anvil;
+
 	/** Container of this Anvil */
-	private ContainerImpl container;
+	private ContainerImpl container = new ContainerImpl(0f, true);
 
 	/**
 	 * Constructor
 	 */
 	public Anvil(float x, float y) {
-		super(x, y, 40, 30, true, 0f);
+		super(x, y, 44, 18, true, 0f);
 		setConstructionProgress(1f);
 	}
 
 
 	@Override
 	protected void internalRender(float constructionProgress) {
+		spriteBatch.draw(anvil, position.x - width / 2, position.y);
 	}
 
 
@@ -88,20 +95,11 @@ public class Anvil extends Construction implements Container {
 				new MenuItem(
 					"Smith",
 					() -> {
-						UserInterface.addLayeredComponent(
-							new AnvilWindow(
-								BloodAndMithrilClient.WIDTH/2 - 150,
-								BloodAndMithrilClient.HEIGHT/2 + 175,
-								300,
-								350,
-								"Smith",
-								true,
-								300,
-								350,
-								selected,
-								this
-							)
-						);
+						if (ClientServerInterface.isServer()) {
+							selected.getAI().setCurrentTask(new Smith(selected, this));
+						} else {
+							ClientServerInterface.SendRequest.sendSmithRequest(selected, this);
+						}
 					},
 					Color.WHITE,
 					Color.GREEN,

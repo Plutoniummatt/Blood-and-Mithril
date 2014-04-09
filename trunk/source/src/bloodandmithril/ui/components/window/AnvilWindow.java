@@ -16,6 +16,7 @@ import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.Smithable;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.furniture.Anvil;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -161,6 +162,10 @@ public class AnvilWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
+		if (((Prop) anvil).position.cpy().sub((smith).getState().position.cpy()).len() > 64) {
+			setClosing(true);
+		}
+
 		listing.x = x;
 		listing.y = y;
 		listing.width = width;

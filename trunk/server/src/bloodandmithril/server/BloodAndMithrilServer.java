@@ -43,12 +43,13 @@ import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
+import bloodandmithril.prop.furniture.Anvil;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
-import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Epoch;
 import bloodandmithril.world.topography.fluid.Fluid;
 import bloodandmithril.world.topography.fluid.FluidFraction;
 
@@ -159,7 +160,7 @@ public class BloodAndMithrilServer {
 							for (Individual individual : Domain.getIndividuals().values()) {
 								ClientServerInterface.SendNotification.notifyIndividualSync(individual.getId().getId());
 							}
-							
+
 						} catch (InterruptedException e) {
 							Logger.generalDebug(e.getMessage(), LogLevel.WARN, e);
 						}
@@ -175,7 +176,7 @@ public class BloodAndMithrilServer {
 							for (Entry<Integer, Light> entry : Domain.getLights().entrySet()) {
 								ClientServerInterface.SendNotification.notifySyncLight(entry.getKey(), entry.getValue());
 							}
-							
+
 							if (Domain.getActiveWorld() != null && Domain.getActiveWorld().getTopography() != null && Domain.getActiveWorld().getTopography().getFluids() != null) {
 								ClientServerInterface.SendNotification.notifySyncFluids();
 							}
@@ -219,7 +220,7 @@ public class BloodAndMithrilServer {
 			gameWorld = new Domain();
 
 			Gdx.input.setInputProcessor(this);
-			
+
 			PrefabricatedComponent.setup();
 		}
 
@@ -264,47 +265,47 @@ public class BloodAndMithrilServer {
 			if (keycode == Input.Keys.S) {
 				GameSaver.save(false);
 			}
-			
+
 			if (keycode == Input.Keys.J) {
 				Domain.getActiveWorld().getTopography().getFluids().put(
-					0, 
-					50, 
+					0,
+					50,
 					new Fluid(FluidFraction.fraction(new Water(), 16f))
 				);
 			}
-			
+
 			if (keycode == Input.Keys.K) {
 				Domain.getActiveWorld().getTopography().getFluids().put(
-					0, 
+					0,
 					50,
 					new Fluid(FluidFraction.fraction(new Blood(), 16f))
 				);
 			}
-			
+
 			if (keycode == Input.Keys.H) {
 				Domain.getActiveWorld().getTopography().getFluids().put(
-					0, 
+					0,
 					50,
 					new Fluid(FluidFraction.fraction(new Acid(), 16f))
 				);
 			}
-			
+
 			if (keycode == Input.Keys.G) {
 				Domain.getActiveWorld().getTopography().getFluids().put(
-					0, 
+					0,
 					50,
 					new Fluid(FluidFraction.fraction(new CrudeOil(), 16f))
 				);
 			}
-			
+
 			if (keycode == Input.Keys.F) {
 				Domain.getActiveWorld().getTopography().getFluids().put(
-					0, 
+					0,
 					50,
 					new Fluid(FluidFraction.fraction(new Milk(), 16f))
 				);
 			}
-			
+
 			if (keycode == Input.Keys.P) {
 				Domain.getIndividuals().get(1).addCondition(new Poison(1f, 0.1f));
 			}
@@ -340,6 +341,14 @@ public class BloodAndMithrilServer {
 				if (individual != null) {
 					bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
 					Domain.getProps().put(carrot.id, carrot);
+				}
+			}
+
+			if (keycode == Input.Keys.Y) {
+				Individual individual = Domain.getIndividuals().get(1);
+				if (individual != null) {
+					Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
+					Domain.getProps().put(anvil.id, anvil);
 				}
 			}
 
