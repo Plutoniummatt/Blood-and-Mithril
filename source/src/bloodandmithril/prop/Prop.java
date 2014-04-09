@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.building.Furnace;
+import bloodandmithril.prop.furniture.Anvil;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.Carrot;
 import bloodandmithril.ui.components.ContextMenu;
@@ -61,10 +62,10 @@ public abstract class Prop implements Serializable {
 
 	/** Get the right-click {@link ContextMenu} */
 	public abstract ContextMenu getContextMenu();
-	
+
 	/** Updates this prop */
 	public abstract void update(float delta);
-	
+
 	/** Returns the label to use for the right click context menu */
 	public abstract String getContextMenuItemLabel();
 
@@ -73,5 +74,6 @@ public abstract class Prop implements Serializable {
 		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 503, 176, 49, 76);
 		WoodenChest.woodenChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);
 		Carrot.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 176, 12, 17);
+		Anvil.anvil= new TextureRegion(Domain.gameWorldTexture, 363, 225, 44, 18);
 	}
 }

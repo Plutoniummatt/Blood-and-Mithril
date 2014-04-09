@@ -29,9 +29,9 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.Attack.Strike;
-import bloodandmithril.character.ai.task.Construct.Constructing;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.Construct;
+import bloodandmithril.character.ai.task.Construct.Constructing;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Harvest;
@@ -41,6 +41,9 @@ import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.LockUnlockContainer.LockUnlock;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.ai.task.MineTile.Mine;
+import bloodandmithril.character.ai.task.Smith;
+import bloodandmithril.character.ai.task.Smith.BeginSmithing;
+import bloodandmithril.character.ai.task.Smith.Blacksmithing;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
@@ -56,9 +59,13 @@ import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.Response.Responses;
+import bloodandmithril.csi.requests.AddLightRequest;
+import bloodandmithril.csi.requests.AddLightRequest.RemoveLightNotification;
+import bloodandmithril.csi.requests.AddLightRequest.SyncLightResponse;
 import bloodandmithril.csi.requests.CSIMineTile;
+import bloodandmithril.csi.requests.CSISmith;
+import bloodandmithril.csi.requests.CSISmith.NotifyOpenAnvilWindow;
 import bloodandmithril.csi.requests.CSITradeWith;
-import bloodandmithril.csi.requests.CSITradeWith.CSITradeWithResponse;
 import bloodandmithril.csi.requests.ChangeFactionControlPassword;
 import bloodandmithril.csi.requests.ChangeFactionControlPassword.RefreshFactionWindow;
 import bloodandmithril.csi.requests.ChangeNickName;
@@ -68,13 +75,13 @@ import bloodandmithril.csi.requests.ConstructionRequest;
 import bloodandmithril.csi.requests.ConsumeItem;
 import bloodandmithril.csi.requests.DestroyPropNotification;
 import bloodandmithril.csi.requests.DestroyTile;
-import bloodandmithril.csi.requests.FurnaceSmelt;
-import bloodandmithril.csi.requests.IgniteFurnaceRequest;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.DrinkLiquid;
 import bloodandmithril.csi.requests.EquipOrUnequipItem;
+import bloodandmithril.csi.requests.FurnaceSmelt;
 import bloodandmithril.csi.requests.GenerateChunk;
 import bloodandmithril.csi.requests.GenerateChunk.GenerateChunkResponse;
+import bloodandmithril.csi.requests.IgniteFurnaceRequest;
 import bloodandmithril.csi.requests.IndividualSelection;
 import bloodandmithril.csi.requests.LockUnlockContainerRequest;
 import bloodandmithril.csi.requests.MoveIndividual;
@@ -89,9 +96,6 @@ import bloodandmithril.csi.requests.SendChatMessage.Message;
 import bloodandmithril.csi.requests.SendChatMessage.SendChatMessageResponse;
 import bloodandmithril.csi.requests.SendHarvestRequest;
 import bloodandmithril.csi.requests.SetAIIdle;
-import bloodandmithril.csi.requests.AddLightRequest;
-import bloodandmithril.csi.requests.AddLightRequest.RemoveLightNotification;
-import bloodandmithril.csi.requests.AddLightRequest.SyncLightResponse;
 import bloodandmithril.csi.requests.SyncFluidsNotification;
 import bloodandmithril.csi.requests.SynchronizeFaction;
 import bloodandmithril.csi.requests.SynchronizeFaction.SynchronizeFactionResponse;
@@ -111,8 +115,8 @@ import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Equipable;
-import bloodandmithril.item.EquipperImpl;
 import bloodandmithril.item.Equipper.EquipmentSlot;
+import bloodandmithril.item.EquipperImpl;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
@@ -120,8 +124,8 @@ import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.equipment.Weapon;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
-import bloodandmithril.item.material.container.LiquidContainer;
 import bloodandmithril.item.material.container.GlassBottle;
+import bloodandmithril.item.material.container.LiquidContainer;
 import bloodandmithril.item.material.container.WoodenBucket;
 import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Acid;
@@ -145,6 +149,7 @@ import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
+import bloodandmithril.prop.furniture.Anvil;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.FelberryBush;
 import bloodandmithril.prop.plant.Plant;
@@ -155,9 +160,9 @@ import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.ConcurrentDualKeySkipListMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
-import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
+import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
@@ -357,6 +362,12 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(NotifyOpenAnvilWindow.class);
+		kryo.register(Blacksmithing.class);
+		kryo.register(BeginSmithing.class);
+		kryo.register(CSISmith.class);
+		kryo.register(Smith.class);
+		kryo.register(Anvil.class);
 		kryo.register(Milk.class);
 		kryo.register(CrudeOil.class);
 		kryo.register(Acid.class);
@@ -421,7 +432,6 @@ public class ClientServerInterface {
 		kryo.register(ConsumeItem.class);
 		kryo.register(CSIMineTile.class);
 		kryo.register(CSITradeWith.class);
-		kryo.register(CSITradeWithResponse.class);
 		kryo.register(Currency.class);
 		kryo.register(DeathCap.class);
 		kryo.register(DebugTile.class);
@@ -549,12 +559,18 @@ public class ClientServerInterface {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
 		}
-		
+
+
+		public static synchronized void sendSmithRequest(Individual individual, Anvil anvil) {
+			client.sendTCP(new CSISmith(individual.getId().getId(), anvil.id, client.getID()));
+			Logger.networkDebug("Sending smith request", LogLevel.DEBUG);
+		}
+
 		public static synchronized void sendLockUnlockContainerRequest(int individualId, int containerId, boolean lock) {
 			client.sendTCP(new LockUnlockContainerRequest(individualId, containerId, lock));
 			Logger.networkDebug("Sending lock/unlock container request", LogLevel.DEBUG);
 		}
-		
+
 		public static synchronized void sendAddLightRequest(Light light) {
 			client.sendTCP(new AddLightRequest(light.size, light.x, light.y, light.color, light.intensity, light.spanBegin, light.spanEnd));
 			Logger.networkDebug("Sending add light request", LogLevel.DEBUG);
@@ -564,7 +580,7 @@ public class ClientServerInterface {
 			client.sendTCP(new SendHarvestRequest(individualId, propId));
 			Logger.networkDebug("Sending harvest request", LogLevel.DEBUG);
 		}
-		
+
 		public static synchronized void sendConstructRequest(int individualId, int propId) {
 			client.sendTCP(new ConstructionRequest(individualId, propId));
 			Logger.networkDebug("Sending construction request", LogLevel.DEBUG);
@@ -594,12 +610,12 @@ public class ClientServerInterface {
 			client.sendTCP(new RequestClientList());
 			Logger.networkDebug("Sending client name list request", LogLevel.DEBUG);
 		}
-		
+
 		public static synchronized void sendIgniteFurnaceRequest(int furnaceId) {
 			client.sendTCP(new IgniteFurnaceRequest(furnaceId));
 			Logger.networkDebug("Sending ignite furnace request", LogLevel.DEBUG);
 		}
-		
+
 		public static synchronized void sendFurnaceSmeltRequest(int furnaceId) {
 			client.sendTCP(new FurnaceSmelt(furnaceId));
 			Logger.networkDebug("Sending furnace smelt request", LogLevel.DEBUG);
@@ -684,7 +700,7 @@ public class ClientServerInterface {
 			client.sendTCP(new OpenTradeWindow(proposerId, proposee, proposeeId));
 			Logger.networkDebug("Sending open trade window request", LogLevel.DEBUG);
 		}
-		
+
 		public static synchronized void sendChatMessage(String message) {
 			client.sendTCP(
 				new SendChatMessage(
@@ -726,14 +742,24 @@ public class ClientServerInterface {
 				new DestroyPropNotification(propId)
 			);
 		}
-		
-		
+
+
 		public static synchronized void notifyRemoveLight(int lightId) {
 			sendNotification(
 				-1,
 				true,
 				true,
 				new AddLightRequest.RemoveLightNotification(lightId)
+			);
+		}
+
+
+		public static synchronized void notifyOpenAnvilWindow(int smithId, int anvilId, int connectionId) {
+			sendNotification(
+				connectionId,
+				true,
+				true,
+				new CSISmith.NotifyOpenAnvilWindow(smithId, anvilId)
 			);
 		}
 
@@ -836,7 +862,7 @@ public class ClientServerInterface {
 				new SynchronizeIndividualResponse(id, System.currentTimeMillis())
 			);
 		}
-		
+
 
 		public static synchronized void notifySyncFluids() {
 			sendNotification(
@@ -846,7 +872,7 @@ public class ClientServerInterface {
 				new SyncFluidsNotification(Domain.getActiveWorld().getTopography().getFluids())
 			);
 		}
-		
+
 
 		public static synchronized void notifySyncLight(int id, Light light) {
 			sendNotification(

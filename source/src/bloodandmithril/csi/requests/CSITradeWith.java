@@ -65,21 +65,4 @@ public class CSITradeWith implements Request {
 	public boolean notifyOthers() {
 		return false;
 	}
-
-
-	public static class CSITradeWithResponse implements Response {
-		@Override
-		public void acknowledge() {
-			// Do nothing
-		}
-
-		@Override
-		public int forClient() {
-			return -1;
-		}
-
-		@Override
-		public void prepare() {
-		}
-	}
 }

@@ -90,14 +90,13 @@ public class TradeWith extends CompositeAITask {
 
 
 	public static class Trade extends AITask {
+		private static final long serialVersionUID = 4644624691451364142L;
 
 		private final Individual proposer;
 
 		private final Container proposee;
 
 		private final int connectionId;
-
-		private static final long serialVersionUID = 4644624691451364142L;
 
 		/**
 		 * Constructor
@@ -138,7 +137,7 @@ public class TradeWith extends CompositeAITask {
 			if (proposee.isLocked()) {
 				return;
 			}
-			
+
 			if (proposee instanceof Individual) {
 				Individual proposeeCasted = (Individual)proposee;
 
@@ -181,7 +180,7 @@ public class TradeWith extends CompositeAITask {
 	public static void openTradeWindowWithProp(Individual proposer, Container container) {
 		if (container instanceof Prop) {
 			Prop prop = Domain.getProps().get(((Prop) container).id);
-			
+
 			if (prop instanceof Construction) {
 				if (((Construction) prop).getConstructionProgress() != 1f) {
 					UserInterface.addLayeredComponentUnique(
@@ -202,7 +201,7 @@ public class TradeWith extends CompositeAITask {
 					return;
 				}
 			}
-			
+
 			if (prop instanceof Furnace) {
 				UserInterface.addLayeredComponentUnique(
 					new FurnaceWindow(

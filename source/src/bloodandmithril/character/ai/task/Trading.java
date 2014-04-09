@@ -61,6 +61,5 @@ public class Trading extends AITask {
 
 	@Override
 	public void execute(float delta) {
-		// Do nothing
 	}
 }
