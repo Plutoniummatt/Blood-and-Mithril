@@ -110,11 +110,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static final Set<Integer> controlledFactions = Sets.newHashSet();
 
 	public static long ping = 0;
-	
+
 	public static Thread updateThread;
-	
+
 	private long topographyBacklogExecutionTimer;
-	
+
 	private static CursorBoundTask cursorBoundTask = null;
 
 	@Override
@@ -133,10 +133,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		SoundService.changeMusic(2f, SoundService.music1);
 
 		newCachedThreadPool = Executors.newCachedThreadPool();
-		
+
 		updateThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
-		
+
 			while (true) {
 				if ((System.currentTimeMillis() - prevFrame) > 16) {
 					prevFrame = System.currentTimeMillis();
@@ -144,8 +144,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				}
 			}
 		});
-		
-		
+
+
 		updateThread.setName("Update thread");
 		updateThread.start();
 	}
@@ -194,13 +194,13 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			SoundService.update(Gdx.graphics.getDeltaTime());
 			Shaders.updateShaderUniforms();
 		}
-		
+
 		// Topography backlog ---------- /
 		if (System.currentTimeMillis() - topographyBacklogExecutionTimer > 100) {
 			Topography.executeBackLog();
 			topographyBacklogExecutionTimer = System.currentTimeMillis();
 		}
-		
+
 		// Camera --------------------- /
 		cam.update();
 		UserInterface.update();
@@ -260,13 +260,14 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	private void rightClick() {
 		boolean doubleClick = rightDoubleClickTimer < DOUBLE_CLICK_TIME;
+		boolean uiClicked = false;
 		rightDoubleClickTimer = 0f;
 
 		if (!Gdx.input.isKeyPressed(KeyMappings.contextMenuBypass)) {
-			UserInterface.rightClick();
+			uiClicked = UserInterface.rightClick();
 		}
 
-		if (UserInterface.contextMenus.isEmpty()) {
+		if (UserInterface.contextMenus.isEmpty() && !uiClicked) {
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
 				if (ClientServerInterface.isServer()) {
 					indi.setWalking(!doubleClick);
@@ -313,7 +314,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Called upon left clicking
 	 */
 	private void leftClick(int screenX, int screenY) {
-		
+
 		boolean doubleClick = leftDoubleClickTimer < DOUBLE_CLICK_TIME;
 		leftDoubleClickTimer = 0f;
 
@@ -333,19 +334,19 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			if (getCursorBoundTask() != null) {
 				if (getCursorBoundTask().isWorldCoordinate()) {
 					getCursorBoundTask().execute(
-						(int) getMouseWorldX(), 
+						(int) getMouseWorldX(),
 						(int) getMouseWorldY()
 					);
 				} else {
 					getCursorBoundTask().execute(
-						(int) getMouseScreenX(), 
-						(int) getMouseScreenY()
+						getMouseScreenX(),
+						getMouseScreenY()
 					);
 				}
 				setCursorBoundTask(null);
 				return;
 			}
-			
+
 			if (individualClicked == null) {
 				if (doubleClick) {
 					for (Individual indi : Domain.getIndividuals().values()) {
@@ -533,7 +534,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		leftDoubleClickTimer += delta;
 		rightDoubleClickTimer += delta;
 	}
-	
+
 
 	/**
 	 * Camera dragging processing

@@ -1,8 +1,8 @@
 package bloodandmithril.ui.components.window;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -40,7 +40,8 @@ import bloodandmithril.item.misc.Currency;
 import bloodandmithril.item.misc.SkeletonKey;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.prop.building.PineChest;
+import bloodandmithril.prop.furniture.Anvil;
+import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -50,8 +51,8 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
-import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Epoch;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.fluid.Fluid;
 import bloodandmithril.world.topography.fluid.FluidFraction;
@@ -145,9 +146,9 @@ public class DevWindow extends Window {
 				20f,
 				Domain.getActiveWorld()
 			);
-			
+
 			elf.getSkills().setObservation(55);
-			
+
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(new Carrot());
 			}
@@ -197,55 +198,55 @@ public class DevWindow extends Window {
 			Domain.getIndividuals().put(boar.getId().getId(), boar);
 			return true;
 		}
-		
+
 		if (keyCode == Input.Keys.L) {
 			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), true);
 		}
-		
+
 		if (keyCode == Input.Keys.P) {
 			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickTile.class);
 		}
-		
+
 		if (keyCode == Input.Keys.J) {
 			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()), 
-				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				Topography.convertToWorldTileCoord(getMouseWorldX()),
+				Topography.convertToWorldTileCoord(getMouseWorldY()),
 				new Fluid(FluidFraction.fraction(new Water(), 16f))
 			);
 		}
-		
+
 		if (keyCode == Input.Keys.K) {
 			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()), 
-				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				Topography.convertToWorldTileCoord(getMouseWorldX()),
+				Topography.convertToWorldTileCoord(getMouseWorldY()),
 				new Fluid(FluidFraction.fraction(new Blood(), 16f))
 			);
 		}
-		
+
 		if (keyCode == Input.Keys.H) {
 			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()), 
-				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				Topography.convertToWorldTileCoord(getMouseWorldX()),
+				Topography.convertToWorldTileCoord(getMouseWorldY()),
 				new Fluid(FluidFraction.fraction(new Acid(), 16f))
 			);
 		}
-		
+
 		if (keyCode == Input.Keys.G) {
 			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()), 
-				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				Topography.convertToWorldTileCoord(getMouseWorldX()),
+				Topography.convertToWorldTileCoord(getMouseWorldY()),
 				new Fluid(FluidFraction.fraction(new CrudeOil(), 16f))
 			);
 		}
-		
+
 		if (keyCode == Input.Keys.F) {
 			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()), 
-				Topography.convertToWorldTileCoord(getMouseWorldY()), 
+				Topography.convertToWorldTileCoord(getMouseWorldX()),
+				Topography.convertToWorldTileCoord(getMouseWorldY()),
 				new Fluid(FluidFraction.fraction(new Milk(), 16f))
 			);
 		}
-		
+
 		return false;
 	}
 
@@ -305,6 +306,33 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
+				"Spawn Anvil on first individual",
+				new Button(
+					"Spawn Anvil on first individual",
+					Fonts.defaultFont,
+					0,
+					0,
+					310,
+					16,
+					() -> {
+						Individual individual = Domain.getIndividuals().get(1);
+						if (individual != null) {
+							Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
+							Domain.getProps().put(anvil.id, anvil);
+						}
+					},
+					Color.GREEN,
+					Color.WHITE,
+					Color.GREEN,
+					UIRef.BL
+				),
+				null
+			),
+			0
+		);
+
+		newHashMap.put(
+			new ListingMenuItem<String>(
 				"Spawn Chest on first individual",
 				new Button(
 					"Spawn Chest on first individual",
@@ -316,10 +344,10 @@ public class DevWindow extends Window {
 					() -> {
 						Individual individual = Domain.getIndividuals().get(1);
 						if (individual != null) {
-							PineChest pineChest = new PineChest(
-								individual.getState().position.x, 
-								individual.getState().position.y, 
-								true, 
+							WoodenChest pineChest = new WoodenChest(
+								individual.getState().position.x,
+								individual.getState().position.y,
+								true,
 								100f,
 								true,
 								new Function<Item, Boolean>() {
@@ -333,7 +361,7 @@ public class DevWindow extends Window {
 									}
 								}
 							);
-							
+
 							Domain.getProps().put(pineChest.id, pineChest);
 						}
 					},
@@ -447,7 +475,7 @@ public class DevWindow extends Window {
 			),
 			0
 		);
-		
+
 		newHashMap.put(
 			new ListingMenuItem<String>(
 				"See All",
@@ -470,7 +498,7 @@ public class DevWindow extends Window {
 			),
 			0
 		);
-		
+
 		newHashMap.put(
 			new ListingMenuItem<String>(
 				"Debug",
@@ -493,7 +521,7 @@ public class DevWindow extends Window {
 			),
 			0
 		);
-		
+
 		newHashMap.put(
 			new ListingMenuItem<String>(
 				"Render Topography",
@@ -516,8 +544,8 @@ public class DevWindow extends Window {
 			),
 			0
 		);
-		
-		newHashMap.put(			
+
+		newHashMap.put(
 			new ListingMenuItem<String>(
 				"Save game",
 				new Button(

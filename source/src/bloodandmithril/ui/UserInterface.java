@@ -116,10 +116,10 @@ public class UserInterface {
 
 	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
 	public static boolean renderAvailableInterfaces = true, renderComponentBoundaries = true;
-	
+
 	/** Whether to render debug UI */
 	public static boolean DEBUG = false;
-	
+
 	/** Whether to render debug UI */
 	public static boolean RENDER_TOPOGRAPHY = false;
 
@@ -148,62 +148,62 @@ public class UserInterface {
 	}
 
 
-	public static void refreshInventoryWindows() {
+	public static void refreshRefreshableWindows() {
 		layeredComponents.stream().filter((component) -> {
 			return component instanceof Refreshable;
 		}).forEach((component) -> {
 			((Refreshable) component).refresh();
 		});
 	}
-	
-	
+
+
 	/**
 	 * Load the buttons
 	 */
 	private static void loadButtons() {
 		Button pauseButton = new Button(
-			"Pause", 
-			defaultFont, 
-			-32, 
-			4, 
-			55, 
-			16, 
+			"Pause",
+			defaultFont,
+			-32,
+			4,
+			55,
+			16,
 			() -> {
 				BloodAndMithrilClient.paused = true;
-			}, 
-			Color.WHITE, 
-			Color.GREEN, 
-			Color.WHITE, 
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.WHITE,
 			UIRef.TR
 		);
 
 		unpauseButton = new Button(
-			"Unpause", 
-			defaultFont, 
-			0, 
-			0, 
-			75, 
-			16, 
+			"Unpause",
+			defaultFont,
+			0,
+			0,
+			75,
+			16,
 			() -> {
 				BloodAndMithrilClient.paused = false;
-			}, 
-			Color.WHITE, 
-			Color.GREEN, 
-			Color.WHITE, 
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.WHITE,
 			UIRef.M
 		);
 
 		savingButton = new Button(
-			"Saving...", 
-			defaultFont, 
-			0, 
-			0, 
-			75, 
-			16, 
-			() -> {}, 
-			Color.WHITE, 
-			Color.WHITE, 
-			Color.WHITE, 
+			"Saving...",
+			defaultFont,
+			0,
+			0,
+			75,
+			16,
+			() -> {},
+			Color.WHITE,
+			Color.WHITE,
+			Color.WHITE,
 			UIRef.M
 		);
 
@@ -241,27 +241,27 @@ public class UserInterface {
 			}
 			renderMouseOverTileHighlightBox();
 		}
-		
+
 		if (getCursorBoundTask() != null) {
 			renderMouseOverTileHighlightBox();
 			spriteBatch.begin();
 			Fonts.defaultFont.setColor(Color.BLACK);
 			Fonts.defaultFont.draw(
-				spriteBatch, 
-				getCursorBoundTask().getShortDescription(), 
-				BloodAndMithrilClient.getMouseScreenX() + 20, 
-				BloodAndMithrilClient.getMouseScreenY() - 20 
+				spriteBatch,
+				getCursorBoundTask().getShortDescription(),
+				BloodAndMithrilClient.getMouseScreenX() + 20,
+				BloodAndMithrilClient.getMouseScreenY() - 20
 			);
 			Fonts.defaultFont.setColor(Color.WHITE);
 			Fonts.defaultFont.draw(
-				spriteBatch, 
-				getCursorBoundTask().getShortDescription(), 
-				BloodAndMithrilClient.getMouseScreenX() + 21, 
-				BloodAndMithrilClient.getMouseScreenY() - 21 
+				spriteBatch,
+				getCursorBoundTask().getShortDescription(),
+				BloodAndMithrilClient.getMouseScreenX() + 21,
+				BloodAndMithrilClient.getMouseScreenY() - 21
 			);
 			spriteBatch.end();
 		}
-		
+
 		renderDragBox();
 		renderLayeredComponents();
 		renderContextMenus();
@@ -282,13 +282,13 @@ public class UserInterface {
 
 		renderPauseScreen();
 		renderSavingScreen();
-		
+
 		if (RENDER_TOPOGRAPHY) {
 			TopographyDebugRenderer.render();
 		}
 	}
-	
-	
+
+
 	@SuppressWarnings("unused")
 	private static void renderFluidTileHighlights() {
 		shapeRenderer.begin(Rectangle);
@@ -516,7 +516,7 @@ public class UserInterface {
 		defaultFont.draw(spriteBatch, "Ping: " + ping, 5, HEIGHT - 45);
 		defaultFont.draw(spriteBatch, "Framerate: " + String.format("%.1f", 1f/Gdx.graphics.getDeltaTime()), 5, HEIGHT - 65);
 	}
-	
+
 	/** Debug text */
 	private static void renderDebugText() {
 		defaultFont.setColor(Color.YELLOW);
@@ -680,8 +680,8 @@ public class UserInterface {
 	public static void removeLayeredComponent(Component toRemove) {
 		layeredComponents.remove(toRemove);
 	}
-	
-	
+
+
 	/**
 	 * Removes a layered component
 	 */
@@ -697,9 +697,11 @@ public class UserInterface {
 	/**
 	 * Called when right mouse button is clicked
 	 */
-	public static void rightClick() {
+	public static boolean rightClick() {
+		boolean clicked = false;
+
 		if (BloodAndMithrilClient.paused || GameSaver.isSaving()) {
-			return;
+			return false;
 		}
 
 		contextMenus.clear();
@@ -711,6 +713,7 @@ public class UserInterface {
 			while (iter.hasNext()) {
 				Component next = iter.next();
 				if (next instanceof Window && ((Window)next).rightClick(windowsCopy)) {
+					clicked = true;
 					break;
 				}
 			}
@@ -758,6 +761,8 @@ public class UserInterface {
 		if (!newMenu.getMenuItems().isEmpty()) {
 			contextMenus.add(newMenu);
 		}
+
+		return clicked;
 	}
 
 
@@ -775,7 +780,7 @@ public class UserInterface {
 	/** Adds a {@link Component} to {@link #layeredComponents}, checking if an existing one with the same title exists */
 	public static void addLayeredComponentUnique(Component toAdd, String title) {
 		Window existing = null;
-		
+
 		for (Component window : layeredComponents) {
 			if (window instanceof Window) {
 				((Window) window).setActive(false);
@@ -794,20 +799,20 @@ public class UserInterface {
 			existing.minimized = false;
 		}
 	}
-	
-	
+
+
 	public static void addMessage(String title, String message) {
 		addLayeredComponent(
 			new MessageWindow(
-				message, 
-				Color.ORANGE, 
-				WIDTH / 2 - 100, 
-				HEIGHT / 2 + 50, 
-				300, 
-				150, 
-				title, 
-				true, 
-				300, 
+				message,
+				Color.ORANGE,
+				WIDTH / 2 - 100,
+				HEIGHT / 2 + 50,
+				300,
+				150,
+				title,
+				true,
+				300,
 				150
 			)
 		);

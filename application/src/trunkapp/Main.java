@@ -1,14 +1,13 @@
 package trunkapp;
 
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.DevWindow;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -20,7 +19,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
  */
 public class Main {
 	public static BloodAndMithrilClient client;
-	
+
 	public static void main(String[] args) {
 
 	  //Configurations
@@ -37,7 +36,7 @@ public class Main {
 		client = new BloodAndMithrilClient() {
 			@Override
 			public boolean keyDown(int keycode) {
-				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && keycode == Input.Keys.D && ClientServerInterface.isServer() && args.length != 0 && args[0].equals("developer")) {
+				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && keycode == Input.Keys.D) {
 					UserInterface.addLayeredComponentUnique(
 						new DevWindow(
 							WIDTH/2 - 250,
@@ -53,7 +52,7 @@ public class Main {
 				return super.keyDown(keycode);
 			}
 		};
-		
+
 		new LwjglApplication(client, cfg);
 	}
 }

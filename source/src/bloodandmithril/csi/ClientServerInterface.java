@@ -145,7 +145,7 @@ import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.prop.building.PineChest;
+import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.FelberryBush;
 import bloodandmithril.prop.plant.Plant;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
@@ -478,7 +478,7 @@ public class ClientServerInterface {
 		kryo.register(OpenTradeWindow.class);
 		kryo.register(OpenTradeWindow.OpenTradeWindowResponse.class);
 		kryo.register(Path.class);
-		kryo.register(PineChest.class);
+		kryo.register(WoodenChest.class);
 		kryo.register(Ping.class);
 		kryo.register(Plant.class);
 		kryo.register(Poison.class);

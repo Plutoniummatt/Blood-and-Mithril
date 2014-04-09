@@ -2,7 +2,7 @@ package bloodandmithril.prop.building;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.csi.ClientServerInterface.isClient;
-import static bloodandmithril.ui.UserInterface.refreshInventoryWindows;
+import static bloodandmithril.ui.UserInterface.refreshRefreshableWindows;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
@@ -195,7 +195,7 @@ public class Furnace extends Construction implements Container {
 							new TransferItems.RefreshWindowsResponse()
 						);
 					} else {
-						refreshInventoryWindows();
+						refreshRefreshableWindows();
 					}
 				}
 				
@@ -214,7 +214,7 @@ public class Furnace extends Construction implements Container {
 							new TransferItems.RefreshWindowsResponse()
 						);
 					} else {
-						refreshInventoryWindows();
+						refreshRefreshableWindows();
 					}
 				}
 			}

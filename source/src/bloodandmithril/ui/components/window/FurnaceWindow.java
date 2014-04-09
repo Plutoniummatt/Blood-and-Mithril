@@ -36,9 +36,6 @@ public class FurnaceWindow extends TradeWindow {
 	/** The {@link Furnace} backing this {@link FurnaceWindow} */
 	private final Furnace furnace;
 
-	/** The {@link TextInputWindow} that is responsible for changing the furnace temperature */
-	private TextInputWindow temperatureInputWindow;
-
 	/** Button that ignites the furnace */
 	private final Button igniteButton = new Button(
 		"Ignite",
@@ -55,7 +52,7 @@ public class FurnaceWindow extends TradeWindow {
 		Color.WHITE,
 		UIRef.BL
 	);
-	
+
 	/** Button that begins the smelting process */
 	private final Button smeltButton = new Button(
 		"Smelt",
@@ -124,8 +121,8 @@ public class FurnaceWindow extends TradeWindow {
 			);
 		}
 	}
-	
-	
+
+
 	@Override
 	protected boolean tradeButtonClickable() {
 		return super.tradeButtonClickable() && !furnace.isSmelting();
@@ -147,7 +144,7 @@ public class FurnaceWindow extends TradeWindow {
 				return 0D;
 			}
 		}).sum();
-		
+
 		float fuelFraction = furnace.getCombustionDurationRemaining() / max;
 		float smeltingFraction = furnace.getSmeltingDurationRemaining() / Furnace.SMELTING_DURATION;
 
@@ -165,7 +162,7 @@ public class FurnaceWindow extends TradeWindow {
 			alphaGreen,
 			alphaGreen
 		);
-		
+
 		// Smelting
 		if (furnace.isSmelting()) {
 			UserInterface.shapeRenderer.filledRect(
@@ -179,7 +176,7 @@ public class FurnaceWindow extends TradeWindow {
 				alphaRed
 			);
 		}
-		
+
 		UserInterface.shapeRenderer.end();
 	}
 
@@ -187,10 +184,6 @@ public class FurnaceWindow extends TradeWindow {
 	@Override
 	protected void uponClose() {
 		super.uponClose();
-
-		if (temperatureInputWindow != null) {
-			temperatureInputWindow.setClosing(true);
-		}
 	}
 
 
@@ -237,7 +230,7 @@ public class FurnaceWindow extends TradeWindow {
 			);
 			return;
 		}
-		
+
 		if (ClientServerInterface.isServer()) {
 			furnace.setCombustionDurationRemaining(finalDuration);
 			furnace.ignite();
@@ -245,8 +238,8 @@ public class FurnaceWindow extends TradeWindow {
 			ClientServerInterface.SendRequest.sendIgniteFurnaceRequest(furnace.id);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Begins the smelting
 	 */

@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.prop.building.PineChest;
+import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.Carrot;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.world.Domain;
@@ -71,7 +71,7 @@ public abstract class Prop implements Serializable {
 	public static void setup() {
 		Furnace.FURANCE = new TextureRegion(Domain.gameWorldTexture, 453, 176, 49, 76);
 		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 503, 176, 49, 76);
-		PineChest.pineChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);
+		WoodenChest.woodenChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);
 		Carrot.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 176, 12, 17);
 	}
 }
