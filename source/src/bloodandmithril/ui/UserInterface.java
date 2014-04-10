@@ -817,8 +817,8 @@ public class UserInterface {
 			new MessageWindow(
 				message,
 				Color.ORANGE,
-				WIDTH / 2 - 100,
-				HEIGHT / 2 + 50,
+				WIDTH / 2 - 150,
+				HEIGHT / 2 + 75,
 				300,
 				150,
 				title,
