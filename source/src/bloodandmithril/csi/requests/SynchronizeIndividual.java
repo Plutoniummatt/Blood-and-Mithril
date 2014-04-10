@@ -118,6 +118,12 @@ public class SynchronizeIndividual implements Request {
 					return;
 				}
 				got.copyFrom(individual);
+
+				if (!got.getSelectedByClient().contains(ClientServerInterface.client.getID())) {
+					Domain.getSelectedIndividuals().removeIf(individual -> {
+						return individual.getId().getId() == got.getId().getId();
+					});
+				}
 			}
 			Logger.networkDebug("Received data for individual: " + individual.getId().getSimpleName(), LogLevel.TRACE);
 		}
@@ -126,11 +132,11 @@ public class SynchronizeIndividual implements Request {
 		public void prepare() {
 			if (this.individualId != null) {
 				this.individual = Domain.getIndividuals().get(individualId).copy();
-				
+
 				// Handle AITasks with Paths explicitly, these guys cause ConcurrentModificationExceptions and nasty NPE's even with
 				// ConcurrentLinkedDeque's
 				AITask current = this.individual.getAI().getCurrentTask();
-				
+
 				synchronized (current) {
 					if (current instanceof GoToLocation) {
 						((GoToLocation) current).setPath(((GoToLocation) current).getPath().copy());
