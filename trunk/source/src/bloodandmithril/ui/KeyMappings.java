@@ -24,6 +24,7 @@ public class KeyMappings {
 	public static int walk = Input.Keys.SHIFT_RIGHT;
 	public static int contextMenuBypass = Input.Keys.SHIFT_LEFT;
 	public static int forceMove = Input.Keys.ALT_LEFT;
+	public static int toggleWalkRun = Input.Keys.W;
 
 	public static void setup() {
 		keyMap.put(Input.Keys.NUM_0, "0");

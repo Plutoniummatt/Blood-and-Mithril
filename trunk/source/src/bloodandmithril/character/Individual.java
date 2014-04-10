@@ -35,6 +35,7 @@ import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.skill.Skills;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Equipable;
@@ -49,13 +50,14 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.IndividualStatusWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
+import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
-import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Epoch;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
@@ -78,7 +80,7 @@ public abstract class Individual implements Equipper, Serializable {
 
 	/** Identifier of this character */
 	private IndividualIdentifier id;
-	
+
 	/** {@link World} id of this {@link Individual} */
 	private int worldId;
 
@@ -139,7 +141,7 @@ public abstract class Individual implements Equipper, Serializable {
 
 	/** Holds state of the equipment and inventory */
 	private EquipperImpl equipper;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -190,10 +192,11 @@ public abstract class Individual implements Equipper, Serializable {
 		this.walking = other.walking;
 		this.width = other.width;
 		this.timeStamp = other.timeStamp;
+		this.selectedByClient = other.selectedByClient;
 		this.skills = other.skills;
 		synchronizeContainer(other.equipper);
 		synchronizeEquipper(other.equipper);
-		
+
 		internalCopyFrom(other);
 	}
 
@@ -279,9 +282,21 @@ public abstract class Individual implements Equipper, Serializable {
 
 
 	/** Select this {@link Individual} */
-	public void select(int id) {
+	public void select(int clientId) {
 		ai.setToManual();
-		selectedByClient.add(id);
+		selectedByClient.add(clientId);
+
+		UserInterface.addLayeredComponentUnique(
+			new SelectedIndividualsControlWindow(
+				BloodAndMithrilClient.WIDTH - 170,
+				300,
+				150,
+				250,
+				"Actions",
+				true
+			),
+			"Actions"
+		);
 	}
 
 
@@ -689,7 +704,7 @@ public abstract class Individual implements Equipper, Serializable {
 				null
 			),
 			new MenuItem(
-				"Update biography", 
+				"Update biography",
 				() -> {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
@@ -712,7 +727,7 @@ public abstract class Individual implements Equipper, Serializable {
 							thisIndividual.getDescription()
 						)
 					);
-				}, 
+				},
 				Color.WHITE,
 				getToolTipTextColor(),
 				Color.GRAY,
@@ -1052,33 +1067,33 @@ public abstract class Individual implements Equipper, Serializable {
 	public boolean isAttacking() {
 		return attacking;
 	}
-	
-	
+
+
 	@Override
 	public boolean unlock(Item with) {
 		// Do nothing
 		return false;
 	}
-	
-	
+
+
 	@Override
 	public boolean lock(Item with) {
 		// Do nothing
 		return false;
 	}
-	
-	
+
+
 	@Override
 	public boolean isLocked() {
 		return false;
 	}
-	
-	
+
+
 	@Override
 	public boolean isLockable() {
 		return false;
 	}
-	
+
 
 	@Override
 	public void synchronizeContainer(Container other) {
@@ -1114,25 +1129,25 @@ public abstract class Individual implements Equipper, Serializable {
 	public float getCurrentLoad() {
 		return equipper.getCurrentLoad();
 	}
-	
-	
+
+
 	@Override
 	public boolean canExceedCapacity() {
 		return equipper.canExceedCapacity();
 	}
 
-	
+
 	@Override
 	public Map<EquipmentSlot, Boolean> getAvailableEquipmentSlots() {
 		return equipper.getAvailableEquipmentSlots();
 	}
-	
+
 
 	@Override
 	public HashMap<Item, Integer> getEquipped() {
 		return equipper.getEquipped();
 	}
-	
+
 
 	@Override
 	public void equip(Equipable item) {
@@ -1145,7 +1160,7 @@ public abstract class Individual implements Equipper, Serializable {
 		equipper.unequip(item);
 	}
 
-	
+
 	@Override
 	public void synchronizeEquipper(Equipper other) {
 		equipper.synchronizeEquipper(other);

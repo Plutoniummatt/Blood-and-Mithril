@@ -101,7 +101,7 @@ public abstract class Window extends Component {
 
 		if (UserInterface.contextMenus.isEmpty()) {
 			if (isWithin()) {
-				
+
 				if (closeButton.click()) {
 					setClosing(true);
 					return false;

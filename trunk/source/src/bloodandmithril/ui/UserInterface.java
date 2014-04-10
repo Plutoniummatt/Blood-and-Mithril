@@ -676,8 +676,12 @@ public class UserInterface {
 		}
 
 		for (Component component : layeredComponents) {
+			boolean pressed = false;
 			if (component.isActive() && !(component instanceof BottomBar)) {
-				return component.keyPressed(keyCode);
+				pressed = component.keyPressed(keyCode) || pressed;
+			}
+			if (pressed) {
+				return true;
 			}
 		}
 
@@ -729,6 +733,10 @@ public class UserInterface {
 				}
 			}
 			layeredComponents = windowsCopy;
+
+			if (clicked) {
+				return true;
+			}
 		}
 
 		for (final Individual indi : Domain.getIndividuals().values()) {

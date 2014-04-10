@@ -251,13 +251,23 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			rightClick();
 		}
 
+		if (button == KeyMappings.middleClick) {
+			middleClick(screenX, screenY);
+		}
+
 		return false;
+	}
+
+
+	private void middleClick(int screenX, int screenY) {
+		saveCamDragCoordinates(screenX, screenY);
 	}
 
 
 	/**
 	 * Called upon right clicking
 	 */
+	@SuppressWarnings("unused")
 	private void rightClick() {
 		boolean doubleClick = rightDoubleClickTimer < DOUBLE_CLICK_TIME;
 		boolean uiClicked = false;
@@ -269,11 +279,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (UserInterface.contextMenus.isEmpty() && !uiClicked) {
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
-				if (ClientServerInterface.isServer()) {
-					indi.setWalking(!doubleClick);
-				} else {
-					ClientServerInterface.SendRequest.sendRunWalkRequest(indi.getId().getId(), !doubleClick);
-				}
 				if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 					if (ClientServerInterface.isServer()) {
 						indi.getAI().setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
@@ -319,9 +324,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		leftDoubleClickTimer = 0f;
 
 		boolean uiClicked = UserInterface.leftClick();
-		if (Gdx.input.isKeyPressed(KeyMappings.cameraDrag)) {
-			saveCamDragCoordinates(screenX, screenY);
-		}
 
 		Individual individualClicked = null;
 		for (Individual indi : Domain.getIndividuals().values()) {
@@ -449,11 +451,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			return false;
 		}
 
-		if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
-			if (Gdx.input.isKeyPressed(KeyMappings.cameraDrag))  {
-				cam.position.x = oldCamX + camDragX - screenX;
-				cam.position.y = oldCamY + screenY - camDragY;
-			}
+		if (Gdx.input.isButtonPressed(KeyMappings.middleClick)) {
+			cam.position.x = oldCamX + camDragX - screenX;
+			cam.position.y = oldCamY + screenY - camDragY;
 		}
 		return false;
 	}
