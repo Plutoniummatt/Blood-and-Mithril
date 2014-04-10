@@ -123,6 +123,9 @@ public class UserInterface {
 	/** Whether to render debug UI */
 	public static boolean RENDER_TOPOGRAPHY = false;
 
+	/** FPS should be updated twice per second */
+	private static int fpsTimer, fps, fpsDisplayed;
+
 	/** Texture regions */
 	public static TextureRegion finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
 	public static TextureRegion currentArrow = new TextureRegion(UserInterface.uiTexture, 0, 0, 11, 8);
@@ -514,7 +517,15 @@ public class UserInterface {
 		defaultFont.draw(spriteBatch, "Time: " + currentEpoch.getTimeString(), 5, HEIGHT - 5);
 		defaultFont.draw(spriteBatch, "Date: " + currentEpoch.getDateString(), 5, HEIGHT - 25);
 		defaultFont.draw(spriteBatch, "Ping: " + ping, 5, HEIGHT - 45);
-		defaultFont.draw(spriteBatch, "Framerate: " + String.format("%.1f", 1f/Gdx.graphics.getDeltaTime()), 5, HEIGHT - 65);
+
+		fps = (fps + Math.round(1f/Gdx.graphics.getDeltaTime())) / 2;
+		fpsTimer++;
+		if (fpsTimer >= 30) {
+			fpsDisplayed = fps;
+			fpsTimer = 0;
+		}
+
+		defaultFont.draw(spriteBatch, "Framerate: " + fpsDisplayed, 5, HEIGHT - 65);
 	}
 
 	/** Debug text */
