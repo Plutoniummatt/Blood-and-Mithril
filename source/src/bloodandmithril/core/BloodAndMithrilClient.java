@@ -105,7 +105,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private float rightDoubleClickTimer = 0f;
 
 	/** Client-side threadpool */
-	public static ExecutorService newCachedThreadPool;
+	public static ExecutorService clientCSIThread;
 
 	public static final Set<Integer> controlledFactions = Sets.newHashSet();
 
@@ -132,7 +132,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		SoundService.changeMusic(2f, SoundService.music1);
 
-		newCachedThreadPool = Executors.newCachedThreadPool();
+		clientCSIThread = Executors.newCachedThreadPool();
 
 		updateThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();

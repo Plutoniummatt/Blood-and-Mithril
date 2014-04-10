@@ -101,55 +101,49 @@ public class MainMenuWindow extends Window {
 						250,
 						100,
 						args -> {
-							try {
-								if (args[0].toString().equals("local")) {
-									Domain.getFactions().put(0, new Faction("NPC", 0, false));
-									Domain.getFactions().put(1, new Faction("Elves", 1, true));
+							if (args[0].toString().equals("local")) {
+								Domain.getFactions().put(0, new Faction("NPC", 0, false));
+								Domain.getFactions().put(1, new Faction("Elves", 1, true));
 
-									ClientServerInterface.setServer(true);
-									GameLoader.load();
-									BloodAndMithrilClient.domain = new Domain();
-								} else {
-									ClientServerInterface.setupAndConnect(args[0].toString());
-									BloodAndMithrilClient.domain = new Domain();
-								}
-
-								UserInterface.buttons.remove("connect");
-								UserInterface.setup();
-								for (Component component : UserInterface.layeredComponents) {
-									if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
-										component.setClosing(true);
-									} else if (component instanceof MainMenuWindow) {
-										component.setClosing(true);
-									}
-								}
-							} catch (IOException e) {
-								for (Component component : UserInterface.layeredComponents) {
-									component.setActive(false);
-								}
-								UserInterface.addLayeredComponent(
-									new MessageWindow(
-										"Failed to connect",
-										Color.RED,
-										BloodAndMithrilClient.WIDTH/2 - 150,
-										BloodAndMithrilClient.HEIGHT/2 + 50,
-										300,
-										100,
-										"Error",
-										true,
-										300,
-										100,
-										() -> {
-											for (Component component : UserInterface.layeredComponents) {
-												if (component instanceof Window && ((Window) component).title.equals("Error")) {
-													component.setClosing(true);
-												} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
-													component.setActive(true);
-												}
-											}
+								ClientServerInterface.setServer(true);
+								GameLoader.load();
+								BloodAndMithrilClient.domain = new Domain();
+								connected();
+							} else {
+								BloodAndMithrilClient.clientCSIThread.execute(() -> {
+									try {
+										ClientServerInterface.setupAndConnect(args[0].toString());
+										BloodAndMithrilClient.domain = new Domain();
+										connected();
+									} catch (IOException e) {
+										for (Component component : UserInterface.layeredComponents) {
+											component.setActive(false);
 										}
-									)
-								);
+										UserInterface.addLayeredComponent(
+											new MessageWindow(
+												"Failed to connect",
+												Color.RED,
+												BloodAndMithrilClient.WIDTH/2 - 150,
+												BloodAndMithrilClient.HEIGHT/2 + 50,
+												300,
+												100,
+												"Error",
+												true,
+												300,
+												100,
+												() -> {
+													for (Component component : UserInterface.layeredComponents) {
+														if (component instanceof Window && ((Window) component).title.equals("Error")) {
+															component.setClosing(true);
+														} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
+															component.setActive(true);
+														}
+													}
+												}
+											)
+										);
+									}
+								});
 							}
 						},
 						"Connect",
@@ -195,6 +189,22 @@ public class MainMenuWindow extends Window {
 			Color.GRAY,
 			UIRef.BL
 		);
+	}
+
+
+	/**
+	 * Connection was successful, begin setup.
+	 */
+	private void connected() {
+		UserInterface.buttons.remove("connect");
+		UserInterface.setup();
+		for (Component component : UserInterface.layeredComponents) {
+			if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
+				component.setClosing(true);
+			} else if (component instanceof MainMenuWindow) {
+				component.setClosing(true);
+			}
+		}
 	}
 
 
