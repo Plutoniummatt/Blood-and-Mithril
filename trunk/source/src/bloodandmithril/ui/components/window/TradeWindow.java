@@ -3,6 +3,8 @@ package bloodandmithril.ui.components.window;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.util.Fonts.defaultFont;
+import static com.google.common.collect.Iterables.tryFind;
+import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Math.min;
 
 import java.util.Deque;
@@ -32,6 +34,7 @@ import bloodandmithril.world.Domain;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -45,7 +48,7 @@ public class TradeWindow extends Window implements Refreshable {
 	/** Panels of involved traders */
 	protected ScrollableListingPanel<Item, Integer> proposerPanel;
 	protected ScrollableListingPanel<Item, Integer> proposeePanel;
-	
+
 	protected ScrollableListingPanel<Item, Integer> proposerTradingPanel;
 	protected ScrollableListingPanel<Item, Integer> proposeeTradingPanel;
 
@@ -155,6 +158,8 @@ public class TradeWindow extends Window implements Refreshable {
 				}
 			}
 
+			proposerItemsToTrade.clear();
+			proposeeItemsToTrade.clear();
 			refresh();
 		} else {
 			rejectTradeProposal();
@@ -163,12 +168,15 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	/**
-	 * Refreshes this window and syncs it with the trader inventories
+	 * Refreshes this window and synchronises it with the trader inventories
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized void refresh() {
 		proposer = Domain.getIndividuals().get(((Individual) proposer).getId().getId());
+
+		HashMap<ListingMenuItem<Item>, Integer> proposerToTrade = newHashMap(proposerItemsToTrade);
+		HashMap<ListingMenuItem<Item>, Integer> proposeeToTrade = newHashMap(proposeeItemsToTrade);
 
 		proposerItemsToTrade.clear();
 		proposeeItemsToTrade.clear();
@@ -178,8 +186,43 @@ public class TradeWindow extends Window implements Refreshable {
 		populate(proposerItemsToTrade, proposerItemsNotToTrade, proposer.getInventory());
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
 
+		for (Entry<ListingMenuItem<Item>, Integer> entry : proposerToTrade.entrySet()) {
+			Optional<Entry<ListingMenuItem<Item>, Integer>> tryFind = tryFind(proposerItemsNotToTrade.entrySet(), e -> {
+				return e.getKey().t.sameAs(entry.getKey().t);
+			});
+
+			changeList(
+				entry.getKey().t,
+				min(
+					entry.getValue(),
+					tryFind.isPresent() ? tryFind.get().getValue() : 0
+				),
+				proposerItemsToTrade,
+				proposerItemsNotToTrade,
+				false
+			);
+		}
+
+		for (Entry<ListingMenuItem<Item>, Integer> entry : proposeeToTrade.entrySet()) {
+			Optional<Entry<ListingMenuItem<Item>, Integer>> tryFind = tryFind(proposeeItemsNotToTrade.entrySet(), e -> {
+				return e.getKey().t.sameAs(entry.getKey().t);
+			});
+
+			changeList(
+				entry.getKey().t,
+				min(
+					entry.getValue(),
+					tryFind.isPresent() ? tryFind.get().getValue() : 0
+				),
+				proposeeItemsToTrade,
+				proposeeItemsNotToTrade,
+				false
+			);
+		}
+
 		proposerPanel.refresh(Lists.newArrayList(proposerItemsNotToTrade));
 		proposeePanel.refresh(Lists.newArrayList(proposeeItemsNotToTrade));
+
 		proposerTradingPanel.refresh(Lists.newArrayList(proposerItemsToTrade));
 		proposeeTradingPanel.refresh(Lists.newArrayList(proposeeItemsToTrade));
 	}
@@ -239,7 +282,7 @@ public class TradeWindow extends Window implements Refreshable {
 				return false;
 			}
 		};
-		
+
 		proposerTradingPanel = new ScrollableListingPanel<Item, Integer>(this) {
 
 			@Override
@@ -252,36 +295,36 @@ public class TradeWindow extends Window implements Refreshable {
 				return 80;
 			}
 
-			
+
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
-			
+
 			@Override
 			public boolean keyPressed(int keyCode) {
 				return false;
 			}
 		};
-		
+
 		proposeeTradingPanel = new ScrollableListingPanel<Item, Integer>(this) {
-			
+
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(proposeeItemsToTrade);
 			}
-			
+
 			@Override
 			protected int getExtraStringOffset() {
 				return 80;
 			}
-			
-			
+
+
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
-			
+
 			@Override
 			public boolean keyPressed(int keyCode) {
 				return false;
@@ -309,13 +352,13 @@ public class TradeWindow extends Window implements Refreshable {
 						if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
 							UserInterface.addLayeredComponent(
 								new TextInputWindow(
-									WIDTH / 2 - 125, 
-									HEIGHT / 2 + 100, 
-									250, 
-									100, 
-									"Enter quantity", 
-									250, 
-									100, 
+									WIDTH / 2 - 125,
+									HEIGHT / 2 + 100,
+									250,
+									100,
+									"Enter quantity",
+									250,
+									100,
 									args -> {
 										try {
 											changeList(entry.getKey(), Integer.parseInt(args[0].toString()), trading, notTrading, false);
@@ -323,9 +366,9 @@ public class TradeWindow extends Window implements Refreshable {
 										} catch (NumberFormatException e) {
 											UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 										}
-									}, 
-									"Confirm", 
-									true, 
+									},
+									"Confirm",
+									true,
 									"1"
 								)
 							);
@@ -340,8 +383,8 @@ public class TradeWindow extends Window implements Refreshable {
 				),
 				null
 			);
-			
-			
+
+
 			notTrading.put(
 				listingMenuItem,
 				entry.getValue()
@@ -364,13 +407,13 @@ public class TradeWindow extends Window implements Refreshable {
 					if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
-								WIDTH / 2 - 125, 
-								HEIGHT / 2 + 100, 
-								250, 
-								100, 
-								"Enter quantity", 
-								250, 
-								100, 
+								WIDTH / 2 - 125,
+								HEIGHT / 2 + 100,
+								250,
+								100,
+								"Enter quantity",
+								250,
+								100,
 								args -> {
 									try {
 										changeList(key, Integer.parseInt(args[0].toString()), transferFrom, transferTo, !toTrade);
@@ -378,9 +421,9 @@ public class TradeWindow extends Window implements Refreshable {
 									} catch (NumberFormatException e) {
 										UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 									}
-								}, 
-								"Confirm", 
-								true, 
+								},
+								"Confirm",
+								true,
 								"1"
 							)
 						);
@@ -399,7 +442,7 @@ public class TradeWindow extends Window implements Refreshable {
 		for (Entry<ListingMenuItem<Item>, Integer> entry : Lists.newArrayList(transferFrom.entrySet())) {
 			if (entry.getKey().t.sameAs(key)) {
 				int transferred = 0;
-				
+
 				if (transferFrom.get(entry.getKey()) <= numberToChange) {
 					transferred = entry.getValue();
 					transferFrom.remove(entry.getKey());
@@ -485,7 +528,7 @@ public class TradeWindow extends Window implements Refreshable {
 	 */
 	protected void renderListingPanels() {
 		int lineWidth = 23;
-		
+
 		proposerPanel.x = x;
 		proposerPanel.y = y - (proposerItemsToTrade.isEmpty() ? 0 : ((1 + min(5,proposerItemsToTrade.size())) * lineWidth));
 		proposerPanel.height = height - 50 - (proposerItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposerItemsToTrade.size())) * lineWidth));
@@ -495,20 +538,20 @@ public class TradeWindow extends Window implements Refreshable {
 		proposeePanel.y = y - (proposeeItemsToTrade.isEmpty() ? 0 : ((1 + min(5,proposeeItemsToTrade.size())) * lineWidth));
 		proposeePanel.height = height - 50 - (proposeeItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposeeItemsToTrade.size())) * lineWidth));
 		proposeePanel.width = width / 2 - 10;
-		
+
 		proposerTradingPanel.x = x;
 		proposerTradingPanel.y = y;
 		proposerTradingPanel.height = 50 + (proposerItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposerItemsToTrade.size())) * lineWidth));
 		proposerTradingPanel.width = width / 2 - 10;
-		
+
 		proposeeTradingPanel.x = x + width / 2 + 10;
 		proposeeTradingPanel.y = y;
 		proposeeTradingPanel.height = 50 + (proposeeItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposeeItemsToTrade.size())) * lineWidth));
 		proposeeTradingPanel.width = width / 2 - 10;
-		
+
 		proposerPanel.render();
 		proposeePanel.render();
-		
+
 		if (!proposerItemsToTrade.isEmpty()) {
 			proposerTradingPanel.render();
 		}
@@ -524,7 +567,7 @@ public class TradeWindow extends Window implements Refreshable {
 		proposeePanel.leftClick(copy, windowsCopy);
 		proposerTradingPanel.leftClick(copy, windowsCopy);
 		proposeeTradingPanel.leftClick(copy, windowsCopy);
-		
+
 		if (tradeButtonClickable()) {
 			tradeButton.click();
 		}

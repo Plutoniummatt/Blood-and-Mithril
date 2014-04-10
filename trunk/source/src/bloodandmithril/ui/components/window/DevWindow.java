@@ -247,6 +247,10 @@ public class DevWindow extends Window {
 			);
 		}
 
+		if (keyCode == Input.Keys.C) {
+			UserInterface.refreshRefreshableWindows();
+		}
+
 		return false;
 	}
 
