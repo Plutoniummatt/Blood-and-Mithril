@@ -8,6 +8,7 @@ import java.util.List;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.util.Fonts;
 
 /**
  * {@link Window} with controls relevant to the selected entity
@@ -32,8 +33,8 @@ public class SelectedEntityControlWindow extends Window {
 	 */
 	private void setupButtons(boolean multipleSelected) {
 		buttons.add(new Button(
-			text,
-			font,
+			"Run",
+			Fonts.defaultFont,
 			offsetX,
 			offsetY,
 			width,
