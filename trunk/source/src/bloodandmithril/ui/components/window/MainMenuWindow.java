@@ -101,6 +101,13 @@ public class MainMenuWindow extends Window {
 						250,
 						100,
 						args -> {
+							for (Component component : UserInterface.layeredComponents) {
+								if (component instanceof Window && ((Window) component).title.equals("Enter IP") ||
+									component instanceof MainMenuWindow) {
+									component.setClosing(true);
+								}
+							}
+
 							if (args[0].toString().equals("local")) {
 								Domain.getFactions().put(0, new Faction("NPC", 0, false));
 								Domain.getFactions().put(1, new Faction("Elves", 1, true));
@@ -110,15 +117,36 @@ public class MainMenuWindow extends Window {
 								BloodAndMithrilClient.domain = new Domain();
 								connected();
 							} else {
+								UserInterface.addMessage("Connecting", "Attemping to connect to " + args[0].toString());
 								BloodAndMithrilClient.clientCSIThread.execute(() -> {
 									try {
 										ClientServerInterface.setupAndConnect(args[0].toString());
 										BloodAndMithrilClient.domain = new Domain();
 										connected();
 									} catch (IOException e) {
+
+										// Deactivate all windows, close the connecting message pop-up.
 										for (Component component : UserInterface.layeredComponents) {
 											component.setActive(false);
+											if (component instanceof Window && ((Window) component).title.equals("Connecting")) {
+												component.setClosing(true);
+											}
 										}
+
+										UserInterface.addLayeredComponent(
+											new MainMenuWindow(
+												BloodAndMithrilClient.WIDTH/2 - 100,
+												BloodAndMithrilClient.HEIGHT/2 + 55,
+												200,
+												110,
+												"Main menu",
+												false,
+												200,
+												110,
+												false
+											)
+										);
+
 										UserInterface.addLayeredComponent(
 											new MessageWindow(
 												"Failed to connect",
@@ -198,10 +226,11 @@ public class MainMenuWindow extends Window {
 	private void connected() {
 		UserInterface.buttons.remove("connect");
 		UserInterface.setup();
+
 		for (Component component : UserInterface.layeredComponents) {
-			if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
-				component.setClosing(true);
-			} else if (component instanceof MainMenuWindow) {
+			if (component instanceof Window && ((Window) component).title.equals("Connecting") ||
+				component instanceof Window && ((Window) component).title.equals("Enter IP") ||
+				component instanceof MainMenuWindow) {
 				component.setClosing(true);
 			}
 		}
