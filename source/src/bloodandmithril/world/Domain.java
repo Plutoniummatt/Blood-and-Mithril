@@ -52,13 +52,13 @@ import com.google.common.base.Predicate;
  * @author Matt
  */
 public class Domain {
-	
+
 	/** The current active {@link World} */
 	private static World activeWorld;
 
 	/** {@link World}s */
 	private static HashMap<Integer, World> 						worlds 					= newHashMap();
-	
+
 	/** {@link Topography}s */
 	private static HashMap<Integer, Topography>					topographies			= newHashMap();
 
@@ -76,13 +76,13 @@ public class Domain {
 
 	/** Every {@link Prop} that exists */
 	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
-	
+
 	/** Every {@link Item} that exists that is not stored in a {@link Container} */
 	private static ConcurrentHashMap<Integer, Item> 			items	 				= new ConcurrentHashMap<>();
-	
+
 	/** Domain-specific {@link ShapeRenderer} */
 	public static ShapeRenderer shapeRenderer;
-	
+
 	/** Textures */
 	public static Texture gameWorldTexture;
 	public static Texture individualTexture;
@@ -91,11 +91,11 @@ public class Domain {
 	public static FrameBuffer fBuffer;
 	public static FrameBuffer mBuffer;
 	public static FrameBuffer bBuffer;
-	
+
 	private long topographyUpdateTimer;
-	
+
 	private static Thread fluidThread;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -107,22 +107,22 @@ public class Domain {
 		} else {
 			activeWorld = worlds.get(1);
 		}
-		
+
 		fluidThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
-			
+
 			while (true) {
 				if ((System.currentTimeMillis() - prevFrame) > 10) {
 					updateFluids(Gdx.graphics.getDeltaTime());
 				}
 			}
 		});
-		
+
 		fluidThread.setName("Fluid thread");
 		fluidThread.start();
 	}
-	
-	
+
+
 	/**
 	 * Fluid update method
 	 */
@@ -131,13 +131,13 @@ public class Domain {
 			updateFluids();
 		}
 	}
-	
-	
+
+
 	public static Topography getTopography(int id) {
 		return topographies.get(id);
 	}
-	
-	
+
+
 	public static Topography addTopography(int id, Topography topography) {
 		return topographies.put(id, topography);
 	}
@@ -146,10 +146,10 @@ public class Domain {
 	public static void setup() {
 		gameWorldTexture 					= new Texture(files.internal("data/image/gameWorld.png"));
 		individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
-		
+
 		gameWorldTexture.setFilter(Linear, Linear);
 		individualTexture.setFilter(Linear, Nearest);
-		
+
 		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
 		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
 		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
@@ -172,7 +172,7 @@ public class Domain {
 		}
 		spriteBatch.end();
 		bBuffer.end();
-		
+
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
@@ -199,53 +199,53 @@ public class Domain {
 		spriteBatch.end();
 		getActiveWorld().getTopography().renderForeGround(camX, camY);
 		IndividualPlatformFilteringRenderer.renderIndividuals();
-		
-		
+
+
 		gl20.glEnable(GL20.GL_BLEND);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		shapeRenderer.setProjectionMatrix(cam.combined);
-		
+
 		synchronized (getActiveWorld().getTopography().getFluids()) {
 			getActiveWorld().getTopography().getFluids().getAllFluids().stream().forEach(entry -> {
 				entry.value.render(entry.x, entry.y);
 			});
 		}
-		
+
 		shapeRenderer.end();
 		gl20.glDisable(GL20.GL_BLEND);
-		
+
 		fBuffer.end();
 
 		DynamicLightingPostRenderer.render(camX, camY);
 	}
 
-	
+
 	/**
 	 * Updates the game world
 	 */
 	public void update(int camX, int camY) {
 		if (getActiveWorld() != null) {
 			getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam(camX, camY);
-			
+
 			float d = 1f/60f;
-			
+
 			currentEpoch.incrementTime(d);
 
 			for (Individual indi : individuals.values()) {
 				indi.update(d);
 			}
-			
+
 			for (Prop prop : props.values()) {
 				prop.update(d);
 			}
-			
+
 			for (Item item : items.values()) {
 				item.update(d);
 			}
 		}
 	}
-	
-	
+
+
 	public void updateFluids() {
 		if (System.currentTimeMillis() - topographyUpdateTimer > 10) {
 			topographyUpdateTimer = System.currentTimeMillis();
@@ -262,13 +262,13 @@ public class Domain {
 	public static void setActiveWorld(World activeWorldToSet) {
 		activeWorld = activeWorldToSet;
 	}
-	
-	
+
+
 	public static World getWorld(int id) {
 		return getWorlds().get(id);
 	}
-	
-	
+
+
 	public static HashMap<Integer, World> getWorlds() {
 		return worlds;
 	}

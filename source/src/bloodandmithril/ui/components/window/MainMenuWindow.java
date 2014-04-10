@@ -111,11 +111,12 @@ public class MainMenuWindow extends Window {
 							if (args[0].toString().equals("local")) {
 								Domain.getFactions().put(0, new Faction("NPC", 0, false));
 								Domain.getFactions().put(1, new Faction("Elves", 1, true));
-
 								ClientServerInterface.setServer(true);
-								GameLoader.load();
-								BloodAndMithrilClient.domain = new Domain();
-								connected();
+								BloodAndMithrilClient.clientCSIThread.execute(() -> {
+									GameLoader.load();
+									BloodAndMithrilClient.domain = new Domain();
+									connected();
+								});
 							} else {
 								UserInterface.addMessage("Connecting", "Attemping to connect to " + args[0].toString());
 								BloodAndMithrilClient.clientCSIThread.execute(() -> {
