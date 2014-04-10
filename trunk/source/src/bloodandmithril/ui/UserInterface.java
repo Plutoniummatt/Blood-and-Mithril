@@ -137,7 +137,7 @@ public class UserInterface {
 	 * @param WIDTH - initial window width
 	 * @param HEIGHT - initial window height
 	 */
-	public static void setup() {
+	public static synchronized void setup() {
 		loadBars();
 		loadButtons();
 	}
@@ -555,7 +555,7 @@ public class UserInterface {
 
 
 	/** Renders layered components, e.g. {@link Window}s */
-	private static void renderLayeredComponents() {
+	private static synchronized void renderLayeredComponents() {
 		ArrayDeque<Component> copy = new ArrayDeque<>(layeredComponents);
 		for (Component component : layeredComponents) {
 			if (component instanceof Window) {
