@@ -71,14 +71,32 @@ public class ContextMenu extends Component {
 		}
 		maxLength = maxLength * 10;
 
-		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), maxLength, maxHeight, isActive(), backGroundColor);
-		renderBox(x, y, maxLength, maxHeight, isActive(), borderColor);
+		int renderX = x + maxLength >= BloodAndMithrilClient.WIDTH ? BloodAndMithrilClient.WIDTH - maxLength : x;
+		int renderY = y - maxHeight <= 0 ? maxHeight : y;
+
+		renderRectangle(
+			renderX + bottomLeft.getRegionWidth(),
+			renderY + bottomLeft.getRegionHeight(),
+			maxLength,
+			maxHeight,
+			isActive(),
+			backGroundColor
+		);
+
+		renderBox(
+			renderX,
+			renderY,
+			maxLength,
+			maxHeight,
+			isActive(),
+			borderColor
+		);
 
 		int i = 0;
 		Iterator<MenuItem> iterator = menuItems.iterator();
 		while (iterator.hasNext()) {
 			MenuItem next = iterator.next();
-			next.button.render(x + next.button.width/2 + 5, y - i * 20, isActive());
+			next.button.render(renderX + next.button.width/2 + 5, renderY - i * 20, isActive());
 			i++;
 		}
 
