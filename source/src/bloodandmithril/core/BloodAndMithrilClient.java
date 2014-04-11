@@ -32,7 +32,6 @@ import bloodandmithril.world.weather.Weather;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -413,12 +412,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if(keycode == Keys.A) {
-			UserInterface.layeredComponents.stream().forEach(comp -> {
-				System.out.println(comp);
-			});
-		}
-
 		if (GameSaver.isSaving()) {
 			return false;
 		}
