@@ -119,11 +119,17 @@ public abstract class Window extends Component {
 					resizeButton.click();
 				}
 
-				if (isActive() && !alwaysActive) {
+				if (isActive()) {
 					internalLeftClick(copy, windowsCopy);
 					determinePositioning();
-					return true;
 
+					if (alwaysActive) {
+						windowsCopy.remove(this);
+						windowsCopy.addLast(this);
+						determinePositioning();
+					}
+
+					return true;
 				} else {
 					windowsCopy.remove(this);
 					windowsCopy.addLast(this);
