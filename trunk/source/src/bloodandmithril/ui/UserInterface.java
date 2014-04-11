@@ -633,7 +633,8 @@ public class UserInterface {
 			ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
 			Iterator<Component> iter = layeredComponents.descendingIterator();
 			while (iter.hasNext()) {
-				if (iter.next().leftClick(contextMenuCopy, windowsCopy)) {
+				Component next = iter.next();
+				if (next.leftClick(contextMenuCopy, windowsCopy)) {
 					clicked = true;
 					break;
 				}
