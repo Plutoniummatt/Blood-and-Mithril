@@ -1,6 +1,6 @@
 package bloodandmithril.item.material.fuel;
 
-import com.badlogic.gdx.graphics.Color;
+import java.util.Map;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
@@ -10,9 +10,11 @@ import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class Coal extends Item implements Fuel {
 	private static final long serialVersionUID = 6399640412435082388L;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -26,13 +28,13 @@ public class Coal extends Item implements Fuel {
 		return 20;
 	}
 
-	
+
 	@Override
 	public String getSingular(boolean firstCap) {
 		return firstCap ? "Coal" : "coal";
 	}
 
-	
+
 	@Override
 	public String getPlural(boolean firstCap) {
 		return firstCap ? "Coal" : "coal";
@@ -55,15 +57,15 @@ public class Coal extends Item implements Fuel {
 		);
 	}
 
-	
+
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof Coal;
 	}
 
-	
+
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return new Ashes();
 	}
 
@@ -76,6 +78,6 @@ public class Coal extends Item implements Fuel {
 
 	@Override
 	public void render() {
-		
+
 	}
 }

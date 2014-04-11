@@ -1,5 +1,7 @@
 package bloodandmithril.item.material.plant;
 
+import java.util.Map;
+
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -19,7 +21,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class DeathCap extends Item implements Consumable {
 	private static final long serialVersionUID = -7125731448429674227L;
-	
+
 	private final boolean cooked;
 
 	/**
@@ -81,13 +83,13 @@ public class DeathCap extends Item implements Consumable {
 
 
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return this;
 	}
 
 
 	@Override
 	public void render() {
-		
+
 	}
 }

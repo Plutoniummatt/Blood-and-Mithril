@@ -134,7 +134,10 @@ import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
+import bloodandmithril.item.material.metal.IronIngot;
+import bloodandmithril.item.material.metal.SteelIngot;
 import bloodandmithril.item.material.mineral.Ashes;
+import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.mineral.YellowSand;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.CarrotSeed;
@@ -362,6 +365,9 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(SteelIngot.class);
+		kryo.register(IronIngot.class);
+		kryo.register(Hematite.class);
 		kryo.register(NotifyOpenAnvilWindow.class);
 		kryo.register(Blacksmithing.class);
 		kryo.register(BeginSmithing.class);

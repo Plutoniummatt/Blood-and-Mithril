@@ -50,10 +50,10 @@ public class Furnace extends Construction implements Container {
 
 	/** The amount of time taken to smelt one batch of material, in seconds */
 	public static final float SMELTING_DURATION = 10f;
-	
+
 	/** The heat level of {@link Furnace}s */
 	private static final int HEAT_LEVEL = 2500;
-	
+
 	/** The duration which this furnace will combust/smelt, in seconds */
 	private float combustionDurationRemaining, smeltingDurationRemaining;
 
@@ -65,7 +65,7 @@ public class Furnace extends Construction implements Container {
 
 	/** True if burning */
 	private boolean burning, smelting;
-	
+
 	/** The {@link Container} of this {@link Furnace} */
 	private ContainerImpl container;
 
@@ -101,17 +101,17 @@ public class Furnace extends Construction implements Container {
 		if (burning) {
 			return;
 		}
-		
+
 		burning = true;
-		
+
 		lightId = ParameterPersistenceService.getParameters().getNextLightId();
 		light = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f, 0f, 1f);
 		Domain.getLights().put(lightId, light);
-		
+
 		smelt();
 	}
-	
-	
+
+
 	/**
 	 * Begin smelting
 	 */
@@ -119,7 +119,7 @@ public class Furnace extends Construction implements Container {
 		if (smelting) {
 			return;
 		}
-		
+
 		if (!container.getInventory().isEmpty()) {
 			Optional<Item> notCoal = Iterables.tryFind(container.getInventory().keySet(), new Predicate<Item>() {
 				@Override
@@ -127,7 +127,7 @@ public class Furnace extends Construction implements Container {
 					return !(item instanceof Coal);
 				}
 			});
-			
+
 			if (notCoal.isPresent()) {
 				smelting = true;
 				smeltingDurationRemaining = SMELTING_DURATION;
@@ -154,8 +154,8 @@ public class Furnace extends Construction implements Container {
 	public float getCombustionDurationRemaining() {
 		return combustionDurationRemaining;
 	}
-	
-	
+
+
 	public float getSmeltingDurationRemaining() {
 		return smeltingDurationRemaining;
 	}
@@ -178,14 +178,14 @@ public class Furnace extends Construction implements Container {
 		if (burning) {
 			synchronized (this) {
 				this.combustionDurationRemaining -= delta;
-				
+
 				if (smelting) {
 					smeltingDurationRemaining -= delta;
 				}
-				
+
 				if (this.smeltingDurationRemaining <= 0f && smelting) {
-					smelting = false;
 					smeltItems();
+					smelting = false;
 					if (!isClient()) {
 						ClientServerInterface.sendNotification(
 							-1,
@@ -198,7 +198,7 @@ public class Furnace extends Construction implements Container {
 						refreshRefreshableWindows();
 					}
 				}
-				
+
 				if (this.combustionDurationRemaining <= 0f) {
 					burning = false;
 					smelting = false;
@@ -229,19 +229,19 @@ public class Furnace extends Construction implements Container {
 		synchronized(container) {
 			Set<Entry<Item, Integer>> existing = newHashMap(container.getInventory()).entrySet();
 			container.getInventory().clear();
-			
-			
+
+
 			for (Entry<Item, Integer> entry : existing) {
 				for (int i = 0; i < entry.getValue(); i++) {
 					if (entry.getKey() instanceof Coal) {
 						if (isBurning()) {
 							container.giveItem(new Coal());
 						} else {
-							container.giveItem(entry.getKey().combust(HEAT_LEVEL));
+							container.giveItem(entry.getKey().combust(HEAT_LEVEL, newHashMap(getInventory())));
 						}
 					} else {
 						if (smelting) {
-							container.giveItem(entry.getKey().combust(HEAT_LEVEL));
+							container.giveItem(entry.getKey().combust(HEAT_LEVEL, newHashMap(getInventory())));
 						} else {
 							container.giveItem(entry.getKey());
 						}
@@ -313,9 +313,9 @@ public class Furnace extends Construction implements Container {
 	@Override
 	protected Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
-		
+
 		requiredItems.put(new YellowBrick(), 5);
-		
+
 		return requiredItems;
 	}
 

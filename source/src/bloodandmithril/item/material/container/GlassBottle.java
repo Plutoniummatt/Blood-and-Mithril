@@ -49,7 +49,7 @@ public class GlassBottle extends LiquidContainer {
 
 
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return this;
 	}
 

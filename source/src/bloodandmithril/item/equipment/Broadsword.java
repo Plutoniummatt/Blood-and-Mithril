@@ -1,9 +1,14 @@
 package bloodandmithril.item.equipment;
 
+import static com.google.common.collect.Maps.newHashMap;
+
+import java.util.Map;
+
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.material.metal.SteelIngot;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Util;
@@ -95,7 +100,7 @@ public class Broadsword extends OneHandedWeapon implements Smithable {
 
 
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return this;
 	}
 
@@ -109,5 +114,14 @@ public class Broadsword extends OneHandedWeapon implements Smithable {
 	@Override
 	public int getRequiredSmithingLevel() {
 		return 20;
+	}
+
+
+	@Override
+	public Map<String, Integer> getRequiredMaterials() {
+		Map<String, Integer> requiredItems = newHashMap();
+
+		requiredItems.put(new SteelIngot().getSingular(true), 5);
+		return requiredItems;
 	}
 }

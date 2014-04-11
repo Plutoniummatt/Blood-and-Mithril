@@ -32,6 +32,7 @@ import bloodandmithril.world.weather.Weather;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -530,9 +531,26 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		if (!paused && delta < LAG_SPIKE_TOLERANCE && !GameSaver.isSaving() && domain != null) {
 			domain.update((int) cam.position.x, (int) cam.position.y);
 		}
+		cameraMovement();
 
 		leftDoubleClickTimer += delta;
 		rightDoubleClickTimer += delta;
+	}
+
+
+	private void cameraMovement() {
+		if (Gdx.input.isKeyPressed(Keys.UP)){
+			cam.position.y += 10f;
+		}
+		if (Gdx.input.isKeyPressed(Keys.DOWN)){
+			cam.position.y -= 10f;
+		}
+		if (Gdx.input.isKeyPressed(Keys.LEFT)){
+			cam.position.x -= 10f;
+		}
+		if (Gdx.input.isKeyPressed(Keys.RIGHT)){
+			cam.position.x += 10f;
+		}
 	}
 
 

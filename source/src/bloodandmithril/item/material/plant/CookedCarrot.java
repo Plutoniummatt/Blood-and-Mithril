@@ -1,6 +1,6 @@
 package bloodandmithril.item.material.plant;
 
-import com.badlogic.gdx.graphics.Color;
+import java.util.Map;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -10,18 +10,20 @@ import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class CookedCarrot extends Item implements Consumable {
 	private static final long serialVersionUID = -4630040294684060393L;
 	public static final String description = "A nicely cooked carrot, less crunchy than raw.  Increases stamina as well as hunger";
-	
+
 	/**
 	 * Constructor
 	 */
 	public CookedCarrot() {
 		super(0.1f, false, ItemValues.COOKEDCARROT);
 	}
-	
-	
+
+
 	@Override
 	public boolean sameAs(Item other) {
 		if (other instanceof CookedCarrot) {
@@ -29,8 +31,8 @@ public class CookedCarrot extends Item implements Consumable {
 		}
 		return false;
 	}
-	
-	
+
+
 	@Override
 	public String getSingular(boolean firstCap) {
 		return firstCap ? "Cooked carrot" : "cooked carrot";
@@ -69,13 +71,13 @@ public class CookedCarrot extends Item implements Consumable {
 
 
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return null;
 	}
 
 
 	@Override
 	public void render() {
-		
+
 	}
 }

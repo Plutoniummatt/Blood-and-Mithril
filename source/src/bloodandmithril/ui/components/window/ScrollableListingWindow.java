@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.badlogic.gdx.graphics.Color;
-
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -18,6 +16,9 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.Task;
+
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * A window that simply displays a {@link ScrollableListingPanel}
@@ -30,7 +31,7 @@ public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends
 	 * The {@link ScrollableListingPanel} of this {@link ScrollableListingWindow}.
 	 */
 	private ScrollableListingPanel<T, A> listing;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -51,12 +52,12 @@ public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends
 				return item.getValue().toString();
 			}
 
-			
+
 			@Override
 			protected int getExtraStringOffset() {
 				return 80;
 			}
-			
+
 
 			@Override
 			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<T>, A>> listings) {
@@ -78,60 +79,65 @@ public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends
 		listing.y = y;
 		listing.width = width;
 		listing.height = height;
-		
+
 		listing.render();
 	}
 
-	
+
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		listing.leftClick(copy, windowsCopy);
 	}
 
-	
+
 	@Override
 	protected void uponClose() {
 	}
 
-	
+
 	@Override
 	public boolean keyPressed(int keyCode) {
 		return false;
 	}
 
-	
+
 	@Override
 	public void leftClickReleased() {
 		listing.leftClickReleased();
 	}
-	
-	
+
+
 	private void populateListing(final Map<T, A> mapToBuildFrom, List<HashMap<ScrollableListingPanel.ListingMenuItem<T>, A>> listings) {
 		HashMap<ScrollableListingPanel.ListingMenuItem<T>, A> map = newHashMap();
-		
+
 		for (Entry<T, A> tEntry : mapToBuildFrom.entrySet()) {
 			map.put(
 				new ListingMenuItem<T>(
-					tEntry.getKey(), 
+					tEntry.getKey(),
 					new Button(
 						tEntry.getKey().toString(),
-						Fonts.defaultFont, 
-						0, 
-						0, 
-						tEntry.getKey().toString().length() * 10, 
-						16, 
-						() -> {}, 
+						Fonts.defaultFont,
+						0,
+						0,
+						tEntry.getKey().toString().length() * 10,
+						16,
+						buttonTask(tEntry),
 						Color.ORANGE,
 						Color.GREEN,
 						Color.WHITE,
 						UIRef.BL
-					), 
-					null 
+					),
+					null
 				),
 				tEntry.getValue()
 			);
 		}
-		
+
 		listings.add(map);
+	}
+
+
+	protected Task buttonTask(Entry<T, A> listingItem) {
+		return () -> {};
 	}
 }

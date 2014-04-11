@@ -1,5 +1,7 @@
 package bloodandmithril.item.material.animal;
 
+import java.util.Map;
+
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -87,13 +89,13 @@ public class ChickenLeg extends Item implements Consumable {
 
 
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return this;
 	}
 
 
 	@Override
 	public void render() {
-		
+
 	}
 }
