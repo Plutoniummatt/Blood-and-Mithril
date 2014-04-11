@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.ui.KeyMappings;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -34,6 +35,7 @@ public class SelectedIndividualsControlWindow extends Window {
 	public SelectedIndividualsControlWindow(int x, int y, int length, int height, String title, boolean active) {
 		super(x, y, length, height, title, active, length, height, true, false);
 		setupButtons();
+		setAlwaysActive(true);
 	}
 
 
@@ -41,6 +43,10 @@ public class SelectedIndividualsControlWindow extends Window {
 	 * Sets up the buttons for this {@link SelectedIndividualsControlWindow}
 	 */
 	private void setupButtons() {
+		boolean someoneRunning = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
+			return individual.isWalking() ? 0 : 1;
+		}).sum() > 0;
+
 		buttons.put(0, new Button(
 			"Run",
 			Fonts.defaultFont,
@@ -61,9 +67,9 @@ public class SelectedIndividualsControlWindow extends Window {
 					}
 				}
 			},
-			Color.GREEN,
-			Color.GREEN,
-			Color.GREEN,
+			someoneRunning ? Color.GREEN : Color.ORANGE,
+			someoneRunning ? Color.ORANGE : Color.GREEN,
+			Color.WHITE,
 			UIRef.BL
 		));
 	}
@@ -75,12 +81,13 @@ public class SelectedIndividualsControlWindow extends Window {
 			return individual.isWalking() ? 0 : 1;
 		}).sum() > 0;
 
+		boolean isTopOfUIDeque = UserInterface.layeredComponents.getLast() == this;
 		boolean selected = Domain.getSelectedIndividuals().size() > 0;
 
 		buttons.get(0).text = someoneRunning ? "Walk" : "Run";
-		buttons.get(0).setIdleColor(selected ? Color.GREEN : Colors.UI_GRAY);
-		buttons.get(0).setOverColor(selected ? Color.GREEN : Colors.UI_GRAY);
-		buttons.get(0).setDownColor(selected ? Color.GREEN : Colors.UI_GRAY);
+		buttons.get(0).setIdleColor(selected ? (someoneRunning ? Color.GREEN : Color.ORANGE) : Colors.UI_GRAY);
+		buttons.get(0).setOverColor(selected ? (isTopOfUIDeque ? (someoneRunning ? Color.ORANGE : Color.GREEN) : (someoneRunning ? Color.GREEN : Color.ORANGE)) : Colors.UI_GRAY);
+		buttons.get(0).setDownColor(selected ? (isTopOfUIDeque ? Color.WHITE : (someoneRunning ? Color.GREEN : Color.ORANGE)) : Colors.UI_GRAY);
 		buttons.get(0).render(x + 27, y - 20, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
 	}
 

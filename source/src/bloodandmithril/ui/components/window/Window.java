@@ -41,6 +41,9 @@ public abstract class Window extends Component {
 	/** Whether or not this {@link Window} can be minimized */
 	public final boolean minimizable;
 
+	/** True if this window is always active */
+	private boolean alwaysActive;
+
 	/** True if minimized */
 	public boolean minimized = false;
 
@@ -116,7 +119,7 @@ public abstract class Window extends Component {
 					resizeButton.click();
 				}
 
-				if (isActive()) {
+				if (isActive() && !alwaysActive) {
 					internalLeftClick(copy, windowsCopy);
 					determinePositioning();
 					return true;
@@ -350,5 +353,10 @@ public abstract class Window extends Component {
 		defaultFont.setColor(1f, 1f, 1f, 1f * getAlpha() * (isActive() ? 1f : 0.7f));
 		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate(title), x + 6, y - 3);
 		defaultFont.setColor(1f, 1f, 1f, 1f);
+	}
+
+
+	public void setAlwaysActive(boolean alwaysActive) {
+		this.alwaysActive = alwaysActive;
 	}
 }
