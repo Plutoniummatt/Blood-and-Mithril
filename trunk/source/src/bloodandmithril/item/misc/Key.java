@@ -1,11 +1,13 @@
 package bloodandmithril.item.misc;
 
-import com.badlogic.gdx.graphics.Color;
+import java.util.Map;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
+
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * A generic key
@@ -15,14 +17,14 @@ import bloodandmithril.ui.components.window.Window;
 public abstract class Key extends Item {
 	private static final long serialVersionUID = 607926655790662998L;
 	public static final String description = "A key is a device that is used to operate a lock.";
-	
+
 	/**
 	 * Constructor
 	 */
 	protected Key(float mass, long value) {
 		super(mass, false, value);
 	}
-	
+
 
 	@Override
 	public Window getInfoWindow() {
@@ -39,16 +41,16 @@ public abstract class Key extends Item {
 			100
 		);
 	}
-	
+
 
 	/**
 	 * @return the String description of the {@link Key}
 	 */
 	protected abstract String getDescription();
 
-	
+
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return this;
 	}
 }

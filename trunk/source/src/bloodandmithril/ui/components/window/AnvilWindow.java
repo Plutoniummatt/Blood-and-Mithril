@@ -12,12 +12,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.Smithable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.furniture.Anvil;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -101,7 +103,28 @@ public class AnvilWindow extends Window {
 				secondaryMenu.addMenuItem(
 					new MenuItem(
 						"Required materials",
-						() -> {},
+						() -> {
+							UserInterface.addLayeredComponent(
+								new ScrollableListingWindow<String, Integer>(
+									BloodAndMithrilClient.WIDTH/2 - 200,
+									BloodAndMithrilClient.HEIGHT/2 + 125,
+									400,
+									250,
+									"Required materials for " + ((Item)item).getSingular(true),
+									true,
+									150,
+									200,
+									false,
+									true,
+									item.getRequiredMaterials()) {
+
+									@Override
+									public void refresh() {
+										// no op
+									}
+								}
+							);
+						},
 						Color.WHITE,
 						Color.GREEN,
 						Color.WHITE,

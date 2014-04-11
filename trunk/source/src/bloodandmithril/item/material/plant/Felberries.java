@@ -1,6 +1,6 @@
 package bloodandmithril.item.material.plant;
 
-import com.badlogic.gdx.graphics.Color;
+import java.util.Map;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -9,6 +9,8 @@ import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
+
+import com.badlogic.gdx.graphics.Color;
 
 
 /**
@@ -72,13 +74,13 @@ public class Felberries extends Item implements Consumable {
 
 
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return this;
 	}
 
 
 	@Override
 	public void render() {
-		
+
 	}
 }

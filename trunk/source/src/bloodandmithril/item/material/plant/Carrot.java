@@ -1,5 +1,7 @@
 package bloodandmithril.item.material.plant;
 
+import java.util.Map;
+
 import bloodandmithril.character.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Consumable;
@@ -74,7 +76,7 @@ public class Carrot extends Item implements Consumable {
 
 
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		if (heatLevel > 200 && heatLevel < 500f) {
 			return new CookedCarrot();
 		} else {
@@ -85,6 +87,6 @@ public class Carrot extends Item implements Consumable {
 
 	@Override
 	public void render() {
-		
+
 	}
 }

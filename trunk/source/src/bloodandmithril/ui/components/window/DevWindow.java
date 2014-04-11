@@ -34,6 +34,7 @@ import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
+import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
@@ -148,9 +149,13 @@ public class DevWindow extends Window {
 			);
 
 			elf.getSkills().setObservation(55);
+			elf.getSkills().setSmithing(55);
 
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(new Carrot());
+			}
+			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
+				elf.giveItem(new Hematite());
 			}
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 				elf.giveItem(new Coal());

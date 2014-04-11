@@ -1,5 +1,7 @@
 package bloodandmithril.item.material.brick;
 
+import java.util.Map;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
@@ -63,13 +65,13 @@ public class YellowBrick extends Item {
 
 
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return this;
 	}
 
 
 	@Override
 	public void render() {
-		
+
 	}
 }

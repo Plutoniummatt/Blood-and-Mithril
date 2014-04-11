@@ -1,5 +1,7 @@
 package bloodandmithril.item.equipment;
 
+import java.util.Map;
+
 import bloodandmithril.character.Individual;
 import bloodandmithril.prop.furniture.Anvil;
 
@@ -21,4 +23,9 @@ public interface Smithable {
 	 * @return the required smithing level to be able to smith this item.
 	 */
 	public int getRequiredSmithingLevel();
+
+	/**
+	 * @return the map of required materials to smith this {@link Smithable}
+	 */
+	public Map<String, Integer> getRequiredMaterials();
 }

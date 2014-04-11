@@ -1,6 +1,6 @@
 package bloodandmithril.item.material.mineral;
 
-import com.badlogic.gdx.graphics.Color;
+import java.util.Map;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
@@ -8,10 +8,12 @@ import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class Ashes extends Item {
 	private static final long serialVersionUID = 988154990456038686L;
 	public static final String description = "The residue of combustion, mostly consisting of metal oxides.";
-	
+
 	/**
 	 * Constructor
 	 */
@@ -19,19 +21,19 @@ public class Ashes extends Item {
 		super(0.2f, false, ItemValues.ASHES);
 	}
 
-	
+
 	@Override
 	public String getSingular(boolean firstCap) {
 		return "Ashes";
 	}
 
-	
+
 	@Override
 	public String getPlural(boolean firstCap) {
 		return "Ashes";
 	}
 
-	
+
 	@Override
 	public Window getInfoWindow() {
 		return new MessageWindow(
@@ -48,21 +50,21 @@ public class Ashes extends Item {
 		);
 	}
 
-	
+
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof Ashes;
 	}
 
-	
+
 	@Override
-	public Item combust(int heatLevel) {
+	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return this;
 	}
 
 
 	@Override
 	public void render() {
-		
+
 	}
 }
