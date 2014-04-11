@@ -1,10 +1,10 @@
 package bloodandmithril.ui.components.window;
 
-import static com.google.common.collect.Maps.newTreeMap;
+import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.ClientServerInterface;
@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class SelectedIndividualsControlWindow extends Window {
 
-	TreeMap<Integer, Button> buttons = newTreeMap();
+	HashMap<Integer, Button> buttons = newHashMap();
 
 	/**
 	 * Constructor
@@ -81,13 +81,13 @@ public class SelectedIndividualsControlWindow extends Window {
 			return individual.isWalking() ? 0 : 1;
 		}).sum() > 0;
 
-		boolean isTopOfUIDeque = UserInterface.layeredComponents.getLast() == this;
+		boolean buttonsActive = UserInterface.layeredComponents.getLast() == this;
 		boolean selected = Domain.getSelectedIndividuals().size() > 0;
 
 		buttons.get(0).text = someoneRunning ? "Walk" : "Run";
 		buttons.get(0).setIdleColor(selected ? (someoneRunning ? Color.GREEN : Color.ORANGE) : Colors.UI_GRAY);
-		buttons.get(0).setOverColor(selected ? (isTopOfUIDeque ? (someoneRunning ? Color.ORANGE : Color.GREEN) : (someoneRunning ? Color.GREEN : Color.ORANGE)) : Colors.UI_GRAY);
-		buttons.get(0).setDownColor(selected ? (isTopOfUIDeque ? Color.WHITE : (someoneRunning ? Color.GREEN : Color.ORANGE)) : Colors.UI_GRAY);
+		buttons.get(0).setOverColor(selected ? (buttonsActive ? (someoneRunning ? Color.ORANGE : Color.GREEN) : (someoneRunning ? Color.GREEN : Color.ORANGE)) : Colors.UI_GRAY);
+		buttons.get(0).setDownColor(selected ? (buttonsActive ? Color.WHITE : (someoneRunning ? Color.GREEN : Color.ORANGE)) : Colors.UI_GRAY);
 		buttons.get(0).render(x + 27, y - 20, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
 	}
 
