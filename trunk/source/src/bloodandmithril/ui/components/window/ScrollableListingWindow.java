@@ -41,6 +41,8 @@ public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends
 		super(x, y, length, height, title, active, minLength, minHeight, minimizable, resizeable);
 		this.displayFunction = displayFunction;
 		buildListing(map);
+
+		listing.setScrollWheelActive(true);
 	}
 
 

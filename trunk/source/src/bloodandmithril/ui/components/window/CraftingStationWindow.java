@@ -128,6 +128,8 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			UIRef.BL
 		);
 
+		craftablesListing.setScrollWheelActive(true);
+
 		refresh();
 	}
 
@@ -198,7 +200,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 							refresh();
 						},
 						currentlySelectedToCraft.sameAs(item) ? Color.GREEN : Color.WHITE,
-						currentlySelectedToCraft.sameAs(item) ? Color.ORANGE : Color.GREEN,
+						currentlySelectedToCraft.sameAs(item) ? Color.ORANGE : Color.ORANGE,
 						Color.WHITE,
 						UIRef.BL
 					),
