@@ -335,4 +335,10 @@ public abstract class Construction extends Prop implements Container {
 	public boolean lock(Item with) {
 		return false;
 	}
+
+
+	@Override
+	public int has(Item item) {
+		return materialContainer.has(item);
+	}
 }

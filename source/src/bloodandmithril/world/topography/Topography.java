@@ -31,7 +31,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 public class Topography {
-	
+
 	/** Unique ID of the {@link World} that this {@link Topography} lives on */
 	private final int worldId;
 
@@ -49,7 +49,7 @@ public class Topography {
 
 	/** The chunk map of the topography. */
 	private final ChunkMap chunkMap;
-	
+
 	/** {@link Structures} that exist on this instance of {@link Topography} */
 	private final Structures structures;
 
@@ -61,10 +61,10 @@ public class Topography {
 
 	/** The current chunk coordinates that have already been requested for generation */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> requestedForGeneration = new ConcurrentDualKeyHashMap<>();
-	
+
 	/** {@link FluidMap} of this {@link Topography} */
 	private FluidMap fluidMap = new FluidMap();
-	
+
 	private final FluidDynamicsProcessor fluidDynamicsProcessor;
 
 	/**
@@ -76,7 +76,7 @@ public class Topography {
 		this.structures = new Structures();
 		this.fluidDynamicsProcessor = new FluidDynamicsProcessor(this);
 	}
-	
+
 
 	/** Adds a task to be processed */
 	public static void addTask(Task task) {
@@ -94,8 +94,8 @@ public class Topography {
 			}
 		}
 	}
-	
-	
+
+
 	/** Updates the {@link Topography} */
 	public void update() {
 		fluidDynamicsProcessor.process();
@@ -254,20 +254,20 @@ public class Topography {
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
-		
+
 		getFluids().remove(
-			convertToWorldTileCoord(worldX), 
+			convertToWorldTileCoord(worldX),
 			convertToWorldTileCoord(worldY)
 		);
-		
+
 		try {
 			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
 		} catch (NullPointerException e) {
 			Logger.generalDebug("can't change a null tile", LogLevel.WARN);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Changes a tile at this location
 	 *
@@ -279,12 +279,12 @@ public class Topography {
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToTileCoord(worldX);
 		int tileY = convertToTileCoord(worldY);
-		
+
 		getFluids().remove(
-			convertToWorldTileCoord(worldX), 
+			convertToWorldTileCoord(worldX),
 			convertToWorldTileCoord(worldY)
 		);
-		
+
 		try {
 			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
 		} catch (NullPointerException e) {
@@ -323,8 +323,8 @@ public class Topography {
 			return worldCoordinateIntegerized / TILE_SIZE / CHUNK_SIZE - 1;
 		}
 	}
-	
-	
+
+
 	public static void setup() {
 		atlas = new Texture(Gdx.files.internal("data/image/textureAtlas.png"));
 	}
@@ -343,18 +343,18 @@ public class Topography {
 
 		return getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 	}
-	
-	
+
+
 	/**
 	 * Gets a tile given the world tile coordinates
 	 */
 	public synchronized Tile getTile(int tileX, int tileY, boolean foreGround) {
 		int chunkX = convertToChunkCoord(convertToWorldCoord(tileX, false));
 		int chunkY = convertToChunkCoord(convertToWorldCoord(tileY, false));
-		
+
 		int chunkTileX = convertToTileCoord(convertToWorldCoord(tileX, false));
 		int chunkTileY = convertToTileCoord(convertToWorldCoord(tileY, false));
-		
+
 		try {
 			return getChunkMap().get(chunkX).get(chunkY).getTile(chunkTileX, chunkTileY, foreGround);
 		} catch (NullPointerException e) {
@@ -415,8 +415,8 @@ public class Topography {
 	public FluidMap getFluids() {
 		return fluidMap;
 	}
-	
-	
+
+
 	public void setFluids(FluidMap fluidMap) {
 		this.fluidMap = fluidMap;
 	}

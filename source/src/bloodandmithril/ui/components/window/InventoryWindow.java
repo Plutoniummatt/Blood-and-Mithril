@@ -118,12 +118,12 @@ public class InventoryWindow extends Window implements Refreshable {
 		int lineWidth = 23;
 
 		// Set the position and dimensions of the panel
-		inventoryListingPanel.height = height - (equippedItemsToDisplay.isEmpty() ? 0 : ((1 + min(5,equippedItemsToDisplay.size())) * lineWidth)) - lineWidth;
+		inventoryListingPanel.height = height - (equippedItemsToDisplay.isEmpty() ? 0 : (1 + min(5,equippedItemsToDisplay.size())) * lineWidth) - lineWidth;
 		inventoryListingPanel.width = width;
 		inventoryListingPanel.x = x;
-		inventoryListingPanel.y = y - (equippedItemsToDisplay.isEmpty() ? 0 : ((1 + min(5,equippedItemsToDisplay.size())) * lineWidth));
+		inventoryListingPanel.y = y - (equippedItemsToDisplay.isEmpty() ? 0 : (1 + min(5,equippedItemsToDisplay.size())) * lineWidth);
 
-		equippedListingPanel.height = 50 + (equippedItemsToDisplay.isEmpty() ? 0 : ((1 + min(5, equippedItemsToDisplay.size())) * lineWidth));
+		equippedListingPanel.height = 50 + (equippedItemsToDisplay.isEmpty() ? 0 : (1 + min(5, equippedItemsToDisplay.size())) * lineWidth);
 		equippedListingPanel.width = width;
 		equippedListingPanel.x = x;
 		equippedListingPanel.y = y;
@@ -596,5 +596,11 @@ public class InventoryWindow extends Window implements Refreshable {
 				null
 			);
 		}
+	}
+
+
+	@Override
+	public Object getUniqueIdentifier() {
+		return "inventoryWindow" + ((Individual)host).getId().getId();
 	}
 }

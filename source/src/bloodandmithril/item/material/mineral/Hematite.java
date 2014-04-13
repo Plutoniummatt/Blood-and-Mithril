@@ -2,13 +2,8 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.metal.IronIngot;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * Otherwise known as Iron ore.
@@ -39,19 +34,8 @@ public class Hematite extends Item {
 
 
 	@Override
-	public Window getInfoWindow() {
-		return new MessageWindow(
-			"Hematite is a mineral, colored black to steel or silver-gray, brown to reddish brown, or red. It is mined as the main ore of iron.",
-			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			350,
-			200,
-			"Hematite",
-			true,
-			100,
-			100
-		);
+	public String getDescription() {
+		return "Hematite is a mineral, colored black to steel or silver-gray, brown to reddish brown, or red. It is mined as the main ore of iron.";
 	}
 
 

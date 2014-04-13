@@ -7,10 +7,13 @@ import java.io.Serializable;
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.tile.Tile;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -51,8 +54,8 @@ public abstract class Item implements Serializable, Comparable<Item> {
 	/** Get the plural name for this item */
 	public abstract String getPlural(boolean firstCap);
 
-	/** A window with a description of this {@link Item} */
-	public abstract Window getInfoWindow();
+	/** Returns the string description of this {@link Item} */
+	public abstract String getDescription();
 
 	/** Returns true if two {@link Item}s have identical attributes */
 	public abstract boolean sameAs(Item other);
@@ -63,6 +66,22 @@ public abstract class Item implements Serializable, Comparable<Item> {
 
 	/** Implementation-specific render method */
 	public abstract void render();
+
+	/** A window with a description of this {@link Item} */
+	public Window getInfoWindow() {
+		return new MessageWindow(
+			getDescription(),
+			Color.ORANGE,
+			BloodAndMithrilClient.WIDTH/2 - 175,
+			BloodAndMithrilClient.HEIGHT/2 + 100,
+			350,
+			200,
+			getSingular(true),
+			true,
+			100,
+			100
+		);
+	}
 
 	/** Update method, delta measured in seconds */
 	public void update(float delta) {

@@ -2,13 +2,8 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
-
-import com.badlogic.gdx.graphics.Color;
 
 public class Ashes extends Item {
 	private static final long serialVersionUID = 988154990456038686L;
@@ -35,19 +30,8 @@ public class Ashes extends Item {
 
 
 	@Override
-	public Window getInfoWindow() {
-		return new MessageWindow(
-			description,
-			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			350,
-			200,
-			"Ashes",
-			true,
-			100,
-			100
-		);
+	public String getDescription() {
+		return description;
 	}
 
 

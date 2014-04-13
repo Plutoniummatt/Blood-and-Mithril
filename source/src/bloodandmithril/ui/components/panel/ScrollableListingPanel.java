@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.panel;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static com.google.common.collect.Lists.newArrayList;
@@ -105,6 +107,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 				}
 			});
 
+			boolean clicked = false;
 			for(Entry<ListingMenuItem<T>, A> item : entrySet) {
 				if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
 					i++;
@@ -112,9 +115,15 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 				}
 				if (item.getKey().button.click() && item.getKey().menu == null) {
 					copy.clear();
+					clicked = true;
 				}
 				if (item.getKey().menu != null && item.getKey().button.isMouseOver()) {
+					item.getKey().menu.x = getMouseScreenX();
+					item.getKey().menu.y = getMouseScreenY();
 					copy.add(item.getKey().menu);
+				}
+				if (clicked) {
+					break;
 				}
 				i++;
 			}
@@ -154,6 +163,10 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 	 * Renders the scroll bar
 	 */
 	private void renderScrollBar() {
+		if (listings.isEmpty()) {
+			return;
+		}
+
 		Window p = (Window) parent;
 		Color scrollBarColor = p.isActive() ? Colors.modulateAlpha(p.borderColor, 0.5f * p.getAlpha()) : Colors.modulateAlpha(p.borderColor, 0.2f * p.getAlpha());
 		Component.shapeRenderer.begin(ShapeType.FilledRectangle);
@@ -168,6 +181,10 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 	 * Renders the listing
 	 */
 	private void renderListing() {
+		if (listings.isEmpty()) {
+			return;
+		}
+
 		// Render the equipped items first
 		int i = 0;
 		ArrayList<HashMap<ListingMenuItem<T>, A>> newArrayList = Lists.newArrayList(listings);
@@ -192,14 +209,14 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 					defaultFont.draw(spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
 					break;
 				}
-				
+
 				item.getKey().button.render(
-					x + item.getKey().button.width/2 + 6, 
-					y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25, 
+					x + item.getKey().button.width/2 + 6,
+					y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25,
 					parent.isActive() && UserInterface.contextMenus.isEmpty(), parent.getAlpha(),
 					width - 35
 				);
-				
+
 				defaultFont.draw(spriteBatch, getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
 				i++;
 			}
@@ -212,6 +229,10 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 	 * Renders the scroll bar button
 	 */
 	private void renderScrollBarButton() {
+		if (listings.isEmpty()) {
+			return;
+		}
+
 		int size = 0;
 		for (Map<ListingMenuItem<T>, A> listing : listings) {
 			size += listing.size();

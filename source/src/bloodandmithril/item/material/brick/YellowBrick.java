@@ -2,14 +2,9 @@ package bloodandmithril.item.material.brick;
 
 import java.util.Map;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * {@link Item} representing {@link YellowBrickTile}
@@ -42,19 +37,8 @@ public class YellowBrick extends Item {
 
 
 	@Override
-	public Window getInfoWindow() {
-		return new MessageWindow(
-			"Yellow colored bricks",
-			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			350,
-			200,
-			"Yellow Bricks",
-			true,
-			100,
-			100
-		);
+	public String getDescription() {
+		return "Yellow colored bricks";
 	}
 
 

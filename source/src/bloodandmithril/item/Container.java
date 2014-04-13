@@ -30,6 +30,12 @@ public interface Container {
 
 
 	/**
+	 * @return the number of specified items that exists in the container
+	 */
+	public int has(Item item);
+
+
+	/**
 	 * @return the inventory
 	 */
 	public Map<Item, Integer> getInventory();
@@ -45,32 +51,32 @@ public interface Container {
 	 * @return the current weight that is stored in the {@link ContainerImpl}
 	 */
 	public float getCurrentLoad();
-	
-	
+
+
 	/**
 	 * @return whether or not this {@link Container} can exceed the max capacity.
 	 */
 	public boolean canExceedCapacity();
-	
-	
+
+
 	/**
 	 * @return whether or not this {@link Container} is locked.
 	 */
 	public boolean isLocked();
-	
-	
+
+
 	/**
 	 * @return whether or not this {@link Container} is lockable.
 	 */
 	public boolean isLockable();
-	
-	
+
+
 	/**
 	 * Attempt to unlock this container
 	 */
 	public boolean unlock(Item with);
-	
-	
+
+
 	/**
 	 * Attempt to lock this container
 	 */

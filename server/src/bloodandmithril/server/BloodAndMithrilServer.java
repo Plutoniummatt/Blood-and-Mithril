@@ -36,6 +36,7 @@ import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
+import bloodandmithril.item.material.metal.SteelIngot;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
@@ -327,6 +328,17 @@ public class BloodAndMithrilServer {
 				}
 			}
 
+			if (keycode == Input.Keys.Z) {
+				Individual individual = Domain.getIndividuals().get(1);
+				if (individual != null) {
+					Anvil anvil = new Anvil(
+						individual.getState().position.x,
+						individual.getState().position.y
+					);
+					Domain.getProps().put(anvil.id, anvil);
+				}
+			}
+
 			if (keycode == Input.Keys.M) {
 				Individual individual = Domain.getIndividuals().get(1);
 				if (individual != null) {
@@ -387,8 +399,13 @@ public class BloodAndMithrilServer {
 					Domain.getActiveWorld()
 				);
 
+				elf.getSkills().setSmithing(50);
+
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 					elf.giveItem(new Carrot());
+				}
+				for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
+					elf.giveItem(new SteelIngot());
 				}
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 					elf.giveItem(new Coal());

@@ -1,7 +1,5 @@
 package bloodandmithril.item.equipment;
 
-import static com.google.common.collect.Maps.newHashMap;
-
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
@@ -9,16 +7,14 @@ import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.metal.SteelIngot;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
 
-public class Broadsword extends OneHandedWeapon implements Smithable {
+public class Broadsword extends OneHandedWeapon implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
 	public static TextureRegion texture;
@@ -44,19 +40,8 @@ public class Broadsword extends OneHandedWeapon implements Smithable {
 
 
 	@Override
-	public Window getInfoWindow() {
-		return new MessageWindow(
-			"Broadswords are heavy military swords, contrasting with rapier, the light sword worn with civilian dress. Since the blade of the rapier had become narrow and thrust-oriented, the heavier blades became known as Broadsword",
-			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			350,
-			200,
-			"Broadsword",
-			true,
-			100,
-			100
-		);
+	public String getDescription() {
+		return "Broadswords are heavy military swords, contrasting with rapier, the light sword worn with civilian dress. Since the blade of the rapier had become narrow and thrust-oriented, the heavier blades became known as Broadsword";
 	}
 
 
@@ -107,21 +92,27 @@ public class Broadsword extends OneHandedWeapon implements Smithable {
 
 	@Override
 	public void render() {
-
 	}
 
 
 	@Override
-	public int getRequiredSmithingLevel() {
-		return 20;
+	public boolean canBeCraftedBy(Individual individual) {
+		return individual.getSkills().getSmithing() >= 10;
 	}
 
 
 	@Override
-	public Map<String, Integer> getRequiredMaterials() {
-		Map<String, Integer> requiredItems = newHashMap();
+	public Map<Item, Integer> getRequiredMaterials() {
+		Map<Item, Integer> map = Maps.newHashMap();
 
-		requiredItems.put(new SteelIngot().getSingular(true), 5);
-		return requiredItems;
+		map.put(new SteelIngot(), 7);
+
+		return map;
+	}
+
+
+	@Override
+	public float getCraftingDuration() {
+		return 15f;
 	}
 }

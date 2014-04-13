@@ -557,7 +557,7 @@ public class UserInterface {
 	/** Renders layered components, e.g. {@link Window}s */
 	private static synchronized void renderLayeredComponents() {
 		ArrayDeque<Component> copy = new ArrayDeque<>(layeredComponents);
-		for (Component component : layeredComponents) {
+		for (Component component : new ArrayDeque<>(layeredComponents)) {
 			if (component instanceof Window) {
 				if (!((Window)component).minimized || component.getAlpha() > 0f) {
 					component.render();
@@ -798,13 +798,13 @@ public class UserInterface {
 
 
 	/** Adds a {@link Component} to {@link #layeredComponents}, checking if an existing one with the same title exists */
-	public static void addLayeredComponentUnique(Component toAdd, String title) {
+	public static void addLayeredComponentUnique(Window toAdd) {
 		Window existing = null;
 
 		for (Component window : layeredComponents) {
 			if (window instanceof Window) {
 				((Window) window).setActive(false);
-				if (((Window)window).title.equals(title)) {
+				if (((Window)window).getUniqueIdentifier().equals(toAdd.getUniqueIdentifier())) {
 					existing = (Window)window;
 				}
 			}

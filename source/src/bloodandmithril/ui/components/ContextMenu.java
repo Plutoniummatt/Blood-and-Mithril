@@ -1,5 +1,8 @@
 package bloodandmithril.ui.components;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
@@ -8,6 +11,7 @@ import java.util.List;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.Function;
 import bloodandmithril.util.Task;
 
 import com.badlogic.gdx.graphics.Color;
@@ -114,7 +118,19 @@ public class ContextMenu extends Component {
 				copy.clear();
 			}
 			if (item.menu != null && item.button.isMouseOver()) {
-				copy.add(item.menu);
+				if (item.secondaryContextMenuCondition == null) {
+					item.menu.x = getMouseScreenX();
+					item.menu.y = getMouseScreenY();
+					copy.add(item.menu);
+				} else {
+					if (item.secondaryContextMenuCondition.call()) {
+						item.menu.x = getMouseScreenX();
+						item.menu.y = getMouseScreenY();
+						copy.add(item.menu);
+					} else {
+						copy.clear();
+					}
+				}
 			}
 		}
 		return isInside(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
@@ -143,6 +159,7 @@ public class ContextMenu extends Component {
 
 		public ContextMenu menu;
 		public Button button;
+		public Function<Boolean> secondaryContextMenuCondition;
 
 
 		/** Constructor */
@@ -155,6 +172,26 @@ public class ContextMenu extends Component {
 		/** Overloaded Constructor */
 		public MenuItem(String text, Task task, Color idle, Color over, Color down, ContextMenu menu) {
 			this.menu = menu;
+			this.button = new Button(
+				text,
+				Fonts.defaultFont,
+				0,
+				0,
+				text.length() * 10,
+				16,
+				task,
+				idle,
+				over,
+				down,
+				UIRef.BL
+			);
+		}
+
+
+		/** Overloaded Constructor */
+		public MenuItem(String text, Task task, Color idle, Color over, Color down, ContextMenu menu, Function<Boolean> secondaryContextMenuCondition) {
+			this.menu = menu;
+			this.secondaryContextMenuCondition = secondaryContextMenuCondition;
 			this.button = new Button(
 				text,
 				Fonts.defaultFont,

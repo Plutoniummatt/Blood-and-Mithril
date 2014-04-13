@@ -4,14 +4,9 @@ import java.util.Map;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.conditions.Poison;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
-
-import com.badlogic.gdx.graphics.Color;
 
 
 /**
@@ -57,19 +52,8 @@ public class DeathCap extends Item implements Consumable {
 
 
 	@Override
-	public Window getInfoWindow() {
-		return new MessageWindow(
-			"The death cap is a toxic fungus, the toxins breakdown once cooked, and is widely used in cuisine across the land.",
-			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			350,
-			200,
-			"Death cap",
-			true,
-			100,
-			100
-		);
+	public String getDescription() {
+		return "The death cap is a toxic fungus, the toxins breakdown once cooked, and is widely used in cuisine across the land.";
 	}
 
 

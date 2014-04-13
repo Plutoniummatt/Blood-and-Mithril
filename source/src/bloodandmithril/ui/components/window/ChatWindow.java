@@ -190,4 +190,10 @@ public class ChatWindow extends Window {
 	public void leftClickReleased() {
 		participants.leftClickReleased();
 	}
+
+
+	@Override
+	public Object getUniqueIdentifier() {
+		return getClass();
+	}
 }

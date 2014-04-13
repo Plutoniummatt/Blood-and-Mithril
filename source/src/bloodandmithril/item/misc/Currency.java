@@ -2,13 +2,8 @@ package bloodandmithril.item.misc;
 
 import java.util.Map;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * Class representing currency
@@ -39,19 +34,8 @@ public class Currency extends Item {
 
 
 	@Override
-	public Window getInfoWindow() {
-		return new MessageWindow(
-			"The most widely used form of currency, can be used for trade as a substitution for items.",
-			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			350,
-			200,
-			"Coin",
-			true,
-			100,
-			100
-		);
+	public String getDescription() {
+		return "The most widely used form of currency, can be used for trade as a substitution for items.";
 	}
 
 

@@ -28,7 +28,7 @@ public class ContainerImpl implements Container, Serializable {
 
 	/** Whether or not this {@link ContainerImpl} is locked */
 	private boolean locked, lockable;
-	
+
 	/** The function that determines if an {@link Item} can unlock this {@link ContainerImpl} */
 	private transient Function<Item, Boolean> unlockingFunction;
 
@@ -42,7 +42,7 @@ public class ContainerImpl implements Container, Serializable {
 		this.lockable = false;
 	}
 
-	
+
 	/**
 	 * Constructor for a lockable container.
 	 */
@@ -165,7 +165,7 @@ public class ContainerImpl implements Container, Serializable {
 			locked = false;
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -176,7 +176,7 @@ public class ContainerImpl implements Container, Serializable {
 			locked = true;
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -191,6 +191,7 @@ public class ContainerImpl implements Container, Serializable {
 	}
 
 
+	@Override
 	public boolean isLockable() {
 		return lockable;
 	}
@@ -198,5 +199,16 @@ public class ContainerImpl implements Container, Serializable {
 
 	public void setLockable(boolean lockable) {
 		this.lockable = lockable;
+	}
+
+
+	@Override
+	public int has(Item item) {
+		for (Entry<Item, Integer> entry : inventory.entrySet()) {
+			if (entry.getKey().sameAs(item)) {
+				return entry.getValue();
+			}
+		}
+		return 0;
 	}
 }

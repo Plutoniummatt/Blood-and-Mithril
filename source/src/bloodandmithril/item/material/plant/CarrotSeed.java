@@ -2,13 +2,8 @@ package bloodandmithril.item.material.plant;
 
 import java.util.Map;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
-
-import com.badlogic.gdx.graphics.Color;
 
 public class CarrotSeed extends Seed {
 	private static final long serialVersionUID = -3918937697003306522L;
@@ -31,19 +26,8 @@ public class CarrotSeed extends Seed {
 	}
 
 	@Override
-	public Window getInfoWindow() {
-		return new MessageWindow(
-			"Seed of a carrot",
-			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			350,
-			200,
-			"Carrot seed",
-			true,
-			100,
-			100
-		);
+	public String getDescription() {
+		return "Seed of a carrot";
 	}
 
 	@Override

@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import bloodandmithril.item.Equipper.EquipmentSlot;
-
 /**
  * Default implementation of {@link Equipper}
  *
@@ -20,7 +18,7 @@ public class EquipperImpl implements Equipper, Serializable {
 
 	/** The current available {@link EquipmentSlot}s, maps to true if empty/available */
 	protected Map<EquipmentSlot, Boolean> availableEquipmentSlots = new HashMap<>();
-	
+
 	private ContainerImpl container;
 
 	/**
@@ -32,8 +30,8 @@ public class EquipperImpl implements Equipper, Serializable {
 			availableEquipmentSlots.put(slot, true);
 		}
 	}
-	
-	
+
+
 	@Override
 	public Map<EquipmentSlot, Boolean> getAvailableEquipmentSlots() {
 		return availableEquipmentSlots;
@@ -178,5 +176,11 @@ public class EquipperImpl implements Equipper, Serializable {
 	@Override
 	public boolean isLockable() {
 		return false;
+	}
+
+
+	@Override
+	public int has(Item item) {
+		return container.has(item);
 	}
 }

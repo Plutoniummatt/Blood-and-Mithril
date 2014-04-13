@@ -365,4 +365,10 @@ public abstract class Window extends Component {
 	public void setAlwaysActive(boolean alwaysActive) {
 		this.alwaysActive = alwaysActive;
 	}
+
+
+	/**
+	 * @return some sort of unique but deterministic {@link Object} to determine uniqueness when using {@link UserInterface#addLayeredComponentUnique(Component)}
+	 */
+	public abstract Object getUniqueIdentifier();
 }

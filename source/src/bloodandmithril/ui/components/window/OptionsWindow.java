@@ -3,8 +3,6 @@ package bloodandmithril.ui.components.window;
 import java.util.Deque;
 import java.util.List;
 
-import com.badlogic.gdx.graphics.Color;
-
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.UserInterface;
@@ -14,13 +12,15 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
 
+import com.badlogic.gdx.graphics.Color;
+
 /**
  * The options window
  *
  * @author Matt
  */
 public class OptionsWindow extends Window {
-	
+
 	private Button changeRes;
 
 	/**
@@ -28,14 +28,14 @@ public class OptionsWindow extends Window {
 	 */
 	public OptionsWindow() {
 		super(BloodAndMithrilClient.WIDTH/2 - 125, BloodAndMithrilClient.HEIGHT/2 + 125, 250, 350, "Options", true, 250, 350, false, false);
-		
+
 		this.changeRes = new Button(
-			"Change resolution", 
-			Fonts.defaultFont, 
-			0, 
-			0, 
-			170, 
-			16, 
+			"Change resolution",
+			Fonts.defaultFont,
+			0,
+			0,
+			170,
+			16,
 			() -> {
 				UserInterface.addLayeredComponent(
 					new TextInputWindow(
@@ -67,7 +67,7 @@ public class OptionsWindow extends Window {
 								);
 								return;
 							}
-							
+
 							UserInterface.addLayeredComponent(
 								new TextInputWindow(
 									BloodAndMithrilClient.WIDTH / 2 - 125,
@@ -98,7 +98,7 @@ public class OptionsWindow extends Window {
 											);
 											return;
 										}
-										
+
 										UserInterface.addLayeredComponent(
 											new MessageWindow(
 												"Please restart the game for the changes to take effect",
@@ -113,54 +113,60 @@ public class OptionsWindow extends Window {
 												100
 											)
 										);
-										
+
 										ConfigPersistenceService.saveConfig();
 										UserInterface.removeLayeredComponent("Options");
-									}, 
-									"Confirm", 
-									true, 
+									},
+									"Confirm",
+									true,
 									Integer.toString(BloodAndMithrilClient.HEIGHT)
 								)
 							);
-						}, 
-						"Confirm", 
-						true, 
+						},
+						"Confirm",
+						true,
 						Integer.toString(BloodAndMithrilClient.WIDTH)
 					)
 				);
-			}, 
-			Color.ORANGE, 
-			Color.GREEN, 
-			Color.WHITE, 
+			},
+			Color.ORANGE,
+			Color.GREEN,
+			Color.WHITE,
 			UIRef.BL
 		);
 	}
-	
+
 
 	@Override
 	protected void internalWindowRender() {
 		changeRes.render(x + width/2, y - 30, isActive(), getAlpha());
 	}
 
-	
+
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		changeRes.click();
 	}
 
-	
+
 	@Override
 	protected void uponClose() {
 	}
 
-	
+
 	@Override
 	public boolean keyPressed(int keyCode) {
 		return false;
 	}
 
-	
+
 	@Override
 	public void leftClickReleased() {
+	}
+
+
+	@Override
+	public Object getUniqueIdentifier() {
+		return getClass();
 	}
 }
