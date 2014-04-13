@@ -165,6 +165,12 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	}
 
 
+	@Override
+	public boolean scrolled(int amount) {
+		return craftablesListing.scrolled(amount) || requiredMaterialsListing.scrolled(amount);
+	}
+
+
 	/**
 	 * Constructs the listing
 	 */
@@ -330,6 +336,15 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void refresh() {
+		if (craftingStation.isOccupied() && !currentlySelectedToCraft.sameAs(craftingStation.getCurrentlyBeingCrafted())) {
+			currentlySelectedToCraft = craftingStation.getCurrentlyBeingCrafted();
+			craftablesListing.getListing().clear();
+			craftablesListing.getListing().add(constructCraftablesListing());
+			requiredMaterialsListing.getRequiredMaterials().clear();
+			requiredMaterialsListing.getRequiredMaterials().putAll(((Craftable)currentlySelectedToCraft).getRequiredMaterials());
+			refresh();
+		}
+
 		enoughMaterials = CraftingStation.enoughMaterialsToCraft(individual, (Craftable) currentlySelectedToCraft);
 		requiredMaterialsListing.refresh();
 

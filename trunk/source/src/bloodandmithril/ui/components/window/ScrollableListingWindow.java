@@ -94,6 +94,12 @@ public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends
 
 
 	@Override
+	public boolean scrolled(int amount) {
+		return listing.scrolled(amount);
+	}
+
+
+	@Override
 	protected void uponClose() {
 	}
 

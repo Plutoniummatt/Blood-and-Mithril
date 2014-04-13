@@ -1,5 +1,8 @@
 package bloodandmithril.ui.components;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+
 import java.util.Deque;
 import java.util.List;
 
@@ -29,7 +32,7 @@ public abstract class Panel extends Component {
 	/** Called when left mouse button is clicked */
 	@Override
 	public abstract boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy);
-	
+
 	/** Called when left click is released */
 	@Override
 	public abstract void leftClickReleased();
@@ -37,6 +40,13 @@ public abstract class Panel extends Component {
 	/** Renders this panel */
 	@Override
 	public abstract void render();
+
+	/** True if mouse is within the window */
+	protected boolean isMouseWithin() {
+		int posX = getMouseScreenX();
+		int posY = getMouseScreenY();
+		return posX > x && posX < x + width && posY < y && posY > y - height;
+	}
 
 	/** Component specific render */
 	@Override

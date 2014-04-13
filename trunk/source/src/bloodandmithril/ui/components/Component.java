@@ -71,6 +71,13 @@ public abstract class Component {
 	protected abstract void internalComponentRender();
 
 	/**
+	 * Called when the scroll wheel is scrolled.
+	 */
+	public boolean scrolled(int amount) {
+		return false;
+	}
+
+	/**
 	 * Renders this {@link Component}
 	 */
 	public void render() {

@@ -98,6 +98,12 @@ public class FactionsWindow extends Window {
 
 
 	@Override
+	public boolean scrolled(int amount) {
+		return factionsPanel.scrolled(amount);
+	}
+
+
+	@Override
 	public void leftClickReleased() {
 		factionsPanel.leftClickReleased();
 	}
