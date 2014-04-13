@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.DiscardLiquid;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.core.CursorBoundTask;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Equipable;
@@ -30,6 +29,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
+import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
@@ -369,26 +369,38 @@ public class InventoryWindow extends Window implements Refreshable {
 										return;
 									}
 
-									if (ClientServerInterface.isServer()) {
-										BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(
-											new JITTask() {
-												@Override
-												public void execute(Object... args) {
+									BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(
+										new JITTask() {
+											@Override
+											public void execute(Object... args) {
+												if (ClientServerInterface.isServer()) {
 													((Individual)host).getAI().setCurrentTask(
-														new DiscardLiquid((Individual)host, (int) args[0], (int) args[1], (LiquidContainer) item, amount)
+														new DiscardLiquid(
+															(Individual) host,
+															(int) args[0],
+															(int) args[1],
+															(LiquidContainer) item,
+															amount
+														)
+													);
+												} else {
+													ClientServerInterface.SendRequest.sendDiscardLiquidRequest(
+														(int) args[0],
+														(int) args[1],
+														(Individual) host,
+														(LiquidContainer) item,
+														amount
 													);
 												}
-											},
-											true
-										) {
-											@Override
-											public String getShortDescription() {
-												return "Discard contents";
 											}
-										});
-									} else {
-										// TODO
-									}
+										},
+										true
+									) {
+										@Override
+										public String getShortDescription() {
+											return "Discard contents";
+										}
+									});
 								} catch (NumberFormatException e) {
 									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 								}

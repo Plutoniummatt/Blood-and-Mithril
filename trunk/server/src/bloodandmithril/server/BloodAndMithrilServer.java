@@ -28,7 +28,7 @@ import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.YellowBrick;
-import bloodandmithril.item.material.container.GlassBottle;
+import bloodandmithril.item.material.container.WoodenBucket;
 import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Acid;
 import bloodandmithril.item.material.liquid.Blood;
@@ -380,7 +380,7 @@ public class BloodAndMithrilServer {
 
 			if (keycode == Input.Keys.R) {
 				IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f);
-				state.position = new Vector2(0, 500);
+				state.position = new Vector2(200, 700);
 				state.velocity = new Vector2(0, 0);
 				state.acceleration = new Vector2(0, 0);
 
@@ -418,8 +418,8 @@ public class BloodAndMithrilServer {
 				}
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 					Map<Class<? extends Liquid>, Float> liquids = new HashMap<>();
-					liquids.put(Water.class, 1f);
-					elf.giveItem(new GlassBottle(liquids));
+					liquids.put(Blood.class, 16f);
+					elf.giveItem(new WoodenBucket(liquids));
 				}
 				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 					elf.giveItem(new Currency());

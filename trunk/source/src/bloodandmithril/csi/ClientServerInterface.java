@@ -34,6 +34,8 @@ import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.ai.task.Construct.Constructing;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.Craft.Crafting;
+import bloodandmithril.character.ai.task.DiscardLiquid;
+import bloodandmithril.character.ai.task.DiscardLiquid.Discard;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Harvest;
@@ -91,6 +93,7 @@ import bloodandmithril.csi.requests.Ping;
 import bloodandmithril.csi.requests.Ping.Pong;
 import bloodandmithril.csi.requests.RequestClientList;
 import bloodandmithril.csi.requests.RequestClientList.RequestClientListResponse;
+import bloodandmithril.csi.requests.RequestDiscardLiquid;
 import bloodandmithril.csi.requests.RequestStartCrafting;
 import bloodandmithril.csi.requests.RequestTakeItemFromCraftingStation;
 import bloodandmithril.csi.requests.SendAttackRequest;
@@ -369,6 +372,9 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(DiscardLiquid.class);
+		kryo.register(Discard.class);
+		kryo.register(RequestDiscardLiquid.class);
 		kryo.register(Crafting.class);
 		kryo.register(Craft.class);
 		kryo.register(RequestStartCrafting.class);
@@ -572,6 +578,12 @@ public class ClientServerInterface {
 		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
+		}
+
+
+		public static synchronized void sendDiscardLiquidRequest(int x, int y, Individual individual, LiquidContainer container, float amount) {
+			client.sendTCP(new RequestDiscardLiquid(individual, container, amount, x, y));
+			Logger.networkDebug("Sending discard liquid request", LogLevel.DEBUG);
 		}
 
 
