@@ -3,6 +3,7 @@ package bloodandmithril.csi.requests;
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
+import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.prop.crafting.CraftingStation;
 import bloodandmithril.world.Domain;
 
@@ -32,7 +33,7 @@ public class RequestTakeItemFromCraftingStation implements Request {
 		Responses responses = new Responses(true);
 		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individualId, System.currentTimeMillis()));
 		responses.add(new SynchronizePropRequest.SynchronizePropResponse(Domain.getProps().get(craftingStationId)));
-		responses.add(new TransferItems.RefreshWindowsResponse());
+		responses.add(new RefreshWindowsResponse());
 		return responses;
 	}
 

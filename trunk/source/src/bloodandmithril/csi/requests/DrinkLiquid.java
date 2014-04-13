@@ -3,6 +3,7 @@ package bloodandmithril.csi.requests;
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
+import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.item.material.container.LiquidContainer;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.world.Domain;
@@ -40,7 +41,7 @@ public class DrinkLiquid implements Request {
 
 		Responses responses = new Responses(true);
 		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individual.getId().getId(), System.currentTimeMillis()));
-		responses.add(new TransferItems.RefreshWindowsResponse());
+		responses.add(new RefreshWindowsResponse());
 		return responses;
 	}
 
