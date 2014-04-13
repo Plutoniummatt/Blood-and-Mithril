@@ -96,7 +96,7 @@ public class Elf extends Individual {
 	 * Constructor
 	 */
 	public Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity, World world) {
-		super(id, state, factionId, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId());
+		super(id, state, factionId, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId());
 		this.female = female;
 		this.hairColorR = hairColor.r;
 		this.hairColorG = hairColor.g;
@@ -111,13 +111,13 @@ public class Elf extends Individual {
 		current = STANDING_RIGHT;
 		currentHair = STANDING_RIGHT_HAIR;
 	}
-	
-	
+
+
 	/**
 	 * Constructor
 	 */
 	private Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity, int worldId) {
-		super(id, state, factionId, 0.05f, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId);
+		super(id, state, factionId, capacity, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId);
 		this.female = female;
 		this.hairColorR = hairColor.r;
 		this.hairColorG = hairColor.g;
@@ -159,7 +159,7 @@ public class Elf extends Individual {
 	@Override
 	protected void internalRender() {
 		BloodAndMithrilClient.spriteBatch.begin();
-		
+
 		// Determine which shader we're using, normal, or highlighted
 		if (isMouseOver()) {
 
@@ -281,7 +281,7 @@ public class Elf extends Individual {
 
 		decreaseHunger(0.000001f);
 		decreaseThirst(0.000003f);
-		
+
 		if (!isWalking()) {
 			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
 				decreaseStamina(0.0005f);
@@ -299,11 +299,11 @@ public class Elf extends Individual {
 		if (getState().hunger < 0.75f) {
 			addCondition(new Hunger(getId().getId()));
 		}
-		
+
 		if (getState().thirst < 0.75f) {
 			addCondition(new Thirst(getId().getId()));
 		}
-		
+
 		if (getState().stamina < 0.75f) {
 			addCondition(new Exhaustion(getId().getId()));
 		}

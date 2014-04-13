@@ -284,7 +284,7 @@ public abstract class Construction extends Prop implements Container {
 				((RequiredMaterialsWindow) component).refresh();
 			});
 		} else {
-			ClientServerInterface.SendNotification.notifyRefreshItemWindows();
+			ClientServerInterface.SendNotification.notifyRefreshWindows();
 		}
 	}
 

@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.csi.requests.SynchronizePropRequest;
+import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.prop.Prop;
@@ -32,6 +35,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public abstract class CraftingStation extends Construction {
 	private static final long serialVersionUID = 2177296386331588828L;
 
+	private float craftingProgress;
+	private Item currentlyBeingCrafted;
+	private Integer occupiedBy;
+	private boolean finished;
+
 	/**
 	 * Constructor
 	 */
@@ -47,7 +55,7 @@ public abstract class CraftingStation extends Construction {
 	protected abstract String getDescription();
 
 	/** Returns the string title of this {@link CraftingStation} */
-	protected abstract String getTitle();
+	public abstract String getTitle();
 
 	/** Returns the verb that describes the action of this {@link CraftingStation} */
 	public abstract String getAction();
@@ -127,12 +135,82 @@ public abstract class CraftingStation extends Construction {
 
 	@Override
 	public void synchronizeProp(Prop other) {
-		// TODO Auto-generated method stub
+		this.craftingProgress = ((CraftingStation)other).craftingProgress;
+		this.currentlyBeingCrafted = ((CraftingStation)other).currentlyBeingCrafted;
+		this.finished = ((CraftingStation)other).finished;
+		this.occupiedBy = ((CraftingStation)other).occupiedBy;
 	}
 
 
 	@Override
 	public void update(float delta) {
-		// TODO Auto-generated method stub
+		if (currentlyBeingCrafted != null && occupiedBy != null) {
+			occupiedBy = Domain.getIndividuals().get(occupiedBy).getAI().getCurrentTask() instanceof Craft ? occupiedBy : null;
+		}
+	}
+
+
+	public float getCraftingProgress() {
+		return craftingProgress;
+	}
+
+
+	public Item getCurrentlyBeingCrafted() {
+		return currentlyBeingCrafted;
+	}
+
+
+	public void setCurrentlyBeingCrafted(Item currentlyBeingCrafted) {
+		this.currentlyBeingCrafted = currentlyBeingCrafted;
+	}
+
+
+	public synchronized boolean craft(Item item, Individual individual, float aiTaskDelay) {
+		if (occupiedBy == null) {
+			occupiedBy = individual.getId().getId();
+		}
+
+		if (currentlyBeingCrafted == null) {
+			currentlyBeingCrafted = item;
+
+			if (ClientServerInterface.isClient()) {
+				UserInterface.refreshRefreshableWindows();
+			} else {
+				ClientServerInterface.sendNotification(-1, true, true,
+					new SynchronizePropRequest.SynchronizePropResponse(this),
+					new TransferItems.RefreshWindowsResponse()
+				);
+			}
+		}
+
+		if (occupiedBy == individual.getId().getId()) {
+			craftingProgress += aiTaskDelay / ((Craftable)currentlyBeingCrafted).getCraftingDuration();
+			if (craftingProgress >= 1f) {
+				craftingProgress = 1f;
+				finished = true;
+			}
+			return true;
+		}
+		return false;
+	}
+
+
+	public boolean isFinished() {
+		return finished;
+	}
+
+
+	public void takeItem(Individual individual) {
+		if (currentlyBeingCrafted != null && finished) {
+			individual.giveItem(currentlyBeingCrafted);
+			setCurrentlyBeingCrafted(null);
+			craftingProgress = 0f;
+			finished = false;
+		}
+	}
+
+
+	public boolean isOccupied() {
+		return occupiedBy != null;
 	}
 }

@@ -150,7 +150,6 @@ public abstract class Individual implements Equipper, Serializable {
 			IndividualIdentifier id,
 			IndividualState state,
 			int factionId,
-			float aiDelay,
 			float inventoryMassCapacity,
 			int width,
 			int height,
@@ -161,7 +160,7 @@ public abstract class Individual implements Equipper, Serializable {
 		this.id = id;
 		this.state = state;
 		this.factionId = factionId;
-		this.aITaskDelay = aiDelay;
+		this.aITaskDelay = 0.05f;
 		this.width = width;
 		this.height = height;
 		this.safetyHeight = safetyHeight;
@@ -373,7 +372,7 @@ public abstract class Individual implements Equipper, Serializable {
 
 		aiReactionTimer += delta;
 		if (aiReactionTimer >= aITaskDelay) {
-			ai.update(delta);
+			ai.update(aITaskDelay);
 			aiReactionTimer = 0f;
 		}
 
