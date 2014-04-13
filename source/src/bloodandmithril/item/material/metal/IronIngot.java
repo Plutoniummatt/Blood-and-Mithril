@@ -3,6 +3,7 @@ package bloodandmithril.item.material.metal;
 import java.util.Map;
 
 import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.material.fuel.Coal;
 
 import com.google.common.collect.Iterables;
@@ -19,7 +20,7 @@ public class IronIngot extends Item {
 	 * Constructor
 	 */
 	public IronIngot() {
-		super(1f, false, 15);
+		super(1f, false, ItemValues.IRONINGOT);
 	}
 
 

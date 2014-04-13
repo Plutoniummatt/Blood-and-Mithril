@@ -32,7 +32,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
-import bloodandmithril.world.topography.tile.tiles.sedimentary.YellowSandTile;
+import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
 import bloodandmithril.world.topography.tile.tiles.soil.DryDirtTile;
 import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
 
@@ -355,7 +355,7 @@ public class Desert extends SuperStructure {
 				return new DryDirtTile();
 			}
 			if (worldTileY > sandBase.get(worldTileX)) {
-				return new YellowSandTile();
+				return new SandTile();
 			} else {
 				return new DryDirtTile();
 			}

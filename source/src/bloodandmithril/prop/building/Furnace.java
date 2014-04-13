@@ -3,8 +3,10 @@ package bloodandmithril.prop.building;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.csi.ClientServerInterface.isClient;
 import static bloodandmithril.ui.UserInterface.refreshRefreshableWindows;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -19,10 +21,12 @@ import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.brick.YellowBrick;
+import bloodandmithril.item.material.brick.Brick;
+import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.crafting.CraftingStation;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -42,7 +46,7 @@ import com.google.common.collect.Iterables;
  *
  * @author Matt
  */
-public class Furnace extends Construction implements Container {
+public class Furnace extends CraftingStation implements Container {
 	private static final long serialVersionUID = 7693386784097531328L;
 
 	/** {@link TextureRegion} of the {@link Furnace} */
@@ -73,7 +77,7 @@ public class Furnace extends Construction implements Container {
 	 * Constructor
 	 */
 	public Furnace(float x, float y) {
-		super(x, y, 49, 76, false, 0.1f);
+		super(x, y, 49, 76, 0.1f);
 		this.container = new ContainerImpl(500f, true);
 	}
 
@@ -175,6 +179,8 @@ public class Furnace extends Construction implements Container {
 
 	@Override
 	public synchronized void update(float delta) {
+		super.update(delta);
+
 		if (burning) {
 			synchronized (this) {
 				this.combustionDurationRemaining -= delta;
@@ -265,7 +271,7 @@ public class Furnace extends Construction implements Container {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new MessageWindow(
-							"A furnace, able to achieve temperatures hot enough to melt most metals",
+							getDescription(),
 							Color.ORANGE,
 							BloodAndMithrilClient.WIDTH/2 - 175,
 							BloodAndMithrilClient.HEIGHT/2 + 100,
@@ -293,8 +299,8 @@ public class Furnace extends Construction implements Container {
 					if (Domain.getSelectedIndividuals().size() == 1) {
 						if (ClientServerInterface.isServer()) {
 							selected.getAI().setCurrentTask(
-									new TradeWith(selected, this)
-									);
+								new TradeWith(selected, this)
+							);
 						} else {
 							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
 						}
@@ -311,6 +317,7 @@ public class Furnace extends Construction implements Container {
 			menu.addMenuItem(openChestMenuItem);
 		}
 
+		addCraftMenuItem(menu);
 		return menu;
 	}
 
@@ -318,9 +325,7 @@ public class Furnace extends Construction implements Container {
 	@Override
 	protected Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
-
-		requiredItems.put(new YellowBrick(), 5);
-
+		requiredItems.put(new Brick(), 5);
 		return requiredItems;
 	}
 
@@ -381,6 +386,18 @@ public class Furnace extends Construction implements Container {
 
 
 	@Override
+	public String getCustomMessage() {
+		return "Furnace is not ignited";
+	}
+
+
+	@Override
+	public boolean customCanCraft() {
+		return isBurning();
+	}
+
+
+	@Override
 	public float getCurrentLoad() {
 		if (getConstructionProgress() == 1f) {
 			return container.getCurrentLoad();
@@ -431,5 +448,35 @@ public class Furnace extends Construction implements Container {
 		} else {
 			return super.has(item);
 		}
+	}
+
+
+	@Override
+	public String getTitle() {
+		return "Furnace";
+	}
+
+
+	@Override
+	protected TextureRegion getTextureRegion() {
+		return null;
+	}
+
+
+	@Override
+	protected String getDescription() {
+		return "A furnace, able to achieve temperatures hot enough to melt most metals";
+	}
+
+
+	@Override
+	public String getAction() {
+		return "Craft";
+	}
+
+
+	@Override
+	public List<Item> getCraftables() {
+		return newArrayList(new GlassBottle(newHashMap()));
 	}
 }

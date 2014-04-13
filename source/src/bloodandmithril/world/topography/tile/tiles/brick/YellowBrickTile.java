@@ -1,7 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.brick;
 
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.brick.YellowBrick;
+import bloodandmithril.item.material.brick.Brick;
 import bloodandmithril.world.topography.tile.tiles.BrickTile;
 
 public class YellowBrickTile extends BrickTile {
@@ -35,6 +35,6 @@ public class YellowBrickTile extends BrickTile {
 
 	@Override
 	public Item mine() {
-		return new YellowBrick();
+		return new Brick();
 	}
 }

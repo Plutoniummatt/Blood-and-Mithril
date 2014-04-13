@@ -1,16 +1,16 @@
 package bloodandmithril.world.topography.tile.tiles.sedimentary;
 
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.mineral.YellowSand;
+import bloodandmithril.item.material.mineral.Sand;
 import bloodandmithril.world.topography.tile.tiles.SeditmentaryTile;
 
-public class YellowSandTile extends SeditmentaryTile {
+public class SandTile extends SeditmentaryTile {
 	private static final long serialVersionUID = 905567490661951934L;
 
 	/**
 	 * Constructor
 	 */
-	public YellowSandTile() {
+	public SandTile() {
 		super(false);
 	}
 
@@ -33,6 +33,6 @@ public class YellowSandTile extends SeditmentaryTile {
 
 	@Override
 	public Item mine() {
-		return new YellowSand();
+		return new Sand();
 	}
 }

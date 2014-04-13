@@ -4,51 +4,51 @@ import java.util.Map;
 
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.material.metal.IronIngot;
+import bloodandmithril.item.material.brick.Brick;
 
 /**
- * Otherwise known as Iron ore.
+ * Clay
  *
  * @author Matt
  */
-public class Hematite extends Item {
-	private static final long serialVersionUID = 5544474463358187047L;
+public class Clay extends Item {
+	private static final long serialVersionUID = 883456114549112166L;
 
 	/**
 	 * Constructor
 	 */
-	public Hematite() {
-		super(2f, false, ItemValues.HEMATITE);
+	public Clay() {
+		super(0.5f, false, ItemValues.CLAY);
 	}
 
 
 	@Override
 	public String getSingular(boolean firstCap) {
-		return (firstCap ? "H" : "h") + "ematite";
+		return (firstCap ? "C" : "c") + "lay";
 	}
 
 
 	@Override
 	public String getPlural(boolean firstCap) {
-		return (firstCap ? "H" : "h") + "ematite";
+		return (firstCap ? "C" : "c") + "lay";
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "Hematite is a mineral, colored black to steel or silver-gray, brown to reddish brown, or red. It is mined as the main ore of iron.";
+		return "Clay";
 	}
 
 
 	@Override
 	public boolean sameAs(Item other) {
-		return other instanceof Hematite;
+		return other instanceof Clay;
 	}
 
 
 	@Override
 	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return heatLevel >= 1400 ? new IronIngot() : this;
+		return heatLevel > 500 ? new Brick() : this;
 	}
 
 

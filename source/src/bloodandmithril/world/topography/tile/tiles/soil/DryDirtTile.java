@@ -1,6 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.soil;
 
 import bloodandmithril.item.Item;
+import bloodandmithril.item.material.mineral.Dirt;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
 public class DryDirtTile extends SoilTile {
@@ -32,7 +33,6 @@ public class DryDirtTile extends SoilTile {
 
 	@Override
 	public Item mine() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Dirt();
 	}
 }

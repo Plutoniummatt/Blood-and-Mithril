@@ -155,7 +155,9 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	 * Called when the action button is pressed, i.e 'Smith'
 	 */
 	private void craft() {
-		if (craftingStation.getCurrentlyBeingCrafted() != null && craftingStation.isOccupied() || !enoughMaterials && craftingStation.getCurrentlyBeingCrafted() == null) {
+		if (!customCanCraft() ||
+			craftingStation.getCurrentlyBeingCrafted() != null && craftingStation.isOccupied() ||
+			!enoughMaterials && craftingStation.getCurrentlyBeingCrafted() == null) {
 			return;
 		}
 
@@ -249,7 +251,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		craftButton.render(
 			x + width / 2 + 11,
 			y - 65,
-			isActive() && (craftingStation.getCurrentlyBeingCrafted() == null || !craftingStation.isOccupied()) && !craftingStation.isFinished() && (enoughMaterials || craftingStation.getCurrentlyBeingCrafted() != null),
+			isActive() && (craftingStation.getCurrentlyBeingCrafted() == null || !craftingStation.isOccupied()) && !craftingStation.isFinished() && (enoughMaterials || craftingStation.getCurrentlyBeingCrafted() != null) && customCanCraft(),
 			getAlpha()
 		);
 
@@ -262,6 +264,14 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	}
 
 
+	/**
+	 * @return See {@link CraftingStation#customCanCraft()}
+	 */
+	protected boolean customCanCraft() {
+		return craftingStation.customCanCraft();
+	}
+
+
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		craftablesListing.leftClick(copy, windowsCopy);
@@ -270,6 +280,24 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 		if (craftingStation.isFinished()) {
 			takeFinishedItemButton.click();
+		}
+
+		if (!customCanCraft() && craftButton.click()) {
+			copy.add(
+				new ContextMenu(
+					getMouseScreenX(),
+					getMouseScreenY(),
+					new MenuItem(
+						craftingStation.getCustomMessage(),
+						() -> {},
+						Colors.UI_DARK_GRAY,
+						Colors.UI_DARK_GRAY,
+						Colors.UI_DARK_GRAY,
+						null
+					)
+				)
+			);
+			return;
 		}
 
 		if (craftingStation.getCurrentlyBeingCrafted() != null && craftingStation.isOccupied() && !craftingStation.isFinished()) {

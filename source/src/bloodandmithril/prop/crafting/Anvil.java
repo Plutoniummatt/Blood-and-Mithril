@@ -24,7 +24,7 @@ public class Anvil extends CraftingStation {
 	 * Constructor
 	 */
 	public Anvil(float x, float y) {
-		super(x, y, 44, 18);
+		super(x, y, 44, 18, 0);
 		setConstructionProgress(1f);
 	}
 

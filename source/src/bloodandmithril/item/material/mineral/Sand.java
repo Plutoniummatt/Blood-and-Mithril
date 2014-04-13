@@ -4,21 +4,21 @@ import java.util.Map;
 
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.world.topography.tile.tiles.sedimentary.YellowSandTile;
+import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
 
 /**
- * Yellow Sand, obtained as a result of mining {@link YellowSandTile}
+ * Sand, obtained as a result of mining {@link SandTile}
  *
  * @author Matt
  */
-public class YellowSand extends Item {
+public class Sand extends Item {
 	private static final long serialVersionUID = -7756119539773387265L;
 
 
 	/**
 	 * Constructor
 	 */
-	public YellowSand() {
+	public Sand() {
 		super(10f, false, ItemValues.YELLOWSAND);
 	}
 
@@ -49,18 +49,17 @@ public class YellowSand extends Item {
 
 	@Override
 	public boolean sameAs(Item other) {
-		return other instanceof YellowSand;
+		return other instanceof Sand;
 	}
 
 
 	@Override
 	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return this;
+		return heatLevel > 1400 ? new Glass() : this;
 	}
 
 
 	@Override
 	public void render() {
-
 	}
 }

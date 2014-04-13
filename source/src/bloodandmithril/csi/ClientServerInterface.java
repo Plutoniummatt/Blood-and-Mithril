@@ -129,7 +129,7 @@ import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.item.equipment.Weapon;
 import bloodandmithril.item.material.animal.ChickenLeg;
-import bloodandmithril.item.material.brick.YellowBrick;
+import bloodandmithril.item.material.brick.Brick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.container.LiquidContainer;
 import bloodandmithril.item.material.container.WoodenBucket;
@@ -143,13 +143,17 @@ import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.metal.IronIngot;
 import bloodandmithril.item.material.metal.SteelIngot;
 import bloodandmithril.item.material.mineral.Ashes;
+import bloodandmithril.item.material.mineral.Clay;
+import bloodandmithril.item.material.mineral.Dirt;
+import bloodandmithril.item.material.mineral.Glass;
 import bloodandmithril.item.material.mineral.Hematite;
-import bloodandmithril.item.material.mineral.YellowSand;
+import bloodandmithril.item.material.mineral.Sand;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.CarrotSeed;
 import bloodandmithril.item.material.plant.CookedCarrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.material.plant.Felberries;
+import bloodandmithril.item.material.plant.Pine;
 import bloodandmithril.item.material.plant.Seed;
 import bloodandmithril.item.misc.Currency;
 import bloodandmithril.item.misc.Key;
@@ -160,6 +164,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.crafting.Anvil;
 import bloodandmithril.prop.crafting.CraftingStation;
+import bloodandmithril.prop.crafting.WorkBench;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.FelberryBush;
 import bloodandmithril.prop.plant.Plant;
@@ -191,7 +196,7 @@ import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 import bloodandmithril.world.topography.tile.tiles.glass.ClearGlassTile;
 import bloodandmithril.world.topography.tile.tiles.glass.InterlacedWindowTile;
-import bloodandmithril.world.topography.tile.tiles.sedimentary.YellowSandTile;
+import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
 import bloodandmithril.world.topography.tile.tiles.soil.DryDirtTile;
 import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
@@ -372,6 +377,12 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Glass.class);
+		kryo.register(Clay.class);
+		kryo.register(Dirt.class);
+		kryo.register(bloodandmithril.item.furniture.WoodenChest.class);
+		kryo.register(Pine.class);
+		kryo.register(WorkBench.class);
 		kryo.register(DiscardLiquid.class);
 		kryo.register(Discard.class);
 		kryo.register(RequestDiscardLiquid.class);
@@ -561,11 +572,11 @@ public class ClientServerInterface {
 		kryo.register(Water.class);
 		kryo.register(WayPoint.class);
 		kryo.register(Weapon.class);
-		kryo.register(YellowBrick.class);
+		kryo.register(Brick.class);
 		kryo.register(YellowBrickPlatform.class);
 		kryo.register(YellowBrickTile.class);
-		kryo.register(YellowSand.class);
-		kryo.register(YellowSandTile.class);
+		kryo.register(Sand.class);
+		kryo.register(SandTile.class);
 	}
 
 

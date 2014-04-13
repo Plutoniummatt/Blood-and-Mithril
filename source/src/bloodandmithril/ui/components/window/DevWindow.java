@@ -23,7 +23,7 @@ import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
-import bloodandmithril.item.material.brick.YellowBrick;
+import bloodandmithril.item.material.brick.Brick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.container.WoodenBucket;
 import bloodandmithril.item.material.fuel.Coal;
@@ -33,14 +33,16 @@ import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
+import bloodandmithril.item.material.metal.IronIngot;
 import bloodandmithril.item.material.metal.SteelIngot;
 import bloodandmithril.item.material.mineral.Hematite;
-import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
+import bloodandmithril.item.material.plant.Pine;
 import bloodandmithril.item.misc.Currency;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.crafting.Anvil;
+import bloodandmithril.prop.crafting.WorkBench;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -159,9 +161,12 @@ public class DevWindow extends Window {
 			elf.getSkills().setSmithing(55);
 
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(new Carrot());
+				elf.giveItem(new Pine());
 			}
-			for (int i = 5; i > 0; i--) {
+			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
+				elf.giveItem(new IronIngot());
+			}
+			for (int i = 40; i > 0; i--) {
 				elf.giveItem(new SteelIngot());
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
@@ -190,7 +195,7 @@ public class DevWindow extends Window {
 				elf.giveItem(new Currency());
 			}
 			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
-				elf.giveItem(new YellowBrick());
+				elf.giveItem(new Brick());
 			}
 			elf.giveItem(new ButterflySword(100));
 			elf.giveItem(new Broadsword(100));
@@ -382,6 +387,37 @@ public class DevWindow extends Window {
 							);
 
 							Domain.getProps().put(pineChest.id, pineChest);
+						}
+					},
+					Color.GREEN,
+					Color.WHITE,
+					Color.GREEN,
+					UIRef.BL
+				),
+				null
+			),
+			0
+		);
+
+		newHashMap.put(
+			new ListingMenuItem<String>(
+				"Spawn Carpenter workshop on first individual",
+				new Button(
+					"Spawn Carpenter workshop on first individual",
+					Fonts.defaultFont,
+					0,
+					0,
+					310,
+					16,
+					() -> {
+						Individual individual = Domain.getIndividuals().get(1);
+						if (individual != null) {
+							WorkBench carpenterWorkshop = new WorkBench(
+								individual.getState().position.x,
+								individual.getState().position.y
+							);
+
+							Domain.getProps().put(carpenterWorkshop.id, carpenterWorkshop);
 						}
 					},
 					Color.GREEN,

@@ -16,6 +16,9 @@ public class Skills implements Serializable {
 	private int trading = 0;				// Better at trading, trade less for more
 	private int observation = 0;			// Better at identifying the status of an individual
 	private int smithing = 0;				// Blacksmithing
+	private int carpentry = 0;				// Carpentry
+	private int masonry = 0;				// Masonry
+	private int glassworking = 0;			// Glassworking
 
 	/**
 	 * Constructor
@@ -46,10 +49,34 @@ public class Skills implements Serializable {
 		this.smithing = smithing;
 	}
 
+	public int getCarpentry() {
+		return carpentry;
+	}
+
+	public void setCarpentry(int carpentry) {
+		this.carpentry = carpentry;
+	}
+
 	/**
 	 * @return the ratio of a skill level to that of the max skill level
 	 */
 	public static float getRatioToMax(int skillLevel) {
 		return (float) skillLevel / (float) MAX_LEVEL;
+	}
+
+	public int getMasonry() {
+		return masonry;
+	}
+
+	public void setMasonry(int masonry) {
+		this.masonry = masonry;
+	}
+
+	public int getGlassworking() {
+		return glassworking;
+	}
+
+	public void setGlassworking(int glassworking) {
+		this.glassworking = glassworking;
 	}
 }
