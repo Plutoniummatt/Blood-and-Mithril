@@ -40,7 +40,7 @@ import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.prop.furniture.Anvil;
+import bloodandmithril.prop.crafting.Anvil;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;

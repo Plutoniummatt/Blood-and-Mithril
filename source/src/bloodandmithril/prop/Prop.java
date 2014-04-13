@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.prop.furniture.Anvil;
+import bloodandmithril.prop.crafting.Anvil;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.Carrot;
 import bloodandmithril.ui.components.ContextMenu;

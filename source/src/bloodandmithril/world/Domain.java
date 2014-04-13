@@ -112,7 +112,7 @@ public class Domain {
 			long prevFrame = System.currentTimeMillis();
 
 			while (true) {
-				if ((System.currentTimeMillis() - prevFrame) > 10) {
+				if (System.currentTimeMillis() - prevFrame > 10) {
 					updateFluids(Gdx.graphics.getDeltaTime());
 				}
 			}

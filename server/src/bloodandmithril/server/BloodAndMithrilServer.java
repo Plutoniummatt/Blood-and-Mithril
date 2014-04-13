@@ -44,7 +44,7 @@ import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.prop.furniture.Anvil;
+import bloodandmithril.prop.crafting.Anvil;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
