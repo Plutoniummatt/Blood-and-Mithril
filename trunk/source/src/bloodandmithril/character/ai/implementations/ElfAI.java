@@ -26,7 +26,6 @@ public class ElfAI extends ArtificialIntelligence {
 
 	@Override
 	protected void determineCurrentTask() {
-//		wander(600f, false);
 	}
 
 
