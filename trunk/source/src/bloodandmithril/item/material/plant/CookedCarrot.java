@@ -3,14 +3,9 @@ package bloodandmithril.item.material.plant;
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
-
-import com.badlogic.gdx.graphics.Color;
 
 public class CookedCarrot extends Item implements Consumable {
 	private static final long serialVersionUID = -4630040294684060393L;
@@ -54,19 +49,8 @@ public class CookedCarrot extends Item implements Consumable {
 
 
 	@Override
-	public Window getInfoWindow() {
-		return new MessageWindow(
-			description,
-			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			350,
-			200,
-			"Carrot",
-			true,
-			100,
-			100
-		);
+	public String getDescription() {
+		return description;
 	}
 
 

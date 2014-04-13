@@ -195,8 +195,7 @@ public class TradeWith extends CompositeAITask {
 							300,
 							proposer,
 							(Construction) prop
-						),
-						proposer.getId().getSimpleName() + " interacting with container"
+						)
 					);
 					return;
 				}
@@ -215,8 +214,7 @@ public class TradeWith extends CompositeAITask {
 						300,
 						proposer,
 						(Furnace) prop
-					),
-					proposer.getId().getSimpleName() + " interacting with container"
+					)
 				);
 			} else {
 				UserInterface.addLayeredComponentUnique(
@@ -231,8 +229,7 @@ public class TradeWith extends CompositeAITask {
 						300,
 						proposer,
 						(Container) prop
-					),
-					proposer.getId().getSimpleName() + " interacting with container"
+					)
 				);
 			}
 		}
@@ -264,8 +261,7 @@ public class TradeWith extends CompositeAITask {
 				300,
 				proposer,
 				proposeeCasted
-			),
-			"Trade between " + proposeeCasted.getId().getFirstName() + " and " + proposer.getId().getFirstName()
+			)
 		);
 	}
 }

@@ -3,13 +3,13 @@ package bloodandmithril.generation;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.common.collect.Maps;
-
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.tile.Tile;
+
+import com.google.common.collect.Maps;
 
 /**
  * Contains maps from coordinates to (super/sub) {@link Structure} keys.
@@ -35,7 +35,7 @@ public class Structures {
 	/**
 	 * Looks for a substructure and attempts to get a tile, if it's null, get
 	 * one from the super structure.
-	 * 
+	 *
 	 * This method enforces that substructures sit on top of superstructures, thus overriding them.
 	 *
 	 * @param chunkX
@@ -45,25 +45,25 @@ public class Structures {
 	 * @param foreground
 	 */
 	public Tile getTile(int chunkX, int chunkY, int worldTileX, int worldTileY, boolean foreground) {
-		
+
 		Tile returnTile = null;
-		
+
 		if (getStructure(chunkX, chunkY, false) != null) {
-			returnTile = 
+			returnTile =
 				foreground ?
 				getStructure(chunkX, chunkY, false).getForegroundTile(worldTileX, worldTileY):
 				getStructure(chunkX, chunkY, false).getBackgroundTile(worldTileX, worldTileY);
 		}
-		
+
 		if (returnTile == null) {
 			if (getStructure(chunkX, chunkY, true) != null) {
-				returnTile = 
+				returnTile =
 					foreground ?
 					getStructure(chunkX, chunkY, true).getForegroundTile(worldTileX, worldTileY):
 					getStructure(chunkX, chunkY, true).getBackgroundTile(worldTileX, worldTileY);
 			}
 		}
-		
+
 		return returnTile;
 	}
 
@@ -86,8 +86,8 @@ public class Structures {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Returns a structure, given a key.
 	 */
@@ -114,18 +114,17 @@ public class Structures {
 	 * Deletes a {@link Chunk} from the relevant keyMap, decrements number of chunks left to be generated, also deletes the structure if it was the last chunk.
 	 */
 	public void deleteChunkFromStructureKeyMapAndCheckIfStructureCanBeDeleted(int chunkX, int chunkY, boolean superStructure) {
-		
+
 		// Grab the specified key map
 		ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keyMapToUse = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
 
 		// Delete the key from key map
 		int key = keyMapToUse.get(chunkX).get(chunkY);
 		keyMapToUse.get(chunkX).remove(chunkY);
-		
+
 		// Decrement chunks left to be generated
-		getStructures().get(key).setChunksLeftToBeGenerated(
-				getStructures().get(key).getChunksLeftToBeGenerated() - 1);
-		
+		getStructures().get(key).setChunksLeftToBeGenerated(getStructures().get(key).getChunksLeftToBeGenerated() - 1);
+
 		// If that was the last chunk, delete the structure, no longer needed
 		if (getStructures().get(key).allChunksGenerated()) {
 			getStructures().remove(key);
@@ -159,7 +158,6 @@ public class Structures {
 					throw new RuntimeException("Overwriting structures is not allowed.");
 				}
 				structureKeys.get(x).put(y, structureKey);
-				System.out.println(x + ", " + y + " " + structure.getClass().getSimpleName() + " " + structureKey);
 			}
 		}
 		return structureKey;

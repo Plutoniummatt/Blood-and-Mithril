@@ -122,4 +122,10 @@ public class IndividualInfoWindow extends Window {
 	public boolean keyPressed(int keyCode) {
 		return false;
 	}
+
+
+	@Override
+	public Object getUniqueIdentifier() {
+		return "IndiInfoWindow" + individual.getId().getId();
+	}
 }

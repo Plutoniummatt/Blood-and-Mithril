@@ -44,8 +44,7 @@ public class Main {
 							500,
 							300,
 							true
-						),
-						"Developer"
+						)
 					);
 				}
 

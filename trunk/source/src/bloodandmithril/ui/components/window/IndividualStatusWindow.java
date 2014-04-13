@@ -146,16 +146,16 @@ public class IndividualStatusWindow extends Window {
 		if (!drawLine(truncate(vitals), 45)) {
 			return;
 		}
-		
+
 		if (identified || individual.isControllable()) {
 			if (!drawLine(truncate(Hunger.getName(individual.getState().hunger)), 65)) {
 				return;
 			}
-			
+
 			if (!drawLine(truncate(Thirst.getName(individual.getState().thirst)), 85)) {
 				return;
 			}
-			
+
 			if (!drawLine(truncate(Exhaustion.getName(individual.getState().stamina)), 105)) {
 				return;
 			}
@@ -177,7 +177,7 @@ public class IndividualStatusWindow extends Window {
 		} else if (!drawLine("Unknown", 155)) {
 			return;
 		}
-		
+
 		identify.render(x + width - 50, y - 37, !Domain.getSelectedIndividuals().isEmpty() && isActive() && !individual.isControllable(), getAlpha());
 	}
 
@@ -301,5 +301,11 @@ public class IndividualStatusWindow extends Window {
 			);
 		}
 		listings.add(map);
+	}
+
+
+	@Override
+	public Object getUniqueIdentifier() {
+		return "statusWindow" + individual.getId().getId();
 	}
 }

@@ -10,7 +10,6 @@ import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -63,19 +62,8 @@ public class ChickenLeg extends Item implements Consumable {
 
 
 	@Override
-	public Window getInfoWindow() {
-		return new MessageWindow(
-			"A chicken leg, this is dark meat and is the lower part of the leg.",
-			Color.ORANGE,
-			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY(),
-			350,
-			200,
-			"Chicken leg",
-			true,
-			100,
-			100
-		);
+	public String getDescription() {
+		return "A chicken leg, this is dark meat and is the lower part of the leg.";
 	}
 
 

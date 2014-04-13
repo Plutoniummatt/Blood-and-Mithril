@@ -60,7 +60,7 @@ public class GlassBottle extends LiquidContainer {
 
 
 	@Override
-	protected String getContainerDescription() {
+	public String getDescription() {
 		return "A bottle made from glass";
 	}
 

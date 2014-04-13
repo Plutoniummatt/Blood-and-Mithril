@@ -24,28 +24,28 @@ public class TerrainGenerator {
 	/**
 	 * Generates a chunk, based on passed in chunk coordinates
 	 */
-	public void generate(int x, int y, World world) {
+	public void generate(int chunkX, int chunkY, World world) {
 		// Makes arrays of tiles to work on. both for foreground and background
 		Tile[][] fTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
 		Tile[][] bTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
 
 		// If a structure does not exist where the surface should be, generate the surface structure.
-		generateSurface(x, world);
+		generateSurface(chunkX, world);
 
 		// If a structure still does not exist at the chunk coordinates being generated, it must be outside of the surface structure boundaries.
-		generateAboveAndBelowSurface(x, y, world);
+		generateAboveAndBelowSurface(chunkX, chunkY, world);
 
 		// Populate the tile arrays.
-		populateTileArrays(x, y, fTiles, bTiles, world.getTopography().getStructures());
+		populateTileArrays(chunkX, chunkY, fTiles, bTiles, world.getTopography().getStructures());
 		
 		// If the structure has finished generating, we can delete it from the StructureMap, otherwise, decrement the number of chunks left to be generated on the structure
-		if (world.getTopography().getStructures().structureExists(x, y, true)) {
-			world.getTopography().getStructures().deleteChunkFromStructureKeyMapAndCheckIfStructureCanBeDeleted(x, y, true);
+		if (world.getTopography().getStructures().structureExists(chunkX, chunkY, true)) {
+			world.getTopography().getStructures().deleteChunkFromStructureKeyMapAndCheckIfStructureCanBeDeleted(chunkX, chunkY, true);
 		}
 
 		// Create the chunk and put it in the ChunkMap.
-		Chunk newChunk = new Chunk(fTiles, bTiles, x, y, world.getWorldId());
-		world.getTopography().getChunkMap().addChunk(x, y, newChunk);
+		Chunk newChunk = new Chunk(fTiles, bTiles, chunkX, chunkY, world.getWorldId());
+		world.getTopography().getChunkMap().addChunk(chunkX, chunkY, newChunk);
 	}
 
 

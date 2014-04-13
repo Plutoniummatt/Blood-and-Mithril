@@ -149,13 +149,7 @@ public class TradeWindow extends Window implements Refreshable {
 			TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
 
 			if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
-				for (Component component : UserInterface.layeredComponents) {
-					if (component instanceof InventoryWindow) {
-						((InventoryWindow) component).refresh();
-					} else if (component instanceof TradeWindow) {
-						((TradeWindow) component).refresh();
-					}
-				}
+				UserInterface.refreshRefreshableWindows();
 			}
 
 			proposerItemsToTrade.clear();
@@ -530,23 +524,23 @@ public class TradeWindow extends Window implements Refreshable {
 		int lineWidth = 23;
 
 		proposerPanel.x = x;
-		proposerPanel.y = y - (proposerItemsToTrade.isEmpty() ? 0 : ((1 + min(5,proposerItemsToTrade.size())) * lineWidth));
-		proposerPanel.height = height - 50 - (proposerItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposerItemsToTrade.size())) * lineWidth));
+		proposerPanel.y = y - (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5,proposerItemsToTrade.size())) * lineWidth);
+		proposerPanel.height = height - 50 - (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposerItemsToTrade.size())) * lineWidth);
 		proposerPanel.width = width / 2 - 10;
 
 		proposeePanel.x = x + width / 2 + 10;
-		proposeePanel.y = y - (proposeeItemsToTrade.isEmpty() ? 0 : ((1 + min(5,proposeeItemsToTrade.size())) * lineWidth));
-		proposeePanel.height = height - 50 - (proposeeItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposeeItemsToTrade.size())) * lineWidth));
+		proposeePanel.y = y - (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5,proposeeItemsToTrade.size())) * lineWidth);
+		proposeePanel.height = height - 50 - (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposeeItemsToTrade.size())) * lineWidth);
 		proposeePanel.width = width / 2 - 10;
 
 		proposerTradingPanel.x = x;
 		proposerTradingPanel.y = y;
-		proposerTradingPanel.height = 50 + (proposerItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposerItemsToTrade.size())) * lineWidth));
+		proposerTradingPanel.height = 50 + (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposerItemsToTrade.size())) * lineWidth);
 		proposerTradingPanel.width = width / 2 - 10;
 
 		proposeeTradingPanel.x = x + width / 2 + 10;
 		proposeeTradingPanel.y = y;
-		proposeeTradingPanel.height = 50 + (proposeeItemsToTrade.isEmpty() ? 0 : ((1 + min(5, proposeeItemsToTrade.size())) * lineWidth));
+		proposeeTradingPanel.height = 50 + (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposeeItemsToTrade.size())) * lineWidth);
 		proposeeTradingPanel.width = width / 2 - 10;
 
 		proposerPanel.render();
@@ -606,5 +600,11 @@ public class TradeWindow extends Window implements Refreshable {
 	@Override
 	public boolean keyPressed(int keyCode) {
 		return false;
+	}
+
+
+	@Override
+	public Object getUniqueIdentifier() {
+		return "tradeWindow" + (proposer.hashCode() + proposee.hashCode());
 	}
 }

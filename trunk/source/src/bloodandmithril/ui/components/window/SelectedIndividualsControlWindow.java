@@ -81,13 +81,13 @@ public class SelectedIndividualsControlWindow extends Window {
 			return individual.isWalking() ? 0 : 1;
 		}).sum() > 0;
 
-		boolean buttonsActive = UserInterface.layeredComponents.getLast() == this;
+		boolean buttonsActive = UserInterface.layeredComponents.isEmpty() ? false : UserInterface.layeredComponents.getLast() == this;
 		boolean selected = Domain.getSelectedIndividuals().size() > 0;
 
 		buttons.get(0).text = someoneRunning ? "Walk" : "Run";
-		buttons.get(0).setIdleColor(selected ? (someoneRunning ? Color.GREEN : Color.ORANGE) : Colors.UI_GRAY);
-		buttons.get(0).setOverColor(selected ? (buttonsActive ? (someoneRunning ? Color.ORANGE : Color.GREEN) : (someoneRunning ? Color.GREEN : Color.ORANGE)) : Colors.UI_GRAY);
-		buttons.get(0).setDownColor(selected ? (buttonsActive ? Color.WHITE : (someoneRunning ? Color.GREEN : Color.ORANGE)) : Colors.UI_GRAY);
+		buttons.get(0).setIdleColor(selected ? someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
+		buttons.get(0).setOverColor(selected ? buttonsActive ? someoneRunning ? Color.ORANGE : Color.GREEN : someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
+		buttons.get(0).setDownColor(selected ? buttonsActive ? Color.WHITE : someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
 		buttons.get(0).render(x + 27, y - 20, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
 	}
 
@@ -123,5 +123,11 @@ public class SelectedIndividualsControlWindow extends Window {
 
 	@Override
 	public void leftClickReleased() {
+	}
+
+
+	@Override
+	public Object getUniqueIdentifier() {
+		return getClass();
 	}
 }

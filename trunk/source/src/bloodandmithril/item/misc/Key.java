@@ -43,12 +43,6 @@ public abstract class Key extends Item {
 	}
 
 
-	/**
-	 * @return the String description of the {@link Key}
-	 */
-	protected abstract String getDescription();
-
-
 	@Override
 	public Item combust(int heatLevel, Map<Item, Integer> with) {
 		return this;

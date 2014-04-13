@@ -41,9 +41,8 @@ import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.LockUnlockContainer.LockUnlock;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.ai.task.MineTile.Mine;
-import bloodandmithril.character.ai.task.Smith;
-import bloodandmithril.character.ai.task.Smith.BeginSmithing;
-import bloodandmithril.character.ai.task.Smith.Blacksmithing;
+import bloodandmithril.character.ai.task.OpenCraftingStation;
+import bloodandmithril.character.ai.task.OpenCraftingStation.OpenCraftingStationWindow;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
@@ -63,8 +62,8 @@ import bloodandmithril.csi.requests.AddLightRequest;
 import bloodandmithril.csi.requests.AddLightRequest.RemoveLightNotification;
 import bloodandmithril.csi.requests.AddLightRequest.SyncLightResponse;
 import bloodandmithril.csi.requests.CSIMineTile;
-import bloodandmithril.csi.requests.CSISmith;
-import bloodandmithril.csi.requests.CSISmith.NotifyOpenAnvilWindow;
+import bloodandmithril.csi.requests.CSIOpenCraftingStation;
+import bloodandmithril.csi.requests.CSIOpenCraftingStation.NotifyOpenCraftingStationWindow;
 import bloodandmithril.csi.requests.CSITradeWith;
 import bloodandmithril.csi.requests.ChangeFactionControlPassword;
 import bloodandmithril.csi.requests.ChangeFactionControlPassword.RefreshFactionWindow;
@@ -152,6 +151,7 @@ import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
+import bloodandmithril.prop.crafting.CraftingStation;
 import bloodandmithril.prop.furniture.Anvil;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.FelberryBush;
@@ -365,15 +365,15 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(CraftingStation.class);
+		kryo.register(Anvil.class);
 		kryo.register(SteelIngot.class);
 		kryo.register(IronIngot.class);
 		kryo.register(Hematite.class);
-		kryo.register(NotifyOpenAnvilWindow.class);
-		kryo.register(Blacksmithing.class);
-		kryo.register(BeginSmithing.class);
-		kryo.register(CSISmith.class);
-		kryo.register(Smith.class);
-		kryo.register(Anvil.class);
+		kryo.register(NotifyOpenCraftingStationWindow.class);
+		kryo.register(OpenCraftingStationWindow.class);
+		kryo.register(CSIOpenCraftingStation.class);
+		kryo.register(OpenCraftingStation.class);
 		kryo.register(Milk.class);
 		kryo.register(CrudeOil.class);
 		kryo.register(Acid.class);
@@ -567,8 +567,8 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void sendSmithRequest(Individual individual, Anvil anvil) {
-			client.sendTCP(new CSISmith(individual.getId().getId(), anvil.id, client.getID()));
+		public static synchronized void sendOpenCraftingStationRequest(Individual individual, CraftingStation craftingStation) {
+			client.sendTCP(new CSIOpenCraftingStation(individual.getId().getId(), craftingStation.id, client.getID()));
 			Logger.networkDebug("Sending smith request", LogLevel.DEBUG);
 		}
 
@@ -760,12 +760,12 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyOpenAnvilWindow(int smithId, int anvilId, int connectionId) {
+		public static synchronized void notifyOpenCraftingStationWindow(int individualId, int craftingStationId, int connectionId) {
 			sendNotification(
 				connectionId,
 				true,
 				true,
-				new CSISmith.NotifyOpenAnvilWindow(smithId, anvilId)
+				new CSIOpenCraftingStation.NotifyOpenCraftingStationWindow(individualId, craftingStationId)
 			);
 		}
 

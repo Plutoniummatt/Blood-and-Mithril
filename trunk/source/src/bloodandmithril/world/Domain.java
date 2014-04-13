@@ -127,7 +127,7 @@ public class Domain {
 	 * Fluid update method
 	 */
 	private void updateFluids(float delta) {
-		if (!BloodAndMithrilClient.paused && delta < BloodAndMithrilClient.LAG_SPIKE_TOLERANCE && !GameSaver.isSaving()) {
+		if (!BloodAndMithrilClient.paused && !GameSaver.isSaving()) {
 			updateFluids();
 		}
 	}

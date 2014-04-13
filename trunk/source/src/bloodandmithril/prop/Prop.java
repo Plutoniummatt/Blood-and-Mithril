@@ -1,6 +1,5 @@
 package bloodandmithril.prop;
 
-
 import java.io.Serializable;
 
 import bloodandmithril.persistence.ParameterPersistenceService;

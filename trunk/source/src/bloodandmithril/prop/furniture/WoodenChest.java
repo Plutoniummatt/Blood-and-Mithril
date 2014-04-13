@@ -273,6 +273,16 @@ public class WoodenChest extends Construction implements Container {
 
 
 	@Override
+	public int has(Item item) {
+		if (getConstructionProgress() == 1f) {
+			return container.has(item);
+		} else {
+			return 0;
+		}
+	}
+
+
+	@Override
 	public boolean lock(Item with) {
 		if (getConstructionProgress() == 1f) {
 			return container.lock(with);

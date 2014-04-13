@@ -98,4 +98,10 @@ public class TextInputWindow extends Window {
 
 		return panel.keyPressed(keyCode);
 	}
+
+
+	@Override
+	public Object getUniqueIdentifier() {
+		return hashCode();
+	}
 }

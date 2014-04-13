@@ -74,9 +74,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	/** The maximum spread of individuals when going to location */
 	private static final float INDIVIDUAL_SPREAD = 600f;
 
-	/** See {@link #update(float)}, if delta is greater than this value, skip the update frame */
-	public static final float LAG_SPIKE_TOLERANCE = 0.1f;
-
 	/** The tolerance for double clicking */
 	private static final float DOUBLE_CLICK_TIME = 0.25f;
 
@@ -191,6 +188,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public void render() {
+		cameraMovement();
 		if (!GameSaver.isSaving()) {
 			SoundService.update(Gdx.graphics.getDeltaTime());
 			Shaders.updateShaderUniforms();
@@ -528,10 +526,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		// Do not update if game is paused
 		// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-		if (!paused && delta < LAG_SPIKE_TOLERANCE && !GameSaver.isSaving() && domain != null) {
+		if (!paused && !GameSaver.isSaving() && domain != null) {
 			domain.update((int) cam.position.x, (int) cam.position.y);
 		}
-		cameraMovement();
 
 		leftDoubleClickTimer += delta;
 		rightDoubleClickTimer += delta;

@@ -2,12 +2,7 @@ package bloodandmithril.item.material.metal;
 
 import java.util.Map;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
-import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.ui.components.window.Window;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * Lump of Steel
@@ -38,19 +33,8 @@ public class SteelIngot extends Item {
 
 
 	@Override
-	public Window getInfoWindow() {
-		return new MessageWindow(
-			"An ingot is a material, usually metal, that is cast into a shape suitable for further processing, this one is made from Steel.",
-			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			350,
-			200,
-			"Iron ingot",
-			true,
-			100,
-			100
-		);
+	public String getDescription() {
+		return "An ingot is a material, usually metal, that is cast into a shape suitable for further processing, this one is made from Steel.";
 	}
 
 

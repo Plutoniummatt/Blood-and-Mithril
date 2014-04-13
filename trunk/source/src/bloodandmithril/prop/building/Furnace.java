@@ -7,7 +7,6 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
@@ -227,21 +226,21 @@ public class Furnace extends Construction implements Container {
 	 */
 	private synchronized void smeltItems() {
 		synchronized(container) {
-			Set<Entry<Item, Integer>> existing = newHashMap(container.getInventory()).entrySet();
+			Map<Item, Integer> existing = newHashMap(container.getInventory());
 			container.getInventory().clear();
 
 
-			for (Entry<Item, Integer> entry : existing) {
+			for (Entry<Item, Integer> entry : existing.entrySet()) {
 				for (int i = 0; i < entry.getValue(); i++) {
 					if (entry.getKey() instanceof Coal) {
 						if (isBurning()) {
 							container.giveItem(new Coal());
 						} else {
-							container.giveItem(entry.getKey().combust(HEAT_LEVEL, newHashMap(getInventory())));
+							container.giveItem(entry.getKey().combust(HEAT_LEVEL, existing));
 						}
 					} else {
 						if (smelting) {
-							container.giveItem(entry.getKey().combust(HEAT_LEVEL, newHashMap(getInventory())));
+							container.giveItem(entry.getKey().combust(HEAT_LEVEL, existing));
 						} else {
 							container.giveItem(entry.getKey());
 						}
@@ -416,5 +415,15 @@ public class Furnace extends Construction implements Container {
 	@Override
 	public boolean isLockable() {
 		return false;
+	}
+
+
+	@Override
+	public int has(Item item) {
+		if (getConstructionProgress() == 1f) {
+			return container.has(item);
+		} else {
+			return super.has(item);
+		}
 	}
 }

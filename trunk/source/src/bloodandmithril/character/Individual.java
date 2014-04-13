@@ -54,6 +54,7 @@ import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.world.Domain;
@@ -286,17 +287,18 @@ public abstract class Individual implements Equipper, Serializable {
 		ai.setToManual();
 		selectedByClient.add(clientId);
 
-		UserInterface.addLayeredComponentUnique(
-			new SelectedIndividualsControlWindow(
-				BloodAndMithrilClient.WIDTH - 170,
-				300,
-				150,
-				250,
-				"Actions",
-				true
-			),
-			"Actions"
-		);
+		if (ClientServerInterface.isClient()) {
+			UserInterface.addLayeredComponentUnique(
+				new SelectedIndividualsControlWindow(
+					BloodAndMithrilClient.WIDTH - 170,
+					300,
+					150,
+					250,
+					"Actions",
+					true
+				)
+			);
+		}
 	}
 
 
@@ -663,7 +665,7 @@ public abstract class Individual implements Equipper, Serializable {
 					true,
 					250, 200
 				);
-				UserInterface.addLayeredComponentUnique(individualInfoWindow, id.getSimpleName() + " - Info");
+				UserInterface.addLayeredComponentUnique(individualInfoWindow);
 			},
 			Color.WHITE,
 			getToolTipTextColor(),
@@ -760,7 +762,7 @@ public abstract class Individual implements Equipper, Serializable {
 					true,
 					150, 300
 				);
-				UserInterface.addLayeredComponentUnique(inventoryWindow, id.getSimpleName() + " - Inventory");
+				UserInterface.addLayeredComponentUnique(inventoryWindow);
 			},
 			Color.WHITE,
 			getToolTipTextColor(),
@@ -831,9 +833,6 @@ public abstract class Individual implements Equipper, Serializable {
 			null
 		);
 
-
-
-
 		if (isControllable()) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
 		}
@@ -853,9 +852,29 @@ public abstract class Individual implements Equipper, Serializable {
 
 
 		if (!Domain.getSelectedIndividuals().isEmpty() &&
-			 Domain.getSelectedIndividuals().size() == 1 &&
-			!Domain.getSelectedIndividuals().contains(thisIndividual)) {
+			!(Domain.getSelectedIndividuals().size() == 1 && Domain.getSelectedIndividuals().contains(thisIndividual))) {
 			contextMenuToReturn.addMenuItem(tradeMenuItem);
+
+			if (Domain.getSelectedIndividuals().size() > 1) {
+				final ContextMenu contextMenu = new ContextMenu(0, 0,
+					new MenuItem(
+						"You have multiple individuals selected",
+						() -> {},
+						Colors.UI_GRAY,
+						Colors.UI_GRAY,
+						Colors.UI_GRAY,
+						null
+					)
+				);
+				tradeMenuItem.menu = contextMenu;
+				tradeMenuItem.button.setTask(() -> {
+					contextMenu.x = getMouseScreenX();
+					contextMenu.y = getMouseScreenY();
+				});
+				tradeMenuItem.button.setIdleColor(Colors.UI_GRAY);
+				tradeMenuItem.button.setOverColor(Colors.UI_GRAY);
+				tradeMenuItem.button.setDownColor(Colors.UI_GRAY);
+			}
 		}
 
 		for (MenuItem item : internalGetContextMenuItems()) {
@@ -1080,6 +1099,12 @@ public abstract class Individual implements Equipper, Serializable {
 	public boolean lock(Item with) {
 		// Do nothing
 		return false;
+	}
+
+
+	@Override
+	public int has(Item item) {
+		return equipper.has(item);
 	}
 
 

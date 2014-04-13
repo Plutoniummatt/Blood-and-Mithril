@@ -241,4 +241,10 @@ public class FactionsWindow extends Window {
 		}
 		return map;
 	}
+
+
+	@Override
+	public Object getUniqueIdentifier() {
+		return getClass();
+	}
 }

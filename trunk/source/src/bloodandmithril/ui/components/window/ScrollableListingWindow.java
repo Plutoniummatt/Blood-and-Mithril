@@ -19,6 +19,7 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Task;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Function;
 
 /**
  * A window that simply displays a {@link ScrollableListingPanel}
@@ -31,12 +32,14 @@ public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends
 	 * The {@link ScrollableListingPanel} of this {@link ScrollableListingWindow}.
 	 */
 	private ScrollableListingPanel<T, A> listing;
+	private Function<T, String> displayFunction;
 
 	/**
 	 * Constructor
 	 */
-	public ScrollableListingWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, Map<T, A> map) {
+	public ScrollableListingWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, Map<T, A> map, Function<T, String> displayFunction) {
 		super(x, y, length, height, title, active, minLength, minHeight, minimizable, resizeable);
+		this.displayFunction = displayFunction;
 		buildListing(map);
 	}
 
@@ -115,7 +118,7 @@ public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends
 				new ListingMenuItem<T>(
 					tEntry.getKey(),
 					new Button(
-						tEntry.getKey().toString(),
+						displayFunction.apply(tEntry.getKey()),
 						Fonts.defaultFont,
 						0,
 						0,

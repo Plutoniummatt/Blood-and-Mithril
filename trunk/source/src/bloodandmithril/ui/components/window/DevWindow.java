@@ -34,6 +34,7 @@ import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
+import bloodandmithril.item.material.metal.SteelIngot;
 import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
@@ -154,6 +155,9 @@ public class DevWindow extends Window {
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(new Carrot());
 			}
+			for (int i = 5; i > 0; i--) {
+				elf.giveItem(new SteelIngot());
+			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(new Hematite());
 			}
@@ -210,6 +214,10 @@ public class DevWindow extends Window {
 
 		if (keyCode == Input.Keys.P) {
 			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickTile.class);
+		}
+
+		if (keyCode == Input.Keys.Z) {
+			Domain.getActiveWorld().getTopography().loadOrGenerateChunk(1, 1);
 		}
 
 		if (keyCode == Input.Keys.J) {
@@ -578,5 +586,11 @@ public class DevWindow extends Window {
 		);
 
 		return newHashMap;
+	}
+
+
+	@Override
+	public Object getUniqueIdentifier() {
+		return getClass();
 	}
 }
