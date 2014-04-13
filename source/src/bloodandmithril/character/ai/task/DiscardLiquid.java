@@ -88,7 +88,7 @@ public class DiscardLiquid extends CompositeAITask {
 						LiquidContainer newBottle = container.clone();
 						Map<Class<? extends Liquid>, Float> subtracted = newBottle.subtract(amount);
 						individual.giveItem(newBottle);
-						Domain.getWorld((individual).getWorldId()).getTopography().getFluids().put(
+						Domain.getWorld(individual.getWorldId()).getTopography().getFluids().put(
 							Topography.convertToWorldTileCoord(location.x),
 							Topography.convertToWorldTileCoord(location.y),
 							new Fluid(subtracted)
@@ -98,7 +98,7 @@ public class DiscardLiquid extends CompositeAITask {
 							if (isClient()) {
 								UserInterface.refreshRefreshableWindows();
 							} else {
-								ClientServerInterface.SendRequest.sendRefreshItemWindowsRequest();
+								ClientServerInterface.SendNotification.notifyRefreshWindows();
 							}
 						}
 

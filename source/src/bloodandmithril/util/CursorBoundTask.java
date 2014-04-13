@@ -1,7 +1,5 @@
-package bloodandmithril.core;
+package bloodandmithril.util;
 
-import bloodandmithril.util.JITTask;
-import bloodandmithril.util.Task;
 
 /**
  * Binds a {@link Task} to the cursor.
