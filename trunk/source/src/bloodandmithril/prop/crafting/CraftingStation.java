@@ -46,8 +46,8 @@ public abstract class CraftingStation extends Construction {
 	/**
 	 * Constructor
 	 */
-	protected CraftingStation(float x, float y, int width, int height) {
-		super(x, y, width, height, true, 0f);
+	protected CraftingStation(float x, float y, int width, int height, float constructionRate) {
+		super(x, y, width, height, true, constructionRate);
 	}
 
 
@@ -57,14 +57,27 @@ public abstract class CraftingStation extends Construction {
 	/** Returns the string description of this {@link CraftingStation} */
 	protected abstract String getDescription();
 
-	/** Returns the string title of this {@link CraftingStation} */
-	public abstract String getTitle();
-
 	/** Returns the verb that describes the action of this {@link CraftingStation} */
 	public abstract String getAction();
 
 	/** Returns the list of {@link Craftable} {@link Item}s */
 	public abstract List<Item> getCraftables();
+
+
+	/**
+	 * @return true by default, override for custom functions
+	 */
+	public boolean customCanCraft() {
+		return true;
+	}
+
+
+	/**
+	 * @return The string message to display indicating the reason why something can not be crafted
+	 */
+	public String getCustomMessage() {
+		return "";
+	}
 
 
 	@Override
@@ -109,6 +122,13 @@ public abstract class CraftingStation extends Construction {
 			)
 		);
 
+		addCraftMenuItem(menu);
+
+		return menu;
+	}
+
+
+	protected void addCraftMenuItem(ContextMenu menu) {
 		if (Domain.getSelectedIndividuals().size() > 0) {
 			final Individual selected = Domain.getSelectedIndividuals().iterator().next();
 			menu.addMenuItem(
@@ -133,8 +153,6 @@ public abstract class CraftingStation extends Construction {
 				)
 			);
 		}
-
-		return menu;
 	}
 
 
@@ -170,7 +188,16 @@ public abstract class CraftingStation extends Construction {
 	}
 
 
+	/**
+	 * Make progress on the crafting of some {@link Craftable}
+	 *
+	 * @return whether or not the crafting task should continue.
+	 */
 	public synchronized boolean craft(Item item, Individual individual, float aiTaskDelay) {
+		if (!customCanCraft()) {
+			return false;
+		}
+
 		if (occupiedBy == null) {
 			occupiedBy = individual.getId().getId();
 		}
@@ -204,6 +231,7 @@ public abstract class CraftingStation extends Construction {
 			}
 			return true;
 		}
+
 		return false;
 	}
 

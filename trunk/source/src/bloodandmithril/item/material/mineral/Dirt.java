@@ -1,50 +1,47 @@
-package bloodandmithril.item.material.brick;
+package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 /**
- * {@link Item} representing {@link YellowBrickTile}
+ * Just a pile of dirt
  *
  * @author Matt
  */
-public class YellowBrick extends Item {
-	private static final long serialVersionUID = -7756119539482746265L;
+public class Dirt extends Item {
+	private static final long serialVersionUID = 6522655675894787083L;
 
 	/**
 	 * Constructor
 	 */
-	public YellowBrick() {
-		super(10f, false, ItemValues.YELLOWBRICK);
+	public Dirt() {
+		super(0.5f, false, ItemValues.DIRT);
 	}
 
 
 	@Override
 	public String getSingular(boolean firstCap) {
-		if (firstCap) {
-			return "Yellow bricks";
-		}
-		return "yellow bricks";
+		return (firstCap ? "D" : "d") + "irt";
 	}
+
 
 	@Override
 	public String getPlural(boolean firstCap) {
-		return getSingular(firstCap);
+		return (firstCap ? "D" : "d") + "irt";
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "Yellow colored bricks";
+		return "Just a pile of dirt";
 	}
 
 
 	@Override
 	public boolean sameAs(Item other) {
-		return other instanceof YellowBrick;
+		return other instanceof Dirt;
 	}
 
 
@@ -56,6 +53,5 @@ public class YellowBrick extends Item {
 
 	@Override
 	public void render() {
-
 	}
 }

@@ -11,7 +11,7 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 import bloodandmithril.world.topography.tile.tiles.glass.ClearGlassTile;
-import bloodandmithril.world.topography.tile.tiles.sedimentary.YellowSandTile;
+import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
 import bloodandmithril.world.topography.tile.tiles.soil.DryDirtTile;
 import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
@@ -118,7 +118,7 @@ public abstract class Tile implements Serializable {
 	 *  <p> 2		{@link DebugTile}               </p>
 	 *  <p> 3		{@link StandardSoilTile}        </p>
 	 *  <p> 4		{@link GraniteTile}             </p>
-	 *  <p> 5		{@link YellowSandTile}          </p>
+	 *  <p> 5		{@link SandTile}          </p>
 	 *  <p> 6		{@link SandStoneTile}           </p>
 	 *  <p> 7		{@link DryDirtTile}             </p>
 	 *  <p> 8		{@link YellowBrickTile}         </p>

@@ -221,9 +221,12 @@ public abstract class Construction extends Prop implements Container {
 
 	@Override
 	public String getContextMenuItemLabel() {
-		return getClass().getSimpleName() + (constructionProgress == 1f ? "" : " - Under construction (" + String.format("%.1f", constructionProgress * 100) + "%)");
+		return getTitle() + (constructionProgress == 1f ? "" : " - Under construction (" + String.format("%.1f", constructionProgress * 100) + "%)");
 	}
 
+
+	/** Returns the string title of this {@link Construction} */
+	public abstract String getTitle();
 
 	/** Renders this {@link Construction} based on {@link #constructionProgress} */
 	protected abstract void internalRender(float constructionProgress);

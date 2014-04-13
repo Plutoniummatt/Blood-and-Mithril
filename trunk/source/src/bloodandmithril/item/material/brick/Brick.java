@@ -1,47 +1,51 @@
-package bloodandmithril.item.material.metal;
+package bloodandmithril.item.material.brick;
 
 import java.util.Map;
 
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
+import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 /**
- * Lump of Steel
+ * {@link Item} representing {@link YellowBrickTile}
  *
  * @author Matt
  */
-public class SteelIngot extends Item {
-	private static final long serialVersionUID = -5395254759014196508L;
+public class Brick extends Item {
+	private static final long serialVersionUID = -7756119539482746265L;
 
 	/**
 	 * Constructor
 	 */
-	public SteelIngot() {
-		super(1f, false, ItemValues.STEELINGOT);
+	public Brick() {
+		super(10f, false, ItemValues.YELLOWBRICK);
 	}
 
 
 	@Override
 	public String getSingular(boolean firstCap) {
-		return (firstCap ? "S" : "s") + "teel ingot";
+		if (firstCap) {
+			return "Bricks";
+		}
+		return "bricks";
 	}
 
 
 	@Override
 	public String getPlural(boolean firstCap) {
-		return (firstCap ? "S" : "s") + "teel ingots";
+		return getSingular(firstCap);
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "An ingot is a material, usually metal, that is cast into a shape suitable for further processing, this one is made from Steel.";
+		return "Bricks, clay hardened under intense heat";
 	}
 
 
 	@Override
 	public boolean sameAs(Item other) {
-		return other instanceof SteelIngot;
+		return other instanceof Brick;
 	}
 
 

@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class WoodenChest extends Construction implements Container {
 	private static final long serialVersionUID = -8935044324226731703L;
+	public static final String description = "A chest constructed mostly from wood, used to store items";
 
 	/** {@link TextureRegion} of the {@link WoodenChest} */
 	public static TextureRegion woodenChest;
@@ -68,7 +69,7 @@ public class WoodenChest extends Construction implements Container {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new MessageWindow(
-							"A chest constructed mostly from wood, used to store items",
+							description,
 							Color.ORANGE,
 							BloodAndMithrilClient.WIDTH/2 - 250,
 							BloodAndMithrilClient.HEIGHT/2 + 125,
@@ -315,5 +316,11 @@ public class WoodenChest extends Construction implements Container {
 		} else {
 			return false;
 		}
+	}
+
+
+	@Override
+	public String getTitle() {
+		return "Wooden chest";
 	}
 }

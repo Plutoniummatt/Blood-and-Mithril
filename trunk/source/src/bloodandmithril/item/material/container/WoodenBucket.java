@@ -5,9 +5,12 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import bloodandmithril.character.Individual;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
+import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.material.plant.Pine;
 
 import com.google.common.collect.Maps;
 
@@ -16,7 +19,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
-public class WoodenBucket extends LiquidContainer {
+public class WoodenBucket extends LiquidContainer implements Craftable {
 	private static final long serialVersionUID = -4162891941797527242L;
 
 
@@ -44,7 +47,7 @@ public class WoodenBucket extends LiquidContainer {
 
 	@Override
 	protected String getCotainerTitle() {
-		return "Bucket";
+		return "Wooden Bucket";
 	}
 
 
@@ -61,13 +64,18 @@ public class WoodenBucket extends LiquidContainer {
 			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";
 		}
 
-		return (firstCap ? "B" : "b") + "ucket" + content;
+		return (firstCap ? "W" : "w") + "ooden bucket" + content;
 	}
 
 
 	@Override
 	public String getPlural(boolean firstCap) {
-		return (firstCap ? "B" : "b") + "uckets";
+		String content = "";
+		if (!containedLiquids.isEmpty()) {
+			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";
+		}
+
+		return (firstCap ? "W" : "w") + "ooden buckets" + content;
 	}
 
 
@@ -79,5 +87,25 @@ public class WoodenBucket extends LiquidContainer {
 
 	@Override
 	public void render() {
+	}
+
+
+	@Override
+	public boolean canBeCraftedBy(Individual individual) {
+		return individual.getSkills().getCarpentry() >= 0;
+	}
+
+
+	@Override
+	public Map<Item, Integer> getRequiredMaterials() {
+		Map<Item, Integer> map = Maps.newHashMap();
+		map.put(new Pine(), 2);
+		return map;
+	}
+
+
+	@Override
+	public float getCraftingDuration() {
+		return 10f;
 	}
 }

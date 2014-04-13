@@ -32,7 +32,6 @@ public class YellowBrickPlatform extends BrickTile {
 
 	@Override
 	public Item mine() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
