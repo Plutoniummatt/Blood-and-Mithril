@@ -43,7 +43,7 @@ public class Anvil extends CraftingStation {
 
 
 	@Override
-	protected String getTitle() {
+	public String getTitle() {
 		return "Anvil";
 	}
 

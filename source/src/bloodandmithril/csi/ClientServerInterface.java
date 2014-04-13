@@ -32,6 +32,8 @@ import bloodandmithril.character.ai.task.Attack.Strike;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.ai.task.Construct.Constructing;
+import bloodandmithril.character.ai.task.Craft;
+import bloodandmithril.character.ai.task.Craft.Crafting;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Harvest;
@@ -89,6 +91,8 @@ import bloodandmithril.csi.requests.Ping;
 import bloodandmithril.csi.requests.Ping.Pong;
 import bloodandmithril.csi.requests.RequestClientList;
 import bloodandmithril.csi.requests.RequestClientList.RequestClientListResponse;
+import bloodandmithril.csi.requests.RequestStartCrafting;
+import bloodandmithril.csi.requests.RequestTakeItemFromCraftingStation;
 import bloodandmithril.csi.requests.SendAttackRequest;
 import bloodandmithril.csi.requests.SendChatMessage;
 import bloodandmithril.csi.requests.SendChatMessage.Message;
@@ -365,6 +369,10 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Crafting.class);
+		kryo.register(Craft.class);
+		kryo.register(RequestStartCrafting.class);
+		kryo.register(RequestTakeItemFromCraftingStation.class);
 		kryo.register(CraftingStation.class);
 		kryo.register(Anvil.class);
 		kryo.register(SteelIngot.class);
@@ -564,6 +572,18 @@ public class ClientServerInterface {
 		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
+		}
+
+
+		public static synchronized void sendStartCraftingRequest(Individual individual, CraftingStation craftingStation, Item item) {
+			client.sendTCP(new RequestStartCrafting(individual, craftingStation, item));
+			Logger.networkDebug("Sending start crafting item request", LogLevel.DEBUG);
+		}
+
+
+		public static synchronized void sendTakeItemFromCraftingStationRequest(CraftingStation craftingStation, Individual individual) {
+			client.sendTCP(new RequestTakeItemFromCraftingStation(individual, craftingStation));
+			Logger.networkDebug("Sending take item from crafting station request", LogLevel.DEBUG);
 		}
 
 
@@ -814,7 +834,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyRefreshItemWindows() {
+		public static synchronized void notifyRefreshWindows() {
 			sendNotification(
 				-1,
 				true,

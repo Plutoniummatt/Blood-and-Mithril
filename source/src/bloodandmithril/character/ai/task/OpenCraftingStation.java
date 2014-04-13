@@ -132,7 +132,7 @@ public class OpenCraftingStation extends CompositeAITask {
 			new CraftingStationWindow(
 				BloodAndMithrilClient.WIDTH/2 - 375,
 				BloodAndMithrilClient.HEIGHT/2 + 150,
-				individual.getId().getFirstName() + " interacting with anvil",
+				individual.getId().getFirstName() + " interacting with " + craftingStation.getTitle(),
 				individual,
 				craftingStation
 			)
