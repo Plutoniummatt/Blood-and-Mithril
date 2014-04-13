@@ -401,6 +401,8 @@ public class InventoryWindow extends Window implements Refreshable {
 											return "Discard contents";
 										}
 									});
+
+									setClosing(true);
 								} catch (NumberFormatException e) {
 									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 								}
