@@ -19,6 +19,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.RequiredMaterialsWindow;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 
@@ -147,23 +148,28 @@ public abstract class Construction extends Prop implements Container {
 			);
 
 
-			if (Domain.getSelectedIndividuals().size() == 1) {
+			if (Domain.getSelectedIndividuals().size() > 0) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
 				MenuItem openTransferItemsWindow = new MenuItem(
 					"Transfer materials for construction",
 					() -> {
-						if (ClientServerInterface.isServer()) {
-							selected.getAI().setCurrentTask(
-								new TradeWith(selected, this)
-							);
-						} else {
-							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
+						if (Domain.getSelectedIndividuals().size() == 1) {
+							if (ClientServerInterface.isServer()) {
+								selected.getAI().setCurrentTask(
+										new TradeWith(selected, this)
+										);
+							} else {
+								ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
+							}
 						}
 					},
-					Color.WHITE,
-					Color.GREEN,
-					Color.GRAY,
-					null
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+					new ContextMenu(0, 0, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+					() -> {
+						return Domain.getSelectedIndividuals().size() > 1;
+					}
 				);
 
 				menu.addMenuItem(openTransferItemsWindow);
@@ -177,7 +183,7 @@ public abstract class Construction extends Prop implements Container {
 							}
 
 							if (ClientServerInterface.isServer()) {
-								selected.getAI().setCurrentTask(new Construct((selected), this));
+								selected.getAI().setCurrentTask(new Construct(selected, this));
 							} else {
 								ClientServerInterface.SendRequest.sendConstructRequest(selected.getId().getId(), id);
 							}
