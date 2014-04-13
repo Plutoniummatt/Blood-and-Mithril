@@ -1,11 +1,10 @@
-package bloodandmithril.prop.furniture;
+package bloodandmithril.prop.crafting;
 
 import java.util.List;
 
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
-import bloodandmithril.prop.crafting.CraftingStation;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Lists;

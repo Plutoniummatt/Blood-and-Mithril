@@ -61,6 +61,7 @@ import com.google.common.collect.Sets;
  * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
  * <b><p> Generation                                                                                     </b></p>
  * <b><p> Stockpiling                                              										 </b></p>
+ * <b><p> Crafting                                              										 </b></p>
  *
  * DONE
  *
