@@ -667,6 +667,18 @@ public class UserInterface {
 	}
 
 
+	/**
+	 * Called when the scroll wheel is scrolled.
+	 */
+	public static void scrolled(int amount) {
+		for (Component component : newArrayList(layeredComponents)) {
+			if (component.isActive()) {
+				component.scrolled(amount);
+			}
+		}
+	}
+
+
 	public static boolean keyPressed(int keyCode) {
 		if (BloodAndMithrilClient.paused) {
 			return false;

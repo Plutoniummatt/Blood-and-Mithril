@@ -128,6 +128,12 @@ public class DevWindow extends Window {
 
 
 	@Override
+	public boolean scrolled(int amount) {
+		return panel.scrolled(amount);
+	}
+
+
+	@Override
 	public boolean keyPressed(int keyCode) {
 		if (keyCode == Input.Keys.E) {
 			IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 0.1f, 1f, 1f);

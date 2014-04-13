@@ -28,7 +28,6 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
-import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.JITTask;
@@ -55,8 +54,8 @@ public class InventoryWindow extends Window implements Refreshable {
 	public Equipper host;
 
 	/** The inventory listing panel, see {@link ScrollableListingPanel} */
-	private Panel equippedListingPanel;
-	private Panel inventoryListingPanel;
+	private ScrollableListingPanel<Item, Integer> equippedListingPanel;
+	private ScrollableListingPanel<Item, Integer> inventoryListingPanel;
 
 	/**
 	 * Constructor
@@ -103,6 +102,12 @@ public class InventoryWindow extends Window implements Refreshable {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		inventoryListingPanel.leftClick(copy, windowsCopy);
 		equippedListingPanel.leftClick(copy, windowsCopy);
+	}
+
+
+	@Override
+	public boolean scrolled(int amount) {
+		return equippedListingPanel.scrolled(amount) || inventoryListingPanel.scrolled(amount);
 	}
 
 

@@ -136,7 +136,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			long prevFrame = System.currentTimeMillis();
 
 			while (true) {
-				if ((System.currentTimeMillis() - prevFrame) > 16) {
+				if (System.currentTimeMillis() - prevFrame > 16) {
 					prevFrame = System.currentTimeMillis();
 					update(Gdx.graphics.getDeltaTime());
 				}
@@ -466,6 +466,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public boolean scrolled(int amount) {
+		UserInterface.scrolled(amount);
 		return false;
 	}
 

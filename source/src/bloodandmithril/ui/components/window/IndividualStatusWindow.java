@@ -233,6 +233,12 @@ public class IndividualStatusWindow extends Window {
 
 
 	@Override
+	public boolean scrolled(int amount) {
+		return conditionsPanel.scrolled(amount);
+	}
+
+
+	@Override
 	public void leftClickReleased() {
 		conditionsPanel.leftClickReleased();
 	}

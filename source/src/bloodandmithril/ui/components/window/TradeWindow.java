@@ -569,6 +569,12 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	@Override
+	public boolean scrolled(int amount) {
+		return proposerTradingPanel.scrolled(amount) || proposeeTradingPanel.scrolled(amount) || proposerPanel.scrolled(amount) || proposeePanel.scrolled(amount);
+	}
+
+
+	@Override
 	public void leftClickReleased() {
 		proposerPanel.leftClickReleased();
 		proposeePanel.leftClickReleased();

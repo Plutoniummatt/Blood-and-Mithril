@@ -51,6 +51,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 	/** Used for scroll processing */
 	private Float scrollBarButtonLocationOld = null;
 	private float mouseLocYFrozen;
+	private boolean scrollWheelActive;
 
 	/**
 	 * Constructor
@@ -89,6 +90,8 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 
 	@Override
 	public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		scrollWheelActive = isMouseWithin();
+
 		int size = 0;
 		for (Map<ListingMenuItem<T>, A> listing : listings) {
 			size += listing.size();
@@ -136,6 +139,32 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 			mouseLocYFrozen = BloodAndMithrilClient.getMouseScreenY();
 		}
 
+		return false;
+	}
+
+
+	@Override
+	public boolean scrolled(int amount) {
+		if (scrollWheelActive) {
+			startingIndex += amount;
+
+			int size = 0;
+			for (Map<ListingMenuItem<T>, A> listing : listings) {
+				size += listing.size();
+			}
+
+			if (startingIndex < 0) {
+				startingIndex = 0;
+			}
+
+			if (startingIndex > size) {
+				startingIndex = size;
+			}
+
+			scrollBarButtonLocation = (float)startingIndex / (float)size;
+
+			return true;
+		}
 		return false;
 	}
 

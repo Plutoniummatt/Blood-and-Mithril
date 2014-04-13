@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.ArrayDeque;
@@ -103,7 +105,7 @@ public abstract class Window extends Component {
 		}
 
 		if (UserInterface.contextMenus.isEmpty()) {
-			if (isWithin()) {
+			if (isMouseWithin()) {
 
 				if (closeButton.click()) {
 					setClosing(true);
@@ -154,9 +156,9 @@ public abstract class Window extends Component {
 		}
 
 		if (UserInterface.contextMenus.isEmpty()) {
-			if (isActive() && isWithin()) {
+			if (isActive() && isMouseWithin()) {
 				return true;
-			} else if (isWithin()) {
+			} else if (isMouseWithin()) {
 				windowsCopy.remove(this);
 				windowsCopy.addLast(this);
 				setActive(true);
@@ -170,24 +172,24 @@ public abstract class Window extends Component {
 	}
 
 
-	/** True if mouse is within the window */
-	private boolean isWithin() {
-		int posX = BloodAndMithrilClient.getMouseScreenX();
-		int posY = BloodAndMithrilClient.getMouseScreenY();
-		return posX > x && posX < x + width && posY < y && posY > y - height;
-	}
-
-
 	/** If mouse clicked on the header, then we're positioning */
 	private void determinePositioning() {
 		oldX = x;
 		oldY = y;
-		mx = BloodAndMithrilClient.getMouseScreenX();
-		my = BloodAndMithrilClient.getMouseScreenY();
+		mx = getMouseScreenX();
+		my = getMouseScreenY();
 
 		if (mx > x && mx < x + width && my < y && my > y - 25) {
 			positioning = true;
 		}
+	}
+
+
+	/** True if mouse is within the window */
+	private boolean isMouseWithin() {
+		int posX = getMouseScreenX();
+		int posY = getMouseScreenY();
+		return posX > x && posX < x + width && posY < y && posY > y - height;
 	}
 
 

@@ -125,6 +125,12 @@ public class ChatWindow extends Window {
 	}
 
 
+	@Override
+	public boolean scrolled(int amount) {
+		return participants.scrolled(amount);
+	}
+
+
 	public static synchronized void addMessage(Message messageToAdd) {
 		if (!messagesToDisplay.offerLast(messageToAdd)) {
 			messagesToDisplay.removeFirst();
