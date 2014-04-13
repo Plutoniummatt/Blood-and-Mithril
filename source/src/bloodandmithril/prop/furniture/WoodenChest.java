@@ -20,6 +20,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
@@ -88,23 +89,28 @@ public class WoodenChest extends Construction implements Container {
 		);
 
 		if (!isLocked()) {
-			if (Domain.getSelectedIndividuals().size() == 1) {
+			if (Domain.getSelectedIndividuals().size() > 0) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
 				MenuItem openChestMenuItem = new MenuItem(
 					"Open",
 					() -> {
-						if (ClientServerInterface.isServer()) {
-							selected.getAI().setCurrentTask(
-								new TradeWith(selected, this)
-							);
-						} else {
-							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
+						if (Domain.getSelectedIndividuals().size() == 1) {
+							if (ClientServerInterface.isServer()) {
+								selected.getAI().setCurrentTask(
+										new TradeWith(selected, this)
+										);
+							} else {
+								ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
+							}
 						}
 					},
-					Color.WHITE,
-					Color.GREEN,
-					Color.GRAY,
-					null
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+					new ContextMenu(0, 0, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+					() -> {
+						return Domain.getSelectedIndividuals().size() > 1;
+					}
 				);
 				menu.addMenuItem(openChestMenuItem);
 
@@ -112,40 +118,50 @@ public class WoodenChest extends Construction implements Container {
 					MenuItem lockChestMenuItem = new MenuItem(
 						"Lock",
 						() -> {
-							if (ClientServerInterface.isServer()) {
-								selected.getAI().setCurrentTask(
-									new LockUnlockContainer(selected, this, true)
-								);
-							} else {
-								ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, true);
+							if (Domain.getSelectedIndividuals().size() == 1) {
+								if (ClientServerInterface.isServer()) {
+									selected.getAI().setCurrentTask(
+											new LockUnlockContainer(selected, this, true)
+											);
+								} else {
+									ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, true);
+								}
 							}
 						},
-						Color.WHITE,
-						Color.GREEN,
-						Color.GRAY,
-						null
+						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+						new ContextMenu(0, 0, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+						() -> {
+							return Domain.getSelectedIndividuals().size() > 1;
+						}
 					);
 					menu.addMenuItem(lockChestMenuItem);
 				}
 			}
 		} else {
-			if (Domain.getSelectedIndividuals().size() == 1) {
+			if (Domain.getSelectedIndividuals().size() > 0) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
 				MenuItem unlockChestMenuItem = new MenuItem(
 					"Unlock",
 					() -> {
-						if (ClientServerInterface.isServer()) {
-							selected.getAI().setCurrentTask(
-								new LockUnlockContainer(selected, this, false)
-							);
-						} else {
-							ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, false);
+						if (Domain.getSelectedIndividuals().size() == 1) {
+							if (ClientServerInterface.isServer()) {
+								selected.getAI().setCurrentTask(
+										new LockUnlockContainer(selected, this, false)
+										);
+							} else {
+								ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, false);
+							}
 						}
 					},
-					Color.WHITE,
-					Color.GREEN,
-					Color.GRAY,
-					null
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+					new ContextMenu(0, 0, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+					() -> {
+						return Domain.getSelectedIndividuals().size() > 1;
+					}
 				);
 				menu.addMenuItem(unlockChestMenuItem);
 			}

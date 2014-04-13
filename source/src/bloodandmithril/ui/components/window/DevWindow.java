@@ -2,7 +2,6 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -39,7 +38,6 @@ import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
-import bloodandmithril.item.misc.SkeletonKey;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.furniture.Anvil;
@@ -370,11 +368,7 @@ public class DevWindow extends Window {
 								new Function<Item, Boolean>() {
 									@Override
 									public Boolean apply(Item item) {
-										if (item instanceof SkeletonKey) {
-											return ((SkeletonKey)item).match(newArrayList(1,2,3,4,5,6,7));
-										} else {
-											return false;
-										}
+										return true;
 									}
 								}
 							);
