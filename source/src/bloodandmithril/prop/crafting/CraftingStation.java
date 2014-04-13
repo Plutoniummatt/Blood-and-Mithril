@@ -5,6 +5,7 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Craft;
@@ -26,6 +27,8 @@ import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 
 /**
  * Superclass for all {@link Prop}s that craft {@link Item}s
@@ -112,10 +115,12 @@ public abstract class CraftingStation extends Construction {
 				new MenuItem(
 					getAction(),
 					() -> {
-						if (ClientServerInterface.isServer()) {
-							selected.getAI().setCurrentTask(new OpenCraftingStation(selected, this));
-						} else {
-							ClientServerInterface.SendRequest.sendOpenCraftingStationRequest(selected, this);
+						if (Domain.getSelectedIndividuals().size() == 1) {
+							if (ClientServerInterface.isServer()) {
+								selected.getAI().setCurrentTask(new OpenCraftingStation(selected, this));
+							} else {
+								ClientServerInterface.SendRequest.sendOpenCraftingStationRequest(selected, this);
+							}
 						}
 					},
 					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
@@ -173,6 +178,14 @@ public abstract class CraftingStation extends Construction {
 		if (currentlyBeingCrafted == null) {
 			currentlyBeingCrafted = item;
 
+			if (enoughMaterialsToCraft(individual, (Craftable)item)) {
+				for (Entry<Item, Integer> requiredItem : ((Craftable)item).getRequiredMaterials().entrySet()) {
+					for (int i = requiredItem.getValue(); i > 0; i--) {
+						individual.takeItem(requiredItem.getKey());
+					}
+				}
+			}
+
 			if (ClientServerInterface.isClient()) {
 				UserInterface.refreshRefreshableWindows();
 			} else {
@@ -192,6 +205,29 @@ public abstract class CraftingStation extends Construction {
 			return true;
 		}
 		return false;
+	}
+
+
+	/**
+	 * @return whether the {@link Individual} has enough items to craft a {@link Craftable}
+	 */
+	public static boolean enoughMaterialsToCraft(Individual individual, Craftable craftable) {
+		Map<Item, Integer> inventoryCopy = individual.getInventory();
+		for (Entry<Item, Integer> requiredItem : craftable.getRequiredMaterials().entrySet()) {
+			Optional<Entry<Item, Integer>> tryFind = Iterables.tryFind(inventoryCopy.entrySet(), toMatch -> {
+				return toMatch.getKey().sameAs(requiredItem.getKey());
+			});
+
+			if (tryFind.isPresent()) {
+				if (requiredItem.getValue() > tryFind.get().getValue()) {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 
