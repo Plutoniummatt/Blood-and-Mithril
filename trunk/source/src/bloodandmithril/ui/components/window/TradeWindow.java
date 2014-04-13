@@ -363,7 +363,7 @@ public class TradeWindow extends Window implements Refreshable {
 									},
 									"Confirm",
 									true,
-									"1"
+									""
 								)
 							);
 						} else {
@@ -418,7 +418,7 @@ public class TradeWindow extends Window implements Refreshable {
 								},
 								"Confirm",
 								true,
-								"1"
+								""
 							)
 						);
 					} else {
