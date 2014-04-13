@@ -11,7 +11,6 @@ import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.Domain;
 
 /**
@@ -60,7 +59,7 @@ public class TransferItems implements Request {
 
 		case PROP:
 			Prop prop = Domain.getProps().get(proposeeId);
-			proposee = ((Container) prop);
+			proposee = (Container) prop;
 			response.add(new SynchronizePropRequest.SynchronizePropResponse(prop));
 			break;
 
@@ -101,43 +100,6 @@ public class TransferItems implements Request {
 		public void acknowledge() {
 			// Need to notify all clients to refresh inventory windows and trade windows
 			ClientServerInterface.SendRequest.sendRefreshItemWindowsRequest();
-		}
-
-		@Override
-		public int forClient() {
-			return -1;
-		}
-
-		@Override
-		public void prepare() {
-		}
-	}
-
-
-	public static class RefreshWindows implements Request {
-		@Override
-		public Responses respond() {
-			Responses responses = new Responses(false);
-			responses.add(new RefreshWindowsResponse());
-			return responses;
-		}
-
-		@Override
-		public boolean tcp() {
-			return true;
-		}
-
-		@Override
-		public boolean notifyOthers() {
-			return true;
-		}
-	}
-
-
-	public static class RefreshWindowsResponse implements Response {
-		@Override
-		public void acknowledge() {
-			UserInterface.refreshRefreshableWindows();
 		}
 
 		@Override

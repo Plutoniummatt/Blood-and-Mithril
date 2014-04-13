@@ -3,7 +3,7 @@ package bloodandmithril.csi.requests;
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
+import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.world.Domain;
 

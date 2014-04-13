@@ -91,6 +91,8 @@ import bloodandmithril.csi.requests.MoveIndividual;
 import bloodandmithril.csi.requests.OpenTradeWindow;
 import bloodandmithril.csi.requests.Ping;
 import bloodandmithril.csi.requests.Ping.Pong;
+import bloodandmithril.csi.requests.RefreshWindows;
+import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.RequestClientList;
 import bloodandmithril.csi.requests.RequestClientList.RequestClientListResponse;
 import bloodandmithril.csi.requests.RequestDiscardLiquid;
@@ -113,8 +115,6 @@ import bloodandmithril.csi.requests.SynchronizeWorldState;
 import bloodandmithril.csi.requests.SynchronizeWorldState.SynchronizeWorldStateResponse;
 import bloodandmithril.csi.requests.ToggleWalkRun;
 import bloodandmithril.csi.requests.TransferItems;
-import bloodandmithril.csi.requests.TransferItems.RefreshWindows;
-import bloodandmithril.csi.requests.TransferItems.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Consumable;
@@ -552,7 +552,7 @@ public class ClientServerInterface {
 		kryo.register(TradeWith.class);
 		kryo.register(Trading.class);
 		kryo.register(TransferItems.class);
-		kryo.register(TransferItems.RefreshWindows.class);
+		kryo.register(RefreshWindows.class);
 		kryo.register(TransferItems.TradeEntity.class);
 		kryo.register(TransferItems.TransferItemsResponse.class);
 		kryo.register(TreeMap.class);
@@ -851,7 +851,7 @@ public class ClientServerInterface {
 				-1,
 				true,
 				false,
-				new TransferItems.RefreshWindowsResponse()
+				new RefreshWindowsResponse()
 			);
 		}
 
@@ -877,7 +877,7 @@ public class ClientServerInterface {
 				true,
 				true,
 				new SynchronizeIndividualResponse(individualId, System.currentTimeMillis()),
-				new TransferItems.RefreshWindowsResponse()
+				new RefreshWindowsResponse()
 			);
 		}
 

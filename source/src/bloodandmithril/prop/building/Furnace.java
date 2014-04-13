@@ -13,8 +13,8 @@ import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.AddLightRequest;
+import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.SynchronizePropRequest;
-import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.ContainerImpl;
@@ -192,7 +192,7 @@ public class Furnace extends Construction implements Container {
 							true,
 							true,
 							new SynchronizePropRequest.SynchronizePropResponse(this),
-							new TransferItems.RefreshWindowsResponse()
+							new RefreshWindowsResponse()
 						);
 					} else {
 						refreshRefreshableWindows();
@@ -211,7 +211,7 @@ public class Furnace extends Construction implements Container {
 							true,
 							new AddLightRequest.RemoveLightNotification(lightId),
 							new SynchronizePropRequest.SynchronizePropResponse(this),
-							new TransferItems.RefreshWindowsResponse()
+							new RefreshWindowsResponse()
 						);
 					} else {
 						refreshRefreshableWindows();

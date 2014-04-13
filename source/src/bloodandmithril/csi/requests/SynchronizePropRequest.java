@@ -3,6 +3,7 @@ package bloodandmithril.csi.requests;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
+import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.item.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Construction;
@@ -26,7 +27,7 @@ public class SynchronizePropRequest implements Request {
 	public Responses respond() {
 		Responses responses = new Responses(false);
 		responses.add(new SynchronizePropResponse(Domain.getProps().get(propId)));
-		responses.add(new TransferItems.RefreshWindowsResponse());
+		responses.add(new RefreshWindowsResponse());
 		return responses;
 	}
 

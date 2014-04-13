@@ -12,8 +12,8 @@ import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.SynchronizePropRequest;
-import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.prop.Prop;
@@ -191,7 +191,7 @@ public abstract class CraftingStation extends Construction {
 			} else {
 				ClientServerInterface.sendNotification(-1, true, true,
 					new SynchronizePropRequest.SynchronizePropResponse(this),
-					new TransferItems.RefreshWindowsResponse()
+					new RefreshWindowsResponse()
 				);
 			}
 		}
