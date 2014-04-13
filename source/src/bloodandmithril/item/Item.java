@@ -60,8 +60,7 @@ public abstract class Item implements Serializable, Comparable<Item> {
 	/** Returns true if two {@link Item}s have identical attributes */
 	public abstract boolean sameAs(Item other);
 
-	/** What this {@link Item} will turn into when combusted
-	 * @param with TODO*/
+	/** What this {@link Item} will turn into when combusted */
 	public abstract Item combust(int heatLevel, Map<Item, Integer> with);
 
 	/** Implementation-specific render method */

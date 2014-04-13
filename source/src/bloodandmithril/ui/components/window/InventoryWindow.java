@@ -58,28 +58,6 @@ public class InventoryWindow extends Window implements Refreshable {
 	private ScrollableListingPanel<Item, Integer> inventoryListingPanel;
 
 	/**
-	 * Constructor
-	 */
-	@Deprecated
-	public InventoryWindow(
-			Equipper host,
-			int x,
-			int y,
-			int length,
-			int height,
-			Color borderColor,
-			Color backGroundColor,
-			String title,
-			boolean active,
-			int minLength,
-			int minHeight) {
-		super(x, y, length, height, borderColor, backGroundColor, title, active, minLength, minHeight, true, true);
-		this.host = host;
-		buildItems(host.getEquipped(), host.getInventory());
-	}
-
-
-	/**
 	 * Overloaded constructor - with default colors
 	 */
 	public InventoryWindow(
@@ -95,6 +73,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		super(x, y, length, height, title, active, minLength, minHeight, true, true);
 		this.host = host;
 		buildItems(host.getEquipped(), host.getInventory());
+		inventoryListingPanel.setScrollWheelActive(true);
 	}
 
 

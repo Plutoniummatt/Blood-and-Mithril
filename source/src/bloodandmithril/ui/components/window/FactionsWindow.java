@@ -66,6 +66,8 @@ public class FactionsWindow extends Window {
 				listings.add(buildMap(false));
 			}
 		};
+
+		factionsPanel.setScrollWheelActive(true);
 	}
 
 

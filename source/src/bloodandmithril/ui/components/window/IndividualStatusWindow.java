@@ -85,6 +85,8 @@ public class IndividualStatusWindow extends Window {
 				return false;
 			}
 		};
+
+		conditionsPanel.setScrollWheelActive(true);
 	}
 
 

@@ -328,4 +328,9 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 	public List<HashMap<ListingMenuItem<T>, A>> getListing() {
 		return listings;
 	}
+
+
+	public void setScrollWheelActive(boolean active) {
+		this.scrollWheelActive = active;
+	}
 }

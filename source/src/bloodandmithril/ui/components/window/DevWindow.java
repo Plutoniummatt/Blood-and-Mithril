@@ -71,7 +71,7 @@ import com.google.common.collect.Maps;
  */
 public class DevWindow extends Window {
 
-	ScrollableListingPanel<String, Object> panel;
+	private ScrollableListingPanel<String, Object> panel;
 
 	/**
 	 * Constructor
@@ -102,6 +102,8 @@ public class DevWindow extends Window {
 				return false;
 			}
 		};
+
+		panel.setScrollWheelActive(true);
 	}
 
 
