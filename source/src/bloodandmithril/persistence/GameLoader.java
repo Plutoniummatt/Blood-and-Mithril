@@ -37,7 +37,7 @@ public class GameLoader {
 	private static void loadCurrentEpoch() {
 		Epoch epoch = ParameterPersistenceService.getParameters().getCurrentEpoch();
 		if (epoch != null) {
-			WorldState.currentEpoch = epoch;
+			WorldState.setCurrentEpoch(epoch);
 		}
 	}
 

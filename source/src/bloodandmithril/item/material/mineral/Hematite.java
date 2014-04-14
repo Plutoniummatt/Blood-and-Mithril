@@ -1,10 +1,7 @@
 package bloodandmithril.item.material.mineral;
 
-import java.util.Map;
-
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.material.metal.IronIngot;
 
 /**
  * Otherwise known as Iron ore.
@@ -43,12 +40,6 @@ public class Hematite extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof Hematite;
-	}
-
-
-	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return heatLevel >= 1400 ? new IronIngot() : this;
 	}
 
 

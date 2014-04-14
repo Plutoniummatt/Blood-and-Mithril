@@ -37,7 +37,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
-public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends Object> extends Panel {
+public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 	/** Datastructure that backs this listing panel */
 	private List<HashMap<ListingMenuItem<T>, A>> listings = Lists.newArrayList();
@@ -53,11 +53,15 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 	private float mouseLocYFrozen;
 	private boolean scrollWheelActive;
 
+	/** Used to sort this listing panel */
+	private Comparator<T> sortingComparator;
+
 	/**
 	 * Constructor
 	 */
-	public ScrollableListingPanel(Component parent) {
+	public ScrollableListingPanel(Component parent, Comparator<T> sortingComparator) {
 		super(parent);
+		this.sortingComparator = sortingComparator;
 		onSetup(listings);
 	}
 
@@ -106,7 +110,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, A>>() {
 				@Override
 				public int compare(Entry<ListingMenuItem<T>, A> o1, Entry<ListingMenuItem<T>, A> o2) {
-					return o1.getKey().t.compareTo(o2.getKey().t);
+					return sortingComparator.compare(o1.getKey().t, o2.getKey().t);
 				}
 			});
 
@@ -225,7 +229,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, A>>() {
 				@Override
 				public int compare(Entry<ListingMenuItem<T>, A> o1, Entry<ListingMenuItem<T>, A> o2) {
-					return o1.getKey().t.compareTo(o2.getKey().t);
+					return sortingComparator.compare(o1.getKey().t, o2.getKey().t);
 				}
 			});
 
@@ -306,7 +310,7 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 	 *
 	 * @author Matt
 	 */
-	public static class ListingMenuItem<T extends Comparable<T>> extends MenuItem implements Comparable<ListingMenuItem<T>> {
+	public static class ListingMenuItem<T> extends MenuItem {
 
 		public T t;
 
@@ -316,11 +320,6 @@ public abstract class ScrollableListingPanel<T extends Comparable<T>, A extends 
 		public ListingMenuItem(T t, Button button, ContextMenu menu) {
 			super(button, menu);
 			this.t = t;
-		}
-
-		@Override
-		public int compareTo(ListingMenuItem<T> o) {
-			return t.compareTo(o.t);
 		}
 	}
 

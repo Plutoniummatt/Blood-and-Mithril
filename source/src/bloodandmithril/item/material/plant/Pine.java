@@ -1,10 +1,7 @@
 package bloodandmithril.item.material.plant;
 
-import java.util.Map;
-
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.material.mineral.Ashes;
 
 public class Pine extends Item {
 	private static final long serialVersionUID = 1882318163053390592L;
@@ -38,12 +35,6 @@ public class Pine extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof Pine;
-	}
-
-
-	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return new Ashes();
 	}
 
 

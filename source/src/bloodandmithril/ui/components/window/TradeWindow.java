@@ -7,6 +7,7 @@ import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Math.min;
 
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +87,7 @@ public class TradeWindow extends Window implements Refreshable {
 	/**
 	 * Constructor
 	 */
-	public TradeWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Individual proposer, Container proposee) {
+	public TradeWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Individual proposer, Container proposee, Comparator<Item> sortingComparator) {
 		super(x, y, length, height, title, active, minLength, minHeight, false, true);
 
 		this.proposer = proposer;
@@ -99,7 +100,7 @@ public class TradeWindow extends Window implements Refreshable {
 			tradeButton.text = "Transfer Items";
 		}
 
-		createPanels();
+		createPanels(sortingComparator);
 	}
 
 
@@ -230,8 +231,8 @@ public class TradeWindow extends Window implements Refreshable {
 	}
 
 
-	private void createPanels() {
-		proposerPanel = new ScrollableListingPanel<Item, Integer>(this) {
+	private void createPanels(Comparator<Item> sortingComparator) {
+		proposerPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -254,7 +255,7 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		};
 
-		proposeePanel = new ScrollableListingPanel<Item, Integer>(this) {
+		proposeePanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -277,7 +278,7 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		};
 
-		proposerTradingPanel = new ScrollableListingPanel<Item, Integer>(this) {
+		proposerTradingPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -301,7 +302,7 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		};
 
-		proposeeTradingPanel = new ScrollableListingPanel<Item, Integer>(this) {
+		proposeeTradingPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -343,6 +344,10 @@ public class TradeWindow extends Window implements Refreshable {
 					entry.getKey().getSingular(true).length() * 10,
 					16,
 					() -> {
+						if (!isItemAvailableToTrade(entry.getKey())) {
+							return;
+						}
+
 						if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
 							UserInterface.addLayeredComponent(
 								new TextInputWindow(
@@ -370,9 +375,9 @@ public class TradeWindow extends Window implements Refreshable {
 							changeList(entry.getKey(), 1, trading, notTrading, false);
 						}
 					},
-					Colors.UI_GRAY,
-					Color.GREEN,
-					Color.WHITE,
+					isItemAvailableToTrade(entry.getKey()) ? Colors.UI_GRAY : Colors.UI_DARKER_GRAY,
+					isItemAvailableToTrade(entry.getKey()) ? Color.GREEN : Colors.UI_DARKER_GRAY,
+					isItemAvailableToTrade(entry.getKey()) ? Color.WHITE : Colors.UI_DARKER_GRAY,
 					UIRef.BL
 				),
 				null
@@ -384,6 +389,14 @@ public class TradeWindow extends Window implements Refreshable {
 				entry.getValue()
 			);
 		}
+	}
+
+
+	/**
+	 * @return whether or not a listing item is able to be selected for trade
+	 */
+	protected boolean isItemAvailableToTrade(Item item) {
+		return true; // by default
 	}
 
 

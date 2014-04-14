@@ -11,7 +11,7 @@ public class SynchronizeWorldState implements Request {
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(false);
-		responses.add(new SynchronizeWorldStateResponse(WorldState.currentEpoch));
+		responses.add(new SynchronizeWorldStateResponse(WorldState.getCurrentEpoch()));
 		return responses;
 	}
 
@@ -40,7 +40,7 @@ public class SynchronizeWorldState implements Request {
 		
 		@Override
 		public void acknowledge() {
-			WorldState.currentEpoch = currentEpoch;
+			WorldState.setCurrentEpoch(currentEpoch);
 		}
 
 		

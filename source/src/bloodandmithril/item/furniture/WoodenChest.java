@@ -8,7 +8,6 @@ import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.item.material.metal.IronIngot;
-import bloodandmithril.item.material.mineral.Ashes;
 import bloodandmithril.item.material.plant.Pine;
 
 import com.google.common.collect.Maps;
@@ -55,12 +54,6 @@ public class WoodenChest extends Item implements Craftable {
 
 
 	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return new Ashes();
-	}
-
-
-	@Override
 	public void render() {
 	}
 
@@ -75,7 +68,7 @@ public class WoodenChest extends Item implements Craftable {
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> map = Maps.newHashMap();
 
-		map.put(new Pine(), 5);
+		map.put(new Pine(), 10);
 		map.put(new IronIngot(), 2);
 
 		return map;

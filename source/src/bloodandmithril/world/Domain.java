@@ -8,7 +8,7 @@ import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.world.Domain.Depth.BACKGROUND;
 import static bloodandmithril.world.Domain.Depth.FOREGOUND;
 import static bloodandmithril.world.Domain.Depth.MIDDLEGROUND;
-import static bloodandmithril.world.WorldState.currentEpoch;
+import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.badlogic.gdx.Gdx.files;
 import static com.badlogic.gdx.Gdx.gl20;
@@ -109,12 +109,8 @@ public class Domain {
 		}
 
 		fluidThread = new Thread(() -> {
-			long prevFrame = System.currentTimeMillis();
-
 			while (true) {
-				if (System.currentTimeMillis() - prevFrame > 10) {
-					updateFluids(Gdx.graphics.getDeltaTime());
-				}
+				updateFluids(Gdx.graphics.getDeltaTime());
 			}
 		});
 
@@ -229,7 +225,7 @@ public class Domain {
 
 			float d = 1f/60f;
 
-			currentEpoch.incrementTime(d);
+			getCurrentEpoch().incrementTime(d);
 
 			for (Individual indi : individuals.values()) {
 				indi.update(d);

@@ -70,12 +70,6 @@ public class ButterflySword extends OneHandedWeapon implements Craftable {
 
 
 	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return this;
-	}
-
-
-	@Override
 	public void render() {
 	}
 

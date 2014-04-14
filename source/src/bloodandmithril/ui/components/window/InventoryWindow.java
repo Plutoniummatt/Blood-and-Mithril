@@ -4,6 +4,7 @@ import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static java.lang.Math.min;
 
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +57,13 @@ public class InventoryWindow extends Window implements Refreshable {
 	/** The inventory listing panel, see {@link ScrollableListingPanel} */
 	private ScrollableListingPanel<Item, Integer> equippedListingPanel;
 	private ScrollableListingPanel<Item, Integer> inventoryListingPanel;
+
+	private static Comparator<Item> inventorySortingOrder = new Comparator<Item>() {
+		@Override
+		public int compare(Item o1, Item o2) {
+			return o1.getSingular(false).compareTo(o2.getSingular(false));
+		}
+	};
 
 	/**
 	 * Overloaded constructor - with default colors
@@ -163,7 +171,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		populateList(equippedItems, true);
 		populateList(nonEquippedItems, false);
 
-		inventoryListingPanel = new ScrollableListingPanel<Item, Integer>(this) {
+		inventoryListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder) {
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(nonEquippedItemsToDisplay);
@@ -185,7 +193,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			}
 		};
 
-		equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this) {
+		equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder) {
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(equippedItemsToDisplay);

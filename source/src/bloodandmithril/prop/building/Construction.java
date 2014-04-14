@@ -1,20 +1,20 @@
 package bloodandmithril.prop.building;
 
-import static com.google.common.collect.Maps.newHashMap;
-
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 
 import bloodandmithril.character.Individual;
-import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
+import bloodandmithril.csi.requests.SynchronizeIndividual;
+import bloodandmithril.csi.requests.SynchronizePropRequest;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.crafting.CraftingStation;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -24,8 +24,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  * A Construction
@@ -76,10 +74,30 @@ public abstract class Construction extends Prop implements Container {
 	/**
 	 * Progresses the construction of this {@link Construction}, in time units measured in seconds
 	 */
-	public synchronized void construct(float time) {
+	public synchronized void construct(Individual individual, float time) {
+		if (constructionProgress == 0f) {
+			if (CraftingStation.enoughMaterialsToCraft(individual, getRequiredMaterials())) {
+				for (Entry<Item, Integer> requiredItem : getRequiredMaterials().entrySet()) {
+					for (int i = requiredItem.getValue(); i > 0; i--) {
+						individual.takeItem(requiredItem.getKey());
+					}
+				}
+			}
+
+			if (ClientServerInterface.isClient()) {
+				UserInterface.refreshRefreshableWindows();
+			} else {
+				ClientServerInterface.sendNotification(-1, true, true,
+					new SynchronizePropRequest.SynchronizePropResponse(this),
+					new SynchronizeIndividual.SynchronizeIndividualResponse(individual.getId().getId(), System.currentTimeMillis()),
+					new RefreshWindowsResponse()
+				);
+			}
+		}
+
 		if (constructionProgress == 1f) {
 			finishConstruction();
-		} else if (canConstruct()) {
+		} else {
 			constructionProgress = constructionProgress + time * constructionRate >= 1f ? 1f : constructionProgress + time * constructionRate;
 		}
 	}
@@ -128,14 +146,14 @@ public abstract class Construction extends Prop implements Container {
 						}
 
 						UserInterface.addLayeredComponent(new RequiredMaterialsWindow(
-							BloodAndMithrilClient.WIDTH / 2 - 250,
-							BloodAndMithrilClient.HEIGHT / 2 + 250,
-							500,
-							500,
+							BloodAndMithrilClient.WIDTH / 2 - 150,
+							BloodAndMithrilClient.HEIGHT / 2 + 100,
+							300,
+							200,
 							"Required materials",
 							true,
-							500,
 							300,
+							200,
 							materialContainer,
 							getRequiredMaterials()
 						));
@@ -151,13 +169,13 @@ public abstract class Construction extends Prop implements Container {
 			if (Domain.getSelectedIndividuals().size() > 0) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
 				MenuItem openTransferItemsWindow = new MenuItem(
-					"Transfer materials for construction",
+					"Construct",
 					() -> {
 						if (Domain.getSelectedIndividuals().size() == 1) {
 							if (ClientServerInterface.isServer()) {
 								selected.getAI().setCurrentTask(
-										new TradeWith(selected, this)
-										);
+									new TradeWith(selected, this)
+								);
 							} else {
 								ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
 							}
@@ -173,29 +191,6 @@ public abstract class Construction extends Prop implements Container {
 				);
 
 				menu.addMenuItem(openTransferItemsWindow);
-
-				if (constructionProgress != 0f && canConstruct()) {
-					MenuItem construct = new MenuItem(
-						"Construct",
-						() -> {
-							if (getConstructionProgress() == 1f) {
-								return;
-							}
-
-							if (ClientServerInterface.isServer()) {
-								selected.getAI().setCurrentTask(new Construct(selected, this));
-							} else {
-								ClientServerInterface.SendRequest.sendConstructRequest(selected.getId().getId(), id);
-							}
-						},
-						Color.WHITE,
-						Color.GREEN,
-						Color.GRAY,
-						null
-					);
-
-					menu.addMenuItem(construct);
-				}
 			}
 
 			return menu;
@@ -232,38 +227,10 @@ public abstract class Construction extends Prop implements Container {
 	protected abstract void internalRender(float constructionProgress);
 
 	/** Get the required items to construct this {@link Construction} */
-	protected abstract Map<Item, Integer> getRequiredMaterials();
+	public abstract Map<Item, Integer> getRequiredMaterials();
 
 	/** Get the context menu that will be displayed once this {@link Construction} has finished being constructing */
 	protected abstract ContextMenu getCompletedContextMenu();
-
-
-	/**
-	 * Whether or not construction of this {@link Construction} can take place.
-	 */
-	public boolean canConstruct() {
-		final Map<Item, Integer> requiredMaterials = getRequiredMaterials();
-
-		newHashMap(requiredMaterials).entrySet().stream().forEach(new Consumer<Entry<Item, Integer>>() {
-			@Override
-			public void accept(Entry<Item, Integer> arg0) {
-				Entry<Item, Integer> existing = Iterables.tryFind(materialContainer.getInventory().entrySet(), new Predicate<Entry<Item, Integer>>() {
-					@Override
-					public boolean apply(Entry<Item, Integer> input) {
-						return input.getKey().sameAs(arg0.getKey());
-					}
-				}).orNull();
-
-				if (existing != null) {
-					if (arg0.getValue() - existing.getValue() <= 0) {
-						requiredMaterials.remove(arg0.getKey());
-					}
-				}
-			}
-		});
-
-		return requiredMaterials.isEmpty();
-	}
 
 
 	@Override

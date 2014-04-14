@@ -1,7 +1,5 @@
 package bloodandmithril.item.material.mineral;
 
-import java.util.Map;
-
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 
@@ -38,12 +36,6 @@ public class Ashes extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof Ashes;
-	}
-
-
-	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return this;
 	}
 
 

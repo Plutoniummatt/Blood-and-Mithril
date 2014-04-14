@@ -1,7 +1,5 @@
 package bloodandmithril.item.misc;
 
-import java.util.Map;
-
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 
@@ -42,12 +40,6 @@ public class Currency extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof Currency;
-	}
-
-
-	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return this;
 	}
 
 

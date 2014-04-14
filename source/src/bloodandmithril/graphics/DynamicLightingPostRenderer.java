@@ -8,7 +8,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.world.Domain.fBuffer;                          
 import static bloodandmithril.world.Domain.mBuffer;                          
 import static bloodandmithril.world.Domain.bBuffer;                          
-import static bloodandmithril.world.WorldState.currentEpoch;
+import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.Gdx.gl20;
 import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
@@ -238,7 +238,7 @@ public class DynamicLightingPostRenderer {
 			spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
 		} else {
 			spriteBatch.setShader(Shaders.black);
-			float color = currentEpoch.dayLight() * 0.15f;
+			float color = getCurrentEpoch().dayLight() * 0.15f;
 			Shaders.black.setUniformf("color", new Color(color, color, color, 1f));
 			spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
 			
@@ -294,7 +294,7 @@ public class DynamicLightingPostRenderer {
 		double r;
 		double g;
 		double b;
-		float time = currentEpoch.getTime();
+		float time = getCurrentEpoch().getTime();
 		
 		if (time < 10.0) {
 			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 10.0), 2.0));
@@ -310,7 +310,7 @@ public class DynamicLightingPostRenderer {
 			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow((time - 14.0), 2.0));
 		}
 		
-		Shaders.daylightOcclusion.setUniformf("dl", (float)r, (float)g, (float)b, currentEpoch.dayLight());
+		Shaders.daylightOcclusion.setUniformf("dl", (float)r, (float)g, (float)b, getCurrentEpoch().dayLight());
 		Shaders.daylightOcclusion.setUniformf("res", WIDTH, HEIGHT);
 		spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
 		spriteBatch.end();

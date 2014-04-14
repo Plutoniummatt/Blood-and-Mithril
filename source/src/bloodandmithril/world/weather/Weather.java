@@ -4,7 +4,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.world.Domain.gameWorldTexture;
-import static bloodandmithril.world.WorldState.currentEpoch;
+import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledCircle;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
 import static com.google.common.collect.Lists.newArrayList;
@@ -53,7 +53,7 @@ public class Weather {
 	private static Vector2 celestialPivot 				= new Vector2(WIDTH/2, -HEIGHT/2);
 
 	/** The index to access {@link #moonPhases} with, updated between 11:00 and 13:00 */
-	private static int moonPhaseIndex 					= (int)(12f / 30f * currentEpoch.dayOfMonth);
+	private static int moonPhaseIndex 					= (int)(12f / 30f * getCurrentEpoch().dayOfMonth);
 
 	/** Load resources */
 	public static void setup() {
@@ -73,7 +73,7 @@ public class Weather {
 
 	/** Renders the sun */
 	private static void renderSun() {
-		float time = WorldState.currentEpoch.getTime();
+		float time = WorldState.getCurrentEpoch().getTime();
 
 		double angle = time < 12f ? PI/2f + PI * (time- 2f)/20f : PI + PI * (time - 12f)/20f;
 
@@ -94,10 +94,10 @@ public class Weather {
 
 	/** Renders the moon */
 	private static void renderMoon() {
-		float time = currentEpoch.getTime();
+		float time = getCurrentEpoch().getTime();
 
 		if (time > 11f && time < 13f) {
-			moonPhaseIndex = (int)(12f / 30f * currentEpoch.dayOfMonth);
+			moonPhaseIndex = (int)(12f / 30f * getCurrentEpoch().dayOfMonth);
 		}
 
 		double angle = PI + time < 12f ? PI + PI * time/24f : PI * time/24f;
@@ -116,7 +116,7 @@ public class Weather {
 	private static void renderSky() {
 		shapeRenderer.begin(FilledRectangle);
 
-		float time = currentEpoch.getTime();
+		float time = getCurrentEpoch().getTime();
 		Color filter = new Color();
 
 		if (time < 10) {
@@ -133,8 +133,8 @@ public class Weather {
 			filter.b = (float) (0.1D + 1.2D * exp(-0.200*pow(time-14, 2)));
 		}
 
-		Color topColor = dayTopColor.cpy().mul(currentEpoch.dayLight()).add(nightTopColor.cpy().mul(1f - currentEpoch.dayLight())).mul(filter);
-		Color bottomColor = dayBottomColor.cpy().mul(currentEpoch.dayLight()).add(nightBottomColor.cpy().mul(1f - currentEpoch.dayLight())).mul(filter);
+		Color topColor = dayTopColor.cpy().mul(getCurrentEpoch().dayLight()).add(nightTopColor.cpy().mul(1f - getCurrentEpoch().dayLight())).mul(filter);
+		Color bottomColor = dayBottomColor.cpy().mul(getCurrentEpoch().dayLight()).add(nightBottomColor.cpy().mul(1f - getCurrentEpoch().dayLight())).mul(filter);
 
 		shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT, bottomColor, bottomColor, topColor, topColor);
 		shapeRenderer.end();

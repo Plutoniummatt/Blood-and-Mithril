@@ -1,7 +1,5 @@
 package bloodandmithril.item.misc;
 
-import java.util.Map;
-
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
@@ -40,11 +38,5 @@ public abstract class Key extends Item {
 			100,
 			100
 		);
-	}
-
-
-	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return this;
 	}
 }

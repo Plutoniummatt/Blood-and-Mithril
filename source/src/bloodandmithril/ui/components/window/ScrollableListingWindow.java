@@ -2,6 +2,7 @@ package bloodandmithril.ui.components.window;
 
 import static com.google.common.collect.Maps.newHashMap;
 
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ import com.google.common.base.Function;
  *
  * @author Matt
  */
-public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends Object> extends Window implements Refreshable {
+public abstract class ScrollableListingWindow<T, A> extends Window implements Refreshable {
 
 	/**
 	 * The {@link ScrollableListingPanel} of this {@link ScrollableListingWindow}.
@@ -37,10 +38,10 @@ public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends
 	/**
 	 * Constructor
 	 */
-	public ScrollableListingWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, Map<T, A> map, Function<T, String> displayFunction) {
+	public ScrollableListingWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, Map<T, A> map, Function<T, String> displayFunction, Comparator<T> sortingOrder) {
 		super(x, y, length, height, title, active, minLength, minHeight, minimizable, resizeable);
 		this.displayFunction = displayFunction;
-		buildListing(map);
+		buildListing(map, sortingOrder);
 
 		listing.setScrollWheelActive(true);
 	}
@@ -49,8 +50,8 @@ public abstract class ScrollableListingWindow<T extends Comparable<T>, A extends
 	/**
 	 * Builds the {@link ScrollableListingPanel} object
 	 */
-	protected void buildListing(final Map<T, A> mapToBuildFrom) {
-		this.listing = new ScrollableListingPanel<T, A>(this) {
+	protected void buildListing(final Map<T, A> mapToBuildFrom, final Comparator<T> sortingOrder) {
+		this.listing = new ScrollableListingPanel<T, A>(this, sortingOrder) {
 
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<T>, A> item) {

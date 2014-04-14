@@ -46,7 +46,7 @@ public class ParameterPersistenceService {
 	public synchronized static void saveParameters() {
 		FileHandle file = Gdx.files.local(GameSaver.savePath + "/parameters.txt");
 		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y) : new Vector2());
-		parameters.setCurrentEpoch(WorldState.currentEpoch);
+		parameters.setCurrentEpoch(WorldState.getCurrentEpoch());
 		file.writeString(encode(parameters), false);
 	}
 }

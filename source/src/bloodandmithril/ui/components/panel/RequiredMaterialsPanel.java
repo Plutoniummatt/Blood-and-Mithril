@@ -2,6 +2,7 @@ package bloodandmithril.ui.components.panel;
 
 import static com.google.common.collect.Maps.newHashMap;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,12 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 	 * Constructor
 	 */
 	public RequiredMaterialsPanel(Component parent, Container materialsContainer, Map<Item, Integer> requiredMaterials) {
-		super(parent);
+		super(parent, new Comparator<Item>() {
+			@Override
+			public int compare(Item o1, Item o2) {
+				return o1.getSingular(false).compareTo(o2.getSingular(false));
+			}
+		});
 		this.materialsContainer = materialsContainer;
 		this.requiredMaterials = requiredMaterials;
 

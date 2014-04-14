@@ -14,14 +14,14 @@ import bloodandmithril.world.Domain;
  */
 public class Construct extends CompositeAITask {
 	private static final long serialVersionUID = 8175661093571274804L;
-	
+
 	/**
 	 * Constructor
 	 */
 	public Construct(Individual host, Construction construction) {
 		super(
-			host.getId(), 
-			"Constructing", 
+			host.getId(),
+			"Constructing",
 			new GoToLocation(
 				host,
 				new WayPoint(construction.position, 32),
@@ -30,11 +30,11 @@ public class Construct extends CompositeAITask {
 				true
 			)
 		);
-		
+
 		appendTask(new Constructing(hostId, construction.id));
 	}
 
-	
+
 	public static class Constructing extends AITask {
 		private static final long serialVersionUID = -6557725570349017304L;
 		private int constructionId;
@@ -46,29 +46,29 @@ public class Construct extends CompositeAITask {
 			super(hostId);
 			this.constructionId = constructionId;
 		}
-		
+
 
 		@Override
 		public String getDescription() {
 			return "Constructing";
 		}
 
-		
+
 		@Override
 		public boolean isComplete() {
 			return ((Construction) Domain.getProps().get(constructionId)).getConstructionProgress() == 1f;
 		}
 
-		
+
 		@Override
 		public void uponCompletion() {
 		}
 
-		
+
 		@Override
 		public void execute(float delta) {
 			Construction construction = (Construction) Domain.getProps().get(constructionId);
-			construction.construct(delta);
+			construction.construct(Domain.getIndividuals().get(hostId.getId()), delta);
 		}
 	}
 }

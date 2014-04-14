@@ -2,6 +2,7 @@ package bloodandmithril.ui.components.window;
 
 import static com.google.common.collect.Maps.newHashMap;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -15,6 +16,10 @@ public class RequiredMaterialsWindow extends ScrollableListingWindow<Item, Strin
 
 	private Container materialsContainer;
 	private Map<Item, Integer> requiredMaterials;
+
+	private static Comparator<Item> sortOrder = (o1, o2) -> {
+		return o1.getSingular(false).compareTo(o2.getSingular(false));
+	};
 
 	/**
 	 * Constructor
@@ -34,7 +39,8 @@ public class RequiredMaterialsWindow extends ScrollableListingWindow<Item, Strin
 		super(x, y, length, height, title, active, minLength, minHeight, true, true, getConstructionMaterialStatus(materialsContainer, requiredMaterials),
 			item -> {
 				return item.getSingular(true);
-			}
+			},
+			sortOrder
 		);
 		this.materialsContainer = materialsContainer;
 		this.requiredMaterials = requiredMaterials;
@@ -43,7 +49,7 @@ public class RequiredMaterialsWindow extends ScrollableListingWindow<Item, Strin
 
 	@Override
 	public void refresh() {
-		buildListing(getConstructionMaterialStatus(materialsContainer, requiredMaterials));
+		buildListing(getConstructionMaterialStatus(materialsContainer, requiredMaterials), sortOrder);
 	}
 
 

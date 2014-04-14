@@ -6,6 +6,7 @@ import static bloodandmithril.ui.UserInterface.refreshRefreshableWindows;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,9 +22,12 @@ import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.material.Fuel;
 import bloodandmithril.item.material.brick.Brick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
+import bloodandmithril.item.material.metal.IronIngot;
+import bloodandmithril.item.material.metal.SteelIngot;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.crafting.CraftingStation;
@@ -37,9 +41,6 @@ import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  * A Furnace
@@ -55,11 +56,8 @@ public class Furnace extends CraftingStation implements Container {
 	/** The amount of time taken to smelt one batch of material, in seconds */
 	public static final float SMELTING_DURATION = 10f;
 
-	/** The heat level of {@link Furnace}s */
-	private static final int HEAT_LEVEL = 2500;
-
 	/** The duration which this furnace will combust/smelt, in seconds */
-	private float combustionDurationRemaining, smeltingDurationRemaining;
+	private float combustionDurationRemaining;
 
 	/** The {@link Light} that will be rendered if this {@link Furnace} is lit */
 	private Light light;
@@ -68,10 +66,16 @@ public class Furnace extends CraftingStation implements Container {
 	private int lightId;
 
 	/** True if burning */
-	private boolean burning, smelting;
+	private boolean burning;
 
 	/** The {@link Container} of this {@link Furnace} */
 	private ContainerImpl container;
+
+	private static final ArrayList<Item> craftables = newArrayList(
+		new GlassBottle(newHashMap()),
+		new IronIngot(),
+		new SteelIngot()
+	);
 
 	/**
 	 * Constructor
@@ -88,10 +92,8 @@ public class Furnace extends CraftingStation implements Container {
 			this.container.synchronizeContainer(((Furnace)other).container);
 			this.burning = ((Furnace) other).burning;
 			this.combustionDurationRemaining = ((Furnace) other).combustionDurationRemaining;
-			this.smeltingDurationRemaining = ((Furnace) other).smeltingDurationRemaining;
 			this.lightId = ((Furnace) other).lightId;
 			this.light = Domain.getLights().get(((Furnace) other).lightId);
-			this.smelting = ((Furnace) other).smelting;
 		} else {
 			throw new RuntimeException("Can not synchronize Furnace with " + other.getClass().getSimpleName());
 		}
@@ -111,32 +113,6 @@ public class Furnace extends CraftingStation implements Container {
 		lightId = ParameterPersistenceService.getParameters().getNextLightId();
 		light = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f, 0f, 1f);
 		Domain.getLights().put(lightId, light);
-
-		smelt();
-	}
-
-
-	/**
-	 * Begin smelting
-	 */
-	public synchronized void smelt() {
-		if (smelting) {
-			return;
-		}
-
-		if (!container.getInventory().isEmpty()) {
-			Optional<Item> notCoal = Iterables.tryFind(container.getInventory().keySet(), new Predicate<Item>() {
-				@Override
-				public boolean apply(Item item) {
-					return !(item instanceof Coal);
-				}
-			});
-
-			if (notCoal.isPresent()) {
-				smelting = true;
-				smeltingDurationRemaining = SMELTING_DURATION;
-			}
-		}
 	}
 
 
@@ -160,11 +136,6 @@ public class Furnace extends CraftingStation implements Container {
 	}
 
 
-	public float getSmeltingDurationRemaining() {
-		return smeltingDurationRemaining;
-	}
-
-
 	public synchronized void setCombustionDurationRemaining(float combustionDurationRemaining) {
 		synchronized (this) {
 			this.combustionDurationRemaining = combustionDurationRemaining;
@@ -185,30 +156,9 @@ public class Furnace extends CraftingStation implements Container {
 			synchronized (this) {
 				this.combustionDurationRemaining -= delta;
 
-				if (smelting) {
-					smeltingDurationRemaining -= delta;
-				}
-
-				if (this.smeltingDurationRemaining <= 0f && smelting) {
-					smeltItems();
-					smelting = false;
-					if (!isClient()) {
-						ClientServerInterface.sendNotification(
-							-1,
-							true,
-							true,
-							new SynchronizePropRequest.SynchronizePropResponse(this),
-							new RefreshWindowsResponse()
-						);
-					} else {
-						refreshRefreshableWindows();
-					}
-				}
-
 				if (this.combustionDurationRemaining <= 0f) {
 					burning = false;
-					smelting = false;
-					smeltItems();
+					combustFuel();
 					Domain.getLights().remove(lightId);
 					if (!isClient()) {
 						ClientServerInterface.sendNotification(
@@ -231,7 +181,7 @@ public class Furnace extends CraftingStation implements Container {
 	/**
 	 * Transmutes all items in the {@link Furnace} according to {@link Item#combust(float, float)}
 	 */
-	private synchronized void smeltItems() {
+	private synchronized void combustFuel() {
 		synchronized(container) {
 			Map<Item, Integer> existing = newHashMap(container.getInventory());
 			container.getInventory().clear();
@@ -239,27 +189,12 @@ public class Furnace extends CraftingStation implements Container {
 
 			for (Entry<Item, Integer> entry : existing.entrySet()) {
 				for (int i = 0; i < entry.getValue(); i++) {
-					if (entry.getKey() instanceof Coal) {
-						if (isBurning()) {
-							container.giveItem(new Coal());
-						} else {
-							container.giveItem(entry.getKey().combust(HEAT_LEVEL, existing));
-						}
-					} else {
-						if (smelting) {
-							container.giveItem(entry.getKey().combust(HEAT_LEVEL, existing));
-						} else {
-							container.giveItem(entry.getKey());
-						}
+					if (entry.getKey() instanceof Fuel) {
+						container.giveItem(((Fuel)entry.getKey()).combust());
 					}
 				}
 			}
 		}
-	}
-
-
-	public boolean isSmelting() {
-		return smelting;
 	}
 
 
@@ -323,7 +258,7 @@ public class Furnace extends CraftingStation implements Container {
 
 
 	@Override
-	protected Map<Item, Integer> getRequiredMaterials() {
+	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
 		requiredItems.put(new Brick(), 5);
 		return requiredItems;
@@ -477,6 +412,6 @@ public class Furnace extends CraftingStation implements Container {
 
 	@Override
 	public List<Item> getCraftables() {
-		return newArrayList(new GlassBottle(newHashMap()));
+		return craftables;
 	}
 }

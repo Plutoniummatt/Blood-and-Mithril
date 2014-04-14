@@ -75,6 +75,6 @@ public abstract class Prop implements Serializable {
 		WoodenChest.woodenChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);
 		Carrot.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 176, 12, 17);
 		Anvil.anvil = new TextureRegion(Domain.gameWorldTexture, 363, 225, 44, 18);
-		WorkBench.workbench = new TextureRegion(Domain.gameWorldTexture, 363, 225, 44, 18);
+		WorkBench.workbench = new TextureRegion(Domain.gameWorldTexture, 559, 219, 80, 33);
 	}
 }
