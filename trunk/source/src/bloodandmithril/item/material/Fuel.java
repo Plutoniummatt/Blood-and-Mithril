@@ -14,9 +14,6 @@ public interface Fuel {
 	/** The duration which this {@link Fuel} will combust at a temperature of {@link Furnace#MIN_TEMP} */
 	public float getCombustionDuration();
 
-	/** The amount of thermal energy released throughout the combustion duration */
-	public float getEnergy();
-
 	/** What this {@link Fuel} will turn into when combusted */
-	public Item combust();
+	public Item consume();
 }

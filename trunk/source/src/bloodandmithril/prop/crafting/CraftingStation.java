@@ -271,6 +271,12 @@ public abstract class CraftingStation extends Construction {
 			craftingProgress = 0f;
 			finished = false;
 		}
+
+		if (ClientServerInterface.isClient()) {
+			UserInterface.refreshRefreshableWindows();
+		} else {
+			ClientServerInterface.SendNotification.notifyRefreshWindows();
+		}
 	}
 
 

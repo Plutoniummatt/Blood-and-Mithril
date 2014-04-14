@@ -17,11 +17,13 @@ import bloodandmithril.world.Domain;
 public class Craft extends CompositeAITask {
 	private static final long serialVersionUID = 4625886192088540454L;
 	private Item item;
+	private int quantity;
+	private boolean bulk;
 
 	/**
 	 * Constructor
 	 */
-	public Craft(Individual host, CraftingStation craftingStation, Item item) {
+	public Craft(Individual host, CraftingStation craftingStation, Item item, int quantity) {
 		super(
 			host.getId(),
 			"Crafting",
@@ -35,7 +37,14 @@ public class Craft extends CompositeAITask {
 		);
 
 		this.item = item;
+		this.quantity = quantity;
+		this.bulk = quantity > 1;
 		appendTask(new Crafting(hostId, craftingStation.id));
+	}
+
+
+	public int getQuantity() {
+		return quantity;
 	}
 
 
@@ -61,7 +70,7 @@ public class Craft extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return occupied || ((CraftingStation) Domain.getProps().get(craftingStationId)).isFinished();
+			return occupied || quantity == 0;
 		}
 
 
@@ -73,8 +82,17 @@ public class Craft extends CompositeAITask {
 		@Override
 		public void execute(float delta) {
 			CraftingStation craftingStation = (CraftingStation) Domain.getProps().get(craftingStationId);
-			if (!craftingStation.craft(item, Domain.getIndividuals().get(hostId.getId()), delta)) {
+			Individual individual = Domain.getIndividuals().get(hostId.getId());
+
+			if (!craftingStation.craft(item, individual, delta)) {
 				occupied = true;
+			}
+
+			if (craftingStation.isFinished()) {
+				if (bulk) {
+					craftingStation.takeItem(individual);
+				}
+				quantity--;
 			}
 		}
 	}

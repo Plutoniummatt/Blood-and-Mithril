@@ -596,8 +596,8 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void sendStartCraftingRequest(Individual individual, CraftingStation craftingStation, Item item) {
-			client.sendTCP(new RequestStartCrafting(individual, craftingStation, item));
+		public static synchronized void sendStartCraftingRequest(Individual individual, CraftingStation craftingStation, Item item, int quantity) {
+			client.sendTCP(new RequestStartCrafting(individual, craftingStation, item, quantity));
 			Logger.networkDebug("Sending start crafting item request", LogLevel.DEBUG);
 		}
 

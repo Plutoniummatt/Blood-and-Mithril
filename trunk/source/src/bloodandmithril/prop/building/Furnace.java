@@ -190,7 +190,7 @@ public class Furnace extends CraftingStation implements Container {
 			for (Entry<Item, Integer> entry : existing.entrySet()) {
 				for (int i = 0; i < entry.getValue(); i++) {
 					if (entry.getKey() instanceof Fuel) {
-						container.giveItem(((Fuel)entry.getKey()).combust());
+						container.giveItem(((Fuel)entry.getKey()).consume());
 					}
 				}
 			}
