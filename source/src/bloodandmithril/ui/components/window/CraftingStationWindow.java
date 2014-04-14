@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Item;
@@ -32,6 +35,8 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -112,7 +117,32 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			90,
 			16,
 			() -> {
-				craft();
+				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+					UserInterface.addLayeredComponent(
+						new TextInputWindow(
+							WIDTH / 2 - 125,
+							HEIGHT/2 + 50,
+							250,
+							100,
+							"Quantity",
+							250,
+							100,
+							args -> {
+								try {
+									int quantity = Integer.parseInt(args[0].toString());
+									craft(quantity);
+								} catch (Exception e) {
+									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
+								}
+							},
+							"Confirm",
+							true,
+							""
+						)
+					);
+				} else {
+					craft(1);
+				}
 			},
 			Color.ORANGE,
 			Color.GREEN,
@@ -149,7 +179,6 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		if (craftingStation.isFinished()) {
 			if (ClientServerInterface.isServer()) {
 				craftingStation.takeItem(individual);
-				UserInterface.refreshRefreshableWindows();
 			} else {
 				ClientServerInterface.SendRequest.sendTakeItemFromCraftingStationRequest(craftingStation, individual);
 			}
@@ -162,7 +191,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	/**
 	 * Called when the action button is pressed, i.e 'Smith'
 	 */
-	private void craft() {
+	private void craft(int quantity) {
 		if (!customCanCraft() ||
 			craftingStation.getCurrentlyBeingCrafted() != null && craftingStation.isOccupied() ||
 			!enoughMaterials && craftingStation.getCurrentlyBeingCrafted() == null) {
@@ -170,9 +199,9 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		}
 
 		if (ClientServerInterface.isServer()) {
-			individual.getAI().setCurrentTask(new Craft(individual, craftingStation, currentlySelectedToCraft));
+			individual.getAI().setCurrentTask(new Craft(individual, craftingStation, currentlySelectedToCraft, quantity));
 		} else {
-			ClientServerInterface.SendRequest.sendStartCraftingRequest(individual, craftingStation, currentlySelectedToCraft);
+			ClientServerInterface.SendRequest.sendStartCraftingRequest(individual, craftingStation, currentlySelectedToCraft, quantity);
 		}
 	}
 
@@ -245,7 +274,15 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 		defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.GREEN, getAlpha()) : Colors.modulateAlpha(Color.GREEN, 0.5f * getAlpha()));
 		String selected = craftingStation.getCurrentlyBeingCrafted() == null ? "Selected: " : craftingStation.getAction() + "ing: ";
-		String progress = craftingStation.getCurrentlyBeingCrafted() == null ? "" : " (" + String.format("%.1f", 100f * craftingStation.getCraftingProgress()) + "%)";
+		String bulkMessage = "";
+
+		AITask currentTask = individual.getAI().getCurrentTask();
+		if (currentTask instanceof Craft) {
+			int quantity = ((Craft) currentTask).getQuantity();
+			bulkMessage = quantity > 1 ? "(" + quantity + " left)" : "";
+		}
+
+		String progress = craftingStation.getCurrentlyBeingCrafted() == null ? "" : " (" + String.format("%.1f", 100f * craftingStation.getCraftingProgress()) + "%) " + bulkMessage;
 		defaultFont.draw(spriteBatch, selected + currentlySelectedToCraft.getSingular(true) + progress, x + width / 2 - 33, y - 33);
 		defaultFont.draw(spriteBatch, "Required materials:", x + width / 2 - 33, y - 133);
 
@@ -374,13 +411,13 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void refresh() {
-		if (craftingStation.isOccupied() && !currentlySelectedToCraft.sameAs(craftingStation.getCurrentlyBeingCrafted())) {
+		if (craftingStation.isOccupied() && craftingStation.getCurrentlyBeingCrafted() != null && !currentlySelectedToCraft.sameAs(craftingStation.getCurrentlyBeingCrafted())) {
 			currentlySelectedToCraft = craftingStation.getCurrentlyBeingCrafted();
 			craftablesListing.getListing().clear();
 			craftablesListing.getListing().add(constructCraftablesListing());
 			requiredMaterialsListing.getRequiredMaterials().clear();
 			requiredMaterialsListing.getRequiredMaterials().putAll(((Craftable)currentlySelectedToCraft).getRequiredMaterials());
-			refresh();
+			System.out.println("s");
 		}
 
 		enoughMaterials = CraftingStation.enoughMaterialsToCraft(individual, ((Craftable) currentlySelectedToCraft).getRequiredMaterials());

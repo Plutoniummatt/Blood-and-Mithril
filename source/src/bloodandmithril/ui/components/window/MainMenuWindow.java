@@ -30,16 +30,6 @@ public class MainMenuWindow extends Window {
 	private Button connect, options, exit;
 
 	/**
-	 * Constructor
-	 */
-	@Deprecated
-	public MainMenuWindow(int x, int y, int length, int height, Color borderColor, Color backGroundColor, String title, boolean active, int minLength, int minHeight, boolean minimizable) {
-		super(x, y, length, height, borderColor, backGroundColor, title, active, minLength, minHeight, minimizable, false);
-		loadButtons();
-	}
-
-
-	/**
 	 * Overloaded constructor - uses default colors
 	 */
 	public MainMenuWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable) {

@@ -47,19 +47,13 @@ public class Coal extends Item implements Fuel {
 
 
 	@Override
-	public float getEnergy() {
-		return 5000f;
-	}
-
-
-	@Override
 	public void render() {
 
 	}
 
 
 	@Override
-	public Item combust() {
+	public Item consume() {
 		return new Ashes();
 	}
 }
