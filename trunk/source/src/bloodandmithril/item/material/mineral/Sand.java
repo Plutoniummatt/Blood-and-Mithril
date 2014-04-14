@@ -1,7 +1,5 @@
 package bloodandmithril.item.material.mineral;
 
-import java.util.Map;
-
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
@@ -50,12 +48,6 @@ public class Sand extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof Sand;
-	}
-
-
-	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return heatLevel > 1400 ? new Glass() : this;
 	}
 
 

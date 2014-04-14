@@ -51,7 +51,7 @@ public class Names {
 		Collections.shuffle(elfLast);
 		last = elfLast.get(0);
 		
-		return new IndividualIdentifier(first, last, new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), WorldState.currentEpoch.year - age));
+		return new IndividualIdentifier(first, last, new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), WorldState.getCurrentEpoch().year - age));
 	}
 	
 	
@@ -70,7 +70,7 @@ public class Names {
 		Collections.shuffle(dwarfLast);
 		last = dwarfLast.get(0);
 		
-		return new IndividualIdentifier(first, last, new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), WorldState.currentEpoch.year - age));
+		return new IndividualIdentifier(first, last, new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), WorldState.getCurrentEpoch().year - age));
 	}
 	
 

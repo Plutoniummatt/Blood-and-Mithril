@@ -57,12 +57,6 @@ public class GlassBottle extends LiquidContainer implements Craftable {
 
 
 	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return this;
-	}
-
-
-	@Override
 	public void render() {
 	}
 

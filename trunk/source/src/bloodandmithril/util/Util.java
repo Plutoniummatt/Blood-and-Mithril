@@ -90,7 +90,7 @@ public class Util {
 	 */
 	public static String fitToTextInputBox(String toPara, int length, int currentBeginningIndex, boolean renderCursor) {
 		return toPara.substring(currentBeginningIndex, Math.min(currentBeginningIndex + length / 12 - 3, toPara.length())) +
-		       (currentBeginningIndex + length / 12 - 3 < toPara.length() ? "..." : (renderCursor ? "|" : ""));
+		       (currentBeginningIndex + length / 12 - 3 < toPara.length() ? "..." : renderCursor ? "|" : "");
 	}
 
 
@@ -170,8 +170,8 @@ public class Util {
 			return string.substring(0, index - 1);
 		}
 	}
-	
-	
+
+
 	public static float round2dp(float toRound) {
 		return Float.parseFloat(String.format("%.2f", toRound));
 	}
@@ -187,10 +187,11 @@ public class Util {
 		public static final Color UI_DARK_ORANGE = new Color(0.8f, 0.6f, 0.0f, 1f);
 		public static final Color UI_GRAY = new Color(0.8f, 0.8f, 0.8f, 1f);
 		public static final Color UI_DARK_GRAY = new Color(0.55f, 0.55f, 0.55f, 1f);
+		public static final Color UI_DARKER_GRAY = new Color(0.25f, 0.25f, 0.25f, 1f);
 		public static final Color UI_DARK_PURPLE = new Color(0.8f, 0f, 0.6f, 1f);
 		public static final Color UI_DARK_GREEN = new Color(0f, 0.5f, 0f, 1f);
 		public static final Color UI_DARK_PURPLE_INACTIVE = new Color(0.45f, 0f, 0.32f, 0.6f);
-		
+
 		public static final Color WATER = new Color(0f, 0.3f, 1f, 0.7f);
 		public static final Color BLOOD = new Color(0.45f, 0.0f, 0f, 1f);
 		public static final Color ACID = new Color(0.35f, 1f, 0f, 0.8f);

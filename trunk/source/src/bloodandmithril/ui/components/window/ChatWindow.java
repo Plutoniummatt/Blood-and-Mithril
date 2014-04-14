@@ -1,6 +1,7 @@
 package bloodandmithril.ui.components.window;
 
 import java.util.ArrayDeque;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,7 +46,7 @@ public class ChatWindow extends Window {
 	public ChatWindow(int x, int y, int length, int height, boolean active, int minLength, int minHeight) {
 		super(x, y, length, height, "Chat", active, minLength, minHeight, true, true);
 
-		participants = new ScrollableListingPanel<String, Object>(this) {
+		participants = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder()) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
 				return "";

@@ -4,7 +4,6 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static java.lang.Math.abs;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -21,7 +20,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
-public abstract class Item implements Serializable, Comparable<Item> {
+public abstract class Item implements Serializable {
 	private static final long serialVersionUID = -7733840667288631158L;
 
 	/** The mass of this item */
@@ -59,9 +58,6 @@ public abstract class Item implements Serializable, Comparable<Item> {
 
 	/** Returns true if two {@link Item}s have identical attributes */
 	public abstract boolean sameAs(Item other);
-
-	/** What this {@link Item} will turn into when combusted */
-	public abstract Item combust(int heatLevel, Map<Item, Integer> with);
 
 	/** Implementation-specific render method */
 	public abstract void render();
@@ -101,15 +97,6 @@ public abstract class Item implements Serializable, Comparable<Item> {
 		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
 			position.y = Domain.getWorld(id).getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(position, true).y;
 			velocity.y = 0f;
-		}
-	}
-
-	@Override
-	public int compareTo(Item o) {
-		if (value == o.value) {
-			return getClass().getSimpleName().compareTo(o.getClass().getSimpleName());
-		} else {
-			return value > o.value ? 1 : -1;
 		}
 	}
 

@@ -87,7 +87,7 @@ public abstract class CraftingStation extends Construction {
 
 
 	@Override
-	protected Map<Item, Integer> getRequiredMaterials() {
+	public Map<Item, Integer> getRequiredMaterials() {
 		return newHashMap();
 	}
 
@@ -205,7 +205,7 @@ public abstract class CraftingStation extends Construction {
 		if (currentlyBeingCrafted == null) {
 			currentlyBeingCrafted = item;
 
-			if (enoughMaterialsToCraft(individual, (Craftable)item)) {
+			if (enoughMaterialsToCraft(individual, ((Craftable)item).getRequiredMaterials())) {
 				for (Entry<Item, Integer> requiredItem : ((Craftable)item).getRequiredMaterials().entrySet()) {
 					for (int i = requiredItem.getValue(); i > 0; i--) {
 						individual.takeItem(requiredItem.getKey());
@@ -239,9 +239,9 @@ public abstract class CraftingStation extends Construction {
 	/**
 	 * @return whether the {@link Individual} has enough items to craft a {@link Craftable}
 	 */
-	public static boolean enoughMaterialsToCraft(Individual individual, Craftable craftable) {
+	public static boolean enoughMaterialsToCraft(Individual individual, Map<Item, Integer> requiredMaterials) {
 		Map<Item, Integer> inventoryCopy = individual.getInventory();
-		for (Entry<Item, Integer> requiredItem : craftable.getRequiredMaterials().entrySet()) {
+		for (Entry<Item, Integer> requiredItem : requiredMaterials.entrySet()) {
 			Optional<Entry<Item, Integer>> tryFind = Iterables.tryFind(inventoryCopy.entrySet(), toMatch -> {
 				return toMatch.getKey().sameAs(requiredItem.getKey());
 			});

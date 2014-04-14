@@ -1,6 +1,7 @@
 package bloodandmithril.ui.components.window;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,7 @@ public class FactionsWindow extends Window {
 	public FactionsWindow(int x, int y, int length, int height, boolean active, int minLength, int minHeight) {
 		super(x, y, length, height, "Factions", active, minLength, minHeight, true, false);
 
-		factionsPanel = new ScrollableListingPanel<String, Object>(this) {
+		factionsPanel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder()) {
 
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {

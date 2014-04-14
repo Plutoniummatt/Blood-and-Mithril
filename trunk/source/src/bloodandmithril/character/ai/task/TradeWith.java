@@ -1,5 +1,7 @@
 package bloodandmithril.character.ai.task;
 
+import java.util.Comparator;
+
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
@@ -7,19 +9,17 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.Container;
+import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Construction;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.ConstructionWindow;
 import bloodandmithril.ui.components.window.FurnaceWindow;
 import bloodandmithril.ui.components.window.TradeWindow;
-import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
 
 /**
  * A {@link CompositeAITask} comprising of:
@@ -31,6 +31,10 @@ import com.google.common.collect.Lists;
  */
 public class TradeWith extends CompositeAITask {
 	private static final long serialVersionUID = -4098496856332182431L;
+
+	private static Comparator<Item> sortOrder = (o1, o2) -> {
+		return o1.getSingular(false).compareTo(o2.getSingular(false));
+	};
 
 	/**
 	 * Overloaded constructor
@@ -185,14 +189,10 @@ public class TradeWith extends CompositeAITask {
 				if (((Construction) prop).getConstructionProgress() != 1f) {
 					UserInterface.addLayeredComponentUnique(
 						new ConstructionWindow(
-							BloodAndMithrilClient.WIDTH/2 - 450,
+							BloodAndMithrilClient.WIDTH/2 - 300,
 							BloodAndMithrilClient.HEIGHT/2 + 150,
-							900,
-							300,
-							proposer.getId().getSimpleName() + " interacting with container",
+							proposer.getId().getSimpleName() + " interacting with " + ((Construction)prop).getTitle(),
 							true,
-							900,
-							300,
 							proposer,
 							(Construction) prop
 						)
@@ -228,7 +228,8 @@ public class TradeWith extends CompositeAITask {
 						900,
 						300,
 						proposer,
-						(Container) prop
+						(Container) prop,
+						sortOrder
 					)
 				);
 			}
@@ -240,15 +241,6 @@ public class TradeWith extends CompositeAITask {
 	 * Opens a {@link TradeWindow} with another {@link Individual}
 	 */
 	public static void openTradeWindowWithIndividual(Individual proposer, Individual proposeeCasted) {
-		for (Component component : Lists.newArrayList(UserInterface.layeredComponents)) {
-			if (component instanceof Window) {
-				if (((Window)component).title.equals(proposer.getId().getSimpleName() + " - Inventory") ||
-						((Window)component).title.equals(proposeeCasted.getId().getSimpleName() + " - Inventory")) {
-					UserInterface.removeLayeredComponent(component);
-				}
-			}
-		}
-
 		UserInterface.addLayeredComponentUnique(
 			new TradeWindow(
 				BloodAndMithrilClient.WIDTH / 2 - 450,
@@ -260,7 +252,8 @@ public class TradeWith extends CompositeAITask {
 				900,
 				300,
 				proposer,
-				proposeeCasted
+				proposeeCasted,
+				sortOrder
 			)
 		);
 	}

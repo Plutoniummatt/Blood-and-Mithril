@@ -7,6 +7,7 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,13 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	private RequiredMaterialsPanel requiredMaterialsListing;
 	private Button showInfoButton, craftButton, takeFinishedItemButton;
 
+	private static Comparator<Item> sortingComparator = new Comparator<Item>() {
+		@Override
+		public int compare(Item o1, Item o2) {
+			return o1.getSingular(false).compareTo(o2.getSingular(false));
+		}
+	};
+
 	/**
 	 * Constructor
 	 */
@@ -56,9 +64,9 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		super(x, y, 750, 300, title, true, 750, 300, true, true);
 		this.individual = individual;
 		this.craftingStation = craftingStation;
-		this.currentlySelectedToCraft = craftingStation.getCraftables().get(0);
+		this.currentlySelectedToCraft = craftingStation.getCurrentlyBeingCrafted() == null ? craftingStation.getCraftables().get(0) : craftingStation.getCurrentlyBeingCrafted();
 
-		this.craftablesListing = new ScrollableListingPanel<Item, String>(this) {
+		this.craftablesListing = new ScrollableListingPanel<Item, String>(this, sortingComparator) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Item>, String> item) {
 				return "";
@@ -375,7 +383,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			refresh();
 		}
 
-		enoughMaterials = CraftingStation.enoughMaterialsToCraft(individual, (Craftable) currentlySelectedToCraft);
+		enoughMaterials = CraftingStation.enoughMaterialsToCraft(individual, ((Craftable) currentlySelectedToCraft).getRequiredMaterials());
 		requiredMaterialsListing.refresh();
 
 		if (craftingStation.getCurrentlyBeingCrafted() != null) {

@@ -9,7 +9,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.ParameterPersistenceService.getParameters;
-import static bloodandmithril.world.WorldState.currentEpoch;
+import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static com.google.common.collect.Lists.newArrayList;
@@ -313,15 +313,15 @@ public abstract class Individual implements Equipper, Serializable {
 
 	/** How old this {@link Individual} is */
 	public int getAge() {
-		int age = currentEpoch.year - id.birthday.year;
+		int age = getCurrentEpoch().year - id.birthday.year;
 
 		if (age == 0) {
 			return 0;
 		}
 
-		if (currentEpoch.monthOfYear < id.birthday.monthOfYear) {
+		if (getCurrentEpoch().monthOfYear < id.birthday.monthOfYear) {
 			age--;
-		} else if (currentEpoch.monthOfYear == id.birthday.monthOfYear && currentEpoch.dayOfMonth < id.birthday.dayOfMonth) {
+		} else if (getCurrentEpoch().monthOfYear == id.birthday.monthOfYear && getCurrentEpoch().dayOfMonth < id.birthday.dayOfMonth) {
 			age--;
 		}
 
@@ -889,7 +889,7 @@ public abstract class Individual implements Equipper, Serializable {
 	 *
 	 * @author Matt
 	 */
-	public static abstract class Condition implements Comparable<Condition>, Serializable {
+	public static abstract class Condition implements Serializable {
 		private static final long serialVersionUID = -1125485475556985426L;
 
 		/** Affect the character suffering from this condition */
@@ -915,11 +915,6 @@ public abstract class Individual implements Equipper, Serializable {
 
 		/** The severity of this condition */
 		public abstract String getName();
-
-		@Override
-		public int compareTo(Condition other) {
-			return getClass().getSimpleName().compareTo(other.getClass().getSimpleName());
-		}
 	}
 
 

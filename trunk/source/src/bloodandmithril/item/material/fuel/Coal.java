@@ -1,7 +1,5 @@
 package bloodandmithril.item.material.fuel;
 
-import java.util.Map;
-
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.material.Fuel;
@@ -49,12 +47,6 @@ public class Coal extends Item implements Fuel {
 
 
 	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return new Ashes();
-	}
-
-
-	@Override
 	public float getEnergy() {
 		return 5000f;
 	}
@@ -63,5 +55,11 @@ public class Coal extends Item implements Fuel {
 	@Override
 	public void render() {
 
+	}
+
+
+	@Override
+	public Item combust() {
+		return new Ashes();
 	}
 }

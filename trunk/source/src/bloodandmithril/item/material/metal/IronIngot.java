@@ -1,19 +1,21 @@
 package bloodandmithril.item.material.metal;
 
+import static com.google.common.collect.Maps.newHashMap;
+
 import java.util.Map;
 
+import bloodandmithril.character.Individual;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.material.fuel.Coal;
-
-import com.google.common.collect.Iterables;
+import bloodandmithril.item.equipment.Craftable;
+import bloodandmithril.item.material.mineral.Hematite;
 
 /**
  * Lump of iron
  *
  * @author Matt
  */
-public class IronIngot extends Item {
+public class IronIngot extends Item implements Craftable {
 	private static final long serialVersionUID = 5784780777572238051L;
 
 	/**
@@ -49,19 +51,26 @@ public class IronIngot extends Item {
 
 
 	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		boolean hasCoal = Iterables.tryFind(with.entrySet(), entry -> {
-			return entry.getKey() instanceof Coal;
-		}).isPresent();
-
-		if (heatLevel >= 1400 && hasCoal) {
-			return new SteelIngot();
-		}
-		return this;
+	public void render() {
 	}
 
 
 	@Override
-	public void render() {
+	public boolean canBeCraftedBy(Individual individual) {
+		return individual.getSkills().getSmithing() > 0;
+	}
+
+
+	@Override
+	public Map<Item, Integer> getRequiredMaterials() {
+		Map<Item, Integer> map = newHashMap();
+		map.put(new Hematite(), 1);
+		return map;
+	}
+
+
+	@Override
+	public float getCraftingDuration() {
+		return 2f;
 	}
 }

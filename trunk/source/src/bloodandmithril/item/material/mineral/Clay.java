@@ -1,10 +1,7 @@
 package bloodandmithril.item.material.mineral;
 
-import java.util.Map;
-
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.material.brick.Brick;
 
 /**
  * Clay
@@ -43,12 +40,6 @@ public class Clay extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof Clay;
-	}
-
-
-	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return heatLevel > 500 ? new Brick() : this;
 	}
 
 

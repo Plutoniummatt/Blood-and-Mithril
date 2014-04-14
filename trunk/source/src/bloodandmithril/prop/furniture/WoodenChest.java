@@ -264,7 +264,7 @@ public class WoodenChest extends Construction implements Container {
 
 
 	@Override
-	protected Map<Item, Integer> getRequiredMaterials() {
+	public Map<Item, Integer> getRequiredMaterials() {
 		return newHashMap();
 	}
 

@@ -1,7 +1,5 @@
 package bloodandmithril.item.material.brick;
 
-import java.util.Map;
-
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
@@ -46,12 +44,6 @@ public class Brick extends Item {
 	@Override
 	public boolean sameAs(Item other) {
 		return other instanceof Brick;
-	}
-
-
-	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		return this;
 	}
 
 

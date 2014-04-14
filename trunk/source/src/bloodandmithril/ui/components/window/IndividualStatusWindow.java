@@ -2,6 +2,7 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.util.Fonts.defaultFont;
 
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,13 @@ public class IndividualStatusWindow extends Window {
 	private String vitals;
 	private boolean identified, identifying;
 
+	private static Comparator<Condition> sortingOrder = new Comparator<Individual.Condition>() {
+		@Override
+		public int compare(Condition o1, Condition o2) {
+			return o1.getClass().getSimpleName().compareTo(o2.getClass().getSimpleName());
+		}
+	};
+
 	private final Button identify = new Button(
 		"Identify",
 		Fonts.defaultFont,
@@ -64,7 +72,7 @@ public class IndividualStatusWindow extends Window {
 	public IndividualStatusWindow(final Individual individual, int x, int y, int length, int height, String title, boolean active) {
 		super(x, y, length, height, title, active, 400, 400, true, true);
 		this.individual = individual;
-		this.conditionsPanel = new ScrollableListingPanel<Condition, Object>(this) {
+		this.conditionsPanel = new ScrollableListingPanel<Condition, Object>(this, sortingOrder) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Condition>, Object> item) {
 				return "";

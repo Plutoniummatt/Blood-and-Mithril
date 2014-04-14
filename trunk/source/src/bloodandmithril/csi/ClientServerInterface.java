@@ -81,7 +81,6 @@ import bloodandmithril.csi.requests.DestroyTile;
 import bloodandmithril.csi.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.csi.requests.DrinkLiquid;
 import bloodandmithril.csi.requests.EquipOrUnequipItem;
-import bloodandmithril.csi.requests.FurnaceSmelt;
 import bloodandmithril.csi.requests.GenerateChunk;
 import bloodandmithril.csi.requests.GenerateChunk.GenerateChunkResponse;
 import bloodandmithril.csi.requests.IgniteFurnaceRequest;
@@ -419,7 +418,6 @@ public class ClientServerInterface {
 		kryo.register(Construct.class);
 		kryo.register(ConstructionRequest.class);
 		kryo.register(EquipperImpl.class);
-		kryo.register(FurnaceSmelt.class);
 		kryo.register(Container.class);
 		kryo.register(ContainerImpl.class);
 		kryo.register(Ashes.class);
@@ -665,11 +663,6 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending ignite furnace request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendFurnaceSmeltRequest(int furnaceId) {
-			client.sendTCP(new FurnaceSmelt(furnaceId));
-			Logger.networkDebug("Sending furnace smelt request", LogLevel.DEBUG);
-		}
-
 		public static synchronized void sendSynchronizeIndividualRequest(int id) {
 			client.sendUDP(new SynchronizeIndividual(id));
 			Logger.networkDebug("Sending sync individual request for " + id, LogLevel.TRACE);
@@ -898,7 +891,7 @@ public class ClientServerInterface {
 				-1,
 				false,
 				false,
-				new SynchronizeWorldStateResponse(WorldState.currentEpoch)
+				new SynchronizeWorldStateResponse(WorldState.getCurrentEpoch())
 			);
 		}
 

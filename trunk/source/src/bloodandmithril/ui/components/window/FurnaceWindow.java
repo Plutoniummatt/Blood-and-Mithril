@@ -2,6 +2,7 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.util.Fonts.defaultFont;
 
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,6 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.Fuel;
-import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -20,7 +20,6 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
-import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;
@@ -53,29 +52,20 @@ public class FurnaceWindow extends TradeWindow {
 		UIRef.BL
 	);
 
-	/** Button that begins the smelting process */
-	private final Button smeltButton = new Button(
-		"Smelt",
-		defaultFont,
-		0,
-		0,
-		70,
-		16,
-		() -> {
-			smelt();
-		},
-		Color.GREEN,
-		Color.ORANGE,
-		Color.WHITE,
-		UIRef.BL
-	);
-
-
 	/**
 	 * Constructor
 	 */
 	public FurnaceWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Individual proposer, Furnace furnace) {
-		super(x, y, length, height, title, active, minLength, minHeight, proposer, furnace);
+		super(x, y, length, height, title, active, minLength, minHeight, proposer, furnace, new Comparator<Item>() {
+			@Override
+			public int compare(Item o1, Item o2) {
+				if (o1 instanceof Fuel ^ o2 instanceof Fuel) {
+					return o1 instanceof Fuel ? -1 : 1;
+				} else {
+					return o1.getSingular(false).compareTo(o2.getSingular(false));
+				}
+			}
+		});
 		this.furnace = furnace;
 	}
 
@@ -85,15 +75,10 @@ public class FurnaceWindow extends TradeWindow {
 		if (furnace.isBurning()) {
 			for (HashMap<ListingMenuItem<Item>, Integer> hashMap : proposeePanel.getListing()) {
 				for (Entry<ListingMenuItem<Item>, Integer> entry : hashMap.entrySet()) {
-					if (entry.getKey().t instanceof Coal) {
+					if (entry.getKey().t instanceof Fuel) {
 						entry.getKey().button.setDownColor(Color.GREEN);
 						entry.getKey().button.setOverColor(Color.GREEN);
 						entry.getKey().button.setIdleColor(Color.GREEN);
-						entry.getKey().button.setTask(() -> {});
-					} else if (furnace.isSmelting()) {
-						entry.getKey().button.setDownColor(Util.Colors.DARK_RED);
-						entry.getKey().button.setOverColor(Util.Colors.DARK_RED);
-						entry.getKey().button.setIdleColor(Util.Colors.DARK_RED);
 						entry.getKey().button.setTask(() -> {});
 					}
 				}
@@ -105,27 +90,21 @@ public class FurnaceWindow extends TradeWindow {
 
 		super.internalWindowRender();
 
-		if (!furnace.isBurning()) {
-			igniteButton.render(
-				x + width/2,
-				y - height + 65,
-				isActive() && isProposeeItemsEmpty(),
-				getAlpha()
-			);
-		} else {
-			smeltButton.render(
-				x + width/2,
-				y - height + 65,
-				!furnace.isSmelting() && isActive(),
-				getAlpha()
-			);
-		}
+		igniteButton.render(
+			x + width/2,
+			y - height + 65,
+			isActive() && isProposeeItemsEmpty() && !furnace.isBurning(),
+			getAlpha()
+		);
 	}
 
 
+	/**
+	 * @return whether or not a listing item is able to be selected for trade
+	 */
 	@Override
-	protected boolean tradeButtonClickable() {
-		return super.tradeButtonClickable() && !furnace.isSmelting();
+	protected boolean isItemAvailableToTrade(Item item) {
+		return item instanceof Fuel; // by default
 	}
 
 
@@ -146,10 +125,8 @@ public class FurnaceWindow extends TradeWindow {
 		}).sum();
 
 		float fuelFraction = furnace.getCombustionDurationRemaining() / max;
-		float smeltingFraction = furnace.getSmeltingDurationRemaining() / Furnace.SMELTING_DURATION;
 
 		Color alphaGreen = Colors.modulateAlpha(Color.GREEN, isActive() ? getAlpha() : getAlpha() * 0.6f);
-		Color alphaRed = Colors.modulateAlpha(Color.RED, isActive() ? getAlpha() : getAlpha() * 0.6f);
 
 		// Fuel
 		UserInterface.shapeRenderer.filledRect(
@@ -162,20 +139,6 @@ public class FurnaceWindow extends TradeWindow {
 			alphaGreen,
 			alphaGreen
 		);
-
-		// Smelting
-		if (furnace.isSmelting()) {
-			UserInterface.shapeRenderer.filledRect(
-				x + width / 2 - 10,
-				y - 28,
-				smeltingFraction * maxWidth,
-				2,
-				alphaRed,
-				alphaRed,
-				alphaRed,
-				alphaRed
-			);
-		}
 
 		UserInterface.shapeRenderer.end();
 	}
@@ -191,12 +154,8 @@ public class FurnaceWindow extends TradeWindow {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		super.internalLeftClick(copy, windowsCopy);
 
-		if (furnace.isBurning()) {
-			smeltButton.click();
-		} else {
-			if (isProposeeItemsEmpty()) {
-				igniteButton.click();
-			}
+		if (isProposeeItemsEmpty() && !furnace.isBurning()) {
+			igniteButton.click();
 		}
 	}
 
@@ -216,13 +175,13 @@ public class FurnaceWindow extends TradeWindow {
 		if (finalDuration == 0f) {
 			UserInterface.addLayeredComponent(
 				new MessageWindow(
-					"Add coal to the furnace before attemping to ignite",
+					"Add fuel to the furnace before attemping to ignite",
 					Color.RED,
 					BloodAndMithrilClient.WIDTH/2 - 175,
 					BloodAndMithrilClient.HEIGHT/2 + 100,
 					350,
 					200,
-					"No coal",
+					"No fuel",
 					true,
 					100,
 					100
@@ -236,36 +195,6 @@ public class FurnaceWindow extends TradeWindow {
 			furnace.ignite();
 		} else {
 			ClientServerInterface.SendRequest.sendIgniteFurnaceRequest(furnace.id);
-		}
-	}
-
-
-	/**
-	 * Begins the smelting
-	 */
-	private void smelt() {
-		if (ClientServerInterface.isServer()) {
-			if (furnace.getInventory().isEmpty()) {
-				UserInterface.addLayeredComponent(
-					new MessageWindow(
-						"Can not smelt nothing",
-						Color.RED,
-						BloodAndMithrilClient.WIDTH/2 - 175,
-						BloodAndMithrilClient.HEIGHT/2 + 100,
-						350,
-						200,
-						"Furnace",
-						true,
-						100,
-						100
-					)
-				);
-				return;
-			}
-
-			furnace.smelt();
-		} else {
-			ClientServerInterface.SendRequest.sendFurnaceSmeltRequest(furnace.id);
 		}
 	}
 }

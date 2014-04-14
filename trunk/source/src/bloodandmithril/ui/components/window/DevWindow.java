@@ -3,6 +3,7 @@ package bloodandmithril.ui.components.window;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +82,7 @@ public class DevWindow extends Window {
 	public DevWindow(int x, int y, int length, int height, boolean active) {
 		super(x, y, length, height, "Developer", active, 500, 300, false, true);
 
-		panel = new ScrollableListingPanel<String, Object>(this) {
+		panel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder()) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
 				return "";
@@ -401,13 +402,13 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"Spawn Carpenter workshop on first individual",
+				"Spawn work bench on first individual",
 				new Button(
-					"Spawn Carpenter workshop on first individual",
+					"Spawn work bench on first individual",
 					Fonts.defaultFont,
 					0,
 					0,
-					310,
+					360,
 					16,
 					() -> {
 						Individual individual = Domain.getIndividuals().get(1);
@@ -444,7 +445,7 @@ public class DevWindow extends Window {
 						Individual individual = Domain.getIndividuals().get(1);
 						if (individual != null) {
 							Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-							furnace.setConstructionProgress(1f);
+							furnace.setConstructionProgress(0f);
 							Domain.getProps().put(furnace.id, furnace);
 						}
 					},

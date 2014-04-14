@@ -1,12 +1,9 @@
 package bloodandmithril.item.material.plant;
 
-import java.util.Map;
-
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.material.mineral.Ashes;
 
 /**
  * A Carrot
@@ -56,16 +53,6 @@ public class Carrot extends Item implements Consumable {
 			return true;
 		}
 		return false;
-	}
-
-
-	@Override
-	public Item combust(int heatLevel, Map<Item, Integer> with) {
-		if (heatLevel > 200 && heatLevel < 500f) {
-			return new CookedCarrot();
-		} else {
-			return new Ashes();
-		}
 	}
 
 
