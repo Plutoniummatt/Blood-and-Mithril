@@ -85,11 +85,6 @@ public class Broadsword extends OneHandedWeapon implements Craftable {
 
 
 	@Override
-	public void render() {
-	}
-
-
-	@Override
 	public boolean canBeCraftedBy(Individual individual) {
 		return individual.getSkills().getSmithing() >= 10;
 	}
@@ -108,5 +103,11 @@ public class Broadsword extends OneHandedWeapon implements Craftable {
 	@Override
 	public float getCraftingDuration() {
 		return 15f;
+	}
+
+
+	@Override
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

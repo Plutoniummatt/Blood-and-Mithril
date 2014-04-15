@@ -4,6 +4,8 @@ import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
  * {@link Item} representing {@link YellowBrickTile}
  *
@@ -48,6 +50,7 @@ public class Brick extends Item {
 
 
 	@Override
-	public void render() {
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

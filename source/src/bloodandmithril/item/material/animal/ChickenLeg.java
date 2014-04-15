@@ -10,6 +10,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.MessageWindow;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class ChickenLeg extends Item implements Consumable {
 	private static final long serialVersionUID = 327664484386522545L;
@@ -75,7 +76,7 @@ public class ChickenLeg extends Item implements Consumable {
 
 
 	@Override
-	public void render() {
-
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

@@ -5,6 +5,8 @@ import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.material.Fuel;
 import bloodandmithril.item.material.mineral.Ashes;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class Coal extends Item implements Fuel {
 	private static final long serialVersionUID = 6399640412435082388L;
 
@@ -47,13 +49,13 @@ public class Coal extends Item implements Fuel {
 
 
 	@Override
-	public void render() {
-
+	public Item consume() {
+		return new Ashes();
 	}
 
 
 	@Override
-	public Item consume() {
-		return new Ashes();
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

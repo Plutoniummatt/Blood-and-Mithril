@@ -1,18 +1,27 @@
 package bloodandmithril.item;
 
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static java.lang.Math.abs;
 
 import java.io.Serializable;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.item.material.metal.IronIngot;
+import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -36,7 +45,7 @@ public abstract class Item implements Serializable {
 	private Vector2 position, velocity;
 
 	/** ID of this item, it should be null when stored inside a container, this is a dynamically changing field, it is not an immutable */
-	private Integer id;
+	private Integer id, worldId;
 
 	/**
 	 * Constructor
@@ -59,8 +68,23 @@ public abstract class Item implements Serializable {
 	/** Returns true if two {@link Item}s have identical attributes */
 	public abstract boolean sameAs(Item other);
 
-	/** Implementation-specific render method */
-	public abstract void render();
+	/** Gets the {@link TextureRegion} of this {@link Item} */
+	protected abstract TextureRegion getTextureRegion();
+
+	/** Renders this item in world */
+	public void render() {
+		TextureRegion textureRegion = getTextureRegion();
+		spriteBatch.draw(textureRegion, position.x - textureRegion.getRegionWidth() / 2, position.y);
+	};
+
+
+	/**
+	 * Loads the textures
+	 */
+	public static void setup() {
+		IronIngot.IRONINGOT = new TextureRegion(Domain.gameWorldTexture, 372, 246, 18, 6);
+	}
+
 
 	/** A window with a description of this {@link Item} */
 	public Window getInfoWindow() {
@@ -78,27 +102,91 @@ public abstract class Item implements Serializable {
 		);
 	}
 
+
 	/** Update method, delta measured in seconds */
 	public void update(float delta) {
 		if (id == null) {
 			return;
 		}
 
-		position.add(velocity.cpy().mul(delta));
+		position.add(getVelocity().cpy().mul(delta));
 
-		float gravity = Domain.getWorld(id).getGravity();
-		if (abs((velocity.y - gravity * delta) * delta) < TILE_SIZE/2) {
-			velocity.y = velocity.y - delta * gravity;
+		float gravity = Domain.getWorld(getWorldId()).getGravity();
+		if (abs((getVelocity().y - gravity * delta) * delta) < TILE_SIZE/2) {
+			getVelocity().y = getVelocity().y - delta * gravity;
 		} else {
-			velocity.y = velocity.y * 0.8f;
+			getVelocity().y = getVelocity().y * 0.8f;
 		}
 
-		Tile tileUnder = Domain.getWorld(id).getTopography().getTile(position.x, position.y, true);
+		Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
 		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
-			position.y = Domain.getWorld(id).getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(position, true).y;
-			velocity.y = 0f;
+			position.y = Domain.getWorld(getWorldId()).getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(position, true).y;
+			getVelocity().y = 0f;
 		}
 	}
+
+
+	public ContextMenu getContextMenu() {
+		MenuItem takeItem = new MenuItem(
+			"Take",
+			() -> {
+				if (Domain.getSelectedIndividuals().size() == 1) {
+					Individual selected = Domain.getSelectedIndividuals().iterator().next();
+					if (ClientServerInterface.isServer()) {
+						selected.getAI().setCurrentTask(new TakeItem(selected, this));
+					} else {
+						ClientServerInterface.SendRequest.sendRequestTakeItem(selected, this);
+					}
+				}
+			},
+			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+			new ContextMenu(0, 0, new MenuItem(
+				"You have multiple individuals selected",
+				() -> {},
+				Colors.UI_DARK_GRAY,
+				Colors.UI_DARK_GRAY,
+				Colors.UI_DARK_GRAY,
+				null
+			)),
+			() -> {return Domain.getSelectedIndividuals().size() > 1;}
+		);
+
+		ContextMenu menu = new ContextMenu(0, 0,
+			new MenuItem(
+				"Show info",
+				() -> {
+					UserInterface.addLayeredComponent(
+						getInfoWindow()
+					);
+				},
+				Color.WHITE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			)
+		);
+
+		if (!Domain.getSelectedIndividuals().isEmpty()) {
+			menu.addMenuItem(takeItem);
+		}
+
+		return menu;
+	}
+
+
+	public boolean isMouseOver() {
+		float mx = BloodAndMithrilClient.getMouseWorldX();
+		float my = BloodAndMithrilClient.getMouseWorldY();
+
+		TextureRegion textureRegion = getTextureRegion();
+		int width = textureRegion.getRegionWidth();
+		int height = textureRegion.getRegionHeight();
+
+		return mx > position.x - width/2 && mx < position.x + width/2 && my > position.y && my < position.y + height;
+	}
+
 
 	@Override
 	public String toString() {
@@ -119,5 +207,21 @@ public abstract class Item implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Vector2 getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(Vector2 velocity) {
+		this.velocity = velocity;
+	}
+
+	public Integer getWorldId() {
+		return worldId;
+	}
+
+	public void setWorldId(Integer worldId) {
+		this.worldId = worldId;
 	}
 }

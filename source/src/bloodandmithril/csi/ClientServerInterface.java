@@ -47,6 +47,8 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.ai.task.MineTile.Mine;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.ai.task.OpenCraftingStation.OpenCraftingStationWindow;
+import bloodandmithril.character.ai.task.TakeItem;
+import bloodandmithril.character.ai.task.TakeItem.Take;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
@@ -96,6 +98,7 @@ import bloodandmithril.csi.requests.RequestClientList;
 import bloodandmithril.csi.requests.RequestClientList.RequestClientListResponse;
 import bloodandmithril.csi.requests.RequestDiscardLiquid;
 import bloodandmithril.csi.requests.RequestStartCrafting;
+import bloodandmithril.csi.requests.RequestTakeItem;
 import bloodandmithril.csi.requests.RequestTakeItemFromCraftingStation;
 import bloodandmithril.csi.requests.SendAttackRequest;
 import bloodandmithril.csi.requests.SendChatMessage;
@@ -108,6 +111,7 @@ import bloodandmithril.csi.requests.SynchronizeFaction;
 import bloodandmithril.csi.requests.SynchronizeFaction.SynchronizeFactionResponse;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
 import bloodandmithril.csi.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
+import bloodandmithril.csi.requests.SynchronizeItems;
 import bloodandmithril.csi.requests.SynchronizePropRequest;
 import bloodandmithril.csi.requests.SynchronizePropRequest.SynchronizePropResponse;
 import bloodandmithril.csi.requests.SynchronizeWorldState;
@@ -376,6 +380,10 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Take.class);
+		kryo.register(TakeItem.class);
+		kryo.register(RequestTakeItem.class);
+		kryo.register(SynchronizeItems.class);
 		kryo.register(Glass.class);
 		kryo.register(Clay.class);
 		kryo.register(Dirt.class);
@@ -658,6 +666,11 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending client name list request", LogLevel.DEBUG);
 		}
 
+		public static synchronized void sendRequestTakeItem(Individual individual, Item item) {
+			client.sendTCP(new RequestTakeItem(individual, item));
+			Logger.networkDebug("Sending take item request", LogLevel.DEBUG);
+		}
+
 		public static synchronized void sendIgniteFurnaceRequest(int furnaceId) {
 			client.sendTCP(new IgniteFurnaceRequest(furnaceId));
 			Logger.networkDebug("Sending ignite furnace request", LogLevel.DEBUG);
@@ -782,6 +795,16 @@ public class ClientServerInterface {
 				true,
 				true,
 				new DestroyPropNotification(propId)
+			);
+		}
+
+
+		public static synchronized void notifySyncItems() {
+			sendNotification(
+				-1,
+				true,
+				true,
+				new SynchronizeItems()
 			);
 		}
 

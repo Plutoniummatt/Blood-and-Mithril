@@ -33,6 +33,7 @@ import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
 import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
@@ -44,6 +45,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Predicate;
 
 /**
@@ -134,6 +136,16 @@ public class Domain {
 	}
 
 
+	public static int addItem(Item item, Vector2 position, World world) {
+		item.setWorldId(world.getWorldId());
+		item.setId(ParameterPersistenceService.getParameters().getNextItemId());
+		item.setPosition(position);
+		item.setVelocity(new Vector2());
+		getItems().put(item.getId(), item);
+		return item.getId();
+	}
+
+
 	public static Topography addTopography(int id, Topography topography) {
 		return topographies.put(id, topography);
 	}
@@ -191,6 +203,9 @@ public class Domain {
 			if (prop.depth == FOREGOUND) {
 				prop.render();
 			}
+		}
+		for (Item item : getItems().values()) {
+			item.render();
 		}
 		spriteBatch.end();
 		getActiveWorld().getTopography().renderForeGround(camX, camY);
@@ -325,7 +340,7 @@ public class Domain {
 	}
 
 
-	public static ConcurrentHashMap<Integer, Item> getItems() {
+	public synchronized static ConcurrentHashMap<Integer, Item> getItems() {
 		return items;
 	}
 

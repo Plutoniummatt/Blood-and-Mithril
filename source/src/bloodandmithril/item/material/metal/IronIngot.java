@@ -10,6 +10,8 @@ import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.item.material.mineral.Hematite;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
  * Lump of iron
  *
@@ -17,6 +19,7 @@ import bloodandmithril.item.material.mineral.Hematite;
  */
 public class IronIngot extends Item implements Craftable {
 	private static final long serialVersionUID = 5784780777572238051L;
+	public static TextureRegion IRONINGOT;;
 
 	/**
 	 * Constructor
@@ -51,11 +54,6 @@ public class IronIngot extends Item implements Craftable {
 
 
 	@Override
-	public void render() {
-	}
-
-
-	@Override
 	public boolean canBeCraftedBy(Individual individual) {
 		return individual.getSkills().getSmithing() > 0;
 	}
@@ -72,5 +70,11 @@ public class IronIngot extends Item implements Craftable {
 	@Override
 	public float getCraftingDuration() {
 		return 2f;
+	}
+
+
+	@Override
+	protected TextureRegion getTextureRegion() {
+		return IRONINGOT;
 	}
 }

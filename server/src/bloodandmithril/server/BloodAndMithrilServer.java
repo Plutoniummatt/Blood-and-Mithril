@@ -30,12 +30,10 @@ import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.Brick;
 import bloodandmithril.item.material.container.WoodenBucket;
 import bloodandmithril.item.material.fuel.Coal;
-import bloodandmithril.item.material.liquid.Acid;
 import bloodandmithril.item.material.liquid.Blood;
-import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
-import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
+import bloodandmithril.item.material.metal.IronIngot;
 import bloodandmithril.item.material.metal.SteelIngot;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
@@ -168,6 +166,7 @@ public class BloodAndMithrilServer {
 						if (counter % 2 == 0) {
 							for (Prop prop : Domain.getProps().values()) {
 								ClientServerInterface.SendNotification.notifySyncProp(prop);
+
 							}
 
 							for (Faction faction : Domain.getFactions().values()) {
@@ -181,6 +180,8 @@ public class BloodAndMithrilServer {
 							if (Domain.getActiveWorld() != null && Domain.getActiveWorld().getTopography() != null && Domain.getActiveWorld().getTopography().getFluids() != null) {
 								ClientServerInterface.SendNotification.notifySyncFluids();
 							}
+
+							ClientServerInterface.SendNotification.notifySyncItems();
 						}
 
 						if (counter >= 100) {
@@ -284,27 +285,7 @@ public class BloodAndMithrilServer {
 			}
 
 			if (keycode == Input.Keys.H) {
-				Domain.getActiveWorld().getTopography().getFluids().put(
-					0,
-					50,
-					new Fluid(FluidFraction.fraction(new Acid(), 16f))
-				);
-			}
-
-			if (keycode == Input.Keys.G) {
-				Domain.getActiveWorld().getTopography().getFluids().put(
-					0,
-					50,
-					new Fluid(FluidFraction.fraction(new CrudeOil(), 16f))
-				);
-			}
-
-			if (keycode == Input.Keys.F) {
-				Domain.getActiveWorld().getTopography().getFluids().put(
-					0,
-					50,
-					new Fluid(FluidFraction.fraction(new Milk(), 16f))
-				);
+				Domain.addItem(new IronIngot(), new Vector2(400, 500), Domain.getActiveWorld());
 			}
 
 			if (keycode == Input.Keys.P) {
