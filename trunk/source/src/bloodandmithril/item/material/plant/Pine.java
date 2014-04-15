@@ -3,6 +3,8 @@ package bloodandmithril.item.material.plant;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class Pine extends Item {
 	private static final long serialVersionUID = 1882318163053390592L;
 
@@ -39,6 +41,7 @@ public class Pine extends Item {
 
 
 	@Override
-	public void render() {
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

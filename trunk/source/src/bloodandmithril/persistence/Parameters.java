@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 import bloodandmithril.character.Individual.IndividualIdentifier;
+import bloodandmithril.item.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Epoch;
 
@@ -23,6 +24,7 @@ public class Parameters implements Serializable {
 	private int lightCounter = 0;
 	private int propIdCounter = 0;
 	private int worldIdCounter = 0;
+	private int itemCounter = 0;
 
 	private Vector2 camera;
 	private Epoch currentEpoch;
@@ -44,8 +46,8 @@ public class Parameters implements Serializable {
 		structureKeyCounter++;
 		return structureKeyCounter;
 	}
-	
-	
+
+
 	/**
 	 * Returns the world id counter
 	 */
@@ -62,8 +64,17 @@ public class Parameters implements Serializable {
 		individualIdCounter++;
 		return individualIdCounter;
 	}
-	
-	
+
+
+	/**
+	 * Returns the next unique identifier to use for {@link Item}
+	 */
+	public synchronized int getNextItemId() {
+		itemCounter++;
+		return itemCounter;
+	}
+
+
 	/**
 	 * Returns the next unique identifier to use for {@link Light}
 	 */

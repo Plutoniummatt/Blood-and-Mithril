@@ -3,6 +3,8 @@ package bloodandmithril.item.material.mineral;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class Glass extends Item {
 	private static final long serialVersionUID = -1491126318224334985L;
 
@@ -39,6 +41,7 @@ public class Glass extends Item {
 
 
 	@Override
-	public void render() {
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

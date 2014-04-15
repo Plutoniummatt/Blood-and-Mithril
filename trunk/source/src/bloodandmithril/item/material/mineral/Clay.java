@@ -3,6 +3,8 @@ package bloodandmithril.item.material.mineral;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
  * Clay
  *
@@ -44,6 +46,7 @@ public class Clay extends Item {
 
 
 	@Override
-	public void render() {
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

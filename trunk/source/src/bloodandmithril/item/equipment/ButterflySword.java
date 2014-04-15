@@ -70,11 +70,6 @@ public class ButterflySword extends OneHandedWeapon implements Craftable {
 
 
 	@Override
-	public void render() {
-	}
-
-
-	@Override
 	public boolean canBeCraftedBy(Individual individual) {
 		return individual.getSkills().getSmithing() >= 15;
 	}
@@ -94,5 +89,11 @@ public class ButterflySword extends OneHandedWeapon implements Craftable {
 	@Override
 	public float getCraftingDuration() {
 		return 15f;
+	}
+
+
+	@Override
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

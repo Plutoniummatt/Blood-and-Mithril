@@ -10,6 +10,7 @@ import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.item.material.metal.IronIngot;
 import bloodandmithril.item.material.plant.Pine;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
 /**
@@ -54,11 +55,6 @@ public class WoodenChest extends Item implements Craftable {
 
 
 	@Override
-	public void render() {
-	}
-
-
-	@Override
 	public boolean canBeCraftedBy(Individual individual) {
 		return false;
 	}
@@ -78,5 +74,11 @@ public class WoodenChest extends Item implements Craftable {
 	@Override
 	public float getCraftingDuration() {
 		return 30f;
+	}
+
+
+	@Override
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

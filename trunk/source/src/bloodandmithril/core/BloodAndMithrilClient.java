@@ -14,6 +14,7 @@ import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.DynamicLightingPostRenderer;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Equipable;
+import bloodandmithril.item.Item;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -61,10 +62,10 @@ import com.google.common.collect.Sets;
  * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
  * <b><p> Generation                                                                                     </b></p>
  * <b><p> Stockpiling                                              										 </b></p>
- * <b><p> Crafting                                              										 </b></p>
  *
  * DONE
  *
+ * <b><p> Crafting                                              										 </b></p>
  * <b><p> Networking                                                                                     </b></p>
  * <b><p> Text input (Renaming elves, setting save path etc)                                             </b></p>
  * <b><p> Trading	                                              										 </b></p>
@@ -168,6 +169,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Equipable.setup();
 		Prop.setup();
 		DynamicLightingPostRenderer.setup();
+		Item.setup();
 
 		UserInterface.UICamera = new OrthographicCamera(WIDTH, HEIGHT);
 		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);

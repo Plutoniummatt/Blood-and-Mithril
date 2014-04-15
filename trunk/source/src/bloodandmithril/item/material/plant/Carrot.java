@@ -5,6 +5,8 @@ import bloodandmithril.item.Consumable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
  * A Carrot
  *
@@ -57,7 +59,7 @@ public class Carrot extends Item implements Consumable {
 
 
 	@Override
-	public void render() {
-
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

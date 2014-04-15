@@ -12,6 +12,7 @@ import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.plant.Pine;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
 /**
@@ -80,11 +81,6 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 
 
 	@Override
-	public void render() {
-	}
-
-
-	@Override
 	public boolean canBeCraftedBy(Individual individual) {
 		return individual.getSkills().getCarpentry() >= 0;
 	}
@@ -101,5 +97,11 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 	@Override
 	public float getCraftingDuration() {
 		return 10f;
+	}
+
+
+	@Override
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

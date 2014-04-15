@@ -12,6 +12,8 @@ import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.mineral.Glass;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
  * A {@link Bottle} made from glass
  *
@@ -57,11 +59,6 @@ public class GlassBottle extends LiquidContainer implements Craftable {
 
 
 	@Override
-	public void render() {
-	}
-
-
-	@Override
 	public String getDescription() {
 		return "A bottle made from glass";
 	}
@@ -90,5 +87,11 @@ public class GlassBottle extends LiquidContainer implements Craftable {
 	@Override
 	public float getCraftingDuration() {
 		return 5f;
+	}
+
+
+	@Override
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

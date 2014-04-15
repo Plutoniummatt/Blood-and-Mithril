@@ -3,6 +3,8 @@ package bloodandmithril.item.misc;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
  * Class representing currency
  *
@@ -44,7 +46,7 @@ public class Currency extends Item {
 
 
 	@Override
-	public void render() {
-
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

@@ -10,6 +10,8 @@ import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.item.material.fuel.Coal;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
  * Lump of Steel
  *
@@ -51,11 +53,6 @@ public class SteelIngot extends Item implements Craftable {
 
 
 	@Override
-	public void render() {
-	}
-
-
-	@Override
 	public boolean canBeCraftedBy(Individual individual) {
 		return individual.getSkills().getSmithing() > 0;
 	}
@@ -73,5 +70,11 @@ public class SteelIngot extends Item implements Craftable {
 	@Override
 	public float getCraftingDuration() {
 		return 5f;
+	}
+
+
+	@Override
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

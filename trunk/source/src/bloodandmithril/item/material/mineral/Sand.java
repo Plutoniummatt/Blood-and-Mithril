@@ -4,6 +4,8 @@ import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
  * Sand, obtained as a result of mining {@link SandTile}
  *
@@ -52,6 +54,7 @@ public class Sand extends Item {
 
 
 	@Override
-	public void render() {
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

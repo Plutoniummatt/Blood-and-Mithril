@@ -3,6 +3,8 @@ package bloodandmithril.item.material.plant;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class CarrotSeed extends Seed {
 	private static final long serialVersionUID = -3918937697003306522L;
 
@@ -39,6 +41,7 @@ public class CarrotSeed extends Seed {
 
 
 	@Override
-	public void render() {
+	protected TextureRegion getTextureRegion() {
+		return null;
 	}
 }

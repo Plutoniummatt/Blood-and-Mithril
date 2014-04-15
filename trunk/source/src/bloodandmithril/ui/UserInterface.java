@@ -51,6 +51,7 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.Interface;
+import bloodandmithril.item.Item;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Prop;
@@ -790,19 +791,27 @@ public class UserInterface {
 			}
 		}
 
-		if (!newMenu.getMenuItems().isEmpty()) {
-			if (newMenu.getMenuItems().size() == 1) {
-				ContextMenu menu = newMenu.getMenuItems().get(0).menu;
-				if (menu != null) {
-					menu.x = getMouseScreenX();
-					menu.y = getMouseScreenY();
-					contextMenus.add(menu);
-				} else {
-					contextMenus.add(newMenu);
-				}
-			} else {
-				contextMenus.add(newMenu);
+		for (final Item item : Domain.getItems().values()) {
+			if (item.isMouseOver()) {
+				final ContextMenu secondaryMenu = item.getContextMenu();
+				newMenu.getMenuItems().add(
+					new MenuItem(
+						item.getSingular(true),
+						() -> {
+							secondaryMenu.x = getMouseScreenX();
+							secondaryMenu.y = getMouseScreenY();
+						},
+						Color.WHITE,
+						Color.GREEN,
+						Color.GRAY,
+						secondaryMenu
+					)
+				);
 			}
+		}
+
+		if (!newMenu.getMenuItems().isEmpty()) {
+			contextMenus.add(newMenu);
 		}
 
 		return clicked;

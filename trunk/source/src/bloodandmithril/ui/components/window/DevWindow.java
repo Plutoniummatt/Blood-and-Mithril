@@ -28,11 +28,8 @@ import bloodandmithril.item.material.brick.Brick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.container.WoodenBucket;
 import bloodandmithril.item.material.fuel.Coal;
-import bloodandmithril.item.material.liquid.Acid;
 import bloodandmithril.item.material.liquid.Blood;
-import bloodandmithril.item.material.liquid.CrudeOil;
 import bloodandmithril.item.material.liquid.Liquid;
-import bloodandmithril.item.material.liquid.Milk;
 import bloodandmithril.item.material.liquid.Water;
 import bloodandmithril.item.material.metal.IronIngot;
 import bloodandmithril.item.material.metal.SteelIngot;
@@ -228,10 +225,6 @@ public class DevWindow extends Window {
 			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickTile.class);
 		}
 
-		if (keyCode == Input.Keys.Z) {
-			Domain.getActiveWorld().getTopography().loadOrGenerateChunk(1, 1);
-		}
-
 		if (keyCode == Input.Keys.J) {
 			Domain.getActiveWorld().getTopography().getFluids().put(
 				Topography.convertToWorldTileCoord(getMouseWorldX()),
@@ -249,31 +242,12 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Input.Keys.H) {
-			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()),
-				Topography.convertToWorldTileCoord(getMouseWorldY()),
-				new Fluid(FluidFraction.fraction(new Acid(), 16f))
+			IronIngot ironIngot = new IronIngot();
+			Domain.addItem(
+				ironIngot,
+				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
+				Domain.getActiveWorld()
 			);
-		}
-
-		if (keyCode == Input.Keys.G) {
-			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()),
-				Topography.convertToWorldTileCoord(getMouseWorldY()),
-				new Fluid(FluidFraction.fraction(new CrudeOil(), 16f))
-			);
-		}
-
-		if (keyCode == Input.Keys.F) {
-			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()),
-				Topography.convertToWorldTileCoord(getMouseWorldY()),
-				new Fluid(FluidFraction.fraction(new Milk(), 16f))
-			);
-		}
-
-		if (keyCode == Input.Keys.C) {
-			UserInterface.refreshRefreshableWindows();
 		}
 
 		return false;
