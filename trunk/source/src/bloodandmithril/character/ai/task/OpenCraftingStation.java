@@ -3,12 +3,10 @@ package bloodandmithril.character.ai.task;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.crafting.CraftingStation;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.window.CraftingStationWindow;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.math.Vector2;
@@ -129,13 +127,7 @@ public class OpenCraftingStation extends CompositeAITask {
 
 	public static void openCraftingStationWindow(Individual individual, CraftingStation craftingStation) {
 		UserInterface.addLayeredComponentUnique(
-			new CraftingStationWindow(
-				BloodAndMithrilClient.WIDTH/2 - 375,
-				BloodAndMithrilClient.HEIGHT/2 + 150,
-				individual.getId().getFirstName() + " interacting with " + craftingStation.getTitle(),
-				individual,
-				craftingStation
-			)
+			craftingStation.getCraftingStationWindow(individual)
 		);
 	}
 }

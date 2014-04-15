@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.Individual;
-import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.AddLightRequest;
@@ -34,9 +33,10 @@ import bloodandmithril.prop.crafting.CraftingStation;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.window.CraftingStationWindow;
+import bloodandmithril.ui.components.window.FurnaceCraftingWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Util;
-import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
@@ -226,32 +226,6 @@ public class Furnace extends CraftingStation implements Container {
 			)
 		);
 
-		if (Domain.getSelectedIndividuals().size() > 0) {
-			final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-			MenuItem openChestMenuItem = new MenuItem(
-				"Open furnace",
-				() -> {
-					if (Domain.getSelectedIndividuals().size() == 1) {
-						if (ClientServerInterface.isServer()) {
-							selected.getAI().setCurrentTask(
-								new TradeWith(selected, this)
-							);
-						} else {
-							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
-						}
-					}
-				},
-				Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
-				Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
-				Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
-				new ContextMenu(0, 0, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
-				() -> {
-					return Domain.getSelectedIndividuals().size() > 1;
-				}
-			);
-			menu.addMenuItem(openChestMenuItem);
-		}
-
 		addCraftMenuItem(menu);
 		return menu;
 	}
@@ -413,5 +387,17 @@ public class Furnace extends CraftingStation implements Container {
 	@Override
 	public List<Item> getCraftables() {
 		return craftables;
+	}
+
+
+	@Override
+	public CraftingStationWindow getCraftingStationWindow(Individual individual) {
+		return new FurnaceCraftingWindow(
+			BloodAndMithrilClient.WIDTH/2 - 375,
+			BloodAndMithrilClient.HEIGHT/2 + 150,
+			individual.getId().getFirstName() + " interacting with " + getTitle(),
+			individual,
+			this
+		);
 	}
 }

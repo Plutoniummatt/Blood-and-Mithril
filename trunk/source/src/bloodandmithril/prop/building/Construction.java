@@ -137,35 +137,6 @@ public abstract class Construction extends Prop implements Container {
 		} else {
 			ContextMenu menu = new ContextMenu(0, 0);
 
-			menu.addMenuItem(
-				new MenuItem(
-					"Required materials",
-					() -> {
-						if (getConstructionProgress() == 1f) {
-							return;
-						}
-
-						UserInterface.addLayeredComponent(new RequiredMaterialsWindow(
-							BloodAndMithrilClient.WIDTH / 2 - 150,
-							BloodAndMithrilClient.HEIGHT / 2 + 100,
-							300,
-							200,
-							"Required materials",
-							true,
-							300,
-							200,
-							materialContainer,
-							getRequiredMaterials()
-						));
-					},
-					Color.WHITE,
-					Color.GREEN,
-					Color.GRAY,
-					null
-				)
-			);
-
-
 			if (Domain.getSelectedIndividuals().size() > 0) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
 				MenuItem openTransferItemsWindow = new MenuItem(
