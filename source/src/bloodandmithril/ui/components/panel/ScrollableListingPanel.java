@@ -94,8 +94,6 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 	@Override
 	public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		scrollWheelActive = isMouseWithin();
-
 		int size = 0;
 		for (Map<ListingMenuItem<T>, A> listing : listings) {
 			size += listing.size();
@@ -149,12 +147,17 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 	@Override
 	public boolean scrolled(int amount) {
+		scrollWheelActive = isMouseWithin();
 		if (scrollWheelActive) {
 			startingIndex += amount;
 
 			int size = 0;
 			for (Map<ListingMenuItem<T>, A> listing : listings) {
 				size += listing.size();
+			}
+
+			if (size == 0) {
+				return false;
 			}
 
 			if (startingIndex < 0) {

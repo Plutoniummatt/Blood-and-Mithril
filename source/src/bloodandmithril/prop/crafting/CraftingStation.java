@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -21,6 +22,7 @@ import bloodandmithril.prop.building.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.window.CraftingStationWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
@@ -136,6 +138,12 @@ public abstract class CraftingStation extends Construction {
 					getAction(),
 					() -> {
 						if (Domain.getSelectedIndividuals().size() == 1) {
+							AITask currentTask = selected.getAI().getCurrentTask();
+							if (currentTask instanceof Craft && ((Craft)currentTask).getCraftingStationId() == id) {
+								OpenCraftingStation.openCraftingStationWindow(selected, this);
+								return;
+							}
+
 							if (ClientServerInterface.isServer()) {
 								selected.getAI().setCurrentTask(new OpenCraftingStation(selected, this));
 							} else {
@@ -282,5 +290,16 @@ public abstract class CraftingStation extends Construction {
 
 	public boolean isOccupied() {
 		return occupiedBy != null;
+	}
+
+
+	public CraftingStationWindow getCraftingStationWindow(Individual individual) {
+		return new CraftingStationWindow(
+			BloodAndMithrilClient.WIDTH/2 - 375,
+			BloodAndMithrilClient.HEIGHT/2 + 150,
+			individual.getId().getFirstName() + " interacting with " + getTitle(),
+			individual,
+			this
+		);
 	}
 }

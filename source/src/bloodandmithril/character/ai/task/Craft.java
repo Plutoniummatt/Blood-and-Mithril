@@ -18,6 +18,7 @@ public class Craft extends CompositeAITask {
 	private static final long serialVersionUID = 4625886192088540454L;
 	private Item item;
 	private int quantity;
+	private int craftingStationId;
 	private boolean bulk;
 
 	/**
@@ -39,7 +40,13 @@ public class Craft extends CompositeAITask {
 		this.item = item;
 		this.quantity = quantity;
 		this.bulk = quantity > 1;
+		this.craftingStationId = craftingStation.id;
 		appendTask(new Crafting(hostId, craftingStation.id));
+	}
+
+
+	public int getCraftingStationId() {
+		return craftingStationId;
 	}
 
 

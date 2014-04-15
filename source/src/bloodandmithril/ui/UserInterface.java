@@ -791,7 +791,18 @@ public class UserInterface {
 		}
 
 		if (!newMenu.getMenuItems().isEmpty()) {
-			contextMenus.add(newMenu);
+			if (newMenu.getMenuItems().size() == 1) {
+				ContextMenu menu = newMenu.getMenuItems().get(0).menu;
+				if (menu != null) {
+					menu.x = getMouseScreenX();
+					menu.y = getMouseScreenY();
+					contextMenus.add(menu);
+				} else {
+					contextMenus.add(newMenu);
+				}
+			} else {
+				contextMenus.add(newMenu);
+			}
 		}
 
 		return clicked;

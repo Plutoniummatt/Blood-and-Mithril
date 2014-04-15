@@ -47,13 +47,13 @@ import com.badlogic.gdx.graphics.Color;
 public class CraftingStationWindow extends Window implements Refreshable {
 
 	private final Individual individual;
-	private final CraftingStation craftingStation;
 	private Item currentlySelectedToCraft;
-	private boolean enoughMaterials;
+	protected final CraftingStation craftingStation;
+	protected boolean enoughMaterials;
 
 	private ScrollableListingPanel<Item, String> craftablesListing;
 	private RequiredMaterialsPanel requiredMaterialsListing;
-	private Button showInfoButton, craftButton, takeFinishedItemButton;
+	protected Button showInfoButton, craftButton, takeFinishedItemButton;
 
 	private static Comparator<Item> sortingComparator = new Comparator<Item>() {
 		@Override
@@ -265,9 +265,9 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		craftablesListing.height = height;
 
 		requiredMaterialsListing.x = x + width / 2 - 40;
-		requiredMaterialsListing.y = y - 120;
+		requiredMaterialsListing.y = y - 130;
 		requiredMaterialsListing.width = width / 2 + 40;
-		requiredMaterialsListing.height = height - 120;
+		requiredMaterialsListing.height = height - 130;
 
 		craftablesListing.render();
 		requiredMaterialsListing.render();
@@ -286,6 +286,14 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		defaultFont.draw(spriteBatch, selected + currentlySelectedToCraft.getSingular(true) + progress, x + width / 2 - 33, y - 33);
 		defaultFont.draw(spriteBatch, "Required materials:", x + width / 2 - 33, y - 133);
 
+		renderButtons();
+	}
+
+
+	/**
+	 * Renders the buttons on this {@link CraftingStationWindow}
+	 */
+	protected void renderButtons() {
 		showInfoButton.render(
 			x + width / 2 + 11,
 			y - 45,
