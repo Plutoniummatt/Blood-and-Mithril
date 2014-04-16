@@ -79,11 +79,4 @@ public class ChickenLeg extends Item implements Consumable {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
-
-
-	@Override
-	protected float getRenderAngle() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }

@@ -3,6 +3,7 @@ package bloodandmithril.item;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static java.lang.Math.abs;
+import static java.lang.Math.max;
 
 import java.io.Serializable;
 
@@ -16,6 +17,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.tile.Tile;
@@ -47,6 +49,9 @@ public abstract class Item implements Serializable {
 	/** ID of this item, it should be null when stored inside a container, this is a dynamically changing field, it is not an immutable */
 	private Integer id, worldId;
 
+	/** Rotating when in world */
+	private float angle, angularVelocity = (Util.getRandom().nextFloat() - 0.5f) * 40f;
+
 	/**
 	 * Constructor
 	 */
@@ -54,6 +59,8 @@ public abstract class Item implements Serializable {
 		this.mass = mass;
 		this.equippable = equippable;
 		this.value = value;
+
+		this.angle = rotates() ? Util.getRandom().nextFloat() * 360f : 0f;
 	}
 
 	/** Get the singular name for this item */
@@ -71,8 +78,10 @@ public abstract class Item implements Serializable {
 	/** Gets the {@link TextureRegion} of this {@link Item} */
 	protected abstract TextureRegion getTextureRegion();
 
-	/** Returns the angle this item will be rendered in the world */
-	protected abstract float getRenderAngle();
+	/** Whether to call standard {@link #update(float)} or {@link #updateRigid(float)} */
+	protected boolean rotates() {
+		return false;
+	}
 
 	/** Returns the vector from the bottom left of the texture region to the centre of rotation (location of item) */
 	protected Vector2 getRenderCentreOffset() {
@@ -94,7 +103,7 @@ public abstract class Item implements Serializable {
 			textureRegion.getRegionHeight(),
 			1f,
 			1f,
-			getRenderAngle()
+			angle
 		);
 	};
 
@@ -111,7 +120,7 @@ public abstract class Item implements Serializable {
 
 		// Translate coordinate system to have origin on the centre of the item (rotation pivot of rendering), then work out mouse coordinates in this coordinate system
 		// Then apply rotation of -(renderAngle) to mouse coordinates in these new coordinates, result should be a rectangle. Then apply standard logic.
-		mouseCoords.sub(position).add(getRenderCentreOffset().rotate(getRenderAngle())).rotate(-getRenderAngle());
+		mouseCoords.sub(position).add(getRenderCentreOffset().rotate(angle)).rotate(-angle);
 
 		return mouseCoords.x > 0 && mouseCoords.x < width && mouseCoords.y > 0 && mouseCoords.y < height;
 	}
@@ -144,23 +153,62 @@ public abstract class Item implements Serializable {
 
 	/** Update method, delta measured in seconds */
 	public void update(float delta) {
-		if (id == null) {
+		if (getId() == null) {
 			return;
 		}
 
-		position.add(getVelocity().cpy().mul(delta));
+		Vector2 previousPosition = position.cpy();
+		Vector2 previousVelocity = velocity.cpy();
+
+		position.add(velocity.cpy().mul(delta));
 
 		float gravity = Domain.getWorld(getWorldId()).getGravity();
-		if (abs((getVelocity().y - gravity * delta) * delta) < TILE_SIZE/2) {
-			getVelocity().y = getVelocity().y - delta * gravity;
+		if (abs((velocity.y - gravity * delta) * delta) < TILE_SIZE/2) {
+			velocity.y = velocity.y - delta * gravity;
 		} else {
-			getVelocity().y = getVelocity().y * 0.8f;
+			velocity.y = velocity.y * 0.8f;
 		}
 
 		Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
+		if (rotates() && tileUnder.isPassable()) {
+			angle = angle + angularVelocity;
+		}
+
 		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
-			position.y = Domain.getWorld(getWorldId()).getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(position, true).y;
-			getVelocity().y = 0f;
+			Vector2 trial = position.cpy();
+			trial.y += -previousVelocity.y*delta;
+
+			if (Domain.getWorld(getWorldId()).getTopography().getTile(trial.x, trial.y, true).isPassable()) {
+				if (previousVelocity.y <= 0f) {
+
+					int i = (int)angle % 360;
+					if (i < 0) {
+						i = i + 360;
+					}
+					boolean pointingUp = i > 350 || i > 0 && i < 190;
+					if (pointingUp) {
+						if (abs(velocity.y) > 400f) {
+							angularVelocity = (Util.getRandom().nextFloat() - 0.5f) * 40f;
+						} else {
+							angularVelocity = max(angularVelocity * 0.6f, 5f);
+						}
+						setPosition(previousPosition);
+						velocity.y = -previousVelocity.y * 0.7f;
+						velocity.x = previousVelocity.x * 0.3f;
+					} else {
+						angularVelocity = 0f;
+						velocity.x = velocity.x * 0.3f;
+						velocity.y = 0f;
+						position.y = Domain.getWorld(getWorldId()).getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getPosition(), true).y;
+					}
+				} else {
+					setPosition(previousPosition);
+					velocity.y = -previousVelocity.y;
+				}
+			} else {
+				velocity.x = 0f;
+				setPosition(previousPosition);
+			}
 		}
 	}
 

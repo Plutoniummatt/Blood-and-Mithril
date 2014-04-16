@@ -33,7 +33,6 @@ import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Blood;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Water;
-import bloodandmithril.item.material.metal.IronIngot;
 import bloodandmithril.item.material.metal.SteelIngot;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
@@ -282,10 +281,6 @@ public class BloodAndMithrilServer {
 					50,
 					new Fluid(FluidFraction.fraction(new Blood(), 16f))
 				);
-			}
-
-			if (keycode == Input.Keys.H) {
-				Domain.addItem(new IronIngot(), new Vector2(400, 500), Domain.getActiveWorld());
 			}
 
 			if (keycode == Input.Keys.P) {
