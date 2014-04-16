@@ -49,4 +49,11 @@ public class Clay extends Item {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected float getRenderAngle() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

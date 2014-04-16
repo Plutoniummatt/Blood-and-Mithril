@@ -77,4 +77,11 @@ public class IronIngot extends Item implements Craftable {
 	protected TextureRegion getTextureRegion() {
 		return IRONINGOT;
 	}
+
+
+	@Override
+	protected float getRenderAngle() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

@@ -242,10 +242,10 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Input.Keys.H) {
-			IronIngot ironIngot = new IronIngot();
 			Domain.addItem(
-				ironIngot,
+				new Broadsword(10),
 				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
+				new Vector2(new Vector2(100f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
 				Domain.getActiveWorld()
 			);
 		}

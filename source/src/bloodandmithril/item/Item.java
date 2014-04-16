@@ -71,11 +71,50 @@ public abstract class Item implements Serializable {
 	/** Gets the {@link TextureRegion} of this {@link Item} */
 	protected abstract TextureRegion getTextureRegion();
 
+	/** Returns the angle this item will be rendered in the world */
+	protected abstract float getRenderAngle();
+
+	/** Returns the vector from the bottom left of the texture region to the centre of rotation (location of item) */
+	protected Vector2 getRenderCentreOffset() {
+		return new Vector2(getTextureRegion().getRegionWidth() / 2, 0f);
+	}
+
 	/** Renders this item in world */
 	public void render() {
 		TextureRegion textureRegion = getTextureRegion();
-		spriteBatch.draw(textureRegion, position.x - textureRegion.getRegionWidth() / 2, position.y);
+		Vector2 offset = getRenderCentreOffset();
+
+		spriteBatch.draw(
+			textureRegion,
+			position.x - offset.x,
+			position.y - offset.y,
+			offset.x,
+			offset.y,
+			textureRegion.getRegionWidth(),
+			textureRegion.getRegionHeight(),
+			1f,
+			1f,
+			getRenderAngle()
+		);
 	};
+
+
+	public boolean isMouseOver() {
+		Vector2 mouseCoords = new Vector2(
+			BloodAndMithrilClient.getMouseWorldX(),
+			BloodAndMithrilClient.getMouseWorldY()
+		);
+
+		TextureRegion textureRegion = getTextureRegion();
+		int width = textureRegion.getRegionWidth();
+		int height = textureRegion.getRegionHeight();
+
+		// Translate coordinate system to have origin on the centre of the item (rotation pivot of rendering), then work out mouse coordinates in this coordinate system
+		// Then apply rotation of -(renderAngle) to mouse coordinates in these new coordinates, result should be a rectangle. Then apply standard logic.
+		mouseCoords.sub(position).add(getRenderCentreOffset().rotate(getRenderAngle())).rotate(-getRenderAngle());
+
+		return mouseCoords.x > 0 && mouseCoords.x < width && mouseCoords.y > 0 && mouseCoords.y < height;
+	}
 
 
 	/**
@@ -173,18 +212,6 @@ public abstract class Item implements Serializable {
 		}
 
 		return menu;
-	}
-
-
-	public boolean isMouseOver() {
-		float mx = BloodAndMithrilClient.getMouseWorldX();
-		float my = BloodAndMithrilClient.getMouseWorldY();
-
-		TextureRegion textureRegion = getTextureRegion();
-		int width = textureRegion.getRegionWidth();
-		int height = textureRegion.getRegionHeight();
-
-		return mx > position.x - width/2 && mx < position.x + width/2 && my > position.y && my < position.y + height;
 	}
 
 

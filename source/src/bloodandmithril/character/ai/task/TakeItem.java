@@ -82,7 +82,7 @@ public class TakeItem extends CompositeAITask {
 		@Override
 		public void execute(float delta) {
 			Individual individual = Domain.getIndividuals().get(hostId.getId());
-			if (individual.getState().position.cpy().sub(item.getPosition()).len() < 2 * Topography.TILE_SIZE) {
+			if (individual.getInteractionBox().isWithinBox(item.getPosition())) {
 				individual.giveItem(item);
 				Domain.getItems().remove(item.getId());
 			}

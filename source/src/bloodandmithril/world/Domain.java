@@ -15,7 +15,6 @@ import static com.badlogic.gdx.Gdx.gl20;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
-import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -136,11 +135,11 @@ public class Domain {
 	}
 
 
-	public static int addItem(Item item, Vector2 position, World world) {
+	public static int addItem(Item item, Vector2 position, Vector2 velocity, World world) {
 		item.setWorldId(world.getWorldId());
 		item.setId(ParameterPersistenceService.getParameters().getNextItemId());
 		item.setPosition(position);
-		item.setVelocity(new Vector2());
+		item.setVelocity(velocity);
 		getItems().put(item.getId(), item);
 		return item.getId();
 	}
@@ -156,7 +155,7 @@ public class Domain {
 		individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
 
 		gameWorldTexture.setFilter(Linear, Linear);
-		individualTexture.setFilter(Linear, Nearest);
+		individualTexture.setFilter(Linear, Linear);
 
 		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
 		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);

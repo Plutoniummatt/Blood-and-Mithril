@@ -45,4 +45,10 @@ public class Ashes extends Item {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected float getRenderAngle() {
+		return 0;
+	}
 }
