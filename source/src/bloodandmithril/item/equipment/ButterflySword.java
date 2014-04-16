@@ -94,13 +94,18 @@ public class ButterflySword extends OneHandedWeapon implements Craftable {
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return null;
+		return texture;
 	}
 
 
 	@Override
-	protected float getRenderAngle() {
-		// TODO Auto-generated method stub
-		return 0;
+	protected boolean rotates() {
+		return true;
+	}
+
+
+	@Override
+	protected Vector2 getRenderCentreOffset() {
+		return new Vector2(getTextureRegion().getRegionWidth() * (5f / 7f), getTextureRegion().getRegionHeight() / 2);
 	}
 }
