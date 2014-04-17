@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static java.lang.Math.min;
@@ -35,9 +37,13 @@ import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 /**
@@ -280,291 +286,369 @@ public class InventoryWindow extends Window implements Refreshable {
 
 	/** Determines which context menu to use */
 	private ContextMenu determineMenu(final Item item, boolean equipped) {
+		ContextMenu toReturn = null;
+
 		if (item instanceof Consumable) {
-			MenuItem consume = new MenuItem(
-				"Consume",
-				() -> {
-					if (ClientServerInterface.isServer()) {
-						if (item instanceof Consumable && host instanceof Individual && ((Consumable)item).consume((Individual)host)) {
-							host.takeItem(item);
-						}
-					} else {
-						ClientServerInterface.SendRequest.sendConsumeItemRequest((Consumable)item, ((Individual)host).getId().getId());
-					}
-					refresh();
-				},
-				Color.WHITE,
-				Color.GREEN,
-				Color.WHITE,
-				null
-			);
-
-			ContextMenu contextMenu = new ContextMenu(x, y,
-				InventoryItemContextMenuConstructor.showInfo(item)
-			);
-
-			if (host instanceof Individual) {
-				contextMenu.addMenuItem(consume);
-			}
-			return contextMenu;
+			toReturn = consumableMenu(item);
 		}
 
 		if (item instanceof LiquidContainer) {
-			MenuItem drink = new MenuItem(
-				"Drink from",
-				() -> {
+			toReturn = liquidContainerMenu(item);
+		}
+
+		if (item instanceof Equipable) {
+			toReturn = equippableMenu(item, equipped);
+		}
+
+		if (toReturn == null) {
+			toReturn = new ContextMenu(x, y,InventoryItemContextMenuConstructor.showInfo(item));
+		}
+
+		toReturn.addMenuItem(new MenuItem(
+			"Discard",
+			() -> {
+				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
-							BloodAndMithrilClient.WIDTH / 2 - 125,
-							BloodAndMithrilClient.HEIGHT/2 + 50,
+							WIDTH / 2 - 125,
+							HEIGHT/2 + 50,
 							250,
 							100,
-							"Amount",
+							"Quantity",
 							250,
 							100,
 							args -> {
 								try {
-									float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
-
-									if (amount < 0.01f) {
-										UserInterface.addMessage("Too little to drink", "It would be a waste of time to drink this little, enter a larger amount");
-										return;
-									}
-
-									if (ClientServerInterface.isServer()) {
-										host.takeItem(item);
-										LiquidContainer newContainer = ((LiquidContainer) item).clone();
-										newContainer.drinkFrom(amount, (Individual)host);
-										host.giveItem(newContainer);
-										refresh();
-									} else {
-										ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (LiquidContainer)item, Float.parseFloat((String)args[0]));
-									}
+									int quantity = 0;
+									quantity = Integer.parseInt(args[0].toString());
+									discard(item, quantity);
 								} catch (NumberFormatException e) {
-									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+									UserInterface.addMessage("Error", "Can not recognise " + args[0].toString() + " as a quantity");
 								}
 							},
-							"Drink",
+							"Confirm",
 							true,
 							""
 						)
 					);
-				},
-				Colors.UI_GRAY,
-				Color.GREEN,
-				Color.WHITE,
-				null
-			);
+				} else {
+					discard(item, 1);
+				}
+			},
+			Colors.UI_GRAY,
+			Color.GREEN,
+			Color.WHITE,
+			null
+		));
 
-			MenuItem emptyContainerContents = new MenuItem(
-				"Discard",
-				() -> {
-					UserInterface.addLayeredComponent(
-						new TextInputWindow(
-							BloodAndMithrilClient.WIDTH / 2 - 125,
-							BloodAndMithrilClient.HEIGHT/2 + 50,
-							250,
-							100,
-							"Amount",
-							250,
-							100,
-							args -> {
-								try {
-									float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
+		return toReturn;
+	}
 
-									if (amount < 0.01f) {
-										UserInterface.addMessage("Too little to discard", "Its too little to discard, enter a larger amount");
-										return;
-									}
 
-									BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(
-										new JITTask() {
-											@Override
-											public void execute(Object... args) {
-												if (ClientServerInterface.isServer()) {
-													((Individual)host).getAI().setCurrentTask(
-														new DiscardLiquid(
-															(Individual) host,
-															(int) args[0],
-															(int) args[1],
-															(LiquidContainer) item,
-															amount
-														)
-													);
-												} else {
-													ClientServerInterface.SendRequest.sendDiscardLiquidRequest(
+	private void discard(final Item item, int quantity) {
+		if (isServer()) {
+			Vector2 pos = ((Individual) host).getState().position;
+			for (int i = quantity; i !=0; i--) {
+				if (host.takeItem(item) == 1) {
+					Domain.addItem(
+						item.copy(),
+						new Vector2(pos.x, pos.y + ((Individual) host).getHeight()),
+						new Vector2(100f, 0).rotate(Util.getRandom().nextFloat() * 180f),
+						Domain.getWorlds().get(((Individual)host).getWorldId())
+					);
+				} else {
+					break;
+				}
+			}
+			UserInterface.refreshRefreshableWindows();
+		} else {
+			// TODO Discard items over network
+		}
+	}
+
+
+	private ContextMenu equippableMenu(final Item item, boolean equipped) {
+		MenuItem equipUnequip = equipped ? new MenuItem(
+			"Unequip",
+			() -> {
+				if (ClientServerInterface.isServer()) {
+					host.unequip((Equipable)item);
+				} else {
+					ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(false, (Equipable)item, ((Individual)host).getId().getId());
+				}
+				refresh();
+			},
+			Colors.UI_GRAY,
+			Color.GREEN,
+			Color.WHITE,
+			null
+		) :
+
+		new MenuItem(
+			"Equip",
+			() -> {
+				if (ClientServerInterface.isServer()) {
+					host.equip((Equipable)item);
+				} else {
+					ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(true, (Equipable)item, ((Individual)host).getId().getId());
+				}
+				refresh();
+			},
+			Colors.UI_GRAY,
+			Color.GREEN,
+			Color.WHITE,
+			null
+		);
+
+		return new ContextMenu(x, y,
+			InventoryItemContextMenuConstructor.showInfo(item),
+			equipUnequip
+		);
+	}
+
+
+	private ContextMenu liquidContainerMenu(final Item item) {
+		MenuItem drink = new MenuItem(
+			"Drink from",
+			() -> {
+				UserInterface.addLayeredComponent(
+					new TextInputWindow(
+						BloodAndMithrilClient.WIDTH / 2 - 125,
+						BloodAndMithrilClient.HEIGHT/2 + 50,
+						250,
+						100,
+						"Amount",
+						250,
+						100,
+						args -> {
+							try {
+								float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
+
+								if (amount < 0.01f) {
+									UserInterface.addMessage("Too little to drink", "It would be a waste of time to drink this little, enter a larger amount");
+									return;
+								}
+
+								if (ClientServerInterface.isServer()) {
+									host.takeItem(item);
+									LiquidContainer newContainer = ((LiquidContainer) item).clone();
+									newContainer.drinkFrom(amount, (Individual)host);
+									host.giveItem(newContainer);
+									refresh();
+								} else {
+									ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (LiquidContainer)item, Float.parseFloat((String)args[0]));
+								}
+							} catch (NumberFormatException e) {
+								UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+							}
+						},
+						"Drink",
+						true,
+						""
+					)
+				);
+			},
+			Colors.UI_GRAY,
+			Color.GREEN,
+			Color.WHITE,
+			null
+		);
+
+		MenuItem emptyContainerContents = new MenuItem(
+			"Discard content",
+			() -> {
+				UserInterface.addLayeredComponent(
+					new TextInputWindow(
+						BloodAndMithrilClient.WIDTH / 2 - 125,
+						BloodAndMithrilClient.HEIGHT/2 + 50,
+						250,
+						100,
+						"Amount",
+						250,
+						100,
+						args -> {
+							try {
+								float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
+
+								if (amount < 0.01f) {
+									UserInterface.addMessage("Too little to discard", "Its too little to discard, enter a larger amount");
+									return;
+								}
+
+								BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(
+									new JITTask() {
+										@Override
+										public void execute(Object... args) {
+											if (ClientServerInterface.isServer()) {
+												((Individual)host).getAI().setCurrentTask(
+													new DiscardLiquid(
+														(Individual) host,
 														(int) args[0],
 														(int) args[1],
-														(Individual) host,
 														(LiquidContainer) item,
 														amount
-													);
-												}
+													)
+												);
+											} else {
+												ClientServerInterface.SendRequest.sendDiscardLiquidRequest(
+													(int) args[0],
+													(int) args[1],
+													(Individual) host,
+													(LiquidContainer) item,
+													amount
+												);
 											}
-										},
-										true
-									) {
-										@Override
-										public String getShortDescription() {
-											return "Discard contents";
 										}
-									});
-
-									setClosing(true);
-								} catch (NumberFormatException e) {
-									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
-								}
-							},
-							"Discard",
-							true,
-							""
-						)
-					);
-				},
-				Colors.UI_GRAY,
-				Color.GREEN,
-				Color.WHITE,
-				null
-			);
-
-			MenuItem transferContainerContents = new MenuItem(
-				"Transfer",
-				() -> {
-					UserInterface.addLayeredComponent(
-						new TextInputWindow(
-							BloodAndMithrilClient.WIDTH / 2 - 125,
-							BloodAndMithrilClient.HEIGHT/2 + 50,
-							250,
-							100,
-							"Amount",
-							250,
-							100,
-							args -> {
-								try {
-									float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
-									if (amount < 0.01f) {
-										UserInterface.addMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
-										return;
+									},
+									true
+								) {
+									@Override
+									public String getShortDescription() {
+										return "Discard contents";
 									}
+								});
 
-									for (ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
+								setClosing(true);
+							} catch (NumberFormatException e) {
+								UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+							}
+						},
+						"Discard content",
+						true,
+						""
+					)
+				);
+			},
+			Colors.UI_GRAY,
+			Color.GREEN,
+			Color.WHITE,
+			null
+		);
+
+		MenuItem transferContainerContents = new MenuItem(
+			"Transfer",
+			() -> {
+				UserInterface.addLayeredComponent(
+					new TextInputWindow(
+						BloodAndMithrilClient.WIDTH / 2 - 125,
+						BloodAndMithrilClient.HEIGHT/2 + 50,
+						250,
+						100,
+						"Amount",
+						250,
+						100,
+						args -> {
+							try {
+								float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
+								if (amount < 0.01f) {
+									UserInterface.addMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
+									return;
+								}
+
+								for (ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
+									listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
+									listItem.button.setDownColor(Colors.UI_DARK_GRAY);
+									listItem.button.setOverColor(Colors.UI_DARK_GRAY);
+									listItem.menu = null;
+								}
+								for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
+									if (listItem.t instanceof LiquidContainer) {
+
+										if (listItem.t == item) {
+											listItem.button.setIdleColor(Colors.UI_DARK_GREEN);
+											listItem.button.setDownColor(Colors.UI_DARK_GREEN);
+											listItem.button.setOverColor(Colors.UI_DARK_GREEN);
+											listItem.menu = null;
+										} else {
+											listItem.button.setIdleColor(Color.ORANGE);
+											setActive(true);
+											LiquidContainer toTransferTo = ((LiquidContainer)listItem.t).clone();
+											listItem.menu = null;
+											listItem.button.setTask(() -> {
+												if (isServer()) {
+													Individual individual = (Individual) host;
+													LiquidContainer container = (LiquidContainer) item;
+													individual.takeItem(container);
+													individual.takeItem(listItem.t);
+													LiquidContainer newContainer = container.clone();
+													Map<Class<? extends Liquid>, Float> subtracted = newContainer.subtract(amount);
+													Map<Class<? extends Liquid>, Float> remainder = toTransferTo.add(subtracted);
+													if (!remainder.isEmpty()) {
+														newContainer.add(remainder);
+													}
+													individual.giveItem(newContainer);
+													individual.giveItem(toTransferTo);
+													refresh();
+												} else {
+													// TODO Transfer liquid over network
+												}
+											});
+										}
+									} else {
 										listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
 										listItem.button.setDownColor(Colors.UI_DARK_GRAY);
 										listItem.button.setOverColor(Colors.UI_DARK_GRAY);
 										listItem.menu = null;
 									}
-									for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
-										if (listItem.t instanceof LiquidContainer) {
-
-											if (listItem.t == item) {
-												listItem.button.setIdleColor(Colors.UI_DARK_GREEN);
-												listItem.button.setDownColor(Colors.UI_DARK_GREEN);
-												listItem.button.setOverColor(Colors.UI_DARK_GREEN);
-												listItem.menu = null;
-											} else {
-												listItem.button.setIdleColor(Color.ORANGE);
-												setActive(true);
-												LiquidContainer toTransferTo = ((LiquidContainer)listItem.t).clone();
-												listItem.menu = null;
-												listItem.button.setTask(() -> {
-													if (isServer()) {
-														Individual individual = (Individual) host;
-														LiquidContainer container = (LiquidContainer) item;
-														individual.takeItem(container);
-														individual.takeItem(listItem.t);
-														LiquidContainer newContainer = container.clone();
-														Map<Class<? extends Liquid>, Float> subtracted = newContainer.subtract(amount);
-														Map<Class<? extends Liquid>, Float> remainder = toTransferTo.add(subtracted);
-														if (!remainder.isEmpty()) {
-															newContainer.add(remainder);
-														}
-														individual.giveItem(newContainer);
-														individual.giveItem(toTransferTo);
-														refresh();
-													} else {
-														// TODO
-													}
-												});
-											}
-										} else {
-											listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
-											listItem.button.setDownColor(Colors.UI_DARK_GRAY);
-											listItem.button.setOverColor(Colors.UI_DARK_GRAY);
-											listItem.menu = null;
-										}
-									}
-
-								} catch (NumberFormatException e) {
-									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 								}
-							},
-							"Transfer",
-							true,
-							""
-						)
-					);
-				},
-				Colors.UI_GRAY,
-				Color.GREEN,
-				Color.WHITE,
-				null
-			);
 
-			ContextMenu contextMenu = new ContextMenu(x, y,
-				InventoryItemContextMenuConstructor.showInfo(item)
-			);
+							} catch (NumberFormatException e) {
+								UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+							}
+						},
+						"Transfer",
+						true,
+						""
+					)
+				);
+			},
+			Colors.UI_GRAY,
+			Color.GREEN,
+			Color.WHITE,
+			null
+		);
 
-			if (host instanceof Individual && !((LiquidContainer)item).isEmpty()) {
-				contextMenu.addMenuItem(drink);
-				contextMenu.addMenuItem(transferContainerContents);
-				contextMenu.addMenuItem(emptyContainerContents);
-			}
-
-			return contextMenu;
-		}
-
-		if (item instanceof Equipable) {
-			MenuItem equipUnequip = equipped ? new MenuItem(
-				"Unequip",
-				() -> {
-					if (ClientServerInterface.isServer()) {
-						host.unequip((Equipable)item);
-					} else {
-						ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(false, (Equipable)item, ((Individual)host).getId().getId());
-					}
-					refresh();
-				},
-				Colors.UI_GRAY,
-				Color.GREEN,
-				Color.WHITE,
-				null
-			) :
-
-			new MenuItem(
-				"Equip",
-				() -> {
-					if (ClientServerInterface.isServer()) {
-						host.equip((Equipable)item);
-					} else {
-						ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(true, (Equipable)item, ((Individual)host).getId().getId());
-					}
-					refresh();
-				},
-				Colors.UI_GRAY,
-				Color.GREEN,
-				Color.WHITE,
-				null
-			);
-
-			return new ContextMenu(x, y,
-				InventoryItemContextMenuConstructor.showInfo(item),
-				equipUnequip
-			);
-		}
-
-		return new ContextMenu(x, y,
+		ContextMenu contextMenu = new ContextMenu(x, y,
 			InventoryItemContextMenuConstructor.showInfo(item)
 		);
+
+		if (host instanceof Individual && !((LiquidContainer)item).isEmpty()) {
+			contextMenu.addMenuItem(drink);
+			contextMenu.addMenuItem(transferContainerContents);
+			contextMenu.addMenuItem(emptyContainerContents);
+		}
+
+		return contextMenu;
+	}
+
+
+	private ContextMenu consumableMenu(final Item item) {
+		MenuItem consume = new MenuItem(
+			"Consume",
+			() -> {
+				if (ClientServerInterface.isServer()) {
+					if (item instanceof Consumable && host instanceof Individual && ((Consumable)item).consume((Individual)host)) {
+						host.takeItem(item);
+					}
+				} else {
+					ClientServerInterface.SendRequest.sendConsumeItemRequest((Consumable)item, ((Individual)host).getId().getId());
+				}
+				refresh();
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.WHITE,
+			null
+		);
+
+		ContextMenu contextMenu = new ContextMenu(x, y,
+			InventoryItemContextMenuConstructor.showInfo(item)
+		);
+
+		if (host instanceof Individual) {
+			contextMenu.addMenuItem(consume);
+		}
+		return contextMenu;
 	}
 
 

@@ -141,7 +141,7 @@ public class ContainerImpl implements Container, Serializable {
 	private void refreshCurrentLoad() {
 		float weight = 0f;
 		for (Entry<Item, Integer> entry : inventory.entrySet()) {
-			weight = weight + entry.getValue() * entry.getKey().mass;
+			weight = weight + entry.getValue() * entry.getKey().getMass();
 		}
 		currentLoad = weight;
 	}

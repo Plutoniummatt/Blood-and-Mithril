@@ -28,11 +28,11 @@ public class TradeService {
 		float proposerActualValue = 0, proposeeActualValue = 0;
 
 		for (Entry<Item, Integer> entry : tradeThis.entrySet()) {
-			proposerActualValue = proposerActualValue + entry.getValue() * entry.getKey().value;
+			proposerActualValue = proposerActualValue + entry.getValue() * entry.getKey().getValue();
 		}
 
 		for (Entry<Item, Integer> entry : forThis.entrySet()) {
-			proposeeActualValue = proposeeActualValue + entry.getValue() * entry.getKey().value;
+			proposeeActualValue = proposeeActualValue + entry.getValue() * entry.getKey().getValue();
 		}
 
 		// At max level, proposer effective value is 100%

@@ -44,4 +44,10 @@ public class Pine extends Item {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new Pine();
+	}
 }

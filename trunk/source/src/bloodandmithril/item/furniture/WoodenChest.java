@@ -81,4 +81,10 @@ public class WoodenChest extends Item implements Craftable {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new WoodenChest();
+	}
 }

@@ -44,4 +44,10 @@ public class CarrotSeed extends Seed {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new CarrotSeed();
+	}
 }

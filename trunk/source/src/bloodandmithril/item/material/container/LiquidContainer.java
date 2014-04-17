@@ -28,8 +28,6 @@ public abstract class LiquidContainer extends Item {
 	protected Map<Class<? extends Liquid>, Float> containedLiquids;
 	protected final float maxAmount;
 
-	private Map<Class<? extends Liquid>, Float> transformValues;
-
 	/**
 	 * Constructor
 	 */
@@ -89,6 +87,26 @@ public abstract class LiquidContainer extends Item {
 			throw new RuntimeException(e);
 		}
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		LiquidContainer container = copyContainer();
+
+		Map<Class<? extends Liquid>, Float> copy = Maps.newHashMap();
+
+		for (Entry<Class<? extends Liquid>, Float> entry : containedLiquids.entrySet()) {
+			copy.put(entry.getKey(), entry.getValue().floatValue());
+		}
+
+		container.containedLiquids = copy;
+
+		return container;
+	}
+
+
+	/** Copies the container itself, not the content */
+	protected abstract LiquidContainer copyContainer();
 
 
 	@Override
@@ -168,7 +186,7 @@ public abstract class LiquidContainer extends Item {
 				}
 			}
 
-			transformValues = Maps.transformValues(toAdd, value -> {
+			Map<Class<? extends Liquid>, Float> transformValues = Maps.transformValues(toAdd, value -> {
 				return round2dp(value * (1-fractionOfAmountToAdd));
 			});
 

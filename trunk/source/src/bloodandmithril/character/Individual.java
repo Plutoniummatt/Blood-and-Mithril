@@ -720,7 +720,7 @@ public abstract class Individual implements Equipper, Serializable {
 								if (isServer()) {
 									thisIndividual.updateDescription(args[0].toString());
 								} else {
-									// TODO
+									// TODO Update biography over network
 								}
 							},
 							"Confirm",
