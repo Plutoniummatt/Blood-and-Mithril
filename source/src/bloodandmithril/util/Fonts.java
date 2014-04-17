@@ -11,10 +11,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
  * @author Matt
  */
 public class Fonts {
-	
+
 	/** The default font to use */
 	public static BitmapFont defaultFont;
-	
+
 	/**
 	 * Loads all fonts
 	 */

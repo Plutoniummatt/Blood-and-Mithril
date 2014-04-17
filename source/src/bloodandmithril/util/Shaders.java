@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 public class Shaders {
 
 	public static ShaderProgram pass = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/pass.fp"));
-	
+
 	public static ShaderProgram gaussianBlur = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/gaussianBlur.fp"));
 
 	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/sun.fp"));
@@ -35,14 +35,16 @@ public class Shaders {
 	public static ShaderProgram daylightShader = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/daylightShader.fp"));
 
 	public static ShaderProgram black = colorFilterShader(Color.BLACK);
-	
+
 	public static ShaderProgram daylightOcclusion = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/daylightOcclusionShader.fp"));
-	
+
 	public static ShaderProgram filter = colorFilterShader();
 
 	public static ShaderProgram moon = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/moonShader.fp"));
 
 	public static ShaderProgram elfHighLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/elf/highLight.fp"));
+
+	public static ShaderProgram xBlur = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/xblur.fp"));
 
 	public static ShaderProgram elfDayLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/elf/dayLight.fp"));
 

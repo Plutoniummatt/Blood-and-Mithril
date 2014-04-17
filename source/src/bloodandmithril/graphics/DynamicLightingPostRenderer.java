@@ -5,9 +5,9 @@ import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
-import static bloodandmithril.world.Domain.fBuffer;                          
-import static bloodandmithril.world.Domain.mBuffer;                          
-import static bloodandmithril.world.Domain.bBuffer;                          
+import static bloodandmithril.world.Domain.bBuffer;
+import static bloodandmithril.world.Domain.fBuffer;
+import static bloodandmithril.world.Domain.mBuffer;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.Gdx.gl20;
@@ -33,22 +33,28 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
  */
 public class DynamicLightingPostRenderer {
 	public static boolean SEE_ALL = false;
-	
-	private static FrameBuffer bBufferLit;
-	private static FrameBuffer mBufferLit;
-	private static FrameBuffer bBufferProcessedForDaylightShader;
-	
-	
+
+	public static FrameBuffer bBufferLit;
+	public static FrameBuffer bBufferDownSample;
+	public static FrameBuffer bBufferDownSample2;
+	public static FrameBuffer mBufferLit;
+	public static FrameBuffer bBufferProcessedForDaylightShader;
+
+
 	public static void setup() {
 		bBufferProcessedForDaylightShader 	= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
+		bBufferDownSample				 	= new FrameBuffer(RGBA8888, WIDTH/4, HEIGHT/4, true);
+		bBufferDownSample2				 	= new FrameBuffer(RGBA8888, WIDTH/4, HEIGHT/4, true);
 		bBufferLit 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
 		mBufferLit							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
+
+//		bBufferDownSample.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
-	
+
 
 	public static void render(float camX, float camY) {
 		backgroundBlur();
-		
+
 		ArrayList<Light> tempLights = new ArrayList<Light>();
 
 		//Do not bother with lights that are off screen
@@ -68,7 +74,7 @@ public class DynamicLightingPostRenderer {
 				light.fOcclusion = new FrameBuffer(RGBA8888, light.size, light.size, true);
 				light.mOcclusion = new FrameBuffer(RGBA8888, light.size, light.size, true);
 			}
-			
+
 			if (light.renderSwitch) {
 				light.renderSwitch = !light.renderSwitch;
 				continue;
@@ -146,7 +152,7 @@ public class DynamicLightingPostRenderer {
 			spriteBatch.draw(light.mOcclusion.getColorBufferTexture(), 0f, 0f, WIDTH, HEIGHT, 0, 0, light.size, light.size, false, false);
 			spriteBatch.end();
 			light.mShadowMap.end();
-			
+
 			light.renderSwitch = !light.renderSwitch;
 		}
 
@@ -155,9 +161,9 @@ public class DynamicLightingPostRenderer {
 		spriteBatch.begin();
 
 		bBufferLit.begin();
-		
+
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
-		
+
 		// Still render through the shader if no lights are present
 		if (tempLights.isEmpty()) {
 			spriteBatch.setShader(Shaders.defaultBackGroundTiles);
@@ -167,7 +173,7 @@ public class DynamicLightingPostRenderer {
 			spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
 			spriteBatch.flush();
 		}
-		
+
 		for (Light light : tempLights) {
 			spriteBatch.setShader(Shaders.defaultBackGroundTiles);
 			bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
@@ -181,10 +187,10 @@ public class DynamicLightingPostRenderer {
 			spriteBatch.flush();
 		}
 		bBufferLit.end();
-		
+
 		mBufferLit.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
-		
+
 		// Still render through the shader if no lights are present
 		if (tempLights.isEmpty()) {
 			spriteBatch.setShader(Shaders.defaultBackGroundTiles);
@@ -194,7 +200,7 @@ public class DynamicLightingPostRenderer {
 			spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
 			spriteBatch.flush();
 		}
-		
+
 		for (Light light : tempLights) {
 			spriteBatch.setShader(Shaders.defaultBackGroundTiles);
 			bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
@@ -220,12 +226,12 @@ public class DynamicLightingPostRenderer {
 		for (Light light: tempLights) {
 			spriteBatch.setShader(Shaders.shadow);
 			Shaders.shadow.setUniformf("resolution", light.fOcclusion.getWidth(), light.fOcclusion.getHeight());
-			
+
 			Shaders.shadow.setUniformf("color", light.color.r, light.color.g, light.color.b, 0.4f * light.color.a/20f);
 			Shaders.shadow.setUniformf("intensity", light.intensity);
 			spriteBatch.draw(light.mShadowMap.getColorBufferTexture(),  (int)worldToScreenX(light.x) - light.size/2,  (int)worldToScreenY(light.y) - light.size/2, light.size, light.size, 0, 0, light.size, 1, false, true);
 			spriteBatch.flush();
-			
+
 			Shaders.shadow.setUniformf("color", light.color.r, light.color.g, light.color.b, 0.7f * light.color.a/20f);
 			Shaders.shadow.setUniformf("intensity", light.intensity);
 			spriteBatch.draw(light.fShadowMap.getColorBufferTexture(),  (int)worldToScreenX(light.x) - light.size/2,  (int)worldToScreenY(light.y) - light.size/2, light.size, light.size, 0, 0, light.size, 1, false, true);
@@ -241,7 +247,7 @@ public class DynamicLightingPostRenderer {
 			float color = getCurrentEpoch().dayLight() * 0.15f;
 			Shaders.black.setUniformf("color", new Color(color, color, color, 1f));
 			spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
-			
+
 			spriteBatch.setShader(Shaders.pass);
 			spriteBatch.draw(mBufferLit.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
 		}
@@ -283,36 +289,56 @@ public class DynamicLightingPostRenderer {
 		spriteBatch.end();
 		//End rendering----------------------------------//
 	}
-	
-	
-	private static void backgroundBlur() {
+
+
+	public static void backgroundBlur() {
+		bBufferDownSample.begin();
+		spriteBatch.begin();
+		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.xBlur);
+		Shaders.xBlur.setUniformf("res", WIDTH/4, HEIGHT/4);
+		Shaders.xBlur.setUniformf("dir", 1f, 0f);
+		spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0);
+		spriteBatch.end();
+		bBufferDownSample.end();
+
+		bBufferDownSample2.begin();
+		spriteBatch.begin();
+		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.xBlur);
+		Shaders.xBlur.setUniformf("res", WIDTH/4, HEIGHT/4);
+		Shaders.xBlur.setUniformf("dir", 0f, 1f);
+		spriteBatch.draw(bBufferDownSample.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
+		spriteBatch.end();
+		bBufferDownSample2.end();
+
 		bBufferProcessedForDaylightShader.begin();
 		spriteBatch.begin();
 		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.setShader(Shaders.daylightOcclusion);
-		
+
 		double r;
 		double g;
 		double b;
 		float time = getCurrentEpoch().getTime();
-		
+
 		if (time < 10.0) {
-			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 10.0), 2.0));
-			g = 0.1 + 1.1 * Math.exp(-0.150*Math.pow((time - 10.0), 2.0));
-			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow((time - 10.0), 2.0));
+			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow(time - 10.0, 2.0));
+			g = 0.1 + 1.1 * Math.exp(-0.150*Math.pow(time - 10.0, 2.0));
+			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow(time - 10.0, 2.0));
 		} else if (time >= 10 && time < 14) {
 			r = 1.3;
 			g = 1.2;
 			b = 1.1;
 		} else {
-			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow((time - 14.0), 2.0));
-			g = 0.1 + 1.1 * Math.exp(-0.150*Math.pow((time - 14.0), 2.0));
-			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow((time - 14.0), 2.0));
+			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow(time - 14.0, 2.0));
+			g = 0.1 + 1.1 * Math.exp(-0.150*Math.pow(time - 14.0, 2.0));
+			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow(time - 14.0, 2.0));
 		}
-		
+
 		Shaders.daylightOcclusion.setUniformf("dl", (float)r, (float)g, (float)b, getCurrentEpoch().dayLight());
 		Shaders.daylightOcclusion.setUniformf("res", WIDTH, HEIGHT);
-		spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
+		spriteBatch.draw(bBufferDownSample2.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH/4, HEIGHT/4, false, true);
 		spriteBatch.end();
 		bBufferProcessedForDaylightShader.end();
 	}
