@@ -70,4 +70,10 @@ public class DeathCap extends Item implements Consumable {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new DeathCap(cooked);
+	}
 }

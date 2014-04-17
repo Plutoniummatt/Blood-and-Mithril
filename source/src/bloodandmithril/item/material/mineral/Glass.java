@@ -44,4 +44,10 @@ public class Glass extends Item {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new Glass();
+	}
 }

@@ -4,13 +4,13 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.Condition;
 
 /**
- * Drains health, curable with bandage TODO
+ * Drains health
  *
  * @author Matt
  */
 public class Bleeding extends Condition {
 	private static final long serialVersionUID = 2191121600917403074L;
-	
+
 	/** The health/second being drained */
 	private float severity;
 

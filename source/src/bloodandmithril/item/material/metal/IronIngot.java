@@ -77,4 +77,10 @@ public class IronIngot extends Item implements Craftable {
 	protected TextureRegion getTextureRegion() {
 		return IRONINGOT;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new IronIngot();
+	}
 }

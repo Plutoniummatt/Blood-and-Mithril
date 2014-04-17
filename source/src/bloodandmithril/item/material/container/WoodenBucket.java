@@ -104,4 +104,10 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected LiquidContainer copyContainer() {
+		return new WoodenBucket();
+	}
 }

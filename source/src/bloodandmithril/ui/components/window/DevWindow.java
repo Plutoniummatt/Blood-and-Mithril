@@ -245,7 +245,7 @@ public class DevWindow extends Window {
 			Domain.addItem(
 				new Broadsword(10),
 				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
-				new Vector2(new Vector2(600f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
+				new Vector2(new Vector2(800f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
 				Domain.getActiveWorld()
 			);
 		}

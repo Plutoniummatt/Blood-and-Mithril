@@ -4,7 +4,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.Condition;
 
 /**
- * Drains health. curable with antidote TODO
+ * Drains health
  *
  * @author Matt
  */

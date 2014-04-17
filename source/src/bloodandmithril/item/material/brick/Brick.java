@@ -53,4 +53,10 @@ public class Brick extends Item {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new Brick();
+	}
 }

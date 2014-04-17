@@ -57,4 +57,10 @@ public class Sand extends Item {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new Sand();
+	}
 }

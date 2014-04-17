@@ -49,4 +49,10 @@ public class Currency extends Item {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new Currency();
+	}
 }

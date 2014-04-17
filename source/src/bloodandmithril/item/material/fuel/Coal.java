@@ -58,4 +58,10 @@ public class Coal extends Item implements Fuel {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new Coal();
+	}
 }

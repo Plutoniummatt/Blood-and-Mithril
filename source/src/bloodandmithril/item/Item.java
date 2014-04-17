@@ -35,13 +35,13 @@ public abstract class Item implements Serializable {
 	private static final long serialVersionUID = -7733840667288631158L;
 
 	/** The mass of this item */
-	public final float mass;
+	private float mass;
 
 	/** The value of this item */
-	public final long value;
+	private long value;
 
 	/** Whether this item can be equipped by an {@link Individual} */
-	public final boolean equippable;
+	private boolean equippable;
 
 	/** The position and velocity of this item, if it exists on the world */
 	private Vector2 position, velocity;
@@ -78,9 +78,28 @@ public abstract class Item implements Serializable {
 	/** Gets the {@link TextureRegion} of this {@link Item} */
 	protected abstract TextureRegion getTextureRegion();
 
+	/** Clones this {@link Item}, WARNING : ID IS NOT CLONED! */
+	public Item copy() {
+		Item item = internalCopy();
+
+		item.angle = angle;
+		item.angularVelocity = angularVelocity;
+		item.equippable = equippable;
+		item.mass = mass;
+		item.value = value;
+
+		return item;
+	}
+
+	protected abstract Item internalCopy();
+
 	/** Whether to call standard {@link #update(float)} or {@link #updateRigid(float)} */
-	protected boolean rotates() {
+	public boolean rotates() {
 		return false;
+	}
+
+	public void setAngularVelocity(float angVel) {
+		this.angularVelocity = angVel;
 	}
 
 	/** Returns the vector from the bottom left of the texture region to the centre of rotation (location of item) */
@@ -298,5 +317,17 @@ public abstract class Item implements Serializable {
 
 	public void setWorldId(Integer worldId) {
 		this.worldId = worldId;
+	}
+
+	public float getMass() {
+		return mass;
+	}
+
+	public long getValue() {
+		return value;
+	}
+
+	public boolean isEquippable() {
+		return equippable;
 	}
 }

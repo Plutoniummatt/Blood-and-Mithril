@@ -109,10 +109,10 @@ public class EquipperImpl implements Equipper, Serializable {
 	private void refreshCurrentLoad() {
 		float weight = 0f;
 		for (Entry<Item, Integer> entry : container.getInventory().entrySet()) {
-			weight = weight + entry.getValue() * entry.getKey().mass;
+			weight = weight + entry.getValue() * entry.getKey().getMass();
 		}
 		for (Entry<Item, Integer> entry : equippedItems.entrySet()) {
-			weight = weight + entry.getValue() * entry.getKey().mass;
+			weight = weight + entry.getValue() * entry.getKey().getMass();
 		}
 		container.currentLoad = weight;
 	}

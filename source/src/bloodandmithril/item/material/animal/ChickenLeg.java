@@ -79,4 +79,10 @@ public class ChickenLeg extends Item implements Consumable {
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new ChickenLeg();
+	}
 }

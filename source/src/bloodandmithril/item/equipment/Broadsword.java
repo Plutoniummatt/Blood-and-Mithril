@@ -108,7 +108,7 @@ public class Broadsword extends OneHandedWeapon implements Craftable {
 
 
 	@Override
-	protected boolean rotates() {
+	public boolean rotates() {
 		return true;
 	}
 
@@ -122,5 +122,11 @@ public class Broadsword extends OneHandedWeapon implements Craftable {
 	@Override
 	protected Vector2 getRenderCentreOffset() {
 		return new Vector2(getTextureRegion().getRegionWidth() * (5f / 7f), getTextureRegion().getRegionHeight() / 2);
+	}
+
+
+	@Override
+	protected Item internalCopy() {
+		return new Broadsword(getValue());
 	}
 }

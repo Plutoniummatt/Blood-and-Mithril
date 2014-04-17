@@ -36,6 +36,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Util;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.Gdx;
@@ -136,6 +137,10 @@ public class Domain {
 
 
 	public static int addItem(Item item, Vector2 position, Vector2 velocity, World world) {
+		if (item.rotates()) {
+			item.setAngularVelocity((Util.getRandom().nextFloat() - 0.5f) * 40f);
+		}
+
 		item.setWorldId(world.getWorldId());
 		item.setId(ParameterPersistenceService.getParameters().getNextItemId());
 		item.setPosition(position);
