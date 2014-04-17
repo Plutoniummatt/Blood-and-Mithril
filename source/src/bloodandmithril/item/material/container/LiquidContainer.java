@@ -228,6 +228,20 @@ public abstract class LiquidContainer extends Item {
 	}
 
 
+	public static void transfer(Individual individual, LiquidContainer from, LiquidContainer to, float amount) {
+		individual.takeItem(from);
+		individual.takeItem(to);
+		LiquidContainer newContainer = from.clone();
+		Map<Class<? extends Liquid>, Float> subtracted = newContainer.subtract(amount);
+		Map<Class<? extends Liquid>, Float> remainder = to.add(subtracted);
+		if (!remainder.isEmpty()) {
+			newContainer.add(remainder);
+		}
+		individual.giveItem(newContainer);
+		individual.giveItem(to);
+	}
+
+
 	@Override
 	public abstract LiquidContainer clone();
 }

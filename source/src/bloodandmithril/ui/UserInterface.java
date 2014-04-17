@@ -15,8 +15,8 @@ import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.GameSaver.isSaving;
-import static bloodandmithril.ui.KeyMappings.cameraDrag;
 import static bloodandmithril.ui.KeyMappings.leftClick;
+import static bloodandmithril.ui.KeyMappings.rightClick;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
@@ -46,6 +46,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.Structure;
@@ -64,6 +65,7 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
@@ -76,6 +78,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 /**
  * Class representing UI
@@ -113,7 +116,8 @@ public class UserInterface {
 	public static final Texture uiTexture = new Texture(files.internal("data/image/ui.png"));
 
 	/** Initial coordinates for the drag box, see {@link #renderDragBox()} */
-	private static Vector2 initialDragCoordinates = null;
+	private static Vector2 initialLeftMouseDragCoordinates = null;
+	private static Vector2 initialRightMouseDragCoordinates = null;
 
 	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
 	public static boolean renderAvailableInterfaces = true, renderComponentBoundaries = true;
@@ -430,8 +434,8 @@ public class UserInterface {
 	 */
 	public static void leftClickRelease(int screenX, int screenY) {
 
-		if (initialDragCoordinates != null) {
-			Vector2 diagCorner1 = initialDragCoordinates.cpy();
+		if (initialLeftMouseDragCoordinates != null) {
+			Vector2 diagCorner1 = initialLeftMouseDragCoordinates.cpy();
 			Vector2 diagCorner2 = new Vector2(screenX, screenY);
 
 			float left = min(diagCorner1.x, diagCorner2.x);
@@ -479,16 +483,86 @@ public class UserInterface {
 	}
 
 
+	public static void rightClickRelease(int screenX, int screenY) {
+		if (initialRightMouseDragCoordinates != null && Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox)) {
+			Vector2 diagCorner1 = initialRightMouseDragCoordinates.cpy();
+			Vector2 diagCorner2 = new Vector2(screenX, screenY);
+
+			float left = min(diagCorner1.x, diagCorner2.x);
+			float right = max(diagCorner1.x, diagCorner2.x);
+			float top = max(diagCorner1.y, diagCorner2.y);
+			float bottom = min(diagCorner1.y, diagCorner2.y);
+
+			if (right - left < 3 || top - bottom < 3) {
+				return;
+			}
+
+			List<Item> items = Lists.newLinkedList();
+			Domain.getItems().values().stream().filter(toKeep -> {
+				return toKeep.getWorldId() == Domain.getActiveWorld().getWorldId();
+			}).filter(item -> {
+				return
+					worldToScreenX(item.getPosition().x) > left &&
+					worldToScreenX(item.getPosition().x) < right &&
+					worldToScreenY(item.getPosition().y) > bottom &&
+					worldToScreenY(item.getPosition().y) < top;
+			}).forEach(toAdd -> {
+				items.add(toAdd);
+			});
+
+			if (!items.isEmpty()) {
+				if (Domain.getSelectedIndividuals().size() > 0) {
+					contextMenus.clear();
+					boolean singleIndividualSelected = Domain.getSelectedIndividuals().size() == 1;
+					contextMenus.add(new ContextMenu(
+						screenX,
+						screenY,
+						new MenuItem(
+							"Take items",
+							() -> {
+								if (singleIndividualSelected) {
+									Individual next = Domain.getSelectedIndividuals().iterator().next();
+									if (ClientServerInterface.isServer()) {
+										next.getAI().setCurrentTask(new TakeItem(next, items));
+									} else {
+										ClientServerInterface.SendRequest.sendRequestTakeItems(next, items);
+									}
+								}
+							},
+							singleIndividualSelected ? Color.WHITE : Colors.UI_DARK_GRAY,
+							singleIndividualSelected ? Color.GREEN : Colors.UI_DARK_GRAY,
+							singleIndividualSelected ? Color.WHITE : Colors.UI_DARK_GRAY,
+							new ContextMenu(screenX, screenY, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+							() -> {
+								return !singleIndividualSelected;
+							}
+						)
+					));
+				}
+			}
+		}
+	}
+
+
 	/**
 	 * Renders the drag-box
 	 */
 	private static void renderDragBox() {
-		if (input.isButtonPressed(leftClick) && initialDragCoordinates != null && !input.isKeyPressed(cameraDrag)) {
+		if (input.isButtonPressed(leftClick) && initialLeftMouseDragCoordinates != null) {
 			shapeRenderer.begin(Rectangle);
 			shapeRenderer.setColor(Color.GREEN);
-			float width = getMouseScreenX() - initialDragCoordinates.x;
-			float height = getMouseScreenY() - initialDragCoordinates.y;
-			shapeRenderer.rect(initialDragCoordinates.x, initialDragCoordinates.y, width, height);
+			float width = getMouseScreenX() - initialLeftMouseDragCoordinates.x;
+			float height = getMouseScreenY() - initialLeftMouseDragCoordinates.y;
+			shapeRenderer.rect(initialLeftMouseDragCoordinates.x, initialLeftMouseDragCoordinates.y, width, height);
+			shapeRenderer.end();
+		}
+
+		if (input.isButtonPressed(rightClick) && initialRightMouseDragCoordinates != null && Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox)) {
+			shapeRenderer.begin(Rectangle);
+			shapeRenderer.setColor(Color.RED);
+			float width = getMouseScreenX() - initialRightMouseDragCoordinates.x;
+			float height = getMouseScreenY() - initialRightMouseDragCoordinates.y;
+			shapeRenderer.rect(initialRightMouseDragCoordinates.x, initialRightMouseDragCoordinates.y, width, height);
 			shapeRenderer.end();
 		}
 	}
@@ -658,10 +732,10 @@ public class UserInterface {
 
 		contextMenus = contextMenuCopy;
 
-		if (!clicked && !Gdx.input.isKeyPressed(KeyMappings.cameraDrag)) {
-			initialDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
+		if (!clicked) {
+			initialLeftMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 		} else {
-			initialDragCoordinates = null;
+			initialLeftMouseDragCoordinates = null;
 		}
 
 		return clicked;
@@ -812,6 +886,12 @@ public class UserInterface {
 
 		if (!newMenu.getMenuItems().isEmpty()) {
 			contextMenus.add(newMenu);
+		}
+
+		if (!clicked) {
+			initialRightMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
+		} else {
+			initialRightMouseDragCoordinates = null;
 		}
 
 		return clicked;

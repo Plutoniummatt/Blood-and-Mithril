@@ -40,7 +40,7 @@ float illumination() {
 	
 	//we multiply the blur amount by our distance from center
 	//this leads to more blurriness as the shadow "fades away"
-	float blur = (1./resolution.x)  * smoothstep(0., 1., r); 
+	float blur = (1./resolution.x) * smoothstep(0., 1., r); 
 	
 	//now we use a simple gaussian blur
 	float sum = 0.0;

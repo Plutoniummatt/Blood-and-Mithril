@@ -41,6 +41,10 @@ public class CompositeAITask extends AITask {
 	/** Adds a task to the end of the queue */
 	protected void appendTask(AITask taskToAdd) {
 		tasks.addLast(taskToAdd);
+
+		if (getCurrentTask() == null) {
+			setCurrentTask(tasks.poll());
+		}
 	}
 
 
@@ -57,7 +61,7 @@ public class CompositeAITask extends AITask {
 	public boolean isComplete() {
 		return getCurrentTask() == null;
 	}
-	
+
 
 	/**
 	 * @see bloodandmithril.character.ai.AITask#execute()

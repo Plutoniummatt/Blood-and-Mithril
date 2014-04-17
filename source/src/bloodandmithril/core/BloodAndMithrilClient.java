@@ -280,7 +280,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			uiClicked = UserInterface.rightClick();
 		}
 
-		if (UserInterface.contextMenus.isEmpty() && !uiClicked) {
+		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox)) {
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
 				if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 					if (ClientServerInterface.isServer()) {
@@ -443,6 +443,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if (button == KeyMappings.leftClick) {
 			UserInterface.leftClickRelease(screenX, Gdx.graphics.getHeight() - screenY);
+		}
+
+		if (button == KeyMappings.rightClick) {
+			UserInterface.rightClickRelease(screenX, Gdx.graphics.getHeight() - screenY);
 		}
 		return false;
 	}

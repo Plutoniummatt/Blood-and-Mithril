@@ -1,5 +1,9 @@
 package bloodandmithril.character.ai.task;
 
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Deque;
+
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
@@ -24,6 +28,7 @@ import bloodandmithril.world.topography.Topography;
 public class TakeItem extends CompositeAITask {
 	private static final long serialVersionUID = 1L;
 	private Item item;
+	private Deque<Integer> itemIds = new ArrayDeque<>();
 
 	/**
 	 * Constructor
@@ -45,6 +50,38 @@ public class TakeItem extends CompositeAITask {
 		appendTask(new Take(hostId));
 	}
 
+
+	/**
+	 * Take multiple items
+	 */
+	public TakeItem(Individual host, Collection<Item> items) {
+		super(
+			host.getId(),
+			"Taking items"
+		);
+
+		for (Item item : items) {
+			itemIds.addLast(item.getId());
+		}
+
+		appendTask(new TakeItem(
+			host,
+			Domain.getItems().get(itemIds.poll()),
+			itemIds
+		));
+	}
+
+
+	/**
+	 * Take multiple items
+	 */
+	public TakeItem(Individual host, Item item, Deque<Integer> itemIds) {
+		this(host, item);
+
+		for (Integer id : itemIds) {
+			this.itemIds.addLast(id);
+		}
+	}
 
 	public class Take extends AITask {
 		private static final long serialVersionUID = 8539704078732653173L;
@@ -75,6 +112,14 @@ public class TakeItem extends CompositeAITask {
 					new SynchronizeIndividual.SynchronizeIndividualResponse(hostId.getId(), System.currentTimeMillis()),
 					new RefreshWindows.RefreshWindowsResponse()
 				);
+			}
+
+			if (!itemIds.isEmpty()) {
+				appendTask(new TakeItem(
+					Domain.getIndividuals().get(hostId.getId()),
+					Domain.getItems().get(itemIds.poll()),
+					itemIds
+				));
 			}
 		}
 

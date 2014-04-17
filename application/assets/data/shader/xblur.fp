@@ -32,27 +32,27 @@ void main()
 	total += invertSample(vec2(tc.x - 11.0*dir.x*resolution.x, tc.y - 11.0*dir.y*resolution.y)) * 0.02;
 	total += invertSample(vec2(tc.x - 10.0*dir.x*resolution.x, tc.y - 10.0*dir.y*resolution.y)) * 0.02;
 	
-	total += invertSample(vec2(tc.x - 9.0*dir.x*resolution.x, tc.y - 9.0*dir.y*resolution.y)) * 0.02;
-	total += invertSample(vec2(tc.x - 8.0*dir.x*resolution.x, tc.y - 8.0*dir.y*resolution.y)) * 0.02;
-	total += invertSample(vec2(tc.x - 7.0*dir.x*resolution.x, tc.y - 7.0*dir.y*resolution.y)) * 0.02;
-	total += invertSample(vec2(tc.x - 6.0*dir.x*resolution.x, tc.y - 6.0*dir.y*resolution.y)) * 0.02;
-	total += invertSample(vec2(tc.x - 5.0*dir.x*resolution.x, tc.y - 5.0*dir.y*resolution.y)) * 0.02;
-	total += invertSample(vec2(tc.x - 4.0*dir.x*resolution.x, tc.y - 4.0*dir.y*resolution.y)) * 0.05;
-    total += invertSample(vec2(tc.x - 3.0*dir.x*resolution.x, tc.y - 3.0*dir.y*resolution.y)) * 0.05;
-    total += invertSample(vec2(tc.x - 2.0*dir.x*resolution.x, tc.y - 2.0*dir.y*resolution.y)) * 0.05;
-    total += invertSample(vec2(tc.x - 1.0*dir.x*resolution.x, tc.y - 1.0*dir.y*resolution.y)) * 0.05;
+	total += invertSample(vec2(tc.x - 9.0*dir.x*resolution.x, tc.y - 9.0*dir.y*resolution.y)) * 0.03;
+	total += invertSample(vec2(tc.x - 8.0*dir.x*resolution.x, tc.y - 8.0*dir.y*resolution.y)) * 0.03;
+	total += invertSample(vec2(tc.x - 7.0*dir.x*resolution.x, tc.y - 7.0*dir.y*resolution.y)) * 0.03;
+	total += invertSample(vec2(tc.x - 6.0*dir.x*resolution.x, tc.y - 6.0*dir.y*resolution.y)) * 0.04;
+	total += invertSample(vec2(tc.x - 5.0*dir.x*resolution.x, tc.y - 5.0*dir.y*resolution.y)) * 0.05;
+	total += invertSample(vec2(tc.x - 4.0*dir.x*resolution.x, tc.y - 4.0*dir.y*resolution.y)) * 0.06;
+    total += invertSample(vec2(tc.x - 3.0*dir.x*resolution.x, tc.y - 3.0*dir.y*resolution.y)) * 0.07;
+    total += invertSample(vec2(tc.x - 2.0*dir.x*resolution.x, tc.y - 2.0*dir.y*resolution.y)) * 0.08;
+    total += invertSample(vec2(tc.x - 1.0*dir.x*resolution.x, tc.y - 1.0*dir.y*resolution.y)) * 0.09;
 
-    total += invertSample(vec2(tc.x, tc.y)) * 0.06;
+    total += invertSample(vec2(tc.x, tc.y)) * 0.10;
 
-    total += invertSample(vec2(tc.x + 1.0*dir.x*resolution.x, tc.y + 1.0*dir.y*resolution.y)) * 0.05;
-    total += invertSample(vec2(tc.x + 2.0*dir.x*resolution.x, tc.y + 2.0*dir.y*resolution.y)) * 0.05;
-    total += invertSample(vec2(tc.x + 3.0*dir.x*resolution.x, tc.y + 3.0*dir.y*resolution.y)) * 0.05;
-    total += invertSample(vec2(tc.x + 4.0*dir.x*resolution.x, tc.y + 4.0*dir.y*resolution.y)) * 0.05;
-    total += invertSample(vec2(tc.x + 5.0*dir.x*resolution.x, tc.y + 5.0*dir.y*resolution.y)) * 0.02;
-    total += invertSample(vec2(tc.x + 6.0*dir.x*resolution.x, tc.y + 6.0*dir.y*resolution.y)) * 0.02;
-    total += invertSample(vec2(tc.x + 7.0*dir.x*resolution.x, tc.y + 7.0*dir.y*resolution.y)) * 0.02;
-    total += invertSample(vec2(tc.x + 8.0*dir.x*resolution.x, tc.y + 8.0*dir.y*resolution.y)) * 0.02;
-    total += invertSample(vec2(tc.x + 9.0*dir.x*resolution.x, tc.y + 9.0*dir.y*resolution.y)) * 0.02;
+    total += invertSample(vec2(tc.x + 1.0*dir.x*resolution.x, tc.y + 1.0*dir.y*resolution.y)) * 0.09;
+    total += invertSample(vec2(tc.x + 2.0*dir.x*resolution.x, tc.y + 2.0*dir.y*resolution.y)) * 0.08;
+    total += invertSample(vec2(tc.x + 3.0*dir.x*resolution.x, tc.y + 3.0*dir.y*resolution.y)) * 0.07;
+    total += invertSample(vec2(tc.x + 4.0*dir.x*resolution.x, tc.y + 4.0*dir.y*resolution.y)) * 0.06;
+    total += invertSample(vec2(tc.x + 5.0*dir.x*resolution.x, tc.y + 5.0*dir.y*resolution.y)) * 0.05;
+    total += invertSample(vec2(tc.x + 6.0*dir.x*resolution.x, tc.y + 6.0*dir.y*resolution.y)) * 0.04;
+    total += invertSample(vec2(tc.x + 7.0*dir.x*resolution.x, tc.y + 7.0*dir.y*resolution.y)) * 0.03;
+    total += invertSample(vec2(tc.x + 8.0*dir.x*resolution.x, tc.y + 8.0*dir.y*resolution.y)) * 0.03;
+    total += invertSample(vec2(tc.x + 9.0*dir.x*resolution.x, tc.y + 9.0*dir.y*resolution.y)) * 0.03;
     
     total += invertSample(vec2(tc.x + 10.0*dir.x*resolution.x, tc.y + 10.0*dir.y*resolution.y)) * 0.02;
     total += invertSample(vec2(tc.x + 11.0*dir.x*resolution.x, tc.y + 11.0*dir.y*resolution.y)) * 0.02;
