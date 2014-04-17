@@ -43,10 +43,6 @@ public class SelectedIndividualsControlWindow extends Window {
 	 * Sets up the buttons for this {@link SelectedIndividualsControlWindow}
 	 */
 	private void setupButtons() {
-		boolean someoneRunning = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
-			return individual.isWalking() ? 0 : 1;
-		}).sum() > 0;
-
 		buttons.put(0, new Button(
 			"Run",
 			Fonts.defaultFont,
@@ -67,8 +63,8 @@ public class SelectedIndividualsControlWindow extends Window {
 					}
 				}
 			},
-			someoneRunning ? Color.GREEN : Color.ORANGE,
-			someoneRunning ? Color.ORANGE : Color.GREEN,
+			Color.WHITE,
+			Color.GREEN,
 			Color.WHITE,
 			UIRef.BL
 		));

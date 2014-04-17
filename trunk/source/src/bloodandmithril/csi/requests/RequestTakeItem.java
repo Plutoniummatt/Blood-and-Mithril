@@ -1,11 +1,15 @@
 package bloodandmithril.csi.requests;
 
+import java.util.Collection;
+
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.Item;
 import bloodandmithril.world.Domain;
+
+import com.google.common.collect.Lists;
 
 /**
  * A {@link Request} for an {@link Individual} to {@link TakeItem}
@@ -14,21 +18,33 @@ import bloodandmithril.world.Domain;
  */
 public class RequestTakeItem implements Request {
 
-	private final int individualId, itemId;
+	private final int individualId;
+	private Collection<Integer> items = Lists.newArrayList();
 
 	/**
 	 * Constructor
 	 */
-	public RequestTakeItem(Individual individual, Item item) {
+	public RequestTakeItem(Individual individual, Collection<Item> items) {
 		this.individualId = individual.getId().getId();
-		this.itemId = item.getId();
+
+		for (Item item : items) {
+			this.items.add(item.getId());
+		}
 	}
 
 
 	@Override
 	public Responses respond() {
 		Individual individual = Domain.getIndividuals().get(individualId);
-		individual.getAI().setCurrentTask(new TakeItem(individual, Domain.getItems().get(itemId)));
+		Collection<Item> serverItems = Lists.newArrayList();
+		for (Integer id : items) {
+			Item item = Domain.getItems().get(id);
+			if (item != null) {
+				serverItems.add(item);
+			}
+		}
+
+		individual.getAI().setCurrentTask(new TakeItem(individual, serverItems));
 		return new Responses(false);
 	}
 

@@ -18,11 +18,11 @@ import bloodandmithril.character.ai.task.DiscardLiquid;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Consumable;
+import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.material.container.LiquidContainer;
-import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -37,13 +37,11 @@ import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 /**
@@ -321,7 +319,8 @@ public class InventoryWindow extends Window implements Refreshable {
 								try {
 									int quantity = 0;
 									quantity = Integer.parseInt(args[0].toString());
-									discard(item, quantity);
+									ContainerImpl.discard((Individual)host, item, quantity);
+									UserInterface.refreshRefreshableWindows();
 								} catch (NumberFormatException e) {
 									UserInterface.addMessage("Error", "Can not recognise " + args[0].toString() + " as a quantity");
 								}
@@ -332,7 +331,8 @@ public class InventoryWindow extends Window implements Refreshable {
 						)
 					);
 				} else {
-					discard(item, 1);
+					ContainerImpl.discard((Individual)host, item, 1);
+					UserInterface.refreshRefreshableWindows();
 				}
 			},
 			Colors.UI_GRAY,
@@ -342,28 +342,6 @@ public class InventoryWindow extends Window implements Refreshable {
 		));
 
 		return toReturn;
-	}
-
-
-	private void discard(final Item item, int quantity) {
-		if (isServer()) {
-			Vector2 pos = ((Individual) host).getState().position;
-			for (int i = quantity; i !=0; i--) {
-				if (host.takeItem(item) == 1) {
-					Domain.addItem(
-						item.copy(),
-						new Vector2(pos.x, pos.y + ((Individual) host).getHeight()),
-						new Vector2(100f, 0).rotate(Util.getRandom().nextFloat() * 180f),
-						Domain.getWorlds().get(((Individual)host).getWorldId())
-					);
-				} else {
-					break;
-				}
-			}
-			UserInterface.refreshRefreshableWindows();
-		} else {
-			// TODO Discard items over network
-		}
 	}
 
 
@@ -566,21 +544,20 @@ public class InventoryWindow extends Window implements Refreshable {
 											listItem.menu = null;
 											listItem.button.setTask(() -> {
 												if (isServer()) {
-													Individual individual = (Individual) host;
-													LiquidContainer container = (LiquidContainer) item;
-													individual.takeItem(container);
-													individual.takeItem(listItem.t);
-													LiquidContainer newContainer = container.clone();
-													Map<Class<? extends Liquid>, Float> subtracted = newContainer.subtract(amount);
-													Map<Class<? extends Liquid>, Float> remainder = toTransferTo.add(subtracted);
-													if (!remainder.isEmpty()) {
-														newContainer.add(remainder);
-													}
-													individual.giveItem(newContainer);
-													individual.giveItem(toTransferTo);
+													LiquidContainer.transfer(
+														(Individual) host,
+														(LiquidContainer) item,
+														toTransferTo,
+														amount
+													);
 													refresh();
 												} else {
-													// TODO Transfer liquid over network
+													ClientServerInterface.SendRequest.sendRequestTransferLiquidBetweenContainers(
+														(Individual) host,
+														(LiquidContainer) item,
+														toTransferTo,
+														amount
+													);
 												}
 											});
 										}

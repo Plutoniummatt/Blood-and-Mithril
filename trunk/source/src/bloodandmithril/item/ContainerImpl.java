@@ -1,11 +1,20 @@
 package bloodandmithril.item;
 
+import static bloodandmithril.csi.ClientServerInterface.isServer;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+
+import bloodandmithril.character.Individual;
+import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.util.Util;
+import bloodandmithril.world.Domain;
+
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Default implementation of container.
@@ -60,9 +69,9 @@ public class ContainerImpl implements Container, Serializable {
 		this.inventory.clear();
 		this.inventory.putAll(other.getInventory());
 
-		this.inventoryMassCapacity = (other.getMaxCapacity());
+		this.inventoryMassCapacity = other.getMaxCapacity();
 		this.currentLoad = other.getCurrentLoad();
-		this.canExceedCapacity = (other.canExceedCapacity());
+		this.canExceedCapacity = other.canExceedCapacity();
 		this.locked = other.isLocked();
 		this.lockable = other.isLockable();
 
@@ -210,5 +219,26 @@ public class ContainerImpl implements Container, Serializable {
 			}
 		}
 		return 0;
+	}
+
+
+	public static void discard(Individual individual, final Item item, int quantity) {
+		if (isServer()) {
+			Vector2 pos = individual.getState().position;
+			for (int i = quantity; i !=0; i--) {
+				if (individual.takeItem(item) == 1) {
+					Domain.addItem(
+						item.copy(),
+						new Vector2(pos.x, pos.y + individual.getHeight()/2),
+						new Vector2(100f, 0).rotate(Util.getRandom().nextFloat() * 180f),
+						Domain.getWorlds().get(individual.getWorldId())
+					);
+				} else {
+					break;
+				}
+			}
+		} else {
+			ClientServerInterface.SendRequest.sendDiscardItemRequest(individual, item, quantity);
+		}
 	}
 }

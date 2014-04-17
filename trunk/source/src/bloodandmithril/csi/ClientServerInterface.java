@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -96,10 +97,12 @@ import bloodandmithril.csi.requests.RefreshWindows;
 import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.RequestClientList;
 import bloodandmithril.csi.requests.RequestClientList.RequestClientListResponse;
+import bloodandmithril.csi.requests.RequestDiscardItem;
 import bloodandmithril.csi.requests.RequestDiscardLiquid;
 import bloodandmithril.csi.requests.RequestStartCrafting;
 import bloodandmithril.csi.requests.RequestTakeItem;
 import bloodandmithril.csi.requests.RequestTakeItemFromCraftingStation;
+import bloodandmithril.csi.requests.RequestTransferLiquidBetweenContainers;
 import bloodandmithril.csi.requests.SendAttackRequest;
 import bloodandmithril.csi.requests.SendChatMessage;
 import bloodandmithril.csi.requests.SendChatMessage.Message;
@@ -380,6 +383,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(RequestTransferLiquidBetweenContainers.class);
+		kryo.register(RequestDiscardItem.class);
 		kryo.register(Take.class);
 		kryo.register(TakeItem.class);
 		kryo.register(RequestTakeItem.class);
@@ -598,6 +603,12 @@ public class ClientServerInterface {
 		}
 
 
+		public static synchronized void sendDiscardItemRequest(Individual individual, Item item, int quantity) {
+			client.sendTCP(new RequestDiscardItem(individual, item, quantity));
+			Logger.networkDebug("Sending discard item request", LogLevel.DEBUG);
+		}
+
+
 		public static synchronized void sendDiscardLiquidRequest(int x, int y, Individual individual, LiquidContainer container, float amount) {
 			client.sendTCP(new RequestDiscardLiquid(individual, container, amount, x, y));
 			Logger.networkDebug("Sending discard liquid request", LogLevel.DEBUG);
@@ -661,13 +672,23 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending drink liquid request", LogLevel.DEBUG);
 		}
 
+		public static synchronized void sendRequestTransferLiquidBetweenContainers(Individual individual, LiquidContainer from, LiquidContainer to, float amount) {
+			client.sendTCP(new RequestTransferLiquidBetweenContainers(individual, from, to, amount));
+			Logger.networkDebug("Sending transfer liquid between containers request", LogLevel.DEBUG);
+		}
+
 		public static synchronized void sendRequestConnectedPlayerNamesRequest() {
 			client.sendTCP(new RequestClientList());
 			Logger.networkDebug("Sending client name list request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendRequestTakeItem(Individual individual, Item item) {
-			client.sendTCP(new RequestTakeItem(individual, item));
+			client.sendTCP(new RequestTakeItem(individual, Lists.newArrayList(item)));
+			Logger.networkDebug("Sending take item request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendRequestTakeItems(Individual individual, Collection<Item> items) {
+			client.sendTCP(new RequestTakeItem(individual, items));
 			Logger.networkDebug("Sending take item request", LogLevel.DEBUG);
 		}
 
