@@ -47,8 +47,6 @@ public class DynamicLightingPostRenderer {
 		bBufferDownSample2				 	= new FrameBuffer(RGBA8888, WIDTH/4, HEIGHT/4, true);
 		bBufferLit 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
 		mBufferLit							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
-
-//		bBufferDownSample.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 
