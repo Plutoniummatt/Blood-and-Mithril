@@ -2,21 +2,21 @@ package bloodandmithril.generation.component.prefab;
 
 import java.util.Collection;
 
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.collect.Collections2;
-
 import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.Corridor;
+import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.Interface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
-import bloodandmithril.generation.component.Stairs;
-import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
+import bloodandmithril.generation.component.Stairs;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
-import bloodandmithril.world.topography.tile.tiles.glass.InterlacedWindowTile;
+import bloodandmithril.world.topography.tile.tiles.glass.ClearGlassTile;
+
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.Collections2;
 
 /**
  * An implementations of {@link PrefabricatedComponent}s that is a representation of an entrance to underground temple-like annexes
@@ -25,7 +25,7 @@ import bloodandmithril.world.topography.tile.tiles.glass.InterlacedWindowTile;
  */
 public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	private static final long serialVersionUID = 4185881549137827481L;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -36,7 +36,7 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 			structureKey,
 			inverted
 		);
-		
+
 		generateInterfaces();
 	}
 
@@ -44,13 +44,13 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	private static ComponentBlueprint blueprint(Class<? extends Tile> backgroundTile, Class<? extends Tile> wallTile) {
 		Tile[][] fTiles = new Tile[100][40];
 		Tile[][] bTiles = new Tile[100][40];
-		
+
 		for (int x = 0; x < 100; x++) {
 			for (int y = 0; y < 40; y++) {
-				
+
 				int fPixel = PrefabricatedComponent.prefabPixmap.getPixel(x, y);
 				int bPixel = PrefabricatedComponent.prefabPixmap.getPixel(x, y + 40);
-				
+
 				try {
 					if (fPixel == Color.rgba8888(Color.RED)) {
 						fTiles[x][39 - y] = wallTile.newInstance();
@@ -61,11 +61,11 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 					} else {
 						fTiles[x][39 - y] = null;
 					}
-					
+
 					if (bPixel == Color.rgba8888(Color.BLACK)) {
 						bTiles[x][39 - y] = backgroundTile.newInstance();
 					} else if (bPixel == Color.rgba8888(Color.GREEN)) {
-						bTiles[x][39 - y] = new InterlacedWindowTile();
+						bTiles[x][39 - y] = new ClearGlassTile();
 					} else if (bPixel == Color.rgba8888(Color.WHITE)) {
 						bTiles[x][39 - y] = new Tile.EmptyTile();
 					} else {
@@ -94,7 +94,7 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 		} else {
 			generateUnitThicknessHorizontalInterfaces(boundaries.top - 29, boundaries.left + 4, boundaries.left + 10);
 		}
-		
+
 		// Generate the side interface
 		if (inverted) {
 			generateUnitThicknessVerticalInterfaces(boundaries.right, boundaries.top - 17, boundaries.top - 22);
@@ -109,15 +109,15 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 		if (with.equals(Stairs.class)) {
 			return stemStairs(custom);
 		}
-		
+
 		if (with.equals(Corridor.class)) {
 			return stemCorridor(custom);
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Stem a {@link Corridor} from this component
 	 */
@@ -131,20 +131,20 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 		if (!verticalInterfacesCollection.isEmpty()) {
 			Interface createConnectedInterface = verticalInterfacesCollection.iterator().next().createConnectedInterface(
 				new RectangularInterfaceCustomization(
-					6, 
-					1, 
-					0, 
+					6,
+					1,
+					0,
 					0
 				)
 			);
-			
+
 			return checkForOverlaps(createConnectedInterface, createConnectedInterface.createComponent(Corridor.class, corridorCustomization, getStructureKey()));
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Stem some {@link Stairs} from this component
 	 */
