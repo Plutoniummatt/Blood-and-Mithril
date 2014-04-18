@@ -74,6 +74,7 @@ import bloodandmithril.csi.requests.CSIOpenCraftingStation.NotifyOpenCraftingSta
 import bloodandmithril.csi.requests.CSITradeWith;
 import bloodandmithril.csi.requests.ChangeFactionControlPassword;
 import bloodandmithril.csi.requests.ChangeFactionControlPassword.RefreshFactionWindow;
+import bloodandmithril.csi.requests.ChangeIndividualBiography;
 import bloodandmithril.csi.requests.ChangeNickName;
 import bloodandmithril.csi.requests.ChangeNickName.ChangeNickNameResponse;
 import bloodandmithril.csi.requests.ClientConnected;
@@ -383,6 +384,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(ChangeIndividualBiography.class);
 		kryo.register(RequestTransferLiquidBetweenContainers.class);
 		kryo.register(RequestDiscardItem.class);
 		kryo.register(Take.class);
@@ -606,6 +608,12 @@ public class ClientServerInterface {
 		public static synchronized void sendDiscardItemRequest(Individual individual, Item item, int quantity) {
 			client.sendTCP(new RequestDiscardItem(individual, item, quantity));
 			Logger.networkDebug("Sending discard item request", LogLevel.DEBUG);
+		}
+
+
+		public static synchronized void sendUpdateBiographyRequest(Individual individual, String description) {
+			client.sendTCP(new ChangeIndividualBiography(individual, description));
+			Logger.networkDebug("Sending change individual description request", LogLevel.DEBUG);
 		}
 
 

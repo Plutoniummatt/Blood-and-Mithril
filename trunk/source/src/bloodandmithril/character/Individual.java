@@ -134,7 +134,6 @@ public abstract class Individual implements Equipper, Serializable {
 	private Skills skills = new Skills();
 
 	/** Whether or not this {@link Individual} is attacking */
-	//TODO reset when attack animation finishes
 	private boolean attacking;
 
 	/** WHich client number this {@link Individual} is selected by */
@@ -720,7 +719,7 @@ public abstract class Individual implements Equipper, Serializable {
 								if (isServer()) {
 									thisIndividual.updateDescription(args[0].toString());
 								} else {
-									// TODO Update biography over network
+									ClientServerInterface.SendRequest.sendUpdateBiographyRequest(thisIndividual, args[0].toString());
 								}
 							},
 							"Confirm",
