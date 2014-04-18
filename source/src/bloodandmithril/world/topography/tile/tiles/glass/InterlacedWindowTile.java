@@ -1,6 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.glass;
 
 import bloodandmithril.item.Item;
+import bloodandmithril.item.material.mineral.Glass;
 import bloodandmithril.world.topography.tile.tiles.GlassTile;
 
 public class InterlacedWindowTile extends GlassTile {
@@ -12,27 +13,26 @@ public class InterlacedWindowTile extends GlassTile {
 	public InterlacedWindowTile() {
 		super(false);
 	}
-	
+
 
 	@Override
 	protected float getTexCoordYSpecific() {
 		return 11;
 	}
 
-	
+
 	@Override
 	public void changeToStair() {
 	}
 
-	
+
 	@Override
 	public void changeToSmoothCeiling() {
 	}
-	
+
 
 	@Override
 	public Item mine() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Glass();
 	}
 }
