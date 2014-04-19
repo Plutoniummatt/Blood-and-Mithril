@@ -289,9 +289,9 @@ public abstract class Individual implements Equipper, Serializable {
 			UserInterface.addLayeredComponentUnique(
 				new SelectedIndividualsControlWindow(
 					BloodAndMithrilClient.WIDTH - 170,
-					300,
 					150,
-					250,
+					150,
+					100,
 					"Actions",
 					true
 				)
