@@ -176,7 +176,6 @@ public class Chunk {
 	 * Renders this chunk
 	 */
 	public void render(boolean foreGround) {
-		Topography.atlas.bind();
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		if (foreGround) {
@@ -237,7 +236,7 @@ public class Chunk {
 
 		/** The y-coordinate of the bottom left corner of the chunk */
 		public int yChunkCoord;
-		
+
 		/** Unique id of the {@link World} this chunk data relates to */
 		public int worldId;
 	}
@@ -367,8 +366,8 @@ public class Chunk {
 
 		changeTile(tileX, tileY, foreGround, newTile);
 	}
-	
-	
+
+
 	/**
 	 * Changes a tile on the chunk
 	 */

@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.graphics.DynamicLightingPostRenderer;
+import bloodandmithril.graphics.DefaultRenderer;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
@@ -163,9 +163,9 @@ public class Domain {
 		gameWorldTexture.setFilter(Linear, Linear);
 		individualTexture.setFilter(Linear, Linear);
 
-		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
-		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
-		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, true);
+		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
+		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
+		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
@@ -234,7 +234,7 @@ public class Domain {
 
 		fBuffer.end();
 
-		DynamicLightingPostRenderer.render(camX, camY);
+		DefaultRenderer.render(camX, camY);
 	}
 
 
