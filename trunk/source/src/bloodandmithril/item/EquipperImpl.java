@@ -19,16 +19,22 @@ public class EquipperImpl implements Equipper, Serializable {
 	/** The current available {@link EquipmentSlot}s, maps to true if empty/available */
 	protected Map<EquipmentSlot, Boolean> availableEquipmentSlots = new HashMap<>();
 
-	private ContainerImpl container;
+	private ContainerImpl containerImpl;
 
 	/**
 	 * @param inventoryMassCapacity
 	 */
 	public EquipperImpl(float inventoryMassCapacity) {
-		this.container = new ContainerImpl(inventoryMassCapacity, true);
+		this.containerImpl = new ContainerImpl(inventoryMassCapacity, true);
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			availableEquipmentSlots.put(slot, true);
 		}
+	}
+
+
+	@Override
+	public Equipper getEquipperImpl() {
+		return this;
 	}
 
 
@@ -40,14 +46,14 @@ public class EquipperImpl implements Equipper, Serializable {
 
 	@Override
 	public void giveItem(Item item) {
-		container.giveItem(item);
+		containerImpl.giveItem(item);
 		refreshCurrentLoad();
 	}
 
 
 	@Override
 	public int takeItem(Item item) {
-		int taken = container.takeItem(item);
+		int taken = containerImpl.takeItem(item);
 		refreshCurrentLoad();
 		return taken;
 	}
@@ -99,7 +105,7 @@ public class EquipperImpl implements Equipper, Serializable {
 		}
 
 		equippedItems.remove(toUnequip);
-		container.getInventory().put(toUnequip, (container.getInventory().get(toUnequip) == null ? 0 : container.getInventory().get(toUnequip)) + 1);
+		containerImpl.getInventory().put(toUnequip, (containerImpl.getInventory().get(toUnequip) == null ? 0 : containerImpl.getInventory().get(toUnequip)) + 1);
 		availableEquipmentSlots.put(toUnequip.slot, true);
 		refreshCurrentLoad();
 	}
@@ -108,37 +114,13 @@ public class EquipperImpl implements Equipper, Serializable {
 	/** Refreshes the {@link #currentLoad} */
 	private void refreshCurrentLoad() {
 		float weight = 0f;
-		for (Entry<Item, Integer> entry : container.getInventory().entrySet()) {
+		for (Entry<Item, Integer> entry : containerImpl.getInventory().entrySet()) {
 			weight = weight + entry.getValue() * entry.getKey().getMass();
 		}
 		for (Entry<Item, Integer> entry : equippedItems.entrySet()) {
 			weight = weight + entry.getValue() * entry.getKey().getMass();
 		}
-		container.currentLoad = weight;
-	}
-
-
-	@Override
-	public void synchronizeContainer(Container other) {
-		container.synchronizeContainer(other);
-	}
-
-
-	@Override
-	public Map<Item, Integer> getInventory() {
-		return container.getInventory();
-	}
-
-
-	@Override
-	public float getMaxCapacity() {
-		return container.getMaxCapacity();
-	}
-
-
-	@Override
-	public float getCurrentLoad() {
-		return container.getCurrentLoad();
+		containerImpl.currentLoad = weight;
 	}
 
 
@@ -146,12 +128,6 @@ public class EquipperImpl implements Equipper, Serializable {
 	public void synchronizeEquipper(Equipper other) {
 		this.equippedItems = other.getEquipped();
 		this.availableEquipmentSlots = other.getAvailableEquipmentSlots();
-	}
-
-
-	@Override
-	public boolean canExceedCapacity() {
-		return container.canExceedCapacity();
 	}
 
 
@@ -180,7 +156,7 @@ public class EquipperImpl implements Equipper, Serializable {
 
 
 	@Override
-	public int has(Item item) {
-		return container.has(item);
+	public Container getContainerImpl() {
+		return containerImpl;
 	}
 }

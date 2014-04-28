@@ -240,16 +240,6 @@ public class Furnace extends CraftingStation implements Container {
 
 
 	@Override
-	public void synchronizeContainer(Container other) {
-		if (getConstructionProgress() == 1f) {
-			container.synchronizeContainer(other);
-		} else {
-			super.synchronizeContainer(other);
-		}
-	}
-
-
-	@Override
 	public void giveItem(Item item) {
 		if (getConstructionProgress() == 1f) {
 			container.giveItem(item);
@@ -265,31 +255,11 @@ public class Furnace extends CraftingStation implements Container {
 
 
 	@Override
-	public int takeItem(Item item) {
+	public Container getContainerImpl() {
 		if (getConstructionProgress() == 1f) {
-			return container.takeItem(item);
+			return container;
 		} else {
-			return super.takeItem(item);
-		}
-	}
-
-
-	@Override
-	public Map<Item, Integer> getInventory() {
-		if (getConstructionProgress() == 1f) {
-			return container.getInventory();
-		} else {
-			return super.getInventory();
-		}
-	}
-
-
-	@Override
-	public float getMaxCapacity() {
-		if (getConstructionProgress() == 1f) {
-			return container.getMaxCapacity();
-		} else {
-			return super.getMaxCapacity();
+			return super.getContainerImpl();
 		}
 	}
 
@@ -303,26 +273,6 @@ public class Furnace extends CraftingStation implements Container {
 	@Override
 	public boolean customCanCraft() {
 		return isBurning();
-	}
-
-
-	@Override
-	public float getCurrentLoad() {
-		if (getConstructionProgress() == 1f) {
-			return container.getCurrentLoad();
-		} else {
-			return super.getCurrentLoad();
-		}
-	}
-
-
-	@Override
-	public boolean canExceedCapacity() {
-		if (getConstructionProgress() == 1f) {
-			return container.canExceedCapacity();
-		} else {
-			return super.canExceedCapacity();
-		}
 	}
 
 
@@ -347,16 +297,6 @@ public class Furnace extends CraftingStation implements Container {
 	@Override
 	public boolean isLockable() {
 		return false;
-	}
-
-
-	@Override
-	public int has(Item item) {
-		if (getConstructionProgress() == 1f) {
-			return container.has(item);
-		} else {
-			return super.has(item);
-		}
 	}
 
 
