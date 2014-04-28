@@ -217,75 +217,65 @@ public abstract class Construction extends Prop implements Container {
 
 	@Override
 	public void giveItem(Item item) {
-		materialContainer.giveItem(item);
-		if (ClientServerInterface.isClient()) {
-			UserInterface.layeredComponents.stream().filter((component) -> {
-				return component instanceof RequiredMaterialsWindow;
-			}).forEach((component) -> {
-				((RequiredMaterialsWindow) component).refresh();
-			});
+		if (constructionProgress == 1f) {
+			getContainerImpl().giveItem(item);
 		} else {
-			ClientServerInterface.SendNotification.notifyRefreshWindows();
+			materialContainer.giveItem(item);
+			if (ClientServerInterface.isClient()) {
+				UserInterface.layeredComponents.stream().filter((component) -> {
+					return component instanceof RequiredMaterialsWindow;
+				}).forEach((component) -> {
+					((RequiredMaterialsWindow) component).refresh();
+				});
+			} else {
+				ClientServerInterface.SendNotification.notifyRefreshWindows();
+			}
 		}
 	}
 
 
 	@Override
-	public int takeItem(Item item) {
-		return materialContainer.takeItem(item);
-	}
-
-
-	@Override
-	public Map<Item, Integer> getInventory() {
-		return materialContainer.getInventory();
-	}
-
-
-	@Override
-	public float getMaxCapacity() {
-		return materialContainer.getMaxCapacity();
-	}
-
-
-	@Override
-	public float getCurrentLoad() {
-		return materialContainer.getCurrentLoad();
-	}
-
-
-	@Override
-	public boolean canExceedCapacity() {
-		return materialContainer.canExceedCapacity();
+	public Container getContainerImpl() {
+		return materialContainer;
 	}
 
 
 	@Override
 	public boolean isLocked() {
-		return false;
+		if (constructionProgress == 1f) {
+			return getContainerImpl().isLocked();
+		} else {
+			return false;
+		}
 	}
 
 
 	@Override
 	public boolean isLockable() {
-		return false;
+		if (constructionProgress == 1f) {
+			return getContainerImpl().isLockable();
+		} else {
+			return false;
+		}
 	}
 
 
 	@Override
 	public boolean unlock(Item with) {
-		return false;
+		if (constructionProgress == 1f) {
+			return getContainerImpl().unlock(with);
+		} else {
+			return false;
+		}
 	}
 
 
 	@Override
 	public boolean lock(Item with) {
-		return false;
-	}
-
-
-	@Override
-	public int has(Item item) {
-		return materialContainer.has(item);
+		if (constructionProgress == 1f) {
+			return getContainerImpl().lock(with);
+		} else {
+			return false;
+		}
 	}
 }

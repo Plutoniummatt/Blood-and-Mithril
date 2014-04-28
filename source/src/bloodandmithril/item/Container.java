@@ -9,76 +9,107 @@ import java.util.Map;
  */
 public interface Container {
 
+
+	/**
+	 * @return The implementation of the {@link Container} that holds state
+	 */
+	public Container getContainerImpl();
+
+
 	/**
 	 * Synchronizes this container with another
 	 */
-	public void synchronizeContainer(Container other);
+	public default void synchronizeContainer(Container other) {
+		getContainerImpl().synchronizeContainer(other);
+	}
 
 
 	/**
 	 * @param item to put
 	 * @param quantity of item to put
 	 */
-	public void giveItem(Item item);
+	public default void giveItem(Item item) {
+		getContainerImpl().giveItem(item);
+	}
 
 
 	/**
 	 * Takes a number of items
 	 * @return the number of items taken.
 	 */
-	public int takeItem(Item item);
+	public default int takeItem(Item item) {
+		return getContainerImpl().takeItem(item);
+	}
 
 
 	/**
 	 * @return the number of specified items that exists in the container
 	 */
-	public int has(Item item);
+	public default int has(Item item) {
+		return getContainerImpl().has(item);
+	}
 
 
 	/**
 	 * @return the inventory
 	 */
-	public Map<Item, Integer> getInventory();
+	public default Map<Item, Integer> getInventory() {
+		return getContainerImpl().getInventory();
+	}
 
 
 	/**
 	 * @return the maximum weight that can be stored in this {@link ContainerImpl}
 	 */
-	public float getMaxCapacity();
+	public default float getMaxCapacity() {
+		return getContainerImpl().getMaxCapacity();
+	}
 
 
 	/**
 	 * @return the current weight that is stored in the {@link ContainerImpl}
 	 */
-	public float getCurrentLoad();
+	public default float getCurrentLoad() {
+		return getContainerImpl().getCurrentLoad();
+	}
 
 
 	/**
 	 * @return whether or not this {@link Container} can exceed the max capacity.
 	 */
-	public boolean canExceedCapacity();
+	public default boolean canExceedCapacity() {
+		return getContainerImpl().canExceedCapacity();
+	}
 
 
 	/**
 	 * @return whether or not this {@link Container} is locked.
 	 */
-	public boolean isLocked();
+	public default boolean isLocked() {
+		return getContainerImpl().isLocked();
+	}
 
 
 	/**
 	 * @return whether or not this {@link Container} is lockable.
 	 */
-	public boolean isLockable();
+	public default boolean isLockable() {
+		return getContainerImpl().isLockable();
+	}
 
 
 	/**
 	 * Attempt to unlock this container
 	 */
-	public boolean unlock(Item with);
+	public default boolean unlock(Item with) {
+		return getContainerImpl().unlock(with);
+	}
 
 
 	/**
 	 * Attempt to lock this container
 	 */
-	public boolean lock(Item with);
+	public default boolean lock(Item with) {
+		return getContainerImpl().lock(with);
+	}
 }

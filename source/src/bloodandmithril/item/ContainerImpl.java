@@ -241,4 +241,10 @@ public class ContainerImpl implements Container, Serializable {
 			ClientServerInterface.SendRequest.sendDiscardItemRequest(individual, item, quantity);
 		}
 	}
+
+
+	@Override
+	public Container getContainerImpl() {
+		return this;
+	}
 }

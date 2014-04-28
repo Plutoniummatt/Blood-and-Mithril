@@ -194,71 +194,11 @@ public class WoodenChest extends Construction implements Container {
 
 
 	@Override
-	public void synchronizeContainer(Container other) {
+	public Container getContainerImpl() {
 		if (getConstructionProgress() == 1f) {
-			container.synchronizeContainer(other);
+			return container;
 		} else {
-			super.synchronizeContainer(other);
-		}
-	}
-
-
-	@Override
-	public void giveItem(Item item) {
-		if (getConstructionProgress() == 1f) {
-			container.giveItem(item);
-		} else {
-			super.giveItem(item);
-		}
-	}
-
-
-	@Override
-	public int takeItem(Item item) {
-		if (getConstructionProgress() == 1f) {
-			return container.takeItem(item);
-		} else {
-			return super.takeItem(item);
-		}
-	}
-
-
-	@Override
-	public Map<Item, Integer> getInventory() {
-		if (getConstructionProgress() == 1f) {
-			return container.getInventory();
-		} else {
-			return super.getInventory();
-		}
-	}
-
-
-	@Override
-	public float getMaxCapacity() {
-		if (getConstructionProgress() == 1f) {
-			return container.getMaxCapacity();
-		} else {
-			return super.getMaxCapacity();
-		}
-	}
-
-
-	@Override
-	public float getCurrentLoad() {
-		if (getConstructionProgress() == 1f) {
-			return container.getCurrentLoad();
-		} else {
-			return super.getCurrentLoad();
-		}
-	}
-
-
-	@Override
-	public boolean canExceedCapacity() {
-		if (getConstructionProgress() == 1f) {
-			return container.canExceedCapacity();
-		} else {
-			return super.canExceedCapacity();
+			return super.getContainerImpl();
 		}
 	}
 

@@ -10,36 +10,52 @@ import java.util.Map;
  */
 public interface Equipper extends Container {
 
-	
+
+	/**
+	 * @return The implementation of {@link Equipper} that holds state
+	 */
+	public Equipper getEquipperImpl();
+
+
 	/**
 	 * @return the available {@link EquipmentSlot}s of this {@link Equipper}
 	 */
-	public Map<EquipmentSlot, Boolean> getAvailableEquipmentSlots();
-	
+	public default Map<EquipmentSlot, Boolean> getAvailableEquipmentSlots() {
+		return getEquipperImpl().getAvailableEquipmentSlots();
+	}
+
 
 	/**
 	 * @return the equipped items
 	 */
-	public HashMap<Item, Integer> getEquipped();
-	
-
-	/**
-	 * Equip an {@link Item}
-	 */
-	public void equip(Equipable item);
+	public default HashMap<Item, Integer> getEquipped() {
+		return getEquipperImpl().getEquipped();
+	}
 
 
 	/**
 	 * Equip an {@link Item}
 	 */
-	public void unequip(Equipable item);
+	public default void equip(Equipable item) {
+		getEquipperImpl().equip(item);
+	}
 
-	
+
+	/**
+	 * Equip an {@link Item}
+	 */
+	public default void unequip(Equipable item) {
+		getEquipperImpl().unequip(item);
+	}
+
+
 	/**
 	 * Synchronizes this {@link Container} with another
 	 */
-	public void synchronizeEquipper(Equipper other);
-	
+	public default void synchronizeEquipper(Equipper other) {
+		getEquipperImpl().synchronizeEquipper(other);
+	}
+
 
 	/**
 	 * An equipment slot, {@link Item}s must fit into one of these slots when equipped, there can not be more than one {@link Item} per slot

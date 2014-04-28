@@ -20,10 +20,8 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import bloodandmithril.character.ai.AITask;
@@ -38,7 +36,6 @@ import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Container;
-import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.EquipperImpl;
 import bloodandmithril.item.Item;
@@ -140,7 +137,7 @@ public abstract class Individual implements Equipper, Serializable {
 	private Set<Integer> selectedByClient = Sets.newHashSet();
 
 	/** Holds state of the equipment and inventory */
-	private EquipperImpl equipper;
+	private EquipperImpl equipperImpl;
 
 	/**
 	 * Constructor
@@ -155,7 +152,7 @@ public abstract class Individual implements Equipper, Serializable {
 			int safetyHeight,
 			Box interactionBox,
 			int worldId) {
-		this.equipper = new EquipperImpl(inventoryMassCapacity);
+		this.equipperImpl = new EquipperImpl(inventoryMassCapacity);
 		this.id = id;
 		this.state = state;
 		this.factionId = factionId;
@@ -193,8 +190,8 @@ public abstract class Individual implements Equipper, Serializable {
 		this.timeStamp = other.timeStamp;
 		this.selectedByClient = other.selectedByClient;
 		this.skills = other.skills;
-		synchronizeContainer(other.equipper);
-		synchronizeEquipper(other.equipper);
+		synchronizeContainer(other.equipperImpl);
+		synchronizeEquipper(other.equipperImpl);
 
 		internalCopyFrom(other);
 	}
@@ -1064,7 +1061,7 @@ public abstract class Individual implements Equipper, Serializable {
 
 	/** Attack. */
 	public void attack(Individual victim) {
-		for (Item item : equipper.getEquipped().keySet()) {
+		for (Item item : equipperImpl.getEquipped().keySet()) {
 			if (item instanceof Weapon) {
 				((Weapon) item).affect(victim);
 				attacking = true;
@@ -1096,12 +1093,6 @@ public abstract class Individual implements Equipper, Serializable {
 
 
 	@Override
-	public int has(Item item) {
-		return equipper.has(item);
-	}
-
-
-	@Override
 	public boolean isLocked() {
 		return false;
 	}
@@ -1114,74 +1105,14 @@ public abstract class Individual implements Equipper, Serializable {
 
 
 	@Override
-	public void synchronizeContainer(Container other) {
-		equipper.synchronizeContainer(other);
+	public Container getContainerImpl() {
+		return equipperImpl;
 	}
 
 
 	@Override
-	public void giveItem(Item item) {
-		equipper.giveItem(item);
-	}
-
-
-	@Override
-	public int takeItem(Item item) {
-		return equipper.takeItem(item);
-	}
-
-
-	@Override
-	public Map<Item, Integer> getInventory() {
-		return equipper.getInventory();
-	}
-
-
-	@Override
-	public float getMaxCapacity() {
-		return equipper.getMaxCapacity();
-	}
-
-
-	@Override
-	public float getCurrentLoad() {
-		return equipper.getCurrentLoad();
-	}
-
-
-	@Override
-	public boolean canExceedCapacity() {
-		return equipper.canExceedCapacity();
-	}
-
-
-	@Override
-	public Map<EquipmentSlot, Boolean> getAvailableEquipmentSlots() {
-		return equipper.getAvailableEquipmentSlots();
-	}
-
-
-	@Override
-	public HashMap<Item, Integer> getEquipped() {
-		return equipper.getEquipped();
-	}
-
-
-	@Override
-	public void equip(Equipable item) {
-		equipper.equip(item);
-	}
-
-
-	@Override
-	public void unequip(Equipable item) {
-		equipper.unequip(item);
-	}
-
-
-	@Override
-	public void synchronizeEquipper(Equipper other) {
-		equipper.synchronizeEquipper(other);
+	public Equipper getEquipperImpl() {
+		return equipperImpl;
 	}
 
 
