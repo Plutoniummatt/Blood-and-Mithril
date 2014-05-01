@@ -42,6 +42,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -84,7 +85,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			int minHeight) {
 		super(x, y, length, height, title, active, minLength, minHeight, true, true);
 		this.host = host;
-		buildItems(host.getEquipped(), host.getInventory());
+		buildItems(host.getEquipped(), host.getInventory(), true);
 		inventoryListingPanel.setScrollWheelActive(true);
 	}
 
@@ -171,53 +172,59 @@ public class InventoryWindow extends Window implements Refreshable {
 	/**
 	 * Builds the list of items to display
 	 */
-	private void buildItems(Map<Item, Integer> equippedItems, Map<Item, Integer> nonEquippedItems) {
+	@SuppressWarnings("unchecked")
+	private void buildItems(Map<Item, Integer> equippedItems, Map<Item, Integer> nonEquippedItems, boolean newPanels) {
 		populateList(equippedItems, true);
 		populateList(nonEquippedItems, false);
 
-		inventoryListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder) {
-			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
-				listings.add(nonEquippedItemsToDisplay);
-			}
+		if (newPanels) {
+			inventoryListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder) {
+				@Override
+				protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+					listings.add(nonEquippedItemsToDisplay);
+				}
 
-			@Override
-			protected int getExtraStringOffset() {
-				return 80;
-			}
+				@Override
+				protected int getExtraStringOffset() {
+					return 80;
+				}
 
-			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
-				return Integer.toString(item.getValue());
-			}
+				@Override
+				protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+					return Integer.toString(item.getValue());
+				}
 
-			@Override
-			public boolean keyPressed(int keyCode) {
-				return false;
-			}
-		};
+				@Override
+				public boolean keyPressed(int keyCode) {
+					return false;
+				}
+			};
 
-		equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder) {
-			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
-				listings.add(equippedItemsToDisplay);
-			}
+			equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder) {
+				@Override
+				protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+					listings.add(equippedItemsToDisplay);
+				}
 
-			@Override
-			protected int getExtraStringOffset() {
-				return 80;
-			}
+				@Override
+				protected int getExtraStringOffset() {
+					return 80;
+				}
 
-			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
-				return Integer.toString(item.getValue());
-			}
+				@Override
+				protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+					return Integer.toString(item.getValue());
+				}
 
-			@Override
-			public boolean keyPressed(int keyCode) {
-				return false;
-			}
-		};
+				@Override
+				public boolean keyPressed(int keyCode) {
+					return false;
+				}
+			};
+		} else {
+			inventoryListingPanel.refresh(Lists.newArrayList(nonEquippedItemsToDisplay));
+			equippedListingPanel.refresh(Lists.newArrayList(equippedItemsToDisplay));
+		}
 	}
 
 
@@ -635,7 +642,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();
 
-		buildItems(host.getEquipped(), host.getInventory());
+		buildItems(host.getEquipped(), host.getInventory(), false);
 	}
 
 
