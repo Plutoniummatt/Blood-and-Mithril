@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 
 import org.lwjgl.opengl.Display;
 
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.persistence.world.ChunkLoader;
@@ -20,8 +21,10 @@ import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -105,7 +108,7 @@ public class Topography {
 	/**
 	 * Renders the background
 	 */
-	public void renderBackGround(int camX, int camY) {
+	public void renderBackGround(int camX, int camY, Camera camera, ShaderProgram shader) {
 		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
@@ -117,7 +120,7 @@ public class Topography {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
 					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(false);
+					getChunkMap().get(x).get(y).render(false, camera, shader);
 				}
 			}
 		}
@@ -127,7 +130,7 @@ public class Topography {
 	/**
 	 * Renders the foreground
 	 */
-	public void renderForeGround(int camX, int camY) {
+	public void renderForeGround(int camX, int camY, ShaderProgram shader) {
 		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
@@ -138,7 +141,7 @@ public class Topography {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
 					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(true);
+					getChunkMap().get(x).get(y).render(true, BloodAndMithrilClient.cam, shader);
 				}
 			}
 		}

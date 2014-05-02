@@ -2,7 +2,6 @@ package bloodandmithril.character;
 
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
-import static bloodandmithril.core.BloodAndMithrilClient.cam;
 import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
@@ -271,7 +270,7 @@ public abstract class Individual implements Equipper, Serializable {
 				1f
 			);
 
-			Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
+			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
 			spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight());
 		}
 	}

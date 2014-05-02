@@ -218,7 +218,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Input.Keys.L) {
-			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), true);
+			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), false);
 		}
 
 		if (keyCode == Input.Keys.P) {

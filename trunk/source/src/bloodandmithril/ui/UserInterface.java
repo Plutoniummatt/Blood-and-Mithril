@@ -96,6 +96,7 @@ public class UserInterface {
 
 	/** UI camera */
 	public static OrthographicCamera UICamera;
+	public static OrthographicCamera UICameraTrackingCam;
 
 	/** List of {@link Button}s */
 	public static HashMap<String, Button> buttons = newHashMap();
@@ -575,7 +576,7 @@ public class UserInterface {
 				AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
 					shapeRenderer.setColor(Color.WHITE);
-//					((GoToLocation)currentTask).renderPath();
+				//	((GoToLocation)currentTask).renderPath();
 					((GoToLocation)currentTask).renderFinalWayPoint();
 				}
 			}
@@ -678,6 +679,9 @@ public class UserInterface {
 	 */
 	public static void update() {
 		UICamera.update();
+		UICameraTrackingCam.position.x = cam.position.x;
+		UICameraTrackingCam.position.y = cam.position.y;
+		UICameraTrackingCam.update();
 	}
 
 

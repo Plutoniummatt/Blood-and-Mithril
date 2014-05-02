@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import org.lwjgl.opengl.GL11;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
@@ -13,12 +12,14 @@ import bloodandmithril.world.World;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
@@ -175,29 +176,31 @@ public class Chunk {
 	/**
 	 * Renders this chunk
 	 */
-	public void render(boolean foreGround) {
+	public void render(boolean foreGround, Camera camera, ShaderProgram shader) {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		if (foreGround) {
 			Shaders.pass.begin();
-			Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+			Shaders.pass.setUniformMatrix("u_projTrans", camera.combined);
 			Shaders.pass.setUniformi("u_texture", 0);
-			fMesh.render(Shaders.pass, GL11.GL_QUADS);
+			fMesh.render(shader, GL11.GL_QUADS);
 			Shaders.pass.end();
 		} else {
 			Shaders.pass.begin();
-			Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+			Shaders.pass.setUniformMatrix("u_projTrans", camera.combined);
 			Shaders.pass.setUniformi("u_texture", 0);
-			bMesh.render(Shaders.pass, GL11.GL_QUADS);
+			bMesh.render(shader, GL11.GL_QUADS);
 			Shaders.pass.end();
 		}
 
 		if (UserInterface.DEBUG) {
 			UserInterface.shapeRenderer.begin(ShapeType.Rectangle);
+			UserInterface.shapeRenderer.setProjectionMatrix(camera.combined);
 			UserInterface.shapeRenderer.setColor(new Color(1f, 0.5f, 1f, 0.15f));
-			float x = BloodAndMithrilClient.worldToScreenX(fData.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
-			float y = BloodAndMithrilClient.worldToScreenY(fData.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE);
+			float x = fData.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE;
+			float y = fData.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE;
 			UserInterface.shapeRenderer.rect(x, y, Topography.CHUNK_SIZE * Topography.TILE_SIZE, Topography.CHUNK_SIZE * Topography.TILE_SIZE);
+			UserInterface.shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 			UserInterface.shapeRenderer.end();
 		}
 		Gdx.gl.glDisable(GL10.GL_BLEND);

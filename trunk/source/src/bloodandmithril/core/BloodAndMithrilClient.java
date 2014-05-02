@@ -11,6 +11,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
+import bloodandmithril.graphics.DefaultRenderer;
 import bloodandmithril.graphics.DynamicLightingPostRenderer;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Equipable;
@@ -118,6 +119,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	private static CursorBoundTask cursorBoundTask = null;
 
+	public static final int camMargin = 640;
+
 	@Override
 	public void create() {
 		// Load client-side resources
@@ -126,8 +129,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		spriteBatch = new SpriteBatch();
 
-		cam = new OrthographicCamera(WIDTH, HEIGHT);
-		cam.setToOrtho(false, WIDTH, HEIGHT);
+		cam = new OrthographicCamera(WIDTH + camMargin, HEIGHT + camMargin);
+		cam.setToOrtho(false, WIDTH + camMargin, HEIGHT + camMargin);
 
 		Gdx.input.setInputProcessor(this);
 
@@ -169,10 +172,13 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Equipable.setup();
 		Prop.setup();
 		DynamicLightingPostRenderer.setup();
+		DefaultRenderer.setup();
 		Item.setup();
 
 		UserInterface.UICamera = new OrthographicCamera(WIDTH, HEIGHT);
 		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
+		UserInterface.UICameraTrackingCam = new OrthographicCamera(WIDTH, HEIGHT);
+		UserInterface.UICameraTrackingCam.setToOrtho(false, WIDTH, HEIGHT);
 
 		UserInterface.addLayeredComponent(
 			new MainMenuWindow(
