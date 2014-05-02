@@ -17,39 +17,22 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 public class Shaders {
 
 	public static ShaderProgram pass = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/pass.fp"));
-
+	public static ShaderProgram invertAlphaOcclusion = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/invertAlphaOcclusion.fp"));
 	public static ShaderProgram invertY = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/invertYAxis.fp"));
-
-	public static ShaderProgram gaussianBlur = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/gaussianBlur.fp"));
-
-	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/sun.fp"));
-
-	public static ShaderProgram shadow = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/shadow.fp"));
-
-	public static ShaderProgram shadowMap = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/1DShadowMap.fp"));
-
-	public static ShaderProgram defaultBackGroundTiles = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/backGroundTileShader.fp"));
-
-	public static ShaderProgram defaultForeGroundTiles = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/foreGroundTileShader.fp"));
-
 	public static ShaderProgram text = SpriteBatch.createDefaultShader();
-
-	public static ShaderProgram daylightShader = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/daylightShader.fp"));
-
-	public static ShaderProgram black = colorFilterShader(Color.BLACK);
-
-	public static ShaderProgram daylightOcclusion = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/daylightOcclusionShader.fp"));
-
 	public static ShaderProgram filter = colorFilterShader();
+	public static ShaderProgram blur = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/blur.fp"));
 
-	public static ShaderProgram moon = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/moonShader.fp"));
-
-	public static ShaderProgram elfHighLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/elf/highLight.fp"));
-
-	public static ShaderProgram xBlur = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/xblur.fp"));
-
-	public static ShaderProgram elfDayLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/elf/dayLight.fp"));
-
+	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/sun.fp"));
+	public static ShaderProgram shadow = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/shadow.fp"));
+	public static ShaderProgram shadowMap = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/1DShadowMap.fp"));
+	public static ShaderProgram defaultBackGroundTiles = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/backGroundTileShader.fp"));
+	public static ShaderProgram defaultForeGroundTiles = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/foreGroundTileShader.fp"));
+	public static ShaderProgram daylightShader = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/daylightShader.fp"));
+	public static ShaderProgram black = colorFilterShader(Color.BLACK);
+	public static ShaderProgram moon = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/moonShader.fp"));
+	public static ShaderProgram elfHighLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/elf/highLight.fp"));
+	public static ShaderProgram elfDayLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/elf/dayLight.fp"));
 
 	public static void setup() {
 		ShaderProgram.pedantic = false;

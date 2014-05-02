@@ -125,7 +125,7 @@ public class GoToLocation extends AITask {
 				return;
 			}
 			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-			Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
 			BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
 		}
 	}

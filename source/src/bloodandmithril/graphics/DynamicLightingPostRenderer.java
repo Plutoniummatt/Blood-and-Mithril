@@ -293,9 +293,9 @@ public class DynamicLightingPostRenderer {
 		bBufferDownSample.begin();
 		spriteBatch.begin();
 		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.xBlur);
-		Shaders.xBlur.setUniformf("res", WIDTH/4, HEIGHT/4);
-		Shaders.xBlur.setUniformf("dir", 1f, 0f);
+		spriteBatch.setShader(Shaders.blur);
+		Shaders.blur.setUniformf("res", WIDTH/4, HEIGHT/4);
+		Shaders.blur.setUniformf("dir", 1f, 0f);
 		spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0);
 		spriteBatch.end();
 		bBufferDownSample.end();
@@ -303,9 +303,9 @@ public class DynamicLightingPostRenderer {
 		bBufferDownSample2.begin();
 		spriteBatch.begin();
 		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.xBlur);
-		Shaders.xBlur.setUniformf("res", WIDTH/4, HEIGHT/4);
-		Shaders.xBlur.setUniformf("dir", 0f, 1f);
+		spriteBatch.setShader(Shaders.blur);
+		Shaders.blur.setUniformf("res", WIDTH/4, HEIGHT/4);
+		Shaders.blur.setUniformf("dir", 0f, 1f);
 		spriteBatch.draw(bBufferDownSample.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
 		spriteBatch.end();
 		bBufferDownSample2.end();
@@ -313,29 +313,8 @@ public class DynamicLightingPostRenderer {
 		bBufferProcessedForDaylightShader.begin();
 		spriteBatch.begin();
 		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.daylightOcclusion);
+		spriteBatch.setShader(Shaders.pass);
 
-		double r;
-		double g;
-		double b;
-		float time = getCurrentEpoch().getTime();
-
-		if (time < 10.0) {
-			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow(time - 10.0, 2.0));
-			g = 0.1 + 1.1 * Math.exp(-0.150*Math.pow(time - 10.0, 2.0));
-			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow(time - 10.0, 2.0));
-		} else if (time >= 10 && time < 14) {
-			r = 1.3;
-			g = 1.2;
-			b = 1.1;
-		} else {
-			r = 0.1 + 1.2 * Math.exp(-0.100*Math.pow(time - 14.0, 2.0));
-			g = 0.1 + 1.1 * Math.exp(-0.150*Math.pow(time - 14.0, 2.0));
-			b = 0.1 + 1.0 * Math.exp(-0.200*Math.pow(time - 14.0, 2.0));
-		}
-
-		Shaders.daylightOcclusion.setUniformf("dl", (float)r, (float)g, (float)b, getCurrentEpoch().dayLight());
-		Shaders.daylightOcclusion.setUniformf("res", WIDTH, HEIGHT);
 		spriteBatch.draw(bBufferDownSample2.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH/4, HEIGHT/4, false, true);
 		spriteBatch.end();
 		bBufferProcessedForDaylightShader.end();

@@ -3,6 +3,7 @@ package bloodandmithril.world;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.cam;
+import static bloodandmithril.core.BloodAndMithrilClient.camMargin;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.world.Domain.Depth.BACKGROUND;
@@ -19,6 +20,7 @@ import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
+import static java.lang.Math.round;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -94,6 +96,7 @@ public class Domain {
 	public static FrameBuffer fBuffer;
 	public static FrameBuffer mBuffer;
 	public static FrameBuffer bBuffer;
+	public static FrameBuffer bBufferQuantized;
 
 	private long topographyUpdateTimer;
 
@@ -163,9 +166,10 @@ public class Domain {
 		gameWorldTexture.setFilter(Linear, Linear);
 		individualTexture.setFilter(Linear, Linear);
 
-		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
-		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
-		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
+		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + 640, HEIGHT + 640, false);
+		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + 640, HEIGHT + 640, false);
+		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + 640, HEIGHT + 640, false);
+		bBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin, HEIGHT + camMargin, false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
@@ -176,7 +180,7 @@ public class Domain {
 	 */
 	public void render(int camX, int camY) {
 		bBuffer.begin();
-		getActiveWorld().getTopography().renderBackGround(camX, camY);
+		getActiveWorld().getTopography().renderBackGround(camX, camY, cam, Shaders.pass);
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
@@ -187,6 +191,18 @@ public class Domain {
 		}
 		spriteBatch.end();
 		bBuffer.end();
+
+		bBufferQuantized.begin();
+		int xOffset = round(cam.position.x) % 16;
+		int yOffset = round(cam.position.y) % 16;
+		cam.position.x = cam.position.x - xOffset;
+		cam.position.y = cam.position.y - yOffset;
+		cam.update();
+		getActiveWorld().getTopography().renderBackGround(camX, camY, cam, Shaders.pass);
+		cam.position.x = cam.position.x + xOffset;
+		cam.position.y = cam.position.y + yOffset;
+		cam.update();
+		bBufferQuantized.end();
 
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
@@ -215,7 +231,7 @@ public class Domain {
 			item.render();
 		}
 		spriteBatch.end();
-		getActiveWorld().getTopography().renderForeGround(camX, camY);
+		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass);
 		IndividualPlatformFilteringRenderer.renderIndividuals();
 
 
@@ -231,7 +247,6 @@ public class Domain {
 
 		shapeRenderer.end();
 		gl20.glDisable(GL20.GL_BLEND);
-
 		fBuffer.end();
 
 		DefaultRenderer.render(camX, camY);
