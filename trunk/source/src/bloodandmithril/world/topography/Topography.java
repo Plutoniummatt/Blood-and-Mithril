@@ -11,6 +11,7 @@ import bloodandmithril.generation.Structures;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.Operator;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
@@ -108,7 +109,7 @@ public class Topography {
 	/**
 	 * Renders the background
 	 */
-	public void renderBackGround(int camX, int camY, Camera camera, ShaderProgram shader) {
+	public void renderBackGround(int camX, int camY, Camera camera, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
 		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
@@ -120,7 +121,7 @@ public class Topography {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
 					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(false, camera, shader);
+					getChunkMap().get(x).get(y).render(false, camera, shader, uniformSettings);
 				}
 			}
 		}
@@ -130,7 +131,7 @@ public class Topography {
 	/**
 	 * Renders the foreground
 	 */
-	public void renderForeGround(int camX, int camY, ShaderProgram shader) {
+	public void renderForeGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
 		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
@@ -141,7 +142,7 @@ public class Topography {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
 					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(true, BloodAndMithrilClient.cam, shader);
+					getChunkMap().get(x).get(y).render(true, BloodAndMithrilClient.cam, shader, uniformSettings);
 				}
 			}
 		}

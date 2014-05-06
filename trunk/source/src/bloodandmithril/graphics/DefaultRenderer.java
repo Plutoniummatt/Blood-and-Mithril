@@ -5,10 +5,14 @@ import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.cam;
 import static bloodandmithril.core.BloodAndMithrilClient.camMargin;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+import static com.badlogic.gdx.Gdx.gl;
+import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static java.lang.Math.round;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,8 +22,9 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 public class DefaultRenderer {
 
 	public static FrameBuffer bBufferDownSampled;
-	public static FrameBuffer bBufferDownSampledXBlur;
-	public static FrameBuffer bBufferDownSampledYBlur;
+	public static FrameBuffer bBufferDownSampledXBlurColorBuffer;
+	public static FrameBuffer bBufferDownSampledYBlurColorBuffer;
+	public static FrameBuffer backgroundFBO;
 	public static FrameBuffer backgroundOcclusionFBO;
 
 	/**
@@ -28,7 +33,7 @@ public class DefaultRenderer {
 	public static void render(float camX, float camY) {
 		weather();
 		background();
-		middleground();
+//		middleground();
 //		foreground();
 	}
 
@@ -44,17 +49,24 @@ public class DefaultRenderer {
 			false
 		);
 
-		bBufferDownSampledXBlur = new FrameBuffer(
+		bBufferDownSampledXBlurColorBuffer = new FrameBuffer(
 			RGBA8888,
 			(WIDTH + camMargin) / 16,
 			(HEIGHT + camMargin) / 16,
 			false
 		);
 
-		bBufferDownSampledYBlur = new FrameBuffer(
+		bBufferDownSampledYBlurColorBuffer = new FrameBuffer(
 			RGBA8888,
 			(WIDTH + camMargin) / 16,
 			(HEIGHT + camMargin) / 16,
+			false
+		);
+
+		backgroundFBO = new FrameBuffer(
+			RGBA8888,
+			WIDTH,
+			HEIGHT,
 			false
 		);
 
@@ -66,32 +78,47 @@ public class DefaultRenderer {
 		);
 
 		bBufferDownSampled.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		bBufferDownSampledXBlur.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		bBufferDownSampledYBlur.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		bBufferDownSampledXBlurColorBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		bBufferDownSampledYBlurColorBuffer.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	}
 
 
 	private static void weather() {
-//		Weather.render();
+		Weather.render();
 	}
 
 
 	private static void background() {
 		backgroundLighting();
 
+		backgroundFBO.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertY);
+		spriteBatch.draw(
+			Domain.bBuffer.getColorBufferTexture(),
+			-camMargin / 2,
+			-camMargin / 2
+		);
+		spriteBatch.end();
+		backgroundFBO.end();
 
-//		spriteBatch.draw(
-//			Domain.bBuffer.getColorBufferTexture(),
-//			-camMargin / 2,
-//			-camMargin / 2
-//		);
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.invertYBlendWithOcclusion);
+		backgroundOcclusionFBO.getColorBufferTexture().bind(1);
+		Shaders.invertYBlendWithOcclusion.setUniformi("occlusion", 1);
+		gl.glActiveTexture(GL_TEXTURE0);
 
 		spriteBatch.draw(
-			backgroundOcclusionFBO.getColorBufferTexture(),
+			backgroundFBO.getColorBufferTexture(),
 			0, 0
 		);
+
+//		spriteBatch.draw(
+//			backgroundOcclusionFBO.getColorBufferTexture(),
+//			0, 0
+//		);
 
 		spriteBatch.end();
 	}
@@ -107,7 +134,7 @@ public class DefaultRenderer {
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.invertAlphaOcclusion);
+		spriteBatch.setShader(Shaders.pass);
 		spriteBatch.draw(
 			Domain.bBufferQuantized.getColorBufferTexture(),
 			0,
@@ -119,52 +146,58 @@ public class DefaultRenderer {
 
 		// Step 2
 		// Apply x-blur to bBufferDownSampled
-		bBufferDownSampledXBlur.begin();
+		bBufferDownSampledXBlurColorBuffer.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.blur);
-		Shaders.blur.setUniformf("res", bBufferDownSampled.getWidth(), bBufferDownSampled.getHeight());
-		Shaders.blur.setUniformf("dir", 1f, 0f);
+		spriteBatch.setShader(Shaders.colorSmear);
+		Shaders.colorSmear.setUniformf("res", bBufferDownSampled.getWidth(), bBufferDownSampled.getHeight());
+		Shaders.colorSmear.setUniformf("dir", 1f, 0f);
 		spriteBatch.draw(
 			bBufferDownSampled.getColorBufferTexture(),
 			0,
 			0,
 			WIDTH, HEIGHT
 		);
-		spriteBatch.flush();
 		spriteBatch.end();
-		bBufferDownSampledXBlur.end();
+		bBufferDownSampledXBlurColorBuffer.end();
 
 		// Step 3
 		// Apply y-blur to x-blurred bBufferDownSampledXBlur
-		bBufferDownSampledYBlur.begin();
+		bBufferDownSampledYBlurColorBuffer.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.blur);
-		Shaders.blur.setUniformf("res", bBufferDownSampledXBlur.getWidth(), bBufferDownSampledXBlur.getHeight());
-		Shaders.blur.setUniformf("dir", 0f, 1f);
+		spriteBatch.setShader(Shaders.colorSmear);
+		Shaders.colorSmear.setUniformf("res", bBufferDownSampledXBlurColorBuffer.getWidth(), bBufferDownSampledXBlurColorBuffer.getHeight());
+		Shaders.colorSmear.setUniformf("dir", 0f, 1f);
 		spriteBatch.draw(
-			bBufferDownSampledXBlur.getColorBufferTexture(),
+			bBufferDownSampledXBlurColorBuffer.getColorBufferTexture(),
 			0,
 			0,
 			WIDTH, HEIGHT
 		);
 		spriteBatch.end();
-		bBufferDownSampledYBlur.end();
+		bBufferDownSampledYBlurColorBuffer.end();
 
 		backgroundOcclusionFBO.begin();
 		spriteBatch.begin();
-		Gdx.gl20.glClearColor(1f, 1f, 1f, 0f);
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.setShader(Shaders.pass);
+//		spriteBatch.draw(
+//			bBufferDownSampledYBlurColorBuffer.getColorBufferTexture(),
+//			0,
+//			0,
+//			bBufferDownSampledYBlurColorBuffer.getWidth() * 4,
+//			bBufferDownSampledYBlurColorBuffer.getHeight() * 4
+//		);
 		spriteBatch.draw(
-			bBufferDownSampledYBlur.getColorBufferTexture(),
-			-camMargin / 2 - (round(cam.position.x) % 16),
-			-camMargin / 2 - (round(cam.position.y) % 16),
-			bBufferDownSampledYBlur.getWidth() * 16,
-			bBufferDownSampledYBlur.getHeight() * 16
+			bBufferDownSampledYBlurColorBuffer.getColorBufferTexture(),
+			-camMargin / 2 - round(cam.position.x) % TILE_SIZE,
+			-camMargin / 2 - round(cam.position.y) % TILE_SIZE,
+			bBufferDownSampledYBlurColorBuffer.getWidth() * TILE_SIZE,
+			bBufferDownSampledYBlurColorBuffer.getHeight() * TILE_SIZE
 		);
 		spriteBatch.end();
 		backgroundOcclusionFBO.end();
