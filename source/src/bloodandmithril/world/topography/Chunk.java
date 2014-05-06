@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.lwjgl.opengl.GL11;
 
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Operator;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -176,21 +176,23 @@ public class Chunk {
 	/**
 	 * Renders this chunk
 	 */
-	public void render(boolean foreGround, Camera camera, ShaderProgram shader) {
+	public void render(boolean foreGround, Camera camera, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
 		Gdx.gl.glEnable(GL10.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		if (foreGround) {
-			Shaders.pass.begin();
-			Shaders.pass.setUniformMatrix("u_projTrans", camera.combined);
-			Shaders.pass.setUniformi("u_texture", 0);
+			shader.begin();
+			shader.setUniformMatrix("u_projTrans", camera.combined);
+			shader.setUniformi("u_texture", 0);
+			uniformSettings.operate(shader);
 			fMesh.render(shader, GL11.GL_QUADS);
-			Shaders.pass.end();
+			shader.end();
 		} else {
-			Shaders.pass.begin();
-			Shaders.pass.setUniformMatrix("u_projTrans", camera.combined);
-			Shaders.pass.setUniformi("u_texture", 0);
+			shader.begin();
+			shader.setUniformMatrix("u_projTrans", camera.combined);
+			shader.setUniformi("u_texture", 0);
+			uniformSettings.operate(shader);
 			bMesh.render(shader, GL11.GL_QUADS);
-			Shaders.pass.end();
+			shader.end();
 		}
 
 		if (UserInterface.DEBUG) {

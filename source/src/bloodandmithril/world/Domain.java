@@ -166,10 +166,10 @@ public class Domain {
 		gameWorldTexture.setFilter(Linear, Linear);
 		individualTexture.setFilter(Linear, Linear);
 
-		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + 640, HEIGHT + 640, false);
-		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + 640, HEIGHT + 640, false);
-		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + 640, HEIGHT + 640, false);
-		bBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin, HEIGHT + camMargin, false);
+		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
+		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
+		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
+		bBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
@@ -180,7 +180,8 @@ public class Domain {
 	 */
 	public void render(int camX, int camY) {
 		bBuffer.begin();
-		getActiveWorld().getTopography().renderBackGround(camX, camY, cam, Shaders.pass);
+		Shaders.invertAlphaSolidColor.begin();
+		getActiveWorld().getTopography().renderBackGround(camX, camY, cam, Shaders.pass, shader -> {});
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
@@ -193,12 +194,14 @@ public class Domain {
 		bBuffer.end();
 
 		bBufferQuantized.begin();
-		int xOffset = round(cam.position.x) % 16;
-		int yOffset = round(cam.position.y) % 16;
+		int xOffset = round(cam.position.x) % TILE_SIZE;
+		int yOffset = round(cam.position.y) % TILE_SIZE;
 		cam.position.x = cam.position.x - xOffset;
 		cam.position.y = cam.position.y - yOffset;
 		cam.update();
-		getActiveWorld().getTopography().renderBackGround(camX, camY, cam, Shaders.pass);
+		getActiveWorld().getTopography().renderBackGround(camX, camY, cam, Shaders.invertAlphaSolidColor, shader -> {
+			shader.setUniformf("c", 1.0f, 1.0f, 1.0f, 1.0f);
+		});
 		cam.position.x = cam.position.x + xOffset;
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();
@@ -231,7 +234,7 @@ public class Domain {
 			item.render();
 		}
 		spriteBatch.end();
-		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass);
+		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
 		IndividualPlatformFilteringRenderer.renderIndividuals();
 
 
