@@ -19,6 +19,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
+/**
+ * Class that encapsulates rendering things to the screen
+ *
+ * @author Matt
+ */
 public class DefaultRenderer {
 	public static boolean SEE_ALL = false;
 
@@ -120,7 +125,7 @@ public class DefaultRenderer {
 		workingDownSampled.end();
 
 		// Step 2
-		// Apply x-blur to bBufferDownSampled
+		// Apply x-blur to workingDownSampled
 		workingDownSampledXBlurColorBuffer.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -138,7 +143,7 @@ public class DefaultRenderer {
 		workingDownSampledXBlurColorBuffer.end();
 
 		// Step 3
-		// Apply y-blur to x-blurred bBufferDownSampledXBlur
+		// Apply y-blur to x-blurred workingDownSampledXBlur
 		workingDownSampledYBlurColorBuffer.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -175,7 +180,7 @@ public class DefaultRenderer {
 
 	private static void foregroundLighting() {
 		// Step 1
-		// Render the quantized background buffer to the 16x downsampled FBO
+		// Render the quantized foreground buffer to the 16x downsampled FBO
 		workingDownSampled.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -191,7 +196,7 @@ public class DefaultRenderer {
 		workingDownSampled.end();
 
 		// Step 2
-		// Apply x-blur to bBufferDownSampled
+		// Apply x-blur to workingDownSampled
 		workingDownSampledXBlurColorBuffer.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -209,7 +214,7 @@ public class DefaultRenderer {
 		workingDownSampledXBlurColorBuffer.end();
 
 		// Step 3
-		// Apply y-blur to x-blurred bBufferDownSampledXBlur
+		// Apply y-blur to x-blurred workingDownSampledXBlur
 		workingDownSampledYBlurColorBuffer.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
