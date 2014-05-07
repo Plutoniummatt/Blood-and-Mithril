@@ -283,9 +283,9 @@ public class DynamicLightingPostRenderer {
 		bBufferDownSample.begin();
 		spriteBatch.begin();
 		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.colorSmearGaussian32Radius);
-		Shaders.colorSmearGaussian32Radius.setUniformf("res", WIDTH/4, HEIGHT/4);
-		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 1f, 0f);
+		spriteBatch.setShader(Shaders.colorSmearLargeRadius);
+		Shaders.colorSmearLargeRadius.setUniformf("res", WIDTH/4, HEIGHT/4);
+		Shaders.colorSmearLargeRadius.setUniformf("dir", 1f, 0f);
 		spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0);
 		spriteBatch.end();
 		bBufferDownSample.end();
@@ -293,9 +293,9 @@ public class DynamicLightingPostRenderer {
 		bBufferDownSample2.begin();
 		spriteBatch.begin();
 		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.colorSmearGaussian32Radius);
-		Shaders.colorSmearGaussian32Radius.setUniformf("res", WIDTH/4, HEIGHT/4);
-		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 0f, 1f);
+		spriteBatch.setShader(Shaders.colorSmearLargeRadius);
+		Shaders.colorSmearLargeRadius.setUniformf("res", WIDTH/4, HEIGHT/4);
+		Shaders.colorSmearLargeRadius.setUniformf("dir", 0f, 1f);
 		spriteBatch.draw(bBufferDownSample.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
 		spriteBatch.end();
 		bBufferDownSample2.end();
