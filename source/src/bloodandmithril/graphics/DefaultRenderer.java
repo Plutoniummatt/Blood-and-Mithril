@@ -20,21 +20,25 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
 public class DefaultRenderer {
+	public static boolean SEE_ALL = false;
 
-	public static FrameBuffer bBufferDownSampled;
-	public static FrameBuffer bBufferDownSampledXBlurColorBuffer;
-	public static FrameBuffer bBufferDownSampledYBlurColorBuffer;
-	public static FrameBuffer backgroundFBO;
+	public static FrameBuffer workingDownSampled;
+	public static FrameBuffer workingDownSampledXBlurColorBuffer;
+	public static FrameBuffer workingDownSampledYBlurColorBuffer;
 	public static FrameBuffer backgroundOcclusionFBO;
+	public static FrameBuffer foregroundOcclusionFBO;
+	public static FrameBuffer workingFBO;
 
 	/**
 	 * Master render method.
 	 */
 	public static void render(float camX, float camY) {
 		weather();
+		backgroundLighting();
+		foregroundLighting();
 		background();
-//		middleground();
-//		foreground();
+		middleground();
+		foreground();
 	}
 
 
@@ -42,28 +46,28 @@ public class DefaultRenderer {
 	 * Loads framebuffers etc.
 	 */
 	public static void setup() {
-		bBufferDownSampled = new FrameBuffer(
+		workingDownSampled = new FrameBuffer(
 			RGBA8888,
 			(WIDTH + camMargin) / 16,
 			(HEIGHT + camMargin) / 16,
 			false
 		);
 
-		bBufferDownSampledXBlurColorBuffer = new FrameBuffer(
+		workingDownSampledXBlurColorBuffer = new FrameBuffer(
 			RGBA8888,
 			(WIDTH + camMargin) / 16,
 			(HEIGHT + camMargin) / 16,
 			false
 		);
 
-		bBufferDownSampledYBlurColorBuffer = new FrameBuffer(
+		workingDownSampledYBlurColorBuffer = new FrameBuffer(
 			RGBA8888,
 			(WIDTH + camMargin) / 16,
 			(HEIGHT + camMargin) / 16,
 			false
 		);
 
-		backgroundFBO = new FrameBuffer(
+		workingFBO = new FrameBuffer(
 			RGBA8888,
 			WIDTH,
 			HEIGHT,
@@ -77,50 +81,21 @@ public class DefaultRenderer {
 			false
 		);
 
-		bBufferDownSampled.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		bBufferDownSampledXBlurColorBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		bBufferDownSampledYBlurColorBuffer.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		foregroundOcclusionFBO = new FrameBuffer(
+			RGBA8888,
+			WIDTH,
+			HEIGHT,
+			false
+		);
+
+		workingDownSampled.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		workingDownSampledXBlurColorBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		workingDownSampledYBlurColorBuffer.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	}
 
 
 	private static void weather() {
 		Weather.render();
-	}
-
-
-	private static void background() {
-		backgroundLighting();
-
-		backgroundFBO.begin();
-		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.invertY);
-		spriteBatch.draw(
-			Domain.bBuffer.getColorBufferTexture(),
-			-camMargin / 2,
-			-camMargin / 2
-		);
-		spriteBatch.end();
-		backgroundFBO.end();
-
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.invertYBlendWithOcclusion);
-		backgroundOcclusionFBO.getColorBufferTexture().bind(1);
-		Shaders.invertYBlendWithOcclusion.setUniformi("occlusion", 1);
-		gl.glActiveTexture(GL_TEXTURE0);
-
-		spriteBatch.draw(
-			backgroundFBO.getColorBufferTexture(),
-			0, 0
-		);
-
-//		spriteBatch.draw(
-//			backgroundOcclusionFBO.getColorBufferTexture(),
-//			0, 0
-//		);
-
-		spriteBatch.end();
 	}
 
 
@@ -130,7 +105,7 @@ public class DefaultRenderer {
 	private static void backgroundLighting() {
 		// Step 1
 		// Render the quantized background buffer to the 16x downsampled FBO
-		bBufferDownSampled.begin();
+		workingDownSampled.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -142,80 +117,240 @@ public class DefaultRenderer {
 			WIDTH, HEIGHT
 		);
 		spriteBatch.end();
-		bBufferDownSampled.end();
+		workingDownSampled.end();
 
 		// Step 2
 		// Apply x-blur to bBufferDownSampled
-		bBufferDownSampledXBlurColorBuffer.begin();
+		workingDownSampledXBlurColorBuffer.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.colorSmear);
-		Shaders.colorSmear.setUniformf("res", bBufferDownSampled.getWidth(), bBufferDownSampled.getHeight());
-		Shaders.colorSmear.setUniformf("dir", 1f, 0f);
+		spriteBatch.setShader(Shaders.colorSmearGaussian32Radius);
+		Shaders.colorSmearGaussian32Radius.setUniformf("res", workingDownSampled.getWidth(), workingDownSampled.getHeight());
+		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 1f, 0f);
 		spriteBatch.draw(
-			bBufferDownSampled.getColorBufferTexture(),
+			workingDownSampled.getColorBufferTexture(),
 			0,
 			0,
 			WIDTH, HEIGHT
 		);
 		spriteBatch.end();
-		bBufferDownSampledXBlurColorBuffer.end();
+		workingDownSampledXBlurColorBuffer.end();
 
 		// Step 3
 		// Apply y-blur to x-blurred bBufferDownSampledXBlur
-		bBufferDownSampledYBlurColorBuffer.begin();
+		workingDownSampledYBlurColorBuffer.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.colorSmear);
-		Shaders.colorSmear.setUniformf("res", bBufferDownSampledXBlurColorBuffer.getWidth(), bBufferDownSampledXBlurColorBuffer.getHeight());
-		Shaders.colorSmear.setUniformf("dir", 0f, 1f);
+		spriteBatch.setShader(Shaders.colorSmearGaussian32Radius);
+		Shaders.colorSmearGaussian32Radius.setUniformf("res", workingDownSampledXBlurColorBuffer.getWidth(), workingDownSampledXBlurColorBuffer.getHeight());
+		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 0f, 1f);
 		spriteBatch.draw(
-			bBufferDownSampledXBlurColorBuffer.getColorBufferTexture(),
+			workingDownSampledXBlurColorBuffer.getColorBufferTexture(),
 			0,
 			0,
 			WIDTH, HEIGHT
 		);
 		spriteBatch.end();
-		bBufferDownSampledYBlurColorBuffer.end();
+		workingDownSampledYBlurColorBuffer.end();
 
 		backgroundOcclusionFBO.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.setShader(Shaders.pass);
-//		spriteBatch.draw(
-//			bBufferDownSampledYBlurColorBuffer.getColorBufferTexture(),
-//			0,
-//			0,
-//			bBufferDownSampledYBlurColorBuffer.getWidth() * 4,
-//			bBufferDownSampledYBlurColorBuffer.getHeight() * 4
-//		);
 		spriteBatch.draw(
-			bBufferDownSampledYBlurColorBuffer.getColorBufferTexture(),
+			workingDownSampledYBlurColorBuffer.getColorBufferTexture(),
 			-camMargin / 2 - round(cam.position.x) % TILE_SIZE,
 			-camMargin / 2 - round(cam.position.y) % TILE_SIZE,
-			bBufferDownSampledYBlurColorBuffer.getWidth() * TILE_SIZE,
-			bBufferDownSampledYBlurColorBuffer.getHeight() * TILE_SIZE
+			workingDownSampledYBlurColorBuffer.getWidth() * TILE_SIZE,
+			workingDownSampledYBlurColorBuffer.getHeight() * TILE_SIZE
 		);
 		spriteBatch.end();
 		backgroundOcclusionFBO.end();
 	}
 
 
-	private static void middleground() {
+
+	private static void foregroundLighting() {
+		// Step 1
+		// Render the quantized background buffer to the 16x downsampled FBO
+		workingDownSampled.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.pass);
+		spriteBatch.draw(
+			Domain.fBufferQuantized.getColorBufferTexture(),
+			0,
+			0,
+			WIDTH, HEIGHT
+		);
+		spriteBatch.end();
+		workingDownSampled.end();
+
+		// Step 2
+		// Apply x-blur to bBufferDownSampled
+		workingDownSampledXBlurColorBuffer.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.colorSmearGaussian4Radius);
+		Shaders.colorSmearGaussian32Radius.setUniformf("res", workingDownSampled.getWidth(), workingDownSampled.getHeight());
+		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 1f, 0f);
+		spriteBatch.draw(
+			workingDownSampled.getColorBufferTexture(),
+			0,
+			0,
+			WIDTH, HEIGHT
+		);
+		spriteBatch.end();
+		workingDownSampledXBlurColorBuffer.end();
+
+		// Step 3
+		// Apply y-blur to x-blurred bBufferDownSampledXBlur
+		workingDownSampledYBlurColorBuffer.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.colorSmearGaussian4Radius);
+		Shaders.colorSmearGaussian32Radius.setUniformf("res", workingDownSampledXBlurColorBuffer.getWidth(), workingDownSampledXBlurColorBuffer.getHeight());
+		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 0f, 1f);
+		spriteBatch.draw(
+			workingDownSampledXBlurColorBuffer.getColorBufferTexture(),
+			0,
+			0,
+			WIDTH, HEIGHT
+		);
+		spriteBatch.end();
+		workingDownSampledYBlurColorBuffer.end();
+
+		foregroundOcclusionFBO.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.pass);
+		spriteBatch.draw(
+			workingDownSampledYBlurColorBuffer.getColorBufferTexture(),
+			-camMargin / 2 - round(cam.position.x) % TILE_SIZE,
+			-camMargin / 2 - round(cam.position.y) % TILE_SIZE,
+			workingDownSampledYBlurColorBuffer.getWidth() * TILE_SIZE,
+			workingDownSampledYBlurColorBuffer.getHeight() * TILE_SIZE
+		);
+		spriteBatch.end();
+		foregroundOcclusionFBO.end();
+	}
+
+
+	private static void background() {
+		workingFBO.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertY);
-		spriteBatch.draw(Domain.mBuffer.getColorBufferTexture(), -camMargin / 2, -camMargin / 2);
+		spriteBatch.draw(
+			Domain.bBuffer.getColorBufferTexture(),
+			-camMargin / 2,
+			-camMargin / 2
+		);
+		spriteBatch.end();
+		workingFBO.end();
+
+		spriteBatch.begin();
+		if (SEE_ALL) {
+			spriteBatch.setShader(Shaders.invertY);
+			spriteBatch.draw(
+				workingFBO.getColorBufferTexture(),
+				0, 0
+			);
+		} else {
+			spriteBatch.setShader(Shaders.invertYBlendWithOcclusion);
+			backgroundOcclusionFBO.getColorBufferTexture().bind(1);
+			Shaders.invertYBlendWithOcclusion.setUniformi("occlusion", 1);
+			gl.glActiveTexture(GL_TEXTURE0);
+
+			spriteBatch.draw(
+				workingFBO.getColorBufferTexture(),
+				0, 0
+			);
+		}
+		spriteBatch.end();
+	}
+
+
+	private static void middleground() {
+		workingFBO.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.invertY);
+		spriteBatch.draw(
+			Domain.mBuffer.getColorBufferTexture(),
+			-camMargin / 2,
+			-camMargin / 2
+		);
+		spriteBatch.end();
+		workingFBO.end();
+
+		spriteBatch.begin();
+		if (SEE_ALL) {
+			spriteBatch.setShader(Shaders.invertY);
+			spriteBatch.draw(
+				workingFBO.getColorBufferTexture(),
+				0, 0
+			);
+		} else {
+			spriteBatch.setShader(Shaders.invertYDoubleBlendWithTwoOcclusions);
+			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
+			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
+			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion", 1);
+			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion2", 2);
+			gl.glActiveTexture(GL_TEXTURE0);
+
+			spriteBatch.draw(
+				workingFBO.getColorBufferTexture(),
+				0, 0
+			);
+		}
 		spriteBatch.end();
 	}
 
 
 	private static void foreground() {
+		workingFBO.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertY);
-		spriteBatch.draw(Domain.fBuffer.getColorBufferTexture(), -camMargin / 2, -camMargin / 2);
+		spriteBatch.draw(
+			Domain.fBuffer.getColorBufferTexture(),
+			-camMargin / 2,
+			-camMargin / 2
+		);
+		spriteBatch.end();
+		workingFBO.end();
+
+		spriteBatch.begin();
+		if (SEE_ALL) {
+			spriteBatch.setShader(Shaders.invertY);
+			spriteBatch.draw(
+				workingFBO.getColorBufferTexture(),
+				0, 0
+			);
+		} else {
+			spriteBatch.setShader(Shaders.invertYDoubleBlendWithTwoOcclusions);
+			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
+			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
+			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion", 1);
+			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion2", 2);
+			gl.glActiveTexture(GL_TEXTURE0);
+
+			spriteBatch.draw(
+				workingFBO.getColorBufferTexture(),
+				0, 0
+			);
+		}
 		spriteBatch.end();
 	}
 }

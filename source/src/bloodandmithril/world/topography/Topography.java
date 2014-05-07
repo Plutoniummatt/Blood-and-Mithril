@@ -22,7 +22,6 @@ import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -109,7 +108,7 @@ public class Topography {
 	/**
 	 * Renders the background
 	 */
-	public void renderBackGround(int camX, int camY, Camera camera, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
+	public void renderBackGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
 		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
@@ -121,7 +120,7 @@ public class Topography {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
 					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(false, camera, shader, uniformSettings);
+					getChunkMap().get(x).get(y).render(false, BloodAndMithrilClient.cam, shader, uniformSettings);
 				}
 			}
 		}
@@ -137,6 +136,7 @@ public class Topography {
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
 		int topRightY		= bottomLeftY + Display.getHeight() / (CHUNK_SIZE * TILE_SIZE);
 
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Topography.atlas.bind();
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {

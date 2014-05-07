@@ -31,8 +31,8 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
  *
  * @author Matt
  */
+@Deprecated
 public class DynamicLightingPostRenderer {
-	public static boolean SEE_ALL = false;
 
 	public static FrameBuffer bBufferLit;
 	public static FrameBuffer bBufferDownSample;
@@ -237,18 +237,13 @@ public class DynamicLightingPostRenderer {
 		}
 
 		//Render middleground without lighting
-		if (SEE_ALL) {
-			spriteBatch.setShader(Shaders.pass);
-			spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
-		} else {
-			spriteBatch.setShader(Shaders.black);
-			float color = getCurrentEpoch().dayLight() * 0.15f;
-			Shaders.black.setUniformf("color", new Color(color, color, color, 1f));
-			spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
+		spriteBatch.setShader(Shaders.black);
+		float color = getCurrentEpoch().dayLight() * 0.15f;
+		Shaders.black.setUniformf("color", new Color(color, color, color, 1f));
+		spriteBatch.draw(mBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
 
-			spriteBatch.setShader(Shaders.pass);
-			spriteBatch.draw(mBufferLit.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
-		}
+		spriteBatch.setShader(Shaders.pass);
+		spriteBatch.draw(mBufferLit.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
 
 		//Render the middleground, affected by lighting
 		for (Light light : tempLights) {
@@ -262,16 +257,11 @@ public class DynamicLightingPostRenderer {
 		}
 
 		//Render foreground without lighting
-		if (SEE_ALL) {
-			spriteBatch.setShader(Shaders.pass);
-			spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
-		} else {
-			spriteBatch.setShader(Shaders.daylightShader);
-			bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
-			gl.glActiveTexture(GL_TEXTURE0);
-			Shaders.daylightShader.setUniformi("u_texture2", 1);
-			spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
-		}
+		spriteBatch.setShader(Shaders.daylightShader);
+		bBufferProcessedForDaylightShader.getColorBufferTexture().bind(1);
+		gl.glActiveTexture(GL_TEXTURE0);
+		Shaders.daylightShader.setUniformi("u_texture2", 1);
+		spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, false, true);
 
 		//Render the foreground, affected by lighting
 		for (Light light : tempLights) {
@@ -293,9 +283,9 @@ public class DynamicLightingPostRenderer {
 		bBufferDownSample.begin();
 		spriteBatch.begin();
 		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.colorSmear);
-		Shaders.colorSmear.setUniformf("res", WIDTH/4, HEIGHT/4);
-		Shaders.colorSmear.setUniformf("dir", 1f, 0f);
+		spriteBatch.setShader(Shaders.colorSmearGaussian32Radius);
+		Shaders.colorSmearGaussian32Radius.setUniformf("res", WIDTH/4, HEIGHT/4);
+		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 1f, 0f);
 		spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0);
 		spriteBatch.end();
 		bBufferDownSample.end();
@@ -303,9 +293,9 @@ public class DynamicLightingPostRenderer {
 		bBufferDownSample2.begin();
 		spriteBatch.begin();
 		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.colorSmear);
-		Shaders.colorSmear.setUniformf("res", WIDTH/4, HEIGHT/4);
-		Shaders.colorSmear.setUniformf("dir", 0f, 1f);
+		spriteBatch.setShader(Shaders.colorSmearGaussian32Radius);
+		Shaders.colorSmearGaussian32Radius.setUniformf("res", WIDTH/4, HEIGHT/4);
+		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 0f, 1f);
 		spriteBatch.draw(bBufferDownSample.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
 		spriteBatch.end();
 		bBufferDownSample2.end();

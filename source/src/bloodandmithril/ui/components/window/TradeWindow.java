@@ -617,12 +617,6 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
-		return false;
-	}
-
-
-	@Override
 	public Object getUniqueIdentifier() {
 		return "tradeWindow" + (proposer.hashCode() + proposee.hashCode());
 	}

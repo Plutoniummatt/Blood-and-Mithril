@@ -130,12 +130,6 @@ public class ConstructionWindow extends Window implements Refreshable {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
-		return false;
-	}
-
-
-	@Override
 	public void leftClickReleased() {
 		requiredMaterialsPanel.leftClickReleased();
 	}

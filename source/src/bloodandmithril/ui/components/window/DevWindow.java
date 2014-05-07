@@ -19,7 +19,7 @@ import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.graphics.DynamicLightingPostRenderer;
+import bloodandmithril.graphics.DefaultRenderer;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
@@ -137,6 +137,10 @@ public class DevWindow extends Window {
 
 	@Override
 	public boolean keyPressed(int keyCode) {
+		if (super.keyPressed(keyCode)) {
+			return true;
+		}
+
 		if (keyCode == Input.Keys.E) {
 			IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 0.1f, 1f, 1f);
 			state.position = new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY());
@@ -535,9 +539,9 @@ public class DevWindow extends Window {
 					310,
 					16,
 					() -> {
-						DynamicLightingPostRenderer.SEE_ALL = !DynamicLightingPostRenderer.SEE_ALL;
+						DefaultRenderer.SEE_ALL = !DefaultRenderer.SEE_ALL;
 					},
-					DynamicLightingPostRenderer.SEE_ALL ? Color.GREEN : Color.RED,
+					DefaultRenderer.SEE_ALL ? Color.GREEN : Color.RED,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL

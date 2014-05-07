@@ -404,12 +404,6 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
-		return false;
-	}
-
-
-	@Override
 	public void leftClickReleased() {
 		craftablesListing.leftClickReleased();
 		requiredMaterialsListing.leftClickReleased();

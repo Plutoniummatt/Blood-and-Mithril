@@ -110,12 +110,6 @@ public class MessageWindow extends Window {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
-		return false;
-	}
-
-
-	@Override
 	public Object getUniqueIdentifier() {
 		return message;
 	}

@@ -18,6 +18,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Shaders;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 
@@ -94,6 +95,16 @@ public abstract class Window extends Component {
 			answer = answer + "...";
 		}
 		return answer;
+	}
+
+
+	@Override
+	public boolean keyPressed(int keyCode) {
+		if (keyCode == Input.Keys.ESCAPE) {
+			setClosing(true);
+			return true;
+		}
+		return false;
 	}
 
 

@@ -89,6 +89,10 @@ public class TextInputWindow extends Window {
 
 	@Override
 	public boolean keyPressed(int keyCode) {
+		if (super.keyPressed(keyCode)) {
+			return true;
+		}
+
 		if (keyCode == Input.Keys.ENTER) {
 			task.execute(panel.getInputText());
 			if (closeUponButtonClick) {

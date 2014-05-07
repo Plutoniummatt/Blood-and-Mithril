@@ -237,12 +237,6 @@ public class IndividualStatusWindow extends Window {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
-		return false;
-	}
-
-
-	@Override
 	public boolean scrolled(int amount) {
 		return conditionsPanel.scrolled(amount);
 	}

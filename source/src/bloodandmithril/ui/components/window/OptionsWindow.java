@@ -155,12 +155,6 @@ public class OptionsWindow extends Window {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
-		return false;
-	}
-
-
-	@Override
 	public void leftClickReleased() {
 	}
 

@@ -95,12 +95,6 @@ public class FactionsWindow extends Window {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
-		return false;
-	}
-
-
-	@Override
 	public boolean scrolled(int amount) {
 		return factionsPanel.scrolled(amount);
 	}

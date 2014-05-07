@@ -1,6 +1,6 @@
 package bloodandmithril.util;
 
-import bloodandmithril.graphics.DynamicLightingPostRenderer;
+import bloodandmithril.graphics.DefaultRenderer;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.WorldState;
 
@@ -17,12 +17,15 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 public class Shaders {
 
 	public static ShaderProgram pass = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/pass.fp"));
-	public static ShaderProgram invertY = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/invertYAxis.fp"));
-	public static ShaderProgram invertYBlendWithOcclusion = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/invertYBlendWithOcclusion.fp"));
 	public static ShaderProgram text = SpriteBatch.createDefaultShader();
 	public static ShaderProgram filter = colorFilterShader();
-	public static ShaderProgram invertAlphaSolidColor = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/invertAlphaSolidColor.fp"));
-	public static ShaderProgram colorSmear = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/colorSmearGaussian.fp"));
+
+	public static ShaderProgram invertY = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYAxis.fp"));
+	public static ShaderProgram invertYBlendWithOcclusion = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYBlendWithOcclusion.fp"));
+	public static ShaderProgram invertYDoubleBlendWithTwoOcclusions = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYDoubleBlendWithTwoOcclusions.fp"));
+	public static ShaderProgram invertAlphaSolidColor = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertAlphaSolidColor.fp"));
+	public static ShaderProgram colorSmearGaussian32Radius = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/colorSmearGaussian.fp"));
+	public static ShaderProgram colorSmearGaussian4Radius = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/colorSmearGaussian4Radius.fp"));
 
 	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/sun.fp"));
 	public static ShaderProgram shadow = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/shadow.fp"));
@@ -68,7 +71,7 @@ public class Shaders {
 		defaultBackGroundTiles.end();
 
 		defaultForeGroundTiles.begin();
-		defaultForeGroundTiles.setUniformf("debugSwitch", DynamicLightingPostRenderer.SEE_ALL ? 1f : 0f);
+		defaultForeGroundTiles.setUniformf("debugSwitch", DefaultRenderer.SEE_ALL ? 1f : 0f);
 		defaultForeGroundTiles.end();
 	}
 }

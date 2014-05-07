@@ -651,12 +651,6 @@ public class InventoryWindow extends Window implements Refreshable {
 	}
 
 
-	@Override
-	public boolean keyPressed(int keyCode) {
-		return false;
-	}
-
-
 	private static class InventoryItemContextMenuConstructor {
 		private static MenuItem showInfo(final Item item) {
 			return new MenuItem(

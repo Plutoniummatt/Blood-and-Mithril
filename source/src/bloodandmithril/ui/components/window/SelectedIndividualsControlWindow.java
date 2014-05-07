@@ -110,6 +110,10 @@ public class SelectedIndividualsControlWindow extends Window {
 
 	@Override
 	public boolean keyPressed(int keyCode) {
+		if (super.keyPressed(keyCode)) {
+			return true;
+		}
+
 		if (keyCode == KeyMappings.toggleWalkRun) {
 			buttons.get(0).getTask().execute();
 		}
