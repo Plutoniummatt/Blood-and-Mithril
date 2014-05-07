@@ -180,6 +180,10 @@ public class ChatWindow extends Window {
 
 	@Override
 	public boolean keyPressed(int keyCode) {
+		if (super.keyPressed(keyCode)) {
+			return true;
+		}
+
 		textInputPanel.keyPressed(keyCode);
 
 		if (keyCode == Input.Keys.ENTER) {

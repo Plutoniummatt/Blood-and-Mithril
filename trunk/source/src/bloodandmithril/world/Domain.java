@@ -97,6 +97,7 @@ public class Domain {
 	public static FrameBuffer mBuffer;
 	public static FrameBuffer bBuffer;
 	public static FrameBuffer bBufferQuantized;
+	public static FrameBuffer fBufferQuantized;
 
 	private long topographyUpdateTimer;
 
@@ -170,6 +171,7 @@ public class Domain {
 		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 		bBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
+		fBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
@@ -181,7 +183,7 @@ public class Domain {
 	public void render(int camX, int camY) {
 		bBuffer.begin();
 		Shaders.invertAlphaSolidColor.begin();
-		getActiveWorld().getTopography().renderBackGround(camX, camY, cam, Shaders.pass, shader -> {});
+		getActiveWorld().getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {});
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
@@ -199,13 +201,25 @@ public class Domain {
 		cam.position.x = cam.position.x - xOffset;
 		cam.position.y = cam.position.y - yOffset;
 		cam.update();
-		getActiveWorld().getTopography().renderBackGround(camX, camY, cam, Shaders.invertAlphaSolidColor, shader -> {
+		getActiveWorld().getTopography().renderBackGround(camX, camY, Shaders.invertAlphaSolidColor, shader -> {
 			shader.setUniformf("c", 1.0f, 1.0f, 1.0f, 1.0f);
 		});
 		cam.position.x = cam.position.x + xOffset;
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();
 		bBufferQuantized.end();
+
+		fBufferQuantized.begin();
+		cam.position.x = cam.position.x - xOffset;
+		cam.position.y = cam.position.y - yOffset;
+		cam.update();
+		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.invertAlphaSolidColor, shader -> {
+			shader.setUniformf("c", 1.0f, 1.0f, 1.0f, 1.0f);
+		});
+		cam.position.x = cam.position.x + xOffset;
+		cam.position.y = cam.position.y + yOffset;
+		cam.update();
+		fBufferQuantized.end();
 
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);

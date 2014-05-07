@@ -26,9 +26,9 @@ vec4 sample(float offsetX, float offsetY)
 vec4 blend(vec4 a, vec4 b, float factor)
 {
 	return vec4(
-		max(a.r, b.r * factor), 
-		max(a.g, b.g * factor), 
-		max(a.b, b.b * factor), 
+		min(a.r + b.r * factor, 1.0), 
+		min(a.g + b.g * factor, 1.0), 
+		min(a.b + b.b * factor, 1.0), 
 		1.0
 	);
 }
