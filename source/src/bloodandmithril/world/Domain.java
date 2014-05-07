@@ -213,6 +213,7 @@ public class Domain {
 		cam.position.x = cam.position.x - xOffset;
 		cam.position.y = cam.position.y - yOffset;
 		cam.update();
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.invertAlphaSolidColor, shader -> {
 			shader.setUniformf("c", 1.0f, 1.0f, 1.0f, 1.0f);
 		});
@@ -250,7 +251,6 @@ public class Domain {
 		spriteBatch.end();
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
 		IndividualPlatformFilteringRenderer.renderIndividuals();
-
 
 		gl20.glEnable(GL20.GL_BLEND);
 		shapeRenderer.begin(ShapeType.FilledRectangle);
