@@ -130,9 +130,9 @@ public class DefaultRenderer {
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.colorSmearGaussian32Radius);
-		Shaders.colorSmearGaussian32Radius.setUniformf("res", workingDownSampled.getWidth(), workingDownSampled.getHeight());
-		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 1f, 0f);
+		spriteBatch.setShader(Shaders.colorSmearLargeRadius);
+		Shaders.colorSmearLargeRadius.setUniformf("res", workingDownSampled.getWidth(), workingDownSampled.getHeight());
+		Shaders.colorSmearLargeRadius.setUniformf("dir", 1f, 0f);
 		spriteBatch.draw(
 			workingDownSampled.getColorBufferTexture(),
 			0,
@@ -148,9 +148,9 @@ public class DefaultRenderer {
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.colorSmearGaussian32Radius);
-		Shaders.colorSmearGaussian32Radius.setUniformf("res", workingDownSampledXBlurColorBuffer.getWidth(), workingDownSampledXBlurColorBuffer.getHeight());
-		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 0f, 1f);
+		spriteBatch.setShader(Shaders.colorSmearLargeRadius);
+		Shaders.colorSmearLargeRadius.setUniformf("res", workingDownSampledXBlurColorBuffer.getWidth(), workingDownSampledXBlurColorBuffer.getHeight());
+		Shaders.colorSmearLargeRadius.setUniformf("dir", 0f, 1f);
 		spriteBatch.draw(
 			workingDownSampledXBlurColorBuffer.getColorBufferTexture(),
 			0,
@@ -201,9 +201,9 @@ public class DefaultRenderer {
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.colorSmearGaussian4Radius);
-		Shaders.colorSmearGaussian32Radius.setUniformf("res", workingDownSampled.getWidth(), workingDownSampled.getHeight());
-		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 1f, 0f);
+		spriteBatch.setShader(Shaders.colorSmearSmallRadius);
+		Shaders.colorSmearLargeRadius.setUniformf("res", workingDownSampled.getWidth(), workingDownSampled.getHeight());
+		Shaders.colorSmearLargeRadius.setUniformf("dir", 1f, 0f);
 		spriteBatch.draw(
 			workingDownSampled.getColorBufferTexture(),
 			0,
@@ -219,9 +219,9 @@ public class DefaultRenderer {
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.colorSmearGaussian4Radius);
-		Shaders.colorSmearGaussian32Radius.setUniformf("res", workingDownSampledXBlurColorBuffer.getWidth(), workingDownSampledXBlurColorBuffer.getHeight());
-		Shaders.colorSmearGaussian32Radius.setUniformf("dir", 0f, 1f);
+		spriteBatch.setShader(Shaders.colorSmearSmallRadius);
+		Shaders.colorSmearLargeRadius.setUniformf("res", workingDownSampledXBlurColorBuffer.getWidth(), workingDownSampledXBlurColorBuffer.getHeight());
+		Shaders.colorSmearLargeRadius.setUniformf("dir", 0f, 1f);
 		spriteBatch.draw(
 			workingDownSampledXBlurColorBuffer.getColorBufferTexture(),
 			0,

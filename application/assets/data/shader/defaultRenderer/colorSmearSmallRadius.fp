@@ -38,14 +38,12 @@ void main()
 	vec4 total = vec4(0.0, 0.0, 0.0, 0.0);
 	
 	total = sample(0.0, 0.0);
-    total = blend(total, sample(-4.0,  -4.0),  0.20);
     total = blend(total, sample(-3.0,  -3.0),  0.20);
     total = blend(total, sample(-2.0,  -2.0),  0.20);
     total = blend(total, sample(-1.0,  -1.0),  0.20);
     total = blend(total, sample(1.0,   1.0),   0.20);
     total = blend(total, sample(2.0,   2.0),   0.20);
     total = blend(total, sample(3.0,   3.0),   0.20);
-    total = blend(total, sample(4.0,   4.0),   0.20);
                                                                                   
 	gl_FragColor = total;
 }
