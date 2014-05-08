@@ -279,7 +279,7 @@ public class Domain {
 
 			float d = 1f/60f;
 
-			getCurrentEpoch().incrementTime(d);
+			getCurrentEpoch().incrementTime(d * 500);
 
 			for (Individual indi : individuals.values()) {
 				indi.update(d);

@@ -7,10 +7,11 @@ precision mediump float;
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
 uniform sampler2D occlusion;
+uniform vec4 dayLightColor;
 
 void main()
 {
   vec2 inverted = vec2(v_texCoords.x, 1.0 - v_texCoords.y);
   float factor = texture2D(occlusion, inverted).r;
-  gl_FragColor = texture2D(u_texture, inverted) * vec4(factor, factor, factor, 1.0);
+  gl_FragColor = texture2D(u_texture, inverted) * vec4(factor, factor, factor, 1.0) * dayLightColor;
 }
