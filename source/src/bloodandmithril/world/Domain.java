@@ -96,8 +96,7 @@ public class Domain {
 	public static FrameBuffer fBuffer;
 	public static FrameBuffer mBuffer;
 	public static FrameBuffer bBuffer;
-	public static FrameBuffer bBufferQuantized;
-	public static FrameBuffer fBufferQuantized;
+	public static FrameBuffer bufferQuantized;
 
 	private long topographyUpdateTimer;
 
@@ -170,8 +169,7 @@ public class Domain {
 		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
-		bBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
-		fBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
+		bufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
@@ -195,32 +193,32 @@ public class Domain {
 		spriteBatch.end();
 		bBuffer.end();
 
-		bBufferQuantized.begin();
+		bufferQuantized.begin();
 		int xOffset = round(cam.position.x) % TILE_SIZE;
 		int yOffset = round(cam.position.y) % TILE_SIZE;
 		cam.position.x = cam.position.x - xOffset;
 		cam.position.y = cam.position.y - yOffset;
 		cam.update();
 		getActiveWorld().getTopography().renderBackGround(camX, camY, Shaders.invertAlphaSolidColor, shader -> {
-			shader.setUniformf("c", 1.0f, 1.0f, 1.0f, 1.0f);
+			shader.setUniformf("c", 1.0f, 0.0f, 0.0f, 1.0f);
 		});
 		cam.position.x = cam.position.x + xOffset;
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();
-		bBufferQuantized.end();
+		bufferQuantized.end();
 
-		fBufferQuantized.begin();
+		bufferQuantized.begin();
 		cam.position.x = cam.position.x - xOffset;
 		cam.position.y = cam.position.y - yOffset;
 		cam.update();
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.invertAlphaSolidColor, shader -> {
-			shader.setUniformf("c", 1.0f, 1.0f, 1.0f, 1.0f);
+			shader.setUniformf("c", 0.0f, 1.0f, 0.0f, 1.0f);
 		});
 		cam.position.x = cam.position.x + xOffset;
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();
-		fBufferQuantized.end();
+		bufferQuantized.end();
 
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
@@ -279,7 +277,7 @@ public class Domain {
 
 			float d = 1f/60f;
 
-			getCurrentEpoch().incrementTime(d * 500);
+			getCurrentEpoch().incrementTime(d);
 
 			for (Individual indi : individuals.values()) {
 				indi.update(d);
