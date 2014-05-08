@@ -8,6 +8,7 @@ varying vec2 v_texCoords;
 uniform sampler2D u_texture;
 uniform sampler2D occlusion;
 uniform sampler2D occlusion2;
+uniform vec4 dayLightColor;
 
 void main()
 {
@@ -15,5 +16,5 @@ void main()
   float factor1 = texture2D(occlusion, inverted).r;
   float factor2 = texture2D(occlusion2, inverted).r;
   float factor = factor1 * factor2;
-  gl_FragColor = texture2D(u_texture, inverted) * vec4(factor, factor, factor, 1.0);
+  gl_FragColor = texture2D(u_texture, inverted) * vec4(factor, factor, factor, 1.0) * dayLightColor;
 }

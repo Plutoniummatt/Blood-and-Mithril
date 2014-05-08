@@ -17,8 +17,8 @@ import static java.lang.Math.sin;
 import java.util.List;
 
 import bloodandmithril.util.Shaders;
-import bloodandmithril.world.Epoch;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldState;
 
 import com.badlogic.gdx.graphics.Color;
@@ -71,6 +71,28 @@ public class Weather {
 	}
 
 
+	public static Color getDaylightColor() {
+		float time = getCurrentEpoch().getTime();
+		Color filter = new Color();
+
+		if (time < 10) {
+			filter.r = (float) (0.1D + 1.2D * exp(-0.100*pow(time-10, 2)));
+			filter.g = (float) (0.1D + 1.2D * exp(-0.150*pow(time-10, 2)));
+			filter.b = (float) (0.1D + 1.2D * exp(-0.200*pow(time-10, 2)));
+		} else if (time >= 10 && time < 14) {
+			filter.r = 1.3f;
+			filter.g = 1.3f;
+			filter.b = 1.3f;
+		} else {
+			filter.r = (float) (0.1D + 1.2D * exp(-0.100*pow(time-14, 2)));
+			filter.g = (float) (0.1D + 1.2D * exp(-0.150*pow(time-14, 2)));
+			filter.b = (float) (0.1D + 1.2D * exp(-0.200*pow(time-14, 2)));
+		}
+
+		return filter;
+	}
+
+
 	/** Renders the sun */
 	private static void renderSun() {
 		float time = WorldState.getCurrentEpoch().getTime();
@@ -115,23 +137,7 @@ public class Weather {
 	/** Renders the sky */
 	private static void renderSky() {
 		shapeRenderer.begin(FilledRectangle);
-
-		float time = getCurrentEpoch().getTime();
-		Color filter = new Color();
-
-		if (time < 10) {
-			filter.r = (float) (0.1D + 1.2D * exp(-0.100*pow(time-10, 2)));
-			filter.g = (float) (0.1D + 1.2D * exp(-0.150*pow(time-10, 2)));
-			filter.b = (float) (0.1D + 1.2D * exp(-0.200*pow(time-10, 2)));
-		} else if (time >= 10 && time < 14) {
-			filter.r = 1.3f;
-			filter.g = 1.3f;
-			filter.b = 1.3f;
-		} else {
-			filter.r = (float) (0.1D + 1.2D * exp(-0.100*pow(time-14, 2)));
-			filter.g = (float) (0.1D + 1.2D * exp(-0.150*pow(time-14, 2)));
-			filter.b = (float) (0.1D + 1.2D * exp(-0.200*pow(time-14, 2)));
-		}
+		Color filter = getDaylightColor();
 
 		Color topColor = dayTopColor.cpy().mul(getCurrentEpoch().dayLight()).add(nightTopColor.cpy().mul(1f - getCurrentEpoch().dayLight())).mul(filter);
 		Color bottomColor = dayBottomColor.cpy().mul(getCurrentEpoch().dayLight()).add(nightBottomColor.cpy().mul(1f - getCurrentEpoch().dayLight())).mul(filter);

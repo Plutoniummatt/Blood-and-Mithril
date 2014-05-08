@@ -15,6 +15,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -272,6 +273,8 @@ public class DefaultRenderer {
 		} else {
 			spriteBatch.setShader(Shaders.invertYBlendWithOcclusion);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(1);
+			Color daylight = Weather.getDaylightColor();
+			Shaders.invertYBlendWithOcclusion.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			Shaders.invertYBlendWithOcclusion.setUniformi("occlusion", 1);
 			gl.glActiveTexture(GL_TEXTURE0);
 
@@ -307,6 +310,8 @@ public class DefaultRenderer {
 			);
 		} else {
 			spriteBatch.setShader(Shaders.invertYDoubleBlendWithTwoOcclusions);
+			Color daylight = Weather.getDaylightColor();
+			Shaders.invertYBlendWithOcclusion.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
 			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion", 1);
