@@ -12,7 +12,9 @@ import static bloodandmithril.world.Domain.Depth.MIDDLEGROUND;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.badlogic.gdx.Gdx.files;
+import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.Gdx.gl20;
+import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
@@ -96,7 +98,9 @@ public class Domain {
 	public static FrameBuffer fBuffer;
 	public static FrameBuffer mBuffer;
 	public static FrameBuffer bBuffer;
-	public static FrameBuffer bufferQuantized;
+	public static FrameBuffer bBufferQuantized;
+	public static FrameBuffer fBufferQuantized;
+	public static FrameBuffer combinedBufferQuantized;
 
 	private long topographyUpdateTimer;
 
@@ -169,7 +173,9 @@ public class Domain {
 		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
-		bufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
+		bBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
+		fBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
+		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
@@ -193,7 +199,7 @@ public class Domain {
 		spriteBatch.end();
 		bBuffer.end();
 
-		bufferQuantized.begin();
+		bBufferQuantized.begin();
 		int xOffset = round(cam.position.x) % TILE_SIZE;
 		int yOffset = round(cam.position.y) % TILE_SIZE;
 		cam.position.x = cam.position.x - xOffset;
@@ -205,9 +211,9 @@ public class Domain {
 		cam.position.x = cam.position.x + xOffset;
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();
-		bufferQuantized.end();
+		bBufferQuantized.end();
 
-		bufferQuantized.begin();
+		fBufferQuantized.begin();
 		cam.position.x = cam.position.x - xOffset;
 		cam.position.y = cam.position.y - yOffset;
 		cam.update();
@@ -218,7 +224,22 @@ public class Domain {
 		cam.position.x = cam.position.x + xOffset;
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();
-		bufferQuantized.end();
+		fBufferQuantized.end();
+
+		combinedBufferQuantized.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.invertAlphaSolidColorBlend);
+		bBufferQuantized.getColorBufferTexture().bind(1);
+		Shaders.invertAlphaSolidColorBlend.setUniformi("u_texture_2", 1);
+		gl.glActiveTexture(GL_TEXTURE0);
+		spriteBatch.draw(
+			fBufferQuantized.getColorBufferTexture(),
+			0, 0, WIDTH, HEIGHT
+		);
+		spriteBatch.end();
+		combinedBufferQuantized.end();
 
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
