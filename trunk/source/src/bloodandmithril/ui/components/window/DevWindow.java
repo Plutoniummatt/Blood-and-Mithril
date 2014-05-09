@@ -221,12 +221,20 @@ public class DevWindow extends Window {
 			return true;
 		}
 
-		if (keyCode == Input.Keys.L) {
+		if (keyCode == Input.Keys.O) {
 			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), false);
 		}
 
-		if (keyCode == Input.Keys.P) {
+		if (keyCode == Input.Keys.K) {
+			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), true);
+		}
+
+		if (keyCode == Input.Keys.L) {
 			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickTile.class);
+		}
+
+		if (keyCode == Input.Keys.P) {
+			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), false, YellowBrickTile.class);
 		}
 
 		if (keyCode == Input.Keys.J) {
@@ -234,14 +242,6 @@ public class DevWindow extends Window {
 				Topography.convertToWorldTileCoord(getMouseWorldX()),
 				Topography.convertToWorldTileCoord(getMouseWorldY()),
 				new Fluid(FluidFraction.fraction(new Water(), 16f))
-			);
-		}
-
-		if (keyCode == Input.Keys.K) {
-			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()),
-				Topography.convertToWorldTileCoord(getMouseWorldY()),
-				new Fluid(FluidFraction.fraction(new Blood(), 16f))
 			);
 		}
 

@@ -114,6 +114,7 @@ public class Topography {
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
 		int topRightY		= bottomLeftY + Display.getHeight() / (CHUNK_SIZE * TILE_SIZE);
 
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Topography.atlas.bind();
 		for (int x = bottomLeftX - 2; x <= topRightX + 2; x++) {
