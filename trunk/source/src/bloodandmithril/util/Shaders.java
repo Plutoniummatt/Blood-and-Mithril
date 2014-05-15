@@ -1,6 +1,6 @@
 package bloodandmithril.util;
 
-import bloodandmithril.graphics.DefaultRenderer;
+import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.WorldState;
 
@@ -72,7 +72,7 @@ public class Shaders {
 		defaultBackGroundTiles.end();
 
 		defaultForeGroundTiles.begin();
-		defaultForeGroundTiles.setUniformf("debugSwitch", DefaultRenderer.SEE_ALL ? 1f : 0f);
+		defaultForeGroundTiles.setUniformf("debugSwitch", GaussianLightingRenderer.SEE_ALL ? 1f : 0f);
 		defaultForeGroundTiles.end();
 	}
 }

@@ -146,12 +146,13 @@ public abstract class Individual implements Equipper, Serializable {
 			IndividualState state,
 			int factionId,
 			float inventoryMassCapacity,
+			int maxRings,
 			int width,
 			int height,
 			int safetyHeight,
 			Box interactionBox,
 			int worldId) {
-		this.equipperImpl = new EquipperImpl(inventoryMassCapacity);
+		this.equipperImpl = new EquipperImpl(inventoryMassCapacity, maxRings);
 		this.id = id;
 		this.state = state;
 		this.factionId = factionId;
