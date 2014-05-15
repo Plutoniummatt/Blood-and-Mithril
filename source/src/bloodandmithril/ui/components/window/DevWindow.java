@@ -19,7 +19,7 @@ import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.graphics.DefaultRenderer;
+import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
@@ -539,9 +539,9 @@ public class DevWindow extends Window {
 					310,
 					16,
 					() -> {
-						DefaultRenderer.SEE_ALL = !DefaultRenderer.SEE_ALL;
+						GaussianLightingRenderer.SEE_ALL = !GaussianLightingRenderer.SEE_ALL;
 					},
-					DefaultRenderer.SEE_ALL ? Color.GREEN : Color.RED,
+					GaussianLightingRenderer.SEE_ALL ? Color.GREEN : Color.RED,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL

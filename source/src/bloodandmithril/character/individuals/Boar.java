@@ -53,7 +53,7 @@ public class Boar extends Individual {
 	 * Constructor
 	 */
 	public Boar(IndividualIdentifier id, IndividualState state, World world) {
-		super(id, state, Faction.NPC, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId());
+		super(id, state, Faction.NPC, 0f, 0, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId());
 		ai = new BoarAI(this);
 		current = STANDING_RIGHT;
 	}
@@ -63,7 +63,7 @@ public class Boar extends Individual {
 	 * Constructor
 	 */
 	private Boar(IndividualIdentifier id, IndividualState state, int worldId) {
-		super(id, state, Faction.NPC, 0f, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId);
+		super(id, state, Faction.NPC, 0f, 0, 64, 32, 120, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId);
 		ai = new BoarAI(this);
 		current = STANDING_RIGHT;
 	}

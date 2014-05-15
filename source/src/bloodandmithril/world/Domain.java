@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.graphics.DefaultRenderer;
+import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Container;
 import bloodandmithril.item.Item;
@@ -285,7 +285,7 @@ public class Domain {
 		gl20.glDisable(GL20.GL_BLEND);
 		fBuffer.end();
 
-		DefaultRenderer.render(camX, camY);
+		GaussianLightingRenderer.render(camX, camY);
 	}
 
 

@@ -1,7 +1,11 @@
 package bloodandmithril.item;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
+
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -14,17 +18,22 @@ public class EquipperImpl implements Equipper, Serializable {
 	private static final long serialVersionUID = -4489215845226338399L;
 
 	/** The current equipped {@link Item}s of this {@link Container} */
-	protected HashMap<Item, Integer> equippedItems = new HashMap<Item, Integer>();
+	protected HashMap<Item, Integer> equippedItems = newHashMap();
 
 	/** The current available {@link EquipmentSlot}s, maps to true if empty/available */
-	protected Map<EquipmentSlot, Boolean> availableEquipmentSlots = new HashMap<>();
+	protected Map<EquipmentSlot, Boolean> availableEquipmentSlots = newHashMap();
+
+	private List<Item> equippedRings = newArrayList();
+
+	private final int maxRings;
 
 	private ContainerImpl containerImpl;
 
 	/**
 	 * @param inventoryMassCapacity
 	 */
-	public EquipperImpl(float inventoryMassCapacity) {
+	public EquipperImpl(float inventoryMassCapacity, int maxRings) {
+		this.maxRings = maxRings;
 		this.containerImpl = new ContainerImpl(inventoryMassCapacity, true);
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			availableEquipmentSlots.put(slot, true);

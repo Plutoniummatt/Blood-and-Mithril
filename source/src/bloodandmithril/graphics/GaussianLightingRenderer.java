@@ -21,11 +21,11 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
 /**
- * Class that encapsulates rendering things to the screen
+ * Class that encapsulates rendering things to the screen, lighting model is based on efficient large radius Gaussian blurred occlusion mapping
  *
  * @author Matt
  */
-public class DefaultRenderer {
+public class GaussianLightingRenderer {
 	public static boolean SEE_ALL = false;
 
 	public static FrameBuffer workingDownSampled;
@@ -166,11 +166,6 @@ public class DefaultRenderer {
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.setShader(Shaders.pass);
-//		spriteBatch.draw(
-//			workingDownSampledYBlurColorBuffer.getColorBufferTexture(), 0, 0,
-//			workingDownSampledYBlurColorBuffer.getWidth() * 4,
-//			workingDownSampledYBlurColorBuffer.getHeight() * 4
-//		);
 		spriteBatch.draw(
 			workingDownSampledYBlurColorBuffer.getColorBufferTexture(),
 			-camMargin / 2 - round(cam.position.x) % TILE_SIZE,
@@ -275,10 +270,6 @@ public class DefaultRenderer {
 				backgroundOcclusionFBO.getColorBufferTexture(),
 				0, 0
 			);
-//			spriteBatch.draw(
-//				workingFBO.getColorBufferTexture(),
-//				0, 0
-//			);
 		} else {
 			spriteBatch.setShader(Shaders.invertYBlendWithOcclusion);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(1);
