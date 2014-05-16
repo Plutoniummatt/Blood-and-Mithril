@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import bloodandmithril.item.equipment.Ring;
+import bloodandmithril.util.Function;
+
 /**
  * Default implementation of {@link Equipper}
  *
@@ -21,13 +24,13 @@ public class EquipperImpl implements Equipper, Serializable {
 	protected HashMap<Item, Integer> equippedItems = newHashMap();
 
 	/** The current available {@link EquipmentSlot}s, maps to true if empty/available */
-	protected Map<EquipmentSlot, Boolean> availableEquipmentSlots = newHashMap();
+	protected Map<EquipmentSlot, Function<Boolean>> availableEquipmentSlots = newHashMap();
 
-	private List<Item> equippedRings = newArrayList();
-
-	private final int maxRings;
+	private List<Ring> equippedRings = newArrayList();
 
 	private ContainerImpl containerImpl;
+
+	private int maxRings;
 
 	/**
 	 * @param inventoryMassCapacity
@@ -36,7 +39,21 @@ public class EquipperImpl implements Equipper, Serializable {
 		this.maxRings = maxRings;
 		this.containerImpl = new ContainerImpl(inventoryMassCapacity, true);
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
-			availableEquipmentSlots.put(slot, true);
+			if (slot != EquipmentSlot.RING) {
+				availableEquipmentSlots.put(
+					slot,
+					() -> {
+						return true;
+					}
+				);
+			} else {
+				availableEquipmentSlots.put(
+					slot,
+					() -> {
+						return equippedRings.size() < maxRings;
+					}
+				);
+			}
 		}
 	}
 
@@ -48,7 +65,13 @@ public class EquipperImpl implements Equipper, Serializable {
 
 
 	@Override
-	public Map<EquipmentSlot, Boolean> getAvailableEquipmentSlots() {
+	public List<Ring> getEquippedRings() {
+		return equippedRings;
+	}
+
+
+	@Override
+	public Map<EquipmentSlot, Function<Boolean>> getAvailableEquipmentSlots() {
 		return availableEquipmentSlots;
 	}
 
@@ -77,15 +100,27 @@ public class EquipperImpl implements Equipper, Serializable {
 	@Override
 	public void equip(Equipable item) {
 		for (Item equipped : equippedItems.keySet()) {
-			if (equipped.sameAs(item)) {
+			if (equipped.sameAs(item) && item.slot != EquipmentSlot.RING) {
 				return;
 			}
 		}
 
-		if (availableEquipmentSlots.get(item.slot)) {
+		if (availableEquipmentSlots.get(item.slot).call()) {
 			takeItem(item);
 			equippedItems.put(item, 1);
-			availableEquipmentSlots.put(item.slot, false);
+			if (item.slot == EquipmentSlot.RING) {
+				equippedRings.add((Ring)item);
+			}
+			availableEquipmentSlots.put(
+				item.slot,
+				item.slot == EquipmentSlot.RING ?
+				() -> {
+					return equippedRings.size() < maxRings;
+				} :
+				() -> {
+					return false;
+				}
+			);
 			refreshCurrentLoad();
 		} else {
 			for (Item eq : equippedItems.keySet()) {
@@ -94,7 +129,16 @@ public class EquipperImpl implements Equipper, Serializable {
 					break;
 				}
 			}
-			availableEquipmentSlots.put(item.slot, true);
+			availableEquipmentSlots.put(
+				item.slot,
+				item.slot == EquipmentSlot.RING ?
+				() -> {
+					return equippedRings.size() < maxRings;
+				} :
+				() -> {
+					return true;
+				}
+			);
 			equip(item);
 		}
 	}
@@ -114,8 +158,20 @@ public class EquipperImpl implements Equipper, Serializable {
 		}
 
 		equippedItems.remove(toUnequip);
+		if (toUnequip.slot == EquipmentSlot.RING) {
+			equippedRings.remove(toUnequip);
+		}
 		containerImpl.getInventory().put(toUnequip, (containerImpl.getInventory().get(toUnequip) == null ? 0 : containerImpl.getInventory().get(toUnequip)) + 1);
-		availableEquipmentSlots.put(toUnequip.slot, true);
+		availableEquipmentSlots.put(
+			toUnequip.slot,
+			item.slot == EquipmentSlot.RING ?
+			() -> {
+				return equippedRings.size() < maxRings;
+			} :
+			() -> {
+				return true;
+			}
+		);
 		refreshCurrentLoad();
 	}
 
@@ -134,8 +190,16 @@ public class EquipperImpl implements Equipper, Serializable {
 
 
 	@Override
+	public int getMaxRings() {
+		return maxRings;
+	}
+
+
+	@Override
 	public void synchronizeEquipper(Equipper other) {
 		this.equippedItems = other.getEquipped();
+		this.equippedRings = other.getEquippedRings();
+		this.maxRings = other.getMaxRings();
 		this.availableEquipmentSlots = other.getAvailableEquipmentSlots();
 	}
 

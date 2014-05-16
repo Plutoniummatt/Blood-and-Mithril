@@ -24,7 +24,7 @@ public class ButterflySword extends OneHandedWeapon implements Craftable {
 	 * Constructor
 	 */
 	public ButterflySword(long value) {
-		super(10, true, value);
+		super(1.5f, true, value);
 	}
 
 

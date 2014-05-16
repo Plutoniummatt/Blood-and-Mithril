@@ -1,7 +1,11 @@
 package bloodandmithril.item;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import bloodandmithril.item.equipment.Ring;
+import bloodandmithril.util.Function;
 
 /**
  * An {@link Equipper} is able to equip {@link Equipable} {@link Item}s
@@ -20,7 +24,7 @@ public interface Equipper extends Container {
 	/**
 	 * @return the available {@link EquipmentSlot}s of this {@link Equipper}
 	 */
-	public default Map<EquipmentSlot, Boolean> getAvailableEquipmentSlots() {
+	public default Map<EquipmentSlot, Function<Boolean>> getAvailableEquipmentSlots() {
 		return getEquipperImpl().getAvailableEquipmentSlots();
 	}
 
@@ -30,6 +34,22 @@ public interface Equipper extends Container {
 	 */
 	public default HashMap<Item, Integer> getEquipped() {
 		return getEquipperImpl().getEquipped();
+	}
+
+
+	/**
+	 * @return the maximum number of rings this equipper can equip
+	 */
+	public default int getMaxRings() {
+		return getEquipperImpl().getMaxRings();
+	}
+
+
+	/**
+	 * @return all equipped {@link Ring}s
+	 */
+	public default List<Ring> getEquippedRings() {
+		return getEquipperImpl().getEquippedRings();
 	}
 
 
@@ -63,6 +83,6 @@ public interface Equipper extends Container {
 	 * @author Matt
 	 */
 	public enum EquipmentSlot {
-		LEFTHAND, RIGHTHAND, GLOVE, CHEST, LEGS, FEET, HEAD, AMMO, NECKLACE
+		LEFTHAND, RIGHTHAND, GLOVE, CHEST, LEGS, FEET, HEAD, AMMO, NECKLACE, RING
 	}
 }
