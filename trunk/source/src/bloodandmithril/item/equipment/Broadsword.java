@@ -23,7 +23,7 @@ public class Broadsword extends OneHandedWeapon implements Craftable {
 	 * Constructor
 	 */
 	public Broadsword(long value) {
-		super(10, true, value);
+		super(2, true, value);
 	}
 
 
