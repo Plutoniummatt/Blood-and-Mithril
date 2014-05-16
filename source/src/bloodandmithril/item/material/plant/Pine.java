@@ -17,13 +17,13 @@ public class Pine extends Item {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return (firstCap ? "P" : "p") + "ine";
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return (firstCap ? "P" : "p") + "ine";
 	}
 
@@ -35,7 +35,7 @@ public class Pine extends Item {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		return other instanceof Pine;
 	}
 

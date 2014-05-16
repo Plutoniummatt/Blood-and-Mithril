@@ -22,13 +22,13 @@ public class Clay extends Item {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return (firstCap ? "C" : "c") + "lay";
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return (firstCap ? "C" : "c") + "lay";
 	}
 
@@ -40,7 +40,7 @@ public class Clay extends Item {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		return other instanceof Clay;
 	}
 

@@ -40,13 +40,13 @@ public class DeathCap extends Item implements Consumable {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return (firstCap ? "Death cap" : "death cap") + (cooked ? " (Cooked)" : " (Raw)");
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return (firstCap ? "Death caps" : "death caps") + (cooked ? " (Cooked)" : " (Raw)");
 	}
 
@@ -58,7 +58,7 @@ public class DeathCap extends Item implements Consumable {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		if (other instanceof DeathCap) {
 			return cooked == ((DeathCap)other).cooked;
 		}

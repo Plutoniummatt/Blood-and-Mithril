@@ -30,13 +30,13 @@ public class IronIngot extends Item implements Craftable {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return (firstCap ? "I" : "i") + "ron ingot";
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return (firstCap ? "I" : "i") + "ron ingots";
 	}
 
@@ -48,7 +48,7 @@ public class IronIngot extends Item implements Craftable {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		return other instanceof IronIngot;
 	}
 

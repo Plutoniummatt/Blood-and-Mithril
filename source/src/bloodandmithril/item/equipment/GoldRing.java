@@ -42,13 +42,13 @@ public class GoldRing extends Ring {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return (firstCap ? "G" : "g") + "old ring";
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return (firstCap ? "G" : "g") + "old rings";
 	}
 
@@ -60,7 +60,7 @@ public class GoldRing extends Ring {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		return other instanceof GoldRing && other.getValue() == getValue();
 	}
 

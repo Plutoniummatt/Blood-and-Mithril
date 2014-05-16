@@ -28,13 +28,13 @@ public class Broadsword extends OneHandedWeapon implements Craftable {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return "Broad sword";
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return "Broad swords";
 	}
 
@@ -46,7 +46,7 @@ public class Broadsword extends OneHandedWeapon implements Craftable {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		if (other instanceof Broadsword) {
 			return true;
 		} else {

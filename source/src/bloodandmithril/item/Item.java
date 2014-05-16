@@ -2,15 +2,19 @@ package bloodandmithril.item;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
 
 import java.io.Serializable;
+import java.util.List;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.item.affix.Affix;
+import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.material.metal.IronIngot;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -25,14 +29,19 @@ import bloodandmithril.world.topography.tile.Tile;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 
 /**
  * An {@link Item}
  *
  * @author Matt
  */
-public abstract class Item implements Serializable {
+public abstract class Item implements Serializable, Affixed {
 	private static final long serialVersionUID = -7733840667288631158L;
+
+	/** Affixes of this {@link Item} */
+	protected List<Affix> affixes = newArrayList();
 
 	/** The mass of this item */
 	private float mass;
@@ -64,16 +73,50 @@ public abstract class Item implements Serializable {
 	}
 
 	/** Get the singular name for this item */
-	public abstract String getSingular(boolean firstCap);
+	public String getSingular(boolean firstCap) {
+		return modifyName(internalGetSingular(firstCap));
+	}
 
 	/** Get the plural name for this item */
-	public abstract String getPlural(boolean firstCap);
+	public String getPlural(boolean firstCap) {
+		return modifyName(internalGetPlural(firstCap));
+	}
+
+	/** Get the singular name for this item */
+	protected abstract String internalGetSingular(boolean firstCap);
+
+	/** Get the plural name for this item */
+	protected abstract String internalGetPlural(boolean firstCap);
 
 	/** Returns the string description of this {@link Item} */
 	public abstract String getDescription();
 
 	/** Returns true if two {@link Item}s have identical attributes */
-	public abstract boolean sameAs(Item other);
+	protected abstract boolean internalSameAs(Item other);
+
+	public boolean sameAs(Item other) {
+		if (affixes.size() != other.affixes.size()) {
+			return false;
+		}
+
+		for (final Affix affix : affixes) {
+			Optional<Affix> tryFind = Iterables.tryFind(other.affixes, a -> {
+				return a.getClass().equals(affix.getClass());
+			});
+
+			if (tryFind.isPresent()) {
+				if (tryFind.get().isSameAs(affix)) {
+					continue;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		return internalSameAs(other);
+	}
 
 	/** Gets the {@link TextureRegion} of this {@link Item} */
 	protected abstract TextureRegion getTextureRegion();
@@ -87,6 +130,7 @@ public abstract class Item implements Serializable {
 		item.equippable = equippable;
 		item.mass = mass;
 		item.value = value;
+		item.affixes = newArrayList(affixes);
 
 		return item;
 	}
@@ -162,7 +206,7 @@ public abstract class Item implements Serializable {
 			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
-			getSingular(true),
+			internalGetSingular(true),
 			true,
 			100,
 			100
@@ -284,7 +328,7 @@ public abstract class Item implements Serializable {
 
 	@Override
 	public String toString() {
-		return getSingular(true);
+		return internalGetSingular(true);
 	}
 
 	public Vector2 getPosition() {
@@ -329,5 +373,20 @@ public abstract class Item implements Serializable {
 
 	public boolean isEquippable() {
 		return equippable;
+	}
+
+	@Override
+	public List<Affix> getAffixes() {
+		return affixes;
+	}
+
+	@Override
+	public String modifyName(String original) {
+		String toReturn = original;
+		for (Affix affix : affixes) {
+			toReturn = affix.modifyName(toReturn);
+		}
+
+		return toReturn;
 	}
 }

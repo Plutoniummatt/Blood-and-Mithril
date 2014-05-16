@@ -17,13 +17,13 @@ public class CarrotSeed extends Seed {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return firstCap ? "Carrot seed" : "carrot seed";
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return firstCap ? "Carrot seeds" : "carrot seeds";
 	}
 
@@ -35,7 +35,7 @@ public class CarrotSeed extends Seed {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		return other instanceof CarrotSeed;
 	}
 
