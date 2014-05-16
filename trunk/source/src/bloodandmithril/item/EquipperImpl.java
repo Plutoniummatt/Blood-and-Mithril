@@ -107,7 +107,7 @@ public class EquipperImpl implements Equipper, Serializable {
 
 		if (availableEquipmentSlots.get(item.slot).call()) {
 			takeItem(item);
-			equippedItems.put(item, 1);
+			equippedItems.put(item, (equippedItems.get(item) == null ? 0 : equippedItems.get(item)) + 1);
 			if (item.slot == EquipmentSlot.RING) {
 				equippedRings.add((Ring)item);
 			}
@@ -157,7 +157,12 @@ public class EquipperImpl implements Equipper, Serializable {
 			return;
 		}
 
-		equippedItems.remove(toUnequip);
+		if (equippedItems.get(toUnequip) > 1) {
+			equippedItems.put(toUnequip, equippedItems.get(toUnequip) - 1);
+		} else {
+			equippedItems.remove(toUnequip);
+		}
+
 		if (toUnequip.slot == EquipmentSlot.RING) {
 			equippedRings.remove(toUnequip);
 		}

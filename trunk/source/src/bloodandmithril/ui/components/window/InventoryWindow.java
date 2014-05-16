@@ -309,44 +309,47 @@ public class InventoryWindow extends Window implements Refreshable {
 			toReturn = new ContextMenu(x, y,InventoryItemContextMenuConstructor.showInfo(item));
 		}
 
-		toReturn.addMenuItem(new MenuItem(
-			"Discard",
-			() -> {
-				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
-					UserInterface.addLayeredComponent(
-						new TextInputWindow(
-							WIDTH / 2 - 125,
-							HEIGHT/2 + 50,
-							250,
-							100,
-							"Quantity",
-							250,
-							100,
-							args -> {
-								try {
-									int quantity = 0;
-									quantity = Integer.parseInt(args[0].toString());
-									ContainerImpl.discard((Individual)host, item, quantity);
-									UserInterface.refreshRefreshableWindows();
-								} catch (NumberFormatException e) {
-									UserInterface.addMessage("Error", "Can not recognise " + args[0].toString() + " as a quantity");
-								}
-							},
-							"Confirm",
-							true,
-							""
-						)
-					);
-				} else {
-					ContainerImpl.discard((Individual)host, item, 1);
-					UserInterface.refreshRefreshableWindows();
-				}
-			},
-			Colors.UI_GRAY,
-			Color.GREEN,
-			Color.WHITE,
-			null
-		));
+		if (!equipped) {
+			toReturn.addMenuItem(new MenuItem(
+				"Discard",
+				() -> {
+					if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+						UserInterface.addLayeredComponent(
+							new TextInputWindow(
+								WIDTH / 2 - 125,
+								HEIGHT/2 + 50,
+								250,
+								100,
+								"Quantity",
+								250,
+								100,
+								args -> {
+									try {
+										int quantity = 0;
+										quantity = Integer.parseInt(args[0].toString());
+										ContainerImpl.discard((Individual)host, item, quantity);
+										UserInterface.refreshRefreshableWindows();
+									} catch (NumberFormatException e) {
+										UserInterface.addMessage("Error", "Can not recognise " + args[0].toString() + " as a quantity");
+									}
+								},
+								"Confirm",
+								true,
+								""
+							)
+						);
+					} else {
+						ContainerImpl.discard((Individual)host, item, 1);
+						UserInterface.refreshRefreshableWindows();
+					}
+				},
+				Colors.UI_GRAY,
+				Color.GREEN,
+				Color.WHITE,
+				null
+			));
+		}
+
 
 		return toReturn;
 	}
