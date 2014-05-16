@@ -8,7 +8,7 @@ package bloodandmithril.item.affix;
 public class HealthRegeneration extends PostAffix {
 	private static final long serialVersionUID = -2608188062956678506L;
 
-	private float extraHealthRegen;
+	private final float extraHealthRegen;
 
 	/**
 	 * Constructor
