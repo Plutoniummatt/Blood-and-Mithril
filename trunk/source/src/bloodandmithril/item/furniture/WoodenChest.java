@@ -31,13 +31,13 @@ public class WoodenChest extends Item implements Craftable {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return (firstCap ? "W" : "w") + "ooden chest";
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return (firstCap ? "W" : "w") + "ooden chests";
 	}
 
@@ -49,7 +49,7 @@ public class WoodenChest extends Item implements Craftable {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		return other instanceof WoodenChest;
 	}
 

@@ -25,13 +25,13 @@ public class Carrot extends Item implements Consumable {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return firstCap ? "Carrot" : "carrot";
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return firstCap ? "Carrots" : "carrots";
 	}
 
@@ -50,7 +50,7 @@ public class Carrot extends Item implements Consumable {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		if (other instanceof Carrot) {
 			return true;
 		}

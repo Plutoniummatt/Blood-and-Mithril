@@ -29,13 +29,13 @@ public class ButterflySword extends OneHandedWeapon implements Craftable {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return "Butterfly sword";
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return "Butterfly swords";
 	}
 
@@ -47,7 +47,7 @@ public class ButterflySword extends OneHandedWeapon implements Craftable {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		if (other instanceof ButterflySword) {
 			return true;
 		} else {

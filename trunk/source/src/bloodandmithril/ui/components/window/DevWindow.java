@@ -21,6 +21,8 @@ import bloodandmithril.character.individuals.Names;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.Item;
+import bloodandmithril.item.affix.HealthRegeneration;
+import bloodandmithril.item.affix.StaminaRegeneration;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.GoldRing;
@@ -167,7 +169,13 @@ public class DevWindow extends Window {
 				elf.giveItem(new Pine());
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(new GoldRing(i));
+				GoldRing item = new GoldRing(1);
+				if (Util.getRandom().nextBoolean()) {
+					item.getAffixes().add(new HealthRegeneration(1));
+				} else {
+					item.getAffixes().add(new StaminaRegeneration(1));
+				}
+				elf.giveItem(item);
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(new IronIngot());

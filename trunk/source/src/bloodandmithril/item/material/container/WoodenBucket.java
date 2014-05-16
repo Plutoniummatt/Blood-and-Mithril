@@ -59,7 +59,7 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		String content = "";
 		if (!containedLiquids.isEmpty()) {
 			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";
@@ -70,7 +70,7 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		String content = "";
 		if (!containedLiquids.isEmpty()) {
 			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";

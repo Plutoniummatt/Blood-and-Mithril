@@ -2,6 +2,7 @@ package bloodandmithril.item;
 
 
 import bloodandmithril.item.Equipper.EquipmentSlot;
+import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.world.Domain;
@@ -14,11 +15,10 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
-public abstract class Equipable extends Item {
+public abstract class Equipable extends Item implements Affixed {
 	private static final long serialVersionUID = 6029877977431123172L;
 
 	public final EquipmentSlot slot;
-
 
 	public static void setup() {
 		ButterflySword.texture = new TextureRegion(Domain.individualTexture, 419, 587, 47, 12);

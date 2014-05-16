@@ -24,13 +24,13 @@ public class ChickenLeg extends Item implements Consumable {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		return firstCap ? "Chicken leg" : "chicken leg";
 	}
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		return firstCap ? "Chicken legs" : "chicken legs";
 	}
 
@@ -67,7 +67,7 @@ public class ChickenLeg extends Item implements Consumable {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		if (other instanceof ChickenLeg) {
 			return true;
 		}

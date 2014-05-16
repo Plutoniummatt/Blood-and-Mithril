@@ -24,7 +24,7 @@ public class Sand extends Item {
 
 
 	@Override
-	public String getSingular(boolean firstCap) {
+	protected String internalGetSingular(boolean firstCap) {
 		if (firstCap) {
 			return "Sand";
 		}
@@ -33,7 +33,7 @@ public class Sand extends Item {
 
 
 	@Override
-	public String getPlural(boolean firstCap) {
+	protected String internalGetPlural(boolean firstCap) {
 		if (firstCap) {
 			return "Sand";
 		}
@@ -48,7 +48,7 @@ public class Sand extends Item {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		return other instanceof Sand;
 	}
 

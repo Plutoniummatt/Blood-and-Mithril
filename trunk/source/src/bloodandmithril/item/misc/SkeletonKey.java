@@ -38,7 +38,7 @@ public abstract class SkeletonKey extends Key {
 
 
 	@Override
-	public boolean sameAs(Item other) {
+	protected boolean internalSameAs(Item other) {
 		if (!(other instanceof SkeletonKey)) {
 			return false;
 		}
