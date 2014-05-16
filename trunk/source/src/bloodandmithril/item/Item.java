@@ -15,6 +15,9 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.affix.Affix;
 import bloodandmithril.item.affix.Affixed;
+import bloodandmithril.item.affix.MinorAffix;
+import bloodandmithril.item.affix.PostAffix;
+import bloodandmithril.item.affix.PreAffix;
 import bloodandmithril.item.material.metal.IronIngot;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -41,7 +44,13 @@ public abstract class Item implements Serializable, Affixed {
 	private static final long serialVersionUID = -7733840667288631158L;
 
 	/** Affixes of this {@link Item} */
-	protected List<Affix> affixes = newArrayList();
+	protected List<MinorAffix> minorAffixes = newArrayList();
+
+	/** {@link PreAffix} of this {@link Item} */
+	protected PreAffix preAfix;
+
+	/** {@link PostAffix} of this {@link Item} */
+	protected PostAffix postAffix;
 
 	/** The mass of this item */
 	private float mass;
@@ -95,12 +104,12 @@ public abstract class Item implements Serializable, Affixed {
 	protected abstract boolean internalSameAs(Item other);
 
 	public boolean sameAs(Item other) {
-		if (affixes.size() != other.affixes.size()) {
+		if (minorAffixes.size() != other.minorAffixes.size()) {
 			return false;
 		}
 
-		for (final Affix affix : affixes) {
-			Optional<Affix> tryFind = Iterables.tryFind(other.affixes, a -> {
+		for (final Affix affix : minorAffixes) {
+			Optional<MinorAffix> tryFind = Iterables.tryFind(other.minorAffixes, a -> {
 				return a.getClass().equals(affix.getClass());
 			});
 
@@ -130,7 +139,7 @@ public abstract class Item implements Serializable, Affixed {
 		item.equippable = equippable;
 		item.mass = mass;
 		item.value = value;
-		item.affixes = newArrayList(affixes);
+		item.minorAffixes = newArrayList(minorAffixes);
 
 		return item;
 	}
@@ -206,7 +215,7 @@ public abstract class Item implements Serializable, Affixed {
 			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
-			internalGetSingular(true),
+			getSingular(true),
 			true,
 			100,
 			100
@@ -376,15 +385,38 @@ public abstract class Item implements Serializable, Affixed {
 	}
 
 	@Override
-	public List<Affix> getAffixes() {
-		return affixes;
+	public List<MinorAffix> getMinorAffixes() {
+		return minorAffixes;
+	}
+
+	@Override
+	public PostAffix getPostAffix() {
+		return postAffix;
+	}
+
+	@Override
+	public PreAffix getPreAffix() {
+		return preAfix;
+	}
+
+	@Override
+	public void setPostAffix(PostAffix postAffix) {
+		this.postAffix = postAffix;
+	}
+
+	@Override
+	public void setPreAffix(PreAffix preAffix) {
+		this.preAfix = preAffix;
 	}
 
 	@Override
 	public String modifyName(String original) {
 		String toReturn = original;
-		for (Affix affix : affixes) {
-			toReturn = affix.modifyName(toReturn);
+		if (preAfix != null) {
+			toReturn = preAfix.modifyName(toReturn);
+		}
+		if (postAffix != null) {
+			toReturn = postAffix.modifyName(toReturn);
 		}
 
 		return toReturn;

@@ -14,7 +14,27 @@ public interface Affixed {
 	/**
 	 * @return all affixes
 	 */
-	public List<Affix> getAffixes();
+	public List<MinorAffix> getMinorAffixes();
+
+	/**
+	 * @return the {@link PostAffix}
+	 */
+	public Affix getPostAffix();
+
+	/**
+	 * @return the {@link PreAffix}
+	 */
+	public Affix getPreAffix();
+
+	/**
+	 * Sets the {@link PostAffix}
+	 */
+	public void setPostAffix(PostAffix postAffix);
+
+	/**
+	 * Sets the {@link PreAffix}
+	 */
+	public void setPreAffix(PreAffix preAffix);
 
 	/**
 	 * @return the modified name of the item
