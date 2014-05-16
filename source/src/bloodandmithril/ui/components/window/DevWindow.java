@@ -23,6 +23,7 @@ import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.Broadsword;
 import bloodandmithril.item.equipment.ButterflySword;
+import bloodandmithril.item.equipment.GoldRing;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.Brick;
 import bloodandmithril.item.material.container.GlassBottle;
@@ -164,6 +165,9 @@ public class DevWindow extends Window {
 
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(new Pine());
+			}
+			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
+				elf.giveItem(new GoldRing(i));
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(new IronIngot());
