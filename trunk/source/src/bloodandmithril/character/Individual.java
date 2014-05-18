@@ -784,7 +784,7 @@ public abstract class Individual implements Equipper, Serializable {
 		MenuItem showStatusWindowItem = new MenuItem(
 			"Status",
 			() -> {
-				UserInterface.addLayeredComponent(
+				UserInterface.addLayeredComponentUnique(
 					new IndividualStatusWindow(
 						thisIndividual,
 						WIDTH/2 - 200,

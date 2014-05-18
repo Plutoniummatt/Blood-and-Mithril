@@ -1,6 +1,8 @@
 package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.util.Fonts.defaultFont;
+import static bloodandmithril.util.Util.Colors.modulateAlpha;
+import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
 
 import java.util.Comparator;
 import java.util.Deque;
@@ -10,10 +12,6 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.Condition;
-import bloodandmithril.character.conditions.Exhaustion;
-import bloodandmithril.character.conditions.Hunger;
-import bloodandmithril.character.conditions.Thirst;
-import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -24,12 +22,10 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * Shows the status of an {@link Individual}
@@ -40,9 +36,7 @@ public class IndividualStatusWindow extends Window {
 
 	private final Individual individual;
 	private ScrollableListingPanel<Condition, Object> conditionsPanel;
-	private float time, identificationTime;
 	private String vitals;
-	private boolean identified, identifying;
 
 	private static Comparator<Condition> sortingOrder = new Comparator<Individual.Condition>() {
 		@Override
@@ -50,23 +44,6 @@ public class IndividualStatusWindow extends Window {
 			return o1.getClass().getSimpleName().compareTo(o2.getClass().getSimpleName());
 		}
 	};
-
-	private final Button identify = new Button(
-		"Identify",
-		Fonts.defaultFont,
-		0,
-		0,
-		80,
-		16,
-		() -> {
-			identifying = true;
-			identified = false;
-		},
-		Color.GREEN,
-		Color.WHITE,
-		Color.GRAY,
-		UIRef.BL
-	);
 
 	/** Constructor */
 	public IndividualStatusWindow(final Individual individual, int x, int y, int length, int height, String title, boolean active) {
@@ -100,10 +77,6 @@ public class IndividualStatusWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		if (identifying) {
-			time = time + 1f/60f;
-		}
-
 		Color activeTitle = Colors.modulateAlpha(Color.YELLOW, getAlpha());
 		Color inactiveTitle = Colors.modulateAlpha(Color.ORANGE, getAlpha());
 		Color activeWhite = Colors.modulateAlpha(Color.WHITE, getAlpha());
@@ -121,54 +94,12 @@ public class IndividualStatusWindow extends Window {
 
 		if (percentageHealth == 0f) {
 			vitals = "Dead";
-			identifying = false;
-		} else if (individual.isControllable()) {
-			setVitalsString(category);
 		} else {
-			int highestObservationSkill = 0;
-			if (!individual.isControllable()) {
-				for (Individual indi : Sets.newHashSet(Domain.getIndividuals().values())) {
-					int skill = indi.getSkills().getObservation();
-					if (skill > highestObservationSkill) {
-						highestObservationSkill = skill;
-					}
-				}
-			}
-
-			identificationTime = (1 - Skills.getRatioToMax(highestObservationSkill)) * 10f;
-
-			if (time > identificationTime || individual.isControllable()) {
-				identified = true;
-				identifying = false;
-				time = 0f;
-				setVitalsString(category);
-			} else {
-				if (!identified) {
-					vitals = "Unknown";
-				}
-			}
-		}
-
-		if (identifying) {
-			vitals = "Identifying..." + String.format("%.1f", time/identificationTime * 100) + "%";
+			setVitalsString(category);
 		}
 
 		if (!drawLine(truncate(vitals), 45)) {
 			return;
-		}
-
-		if (identified || individual.isControllable()) {
-			if (!drawLine(truncate(Hunger.getName(individual.getState().hunger)), 65)) {
-				return;
-			}
-
-			if (!drawLine(truncate(Thirst.getName(individual.getState().thirst)), 85)) {
-				return;
-			}
-
-			if (!drawLine(truncate(Exhaustion.getName(individual.getState().stamina)), 105)) {
-				return;
-			}
 		}
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
@@ -178,17 +109,88 @@ public class IndividualStatusWindow extends Window {
 
 		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
 		BloodAndMithrilClient.spriteBatch.flush();
-		if (identified || individual.isControllable()) {
-			renderConditionsPanel();
-		} else if (identifying) {
-			if (!drawLine("Identifying..." + String.format("%.1f", time/identificationTime * 100) + "%", 155)) {
-				return;
-			}
-		} else if (!drawLine("Unknown", 155)) {
-			return;
-		}
+		renderConditionsPanel();
 
-		identify.render(x + width - 50, y - 37, !Domain.getSelectedIndividuals().isEmpty() && isActive() && !individual.isControllable(), getAlpha());
+		renderBars();
+	}
+
+
+	/**
+	 * Renders health, hunger, thirst, stamina bars etc
+	 */
+	private void renderBars() {
+		shapeRenderer.begin(FilledRectangle);
+		shapeRenderer.filledRect(x + 5, y - 80, width - 20, 7,
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f)
+		);
+		shapeRenderer.filledRect(x + 5, y - 90, width - 20, 7,
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f)
+		);
+		shapeRenderer.filledRect(x + 5, y - 100, width - 20, 7,
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f)
+		);
+		shapeRenderer.filledRect(x + 5, y - 110, width - 20, 7,
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f)
+		);
+		shapeRenderer.filledRect(x + 5, y - 120, width - 20, 7,
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
+			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f)
+		);
+
+		float health = individual.getState().health / individual.getState().maxHealth;
+		shapeRenderer.filledRect(x + 5, y - 80, (width - 20) * health, 7,
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
+		);
+
+		float hunger = individual.getState().hunger;
+		shapeRenderer.filledRect(x + 5, y - 90, (width - 20) * hunger, 7,
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
+		);
+
+		float thirst = individual.getState().thirst;
+		shapeRenderer.filledRect(x + 5, y - 100, (width - 20) * thirst, 7,
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
+		);
+
+		float stamina = individual.getState().stamina;
+		shapeRenderer.filledRect(x + 5, y - 110, (width - 20) * stamina, 7,
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
+		);
+
+		float mana = 0f; // TODO Mana
+		shapeRenderer.filledRect(x + 5, y - 120, (width - 20) * mana, 7,
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
+		);
+		shapeRenderer.end();
 	}
 
 
@@ -225,9 +227,6 @@ public class IndividualStatusWindow extends Window {
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		conditionsPanel.leftClick(copy, windowsCopy);
-		if (!Domain.getSelectedIndividuals().isEmpty() && !individual.isControllable()) {
-			identify.click();
-		}
 	}
 
 
