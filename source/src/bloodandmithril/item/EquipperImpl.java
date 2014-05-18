@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import bloodandmithril.item.equipment.Ring;
-import bloodandmithril.util.Function;
+import bloodandmithril.util.SerializableFunction;
 
 /**
  * Default implementation of {@link Equipper}
@@ -24,7 +24,7 @@ public class EquipperImpl implements Equipper, Serializable {
 	protected HashMap<Item, Integer> equippedItems = newHashMap();
 
 	/** The current available {@link EquipmentSlot}s, maps to true if empty/available */
-	protected Map<EquipmentSlot, Function<Boolean>> availableEquipmentSlots = newHashMap();
+	protected Map<EquipmentSlot, SerializableFunction<Boolean>> availableEquipmentSlots = newHashMap();
 
 	private List<Ring> equippedRings = newArrayList();
 
@@ -42,16 +42,12 @@ public class EquipperImpl implements Equipper, Serializable {
 			if (slot != EquipmentSlot.RING) {
 				availableEquipmentSlots.put(
 					slot,
-					() -> {
-						return true;
-					}
+					new TrueFunction()
 				);
 			} else {
 				availableEquipmentSlots.put(
 					slot,
-					() -> {
-						return equippedRings.size() < maxRings;
-					}
+					new RingFunction()
 				);
 			}
 		}
@@ -71,7 +67,7 @@ public class EquipperImpl implements Equipper, Serializable {
 
 
 	@Override
-	public Map<EquipmentSlot, Function<Boolean>> getAvailableEquipmentSlots() {
+	public Map<EquipmentSlot, SerializableFunction<Boolean>> getAvailableEquipmentSlots() {
 		return availableEquipmentSlots;
 	}
 
@@ -113,13 +109,7 @@ public class EquipperImpl implements Equipper, Serializable {
 			}
 			availableEquipmentSlots.put(
 				item.slot,
-				item.slot == EquipmentSlot.RING ?
-				() -> {
-					return equippedRings.size() < maxRings;
-				} :
-				() -> {
-					return false;
-				}
+				item.slot == EquipmentSlot.RING ? new RingFunction() : new FalseFunction()
 			);
 			refreshCurrentLoad();
 		} else {
@@ -131,13 +121,7 @@ public class EquipperImpl implements Equipper, Serializable {
 			}
 			availableEquipmentSlots.put(
 				item.slot,
-				item.slot == EquipmentSlot.RING ?
-				() -> {
-					return equippedRings.size() < maxRings;
-				} :
-				() -> {
-					return true;
-				}
+				item.slot == EquipmentSlot.RING ? new RingFunction() : new TrueFunction()
 			);
 			equip(item);
 		}
@@ -169,13 +153,7 @@ public class EquipperImpl implements Equipper, Serializable {
 		containerImpl.getInventory().put(toUnequip, (containerImpl.getInventory().get(toUnequip) == null ? 0 : containerImpl.getInventory().get(toUnequip)) + 1);
 		availableEquipmentSlots.put(
 			toUnequip.slot,
-			item.slot == EquipmentSlot.RING ?
-			() -> {
-				return equippedRings.size() < maxRings;
-			} :
-			() -> {
-				return true;
-			}
+			item.slot == EquipmentSlot.RING ? new RingFunction() : new TrueFunction()
 		);
 		refreshCurrentLoad();
 	}
@@ -236,5 +214,47 @@ public class EquipperImpl implements Equipper, Serializable {
 	@Override
 	public Container getContainerImpl() {
 		return containerImpl;
+	}
+
+	/**
+	 * {@link SerializableFunction} to always return true
+	 *
+	 * @author Matt
+	 */
+	private class TrueFunction implements SerializableFunction<Boolean> {
+		private static final long serialVersionUID = -6919306076788382244L;
+
+		@Override
+		public Boolean call() {
+			return true;
+		}
+	}
+
+	/**
+	 * {@link SerializableFunction} to always return false
+	 *
+	 * @author Matt
+	 */
+	private class FalseFunction implements SerializableFunction<Boolean> {
+		private static final long serialVersionUID = -460652673581918065L;
+
+		@Override
+		public Boolean call() {
+			return false;
+		}
+	}
+
+	/**
+	 * {@link SerializableFunction} to determine whether another ring can be equipped
+	 *
+	 * @author Matt
+	 */
+	private class RingFunction implements SerializableFunction<Boolean> {
+		private static final long serialVersionUID = -4418867523435245643L;
+
+		@Override
+		public Boolean call() {
+			return equippedRings.size() < maxRings;
+		}
 	}
 }

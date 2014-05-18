@@ -26,7 +26,7 @@ vec4 sample(float offsetX, float offsetY)
 vec4 blend(vec4 a, vec4 b, float factor)
 {
 	return vec4(
-		min(a.r + b.r * factor, 1.0), 
+		min(max(a.r, b.r * factor), 1.0), 
 		a.g, 
 		a.b, 
 		1.0
@@ -35,7 +35,7 @@ vec4 blend(vec4 a, vec4 b, float factor)
 
 float attenuate(float x, float y) 
 {
-	float modFactor = (1.0 - (0.55 * (1.0 - sample(x, y).g)));
+	float modFactor = (1.0 - (0.4 * (1.0 - sample(x, y).g)));
 	return modFactor;
 }
 
@@ -44,7 +44,6 @@ void main()
 	float attenuationFactor = 1.0;
 	vec4 total = vec4(0.0, 0.0, 0.0, 0.0);
 	
-	attenuationFactor *= attenuate(0.0, 0.0);
 	total = sample(0.0,   0.0);
 
 	attenuationFactor *= attenuate(1.0, 1.0);

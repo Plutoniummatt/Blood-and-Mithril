@@ -47,7 +47,7 @@ public abstract class Item implements Serializable, Affixed {
 	protected List<MinorAffix> minorAffixes = newArrayList();
 
 	/** {@link PreAffix} of this {@link Item} */
-	protected PreAffix preAfix;
+	protected PreAffix preAffix;
 
 	/** {@link PostAffix} of this {@link Item} */
 	protected PostAffix postAffix;
@@ -103,6 +103,9 @@ public abstract class Item implements Serializable, Affixed {
 	/** Returns true if two {@link Item}s have identical attributes */
 	protected abstract boolean internalSameAs(Item other);
 
+	/**
+	 * @return true if this {@link Item} is identical to another, including affixes
+	 */
 	public boolean sameAs(Item other) {
 		if (minorAffixes.size() != other.minorAffixes.size()) {
 			return false;
@@ -117,6 +120,34 @@ public abstract class Item implements Serializable, Affixed {
 				if (tryFind.get().isSameAs(affix)) {
 					continue;
 				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		if (preAffix == null) {
+			if (other.getPreAffix() != null) {
+				return false;
+			}
+		} else {
+			if (other.getPreAffix() != null) {
+				if (!preAffix.isSameAs(other.getPreAffix())) {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		if (postAffix == null) {
+			if (other.getPostAffix() != null) {
+				return false;
+			}
+		} else {
+			if (other.getPostAffix() != null) {
+				if (!postAffix.isSameAs(other.getPostAffix())) {
 					return false;
 				}
 			} else {
@@ -396,7 +427,7 @@ public abstract class Item implements Serializable, Affixed {
 
 	@Override
 	public PreAffix getPreAffix() {
-		return preAfix;
+		return preAffix;
 	}
 
 	@Override
@@ -406,14 +437,14 @@ public abstract class Item implements Serializable, Affixed {
 
 	@Override
 	public void setPreAffix(PreAffix preAffix) {
-		this.preAfix = preAffix;
+		this.preAffix = preAffix;
 	}
 
 	@Override
 	public String modifyName(String original) {
 		String toReturn = original;
-		if (preAfix != null) {
-			toReturn = preAfix.modifyName(toReturn);
+		if (preAffix != null) {
+			toReturn = preAffix.modifyName(toReturn);
 		}
 		if (postAffix != null) {
 			toReturn = postAffix.modifyName(toReturn);
