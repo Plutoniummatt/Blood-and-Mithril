@@ -188,6 +188,7 @@ public class Util {
 		public static final Color UI_GRAY = new Color(0.8f, 0.8f, 0.8f, 1f);
 		public static final Color UI_DARK_GRAY = new Color(0.55f, 0.55f, 0.55f, 1f);
 		public static final Color UI_DARKER_GRAY = new Color(0.25f, 0.25f, 0.25f, 1f);
+		public static final Color UI_DARK_BLUE = new Color(0f, 0f, 0.6f, 1f);
 		public static final Color UI_DARK_PURPLE = new Color(0.8f, 0f, 0.6f, 1f);
 		public static final Color UI_DARK_GREEN = new Color(0f, 0.5f, 0f, 1f);
 		public static final Color UI_DARK_PURPLE_INACTIVE = new Color(0.45f, 0f, 0.32f, 0.6f);
