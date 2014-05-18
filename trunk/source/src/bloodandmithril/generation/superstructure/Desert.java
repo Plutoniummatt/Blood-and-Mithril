@@ -18,6 +18,8 @@ import bloodandmithril.generation.component.Room;
 import bloodandmithril.generation.component.Room.RoomCreationCustomization;
 import bloodandmithril.generation.component.Stairs;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
+import bloodandmithril.generation.component.prefab.UndergroundDesertTempleAltarRoom;
+import bloodandmithril.generation.component.prefab.UndergroundDesertTempleAltarRoom.UndergroundDesertTempleAltarRoomCustomization;
 import bloodandmithril.generation.component.prefab.UndergroundDesertTempleEntrance;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.generation.patterns.UndergroundWithCaves;
@@ -52,7 +54,7 @@ public class Desert extends SuperStructure {
 
 	/** The boundary from which dry dirt is generated */
 	private final HashMap<Integer, Integer> transitionBase = new HashMap<>();
-	
+
 	/**
 	 * Constructor
 	 */
@@ -80,11 +82,11 @@ public class Desert extends SuperStructure {
 	protected void internalGenerate(boolean generatingToRight) {
 		int rightMostTile = (getBoundaries().right + 1) * Topography.CHUNK_SIZE - 1;
 		int leftMostTile = getBoundaries().left * Topography.CHUNK_SIZE;
-		
+
 		generateSurface(generatingToRight, rightMostTile, leftMostTile);
 		generateTransitionBase(generatingToRight, rightMostTile, leftMostTile);
 		generateSandBase(generatingToRight, rightMostTile, leftMostTile);
-		
+
 		if (!desertGenerated) {
 			getComponents().add(new UndergroundDesertTempleEntrance(0, Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(100 - 17) + 27, getStructureKey(), false, YellowBrickTile.class, YellowBrickTile.class));
 
@@ -95,39 +97,30 @@ public class Desert extends SuperStructure {
 					@Override
 					public CorridorCreationCustomization call() {
 						return new CorridorCreationCustomization(
-							false, 
-							1, 
-							1, 
-							150, 
-							6, 
+							false,
+							4,
+							7,
+							20,
+							6,
+							YellowBrickTile.class
+						);
+					}
+				}
+			).stem(
+				this,
+				UndergroundDesertTempleAltarRoom.class,
+				new Function<UndergroundDesertTempleAltarRoomCustomization>() {
+					@Override
+					public UndergroundDesertTempleAltarRoomCustomization call() {
+						return new UndergroundDesertTempleAltarRoomCustomization(
+							false,
+							YellowBrickTile.class,
 							YellowBrickTile.class
 						);
 					}
 				}
 			);
-			
-			getComponents().get(1).stem(
-				this, 
-				Stairs.class, 
-				new Function<StairsCreationCustomization>() {
-					@Override
-					public StairsCreationCustomization call() {
-						return new StairsCreationCustomization(
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextInt(10) + 10,
-							1,
-							6,
-							2,
-							YellowBrickTile.class,
-							YellowBrickTile.class
-						);
-					}
-				},
-				10
-			);
-			
+
 			getComponents().get(0).stem(
 				this,
 				Stairs.class,
@@ -138,7 +131,7 @@ public class Desert extends SuperStructure {
 							false,
 							false,
 							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextInt(30) + 20,
+							Util.getRandom().nextInt(30),
 							1,
 							7,
 							3,
@@ -237,7 +230,7 @@ public class Desert extends SuperStructure {
 				},
 				10
 			);
-			
+
 			desertGenerated = true;
 		}
 	}
@@ -375,7 +368,7 @@ public class Desert extends SuperStructure {
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
 		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
-		
+
 		if (worldTileY > structures.getSurfaceHeight().get(worldTileX)-1) {
 			return new Tile.EmptyTile();
 

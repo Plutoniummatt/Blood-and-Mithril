@@ -28,8 +28,6 @@ import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
-import bloodandmithril.character.ai.task.Attack;
-import bloodandmithril.character.ai.task.Attack.Strike;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.ai.task.Construct.Constructing;
@@ -104,7 +102,6 @@ import bloodandmithril.csi.requests.RequestStartCrafting;
 import bloodandmithril.csi.requests.RequestTakeItem;
 import bloodandmithril.csi.requests.RequestTakeItemFromCraftingStation;
 import bloodandmithril.csi.requests.RequestTransferLiquidBetweenContainers;
-import bloodandmithril.csi.requests.SendAttackRequest;
 import bloodandmithril.csi.requests.SendChatMessage;
 import bloodandmithril.csi.requests.SendChatMessage.Message;
 import bloodandmithril.csi.requests.SendChatMessage.SendChatMessageResponse;
@@ -445,7 +442,6 @@ public class ClientServerInterface {
 		kryo.register(ArtificialIntelligence.class);
 		kryo.register(AStarPathFinder.class);
 		kryo.register(AStarPathFinder.Node.class);
-		kryo.register(Attack.class);
 		kryo.register(Bleeding.class);
 		kryo.register(bloodandmithril.prop.plant.Carrot.class);
 		kryo.register(Boar.class);
@@ -547,7 +543,6 @@ public class ClientServerInterface {
 		kryo.register(SandStoneTile.class);
 		kryo.register(SeditmentaryTile.class);
 		kryo.register(Seed.class);
-		kryo.register(SendAttackRequest.class);
 		kryo.register(SendChatMessage.class);
 		kryo.register(SendChatMessageResponse.class);
 		kryo.register(SendHarvestRequest.class);
@@ -556,7 +551,6 @@ public class ClientServerInterface {
 		kryo.register(SoilTile.class);
 		kryo.register(StandardSoilTile.class);
 		kryo.register(StoneTile.class);
-		kryo.register(Strike.class);
 		kryo.register(SynchronizeFaction.class);
 		kryo.register(SynchronizeFactionResponse.class);
 		kryo.register(SynchronizeIndividual.class);
@@ -738,11 +732,6 @@ public class ClientServerInterface {
 		public static synchronized void sendTradeWithIndividualRequest(Individual proposer, Individual proposee) {
 			client.sendTCP(new CSITradeWith(proposer.getId().getId(), TradeEntity.INDIVIDUAL, proposee.getId().getId(), client.getID()));
 			Logger.networkDebug("Sending trade with individual request", LogLevel.DEBUG);
-		}
-
-		public static synchronized void sendAttackRequest(Individual attacker, Individual victim) {
-			client.sendTCP(new SendAttackRequest(attacker.getId().getId(), victim.getId().getId()));
-			Logger.networkDebug("Sending attack individual request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendTradeWithPropRequest(Individual proposer, int propId) {

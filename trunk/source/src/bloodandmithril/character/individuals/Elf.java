@@ -13,8 +13,6 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.equipment.Broadsword;
-import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.equipment.OneHandedWeapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -464,18 +462,5 @@ public class Elf extends Individual {
 		Elf elf = new Elf(getId(), getState(), factionId, female, new Color(hairColorR, hairColorG, hairColorB, 1f), new Color(eyeColorR, eyeColorG, eyeColorB, 1f), hairStyle, getMaxCapacity(), getWorldId());
 		elf.copyFrom(this);
 		return elf;
-	}
-
-
-	@Override
-	public float getCurrentAttackRange() {
-		for (Item equipped : getEquipped().keySet()) {
-			if (equipped instanceof ButterflySword) {
-				return 32f;
-			} else if (equipped instanceof Broadsword) {
-				return 40f;
-			}
-		}
-		return 16f;
 	}
 }

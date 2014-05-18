@@ -25,7 +25,6 @@ import java.util.Set;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
-import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.TradeWith;
@@ -39,7 +38,6 @@ import bloodandmithril.item.Equipper;
 import bloodandmithril.item.EquipperImpl;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.equipment.OneHandedWeapon;
-import bloodandmithril.item.equipment.Weapon;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -128,9 +126,6 @@ public abstract class Individual implements Equipper, Serializable {
 
 	/** {@link Skills}s of this {@link Individual} */
 	private Skills skills = new Skills();
-
-	/** Whether or not this {@link Individual} is attacking */
-	private boolean attacking;
 
 	/** WHich client number this {@link Individual} is selected by */
 	private Set<Integer> selectedByClient = Sets.newHashSet();
@@ -807,34 +802,8 @@ public abstract class Individual implements Equipper, Serializable {
 			null
 		);
 
-		MenuItem attackMenuItem = new MenuItem(
-			"Attack",
-			() -> {
-				for (Individual indi : Domain.getSelectedIndividuals()) {
-					if (isServer()) {
-						if (indi != thisIndividual) {
-							indi.ai.setCurrentTask(
-								new Attack(indi, thisIndividual)
-							);
-						}
-					} else {
-						ClientServerInterface.SendRequest.sendAttackRequest(indi, thisIndividual);
-					}
-				}
-			},
-			Color.RED,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-
 		if (isControllable()) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
-		}
-
-		if (!Domain.getSelectedIndividuals().isEmpty() &&
-			!Domain.getSelectedIndividuals().contains(thisIndividual)) {
-			contextMenuToReturn.addMenuItem(attackMenuItem);
 		}
 
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
@@ -1053,29 +1022,6 @@ public abstract class Individual implements Equipper, Serializable {
 
 	/** Returns the {@link SpacialConfiguration} where {@link OneHandedWeapon} will be rendered */
 	protected abstract SpacialConfiguration getOneHandedWeaponSpacialConfigration();
-
-
-	/** The attack range of this individual, dependent on the weapons and any other variables */
-	public abstract float getCurrentAttackRange();
-
-
-	/** Attack. */
-	public void attack(Individual victim) {
-		for (Item item : equipperImpl.getEquipped().keySet()) {
-			if (item instanceof Weapon) {
-				((Weapon) item).affect(victim);
-				attacking = true;
-			}
-		}
-	}
-
-
-	/**
-	 * True if currently attacking
-	 */
-	public boolean isAttacking() {
-		return attacking;
-	}
 
 
 	@Override
