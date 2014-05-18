@@ -10,10 +10,11 @@ import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.generation.component.Stairs;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
+import bloodandmithril.generation.component.prefab.UndergroundDesertTempleAltarRoom.UndergroundDesertTempleAltarRoomCustomization;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
-import bloodandmithril.world.topography.tile.tiles.glass.ClearGlassTile;
+import bloodandmithril.world.topography.tile.tiles.glass.InterlacedWindowTile;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Collections2;
@@ -65,7 +66,9 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 					if (bPixel == Color.rgba8888(Color.BLACK)) {
 						bTiles[x][39 - y] = backgroundTile.newInstance();
 					} else if (bPixel == Color.rgba8888(Color.GREEN)) {
-						bTiles[x][39 - y] = new ClearGlassTile();
+						bTiles[x][39 - y] = new InterlacedWindowTile();
+					} else if (bPixel == Color.rgba8888(Color.RED)) {
+						bTiles[x][39 - y] = new Tile.EmptyTile();
 					} else if (bPixel == Color.rgba8888(Color.WHITE)) {
 						bTiles[x][39 - y] = new Tile.EmptyTile();
 					} else {
@@ -112,6 +115,37 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 
 		if (with.equals(Corridor.class)) {
 			return stemCorridor(custom);
+		}
+
+		if (with.equals(UndergroundDesertTempleAltarRoom.class)) {
+			return stemUndergroundDesertTempleAlterRoom(custom);
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Stem a {@link Corridor} from this component
+	 */
+	@SuppressWarnings("rawtypes")
+	private Component stemUndergroundDesertTempleAlterRoom(ComponentCreationCustomization custom) {
+		UndergroundDesertTempleAltarRoomCustomization corridorCustomization = (UndergroundDesertTempleAltarRoomCustomization) custom;
+
+		// Filter out any horizontal interfaces
+		Collection<Interface> verticalInterfacesCollection = Collections2.filter(getAvailableInterfaces(), verticalInterfacePredicate);
+
+		if (!verticalInterfacesCollection.isEmpty()) {
+			Interface createConnectedInterface = verticalInterfacesCollection.iterator().next().createConnectedInterface(
+				new RectangularInterfaceCustomization(
+					6,
+					1,
+					0,
+					0
+				)
+			);
+
+			return checkForOverlaps(createConnectedInterface, createConnectedInterface.createComponent(UndergroundDesertTempleAltarRoom.class, corridorCustomization, getStructureKey()));
 		}
 
 		return null;

@@ -226,10 +226,4 @@ public class Boar extends Individual {
 		boar.copyFrom(this);
 		return boar;
 	}
-
-
-	@Override
-	public float getCurrentAttackRange() {
-		return 25f;
-	}
 }
