@@ -31,6 +31,8 @@ public class GaussianLightingRenderer {
 	public static FrameBuffer workingDownSampled;
 	public static FrameBuffer workingDownSampledXBlurColorBuffer;
 	public static FrameBuffer workingDownSampledYBlurColorBuffer;
+	public static FrameBuffer workingDownSampledXBlurColorBuffer2;
+	public static FrameBuffer workingDownSampledYBlurColorBuffer2;
 	public static FrameBuffer backgroundOcclusionFBO;
 	public static FrameBuffer foregroundOcclusionFBO;
 	public static FrameBuffer workingFBO;
@@ -73,6 +75,20 @@ public class GaussianLightingRenderer {
 			false
 		);
 
+		workingDownSampledXBlurColorBuffer2 = new FrameBuffer(
+			RGBA8888,
+			(WIDTH + camMargin) / 16,
+			(HEIGHT + camMargin) / 16,
+			false
+		);
+
+		workingDownSampledYBlurColorBuffer2 = new FrameBuffer(
+			RGBA8888,
+			(WIDTH + camMargin) / 16,
+			(HEIGHT + camMargin) / 16,
+			false
+		);
+
 		workingFBO = new FrameBuffer(
 			RGBA8888,
 			WIDTH,
@@ -95,7 +111,9 @@ public class GaussianLightingRenderer {
 		);
 
 		workingDownSampled.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		workingDownSampledXBlurColorBuffer2.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		workingDownSampledXBlurColorBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		workingDownSampledYBlurColorBuffer2.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		workingDownSampledYBlurColorBuffer.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	}
 
@@ -126,7 +144,7 @@ public class GaussianLightingRenderer {
 		workingDownSampled.end();
 
 		// Step 2
-		// Apply x-blur to workingDownSampled, attenuated by foreground
+		// Apply y-blur to workingDownSampled, attenuated by foreground
 		workingDownSampledXBlurColorBuffer.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -144,7 +162,7 @@ public class GaussianLightingRenderer {
 		workingDownSampledXBlurColorBuffer.end();
 
 		// Step 3
-		// Apply y-blur to x-blurred workingDownSampledXBlur, attenuated by foreground
+		// Apply x-blur to y-blurred workingDownSampledXBlur, attenuated by foreground
 		workingDownSampledYBlurColorBuffer.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -161,11 +179,50 @@ public class GaussianLightingRenderer {
 		spriteBatch.end();
 		workingDownSampledYBlurColorBuffer.end();
 
+		// Step 4
+		// Apply x-blur to another workingDownSampled, attenuated by foreground
+		workingDownSampledXBlurColorBuffer2.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.colorSmearLargeRadius);
+		Shaders.colorSmearLargeRadius.setUniformf("res", workingDownSampled.getWidth(), workingDownSampled.getHeight());
+		Shaders.colorSmearLargeRadius.setUniformf("dir", 1f, 0f);
+		spriteBatch.draw(
+			workingDownSampled.getColorBufferTexture(),
+			0,
+			0,
+			WIDTH, HEIGHT
+		);
+		spriteBatch.end();
+		workingDownSampledXBlurColorBuffer2.end();
+
+		// Step 5
+		// Apply y-blur to x-blurred workingDownSampledXBlur, attenuated by foreground
+		workingDownSampledYBlurColorBuffer2.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.colorSmearLargeRadius);
+		Shaders.colorSmearLargeRadius.setUniformf("res", workingDownSampledXBlurColorBuffer2.getWidth(), workingDownSampledXBlurColorBuffer2.getHeight());
+		Shaders.colorSmearLargeRadius.setUniformf("dir", 0f, 1f);
+		spriteBatch.draw(
+			workingDownSampledXBlurColorBuffer2.getColorBufferTexture(),
+			0,
+			0,
+			WIDTH, HEIGHT
+		);
+		spriteBatch.end();
+		workingDownSampledYBlurColorBuffer2.end();
+
 		backgroundOcclusionFBO.begin();
 		spriteBatch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.pass);
+		spriteBatch.setShader(Shaders.blendXYandYXSmears);
+		workingDownSampledYBlurColorBuffer2.getColorBufferTexture().bind(1);
+		Shaders.blendXYandYXSmears.setUniformi("u_texture2", 1);
+		gl.glActiveTexture(GL_TEXTURE0);
 		spriteBatch.draw(
 			workingDownSampledYBlurColorBuffer.getColorBufferTexture(),
 			-camMargin / 2 - round(cam.position.x) % TILE_SIZE,

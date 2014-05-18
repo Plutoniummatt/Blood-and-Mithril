@@ -27,6 +27,7 @@ public class Shaders {
 	public static ShaderProgram invertAlphaSolidColorBlend = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertAlphaSolidColorBlend.fp"));
 	public static ShaderProgram colorSmearLargeRadius = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/colorSmearLargeRadius.fp"));
 	public static ShaderProgram colorSmearSmallRadius = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/colorSmearSmallRadius.fp"));
+	public static ShaderProgram blendXYandYXSmears = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/blendXYandYXSmears.fp"));
 
 	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/sun.fp"));
 	public static ShaderProgram shadow = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/shadow.fp"));

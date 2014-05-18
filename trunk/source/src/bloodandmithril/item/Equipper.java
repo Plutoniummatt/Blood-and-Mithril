@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import bloodandmithril.item.equipment.Ring;
-import bloodandmithril.util.Function;
+import bloodandmithril.util.SerializableFunction;
 
 /**
  * An {@link Equipper} is able to equip {@link Equipable} {@link Item}s
@@ -24,7 +24,7 @@ public interface Equipper extends Container {
 	/**
 	 * @return the available {@link EquipmentSlot}s of this {@link Equipper}
 	 */
-	public default Map<EquipmentSlot, Function<Boolean>> getAvailableEquipmentSlots() {
+	public default Map<EquipmentSlot, SerializableFunction<Boolean>> getAvailableEquipmentSlots() {
 		return getEquipperImpl().getAvailableEquipmentSlots();
 	}
 

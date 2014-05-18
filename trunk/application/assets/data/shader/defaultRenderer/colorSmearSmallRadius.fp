@@ -14,8 +14,8 @@ vec4 sample(float offsetX, float offsetY)
 	vec2 tc = v_texCoords;
 	vec2 resolution = vec2(1.0/res.x, 1.0/res.y);
 	vec2 coords = vec2(
-		tc.x + offsetX * dir.x * resolution.x, 
-		tc.y + offsetY * dir.y * resolution.y
+		tc.x + (offsetX * dir.x * resolution.x), 
+		tc.y + (offsetY * dir.y * resolution.y)
 	);
 	if (coords.x > 1.0 || coords.x < 0.0 || coords.y > 1.0 || coords.y < 0.0) {
 		return vec4(0.0, 0.0, 0.0, 0.0);
@@ -38,18 +38,10 @@ void main()
 	vec4 total = vec4(0.0, 0.0, 0.0, 0.0);
 	
 	total = sample(0.0, 0.0);
-    total = blend(total, sample(-6.0,  -6.0),  0.05);
-    total = blend(total, sample(-5.0,  -5.0),  0.10);
-    total = blend(total, sample(-4.0,  -4.0),  0.15);
-    total = blend(total, sample(-3.0,  -3.0),  0.20);
-    total = blend(total, sample(-2.0,  -2.0),  0.25);
-    total = blend(total, sample(-1.0,  -1.0),  0.30);
-    total = blend(total, sample(1.0,   1.0),   0.30);
-    total = blend(total, sample(2.0,   2.0),   0.25);
-    total = blend(total, sample(3.0,   3.0),   0.20);
-    total = blend(total, sample(4.0,   4.0),   0.15);
-    total = blend(total, sample(5.0,   5.0),   0.10);
-    total = blend(total, sample(6.0,   6.0),   0.05);
+    total = blend(total, sample(-2.0,  -2.0),  0.33);
+    total = blend(total, sample(-1.0,  -1.0),  0.66);
+    total = blend(total, sample(1.0,   1.0),   0.66);
+    total = blend(total, sample(2.0,   2.0),   0.33);
                                                                                   
 	gl_FragColor = total;
 }
