@@ -100,7 +100,7 @@ public class Desert extends SuperStructure {
 							false,
 							4,
 							7,
-							20,
+							40,
 							6,
 							YellowBrickTile.class
 						);

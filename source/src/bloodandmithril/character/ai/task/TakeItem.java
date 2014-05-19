@@ -114,12 +114,22 @@ public class TakeItem extends CompositeAITask {
 				);
 			}
 
+			takeNextItem();
+		}
+
+
+		private void takeNextItem() {
 			if (!itemIds.isEmpty()) {
-				appendTask(new TakeItem(
-					Domain.getIndividuals().get(hostId.getId()),
-					Domain.getItems().get(itemIds.poll()),
-					itemIds
-				));
+				Integer next = itemIds.poll();
+				if (Domain.getItems().get(next) != null) {
+					appendTask(new TakeItem(
+						Domain.getIndividuals().get(hostId.getId()),
+						Domain.getItems().get(next),
+						itemIds
+					));
+				} else {
+					takeNextItem();
+				}
 			}
 		}
 

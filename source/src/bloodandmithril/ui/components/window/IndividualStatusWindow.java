@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
@@ -21,9 +22,11 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -36,8 +39,10 @@ import com.google.common.collect.Maps;
 public class IndividualStatusWindow extends Window {
 
 	private final Individual individual;
+
 	private ScrollableListingPanel<Condition, Object> conditionsPanel;
 	private String vitals;
+	public static TextureRegion icons = new TextureRegion(UserInterface.uiTexture, 253, 0, 12, 85);;
 
 	private static Comparator<Condition> sortingOrder = new Comparator<Individual.Condition>() {
 		@Override
@@ -104,9 +109,13 @@ public class IndividualStatusWindow extends Window {
 		}
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
-		if (!drawLine("Conditions: ", 155)) {
+		if (!drawLine("Conditions: ", 175)) {
 			return;
 		}
+
+		spriteBatch.setShader(Shaders.filter);
+		Shaders.filter.setUniformf("color", 1f, 1f, 1f, getAlpha() * (isActive() ? 1.0f : 0.7f));
+		spriteBatch.draw(icons, x + 20, y - 162);
 
 		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
 		BloodAndMithrilClient.spriteBatch.flush();
@@ -122,9 +131,9 @@ public class IndividualStatusWindow extends Window {
 	private void renderBars() {
 
 		int barThickness = 7;
-		int barOffsetY = 75;
-		int barOffsetX = 25;
-		int barSeparation = 12;
+		int barOffsetY = 85;
+		int barOffsetX = 40;
+		int barSeparation = 15;
 		int barLengthModifier = 80;
 
 		shapeRenderer.begin(FilledRectangle);
@@ -202,9 +211,9 @@ public class IndividualStatusWindow extends Window {
 		refreshLisitng(individual, conditionsPanel.getListing());
 
 		conditionsPanel.x = x;
-		conditionsPanel.y = y - 140;
+		conditionsPanel.y = y - 160;
 		conditionsPanel.width = width;
-		conditionsPanel.height = height - 140;
+		conditionsPanel.height = height - 160;
 
 		conditionsPanel.render();
 	}
