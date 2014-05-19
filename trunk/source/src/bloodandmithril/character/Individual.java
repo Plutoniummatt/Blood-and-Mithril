@@ -8,6 +8,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.ParameterPersistenceService.getParameters;
+import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
@@ -59,6 +60,7 @@ import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 
@@ -96,6 +98,15 @@ public abstract class Individual implements Equipper, Serializable {
 
 	/** The box defining the region where this {@link Individual} can interact with entities */
 	private Box interactionBox;
+
+	/** The hitbox defining the region where this {@link Individual} can be hit */
+	private Box hitBox;
+
+	/** The maximum number of {@link Individual}s that may engage this {@link Individual} in melee combat */
+	private final int maximumConcurrentMeleeAttackers;
+
+	/** Set of {@link Individual} IDs that are concurrently attacking this {@link Individual} */
+	private final Set<Integer> meleeAttackers = Sets.newHashSet();
 
 	/** For animation frame timing */
 	protected float animationTimer;
@@ -146,7 +157,8 @@ public abstract class Individual implements Equipper, Serializable {
 			int height,
 			int safetyHeight,
 			Box interactionBox,
-			int worldId) {
+			int worldId,
+			int maximumConcurrentMeleeAttackers) {
 		this.equipperImpl = new EquipperImpl(inventoryMassCapacity, maxRings);
 		this.id = id;
 		this.state = state;
@@ -157,6 +169,8 @@ public abstract class Individual implements Equipper, Serializable {
 		this.safetyHeight = safetyHeight;
 		this.interactionBox = interactionBox;
 		this.setWorldId(worldId);
+		this.hitBox = new Box(new Vector2(state.position), width, height);
+		this.maximumConcurrentMeleeAttackers = maximumConcurrentMeleeAttackers;
 	}
 
 
@@ -255,7 +269,7 @@ public abstract class Individual implements Equipper, Serializable {
 
 
 	/** Renders any decorations for UI */
-	public void renderArrows() {
+	public void renderUIDecorations() {
 		if (isSelected()) {
 			spriteBatch.setShader(Shaders.filter);
 
@@ -268,6 +282,27 @@ public abstract class Individual implements Equipper, Serializable {
 
 			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
 			spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight());
+		}
+
+		if (UserInterface.DEBUG) {
+			shapeRenderer.begin(ShapeType.Rectangle);
+			shapeRenderer.setProjectionMatrix(UserInterface.UICameraTrackingCam.combined);
+			shapeRenderer.setColor(Color.ORANGE);
+			shapeRenderer.rect(
+				interactionBox.position.x - interactionBox.width / 2,
+				interactionBox.position.y - interactionBox.height / 2,
+				interactionBox.width,
+				interactionBox.height
+			);
+			shapeRenderer.setColor(Color.RED);
+			shapeRenderer.rect(
+				hitBox.position.x - hitBox.width / 2,
+				hitBox.position.y - hitBox.height / 2,
+				hitBox.width,
+				hitBox.height
+			);
+			shapeRenderer.end();
+			shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 		}
 	}
 
@@ -358,8 +393,12 @@ public abstract class Individual implements Equipper, Serializable {
 		}
 
 		// Update interaction box location
-		getInteractionBox().position.x = state.position.x;
-		getInteractionBox().position.y = state.position.y + getHeight() / 2;
+		interactionBox.position.x = state.position.x;
+		interactionBox.position.y = state.position.y + getHeight() / 2;
+
+		// Update hitbox location
+		hitBox.position.x = state.position.x;
+		hitBox.position.y = state.position.y + getHeight() / 2;
 
 		aiReactionTimer += delta;
 		if (aiReactionTimer >= aITaskDelay) {
@@ -385,6 +424,9 @@ public abstract class Individual implements Equipper, Serializable {
 	 * Update how this {@link Individual} is affected by its {@link Condition}s
 	 */
 	private void conditions(float delta) {
+		// Reset regeneration values
+		state.reset();
+
 		for (Condition condition : newArrayList(state.currentConditions)) {
 			if (condition.isExpired()) {
 				condition.uponExpiry();
@@ -945,6 +987,24 @@ public abstract class Individual implements Equipper, Serializable {
 	}
 
 
+	public synchronized void increaseMana(float amount) {
+		if (state.mana + amount >= state.maxMana) {
+			state.mana = state.maxMana;
+		} else {
+			state.mana = state.hunger + amount;
+		}
+	}
+
+
+	public synchronized void decreaseMana(float amount) {
+		if (state.mana - amount <= 0f) {
+			state.mana = 0f;
+		} else {
+			state.mana = state.mana - amount;
+		}
+	}
+
+
 	public synchronized void increaseStamina(float amount) {
 		if (state.stamina + amount >= 1f) {
 			state.stamina = 1f;
@@ -1070,7 +1130,7 @@ public abstract class Individual implements Equipper, Serializable {
 	public static class IndividualState implements Serializable {
 		private static final long serialVersionUID = 3678630824613212498L;
 
-		public float health, maxHealth, healthRegen, stamina, staminaRegen, hunger, thirst;
+		public float health, maxHealth, healthRegen, normalHealthRegen, stamina, staminaRegen, normalStaminaRegen, hunger, thirst, mana, maxMana, manaRegen, normalManaRegen;
 		public Vector2 position;
 		public Vector2 velocity;
 		public Vector2 acceleration;
@@ -1079,14 +1139,29 @@ public abstract class Individual implements Equipper, Serializable {
 		/**
 		 * Constructor
 		 */
-		public IndividualState(float health, float maxHealth, float healthRegen, float stamina, float staminaRegen, float hunger, float thirst) {
+		public IndividualState(float health, float maxHealth, float healthRegen, float stamina, float staminaRegen, float hunger, float thirst, float mana, float maxMana, float manaRegen) {
 			this.health = health;
 			this.maxHealth = maxHealth;
 			this.healthRegen = healthRegen;
+			this.normalHealthRegen = healthRegen;
 			this.stamina = stamina;
 			this.staminaRegen = staminaRegen;
+			this.normalStaminaRegen = staminaRegen;
 			this.hunger = hunger;
 			this.thirst = thirst;
+			this.mana = mana;
+			this.maxMana = maxMana;
+			this.manaRegen = manaRegen;
+			this.normalManaRegen = manaRegen;
+		}
+
+		/**
+		 * Resets the regen values
+		 */
+		public void reset() {
+			this.healthRegen = normalHealthRegen;
+			this.staminaRegen = normalStaminaRegen;
+			this.manaRegen = normalManaRegen;
 		}
 	}
 
