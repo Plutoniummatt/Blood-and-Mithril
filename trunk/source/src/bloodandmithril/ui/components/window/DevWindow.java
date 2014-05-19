@@ -45,7 +45,6 @@ import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.prop.crafting.Anvil;
 import bloodandmithril.prop.crafting.WorkBench;
-import bloodandmithril.prop.furniture.ArchedWindow;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -253,11 +252,6 @@ public class DevWindow extends Window {
 
 		if (keyCode == Input.Keys.P) {
 			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), false, YellowBrickTile.class);
-		}
-
-		if (keyCode == Input.Keys.Y) {
-			ArchedWindow window = new ArchedWindow(getMouseWorldX(), getMouseWorldY());
-			Domain.getProps().put(window.id, window);
 		}
 
 		if (keyCode == Input.Keys.J) {
