@@ -94,7 +94,7 @@ public class Elf extends Individual {
 	 * Constructor
 	 */
 	public Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity, World world) {
-		super(id, state, factionId, capacity, 10, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId());
+		super(id, state, factionId, capacity, 10, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId(), 2);
 		this.female = female;
 		this.hairColorR = hairColor.r;
 		this.hairColorG = hairColor.g;
@@ -115,7 +115,7 @@ public class Elf extends Individual {
 	 * Constructor
 	 */
 	private Elf(IndividualIdentifier id, IndividualState state, int factionId, boolean female, Color hairColor, Color eyeColor, int hairStyle, float capacity, int worldId) {
-		super(id, state, factionId, capacity, 10, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId);
+		super(id, state, factionId, capacity, 10, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId, 2);
 		this.female = female;
 		this.hairColorR = hairColor.r;
 		this.hairColorG = hairColor.g;

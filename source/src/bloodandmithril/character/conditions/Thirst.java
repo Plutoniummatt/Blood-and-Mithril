@@ -13,18 +13,22 @@ public class Thirst extends Condition {
 	private static final long serialVersionUID = -3232484824763914755L;
 
 	private final int affected;
-	private final float oldStaminaRegen;
 
 	/**
 	 * Constructor
 	 */
 	public Thirst(int affected) {
 		this.affected = affected;
-		this.oldStaminaRegen = Domain.getIndividuals().get(affected).getState().staminaRegen;
-		Domain.getIndividuals().get(affected).changeStaminaRegen(oldStaminaRegen * 0.5f);
+		float staminaRegen = Domain.getIndividuals().get(affected).getState().staminaRegen;
+		Domain.getIndividuals().get(affected).changeStaminaRegen(staminaRegen * 0.5f);
 	}
 
 
+	/**
+	 * @see bloodandmithril.character.Individual.Condition#affect(bloodandmithril.character.Individual, float)
+	 *
+	 * If thirst is zero, then individual takes 0.03 damage per second.
+	 */
 	@Override
 	public void affect(Individual affected, float delta) {
 		if (affected.getState().thirst == 0f) {
@@ -62,7 +66,7 @@ public class Thirst extends Condition {
 		return getName(Domain.getIndividuals().get(affected).getState().thirst);
 	}
 
-	
+
 	/**
 	 * See {@link Condition#getName()}
 	 */
@@ -83,11 +87,10 @@ public class Thirst extends Condition {
 			default: throw new RuntimeException("Unexpected thirst level");
 		}
 	}
-	
+
 
 	@Override
 	public void uponExpiry() {
-		Domain.getIndividuals().get(affected).changeStaminaRegen(oldStaminaRegen);
 	}
 
 

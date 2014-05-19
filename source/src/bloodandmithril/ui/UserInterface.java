@@ -580,7 +580,7 @@ public class UserInterface {
 					((GoToLocation)currentTask).renderFinalWayPoint();
 				}
 			}
-			indi.renderArrows();
+			indi.renderUIDecorations();
 			spriteBatch.flush();
 		}
 		spriteBatch.end();

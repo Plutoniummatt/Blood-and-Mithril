@@ -24,6 +24,7 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -77,8 +78,8 @@ public class IndividualStatusWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		Color activeTitle = Colors.modulateAlpha(Color.YELLOW, getAlpha());
-		Color inactiveTitle = Colors.modulateAlpha(Color.ORANGE, getAlpha());
+		Color activeTitle = Colors.modulateAlpha(Color.GREEN, getAlpha());
+		Color inactiveTitle = Colors.modulateAlpha(Colors.UI_DARK_GREEN, getAlpha());
 		Color activeWhite = Colors.modulateAlpha(Color.WHITE, getAlpha());
 		Color inactiveWhite = Colors.modulateAlpha(Color.WHITE, 0.6f * getAlpha());
 
@@ -103,7 +104,7 @@ public class IndividualStatusWindow extends Window {
 		}
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
-		if (!drawLine("Conditions: ", 135)) {
+		if (!drawLine("Conditions: ", 155)) {
 			return;
 		}
 
@@ -119,56 +120,16 @@ public class IndividualStatusWindow extends Window {
 	 * Renders health, hunger, thirst, stamina bars etc
 	 */
 	private void renderBars() {
+
+		int barThickness = 7;
+		int barOffsetY = 75;
+		int barOffsetX = 25;
+		int barSeparation = 12;
+		int barLengthModifier = 80;
+
 		shapeRenderer.begin(FilledRectangle);
-		shapeRenderer.filledRect(x + 5, y - 80, width - 20, 7,
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f)
-		);
-		shapeRenderer.filledRect(x + 5, y - 90, width - 20, 7,
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f)
-		);
-		shapeRenderer.filledRect(x + 5, y - 100, width - 20, 7,
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f)
-		);
-		shapeRenderer.filledRect(x + 5, y - 110, width - 20, 7,
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f)
-		);
-		shapeRenderer.filledRect(x + 5, y - 120, width - 20, 7,
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f),
-			modulateAlpha(Color.WHITE, isActive() ? 0.5f : 0.2f)
-		);
-
 		float health = individual.getState().health / individual.getState().maxHealth;
-		shapeRenderer.filledRect(x + 5, y - 80, (width - 20) * health, 7,
-			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
-			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
-			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
-			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
-		);
-
-		float hunger = individual.getState().hunger;
-		shapeRenderer.filledRect(x + 5, y - 90, (width - 20) * hunger, 7,
-			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
-			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
-			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
-			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
-		);
-
-		float thirst = individual.getState().thirst;
-		shapeRenderer.filledRect(x + 5, y - 100, (width - 20) * thirst, 7,
+		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY, (width - barLengthModifier) * health, barThickness,
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
@@ -176,20 +137,45 @@ public class IndividualStatusWindow extends Window {
 		);
 
 		float stamina = individual.getState().stamina;
-		shapeRenderer.filledRect(x + 5, y - 110, (width - 20) * stamina, 7,
+		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY - 1 * barSeparation, (width - barLengthModifier) * stamina, barThickness,
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
 		);
 
-		float mana = 0f; // TODO Mana
-		shapeRenderer.filledRect(x + 5, y - 120, (width - 20) * mana, 7,
+		float mana = individual.getState().maxMana == 0f ? 0f : individual.getState().mana / individual.getState().maxMana;
+		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY - 2 * barSeparation, (width - barLengthModifier) * mana, barThickness,
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
 		);
+
+		float hunger = individual.getState().hunger;
+		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY - 4 * barSeparation, (width - barLengthModifier) * hunger, barThickness,
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
+		);
+
+		float thirst = individual.getState().thirst;
+		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY - 5 * barSeparation, (width - barLengthModifier) * thirst, barThickness,
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
+			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f))
+		);
+		shapeRenderer.end();
+
+		shapeRenderer.begin(ShapeType.Rectangle);
+		shapeRenderer.setColor(modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)));
+		shapeRenderer.rect(x + barOffsetX, y - barOffsetY, width - barLengthModifier, barThickness);
+		shapeRenderer.rect(x + barOffsetX, y - barOffsetY - 1 * barSeparation, width - barLengthModifier, barThickness);
+		shapeRenderer.rect(x + barOffsetX, y - barOffsetY - 2 * barSeparation, width - barLengthModifier, barThickness);
+		shapeRenderer.rect(x + barOffsetX, y - barOffsetY - 4 * barSeparation, width - barLengthModifier, barThickness);
+		shapeRenderer.rect(x + barOffsetX, y - barOffsetY - 5 * barSeparation, width - barLengthModifier, barThickness);
 		shapeRenderer.end();
 	}
 
@@ -216,9 +202,9 @@ public class IndividualStatusWindow extends Window {
 		refreshLisitng(individual, conditionsPanel.getListing());
 
 		conditionsPanel.x = x;
-		conditionsPanel.y = y - 120;
+		conditionsPanel.y = y - 140;
 		conditionsPanel.width = width;
-		conditionsPanel.height = height - 120;
+		conditionsPanel.height = height - 140;
 
 		conditionsPanel.render();
 	}

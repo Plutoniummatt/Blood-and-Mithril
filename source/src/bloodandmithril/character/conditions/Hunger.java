@@ -13,18 +13,25 @@ public class Hunger extends Condition {
 	private static final long serialVersionUID = 6876432751800675014L;
 
 	private final int affected;
-	private final float oldHealthRegen;
 
 	/**
 	 * Constructor
 	 */
 	public Hunger(int affected) {
 		this.affected = affected;
-		this.oldHealthRegen = Domain.getIndividuals().get(affected).getState().healthRegen;
-		Domain.getIndividuals().get(affected).changeHealthRegen(oldHealthRegen * 0.5f);
+		float healthRegen = Domain.getIndividuals().get(affected).getState().healthRegen;
+		Domain.getIndividuals().get(affected).changeHealthRegen(healthRegen * 0.5f);
 	}
 
 
+	/**
+	 * @see bloodandmithril.character.Individual.Condition#affect(bloodandmithril.character.Individual, float)
+	 *
+	 * If we're starving (hunger == 0) then individual takes damage, precisely 0.01 per second.
+	 * Also health regen zeroes.
+	 *
+	 * If hunger is not zero, then restore health regen to old health regen
+	 */
 	@Override
 	public void affect(Individual affected, float delta) {
 		if (affected.getState().hunger == 0f) {
@@ -32,8 +39,6 @@ public class Hunger extends Condition {
 			if (affected.getState().healthRegen != 0f) {
 				affected.changeHealthRegen(0f);
 			}
-		} else if (affected.getState().healthRegen == 0f) {
-			affected.changeHealthRegen(oldHealthRegen);
 		}
 	}
 
@@ -66,8 +71,8 @@ public class Hunger extends Condition {
 	public String getName() {
 		return getName(Domain.getIndividuals().get(affected).getState().hunger);
 	}
-		
-	
+
+
 	/**
 	 * See {@link Condition#getName()}
 	 */
@@ -92,7 +97,6 @@ public class Hunger extends Condition {
 
 	@Override
 	public void uponExpiry() {
-		Domain.getIndividuals().get(affected).changeHealthRegen(oldHealthRegen);
 	}
 
 
