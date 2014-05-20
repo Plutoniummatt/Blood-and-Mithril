@@ -1,13 +1,15 @@
-package bloodandmithril.item.equipment;
+package bloodandmithril.item.equipment.weapon;
+
+import static bloodandmithril.item.material.metal.Ingot.ingot;
 
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.item.Craftable;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.metal.IronIngot;
-import bloodandmithril.item.material.metal.SteelIngot;
+import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
@@ -15,7 +17,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
-public class ButterflySword extends OneHandedWeapon implements Craftable {
+public class ButterflySword<T extends Metal> extends OneHandedWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
 	public static TextureRegion texture;
@@ -23,19 +25,27 @@ public class ButterflySword extends OneHandedWeapon implements Craftable {
 	/**
 	 * Constructor
 	 */
-	public ButterflySword(long value) {
-		super(1.5f, true, value);
+	public ButterflySword(long value, Class<T> metal) {
+		super(1.5f, true, value, metal);
+	}
+
+
+	/**
+	 * @return Static instance getter
+	 */
+	public static <T extends Metal> ButterflySword<T> butterflySword(long value, Class<T> metal) {
+		return new ButterflySword<T>(value, metal);
 	}
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String weaponGetSingular(boolean firstCap) {
 		return "Butterfly sword";
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String weaponGetPlural(boolean firstCap) {
 		return "Butterfly swords";
 	}
 
@@ -79,8 +89,7 @@ public class ButterflySword extends OneHandedWeapon implements Craftable {
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> map = Maps.newHashMap();
 
-		map.put(new SteelIngot(), 4);
-		map.put(new IronIngot(), 2);
+		map.put(ingot(getMaterial()), 6);
 
 		return map;
 	}
@@ -112,6 +121,6 @@ public class ButterflySword extends OneHandedWeapon implements Craftable {
 
 	@Override
 	protected Item internalCopy() {
-		return new ButterflySword(getValue());
+		return new ButterflySword<T>(getValue(), getMaterial());
 	}
 }

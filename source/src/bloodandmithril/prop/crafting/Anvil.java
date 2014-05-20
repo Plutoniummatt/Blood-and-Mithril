@@ -1,10 +1,13 @@
 package bloodandmithril.prop.crafting;
 
+import static bloodandmithril.item.equipment.weapon.Broadsword.broadSword;
+import static bloodandmithril.item.equipment.weapon.ButterflySword.butterflySword;
+
 import java.util.List;
 
 import bloodandmithril.item.Item;
-import bloodandmithril.item.equipment.Broadsword;
-import bloodandmithril.item.equipment.ButterflySword;
+import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.material.metal.Steel;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Lists;
@@ -56,8 +59,10 @@ public class Anvil extends CraftingStation {
 	@Override
 	public List<Item> getCraftables() {
 		return Lists.newArrayList(
-			new Broadsword(0),
-			new ButterflySword(0)
+			broadSword(0, Iron.class),
+			broadSword(0, Steel.class),
+			butterflySword(0, Iron.class),
+			butterflySword(0, Steel.class)
 		);
 	}
 }

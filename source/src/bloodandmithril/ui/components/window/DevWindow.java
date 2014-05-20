@@ -2,6 +2,8 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.item.equipment.weapon.Broadsword.broadSword;
+import static bloodandmithril.item.equipment.weapon.ButterflySword.butterflySword;
 
 import java.util.Comparator;
 import java.util.Deque;
@@ -21,12 +23,8 @@ import bloodandmithril.character.individuals.Names;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.affix.HealthRegeneration;
-import bloodandmithril.item.affix.LowQuality;
-import bloodandmithril.item.affix.StaminaRegeneration;
-import bloodandmithril.item.equipment.Broadsword;
-import bloodandmithril.item.equipment.ButterflySword;
-import bloodandmithril.item.equipment.GoldRing;
+import bloodandmithril.item.equipment.weapon.Broadsword;
+import bloodandmithril.item.equipment.weapon.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.Brick;
 import bloodandmithril.item.material.container.GlassBottle;
@@ -35,8 +33,9 @@ import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Blood;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Water;
-import bloodandmithril.item.material.metal.IronIngot;
-import bloodandmithril.item.material.metal.SteelIngot;
+import bloodandmithril.item.material.metal.Ingot;
+import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.material.plant.Pine;
@@ -170,23 +169,10 @@ public class DevWindow extends Window {
 				elf.giveItem(new Pine());
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				GoldRing item = new GoldRing(1);
-				if (Util.getRandom().nextBoolean()) {
-					item.setPostAffix(new HealthRegeneration(1));
-				}
-				if (Util.getRandom().nextBoolean()) {
-					item.setPostAffix(new StaminaRegeneration(1));
-				}
-				if (Util.getRandom().nextBoolean()) {
-					item.setPreAffix(new LowQuality(1f));
-				}
-				elf.giveItem(item);
-			}
-			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(new IronIngot());
+				elf.giveItem(Ingot.ingot(Iron.class));
 			}
 			for (int i = 40; i > 0; i--) {
-				elf.giveItem(new SteelIngot());
+				elf.giveItem(Ingot.ingot(Steel.class));
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(new Hematite());
@@ -216,8 +202,8 @@ public class DevWindow extends Window {
 			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 				elf.giveItem(new Brick());
 			}
-			elf.giveItem(new ButterflySword(100));
-			elf.giveItem(new Broadsword(100));
+			elf.giveItem(butterflySword(100, Steel.class));
+			elf.giveItem(broadSword(100, Iron.class));
 
 			Domain.getIndividuals().put(elf.getId().getId(), elf);
 			return true;
@@ -264,7 +250,7 @@ public class DevWindow extends Window {
 
 		if (keyCode == Input.Keys.H) {
 			Domain.addItem(
-				new Broadsword(10),
+				Broadsword.broadSword(10, Steel.class),
 				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
 				new Vector2(new Vector2(800f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
 				Domain.getActiveWorld()
@@ -273,7 +259,7 @@ public class DevWindow extends Window {
 
 		if (keyCode == Input.Keys.V) {
 			Domain.addItem(
-				new ButterflySword(10),
+				ButterflySword.butterflySword(10, Steel.class),
 				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
 				new Vector2(new Vector2(600f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
 				Domain.getActiveWorld()
@@ -282,7 +268,7 @@ public class DevWindow extends Window {
 
 		if (keyCode == Input.Keys.B) {
 			Domain.addItem(
-				new IronIngot(),
+				Ingot.ingot(Steel.class),
 				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
 				new Vector2(new Vector2(500f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
 				Domain.getActiveWorld()

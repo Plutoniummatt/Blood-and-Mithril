@@ -1,12 +1,14 @@
-package bloodandmithril.item.equipment;
+package bloodandmithril.item.equipment.weapon;
 
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.item.Craftable;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.metal.SteelIngot;
+import bloodandmithril.item.material.metal.Ingot;
+import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
@@ -14,7 +16,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
-public class Broadsword extends OneHandedWeapon implements Craftable {
+public class Broadsword<T extends Metal> extends OneHandedWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
 	public static TextureRegion texture;
@@ -22,26 +24,34 @@ public class Broadsword extends OneHandedWeapon implements Craftable {
 	/**
 	 * Constructor
 	 */
-	public Broadsword(long value) {
-		super(2, true, value);
+	private Broadsword(long value, Class<T> metal) {
+		super(2, true, value, metal);
+	}
+
+
+	/**
+	 * @return Static instance getter
+	 */
+	public static <T extends Metal> Broadsword<T> broadSword(long value, Class<T> metal) {
+		return new Broadsword<T>(value, metal);
 	}
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String weaponGetSingular(boolean firstCap) {
 		return "Broad sword";
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String weaponGetPlural(boolean firstCap) {
 		return "Broad swords";
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "Broadswords are heavy military swords, contrasting with rapier, the light sword worn with civilian dress. Since the blade of the rapier had become narrow and thrust-oriented, the heavier blades became known as Broadsword";
+		return "Broadswords are heavy military swords, this one is made from " + getMaterial().getName();
 	}
 
 
@@ -95,7 +105,7 @@ public class Broadsword extends OneHandedWeapon implements Craftable {
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> map = Maps.newHashMap();
 
-		map.put(new SteelIngot(), 7);
+		map.put(Ingot.ingot(getMaterial()), 7);
 
 		return map;
 	}
@@ -127,6 +137,6 @@ public class Broadsword extends OneHandedWeapon implements Craftable {
 
 	@Override
 	protected Item internalCopy() {
-		return new Broadsword(getValue());
+		return new Broadsword<T>(getValue(), getMaterial());
 	}
 }

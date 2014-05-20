@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import bloodandmithril.item.equipment.Ring;
+import bloodandmithril.item.equipment.misc.Ring;
 import bloodandmithril.util.SerializableFunction;
 
 /**

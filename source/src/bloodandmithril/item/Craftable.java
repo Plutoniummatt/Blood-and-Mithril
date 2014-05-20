@@ -1,9 +1,8 @@
-package bloodandmithril.item.equipment;
+package bloodandmithril.item;
 
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
-import bloodandmithril.item.Item;
 import bloodandmithril.prop.crafting.CraftingStation;
 
 /**

@@ -9,11 +9,11 @@ import bloodandmithril.world.topography.Topography;
  * @author Sam
  */
 public class RectangularSpaceCalculator {
-	
-	
+
+
 	/**
 	 * Calculates a square of space available
-	 * 
+	 *
 	 * @param startingChunkX - The chunk coordinates to start calculating from.
 	 * @param startingChunkY - The chunk coordinates to start calculating from.
 	 * @param maxWidth - how far it can go in the x direction either way before stopping.
@@ -25,14 +25,14 @@ public class RectangularSpaceCalculator {
 	 * @return - Edges; Left, Right, Bottom, Top
 	 */
 	public static Boundaries calculateBoundaries(
-			boolean superStructure, 
-			int startingChunkX, 
-			int startingChunkY, 
-			int maxWidth, 
-			int maxHeight, 
-			int maxStaticWidth, 
-			int minStaticWidth, 
-			int maxStaticHeight, 
+			boolean superStructure,
+			int startingChunkX,
+			int startingChunkY,
+			int maxWidth,
+			int maxHeight,
+			int maxStaticWidth,
+			int minStaticWidth,
+			int maxStaticHeight,
 			int minStaticHeight,
 			Topography topography) {
 
@@ -41,7 +41,7 @@ public class RectangularSpaceCalculator {
 	    int left = startingChunkX;
 	    int lTop = startingChunkY;
 	    int lBottom = startingChunkY;
-	    
+
 		while(!topography.getStructures().structureExists(left - 1, startingChunkY, superStructure) && !topography.getChunkMap().doesChunkExist(left - 1, startingChunkY) && left > startingChunkX - maxWidth && left > minStaticWidth) {
 			left--;
 		}
@@ -108,11 +108,11 @@ public class RectangularSpaceCalculator {
 
 		return new Boundaries(fTop, fBottom, fLeft, fRight);
 	}
-	
-	
+
+
 	/**
 	 * Calculates a square of space available
-	 * 
+	 *
 	 * @param startingChunkX - The chunk coordinates to start calculating from.
 	 * @param startingChunkY - The chunk coordinates to start calculating from.
 	 * @param maxWidth - how far it can go in the x direction either way before stopping.
@@ -122,12 +122,12 @@ public class RectangularSpaceCalculator {
 	 * @return - Edges; Left, Right, Bottom, Top
 	 */
 	public static Boundaries calculateBoundaries(
-			boolean superStructure, 
-			int startingChunkX, 
-			int startingChunkY, 
-			int maxWidth, 
-			int maxHeight, 
-			int maxStaticHeight, 
+			boolean superStructure,
+			int startingChunkX,
+			int startingChunkY,
+			int maxWidth,
+			int maxHeight,
+			int maxStaticHeight,
 			int minStaticHeight,
 			Topography topography) {
 
@@ -203,11 +203,11 @@ public class RectangularSpaceCalculator {
 
 		return new Boundaries(fTop, fBottom, fLeft, fRight);
 	}
-	
-	
+
+
 	/**
 	 * Calculates a square of space available
-	 * 
+	 *
 	 * @param startingChunkX - The chunk coordinates to start calculating from.
 	 * @param startingChunkY - The chunk coordinates to start calculating from.
 	 * @param maxHeight - how far it can go in the x direction either way before stopping.
@@ -217,11 +217,10 @@ public class RectangularSpaceCalculator {
 	 * @return - Edges; Left, Right, Bottom, Top
 	 */
 	public static Boundaries calculateBoundaries(
-			boolean 
-			superStructure, 
-			int startingChunkX, 
-			int startingChunkY, 
-			int maxWidth, 
+			boolean superStructure,
+			int startingChunkX,
+			int startingChunkY,
+			int maxWidth,
 			int maxHeight,
 			Topography topography) {
 

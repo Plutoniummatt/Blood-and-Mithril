@@ -6,9 +6,9 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.item.Craftable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.plant.Pine;
 
