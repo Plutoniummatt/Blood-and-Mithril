@@ -22,7 +22,7 @@ import bloodandmithril.item.ContainerImpl;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.container.LiquidContainer;
+import bloodandmithril.item.container.LiquidContainer;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;

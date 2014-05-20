@@ -1,6 +1,6 @@
-package bloodandmithril.item.material.container;
+package bloodandmithril.item.container;
 
-import static bloodandmithril.item.material.liquid.LiquidMixtureAnalyzer.getTitle;
+import static bloodandmithril.item.liquid.LiquidMixtureAnalyzer.getTitle;
 import static bloodandmithril.util.Util.round2dp;
 
 import java.util.Map;
@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 import bloodandmithril.character.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.liquid.Liquid;
-import bloodandmithril.item.material.liquid.LiquidMixtureAnalyzer;
+import bloodandmithril.item.liquid.Liquid;
+import bloodandmithril.item.liquid.LiquidMixtureAnalyzer;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 

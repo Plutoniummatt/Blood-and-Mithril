@@ -1,8 +1,7 @@
-package bloodandmithril.item.material.fuel;
+package bloodandmithril.item.fuel;
 
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.material.Fuel;
 import bloodandmithril.item.material.mineral.Ashes;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

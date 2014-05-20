@@ -1,4 +1,4 @@
-package bloodandmithril.item.material.liquid;
+package bloodandmithril.item.liquid;
 
 import com.badlogic.gdx.graphics.Color;
 

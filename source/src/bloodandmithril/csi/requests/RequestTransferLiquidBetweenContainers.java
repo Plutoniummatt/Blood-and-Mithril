@@ -3,7 +3,7 @@ package bloodandmithril.csi.requests;
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.item.material.container.LiquidContainer;
+import bloodandmithril.item.container.LiquidContainer;
 import bloodandmithril.world.Domain;
 
 /**

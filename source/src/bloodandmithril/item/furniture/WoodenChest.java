@@ -10,7 +10,7 @@ import bloodandmithril.item.Craftable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.material.metal.Iron;
-import bloodandmithril.item.material.plant.Pine;
+import bloodandmithril.item.plant.Pine;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;

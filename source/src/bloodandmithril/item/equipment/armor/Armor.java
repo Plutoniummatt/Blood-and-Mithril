@@ -9,15 +9,15 @@ import bloodandmithril.item.material.Material;
  *
  * @author Matt
  */
-public abstract class Armor extends Equipable {
+public abstract class Armor<T extends Material> extends Equipable {
 	private static final long serialVersionUID = -1573984410574358125L;
 
-	private Class<? extends Material> material;
+	private Class<T> material;
 
 	/**
 	 * Constructor
 	 */
-	protected Armor(float mass, long value, EquipmentSlot slot, Class<? extends Material> material) {
+	protected Armor(float mass, long value, EquipmentSlot slot, Class<T> material) {
 		super(mass, true, value, slot);
 		this.material = material;
 	}
@@ -25,7 +25,7 @@ public abstract class Armor extends Equipable {
 	/**
 	 * @return the material this piece of {@link Armor} is made from
 	 */
-	public Class<? extends Material> getMaterial() {
+	public Class<T> getMaterial() {
 		return material;
 	}
 }

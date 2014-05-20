@@ -1,7 +1,7 @@
 package bloodandmithril.prop.plant;
 
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.plant.Felberries;
+import bloodandmithril.item.plant.Felberries;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.components.ContextMenu;
 

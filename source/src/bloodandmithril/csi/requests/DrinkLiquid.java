@@ -4,8 +4,8 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
-import bloodandmithril.item.material.container.LiquidContainer;
-import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.container.LiquidContainer;
+import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.world.Domain;
 
 /**

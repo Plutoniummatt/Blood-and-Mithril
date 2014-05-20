@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.Fuel;
+import bloodandmithril.item.fuel.Fuel;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.building.Furnace;
 import bloodandmithril.world.Domain;

@@ -34,8 +34,14 @@ public abstract class Weapon<T extends Material> extends Equipable implements Af
 		return Material.getMaterial(material).getName() + " " + weaponGetPlural(firstCap);
 	}
 
+	/**
+	 * @return The name of the {@link Weapon}
+	 */
 	protected abstract String weaponGetSingular(boolean firstCap);
 
+	/**
+	 * @return The name of the {@link Weapon}, plural form
+	 */
 	protected abstract String weaponGetPlural(boolean firstCap);
 
 	/**

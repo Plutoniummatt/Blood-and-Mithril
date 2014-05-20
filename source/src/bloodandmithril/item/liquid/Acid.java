@@ -1,4 +1,4 @@
-package bloodandmithril.item.material.liquid;
+package bloodandmithril.item.liquid;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.util.Util.Colors;
@@ -6,14 +6,14 @@ import bloodandmithril.util.Util.Colors;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * Milk.
+ * Acid.
  *
  * @author Matt
  */
-public class Milk extends Liquid {
+public class Acid extends Liquid {
 	private static final long serialVersionUID = 7506934519654231222L;
 
-	public Milk() {
+	public Acid() {
 		super();
 	}
 
@@ -24,12 +24,12 @@ public class Milk extends Liquid {
 	
 	@Override
 	public String getDescription() {
-		return "Cows milk.";
+		return "Corrosive liquid.";
 	}
 
 	
 	@Override
 	public Color getColor() {
-		return Colors.MILK;
+		return Colors.ACID;
 	}
 }
