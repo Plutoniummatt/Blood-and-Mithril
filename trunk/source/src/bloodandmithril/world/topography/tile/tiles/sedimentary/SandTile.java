@@ -1,7 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.sedimentary;
 
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.mineral.Sand;
+import bloodandmithril.item.material.earth.Sand;
 import bloodandmithril.world.topography.tile.tiles.SeditmentaryTile;
 
 public class SandTile extends SeditmentaryTile {

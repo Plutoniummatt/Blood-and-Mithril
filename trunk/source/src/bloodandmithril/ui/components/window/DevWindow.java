@@ -37,6 +37,7 @@ import bloodandmithril.item.material.metal.Ingot;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Hematite;
+import bloodandmithril.item.material.mineral.Rock;
 import bloodandmithril.item.misc.Currency;
 import bloodandmithril.item.plant.DeathCap;
 import bloodandmithril.item.plant.Pine;
@@ -175,7 +176,7 @@ public class DevWindow extends Window {
 				elf.giveItem(Ingot.ingot(Steel.class));
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(new Hematite());
+				elf.giveItem(Rock.rock(Hematite.class));
 			}
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 				elf.giveItem(new Coal());

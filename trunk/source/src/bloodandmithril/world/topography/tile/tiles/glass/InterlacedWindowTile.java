@@ -1,7 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.glass;
 
 import bloodandmithril.item.Item;
-import bloodandmithril.item.material.mineral.Glass;
+import bloodandmithril.item.material.crystalline.Glass;
 import bloodandmithril.world.topography.tile.tiles.GlassTile;
 
 public class InterlacedWindowTile extends GlassTile {

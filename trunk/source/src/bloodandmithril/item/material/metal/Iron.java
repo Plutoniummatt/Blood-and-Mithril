@@ -1,5 +1,6 @@
 package bloodandmithril.item.material.metal;
 
+import static bloodandmithril.item.material.mineral.Rock.rock;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
@@ -35,7 +36,7 @@ public class Iron extends Metal {
 	@Override
 	public Map<Item, Integer> getRequiredMaterialsToCraftIngot() {
 		Map<Item, Integer> map = newHashMap();
-		map.put(new Hematite(), 1);
+		map.put(rock(Hematite.class), 1);
 		return map;
 	}
 

@@ -3,6 +3,7 @@ package bloodandmithril.item.material;
 import java.util.Map;
 
 import bloodandmithril.item.material.metal.Metal;
+import bloodandmithril.item.material.mineral.Mineral;
 
 import com.google.common.collect.Maps;
 
@@ -20,6 +21,7 @@ public abstract class Material {
 
 	static {
 		Metal.metals(materials);
+		Mineral.minerals(materials);
 	}
 
 
