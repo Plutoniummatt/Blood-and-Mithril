@@ -1,4 +1,4 @@
-package bloodandmithril.item.material.liquid;
+package bloodandmithril.item.liquid;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.util.Util.Colors;

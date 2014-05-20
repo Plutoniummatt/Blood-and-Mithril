@@ -1,4 +1,4 @@
-package bloodandmithril.item.material.brick;
+package bloodandmithril.item.construction;
 
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;

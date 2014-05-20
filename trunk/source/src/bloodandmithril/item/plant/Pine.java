@@ -1,42 +1,42 @@
-package bloodandmithril.item.material.plant;
+package bloodandmithril.item.plant;
 
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class CarrotSeed extends Seed {
-	private static final long serialVersionUID = -3918937697003306522L;
+public class Pine extends Item {
+	private static final long serialVersionUID = 1882318163053390592L;
 
 	/**
 	 * Constructor
 	 */
-	protected CarrotSeed() {
-		super(0.001f, false, ItemValues.CARROTSEED);
+	public Pine() {
+		super(1f, false, ItemValues.PINE);
 	}
 
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return firstCap ? "Carrot seed" : "carrot seed";
+		return (firstCap ? "P" : "p") + "ine";
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return firstCap ? "Carrot seeds" : "carrot seeds";
+		return (firstCap ? "P" : "p") + "ine";
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "Seed of a carrot";
+		return "Logs of pine trees.";
 	}
 
 
 	@Override
 	protected boolean internalSameAs(Item other) {
-		return other instanceof CarrotSeed;
+		return other instanceof Pine;
 	}
 
 
@@ -48,6 +48,6 @@ public class CarrotSeed extends Seed {
 
 	@Override
 	protected Item internalCopy() {
-		return new CarrotSeed();
+		return new Pine();
 	}
 }

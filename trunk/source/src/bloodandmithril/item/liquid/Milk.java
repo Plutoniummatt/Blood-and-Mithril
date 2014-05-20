@@ -1,4 +1,4 @@
-package bloodandmithril.item.material.liquid;
+package bloodandmithril.item.liquid;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.util.Util.Colors;
@@ -6,14 +6,14 @@ import bloodandmithril.util.Util.Colors;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * Crude oil.
+ * Milk.
  *
  * @author Matt
  */
-public class CrudeOil extends Liquid {
+public class Milk extends Liquid {
 	private static final long serialVersionUID = 7506934519654231222L;
 
-	public CrudeOil() {
+	public Milk() {
 		super();
 	}
 
@@ -24,12 +24,12 @@ public class CrudeOil extends Liquid {
 	
 	@Override
 	public String getDescription() {
-		return "Black gold.";
+		return "Cows milk.";
 	}
 
 	
 	@Override
 	public Color getColor() {
-		return Colors.CRUDEOIL;
+		return Colors.MILK;
 	}
 }

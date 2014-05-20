@@ -1,4 +1,4 @@
-package bloodandmithril.item.material.animal;
+package bloodandmithril.item.animal;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.individuals.Elf;

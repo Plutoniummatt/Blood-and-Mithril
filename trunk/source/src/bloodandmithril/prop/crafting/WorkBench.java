@@ -5,8 +5,8 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.util.List;
 
 import bloodandmithril.item.Item;
+import bloodandmithril.item.container.WoodenBucket;
 import bloodandmithril.item.furniture.WoodenChest;
-import bloodandmithril.item.material.container.WoodenBucket;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

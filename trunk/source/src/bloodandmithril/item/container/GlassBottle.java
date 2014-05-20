@@ -1,6 +1,6 @@
-package bloodandmithril.item.material.container;
+package bloodandmithril.item.container;
 
-import static bloodandmithril.item.material.liquid.LiquidMixtureAnalyzer.getTitle;
+import static bloodandmithril.item.liquid.LiquidMixtureAnalyzer.getTitle;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
@@ -9,7 +9,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.material.mineral.Glass;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

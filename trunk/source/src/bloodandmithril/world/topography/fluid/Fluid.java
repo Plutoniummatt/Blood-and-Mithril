@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
-import bloodandmithril.item.material.liquid.Liquid;
+import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;

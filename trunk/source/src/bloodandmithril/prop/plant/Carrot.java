@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * The {@link Prop} equivalent to {@link bloodandmithril.item.material.plant.Carrot}
+ * The {@link Prop} equivalent to {@link bloodandmithril.item.plant.Carrot}
  *
  * @author Matt
  */
@@ -60,7 +60,7 @@ public class Carrot extends Plant {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new MessageWindow(
-							bloodandmithril.item.material.plant.Carrot.description,
+							bloodandmithril.item.plant.Carrot.description,
 							Color.ORANGE,
 							BloodAndMithrilClient.WIDTH/2 - 250,
 							BloodAndMithrilClient.HEIGHT/2 + 125,
@@ -110,7 +110,7 @@ public class Carrot extends Plant {
 
 	@Override
 	public Item harvest() {
-		return new bloodandmithril.item.material.plant.Carrot();
+		return new bloodandmithril.item.plant.Carrot();
 	}
 
 

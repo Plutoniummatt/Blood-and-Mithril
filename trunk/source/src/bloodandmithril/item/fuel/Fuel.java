@@ -1,4 +1,4 @@
-package bloodandmithril.item.material;
+package bloodandmithril.item.fuel;
 
 import bloodandmithril.item.Item;
 import bloodandmithril.prop.building.Furnace;

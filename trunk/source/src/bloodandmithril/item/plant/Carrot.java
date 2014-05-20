@@ -1,4 +1,4 @@
-package bloodandmithril.item.material.plant;
+package bloodandmithril.item.plant;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Consumable;
