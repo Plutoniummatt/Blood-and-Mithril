@@ -16,7 +16,7 @@ public abstract class Metal extends Material {
 
 	public static void metals(Map<Class<? extends Material>, Material> materials) {
 		materials.put(Iron.class, new Iron());
-		materials.put(Iron.class, new Steel());
+		materials.put(Steel.class, new Steel());
 	}
 
 	/**

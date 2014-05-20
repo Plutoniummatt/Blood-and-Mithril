@@ -1,58 +1,63 @@
 package bloodandmithril.item.material.mineral;
 
+import java.util.Map;
+
 import bloodandmithril.item.Item;
-import bloodandmithril.item.ItemValues;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-/**
- * Otherwise known as Iron ore.
- *
- * @author Matt
- */
-public class Hematite extends Item {
-	private static final long serialVersionUID = 5544474463358187047L;
+public class Hematite extends Mineral {
+
+	public static TextureRegion HEMATITE;
 
 	/**
-	 * Constructor
+	 * Package protected constructor
 	 */
-	public Hematite() {
-		super(2f, false, ItemValues.HEMATITE);
+	Hematite() {}
+
+	@Override
+	public long getSlabValue() {
+		throw new IllegalStateException("Should not be able to have a Hematite slab");
 	}
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
-		return (firstCap ? "H" : "h") + "ematite";
+	public int getSlabCraftingLevel() {
+		throw new IllegalStateException("Should not be able to have a Hematite slab");
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
-		return (firstCap ? "H" : "h") + "ematite";
+	public Map<Item, Integer> getRequiredMaterialsToCraftSlab() {
+		throw new IllegalStateException("Should not be able to have a Hematite slab");
 	}
 
 
 	@Override
-	public String getDescription() {
+	public float getSlabCraftingDuration() {
+		throw new IllegalStateException("Should not be able to have a Hematite slab");
+	}
+
+
+	@Override
+	public TextureRegion getSlabTextureRegion() {
+		throw new IllegalStateException("Should not be able to have a Hematite slab");
+	}
+
+
+	@Override
+	public TextureRegion getRockTextureRegion() {
+		return HEMATITE;
+	}
+
+
+	@Override
+	public String getName() {
+		return "Hematite";
+	}
+
+	@Override
+	public String getMineralDescription() {
 		return "Hematite is a mineral, colored black to steel or silver-gray, brown to reddish brown, or red. It is mined as the main ore of iron.";
-	}
-
-
-	@Override
-	protected boolean internalSameAs(Item other) {
-		return other instanceof Hematite;
-	}
-
-
-	@Override
-	protected TextureRegion getTextureRegion() {
-		return null;
-	}
-
-
-	@Override
-	protected Item internalCopy() {
-		return new Hematite();
 	}
 }

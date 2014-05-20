@@ -10,7 +10,7 @@ import bloodandmithril.item.Craftable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.liquid.Liquid;
-import bloodandmithril.item.material.mineral.Glass;
+import bloodandmithril.item.material.crystalline.Glass;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

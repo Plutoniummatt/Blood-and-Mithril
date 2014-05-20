@@ -19,6 +19,7 @@ import bloodandmithril.item.affix.MinorAffix;
 import bloodandmithril.item.affix.PostAffix;
 import bloodandmithril.item.affix.PreAffix;
 import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -244,6 +245,7 @@ public abstract class Item implements Serializable, Affixed {
 	 */
 	public static void setup() {
 		Iron.IRONINGOT = new TextureRegion(Domain.gameWorldTexture, 372, 246, 18, 6);
+		Hematite.HEMATITE = new TextureRegion(Domain.gameWorldTexture, 372, 253, 18, 11);
 	}
 
 

@@ -94,9 +94,10 @@ public class Desert extends SuperStructure {
 	/** Generates the desert dungeon */
 	private void generateDungeon() {
 		// Add the entrance in the middle of this desert
+		int entranceX = (getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE;
 		getComponents().add(new UndergroundDesertTempleEntrance(
-			(getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE,
-			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(100 - 17) + 27,
+			entranceX,
+			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(100 - 17 + entranceX) + 27,
 			getStructureKey(),
 			false,
 			YellowBrickTile.class,

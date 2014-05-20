@@ -1,43 +1,42 @@
-package bloodandmithril.item.material.mineral;
+package bloodandmithril.item.material.crystalline;
 
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Ashes extends Item {
-	private static final long serialVersionUID = 988154990456038686L;
-	public static final String description = "The residue of combustion, mostly consisting of metal oxides.";
+public class Glass extends Item {
+	private static final long serialVersionUID = -1491126318224334985L;
 
 	/**
 	 * Constructor
 	 */
-	public Ashes() {
-		super(0.2f, false, ItemValues.ASHES);
+	public Glass() {
+		super(0.5f, false, ItemValues.GLASS);
 	}
 
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return "Ashes";
+		return (firstCap ? "G" : "g") + "lass";
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return "Ashes";
+		return (firstCap ? "G" : "g") + "lass";
 	}
 
 
 	@Override
 	public String getDescription() {
-		return description;
+		return "Silicate glass";
 	}
 
 
 	@Override
 	protected boolean internalSameAs(Item other) {
-		return other instanceof Ashes;
+		return other instanceof Glass;
 	}
 
 
@@ -49,6 +48,6 @@ public class Ashes extends Item {
 
 	@Override
 	protected Item internalCopy() {
-		return new Ashes();
+		return new Glass();
 	}
 }
