@@ -62,6 +62,7 @@ public class Desert extends SuperStructure {
 		super(worldId);
 	}
 
+
 	@Override
 	protected Boundaries findSpace(int startingChunkX, int startingChunkY) {
 		//calculates where the structure can go
@@ -77,7 +78,7 @@ public class Desert extends SuperStructure {
 		);
 	}
 
-	private static boolean desertGenerated = false; //TODO WTF IS THIS SHIT MANNNNG
+
 	@Override
 	protected void internalGenerate(boolean generatingToRight) {
 		int rightMostTile = (getBoundaries().right + 1) * Topography.CHUNK_SIZE - 1;
@@ -86,153 +87,162 @@ public class Desert extends SuperStructure {
 		generateSurface(generatingToRight, rightMostTile, leftMostTile);
 		generateTransitionBase(generatingToRight, rightMostTile, leftMostTile);
 		generateSandBase(generatingToRight, rightMostTile, leftMostTile);
+		generateDungeon();
+	}
 
-		if (!desertGenerated) {
-			getComponents().add(new UndergroundDesertTempleEntrance(0, Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(100 - 17) + 27, getStructureKey(), false, YellowBrickTile.class, YellowBrickTile.class));
 
-			getComponents().get(0).stem(
-				this,
-				Corridor.class,
-				new Function<CorridorCreationCustomization>() {
-					@Override
-					public CorridorCreationCustomization call() {
-						return new CorridorCreationCustomization(
-							false,
-							4,
-							7,
-							40,
-							6,
-							YellowBrickTile.class
-						);
-					}
-				}
-			).stem(
-				this,
-				UndergroundDesertTempleAltarRoom.class,
-				new Function<UndergroundDesertTempleAltarRoomCustomization>() {
-					@Override
-					public UndergroundDesertTempleAltarRoomCustomization call() {
-						return new UndergroundDesertTempleAltarRoomCustomization(
-							false,
-							YellowBrickTile.class,
-							YellowBrickTile.class
-						);
-					}
-				}
-			);
+	/** Generates the desert dungeon */
+	private void generateDungeon() {
+		// Add the entrance in the middle of this desert
+		getComponents().add(new UndergroundDesertTempleEntrance(
+			(getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE,
+			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(100 - 17) + 27,
+			getStructureKey(),
+			false,
+			YellowBrickTile.class,
+			YellowBrickTile.class
+		));
 
-			getComponents().get(0).stem(
-				this,
-				Stairs.class,
-				new Function<StairsCreationCustomization>() {
-					@Override
-					public StairsCreationCustomization call() {
-						return new StairsCreationCustomization(
-							false,
-							false,
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextInt(30),
-							1,
-							7,
-							3,
-							YellowBrickTile.class,
-							YellowBrickTile.class
-						);
-					}
+		getComponents().get(0).stem(
+			this,
+			Corridor.class,
+			new Function<CorridorCreationCustomization>() {
+				@Override
+				public CorridorCreationCustomization call() {
+					return new CorridorCreationCustomization(
+						false,
+						4,
+						7,
+						40,
+						6,
+						YellowBrickTile.class
+					);
 				}
-			).stem(
-				this,
-				Stairs.class,
-				new Function<StairsCreationCustomization>() {
-					@Override
-					public StairsCreationCustomization call() {
-						return new StairsCreationCustomization(
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextInt(30) + 20,
-							1,
-							7,
-							3,
-							YellowBrickTile.class,
-							YellowBrickTile.class
-						);
-					}
+			}
+		).stem(
+			this,
+			UndergroundDesertTempleAltarRoom.class,
+			new Function<UndergroundDesertTempleAltarRoomCustomization>() {
+				@Override
+				public UndergroundDesertTempleAltarRoomCustomization call() {
+					return new UndergroundDesertTempleAltarRoomCustomization(
+						false,
+						YellowBrickTile.class,
+						YellowBrickTile.class
+					);
 				}
-			).stem(
-				this,
-				Stairs.class,
-				new Function<StairsCreationCustomization>() {
-					@Override
-					public StairsCreationCustomization call() {
-						return new StairsCreationCustomization(
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextBoolean(),
-							true,
-							Util.getRandom().nextInt(30) + 20,
-							1,
-							7,
-							3,
-							YellowBrickTile.class,
-							YellowBrickTile.class
-						);
-					}
-				}
-			).stem(
-				this,
-				Corridor.class,
-				new Function<CorridorCreationCustomization>() {
-					@Override
-					public CorridorCreationCustomization call() {
-						return new CorridorCreationCustomization(
-							Util.getRandom().nextBoolean(),
-							3,
-							3,
-							20 + Util.getRandom().nextInt(10),
-							7,
-							YellowBrickTile.class
-						);
-					}
-				}
-			).stem(
-				this,
-				Room.class,
-				new Function<RoomCreationCustomization>() {
-					@Override
-					public RoomCreationCustomization call() {
-						return new RoomCreationCustomization(
-							Util.getRandom().nextBoolean(),
-							20 + Util.getRandom().nextInt(10),
-							20 + Util.getRandom().nextInt(10),
-							3,
-							YellowBrickTile.class
-						);
-					}
-				}
-			).stem(
-				this,
-				Stairs.class,
-				new Function<StairsCreationCustomization>() {
-					@Override
-					public StairsCreationCustomization call() {
-						return new StairsCreationCustomization(
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextBoolean(),
-							Util.getRandom().nextInt(20) + 15,
-							1,
-							7,
-							3,
-							YellowBrickTile.class,
-							YellowBrickTile.class
-						);
-					}
-				},
-				10
-			);
+			}
+		);
 
-			desertGenerated = true;
-		}
+		getComponents().get(0).stem(
+			this,
+			Stairs.class,
+			new Function<StairsCreationCustomization>() {
+				@Override
+				public StairsCreationCustomization call() {
+					return new StairsCreationCustomization(
+						false,
+						false,
+						Util.getRandom().nextBoolean(),
+						Util.getRandom().nextInt(30),
+						1,
+						7,
+						3,
+						YellowBrickTile.class,
+						YellowBrickTile.class
+					);
+				}
+			}
+		).stem(
+			this,
+			Stairs.class,
+			new Function<StairsCreationCustomization>() {
+				@Override
+				public StairsCreationCustomization call() {
+					return new StairsCreationCustomization(
+						Util.getRandom().nextBoolean(),
+						Util.getRandom().nextBoolean(),
+						Util.getRandom().nextBoolean(),
+						Util.getRandom().nextInt(30) + 20,
+						1,
+						7,
+						3,
+						YellowBrickTile.class,
+						YellowBrickTile.class
+					);
+				}
+			}
+		).stem(
+			this,
+			Stairs.class,
+			new Function<StairsCreationCustomization>() {
+				@Override
+				public StairsCreationCustomization call() {
+					return new StairsCreationCustomization(
+						Util.getRandom().nextBoolean(),
+						Util.getRandom().nextBoolean(),
+						true,
+						Util.getRandom().nextInt(30) + 20,
+						1,
+						7,
+						3,
+						YellowBrickTile.class,
+						YellowBrickTile.class
+					);
+				}
+			}
+		).stem(
+			this,
+			Corridor.class,
+			new Function<CorridorCreationCustomization>() {
+				@Override
+				public CorridorCreationCustomization call() {
+					return new CorridorCreationCustomization(
+						Util.getRandom().nextBoolean(),
+						3,
+						3,
+						20 + Util.getRandom().nextInt(10),
+						7,
+						YellowBrickTile.class
+					);
+				}
+			}
+		).stem(
+			this,
+			Room.class,
+			new Function<RoomCreationCustomization>() {
+				@Override
+				public RoomCreationCustomization call() {
+					return new RoomCreationCustomization(
+						Util.getRandom().nextBoolean(),
+						20 + Util.getRandom().nextInt(10),
+						20 + Util.getRandom().nextInt(10),
+						3,
+						YellowBrickTile.class
+					);
+				}
+			}
+		).stem(
+			this,
+			Stairs.class,
+			new Function<StairsCreationCustomization>() {
+				@Override
+				public StairsCreationCustomization call() {
+					return new StairsCreationCustomization(
+						Util.getRandom().nextBoolean(),
+						Util.getRandom().nextBoolean(),
+						Util.getRandom().nextBoolean(),
+						Util.getRandom().nextInt(20) + 15,
+						1,
+						7,
+						3,
+						YellowBrickTile.class,
+						YellowBrickTile.class
+					);
+				}
+			},
+			10
+		);
 	}
 
 

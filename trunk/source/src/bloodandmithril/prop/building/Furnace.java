@@ -25,8 +25,9 @@ import bloodandmithril.item.material.Fuel;
 import bloodandmithril.item.material.brick.Brick;
 import bloodandmithril.item.material.container.GlassBottle;
 import bloodandmithril.item.material.fuel.Coal;
-import bloodandmithril.item.material.metal.IronIngot;
-import bloodandmithril.item.material.metal.SteelIngot;
+import bloodandmithril.item.material.metal.Ingot;
+import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.crafting.CraftingStation;
@@ -73,8 +74,8 @@ public class Furnace extends CraftingStation implements Container {
 
 	private static final ArrayList<Item> craftables = newArrayList(
 		new GlassBottle(newHashMap()),
-		new IronIngot(),
-		new SteelIngot()
+		Ingot.ingot(Iron.class),
+		Ingot.ingot(Steel.class)
 	);
 
 	/**

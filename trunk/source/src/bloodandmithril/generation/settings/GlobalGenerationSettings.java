@@ -3,7 +3,7 @@ package bloodandmithril.generation.settings;
 public class GlobalGenerationSettings {
 
 	// General generation settings
-	public final static int maxStructureWidth = 5; // Chunks
+	public final static int maxSuperStructureChunkWidth = 5; // Chunks
 	public final static int defaultSurfaceHeight = 10; // Tiles
 	
 	// Surface settings

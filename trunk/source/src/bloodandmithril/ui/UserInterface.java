@@ -325,24 +325,24 @@ public class UserInterface {
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : Structures.getStructures().values()) {
-			for (bloodandmithril.generation.component.Component comp : newArrayList(struct.getComponents())) {
+			for (bloodandmithril.generation.component.Component component : newArrayList(struct.getComponents())) {
 				shapeRenderer.begin(FilledRectangle);
 				shapeRenderer.setColor(COMPONENT_FILL_COLOR);
 				shapeRenderer.filledRect(
-					worldToScreenX(comp.getBoundaries().left * TILE_SIZE),
-					worldToScreenY(comp.getBoundaries().bottom * TILE_SIZE),
-					(comp.getBoundaries().right - comp.getBoundaries().left + 1) * TILE_SIZE,
-					(comp.getBoundaries().top - comp.getBoundaries().bottom + 1) * TILE_SIZE
+					worldToScreenX(component.getBoundaries().left * TILE_SIZE),
+					worldToScreenY(component.getBoundaries().bottom * TILE_SIZE),
+					(component.getBoundaries().right - component.getBoundaries().left + 1) * TILE_SIZE,
+					(component.getBoundaries().top - component.getBoundaries().bottom + 1) * TILE_SIZE
 				);
 				shapeRenderer.end();
 
 				shapeRenderer.begin(Rectangle);
 				shapeRenderer.setColor(COMPONENT_BOUNDARY_COLOR);
 				shapeRenderer.rect(
-					worldToScreenX(comp.getBoundaries().left * TILE_SIZE),
-					worldToScreenY(comp.getBoundaries().bottom * TILE_SIZE),
-					(comp.getBoundaries().right - comp.getBoundaries().left + 1) * TILE_SIZE,
-					(comp.getBoundaries().top - comp.getBoundaries().bottom + 1) * TILE_SIZE
+					worldToScreenX(component.getBoundaries().left * TILE_SIZE),
+					worldToScreenY(component.getBoundaries().bottom * TILE_SIZE),
+					(component.getBoundaries().right - component.getBoundaries().left + 1) * TILE_SIZE,
+					(component.getBoundaries().top - component.getBoundaries().bottom + 1) * TILE_SIZE
 				);
 				shapeRenderer.end();
 			}

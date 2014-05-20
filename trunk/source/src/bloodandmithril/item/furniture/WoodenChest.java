@@ -1,13 +1,15 @@
 package bloodandmithril.item.furniture;
 
+import static bloodandmithril.item.material.metal.Ingot.ingot;
+
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Container;
+import bloodandmithril.item.Craftable;
 import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.equipment.Craftable;
-import bloodandmithril.item.material.metal.IronIngot;
+import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.plant.Pine;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -65,7 +67,7 @@ public class WoodenChest extends Item implements Craftable {
 		Map<Item, Integer> map = Maps.newHashMap();
 
 		map.put(new Pine(), 10);
-		map.put(new IronIngot(), 2);
+		map.put(ingot(Iron.class), 2);
 
 		return map;
 	}

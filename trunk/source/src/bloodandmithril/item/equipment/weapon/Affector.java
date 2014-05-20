@@ -1,4 +1,4 @@
-package bloodandmithril.item.equipment;
+package bloodandmithril.item.equipment.weapon;
 
 import bloodandmithril.character.Individual;
 

@@ -1,5 +1,8 @@
 package bloodandmithril.server;
 
+import static bloodandmithril.item.equipment.weapon.Broadsword.broadSword;
+import static bloodandmithril.item.equipment.weapon.ButterflySword.butterflySword;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +27,6 @@ import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.equipment.Broadsword;
-import bloodandmithril.item.equipment.ButterflySword;
 import bloodandmithril.item.material.animal.ChickenLeg;
 import bloodandmithril.item.material.brick.Brick;
 import bloodandmithril.item.material.container.WoodenBucket;
@@ -33,7 +34,9 @@ import bloodandmithril.item.material.fuel.Coal;
 import bloodandmithril.item.material.liquid.Blood;
 import bloodandmithril.item.material.liquid.Liquid;
 import bloodandmithril.item.material.liquid.Water;
-import bloodandmithril.item.material.metal.SteelIngot;
+import bloodandmithril.item.material.metal.Ingot;
+import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.plant.Carrot;
 import bloodandmithril.item.material.plant.DeathCap;
 import bloodandmithril.item.misc.Currency;
@@ -381,7 +384,7 @@ public class BloodAndMithrilServer {
 					elf.giveItem(new Carrot());
 				}
 				for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-					elf.giveItem(new SteelIngot());
+					elf.giveItem(Ingot.ingot(Steel.class));
 				}
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 					elf.giveItem(new Coal());
@@ -403,8 +406,8 @@ public class BloodAndMithrilServer {
 				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 					elf.giveItem(new Brick());
 				}
-				elf.giveItem(new ButterflySword(100));
-				elf.giveItem(new Broadsword(100));
+				elf.giveItem(butterflySword(100, Steel.class));
+				elf.giveItem(broadSword(100, Iron.class));
 
 				Domain.getIndividuals().put(elf.getId().getId(), elf);
 			}

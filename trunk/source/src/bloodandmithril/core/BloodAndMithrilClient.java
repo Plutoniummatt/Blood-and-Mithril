@@ -65,6 +65,7 @@ import com.google.common.collect.Sets;
  *
  * DONE
  *
+ * <b><p> Dynamic tile-driven lighting                                      							 </b></p>
  * <b><p> Crafting                                              										 </b></p>
  * <b><p> Networking                                                                                     </b></p>
  * <b><p> Text input (Renaming elves, setting save path etc)                                             </b></p>

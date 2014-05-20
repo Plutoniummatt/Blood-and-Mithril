@@ -38,7 +38,7 @@ import bloodandmithril.item.Container;
 import bloodandmithril.item.Equipper;
 import bloodandmithril.item.EquipperImpl;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.equipment.OneHandedWeapon;
+import bloodandmithril.item.equipment.weapon.OneHandedWeapon;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;

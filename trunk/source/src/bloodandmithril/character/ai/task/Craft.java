@@ -4,8 +4,8 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.item.Craftable;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.equipment.Craftable;
 import bloodandmithril.prop.crafting.CraftingStation;
 import bloodandmithril.world.Domain;
 

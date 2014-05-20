@@ -1,6 +1,6 @@
 package bloodandmithril.generation;
 
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxStructureWidth;
+import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSuperStructureChunkWidth;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSurfaceHeight;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.superstructure.Caves;
@@ -37,7 +37,7 @@ public class TerrainGenerator {
 
 		// Populate the tile arrays.
 		populateTileArrays(chunkX, chunkY, fTiles, bTiles, world.getTopography().getStructures());
-		
+
 		// If the structure has finished generating, we can delete it from the StructureMap, otherwise, decrement the number of chunks left to be generated on the structure
 		if (world.getTopography().getStructures().structureExists(chunkX, chunkY, true)) {
 			world.getTopography().getStructures().deleteChunkFromStructureKeyMapAndCheckIfStructureCanBeDeleted(chunkX, chunkY, true);
@@ -85,9 +85,9 @@ public class TerrainGenerator {
 
 
 	/** Handles the generation of surface structures */
-	private void generateSurface(int x, World world) {
-		for (int tempX = x - maxStructureWidth; tempX <= x	+ maxStructureWidth; tempX++) {
-			boolean generatingToRight = tempX >= x;
+	private void generateSurface(int chunkX, World world) {
+		for (int tempX = chunkX - maxSuperStructureChunkWidth; tempX <= chunkX + maxSuperStructureChunkWidth; tempX++) {
+			boolean generatingToRight = tempX >= chunkX;
 
 			if (!world.getTopography().getStructures().structureExists(tempX, maxSurfaceHeight, true) && !world.getTopography().getChunkMap().doesChunkExist(tempX, maxSurfaceHeight)) {
 				biomeDecider.decideAndGetBiome(world).generate(tempX, maxSurfaceHeight, generatingToRight);

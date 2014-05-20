@@ -3,8 +3,8 @@ package bloodandmithril.item;
 
 import bloodandmithril.item.Equipper.EquipmentSlot;
 import bloodandmithril.item.affix.Affixed;
-import bloodandmithril.item.equipment.Broadsword;
-import bloodandmithril.item.equipment.ButterflySword;
+import bloodandmithril.item.equipment.weapon.Broadsword;
+import bloodandmithril.item.equipment.weapon.ButterflySword;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

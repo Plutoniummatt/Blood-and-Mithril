@@ -18,7 +18,7 @@ import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.affix.MinorAffix;
 import bloodandmithril.item.affix.PostAffix;
 import bloodandmithril.item.affix.PreAffix;
-import bloodandmithril.item.material.metal.IronIngot;
+import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -69,6 +69,16 @@ public abstract class Item implements Serializable, Affixed {
 
 	/** Rotating when in world */
 	private float angle, angularVelocity = (Util.getRandom().nextFloat() - 0.5f) * 40f;
+
+	/**
+	 * Constructor
+	 */
+	protected Item(float mass, boolean equippable) {
+		this.mass = mass;
+		this.equippable = equippable;
+
+		this.angle = rotates() ? Util.getRandom().nextFloat() * 360f : 0f;
+	}
 
 	/**
 	 * Constructor
@@ -169,7 +179,7 @@ public abstract class Item implements Serializable, Affixed {
 		item.angularVelocity = angularVelocity;
 		item.equippable = equippable;
 		item.mass = mass;
-		item.value = value;
+		item.setValue(value);
 		item.minorAffixes = newArrayList(minorAffixes);
 
 		return item;
@@ -233,7 +243,7 @@ public abstract class Item implements Serializable, Affixed {
 	 * Loads the textures
 	 */
 	public static void setup() {
-		IronIngot.IRONINGOT = new TextureRegion(Domain.gameWorldTexture, 372, 246, 18, 6);
+		Iron.IRONINGOT = new TextureRegion(Domain.gameWorldTexture, 372, 246, 18, 6);
 	}
 
 
@@ -409,6 +419,10 @@ public abstract class Item implements Serializable, Affixed {
 
 	public long getValue() {
 		return value;
+	}
+
+	protected void setValue(long value) {
+		this.value = value;
 	}
 
 	public boolean isEquippable() {

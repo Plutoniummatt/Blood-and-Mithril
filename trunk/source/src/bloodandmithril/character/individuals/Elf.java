@@ -13,7 +13,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Equipable;
 import bloodandmithril.item.Item;
-import bloodandmithril.item.equipment.OneHandedWeapon;
+import bloodandmithril.item.equipment.weapon.OneHandedWeapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
