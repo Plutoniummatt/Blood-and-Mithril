@@ -16,6 +16,8 @@ public class Carrot extends Item implements Consumable {
 	private static final long serialVersionUID = 3714624810622084079L;
 	public static final String description = "The carrot is a root vegetable, usually orange in color. It has a crisp texture when fresh.";
 
+	public static TextureRegion CARROT;
+	
 	/**
 	 * Constructor
 	 */
@@ -60,7 +62,7 @@ public class Carrot extends Item implements Consumable {
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return null;
+		return CARROT;
 	}
 
 

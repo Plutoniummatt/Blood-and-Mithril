@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Coal extends Item implements Fuel {
 	private static final long serialVersionUID = 6399640412435082388L;
 
+	public static TextureRegion COAL;
+
 	/**
 	 * Constructor
 	 */
@@ -55,7 +57,7 @@ public class Coal extends Item implements Fuel {
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return null;
+		return COAL;
 	}
 
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Deque;
 import java.util.List;
 
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
@@ -217,6 +218,9 @@ public class MainMenuWindow extends Window {
 	private void connected() {
 		UserInterface.buttons.remove("connect");
 		UserInterface.setup();
+
+		SoundService.changeMusic(6f, SoundService.gameMusic1);
+		SoundService.setVolumne(0.3f);
 
 		for (Component component : UserInterface.layeredComponents) {
 			if (component instanceof Window && ((Window) component).title.equals("Connecting") ||
