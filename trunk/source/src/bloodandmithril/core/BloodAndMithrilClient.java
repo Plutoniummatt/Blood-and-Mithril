@@ -134,7 +134,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		Gdx.input.setInputProcessor(this);
 
-		SoundService.changeMusic(2f, SoundService.music1);
+		SoundService.changeMusic(2f, SoundService.mainMenu);
 
 		clientCSIThread = Executors.newCachedThreadPool();
 
