@@ -7,7 +7,7 @@ import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.material.metal.Ingot;
+import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;

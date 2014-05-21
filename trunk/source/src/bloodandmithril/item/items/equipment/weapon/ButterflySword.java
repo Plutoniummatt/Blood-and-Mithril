@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon;
 
-import static bloodandmithril.item.material.metal.Ingot.ingot;
+import static bloodandmithril.item.items.material.Ingot.ingot;
 
 import java.util.Map;
 

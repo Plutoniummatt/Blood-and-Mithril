@@ -34,7 +34,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.util.datastructure.DoubleWrapper;
+import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -48,7 +48,7 @@ import com.badlogic.gdx.graphics.Color;
 public class CraftingStationWindow extends Window implements Refreshable {
 
 	private final Individual individual;
-	private DoubleWrapper<Item, Integer> currentlySelectedToCraft;
+	private SerializableDoubleWrapper<Item, Integer> currentlySelectedToCraft;
 	protected final CraftingStation craftingStation;
 	protected boolean enoughMaterials;
 
@@ -72,7 +72,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		this.craftingStation = craftingStation;
 
 		Entry<Item, Integer> next = craftingStation.getCraftables().entrySet().iterator().next();
-		this.currentlySelectedToCraft = craftingStation.getCurrentlyBeingCrafted() == null ? new DoubleWrapper<Item, Integer>(next.getKey(), next.getValue()) : craftingStation.getCurrentlyBeingCrafted();
+		this.currentlySelectedToCraft = craftingStation.getCurrentlyBeingCrafted() == null ? new SerializableDoubleWrapper<Item, Integer>(next.getKey(), next.getValue()) : craftingStation.getCurrentlyBeingCrafted();
 
 		this.craftablesListing = new ScrollableListingPanel<Item, String>(this, sortingComparator) {
 			@Override
@@ -234,7 +234,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 						itemName.length() * 10,
 						16,
 						() -> {
-							currentlySelectedToCraft = new DoubleWrapper<>(item.getKey(), item.getValue());
+							currentlySelectedToCraft = new SerializableDoubleWrapper<>(item.getKey(), item.getValue());
 							craftablesListing.getListing().clear();
 							craftablesListing.getListing().add(constructCraftablesListing());
 							requiredMaterialsListing.getRequiredMaterials().clear();

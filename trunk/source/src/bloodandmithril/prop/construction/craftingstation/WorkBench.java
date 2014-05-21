@@ -1,6 +1,6 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.item.material.wood.Plank.plank;
+import static bloodandmithril.item.items.material.Plank.plank;
 
 import java.util.Map;
 

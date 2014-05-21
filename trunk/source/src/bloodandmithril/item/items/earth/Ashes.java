@@ -1,47 +1,43 @@
-package bloodandmithril.item.material.earth;
+package bloodandmithril.item.items.earth;
 
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-/**
- * Clay
- *
- * @author Matt
- */
-public class Clay extends Item {
-	private static final long serialVersionUID = 883456114549112166L;
+public class Ashes extends Item {
+	private static final long serialVersionUID = 988154990456038686L;
+	public static final String description = "The residue of combustion, mostly consisting of metal oxides.";
 
 	/**
 	 * Constructor
 	 */
-	public Clay() {
-		super(0.5f, false, ItemValues.CLAY);
+	public Ashes() {
+		super(0.2f, false, ItemValues.ASHES);
 	}
 
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return (firstCap ? "C" : "c") + "lay";
+		return "Ashes";
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return (firstCap ? "C" : "c") + "lay";
+		return "Ashes";
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "Clay";
+		return description;
 	}
 
 
 	@Override
 	protected boolean internalSameAs(Item other) {
-		return other instanceof Clay;
+		return other instanceof Ashes;
 	}
 
 
@@ -53,6 +49,6 @@ public class Clay extends Item {
 
 	@Override
 	protected Item internalCopy() {
-		return new Clay();
+		return new Ashes();
 	}
 }

@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.furniture;
 
-import static bloodandmithril.item.material.metal.Ingot.ingot;
+import static bloodandmithril.item.items.material.Ingot.ingot;
 
 import java.util.Map;
 
@@ -9,9 +9,9 @@ import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
+import bloodandmithril.item.items.material.Plank;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Iron;
-import bloodandmithril.item.material.wood.Plank;
 import bloodandmithril.item.material.wood.Wood;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

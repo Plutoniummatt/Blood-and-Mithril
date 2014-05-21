@@ -2,7 +2,7 @@ package bloodandmithril.prop.construction.craftingstation;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.csi.ClientServerInterface.isClient;
-import static bloodandmithril.item.material.metal.Ingot.ingot;
+import static bloodandmithril.item.items.material.Ingot.ingot;
 import static bloodandmithril.ui.UserInterface.refreshRefreshableWindows;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -22,11 +22,12 @@ import bloodandmithril.item.items.construction.Brick;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.container.GlassBottle;
+import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.material.Material;
+import bloodandmithril.item.material.crystalline.Glass;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
-import bloodandmithril.item.material.mineral.Rock;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -74,6 +75,7 @@ public class Furnace extends CraftingStation implements Container {
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
 
 	static {
+		craftables.put(new Glass(), 1);
 		craftables.put(new GlassBottle(newHashMap()), 1);
 		craftables.put(ingot(Iron.class), 1);
 		craftables.put(ingot(Steel.class), 1);

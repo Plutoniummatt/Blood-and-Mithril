@@ -24,7 +24,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.CraftingStationWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.util.datastructure.DoubleWrapper;
+import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
@@ -41,7 +41,7 @@ public abstract class CraftingStation extends Construction {
 	private static final long serialVersionUID = 2177296386331588828L;
 
 	private float craftingProgress;
-	private DoubleWrapper<Item, Integer> currentlyBeingCrafted;
+	private SerializableDoubleWrapper<Item, Integer> currentlyBeingCrafted;
 	private Integer occupiedBy;
 	private boolean finished;
 
@@ -186,12 +186,12 @@ public abstract class CraftingStation extends Construction {
 	}
 
 
-	public DoubleWrapper<Item, Integer> getCurrentlyBeingCrafted() {
+	public SerializableDoubleWrapper<Item, Integer> getCurrentlyBeingCrafted() {
 		return currentlyBeingCrafted;
 	}
 
 
-	public void setCurrentlyBeingCrafted(DoubleWrapper<Item, Integer> currentlyBeingCrafted) {
+	public void setCurrentlyBeingCrafted(SerializableDoubleWrapper<Item, Integer> currentlyBeingCrafted) {
 		this.currentlyBeingCrafted = currentlyBeingCrafted;
 	}
 
@@ -201,7 +201,7 @@ public abstract class CraftingStation extends Construction {
 	 *
 	 * @return whether or not the crafting task should continue.
 	 */
-	public synchronized boolean craft(DoubleWrapper<Item, Integer> item, Individual individual, float aiTaskDelay) {
+	public synchronized boolean craft(SerializableDoubleWrapper<Item, Integer> item, Individual individual, float aiTaskDelay) {
 		if (!customCanCraft()) {
 			return false;
 		}

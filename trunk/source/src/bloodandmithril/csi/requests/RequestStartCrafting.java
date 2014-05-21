@@ -6,20 +6,20 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
-import bloodandmithril.util.datastructure.DoubleWrapper;
+import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 import bloodandmithril.world.Domain;
 
 public class RequestStartCrafting implements Request {
 
 	private final int individualId;
 	private final int craftingStationId;
-	private final DoubleWrapper<Item, Integer> item;
+	private final SerializableDoubleWrapper<Item, Integer> item;
 	private final int quantity;
 
 	/**
 	 * Constructor
 	 */
-	public RequestStartCrafting(Individual host, CraftingStation craftingStation, DoubleWrapper<Item, Integer> item, int quantity) {
+	public RequestStartCrafting(Individual host, CraftingStation craftingStation, SerializableDoubleWrapper<Item, Integer> item, int quantity) {
 		this.quantity = quantity;
 		this.individualId = host.getId().getId();
 		this.craftingStationId = craftingStation.id;

@@ -1,7 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.soil;
 
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.material.earth.Dirt;
+import bloodandmithril.item.items.earth.Dirt;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
 public class StandardSoilTile extends SoilTile {

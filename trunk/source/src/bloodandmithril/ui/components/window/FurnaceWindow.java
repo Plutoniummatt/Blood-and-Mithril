@@ -13,8 +13,10 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.earth.Ashes;
+import bloodandmithril.item.items.material.Rock;
+import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.mineral.Coal;
-import bloodandmithril.item.material.mineral.Rock;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -77,7 +79,7 @@ public class FurnaceWindow extends TradeWindow {
 		if (furnace.isBurning()) {
 			for (HashMap<ListingMenuItem<Item>, Integer> hashMap : proposeePanel.getListing()) {
 				for (Entry<ListingMenuItem<Item>, Integer> entry : hashMap.entrySet()) {
-					if (entry.getKey().t instanceof Fuel) {
+					if (entry.getKey().t instanceof Rock && ((Rock)entry.getKey().t).getMineral().equals(Coal.class)) {
 						entry.getKey().button.setDownColor(Color.GREEN);
 						entry.getKey().button.setOverColor(Color.GREEN);
 						entry.getKey().button.setIdleColor(Color.GREEN);
@@ -106,7 +108,7 @@ public class FurnaceWindow extends TradeWindow {
 	 */
 	@Override
 	protected boolean isItemAvailableToTrade(Item item) {
-		return item instanceof Rock && ((Rock)item).getMineral().equals(Coal.class); // by default
+		return item instanceof Rock && ((Rock)item).getMineral().equals(Coal.class) || item instanceof Ashes;
 	}
 
 
@@ -119,8 +121,8 @@ public class FurnaceWindow extends TradeWindow {
 		int maxWidth = width / 2 + 5;
 
 		float max = (float) furnace.getInventory().entrySet().stream().mapToDouble(entry -> {
-			if (entry.getKey() instanceof Fuel) {
-				return ((Fuel)entry.getKey()).getCombustionDuration() * entry.getValue();
+			if (entry.getKey() instanceof Rock && ((Rock)entry.getKey()).getMineral().equals(Coal.class)) {
+				return Material.getMaterial(Coal.class).getCombustionDuration() * entry.getValue();
 			} else {
 				return 0D;
 			}
@@ -169,8 +171,8 @@ public class FurnaceWindow extends TradeWindow {
 		float finalDuration = 0f;
 		for (Entry<Item, Integer> entry : proposee.getInventory().entrySet()) {
 			Item item = entry.getKey();
-			if (item instanceof Fuel) {
-				finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue();
+			if (item instanceof Rock && ((Rock)item).getMineral().equals(Coal.class)) {
+				finalDuration = finalDuration + Material.getMaterial(Coal.class).getCombustionDuration() * entry.getValue();
 			}
 		}
 

@@ -3,6 +3,7 @@ package bloodandmithril.item.material.metal;
 import java.util.Map;
 
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
