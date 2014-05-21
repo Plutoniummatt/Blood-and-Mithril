@@ -57,9 +57,10 @@ public class ButterflySword<T extends Metal> extends OneHandedWeapon<T> implemen
 
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected boolean internalSameAs(Item other) {
 		if (other instanceof ButterflySword) {
-			return true;
+			return getMaterial().equals(((ButterflySword<T>) other).getMaterial());
 		} else {
 			return false;
 		}

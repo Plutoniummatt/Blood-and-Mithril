@@ -70,7 +70,7 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";
 		}
 
-		return Material.getMaterial(wood).getName() + " bucket" + content;
+		return Material.getMaterial(wood).getName() + " Bucket" + content;
 	}
 
 
@@ -81,7 +81,7 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 			content = " of " + getTitle(containedLiquids, getTotalAmount()) + " (" + String.format("%.2f", getTotalAmount()) + "/" + String.format("%.2f", maxAmount) + ")";
 		}
 
-		return Material.getMaterial(wood).getName() + " buckets" + content;
+		return Material.getMaterial(wood).getName() + " Buckets" + content;
 	}
 
 
