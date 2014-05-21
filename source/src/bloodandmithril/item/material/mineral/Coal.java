@@ -5,7 +5,7 @@ import java.util.Map;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.material.earth.Ashes;
+import bloodandmithril.item.items.earth.Ashes;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

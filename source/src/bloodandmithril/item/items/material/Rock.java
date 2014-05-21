@@ -1,7 +1,8 @@
-package bloodandmithril.item.material.mineral;
+package bloodandmithril.item.items.material;
 
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
+import bloodandmithril.item.material.mineral.Mineral;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

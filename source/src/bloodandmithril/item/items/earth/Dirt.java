@@ -1,4 +1,4 @@
-package bloodandmithril.item.material.earth;
+package bloodandmithril.item.items.earth;
 
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;

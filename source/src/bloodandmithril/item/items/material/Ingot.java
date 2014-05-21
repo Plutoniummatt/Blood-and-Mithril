@@ -1,4 +1,4 @@
-package bloodandmithril.item.material.metal;
+package bloodandmithril.item.items.material;
 
 import java.util.Map;
 
@@ -6,6 +6,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
+import bloodandmithril.item.material.metal.Metal;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

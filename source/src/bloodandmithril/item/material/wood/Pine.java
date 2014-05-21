@@ -5,6 +5,7 @@ import java.util.Map;
 
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.material.Log;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;

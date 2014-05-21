@@ -130,6 +130,9 @@ import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.container.GlassBottle;
 import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.items.container.WoodenBucket;
+import bloodandmithril.item.items.earth.Ashes;
+import bloodandmithril.item.items.earth.Dirt;
+import bloodandmithril.item.items.earth.Sand;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.items.equipment.EquipperImpl;
@@ -137,6 +140,9 @@ import bloodandmithril.item.items.equipment.weapon.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.ButterflySword;
 import bloodandmithril.item.items.equipment.weapon.OneHandedWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
+import bloodandmithril.item.items.material.Ingot;
+import bloodandmithril.item.items.material.Rock;
+import bloodandmithril.item.items.material.Slab;
 import bloodandmithril.item.items.plant.Carrot;
 import bloodandmithril.item.items.plant.DeathCap;
 import bloodandmithril.item.liquid.Acid;
@@ -146,19 +152,12 @@ import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Milk;
 import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.crystalline.Glass;
-import bloodandmithril.item.material.earth.Ashes;
-import bloodandmithril.item.material.earth.Clay;
-import bloodandmithril.item.material.earth.Dirt;
-import bloodandmithril.item.material.earth.Sand;
-import bloodandmithril.item.material.metal.Ingot;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.mineral.Mineral;
-import bloodandmithril.item.material.mineral.Rock;
-import bloodandmithril.item.material.mineral.Slab;
 import bloodandmithril.item.misc.Currency;
 import bloodandmithril.item.misc.Key;
 import bloodandmithril.item.misc.SkeletonKey;
@@ -177,8 +176,8 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.ConcurrentDualKeySkipListMap;
-import bloodandmithril.util.datastructure.DoubleWrapper;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
+import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.Epoch;
@@ -389,7 +388,6 @@ public class ClientServerInterface {
 		kryo.register(RequestTakeItem.class);
 		kryo.register(SynchronizeItems.class);
 		kryo.register(Glass.class);
-		kryo.register(Clay.class);
 		kryo.register(Dirt.class);
 		kryo.register(bloodandmithril.item.items.furniture.WoodenChest.class);
 		kryo.register(WorkBench.class);
@@ -616,7 +614,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void sendStartCraftingRequest(Individual individual, CraftingStation craftingStation, DoubleWrapper<Item, Integer> item, int quantity) {
+		public static synchronized void sendStartCraftingRequest(Individual individual, CraftingStation craftingStation, SerializableDoubleWrapper<Item, Integer> item, int quantity) {
 			client.sendTCP(new RequestStartCrafting(individual, craftingStation, item, quantity));
 			Logger.networkDebug("Sending start crafting item request", LogLevel.DEBUG);
 		}

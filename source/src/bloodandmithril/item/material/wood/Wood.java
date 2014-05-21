@@ -3,6 +3,8 @@ package bloodandmithril.item.material.wood;
 import java.util.Map;
 
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.material.Log;
+import bloodandmithril.item.items.material.Plank;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

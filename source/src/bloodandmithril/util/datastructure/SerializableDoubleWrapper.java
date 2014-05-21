@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author Matt
  */
-public class DoubleWrapper<T extends Serializable, S extends Serializable> implements Serializable {
+public class SerializableDoubleWrapper<T extends Serializable, S extends Serializable> implements Serializable {
 	private static final long serialVersionUID = -3051706517345260879L;
 
 	/** Wrappee? */
@@ -17,7 +17,7 @@ public class DoubleWrapper<T extends Serializable, S extends Serializable> imple
 	/**
 	 * Constructor
 	 */
-	public DoubleWrapper(T t, S s) {
+	public SerializableDoubleWrapper(T t, S s) {
 		this.t = t;
 		this.s = s;
 	}
