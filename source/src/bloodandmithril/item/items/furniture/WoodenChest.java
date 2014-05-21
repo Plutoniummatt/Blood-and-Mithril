@@ -39,13 +39,13 @@ public class WoodenChest extends Item implements Craftable {
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return Material.getMaterial(wood).getName() + " chest";
+		return Material.getMaterial(wood).getName() + " Chest";
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return Material.getMaterial(wood).getName() + " chests";
+		return Material.getMaterial(wood).getName() + " Chests";
 	}
 
 

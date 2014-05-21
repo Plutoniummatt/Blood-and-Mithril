@@ -56,9 +56,10 @@ public class Broadsword<T extends Metal> extends OneHandedWeapon<T> implements C
 
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected boolean internalSameAs(Item other) {
 		if (other instanceof Broadsword) {
-			return true;
+			return getMaterial().equals(((Broadsword<T>) other).getMaterial());
 		} else {
 			return false;
 		}

@@ -271,6 +271,6 @@ public class WoodenChest extends Construction implements Container {
 
 	@Override
 	public String getTitle() {
-		return "Wooden chest";
+		return "Wooden Chest";
 	}
 }
