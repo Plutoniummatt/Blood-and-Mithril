@@ -6,7 +6,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.world.Domain;
 
 import com.google.common.collect.Lists;

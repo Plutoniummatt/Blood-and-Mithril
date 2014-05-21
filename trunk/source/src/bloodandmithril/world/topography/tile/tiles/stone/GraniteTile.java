@@ -1,6 +1,6 @@
 package bloodandmithril.world.topography.tile.tiles.stone;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.world.topography.tile.tiles.StoneTile;
 
 public class GraniteTile extends StoneTile {

@@ -6,7 +6,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import bloodandmithril.character.Individual;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;

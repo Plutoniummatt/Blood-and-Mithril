@@ -4,9 +4,9 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
-import bloodandmithril.item.Container;
+import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.Construction;
+import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.world.Domain;
 
 /**

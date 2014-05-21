@@ -3,7 +3,7 @@ package bloodandmithril.world.topography.tile;
 import java.io.Serializable;
 
 import bloodandmithril.character.ai.task.MineTile;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.datastructure.BinaryTree;
 import bloodandmithril.world.topography.ChunkMap;

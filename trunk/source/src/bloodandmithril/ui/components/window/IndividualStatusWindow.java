@@ -84,7 +84,7 @@ public class IndividualStatusWindow extends Window {
 	@Override
 	protected void internalWindowRender() {
 		Color activeTitle = Colors.modulateAlpha(Color.GREEN, getAlpha());
-		Color inactiveTitle = Colors.modulateAlpha(Colors.UI_DARK_GREEN, getAlpha());
+		Color inactiveTitle = Colors.modulateAlpha(Color.GREEN, getAlpha());
 		Color activeWhite = Colors.modulateAlpha(Color.WHITE, getAlpha());
 		Color inactiveWhite = Colors.modulateAlpha(Color.WHITE, 0.6f * getAlpha());
 

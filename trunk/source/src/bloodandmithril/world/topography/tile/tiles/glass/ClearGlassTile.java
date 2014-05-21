@@ -1,6 +1,6 @@
 package bloodandmithril.world.topography.tile.tiles.glass;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.crystalline.Glass;
 import bloodandmithril.world.topography.tile.tiles.GlassTile;
 

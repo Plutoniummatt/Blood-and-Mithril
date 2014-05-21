@@ -1,7 +1,7 @@
 package bloodandmithril.prop;
 
 import static bloodandmithril.world.Domain.Depth.FOREGOUND;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 
 /**
  * Interface for harvesting

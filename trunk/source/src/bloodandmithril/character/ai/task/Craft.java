@@ -5,8 +5,9 @@ import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.item.Craftable;
-import bloodandmithril.item.Item;
-import bloodandmithril.prop.crafting.CraftingStation;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.prop.construction.craftingstation.CraftingStation;
+import bloodandmithril.util.datastructure.DoubleWrapper;
 import bloodandmithril.world.Domain;
 
 /**
@@ -16,7 +17,7 @@ import bloodandmithril.world.Domain;
  */
 public class Craft extends CompositeAITask {
 	private static final long serialVersionUID = 4625886192088540454L;
-	private Item item;
+	private DoubleWrapper<Item, Integer> item;
 	private int quantity;
 	private int craftingStationId;
 	private boolean bulk;
@@ -24,7 +25,7 @@ public class Craft extends CompositeAITask {
 	/**
 	 * Constructor
 	 */
-	public Craft(Individual host, CraftingStation craftingStation, Item item, int quantity) {
+	public Craft(Individual host, CraftingStation craftingStation, DoubleWrapper<Item, Integer> item, int quantity) {
 		super(
 			host.getId(),
 			"Crafting",

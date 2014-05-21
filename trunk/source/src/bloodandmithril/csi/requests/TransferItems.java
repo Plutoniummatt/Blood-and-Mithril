@@ -7,9 +7,9 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.item.Container;
-import bloodandmithril.item.Item;
 import bloodandmithril.item.TradeService;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 

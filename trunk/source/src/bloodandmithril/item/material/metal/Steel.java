@@ -4,13 +4,15 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
-import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
-import bloodandmithril.item.fuel.Coal;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.material.mineral.Coal;
+import bloodandmithril.item.material.mineral.Rock;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Steel extends Metal {
+	private static final long serialVersionUID = 5907951500410886363L;
 
 	public static TextureRegion STEELINGOT;
 
@@ -36,7 +38,7 @@ public class Steel extends Metal {
 	public Map<Item, Integer> getRequiredMaterialsToCraftIngot() {
 		Map<Item, Integer> map = newHashMap();
 		map.put(Ingot.ingot(Iron.class), 1);
-		map.put(new Coal(), 1);
+		map.put(Rock.rock(Coal.class), 1);
 		return map;
 	}
 

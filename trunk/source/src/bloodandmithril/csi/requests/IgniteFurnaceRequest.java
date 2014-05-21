@@ -4,10 +4,10 @@ import java.util.Map.Entry;
 
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.item.Item;
-import bloodandmithril.item.fuel.Fuel;
+import bloodandmithril.item.Fuel;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.Furnace;
+import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.world.Domain;
 
 public class IgniteFurnaceRequest implements Request {

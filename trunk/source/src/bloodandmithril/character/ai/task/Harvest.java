@@ -6,7 +6,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;

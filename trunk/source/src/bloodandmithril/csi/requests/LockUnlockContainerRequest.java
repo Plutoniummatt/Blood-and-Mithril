@@ -4,7 +4,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.item.Container;
+import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 

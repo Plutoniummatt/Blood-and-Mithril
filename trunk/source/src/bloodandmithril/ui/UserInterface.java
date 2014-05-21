@@ -52,7 +52,7 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.Interface;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Prop;

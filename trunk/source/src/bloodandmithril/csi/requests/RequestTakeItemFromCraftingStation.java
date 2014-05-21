@@ -4,7 +4,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
-import bloodandmithril.prop.crafting.CraftingStation;
+import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.world.Domain;
 
 /**

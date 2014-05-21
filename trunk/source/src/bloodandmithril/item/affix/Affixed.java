@@ -2,7 +2,7 @@ package bloodandmithril.item.affix;
 
 import java.util.List;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 
 /**
  * Interface to indicate that an {@link Item} is affixed

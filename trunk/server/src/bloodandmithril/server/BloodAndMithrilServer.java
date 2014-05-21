@@ -1,7 +1,7 @@
 package bloodandmithril.server;
 
-import static bloodandmithril.item.equipment.weapon.Broadsword.broadSword;
-import static bloodandmithril.item.equipment.weapon.ButterflySword.butterflySword;
+import static bloodandmithril.item.items.equipment.weapon.Broadsword.broadSword;
+import static bloodandmithril.item.items.equipment.weapon.ButterflySword.butterflySword;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,25 +26,27 @@ import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.Light;
-import bloodandmithril.item.Item;
-import bloodandmithril.item.animal.ChickenLeg;
-import bloodandmithril.item.construction.Brick;
-import bloodandmithril.item.container.WoodenBucket;
-import bloodandmithril.item.fuel.Coal;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.animal.ChickenLeg;
+import bloodandmithril.item.items.construction.Brick;
+import bloodandmithril.item.items.container.WoodenBucket;
+import bloodandmithril.item.items.plant.Carrot;
+import bloodandmithril.item.items.plant.DeathCap;
 import bloodandmithril.item.liquid.Blood;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.metal.Ingot;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
+import bloodandmithril.item.material.mineral.Coal;
+import bloodandmithril.item.material.mineral.Rock;
+import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.item.misc.Currency;
-import bloodandmithril.item.plant.Carrot;
-import bloodandmithril.item.plant.DeathCap;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.prop.crafting.Anvil;
+import bloodandmithril.prop.construction.craftingstation.Anvil;
+import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -301,7 +303,8 @@ public class BloodAndMithrilServer {
 							public Boolean apply(Item t) {
 								return true;
 							}
-						}
+						},
+						Pine.class
 					);
 					Domain.getProps().put(pineChest.id, pineChest);
 				}
@@ -387,7 +390,7 @@ public class BloodAndMithrilServer {
 					elf.giveItem(Ingot.ingot(Steel.class));
 				}
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-					elf.giveItem(new Coal());
+					elf.giveItem(Rock.rock(Coal.class));
 				}
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 					elf.giveItem(new DeathCap(false));
@@ -398,7 +401,7 @@ public class BloodAndMithrilServer {
 				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 					Map<Class<? extends Liquid>, Float> liquids = new HashMap<>();
 					liquids.put(Blood.class, 16f);
-					elf.giveItem(new WoodenBucket(liquids));
+					elf.giveItem(new WoodenBucket(liquids, Pine.class));
 				}
 				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 					elf.giveItem(new Currency());

@@ -12,7 +12,7 @@ import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.RefreshWindows;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;

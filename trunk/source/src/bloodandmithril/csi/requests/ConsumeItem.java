@@ -5,7 +5,7 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.item.Consumable;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.world.Domain;
 
 /**

@@ -2,7 +2,7 @@ package bloodandmithril.item.material.metal;
 
 import java.util.Map;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Matt
  */
 public abstract class Metal extends Material {
+	private static final long serialVersionUID = 8576471967416805489L;
 
 	public static void metals(Map<Class<? extends Material>, Material> materials) {
 		materials.put(Iron.class, new Iron());

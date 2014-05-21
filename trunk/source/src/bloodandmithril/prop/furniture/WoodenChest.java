@@ -11,11 +11,13 @@ import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.item.Container;
-import bloodandmithril.item.ContainerImpl;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.container.Container;
+import bloodandmithril.item.items.container.ContainerImpl;
+import bloodandmithril.item.material.Material;
+import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.building.Construction;
+import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -31,7 +33,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class WoodenChest extends Construction implements Container {
 	private static final long serialVersionUID = -8935044324226731703L;
-	public static final String description = "A chest constructed mostly from wood, used to store items";
+
+	private Class<? extends Wood> wood;
 
 	/** {@link TextureRegion} of the {@link WoodenChest} */
 	public static TextureRegion woodenChest;
@@ -42,8 +45,9 @@ public class WoodenChest extends Construction implements Container {
 	/**
 	 * Constructor
 	 */
-	public WoodenChest(float x, float y, boolean grounded, float capacity) {
+	public WoodenChest(float x, float y, boolean grounded, float capacity, Class<? extends Wood> wood) {
 		super(x, y, 44, 35, grounded, 0f);
+		this.wood = wood;
 		container = new ContainerImpl(capacity, true);
 		setConstructionProgress(1f);
 	}
@@ -52,10 +56,16 @@ public class WoodenChest extends Construction implements Container {
 	/**
 	 * Constructor for lockable {@link WoodenChest}
 	 */
-	public WoodenChest(float x, float y, boolean grounded, float capacity, boolean locked, Function<Item, Boolean> unlockingFunction) {
+	public WoodenChest(float x, float y, boolean grounded, float capacity, boolean locked, Function<Item, Boolean> unlockingFunction, Class<? extends Wood> wood) {
 		super(x, y, 44, 35, grounded, 0.1f);
+		this.wood = wood;
 		container = new ContainerImpl(capacity, true, locked, unlockingFunction);
 		setConstructionProgress(1f);
+	}
+
+
+	public String description() {
+		return "A chest constructed mostly from wood, used to store items, this one is made from " + Material.getMaterial(wood).getName() + ".";
 	}
 
 
@@ -69,7 +79,7 @@ public class WoodenChest extends Construction implements Container {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new MessageWindow(
-							description,
+							description(),
 							Color.ORANGE,
 							BloodAndMithrilClient.WIDTH/2 - 250,
 							BloodAndMithrilClient.HEIGHT/2 + 125,

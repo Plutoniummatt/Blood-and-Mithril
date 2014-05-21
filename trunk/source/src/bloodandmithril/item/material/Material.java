@@ -1,9 +1,11 @@
 package bloodandmithril.item.material;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.item.material.mineral.Mineral;
+import bloodandmithril.item.material.wood.Wood;
 
 import com.google.common.collect.Maps;
 
@@ -12,7 +14,8 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
-public abstract class Material {
+public abstract class Material implements Serializable {
+	private static final long serialVersionUID = 5771671188230385115L;
 
 	/**
 	 * Map from a class of material to a singleton instance of that material
@@ -22,6 +25,7 @@ public abstract class Material {
 	static {
 		Metal.metals(materials);
 		Mineral.minerals(materials);
+		Wood.woods(materials);
 	}
 
 

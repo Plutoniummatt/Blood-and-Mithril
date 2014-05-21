@@ -6,8 +6,8 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import bloodandmithril.item.Container;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.container.Container;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;

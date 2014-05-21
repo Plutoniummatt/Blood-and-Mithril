@@ -2,8 +2,8 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.item.equipment.weapon.Broadsword.broadSword;
-import static bloodandmithril.item.equipment.weapon.ButterflySword.butterflySword;
+import static bloodandmithril.item.items.equipment.weapon.Broadsword.broadSword;
+import static bloodandmithril.item.items.equipment.weapon.ButterflySword.butterflySword;
 
 import java.util.Comparator;
 import java.util.Deque;
@@ -22,29 +22,30 @@ import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
-import bloodandmithril.item.Item;
-import bloodandmithril.item.animal.ChickenLeg;
-import bloodandmithril.item.construction.Brick;
-import bloodandmithril.item.container.GlassBottle;
-import bloodandmithril.item.container.WoodenBucket;
-import bloodandmithril.item.equipment.weapon.Broadsword;
-import bloodandmithril.item.equipment.weapon.ButterflySword;
-import bloodandmithril.item.fuel.Coal;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.animal.ChickenLeg;
+import bloodandmithril.item.items.construction.Brick;
+import bloodandmithril.item.items.container.GlassBottle;
+import bloodandmithril.item.items.container.WoodenBucket;
+import bloodandmithril.item.items.equipment.weapon.Broadsword;
+import bloodandmithril.item.items.equipment.weapon.ButterflySword;
+import bloodandmithril.item.items.plant.DeathCap;
 import bloodandmithril.item.liquid.Blood;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.metal.Ingot;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
+import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.mineral.Rock;
+import bloodandmithril.item.material.wood.Log;
+import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.item.misc.Currency;
-import bloodandmithril.item.plant.DeathCap;
-import bloodandmithril.item.plant.Pine;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.prop.building.Furnace;
-import bloodandmithril.prop.crafting.Anvil;
-import bloodandmithril.prop.crafting.WorkBench;
+import bloodandmithril.prop.construction.craftingstation.Anvil;
+import bloodandmithril.prop.construction.craftingstation.Furnace;
+import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -167,10 +168,10 @@ public class DevWindow extends Window {
 			elf.getSkills().setSmithing(55);
 
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(new Pine());
+				elf.giveItem(Ingot.ingot(Iron.class));
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(Ingot.ingot(Iron.class));
+				elf.giveItem(Log.log(Pine.class));
 			}
 			for (int i = 40; i > 0; i--) {
 				elf.giveItem(Ingot.ingot(Steel.class));
@@ -179,7 +180,7 @@ public class DevWindow extends Window {
 				elf.giveItem(Rock.rock(Hematite.class));
 			}
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new Coal());
+				elf.giveItem(Rock.rock(Coal.class));
 			}
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
 				elf.giveItem(new DeathCap(false));
@@ -188,7 +189,7 @@ public class DevWindow extends Window {
 				elf.giveItem(new ChickenLeg());
 			}
 			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new WoodenBucket());
+				elf.giveItem(new WoodenBucket(Pine.class));
 			}
 			for (int i = Util.getRandom().nextInt(50) + 10; i > 0; i--) {
 				Map<Class<? extends Liquid>, Float> liquids = new HashMap<>();
@@ -384,7 +385,8 @@ public class DevWindow extends Window {
 									public Boolean apply(Item item) {
 										return true;
 									}
-								}
+								},
+								Pine.class
 							);
 
 							Domain.getProps().put(pineChest.id, pineChest);

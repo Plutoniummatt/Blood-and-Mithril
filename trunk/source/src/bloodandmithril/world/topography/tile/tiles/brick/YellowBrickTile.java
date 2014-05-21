@@ -1,7 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.brick;
 
-import bloodandmithril.item.Item;
-import bloodandmithril.item.construction.Brick;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.construction.Brick;
 import bloodandmithril.world.topography.tile.tiles.BrickTile;
 
 public class YellowBrickTile extends BrickTile {
