@@ -15,6 +15,7 @@ public class Iron extends Metal {
 	private static final long serialVersionUID = -338323130439901358L;
 
 	public static TextureRegion IRONINGOT;
+	public static TextureRegion IRONINGOTICON;
 
 	/**
 	 * Package protected constructor
@@ -37,7 +38,7 @@ public class Iron extends Metal {
 	@Override
 	public Map<Item, Integer> getRequiredMaterialsToCraftIngot() {
 		Map<Item, Integer> map = newHashMap();
-		map.put(rock(Hematite.class), 1);
+		map.put(rock(Hematite.class), 2);
 		return map;
 	}
 
@@ -51,6 +52,12 @@ public class Iron extends Metal {
 	@Override
 	public TextureRegion getIngotTextureRegion() {
 		return IRONINGOT;
+	}
+
+
+	@Override
+	public TextureRegion getIngotIconTextureRegion() {
+		return IRONINGOTICON;
 	}
 
 

@@ -115,6 +115,7 @@ public class UserInterface {
 
 	/** The texture atlas for other UI elements */
 	public static final Texture uiTexture = new Texture(files.internal("data/image/ui.png"));
+	public static final Texture iconTexture = new Texture(files.internal("data/image/icons.png"));
 
 	/** Initial coordinates for the drag box, see {@link #renderDragBox()} */
 	private static Vector2 initialLeftMouseDragCoordinates = null;

@@ -18,7 +18,9 @@ import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.affix.MinorAffix;
 import bloodandmithril.item.affix.PostAffix;
 import bloodandmithril.item.affix.PreAffix;
+import bloodandmithril.item.items.container.GlassBottle;
 import bloodandmithril.item.items.plant.Carrot;
+import bloodandmithril.item.material.crystalline.Glass;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
@@ -175,6 +177,9 @@ public abstract class Item implements Serializable, Affixed {
 	/** Gets the {@link TextureRegion} of this {@link Item} */
 	protected abstract TextureRegion getTextureRegion();
 
+	/** Gets the {@link TextureRegion} for the Icon of this {@link Item} */
+	public abstract TextureRegion getIconTextureRegion();
+
 	/** Clones this {@link Item}, WARNING : ID IS NOT CLONED! */
 	public Item copy() {
 		Item item = internalCopy();
@@ -252,6 +257,11 @@ public abstract class Item implements Serializable, Affixed {
 		Hematite.HEMATITE = new TextureRegion(Domain.gameWorldTexture, 372, 253, 18, 11);
 		Coal.COAL = new TextureRegion(Domain.gameWorldTexture, 372, 265, 18, 11);
 		Carrot.CARROT = new TextureRegion(Domain.gameWorldTexture, 365, 180, 23, 13);
+
+		Iron.IRONINGOTICON = new TextureRegion(UserInterface.iconTexture, 65, 0, 64, 64);
+		Steel.STEELINGOTICON = new TextureRegion(UserInterface.iconTexture, 130, 0, 64, 64);
+		Glass.GLASSICON = new TextureRegion(UserInterface.iconTexture, 195, 0, 64, 64);
+		GlassBottle.GLASSBOTTLE = new TextureRegion(UserInterface.iconTexture, 260, 0, 64, 64);
 	}
 
 

@@ -92,6 +92,12 @@ public class Ingot extends Item implements Craftable {
 
 
 	@Override
+	public TextureRegion getIconTextureRegion() {
+		return Material.getMaterial(metal).getIngotIconTextureRegion();
+	}
+
+
+	@Override
 	protected Item internalCopy() {
 		return ingot(metal);
 	}

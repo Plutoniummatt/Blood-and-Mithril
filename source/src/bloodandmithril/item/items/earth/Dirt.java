@@ -55,4 +55,11 @@ public class Dirt extends Item {
 	protected Item internalCopy() {
 		return new Dirt();
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -59,4 +59,11 @@ public class Brick extends Item {
 	protected Item internalCopy() {
 		return new Brick();
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

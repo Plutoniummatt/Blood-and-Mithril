@@ -14,6 +14,8 @@ import com.google.common.collect.Maps;
 public class Glass extends Item implements Craftable {
 	private static final long serialVersionUID = -1491126318224334985L;
 
+	public static TextureRegion GLASSICON;
+
 	/**
 	 * Constructor
 	 */
@@ -67,7 +69,7 @@ public class Glass extends Item implements Craftable {
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> map = Maps.newHashMap();
-		map.put(new Sand(), 1);
+		map.put(new Sand(), 5);
 		return map;
 	}
 
@@ -75,5 +77,11 @@ public class Glass extends Item implements Craftable {
 	@Override
 	public float getCraftingDuration() {
 		return 2f;
+	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		return GLASSICON;
 	}
 }

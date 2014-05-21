@@ -45,4 +45,9 @@ public abstract class Metal extends Material {
 	 * @return the {@link TextureRegion} for an {@link Ingot}
 	 */
 	public abstract TextureRegion getIngotTextureRegion();
+
+	/**
+	 * @return the {@link TextureRegion} for an {@link Ingot} icon.
+	 */
+	public abstract TextureRegion getIngotIconTextureRegion();
 }

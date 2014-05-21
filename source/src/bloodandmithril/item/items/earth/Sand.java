@@ -63,4 +63,11 @@ public class Sand extends Item {
 	protected Item internalCopy() {
 		return new Sand();
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

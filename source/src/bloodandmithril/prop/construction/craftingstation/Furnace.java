@@ -76,7 +76,7 @@ public class Furnace extends CraftingStation implements Container {
 
 	static {
 		craftables.put(new Glass(), 1);
-		craftables.put(new GlassBottle(newHashMap()), 1);
+		craftables.put(new GlassBottle(newHashMap()), 3);
 		craftables.put(ingot(Iron.class), 1);
 		craftables.put(ingot(Steel.class), 1);
 	}
