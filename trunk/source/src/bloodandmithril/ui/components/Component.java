@@ -109,7 +109,7 @@ public abstract class Component {
 	 */
 	protected void renderBox(int x, int y, int length, int height, boolean active, Color borderColor) {
 		Shaders.filter.begin();
-		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? borderColor.a * getAlpha() : borderColor.a * 0.4f * getAlpha());
+		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? (borderColor.a * getAlpha()) : (borderColor.a * 0.4f * getAlpha()));
 		Shaders.filter.end();
 		spriteBatch.setShader(Shaders.filter);
 

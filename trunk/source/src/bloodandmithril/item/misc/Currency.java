@@ -55,4 +55,10 @@ public class Currency extends Item {
 	protected Item internalCopy() {
 		return new Currency();
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		return null;
+	}
 }

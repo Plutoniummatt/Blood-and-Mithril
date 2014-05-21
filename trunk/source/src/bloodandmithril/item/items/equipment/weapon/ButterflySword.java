@@ -124,4 +124,11 @@ public class ButterflySword<T extends Metal> extends OneHandedWeapon<T> implemen
 	protected Item internalCopy() {
 		return new ButterflySword<T>(getValue(), getMaterial());
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

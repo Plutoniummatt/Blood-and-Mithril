@@ -140,4 +140,11 @@ public class Broadsword<T extends Metal> extends OneHandedWeapon<T> implements C
 	protected Item internalCopy() {
 		return new Broadsword<T>(getValue(), getMaterial());
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

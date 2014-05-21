@@ -94,4 +94,11 @@ public class Slab extends Item implements Craftable {
 	protected Item internalCopy() {
 		return slab(mineral);
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

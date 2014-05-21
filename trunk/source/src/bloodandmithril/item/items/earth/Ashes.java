@@ -51,4 +51,11 @@ public class Ashes extends Item {
 	protected Item internalCopy() {
 		return new Ashes();
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

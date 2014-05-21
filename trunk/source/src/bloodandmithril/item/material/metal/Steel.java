@@ -16,6 +16,7 @@ public class Steel extends Metal {
 	private static final long serialVersionUID = 5907951500410886363L;
 
 	public static TextureRegion STEELINGOT;
+	public static TextureRegion STEELINGOTICON;
 
 	/**
 	 * Package protected constructor
@@ -53,6 +54,12 @@ public class Steel extends Metal {
 	@Override
 	public TextureRegion getIngotTextureRegion() {
 		return STEELINGOT;
+	}
+
+
+	@Override
+	public TextureRegion getIngotIconTextureRegion() {
+		return STEELINGOTICON;
 	}
 
 

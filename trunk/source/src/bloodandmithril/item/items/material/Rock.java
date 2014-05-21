@@ -80,4 +80,11 @@ public class Rock extends Item {
 	public Class<? extends Mineral> getMineral() {
 		return mineral;
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

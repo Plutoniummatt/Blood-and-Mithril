@@ -94,4 +94,11 @@ public class Plank extends Item implements Craftable {
 	public float getCraftingDuration() {
 		return Material.getMaterial(wood).getPlankCraftingDuration();
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

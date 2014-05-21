@@ -70,4 +70,11 @@ public class Carrot extends Item implements Consumable {
 	protected Item internalCopy() {
 		return new Carrot();
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

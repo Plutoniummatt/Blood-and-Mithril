@@ -6,6 +6,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
+import static bloodandmithril.util.Util.Colors.modulateAlpha;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -33,12 +34,14 @@ import bloodandmithril.ui.components.panel.RequiredMaterialsPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * {@link Anvl} related UI
@@ -290,6 +293,20 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		defaultFont.draw(spriteBatch, "Required materials:", x + width / 2 - 33, y - 133);
 
 		renderButtons();
+		renderItemIcon();
+	}
+
+
+	private void renderItemIcon() {
+		renderRectangle(x + width - 74, y - 30, 64, 64, isActive(), modulateAlpha(Color.BLACK, 0.5f));
+		renderBox(x + width - 76, y - 32, 64, 64, isActive(), borderColor);
+
+		TextureRegion icon = currentlySelectedToCraft.t.getIconTextureRegion();
+		if (icon != null) {
+			spriteBatch.setShader(Shaders.filter);
+			Shaders.filter.setUniformf("color", 1f, 1f, 1f, getAlpha() * (isActive() ? 1f : 0.6f));
+			spriteBatch.draw(icon, x + width - 74, y - 96);
+		}
 	}
 
 

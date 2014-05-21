@@ -72,4 +72,11 @@ public class Log extends Item {
 	protected Item internalCopy() {
 		return log(wood);
 	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

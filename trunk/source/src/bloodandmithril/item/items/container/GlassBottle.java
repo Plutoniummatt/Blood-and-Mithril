@@ -22,6 +22,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class GlassBottle extends LiquidContainer implements Craftable {
 	private static final long serialVersionUID = 3427844446930493119L;
 
+	public static TextureRegion GLASSBOTTLE;
+
 	/**
 	 * Constructor
 	 */
@@ -99,5 +101,11 @@ public class GlassBottle extends LiquidContainer implements Craftable {
 	@Override
 	protected LiquidContainer copyContainer() {
 		return new GlassBottle(newHashMap());
+	}
+
+
+	@Override
+	public TextureRegion getIconTextureRegion() {
+		return GLASSBOTTLE;
 	}
 }
