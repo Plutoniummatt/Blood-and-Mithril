@@ -4,7 +4,7 @@ import java.util.Map;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Craftable;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

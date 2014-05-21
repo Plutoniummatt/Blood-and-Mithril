@@ -5,7 +5,7 @@ import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.crafting.CraftingStation;
+import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.Domain;
 

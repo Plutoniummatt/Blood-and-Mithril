@@ -1,7 +1,7 @@
 package bloodandmithril.item.material.crystalline;
 
-import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
+import bloodandmithril.item.items.Item;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

@@ -3,8 +3,8 @@ package bloodandmithril.csi.requests;
 import bloodandmithril.character.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.item.ContainerImpl;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.world.Domain;
 
 /**

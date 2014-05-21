@@ -5,13 +5,14 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
-import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.mineral.Hematite;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Iron extends Metal {
+	private static final long serialVersionUID = -338323130439901358L;
 
 	public static TextureRegion IRONINGOT;
 

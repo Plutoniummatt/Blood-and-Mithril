@@ -4,21 +4,22 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.item.Item;
-import bloodandmithril.prop.crafting.CraftingStation;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.prop.construction.craftingstation.CraftingStation;
+import bloodandmithril.util.datastructure.DoubleWrapper;
 import bloodandmithril.world.Domain;
 
 public class RequestStartCrafting implements Request {
 
 	private final int individualId;
 	private final int craftingStationId;
-	private final Item item;
+	private final DoubleWrapper<Item, Integer> item;
 	private final int quantity;
 
 	/**
 	 * Constructor
 	 */
-	public RequestStartCrafting(Individual host, CraftingStation craftingStation, Item item, int quantity) {
+	public RequestStartCrafting(Individual host, CraftingStation craftingStation, DoubleWrapper<Item, Integer> item, int quantity) {
 		this.quantity = quantity;
 		this.individualId = host.getId().getId();
 		this.craftingStationId = craftingStation.id;

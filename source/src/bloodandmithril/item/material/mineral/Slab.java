@@ -4,7 +4,7 @@ import java.util.Map;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.item.Craftable;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,6 +25,7 @@ public class Slab extends Item implements Craftable {
 	private Slab(Class<? extends Mineral> mineral) {
 		super(2f, false);
 		this.mineral = mineral;
+		setValue(Material.getMaterial(mineral).getSlabValue());
 	}
 
 

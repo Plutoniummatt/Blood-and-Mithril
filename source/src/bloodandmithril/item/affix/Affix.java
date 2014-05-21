@@ -2,7 +2,7 @@ package bloodandmithril.item.affix;
 
 import java.io.Serializable;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 
 /**
  * An affix is an attribute that can be attached to {@link Item}s

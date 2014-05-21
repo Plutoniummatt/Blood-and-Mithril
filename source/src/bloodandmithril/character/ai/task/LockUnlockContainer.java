@@ -5,7 +5,7 @@ import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.item.Container;
+import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;

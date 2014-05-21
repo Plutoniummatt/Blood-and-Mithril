@@ -1,6 +1,6 @@
 package bloodandmithril.world.topography.tile.tiles;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**

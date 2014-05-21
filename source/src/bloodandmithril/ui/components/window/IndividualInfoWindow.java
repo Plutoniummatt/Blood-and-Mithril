@@ -35,8 +35,8 @@ public class IndividualInfoWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		Color activeTitle = Colors.modulateAlpha(Color.YELLOW, getAlpha());
-		Color inactiveTitle = Colors.modulateAlpha(Color.ORANGE, getAlpha());
+		Color activeTitle = Colors.modulateAlpha(Color.GREEN, getAlpha());
+		Color inactiveTitle = Colors.modulateAlpha(Color.GREEN, getAlpha());
 		Color activeWhite = Colors.modulateAlpha(Color.WHITE, getAlpha());
 		Color inactiveWhite = Colors.modulateAlpha(Color.WHITE, 0.6f * getAlpha());
 

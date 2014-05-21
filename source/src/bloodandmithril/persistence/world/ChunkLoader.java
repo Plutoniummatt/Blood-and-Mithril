@@ -60,7 +60,7 @@ public class ChunkLoader {
 					e.printStackTrace();
 					throw new RuntimeException("Something has interrupted the chunk loading thread.");
 				}
-				processItems(0);
+				processItems();
 			}
 		});
 
@@ -73,14 +73,16 @@ public class ChunkLoader {
 	/**
 	 * Processes items in the loader thread
 	 */
-	private void processItems(final int n) {
-		if (loaderTasks.isEmpty()) {
-			if (n != 0) {
-				Logger.loaderDebug("Loader thread processed " + n + " items", LogLevel.DEBUG);
-			}
-		} else {
+	private void processItems() {
+		int processed = 0;
+
+		while(!loaderTasks.isEmpty()) {
 			loaderTasks.poll().execute();
-			processItems(n + 1);
+			processed++;
+		}
+
+		if (processed != 0) {
+			Logger.loaderDebug("Loader thread processed " + processed + " items", LogLevel.DEBUG);
 		}
 	}
 

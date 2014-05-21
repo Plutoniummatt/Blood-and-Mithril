@@ -6,7 +6,7 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.crafting.CraftingStation;
+import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.world.Domain;
 
 /**

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.csi.Response;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.world.Domain;
 
 import com.google.common.collect.Maps;

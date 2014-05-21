@@ -1,6 +1,6 @@
 package bloodandmithril.world.topography.tile.tiles.brick;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.world.topography.tile.tiles.BrickTile;
 
 public class YellowBrickPlatform extends BrickTile {

@@ -2,11 +2,13 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.ItemValues;
+import bloodandmithril.item.items.Item;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Hematite extends Mineral {
+	private static final long serialVersionUID = -634057726346348061L;
 
 	public static TextureRegion HEMATITE;
 
@@ -14,6 +16,12 @@ public class Hematite extends Mineral {
 	 * Package protected constructor
 	 */
 	Hematite() {}
+
+	@Override
+	public long getRockValue() {
+		return ItemValues.HEMATITE;
+	}
+
 
 	@Override
 	public long getSlabValue() {
@@ -55,6 +63,7 @@ public class Hematite extends Mineral {
 	public String getName() {
 		return "Hematite";
 	}
+
 
 	@Override
 	public String getMineralDescription() {

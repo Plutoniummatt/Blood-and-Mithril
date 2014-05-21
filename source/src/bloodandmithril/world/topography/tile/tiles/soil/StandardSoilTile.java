@@ -1,6 +1,6 @@
 package bloodandmithril.world.topography.tile.tiles.soil;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.earth.Dirt;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 

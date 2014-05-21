@@ -3,7 +3,8 @@ package bloodandmithril.item;
 import java.util.Map;
 
 import bloodandmithril.character.Individual;
-import bloodandmithril.prop.crafting.CraftingStation;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 
 /**
  * Indicates something that can be crafted at a {@link CraftingStation}

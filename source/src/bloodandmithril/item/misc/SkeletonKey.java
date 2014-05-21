@@ -5,7 +5,7 @@ import static com.google.common.collect.Iterables.tryFind;
 import java.util.Collections;
 import java.util.List;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 
 /**
  * A skeleton {@link Key} with 7 teeth, 10 unique heights per tooth.

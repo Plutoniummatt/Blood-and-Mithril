@@ -4,7 +4,7 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.prop.building.Construction;
+import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.world.Domain;
 
 /**

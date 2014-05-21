@@ -1,7 +1,7 @@
 package bloodandmithril.item.material.earth;
 
-import bloodandmithril.item.Item;
 import bloodandmithril.item.ItemValues;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

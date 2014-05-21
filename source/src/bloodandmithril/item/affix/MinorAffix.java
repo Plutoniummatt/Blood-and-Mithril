@@ -1,6 +1,6 @@
 package bloodandmithril.item.affix;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 
 /**
  * Minor affixes are anything but {@link PostAffix} or {@link PreAffix}, an {@link Item} may have any number of these

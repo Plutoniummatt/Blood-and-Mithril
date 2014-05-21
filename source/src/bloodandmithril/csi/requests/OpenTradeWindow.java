@@ -6,7 +6,7 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
-import bloodandmithril.item.Container;
+import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 

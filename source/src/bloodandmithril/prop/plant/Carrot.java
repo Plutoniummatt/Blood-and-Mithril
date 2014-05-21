@@ -6,7 +6,7 @@ import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * The {@link Prop} equivalent to {@link bloodandmithril.item.plant.Carrot}
+ * The {@link Prop} equivalent to {@link bloodandmithril.item.items.plant.Carrot}
  *
  * @author Matt
  */
@@ -60,7 +60,7 @@ public class Carrot extends Plant {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new MessageWindow(
-							bloodandmithril.item.plant.Carrot.description,
+							bloodandmithril.item.items.plant.Carrot.description,
 							Color.ORANGE,
 							BloodAndMithrilClient.WIDTH/2 - 250,
 							BloodAndMithrilClient.HEIGHT/2 + 125,
@@ -110,7 +110,7 @@ public class Carrot extends Plant {
 
 	@Override
 	public Item harvest() {
-		return new bloodandmithril.item.plant.Carrot();
+		return new bloodandmithril.item.items.plant.Carrot();
 	}
 
 

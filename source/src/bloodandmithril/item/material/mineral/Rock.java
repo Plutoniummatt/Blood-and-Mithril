@@ -1,10 +1,6 @@
 package bloodandmithril.item.material.mineral;
 
-import java.util.Map;
-
-import bloodandmithril.character.Individual;
-import bloodandmithril.item.Craftable;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,10 +10,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
-public class Rock extends Item implements Craftable {
+public class Rock extends Item {
 	private static final long serialVersionUID = -7786694866208809183L;
 
-	private Class<? extends Mineral> mineral;
+	private final Class<? extends Mineral> mineral;
 
 	/**
 	 * Private constructor
@@ -25,6 +21,7 @@ public class Rock extends Item implements Craftable {
 	private Rock(Class<? extends Mineral> mineral) {
 		super(2f, false);
 		this.mineral = mineral;
+		setValue(Material.getMaterial(mineral).getRockValue());
 	}
 
 
@@ -37,45 +34,27 @@ public class Rock extends Item implements Craftable {
 
 
 	@Override
-	public boolean canBeCraftedBy(Individual individual) {
-		throw new IllegalStateException("Should not be able to craft a rock");
-	}
-
-
-	@Override
-	public Map<Item, Integer> getRequiredMaterials() {
-		throw new IllegalStateException("Should not be able to craft a rock");
-	}
-
-
-	@Override
-	public float getCraftingDuration() {
-		throw new IllegalStateException("Should not be able to craft a rock");
-	}
-
-
-	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return Material.getMaterial(mineral).getName();
+		return Material.getMaterial(getMineral()).getName();
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return Material.getMaterial(mineral).getName();
+		return Material.getMaterial(getMineral()).getName();
 	}
 
 
 	@Override
 	public String getDescription() {
-		return Material.getMaterial(mineral).getMineralDescription();
+		return Material.getMaterial(getMineral()).getMineralDescription();
 	}
 
 
 	@Override
 	protected boolean internalSameAs(Item other) {
 		if (other instanceof Rock) {
-			return mineral.equals(((Rock) other).mineral);
+			return getMineral().equals(((Rock) other).getMineral());
 		}
 
 		return false;
@@ -84,12 +63,20 @@ public class Rock extends Item implements Craftable {
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return Material.getMaterial(mineral).getRockTextureRegion();
+		return Material.getMaterial(getMineral()).getRockTextureRegion();
 	}
 
 
 	@Override
 	protected Item internalCopy() {
-		return rock(mineral);
+		return rock(getMineral());
+	}
+
+
+	/**
+	 * @return The mineral this {@link Rock} is composed of
+	 */
+	public Class<? extends Mineral> getMineral() {
+		return mineral;
 	}
 }

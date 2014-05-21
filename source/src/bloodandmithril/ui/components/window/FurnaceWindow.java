@@ -11,9 +11,11 @@ import java.util.Map.Entry;
 import bloodandmithril.character.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.item.Item;
-import bloodandmithril.item.fuel.Fuel;
-import bloodandmithril.prop.building.Furnace;
+import bloodandmithril.item.Fuel;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.material.mineral.Coal;
+import bloodandmithril.item.material.mineral.Rock;
+import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -104,7 +106,7 @@ public class FurnaceWindow extends TradeWindow {
 	 */
 	@Override
 	protected boolean isItemAvailableToTrade(Item item) {
-		return item instanceof Fuel; // by default
+		return item instanceof Rock && ((Rock)item).getMineral().equals(Coal.class); // by default
 	}
 
 

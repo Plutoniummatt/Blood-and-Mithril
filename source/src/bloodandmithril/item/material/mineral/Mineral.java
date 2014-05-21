@@ -2,7 +2,7 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,10 +13,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Matt
  */
 public abstract class Mineral extends Material {
+	private static final long serialVersionUID = 9102235184805389671L;
 
 	public static void minerals(Map<Class<? extends Material>, Material> materials) {
 		materials.put(Hematite.class, new Hematite());
+		materials.put(Coal.class, new Coal());
 	}
+
+	/**
+	 * @return the value of an {@link Rock} made from this {@link Mineral}
+	 */
+	public abstract long getRockValue();
 
 	/**
 	 * @return the value of an {@link Slab} made from this {@link Mineral}
@@ -52,5 +59,4 @@ public abstract class Mineral extends Material {
 	 * @return the description of this {@link Mineral}
 	 */
 	public abstract String getMineralDescription();
-
 }

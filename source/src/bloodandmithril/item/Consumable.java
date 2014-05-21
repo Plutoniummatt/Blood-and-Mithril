@@ -1,6 +1,7 @@
 package bloodandmithril.item;
 
 import bloodandmithril.character.Individual;
+import bloodandmithril.item.items.Item;
 
 /**
  * Implement this with an {@link Item} to make it Consumable

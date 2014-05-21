@@ -20,8 +20,8 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Craftable;
-import bloodandmithril.item.Item;
-import bloodandmithril.prop.crafting.CraftingStation;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -34,6 +34,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.util.datastructure.DoubleWrapper;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -47,7 +48,7 @@ import com.badlogic.gdx.graphics.Color;
 public class CraftingStationWindow extends Window implements Refreshable {
 
 	private final Individual individual;
-	private Item currentlySelectedToCraft;
+	private DoubleWrapper<Item, Integer> currentlySelectedToCraft;
 	protected final CraftingStation craftingStation;
 	protected boolean enoughMaterials;
 
@@ -69,7 +70,9 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		super(x, y, 750, 300, title, true, 750, 300, true, true);
 		this.individual = individual;
 		this.craftingStation = craftingStation;
-		this.currentlySelectedToCraft = craftingStation.getCurrentlyBeingCrafted() == null ? craftingStation.getCraftables().get(0) : craftingStation.getCurrentlyBeingCrafted();
+
+		Entry<Item, Integer> next = craftingStation.getCraftables().entrySet().iterator().next();
+		this.currentlySelectedToCraft = craftingStation.getCurrentlyBeingCrafted() == null ? new DoubleWrapper<Item, Integer>(next.getKey(), next.getValue()) : craftingStation.getCurrentlyBeingCrafted();
 
 		this.craftablesListing = new ScrollableListingPanel<Item, String>(this, sortingComparator) {
 			@Override
@@ -93,7 +96,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			}
 		};
 
-		this.requiredMaterialsListing = new RequiredMaterialsPanel(this, individual, ((Craftable)currentlySelectedToCraft).getRequiredMaterials());
+		this.requiredMaterialsListing = new RequiredMaterialsPanel(this, individual, ((Craftable)currentlySelectedToCraft.t).getRequiredMaterials());
 
 		this.showInfoButton = new Button(
 			"Show info",
@@ -102,7 +105,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			0,
 			90,
 			16,
-			() -> {UserInterface.addLayeredComponent(currentlySelectedToCraft.getInfoWindow());},
+			() -> {UserInterface.addLayeredComponent(currentlySelectedToCraft.t.getInfoWindow());},
 			Color.ORANGE,
 			Color.GREEN,
 			Color.WHITE,
@@ -218,11 +221,11 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	private HashMap<ListingMenuItem<Item>, String> constructCraftablesListing() {
 		HashMap<ListingMenuItem<Item>, String> listing = newHashMap();
 
-		for (Item item : craftingStation.getCraftables()) {
-			String itemName = item.getSingular(true);
+		for (Entry<Item, Integer> item : craftingStation.getCraftables().entrySet()) {
+			String itemName = item.getKey().getSingular(true) + " (" + item.getValue() + ")";
 			listing.put(
 				new ListingMenuItem<Item>(
-					item,
+					item.getKey(),
 					new Button(
 						itemName,
 						Fonts.defaultFont,
@@ -231,15 +234,15 @@ public class CraftingStationWindow extends Window implements Refreshable {
 						itemName.length() * 10,
 						16,
 						() -> {
-							currentlySelectedToCraft = item;
+							currentlySelectedToCraft = new DoubleWrapper<>(item.getKey(), item.getValue());
 							craftablesListing.getListing().clear();
 							craftablesListing.getListing().add(constructCraftablesListing());
 							requiredMaterialsListing.getRequiredMaterials().clear();
-							requiredMaterialsListing.getRequiredMaterials().putAll(((Craftable)item).getRequiredMaterials());
+							requiredMaterialsListing.getRequiredMaterials().putAll(((Craftable)item.getKey()).getRequiredMaterials());
 							refresh();
 						},
-						currentlySelectedToCraft.sameAs(item) ? Color.GREEN : Color.WHITE,
-						currentlySelectedToCraft.sameAs(item) ? Color.ORANGE : Color.ORANGE,
+						currentlySelectedToCraft.t.sameAs(item.getKey()) ? Color.GREEN : Color.WHITE,
+						currentlySelectedToCraft.t.sameAs(item.getKey()) ? Color.ORANGE : Color.ORANGE,
 						Color.WHITE,
 						UIRef.BL
 					),
@@ -283,7 +286,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		}
 
 		String progress = craftingStation.getCurrentlyBeingCrafted() == null ? "" : " (" + String.format("%.1f", 100f * craftingStation.getCraftingProgress()) + "%) " + bulkMessage;
-		defaultFont.draw(spriteBatch, selected + currentlySelectedToCraft.getSingular(true) + progress, x + width / 2 - 33, y - 33);
+		defaultFont.draw(spriteBatch, selected + currentlySelectedToCraft.t.getSingular(true) + progress, x + width / 2 - 33, y - 33);
 		defaultFont.draw(spriteBatch, "Required materials:", x + width / 2 - 33, y - 133);
 
 		renderButtons();
@@ -413,7 +416,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void refresh() {
-		if (craftingStation.isOccupied() && craftingStation.getCurrentlyBeingCrafted() != null && !currentlySelectedToCraft.sameAs(craftingStation.getCurrentlyBeingCrafted())) {
+		if (craftingStation.isOccupied() && craftingStation.getCurrentlyBeingCrafted() != null && !currentlySelectedToCraft.t.sameAs(craftingStation.getCurrentlyBeingCrafted().t)) {
 			currentlySelectedToCraft = craftingStation.getCurrentlyBeingCrafted();
 			craftablesListing.getListing().clear();
 			craftablesListing.getListing().add(constructCraftablesListing());
@@ -421,13 +424,13 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			requiredMaterialsListing.getRequiredMaterials().putAll(((Craftable)currentlySelectedToCraft).getRequiredMaterials());
 		}
 
-		enoughMaterials = CraftingStation.enoughMaterialsToCraft(individual, ((Craftable) currentlySelectedToCraft).getRequiredMaterials());
+		enoughMaterials = CraftingStation.enoughMaterialsToCraft(individual, ((Craftable) currentlySelectedToCraft.t).getRequiredMaterials());
 		requiredMaterialsListing.refresh();
 
 		if (craftingStation.getCurrentlyBeingCrafted() != null) {
 			craftablesListing.getListing().stream().forEach(map -> {
 				for (Entry<ListingMenuItem<Item>, String> entry : map.entrySet()) {
-					if (!entry.getKey().t.sameAs(craftingStation.getCurrentlyBeingCrafted())) {
+					if (!entry.getKey().t.sameAs(craftingStation.getCurrentlyBeingCrafted().t)) {
 						entry.getKey().button.setIdleColor(Colors.UI_DARK_GRAY);
 						entry.getKey().button.setOverColor(Colors.UI_DARK_GRAY);
 						entry.getKey().button.setDownColor(Colors.UI_DARK_GRAY);

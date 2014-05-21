@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 import bloodandmithril.character.Individual.IndividualIdentifier;
-import bloodandmithril.item.Item;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Epoch;
 
