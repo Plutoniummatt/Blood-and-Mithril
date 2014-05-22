@@ -1,4 +1,4 @@
-package bloodandmithril.item.misc;
+package bloodandmithril.item.items.misc.key;
 
 import static com.google.common.collect.Iterables.tryFind;
 

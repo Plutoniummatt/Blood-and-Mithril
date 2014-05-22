@@ -1,4 +1,4 @@
-package bloodandmithril.item.misc;
+package bloodandmithril.item.items.misc.key;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.items.Item;
@@ -38,5 +38,14 @@ public abstract class Key extends Item {
 			100,
 			100
 		);
+	}
+
+
+	/**
+	 * @return the description of the item type
+	 */
+	@Override
+	public String getType() {
+		return "Key";
 	}
 }

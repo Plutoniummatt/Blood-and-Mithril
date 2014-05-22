@@ -1,4 +1,4 @@
-package bloodandmithril.item.material.crystalline;
+package bloodandmithril.item.items.material;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import bloodandmithril.item.items.earth.Sand;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
-public class Glass extends Item implements Craftable {
+public class Glass extends bloodandmithril.item.items.material.Material implements Craftable {
 	private static final long serialVersionUID = -1491126318224334985L;
 
 	public static TextureRegion GLASSICON;

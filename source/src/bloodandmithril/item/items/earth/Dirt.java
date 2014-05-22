@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
-public class Dirt extends Item {
+public class Dirt extends Earth {
 	private static final long serialVersionUID = 6522655675894787083L;
 
 	/**

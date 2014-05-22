@@ -1,51 +1,47 @@
-package bloodandmithril.item.items.construction;
+package bloodandmithril.item.items.misc;
 
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * {@link Item} representing {@link YellowBrickTile}
+ * Class representing currency
  *
  * @author Matt
  */
-public class Brick extends Item {
-	private static final long serialVersionUID = -7756119539482746265L;
+public class Currency extends Misc {
+	private static final long serialVersionUID = -7059495735666011863L;
 
 	/**
 	 * Constructor
 	 */
-	public Brick() {
-		super(10f, false, ItemValues.YELLOWBRICK);
+	public Currency() {
+		super(0f, false, ItemValues.CURRENCY);
 	}
 
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		if (firstCap) {
-			return "Bricks";
-		}
-		return "bricks";
+		return firstCap ? "Coin" : "coin";
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return internalGetSingular(firstCap);
+		return firstCap ? "Coins" : "coins";
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "Bricks, clay hardened under intense heat";
+		return "The most widely used form of currency, can be used for trade as a substitution for items.";
 	}
 
 
 	@Override
 	protected boolean internalSameAs(Item other) {
-		return other instanceof Brick;
+		return other instanceof Currency;
 	}
 
 
@@ -57,13 +53,12 @@ public class Brick extends Item {
 
 	@Override
 	protected Item internalCopy() {
-		return new Brick();
+		return new Currency();
 	}
 
 
 	@Override
 	public TextureRegion getIconTextureRegion() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

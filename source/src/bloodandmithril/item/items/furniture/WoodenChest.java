@@ -23,7 +23,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
-public class WoodenChest extends Item implements Craftable {
+public class WoodenChest extends Furniture implements Craftable {
 	private static final long serialVersionUID = -6430848300222528418L;
 
 	private final Class<? extends Wood> wood;

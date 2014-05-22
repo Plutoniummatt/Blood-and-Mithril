@@ -1,6 +1,5 @@
 package bloodandmithril.item.items.container;
 
-import static bloodandmithril.item.liquid.LiquidMixtureAnalyzer.getTitle;
 import static bloodandmithril.util.Util.round2dp;
 
 import java.util.Map;
@@ -10,11 +9,9 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.liquid.Liquid;
-import bloodandmithril.item.liquid.LiquidMixtureAnalyzer;
-import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.ui.components.window.ItemInfoWindow;
 import bloodandmithril.ui.components.window.Window;
 
-import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Maps;
 
 /**
@@ -111,22 +108,22 @@ public abstract class LiquidContainer extends Item {
 
 	@Override
 	public Window getInfoWindow() {
-		try {
-			return new MessageWindow(
-				containedLiquids.isEmpty() ? getDescription() : getDescription() + " containing " + LiquidMixtureAnalyzer.getDescription(containedLiquids, getTotalAmount()),
-				Color.ORANGE,
-				BloodAndMithrilClient.WIDTH/2 - 175,
-				BloodAndMithrilClient.HEIGHT/2 + 100,
-				300,
-				200,
-				containedLiquids.isEmpty() ? getCotainerTitle() : getCotainerTitle() + " of " + getTitle(containedLiquids, getTotalAmount()),
-				true,
-				300,
-				200
-			);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		return new ItemInfoWindow(
+			this,
+			BloodAndMithrilClient.WIDTH/2 - 200,
+			BloodAndMithrilClient.HEIGHT/2 + 250,
+			400,
+			300
+		);
+	}
+
+
+	/**
+	 * @return the description of the item type
+	 */
+	@Override
+	public String getType() {
+		return "Liquid container";
 	}
 
 

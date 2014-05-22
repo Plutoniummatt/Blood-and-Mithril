@@ -5,7 +5,7 @@ import bloodandmithril.item.items.Item;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Ashes extends Item {
+public class Ashes extends Earth {
 	private static final long serialVersionUID = 988154990456038686L;
 	public static final String description = "The residue of combustion, mostly consisting of metal oxides.";
 

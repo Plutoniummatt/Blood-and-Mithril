@@ -1,9 +1,9 @@
-package bloodandmithril.item.items.plant;
+package bloodandmithril.item.items.food.plant;
 
 import bloodandmithril.character.Individual;
-import bloodandmithril.item.Consumable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.food.Food;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -12,12 +12,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
-public class Carrot extends Item implements Consumable {
+public class Carrot extends Food {
 	private static final long serialVersionUID = 3714624810622084079L;
 	public static final String description = "The carrot is a root vegetable, usually orange in color. It has a crisp texture when fresh.";
 
 	public static TextureRegion CARROT;
-	
+
 	/**
 	 * Constructor
 	 */

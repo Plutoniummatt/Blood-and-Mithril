@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
-public class Rock extends Item {
+public class Rock extends bloodandmithril.item.items.material.Material {
 	private static final long serialVersionUID = -7786694866208809183L;
 
 	private final Class<? extends Mineral> mineral;

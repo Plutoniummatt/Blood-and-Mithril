@@ -1,7 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.glass;
 
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.material.crystalline.Glass;
+import bloodandmithril.item.items.material.Glass;
 import bloodandmithril.world.topography.tile.tiles.GlassTile;
 
 public class ClearGlassTile extends GlassTile {
