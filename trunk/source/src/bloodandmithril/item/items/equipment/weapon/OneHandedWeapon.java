@@ -18,4 +18,13 @@ public abstract class OneHandedWeapon<T extends Material> extends Weapon<T> {
 	protected OneHandedWeapon(float mass, boolean equippable, long value, Class<T> material) {
 		super(mass, equippable, value, EquipmentSlot.RIGHTHAND, material);
 	}
+
+
+	/**
+	 * @return the description of the item type
+	 */
+	@Override
+	public String getType() {
+		return "One-handed weapon";
+	}
 }

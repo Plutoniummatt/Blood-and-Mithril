@@ -9,8 +9,8 @@ import bloodandmithril.character.Individual;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.material.Glass;
 import bloodandmithril.item.liquid.Liquid;
-import bloodandmithril.item.material.crystalline.Glass;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

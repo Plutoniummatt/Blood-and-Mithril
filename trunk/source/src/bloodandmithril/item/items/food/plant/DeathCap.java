@@ -1,10 +1,10 @@
-package bloodandmithril.item.items.plant;
+package bloodandmithril.item.items.food.plant;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.conditions.Poison;
-import bloodandmithril.item.Consumable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.food.Food;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
-public class DeathCap extends Item implements Consumable {
+public class DeathCap extends Food {
 	private static final long serialVersionUID = -7125731448429674227L;
 
 	private final boolean cooked;

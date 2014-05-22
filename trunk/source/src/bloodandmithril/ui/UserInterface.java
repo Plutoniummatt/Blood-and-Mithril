@@ -921,7 +921,11 @@ public class UserInterface {
 		for (Component window : layeredComponents) {
 			if (window instanceof Window) {
 				((Window) window).setActive(false);
-				if (((Window)window).getUniqueIdentifier().equals(toAdd.getUniqueIdentifier())) {
+
+				Object existingUniqueIdentifier = ((Window)window).getUniqueIdentifier();
+				Object newUniqueIdentifier = toAdd.getUniqueIdentifier();
+
+				if (existingUniqueIdentifier.equals(newUniqueIdentifier)) {
 					existing = (Window)window;
 				}
 			}

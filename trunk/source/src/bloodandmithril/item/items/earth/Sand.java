@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
-public class Sand extends Item {
+public class Sand extends Earth {
 	private static final long serialVersionUID = -7756119539773387265L;
 
 

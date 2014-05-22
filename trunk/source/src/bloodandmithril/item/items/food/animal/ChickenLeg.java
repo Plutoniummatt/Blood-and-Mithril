@@ -1,18 +1,18 @@
-package bloodandmithril.item.items.animal;
+package bloodandmithril.item.items.food.animal;
 
 import bloodandmithril.character.Individual;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.item.Consumable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.food.Food;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.MessageWindow;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class ChickenLeg extends Item implements Consumable {
+public class ChickenLeg extends Food {
 	private static final long serialVersionUID = 327664484386522545L;
 
 	/**

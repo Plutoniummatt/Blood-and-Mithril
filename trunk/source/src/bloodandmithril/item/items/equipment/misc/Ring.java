@@ -38,4 +38,13 @@ public abstract class Ring extends Equipable implements Craftable {
 	public Class<? extends Material> getMaterial() {
 		return material;
 	}
+
+
+	/**
+	 * @return the description of the item type
+	 */
+	@Override
+	public String getType() {
+		return "Ring";
+	}
 }

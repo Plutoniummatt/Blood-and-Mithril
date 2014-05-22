@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
-public class Slab extends Item implements Craftable {
+public class Slab extends bloodandmithril.item.items.material.Material implements Craftable {
 	private static final long serialVersionUID = -7786694866208809183L;
 
 	private Class<? extends Mineral> mineral;

@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
-public class Log extends Item {
+public class Log extends bloodandmithril.item.items.material.Material {
 	private static final long serialVersionUID = 8519886397429197864L;
 
 	private Class<? extends Wood> wood;

@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @param <T> a type of {@link Metal}
  */
-public class Ingot extends Item implements Craftable {
+public class Ingot extends bloodandmithril.item.items.material.Material implements Craftable {
 	private static final long serialVersionUID = -5952793507591312790L;
 
 	private Class<? extends Metal> metal;
@@ -28,6 +28,7 @@ public class Ingot extends Item implements Craftable {
 	private Ingot(Class<? extends Metal> metal) {
 		super(1f, false);
 		this.metal = metal;
+		setValue(Material.getMaterial(metal).getIngotValue());
 	}
 
 

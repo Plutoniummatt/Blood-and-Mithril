@@ -19,8 +19,8 @@ import bloodandmithril.item.affix.MinorAffix;
 import bloodandmithril.item.affix.PostAffix;
 import bloodandmithril.item.affix.PreAffix;
 import bloodandmithril.item.items.container.GlassBottle;
-import bloodandmithril.item.items.plant.Carrot;
-import bloodandmithril.item.material.crystalline.Glass;
+import bloodandmithril.item.items.food.plant.Carrot;
+import bloodandmithril.item.items.material.Glass;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
@@ -28,7 +28,7 @@ import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
-import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.ui.components.window.ItemInfoWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
@@ -118,6 +118,14 @@ public abstract class Item implements Serializable, Affixed {
 
 	/** Returns true if two {@link Item}s have identical attributes */
 	protected abstract boolean internalSameAs(Item other);
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof Item) {
+			return sameAs((Item)other);
+		}
+		return false;
+	}
 
 	/**
 	 * @return true if this {@link Item} is identical to another, including affixes
@@ -267,17 +275,12 @@ public abstract class Item implements Serializable, Affixed {
 
 	/** A window with a description of this {@link Item} */
 	public Window getInfoWindow() {
-		return new MessageWindow(
-			getDescription(),
-			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
-			350,
-			200,
-			getSingular(true),
-			true,
-			100,
-			100
+		return new ItemInfoWindow(
+			this,
+			BloodAndMithrilClient.WIDTH/2 - 200,
+			BloodAndMithrilClient.HEIGHT/2 + 250,
+			400,
+			300
 		);
 	}
 
@@ -470,6 +473,13 @@ public abstract class Item implements Serializable, Affixed {
 	@Override
 	public void setPreAffix(PreAffix preAffix) {
 		this.preAffix = preAffix;
+	}
+
+	/**
+	 * @return the description of the item type
+	 */
+	public String getType() {
+		return "TODO!!!!";
 	}
 
 	@Override
