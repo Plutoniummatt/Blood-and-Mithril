@@ -108,7 +108,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			0,
 			90,
 			16,
-			() -> {UserInterface.addLayeredComponent(currentlySelectedToCraft.t.getInfoWindow());},
+			() -> {UserInterface.addLayeredComponentUnique(currentlySelectedToCraft.t.getInfoWindow());},
 			Color.ORANGE,
 			Color.GREEN,
 			Color.WHITE,

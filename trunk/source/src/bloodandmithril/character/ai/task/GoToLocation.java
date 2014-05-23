@@ -212,7 +212,7 @@ public class GoToLocation extends AITask {
 
 		host.sendCommand(KeyMappings.moveRight, false);
 		host.sendCommand(KeyMappings.moveLeft, false);
-		host.sendCommand(KeyMappings.walk, false);
+		host.sendCommand(KeyMappings.walk, host.isWalking());
 		host.setJumpOffToNull();
 	}
 }

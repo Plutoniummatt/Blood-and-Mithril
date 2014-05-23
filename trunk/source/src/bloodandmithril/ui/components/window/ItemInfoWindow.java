@@ -87,8 +87,8 @@ public class ItemInfoWindow extends Window {
 	 * Renders the item icon
 	 */
 	private void renderItemIcon() {
-		renderRectangle(x + width - 74, y - 30, 64, 64, isActive(), modulateAlpha(Color.BLACK, 0.5f));
-		renderBox(x + width - 76, y - 32, 64, 64, isActive(), borderColor);
+		renderRectangle(x + width - 74, y - 30, 64, 64, isActive(), modulateAlpha(Color.BLACK, 1f));
+		renderBox(x + width - 76, y - 32, 64, 64, isActive(), Color.GRAY);
 
 		TextureRegion icon = item.getIconTextureRegion();
 		if (icon != null) {

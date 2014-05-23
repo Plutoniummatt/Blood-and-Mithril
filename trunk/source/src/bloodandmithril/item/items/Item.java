@@ -18,10 +18,11 @@ import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.affix.MinorAffix;
 import bloodandmithril.item.affix.PostAffix;
 import bloodandmithril.item.affix.PreAffix;
-import bloodandmithril.item.items.container.GlassBottle;
 import bloodandmithril.item.items.food.plant.Carrot;
-import bloodandmithril.item.items.material.Glass;
+import bloodandmithril.item.material.metal.Copper;
+import bloodandmithril.item.material.metal.Gold;
 import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.material.metal.Silver;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.Hematite;
@@ -266,10 +267,11 @@ public abstract class Item implements Serializable, Affixed {
 		Coal.COAL = new TextureRegion(Domain.gameWorldTexture, 372, 265, 18, 11);
 		Carrot.CARROT = new TextureRegion(Domain.gameWorldTexture, 365, 180, 23, 13);
 
+		Silver.SILVERINGOTICON = new TextureRegion(UserInterface.iconTexture, 0, 0, 64, 64);
 		Iron.IRONINGOTICON = new TextureRegion(UserInterface.iconTexture, 65, 0, 64, 64);
 		Steel.STEELINGOTICON = new TextureRegion(UserInterface.iconTexture, 130, 0, 64, 64);
-		Glass.GLASSICON = new TextureRegion(UserInterface.iconTexture, 195, 0, 64, 64);
-		GlassBottle.GLASSBOTTLE = new TextureRegion(UserInterface.iconTexture, 260, 0, 64, 64);
+		Copper.COPPERINGOTICON = new TextureRegion(UserInterface.iconTexture, 195, 0, 64, 64);
+		Gold.GOLDINGOTICON = new TextureRegion(UserInterface.iconTexture, 260, 0, 64, 64);
 	}
 
 
@@ -378,7 +380,7 @@ public abstract class Item implements Serializable, Affixed {
 			new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponent(
+					UserInterface.addLayeredComponentUnique(
 						getInfoWindow()
 					);
 				},

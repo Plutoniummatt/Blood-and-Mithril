@@ -108,6 +108,8 @@ public abstract class Individual implements Equipper, Serializable {
 	/** Set of {@link Individual} IDs that are concurrently attacking this {@link Individual} */
 	private final Set<Integer> meleeAttackers = Sets.newHashSet();
 
+	protected boolean combatStance;
+
 	/** For animation frame timing */
 	protected float animationTimer;
 
@@ -705,6 +707,17 @@ public abstract class Individual implements Equipper, Serializable {
 			null
 		);
 
+		MenuItem combatMode = new MenuItem(
+			"Combat Mode",
+				() -> {
+					thisIndividual.combatStance = !thisIndividual.combatStance;
+				},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+
 
 		final ContextMenu secondaryMenu = new ContextMenu(0, 0,
 			new MenuItem(
@@ -846,6 +859,7 @@ public abstract class Individual implements Equipper, Serializable {
 
 		if (isControllable()) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
+			contextMenuToReturn.addMenuItem(combatMode);
 		}
 
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);

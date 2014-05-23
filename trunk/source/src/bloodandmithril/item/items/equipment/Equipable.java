@@ -21,8 +21,8 @@ public abstract class Equipable extends Item implements Affixed {
 	public final EquipmentSlot slot;
 
 	public static void setup() {
-		ButterflySword.texture = new TextureRegion(Domain.individualTexture, 419, 587, 47, 12);
-		Broadsword.texture = new TextureRegion(Domain.individualTexture, 417, 621, 52, 11);
+		ButterflySword.texture = new TextureRegion(Domain.individualTexture, 528, 0, 47, 12);
+		Broadsword.texture = new TextureRegion(Domain.individualTexture, 528, 12, 52, 11);
 	}
 
 

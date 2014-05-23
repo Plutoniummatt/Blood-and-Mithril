@@ -17,8 +17,11 @@ public abstract class Metal extends Material {
 	private static final long serialVersionUID = 8576471967416805489L;
 
 	public static void metals(Map<Class<? extends Material>, Material> materials) {
+		materials.put(Copper.class, new Copper());
 		materials.put(Iron.class, new Iron());
 		materials.put(Steel.class, new Steel());
+		materials.put(Silver.class, new Silver());
+		materials.put(Gold.class, new Gold());
 	}
 
 	/**

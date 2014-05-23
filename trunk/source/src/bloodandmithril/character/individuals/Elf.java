@@ -63,8 +63,12 @@ public class Elf extends Individual {
 	private static final String RUNNING_LEFT = "runningLeft";
 	private static final String WALKING_RIGHT = "walkingRight";
 	private static final String WALKING_LEFT = "walkingLeft";
+	private static final String WALKING_RIGHT_COMBAT = "walkingRightCombat";
+	private static final String WALKING_LEFT_COMBAT = "walkingLeftCombat";
 	private static final String STANDING_RIGHT = "standingRight";
 	private static final String STANDING_LEFT = "standingLeft";
+	private static final String STANDING_RIGHT_COMBAT = "standingRightCombat";
+	private static final String STANDING_LEFT_COMBAT = "standingLeftCombat";
 
 	private static final long serialVersionUID = -5566954059579973505L;
 
@@ -137,20 +141,24 @@ public class Elf extends Individual {
 	 */
 	public static void loadAnimations() {
 		for (int i = 0; i <=3; i++) {
-			hairAnimations.put(STANDING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 0, 64, 128, 1, 1));
-			hairAnimations.put(STANDING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 128, 64, 128, 1, 1));
-			hairAnimations.put(WALKING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 0, 64, 128, 1, 1));
-			hairAnimations.put(WALKING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 128, 64, 128, 1, 1));
-			hairAnimations.put(RUNNING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 256, 64, 128, 1, 1));
-			hairAnimations.put(RUNNING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 448 + i * 64, 384, 64, 128, 1, 1));
+			hairAnimations.put(STANDING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 336 + i * 48, 0, 48, 80, 1, 1));
+			hairAnimations.put(STANDING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 336 + i * 48, 80, 48, 80, 1, 1));
+			hairAnimations.put(WALKING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 336 + i * 48, 0, 48, 80, 1, 1));
+			hairAnimations.put(WALKING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 336 + i * 48, 80, 48, 80, 1, 1));
+			hairAnimations.put(RUNNING_RIGHT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 336+ i * 48, 0, 48, 80, 1, 1));
+			hairAnimations.put(RUNNING_LEFT_HAIR + "F", i, AnimationHelper.makeAnimation(Domain.individualTexture, 336 + i * 48, 80, 48, 80, 1, 1));
 		}
 
-		animations.put(STANDING_LEFT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 128, 64, 128, 1, 1));
-		animations.put(STANDING_RIGHT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 0, 64, 128, 1, 1));
-		animations.put(WALKING_LEFT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 64, 128, 64, 128, 6, 0.17f));
-		animations.put(WALKING_RIGHT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 64, 0, 64, 128, 6, 0.17f));
-		animations.put(RUNNING_LEFT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 384, 64, 128, 7, 0.14f));
-		animations.put(RUNNING_RIGHT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 256, 64, 128, 7, 0.14f));
+		animations.put(STANDING_LEFT_COMBAT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 400, 48, 80, 1, 1));
+		animations.put(STANDING_RIGHT_COMBAT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 320, 48, 80, 1, 1));
+		animations.put(WALKING_LEFT_COMBAT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 48, 400, 48, 80, 6, 0.17f));
+		animations.put(WALKING_RIGHT_COMBAT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 48, 320, 48, 80, 6, 0.17f));
+		animations.put(STANDING_LEFT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 80, 48, 80, 1, 1));
+		animations.put(STANDING_RIGHT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 0, 48, 80, 1, 1));
+		animations.put(WALKING_LEFT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 48, 80, 48, 80, 6, 0.17f));
+		animations.put(WALKING_RIGHT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 48, 0, 48, 80, 6, 0.17f));
+		animations.put(RUNNING_LEFT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 240, 48, 80, 7, 0.14f));
+		animations.put(RUNNING_RIGHT + "F", AnimationHelper.makeAnimation(Domain.individualTexture, 0, 160, 48, 80, 7, 0.14f));
 	}
 
 
@@ -228,13 +236,12 @@ public class Elf extends Individual {
 
 
 	/** What animation should we use? */
-	private void updateAnimation() {
-
+	private void updateAnimation(String walkingAnimationLeft, String walkingAnimationRight, String standingLeft, String standingRight) {
 		// If we're moving to the right
 		if (getState().velocity.x > 0) {
 			// If walking, and current animation is not walking right, then set animations to walking right
-			if (isCommandActive(KeyMappings.walk) && !current.equals(WALKING_RIGHT)) {
-				current = WALKING_RIGHT;
+			if (isCommandActive(KeyMappings.walk) && !current.equals(walkingAnimationRight)) {
+				current = walkingAnimationRight;
 				currentHair = WALKING_RIGHT_HAIR;
 				animationTimer = 0f;
 			} else if (!isCommandActive(KeyMappings.walk) && !current.equals(RUNNING_RIGHT)) {
@@ -246,8 +253,8 @@ public class Elf extends Individual {
 
 		// Same for if we're moving left
 		} else if (getState().velocity.x < 0) {
-			if (isCommandActive(KeyMappings.walk) && !current.equals(WALKING_LEFT)) {
-				current = WALKING_LEFT;
+			if (isCommandActive(KeyMappings.walk) && !current.equals(walkingAnimationLeft)) {
+				current = walkingAnimationLeft;
 				currentHair = WALKING_LEFT_HAIR;
 				animationTimer = 0f;
 			} else if (!isCommandActive(KeyMappings.walk) && !current.equals(RUNNING_LEFT)) {
@@ -257,16 +264,20 @@ public class Elf extends Individual {
 			}
 
 		// Otherwise we're standing still, if current animation is not standing left or right, then set current to standing left/right depending on which direction we were facing before.
-		} else if (getState().velocity.x == 0 && !current.equals(STANDING_LEFT) && !current.equals(STANDING_RIGHT)) {
-			current = current.equals(WALKING_RIGHT) || current.equals(RUNNING_RIGHT) ? STANDING_RIGHT : STANDING_LEFT;
-			currentHair = currentHair.equals(WALKING_RIGHT_HAIR) || currentHair.equals(RUNNING_RIGHT_HAIR) ? STANDING_RIGHT_HAIR : STANDING_LEFT_HAIR;
+		} else if (getState().velocity.x == 0 && !current.equals(standingLeft) && !current.equals(standingRight)) {
+			current = current.equals(walkingAnimationRight) || current.equals(RUNNING_RIGHT) || current.equals(STANDING_RIGHT) || current.equals(STANDING_RIGHT_COMBAT) ? standingRight : standingLeft;
+			currentHair = currentHair.equals(WALKING_RIGHT_HAIR) || currentHair.equals(RUNNING_RIGHT_HAIR) || current.equals(STANDING_RIGHT) || current.equals(STANDING_RIGHT_COMBAT) ? STANDING_RIGHT_HAIR : STANDING_LEFT_HAIR;
 		}
 	}
 
 
 	@Override
 	protected void internalUpdate(float delta) {
-		updateAnimation();
+		if (combatStance) {
+			updateAnimation(WALKING_LEFT_COMBAT, WALKING_RIGHT_COMBAT, STANDING_LEFT_COMBAT, STANDING_RIGHT_COMBAT);
+		} else {
+			updateAnimation(WALKING_LEFT, WALKING_RIGHT, STANDING_LEFT, STANDING_RIGHT);
+		}
 
 		if (ClientServerInterface.isServer()) {
 			updateVitals(delta);
@@ -431,6 +442,20 @@ public class Elf extends Individual {
 					return new SpacialConfiguration(new Vector2(1, 20), 0f, false);
 				default:
 					throw new RuntimeException("Unexpected keyframe index");
+				}
+
+			case STANDING_RIGHT_COMBAT:
+			case WALKING_RIGHT_COMBAT:
+				switch (keyFrameIndex) {
+				default:
+					return new SpacialConfiguration(new Vector2(-13, 29), -60f, true);
+				}
+
+			case STANDING_LEFT_COMBAT:
+			case WALKING_LEFT_COMBAT:
+				switch (keyFrameIndex) {
+				default:
+					return new SpacialConfiguration(new Vector2(13, 29), 60f, false);
 				}
 		}
 		return null;
