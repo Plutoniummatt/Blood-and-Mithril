@@ -3,7 +3,6 @@ package bloodandmithril.character.individuals;
 import java.util.HashMap;
 import java.util.List;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.conditions.Exhaustion;
@@ -324,13 +323,13 @@ public class Elf extends Individual {
 		//Horizontal movement
 		Topography topography = Domain.getWorld(getWorldId()).getTopography();
 		if (Math.abs(getState().velocity.y) < 5f) {
-			if (isCommandActive(KeyMappings.moveLeft) && (canStepUp(-2, topography) || !obstructed(-2, topography))) {
+			if (isCommandActive(KeyMappings.moveLeft) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsBean()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsBean()))) {
 				if (isCommandActive(KeyMappings.walk)) {
 					getState().velocity.x = -30f;
 				} else {
 					getState().velocity.x = -80f;
 				}
-			} else if (isCommandActive(KeyMappings.moveRight) && (canStepUp(2, topography) || !obstructed(2, topography))) {
+			} else if (isCommandActive(KeyMappings.moveRight) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsBean()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsBean()))) {
 				if (isCommandActive(KeyMappings.walk)) {
 					getState().velocity.x = 30f;
 				} else {
@@ -341,7 +340,7 @@ public class Elf extends Individual {
 				getState().acceleration.x = 0f;
 
 				int offset = isCommandActive(KeyMappings.moveRight) ? 2 : isCommandActive(KeyMappings.moveLeft) ? -2 : 0;
-				if (obstructed(offset, topography) && !canStepUp(offset, topography) && !(ai.getCurrentTask() instanceof Idle)) {
+				if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsBean()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsBean()) && !(ai.getCurrentTask() instanceof Idle)) {
 					ai.setCurrentTask(new Idle());
 				}
 
