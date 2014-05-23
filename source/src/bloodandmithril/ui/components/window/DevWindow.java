@@ -37,7 +37,10 @@ import bloodandmithril.item.items.misc.Currency;
 import bloodandmithril.item.liquid.Blood;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Water;
+import bloodandmithril.item.material.metal.Copper;
+import bloodandmithril.item.material.metal.Gold;
 import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.material.metal.Silver;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.Hematite;
@@ -169,6 +172,15 @@ public class DevWindow extends Window {
 
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(Ingot.ingot(Iron.class));
+			}
+			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
+				elf.giveItem(Ingot.ingot(Gold.class));
+			}
+			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
+				elf.giveItem(Ingot.ingot(Silver.class));
+			}
+			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
+				elf.giveItem(Ingot.ingot(Copper.class));
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(Log.log(Pine.class));

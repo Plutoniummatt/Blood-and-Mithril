@@ -79,10 +79,10 @@ public class Broadsword<T extends Metal> extends OneHandedWeapon<T> implements C
 			1f,
 			1f,
 			angle,
-			417,
-			621,
-			52,
-			11,
+			texture.getRegionX(),
+			texture.getRegionY(),
+			texture.getRegionWidth(),
+			texture.getRegionHeight(),
 			flipX,
 			false
 		);

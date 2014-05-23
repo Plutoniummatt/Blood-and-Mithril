@@ -135,7 +135,7 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 						new MenuItem(
 							"Show info",
 							() -> {
-								UserInterface.addLayeredComponent(entry.getKey().getInfoWindow());
+								UserInterface.addLayeredComponentUnique(entry.getKey().getInfoWindow());
 							},
 							Color.WHITE,
 							Color.GREEN,

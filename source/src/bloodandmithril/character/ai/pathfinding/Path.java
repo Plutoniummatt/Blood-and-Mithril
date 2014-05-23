@@ -53,26 +53,26 @@ public class Path implements Serializable {
 		}
 		return false;
 	}
-	
-	
+
+
 	/** Public no-arg constructor */
 	public Path() {
 		 this.waypoints = new ConcurrentLinkedDeque<WayPoint>();
 	}
-	
-	
+
+
 	/** Private constructor, see {@link #copy()} */
 	private Path(ConcurrentLinkedDeque<WayPoint> waypoints){
 		this.waypoints = waypoints;
 	}
-	
-	
+
+
 	/** Copies this path, must be synchronized */
 	public synchronized Path copy() {
 		return new Path(new ConcurrentLinkedDeque<>(this.waypoints));
 	}
 
-	
+
 	/** Adds a {@link WayPoint} to this {@link Path} at the beginning */
 	public synchronized void addWayPointReversed(WayPoint wayPoint) {
 		waypoints.addFirst(wayPoint);
@@ -157,7 +157,7 @@ public class Path implements Serializable {
 
 
 	/** Returns the destination waypoint */
-	public WayPoint getDestinationWayPoint() {
+	public synchronized WayPoint getDestinationWayPoint() {
 		if (waypoints.isEmpty()) {
 			return null;
 		}

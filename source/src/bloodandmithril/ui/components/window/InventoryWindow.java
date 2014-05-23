@@ -659,7 +659,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			return new MenuItem(
 				"Show info",
 				() -> {
-					UserInterface.addLayeredComponent(item.getInfoWindow());
+					UserInterface.addLayeredComponentUnique(item.getInfoWindow());
 				},
 				Colors.UI_GRAY,
 				Color.GREEN,

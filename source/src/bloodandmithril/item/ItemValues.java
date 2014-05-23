@@ -28,4 +28,7 @@ public class ItemValues {
 	public static final int CLAY = 50;
 	public static final int DIRT = 1;
 	public static final int GLASS = 100;
+	public static final int GOLDINGOT = 25000;
+	public static final int SILVERINGOT = 10000;
+	public static final int COPPERINGOT = 750;
 }
