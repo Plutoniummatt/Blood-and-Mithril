@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.graphics.Color;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 
 /**
  * A class representing a liquid

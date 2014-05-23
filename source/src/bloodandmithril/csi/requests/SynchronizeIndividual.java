@@ -2,10 +2,10 @@ package bloodandmithril.csi.requests;
 
 import java.util.Set;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;

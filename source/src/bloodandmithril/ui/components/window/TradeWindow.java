@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.item.items.Item;

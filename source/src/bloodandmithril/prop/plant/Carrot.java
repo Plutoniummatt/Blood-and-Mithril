@@ -1,9 +1,9 @@
 package bloodandmithril.prop.plant;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.items.Item;

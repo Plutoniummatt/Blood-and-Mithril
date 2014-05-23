@@ -2,12 +2,12 @@ package bloodandmithril.character.ai;
 
 import java.io.Serializable;
 
-import bloodandmithril.character.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
 import bloodandmithril.util.Task;
 
 
 /**
- * Abstract {@link Task}, see {@link ArtificialIntelligence#ArtificialIntelligence(bloodandmithril.character.Individual)}
+ * Abstract {@link Task}, see {@link ArtificialIntelligence#ArtificialIntelligence(bloodandmithril.character.individuals.Individual)}
  *
  * @author Matt
  */

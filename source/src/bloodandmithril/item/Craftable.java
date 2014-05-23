@@ -2,7 +2,7 @@ package bloodandmithril.item;
 
 import java.util.Map;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 

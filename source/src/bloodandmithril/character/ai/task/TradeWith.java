@@ -2,9 +2,9 @@ package bloodandmithril.character.ai.task;
 
 import java.util.Comparator;
 
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;

@@ -2,8 +2,8 @@ package bloodandmithril.csi.requests;
 
 import java.util.Collection;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TakeItem;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.items.Item;

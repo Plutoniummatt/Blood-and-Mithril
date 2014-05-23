@@ -1,7 +1,7 @@
 package bloodandmithril.character.ai.task;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.individuals.Individual;
 
 /**
  * An {@link AITask} that tells the {@link Individual} to herp derp do nothing.

@@ -6,10 +6,10 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;

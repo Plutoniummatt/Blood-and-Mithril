@@ -1,7 +1,7 @@
 package bloodandmithril.character.conditions;
 
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.Condition;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.Condition;
 import bloodandmithril.world.Domain;
 
 /**
@@ -25,7 +25,7 @@ public class Thirst extends Condition {
 
 
 	/**
-	 * @see bloodandmithril.character.Individual.Condition#affect(bloodandmithril.character.Individual, float)
+	 * @see bloodandmithril.character.individuals.Individual.Condition#affect(bloodandmithril.character.individuals.Individual, float)
 	 *
 	 * If thirst is zero, then individual takes 0.03 damage per second.
 	 */

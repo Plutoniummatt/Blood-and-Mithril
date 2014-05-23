@@ -2,8 +2,8 @@ package bloodandmithril.character.ai.pathfinding;
 
 import java.io.Serializable;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;

@@ -1,8 +1,8 @@
 package bloodandmithril.csi.requests;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.world.Domain;

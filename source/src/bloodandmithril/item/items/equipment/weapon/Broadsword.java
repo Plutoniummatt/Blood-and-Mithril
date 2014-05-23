@@ -2,8 +2,8 @@ package bloodandmithril.item.items.equipment.weapon;
 
 import java.util.Map;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.conditions.Bleeding;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;

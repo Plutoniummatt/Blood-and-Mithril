@@ -2,7 +2,7 @@ package bloodandmithril.csi.requests;
 
 import java.util.HashMap;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;

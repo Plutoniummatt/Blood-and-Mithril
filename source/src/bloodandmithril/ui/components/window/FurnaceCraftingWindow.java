@@ -3,8 +3,8 @@ package bloodandmithril.ui.components.window;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.prop.construction.craftingstation.Furnace;

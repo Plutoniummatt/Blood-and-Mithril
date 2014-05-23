@@ -1,7 +1,7 @@
 package bloodandmithril.character.ai.task;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.world.Domain;
 
 /**

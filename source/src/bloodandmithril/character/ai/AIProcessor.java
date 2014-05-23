@@ -2,9 +2,9 @@ package bloodandmithril.character.ai;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;

@@ -17,9 +17,6 @@ import java.util.concurrent.ExecutorService;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.IndividualIdentifier;
-import bloodandmithril.character.Individual.IndividualState;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
@@ -60,6 +57,9 @@ import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.Individual.IndividualState;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.Response.Responses;

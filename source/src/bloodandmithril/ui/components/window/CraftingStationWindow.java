@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Craft;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;

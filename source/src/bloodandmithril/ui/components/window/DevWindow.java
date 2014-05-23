@@ -13,13 +13,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.IndividualIdentifier;
-import bloodandmithril.character.Individual.IndividualState;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Names;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.Individual.IndividualState;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.items.Item;

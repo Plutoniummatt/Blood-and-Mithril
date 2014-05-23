@@ -9,8 +9,8 @@ import static java.lang.Math.max;
 import java.io.Serializable;
 import java.util.List;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TakeItem;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.affix.Affix;

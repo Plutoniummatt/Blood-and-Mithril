@@ -1,9 +1,9 @@
 package bloodandmithril.character.ai.task;
 
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;

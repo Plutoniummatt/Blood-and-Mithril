@@ -1,8 +1,7 @@
 package bloodandmithril.persistence.character;
 
 import static bloodandmithril.persistence.PersistenceUtil.encode;
-
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.world.Domain;
 

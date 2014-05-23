@@ -1,8 +1,8 @@
 package bloodandmithril.character.ai.task;
 
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;

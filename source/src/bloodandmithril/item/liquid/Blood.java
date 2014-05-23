@@ -1,6 +1,6 @@
 package bloodandmithril.item.liquid;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;

@@ -6,7 +6,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;

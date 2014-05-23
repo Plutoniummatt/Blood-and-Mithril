@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 
 /**
  * Affects another {@link Individual}
