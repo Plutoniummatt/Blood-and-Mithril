@@ -3,7 +3,7 @@ package bloodandmithril.item;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;

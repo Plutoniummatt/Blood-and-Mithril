@@ -8,7 +8,7 @@ import static com.badlogic.gdx.Gdx.files;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.util.Logger.LogLevel;
 
 /**

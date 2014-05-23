@@ -1,6 +1,6 @@
 package bloodandmithril.csi.requests;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.items.Item;

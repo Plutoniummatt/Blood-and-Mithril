@@ -1,6 +1,6 @@
 package bloodandmithril.item;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.Item;
 
 /**

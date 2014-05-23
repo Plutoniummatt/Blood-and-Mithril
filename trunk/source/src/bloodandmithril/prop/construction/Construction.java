@@ -3,8 +3,8 @@ package bloodandmithril.prop.construction;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;

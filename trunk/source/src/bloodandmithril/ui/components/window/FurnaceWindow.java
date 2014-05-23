@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Fuel;

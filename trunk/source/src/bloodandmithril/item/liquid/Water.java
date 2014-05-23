@@ -2,7 +2,7 @@ package bloodandmithril.item.liquid;
 
 import com.badlogic.gdx.graphics.Color;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.util.Util.Colors;
 
 /**

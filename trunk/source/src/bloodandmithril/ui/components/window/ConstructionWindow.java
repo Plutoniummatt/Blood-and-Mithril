@@ -6,8 +6,8 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.Construct;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;

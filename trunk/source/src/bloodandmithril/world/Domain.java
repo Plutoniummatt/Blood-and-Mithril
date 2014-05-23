@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.faction.Faction;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.Light;

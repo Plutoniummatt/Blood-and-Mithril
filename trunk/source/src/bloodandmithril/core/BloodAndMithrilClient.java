@@ -5,10 +5,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import bloodandmithril.audio.SoundService;
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;

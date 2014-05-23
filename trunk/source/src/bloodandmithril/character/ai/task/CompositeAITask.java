@@ -2,8 +2,8 @@ package bloodandmithril.character.ai.task;
 
 import java.util.ArrayDeque;
 
-import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
 
 
 /**

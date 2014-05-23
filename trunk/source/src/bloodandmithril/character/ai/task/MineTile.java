@@ -1,11 +1,11 @@
 package bloodandmithril.character.ai.task;
 
 import bloodandmithril.audio.SoundService;
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;

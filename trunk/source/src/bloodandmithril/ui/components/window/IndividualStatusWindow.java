@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.Condition;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.Condition;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;

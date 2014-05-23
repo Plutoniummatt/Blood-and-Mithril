@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import bloodandmithril.character.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldState;
 

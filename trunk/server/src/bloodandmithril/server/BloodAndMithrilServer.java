@@ -12,14 +12,14 @@ import java.util.function.Function;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.IndividualIdentifier;
-import bloodandmithril.character.Individual.IndividualState;
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Names;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.Individual.IndividualState;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;

@@ -1,7 +1,7 @@
 package bloodandmithril.csi.requests;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.DiscardLiquid;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.item.items.container.LiquidContainer;

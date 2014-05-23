@@ -1,7 +1,7 @@
 package bloodandmithril.character.conditions;
 
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.Condition;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.Condition;
 
 /**
  * Drains health

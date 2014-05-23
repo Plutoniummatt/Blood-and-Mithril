@@ -1,8 +1,8 @@
 package bloodandmithril.csi.requests;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;

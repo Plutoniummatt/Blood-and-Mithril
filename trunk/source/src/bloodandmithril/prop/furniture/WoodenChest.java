@@ -6,9 +6,9 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import bloodandmithril.character.Individual;
 import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.items.Item;

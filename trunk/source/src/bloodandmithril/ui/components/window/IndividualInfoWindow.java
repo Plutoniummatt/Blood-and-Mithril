@@ -5,7 +5,7 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.character.Individual;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;

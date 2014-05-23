@@ -1,4 +1,4 @@
-package bloodandmithril.character;
+package bloodandmithril.character.individuals;
 
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
@@ -10,12 +10,9 @@ import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.ParameterPersistenceService.getParameters;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
-import static bloodandmithril.world.topography.Topography.TILE_SIZE;
-import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.PI;
-import static java.lang.Math.abs;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -24,13 +21,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
-import bloodandmithril.character.ai.task.GoToLocation;
-import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.TradeWith;
-import bloodandmithril.character.individuals.Boar;
-import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
@@ -55,9 +47,6 @@ import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.World;
-import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.tile.Tile;
-import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -69,7 +58,7 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
-public abstract class Individual implements Equipper, Serializable {
+public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private static final long serialVersionUID = 2821835360311044658L;
 
 	/** Timestamp, used for synchronizing with server */
@@ -119,23 +108,14 @@ public abstract class Individual implements Equipper, Serializable {
 	/** The 'reaction' time of the AI instance controlling this {@link Individual} */
 	private float aiReactionTimer;
 
-	/** Coordinates of the tile to jump off (ignored by ground detection) */
-	private Vector2 jumpOff = null;
-
-	/** Used for platform jump-off processing */
-	private boolean jumpedOff = false;
-
-	/** Height at which it's deemed unsafe to fall to the ground */
-	private int safetyHeight;
-
 	/** True if this {@link Individual} is walking */
 	private boolean walking = true;
 
-	/** True if this {@link Individual} is currently stepping up */
-	private boolean steppingUp;
+	/** The kinematics bean, containing things needed for kinematics processing */
+	private KinematicsBean kinematicsBean = new KinematicsBean();
 
-	/** Part of the step-up processing */
-	private int steps = 0;
+	/** Height at which it's deemed unsafe to fall to the ground */
+	private int safetyHeight;
 
 	/** {@link Skills}s of this {@link Individual} */
 	private Skills skills = new Skills();
@@ -191,11 +171,9 @@ public abstract class Individual implements Equipper, Serializable {
 		this.height =  other.getHeight();
 		this.id = other.id;
 		this.interactionBox = other.getInteractionBox();
-		this.jumpedOff = other.jumpedOff;
+		this.kinematicsBean = other.getKinematicsBean();
 		this.safetyHeight = other.safetyHeight;
 		this.state = other.state;
-		this.steppingUp = other.steppingUp;
-		this.steps = other.steps;
 		this.walking = other.walking;
 		this.width = other.width;
 		this.timeStamp = other.timeStamp;
@@ -377,8 +355,8 @@ public abstract class Individual implements Equipper, Serializable {
 	 * No longer jumping off, set {@link #jumpOff} to null, to signify that this individual is not trying to jump off any tile
 	 */
 	public synchronized void setJumpOffToNull() {
-		jumpOff = null;
-		jumpedOff = false;
+		getKinematicsBean().jumpOff = null;
+		getKinematicsBean().jumpedOff = false;
 	}
 
 
@@ -414,10 +392,10 @@ public abstract class Individual implements Equipper, Serializable {
 
 		respondToCommands();
 
-		kinetics(delta, Domain.getWorld(getWorldId()));
+		Kinematics.kinetics(delta, Domain.getWorld(getWorldId()), this);
 
 		if (isServer()) {
-			conditions(delta);
+			updateConditions(delta);
 		}
 	}
 
@@ -425,7 +403,7 @@ public abstract class Individual implements Equipper, Serializable {
 	/**
 	 * Update how this {@link Individual} is affected by its {@link Condition}s
 	 */
-	private void conditions(float delta) {
+	private void updateConditions(float delta) {
 		// Reset regeneration values
 		state.reset();
 
@@ -446,165 +424,6 @@ public abstract class Individual implements Equipper, Serializable {
 	}
 
 
-	/**
-	 * Handles standard kinematics
-	 */
-	protected void kinetics(float delta, World world) {
-		Topography topography = Domain.getWorld(getWorldId()).getTopography();
-		jumpOffLogic(topography);
-
-		//Stepping up
-		if (steppingUp) {
-			if (steps >= TILE_SIZE) {
-				steppingUp = false;
-				state.position.y += TILE_SIZE - steps;
-			} else {
-				state.position.y = state.position.y + 3f;
-				steps += 3f;
-			}
-		}
-
-		//Calculate position
-		state.position.add(state.velocity.cpy().mul(delta));
-
-		//Calculate velocity based on acceleration, including gravity
-		if (abs((state.velocity.y - world.getGravity() * delta) * delta) < TILE_SIZE/2) {
-			state.velocity.y = state.velocity.y - (steppingUp ? 0 : delta * world.getGravity());
-		} else {
-			state.velocity.y = state.velocity.y * 0.8f;
-		}
-		state.velocity.add(state.acceleration.cpy().mul(delta));
-
-		//Ground detection
-		//If the position is not on an empty tile and is not a platform tile run the ground detection routine
-		//If the position is on a platform tile and if the tile below current position is not an empty tile, run ground detection routine
-		//If position below is a platform tile and the next waypoint is directly below current position, skip ground detection
-		if (groundDetectionCriteriaMet(topography) && !steppingUp) {
-			state.velocity.y = 0f;
-
-			if (state.position.y >= 0f) {
-				if ((int)state.position.y % TILE_SIZE == 0) {
-					state.position.y = (int)state.position.y / TILE_SIZE * TILE_SIZE;
-				} else {
-					state.position.y = (int)state.position.y / TILE_SIZE * TILE_SIZE + TILE_SIZE;
-				}
-			} else {
-				state.position.y = (int)state.position.y / TILE_SIZE * TILE_SIZE;
-			}
-		} else if (state.position.y == 0f && !(topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
-			state.velocity.y = 0f;
-		} else {
-			state.velocity.x = state.velocity.x * 0.9f;
-		}
-
-		//Wall check routine, only perform this if we're moving
-		if (state.velocity.x != 0 && obstructed(0, topography)) {
-			if (canStepUp(0, topography)) {
-				if (!steppingUp) {
-					steppingUp = true;
-					steps = 0;
-				}
-			} else if (!steppingUp) {
-				boolean check = false;
-				while (obstructed(0, topography)) {
-					if (state.velocity.x > 0) {
- 						state.position.x = state.position.x - 1;
-					} else {
-						state.position.x = state.position.x + 1;
-					}
-					check = true;
-				}
-				if (check) {
-					state.velocity.x = 0;
-					ai.setCurrentTask(new Idle());
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * Whether we should be running ground detection
-	 */
-	protected boolean groundDetectionCriteriaMet(Topography topography) {
-		Tile currentTile = topography.getTile(state.position.x, state.position.y, true);
-		Tile tileBelow = topography.getTile(state.position.x, state.position.y - TILE_SIZE/2, true);
-		return (!(currentTile instanceof Tile.EmptyTile) && !currentTile.isPlatformTile || currentTile.isPlatformTile && !(tileBelow instanceof EmptyTile)) &&
-			    !isToBeIgnored(state.position);
-	}
-
-
-	/**
-	 * Sets {@link #jumpOff} to null if we've passed it
-	 */
-	private void jumpOffLogic(Topography topography) {
-		AITask currentTask = ai.getCurrentTask();
-		if (currentTask instanceof GoToLocation) {
-			if (((GoToLocation) currentTask).isAboveNext(state.position)) {
-				jumpOff(topography);
-				jumpedOff = false;
-			}
-		}
-
-		if (jumpOff != null) {
-			if (jumpedOff && !convertToWorldCoord(state.position, false).equals(jumpOff)) {
-				jumpedOff = false;
-				jumpOff = null;
-			} else if (Math.abs(convertToWorldCoord(state.position, false).cpy().sub(jumpOff).len()) > 2 * TILE_SIZE) {
-				jumpedOff = true;
-			}
-		}
-	}
-
-
-	/**
-	 * @return true if {@link Tile} at location is to be ignored, according to {@link #jumpOff}
-	 */
-	private boolean isToBeIgnored(Vector2 location) {
-		if (jumpOff != null) {
-			return convertToWorldCoord(location, false).equals(jumpOff) || convertToWorldCoord(location.x, location.y - 1, false).equals(jumpOff);
-		}
-		return false;
-	}
-
-
-	/**
-	 * Jump off the tile this {@link Individual} is currently standing on, as long as its a platform
-	 */
-	public void jumpOff(Topography topography) {
-		if (topography.getTile(state.position.x, state.position.y - TILE_SIZE/2, true).isPlatformTile) {
-			jumpOff = convertToWorldCoord(state.position.x, state.position.y - TILE_SIZE/2, false);
-		}
-	}
-
-
-	/**
-	 * Determines during {@link #kinetics(float)} whether we can step up
-	 */
-	protected boolean canStepUp(int offsetX, Topography topography) {
-		int blockspan = getHeight()/TILE_SIZE + (getHeight() % TILE_SIZE == 0 ? 0 : 1);
-
-		for (int block = 1; block != blockspan + 1; block++) {
-			if (!isPassable(state.position.x + offsetX, state.position.y + TILE_SIZE*block + TILE_SIZE/2, topography)) {
-				return false;
-			}
-		}
-		return !isPassable(state.position.x + offsetX, state.position.y + TILE_SIZE/2, topography);
-	}
-
-
-	/** Whether this {@link Individual} is obstructed by {@link Tile}s */
-	protected boolean obstructed(int offsetX, Topography topography) {
-		int blockspan = getHeight()/TILE_SIZE + (getHeight() % TILE_SIZE == 0 ? 0 : 1);
-		for (int block = 0; block != blockspan; block++) {
-			if (!isPassable(state.position.x + offsetX, state.position.y + TILE_SIZE/2 + TILE_SIZE * block, topography)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-
 	/** Calculates the distance between this individual and the Vector2 parameter */
 	public float getDistanceFrom(Vector2 position) {
 		try {
@@ -613,36 +432,6 @@ public abstract class Individual implements Equipper, Serializable {
 			a.printStackTrace();
 			throw new RuntimeException(a);
 		}
-	}
-
-
-	/**
-	 * True if a {@link Tile#isPassable()}, taking into account the path
-	 */
-	protected boolean isPassable(float x, float y, Topography topography) {
-		AITask current = ai.getCurrentTask();
-		Tile tile = topography.getTile(x, y, true);
-
-		if (convertToWorldCoord(x, y, false).equals(jumpOff)) {
-			return true;
-		}
-
-		//If we're on an empty tile it's obviously passable
-		if (tile instanceof EmptyTile) {
-			return true;
-		}
-
-		//If we're on a platform and we're GoingToLocation, then check to see if the tile above is part of the path, if it is, then not passable, otherwise passable
-		if (tile.isPlatformTile) {
-			if (current instanceof GoToLocation) {
-				return !((GoToLocation)current).isPartOfPath(new Vector2(x, y + TILE_SIZE));
-			} else {
-				return true;
-			}
-		}
-
-		//By this point we're not empty, and we're not a platform, not passable
-		return false;
 	}
 
 
@@ -1224,6 +1013,27 @@ public abstract class Individual implements Equipper, Serializable {
 
 	public void setWorldId(int worldId) {
 		this.worldId = worldId;
+	}
+
+
+	public KinematicsBean getKinematicsBean() {
+		return kinematicsBean;
+	}
+
+
+	public static class KinematicsBean {
+
+		/** Coordinates of the tile to jump off (ignored by ground detection) */
+		public Vector2 jumpOff = null;
+
+		/** Used for platform jump-off processing */
+		public boolean jumpedOff = false;
+
+		/** True if this {@link Individual} is currently stepping up */
+		public boolean steppingUp;
+
+		/** Part of the step-up processing */
+		public int steps = 0;
 	}
 
 

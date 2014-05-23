@@ -2,12 +2,12 @@ package bloodandmithril.character.ai;
 
 import java.io.Serializable;
 
-import bloodandmithril.character.Individual;
-import bloodandmithril.character.Individual.IndividualIdentifier;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Wait;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
