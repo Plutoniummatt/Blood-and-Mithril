@@ -218,9 +218,7 @@ public class MainMenuWindow extends Window {
 	private void connected() {
 		UserInterface.buttons.remove("connect");
 		UserInterface.setup();
-
-		SoundService.changeMusic(6f, SoundService.gameMusic1);
-		SoundService.setVolumne(0.3f);
+		SoundService.fadeOut(2f);
 
 		for (Component component : UserInterface.layeredComponents) {
 			if (component instanceof Window && ((Window) component).title.equals("Connecting") ||
