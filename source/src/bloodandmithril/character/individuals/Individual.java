@@ -1021,7 +1021,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	public static class KinematicsBean {
+	public static class KinematicsBean implements Serializable {
+		private static final long serialVersionUID = 9001152449205822919L;
 
 		/** Coordinates of the tile to jump off (ignored by ground detection) */
 		public Vector2 jumpOff = null;

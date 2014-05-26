@@ -168,7 +168,7 @@ public class Domain {
 		individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
 
 		gameWorldTexture.setFilter(Linear, Linear);
-		individualTexture.setFilter(Linear, Linear);
+		individualTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
 		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
 		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
@@ -309,7 +309,11 @@ public class Domain {
 			}
 
 			for (Item item : items.values()) {
-				item.update(d);
+				try {
+					item.update(d);
+				} catch (NullPointerException e) {
+					// Don't update
+				}
 			}
 		}
 	}
