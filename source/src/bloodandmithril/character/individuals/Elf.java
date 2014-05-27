@@ -49,7 +49,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
-public class Elf extends Individual {
+public class Elf extends GroundedIndividual {
 
 	private static final String RUNNING_LEFT_HAIR = "runningLeftHair";
 	private static final String RUNNING_RIGHT_HAIR = "runningRightHair";

@@ -27,7 +27,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
-public class Boar extends Individual {
+public class Boar extends GroundedIndividual {
 
 	private String biography = new String(
 		"Wild boar or wild pig (Sus scrofa) is a species of the pig genus Sus, " +
