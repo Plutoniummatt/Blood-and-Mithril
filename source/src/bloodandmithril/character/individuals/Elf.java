@@ -1,5 +1,8 @@
 package bloodandmithril.character.individuals;
 
+import static java.util.Collections.singletonList;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -61,10 +64,10 @@ public class Elf extends GroundedIndividual {
 	private String biography = "";
 
 	/** Elf-specific animation map */
-	private static Map<Action, Animation> animationMap;
+	private static Map<Action, Collection<Animation>> animationMap;
 
 	static {
-		animationMap.put(Action.WALK_RIGHT, AnimationHelper.animation(Domain.individualTexture, 0, 0, 1, 1, 10, 0.17f));
+		animationMap.put(Action.WALK_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 0, 1, 1, 10, 0.17f)));
 	}
 
 	/**
@@ -103,15 +106,16 @@ public class Elf extends GroundedIndividual {
 
 	@Override
 	protected void internalRender() {
-		BloodAndMithrilClient.spriteBatch.begin();
-
 		// Draw the body, position is centre bottom of the frame
-		TextureRegion keyFrame = getCurrentAnimation().getKeyFrame(animationTimer, true);
-		BloodAndMithrilClient.spriteBatch.draw(
-			keyFrame,
-			getState().position.x - keyFrame.getRegionWidth()/2,
-			getState().position.y
-		);
+		BloodAndMithrilClient.spriteBatch.begin();
+		for (Animation animation : getCurrentAnimation()) {
+			TextureRegion keyFrame = animation.getKeyFrame(animationTimer, true);
+			BloodAndMithrilClient.spriteBatch.draw(
+				keyFrame,
+				getState().position.x - keyFrame.getRegionWidth()/2,
+				getState().position.y
+			);
+		}
 		BloodAndMithrilClient.spriteBatch.end();
 
 		// Render equipped items
@@ -122,7 +126,6 @@ public class Elf extends GroundedIndividual {
 		Shaders.elfHighLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		for (Item equipped : getEquipped().keySet()) {
 			Equipable toRender = (Equipable) equipped;
-
 			if (equipped instanceof OneHandedWeapon) {
 				SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
 				if (config != null) {
@@ -207,7 +210,6 @@ public class Elf extends GroundedIndividual {
 
 	@Override
 	protected SpacialConfiguration getOneHandedWeaponSpatialConfigration() {
-		// TODO Elf one handed weapon spatial configs
 		return null;
 	}
 
@@ -234,7 +236,7 @@ public class Elf extends GroundedIndividual {
 
 
 	@Override
-	protected Map<Action, Animation> getAnimationMap() {
+	protected Map<Action, Collection<Animation>> getAnimationMap() {
 		return animationMap;
 	}
 
