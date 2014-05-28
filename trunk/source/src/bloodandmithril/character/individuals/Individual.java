@@ -128,7 +128,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** {@link Skills}s of this {@link Individual} */
 	private Skills skills = new Skills();
 
-	/** WHich client number this {@link Individual} is selected by */
+	/** Which client number this {@link Individual} is selected by */
 	private Set<Integer> selectedByClient = Sets.newHashSet();
 
 	/** Holds state of the equipment and inventory */

@@ -8,6 +8,7 @@ import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
 import static bloodandmithril.util.ComparisonUtil.obj;
 
+import java.util.Collection;
 import java.util.Map;
 
 import bloodandmithril.character.ai.task.Idle;
@@ -123,13 +124,13 @@ public abstract class GroundedIndividual extends Individual {
 	/**
 	 * @return The Individual-specific animation map
 	 */
-	protected abstract Map<Action, Animation> getAnimationMap();
+	protected abstract Map<Action, Collection<Animation>> getAnimationMap();
 
 
 	/**
 	 * @return The current {@link Animation} based on the current {@link Action}
 	 */
-	protected Animation getCurrentAnimation() {
+	protected Collection<Animation> getCurrentAnimation() {
 		return getAnimationMap().get(currentAction);
 	}
 
