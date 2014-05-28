@@ -14,12 +14,11 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.faction.Faction;
-import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Names;
 import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
 import bloodandmithril.character.individuals.Individual.IndividualState;
+import bloodandmithril.character.individuals.Names;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
@@ -52,7 +51,6 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Epoch;
 import bloodandmithril.world.topography.fluid.Fluid;
 import bloodandmithril.world.topography.fluid.FluidFraction;
 
@@ -62,7 +60,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -346,20 +343,6 @@ public class BloodAndMithrilServer {
 				}
 			}
 
-			if (keycode == Input.Keys.U) {
-				IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f, 0f, 0f, 0f);
-				state.position = new Vector2(0, 500);
-				state.velocity = new Vector2(0, 0);
-				state.acceleration = new Vector2(0, 0);
-
-				IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
-				id.setNickName("Unknown");
-
-				Boar boar = new Boar(id, state, Domain.getActiveWorld());
-
-				Domain.getIndividuals().put(boar.getId().getId(), boar);
-			}
-
 			if (keycode == Input.Keys.R) {
 				IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f, 0f, 0f, 0f);
 				state.position = new Vector2(200, 700);
@@ -374,9 +357,6 @@ public class BloodAndMithrilServer {
 					state,
 					Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1,
 					true,
-					new Color(0.5f + 0.5f * Util.getRandom().nextFloat(), 0.5f + 0.5f * Util.getRandom().nextFloat(), 0.5f + 0.5f * Util.getRandom().nextFloat(), 1),
-					new Color(0.2f + 0.4f * Util.getRandom().nextFloat(), 0.2f + 0.3f * Util.getRandom().nextFloat(), 0.5f + 0.3f * Util.getRandom().nextFloat(), 1),
-					Util.getRandom().nextInt(4),
 					20f,
 					Domain.getActiveWorld()
 				);

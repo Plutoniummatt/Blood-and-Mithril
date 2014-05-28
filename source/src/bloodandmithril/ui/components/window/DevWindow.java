@@ -14,12 +14,11 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 
 import bloodandmithril.character.faction.Faction;
-import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Names;
 import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
 import bloodandmithril.character.individuals.Individual.IndividualState;
+import bloodandmithril.character.individuals.Names;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.items.Item;
@@ -60,7 +59,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Epoch;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.fluid.Fluid;
 import bloodandmithril.world.topography.fluid.FluidFraction;
@@ -160,9 +158,6 @@ public class DevWindow extends Window {
 
 			Elf elf = new Elf(
 				id, state, Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
-				new Color(0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 0.5f + 0.5f*Util.getRandom().nextFloat(), 1),
-				new Color(0.2f + 0.4f*Util.getRandom().nextFloat(), 0.2f + 0.3f*Util.getRandom().nextFloat(), 0.5f + 0.3f*Util.getRandom().nextFloat(), 1),
-				Util.getRandom().nextInt(4),
 				20f,
 				Domain.getActiveWorld()
 			);
@@ -220,21 +215,6 @@ public class DevWindow extends Window {
 			elf.giveItem(broadSword(100, Iron.class));
 
 			Domain.getIndividuals().put(elf.getId().getId(), elf);
-			return true;
-		}
-
-		if (keyCode == Input.Keys.U) {
-			IndividualState state = new IndividualState(10f, 10f, 0.01f, 1f, 1f, 1f, 1f, 0f, 0f, 0f);
-			state.position = new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY());
-			state.velocity = new Vector2(0, 0);
-			state.acceleration = new Vector2(0, 0);
-
-			IndividualIdentifier id = new IndividualIdentifier("Unknown", "", new Epoch(10f, 12, 12, 2012));
-			id.setNickName("Unknown");
-
-			Boar boar = new Boar(id, state, Domain.getActiveWorld());
-
-			Domain.getIndividuals().put(boar.getId().getId(), boar);
 			return true;
 		}
 
@@ -309,27 +289,6 @@ public class DevWindow extends Window {
 				"Spawn Elf - E",
 				new Button(
 					"Spawn Elf - E",
-					Fonts.defaultFont,
-					0,
-					0,
-					130,
-					16,
-					() -> {},
-					Color.CYAN,
-					Color.CYAN,
-					Color.CYAN,
-					UIRef.BL
-				),
-				null
-			),
-			0
-		);
-
-		newHashMap.put(
-			new ListingMenuItem<String>(
-				"Spawn Boar - U",
-				new Button(
-					"Spawn Boar - U",
 					Fonts.defaultFont,
 					0,
 					0,

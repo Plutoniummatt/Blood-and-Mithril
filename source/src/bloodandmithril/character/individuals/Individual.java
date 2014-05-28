@@ -1,5 +1,6 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
@@ -60,6 +61,13 @@ import com.google.common.collect.Sets;
  */
 public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private static final long serialVersionUID = 2821835360311044658L;
+
+	public enum Action implements Serializable {
+		STAND_LEFT, STAND_RIGHT, WALK_LEFT, WALK_RIGHT, RUN_LEFT, RUN_RIGHT
+	}
+
+	/** The current action of this individual */
+	protected Action currentAction = STAND_LEFT;
 
 	/** Timestamp, used for synchronizing with server */
 	private long timeStamp;
@@ -179,6 +187,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.timeStamp = other.timeStamp;
 		this.selectedByClient = other.selectedByClient;
 		this.skills = other.skills;
+		this.currentAction = other.currentAction;
 		synchronizeContainer(other.equipperImpl);
 		synchronizeEquipper(other.equipperImpl);
 
@@ -237,8 +246,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Setups up all individual resources */
 	public static void setup() {
-		Elf.loadAnimations();
-		Boar.loadAnimations();
 	}
 
 
@@ -864,7 +871,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/** True if mouse is over */
-	public abstract boolean isMouseOver();
+	public boolean isMouseOver() {
+		float x = BloodAndMithrilClient.getMouseWorldX();
+		float y = BloodAndMithrilClient.getMouseWorldY();
+
+		boolean ans = x >= getState().position.x - getWidth()/2 && x <= getState().position.x + getWidth()/2 && y >= getState().position.y && y <= getState().position.y + getHeight();
+		return ans;
+	}
 
 
 	/** Returns the tooltip text color */
@@ -884,7 +897,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/** Returns the {@link SpacialConfiguration} where {@link OneHandedWeapon} will be rendered */
-	protected abstract SpacialConfiguration getOneHandedWeaponSpacialConfigration();
+	protected abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();
 
 
 	@Override
