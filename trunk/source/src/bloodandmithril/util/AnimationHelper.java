@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class AnimationHelper {
 
 	
-	public static Animation makeAnimation(Texture tex, int startX, int startY, int width, int height, int frames, float duration) {
+	public static Animation animation(Texture tex, int startX, int startY, int width, int height, int frames, float duration) {
 		TextureRegion[] regions = new TextureRegion[frames];
 		
 		for (int i = 0; i < frames; i++) {

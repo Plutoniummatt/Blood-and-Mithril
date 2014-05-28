@@ -55,7 +55,6 @@ import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.faction.Faction;
-import bloodandmithril.character.individuals.Boar;
 import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
@@ -446,7 +445,6 @@ public class ClientServerInterface {
 		kryo.register(AStarPathFinder.Node.class);
 		kryo.register(Bleeding.class);
 		kryo.register(bloodandmithril.prop.plant.Carrot.class);
-		kryo.register(Boar.class);
 		kryo.register(BoarAI.class);
 		kryo.register(LiquidContainer.class);
 		kryo.register(Box.class);
