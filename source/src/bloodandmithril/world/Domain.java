@@ -268,8 +268,8 @@ public class Domain {
 			item.render();
 		}
 		spriteBatch.end();
-		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
 		IndividualPlatformFilteringRenderer.renderIndividuals();
+		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
 
 		gl20.glEnable(GL20.GL_BLEND);
 		shapeRenderer.begin(ShapeType.FilledRectangle);

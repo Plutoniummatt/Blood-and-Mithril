@@ -43,8 +43,8 @@ public interface Kinematics {
 				kinematicsBean.steppingUp = false;
 				state.position.y += TILE_SIZE - kinematicsBean.steps;
 			} else {
-				state.position.y = state.position.y + 3f;
-				kinematicsBean.steps += 3f;
+				state.position.y = state.position.y + 4f;
+				kinematicsBean.steps += 4f;
 			}
 		}
 

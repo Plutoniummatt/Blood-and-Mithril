@@ -1,5 +1,6 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static java.util.Collections.singletonList;
 
 import java.util.Collection;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Exceptional at:
@@ -64,10 +66,12 @@ public class Elf extends GroundedIndividual {
 	private String biography = "";
 
 	/** Elf-specific animation map */
-	private static Map<Action, Collection<Animation>> animationMap;
+	private static Map<Action, Collection<Animation>> animationMap = Maps.newHashMap();
 
 	static {
-		animationMap.put(Action.WALK_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 0, 1, 1, 10, 0.17f)));
+		animationMap.put(Action.STAND_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 0, 64, 112, 1, 1f)));
+		animationMap.put(Action.WALK_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.14f)));
+		animationMap.put(Action.RUN_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 8, 0.14f)));
 	}
 
 	/**
@@ -80,7 +84,7 @@ public class Elf extends GroundedIndividual {
 			boolean female,
 			float capacity,
 			World world) {
-		super(id, state, factionId, capacity, 10, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId(), 2);
+		super(id, state, factionId, capacity, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId(), 2);
 		this.female = female;
 
 		this.ai = new ElfAI(this);
@@ -97,7 +101,7 @@ public class Elf extends GroundedIndividual {
 			boolean female,
 			float capacity,
 			int worldId) {
-		super(id, state, factionId, capacity, 10, 32, 75, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId, 2);
+		super(id, state, factionId, capacity, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId, 2);
 		this.female = female;
 
 		this.ai = new ElfAI(this);
@@ -107,19 +111,26 @@ public class Elf extends GroundedIndividual {
 	@Override
 	protected void internalRender() {
 		// Draw the body, position is centre bottom of the frame
-		BloodAndMithrilClient.spriteBatch.begin();
-		for (Animation animation : getCurrentAnimation()) {
+		Collection<Animation> currentAnimations = getCurrentAnimation();
+		if (currentAnimations == null) {
+			return;
+		}
+
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.pass);
+		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+		for (Animation animation : currentAnimations) {
 			TextureRegion keyFrame = animation.getKeyFrame(animationTimer, true);
-			BloodAndMithrilClient.spriteBatch.draw(
+			spriteBatch.draw(
 				keyFrame,
 				getState().position.x - keyFrame.getRegionWidth()/2,
 				getState().position.y
 			);
 		}
-		BloodAndMithrilClient.spriteBatch.end();
+		spriteBatch.end();
 
 		// Render equipped items
-		BloodAndMithrilClient.spriteBatch.begin();
+		spriteBatch.begin();
 		Shaders.elfHighLight.setUniformi("hair", 0);
 		Shaders.elfDayLight.setUniformi("hair", 0);
 		Shaders.elfDayLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
@@ -134,8 +145,8 @@ public class Elf extends GroundedIndividual {
 			}
 		}
 
-		BloodAndMithrilClient.spriteBatch.end();
-		BloodAndMithrilClient.spriteBatch.flush();
+		spriteBatch.end();
+		spriteBatch.flush();
 	}
 
 
@@ -243,12 +254,12 @@ public class Elf extends GroundedIndividual {
 
 	@Override
 	public float getWalkSpeed() {
-		return 30f;
+		return 45f;
 	}
 
 
 	@Override
 	public float getRunSpeed() {
-		return 80f;
+		return 100f;
 	}
 }
