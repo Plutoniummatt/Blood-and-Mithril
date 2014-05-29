@@ -1,10 +1,10 @@
 package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
@@ -12,7 +12,7 @@ import bloodandmithril.world.topography.Topography;
 
 /**
  * {@link CompositeAITask} consisting of:
- * 
+ *
  * Going to the location of a {@link Container}
  * Locking/Unlocking it.
  *
@@ -35,9 +35,9 @@ public class LockUnlockContainer extends CompositeAITask {
 				true
 			)
 		);
-		
+
 		appendTask(this.new LockUnlock(host.getId()));
-		
+
 		if (container instanceof Container) {
 			this.lock = lock;
 			this.container = (Container) container;
@@ -45,8 +45,8 @@ public class LockUnlockContainer extends CompositeAITask {
 			throw new RuntimeException("Can't lock/unlock something that is not a container");
 		}
 	}
-	
-	
+
+
 	/**
 	 * Lock/Unlock a {@link Container}
 	 *

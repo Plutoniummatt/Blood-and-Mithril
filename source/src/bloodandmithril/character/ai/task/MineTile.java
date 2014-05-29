@@ -5,7 +5,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -97,7 +97,7 @@ public class MineTile extends CompositeAITask {
 			final Individual host = Domain.getIndividuals().get(hostId.getId());
 
 			if (host.getInteractionBox().isWithinBox(tileCoordinate)) {
-				Topography.addTask(() -> 
+				Topography.addTask(() ->
 					{
 						Tile tileToBeDeleted = topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
 

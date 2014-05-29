@@ -3,7 +3,7 @@ package bloodandmithril.persistence;
 import java.io.Serializable;
 import java.util.Random;
 
-import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Epoch;

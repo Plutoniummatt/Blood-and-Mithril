@@ -8,7 +8,7 @@ import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
 import static bloodandmithril.util.ComparisonUtil.obj;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import bloodandmithril.character.ai.task.Idle;
@@ -92,13 +92,13 @@ public abstract class GroundedIndividual extends Individual {
 		//Horizontal movement
 		Topography topography = Domain.getWorld(getWorldId()).getTopography();
 		if (Math.abs(getState().velocity.y) < 5f) {
-			if (isCommandActive(KeyMappings.moveLeft) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsBean()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsBean()))) {
+			if (isCommandActive(KeyMappings.moveLeft) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 				if (isCommandActive(KeyMappings.walk)) {
 					getState().velocity.x = -getWalkSpeed();
 				} else {
 					getState().velocity.x = -getRunSpeed();
 				}
-			} else if (isCommandActive(KeyMappings.moveRight) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsBean()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsBean()))) {
+			} else if (isCommandActive(KeyMappings.moveRight) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 				if (isCommandActive(KeyMappings.walk)) {
 					getState().velocity.x = getWalkSpeed();
 				} else {
@@ -109,7 +109,7 @@ public abstract class GroundedIndividual extends Individual {
 				getState().acceleration.x = 0f;
 
 				int offset = isCommandActive(KeyMappings.moveRight) ? 2 : isCommandActive(KeyMappings.moveLeft) ? -2 : 0;
-				if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsBean()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsBean()) && !(ai.getCurrentTask() instanceof Idle)) {
+				if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(ai.getCurrentTask() instanceof Idle)) {
 					ai.setCurrentTask(new Idle());
 				}
 
@@ -124,13 +124,13 @@ public abstract class GroundedIndividual extends Individual {
 	/**
 	 * @return The Individual-specific animation map
 	 */
-	protected abstract Map<Action, Collection<Animation>> getAnimationMap();
+	protected abstract Map<Action, List<Animation>> getAnimationMap();
 
 
 	/**
 	 * @return The current {@link Animation} based on the current {@link Action}
 	 */
-	protected Collection<Animation> getCurrentAnimation() {
+	protected List<Animation> getCurrentAnimation() {
 		return getAnimationMap().get(currentAction);
 	}
 

@@ -2,9 +2,8 @@ package bloodandmithril.character.ai;
 
 import java.io.Serializable;
 
-import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.util.Task;
-
 
 /**
  * Abstract {@link Task}, see {@link ArtificialIntelligence#ArtificialIntelligence(bloodandmithril.character.individuals.Individual)}
@@ -13,7 +12,7 @@ import bloodandmithril.util.Task;
  */
 public abstract class AITask implements Serializable {
 	private static final long serialVersionUID = -3599103577896385879L;
-	
+
 	/** The host of this task */
 	protected final IndividualIdentifier hostId;
 

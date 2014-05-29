@@ -2,7 +2,7 @@ package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;

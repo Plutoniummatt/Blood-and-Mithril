@@ -2,7 +2,7 @@ package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
+import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
@@ -33,7 +33,7 @@ public class Trading extends AITask {
 			this.proposee = Domain.getIndividuals().get(otherId);
 		} else {
 			prop = Domain.getProps().get(otherId);
-			this.proposee = ((Container) prop);
+			this.proposee = (Container) prop;
 		}
 	}
 

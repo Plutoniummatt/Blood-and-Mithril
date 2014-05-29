@@ -14,11 +14,11 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 
 import bloodandmithril.character.faction.Faction;
-import bloodandmithril.character.individuals.Elf;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
-import bloodandmithril.character.individuals.Individual.IndividualState;
+import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.Names;
+import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.items.Item;
