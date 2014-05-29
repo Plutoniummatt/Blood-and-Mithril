@@ -1,5 +1,8 @@
-package bloodandmithril.character.individuals;
+package bloodandmithril.character.individuals.characters;
 
+import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
+import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static java.util.Collections.singletonList;
 
@@ -11,6 +14,10 @@ import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
+import bloodandmithril.character.individuals.GroundedIndividual;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.items.Item;
@@ -66,12 +73,12 @@ public class Elf extends GroundedIndividual {
 	private String biography = "";
 
 	/** Elf-specific animation map */
-	private static Map<Action, Collection<Animation>> animationMap = Maps.newHashMap();
+	private static Map<Action, List<Animation>> animationMap = Maps.newHashMap();
 
 	static {
-		animationMap.put(Action.STAND_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 0, 64, 112, 1, 1f)));
-		animationMap.put(Action.WALK_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.14f)));
-		animationMap.put(Action.RUN_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 8, 0.14f)));
+		animationMap.put(STAND_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 0, 64, 112, 1, 1f)));
+		animationMap.put(WALK_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.14f)));
+		animationMap.put(RUN_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 8, 0.14f)));
 	}
 
 	/**
@@ -247,7 +254,7 @@ public class Elf extends GroundedIndividual {
 
 
 	@Override
-	protected Map<Action, Collection<Animation>> getAnimationMap() {
+	protected Map<Action, List<Animation>> getAnimationMap() {
 		return animationMap;
 	}
 

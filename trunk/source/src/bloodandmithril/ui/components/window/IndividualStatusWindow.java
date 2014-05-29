@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.Condition;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -44,7 +44,7 @@ public class IndividualStatusWindow extends Window {
 	private String vitals;
 	public static TextureRegion icons = new TextureRegion(UserInterface.uiTexture, 253, 0, 12, 85);;
 
-	private static Comparator<Condition> sortingOrder = new Comparator<Individual.Condition>() {
+	private static Comparator<Condition> sortingOrder = new Comparator<Condition>() {
 		@Override
 		public int compare(Condition o1, Condition o2) {
 			return o1.getClass().getSimpleName().compareTo(o2.getClass().getSimpleName());

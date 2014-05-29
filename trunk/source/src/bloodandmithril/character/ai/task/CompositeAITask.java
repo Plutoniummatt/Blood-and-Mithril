@@ -3,8 +3,7 @@ package bloodandmithril.character.ai.task;
 import java.util.ArrayDeque;
 
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.individuals.Individual.IndividualIdentifier;
-
+import bloodandmithril.character.individuals.IndividualIdentifier;
 
 /**
  * An {@link AITask} that is a composite of multiple {@link AITask}s

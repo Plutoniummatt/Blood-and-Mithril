@@ -7,8 +7,6 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
-import bloodandmithril.character.individuals.Individual.IndividualState;
-import bloodandmithril.character.individuals.Individual.KinematicsBean;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
@@ -31,14 +29,14 @@ public interface Kinematics {
 	 */
 	static void kinetics(float delta, World world, Individual individual) {
 		Topography topography = Domain.getWorld(individual.getWorldId()).getTopography();
-		KinematicsBean kinematicsBean = individual.getKinematicsBean();
+		IndividualKineticsProcessingData kinematicsBean = individual.getKinematicsData();
 		IndividualState state = individual.getState();
 		ArtificialIntelligence ai = individual.getAI();
 
 		jumpOffLogic(topography, kinematicsBean, state, ai);
 
 		//Stepping up
-		if (individual.getKinematicsBean().steppingUp) {
+		if (individual.getKinematicsData().steppingUp) {
 			if (kinematicsBean.steps >= TILE_SIZE) {
 				kinematicsBean.steppingUp = false;
 				state.position.y += TILE_SIZE - kinematicsBean.steps;
@@ -110,7 +108,7 @@ public interface Kinematics {
 	/**
 	 * Sets {@link #jumpOff} to null if we've passed it
 	 */
-	static void jumpOffLogic(Topography topography, KinematicsBean kinematicsBean, IndividualState state, ArtificialIntelligence ai) {
+	static void jumpOffLogic(Topography topography, IndividualKineticsProcessingData kinematicsBean, IndividualState state, ArtificialIntelligence ai) {
 		AITask currentTask = ai.getCurrentTask();
 		if (currentTask instanceof GoToLocation) {
 			if (((GoToLocation) currentTask).isAboveNext(state.position)) {
@@ -133,7 +131,7 @@ public interface Kinematics {
 	/**
 	 * Whether we should be running ground detection
 	 */
-	static boolean groundDetectionCriteriaMet(Topography topography, IndividualState state, ArtificialIntelligence ai, KinematicsBean kinematicsBean) {
+	static boolean groundDetectionCriteriaMet(Topography topography, IndividualState state, ArtificialIntelligence ai, IndividualKineticsProcessingData kinematicsBean) {
 		Tile currentTile = topography.getTile(state.position.x, state.position.y, true);
 		Tile tileBelow = topography.getTile(state.position.x, state.position.y - TILE_SIZE/2, true);
 		return (!(currentTile instanceof Tile.EmptyTile) && !currentTile.isPlatformTile || currentTile.isPlatformTile && !(tileBelow instanceof EmptyTile)) &&
@@ -142,7 +140,7 @@ public interface Kinematics {
 
 
 	/** Whether this {@link Individual} is obstructed by {@link Tile}s */
-	static boolean obstructed(int offsetX, Topography topography, IndividualState state, int height, ArtificialIntelligence ai, KinematicsBean kinematicsBean) {
+	static boolean obstructed(int offsetX, Topography topography, IndividualState state, int height, ArtificialIntelligence ai, IndividualKineticsProcessingData kinematicsBean) {
 		int blockspan = height/TILE_SIZE + (height % TILE_SIZE == 0 ? 0 : 1);
 		for (int block = 0; block != blockspan; block++) {
 			if (!isPassable(state.position.x + offsetX, state.position.y + TILE_SIZE/2 + TILE_SIZE * block, topography, kinematicsBean, ai)) {
@@ -156,7 +154,7 @@ public interface Kinematics {
 	/**
 	 * Determines during {@link #kinetics(float)} whether we can step up
 	 */
-	static boolean canStepUp(int offsetX, Topography topography, IndividualState state, int height, ArtificialIntelligence ai, KinematicsBean kinematicsBean) {
+	static boolean canStepUp(int offsetX, Topography topography, IndividualState state, int height, ArtificialIntelligence ai, IndividualKineticsProcessingData kinematicsBean) {
 		int blockspan = height/TILE_SIZE + (height % TILE_SIZE == 0 ? 0 : 1);
 
 		for (int block = 1; block != blockspan + 1; block++) {
@@ -171,7 +169,7 @@ public interface Kinematics {
 	/**
 	 * True if a {@link Tile#isPassable()}, taking into account the path
 	 */
-	static boolean isPassable(float x, float y, Topography topography, KinematicsBean kinematicsBean, ArtificialIntelligence ai) {
+	static boolean isPassable(float x, float y, Topography topography, IndividualKineticsProcessingData kinematicsBean, ArtificialIntelligence ai) {
 		AITask current = ai.getCurrentTask();
 		Tile tile = topography.getTile(x, y, true);
 
@@ -201,7 +199,7 @@ public interface Kinematics {
 	/**
 	 * Jump off the tile this {@link Individual} is currently standing on, as long as its a platform
 	 */
-	public static void jumpOff(Topography topography, IndividualState state, KinematicsBean kinematicsBean) {
+	public static void jumpOff(Topography topography, IndividualState state, IndividualKineticsProcessingData kinematicsBean) {
 		if (topography.getTile(state.position.x, state.position.y - TILE_SIZE/2, true).isPlatformTile) {
 			kinematicsBean.jumpOff = convertToWorldCoord(state.position.x, state.position.y - TILE_SIZE/2, false);
 		}
@@ -211,7 +209,7 @@ public interface Kinematics {
 	/**
 	 * @return true if {@link Tile} at location is to be ignored, according to {@link #jumpOff}
 	 */
-	static boolean isToBeIgnored(Vector2 location, KinematicsBean kinematicsBean) {
+	static boolean isToBeIgnored(Vector2 location, IndividualKineticsProcessingData kinematicsBean) {
 		if (kinematicsBean.jumpOff != null) {
 			return convertToWorldCoord(location, false).equals(kinematicsBean.jumpOff) || convertToWorldCoord(location.x, location.y - 1, false).equals(kinematicsBean.jumpOff);
 		}

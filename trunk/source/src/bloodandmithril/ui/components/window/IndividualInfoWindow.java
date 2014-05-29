@@ -66,7 +66,7 @@ public class IndividualInfoWindow extends Window {
 		}
 
 		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
-		if (!drawLine(truncate(Integer.toString(individual.getAge())), 145)) {
+		if (!drawLine(truncate(Integer.toString(individual.getId().getAge())), 145)) {
 			return;
 		}
 

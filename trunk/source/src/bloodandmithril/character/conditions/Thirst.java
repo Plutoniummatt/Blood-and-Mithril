@@ -1,7 +1,6 @@
 package bloodandmithril.character.conditions;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.Individual.Condition;
 import bloodandmithril.world.Domain;
 
 /**

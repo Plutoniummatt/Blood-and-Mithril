@@ -8,13 +8,12 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
-import static bloodandmithril.persistence.ParameterPersistenceService.getParameters;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
-import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.PI;
 import static java.lang.Math.cos;
+import static java.lang.Math.round;
 import static java.lang.Math.sin;
 
 import java.io.Serializable;
@@ -24,6 +23,7 @@ import java.util.Set;
 
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
@@ -46,7 +46,6 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Epoch;
 import bloodandmithril.world.World;
 
 import com.badlogic.gdx.graphics.Color;
@@ -75,7 +74,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** Identifier of this character */
 	private IndividualIdentifier id;
 
-	/** {@link World} id of this {@link Individual} */
 	private int worldId;
 
 	/** State of this character */
@@ -90,21 +88,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** The faction this {@link Individual} belongs to */
 	protected int factionId;
 
-	/** Width and Height of the individual */
-	private int width, height;
-
-	/** The box defining the region where this {@link Individual} can interact with entities */
 	private Box interactionBox;
 
 	/** The hitbox defining the region where this {@link Individual} can be hit */
 	private Box hitBox;
 
-	/** The maximum number of {@link Individual}s that may engage this {@link Individual} in melee combat */
-	private final int maximumConcurrentMeleeAttackers;
-
-	/** Set of {@link Individual} IDs that are concurrently attacking this {@link Individual} */
-	private final Set<Integer> meleeAttackers = Sets.newHashSet();
-
+	/** Whether this {@link Individual} is in combat stance */
 	protected boolean combatStance;
 
 	/** For animation frame timing */
@@ -119,8 +108,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** True if this {@link Individual} is walking */
 	private boolean walking = true;
 
-	/** The kinematics bean, containing things needed for kinematics processing */
-	private KinematicsBean kinematicsBean = new KinematicsBean();
+	private IndividualKineticsProcessingData kinematicsBean = new IndividualKineticsProcessingData();
 
 	/** Height at which it's deemed unsafe to fall to the ground */
 	private int safetyHeight;
@@ -154,13 +142,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.state = state;
 		this.factionId = factionId;
 		this.aITaskDelay = 0.05f;
-		this.width = width;
-		this.height = height;
 		this.safetyHeight = safetyHeight;
 		this.interactionBox = interactionBox;
 		this.setWorldId(worldId);
 		this.hitBox = new Box(new Vector2(state.position), width, height);
-		this.maximumConcurrentMeleeAttackers = maximumConcurrentMeleeAttackers;
 	}
 
 
@@ -176,16 +161,15 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.animationTimer = other.animationTimer;
 		this.activeCommands = other.activeCommands;
 		this.factionId = other.factionId;
-		this.height =  other.getHeight();
 		this.id = other.id;
 		this.interactionBox = other.getInteractionBox();
-		this.kinematicsBean = other.getKinematicsBean();
+		this.kinematicsBean = other.getKinematicsData();
 		this.safetyHeight = other.safetyHeight;
 		this.state = other.state;
 		this.walking = other.walking;
-		this.width = other.width;
 		this.timeStamp = other.timeStamp;
 		this.selectedByClient = other.selectedByClient;
+		this.hitBox = other.hitBox;
 		this.skills = other.skills;
 		this.currentAction = other.currentAction;
 		synchronizeContainer(other.equipperImpl);
@@ -324,24 +308,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	/** How old this {@link Individual} is */
-	public int getAge() {
-		int age = getCurrentEpoch().year - id.birthday.year;
-
-		if (age == 0) {
-			return 0;
-		}
-
-		if (getCurrentEpoch().monthOfYear < id.birthday.monthOfYear) {
-			age--;
-		} else if (getCurrentEpoch().monthOfYear == id.birthday.monthOfYear && getCurrentEpoch().dayOfMonth < id.birthday.dayOfMonth) {
-			age--;
-		}
-
-		return age;
-	}
-
-
 	/** Clears all commands */
 	public synchronized void clearCommands() {
 		activeCommands.clear();
@@ -362,8 +328,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * No longer jumping off, set {@link #jumpOff} to null, to signify that this individual is not trying to jump off any tile
 	 */
 	public synchronized void setJumpOffToNull() {
-		getKinematicsBean().jumpOff = null;
-		getKinematicsBean().jumpedOff = false;
+		getKinematicsData().jumpOff = null;
+		getKinematicsData().jumpedOff = false;
 	}
 
 
@@ -457,7 +423,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					Domain.getSelectedIndividuals().remove(thisIndividual);
 					clearCommands();
 				} else {
-					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, false);
+					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.getId(), false);
 				}
 			},
 			Color.WHITE,
@@ -473,7 +439,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					Domain.getSelectedIndividuals().add(thisIndividual);
 					thisIndividual.select(0);
 				} else {
-					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.id, true);
+					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.getId(), true);
 				}
 			},
 			Color.WHITE,
@@ -530,14 +496,14 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 							100,
 							args -> {
 								if (isServer()) {
-									thisIndividual.id.nickName = args[0].toString();
+									thisIndividual.id.setNickName(args[0].toString());
 								} else {
-									ClientServerInterface.SendRequest.sendChangeNickNameRequest(thisIndividual.id.id, args[0].toString());
+									ClientServerInterface.SendRequest.sendChangeNickNameRequest(thisIndividual.id.getId(), args[0].toString());
 								}
 							},
 							"Confirm",
 							true,
-							thisIndividual.id.nickName
+							thisIndividual.id.getNickName()
 						)
 					);
 				},
@@ -702,40 +668,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/**
-	 * A condition that applies to a character
-	 *
-	 * @author Matt
-	 */
-	public static abstract class Condition implements Serializable {
-		private static final long serialVersionUID = -1125485475556985426L;
-
-		/** Affect the character suffering from this condition */
-		public abstract void affect(Individual affected, float delta);
-
-		/** Infect another character */
-		public abstract void infect(Individual infected, float delta);
-
-		/** Whether this condition can be removed */
-		public abstract boolean isExpired();
-
-		/** Called when expired */
-		public abstract void uponExpiry();
-
-		/** Called when the condition is added to an individual who already has this condition */
-		public abstract void stack(Condition condition);
-
-		/** Whether this condition is detrimental to the individual */
-		public abstract boolean isNegative();
-
-		/** Gets the help text describing this condition */
-		public abstract String getHelpText();
-
-		/** The severity of this condition */
-		public abstract String getName();
-	}
-
-
-	/**
 	 * @return true if a command is currently active
 	 */
 	public synchronized boolean isCommandActive(int keycode) {
@@ -870,16 +802,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	protected abstract void respondToCommands();
 
 
-	/** True if mouse is over */
-	public boolean isMouseOver() {
-		float x = BloodAndMithrilClient.getMouseWorldX();
-		float y = BloodAndMithrilClient.getMouseWorldY();
-
-		boolean ans = x >= getState().position.x - getWidth()/2 && x <= getState().position.x + getWidth()/2 && y >= getState().position.y && y <= getState().position.y + getHeight();
-		return ans;
-	}
-
-
 	/** Returns the tooltip text color */
 	public abstract Color getToolTipTextColor();
 
@@ -898,6 +820,16 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Returns the {@link SpacialConfiguration} where {@link OneHandedWeapon} will be rendered */
 	protected abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();
+
+
+	/** True if mouse is over */
+	public boolean isMouseOver() {
+		float x = BloodAndMithrilClient.getMouseWorldX();
+		float y = BloodAndMithrilClient.getMouseWorldY();
+
+		boolean ans = x >= getState().position.x - getWidth()/2 && x <= getState().position.x + getWidth()/2 && y >= getState().position.y && y <= getState().position.y + getHeight();
+		return ans;
+	}
 
 
 	@Override
@@ -939,50 +871,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/**
-	 * The current state of the character
-	 *
-	 * @author Matt
-	 */
-	public static class IndividualState implements Serializable {
-		private static final long serialVersionUID = 3678630824613212498L;
-
-		public float health, maxHealth, healthRegen, normalHealthRegen, stamina, staminaRegen, normalStaminaRegen, hunger, thirst, mana, maxMana, manaRegen, normalManaRegen;
-		public Vector2 position;
-		public Vector2 velocity;
-		public Vector2 acceleration;
-		public Set<Condition> currentConditions = newHashSet();
-
-		/**
-		 * Constructor
-		 */
-		public IndividualState(float health, float maxHealth, float healthRegen, float stamina, float staminaRegen, float hunger, float thirst, float mana, float maxMana, float manaRegen) {
-			this.health = health;
-			this.maxHealth = maxHealth;
-			this.healthRegen = healthRegen;
-			this.normalHealthRegen = healthRegen;
-			this.stamina = stamina;
-			this.staminaRegen = staminaRegen;
-			this.normalStaminaRegen = staminaRegen;
-			this.hunger = hunger;
-			this.thirst = thirst;
-			this.mana = mana;
-			this.maxMana = maxMana;
-			this.manaRegen = manaRegen;
-			this.normalManaRegen = manaRegen;
-		}
-
-		/**
-		 * Resets the regen values
-		 */
-		public void reset() {
-			this.healthRegen = normalHealthRegen;
-			this.staminaRegen = normalStaminaRegen;
-			this.manaRegen = normalManaRegen;
-		}
-	}
-
-
-	/**
 	 * Returns the {@link IndividualIdentifier} of this {@link Individual}
 	 */
 	public IndividualIdentifier getId() {
@@ -999,113 +887,58 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
+	/**
+	 * Height at which it's deemed unsafe to fall to the ground
+	 */
 	public int getSafetyHeight() {
 		return safetyHeight;
 	}
 
 
+	/**
+	 * The box defining the region where this {@link Individual} can interact with entities
+	 */
 	public Box getInteractionBox() {
 		return interactionBox;
 	}
 
 
+	/**
+	 * Width of the individual
+	 */
 	public int getWidth() {
-		return width;
+		return round(hitBox.width);
 	}
 
 
+	/**
+	 * Height of the individual
+	 */
 	public int getHeight() {
-		return height;
+		return round(hitBox.height);
 	}
 
 
+	/**
+	 * {@link World} id of this {@link Individual}
+	 */
 	public int getWorldId() {
 		return worldId;
 	}
 
 
+	/**
+	 * See {@link #getWorldId()}
+	 */
 	public void setWorldId(int worldId) {
 		this.worldId = worldId;
 	}
 
 
-	public KinematicsBean getKinematicsBean() {
-		return kinematicsBean;
-	}
-
-
-	public static class KinematicsBean implements Serializable {
-		private static final long serialVersionUID = 9001152449205822919L;
-
-		/** Coordinates of the tile to jump off (ignored by ground detection) */
-		public Vector2 jumpOff = null;
-
-		/** Used for platform jump-off processing */
-		public boolean jumpedOff = false;
-
-		/** True if this {@link Individual} is currently stepping up */
-		public boolean steppingUp;
-
-		/** Part of the step-up processing */
-		public int steps = 0;
-	}
-
-
 	/**
-	 * Uniquely identifies a character.
-	 *
-	 * @author Matt
+	 * The kinematics data, containing things needed for kinematics processing
 	 */
-	public static class IndividualIdentifier implements Serializable {
-		private static final long serialVersionUID = 468971814825676707L;
-
-		private final String firstName, lastName;
-		private String nickName;
-		private final Epoch birthday;
-		private final int id;
-
-		/**
-		 * Constructor
-		 */
-		public IndividualIdentifier(String firstName, String lastName, Epoch birthday) {
-			this.firstName = firstName;
-			this.lastName = lastName;
-			this.birthday = birthday;
-			this.id = getParameters().getNextIndividualId();
-		}
-
-
-		/** Gets the simple first name + last name representation of this {@link IndividualIdentifier} */
-		public String getSimpleName() {
-			if (getLastName().equals("")) {
-				return getFirstName();
-			}
-			return getFirstName() + " " + getLastName();
-		}
-
-
-		public int getId() {
-			return id;
-		}
-
-
-		public String getNickName() {
-			return nickName;
-		}
-
-
-		public void setNickName(String nickName) {
-			this.nickName = nickName;
-		}
-
-
-		public String getFirstName() {
-			return firstName;
-		}
-
-
-		public String getLastName() {
-			return lastName;
-		}
+	public IndividualKineticsProcessingData getKinematicsData() {
+		return kinematicsBean;
 	}
 }
