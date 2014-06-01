@@ -90,9 +90,9 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	protected void generateInterfaces() {
 		// Generate the bottom interface
 		if (inverted) {
-			generateUnitThicknessHorizontalInterfaces(boundaries.top - 91, boundaries.left + 74, boundaries.left + 90);
+			generateUnitThicknessHorizontalInterfaces(boundaries.top - 101, boundaries.left + 154, boundaries.left + 170);
 		} else {
-			generateUnitThicknessHorizontalInterfaces(boundaries.top - 91, boundaries.right - 90, boundaries.right - 74);
+			generateUnitThicknessHorizontalInterfaces(boundaries.top - 101, boundaries.right - 170, boundaries.right - 154);
 		}
 	}
 
