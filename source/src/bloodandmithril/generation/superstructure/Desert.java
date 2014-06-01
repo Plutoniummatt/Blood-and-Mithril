@@ -18,8 +18,6 @@ import bloodandmithril.generation.component.Room;
 import bloodandmithril.generation.component.Room.RoomCreationCustomization;
 import bloodandmithril.generation.component.Stairs;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
-import bloodandmithril.generation.component.prefab.UndergroundDesertTempleAltarRoom;
-import bloodandmithril.generation.component.prefab.UndergroundDesertTempleAltarRoom.UndergroundDesertTempleAltarRoomCustomization;
 import bloodandmithril.generation.component.prefab.UndergroundDesertTempleEntrance;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.generation.patterns.UndergroundWithCaves;
@@ -97,43 +95,12 @@ public class Desert extends SuperStructure {
 		int entranceX = (getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE;
 		getComponents().add(new UndergroundDesertTempleEntrance(
 			entranceX,
-			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(100 - 17 + entranceX) + 30,
+			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(310 + entranceX) + 90,
 			getStructureKey(),
 			false,
 			YellowBrickTile.class,
 			YellowBrickTile.class
 		));
-
-		getComponents().get(0).stem(
-			this,
-			Corridor.class,
-			new Function<CorridorCreationCustomization>() {
-				@Override
-				public CorridorCreationCustomization call() {
-					return new CorridorCreationCustomization(
-						false,
-						4,
-						7,
-						40,
-						6,
-						YellowBrickTile.class
-					);
-				}
-			}
-		).stem(
-			this,
-			UndergroundDesertTempleAltarRoom.class,
-			new Function<UndergroundDesertTempleAltarRoomCustomization>() {
-				@Override
-				public UndergroundDesertTempleAltarRoomCustomization call() {
-					return new UndergroundDesertTempleAltarRoomCustomization(
-						false,
-						YellowBrickTile.class,
-						YellowBrickTile.class
-					);
-				}
-			}
-		);
 
 		getComponents().get(0).stem(
 			this,
@@ -145,9 +112,9 @@ public class Desert extends SuperStructure {
 						false,
 						false,
 						Util.getRandom().nextBoolean(),
-						Util.getRandom().nextInt(30),
+						Util.getRandom().nextInt(30) + 20,
 						1,
-						7,
+						17,
 						3,
 						YellowBrickTile.class,
 						YellowBrickTile.class
@@ -166,7 +133,7 @@ public class Desert extends SuperStructure {
 						Util.getRandom().nextBoolean(),
 						Util.getRandom().nextInt(30) + 20,
 						1,
-						7,
+						17,
 						3,
 						YellowBrickTile.class,
 						YellowBrickTile.class
@@ -185,7 +152,7 @@ public class Desert extends SuperStructure {
 						true,
 						Util.getRandom().nextInt(30) + 20,
 						1,
-						7,
+						17,
 						3,
 						YellowBrickTile.class,
 						YellowBrickTile.class
@@ -203,7 +170,7 @@ public class Desert extends SuperStructure {
 						3,
 						3,
 						20 + Util.getRandom().nextInt(10),
-						7,
+						17,
 						YellowBrickTile.class
 					);
 				}
@@ -235,7 +202,7 @@ public class Desert extends SuperStructure {
 						Util.getRandom().nextBoolean(),
 						Util.getRandom().nextInt(20) + 15,
 						1,
-						7,
+						17,
 						3,
 						YellowBrickTile.class,
 						YellowBrickTile.class

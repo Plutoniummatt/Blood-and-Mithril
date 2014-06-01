@@ -15,9 +15,9 @@ void main()
 	vec4 second = texture2D(u_texture2, v_texCoords);
 	
 	gl_FragColor = vec4(
-		first.r,
-		first.g,
-		first.b,
+		max(first.r, second.r),
+		max(first.g, second.g),
+		max(first.b, second.b),
 		1.0
 	);
 }

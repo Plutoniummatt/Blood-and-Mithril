@@ -77,8 +77,8 @@ public class Elf extends GroundedIndividual {
 
 	static {
 		animationMap.put(STAND_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 0, 64, 112, 1, 1f)));
-		animationMap.put(WALK_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.14f)));
-		animationMap.put(RUN_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 8, 0.14f)));
+		animationMap.put(WALK_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.11f)));
+		animationMap.put(RUN_RIGHT, singletonList(AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 8, 0.11f)));
 	}
 
 	/**
@@ -261,12 +261,12 @@ public class Elf extends GroundedIndividual {
 
 	@Override
 	public float getWalkSpeed() {
-		return 45f;
+		return 55f;
 	}
 
 
 	@Override
 	public float getRunSpeed() {
-		return 100f;
+		return 120f;
 	}
 }
