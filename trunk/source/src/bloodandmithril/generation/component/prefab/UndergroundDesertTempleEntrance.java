@@ -1,23 +1,17 @@
 package bloodandmithril.generation.component.prefab;
 
-import java.util.Collection;
-
 import bloodandmithril.generation.component.Component;
-import bloodandmithril.generation.component.Corridor;
-import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.Interface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.generation.component.Stairs;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
-import bloodandmithril.generation.component.prefab.UndergroundDesertTempleAltarRoom.UndergroundDesertTempleAltarRoomCustomization;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.glass.InterlacedWindowTile;
 
 import com.badlogic.gdx.graphics.Color;
-import com.google.common.collect.Collections2;
 
 /**
  * An implementations of {@link PrefabricatedComponent}s that is a representation of an entrance to underground temple-like annexes
@@ -27,6 +21,8 @@ import com.google.common.collect.Collections2;
 public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	private static final long serialVersionUID = 4185881549137827481L;
 
+	private static final int width = 325, height = 100;
+	
 	/**
 	 * Constructor
 	 */
@@ -40,39 +36,45 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 
 		generateInterfaces();
 	}
+	
+
+	private static Boundaries boundaries(int worldX, int worldY) {
+		return new Boundaries(worldY, worldY - height - 1, worldX, worldX + width - 1);
+	}
 
 
 	private static ComponentBlueprint blueprint(Class<? extends Tile> backgroundTile, Class<? extends Tile> wallTile) {
-		Tile[][] fTiles = new Tile[100][40];
-		Tile[][] bTiles = new Tile[100][40];
+		
+		Tile[][] fTiles = new Tile[width][height];
+		Tile[][] bTiles = new Tile[width][height];
 
-		for (int x = 0; x < 100; x++) {
-			for (int y = 0; y < 40; y++) {
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
 
 				int fPixel = PrefabricatedComponent.prefabPixmap.getPixel(x, y);
-				int bPixel = PrefabricatedComponent.prefabPixmap.getPixel(x, y + 40);
+				int bPixel = PrefabricatedComponent.prefabPixmap.getPixel(x, y + height);
 
 				try {
 					if (fPixel == Color.rgba8888(Color.RED)) {
-						fTiles[x][39 - y] = wallTile.newInstance();
+						fTiles[x][height - 1 - y] = wallTile.newInstance();
 					} else if (fPixel == Color.rgba8888(Color.WHITE)) {
-						fTiles[x][39 - y] = new Tile.EmptyTile();
+						fTiles[x][height - 1 - y] = new Tile.EmptyTile();
 					} else if (fPixel == Color.rgba8888(Color.BLUE)) {
-						fTiles[x][39 - y] = new YellowBrickPlatform();
+						fTiles[x][height - 1 - y] = new YellowBrickPlatform();
 					} else {
-						fTiles[x][39 - y] = null;
+						fTiles[x][height - 1 - y] = null;
 					}
 
 					if (bPixel == Color.rgba8888(Color.BLACK)) {
-						bTiles[x][39 - y] = backgroundTile.newInstance();
+						bTiles[x][height - 1 - y] = backgroundTile.newInstance();
 					} else if (bPixel == Color.rgba8888(Color.GREEN)) {
-						bTiles[x][39 - y] = new InterlacedWindowTile();
+						bTiles[x][height - 1 - y] = new InterlacedWindowTile();
 					} else if (bPixel == Color.rgba8888(Color.RED)) {
-						bTiles[x][39 - y] = new Tile.EmptyTile();
+						bTiles[x][height - 1 - y] = new Tile.EmptyTile();
 					} else if (bPixel == Color.rgba8888(Color.WHITE)) {
-						bTiles[x][39 - y] = new Tile.EmptyTile();
+						bTiles[x][height - 1 - y] = new Tile.EmptyTile();
 					} else {
-						bTiles[x][39 - y] = null;
+						bTiles[x][height - 1 - y] = null;
 					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);
@@ -84,25 +86,13 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	}
 
 
-	private static Boundaries boundaries(int worldX, int worldY) {
-		return new Boundaries(worldY, worldY - 39, worldX, worldX + 99);
-	}
-
-
 	@Override
 	protected void generateInterfaces() {
 		// Generate the bottom interface
 		if (inverted) {
-			generateUnitThicknessHorizontalInterfaces(boundaries.top - 29, boundaries.right - 10, boundaries.right - 4);
+			generateUnitThicknessHorizontalInterfaces(boundaries.top - 91, boundaries.left + 74, boundaries.left + 90);
 		} else {
-			generateUnitThicknessHorizontalInterfaces(boundaries.top - 29, boundaries.left + 4, boundaries.left + 10);
-		}
-
-		// Generate the side interface
-		if (inverted) {
-			generateUnitThicknessVerticalInterfaces(boundaries.right, boundaries.top - 17, boundaries.top - 22);
-		} else {
-			generateUnitThicknessVerticalInterfaces(boundaries.left, boundaries.top - 17, boundaries.top - 22);
+			generateUnitThicknessHorizontalInterfaces(boundaries.top - 91, boundaries.right - 90, boundaries.right - 74);
 		}
 	}
 
@@ -111,68 +101,6 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	protected <T extends Component> Component internalStem(Class<T> with, ComponentCreationCustomization<T> custom) {
 		if (with.equals(Stairs.class)) {
 			return stemStairs(custom);
-		}
-
-		if (with.equals(Corridor.class)) {
-			return stemCorridor(custom);
-		}
-
-		if (with.equals(UndergroundDesertTempleAltarRoom.class)) {
-			return stemUndergroundDesertTempleAlterRoom(custom);
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * Stem a {@link Corridor} from this component
-	 */
-	@SuppressWarnings("rawtypes")
-	private Component stemUndergroundDesertTempleAlterRoom(ComponentCreationCustomization custom) {
-		UndergroundDesertTempleAltarRoomCustomization corridorCustomization = (UndergroundDesertTempleAltarRoomCustomization) custom;
-
-		// Filter out any horizontal interfaces
-		Collection<Interface> verticalInterfacesCollection = Collections2.filter(getAvailableInterfaces(), verticalInterfacePredicate);
-
-		if (!verticalInterfacesCollection.isEmpty()) {
-			Interface createConnectedInterface = verticalInterfacesCollection.iterator().next().createConnectedInterface(
-				new RectangularInterfaceCustomization(
-					6,
-					1,
-					0,
-					0
-				)
-			);
-
-			return checkForOverlaps(createConnectedInterface, createConnectedInterface.createComponent(UndergroundDesertTempleAltarRoom.class, corridorCustomization, getStructureKey()));
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * Stem a {@link Corridor} from this component
-	 */
-	@SuppressWarnings("rawtypes")
-	private Component stemCorridor(ComponentCreationCustomization custom) {
-		CorridorCreationCustomization corridorCustomization = (CorridorCreationCustomization) custom;
-
-		// Filter out any horizontal interfaces
-		Collection<Interface> verticalInterfacesCollection = Collections2.filter(getAvailableInterfaces(), verticalInterfacePredicate);
-
-		if (!verticalInterfacesCollection.isEmpty()) {
-			Interface createConnectedInterface = verticalInterfacesCollection.iterator().next().createConnectedInterface(
-				new RectangularInterfaceCustomization(
-					6,
-					1,
-					0,
-					0
-				)
-			);
-
-			return checkForOverlaps(createConnectedInterface, createConnectedInterface.createComponent(Corridor.class, corridorCustomization, getStructureKey()));
 		}
 
 		return null;

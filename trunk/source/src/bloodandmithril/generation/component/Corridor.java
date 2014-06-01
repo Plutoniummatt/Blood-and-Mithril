@@ -1,17 +1,11 @@
 package bloodandmithril.generation.component;
 
-import java.util.Collection;
-
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.generation.component.Room.RoomCreationCustomization;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
-import bloodandmithril.generation.component.prefab.UndergroundDesertTempleAltarRoom;
-import bloodandmithril.generation.component.prefab.UndergroundDesertTempleAltarRoom.UndergroundDesertTempleAltarRoomCustomization;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
-
-import com.google.common.collect.Collections2;
 
 /**
  * A Corridor, that may be used to connect other {@link Component}s
@@ -87,37 +81,6 @@ public class Corridor extends Component {
 
 		if (with.equals(Stairs.class)) {
 			return stemStairs(custom);
-		}
-
-		if (with.equals(UndergroundDesertTempleAltarRoom.class)) {
-			return stemUndergroundDesertTempleAlterRoom(custom);
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * Stem a {@link Corridor} from this component
-	 */
-	@SuppressWarnings("rawtypes")
-	private Component stemUndergroundDesertTempleAlterRoom(ComponentCreationCustomization custom) {
-		UndergroundDesertTempleAltarRoomCustomization corridorCustomization = (UndergroundDesertTempleAltarRoomCustomization) custom;
-
-		// Filter out any horizontal interfaces
-		Collection<Interface> verticalInterfacesCollection = Collections2.filter(getAvailableInterfaces(), verticalInterfacePredicate);
-
-		if (!verticalInterfacesCollection.isEmpty()) {
-			Interface createConnectedInterface = verticalInterfacesCollection.iterator().next().createConnectedInterface(
-				new RectangularInterfaceCustomization(
-					6,
-					1,
-					0,
-					0
-				)
-			);
-
-			return checkForOverlaps(createConnectedInterface, createConnectedInterface.createComponent(UndergroundDesertTempleAltarRoom.class, corridorCustomization, getStructureKey()));
 		}
 
 		return null;

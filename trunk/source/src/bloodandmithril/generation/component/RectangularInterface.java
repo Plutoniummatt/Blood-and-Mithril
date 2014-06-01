@@ -5,8 +5,6 @@ import bloodandmithril.generation.component.Component.ComponentCreationCustomiza
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.Room.RoomCreationCustomization;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
-import bloodandmithril.generation.component.prefab.UndergroundDesertTempleAltarRoom;
-import bloodandmithril.generation.component.prefab.UndergroundDesertTempleAltarRoom.UndergroundDesertTempleAltarRoomCustomization;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -49,29 +47,7 @@ public class RectangularInterface extends Interface {
 			return createStairs(custom, structureKey);
 		}
 
-		if (type.equals(UndergroundDesertTempleAltarRoom.class)) {
-			return createUndergroundDesertTempleAltarRoom(custom, structureKey);
-		}
-
 		return null;
-	}
-
-
-	/**
-	 * Create {@link UndergroundDesertTempleAltarRoom} from this {@link RectangularInterface}
-	 */
-	@SuppressWarnings("rawtypes")
-	private Component createUndergroundDesertTempleAltarRoom(ComponentCreationCustomization custom, int structureKey) {
-		UndergroundDesertTempleAltarRoomCustomization corridorCustomization = (UndergroundDesertTempleAltarRoomCustomization) custom;
-
-		return new UndergroundDesertTempleAltarRoom(
-			boundaries.right,
-			boundaries.top + 21,
-			structureKey,
-			corridorCustomization.inverted,
-			corridorCustomization.wallTile,
-			corridorCustomization.backgroundTile
-		);
 	}
 
 
