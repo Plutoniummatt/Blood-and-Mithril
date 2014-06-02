@@ -9,6 +9,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
+import bloodandmithril.util.Performance;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
@@ -91,6 +92,7 @@ public class GoToLocation extends AITask {
 	 * Use with care, due to the inefficiency of this method, it is deprecated, intended for debugging purposes only
 	 */
 	@Deprecated
+	@Performance
 	public void renderPath() {
 		WayPoint nextPoint = path.getNextPoint();
 

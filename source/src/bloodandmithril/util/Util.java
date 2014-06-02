@@ -208,5 +208,25 @@ public class Util {
 
 			return toReturn;
 		}
+
+
+		public static Color randomColor() {
+			return new Color(
+				getRandom().nextFloat(),
+				getRandom().nextFloat(),
+				getRandom().nextFloat(),
+				1f
+			);
+		}
+
+
+		public static Color lightColor() {
+			return new Color(
+				getRandom().nextFloat() / 2f + 0.5f,
+				getRandom().nextFloat() / 2f + 0.5f,
+				getRandom().nextFloat() / 2f + 0.5f,
+				1f
+			);
+		}
 	}
 }

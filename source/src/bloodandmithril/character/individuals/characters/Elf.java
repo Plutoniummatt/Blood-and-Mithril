@@ -90,11 +90,15 @@ public class Elf extends GroundedIndividual {
 			int factionId,
 			boolean female,
 			float capacity,
-			World world) {
+			World world,
+			Color hairColor,
+			Color eyeColor) {
 		super(id, state, factionId, capacity, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId(), 2);
-		this.female = female;
 
+		this.female = female;
 		this.ai = new ElfAI(this);
+		this.hairColor = new SerializableColor(hairColor);
+		this.eyeColor = new SerializableColor(eyeColor);
 	}
 
 
@@ -107,11 +111,15 @@ public class Elf extends GroundedIndividual {
 			int factionId,
 			boolean female,
 			float capacity,
-			int worldId) {
+			int worldId,
+			Color hairColor,
+			Color eyeColor) {
 		super(id, state, factionId, capacity, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId, 2);
-		this.female = female;
 
+		this.female = female;
 		this.ai = new ElfAI(this);
+		this.hairColor = new SerializableColor(hairColor);
+		this.eyeColor = new SerializableColor(eyeColor);
 	}
 
 
@@ -247,7 +255,7 @@ public class Elf extends GroundedIndividual {
 
 	@Override
 	public Individual copy() {
-		Elf elf = new Elf(getId(), getState(), factionId, female, getMaxCapacity(), getWorldId());
+		Elf elf = new Elf(getId(), getState(), factionId, female, getMaxCapacity(), getWorldId(), hairColor, eyeColor);
 		elf.copyFrom(this);
 		return elf;
 	}

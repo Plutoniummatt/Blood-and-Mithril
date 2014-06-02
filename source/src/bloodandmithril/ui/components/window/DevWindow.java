@@ -58,6 +58,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.fluid.Fluid;
@@ -159,7 +160,9 @@ public class DevWindow extends Window {
 			Elf elf = new Elf(
 				id, state, Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
 				20f,
-				Domain.getActiveWorld()
+				Domain.getActiveWorld(),
+				Colors.lightColor(),
+				Colors.lightColor()
 			);
 
 			elf.getSkills().setObservation(55);
