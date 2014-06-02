@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.UserInterface;
+import bloodandmithril.util.Performance;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -88,6 +89,8 @@ public class Path implements Serializable {
 	/**
 	 * Renders all the waypoint of this {@link Path}
 	 */
+	@Deprecated
+	@Performance
 	public void render() {
 		LinkedList<WayPoint> waypointsCopy = Lists.newLinkedList(waypoints);
 		Iterator<WayPoint> waypointsIterator = waypointsCopy.iterator();

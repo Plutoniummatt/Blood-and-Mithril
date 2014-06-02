@@ -50,6 +50,7 @@ import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.fluid.Fluid;
 import bloodandmithril.world.topography.fluid.FluidFraction;
@@ -358,7 +359,9 @@ public class BloodAndMithrilServer {
 					Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1,
 					true,
 					20f,
-					Domain.getActiveWorld()
+					Domain.getActiveWorld(),
+					Colors.lightColor(),
+					Colors.lightColor()
 				);
 
 				elf.getSkills().setSmithing(50);

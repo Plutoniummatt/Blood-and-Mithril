@@ -11,4 +11,8 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class SerializableColor extends Color implements Serializable {
 	private static final long serialVersionUID = -6646062971215942066L;
+
+	public SerializableColor(Color color) {
+		super(color);
+	}
 }
