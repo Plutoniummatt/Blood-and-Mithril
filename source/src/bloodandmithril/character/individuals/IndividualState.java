@@ -26,20 +26,20 @@ public class IndividualState implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public IndividualState(float health, float maxHealth, float healthRegen, float stamina, float staminaRegen, float hunger, float thirst, float mana, float maxMana, float manaRegen) {
-		this.health = health;
+	public IndividualState(float maxHealth, float healthRegen, float staminaRegen, float maxMana, float manaRegen) {
+		this.health = maxHealth;
 		this.maxHealth = maxHealth;
 		this.healthRegen = healthRegen;
 		this.normalHealthRegen = healthRegen;
-		this.stamina = stamina;
 		this.staminaRegen = staminaRegen;
 		this.normalStaminaRegen = staminaRegen;
-		this.hunger = hunger;
-		this.thirst = thirst;
-		this.mana = mana;
+		this.mana = maxMana;
 		this.maxMana = maxMana;
 		this.manaRegen = manaRegen;
 		this.normalManaRegen = manaRegen;
+		this.hunger = 1f;
+		this.thirst = 1f;
+		this.stamina = 1f;
 	}
 
 	/**

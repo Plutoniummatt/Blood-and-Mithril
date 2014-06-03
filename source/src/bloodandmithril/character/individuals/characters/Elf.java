@@ -146,10 +146,8 @@ public class Elf extends GroundedIndividual {
 
 		// Render equipped items
 		spriteBatch.begin();
-		Shaders.elfHighLight.setUniformi("hair", 0);
-		Shaders.elfDayLight.setUniformi("hair", 0);
-		Shaders.elfDayLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-		Shaders.elfHighLight.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+		spriteBatch.setShader(Shaders.pass);
+		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		for (Item equipped : getEquipped().keySet()) {
 			Equipable toRender = (Equipable) equipped;
 			if (equipped instanceof OneHandedWeapon) {

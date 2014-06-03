@@ -68,13 +68,14 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** The current action of this individual */
 	protected Action currentAction = STAND_LEFT;
 
-	/** Timestamp, used for synchronizing with server */
-	private long timeStamp;
+	/** Which client number this {@link Individual} is selected by */
+	private Set<Integer> selectedByClient = Sets.newHashSet();
+
+	/** {@link Skills}s of this {@link Individual} */
+	private Skills skills = new Skills();
 
 	/** Identifier of this character */
 	private IndividualIdentifier id;
-
-	private int worldId;
 
 	/** State of this character */
 	private IndividualState state;
@@ -85,42 +86,41 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** The AI responsible for this character */
 	protected ArtificialIntelligence ai;
 
-	/** The faction this {@link Individual} belongs to */
-	protected int factionId;
+	/** Holds state of the equipment and inventory */
+	private EquipperImpl equipperImpl;
 
+	/** Data used for {@link Kinematics} */
+	private IndividualKineticsProcessingData kinematicsData = new IndividualKineticsProcessingData();
+
+	/** The defined area such that the individual can interact with objects */
 	private Box interactionBox;
 
 	/** The hitbox defining the region where this {@link Individual} can be hit */
 	private Box hitBox;
 
-	/** Whether this {@link Individual} is in combat stance */
-	protected boolean combatStance;
-
 	/** For animation frame timing */
 	protected float animationTimer;
-
-	/** Time between sending AI to be processed by the AI processing thread */
-	private float aITaskDelay;
 
 	/** The 'reaction' time of the AI instance controlling this {@link Individual} */
 	private float aiReactionTimer;
 
+	/** Whether this {@link Individual} is in combat stance */
+	private boolean combatStance;
+
 	/** True if this {@link Individual} is walking */
 	private boolean walking = true;
-
-	private IndividualKineticsProcessingData kinematicsBean = new IndividualKineticsProcessingData();
 
 	/** Height at which it's deemed unsafe to fall to the ground */
 	private int safetyHeight;
 
-	/** {@link Skills}s of this {@link Individual} */
-	private Skills skills = new Skills();
+	/** Timestamp, used for synchronizing with server */
+	private long timeStamp;
 
-	/** Which client number this {@link Individual} is selected by */
-	private Set<Integer> selectedByClient = Sets.newHashSet();
+	/** World ID, indicating which {@link World} this {@link Individual} exists on */
+	private int worldId;
 
-	/** Holds state of the equipment and inventory */
-	private EquipperImpl equipperImpl;
+	/** The faction this {@link Individual} belongs to */
+	protected int factionId;
 
 	/**
 	 * Constructor
@@ -141,7 +141,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.id = id;
 		this.state = state;
 		this.factionId = factionId;
-		this.aITaskDelay = 0.05f;
 		this.safetyHeight = safetyHeight;
 		this.interactionBox = interactionBox;
 		this.setWorldId(worldId);
@@ -157,13 +156,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.setWorldId(other.getWorldId());
 		this.selectedByClient = other.selectedByClient;
 		this.aiReactionTimer = other.aiReactionTimer;
-		this.aITaskDelay = other.aITaskDelay;
 		this.animationTimer = other.animationTimer;
 		this.activeCommands = other.activeCommands;
 		this.factionId = other.factionId;
 		this.id = other.id;
 		this.interactionBox = other.getInteractionBox();
-		this.kinematicsBean = other.getKinematicsData();
+		this.kinematicsData = other.getKinematicsData();
 		this.safetyHeight = other.safetyHeight;
 		this.state = other.state;
 		this.walking = other.walking;
@@ -172,6 +170,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.hitBox = other.hitBox;
 		this.skills = other.skills;
 		this.currentAction = other.currentAction;
+		this.combatStance = other.combatStance;
 		synchronizeContainer(other.equipperImpl);
 		synchronizeEquipper(other.equipperImpl);
 
@@ -337,6 +336,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * Updates the individual
 	 */
 	public void update(float delta) {
+		float aiTaskDelay = 0.05f;
 
 		// If chunk has not yet been loaded, do not update
 		try {
@@ -354,8 +354,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		hitBox.position.y = state.position.y + getHeight() / 2;
 
 		aiReactionTimer += delta;
-		if (aiReactionTimer >= aITaskDelay) {
-			ai.update(aITaskDelay);
+		if (aiReactionTimer >= aiTaskDelay) {
+			ai.update(aiTaskDelay);
 			aiReactionTimer = 0f;
 		}
 
@@ -472,7 +472,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		MenuItem combatMode = new MenuItem(
 			"Combat Mode",
 				() -> {
-					thisIndividual.combatStance = !thisIndividual.combatStance;
+					thisIndividual.combatStance = !thisIndividual.inCombatStance();
 				},
 			Color.WHITE,
 			getToolTipTextColor(),
@@ -939,6 +939,14 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * The kinematics data, containing things needed for kinematics processing
 	 */
 	public IndividualKineticsProcessingData getKinematicsData() {
-		return kinematicsBean;
+		return kinematicsData;
+	}
+
+
+	/**
+	 * @return Whether or not this {@link Individual} is in combat stance
+	 */
+	public boolean inCombatStance() {
+		return combatStance;
 	}
 }
