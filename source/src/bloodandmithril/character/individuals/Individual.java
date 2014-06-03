@@ -62,7 +62,21 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private static final long serialVersionUID = 2821835360311044658L;
 
 	public enum Action implements Serializable {
-		STAND_LEFT, STAND_RIGHT, WALK_LEFT, WALK_RIGHT, RUN_LEFT, RUN_RIGHT
+		STAND_LEFT(true),
+		STAND_RIGHT(false),
+		WALK_LEFT(true),
+		WALK_RIGHT(false),
+		RUN_LEFT(true),
+		RUN_RIGHT(false);
+
+		private boolean flipXAnimation;
+		private Action(boolean flipXAnimation) {
+			this.flipXAnimation = flipXAnimation;
+		}
+
+		public boolean flipXAnimation() {
+			return flipXAnimation;
+		}
 	}
 
 	/** The current action of this individual */
@@ -251,7 +265,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			);
 
 			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-			spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight());
+			spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight() + 10);
 		}
 
 		if (UserInterface.DEBUG) {

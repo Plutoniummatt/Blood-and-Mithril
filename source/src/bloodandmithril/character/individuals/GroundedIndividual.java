@@ -6,18 +6,23 @@ import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.ComparisonUtil.obj;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
+import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * An {@link Individual} that is grounded, moves on ground.
@@ -119,6 +124,46 @@ public abstract class GroundedIndividual extends Individual {
 			}
 		}
 	}
+
+
+	@Override
+	protected void internalRender() {
+		// Draw the body, position is centre bottom of the frame
+		Collection<Animation> currentAnimations = getCurrentAnimation();
+		if (currentAnimations == null) {
+			return;
+		}
+
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.pass);
+		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+		for (Animation animation : currentAnimations) {
+			TextureRegion keyFrame = animation.getKeyFrame(animationTimer, true);
+			spriteBatch.draw(
+				keyFrame.getTexture(),
+				getState().position.x - keyFrame.getRegionWidth()/2,
+				getState().position.y,
+				keyFrame.getRegionWidth(),
+				keyFrame.getRegionHeight(),
+				keyFrame.getRegionX(),
+				keyFrame.getRegionY(),
+				keyFrame.getRegionWidth(),
+				keyFrame.getRegionHeight(),
+				currentAction.flipXAnimation(),
+				false
+			);
+		}
+		spriteBatch.end();
+
+		specificInternalRender();
+		spriteBatch.flush();
+	}
+
+
+	/**
+	 * Grounded individual implementation specific render method
+	 */
+	protected abstract void specificInternalRender();
 
 
 	/**
