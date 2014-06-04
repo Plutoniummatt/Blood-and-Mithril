@@ -8,6 +8,7 @@ import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * Exceptional at:
@@ -75,34 +75,34 @@ public class Elf extends GroundedIndividual {
 	private String biography = "";
 
 	/** Elf-specific animation map */
-	private static Map<Action, List<Animation>> animationMap = Maps.newHashMap();
+	private static Map<Action, List<Animation>> animationMap = newHashMap();
 
 	static {
-		ArrayList<Animation> walkRightSequence = newArrayList(
-			AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.11f),	// HEAD
-			AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.11f),	// HAIR
+		ArrayList<Animation> walkSequence = newArrayList(
 			AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.11f),	// BACK ARM
 			AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.11f),	// BACK LEG
+			AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.11f),	// HEAD
+			AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.11f),	// HAIR
 			AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.11f),	// TORSO
 			AnimationHelper.animation(Domain.individualTexture, 0, 560, 64, 112, 10, 0.11f),	// FRONT LEG
 			AnimationHelper.animation(Domain.individualTexture, 0, 336, 64, 112, 10, 0.11f)		// FRONT ARM
 		);
 
-		ArrayList<Animation> standRightSequence = newArrayList(
-			AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f),		// HEAD
-			AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f),		// HAIR
+		ArrayList<Animation> standSequence = newArrayList(
 			AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f),		// BACK ARM
 			AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f),		// BACK LEG
+			AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f),		// HEAD
+			AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f),		// HAIR
 			AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f),		// TORSO
 			AnimationHelper.animation(Domain.individualTexture, 1152, 560, 64, 112, 1, 1f),		// FRONT LEG
 			AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f)		// FRONT ARM
 		);
 
-		ArrayList<Animation> runRightSequence = newArrayList(
-			AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.11f),	// HEAD
-			AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.11f),	// HAIR
+		ArrayList<Animation> runSequence = newArrayList(
 			AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.11f),	// BACK ARM
 			AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.11f),	// BACK LEG
+			AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.11f),	// HEAD
+			AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.11f),	// HAIR
 			AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.11f),	// TORSO
 			AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.11f),	// FRONT LEG
 			AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.11f)	// FRONT ARM
@@ -110,32 +110,32 @@ public class Elf extends GroundedIndividual {
 
 		animationMap.put(
 			WALK_RIGHT,
-			walkRightSequence
+			walkSequence
 		);
 
 		animationMap.put(
 			WALK_LEFT,
-			walkRightSequence
+			walkSequence
 		);
 
 		animationMap.put(
 			STAND_RIGHT,
-			standRightSequence
+			standSequence
 		);
 
 		animationMap.put(
 			STAND_LEFT,
-			standRightSequence
+			standSequence
 		);
 
 		animationMap.put(
 			RUN_RIGHT,
-			runRightSequence
+			runSequence
 		);
 
 		animationMap.put(
 			RUN_LEFT,
-			runRightSequence
+			runSequence
 		);
 	}
 

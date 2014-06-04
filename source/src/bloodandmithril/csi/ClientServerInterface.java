@@ -62,9 +62,6 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.Response.Responses;
-import bloodandmithril.csi.requests.AddLightRequest;
-import bloodandmithril.csi.requests.AddLightRequest.RemoveLightNotification;
-import bloodandmithril.csi.requests.AddLightRequest.SyncLightResponse;
 import bloodandmithril.csi.requests.CSIMineTile;
 import bloodandmithril.csi.requests.CSIOpenCraftingStation;
 import bloodandmithril.csi.requests.CSIOpenCraftingStation.NotifyOpenCraftingStationWindow;
@@ -119,7 +116,6 @@ import bloodandmithril.csi.requests.SynchronizeWorldState.SynchronizeWorldStateR
 import bloodandmithril.csi.requests.ToggleWalkRun;
 import bloodandmithril.csi.requests.TransferItems;
 import bloodandmithril.csi.requests.TransferItems.TradeEntity;
-import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -435,7 +431,6 @@ public class ClientServerInterface {
 		kryo.register(ContainerImpl.class);
 		kryo.register(Ashes.class);
 		kryo.register(InterlacedWindowTile.class);
-		kryo.register(AddLightRequest.class);
 		kryo.register(AITask.class);
 		kryo.register(ArrayDeque.class);
 		kryo.register(ArrayList.class);
@@ -510,7 +505,6 @@ public class ClientServerInterface {
 		kryo.register(IndividualSelection.class);
 		kryo.register(IndividualSelection.SelectIndividualResponse.class);
 		kryo.register(IndividualState.class);
-		kryo.register(Light.class);
 		kryo.register(LinkedList.class);
 		kryo.register(Liquid.class);
 		kryo.register(List.class);
@@ -531,7 +525,6 @@ public class ClientServerInterface {
 		kryo.register(Pong.class);
 		kryo.register(RefreshFactionWindow.class);
 		kryo.register(RefreshWindowsResponse.class);
-		kryo.register(RemoveLightNotification.class);
 		kryo.register(Request.class);
 		kryo.register(RequestClientList.class);
 		kryo.register(RequestClientListResponse.class);
@@ -554,7 +547,6 @@ public class ClientServerInterface {
 		kryo.register(SynchronizePropResponse.class);
 		kryo.register(SynchronizeWorldState.class);
 		kryo.register(SynchronizeWorldStateResponse.class);
-		kryo.register(SyncLightResponse.class);
 		kryo.register(Thirst.class);
 		kryo.register(Tile.class);
 		kryo.register(Tile.Orientation.class);
@@ -632,11 +624,6 @@ public class ClientServerInterface {
 		public static synchronized void sendLockUnlockContainerRequest(int individualId, int containerId, boolean lock) {
 			client.sendTCP(new LockUnlockContainerRequest(individualId, containerId, lock));
 			Logger.networkDebug("Sending lock/unlock container request", LogLevel.DEBUG);
-		}
-
-		public static synchronized void sendAddLightRequest(Light light) {
-			client.sendTCP(new AddLightRequest(light.size, light.x, light.y, light.color, light.intensity, light.spanBegin, light.spanEnd));
-			Logger.networkDebug("Sending add light request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendHarvestRequest(int individualId, int propId) {
@@ -822,16 +809,6 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyRemoveLight(int lightId) {
-			sendNotification(
-				-1,
-				true,
-				true,
-				new AddLightRequest.RemoveLightNotification(lightId)
-			);
-		}
-
-
 		public static synchronized void notifyOpenCraftingStationWindow(int individualId, int craftingStationId, int connectionId) {
 			sendNotification(
 				connectionId,
@@ -948,16 +925,6 @@ public class ClientServerInterface {
 				false,
 				false,
 				new SyncFluidsNotification(Domain.getActiveWorld().getTopography().getFluids())
-			);
-		}
-
-
-		public static synchronized void notifySyncLight(int id, Light light) {
-			sendNotification(
-				-1,
-				false,
-				false,
-				new AddLightRequest.SyncLightResponse(id, light.size, light.x, light.y, light.color, light.intensity, light.spanBegin, light.spanEnd)
 			);
 		}
 	}

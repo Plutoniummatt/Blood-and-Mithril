@@ -127,6 +127,16 @@ public abstract class GroundedIndividual extends Individual {
 
 
 	@Override
+	protected void respondToAttackCommand() {
+		if (currentAction == Action.ATTACK_RIGHT) {
+
+		} else if (currentAction == Action.ATTACK_LEFT) {
+
+		}
+	}
+
+
+	@Override
 	protected void internalRender() {
 		// Draw the body, position is centre bottom of the frame
 		Collection<Animation> currentAnimations = getCurrentAnimation();

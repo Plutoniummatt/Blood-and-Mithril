@@ -11,11 +11,6 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.csi.requests.AddLightRequest;
-import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
-import bloodandmithril.csi.requests.SynchronizePropRequest;
-import bloodandmithril.graphics.Light;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -28,7 +23,6 @@ import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
-import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -36,8 +30,6 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.CraftingStationWindow;
 import bloodandmithril.ui.components.window.FurnaceCraftingWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
-import bloodandmithril.util.Util;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -59,12 +51,6 @@ public class Furnace extends CraftingStation implements Container {
 
 	/** The duration which this furnace will combust/smelt, in seconds */
 	private float combustionDurationRemaining;
-
-	/** The {@link Light} that will be rendered if this {@link Furnace} is lit */
-	private Light light;
-
-	/** The ID of the {@link Light} that will be rendered if this {@link Furnace} is lit */
-	private int lightId;
 
 	/** True if burning */
 	private boolean burning;
@@ -96,8 +82,6 @@ public class Furnace extends CraftingStation implements Container {
 			this.container.synchronizeContainer(((Furnace)other).container);
 			this.burning = ((Furnace) other).burning;
 			this.combustionDurationRemaining = ((Furnace) other).combustionDurationRemaining;
-			this.lightId = ((Furnace) other).lightId;
-			this.light = Domain.getLights().get(((Furnace) other).lightId);
 		} else {
 			throw new RuntimeException("Can not synchronize Furnace with " + other.getClass().getSimpleName());
 		}
@@ -113,20 +97,11 @@ public class Furnace extends CraftingStation implements Container {
 		}
 
 		burning = true;
-
-		lightId = ParameterPersistenceService.getParameters().getNextLightId();
-		light = new Light(500, position.x, position.y + 4, Color.ORANGE, 1f, 0f, 1f);
-		Domain.getLights().put(lightId, light);
 	}
 
 
 	@Override
 	protected void internalRender(float constructionProgress) {
-		if (burning && light != null) {
-			float intensity = 0.75f + 0.25f * Util.getRandom().nextFloat();
-			light.intensity = intensity;
-		}
-
 		if (burning) {
 			spriteBatch.draw(FURNACE_BURNING, position.x - width / 2, position.y);
 		} else {
@@ -163,16 +138,7 @@ public class Furnace extends CraftingStation implements Container {
 				if (this.combustionDurationRemaining <= 0f) {
 					burning = false;
 					combustFuel();
-					Domain.getLights().remove(lightId);
 					if (!isClient()) {
-						ClientServerInterface.sendNotification(
-							-1,
-							true,
-							true,
-							new AddLightRequest.RemoveLightNotification(lightId),
-							new SynchronizePropRequest.SynchronizePropResponse(this),
-							new RefreshWindowsResponse()
-						);
 					} else {
 						refreshRefreshableWindows();
 					}

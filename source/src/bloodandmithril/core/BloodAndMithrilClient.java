@@ -12,12 +12,10 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
-import bloodandmithril.graphics.Light;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
@@ -395,24 +393,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					}
 				}
 
-			}
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-
-			Light light = new Light(
-				512,
-				getMouseWorldX(), getMouseWorldY(),
-				Util.randomOneOf(Color.WHITE, Color.CYAN, Color.GREEN, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.YELLOW),
-				1f,
-				0.1f,
-				0.4f
-			);
-
-			if (ClientServerInterface.isServer()) {
-				Domain.getLights().put(ParameterPersistenceService.getParameters().getNextLightId(), light);
-			} else {
-				ClientServerInterface.SendRequest.sendAddLightRequest(light);
 			}
 		}
 	}
