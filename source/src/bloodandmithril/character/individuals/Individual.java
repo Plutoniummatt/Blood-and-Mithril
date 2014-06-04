@@ -32,6 +32,7 @@ import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.weapon.OneHandedWeapon;
+import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -51,6 +52,8 @@ import bloodandmithril.world.World;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 /**
@@ -68,8 +71,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		WALK_RIGHT(false),
 		RUN_LEFT(true),
 		RUN_RIGHT(false),
-		ATTACK_RIGHT(false),
-		ATTACK_LEFT(true);
+		ATTACK_RIGHT_ONE_HANDED_WEAPON(false),
+		ATTACK_LEFT_ONE_HANDED_WEAPON(true),
+		ATTACK_RIGHT_TWO_HANDED_WEAPON(false),
+		ATTACK_LEFT_TWO_HANDED_WEAPON(true),
+		ATTACK_RIGHT_SPEAR(false),
+		ATTACK_LEFT_SPEAR(true);
 
 		private boolean flipXAnimation;
 		private Action(boolean flipXAnimation) {
@@ -200,13 +207,21 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/** Attacks a set of other {@link Individual}s, if the set is empty, it will hit everything */
+	@SuppressWarnings("rawtypes")
 	public synchronized void attack(Set<Integer> individuals) {
 		this.individualsToBeAttacked = individuals;
 		animationTimer = 0f;
-		if (currentAction.flipXAnimation) {
-			currentAction = Action.ATTACK_LEFT;
-		} else {
-			currentAction = Action.ATTACK_RIGHT;
+
+		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
+			return equipped instanceof Weapon;
+		});
+
+		if (weapon.isPresent()) {
+			if (currentAction.flipXAnimation) {
+				currentAction = ((Weapon) weapon.get()).getAttackAction(false);
+			} else {
+				currentAction = ((Weapon) weapon.get()).getAttackAction(true);
+			}
 		}
 
 		this.individualsToBeAttacked.clear();

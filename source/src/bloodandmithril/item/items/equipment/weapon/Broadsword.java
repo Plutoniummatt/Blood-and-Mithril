@@ -147,4 +147,10 @@ public class Broadsword<T extends Metal> extends OneHandedWeapon<T> implements C
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+	@Override
+	public float getBaseAttackDuration() {
+		return 1.5f;
+	}
 }

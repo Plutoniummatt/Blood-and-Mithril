@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon;
 
+import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
@@ -43,6 +44,17 @@ public abstract class Weapon<T extends Material> extends Equipable implements Af
 	 * @return The name of the {@link Weapon}, plural form
 	 */
 	protected abstract String weaponGetPlural(boolean firstCap);
+
+
+	/**
+	 * @return The base duration of an attack with this {@link Weapon}.
+	 */
+	public abstract float getBaseAttackDuration();
+
+	/**
+	 * @return the {@link Action} that this {@link Weapon} causes.
+	 */
+	public abstract Action getAttackAction(boolean right);
 
 	/**
 	 * @return The {@link Material} this {@link Weapon} is made from
