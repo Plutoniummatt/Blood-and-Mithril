@@ -32,7 +32,6 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
-import bloodandmithril.graphics.Light;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.persistence.GameSaver;
@@ -68,9 +67,6 @@ public class Domain {
 
 	/** {@link Topography}s */
 	private static HashMap<Integer, Topography>					topographies			= newHashMap();
-
-	/** All lights */
-	private static ConcurrentHashMap<Integer, Light> 			lights 					= new ConcurrentHashMap<>();
 
 	/** {@link Individual} that are selected for manual control */
 	private static Set<Individual> 								selectedIndividuals 	= newHashSet();
@@ -349,16 +345,6 @@ public class Domain {
 
 	public static void setWorlds(HashMap<Integer, World> worlds) {
 		Domain.worlds = worlds;
-	}
-
-
-	public static ConcurrentHashMap<Integer, Light> getLights() {
-		return lights;
-	}
-
-
-	public static void setLights(ConcurrentHashMap<Integer, Light> lights) {
-		Domain.lights = lights;
 	}
 
 

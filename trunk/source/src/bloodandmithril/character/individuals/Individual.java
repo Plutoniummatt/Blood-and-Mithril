@@ -67,7 +67,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		WALK_LEFT(true),
 		WALK_RIGHT(false),
 		RUN_LEFT(true),
-		RUN_RIGHT(false);
+		RUN_RIGHT(false),
+		ATTACK_RIGHT(false),
+		ATTACK_LEFT(true);
 
 		private boolean flipXAnimation;
 		private Action(boolean flipXAnimation) {
@@ -112,6 +114,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** The hitbox defining the region where this {@link Individual} can be hit */
 	private Box hitBox;
 
+	/** The set of {@link Individual}s currently being attacked by this {@link Individual} */
+	private Set<Integer> individualsToBeAttacked;
+
 	/** For animation frame timing */
 	protected float animationTimer;
 
@@ -135,6 +140,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** The faction this {@link Individual} belongs to */
 	protected int factionId;
+
 
 	/**
 	 * Constructor
@@ -169,6 +175,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.ai = other.ai;
 		this.setWorldId(other.getWorldId());
 		this.selectedByClient = other.selectedByClient;
+		this.individualsToBeAttacked = other.individualsToBeAttacked;
 		this.aiReactionTimer = other.aiReactionTimer;
 		this.animationTimer = other.animationTimer;
 		this.activeCommands = other.activeCommands;
@@ -192,6 +199,25 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
+	/** Attacks a set of other {@link Individual}s, if the set is empty, it will hit everything */
+	public synchronized void attack(Set<Integer> individuals) {
+		this.individualsToBeAttacked = individuals;
+		animationTimer = 0f;
+		if (currentAction.flipXAnimation) {
+			currentAction = Action.ATTACK_LEFT;
+		} else {
+			currentAction = Action.ATTACK_RIGHT;
+		}
+
+		this.individualsToBeAttacked.clear();
+		this.individualsToBeAttacked.addAll(individuals);
+	}
+
+
+	/** Called during the update routine when the currentAction is attacking */
+	protected abstract void respondToAttackCommand();
+
+
 	/** Implementation-specific copy method of this {@link Individual} */
 	public abstract Individual copy();
 
@@ -201,35 +227,42 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		return ai;
 	}
 
+
 	/** Returns the {@link IndividualState} of this {@link Individual} */
 	public IndividualState getState() {
 		return state;
 	}
+
 
 	/** Returns the {@link Skills} of this {@link Individual} */
 	public Skills getSkills() {
 		return skills;
 	}
 
+
 	/** The {@link #timeStamp} is used for client-server synchronization, if the received timeStamp is older than the current, it will be rejected */
 	public synchronized long getTimeStamp() {
 		return timeStamp;
 	}
+
 
 	/** See {@link #getTimeStamp()} */
 	public synchronized void setTimeStamp(long timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 
+
 	/** True if this {@link Individual} is currently {@link #walking} */
 	public boolean isWalking() {
 		return walking;
 	}
 
+
 	/** See {@link #isWalking()} */
 	public synchronized void setWalking(boolean walking) {
 		this.walking = walking;
 	}
+
 
 	/** See {@link #copy()} */
 	protected abstract void internalCopyFrom(Individual other);
@@ -378,6 +411,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		internalUpdate(delta);
 
 		respondToCommands();
+		respondToAttackCommand();
 
 		Kinematics.kinetics(delta, Domain.getWorld(getWorldId()), this);
 

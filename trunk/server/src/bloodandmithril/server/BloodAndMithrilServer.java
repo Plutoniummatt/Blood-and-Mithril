@@ -6,7 +6,6 @@ import static bloodandmithril.item.items.equipment.weapon.ButterflySword.butterf
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
@@ -24,7 +23,6 @@ import bloodandmithril.csi.Request;
 import bloodandmithril.csi.Response;
 import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.generation.component.PrefabricatedComponent;
-import bloodandmithril.graphics.Light;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucket;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
@@ -173,10 +171,6 @@ public class BloodAndMithrilServer {
 
 							for (Faction faction : Domain.getFactions().values()) {
 								ClientServerInterface.SendNotification.notifySyncFaction(faction);
-							}
-
-							for (Entry<Integer, Light> entry : Domain.getLights().entrySet()) {
-								ClientServerInterface.SendNotification.notifySyncLight(entry.getKey(), entry.getValue());
 							}
 
 							if (Domain.getActiveWorld() != null && Domain.getActiveWorld().getTopography() != null && Domain.getActiveWorld().getTopography().getFluids() != null) {
