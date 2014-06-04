@@ -12,9 +12,12 @@ import static bloodandmithril.util.ComparisonUtil.obj;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.Box;
@@ -23,6 +26,7 @@ import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Sets;
 
 /**
  * An {@link Individual} that is grounded, moves on ground.
@@ -128,11 +132,41 @@ public abstract class GroundedIndividual extends Individual {
 
 	@Override
 	protected void respondToAttackCommand() {
-		if (currentAction == Action.ATTACK_RIGHT) {
-
-		} else if (currentAction == Action.ATTACK_LEFT) {
-
+		// Don't bother if we're not attacking
+		if (!obj(currentAction).oneOf(
+				Action.ATTACK_LEFT_ONE_HANDED_WEAPON,
+				Action.ATTACK_RIGHT_ONE_HANDED_WEAPON,
+				Action.ATTACK_LEFT_TWO_HANDED_WEAPON,
+				Action.ATTACK_LEFT_TWO_HANDED_WEAPON,
+				Action.ATTACK_LEFT_SPEAR,
+				Action.ATTACK_RIGHT_SPEAR
+			)) {
+			return;
 		}
+
+		float attackDuration = getAttackDuration();
+		if (animationTimer > attackDuration) {
+			animationTimer = 0f;
+			if (currentAction.flipXAnimation()) {
+				currentAction = STAND_LEFT;
+			} else {
+				currentAction = STAND_RIGHT;
+			}
+		}
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	private float getAttackDuration() {
+		Set<Item> keySet = Sets.newHashSet(getEquipped().keySet());
+		for(Item item : keySet) {
+			if (item instanceof Weapon) {
+				return ((Weapon)item).getBaseAttackDuration();
+			}
+		}
+
+		// Unarmed attack duration
+		return 1f;
 	}
 
 

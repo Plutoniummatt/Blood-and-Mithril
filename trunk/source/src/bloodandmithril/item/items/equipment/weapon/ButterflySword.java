@@ -148,4 +148,10 @@ public class ButterflySword<T extends Metal> extends OneHandedWeapon<T> implemen
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+	@Override
+	public float getBaseAttackDuration() {
+		return 1f;
+	}
 }
