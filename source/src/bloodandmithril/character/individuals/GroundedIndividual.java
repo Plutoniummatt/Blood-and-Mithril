@@ -133,28 +133,28 @@ public abstract class GroundedIndividual extends Individual {
 	@Override
 	protected void respondToAttackCommand() {
 		// Don't bother if we're not attacking
-		if (!obj(currentAction).oneOf(
-				Action.ATTACK_LEFT_ONE_HANDED_WEAPON,
-				Action.ATTACK_RIGHT_ONE_HANDED_WEAPON,
-				Action.ATTACK_LEFT_TWO_HANDED_WEAPON,
-				Action.ATTACK_LEFT_TWO_HANDED_WEAPON,
-				Action.ATTACK_LEFT_SPEAR,
-				Action.ATTACK_RIGHT_SPEAR
-			)) {
+
+		switch (currentAction) {
+		case ATTACK_LEFT_ONE_HANDED_WEAPON:
+		case ATTACK_RIGHT_ONE_HANDED_WEAPON:
+		case ATTACK_LEFT_TWO_HANDED_WEAPON:
+		case ATTACK_RIGHT_TWO_HANDED_WEAPON:
+		case ATTACK_LEFT_SPEAR:
+		case ATTACK_RIGHT_SPEAR:
+			float attackDuration = getAttackDuration();
+			if (animationTimer > attackDuration) {
+				animationTimer = 0f;
+				if (currentAction.flipXAnimation()) {
+					currentAction = STAND_LEFT;
+				} else {
+					currentAction = STAND_RIGHT;
+				}
+			}
+
+		default:
 			return;
 		}
-
-		float attackDuration = getAttackDuration();
-		if (animationTimer > attackDuration) {
-			animationTimer = 0f;
-			if (currentAction.flipXAnimation()) {
-				currentAction = STAND_LEFT;
-			} else {
-				currentAction = STAND_RIGHT;
-			}
-		}
 	}
-
 
 	@SuppressWarnings("rawtypes")
 	private float getAttackDuration() {
