@@ -91,7 +91,7 @@ public class GenerateChunk implements Request {
 
 		@Override
 		public void prepare() {
-			Logger.networkDebug("Preparing to send generated chunk response at (" + fData.xChunkCoord + ", " + fData.yChunkCoord + ")", level);
+			Logger.networkDebug("Preparing to send generated chunk response at (" + fData.xChunkCoord + ", " + fData.yChunkCoord + ")", LogLevel.DEBUG);
 		}
 	}
 
