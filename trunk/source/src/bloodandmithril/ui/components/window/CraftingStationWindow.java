@@ -44,7 +44,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * {@link Anvl} related UI
+ * {@link Anvil} related UI
  *
  * @author Matt
  */
@@ -327,13 +327,15 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			isActive() && (craftingStation.getCurrentlyBeingCrafted() == null || !craftingStation.isOccupied()) && !craftingStation.isFinished() && (enoughMaterials || craftingStation.getCurrentlyBeingCrafted() != null) && customCanCraft(),
 			getAlpha()
 		);
-
+		
 		takeFinishedItemButton.render(
 			x + width / 2 + 11,
 			y - 85,
 			isActive() && craftingStation.isFinished(),
 			getAlpha()
 		);
+		
+		spriteBatch.flush();
 	}
 
 
