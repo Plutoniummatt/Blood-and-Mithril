@@ -11,7 +11,7 @@ public class Logger {
 	private static final LogLevel loaderDebug = LogLevel.WARN;
 	private static final LogLevel generalDebug = LogLevel.WARN;
 	private static final LogLevel generationDebug = LogLevel.WARN;
-	private static final LogLevel networkDebug = LogLevel.TRACE;
+	private static final LogLevel networkDebug = LogLevel.WARN;
 	private static final LogLevel saverDebug = LogLevel.WARN;
 	private static final LogLevel aiDebug = LogLevel.WARN;
 
