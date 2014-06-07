@@ -18,7 +18,7 @@ import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
-import bloodandmithril.character.individuals.GroundedIndividual;
+import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
@@ -62,7 +62,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
-public class Elf extends GroundedIndividual {
+public class Elf extends Humanoid {
 	private static final long serialVersionUID = -5566954059579973505L;
 
 	/** True if female */
@@ -78,65 +78,67 @@ public class Elf extends GroundedIndividual {
 	private static Map<Action, List<Animation>> animationMap = newHashMap();
 
 	static {
-		ArrayList<Animation> walkSequence = newArrayList(
-			AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.11f),	// BACK ARM
-			AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.11f),	// BACK LEG
-			AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.11f),	// HEAD
-			AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.11f),	// HAIR
-			AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.11f),	// TORSO
-			AnimationHelper.animation(Domain.individualTexture, 0, 560, 64, 112, 10, 0.11f),	// FRONT LEG
-			AnimationHelper.animation(Domain.individualTexture, 0, 336, 64, 112, 10, 0.11f)		// FRONT ARM
-		);
+		if (ClientServerInterface.isClient()) {
+			ArrayList<Animation> walkSequence = newArrayList(
+				AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.11f),	// HEAD
+				AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.11f),	// HAIR
+				AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.11f),	// BACK LEG
+				AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.11f),	// BACK ARM
+				AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.11f),	// TORSO
+				AnimationHelper.animation(Domain.individualTexture, 0, 560, 64, 112, 10, 0.11f),	// FRONT LEG
+				AnimationHelper.animation(Domain.individualTexture, 0, 336, 64, 112, 10, 0.11f)		// FRONT ARM
+			);
 
-		ArrayList<Animation> standSequence = newArrayList(
-			AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f),		// BACK ARM
-			AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f),		// BACK LEG
-			AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f),		// HEAD
-			AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f),		// HAIR
-			AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f),		// TORSO
-			AnimationHelper.animation(Domain.individualTexture, 1152, 560, 64, 112, 1, 1f),		// FRONT LEG
-			AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f)		// FRONT ARM
-		);
+			ArrayList<Animation> standSequence = newArrayList(
+				AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f),		// HEAD
+				AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f),		// HAIR
+				AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f),		// BACK LEG
+				AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f),		// BACK ARM
+				AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f),		// TORSO
+				AnimationHelper.animation(Domain.individualTexture, 1152, 560, 64, 112, 1, 1f),		// FRONT LEG
+				AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f)		// FRONT ARM
+			);
 
-		ArrayList<Animation> runSequence = newArrayList(
-			AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.11f),	// BACK ARM
-			AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.11f),	// BACK LEG
-			AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.11f),	// HEAD
-			AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.11f),	// HAIR
-			AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.11f),	// TORSO
-			AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.11f),	// FRONT LEG
-			AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.11f)	// FRONT ARM
-		);
+			ArrayList<Animation> runSequence = newArrayList(
+				AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.11f),	// HEAD
+				AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.11f),	// HAIR
+				AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.11f),	// BACK LEG
+				AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.11f),	// BACK ARM
+				AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.11f),	// TORSO
+				AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.11f),	// FRONT LEG
+				AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.11f)	// FRONT ARM
+			);
 
-		animationMap.put(
-			WALK_RIGHT,
-			walkSequence
-		);
+			animationMap.put(
+				WALK_RIGHT,
+				walkSequence
+			);
 
-		animationMap.put(
-			WALK_LEFT,
-			walkSequence
-		);
+			animationMap.put(
+				WALK_LEFT,
+				walkSequence
+			);
 
-		animationMap.put(
-			STAND_RIGHT,
-			standSequence
-		);
+			animationMap.put(
+				STAND_RIGHT,
+				standSequence
+			);
 
-		animationMap.put(
-			STAND_LEFT,
-			standSequence
-		);
+			animationMap.put(
+				STAND_LEFT,
+				standSequence
+			);
 
-		animationMap.put(
-			RUN_RIGHT,
-			runSequence
-		);
+			animationMap.put(
+				RUN_RIGHT,
+				runSequence
+			);
 
-		animationMap.put(
-			RUN_LEFT,
-			runSequence
-		);
+			animationMap.put(
+				RUN_LEFT,
+				runSequence
+			);
+		}
 	}
 
 	/**
@@ -214,17 +216,17 @@ public class Elf extends GroundedIndividual {
 		decreaseHunger(0.000001f);
 		decreaseThirst(0.000003f);
 
-		if (!isWalking()) {
-			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
-				decreaseStamina(0.0005f);
-			} else {
-				increaseStamina(delta * getState().staminaRegen);
-			}
-		} else {
+		if (isWalking()) {
 			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
 				increaseStamina(delta * getState().staminaRegen / 2);
 			} else {
-				increaseStamina(0.001f);
+				increaseStamina(getState().staminaRegen);
+			}
+		} else {
+			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
+				decreaseStamina(0.0004f);
+			} else {
+				increaseStamina(delta * getState().staminaRegen);
 			}
 		}
 
