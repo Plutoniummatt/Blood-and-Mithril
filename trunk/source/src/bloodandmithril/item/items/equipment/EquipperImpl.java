@@ -45,7 +45,7 @@ public class EquipperImpl implements Equipper, Serializable {
 			if (slot != EquipmentSlot.RING) {
 				availableEquipmentSlots.put(
 					slot,
-					new TrueFunction()
+					new AlwaysTrueFunction()
 				);
 			} else {
 				availableEquipmentSlots.put(
@@ -124,7 +124,7 @@ public class EquipperImpl implements Equipper, Serializable {
 			}
 			availableEquipmentSlots.put(
 				item.slot,
-				item.slot == EquipmentSlot.RING ? new RingFunction() : new TrueFunction()
+				item.slot == EquipmentSlot.RING ? new RingFunction() : new AlwaysTrueFunction()
 			);
 			equip(item);
 		}
@@ -156,7 +156,7 @@ public class EquipperImpl implements Equipper, Serializable {
 		containerImpl.getInventory().put(toUnequip, (containerImpl.getInventory().get(toUnequip) == null ? 0 : containerImpl.getInventory().get(toUnequip)) + 1);
 		availableEquipmentSlots.put(
 			toUnequip.slot,
-			item.slot == EquipmentSlot.RING ? new RingFunction() : new TrueFunction()
+			item.slot == EquipmentSlot.RING ? new RingFunction() : new AlwaysTrueFunction()
 		);
 		refreshCurrentLoad();
 	}
@@ -224,7 +224,7 @@ public class EquipperImpl implements Equipper, Serializable {
 	 *
 	 * @author Matt
 	 */
-	private class TrueFunction implements SerializableFunction<Boolean> {
+	public class AlwaysTrueFunction implements SerializableFunction<Boolean> {
 		private static final long serialVersionUID = -6919306076788382244L;
 
 		@Override
@@ -252,7 +252,7 @@ public class EquipperImpl implements Equipper, Serializable {
 	 *
 	 * @author Matt
 	 */
-	private class RingFunction implements SerializableFunction<Boolean> {
+	public class RingFunction implements SerializableFunction<Boolean> {
 		private static final long serialVersionUID = -4418867523435245643L;
 
 		@Override

@@ -19,6 +19,7 @@ import static java.lang.Math.sin;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import bloodandmithril.character.ai.ArtificialIntelligence;
@@ -43,6 +44,7 @@ import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
+import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
@@ -71,14 +73,17 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		WALK_RIGHT(false),
 		RUN_LEFT(true),
 		RUN_RIGHT(false),
-		ATTACK_RIGHT_ONE_HANDED_WEAPON(false),
+		ATTACK_LEFT_UNARMED(true),
+		ATTACK_RIGHT_UNARMED(false),
 		ATTACK_LEFT_ONE_HANDED_WEAPON(true),
-		ATTACK_RIGHT_TWO_HANDED_WEAPON(false),
+		ATTACK_RIGHT_ONE_HANDED_WEAPON(false),
 		ATTACK_LEFT_TWO_HANDED_WEAPON(true),
-		ATTACK_RIGHT_SPEAR(false),
-		ATTACK_LEFT_SPEAR(true);
+		ATTACK_RIGHT_TWO_HANDED_WEAPON(false),
+		ATTACK_LEFT_SPEAR(true),
+		ATTACK_RIGHT_SPEAR(false);
 
 		private boolean flipXAnimation;
+
 		private Action(boolean flipXAnimation) {
 			this.flipXAnimation = flipXAnimation;
 		}
@@ -231,6 +236,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Called during the update routine when the currentAction is attacking */
 	protected abstract void respondToAttackCommand();
+
+
+	/** Returns the map that maps from an {@link Action} to a map that maps action frames to their respective {@link Task}s */
+	protected abstract Map<Action, Map<Integer, Task>> getActionFrames();
 
 
 	/** Implementation-specific copy method of this {@link Individual} */
