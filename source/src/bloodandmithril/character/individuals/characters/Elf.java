@@ -218,9 +218,9 @@ public class Elf extends Humanoid {
 
 		if (isWalking()) {
 			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
-				increaseStamina(delta * getState().staminaRegen / 2);
+				increaseStamina(delta * getState().staminaRegen / 2f);
 			} else {
-				increaseStamina(getState().staminaRegen);
+				increaseStamina(delta * getState().staminaRegen);
 			}
 		} else {
 			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
