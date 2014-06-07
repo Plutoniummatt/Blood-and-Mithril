@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.bar;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
@@ -89,7 +91,7 @@ public class BottomBar extends Component {
 
 	/** Called when the factions button is clicked */
 	private void factionsClicked() {
-		for (Component component : UserInterface.layeredComponents) {
+		for (Component component : newArrayList(UserInterface.layeredComponents)) {
 			if (component instanceof FactionsWindow) {
 				((FactionsWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((FactionsWindow) component).width/2;
 				((FactionsWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((FactionsWindow) component).height/2;
@@ -128,13 +130,13 @@ public class BottomBar extends Component {
 				null
 			)
 		);
-
+		
 		if (ClientServerInterface.isClient() && !ClientServerInterface.isServer())
 		contextMenu.addMenuItem(
 			new MenuItem(
 				"Chat",
 				() -> {
-					for (Component component : UserInterface.layeredComponents) {
+					for (Component component : newArrayList(UserInterface.layeredComponents)) {
 						if (component instanceof ChatWindow) {
 							((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
 							((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
