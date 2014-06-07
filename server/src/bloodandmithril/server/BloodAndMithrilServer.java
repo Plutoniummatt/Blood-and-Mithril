@@ -116,11 +116,11 @@ public class BloodAndMithrilServer {
 
 						// Send response
 						if (request.tcp()) {
+							Responses responseToSend = request.respond();
+							for (Response response : responseToSend.getResponses()) {
+								response.prepare();
+							}
 							if (request.notifyOthers()) {
-								Responses responseToSend = request.respond();
-								for (Response response : responseToSend.getResponses()) {
-									response.prepare();
-								}
 								for (Connection c : server.getConnections()) {
 									c.sendTCP(responseToSend);
 								}
@@ -128,11 +128,11 @@ public class BloodAndMithrilServer {
 								connection.sendTCP(request.respond());
 							}
 						} else {
+							Responses responseToSend = request.respond();
+							for (Response response : responseToSend.getResponses()) {
+								response.prepare();
+							}
 							if (request.notifyOthers()) {
-								Responses responseToSend = request.respond();
-								for (Response response : responseToSend.getResponses()) {
-									response.prepare();
-								}
 								for (Connection c : server.getConnections()) {
 									c.sendUDP(responseToSend);
 								}
