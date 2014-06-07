@@ -142,7 +142,7 @@ public class BottomBar extends Component {
 							((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
 							((ChatWindow) component).minimized = false;
 							((ChatWindow) component).setActive(true);
-							return;
+							break;
 						}
 
 						UserInterface.addLayeredComponent(

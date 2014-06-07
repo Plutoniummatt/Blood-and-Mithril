@@ -594,7 +594,7 @@ public class ClientServerInterface {
 	public static class SendRequest {
 		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
-			Logger.networkDebug("Sending chunk generation request", LogLevel.DEBUG);
+			Logger.networkDebug("Sending chunk generation request for (" + x + ", " + y + ")", LogLevel.DEBUG);
 		}
 
 
