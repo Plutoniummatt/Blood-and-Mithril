@@ -82,8 +82,8 @@ public class Elf extends Humanoid {
 			ArrayList<Animation> walkSequence = newArrayList(
 				AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.11f),	// HEAD
 				AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.11f),	// HAIR
-				AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.11f),	// BACK LEG
 				AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.11f),	// BACK ARM
+				AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.11f),	// BACK LEG
 				AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.11f),	// TORSO
 				AnimationHelper.animation(Domain.individualTexture, 0, 560, 64, 112, 10, 0.11f),	// FRONT LEG
 				AnimationHelper.animation(Domain.individualTexture, 0, 336, 64, 112, 10, 0.11f)		// FRONT ARM
@@ -92,8 +92,8 @@ public class Elf extends Humanoid {
 			ArrayList<Animation> standSequence = newArrayList(
 				AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f),		// HEAD
 				AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f),		// HAIR
-				AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f),		// BACK LEG
 				AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f),		// BACK ARM
+				AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f),		// BACK LEG
 				AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f),		// TORSO
 				AnimationHelper.animation(Domain.individualTexture, 1152, 560, 64, 112, 1, 1f),		// FRONT LEG
 				AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f)		// FRONT ARM
@@ -102,8 +102,8 @@ public class Elf extends Humanoid {
 			ArrayList<Animation> runSequence = newArrayList(
 				AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.11f),	// HEAD
 				AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.11f),	// HAIR
-				AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.11f),	// BACK LEG
 				AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.11f),	// BACK ARM
+				AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.11f),	// BACK LEG
 				AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.11f),	// TORSO
 				AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.11f),	// FRONT LEG
 				AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.11f)	// FRONT ARM
