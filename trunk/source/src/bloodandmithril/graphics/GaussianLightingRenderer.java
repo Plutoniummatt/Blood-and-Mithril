@@ -3,7 +3,8 @@ package bloodandmithril.graphics;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.cam;
-import static bloodandmithril.core.BloodAndMithrilClient.camMargin;
+import static bloodandmithril.core.BloodAndMithrilClient.camMarginX;
+import static bloodandmithril.core.BloodAndMithrilClient.camMarginY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.badlogic.gdx.Gdx.gl;
@@ -56,36 +57,36 @@ public class GaussianLightingRenderer {
 	public static void setup() {
 		workingDownSampled = new FrameBuffer(
 			RGBA8888,
-			(WIDTH + camMargin) / 16,
-			(HEIGHT + camMargin) / 16,
+			(WIDTH + camMarginX) / 16,
+			(HEIGHT + camMarginY) / 16,
 			false
 		);
 
 		workingDownSampledXBlurColorBuffer = new FrameBuffer(
 			RGBA8888,
-			(WIDTH + camMargin) / 16,
-			(HEIGHT + camMargin) / 16,
+			(WIDTH + camMarginX) / 16,
+			(HEIGHT + camMarginY) / 16,
 			false
 		);
 
 		workingDownSampledYBlurColorBuffer = new FrameBuffer(
 			RGBA8888,
-			(WIDTH + camMargin) / 16,
-			(HEIGHT + camMargin) / 16,
+			(WIDTH + camMarginX) / 16,
+			(HEIGHT + camMarginY) / 16,
 			false
 		);
 
 		workingDownSampledXBlurColorBuffer2 = new FrameBuffer(
 			RGBA8888,
-			(WIDTH + camMargin) / 16,
-			(HEIGHT + camMargin) / 16,
+			(WIDTH + camMarginX) / 16,
+			(HEIGHT + camMarginY) / 16,
 			false
 		);
 
 		workingDownSampledYBlurColorBuffer2 = new FrameBuffer(
 			RGBA8888,
-			(WIDTH + camMargin) / 16,
-			(HEIGHT + camMargin) / 16,
+			(WIDTH + camMarginX) / 16,
+			(HEIGHT + camMarginY) / 16,
 			false
 		);
 
@@ -225,8 +226,8 @@ public class GaussianLightingRenderer {
 		gl.glActiveTexture(GL_TEXTURE0);
 		spriteBatch.draw(
 			workingDownSampledYBlurColorBuffer.getColorBufferTexture(),
-			-camMargin / 2 - round(cam.position.x) % TILE_SIZE,
-			-camMargin / 2 - round(cam.position.y) % TILE_SIZE,
+			-camMarginX / 2 - round(cam.position.x) % TILE_SIZE,
+			-camMarginY / 2 - round(cam.position.y) % TILE_SIZE,
 			workingDownSampledYBlurColorBuffer.getWidth() * TILE_SIZE,
 			workingDownSampledYBlurColorBuffer.getHeight() * TILE_SIZE
 		);
@@ -296,8 +297,8 @@ public class GaussianLightingRenderer {
 		spriteBatch.setShader(Shaders.pass);
 		spriteBatch.draw(
 			workingDownSampledYBlurColorBuffer.getColorBufferTexture(),
-			-camMargin / 2 - round(cam.position.x) % TILE_SIZE,
-			-camMargin / 2 - round(cam.position.y) % TILE_SIZE,
+			-camMarginX / 2 - round(cam.position.x) % TILE_SIZE,
+			-camMarginY / 2 - round(cam.position.y) % TILE_SIZE,
 			workingDownSampledYBlurColorBuffer.getWidth() * TILE_SIZE,
 			workingDownSampledYBlurColorBuffer.getHeight() * TILE_SIZE
 		);
@@ -314,8 +315,8 @@ public class GaussianLightingRenderer {
 		spriteBatch.setShader(Shaders.invertY);
 		spriteBatch.draw(
 			Domain.bBuffer.getColorBufferTexture(),
-			-camMargin / 2,
-			-camMargin / 2
+			-camMarginX / 2,
+			-camMarginY / 2
 		);
 		spriteBatch.end();
 		workingFBO.end();
@@ -352,8 +353,8 @@ public class GaussianLightingRenderer {
 		spriteBatch.setShader(Shaders.invertY);
 		spriteBatch.draw(
 			Domain.mBuffer.getColorBufferTexture(),
-			-camMargin / 2,
-			-camMargin / 2
+			-camMarginX / 2,
+			-camMarginY / 2
 		);
 		spriteBatch.end();
 		workingFBO.end();
@@ -392,8 +393,8 @@ public class GaussianLightingRenderer {
 		spriteBatch.setShader(Shaders.invertY);
 		spriteBatch.draw(
 			Domain.fBuffer.getColorBufferTexture(),
-			-camMargin / 2,
-			-camMargin / 2
+			-camMarginX / 2,
+			-camMarginY / 2
 		);
 		spriteBatch.end();
 		workingFBO.end();

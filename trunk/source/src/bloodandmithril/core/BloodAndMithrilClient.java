@@ -80,10 +80,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static final float DOUBLE_CLICK_TIME = 0.25f;
 
 	/** Resolution x */
-	public static int WIDTH = ConfigPersistenceService.getConfig().getResX();
+	public static final int WIDTH = ConfigPersistenceService.getConfig().getResX();
 
 	/** Resolution y */
-	public static int HEIGHT = ConfigPersistenceService.getConfig().getResY();
+	public static final int HEIGHT = ConfigPersistenceService.getConfig().getResY();
 
 	/** 'THE' SpriteBatch */
 	public static SpriteBatch spriteBatch;
@@ -117,7 +117,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	private static CursorBoundTask cursorBoundTask = null;
 
-	public static final int camMargin = 640;
+	public static int camMarginX, camMarginY;
+
+	static {
+		camMarginX = 640 + 32 - WIDTH % 32;
+		camMarginY = 640 + 32 - HEIGHT % 32;
+	}
 
 	@Override
 	public void create() {
@@ -127,8 +132,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		spriteBatch = new SpriteBatch();
 
-		cam = new OrthographicCamera(WIDTH + camMargin, HEIGHT + camMargin);
-		cam.setToOrtho(false, WIDTH + camMargin, HEIGHT + camMargin);
+		cam = new OrthographicCamera(WIDTH + camMarginX, HEIGHT + camMarginY);
+		cam.setToOrtho(false, WIDTH + camMarginX, HEIGHT + camMarginY);
 
 		Gdx.input.setInputProcessor(this);
 

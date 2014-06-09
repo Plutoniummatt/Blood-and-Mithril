@@ -3,7 +3,8 @@ package bloodandmithril.world;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.cam;
-import static bloodandmithril.core.BloodAndMithrilClient.camMargin;
+import static bloodandmithril.core.BloodAndMithrilClient.camMarginX;
+import static bloodandmithril.core.BloodAndMithrilClient.camMarginY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.world.Domain.Depth.BACKGROUND;
@@ -166,12 +167,12 @@ public class Domain {
 		gameWorldTexture.setFilter(Linear, Linear);
 		individualTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
-		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
-		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
-		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
-		bBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
-		fBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
-		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, WIDTH + camMargin , HEIGHT + camMargin, false);
+		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
+		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
+		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
+		bBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
+		fBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
+		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
