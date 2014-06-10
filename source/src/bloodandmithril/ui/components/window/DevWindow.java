@@ -237,6 +237,10 @@ public class DevWindow extends Window {
 			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), false, YellowBrickTile.class);
 		}
 
+		if (keyCode == Input.Keys.I) {
+			Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), getMouseWorldY(), true).changeToSmoothCeiling();
+		}
+
 		if (keyCode == Input.Keys.J) {
 			Domain.getActiveWorld().getTopography().getFluids().put(
 				Topography.convertToWorldTileCoord(getMouseWorldX()),
