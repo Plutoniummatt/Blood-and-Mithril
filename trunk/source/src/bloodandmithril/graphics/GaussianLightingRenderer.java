@@ -35,7 +35,10 @@ public class GaussianLightingRenderer {
 	public static FrameBuffer workingDownSampledXBlurColorBuffer2;
 	public static FrameBuffer workingDownSampledYBlurColorBuffer2;
 	public static FrameBuffer backgroundOcclusionFBO;
+	public static FrameBuffer backgroundOcclusionFBONearest;
+	public static FrameBuffer backgroundShadowFBO;
 	public static FrameBuffer foregroundOcclusionFBO;
+	public static FrameBuffer foregroundShadowFBO;
 	public static FrameBuffer workingFBO;
 
 	/**
@@ -104,7 +107,28 @@ public class GaussianLightingRenderer {
 			false
 		);
 
+		backgroundOcclusionFBONearest = new FrameBuffer(
+			RGBA8888,
+			WIDTH,
+			HEIGHT,
+			false
+		);
+
+		backgroundShadowFBO = new FrameBuffer(
+			RGBA8888,
+			WIDTH,
+			HEIGHT,
+			false
+		);
+
 		foregroundOcclusionFBO = new FrameBuffer(
+			RGBA8888,
+			WIDTH,
+			HEIGHT,
+			false
+		);
+
+		foregroundShadowFBO = new FrameBuffer(
 			RGBA8888,
 			WIDTH,
 			HEIGHT,
@@ -233,6 +257,39 @@ public class GaussianLightingRenderer {
 		);
 		spriteBatch.end();
 		backgroundOcclusionFBO.end();
+
+		// Process the shadow FBO - Upsample the downsampled background
+		workingDownSampled.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		backgroundShadowFBO.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.pass);
+		spriteBatch.draw(
+			workingDownSampled.getColorBufferTexture(),
+			-camMarginX / 2 - round(cam.position.x) % TILE_SIZE,
+			-camMarginY / 2 - round(cam.position.y) % TILE_SIZE,
+			workingDownSampled.getWidth() * TILE_SIZE,
+			workingDownSampled.getHeight() * TILE_SIZE
+		);
+		spriteBatch.end();
+		backgroundShadowFBO.end();
+		workingDownSampled.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+
+		backgroundOcclusionFBONearest.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.pass);
+		spriteBatch.draw(
+			workingDownSampled.getColorBufferTexture(),
+			-camMarginX / 2 - round(cam.position.x) % TILE_SIZE,
+			-camMarginY / 2 - round(cam.position.y) % TILE_SIZE,
+			workingDownSampled.getWidth() * TILE_SIZE,
+			workingDownSampled.getHeight() * TILE_SIZE
+		);
+		spriteBatch.end();
+		backgroundOcclusionFBONearest.end();
 	}
 
 
@@ -304,6 +361,24 @@ public class GaussianLightingRenderer {
 		);
 		spriteBatch.end();
 		foregroundOcclusionFBO.end();
+
+		// Process the foreground drop shadow
+		workingDownSampled.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		foregroundShadowFBO.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.pass);
+		spriteBatch.draw(
+			workingDownSampled.getColorBufferTexture(),
+			-camMarginX / 2 - round(cam.position.x) % TILE_SIZE,
+			-camMarginY / 2 - round(cam.position.y) % TILE_SIZE,
+			workingDownSampled.getWidth() * TILE_SIZE,
+			workingDownSampled.getHeight() * TILE_SIZE
+		);
+		spriteBatch.end();
+		foregroundShadowFBO.end();
+		workingDownSampled.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 
@@ -325,15 +400,17 @@ public class GaussianLightingRenderer {
 		if (SEE_ALL) {
 			spriteBatch.setShader(Shaders.invertY);
 			spriteBatch.draw(
-				backgroundOcclusionFBO.getColorBufferTexture(),
+				backgroundShadowFBO.getColorBufferTexture(),
 				0, 0
 			);
 		} else {
-			spriteBatch.setShader(Shaders.invertYBlendWithOcclusion);
+			spriteBatch.setShader(Shaders.invertYBlendWithOcclusionBackground);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(1);
+			backgroundShadowFBO.getColorBufferTexture().bind(2);
 			Color daylight = Weather.getDaylightColor();
-			Shaders.invertYBlendWithOcclusion.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
-			Shaders.invertYBlendWithOcclusion.setUniformi("occlusion", 1);
+			Shaders.invertYBlendWithOcclusionBackground.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
+			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion", 1);
+			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion2", 2);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
@@ -412,8 +489,12 @@ public class GaussianLightingRenderer {
 			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
+			foregroundShadowFBO.getColorBufferTexture().bind(3);
+			backgroundOcclusionFBONearest.getColorBufferTexture().bind(4);
 			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion", 1);
 			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion2", 2);
+			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion3", 3);
+			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion4", 4);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
