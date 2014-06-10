@@ -28,7 +28,9 @@ void main()
   float extraShadow = sample2.r - sample2.g;
   float backgroundBlend = max(backgroundOcclusionNearest.g - backgroundOcclusionNearest.r, 0.0);
   vec4 foregroundDropShadow = vec4(0.0, 0.0, 0.0, 1.0) * (1.0 - shadow) * backgroundBlend * 0.5;
-  vec4 extraForegroundDropShadow = vec4(0.0, 0.0, 0.0, 1.0) * extraShadow * backgroundBlend;
+  vec4 extraForegroundDropShadow = vec4(0.0, 0.0, 0.0, 1.0) * max(0.0, extraShadow * backgroundBlend);
   
-  gl_FragColor = texture2D(u_texture, inverted) * vec4(factor, factor, factor, 1.0) * dayLightColor + extraForegroundDropShadow;
+  vec4 sum = texture2D(u_texture, inverted) * vec4(factor, factor, factor, 1.0) * dayLightColor;
+  vec4 sumWithShadow = sum + extraForegroundDropShadow;
+  gl_FragColor = sumWithShadow;
 }
