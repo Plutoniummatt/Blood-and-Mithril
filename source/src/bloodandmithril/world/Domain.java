@@ -435,11 +435,11 @@ public class Domain {
 		/** Renders all individuals, ones that are on platforms are rendered first */
 		private static void renderIndividuals() {
 			try {
-				for (Individual indi : filter(newArrayList(getIndividuals().values()), onPlatform)) {
+				for (Individual indi : filter(newArrayList(getIndividuals().values()), offPlatform)) {
 					indi.render();
 				}
 
-				for (Individual indi : filter(newArrayList(getIndividuals().values()), offPlatform)) {
+				for (Individual indi : filter(newArrayList(getIndividuals().values()), onPlatform)) {
 					indi.render();
 				}
 			} catch (NullPointerException e) {

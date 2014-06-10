@@ -21,6 +21,7 @@ public class Shaders {
 	public static ShaderProgram filter = colorFilterShader();
 
 	public static ShaderProgram invertY = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYAxis.fp"));
+	public static ShaderProgram invertYBlendWithOcclusionBackground = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYBlendWithOcclusionBackground.fp"));
 	public static ShaderProgram invertYBlendWithOcclusion = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYBlendWithOcclusion.fp"));
 	public static ShaderProgram invertYDoubleBlendWithTwoOcclusions = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYDoubleBlendWithTwoOcclusions.fp"));
 	public static ShaderProgram invertAlphaSolidColor = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertAlphaSolidColor.fp"));
