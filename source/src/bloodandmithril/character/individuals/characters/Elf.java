@@ -80,13 +80,13 @@ public class Elf extends Humanoid {
 	static {
 		if (ClientServerInterface.isClient()) {
 			ArrayList<Animation> walkSequence = newArrayList(
-				AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.11f),	// HEAD
-				AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.11f),	// HAIR
-				AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.11f),	// BACK ARM
-				AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.11f),	// BACK LEG
-				AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.11f),	// TORSO
-				AnimationHelper.animation(Domain.individualTexture, 0, 560, 64, 112, 10, 0.11f),	// FRONT LEG
-				AnimationHelper.animation(Domain.individualTexture, 0, 336, 64, 112, 10, 0.11f)		// FRONT ARM
+				AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.13f),	// HEAD
+				AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.13f),	// HAIR
+				AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.13f),	// BACK ARM
+				AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.13f),	// BACK LEG
+				AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.13f),	// TORSO
+				AnimationHelper.animation(Domain.individualTexture, 0, 560, 64, 112, 10, 0.13f),	// FRONT LEG
+				AnimationHelper.animation(Domain.individualTexture, 0, 336, 64, 112, 10, 0.13f)		// FRONT ARM
 			);
 
 			ArrayList<Animation> standSequence = newArrayList(
@@ -100,13 +100,13 @@ public class Elf extends Humanoid {
 			);
 
 			ArrayList<Animation> runSequence = newArrayList(
-				AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.11f),	// HEAD
-				AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.11f),	// HAIR
-				AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.11f),	// BACK ARM
-				AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.11f),	// BACK LEG
-				AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.11f),	// TORSO
-				AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.11f),	// FRONT LEG
-				AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.11f)	// FRONT ARM
+				AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.13f),	// HEAD
+				AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.13f),	// HAIR
+				AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.13f),	// BACK ARM
+				AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.13f),	// BACK LEG
+				AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.13f),	// TORSO
+				AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.13f),	// FRONT LEG
+				AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.13f)	// FRONT ARM
 			);
 
 			animationMap.put(
@@ -303,12 +303,12 @@ public class Elf extends Humanoid {
 
 	@Override
 	public float getWalkSpeed() {
-		return 55f;
+		return 45f;
 	}
 
 
 	@Override
 	public float getRunSpeed() {
-		return 120f;
+		return 90f;
 	}
 }
