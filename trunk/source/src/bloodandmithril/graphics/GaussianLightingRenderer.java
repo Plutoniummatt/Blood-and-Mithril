@@ -407,10 +407,14 @@ public class GaussianLightingRenderer {
 			spriteBatch.setShader(Shaders.invertYBlendWithOcclusionBackground);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundShadowFBO.getColorBufferTexture().bind(2);
+			backgroundOcclusionFBO.getColorBufferTexture().bind(3);
+			backgroundOcclusionFBONearest.getColorBufferTexture().bind(4);
 			Color daylight = Weather.getDaylightColor();
 			Shaders.invertYBlendWithOcclusionBackground.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion", 1);
 			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion2", 2);
+			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion3", 3);
+			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion4", 4);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
@@ -489,12 +493,8 @@ public class GaussianLightingRenderer {
 			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
-			foregroundShadowFBO.getColorBufferTexture().bind(3);
-			backgroundOcclusionFBONearest.getColorBufferTexture().bind(4);
 			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion", 1);
 			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion2", 2);
-			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion3", 3);
-			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion4", 4);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
