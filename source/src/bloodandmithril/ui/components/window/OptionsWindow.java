@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class OptionsWindow extends Window {
 
-	private Button changeRes;
+	private Button changeRes, fullScreen, vSync;
 
 	/**
 	 * Constructor
@@ -134,18 +134,90 @@ public class OptionsWindow extends Window {
 			Color.WHITE,
 			UIRef.BL
 		);
+
+		this.fullScreen = new Button(
+			ConfigPersistenceService.getConfig().isFullScreen() ? "Change to windowed" : "Change to full screen",
+			Fonts.defaultFont,
+			0,
+			0,
+			200,
+			16,
+			() -> {
+				ConfigPersistenceService.getConfig().setFullScreen(!ConfigPersistenceService.getConfig().isFullScreen());
+				ConfigPersistenceService.saveConfig();
+
+				UserInterface.addLayeredComponent(
+					new MessageWindow(
+						"Please restart the game for the changes to take effect",
+						Color.GREEN,
+						BloodAndMithrilClient.WIDTH/2 - 250,
+						BloodAndMithrilClient.HEIGHT/2 + 75,
+						500,
+						150,
+						"Information",
+						true,
+						300,
+						100
+					)
+				);
+
+				fullScreen.text = ConfigPersistenceService.getConfig().isFullScreen() ? "Change to windowed" : "Change to full screen";
+			},
+			Color.ORANGE,
+			Color.GREEN,
+			Color.WHITE,
+			UIRef.BL
+		);
+
+		this.vSync = new Button(
+			ConfigPersistenceService.getConfig().isvSync() ? "Disable V-Sync" : "Enable V-Sync",
+			Fonts.defaultFont,
+			0,
+			0,
+			140,
+			16,
+			() -> {
+				ConfigPersistenceService.getConfig().setvSync(!ConfigPersistenceService.getConfig().isvSync());
+				ConfigPersistenceService.saveConfig();
+
+				UserInterface.addLayeredComponent(
+					new MessageWindow(
+						"Please restart the game for the changes to take effect",
+						Color.GREEN,
+						BloodAndMithrilClient.WIDTH/2 - 250,
+						BloodAndMithrilClient.HEIGHT/2 + 75,
+						500,
+						150,
+						"Information",
+						true,
+						300,
+						100
+					)
+				);
+
+				vSync.text = ConfigPersistenceService.getConfig().isvSync() ? "Disable V-Sync" : "Enable V-Sync";
+			},
+			Color.ORANGE,
+			Color.GREEN,
+			Color.WHITE,
+			UIRef.BL
+		);
 	}
 
 
 	@Override
 	protected void internalWindowRender() {
 		changeRes.render(x + width/2, y - 30, isActive(), getAlpha());
+		fullScreen.render(x + width/2, y - 50, isActive(), getAlpha());
+		vSync.render(x + width/2, y - 70, isActive(), getAlpha());
 	}
 
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		changeRes.click();
+		fullScreen.click();
+		vSync.click();
 	}
 
 
