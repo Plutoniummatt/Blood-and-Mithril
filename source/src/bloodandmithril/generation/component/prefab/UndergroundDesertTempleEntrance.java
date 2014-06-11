@@ -8,8 +8,8 @@ import bloodandmithril.generation.component.Stairs;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
+import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickFloor;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
-import bloodandmithril.world.topography.tile.tiles.glass.InterlacedWindowTile;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -61,16 +61,26 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 						fTiles[x][height - 1 - y] = new Tile.EmptyTile();
 					} else if (fPixel == Color.rgba8888(Color.BLUE)) {
 						fTiles[x][height - 1 - y] = new YellowBrickPlatform();
+					} else if (fPixel == Color.rgba8888(Color.GREEN)) {
+						fTiles[x][height - 1 - y] = new YellowBrickFloor();
+					} else if (fPixel == Color.rgba8888(Color.MAGENTA)) {
+						Tile tile = wallTile.newInstance();
+						tile.changeToStair();
+						fTiles[x][height - 1 - y] = tile;
+					} else if (fPixel == Color.rgba8888(Color.BLACK)) {
+						Tile tile = wallTile.newInstance();
+						tile.changeToSmoothCeiling();
+						fTiles[x][height - 1 - y] = tile;
 					} else {
 						fTiles[x][height - 1 - y] = null;
 					}
 
 					if (bPixel == Color.rgba8888(Color.BLACK)) {
 						bTiles[x][height - 1 - y] = backgroundTile.newInstance();
-					} else if (bPixel == Color.rgba8888(Color.GREEN)) {
-						bTiles[x][height - 1 - y] = new InterlacedWindowTile();
 					} else if (bPixel == Color.rgba8888(Color.RED)) {
-						bTiles[x][height - 1 - y] = new Tile.EmptyTile();
+						Tile tile = backgroundTile.newInstance();
+						tile.changeToSmoothCeiling();
+						bTiles[x][height - 1 - y] = tile;
 					} else if (bPixel == Color.rgba8888(Color.WHITE)) {
 						bTiles[x][height - 1 - y] = new Tile.EmptyTile();
 					} else {

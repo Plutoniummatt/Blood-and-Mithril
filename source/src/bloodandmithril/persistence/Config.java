@@ -11,7 +11,7 @@ public class Config implements Serializable {
 	private static final long serialVersionUID = -1737356527689517262L;
 
 	private int resX = 800, resY = 600;
-	private boolean fullScreen = false, vSync = true;
+	private boolean fullScreen = false;
 
 	/**
 	 * @return Screen width
@@ -49,18 +49,5 @@ public class Config implements Serializable {
 
 	public void setFullScreen(boolean fullScreen) {
 		this.fullScreen = fullScreen;
-	}
-
-
-	/**
-	 * @return whether vSync is enabled
-	 */
-	public boolean isvSync() {
-		return vSync;
-	}
-
-
-	public void setvSync(boolean vSync) {
-		this.vSync = vSync;
 	}
 }

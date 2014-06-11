@@ -29,7 +29,6 @@ public class Main {
 		cfg.samples = 4;
 		cfg.width = ConfigPersistenceService.getConfig().getResX();
 		cfg.height = ConfigPersistenceService.getConfig().getResY();
-		cfg.vSyncEnabled = ConfigPersistenceService.getConfig().isvSync();
 		cfg.fullscreen = ConfigPersistenceService.getConfig().isFullScreen();
 		cfg.resizable = false;
 		cfg.addIcon("data/image/smallIcon.png", FileType.Internal);
