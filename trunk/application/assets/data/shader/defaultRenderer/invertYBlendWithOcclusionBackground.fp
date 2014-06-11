@@ -23,7 +23,7 @@ void main()
   vec4 backgroundOcclusionNearest = texture2D(occlusion4, inverted);
   float extraShadow = sample3.r - sample3.g;
   float backgroundBlend = max(backgroundOcclusionNearest.g - backgroundOcclusionNearest.r, 0.0);
-  vec4 foregroundDropShadow = vec4(1.0, 1.0, 1.0, 0.0) * max(0.0, extraShadow * backgroundBlend);
+  vec4 foregroundDropShadow = vec4(1.0, 1.0, 1.0, 0.0) * max(0.0, extraShadow * backgroundBlend) * 0.3;
   
   vec4 sampleBlendedWithDaylight = texture2D(u_texture, inverted) * vec4(factor, factor, factor, 1.0) * dayLightColor;
   
