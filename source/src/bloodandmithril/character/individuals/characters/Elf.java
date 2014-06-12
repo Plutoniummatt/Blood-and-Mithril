@@ -156,7 +156,7 @@ public class Elf extends Humanoid {
 		super(id, state, factionId, capacity, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId(), 2);
 
 		this.female = female;
-		this.ai = new ElfAI(this);
+		this.setAi(new ElfAI(this));
 		this.hairColor = new SerializableColor(hairColor);
 		this.eyeColor = new SerializableColor(eyeColor);
 	}
@@ -177,7 +177,7 @@ public class Elf extends Humanoid {
 		super(id, state, factionId, capacity, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId, 2);
 
 		this.female = female;
-		this.ai = new ElfAI(this);
+		this.setAi(new ElfAI(this));
 		this.hairColor = new SerializableColor(hairColor);
 		this.eyeColor = new SerializableColor(eyeColor);
 	}
@@ -289,7 +289,7 @@ public class Elf extends Humanoid {
 
 	@Override
 	public Individual copy() {
-		Elf elf = new Elf(getId(), getState(), factionId, female, getMaxCapacity(), getWorldId(), hairColor, eyeColor);
+		Elf elf = new Elf(getId(), getState(), getFactionId(), female, getMaxCapacity(), getWorldId(), hairColor, eyeColor);
 		elf.copyFrom(this);
 		return elf;
 	}

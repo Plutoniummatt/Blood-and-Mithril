@@ -443,7 +443,7 @@ public class Domain {
 					indi.render();
 				}
 			} catch (NullPointerException e) {
-				generalDebug("Nullpointer whilst rendering individual", LogLevel.WARN, e);
+				generalDebug("Nullpointer whilst rendering individual", LogLevel.INFO, e);
 			}
 		}
 	}

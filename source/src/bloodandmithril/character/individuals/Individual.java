@@ -42,6 +42,7 @@ import bloodandmithril.ui.components.window.IndividualStatusWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
+import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Task;
@@ -52,6 +53,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
@@ -94,7 +96,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 	/** The current action of this individual */
-	protected Action currentAction = STAND_LEFT;
+	private Action currentAction = STAND_LEFT;
 
 	/** Which client number this {@link Individual} is selected by */
 	private Set<Integer> selectedByClient = Sets.newHashSet();
@@ -112,7 +114,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private Commands activeCommands = new Commands();
 
 	/** The AI responsible for this character */
-	protected ArtificialIntelligence ai;
+	private ArtificialIntelligence ai;
 
 	/** Holds state of the equipment and inventory */
 	private EquipperImpl equipperImpl;
@@ -130,7 +132,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private Set<Integer> individualsToBeAttacked;
 
 	/** For animation frame timing */
-	protected float animationTimer;
+	private float animationTimer;
 
 	/** The 'reaction' time of the AI instance controlling this {@link Individual} */
 	private float aiReactionTimer;
@@ -151,8 +153,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private int worldId;
 
 	/** The faction this {@link Individual} belongs to */
-	protected int factionId;
+	private int factionId;
 
+	/** These variables are needed to prevent duplicate executions of action frames */
+	private Action previousActionFrameAction;
+	private int previousActionFrame;
 
 	/**
 	 * Constructor
@@ -172,7 +177,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.equipperImpl = new EquipperImpl(inventoryMassCapacity, maxRings);
 		this.id = id;
 		this.state = state;
-		this.factionId = factionId;
+		this.setFactionId(factionId);
 		this.safetyHeight = safetyHeight;
 		this.interactionBox = interactionBox;
 		this.setWorldId(worldId);
@@ -184,14 +189,14 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * Copies all fields onto this individual from another
 	 */
 	public synchronized void copyFrom(Individual other) {
-		this.ai = other.ai;
+		this.setAi(other.getAi());
 		this.setWorldId(other.getWorldId());
 		this.selectedByClient = other.selectedByClient;
-		this.individualsToBeAttacked = other.individualsToBeAttacked;
+		this.setIndividualsToBeAttacked(other.getIndividualsToBeAttacked());
 		this.aiReactionTimer = other.aiReactionTimer;
-		this.animationTimer = other.animationTimer;
+		this.setAnimationTimer(other.getAnimationTimer());
 		this.activeCommands = other.activeCommands;
-		this.factionId = other.factionId;
+		this.setFactionId(other.getFactionId());
 		this.id = other.id;
 		this.interactionBox = other.getInteractionBox();
 		this.kinematicsData = other.getKinematicsData();
@@ -202,7 +207,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.selectedByClient = other.selectedByClient;
 		this.hitBox = other.hitBox;
 		this.skills = other.skills;
-		this.currentAction = other.currentAction;
+		this.setCurrentAction(other.getCurrentAction());
 		this.combatStance = other.combatStance;
 		synchronizeContainer(other.equipperImpl);
 		synchronizeEquipper(other.equipperImpl);
@@ -214,33 +219,44 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** Attacks a set of other {@link Individual}s, if the set is empty, it will hit everything */
 	@SuppressWarnings("rawtypes")
 	public synchronized void attack(Set<Integer> individuals) {
-		this.individualsToBeAttacked = individuals;
-		animationTimer = 0f;
+		this.setIndividualsToBeAttacked(individuals);
+		setAnimationTimer(0f);
 
 		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
 			return equipped instanceof Weapon;
 		});
 
 		if (weapon.isPresent()) {
-			if (currentAction.flipXAnimation) {
-				currentAction = ((Weapon) weapon.get()).getAttackAction(false);
+			if (getCurrentAction().flipXAnimation) {
+				setCurrentAction(((Weapon) weapon.get()).getAttackAction(false));
 			} else {
-				currentAction = ((Weapon) weapon.get()).getAttackAction(true);
+				setCurrentAction(((Weapon) weapon.get()).getAttackAction(true));
+			}
+		} else {
+			if (getCurrentAction().flipXAnimation) {
+				setCurrentAction(Action.ATTACK_LEFT_UNARMED);
+			} else {
+				setCurrentAction(Action.ATTACK_RIGHT_UNARMED);
 			}
 		}
 
-		this.individualsToBeAttacked.clear();
-		this.individualsToBeAttacked.addAll(individuals);
+		this.getIndividualsToBeAttacked().clear();
+		this.getIndividualsToBeAttacked().addAll(individuals);
 	}
 
+	/** The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed */
+	public void attack() {
+	}
 
 	/** Called during the update routine when the currentAction is attacking */
 	protected abstract void respondToAttackCommand();
 
 
 	/** Returns the map that maps from an {@link Action} to a map that maps action frames to their respective {@link Task}s */
-	protected abstract Map<Action, Map<Integer, Task>> getActionFrames();
+	protected abstract Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames();
 
+	/** Returns the current {@link Animation} of this {@link Individual} */
+	protected abstract List<Animation> getCurrentAnimation();
 
 	/** Implementation-specific copy method of this {@link Individual} */
 	public abstract Individual copy();
@@ -248,7 +264,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Returns the {@link ArtificialIntelligence} implementation of this {@link Individual} */
 	public ArtificialIntelligence getAI() {
-		return ai;
+		return getAi();
 	}
 
 
@@ -294,7 +310,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Determines whether this {@link Individual} is controllable */
 	public boolean isControllable() {
-		return controlledFactions.contains(factionId);
+		return controlledFactions.contains(getFactionId());
 	}
 
 
@@ -350,7 +366,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Select this {@link Individual} */
 	public void select(int clientId) {
-		ai.setToManual();
+		getAi().setToManual();
 		selectedByClient.add(clientId);
 
 		if (ClientServerInterface.isClient()) {
@@ -373,7 +389,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		selectedByClient.remove(id);
 
 		if (selectedByClient.isEmpty()) {
-			ai.setToAuto(clearTask);
+			getAi().setToAuto(clearTask);
 		}
 	}
 
@@ -426,14 +442,15 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		aiReactionTimer += delta;
 		if (aiReactionTimer >= aiTaskDelay) {
-			ai.update(aiTaskDelay);
+			getAi().update(aiTaskDelay);
 			aiReactionTimer = 0f;
 		}
 
-		animationTimer += delta;
+		setAnimationTimer(getAnimationTimer() + delta);
 
 		internalUpdate(delta);
 
+		executeActionFrames();
 		respondToCommands();
 		respondToAttackCommand();
 
@@ -442,6 +459,32 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		if (isServer()) {
 			updateConditions(delta);
 		}
+	}
+
+
+	/**
+	 * Performs the {@link Task} associated with the current frame of the animation of the current {@link Action}
+	 */
+	private void executeActionFrames() {
+		ParameterizedTask<Individual> task = null;
+		try {
+			task = getActionFrames()
+				.get(getCurrentAction())
+				.get(getCurrentAnimation().get(0).getKeyFrameIndex(animationTimer));
+		} catch (NullPointerException e) {
+			// Do nothing
+		}
+
+		if (previousActionFrameAction == getCurrentAction() && previousActionFrame == getCurrentAnimation().get(0).getKeyFrameIndex(animationTimer)) {
+			return;
+		}
+
+		if (task != null) {
+			task.execute(this);
+		}
+
+		previousActionFrame = getCurrentAnimation().get(0).getKeyFrameIndex(animationTimer);
+		previousActionFrameAction = getCurrentAction();
 	}
 
 
@@ -542,9 +585,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		);
 
 		MenuItem combatMode = new MenuItem(
-			"Combat Mode",
+			"Attack",
 				() -> {
-					thisIndividual.combatStance = !thisIndividual.inCombatStance();
+					thisIndividual.attack(newHashSet());
 				},
 			Color.WHITE,
 			getToolTipTextColor(),
@@ -655,7 +698,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				for (Individual indi : Domain.getSelectedIndividuals()) {
 					if (isServer()) {
 						if (indi != thisIndividual) {
-							indi.ai.setCurrentTask(
+							indi.getAi().setCurrentTask(
 								new TradeWith(indi, thisIndividual)
 							);
 						}
@@ -1020,5 +1063,55 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 */
 	public boolean inCombatStance() {
 		return combatStance;
+	}
+
+
+	public Action getCurrentAction() {
+		return currentAction;
+	}
+
+
+	public void setCurrentAction(Action currentAction) {
+		this.currentAction = currentAction;
+	}
+
+
+	public float getAnimationTimer() {
+		return animationTimer;
+	}
+
+
+	public void setAnimationTimer(float animationTimer) {
+		this.animationTimer = animationTimer;
+	}
+
+
+	public int getFactionId() {
+		return factionId;
+	}
+
+
+	public void setFactionId(int factionId) {
+		this.factionId = factionId;
+	}
+
+
+	public ArtificialIntelligence getAi() {
+		return ai;
+	}
+
+
+	public void setAi(ArtificialIntelligence ai) {
+		this.ai = ai;
+	}
+
+
+	public Set<Integer> getIndividualsToBeAttacked() {
+		return individualsToBeAttacked;
+	}
+
+
+	public void setIndividualsToBeAttacked(Set<Integer> individualsToBeAttacked) {
+		this.individualsToBeAttacked = individualsToBeAttacked;
 	}
 }

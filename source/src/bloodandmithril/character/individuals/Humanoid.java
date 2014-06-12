@@ -1,11 +1,10 @@
 package bloodandmithril.character.individuals;
 
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
-import bloodandmithril.util.Task;
+import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.datastructure.Box;
 
 /**
@@ -16,14 +15,18 @@ import bloodandmithril.util.datastructure.Box;
 public abstract class Humanoid extends GroundTravellingIndividual {
 	private static final long serialVersionUID = 7634760818045237827L;
 
-	private static Map<Action, Map<Integer, Task>> actionFrames = newHashMap();
+	private static Map<Action, Map<Integer, ParameterizedTask<Individual>>> actionFrames = newHashMap();
 
 	static {
-		Map<Integer, Task> attackRightOneHandedWeapon = newHashMap();
-		attackRightOneHandedWeapon.put(0, () -> {
-			System.out.println("HYAH!");
-		});
-		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON, attackRightOneHandedWeapon);
+		Map<Integer, ParameterizedTask<Individual>> attackLeftUnarmed = newHashMap();
+		attackLeftUnarmed.put(
+			4,
+			individual -> {
+			}
+		);
+
+
+		actionFrames.put(Action.ATTACK_LEFT_UNARMED, attackLeftUnarmed);
 	}
 
 	/**
@@ -46,7 +49,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 
 	@Override
-	protected Map<Action, Map<Integer, Task>> getActionFrames() {
+	protected Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames() {
 		return actionFrames;
 	}
 }
