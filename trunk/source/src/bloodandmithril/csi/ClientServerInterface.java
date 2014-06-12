@@ -168,6 +168,7 @@ import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
+import bloodandmithril.prop.furniture.Furniture;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.Plant;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
@@ -196,6 +197,7 @@ import bloodandmithril.world.topography.tile.tiles.GlassTile;
 import bloodandmithril.world.topography.tile.tiles.SeditmentaryTile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 import bloodandmithril.world.topography.tile.tiles.StoneTile;
+import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickFloor;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 import bloodandmithril.world.topography.tile.tiles.glass.ClearGlassTile;
@@ -381,6 +383,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Furniture.class);
+		kryo.register(YellowBrickFloor.class);
 		kryo.register(AITask.class);
 		kryo.register(AStarPathFinder.Node.class);
 		kryo.register(AStarPathFinder.class);

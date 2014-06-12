@@ -355,7 +355,6 @@ public class DevWindow extends Window {
 							WoodenChest pineChest = new WoodenChest(
 								individual.getState().position.x,
 								individual.getState().position.y,
-								true,
 								100f,
 								true,
 								new Function<Item, Boolean>() {

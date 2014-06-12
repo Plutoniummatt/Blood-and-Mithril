@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
@@ -33,9 +32,6 @@ import com.badlogic.gdx.graphics.Color;
 public abstract class Construction extends Prop implements Container {
 	private static final long serialVersionUID = -7772373095960462479L;
 
-	/** Dimensions of this {@link Construction} */
-	protected final int width, height;
-
 	/** Current construction progress, 1f means fully constructed */
 	private float constructionProgress;
 
@@ -49,19 +45,8 @@ public abstract class Construction extends Prop implements Container {
 	 * Constructor
 	 */
 	protected Construction(float x, float y, int width, int height, boolean grounded, float constructionRate) {
-		super(x, y, grounded, Depth.MIDDLEGROUND);
-		this.width = width;
-		this.height = height;
+		super(x, y, width, height, grounded, Depth.MIDDLEGROUND);
 		this.constructionRate = constructionRate;
-	}
-
-
-	@Override
-	public boolean isMouseOver() {
-		float mx = BloodAndMithrilClient.getMouseWorldX();
-		float my = BloodAndMithrilClient.getMouseWorldY();
-
-		return mx > position.x - width/2 && mx < position.x + width/2 && my > position.y && my < position.y + height;
 	}
 
 
@@ -109,24 +94,6 @@ public abstract class Construction extends Prop implements Container {
 	private void finishConstruction() {
 		constructionProgress = 1f;
 		materialContainer.getInventory().clear();
-	}
-
-
-	@Override
-	public boolean leftClick() {
-		if (!isMouseOver()) {
-			return false;
-		}
-		return true;
-	}
-
-
-	@Override
-	public boolean rightClick() {
-		if (!isMouseOver()) {
-			return false;
-		}
-		return true;
 	}
 
 
