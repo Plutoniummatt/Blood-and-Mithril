@@ -1,9 +1,7 @@
 package bloodandmithril.prop.furniture;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import static com.google.common.collect.Maps.newHashMap;
 
-import java.util.Map;
 import java.util.function.Function;
 
 import bloodandmithril.character.ai.task.LockUnlockContainer;
@@ -17,7 +15,6 @@ import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -31,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /**
  * A chest made from wood
  */
-public class WoodenChest extends Construction implements Container {
+public class WoodenChest extends Furniture implements Container {
 	private static final long serialVersionUID = -8935044324226731703L;
 
 	private Class<? extends Wood> wood;
@@ -45,22 +42,20 @@ public class WoodenChest extends Construction implements Container {
 	/**
 	 * Constructor
 	 */
-	public WoodenChest(float x, float y, boolean grounded, float capacity, Class<? extends Wood> wood) {
-		super(x, y, 44, 35, grounded, 0f);
+	public WoodenChest(float x, float y, float capacity, Class<? extends Wood> wood) {
+		super(x, y, 44, 35, true, false);
 		this.wood = wood;
 		container = new ContainerImpl(capacity, true);
-		setConstructionProgress(1f);
 	}
 
 
 	/**
 	 * Constructor for lockable {@link WoodenChest}
 	 */
-	public WoodenChest(float x, float y, boolean grounded, float capacity, boolean locked, Function<Item, Boolean> unlockingFunction, Class<? extends Wood> wood) {
-		super(x, y, 44, 35, grounded, 0.1f);
+	public WoodenChest(float x, float y, float capacity, boolean locked, Function<Item, Boolean> unlockingFunction, Class<? extends Wood> wood) {
+		super(x, y, 44, 35, true, false);
 		this.wood = wood;
 		container = new ContainerImpl(capacity, true, locked, unlockingFunction);
-		setConstructionProgress(1f);
 	}
 
 
@@ -70,7 +65,7 @@ public class WoodenChest extends Construction implements Container {
 
 
 	@Override
-	public ContextMenu getCompletedContextMenu() {
+	public ContextMenu getContextMenu() {
 		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 
 		menu.addMenuItem(
@@ -193,7 +188,7 @@ public class WoodenChest extends Construction implements Container {
 
 
 	@Override
-	protected void internalRender(float constructionProgress) {
+	public void render() {
 		spriteBatch.draw(woodenChest, position.x - width / 2, position.y);
 	}
 
@@ -205,72 +200,42 @@ public class WoodenChest extends Construction implements Container {
 
 	@Override
 	public Container getContainerImpl() {
-		if (getConstructionProgress() == 1f) {
-			return container;
-		} else {
-			return super.getContainerImpl();
-		}
-	}
-
-
-	@Override
-	public Map<Item, Integer> getRequiredMaterials() {
-		return newHashMap();
+		return container;
 	}
 
 
 	@Override
 	public boolean isLocked() {
-		if (getConstructionProgress() == 1f) {
-			return container.isLocked();
-		} else {
-			return false;
-		}
+		return container.isLocked();
 	}
 
 
 	@Override
 	public boolean unlock(Item with) {
-		if (getConstructionProgress() == 1f) {
-			return container.unlock(with);
-		} else {
-			return false;
-		}
+		return container.unlock(with);
 	}
 
 
 	@Override
 	public int has(Item item) {
-		if (getConstructionProgress() == 1f) {
-			return container.has(item);
-		} else {
-			return 0;
-		}
+		return container.has(item);
 	}
 
 
 	@Override
 	public boolean lock(Item with) {
-		if (getConstructionProgress() == 1f) {
-			return container.lock(with);
-		} else {
-			return false;
-		}
+		return container.lock(with);
 	}
 
 
 	@Override
 	public boolean isLockable() {
-		if (getConstructionProgress() == 1f) {
-			return container.isLockable();
-		} else {
-			return false;
-		}
+		return container.isLockable();
 	}
 
 
 	@Override
-	public String getTitle() {
-		return "Wooden Chest";
+	public String getContextMenuItemLabel() {
+		return "Wooden chest" + (isLocked() ? " (Locked)" : "");
 	}
 }

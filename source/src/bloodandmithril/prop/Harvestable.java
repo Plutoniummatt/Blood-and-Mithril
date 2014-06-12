@@ -14,10 +14,10 @@ public abstract class Harvestable extends Prop {
 	/**
 	 * Constructor
 	 */
-	protected Harvestable(float x, float y, boolean grounded) {
-		super(x, y, grounded, FOREGOUND);
+	protected Harvestable(float x, float y, int width, int height, boolean grounded) {
+		super(x, y, width, height, grounded, FOREGOUND);
 	}
-	
+
 	@Override
 	public String getContextMenuItemLabel() {
 		return getClass().getSimpleName();
