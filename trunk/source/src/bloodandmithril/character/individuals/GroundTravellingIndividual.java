@@ -1,5 +1,13 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_SPEAR;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_SPEAR;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
@@ -63,34 +71,47 @@ public abstract class GroundTravellingIndividual extends Individual {
 	 * @return the Current animated action this {@link GroundTravellingIndividual} is performing.
 	 */
 	protected void updateCurrentAction() {
+		// If we're attacking, return
+		if (obj(getCurrentAction()).oneOf(
+				ATTACK_LEFT_ONE_HANDED_WEAPON,
+				ATTACK_RIGHT_ONE_HANDED_WEAPON,
+				ATTACK_LEFT_SPEAR,
+				ATTACK_RIGHT_SPEAR,
+				ATTACK_LEFT_TWO_HANDED_WEAPON,
+				ATTACK_RIGHT_TWO_HANDED_WEAPON,
+				ATTACK_LEFT_UNARMED,
+				ATTACK_RIGHT_UNARMED)) {
+			return;
+		}
+
 		// If we're moving to the right
 		if (getState().velocity.x > 0) {
 			// If walking, and current action is not walking right, then set action to walking right
-			if (isCommandActive(KeyMappings.walk) && !currentAction.equals(WALK_RIGHT)) {
-				currentAction = WALK_RIGHT;
-				animationTimer = 0f;
-			} else if (!isCommandActive(KeyMappings.walk) && !currentAction.equals(RUN_RIGHT)) {
+			if (isCommandActive(KeyMappings.walk) && !getCurrentAction().equals(WALK_RIGHT)) {
+				setCurrentAction(WALK_RIGHT);
+				setAnimationTimer(0f);
+			} else if (!isCommandActive(KeyMappings.walk) && !getCurrentAction().equals(RUN_RIGHT)) {
 				// Otherwise if running, and current action is not running right, then set action to running right
-				currentAction = RUN_RIGHT;
-				animationTimer = 0f;
+				setCurrentAction(RUN_RIGHT);
+				setAnimationTimer(0f);
 			}
 
 		// Same for if we're moving left
 		} else if (getState().velocity.x < 0) {
-			if (isCommandActive(KeyMappings.walk) && !currentAction.equals(WALK_LEFT)) {
-				currentAction = WALK_LEFT;
-				animationTimer = 0f;
-			} else if (!isCommandActive(KeyMappings.walk) && !currentAction.equals(RUN_LEFT)) {
-				currentAction = RUN_LEFT;
-				animationTimer = 0f;
+			if (isCommandActive(KeyMappings.walk) && !getCurrentAction().equals(WALK_LEFT)) {
+				setCurrentAction(WALK_LEFT);
+				setAnimationTimer(0f);
+			} else if (!isCommandActive(KeyMappings.walk) && !getCurrentAction().equals(RUN_LEFT)) {
+				setCurrentAction(RUN_LEFT);
+				setAnimationTimer(0f);
 			}
 
 		// Otherwise we're standing still, if current action is not standing, then set current to standing left/right depending on which direction we were facing before.
-		} else if (getState().velocity.x == 0 && !currentAction.equals(STAND_LEFT) && !currentAction.equals(STAND_RIGHT)) {
-			if (obj(currentAction).oneOf(WALK_RIGHT, RUN_RIGHT, STAND_RIGHT)) {
-				currentAction = STAND_RIGHT;
+		} else if (getState().velocity.x == 0 && !getCurrentAction().equals(STAND_LEFT) && !getCurrentAction().equals(STAND_RIGHT)) {
+			if (obj(getCurrentAction()).oneOf(WALK_RIGHT, RUN_RIGHT, STAND_RIGHT)) {
+				setCurrentAction(STAND_RIGHT);
 			} else {
-				currentAction = STAND_LEFT;
+				setCurrentAction(STAND_LEFT);
 			}
 		}
 	}
@@ -118,8 +139,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 				getState().acceleration.x = 0f;
 
 				int offset = isCommandActive(KeyMappings.moveRight) ? 2 : isCommandActive(KeyMappings.moveLeft) ? -2 : 0;
-				if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(ai.getCurrentTask() instanceof Idle)) {
-					ai.setCurrentTask(new Idle());
+				if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(getAi().getCurrentTask() instanceof Idle)) {
+					getAi().setCurrentTask(new Idle());
 				}
 
 				sendCommand(KeyMappings.moveRight, false);
@@ -132,22 +153,22 @@ public abstract class GroundTravellingIndividual extends Individual {
 
 	@Override
 	protected void respondToAttackCommand() {
-		// Don't bother if we're not attacking
-
-		switch (currentAction) {
+		switch (getCurrentAction()) {
 			case ATTACK_LEFT_ONE_HANDED_WEAPON:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
 			case ATTACK_LEFT_TWO_HANDED_WEAPON:
 			case ATTACK_RIGHT_TWO_HANDED_WEAPON:
 			case ATTACK_LEFT_SPEAR:
 			case ATTACK_RIGHT_SPEAR:
+			case ATTACK_LEFT_UNARMED:
+			case ATTACK_RIGHT_UNARMED:
 				float attackDuration = getAttackDuration();
-				if (animationTimer > attackDuration) {
-					animationTimer = 0f;
-					if (currentAction.flipXAnimation()) {
-						currentAction = STAND_LEFT;
+				if (getAnimationTimer() > attackDuration) {
+					setAnimationTimer(0f);
+					if (getCurrentAction().flipXAnimation()) {
+						setCurrentAction(STAND_LEFT);
 					} else {
-						currentAction = STAND_RIGHT;
+						setCurrentAction(STAND_RIGHT);
 					}
 				}
 
@@ -183,7 +204,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 		spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		for (Animation animation : currentAnimations) {
-			TextureRegion keyFrame = animation.getKeyFrame(animationTimer, true);
+			TextureRegion keyFrame = animation.getKeyFrame(getAnimationTimer(), true);
 			spriteBatch.draw(
 				keyFrame.getTexture(),
 				getState().position.x - keyFrame.getRegionWidth()/2,
@@ -194,7 +215,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 				keyFrame.getRegionY(),
 				keyFrame.getRegionWidth(),
 				keyFrame.getRegionHeight(),
-				currentAction.flipXAnimation(),
+				getCurrentAction().flipXAnimation(),
 				false
 			);
 		}
@@ -220,8 +241,9 @@ public abstract class GroundTravellingIndividual extends Individual {
 	/**
 	 * @return The current {@link Animation} based on the current {@link Action}
 	 */
+	@Override
 	protected List<Animation> getCurrentAnimation() {
-		return getAnimationMap().get(currentAction);
+		return getAnimationMap().get(getCurrentAction());
 	}
 
 
