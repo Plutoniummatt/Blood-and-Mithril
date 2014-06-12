@@ -206,7 +206,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.walking = other.walking;
 		this.timeStamp = other.timeStamp;
 		this.selectedByClient = other.selectedByClient;
-		this.hitBox = other.hitBox;
+		this.hitBox = other.getHitBox();
 		this.skills = other.skills;
 		this.setCurrentAction(other.getCurrentAction());
 		this.combatStance = other.combatStance;
@@ -249,7 +249,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	@SuppressWarnings("rawtypes")
 	public void attack() {
 		if (getIndividualsToBeAttacked().isEmpty()) {
-			// TODO Attack environmental objects
+			// TODO Attack environmental objects... maybe?
 		} else {
 			for (Integer individualId : getIndividualsToBeAttacked()) {
 				Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
@@ -261,20 +261,22 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					if (weapon.get() instanceof MeleeWeapon) {
 						attackingBox = ((MeleeWeapon) weapon.get()).getActionFrameHitBox();
 					}
-				} else {
-					attackingBox = getUnarmedHitBox();
 				}
 
+				if (attackingBox == null) {
+					attackingBox = getDefaultHitBox();
+				};
+
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
-				if (attackingBox.overlapsWith(toBeAttacked.hitBox)) {
-					// TODO Something...
+				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
+					// TODO Attack has hit some other individual
 				}
 			}
 		}
 	}
 
-	/** Returns the {@link Box} that will be used to calculate overlaps with other hitboxes, when attacking unarmed */
-	protected abstract Box getUnarmedHitBox();
+	/** Returns the {@link Box} that will be used to calculate overlaps with other hitboxes, when no weapon-specific hitboxes are found */
+	protected abstract Box getDefaultHitBox();
 
 	/** Called during the update routine when the currentAction is attacking */
 	protected abstract void respondToAttackCommand();
@@ -380,10 +382,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			);
 			shapeRenderer.setColor(Color.RED);
 			shapeRenderer.rect(
-				hitBox.position.x - hitBox.width / 2,
-				hitBox.position.y - hitBox.height / 2,
-				hitBox.width,
-				hitBox.height
+				getHitBox().position.x - getHitBox().width / 2,
+				getHitBox().position.y - getHitBox().height / 2,
+				getHitBox().width,
+				getHitBox().height
 			);
 			shapeRenderer.end();
 			shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
@@ -464,8 +466,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		interactionBox.position.y = state.position.y + getHeight() / 2;
 
 		// Update hitbox location
-		hitBox.position.x = state.position.x;
-		hitBox.position.y = state.position.y + getHeight() / 2;
+		getHitBox().position.x = state.position.x;
+		getHitBox().position.y = state.position.y + getHeight() / 2;
 
 		aiReactionTimer += delta;
 		if (aiReactionTimer >= aiTaskDelay) {
@@ -1049,7 +1051,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * Width of the individual
 	 */
 	public int getWidth() {
-		return round(hitBox.width);
+		return round(getHitBox().width);
 	}
 
 
@@ -1057,7 +1059,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * Height of the individual
 	 */
 	public int getHeight() {
-		return round(hitBox.height);
+		return round(getHitBox().height);
 	}
 
 
@@ -1140,5 +1142,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	public void setIndividualsToBeAttacked(Set<Integer> individualsToBeAttacked) {
 		this.individualsToBeAttacked = individualsToBeAttacked;
+	}
+
+
+	public Box getHitBox() {
+		return hitBox;
 	}
 }
