@@ -32,7 +32,8 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
-import bloodandmithril.item.items.equipment.weapon.OneHandedWeapon;
+import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
+import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -216,7 +217,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	/** Attacks a set of other {@link Individual}s, if the set is empty, it will hit everything */
+	/** Attacks a set of other {@link Individual}s, if the set is empty, it will hit environmental objects */
 	@SuppressWarnings("rawtypes")
 	public synchronized void attack(Set<Integer> individuals) {
 		this.setIndividualsToBeAttacked(individuals);
@@ -245,12 +246,38 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 	/** The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed */
+	@SuppressWarnings("rawtypes")
 	public void attack() {
+		if (getIndividualsToBeAttacked().isEmpty()) {
+			// TODO Attack environmental objects
+		} else {
+			for (Integer individualId : getIndividualsToBeAttacked()) {
+				Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
+					return equipped instanceof Weapon;
+				});
+
+				Box attackingBox = null;
+				if (weapon.isPresent()) {
+					if (weapon.get() instanceof MeleeWeapon) {
+						attackingBox = ((MeleeWeapon) weapon.get()).getActionFrameHitBox();
+					}
+				} else {
+					attackingBox = getUnarmedHitBox();
+				}
+
+				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
+				if (attackingBox.overlapsWith(toBeAttacked.hitBox)) {
+					// TODO Something...
+				}
+			}
+		}
 	}
+
+	/** Returns the {@link Box} that will be used to calculate overlaps with other hitboxes, when attacking unarmed */
+	protected abstract Box getUnarmedHitBox();
 
 	/** Called during the update routine when the currentAction is attacking */
 	protected abstract void respondToAttackCommand();
-
 
 	/** Returns the map that maps from an {@link Action} to a map that maps action frames to their respective {@link Task}s */
 	protected abstract Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames();
@@ -933,7 +960,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public abstract void updateDescription(String updated);
 
 
-	/** Returns the {@link SpacialConfiguration} where {@link OneHandedWeapon} will be rendered */
+	/** Returns the {@link SpacialConfiguration} where {@link OneHandedMeleeWeapon} will be rendered */
 	protected abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();
 
 
