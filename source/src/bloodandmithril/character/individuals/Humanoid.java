@@ -22,6 +22,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		attackLeftUnarmed.put(
 			4,
 			individual -> {
+				individual.attack();
 			}
 		);
 

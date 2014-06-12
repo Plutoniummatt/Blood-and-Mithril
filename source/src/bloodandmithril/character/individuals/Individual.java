@@ -217,7 +217,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	/** Attacks a set of other {@link Individual}s, if the set is empty, it will hit environmental objects */
+	/**
+	 * Attacks a set of other {@link Individual}s, if the set is empty, it will hit environmental objects 
+	 */
 	@SuppressWarnings("rawtypes")
 	public synchronized void attack(Set<Integer> individuals) {
 		this.setIndividualsToBeAttacked(individuals);
@@ -243,9 +245,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		this.getIndividualsToBeAttacked().clear();
 		this.getIndividualsToBeAttacked().addAll(individuals);
+		this.getIndividualsToBeAttacked().add(2);
 	}
+	
 
-	/** The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed */
+	/** 
+	 * The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed 
+	 */
 	@SuppressWarnings("rawtypes")
 	public void attack() {
 		if (getIndividualsToBeAttacked().isEmpty()) {
@@ -270,6 +276,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
 					// TODO Attack has hit some other individual
+					toBeAttacked.damage(1f);
 				}
 			}
 		}
