@@ -314,7 +314,14 @@ public class Elf extends Humanoid {
 
 
 	@Override
-	protected Box getUnarmedHitBox() {
-		return null;
+	protected Box getDefaultHitBox() {
+		return new Box(
+			new Vector2(
+				getHitBox().position.x + (getCurrentAction().flipXAnimation() ? - getHitBox().width * (2f/3f) : getHitBox().width * (2f/3f)),
+				getHitBox().position.y
+			),
+			getHitBox().width,
+			getHitBox().height
+		);
 	}
 }
