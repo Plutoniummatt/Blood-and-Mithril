@@ -37,4 +37,24 @@ public class Box implements Serializable {
 			location.y < position.y + height / 2
 		;
 	}
+
+
+	public boolean overlapsWith(Box another) {
+		float left = position.x - width / 2;
+		float right = position.x + width / 2;
+		float top = position.x + height / 2;
+		float bottom = position.x - height / 2;
+
+		float otherLeft = another.position.x - width / 2;
+		float otherRight = another.position.x + width / 2;
+		float otherTop = another.position.x + height / 2;
+		float otherBottom = another.position.x - height / 2;
+
+	    if (right < otherLeft) return false; // a is left of b
+	    if (left > otherRight) return false; // a is right of b
+	    if (top < otherBottom) return false; // a is above b
+	    if (bottom > otherTop) return false; // a is below b
+
+	    return true; // boxes overlap
+	}
 }

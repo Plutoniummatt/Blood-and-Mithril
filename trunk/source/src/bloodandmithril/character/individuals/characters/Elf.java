@@ -26,7 +26,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
-import bloodandmithril.item.items.equipment.weapon.OneHandedWeapon;
+import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
@@ -190,7 +190,7 @@ public class Elf extends Humanoid {
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		for (Item equipped : getEquipped().keySet()) {
 			Equipable toRender = (Equipable) equipped;
-			if (equipped instanceof OneHandedWeapon) {
+			if (equipped instanceof OneHandedMeleeWeapon) {
 				SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
 				if (config != null) {
 					toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
@@ -310,5 +310,11 @@ public class Elf extends Humanoid {
 	@Override
 	public float getRunSpeed() {
 		return 90f;
+	}
+
+
+	@Override
+	protected Box getUnarmedHitBox() {
+		return null;
 	}
 }

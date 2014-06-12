@@ -135,7 +135,7 @@ import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.RingFunction;
 import bloodandmithril.item.items.equipment.weapon.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.ButterflySword;
-import bloodandmithril.item.items.equipment.weapon.OneHandedWeapon;
+import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
@@ -508,7 +508,7 @@ public class ClientServerInterface {
 		kryo.register(MoveIndividual.MoveIndividualResponse.class);
 		kryo.register(MoveIndividual.class);
 		kryo.register(NotifyOpenCraftingStationWindow.class);
-		kryo.register(OneHandedWeapon.class);
+		kryo.register(OneHandedMeleeWeapon.class);
 		kryo.register(OpenCraftingStation.class);
 		kryo.register(OpenCraftingStationWindow.class);
 		kryo.register(OpenTradeWindow.OpenTradeWindowResponse.class);

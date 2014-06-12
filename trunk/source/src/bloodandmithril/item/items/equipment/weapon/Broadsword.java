@@ -10,13 +10,14 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
-public class Broadsword<T extends Metal> extends OneHandedWeapon<T> implements Craftable {
+public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
 	public static TextureRegion texture;
@@ -152,5 +153,11 @@ public class Broadsword<T extends Metal> extends OneHandedWeapon<T> implements C
 	@Override
 	public float getBaseAttackDuration() {
 		return 1.5f;
+	}
+
+
+	@Override
+	public Box getActionFrameHitBox() {
+		return null;
 	}
 }
