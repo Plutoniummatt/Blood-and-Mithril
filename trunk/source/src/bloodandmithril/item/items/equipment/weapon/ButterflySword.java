@@ -152,7 +152,7 @@ public class ButterflySword<T extends Metal> extends OneHandedMeleeWeapon<T> imp
 
 
 	@Override
-	public float getBaseAttackDuration() {
+	public float getBaseAttackPeriod() {
 		return 1f;
 	}
 
@@ -160,5 +160,12 @@ public class ButterflySword<T extends Metal> extends OneHandedMeleeWeapon<T> imp
 	@Override
 	public Box getActionFrameHitBox() {
 		return null;
+	}
+
+
+	@Override
+	public float getBaseDamage() {
+		// Butterfly sword damage
+		return 1f;
 	}
 }

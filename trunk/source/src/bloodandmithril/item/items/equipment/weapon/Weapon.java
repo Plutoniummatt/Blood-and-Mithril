@@ -47,9 +47,14 @@ public abstract class Weapon<T extends Material> extends Equipable implements Af
 
 
 	/**
-	 * @return The base duration of an attack with this {@link Weapon}.
+	 * @return The base period of an attack with this {@link Weapon}.
 	 */
-	public abstract float getBaseAttackDuration();
+	public abstract float getBaseAttackPeriod();
+
+	/**
+	 * @return The base damage of this {@link Weapon}
+	 */
+	public abstract float getBaseDamage();
 
 	/**
 	 * @return the {@link Action} that this {@link Weapon} causes.

@@ -218,7 +218,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/**
-	 * Attacks a set of other {@link Individual}s, if the set is empty, it will hit environmental objects 
+	 * Attacks a set of other {@link Individual}s, if the set is empty, it will hit environmental objects
 	 */
 	@SuppressWarnings("rawtypes")
 	public synchronized void attack(Set<Integer> individuals) {
@@ -245,12 +245,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		this.getIndividualsToBeAttacked().clear();
 		this.getIndividualsToBeAttacked().addAll(individuals);
-		this.getIndividualsToBeAttacked().add(2);
 	}
-	
 
-	/** 
-	 * The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed 
+
+	/**
+	 * The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed
 	 */
 	@SuppressWarnings("rawtypes")
 	public void attack() {
@@ -275,12 +274,18 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
-					// TODO Attack has hit some other individual
-					toBeAttacked.damage(1f);
+					if (weapon.isPresent()) {
+						toBeAttacked.damage(((Weapon) weapon.get()).getBaseDamage());
+					} else {
+						toBeAttacked.damage(getUnarmedDamage());
+					}
 				}
 			}
 		}
 	}
+
+	/** Returns the damage dealt when attacking whilst not armed */
+	protected abstract float getUnarmedDamage();
 
 	/** Returns the {@link Box} that will be used to calculate overlaps with other hitboxes, when no weapon-specific hitboxes are found */
 	protected abstract Box getDefaultHitBox();

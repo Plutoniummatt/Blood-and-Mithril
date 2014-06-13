@@ -26,7 +26,6 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 			}
 		);
 
-
 		actionFrames.put(Action.ATTACK_LEFT_UNARMED, attackLeftUnarmed);
 	}
 

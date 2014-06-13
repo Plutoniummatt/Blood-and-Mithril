@@ -20,12 +20,9 @@ import static bloodandmithril.util.ComparisonUtil.obj;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.Box;
@@ -34,7 +31,6 @@ import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Sets;
 
 /**
  * An {@link Individual} that is grounded, moves on ground.
@@ -162,8 +158,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 			case ATTACK_RIGHT_SPEAR:
 			case ATTACK_LEFT_UNARMED:
 			case ATTACK_RIGHT_UNARMED:
-				float attackDuration = getAttackDuration();
-				if (getAnimationTimer() > attackDuration) {
+				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).animationDuration) {
 					setAnimationTimer(0f);
 					if (getCurrentAction().flipXAnimation()) {
 						setCurrentAction(STAND_LEFT);
@@ -175,20 +170,6 @@ public abstract class GroundTravellingIndividual extends Individual {
 			default:
 				return;
 		}
-	}
-
-
-	@SuppressWarnings("rawtypes")
-	private float getAttackDuration() {
-		Set<Item> keySet = Sets.newHashSet(getEquipped().keySet());
-		for(Item item : keySet) {
-			if (item instanceof Weapon) {
-				return ((Weapon)item).getBaseAttackDuration();
-			}
-		}
-
-		// Unarmed attack duration
-		return 1f;
 	}
 
 
