@@ -1,6 +1,5 @@
 package bloodandmithril.character.individuals.characters;
 
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
@@ -137,11 +136,6 @@ public class Elf extends Humanoid {
 
 			animationMap.put(
 				RUN_LEFT,
-				runSequence
-			);
-			
-			animationMap.put(
-				ATTACK_LEFT_UNARMED,
 				runSequence
 			);
 		}
@@ -329,5 +323,11 @@ public class Elf extends Humanoid {
 			getHitBox().width,
 			getHitBox().height
 		);
+	}
+
+
+	@Override
+	protected float getUnarmedDamage() {
+		return 0.2f;
 	}
 }

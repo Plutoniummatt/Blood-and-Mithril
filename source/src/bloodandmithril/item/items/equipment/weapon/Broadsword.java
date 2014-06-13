@@ -151,7 +151,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 
 	@Override
-	public float getBaseAttackDuration() {
+	public float getBaseAttackPeriod() {
 		return 1.5f;
 	}
 
@@ -159,5 +159,12 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	@Override
 	public Box getActionFrameHitBox() {
 		return null;
+	}
+
+
+	@Override
+	public float getBaseDamage() {
+		// TODO Broadsword damage
+		return 5f;
 	}
 }
