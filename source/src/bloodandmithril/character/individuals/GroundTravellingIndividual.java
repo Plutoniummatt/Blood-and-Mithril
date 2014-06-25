@@ -175,20 +175,6 @@ public abstract class GroundTravellingIndividual extends Individual {
 	}
 
 
-	@SuppressWarnings("rawtypes")
-	private float getAttackDuration() {
-		Set<Item> keySet = Sets.newHashSet(getEquipped().keySet());
-		for(Item item : keySet) {
-			if (item instanceof Weapon) {
-				return ((Weapon)item).getBaseAttackDuration();
-			}
-		}
-
-		// Unarmed attack duration
-		return 0.42f;
-	}
-
-
 	@Override
 	protected void internalRender() {
 		// Draw the body, position is centre bottom of the frame
