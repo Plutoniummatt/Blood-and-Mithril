@@ -72,6 +72,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public enum Action implements Serializable {
 		STAND_LEFT(true),
 		STAND_RIGHT(false),
+		STAND_LEFT_COMBAT(true),
+		STAND_RIGHT_COMBAT(false),
 		WALK_LEFT(true),
 		WALK_RIGHT(false),
 		RUN_LEFT(true),
@@ -625,7 +627,18 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			null
 		);
 
-		MenuItem combatMode = new MenuItem(
+		MenuItem combatItem = new MenuItem(
+			"Combat",
+			() -> {
+				thisIndividual.combatStance = !thisIndividual.combatStance;
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+
+		MenuItem attack = new MenuItem(
 			"Attack",
 				() -> {
 					thisIndividual.attack(newHashSet());
@@ -777,7 +790,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		if (isControllable()) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
-			contextMenuToReturn.addMenuItem(combatMode);
+			contextMenuToReturn.addMenuItem(attack);
+			contextMenuToReturn.addMenuItem(combatItem);
 		}
 
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);

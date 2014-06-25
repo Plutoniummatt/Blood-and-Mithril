@@ -11,7 +11,9 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIG
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT_COMBAT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
@@ -103,11 +105,11 @@ public abstract class GroundTravellingIndividual extends Individual {
 			}
 
 		// Otherwise we're standing still, if current action is not standing, then set current to standing left/right depending on which direction we were facing before.
-		} else if (getState().velocity.x == 0 && !getCurrentAction().equals(STAND_LEFT) && !getCurrentAction().equals(STAND_RIGHT)) {
-			if (obj(getCurrentAction()).oneOf(WALK_RIGHT, RUN_RIGHT, STAND_RIGHT)) {
-				setCurrentAction(STAND_RIGHT);
+		} else if (getState().velocity.x == 0 && !obj(getCurrentAction()).oneOf(STAND_LEFT, STAND_LEFT_COMBAT) && !obj(getCurrentAction()).oneOf(STAND_RIGHT, STAND_RIGHT_COMBAT)) {
+			if (obj(getCurrentAction()).oneOf(WALK_RIGHT, RUN_RIGHT, STAND_RIGHT, STAND_RIGHT_COMBAT)) {
+				setCurrentAction(inCombatStance() ? STAND_RIGHT_COMBAT : STAND_RIGHT);
 			} else {
-				setCurrentAction(STAND_LEFT);
+				setCurrentAction(inCombatStance() ? STAND_LEFT_COMBAT : STAND_LEFT);
 			}
 		}
 	}
@@ -161,15 +163,29 @@ public abstract class GroundTravellingIndividual extends Individual {
 				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).animationDuration) {
 					setAnimationTimer(0f);
 					if (getCurrentAction().flipXAnimation()) {
-						setCurrentAction(STAND_LEFT);
+						setCurrentAction(inCombatStance() ? STAND_LEFT_COMBAT : STAND_LEFT);
 					} else {
-						setCurrentAction(STAND_RIGHT);
+						setCurrentAction(inCombatStance() ? STAND_RIGHT_COMBAT : STAND_RIGHT);
 					}
 				}
 
 			default:
 				return;
 		}
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	private float getAttackDuration() {
+		Set<Item> keySet = Sets.newHashSet(getEquipped().keySet());
+		for(Item item : keySet) {
+			if (item instanceof Weapon) {
+				return ((Weapon)item).getBaseAttackDuration();
+			}
+		}
+
+		// Unarmed attack duration
+		return 0.42f;
 	}
 
 
