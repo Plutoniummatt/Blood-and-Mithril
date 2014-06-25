@@ -18,15 +18,17 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 	private static Map<Action, Map<Integer, ParameterizedTask<Individual>>> actionFrames = newHashMap();
 
 	static {
-		Map<Integer, ParameterizedTask<Individual>> attackLeftUnarmed = newHashMap();
-		attackLeftUnarmed.put(
-			4,
+		Map<Integer, ParameterizedTask<Individual>> attackUnarmed = newHashMap();
+		attackUnarmed.put(
+			3,
 			individual -> {
 				individual.attack();
+				System.out.println("lol");
 			}
 		);
 
-		actionFrames.put(Action.ATTACK_LEFT_UNARMED, attackLeftUnarmed);
+		actionFrames.put(Action.ATTACK_LEFT_UNARMED, attackUnarmed);
+		actionFrames.put(Action.ATTACK_RIGHT_UNARMED, attackUnarmed);
 	}
 
 	/**

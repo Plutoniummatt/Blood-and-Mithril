@@ -1,5 +1,6 @@
 package bloodandmithril.character.individuals.characters;
 
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
