@@ -1,9 +1,12 @@
 package bloodandmithril.character.individuals.characters;
 
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT_COMBAT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
@@ -99,6 +102,16 @@ public class Elf extends Humanoid {
 				AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f)		// FRONT ARM
 			);
 
+			ArrayList<Animation> standSequenceCombat = newArrayList(
+				AnimationHelper.animation(Domain.individualTexture, 1216, 112, 64, 112, 1, 1f),		// HEAD
+				AnimationHelper.animation(Domain.individualTexture, 1216, 0,   64, 112, 1, 1f),		// HAIR
+				AnimationHelper.animation(Domain.individualTexture, 1216, 448, 64, 112, 1, 1f),		// BACK ARM
+				AnimationHelper.animation(Domain.individualTexture, 1216, 672, 64, 112, 1, 1f),		// BACK LEG
+				AnimationHelper.animation(Domain.individualTexture, 1216, 224, 64, 112, 1, 1f),		// TORSO
+				AnimationHelper.animation(Domain.individualTexture, 1216, 560, 64, 112, 1, 1f),		// FRONT LEG
+				AnimationHelper.animation(Domain.individualTexture, 1216, 336, 64, 112, 1, 1f)		// FRONT ARM
+			);
+
 			ArrayList<Animation> runSequence = newArrayList(
 				AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.13f),	// HEAD
 				AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.13f),	// HAIR
@@ -107,6 +120,16 @@ public class Elf extends Humanoid {
 				AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.13f),	// TORSO
 				AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.13f),	// FRONT LEG
 				AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.13f)	// FRONT ARM
+			);
+
+			ArrayList<Animation> stabSequence = newArrayList(
+				AnimationHelper.animation(Domain.individualTexture, 1280, 112, 64, 112, 6, 0.07f),	// HEAD
+				AnimationHelper.animation(Domain.individualTexture, 1280, 0,   64, 112, 6, 0.07f),	// HAIR
+				AnimationHelper.animation(Domain.individualTexture, 1280, 448, 64, 112, 6, 0.07f),	// BACK ARM
+				AnimationHelper.animation(Domain.individualTexture, 1280, 672, 64, 112, 6, 0.07f),	// BACK LEG
+				AnimationHelper.animation(Domain.individualTexture, 1280, 224, 64, 112, 6, 0.07f),	// TORSO
+				AnimationHelper.animation(Domain.individualTexture, 1280, 560, 64, 112, 6, 0.07f),	// FRONT LEG
+				AnimationHelper.animation(Domain.individualTexture, 1280, 336, 64, 112, 6, 0.07f)	// FRONT ARM
 			);
 
 			animationMap.put(
@@ -130,6 +153,16 @@ public class Elf extends Humanoid {
 			);
 
 			animationMap.put(
+				STAND_RIGHT_COMBAT,
+				standSequenceCombat
+			);
+
+			animationMap.put(
+				STAND_LEFT_COMBAT,
+				standSequenceCombat
+			);
+
+			animationMap.put(
 				RUN_RIGHT,
 				runSequence
 			);
@@ -137,6 +170,16 @@ public class Elf extends Humanoid {
 			animationMap.put(
 				RUN_LEFT,
 				runSequence
+			);
+
+			animationMap.put(
+				ATTACK_RIGHT_UNARMED,
+				stabSequence
+			);
+
+			animationMap.put(
+				ATTACK_LEFT_UNARMED,
+				stabSequence
 			);
 		}
 	}
