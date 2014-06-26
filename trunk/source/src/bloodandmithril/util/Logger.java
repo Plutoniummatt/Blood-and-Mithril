@@ -1,5 +1,7 @@
 package bloodandmithril.util;
 
+import java.util.Date;
+
 /**
  * Various static methods used for logging.
  *
@@ -15,12 +17,21 @@ public class Logger {
 	private static final LogLevel saverDebug = LogLevel.WARN;
 	private static final LogLevel aiDebug = LogLevel.WARN;
 
+
+	/**
+	 * @return a String time stamp
+	 */
+	private static String timeStamp() {
+		return new Date().toString() + " - ";
+	}
+
+
 	/**
 	 * Prints a debug message
 	 */
 	public static void loaderDebug(String message, LogLevel level) {
 		if (loaderDebug.value >= level.value) {
-			System.out.println(message);
+			System.out.println(timeStamp() + message);
 		}
 	}
 
@@ -30,7 +41,7 @@ public class Logger {
 	 */
 	public static void generalDebug(String message, LogLevel level, Exception... es) {
 		if (generalDebug.value >= level.value) {
-			System.out.println(message);
+			System.out.println(timeStamp() + message);
 			for (Exception e : es) {
 				e.printStackTrace();
 			}
@@ -43,7 +54,7 @@ public class Logger {
 	 */
 	public static void generationDebug(String message, LogLevel level) {
 		if (generationDebug.value >= level.value) {
-			System.out.println(message);
+			System.out.println(timeStamp() + message);
 		}
 	}
 
@@ -53,9 +64,9 @@ public class Logger {
 	 */
 	public static void networkDebug(String message, LogLevel level) {
 		if (networkDebug.value >= level.value) {
-			System.out.println(message);
+			System.out.println(timeStamp() + message);
 		} else if (level == LogLevel.OVERRIDE) {
-			System.out.println(message);
+			System.out.println(timeStamp() + message);
 		}
 	}
 
@@ -65,7 +76,7 @@ public class Logger {
 	 */
 	public static void saverDebug(String message, LogLevel level) {
 		if (saverDebug.value >= level.value) {
-			System.out.println(message);
+			System.out.println(timeStamp() + message);
 		}
 	}
 
@@ -75,7 +86,7 @@ public class Logger {
 	 */
 	public static void aiDebug(String message, LogLevel level) {
 		if (aiDebug.value >= level.value) {
-			System.out.println(message);
+			System.out.println(timeStamp() + message);
 		}
 	}
 
