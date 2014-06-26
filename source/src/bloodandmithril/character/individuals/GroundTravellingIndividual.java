@@ -124,9 +124,11 @@ public abstract class GroundTravellingIndividual extends Individual {
 	@Override
 	protected void respondToCommands() {
 		//Horizontal movement
-		boolean attacking = attacking();
 		Topography topography = Domain.getWorld(getWorldId()).getTopography();
+		boolean attacking = attacking();
+
 		if (Math.abs(getState().velocity.y) < 5f) {
+
 			if (!attacking && isCommandActive(KeyMappings.moveLeft) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 				if (isCommandActive(KeyMappings.walk)) {
 					getState().acceleration.x = getState().velocity.x > -getWalkSpeed() ? -400f : 400f;
@@ -143,8 +145,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 				getState().acceleration.x = 0f;
 
 				int offset = isCommandActive(KeyMappings.moveRight) ? 2 : isCommandActive(KeyMappings.moveLeft) ? -2 : 0;
-				if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(getAi().getCurrentTask() instanceof Idle)) {
-					getAi().setCurrentTask(new Idle());
+				if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(getAI().getCurrentTask() instanceof Idle)) {
+					getAI().setCurrentTask(new Idle());
 				}
 
 				sendCommand(KeyMappings.moveRight, false);
