@@ -7,6 +7,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
@@ -76,7 +77,9 @@ public interface Kinematics {
 		} else if (state.position.y == 0f && !(topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
 			state.velocity.y = 0f;
 		} else {
-			state.velocity.x = state.velocity.x * 0.9f;
+			if (!(individual.isCommandActive(KeyMappings.moveRight) || individual.isCommandActive(KeyMappings.moveLeft))) {
+				state.velocity.x = state.velocity.x * 0.75f;
+			}
 		}
 
 		//Wall check routine, only perform this if we're moving

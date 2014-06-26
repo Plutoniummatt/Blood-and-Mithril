@@ -23,7 +23,6 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 			3,
 			individual -> {
 				individual.attack();
-				System.out.println("lol");
 			}
 		);
 
