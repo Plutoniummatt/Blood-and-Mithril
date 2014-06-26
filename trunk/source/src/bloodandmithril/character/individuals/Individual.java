@@ -192,7 +192,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * Copies all fields onto this individual from another
 	 */
 	public synchronized void copyFrom(Individual other) {
-		this.setAi(other.getAi());
+		this.setAi(other.getAI());
 		this.setWorldId(other.getWorldId());
 		this.selectedByClient = other.selectedByClient;
 		this.setIndividualsToBeAttacked(other.getIndividualsToBeAttacked());
@@ -247,7 +247,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		this.getIndividualsToBeAttacked().clear();
 		this.getIndividualsToBeAttacked().addAll(individuals);
-		this.getIndividualsToBeAttacked().add(2);
 	}
 
 
@@ -313,7 +312,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Returns the {@link ArtificialIntelligence} implementation of this {@link Individual} */
 	public ArtificialIntelligence getAI() {
-		return getAi();
+		return this.ai;
 	}
 
 
@@ -415,7 +414,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Select this {@link Individual} */
 	public void select(int clientId) {
-		getAi().setToManual();
+		getAI().setToManual();
 		selectedByClient.add(clientId);
 
 		if (ClientServerInterface.isClient()) {
@@ -438,7 +437,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		selectedByClient.remove(id);
 
 		if (selectedByClient.isEmpty()) {
-			getAi().setToAuto(clearTask);
+			getAI().setToAuto(clearTask);
 		}
 	}
 
@@ -491,7 +490,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		aiReactionTimer += delta;
 		if (aiReactionTimer >= aiTaskDelay) {
-			getAi().update(aiTaskDelay);
+			getAI().update(aiTaskDelay);
 			aiReactionTimer = 0f;
 		}
 
@@ -758,7 +757,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				for (Individual indi : Domain.getSelectedIndividuals()) {
 					if (isServer()) {
 						if (indi != thisIndividual) {
-							indi.getAi().setCurrentTask(
+							indi.getAI().setCurrentTask(
 								new TradeWith(indi, thisIndividual)
 							);
 						}
@@ -1159,11 +1158,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	public void setFactionId(int factionId) {
 		this.factionId = factionId;
-	}
-
-
-	public ArtificialIntelligence getAi() {
-		return ai;
 	}
 
 

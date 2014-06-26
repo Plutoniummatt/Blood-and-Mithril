@@ -78,8 +78,9 @@ public interface Kinematics {
 			state.velocity.y = 0f;
 		} else {
 			if (!(individual.isCommandActive(KeyMappings.moveRight) || individual.isCommandActive(KeyMappings.moveLeft))) {
-				state.velocity.x = state.velocity.x * 0.75f;
+				state.velocity.x = state.velocity.x * 0.5f;
 			}
+			state.acceleration.x = 0f;
 		}
 
 		//Wall check routine, only perform this if we're moving
