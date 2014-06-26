@@ -247,6 +247,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		this.getIndividualsToBeAttacked().clear();
 		this.getIndividualsToBeAttacked().addAll(individuals);
+		this.getIndividualsToBeAttacked().add(2);
 	}
 
 
@@ -256,7 +257,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	@SuppressWarnings("rawtypes")
 	public void attack() {
 		if (getIndividualsToBeAttacked().isEmpty()) {
-			// TODO Attack environmental objects... maybe?
+			// TODO Attack environmental objects... maybe?...Could be inefficient (must iterate through potentially lots of props), unless positional indexing can be implemented....worth it?????
 		} else {
 			for (Integer individualId : getIndividualsToBeAttacked()) {
 				Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
@@ -276,11 +277,16 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
+					// Damage
 					if (weapon.isPresent()) {
 						toBeAttacked.damage(((Weapon) weapon.get()).getBaseDamage());
 					} else {
 						toBeAttacked.damage(getUnarmedDamage());
 					}
+
+					// Knock back
+					Vector2 knockbackVector = toBeAttacked.getState().position.cpy().sub(getState().position.cpy()).nor().mul(100f);
+					toBeAttacked.getState().velocity.add(knockbackVector);
 				}
 			}
 		}
@@ -1118,6 +1124,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 */
 	public boolean inCombatStance() {
 		return combatStance;
+	}
+
+
+	public void setCombatStance(boolean combatStance) {
+		this.combatStance = combatStance;
 	}
 
 

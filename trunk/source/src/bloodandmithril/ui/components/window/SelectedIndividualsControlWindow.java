@@ -80,6 +80,7 @@ public class SelectedIndividualsControlWindow extends Window {
 		boolean buttonsActive = UserInterface.layeredComponents.isEmpty() ? false : UserInterface.layeredComponents.getLast() == this;
 		boolean selected = Domain.getSelectedIndividuals().size() > 0;
 
+		// Run button
 		buttons.get(0).text = someoneRunning ? "Walk" : "Run";
 		buttons.get(0).setIdleColor(selected ? someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
 		buttons.get(0).setOverColor(selected ? buttonsActive ? someoneRunning ? Color.ORANGE : Color.GREEN : someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);

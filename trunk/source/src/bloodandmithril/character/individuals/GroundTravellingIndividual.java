@@ -70,20 +70,12 @@ public abstract class GroundTravellingIndividual extends Individual {
 	 */
 	protected void updateCurrentAction() {
 		// If we're attacking, return
-		if (obj(getCurrentAction()).oneOf(
-				ATTACK_LEFT_ONE_HANDED_WEAPON,
-				ATTACK_RIGHT_ONE_HANDED_WEAPON,
-				ATTACK_LEFT_SPEAR,
-				ATTACK_RIGHT_SPEAR,
-				ATTACK_LEFT_TWO_HANDED_WEAPON,
-				ATTACK_RIGHT_TWO_HANDED_WEAPON,
-				ATTACK_LEFT_UNARMED,
-				ATTACK_RIGHT_UNARMED)) {
+		if (attacking()) {
 			return;
 		}
 
 		// If we're moving to the right
-		if (getState().velocity.x > 0) {
+		if (isCommandActive(KeyMappings.moveRight)) {
 			// If walking, and current action is not walking right, then set action to walking right
 			if (isCommandActive(KeyMappings.walk) && !getCurrentAction().equals(WALK_RIGHT)) {
 				setCurrentAction(WALK_RIGHT);
@@ -95,7 +87,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 			}
 
 		// Same for if we're moving left
-		} else if (getState().velocity.x < 0) {
+		} else if (isCommandActive(KeyMappings.moveLeft)) {
 			if (isCommandActive(KeyMappings.walk) && !getCurrentAction().equals(WALK_LEFT)) {
 				setCurrentAction(WALK_LEFT);
 				setAnimationTimer(0f);
@@ -104,8 +96,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 				setAnimationTimer(0f);
 			}
 
-		// Otherwise we're standing still, if current action is not standing, then set current to standing left/right depending on which direction we were facing before.
-		} else if (getState().velocity.x == 0 && !obj(getCurrentAction()).oneOf(STAND_LEFT, STAND_LEFT_COMBAT) && !obj(getCurrentAction()).oneOf(STAND_RIGHT, STAND_RIGHT_COMBAT)) {
+		// Otherwise we're standing still, set current to standing left/right depending on which direction we were facing before.
+		} else {
 			if (obj(getCurrentAction()).oneOf(WALK_RIGHT, RUN_RIGHT, STAND_RIGHT, STAND_RIGHT_COMBAT)) {
 				setCurrentAction(inCombatStance() ? STAND_RIGHT_COMBAT : STAND_RIGHT);
 			} else {
@@ -115,25 +107,39 @@ public abstract class GroundTravellingIndividual extends Individual {
 	}
 
 
+	private boolean attacking() {
+		return obj(getCurrentAction()).oneOf(
+			ATTACK_LEFT_ONE_HANDED_WEAPON,
+			ATTACK_RIGHT_ONE_HANDED_WEAPON,
+			ATTACK_LEFT_SPEAR,
+			ATTACK_RIGHT_SPEAR,
+			ATTACK_LEFT_TWO_HANDED_WEAPON,
+			ATTACK_RIGHT_TWO_HANDED_WEAPON,
+			ATTACK_LEFT_UNARMED,
+			ATTACK_RIGHT_UNARMED
+		);
+	}
+
+
 	@Override
 	protected void respondToCommands() {
 		//Horizontal movement
+		boolean attacking = attacking();
 		Topography topography = Domain.getWorld(getWorldId()).getTopography();
 		if (Math.abs(getState().velocity.y) < 5f) {
-			if (isCommandActive(KeyMappings.moveLeft) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+			if (!attacking && isCommandActive(KeyMappings.moveLeft) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 				if (isCommandActive(KeyMappings.walk)) {
-					getState().velocity.x = -getWalkSpeed();
+					getState().acceleration.x = getState().velocity.x > -getWalkSpeed() ? -400f : 400f;
 				} else {
-					getState().velocity.x = -getRunSpeed();
+					getState().acceleration.x = getState().velocity.x > -getRunSpeed() ? -400f : 400f;
 				}
-			} else if (isCommandActive(KeyMappings.moveRight) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+			} else if (!attacking && isCommandActive(KeyMappings.moveRight) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 				if (isCommandActive(KeyMappings.walk)) {
-					getState().velocity.x = getWalkSpeed();
+					getState().acceleration.x = getState().velocity.x < getWalkSpeed() ? 400f : -400f;
 				} else {
-					getState().velocity.x = getRunSpeed();
+					getState().acceleration.x = getState().velocity.x < getRunSpeed() ? 400f : -400f;
 				}
 			} else {
-				getState().velocity.x = 0f;
 				getState().acceleration.x = 0f;
 
 				int offset = isCommandActive(KeyMappings.moveRight) ? 2 : isCommandActive(KeyMappings.moveLeft) ? -2 : 0;
@@ -162,10 +168,11 @@ public abstract class GroundTravellingIndividual extends Individual {
 			case ATTACK_RIGHT_UNARMED:
 				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).animationDuration) {
 					setAnimationTimer(0f);
+					setCombatStance(true);
 					if (getCurrentAction().flipXAnimation()) {
-						setCurrentAction(inCombatStance() ? STAND_LEFT_COMBAT : STAND_LEFT);
+						setCurrentAction(STAND_LEFT_COMBAT);
 					} else {
-						setCurrentAction(inCombatStance() ? STAND_RIGHT_COMBAT : STAND_RIGHT);
+						setCurrentAction(STAND_RIGHT_COMBAT);
 					}
 				}
 
