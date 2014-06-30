@@ -358,13 +358,13 @@ public class Elf extends Humanoid {
 
 
 	@Override
-	protected Box getDefaultHitBox() {
+	protected Box getDefaultAttackingHitBox() {
 		return new Box(
 			new Vector2(
 				getHitBox().position.x + (getCurrentAction().flipXAnimation() ? - getHitBox().width * (1f/3f) : getHitBox().width * (1f/3f)),
 				getHitBox().position.y
 			),
-			getHitBox().width,
+			getHitBox().width * 2 / 3,
 			getHitBox().height
 		);
 	}
@@ -373,5 +373,11 @@ public class Elf extends Humanoid {
 	@Override
 	protected float getUnarmedDamage() {
 		return 0.2f;
+	}
+
+
+	@Override
+	protected float getDefaultAttackPeriod() {
+		return 2f;
 	}
 }
