@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.skill.Skills;
@@ -132,7 +133,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private Box hitBox;
 
 	/** The set of {@link Individual}s currently being attacked by this {@link Individual} */
-	private Set<Integer> individualsToBeAttacked;
+	private Set<Integer> individualsToBeAttacked = Sets.newHashSet();
+
+	/** Used to obey attacking periods */
+	private float attackTimer;
 
 	/** For animation frame timing */
 	private float animationTimer;
@@ -223,8 +227,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * Attacks a set of other {@link Individual}s, if the set is empty, it will hit environmental objects
 	 */
 	@SuppressWarnings("rawtypes")
-	public synchronized void attack(Set<Integer> individuals) {
-		this.setIndividualsToBeAttacked(individuals);
+	public synchronized boolean attack(Set<Integer> individuals) {
+		if (attackTimer < getAttackPeriod()) {
+			return false;
+		}
+
+		attackTimer = 0f;
 		setAnimationTimer(0f);
 
 		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
@@ -247,8 +255,26 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		this.getIndividualsToBeAttacked().clear();
 		this.getIndividualsToBeAttacked().addAll(individuals);
+
+		return true;
 	}
 
+
+	@SuppressWarnings("rawtypes")
+	private float getAttackPeriod() {
+		float attackingPeriod = getDefaultAttackPeriod();
+		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
+			return equipped instanceof Weapon;
+		});
+
+		if (weapon.isPresent()) {
+			attackingPeriod = ((Weapon)weapon.get()).getBaseAttackPeriod();
+		}
+
+		return attackingPeriod;
+	}
+
+	protected abstract float getDefaultAttackPeriod();
 
 	/**
 	 * The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed
@@ -259,11 +285,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			// TODO Attack environmental objects... maybe?...Could be inefficient (must iterate through potentially lots of props), unless positional indexing can be implemented....worth it?????
 		} else {
 			for (Integer individualId : getIndividualsToBeAttacked()) {
+				Box attackingBox = getAttackingHitBox();
 				Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
 					return equipped instanceof Weapon;
 				});
 
-				Box attackingBox = null;
 				if (weapon.isPresent()) {
 					if (weapon.get() instanceof MeleeWeapon) {
 						attackingBox = ((MeleeWeapon) weapon.get()).getActionFrameHitBox();
@@ -271,7 +297,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				}
 
 				if (attackingBox == null) {
-					attackingBox = getDefaultHitBox();
+					attackingBox = getDefaultAttackingHitBox();
 				};
 
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
@@ -291,11 +317,33 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 	}
 
+
+	@SuppressWarnings("rawtypes")
+	public Box getAttackingHitBox() {
+		Box attackingBox = null;
+		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
+			return equipped instanceof Weapon;
+		});
+
+		if (weapon.isPresent()) {
+			if (weapon.get() instanceof MeleeWeapon) {
+				attackingBox = ((MeleeWeapon) weapon.get()).getActionFrameHitBox();
+			}
+		}
+
+		if (attackingBox == null) {
+			attackingBox = getDefaultAttackingHitBox();
+		};
+
+		return attackingBox;
+	}
+
+
 	/** Returns the damage dealt when attacking whilst not armed */
 	protected abstract float getUnarmedDamage();
 
 	/** Returns the {@link Box} that will be used to calculate overlaps with other hitboxes, when no weapon-specific hitboxes are found */
-	protected abstract Box getDefaultHitBox();
+	protected abstract Box getDefaultAttackingHitBox();
 
 	/** Called during the update routine when the currentAction is attacking */
 	protected abstract void respondToAttackCommand();
@@ -495,6 +543,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 
 		setAnimationTimer(getAnimationTimer() + delta);
+		attackTimer += delta;
 
 		internalUpdate(delta);
 
@@ -632,29 +681,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			null
 		);
 
-		MenuItem combatItem = new MenuItem(
-			"Combat",
-			() -> {
-				thisIndividual.combatStance = !thisIndividual.combatStance;
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-
-		MenuItem attack = new MenuItem(
-			"Attack",
-				() -> {
-					thisIndividual.attack(newHashSet());
-				},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-
-
 		final ContextMenu secondaryMenu = new ContextMenu(0, 0,
 			new MenuItem(
 				"Change nickname",
@@ -772,6 +798,27 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			null
 		);
 
+		MenuItem attack = new MenuItem(
+			"Attack",
+				() -> {
+					for (Individual indi : Domain.getSelectedIndividuals()) {
+						if (indi != thisIndividual) {
+							if (isServer()) {
+								indi.getAI().setCurrentTask(
+									new Attack(indi, thisIndividual)
+								);
+							} else {
+								// TODO Attack over CSI
+							}
+						}
+					}
+				},
+			Color.RED,
+			getToolTipTextColor(),
+			Colors.UI_DARK_ORANGE,
+			null
+		);
+
 		MenuItem showStatusWindowItem = new MenuItem(
 			"Status",
 			() -> {
@@ -795,8 +842,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		if (isControllable()) {
 			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
-			contextMenuToReturn.addMenuItem(attack);
-			contextMenuToReturn.addMenuItem(combatItem);
 		}
 
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
@@ -808,8 +853,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 
 
-		if (!Domain.getSelectedIndividuals().isEmpty() &&
-			!(Domain.getSelectedIndividuals().size() == 1 && Domain.getSelectedIndividuals().contains(thisIndividual))) {
+		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.getSelectedIndividuals().contains(thisIndividual))) {
+			contextMenuToReturn.addMenuItem(attack);
 			contextMenuToReturn.addMenuItem(tradeMenuItem);
 
 			if (Domain.getSelectedIndividuals().size() > 1) {

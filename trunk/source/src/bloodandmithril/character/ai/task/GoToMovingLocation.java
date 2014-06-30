@@ -3,6 +3,7 @@ package bloodandmithril.character.ai.task;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.math.Vector2;
@@ -19,6 +20,7 @@ public class GoToMovingLocation extends AITask {
 	private final Vector2 destination;
 	private final float tolerance;
 	private GoToLocation currentGoToLocation;
+	private SerializableFunction<Boolean> condition;
 
 	/**
 	 * Constructor
@@ -27,6 +29,24 @@ public class GoToMovingLocation extends AITask {
 		super(hostId);
 		this.destination = destination;
 		this.tolerance = tolerance;
+
+		currentGoToLocation = new GoToLocation(
+			Domain.getIndividuals().get(hostId.getId()),
+			new WayPoint(destination),
+			false,
+			150f,
+			true
+		);
+	}
+
+	/**
+	 * Constructor
+	 */
+	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> condition) {
+		super(hostId);
+		this.destination = destination;
+		this.condition = condition;
+		this.tolerance = -1f;
 
 		currentGoToLocation = new GoToLocation(
 			Domain.getIndividuals().get(hostId.getId()),
@@ -46,12 +66,17 @@ public class GoToMovingLocation extends AITask {
 
 	@Override
 	public boolean isComplete() {
+		if (condition != null) {
+			return condition.call();
+		}
+
 		return Domain.getIndividuals().get(hostId.getId()).getDistanceFrom(destination) < tolerance;
 	}
 
 
 	@Override
 	public void uponCompletion() {
+		Domain.getIndividuals().get(hostId.getId()).clearCommands();
 	}
 
 
