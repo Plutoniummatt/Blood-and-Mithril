@@ -10,7 +10,6 @@ import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGH
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -26,17 +25,11 @@ import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.equipment.Equipable;
-import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.SerializableColor;
-import bloodandmithril.util.Shaders;
-import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -228,23 +221,6 @@ public class Elf extends Humanoid {
 
 
 	@Override
-	protected void specificInternalRender() {
-		// Render equipped items
-		spriteBatch.setShader(Shaders.pass);
-		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-		for (Item equipped : getEquipped().keySet()) {
-			Equipable toRender = (Equipable) equipped;
-			if (equipped instanceof OneHandedMeleeWeapon) {
-				SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
-				if (config != null) {
-					toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
-				}
-			}
-		}
-	}
-
-
-	@Override
 	protected void internalUpdate(float delta) {
 		super.internalUpdate(delta);
 
@@ -313,12 +289,6 @@ public class Elf extends Humanoid {
 
 
 	@Override
-	protected SpacialConfiguration getOneHandedWeaponSpatialConfigration() {
-		return null;
-	}
-
-
-	@Override
 	protected void internalCopyFrom(Individual other) {
 		if (!(other instanceof Elf)) {
 			throw new RuntimeException("Cannot cast " + other.getClass().getSimpleName() + " to Elf.");
@@ -379,5 +349,10 @@ public class Elf extends Humanoid {
 	@Override
 	protected float getDefaultAttackPeriod() {
 		return 2f;
+	}
+
+
+	@Override
+	protected void specificInternalRender() {
 	}
 }

@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.equipment;
 
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
@@ -37,4 +38,10 @@ public abstract class Equipable extends Item implements Affixed {
 
 	/** Renders this {@link Equipable} */
 	public abstract void render(Vector2 position, float angle, boolean flipX);
+
+
+	/**
+	 * @return The animation index where this {@link Equipable} will be rendered immediately before
+	 */
+	public abstract int getRenderingIndex(Individual individual);
 }

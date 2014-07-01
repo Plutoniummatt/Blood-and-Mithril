@@ -25,14 +25,19 @@ import java.util.Map;
 
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.Equipable;
+import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * An {@link Individual} that is grounded, moves on ground.
@@ -185,7 +190,15 @@ public abstract class GroundTravellingIndividual extends Individual {
 
 
 	@Override
+	protected SpacialConfiguration getOneHandedWeaponSpatialConfigration() {
+		return new SpacialConfiguration(new Vector2(), 10f, true);
+	}
+
+
+	@Override
 	protected void internalRender() {
+		int animationIndex = 0;
+
 		// Draw the body, position is centre bottom of the frame
 		Collection<Animation> currentAnimations = getCurrentAnimation();
 		if (currentAnimations == null) {
@@ -196,6 +209,22 @@ public abstract class GroundTravellingIndividual extends Individual {
 		spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		for (Animation animation : currentAnimations) {
+
+			// Render equipped items
+			for (Item equipped : getEquipped().keySet()) {
+				if (((Equipable)equipped).getRenderingIndex(this) != animationIndex) {
+					continue;
+				}
+
+				Equipable toRender = (Equipable) equipped;
+				if (equipped instanceof OneHandedMeleeWeapon) {
+					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
+					if (config != null) {
+						toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
+					}
+				}
+			}
+
 			TextureRegion keyFrame = animation.getKeyFrame(getAnimationTimer(), true);
 			spriteBatch.draw(
 				keyFrame.getTexture(),
@@ -210,6 +239,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 				getCurrentAction().flipXAnimation(),
 				false
 			);
+
+			animationIndex++;
 		}
 		spriteBatch.end();
 
