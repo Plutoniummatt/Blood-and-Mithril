@@ -12,7 +12,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 
 /**
- * {@link AITask} that governs combat
+ * {@link AITask} that:
+ *
+ * Makes an {@link Individual} move towards another
+ * Attack when within range, until the target is dead, continuously moving into attacking range when necessary
  *
  * @author Matt
  */

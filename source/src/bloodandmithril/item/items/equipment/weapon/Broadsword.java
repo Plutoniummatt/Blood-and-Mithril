@@ -1,10 +1,11 @@
 package bloodandmithril.item.items.equipment.weapon;
 
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+
 import java.util.Map;
 
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Ingot;
@@ -69,7 +70,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
-		BloodAndMithrilClient.spriteBatch.draw(
+		spriteBatch.draw(
 			Domain.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 13 : 13),
 			position.y - 7,

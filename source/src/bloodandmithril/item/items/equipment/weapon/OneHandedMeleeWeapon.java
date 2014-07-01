@@ -2,6 +2,8 @@ package bloodandmithril.item.items.equipment.weapon;
 
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
+import bloodandmithril.character.individuals.Humanoid;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
@@ -35,5 +37,15 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	@Override
 	public String getType() {
 		return "One-handed weapon";
+	}
+
+
+	@Override
+	public int getRenderingIndex(Individual individual) {
+		if (individual instanceof Humanoid) {
+			return 6;
+		}
+
+		return -1;
 	}
 }

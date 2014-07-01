@@ -1,12 +1,12 @@
 package bloodandmithril.item.items.equipment.weapon;
 
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.item.items.material.Ingot.ingot;
 
 import java.util.Map;
 
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.metal.Metal;
@@ -70,7 +70,7 @@ public class ButterflySword<T extends Metal> extends OneHandedMeleeWeapon<T> imp
 
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
-		BloodAndMithrilClient.spriteBatch.draw(
+		spriteBatch.draw(
 			Domain.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 10 : 10),
 			position.y - 7,
