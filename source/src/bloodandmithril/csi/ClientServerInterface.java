@@ -133,7 +133,7 @@ import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.RingFunction;
-import bloodandmithril.item.items.equipment.weapon.Broadsword;
+import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.item.items.equipment.weapon.ButterflySword;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
@@ -403,7 +403,7 @@ public class ClientServerInterface {
 		kryo.register(Box.class);
 		kryo.register(Brick.class);
 		kryo.register(BrickTile.class);
-		kryo.register(Broadsword.class);
+		kryo.register(Dagger.class);
 		kryo.register(ButterflySword.class);
 		kryo.register(CSIMineTile.class);
 		kryo.register(CSIOpenCraftingStation.class);

@@ -77,8 +77,10 @@ public interface Kinematics {
 		} else if (state.position.y == 0f && !(topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
 			state.velocity.y = 0f;
 		} else {
-			if (!(individual.isCommandActive(KeyMappings.moveRight) || individual.isCommandActive(KeyMappings.moveLeft))) {
-				state.velocity.x = state.velocity.x * 0.5f;
+			if ((individual.isCommandActive(KeyMappings.moveRight) && state.velocity.x < 0f) ||
+				(individual.isCommandActive(KeyMappings.moveLeft) && state.velocity.x > 0f) ||
+				(!individual.isCommandActive(KeyMappings.moveLeft) && !individual.isCommandActive(KeyMappings.moveRight))) {
+				state.velocity.x = state.velocity.x * 0.3f;
 			}
 			state.acceleration.x = 0f;
 		}

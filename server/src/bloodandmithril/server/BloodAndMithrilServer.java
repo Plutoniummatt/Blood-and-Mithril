@@ -1,6 +1,6 @@
 package bloodandmithril.server;
 
-import static bloodandmithril.item.items.equipment.weapon.Broadsword.broadSword;
+import static bloodandmithril.item.items.equipment.weapon.Dagger.dagger;
 import static bloodandmithril.item.items.equipment.weapon.ButterflySword.butterflySword;
 
 import java.io.IOException;
@@ -387,7 +387,7 @@ public class BloodAndMithrilServer {
 					elf.giveItem(new Brick());
 				}
 				elf.giveItem(butterflySword(100, Steel.class));
-				elf.giveItem(broadSword(100, Iron.class));
+				elf.giveItem(dagger(100, Iron.class));
 
 				Domain.getIndividuals().put(elf.getId().getId(), elf);
 			}

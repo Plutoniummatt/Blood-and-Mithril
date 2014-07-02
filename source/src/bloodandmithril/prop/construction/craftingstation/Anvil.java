@@ -1,6 +1,6 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.item.items.equipment.weapon.Broadsword.broadSword;
+import static bloodandmithril.item.items.equipment.weapon.Dagger.dagger;
 import static bloodandmithril.item.items.equipment.weapon.ButterflySword.butterflySword;
 
 import java.util.Map;
@@ -22,8 +22,8 @@ public class Anvil extends CraftingStation {
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
 
 	static {
-		craftables.put(broadSword(0, Iron.class), 1);
-		craftables.put(broadSword(0, Steel.class), 1);
+		craftables.put(dagger(0, Iron.class), 1);
+		craftables.put(dagger(0, Steel.class), 1);
 		craftables.put(butterflySword(0, Iron.class), 1);
 		craftables.put(butterflySword(0, Steel.class), 1);
 	}
