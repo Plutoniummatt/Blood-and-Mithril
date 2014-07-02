@@ -37,7 +37,6 @@ import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * An {@link Individual} that is grounded, moves on ground.
@@ -165,6 +164,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 	@Override
 	protected void respondToAttackCommand() {
 		switch (getCurrentAction()) {
+			case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
+			case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
 			case ATTACK_LEFT_ONE_HANDED_WEAPON:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
 			case ATTACK_LEFT_TWO_HANDED_WEAPON:
@@ -186,12 +187,6 @@ public abstract class GroundTravellingIndividual extends Individual {
 			default:
 				return;
 		}
-	}
-
-
-	@Override
-	protected SpacialConfiguration getOneHandedWeaponSpatialConfigration() {
-		return new SpacialConfiguration(new Vector2(), 10f, true);
 	}
 
 

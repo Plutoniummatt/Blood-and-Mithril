@@ -168,4 +168,10 @@ public class ButterflySword<T extends Metal> extends OneHandedMeleeWeapon<T> imp
 		// Butterfly sword damage
 		return 1f;
 	}
+
+
+	@Override
+	public boolean stab() {
+		return false;
+	}
 }

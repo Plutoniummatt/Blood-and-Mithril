@@ -83,6 +83,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		ATTACK_RIGHT_UNARMED(false),
 		ATTACK_LEFT_ONE_HANDED_WEAPON(true),
 		ATTACK_RIGHT_ONE_HANDED_WEAPON(false),
+		ATTACK_LEFT_ONE_HANDED_WEAPON_STAB(true),
+		ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB(false),
 		ATTACK_LEFT_TWO_HANDED_WEAPON(true),
 		ATTACK_RIGHT_TWO_HANDED_WEAPON(false),
 		ATTACK_LEFT_SPEAR(true),

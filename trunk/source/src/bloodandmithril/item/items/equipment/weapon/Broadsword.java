@@ -168,4 +168,10 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 		// TODO Broadsword damage
 		return 5f;
 	}
+
+
+	@Override
+	public boolean stab() {
+		return false;
+	}
 }

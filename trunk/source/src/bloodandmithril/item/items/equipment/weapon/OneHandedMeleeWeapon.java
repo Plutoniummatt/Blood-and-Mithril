@@ -1,7 +1,9 @@
 package bloodandmithril.item.items.equipment.weapon;
 
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
@@ -27,7 +29,11 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 
 	@Override
 	public Action getAttackAction(boolean right) {
-		return right ? ATTACK_RIGHT_ONE_HANDED_WEAPON : ATTACK_LEFT_ONE_HANDED_WEAPON;
+		if (right) {
+			return stab() ? ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB : ATTACK_RIGHT_ONE_HANDED_WEAPON;
+		} else {
+			return stab() ? ATTACK_LEFT_ONE_HANDED_WEAPON_STAB : ATTACK_LEFT_ONE_HANDED_WEAPON;
+		}
 	}
 
 
@@ -48,4 +54,8 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 
 		return -1;
 	}
+
+
+	/** Whether to stab or slash */
+	public abstract boolean stab();
 }
