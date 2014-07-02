@@ -1,6 +1,8 @@
 package bloodandmithril.character.individuals.characters;
 
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
@@ -30,12 +32,15 @@ import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.SerializableColor;
+import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 
@@ -59,6 +64,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
+@SuppressWarnings("unchecked")
 public class Elf extends Humanoid {
 	private static final long serialVersionUID = -5566954059579973505L;
 
@@ -71,59 +77,59 @@ public class Elf extends Humanoid {
 	/** Biography of this Elf */
 	private String biography = "";
 
-	/** Elf-specific animation map */
-	private static Map<Action, List<Animation>> animationMap = newHashMap();
+	/** Humanoid-specific animation map */
+	private static Map<Action, List<WrapperForTwo<Animation, ShaderProgram>>> animationMap = newHashMap();
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			ArrayList<Animation> walkSequence = newArrayList(
-				AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.13f),	// HEAD
-				AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.13f),	// HAIR
-				AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.13f),	// BACK ARM
-				AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.13f),	// BACK LEG
-				AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.13f),	// TORSO
-				AnimationHelper.animation(Domain.individualTexture, 0, 560, 64, 112, 10, 0.13f),	// FRONT LEG
-				AnimationHelper.animation(Domain.individualTexture, 0, 336, 64, 112, 10, 0.13f)		// FRONT ARM
+			ArrayList<WrapperForTwo<Animation, ShaderProgram>> walkSequence = newArrayList(
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.13f), Shaders.replaceColor),		// HEAD
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.13f), Shaders.filter),			// HAIR
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.13f), Shaders.pass),				// BACK ARM
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.13f), Shaders.pass),				// BACK LEG
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.13f), Shaders.pass),				// TORSO
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 0, 560, 64, 112, 10, 0.13f), Shaders.pass),				// FRONT LEG
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 0, 336, 64, 112, 10, 0.13f), Shaders.pass)				// FRONT ARM
 			);
 
-			ArrayList<Animation> standSequence = newArrayList(
-				AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f),		// HEAD
-				AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f),		// HAIR
-				AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f),		// BACK ARM
-				AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f),		// BACK LEG
-				AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f),		// TORSO
-				AnimationHelper.animation(Domain.individualTexture, 1152, 560, 64, 112, 1, 1f),		// FRONT LEG
-				AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f)		// FRONT ARM
+			ArrayList<WrapperForTwo<Animation, ShaderProgram>> standSequence = newArrayList(
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f), Shaders.replaceColor),		// HEAD
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f), Shaders.filter),			// HAIR
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f), Shaders.pass),				// BACK ARM
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f), Shaders.pass),				// BACK LEG
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f), Shaders.pass),				// TORSO
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1152, 560, 64, 112, 1, 1f), Shaders.pass),				// FRONT LEG
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f), Shaders.pass)				// FRONT ARM
 			);
 
-			ArrayList<Animation> standSequenceCombat = newArrayList(
-				AnimationHelper.animation(Domain.individualTexture, 1216, 112, 64, 112, 1, 1f),		// HEAD
-				AnimationHelper.animation(Domain.individualTexture, 1216, 0,   64, 112, 1, 1f),		// HAIR
-				AnimationHelper.animation(Domain.individualTexture, 1216, 448, 64, 112, 1, 1f),		// BACK ARM
-				AnimationHelper.animation(Domain.individualTexture, 1216, 672, 64, 112, 1, 1f),		// BACK LEG
-				AnimationHelper.animation(Domain.individualTexture, 1216, 224, 64, 112, 1, 1f),		// TORSO
-				AnimationHelper.animation(Domain.individualTexture, 1216, 560, 64, 112, 1, 1f),		// FRONT LEG
-				AnimationHelper.animation(Domain.individualTexture, 1216, 336, 64, 112, 1, 1f)		// FRONT ARM
+			ArrayList<WrapperForTwo<Animation, ShaderProgram>> standSequenceCombat = newArrayList(
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1216, 112, 64, 112, 1, 1f), Shaders.replaceColor),		// HEAD
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1216, 0,   64, 112, 1, 1f), Shaders.filter),			// HAIR
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1216, 448, 64, 112, 1, 1f), Shaders.pass),				// BACK ARM
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1216, 672, 64, 112, 1, 1f), Shaders.pass),				// BACK LEG
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1216, 224, 64, 112, 1, 1f), Shaders.pass),				// TORSO
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1216, 560, 64, 112, 1, 1f), Shaders.pass),				// FRONT LEG
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1216, 336, 64, 112, 1, 1f), Shaders.pass)				// FRONT ARM
 			);
 
-			ArrayList<Animation> runSequence = newArrayList(
-				AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.13f),	// HEAD
-				AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.13f),	// HAIR
-				AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.13f),	// BACK ARM
-				AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.13f),	// BACK LEG
-				AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.13f),	// TORSO
-				AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.13f),	// FRONT LEG
-				AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.13f)	// FRONT ARM
+			ArrayList<WrapperForTwo<Animation, ShaderProgram>> runSequence = newArrayList(
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.13f), Shaders.replaceColor),	// HEAD
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.13f), Shaders.filter),			// HAIR
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.13f), Shaders.pass),			// BACK ARM
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.13f), Shaders.pass),			// BACK LEG
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.13f), Shaders.pass),			// TORSO
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.13f), Shaders.pass),			// FRONT LEG
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.13f), Shaders.pass)				// FRONT ARM
 			);
 
-			ArrayList<Animation> stabSequence = newArrayList(
-				AnimationHelper.animation(Domain.individualTexture, 1280, 112, 64, 112, 6, 0.07f),	// HEAD
-				AnimationHelper.animation(Domain.individualTexture, 1280, 0,   64, 112, 6, 0.07f),	// HAIR
-				AnimationHelper.animation(Domain.individualTexture, 1280, 448, 64, 112, 6, 0.07f),	// BACK ARM
-				AnimationHelper.animation(Domain.individualTexture, 1280, 672, 64, 112, 6, 0.07f),	// BACK LEG
-				AnimationHelper.animation(Domain.individualTexture, 1280, 224, 64, 112, 6, 0.07f),	// TORSO
-				AnimationHelper.animation(Domain.individualTexture, 1280, 560, 64, 112, 6, 0.07f),	// FRONT LEG
-				AnimationHelper.animation(Domain.individualTexture, 1280, 336, 64, 112, 6, 0.07f)	// FRONT ARM
+			ArrayList<WrapperForTwo<Animation, ShaderProgram>> stabSequence = newArrayList(
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1280, 112, 64, 112, 6, 0.07f), Shaders.replaceColor),	// HEAD
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1280, 0,   64, 112, 6, 0.07f), Shaders.filter),			// HAIR
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1280, 448, 64, 112, 6, 0.07f), Shaders.pass),			// BACK ARM
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1280, 672, 64, 112, 6, 0.07f), Shaders.pass),			// BACK LEG
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1280, 224, 64, 112, 6, 0.07f), Shaders.pass),			// TORSO
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1280, 560, 64, 112, 6, 0.07f), Shaders.pass),			// FRONT LEG
+				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1280, 336, 64, 112, 6, 0.07f), Shaders.pass)			// FRONT ARM
 			);
 
 			animationMap.put(
@@ -173,6 +179,16 @@ public class Elf extends Humanoid {
 
 			animationMap.put(
 				ATTACK_LEFT_UNARMED,
+				stabSequence
+			);
+
+			animationMap.put(
+				ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB,
+				stabSequence
+			);
+
+			animationMap.put(
+				ATTACK_LEFT_ONE_HANDED_WEAPON_STAB,
 				stabSequence
 			);
 		}
@@ -265,6 +281,18 @@ public class Elf extends Humanoid {
 
 
 	@Override
+	protected void internalRender() {
+		Shaders.filter.begin();
+		Shaders.filter.setUniformf("color", hairColor);
+
+		Shaders.replaceColor.begin();
+		Shaders.replaceColor.setUniformf("toReplace", Color.RED);
+		Shaders.replaceColor.setUniformf("color", eyeColor);
+		super.internalRender();
+	}
+
+
+	@Override
 	public Color getToolTipTextColor() {
 		return Color.GREEN;
 	}
@@ -310,7 +338,7 @@ public class Elf extends Humanoid {
 
 
 	@Override
-	protected Map<Action, List<Animation>> getAnimationMap() {
+	protected Map<Action, List<WrapperForTwo<Animation, ShaderProgram>>> getAnimationMap() {
 		return animationMap;
 	}
 

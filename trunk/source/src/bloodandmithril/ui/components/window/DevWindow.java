@@ -4,6 +4,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.item.items.equipment.weapon.Broadsword.broadSword;
 import static bloodandmithril.item.items.equipment.weapon.ButterflySword.butterflySword;
+import static bloodandmithril.item.items.equipment.weapon.Dagger.dagger;
 
 import java.util.Comparator;
 import java.util.Deque;
@@ -24,8 +25,8 @@ import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.GlassBottle;
 import bloodandmithril.item.items.container.WoodenBucket;
-import bloodandmithril.item.items.equipment.weapon.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.ButterflySword;
+import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.DeathCap;
 import bloodandmithril.item.items.material.Brick;
@@ -162,7 +163,7 @@ public class DevWindow extends Window {
 				20f,
 				Domain.getActiveWorld(),
 				Colors.lightColor(),
-				Colors.lightColor()
+				Colors.randomColor()
 			);
 
 			elf.getSkills().setObservation(55);
@@ -215,6 +216,7 @@ public class DevWindow extends Window {
 				elf.giveItem(new Brick());
 			}
 			elf.giveItem(butterflySword(100, Steel.class));
+			elf.giveItem(dagger(100, Iron.class));
 			elf.giveItem(broadSword(100, Iron.class));
 
 			Domain.getIndividuals().put(elf.getId().getId(), elf);
@@ -251,7 +253,7 @@ public class DevWindow extends Window {
 
 		if (keyCode == Input.Keys.H) {
 			Domain.addItem(
-				Broadsword.broadSword(10, Steel.class),
+				Dagger.dagger(10, Steel.class),
 				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
 				new Vector2(new Vector2(800f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
 				Domain.getActiveWorld()

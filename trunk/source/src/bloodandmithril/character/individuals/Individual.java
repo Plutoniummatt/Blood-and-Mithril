@@ -51,11 +51,13 @@ import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
@@ -354,7 +356,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	protected abstract Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames();
 
 	/** Returns the current {@link Animation} of this {@link Individual} */
-	protected abstract List<Animation> getCurrentAnimation();
+	protected abstract List<WrapperForTwo<Animation, ShaderProgram>> getCurrentAnimation();
 
 	/** Implementation-specific copy method of this {@link Individual} */
 	public abstract Individual copy();
@@ -549,7 +551,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		internalUpdate(delta);
 
-		executeActionFrames();
+		try {
+			executeActionFrames();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
 		respondToCommands();
 		respondToAttackCommand();
 
@@ -569,12 +575,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		try {
 			task = getActionFrames()
 				.get(getCurrentAction())
-				.get(getCurrentAnimation().get(0).getKeyFrameIndex(animationTimer));
+				.get(getCurrentAnimation().get(0).a.getKeyFrameIndex(animationTimer));
 		} catch (NullPointerException e) {
 			// Do nothing
 		}
 
-		if (previousActionFrameAction == getCurrentAction() && previousActionFrame == getCurrentAnimation().get(0).getKeyFrameIndex(animationTimer)) {
+		if (previousActionFrameAction == getCurrentAction() && previousActionFrame == getCurrentAnimation().get(0).a.getKeyFrameIndex(animationTimer)) {
 			return;
 		}
 
@@ -582,7 +588,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			task.execute(this);
 		}
 
-		previousActionFrame = getCurrentAnimation().get(0).getKeyFrameIndex(animationTimer);
+		previousActionFrame = getCurrentAnimation().get(0).a.getKeyFrameIndex(animationTimer);
 		previousActionFrameAction = getCurrentAction();
 	}
 

@@ -6,6 +6,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.items.equipment.weapon.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.ButterflySword;
+import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,7 +24,8 @@ public abstract class Equipable extends Item implements Affixed {
 
 	public static void setup() {
 		ButterflySword.texture = new TextureRegion(Domain.individualTexture, 0, 10, 47, 12);
-		Broadsword.texture = new TextureRegion(Domain.individualTexture, 0, 10, 52, 11);
+		Dagger.texture = new TextureRegion(Domain.individualTexture, 0, 784, 43, 13);
+		Broadsword.texture = new TextureRegion(Domain.individualTexture, 0, 800, 63, 17);
 	}
 
 

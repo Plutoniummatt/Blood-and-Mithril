@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
-public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
+public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
 	public static TextureRegion texture;
@@ -26,7 +26,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	/**
 	 * Constructor
 	 */
-	private Broadsword(long value, Class<T> metal) {
+	private Dagger(long value, Class<T> metal) {
 		super(2, true, value, metal);
 	}
 
@@ -34,34 +34,34 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	/**
 	 * @return Static instance getter
 	 */
-	public static <T extends Metal> Broadsword<T> broadSword(long value, Class<T> metal) {
-		return new Broadsword<T>(value, metal);
+	public static <T extends Metal> Dagger<T> dagger(long value, Class<T> metal) {
+		return new Dagger<T>(value, metal);
 	}
 
 
 	@Override
 	protected String weaponGetSingular(boolean firstCap) {
-		return "Broadsword";
+		return "Dagger";
 	}
 
 
 	@Override
 	protected String weaponGetPlural(boolean firstCap) {
-		return "Broadswords";
+		return "Daggers";
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "A heavy military sword, made from " + getMaterial().getName();
+		return "A short, sharp blade made from " + getMaterial().getName();
 	}
 
 
 	@Override
 	@SuppressWarnings("unchecked")
 	protected boolean internalSameAs(Item other) {
-		if (other instanceof Broadsword) {
-			return getMaterial().equals(((Broadsword<T>) other).getMaterial());
+		if (other instanceof Dagger) {
+			return getMaterial().equals(((Dagger<T>) other).getMaterial());
 		} else {
 			return false;
 		}
@@ -72,10 +72,10 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	public void render(Vector2 position, float angle, boolean flipX) {
 		spriteBatch.draw(
 			Domain.individualTexture,
-			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
-			position.y - 9,
-			flipX ? texture.getRegionWidth() - 17 : 17,
-			9,
+			position.x - (flipX ? texture.getRegionWidth() - 15 : 15),
+			position.y - 7,
+			flipX ? texture.getRegionWidth() - 15 : 15,
+			7,
 			texture.getRegionWidth(),
 			texture.getRegionHeight(),
 			1f,
@@ -140,7 +140,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	protected Item internalCopy() {
-		return new Broadsword<T>(getValue(), getMaterial());
+		return new Dagger<T>(getValue(), getMaterial());
 	}
 
 

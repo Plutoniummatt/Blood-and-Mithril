@@ -1,10 +1,12 @@
 package bloodandmithril.character.individuals;
 
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_SPEAR;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_SPEAR;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
@@ -19,7 +21,6 @@ import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.ComparisonUtil.obj;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -29,14 +30,15 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.ui.KeyMappings;
-import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 /**
  * An {@link Individual} that is grounded, moves on ground.
@@ -113,6 +115,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 
 	private boolean attacking() {
 		return obj(getCurrentAction()).oneOf(
+			ATTACK_LEFT_ONE_HANDED_WEAPON_STAB,
+			ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB,
 			ATTACK_LEFT_ONE_HANDED_WEAPON,
 			ATTACK_RIGHT_ONE_HANDED_WEAPON,
 			ATTACK_LEFT_SPEAR,
@@ -174,7 +178,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 			case ATTACK_RIGHT_SPEAR:
 			case ATTACK_LEFT_UNARMED:
 			case ATTACK_RIGHT_UNARMED:
-				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).animationDuration) {
+				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).a.animationDuration) {
 					setAnimationTimer(0f);
 					setCombatStance(true);
 					if (getCurrentAction().flipXAnimation()) {
@@ -195,15 +199,15 @@ public abstract class GroundTravellingIndividual extends Individual {
 		int animationIndex = 0;
 
 		// Draw the body, position is centre bottom of the frame
-		Collection<Animation> currentAnimations = getCurrentAnimation();
+		List<WrapperForTwo<Animation, ShaderProgram>> currentAnimations = getCurrentAnimation();
 		if (currentAnimations == null) {
 			return;
 		}
 
 		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.pass);
-		Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-		for (Animation animation : currentAnimations) {
+		for (WrapperForTwo<Animation, ShaderProgram> animation : currentAnimations) {
+			spriteBatch.setShader(animation.b);
+			animation.b.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 
 			// Render equipped items
 			for (Item equipped : getEquipped().keySet()) {
@@ -220,7 +224,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 				}
 			}
 
-			TextureRegion keyFrame = animation.getKeyFrame(getAnimationTimer(), true);
+			TextureRegion keyFrame = animation.a.getKeyFrame(getAnimationTimer(), true);
 			spriteBatch.draw(
 				keyFrame.getTexture(),
 				getState().position.x - keyFrame.getRegionWidth()/2,
@@ -253,14 +257,14 @@ public abstract class GroundTravellingIndividual extends Individual {
 	/**
 	 * @return The Individual-specific animation map
 	 */
-	protected abstract Map<Action, List<Animation>> getAnimationMap();
+	protected abstract Map<Action, List<WrapperForTwo<Animation, ShaderProgram>>> getAnimationMap();
 
 
 	/**
 	 * @return The current {@link Animation} based on the current {@link Action}
 	 */
 	@Override
-	protected List<Animation> getCurrentAnimation() {
+	protected List<WrapperForTwo<Animation, ShaderProgram>> getCurrentAnimation() {
 		return getAnimationMap().get(getCurrentAction());
 	}
 
