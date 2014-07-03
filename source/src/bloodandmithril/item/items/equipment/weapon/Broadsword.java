@@ -158,7 +158,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 
 	@Override
-	public Box getActionFrameHitBox() {
+	public Box getActionFrameHitBox(Individual individual) {
 		return null;
 	}
 

@@ -158,7 +158,7 @@ public class ButterflySword<T extends Metal> extends OneHandedMeleeWeapon<T> imp
 
 
 	@Override
-	public Box getActionFrameHitBox() {
+	public Box getActionFrameHitBox(Individual individual) {
 		return null;
 	}
 

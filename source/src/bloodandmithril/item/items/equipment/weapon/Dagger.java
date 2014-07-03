@@ -158,8 +158,15 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 
 	@Override
-	public Box getActionFrameHitBox() {
-		return null;
+	public Box getActionFrameHitBox(Individual individual) {
+		return new Box(
+			new Vector2(
+				individual.getHitBox().position.x + (individual.getCurrentAction().flipXAnimation() ? - individual.getHitBox().width * (2f/3f) : individual.getHitBox().width * (2f/3f)),
+				individual.getHitBox().position.y
+			),
+			individual.getHitBox().width * 2 / 3,
+			individual.getHitBox().height
+		);
 	}
 
 
