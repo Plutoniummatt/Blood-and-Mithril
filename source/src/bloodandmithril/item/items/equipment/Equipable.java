@@ -24,8 +24,8 @@ public abstract class Equipable extends Item implements Affixed {
 
 	public static void setup() {
 		ButterflySword.texture = new TextureRegion(Domain.individualTexture, 0, 10, 47, 12);
-		Dagger.texture = new TextureRegion(Domain.individualTexture, 0, 784, 43, 13);
-		Broadsword.texture = new TextureRegion(Domain.individualTexture, 0, 800, 63, 17);
+		Dagger.iron = new TextureRegion(Domain.individualTexture, 0, 784, 43, 13);
+		Broadsword.iron = new TextureRegion(Domain.individualTexture, 0, 800, 63, 17);
 	}
 
 

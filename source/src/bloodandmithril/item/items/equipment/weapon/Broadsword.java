@@ -21,7 +21,7 @@ import com.google.common.collect.Maps;
 public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
-	public static TextureRegion texture;
+	public static TextureRegion iron;
 
 	/**
 	 * Constructor
@@ -72,19 +72,19 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	public void render(Vector2 position, float angle, boolean flipX) {
 		spriteBatch.draw(
 			Domain.individualTexture,
-			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
+			position.x - (flipX ? iron.getRegionWidth() - 17 : 17),
 			position.y - 9,
-			flipX ? texture.getRegionWidth() - 17 : 17,
+			flipX ? iron.getRegionWidth() - 17 : 17,
 			9,
-			texture.getRegionWidth(),
-			texture.getRegionHeight(),
+			iron.getRegionWidth(),
+			iron.getRegionHeight(),
 			1f,
 			1f,
 			angle,
-			texture.getRegionX(),
-			texture.getRegionY(),
-			texture.getRegionWidth(),
-			texture.getRegionHeight(),
+			iron.getRegionX(),
+			iron.getRegionY(),
+			iron.getRegionWidth(),
+			iron.getRegionHeight(),
 			flipX,
 			false
 		);
@@ -128,7 +128,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return texture;
+		return iron;
 	}
 
 
@@ -153,25 +153,31 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	public float getBaseAttackPeriod() {
-		return 1.5f;
+		return 3f;
 	}
 
 
 	@Override
 	public Box getActionFrameHitBox(Individual individual) {
-		return null;
+		return new Box(
+			new Vector2(
+				individual.getHitBox().position.x + (individual.getCurrentAction().flipXAnimation() ? - individual.getHitBox().width * (3f/4f) : individual.getHitBox().width  * (3f/4f)),
+				individual.getHitBox().position.y
+			),
+			individual.getHitBox().width,
+			individual.getHitBox().height
+		);
 	}
 
 
 	@Override
 	public float getBaseDamage() {
-		// TODO Dagger damage
-		return 5f;
+		return 8f;
 	}
 
 
 	@Override
 	public boolean stab() {
-		return true;
+		return false;
 	}
 }

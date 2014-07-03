@@ -21,7 +21,7 @@ import com.google.common.collect.Maps;
 public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
-	public static TextureRegion texture;
+	public static TextureRegion iron;
 
 	/**
 	 * Constructor
@@ -72,19 +72,19 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 	public void render(Vector2 position, float angle, boolean flipX) {
 		spriteBatch.draw(
 			Domain.individualTexture,
-			position.x - (flipX ? texture.getRegionWidth() - 15 : 15),
+			position.x - (flipX ? iron.getRegionWidth() - 15 : 15),
 			position.y - 7,
-			flipX ? texture.getRegionWidth() - 15 : 15,
+			flipX ? iron.getRegionWidth() - 15 : 15,
 			7,
-			texture.getRegionWidth(),
-			texture.getRegionHeight(),
+			iron.getRegionWidth(),
+			iron.getRegionHeight(),
 			1f,
 			1f,
 			angle,
-			texture.getRegionX(),
-			texture.getRegionY(),
-			texture.getRegionWidth(),
-			texture.getRegionHeight(),
+			iron.getRegionX(),
+			iron.getRegionY(),
+			iron.getRegionWidth(),
+			iron.getRegionHeight(),
 			flipX,
 			false
 		);
@@ -128,7 +128,7 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return texture;
+		return iron;
 	}
 
 
@@ -153,7 +153,7 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	@Override
 	public float getBaseAttackPeriod() {
-		return 1.5f;
+		return 1f;
 	}
 
 
@@ -172,8 +172,7 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	@Override
 	public float getBaseDamage() {
-		// TODO Dagger damage
-		return 5f;
+		return 2.5f;
 	}
 
 

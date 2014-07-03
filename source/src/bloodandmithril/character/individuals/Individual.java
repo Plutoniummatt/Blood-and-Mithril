@@ -239,7 +239,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/**
-	 * Attacks a set of other {@link Individual}s, if the set is empty, it will hit environmental objects
+	 * Attacks a set of other {@link Individual}s
 	 */
 	@SuppressWarnings("rawtypes")
 	public synchronized boolean attack(Set<Integer> individuals) {
