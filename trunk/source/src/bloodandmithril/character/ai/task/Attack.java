@@ -35,19 +35,20 @@ public class Attack extends CompositeAITask {
 		}
 
 		Individual alive = getAlive();
-		if (alive == null) {
-			return;
+
+		if (alive != null) {
+			Vector2 location = alive.getState().position;
+
+			appendTask(new GoToMovingLocation(
+				hostId,
+				location,
+				new WithinAttackRange(hostId, alive.getId())
+			));
+
+			appendTask(new AttackTarget(host.getId()));
+		} else {
+			appendTask(new Idle());
 		}
-
-		Vector2 location = alive.getState().position;
-
-		appendTask(new GoToMovingLocation(
-			hostId,
-			location,
-			new WithinAttackRange(hostId, alive.getId())
-		));
-
-		appendTask(new AttackTarget(host.getId()));
 	}
 
 	/**
@@ -60,19 +61,20 @@ public class Attack extends CompositeAITask {
 		this.toBeAttacked.addAll(toBeAttacked);
 
 		Individual alive = getAlive();
-		if (alive == null) {
-			return;
+		if (alive != null) {
+			Domain.getIndividuals().get(hostId.getId()).setCombatStance(true);
+			Vector2 location = alive.getState().position;
+
+			appendTask(new GoToMovingLocation(
+				hostId,
+				location,
+				new WithinAttackRange(hostId, alive.getId())
+			));
+
+			appendTask(new AttackTarget(hostId));
+		} else {
+			appendTask(new Idle());
 		}
-
-		Vector2 location = alive.getState().position;
-
-		appendTask(new GoToMovingLocation(
-			hostId,
-			location,
-			new WithinAttackRange(hostId, alive.getId())
-		));
-
-		appendTask(new AttackTarget(hostId));
 	}
 
 

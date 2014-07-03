@@ -26,6 +26,9 @@ import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.conditions.Condition;
+import bloodandmithril.character.conditions.Exhaustion;
+import bloodandmithril.character.conditions.Hunger;
+import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
@@ -36,6 +39,7 @@ import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
+import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -166,9 +170,16 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** The faction this {@link Individual} belongs to */
 	private int factionId;
 
+	/** True if this {@link Individual} is dead */
+	private boolean dead;
+
+	/** When this timer reaches 0, this {@link Individual} will no longer be in combat stance */
+	private float combatTimer;
+
 	/** These variables are needed to prevent duplicate executions of action frames */
 	private Action previousActionFrameAction;
 	private int previousActionFrame;
+
 
 	/**
 	 * Constructor
@@ -286,7 +297,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	@SuppressWarnings("rawtypes")
 	public void attack() {
 		if (getIndividualsToBeAttacked().isEmpty()) {
-			// TODO Attack environmental objects... maybe?...Could be inefficient (must iterate through potentially lots of props), unless positional indexing can be implemented....worth it?????
+			// TODO Attack environmental objects... maybe?...Could be inefficient (must iterate through potentially lots of props), unless positional indexing is implemented....worth it?????
 		} else {
 			for (Integer individualId : getIndividualsToBeAttacked()) {
 				Box attackingBox = getAttackingHitBox();
@@ -296,7 +307,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 				if (weapon.isPresent()) {
 					if (weapon.get() instanceof MeleeWeapon) {
-						attackingBox = ((MeleeWeapon) weapon.get()).getActionFrameHitBox();
+						attackingBox = ((MeleeWeapon) weapon.get()).getActionFrameHitBox(this);
 					}
 				}
 
@@ -331,7 +342,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		if (weapon.isPresent()) {
 			if (weapon.get() instanceof MeleeWeapon) {
-				attackingBox = ((MeleeWeapon) weapon.get()).getActionFrameHitBox();
+				attackingBox = ((MeleeWeapon) weapon.get()).getActionFrameHitBox(this);
 			}
 		}
 
@@ -540,6 +551,14 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		getHitBox().position.x = state.position.x;
 		getHitBox().position.y = state.position.y + getHeight() / 2;
 
+		if (combatTimer <= 0f) {
+			setCombatStance(false);
+		}
+
+		if (inCombatStance() && !(getAI().getCurrentTask() instanceof Attack)) {
+			combatTimer -= delta;
+		}
+
 		aiReactionTimer += delta;
 		if (aiReactionTimer >= aiTaskDelay) {
 			getAI().update(aiTaskDelay);
@@ -549,6 +568,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		setAnimationTimer(getAnimationTimer() + delta);
 		attackTimer += delta;
 
+		if (isAlive()) {
+			updateVitals(delta);
+		}
 		internalUpdate(delta);
 
 		try {
@@ -566,6 +588,51 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 	}
 
+
+	/**
+	 * Updates the vitals of this {@link Individual}
+	 */
+	private void updateVitals(float delta) {
+		heal(delta * getState().healthRegen);
+
+		decreaseHunger(hungerDrain());
+		decreaseThirst(thirstDrain());
+
+		if (isWalking()) {
+			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
+				increaseStamina(delta * getState().staminaRegen / 2f);
+			} else {
+				increaseStamina(delta * getState().staminaRegen);
+			}
+		} else {
+			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
+				decreaseStamina(staminaDrain());
+			} else {
+				increaseStamina(delta * getState().staminaRegen);
+			}
+		}
+
+		if (getState().hunger < 0.75f) {
+			addCondition(new Hunger(getId().getId()));
+		}
+
+		if (getState().thirst < 0.75f) {
+			addCondition(new Thirst(getId().getId()));
+		}
+
+		if (getState().stamina < 0.75f) {
+			addCondition(new Exhaustion(getId().getId()));
+		}
+	}
+
+	/** The amount of hunger drained, per update tick (1/60) of a second, max hunger is 1 */
+	protected abstract float hungerDrain();
+
+	/** The amount of thirst drained, per update tick (1/60) of a second, max thirst is 1 */
+	protected abstract float thirstDrain();
+
+	/** The amount of stamina drained, per update tick (1/60) of a second, max stamina is 1 */
+	protected abstract float staminaDrain();
 
 	/**
 	 * Performs the {@link Task} associated with the current frame of the animation of the current {@link Action}
@@ -895,6 +962,26 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
+	public void revive() {
+		if (dead) {
+			// TODO Revive
+			dead = false;
+		}
+	}
+
+
+	public boolean isAlive() {
+		return !dead;
+	}
+
+
+	/** Kills this {@link Individual} */
+	private void kill() {
+		// TODO Killing an individual
+		dead = true;
+	}
+
+
 	/**
 	 * @return true if a command is currently active
 	 */
@@ -922,8 +1009,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	public synchronized void damage(float amount) {
+		if (state.health == 0f) {
+			return;
+		}
+
 		if (state.health - amount <= 0f) {
 			state.health = 0f;
+			kill();
 		} else {
 			state.health = state.health - amount;
 		}
@@ -1180,6 +1272,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	public void setCombatStance(boolean combatStance) {
+		if (combatStance) {
+			combatTimer = 5f;
+		}
 		this.combatStance = combatStance;
 	}
 

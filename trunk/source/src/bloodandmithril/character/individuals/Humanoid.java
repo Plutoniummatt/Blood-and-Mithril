@@ -1,5 +1,9 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
@@ -29,8 +33,10 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 			}
 		);
 
-		actionFrames.put(Action.ATTACK_LEFT_UNARMED, attackUnarmed);
-		actionFrames.put(Action.ATTACK_RIGHT_UNARMED, attackUnarmed);
+		actionFrames.put(ATTACK_LEFT_UNARMED, attackUnarmed);
+		actionFrames.put(ATTACK_RIGHT_UNARMED, attackUnarmed);
+		actionFrames.put(ATTACK_LEFT_ONE_HANDED_WEAPON_STAB, attackUnarmed);
+		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB, attackUnarmed);
 	}
 
 	/**

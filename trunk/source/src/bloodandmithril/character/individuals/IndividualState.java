@@ -17,7 +17,8 @@ import com.badlogic.gdx.math.Vector2;
 public class IndividualState implements Serializable {
 	private static final long serialVersionUID = 3678630824613212498L;
 
-	public float health, maxHealth, healthRegen, normalHealthRegen, stamina, staminaRegen, normalStaminaRegen, hunger, thirst, mana, maxMana, manaRegen, normalManaRegen;
+	public float health, maxHealth, healthRegen, stamina, staminaRegen, hunger, thirst, mana, maxMana, manaRegen;
+	public final float defaultHealthRegen, defaultStaminaRegen, defaultManaRegen;
 	public Vector2 position;
 	public Vector2 velocity;
 	public Vector2 acceleration;
@@ -30,13 +31,17 @@ public class IndividualState implements Serializable {
 		this.health = maxHealth;
 		this.maxHealth = maxHealth;
 		this.healthRegen = healthRegen;
-		this.normalHealthRegen = healthRegen;
+
 		this.staminaRegen = staminaRegen;
-		this.normalStaminaRegen = staminaRegen;
+
 		this.mana = maxMana;
 		this.maxMana = maxMana;
 		this.manaRegen = manaRegen;
-		this.normalManaRegen = manaRegen;
+
+		this.defaultHealthRegen = healthRegen;
+		this.defaultStaminaRegen = staminaRegen;
+		this.defaultManaRegen = manaRegen;
+
 		this.hunger = 1f;
 		this.thirst = 1f;
 		this.stamina = 1f;
@@ -46,8 +51,8 @@ public class IndividualState implements Serializable {
 	 * Resets the regen values
 	 */
 	public void reset() {
-		this.healthRegen = normalHealthRegen;
-		this.staminaRegen = normalStaminaRegen;
-		this.manaRegen = normalManaRegen;
+		this.healthRegen = defaultHealthRegen;
+		this.staminaRegen = defaultStaminaRegen;
+		this.manaRegen = defaultManaRegen;
 	}
 }

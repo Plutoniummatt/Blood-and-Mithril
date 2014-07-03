@@ -20,15 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 import bloodandmithril.character.ai.implementations.ElfAI;
-import bloodandmithril.character.conditions.Exhaustion;
-import bloodandmithril.character.conditions.Hunger;
-import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.SerializableColor;
@@ -237,50 +233,6 @@ public class Elf extends Humanoid {
 
 
 	@Override
-	protected void internalUpdate(float delta) {
-		super.internalUpdate(delta);
-
-		if (ClientServerInterface.isServer()) {
-			updateVitals(delta);
-		}
-	}
-
-
-	private void updateVitals(float delta) {
-		heal(delta * getState().healthRegen);
-
-		decreaseHunger(0.000001f);
-		decreaseThirst(0.000003f);
-
-		if (isWalking()) {
-			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
-				increaseStamina(delta * getState().staminaRegen / 2f);
-			} else {
-				increaseStamina(delta * getState().staminaRegen);
-			}
-		} else {
-			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
-				decreaseStamina(0.0004f);
-			} else {
-				increaseStamina(delta * getState().staminaRegen);
-			}
-		}
-
-		if (getState().hunger < 0.75f) {
-			addCondition(new Hunger(getId().getId()));
-		}
-
-		if (getState().thirst < 0.75f) {
-			addCondition(new Thirst(getId().getId()));
-		}
-
-		if (getState().stamina < 0.75f) {
-			addCondition(new Exhaustion(getId().getId()));
-		}
-	}
-
-
-	@Override
 	protected void internalRender() {
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", hairColor);
@@ -382,5 +334,23 @@ public class Elf extends Humanoid {
 
 	@Override
 	protected void specificInternalRender() {
+	}
+
+
+	@Override
+	protected float hungerDrain() {
+		return 0.000001f;
+	}
+
+
+	@Override
+	protected float thirstDrain() {
+		return 0.000003f;
+	}
+
+
+	@Override
+	protected float staminaDrain() {
+		return 0.0004f;
 	}
 }

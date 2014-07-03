@@ -180,7 +180,6 @@ public abstract class GroundTravellingIndividual extends Individual {
 			case ATTACK_RIGHT_UNARMED:
 				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).a.animationDuration) {
 					setAnimationTimer(0f);
-					setCombatStance(true);
 					if (getCurrentAction().flipXAnimation()) {
 						setCurrentAction(STAND_LEFT_COMBAT);
 					} else {
