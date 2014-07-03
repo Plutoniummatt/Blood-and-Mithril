@@ -1,7 +1,9 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static com.google.common.collect.Maps.newHashMap;
@@ -26,8 +28,17 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 	static {
 		Map<Integer, ParameterizedTask<Individual>> attackUnarmed = newHashMap();
+		Map<Integer, ParameterizedTask<Individual>> attackOneHanded = newHashMap();
+		
 		attackUnarmed.put(
 			3,
+			individual -> {
+				individual.attack();
+			}
+		);
+		
+		attackOneHanded.put(
+			6,
 			individual -> {
 				individual.attack();
 			}
@@ -37,6 +48,8 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		actionFrames.put(ATTACK_RIGHT_UNARMED, attackUnarmed);
 		actionFrames.put(ATTACK_LEFT_ONE_HANDED_WEAPON_STAB, attackUnarmed);
 		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB, attackUnarmed);
+		actionFrames.put(ATTACK_LEFT_ONE_HANDED_WEAPON, attackOneHanded);
+		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON, attackOneHanded);
 	}
 
 	/**
@@ -126,7 +139,31 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					case 7: return new SpacialConfiguration(new Vector2(-10, 33f), 0f, false);
 				}
 			case ATTACK_LEFT_ONE_HANDED_WEAPON:
+				switch (frameIndex) {
+					case 0: return new SpacialConfiguration(new Vector2(19, 48f), 90, false);
+					case 1: return new SpacialConfiguration(new Vector2(22, 51f), 80f, false);
+					case 2: return new SpacialConfiguration(new Vector2(27, 63f), -180f, true);
+					case 3: return new SpacialConfiguration(new Vector2(27, 63f), -180f, true);
+					case 4: return new SpacialConfiguration(new Vector2(27, 63f), -180f, true);
+					case 5: return new SpacialConfiguration(new Vector2(27, 63f), -180f, true);
+					case 6: return new SpacialConfiguration(new Vector2(-27, 44f), 7f, true);
+					case 7: return new SpacialConfiguration(new Vector2(-27, 44f), 7f, true);
+					case 8: return new SpacialConfiguration(new Vector2(-27, 44f), 7f, true);
+					case 9: return new SpacialConfiguration(new Vector2(-27, 44f), 7f, true);
+				}
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
+				switch (frameIndex) {
+					case 0: return new SpacialConfiguration(new Vector2(-19, 48f), -90f, true);
+					case 1: return new SpacialConfiguration(new Vector2(-22, 51f), -80f, true);
+					case 2: return new SpacialConfiguration(new Vector2(-27, 63f), 180f, false);
+					case 3: return new SpacialConfiguration(new Vector2(-27, 63f), 180f, false);
+					case 4: return new SpacialConfiguration(new Vector2(-27, 63f), 180f, false);
+					case 5: return new SpacialConfiguration(new Vector2(-27, 63f), 180f, false);
+					case 6: return new SpacialConfiguration(new Vector2(27, 44f), -7f, false);
+					case 7: return new SpacialConfiguration(new Vector2(27, 44f), -7f, false);
+					case 8: return new SpacialConfiguration(new Vector2(27, 44f), -7f, false);
+					case 9: return new SpacialConfiguration(new Vector2(27, 44f), -7f, false);
+				}
 			case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
 				switch (frameIndex) {
 					case 0: return new SpacialConfiguration(new Vector2(19, 45f), 40f, true);
