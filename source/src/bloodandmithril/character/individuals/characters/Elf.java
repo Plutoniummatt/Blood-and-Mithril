@@ -129,7 +129,7 @@ public class Elf extends Humanoid {
 				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1280, 560, 64, 112, 6, 0.07f, Animation.NORMAL), Shaders.pass),			// FRONT LEG
 				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1280, 336, 64, 112, 6, 0.07f, Animation.NORMAL), Shaders.pass)			// FRONT ARM
 			);
-			
+
 			ArrayList<WrapperForTwo<Animation, ShaderProgram>> slashSequence = newArrayList(
 				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1664, 112, 64, 112, 10, 0.07f, Animation.NORMAL), Shaders.replaceColor),// HEAD
 				new WrapperForTwo<Animation, ShaderProgram>(AnimationHelper.animation(Domain.individualTexture, 1664, 0,   64, 112, 10, 0.07f, Animation.NORMAL), Shaders.filter),		// HAIR
@@ -199,12 +199,12 @@ public class Elf extends Humanoid {
 				ATTACK_LEFT_ONE_HANDED_WEAPON_STAB,
 				stabSequence
 			);
-			
+
 			animationMap.put(
 				ATTACK_RIGHT_ONE_HANDED_WEAPON,
 				slashSequence
 			);
-			
+
 			animationMap.put(
 				ATTACK_LEFT_ONE_HANDED_WEAPON,
 				slashSequence
@@ -255,14 +255,14 @@ public class Elf extends Humanoid {
 
 
 	@Override
-	protected void internalRender() {
+	public void render() {
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", hairColor);
 
 		Shaders.replaceColor.begin();
 		Shaders.replaceColor.setUniformf("toReplace", Color.RED);
 		Shaders.replaceColor.setUniformf("color", eyeColor);
-		super.internalRender();
+		super.render();
 	}
 
 
@@ -351,11 +351,6 @@ public class Elf extends Humanoid {
 	@Override
 	protected float getDefaultAttackPeriod() {
 		return 0.8f;
-	}
-
-
-	@Override
-	protected void specificInternalRender() {
 	}
 
 

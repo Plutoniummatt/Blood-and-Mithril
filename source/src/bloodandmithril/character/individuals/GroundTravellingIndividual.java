@@ -18,26 +18,19 @@ import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGH
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.ComparisonUtil.obj;
 
 import java.util.List;
 import java.util.Map;
 
 import bloodandmithril.character.ai.task.Idle;
-import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.equipment.Equipable;
-import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.ui.KeyMappings;
-import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 /**
@@ -191,66 +184,6 @@ public abstract class GroundTravellingIndividual extends Individual {
 				return;
 		}
 	}
-
-
-	@Override
-	protected void internalRender() {
-		int animationIndex = 0;
-
-		// Draw the body, position is centre bottom of the frame
-		List<WrapperForTwo<Animation, ShaderProgram>> currentAnimations = getCurrentAnimation();
-		if (currentAnimations == null) {
-			return;
-		}
-
-		spriteBatch.begin();
-		for (WrapperForTwo<Animation, ShaderProgram> animation : currentAnimations) {
-			spriteBatch.setShader(animation.b);
-			animation.b.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-
-			// Render equipped items
-			for (Item equipped : getEquipped().keySet()) {
-				if (((Equipable)equipped).getRenderingIndex(this) != animationIndex) {
-					continue;
-				}
-
-				Equipable toRender = (Equipable) equipped;
-				if (equipped instanceof OneHandedMeleeWeapon) {
-					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
-					if (config != null) {
-						toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
-					}
-				}
-			}
-
-			TextureRegion keyFrame = animation.a.getKeyFrame(getAnimationTimer(), true);
-			spriteBatch.draw(
-				keyFrame.getTexture(),
-				getState().position.x - keyFrame.getRegionWidth()/2,
-				getState().position.y,
-				keyFrame.getRegionWidth(),
-				keyFrame.getRegionHeight(),
-				keyFrame.getRegionX(),
-				keyFrame.getRegionY(),
-				keyFrame.getRegionWidth(),
-				keyFrame.getRegionHeight(),
-				getCurrentAction().flipXAnimation(),
-				false
-			);
-
-			animationIndex++;
-		}
-		spriteBatch.end();
-
-		specificInternalRender();
-		spriteBatch.flush();
-	}
-
-
-	/**
-	 * Grounded individual implementation specific render method
-	 */
-	protected abstract void specificInternalRender();
 
 
 	/**

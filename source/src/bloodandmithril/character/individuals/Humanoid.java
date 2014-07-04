@@ -29,14 +29,14 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 	static {
 		Map<Integer, ParameterizedTask<Individual>> attackUnarmed = newHashMap();
 		Map<Integer, ParameterizedTask<Individual>> attackOneHanded = newHashMap();
-		
+
 		attackUnarmed.put(
 			3,
 			individual -> {
 				individual.attack();
 			}
 		);
-		
+
 		attackOneHanded.put(
 			6,
 			individual -> {
