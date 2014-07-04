@@ -9,6 +9,9 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
+import static bloodandmithril.world.Domain.individualTexture;
+import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
+import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.PI;
@@ -34,6 +37,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
+import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
@@ -61,6 +65,7 @@ import bloodandmithril.world.World;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -432,7 +437,62 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Renders the character and any other sprites */
 	public void render() {
-		internalRender();
+		int animationIndex = 0;
+
+		// Draw the body, position is centre bottom of the frame
+		List<WrapperForTwo<Animation, ShaderProgram>> currentAnimations = getCurrentAnimation();
+		if (currentAnimations == null) {
+			return;
+		}
+
+		spriteBatch.begin();
+		for (WrapperForTwo<Animation, ShaderProgram> animation : currentAnimations) {
+
+			// Render equipped items
+			for (Item equipped : getEquipped().keySet()) {
+				if (((Equipable)equipped).getRenderingIndex(this) != animationIndex) {
+					continue;
+				}
+
+				Equipable toRender = (Equipable) equipped;
+				if (equipped instanceof OneHandedMeleeWeapon) {
+					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
+					if (config != null) {
+						spriteBatch.end();
+						individualTexture.setFilter(Linear, Linear);
+						spriteBatch.begin();
+						spriteBatch.setShader(Shaders.pass);
+						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+						toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
+						spriteBatch.end();
+						individualTexture.setFilter(Nearest, Nearest);
+						spriteBatch.begin();
+					}
+				}
+			}
+
+			spriteBatch.setShader(animation.b);
+			animation.b.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+
+			TextureRegion keyFrame = animation.a.getKeyFrame(getAnimationTimer(), true);
+			spriteBatch.draw(
+				keyFrame.getTexture(),
+				getState().position.x - keyFrame.getRegionWidth()/2,
+				getState().position.y,
+				keyFrame.getRegionWidth(),
+				keyFrame.getRegionHeight(),
+				keyFrame.getRegionX(),
+				keyFrame.getRegionY(),
+				keyFrame.getRegionWidth(),
+				keyFrame.getRegionHeight(),
+				getCurrentAction().flipXAnimation(),
+				false
+			);
+
+			animationIndex++;
+		}
+		spriteBatch.end();
+		spriteBatch.flush();
 	}
 
 
@@ -1108,10 +1168,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public synchronized void changeHealthRegen(float newValue) {
 		state.healthRegen = newValue;
 	}
-
-
-	/** Renders this character */
-	protected abstract void internalRender();
 
 
 	/** Updates this character */

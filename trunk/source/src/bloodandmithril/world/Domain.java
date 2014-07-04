@@ -19,6 +19,7 @@ import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
+import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -253,7 +254,7 @@ public class Domain {
 
 		fBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
-		Domain.individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Domain.individualTexture.setFilter(Linear, Linear);
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.pass);
 		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
@@ -266,7 +267,7 @@ public class Domain {
 			item.render();
 		}
 		spriteBatch.end();
-		Domain.individualTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		Domain.individualTexture.setFilter(Nearest, Nearest);
 		IndividualPlatformFilteringRenderer.renderIndividuals();
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
 
