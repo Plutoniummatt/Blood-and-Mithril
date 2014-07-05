@@ -103,7 +103,7 @@ public class Domain {
 	private long topographyUpdateTimer;
 
 	private static Thread fluidThread;
-
+	
 	/**
 	 * Constructor
 	 */

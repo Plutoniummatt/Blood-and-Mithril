@@ -10,6 +10,7 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
@@ -34,6 +35,11 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 			3,
 			individual -> {
 				individual.attack();
+				SoundService.swordSlash.play(
+					SoundService.getVolumne(individual.getState().position),
+					1f,
+					SoundService.getPan(individual.getState().position)
+				);
 			}
 		);
 
@@ -41,6 +47,11 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 			6,
 			individual -> {
 				individual.attack();
+				SoundService.swordSlash.play(
+					SoundService.getVolumne(individual.getState().position),
+					1f,
+					SoundService.getPan(individual.getState().position)
+				);
 			}
 		);
 
@@ -166,21 +177,25 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				}
 			case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
 				switch (frameIndex) {
-					case 0: return new SpacialConfiguration(new Vector2(19, 45f), 40f, true);
-					case 1: return new SpacialConfiguration(new Vector2(17, 48f), 20f, true);
-					case 2: return new SpacialConfiguration(new Vector2(2, 45f), 0f, true);
-					case 3: return new SpacialConfiguration(new Vector2(-24, 48f), 0f, true);
-					case 4: return new SpacialConfiguration(new Vector2(-28, 48f), 0f, true);
-					case 5: return new SpacialConfiguration(new Vector2(-26, 48f), 0f, true);
+					case 0: return new SpacialConfiguration(new Vector2(19, 45f), -40f, true);
+					case 1: return new SpacialConfiguration(new Vector2(17, 48f), -20f, true);
+					case 2: return new SpacialConfiguration(new Vector2(17, 48f), -20f, true);
+					case 3: return new SpacialConfiguration(new Vector2(17, 48f), -20f, true);
+					case 4: return new SpacialConfiguration(new Vector2(-28, 48f), 0f, true);   
+					case 5: return new SpacialConfiguration(new Vector2(-28, 48f), 0f, true);   
+					case 6: return new SpacialConfiguration(new Vector2(-28, 48f), 0f, true);   
+					case 7: return new SpacialConfiguration(new Vector2(-28, 48f), 0f, true);   
 				}
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
 				switch (frameIndex) {
 					case 0: return new SpacialConfiguration(new Vector2(-19, 45f), -40f, false);
 					case 1: return new SpacialConfiguration(new Vector2(-17, 48f), -20f, false);
-					case 2: return new SpacialConfiguration(new Vector2(-2, 45f), 0f, false);
-					case 3: return new SpacialConfiguration(new Vector2(24, 48f), 0f, false);
+					case 2: return new SpacialConfiguration(new Vector2(-17, 48f), -20f, false);
+					case 3: return new SpacialConfiguration(new Vector2(-17, 48f), -20f, false);
 					case 4: return new SpacialConfiguration(new Vector2(28, 48f), 0f, false);
-					case 5: return new SpacialConfiguration(new Vector2(26, 48f), 0f, false);
+					case 5: return new SpacialConfiguration(new Vector2(28, 48f), 0f, false);
+					case 6: return new SpacialConfiguration(new Vector2(28, 48f), 0f, false);
+					case 7: return new SpacialConfiguration(new Vector2(28, 48f), 0f, false);
 				}
 
 			default:

@@ -18,6 +18,10 @@ public class SoundService {
 	public static Music mainMenu = Gdx.audio.newMusic(Gdx.files.internal("data/music/mainMenu.mp3"));
 
 	public static Sound pickAxe = Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav"));
+	
+	public static Sound swordSlash = Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav"));
+	
+	public static Sound femaleHit = Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav"));
 
 	private static Music current, next;
 
@@ -32,9 +36,9 @@ public class SoundService {
 		float panValue = (location.x - BloodAndMithrilClient.cam.position.x) / (BloodAndMithrilClient.WIDTH / 2);
 
 		if (panValue > 0f) {
-			return Math.min(panValue, 1f);
+			return Math.min(panValue, 0.99f);
 		} else {
-			return Math.max(panValue, -1f);
+			return Math.max(panValue, -0.99f);
 		}
 	}
 

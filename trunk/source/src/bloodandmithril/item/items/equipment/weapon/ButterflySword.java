@@ -12,8 +12,10 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
@@ -173,5 +175,11 @@ public class ButterflySword<T extends Metal> extends OneHandedMeleeWeapon<T> imp
 	@Override
 	public boolean stab() {
 		return false;
+	}
+
+
+	@Override
+	public WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(Individual individual) {
+		return null;
 	}
 }
