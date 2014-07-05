@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.ai.task.DiscardLiquid;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Consumable;
@@ -23,6 +24,7 @@ import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
+import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -371,11 +373,17 @@ public class InventoryWindow extends Window implements Refreshable {
 			Color.WHITE,
 			null
 		) :
-
+			
 		new MenuItem(
 			"Equip",
 			() -> {
 				if (ClientServerInterface.isServer()) {
+					if (item instanceof Weapon && host instanceof Individual) {
+						if (((Individual) host).attacking()) {
+							Action action = ((Individual) host).getCurrentAction();
+							((Individual) host).setCurrentAction(action.flipXAnimation() ? Action.STAND_LEFT : Action.STAND_RIGHT);
+						}
+					}
 					host.equip((Equipable)item);
 				} else {
 					ClientServerInterface.SendRequest.sendEquipOrUnequipItemRequest(true, (Equipable)item, ((Individual)host).getId().getId());

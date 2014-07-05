@@ -24,7 +24,8 @@ public class IndividualLoader {
 	@SuppressWarnings("unchecked")
 	public static void loadAll() {
 		try {
-			setIndividuals((ConcurrentHashMap<Integer, Individual>) decode(files.local(savePath + "/world/individuals.txt")));
+			ConcurrentHashMap<Integer, Individual> decoded = (ConcurrentHashMap<Integer, Individual>) decode(files.local(savePath + "/world/individuals.txt"));
+			setIndividuals(decoded);
 		} catch (Exception e) {
 			loaderDebug("Failed to load individuals", LogLevel.WARN);
 		}

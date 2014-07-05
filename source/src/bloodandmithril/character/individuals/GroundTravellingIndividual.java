@@ -1,15 +1,5 @@
 package bloodandmithril.character.individuals;
 
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_SPEAR;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_SPEAR;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
@@ -106,22 +96,6 @@ public abstract class GroundTravellingIndividual extends Individual {
 	}
 
 
-	private boolean attacking() {
-		return obj(getCurrentAction()).oneOf(
-			ATTACK_LEFT_ONE_HANDED_WEAPON_STAB,
-			ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB,
-			ATTACK_LEFT_ONE_HANDED_WEAPON,
-			ATTACK_RIGHT_ONE_HANDED_WEAPON,
-			ATTACK_LEFT_SPEAR,
-			ATTACK_RIGHT_SPEAR,
-			ATTACK_LEFT_TWO_HANDED_WEAPON,
-			ATTACK_RIGHT_TWO_HANDED_WEAPON,
-			ATTACK_LEFT_UNARMED,
-			ATTACK_RIGHT_UNARMED
-		);
-	}
-
-
 	@Override
 	protected void respondToCommands() {
 		//Horizontal movement
@@ -179,7 +153,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 						setCurrentAction(STAND_RIGHT_COMBAT);
 					}
 				}
-
+				
 			default:
 				return;
 		}

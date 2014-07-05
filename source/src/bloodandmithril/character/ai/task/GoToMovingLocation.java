@@ -30,7 +30,7 @@ public class GoToMovingLocation extends AITask {
 		this.destination = destination;
 		this.tolerance = tolerance;
 
-		currentGoToLocation = new GoToLocation(
+		this.currentGoToLocation = new GoToLocation(
 			Domain.getIndividuals().get(hostId.getId()),
 			new WayPoint(destination),
 			false,
@@ -48,7 +48,7 @@ public class GoToMovingLocation extends AITask {
 		this.condition = condition;
 		this.tolerance = -1f;
 
-		currentGoToLocation = new GoToLocation(
+		this.currentGoToLocation = new GoToLocation(
 			Domain.getIndividuals().get(hostId.getId()),
 			new WayPoint(destination),
 			false,
@@ -82,9 +82,9 @@ public class GoToMovingLocation extends AITask {
 
 	@Override
 	public void execute(float delta) {
-		currentGoToLocation.execute(delta);
-		if (currentGoToLocation.isComplete()) {
-			currentGoToLocation = new GoToLocation(
+		getCurrentGoToLocation().execute(delta);
+		if (getCurrentGoToLocation().isComplete()) {
+			this.currentGoToLocation = new GoToLocation(
 				Domain.getIndividuals().get(hostId.getId()),
 				new WayPoint(destination),
 				false,
@@ -92,5 +92,9 @@ public class GoToMovingLocation extends AITask {
 				true
 			);
 		}
+	}
+
+	public GoToLocation getCurrentGoToLocation() {
+		return currentGoToLocation;
 	}
 }

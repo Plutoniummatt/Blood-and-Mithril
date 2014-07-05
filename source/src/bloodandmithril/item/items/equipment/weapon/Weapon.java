@@ -1,9 +1,14 @@
 package bloodandmithril.item.items.equipment.weapon;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.math.Vector2;
+
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 
 /**
  * A Weapon
@@ -61,6 +66,11 @@ public abstract class Weapon<T extends Material> extends Equipable implements Af
 	 */
 	public abstract Action getAttackAction(boolean right);
 
+	/**
+	 * @return the special effects animation when attacking
+	 */
+	public abstract WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(Individual individual);
+	
 	/**
 	 * @return The {@link Material} this {@link Weapon} is made from
 	 */

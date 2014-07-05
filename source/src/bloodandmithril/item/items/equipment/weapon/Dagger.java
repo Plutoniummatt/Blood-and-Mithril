@@ -12,8 +12,10 @@ import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
@@ -172,12 +174,18 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	@Override
 	public float getBaseDamage() {
-		return 2.5f;
+		return 0f;
 	}
 
 
 	@Override
 	public boolean stab() {
 		return true;
+	}
+
+
+	@Override
+	public WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(Individual individual) {
+		return null;
 	}
 }

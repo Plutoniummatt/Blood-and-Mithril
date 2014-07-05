@@ -1,19 +1,26 @@
 package bloodandmithril.item.items.equipment.weapon;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
+import static bloodandmithril.world.Domain.individualTexture;
+import static com.badlogic.gdx.graphics.g2d.Animation.NORMAL;
 
 import java.util.Map;
 
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.material.metal.Metal;
+import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
@@ -22,6 +29,11 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	private static final long serialVersionUID = -8932319773500235186L;
 
 	public static TextureRegion iron;
+	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMap = Maps.newHashMap();
+	
+	static {
+		specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
+	}
 
 	/**
 	 * Constructor
@@ -172,12 +184,24 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	public float getBaseDamage() {
-		return 8f;
+		return 0f;
 	}
 
 
 	@Override
 	public boolean stab() {
 		return false;
+	}
+
+
+	@Override
+	public WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(Individual individual) {
+		switch (individual.getCurrentAction()) {
+			case ATTACK_LEFT_ONE_HANDED_WEAPON:
+			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
+				return specialEffectsMap.get(individual.getClass());
+				
+			default: return null;
+		}
 	}
 }

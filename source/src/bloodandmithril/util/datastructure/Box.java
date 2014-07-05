@@ -1,5 +1,7 @@
 package bloodandmithril.util.datastructure;
 
+import static bloodandmithril.ui.UserInterface.shapeRenderer;
+
 import java.io.Serializable;
 
 import com.badlogic.gdx.math.Vector2;
@@ -42,13 +44,13 @@ public class Box implements Serializable {
 	public boolean overlapsWith(Box another) {
 		float left = position.x - width / 2;
 		float right = position.x + width / 2;
-		float top = position.x + height / 2;
-		float bottom = position.x - height / 2;
+		float top = position.y + height / 2;
+		float bottom = position.y - height / 2;
 
 		float otherLeft = another.position.x - width / 2;
 		float otherRight = another.position.x + width / 2;
-		float otherTop = another.position.x + height / 2;
-		float otherBottom = another.position.x - height / 2;
+		float otherTop = another.position.y + height / 2;
+		float otherBottom = another.position.y - height / 2;
 
 	    if (right < otherLeft) return false; // a is left of b
 	    if (left > otherRight) return false; // a is right of b
@@ -56,5 +58,15 @@ public class Box implements Serializable {
 	    if (bottom > otherTop) return false; // a is below b
 
 	    return true; // boxes overlap
+	}
+	
+	
+	public void render() {
+		shapeRenderer.rect(
+			position.x - width / 2,
+			position.y - height / 2,
+			width,
+			height
+		);
 	}
 }

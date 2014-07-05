@@ -5,7 +5,9 @@ import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static java.lang.Math.abs;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.world.Domain;
@@ -192,6 +194,15 @@ public interface Kinematics {
 		if (tile.isPlatformTile) {
 			if (current instanceof GoToLocation) {
 				return !((GoToLocation)current).isPartOfPath(new Vector2(x, y + TILE_SIZE));
+			} else if (current instanceof CompositeAITask) {
+				AITask subTask = ((CompositeAITask) current).getCurrentTask();
+				if (subTask instanceof GoToLocation) {
+					return !((GoToLocation)subTask).isPartOfPath(new Vector2(x, y + TILE_SIZE));
+				} else if (subTask instanceof GoToMovingLocation) {
+					return !((GoToMovingLocation)subTask).getCurrentGoToLocation().isPartOfPath(new Vector2(x, y + TILE_SIZE));
+				} else {
+					return true;
+				}
 			} else {
 				return true;
 			}

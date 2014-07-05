@@ -1,5 +1,15 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_SPEAR;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_SPEAR;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
@@ -9,9 +19,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
-import static bloodandmithril.world.Domain.individualTexture;
-import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
-import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
+import static bloodandmithril.util.ComparisonUtil.obj;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.PI;
@@ -305,20 +313,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			// TODO Attack environmental objects... maybe?...Could be inefficient (must iterate through potentially lots of props), unless positional indexing is implemented....worth it?????
 		} else {
 			for (Integer individualId : getIndividualsToBeAttacked()) {
-				Box attackingBox = getAttackingHitBox();
+				Box attackingBox = getInteractionBox();
 				Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
 					return equipped instanceof Weapon;
 				});
-
-				if (weapon.isPresent()) {
-					if (weapon.get() instanceof MeleeWeapon) {
-						attackingBox = ((MeleeWeapon) weapon.get()).getActionFrameHitBox(this);
-					}
-				}
-
-				if (attackingBox == null) {
-					attackingBox = getDefaultAttackingHitBox();
-				};
 
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
@@ -328,6 +326,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					} else {
 						toBeAttacked.damage(getUnarmedDamage());
 					}
+					toBeAttacked.moan();
 
 					// Knock back
 					Vector2 knockbackVector = toBeAttacked.getState().position.cpy().sub(getState().position.cpy()).nor().mul(100f);
@@ -449,27 +448,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		for (WrapperForTwo<Animation, ShaderProgram> animation : currentAnimations) {
 
 			// Render equipped items
-			for (Item equipped : getEquipped().keySet()) {
-				if (((Equipable)equipped).getRenderingIndex(this) != animationIndex) {
-					continue;
-				}
-
-				Equipable toRender = (Equipable) equipped;
-				if (equipped instanceof OneHandedMeleeWeapon) {
-					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
-					if (config != null) {
-						spriteBatch.end();
-						individualTexture.setFilter(Linear, Linear);
-						spriteBatch.begin();
-						spriteBatch.setShader(Shaders.pass);
-						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-						toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
-						spriteBatch.end();
-						individualTexture.setFilter(Nearest, Nearest);
-						spriteBatch.begin();
-					}
-				}
-			}
+			renderEquipment(animationIndex);
 
 			spriteBatch.setShader(animation.b);
 			animation.b.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
@@ -493,6 +472,46 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 		spriteBatch.end();
 		spriteBatch.flush();
+	}
+
+
+	private void renderEquipment(int animationIndex) {
+		for (Item equipped : getEquipped().keySet()) {
+			if (((Equipable)equipped).getRenderingIndex(this) != animationIndex) {
+				continue;
+			}
+
+			Equipable toRender = (Equipable) equipped;
+			spriteBatch.setShader(Shaders.pass);
+			if (equipped instanceof Weapon) {
+				@SuppressWarnings({ "rawtypes", "unchecked" })
+				WrapperForTwo<Animation, Vector2> attackAnimationEffects = ((Weapon) equipped).getAttackAnimationEffects(this);
+				if (attackAnimationEffects != null) {
+					TextureRegion keyFrame = attackAnimationEffects.a.getKeyFrame(getAnimationTimer());
+					spriteBatch.draw(
+						keyFrame.getTexture(),
+						getState().position.x - keyFrame.getRegionWidth()/2 + (getCurrentAction().flipXAnimation() ? - attackAnimationEffects.b.x : attackAnimationEffects.b.x),
+						getState().position.y  + attackAnimationEffects.b.y,
+						keyFrame.getRegionWidth(),
+						keyFrame.getRegionHeight(),
+						keyFrame.getRegionX(),
+						keyFrame.getRegionY(),
+						keyFrame.getRegionWidth(),
+						keyFrame.getRegionHeight(),
+						getCurrentAction().flipXAnimation(),
+						false
+					);
+				}
+				
+				if (equipped instanceof OneHandedMeleeWeapon) {
+					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
+					if (config != null) {
+						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+						toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
+					}
+				}
+			}
+		}
 	}
 
 
@@ -1080,6 +1099,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			state.health = state.health - amount;
 		}
 	}
+	
+	
+	/**
+	 * Play a moaning sound, indicating being hurt
+	 */
+	public abstract void moan();
 
 
 	public synchronized void heal(float amount) {
@@ -1382,5 +1407,21 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	public Box getHitBox() {
 		return hitBox;
+	}
+	
+	
+	public boolean attacking() {
+		return obj(getCurrentAction()).oneOf(
+			ATTACK_LEFT_ONE_HANDED_WEAPON_STAB,
+			ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB,
+			ATTACK_LEFT_ONE_HANDED_WEAPON,
+			ATTACK_RIGHT_ONE_HANDED_WEAPON,
+			ATTACK_LEFT_SPEAR,
+			ATTACK_RIGHT_SPEAR,
+			ATTACK_LEFT_TWO_HANDED_WEAPON,
+			ATTACK_RIGHT_TWO_HANDED_WEAPON,
+			ATTACK_LEFT_UNARMED,
+			ATTACK_RIGHT_UNARMED
+		);
 	}
 }
