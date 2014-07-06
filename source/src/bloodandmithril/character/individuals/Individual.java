@@ -71,7 +71,9 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -320,16 +322,19 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
+					float knockbackStrength = 50f;
+					
 					// Damage
 					if (weapon.isPresent()) {
 						toBeAttacked.damage(((Weapon) weapon.get()).getBaseDamage());
+						knockbackStrength = ((Weapon) weapon.get()).getKnockbackStrength();
 					} else {
 						toBeAttacked.damage(getUnarmedDamage());
 					}
 					toBeAttacked.moan();
 
 					// Knock back
-					Vector2 knockbackVector = toBeAttacked.getState().position.cpy().sub(getState().position.cpy()).nor().mul(100f);
+					Vector2 knockbackVector = toBeAttacked.getState().position.cpy().sub(getState().position.cpy()).nor().mul(knockbackStrength);
 					toBeAttacked.getState().velocity.add(knockbackVector);
 				}
 			}
@@ -470,6 +475,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 			animationIndex++;
 		}
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 		spriteBatch.end();
 		spriteBatch.flush();
 	}
@@ -486,6 +492,15 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			if (equipped instanceof Weapon) {
 				@SuppressWarnings({ "rawtypes", "unchecked" })
 				WrapperForTwo<Animation, Vector2> attackAnimationEffects = ((Weapon) equipped).getAttackAnimationEffects(this);
+				
+				if (equipped instanceof OneHandedMeleeWeapon) {
+					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
+					if (config != null) {
+						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+						toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
+					}
+				}
+				
 				if (attackAnimationEffects != null) {
 					TextureRegion keyFrame = attackAnimationEffects.a.getKeyFrame(getAnimationTimer());
 					spriteBatch.draw(
@@ -501,14 +516,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 						getCurrentAction().flipXAnimation(),
 						false
 					);
-				}
-				
-				if (equipped instanceof OneHandedMeleeWeapon) {
-					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
-					if (config != null) {
-						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-						toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
-					}
 				}
 			}
 		}
@@ -1197,7 +1204,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Updates this character */
 	protected abstract void internalUpdate(float delta);
-
+	
+	public abstract float getWalkSpeed();
+	
+	public abstract float getRunSpeed();
 
 	/** Responds to commands */
 	protected abstract void respondToCommands();

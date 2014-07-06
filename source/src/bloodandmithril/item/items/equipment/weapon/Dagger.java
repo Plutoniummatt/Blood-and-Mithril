@@ -1,15 +1,20 @@
 package bloodandmithril.item.items.equipment.weapon;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
+import static bloodandmithril.world.Domain.individualTexture;
+import static com.badlogic.gdx.graphics.g2d.Animation.NORMAL;
 
 import java.util.Map;
 
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.material.metal.Metal;
+import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
@@ -24,6 +29,12 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 	private static final long serialVersionUID = -8932319773500235186L;
 
 	public static TextureRegion iron;
+	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMap = Maps.newHashMap();
+	
+	static {
+		specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(10f, 34f)));
+	}
+
 
 	/**
 	 * Constructor
@@ -186,6 +197,19 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	@Override
 	public WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(Individual individual) {
-		return null;
+		switch (individual.getCurrentAction()) {
+		case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
+		case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
+			return specialEffectsMap.get(individual.getClass());
+			
+		default: 
+			return null;
+	}
+	}
+
+
+	@Override
+	public float getKnockbackStrength() {
+		return 50;
 	}
 }

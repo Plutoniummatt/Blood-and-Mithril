@@ -82,9 +82,13 @@ public interface Kinematics {
 			if ((individual.isCommandActive(KeyMappings.moveRight) && state.velocity.x < 0f) ||
 				(individual.isCommandActive(KeyMappings.moveLeft) && state.velocity.x > 0f) ||
 				(!individual.isCommandActive(KeyMappings.moveLeft) && !individual.isCommandActive(KeyMappings.moveRight))) {
-				state.velocity.x = state.velocity.x * 0.3f;
+				state.velocity.x = state.velocity.x * 0.4f;
 			}
 			state.acceleration.x = 0f;
+		}
+		
+		if (abs(individual.getState().velocity.x) > individual.getRunSpeed() * 1.5f) {
+			state.velocity.x = state.velocity.x * 0.65f;
 		}
 
 		//Wall check routine, only perform this if we're moving

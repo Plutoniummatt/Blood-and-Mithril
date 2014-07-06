@@ -182,4 +182,10 @@ public class ButterflySword<T extends Metal> extends OneHandedMeleeWeapon<T> imp
 	public WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(Individual individual) {
 		return null;
 	}
+
+
+	@Override
+	public float getKnockbackStrength() {
+		return 300;
+	}
 }

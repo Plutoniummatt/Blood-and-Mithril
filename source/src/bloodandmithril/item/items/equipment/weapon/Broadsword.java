@@ -201,7 +201,14 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
 				return specialEffectsMap.get(individual.getClass());
 				
-			default: return null;
+			default: 
+				return null;
 		}
+	}
+
+
+	@Override
+	public float getKnockbackStrength() {
+		return 350;
 	}
 }

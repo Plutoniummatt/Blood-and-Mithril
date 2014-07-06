@@ -1,14 +1,14 @@
 package bloodandmithril.item.items.equipment.weapon;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.math.Vector2;
-
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.util.datastructure.WrapperForTwo;
+
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * A Weapon
@@ -65,6 +65,11 @@ public abstract class Weapon<T extends Material> extends Equipable implements Af
 	 * @return the {@link Action} that this {@link Weapon} causes.
 	 */
 	public abstract Action getAttackAction(boolean right);
+	
+	/**
+	 * @return the knock back strength
+	 */
+	public abstract float getKnockbackStrength();
 
 	/**
 	 * @return the special effects animation when attacking
