@@ -1,7 +1,7 @@
 package bloodandmithril.prop.construction.craftingstation;
 
+import static bloodandmithril.item.items.equipment.weapon.Broadsword.broadSword;
 import static bloodandmithril.item.items.equipment.weapon.Dagger.dagger;
-import static bloodandmithril.item.items.equipment.weapon.ButterflySword.butterflySword;
 
 import java.util.Map;
 
@@ -24,8 +24,8 @@ public class Anvil extends CraftingStation {
 	static {
 		craftables.put(dagger(0, Iron.class), 1);
 		craftables.put(dagger(0, Steel.class), 1);
-		craftables.put(butterflySword(0, Iron.class), 1);
-		craftables.put(butterflySword(0, Steel.class), 1);
+		craftables.put(broadSword(0, Iron.class), 1);
+		craftables.put(broadSword(0, Steel.class), 1);
 	}
 
 	private static final long serialVersionUID = -7172034409582382182L;

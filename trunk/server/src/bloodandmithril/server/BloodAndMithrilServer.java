@@ -1,7 +1,6 @@
 package bloodandmithril.server;
 
 import static bloodandmithril.item.items.equipment.weapon.Dagger.dagger;
-import static bloodandmithril.item.items.equipment.weapon.ButterflySword.butterflySword;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -386,7 +385,6 @@ public class BloodAndMithrilServer {
 				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 					elf.giveItem(new Brick());
 				}
-				elf.giveItem(butterflySword(100, Steel.class));
 				elf.giveItem(dagger(100, Iron.class));
 
 				Domain.getIndividuals().put(elf.getId().getId(), elf);

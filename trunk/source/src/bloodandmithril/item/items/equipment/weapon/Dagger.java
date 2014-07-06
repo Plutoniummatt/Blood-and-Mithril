@@ -128,7 +128,7 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> map = Maps.newHashMap();
 
-		map.put(Ingot.ingot(getMaterial()), 7);
+		map.put(Ingot.ingot(getMaterial()), 3);
 
 		return map;
 	}

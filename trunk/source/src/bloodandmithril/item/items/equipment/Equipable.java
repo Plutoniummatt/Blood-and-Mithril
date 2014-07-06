@@ -4,10 +4,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
-import bloodandmithril.item.items.equipment.weapon.ButterflySword;
-import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -21,7 +18,6 @@ public abstract class Equipable extends Item implements Affixed {
 	public final EquipmentSlot slot;
 
 	public static void setup() {
-		ButterflySword.texture = new TextureRegion(Domain.individualTexture, 0, 10, 47, 12);
 	}
 
 
