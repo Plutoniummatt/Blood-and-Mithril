@@ -18,6 +18,7 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -111,6 +112,10 @@ public class SelectedIndividualsControlWindow extends Window {
 
 	@Override
 	public boolean keyPressed(int keyCode) {
+		if (keyCode == Keys.ESCAPE) {
+			return false;
+		}
+		
 		if (super.keyPressed(keyCode)) {
 			return true;
 		}
