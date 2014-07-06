@@ -24,7 +24,6 @@ import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.GlassBottle;
 import bloodandmithril.item.items.container.WoodenBucket;
-import bloodandmithril.item.items.equipment.weapon.ButterflySword;
 import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.DeathCap;
@@ -257,15 +256,6 @@ public class DevWindow extends Window {
 				Dagger.dagger(10, Steel.class),
 				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
 				new Vector2(new Vector2(800f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
-				Domain.getActiveWorld()
-			);
-		}
-
-		if (keyCode == Input.Keys.V) {
-			Domain.addItem(
-				ButterflySword.butterflySword(10, Steel.class),
-				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
-				new Vector2(new Vector2(600f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
 				Domain.getActiveWorld()
 			);
 		}
