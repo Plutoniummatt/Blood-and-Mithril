@@ -3,7 +3,6 @@ package bloodandmithril.ui.components.window;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.item.items.equipment.weapon.Broadsword.broadSword;
-import static bloodandmithril.item.items.equipment.weapon.ButterflySword.butterflySword;
 import static bloodandmithril.item.items.equipment.weapon.Dagger.dagger;
 
 import java.util.Comparator;
@@ -215,9 +214,11 @@ public class DevWindow extends Window {
 			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 				elf.giveItem(new Brick());
 			}
-			elf.giveItem(butterflySword(100, Steel.class));
+			
 			elf.giveItem(dagger(100, Iron.class));
 			elf.giveItem(broadSword(100, Iron.class));
+			elf.giveItem(dagger(100, Steel.class));
+			elf.giveItem(broadSword(100, Steel.class));
 
 			Domain.getIndividuals().put(elf.getId().getId(), elf);
 			return true;

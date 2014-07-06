@@ -13,7 +13,10 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Ingot;
+import bloodandmithril.item.material.Material;
+import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Metal;
+import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
@@ -28,10 +31,12 @@ import com.google.common.collect.Maps;
 public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
-	public static TextureRegion iron;
+	private static Map<Class<? extends Material>, TextureRegion> materialTextureRegionMap = Maps.newHashMap();
 	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMap = Maps.newHashMap();
 	
 	static {
+		materialTextureRegionMap.put(Iron.class, new TextureRegion(Domain.individualTexture, 0, 784, 43, 13));
+		materialTextureRegionMap.put(Steel.class, new TextureRegion(Domain.individualTexture, 0, 818, 43, 13));
 		specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(10f, 34f)));
 	}
 
@@ -83,27 +88,29 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
+		TextureRegion textureRegion = getTextureRegion();
+		
 		spriteBatch.draw(
 			Domain.individualTexture,
-			position.x - (flipX ? iron.getRegionWidth() - 15 : 15),
+			position.x - (flipX ? textureRegion.getRegionWidth() - 15 : 15),
 			position.y - 7,
-			flipX ? iron.getRegionWidth() - 15 : 15,
+			flipX ? textureRegion.getRegionWidth() - 15 : 15,
 			7,
-			iron.getRegionWidth(),
-			iron.getRegionHeight(),
+			textureRegion.getRegionWidth(),
+			textureRegion.getRegionHeight(),
 			1f,
 			1f,
 			angle,
-			iron.getRegionX(),
-			iron.getRegionY(),
-			iron.getRegionWidth(),
-			iron.getRegionHeight(),
+			textureRegion.getRegionX(),
+			textureRegion.getRegionY(),
+			textureRegion.getRegionWidth(),
+			textureRegion.getRegionHeight(),
 			flipX,
 			false
 		);
 	}
-
-
+	
+	
 	@Override
 	public void affect(Individual victim) {
 		victim.damage(Util.getRandom().nextFloat() * 5f);
@@ -141,7 +148,7 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return iron;
+		return materialTextureRegionMap.get(getMaterial());
 	}
 
 
