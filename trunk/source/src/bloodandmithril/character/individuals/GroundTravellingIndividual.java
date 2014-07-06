@@ -49,11 +49,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 		super(id, state, factionId, inventoryMassCapacity, maxRings, width, height, safetyHeight, interactionBox, worldId, maximumConcurrentMeleeAttackers);
 	}
 
-
-	public abstract float getWalkSpeed();
-	public abstract float getRunSpeed();
-
-
+	
 	/**
 	 * @return the Current animated action this {@link GroundTravellingIndividual} is performing.
 	 */
