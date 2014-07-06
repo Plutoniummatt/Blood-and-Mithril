@@ -13,7 +13,10 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Ingot;
+import bloodandmithril.item.material.Material;
+import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Metal;
+import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
@@ -28,10 +31,12 @@ import com.google.common.collect.Maps;
 public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
-	public static TextureRegion iron;
+	private static Map<Class<? extends Material>, TextureRegion> materialTextureRegionMap = Maps.newHashMap();
 	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMap = Maps.newHashMap();
 	
 	static {
+		materialTextureRegionMap.put(Iron.class, new TextureRegion(Domain.individualTexture, 0, 800, 63, 17));
+		materialTextureRegionMap.put(Steel.class, new TextureRegion(Domain.individualTexture, 0, 834, 63, 17));
 		specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
 	}
 
@@ -82,21 +87,23 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
+		TextureRegion texture = getTextureRegion();
+		
 		spriteBatch.draw(
 			Domain.individualTexture,
-			position.x - (flipX ? iron.getRegionWidth() - 17 : 17),
+			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,
-			flipX ? iron.getRegionWidth() - 17 : 17,
+			flipX ? texture.getRegionWidth() - 17 : 17,
 			9,
-			iron.getRegionWidth(),
-			iron.getRegionHeight(),
+			texture.getRegionWidth(),
+			texture.getRegionHeight(),
 			1f,
 			1f,
 			angle,
-			iron.getRegionX(),
-			iron.getRegionY(),
-			iron.getRegionWidth(),
-			iron.getRegionHeight(),
+			texture.getRegionX(),
+			texture.getRegionY(),
+			texture.getRegionWidth(),
+			texture.getRegionHeight(),
 			flipX,
 			false
 		);
@@ -140,7 +147,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return iron;
+		return materialTextureRegionMap.get(getMaterial());
 	}
 
 
