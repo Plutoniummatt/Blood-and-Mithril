@@ -1,6 +1,5 @@
 package bloodandmithril.character.combat;
 
-import static java.lang.Math.max;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
@@ -48,8 +47,13 @@ public class CombatChain {
 		}
 
 		Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().mul(knockbackStrength);
-		boolean blocked = Util.roll(max(0f, target.getBlockChance() - attacker.getBlockChanceIgnored()));
+		
+		boolean blocked = Util.roll(
+			target.getBlockChance() * (1f - attacker.getBlockChanceIgnored())
+		);
+		
 		if (blocked) {
+			disarm(knockbackVector);
 			Sound blockSound = attacker.getBlockSound();
 			if (blockSound != null) {
 				blockSound.play(
@@ -59,8 +63,8 @@ public class CombatChain {
 				);
 			}
 		} else {
-			hit(knockbackVector.cpy());
 			knockbackVector.mul(0.1f);
+			hit(knockbackVector.cpy());
 			Sound hitSound = attacker.getHitSound();
 			if (hitSound != null) {
 				hitSound.play(
@@ -75,6 +79,23 @@ public class CombatChain {
 	}
 
 
+	private void disarm(Vector2 disarmVector) {
+		if (weapon == null) {
+			target.damage(attacker.getUnarmedDamage());
+		} else {
+			target.damage(weapon.getBaseDamage());
+		}
+
+		// Disarming
+		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance())) {
+			Sets.newHashSet(target.getEquipped().keySet()).stream().forEach(item -> {
+				target.unequip((Equipable) item);
+				ContainerImpl.discard(target, item, 1, disarmVector);
+			});
+		}
+	}
+
+	
 	@SuppressWarnings("unchecked")
 	private void hit(Vector2 disarmVector) {
 		disarmVector.rotate(90f * (Util.getRandom().nextFloat() - 0.5f));
@@ -97,7 +118,7 @@ public class CombatChain {
 		}
 
 		// Disarming
-		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance()) && !target.getAvailableEquipmentSlots().get(hit.t.getLinkedEquipmentSlot()).call()) {
+		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance() * 2f) && !target.getAvailableEquipmentSlots().get(hit.t.getLinkedEquipmentSlot()).call()) {
 			Sets.newHashSet(target.getEquipped().keySet()).stream().filter(
 				item -> {
 					return ((Equipable) item).slot == hit.t.getLinkedEquipmentSlot();

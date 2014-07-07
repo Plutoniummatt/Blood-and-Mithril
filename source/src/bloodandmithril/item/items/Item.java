@@ -480,9 +480,7 @@ public abstract class Item implements Serializable, Affixed {
 	/**
 	 * @return the description of the item type
 	 */
-	public String getType() {
-		return "TODO!!!!";
-	}
+	public abstract String getType();
 
 	@Override
 	public String modifyName(String original) {

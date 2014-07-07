@@ -13,6 +13,7 @@ import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.csi.requests.RefreshWindows;
 import bloodandmithril.csi.requests.SynchronizeIndividual;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
@@ -139,6 +140,11 @@ public class TakeItem extends CompositeAITask {
 			Individual individual = Domain.getIndividuals().get(hostId.getId());
 			if (individual.getInteractionBox().isWithinBox(item.getPosition())) {
 				individual.giveItem(item);
+				if (item instanceof Equipable) {
+					if (individual.getAvailableEquipmentSlots().get(((Equipable) item).slot).call()) {
+						individual.equip((Equipable) item);
+					}
+				}
 				Domain.getItems().remove(item.getId());
 			}
 		}

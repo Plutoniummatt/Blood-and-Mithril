@@ -37,15 +37,6 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	}
 
 
-	/**
-	 * @return the description of the item type
-	 */
-	@Override
-	public String getType() {
-		return "One-handed weapon";
-	}
-
-
 	@Override
 	public int getRenderingIndex(Individual individual) {
 		if (individual instanceof Humanoid) {

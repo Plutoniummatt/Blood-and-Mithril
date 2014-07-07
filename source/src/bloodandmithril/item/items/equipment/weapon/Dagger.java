@@ -251,4 +251,10 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 	public float getDisarmChance() {
 		return 0.05f;
 	}
+	
+	
+	@Override
+	public String getType() {
+		return "Dagger";
+	}
 }

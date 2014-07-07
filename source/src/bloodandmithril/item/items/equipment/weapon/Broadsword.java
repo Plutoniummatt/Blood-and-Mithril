@@ -35,11 +35,13 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	private static Map<Class<? extends Material>, TextureRegion> materialTextureRegionMap = Maps.newHashMap();
 	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMap = Maps.newHashMap();
+	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMapStab = Maps.newHashMap();
 
 	static {
 		materialTextureRegionMap.put(Iron.class, new TextureRegion(Domain.individualTexture, 0, 800, 63, 17));
 		materialTextureRegionMap.put(Steel.class, new TextureRegion(Domain.individualTexture, 0, 834, 63, 17));
 		specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
+		specialEffectsMapStab.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(18f, 32f)));
 	}
 
 	/**
@@ -174,7 +176,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	public float getBaseAttackPeriod() {
-		return 3f;
+		return 2f;
 	}
 
 
@@ -199,7 +201,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	public boolean stab() {
-		return false;
+		return Util.getRandom().nextBoolean();
 	}
 
 
@@ -209,6 +211,10 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 			case ATTACK_LEFT_ONE_HANDED_WEAPON:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
 				return specialEffectsMap.get(individual.getClass());
+				
+			case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
+			case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
+				return specialEffectsMapStab.get(individual.getClass());
 
 			default:
 				return null;
@@ -249,5 +255,11 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	@Override
 	public float getDisarmChance() {
 		return 0.1f;
+	}
+
+
+	@Override
+	public String getType() {
+		return "One-handed sword";
 	}
 }

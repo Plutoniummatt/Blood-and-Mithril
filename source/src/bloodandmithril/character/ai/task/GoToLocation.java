@@ -122,13 +122,17 @@ public class GoToLocation extends AITask {
 	 */
 	public void renderFinalWayPoint() {
 		if (!path.isEmpty()) {
-			Vector2 waypoint = path.getDestinationWayPoint().waypoint;
-			if (waypoint == null) {
-				return;
+			try {
+				Vector2 waypoint = path.getDestinationWayPoint().waypoint;
+				if (waypoint == null) {
+					return;
+				}
+				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
+				Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
+				BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
+			} catch (NullPointerException e) {
+				// ???
 			}
-			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-			BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
 		}
 	}
 
