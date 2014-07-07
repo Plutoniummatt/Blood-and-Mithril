@@ -7,6 +7,7 @@ import static com.badlogic.gdx.graphics.g2d.Animation.NORMAL;
 
 import java.util.Map;
 
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
@@ -23,6 +24,7 @@ import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -217,5 +219,29 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	@Override
 	public float getKnockbackStrength() {
 		return 350;
+	}
+
+
+	@Override
+	public Sound getHitSound() {
+		return SoundService.stab;
+	}
+
+
+	@Override
+	public float getBlockChance() {
+		return 0.35f;
+	}
+	
+	
+	@Override
+	public Sound getBlockSound() {
+		return SoundService.broadSwordBlock;
+	}
+
+
+	@Override
+	public float getBlockChanceIgnored() {
+		return 0.05f;
 	}
 }

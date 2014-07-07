@@ -1,5 +1,7 @@
 package bloodandmithril.item.items.equipment.weapon;
 
+import com.badlogic.gdx.audio.Sound;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
@@ -25,4 +27,12 @@ public abstract class MeleeWeapon<T extends Material> extends Weapon<T> {
 	 * @return The {@link Box} that will be used to calculate overlaps with other hitboxes
 	 */
 	public abstract Box getActionFrameHitBox(Individual individual);
+	
+	public abstract Sound getHitSound();
+	
+	public abstract Sound getBlockSound();
+	
+	public abstract float getBlockChance();
+	
+	public abstract float getBlockChanceIgnored();
 }

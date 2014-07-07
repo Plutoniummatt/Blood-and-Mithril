@@ -36,6 +36,7 @@ import java.util.Set;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.combat.CombatChain;
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
@@ -72,6 +73,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -288,6 +290,34 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		return true;
 	}
+	
+	
+	@SuppressWarnings("rawtypes")
+	public float getBlockChance() {
+		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
+			return equipped instanceof MeleeWeapon;
+		});
+		
+		if (weapon.isPresent()) {
+			return ((MeleeWeapon) weapon.get()).getBlockChance();
+		}
+		
+		return 0f;
+	}
+	
+	
+	@SuppressWarnings("rawtypes")
+	public float getBlockChanceIgnored() {
+		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
+			return equipped instanceof MeleeWeapon;
+		});
+		
+		if (weapon.isPresent()) {
+			return ((MeleeWeapon) weapon.get()).getBlockChanceIgnored();
+		}
+		
+		return 0f;
+	}
 
 
 	@SuppressWarnings("rawtypes")
@@ -322,25 +352,45 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
-					float knockbackStrength = 50f;
-					
-					// Damage
 					if (weapon.isPresent()) {
-						toBeAttacked.damage(((Weapon) weapon.get()).getBaseDamage());
-						knockbackStrength = ((Weapon) weapon.get()).getKnockbackStrength();
+						combat().target(toBeAttacked).withWeapon((Weapon) weapon.get()).execute();
 					} else {
-						toBeAttacked.damage(getUnarmedDamage());
+						combat().target(toBeAttacked).execute();
 					}
-					toBeAttacked.moan();
-
-					// Knock back
-					Vector2 knockbackVector = toBeAttacked.getState().position.cpy().sub(getState().position.cpy()).nor().mul(knockbackStrength);
-					toBeAttacked.getState().velocity.add(knockbackVector);
 				}
 			}
 		}
 	}
+	
+	
+	private CombatChain combat() {
+		return new CombatChain(this);
+	}
 
+	
+	@SuppressWarnings("rawtypes")
+	public Sound getHitSound() {
+		java.util.Optional<Item> meleeWeapon = getEquipped().keySet().stream().filter(item -> {return item instanceof MeleeWeapon;}).findFirst();
+		
+		if (meleeWeapon.isPresent()) {
+			return ((MeleeWeapon) meleeWeapon.get()).getHitSound();
+		}
+		
+		return null;
+	}
+	
+	
+	@SuppressWarnings("rawtypes")
+	public Sound getBlockSound() {
+		java.util.Optional<Item> meleeWeapon = getEquipped().keySet().stream().filter(item -> {return item instanceof MeleeWeapon;}).findFirst();
+		
+		if (meleeWeapon.isPresent()) {
+			return ((MeleeWeapon) meleeWeapon.get()).getBlockSound();
+		}
+		
+		return null;
+	}
+	
 
 	@SuppressWarnings("rawtypes")
 	public Box getAttackingHitBox() {
@@ -364,7 +414,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/** Returns the damage dealt when attacking whilst not armed */
-	protected abstract float getUnarmedDamage();
+	public abstract float getUnarmedDamage();
 
 	/** Returns the {@link Box} that will be used to calculate overlaps with other hitboxes, when no weapon-specific hitboxes are found */
 	protected abstract Box getDefaultAttackingHitBox();

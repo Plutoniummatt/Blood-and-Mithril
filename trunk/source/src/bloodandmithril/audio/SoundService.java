@@ -22,6 +22,10 @@ public class SoundService {
 	public static Sound swordSlash = Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav"));
 	
 	public static Sound femaleHit = Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav"));
+	
+	public static Sound stab = Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav"));
+	
+	public static Sound broadSwordBlock = Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav"));
 
 	private static Music current, next;
 
