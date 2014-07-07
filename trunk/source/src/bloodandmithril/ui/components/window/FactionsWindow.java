@@ -41,7 +41,7 @@ public class FactionsWindow extends Window {
 	 * Constructor
 	 */
 	public FactionsWindow(int x, int y, int length, int height, boolean active, int minLength, int minHeight) {
-		super(x, y, length, height, "Factions", active, minLength, minHeight, true, false);
+		super(x, y, length, height, "Factions", active, minLength, minHeight, true, false, true);
 
 		factionsPanel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder()) {
 

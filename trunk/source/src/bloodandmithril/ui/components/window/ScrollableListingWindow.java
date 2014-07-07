@@ -39,7 +39,7 @@ public abstract class ScrollableListingWindow<T, A> extends Window implements Re
 	 * Constructor
 	 */
 	public ScrollableListingWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, Map<T, A> map, Function<T, String> displayFunction, Comparator<T> sortingOrder) {
-		super(x, y, length, height, title, active, minLength, minHeight, minimizable, resizeable);
+		super(x, y, length, height, title, active, minLength, minHeight, minimizable, resizeable, true);
 		this.displayFunction = displayFunction;
 		buildListing(map, sortingOrder);
 

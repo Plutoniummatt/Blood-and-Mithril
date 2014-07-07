@@ -62,4 +62,10 @@ public class Silver extends Metal {
 	public String getName() {
 		return "Silver";
 	}
+
+
+	@Override
+	public float getCombatMultiplier() {
+		return 0.5f;
+	}
 }

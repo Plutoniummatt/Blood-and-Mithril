@@ -8,7 +8,8 @@ import java.util.Deque;
 import java.util.List;
 
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Material;
+import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
+import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
@@ -33,7 +34,7 @@ public class ItemInfoWindow extends Window {
 	 * Constructor
 	 */
 	public ItemInfoWindow(Item item, int x, int y, int length, int height) {
-		super(x, y, length, height, item.getSingular(true), true, 400, 300, false, true);
+		super(x, y, length, height, item.getSingular(true), true, 400, 450, false, true, true);
 		this.item = item;
 		instantiatePanel(item);
 	}
@@ -43,9 +44,7 @@ public class ItemInfoWindow extends Window {
 	 * Instantiates the {@link #customPanel}
 	 */
 	private void instantiatePanel(Item item) {
-		if (item instanceof Material) {
-			customPanel = new TextPanel(this, item.getDescription(), Color.ORANGE);
-		}
+		customPanel = new TextPanel(this, item.getDescription(), Color.ORANGE);
 	}
 
 
@@ -63,23 +62,51 @@ public class ItemInfoWindow extends Window {
 		}
 
 		customPanel.x = x + 10;
-		customPanel.y = y - 120;
+		customPanel.y = y - getCustomPanelOffset();
 		customPanel.width = width;
-		customPanel.height = height - 120;
+		customPanel.height = height - getCustomPanelOffset();
 
 		customPanel.render();
+	}
+
+
+	private int getCustomPanelOffset() {
+		if (item instanceof Weapon) {
+			return 220;
+		}
+
+		return 120;
 	}
 
 
 	/**
 	 * Renders basic item stats
 	 */
+	@SuppressWarnings("rawtypes")
 	private void renderBasicStats() {
 		defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, getAlpha() * (isActive() ? 1f : 0.6f)));
 		defaultFont.draw(spriteBatch, "Type: " + item.getType(), x + 10, y - 33);
 		defaultFont.draw(spriteBatch, "Mass: " + item.getMass() + "kg", x + 10, y - 53);
 		defaultFont.draw(spriteBatch, "Value: " + item.getValue(), x + 10, y - 73);
+
+		if (item instanceof Weapon) {
+			weapon((Weapon) item);
+		}
+
 		spriteBatch.flush();
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	private void weapon(Weapon weapon) {
+		if (weapon instanceof MeleeWeapon) {
+			MeleeWeapon meleeWeapon = (MeleeWeapon) weapon;
+			defaultFont.draw(spriteBatch, "Block chance: " + String.format("%.0f", meleeWeapon.getBlockChance() * 100f) + "%", x + 10, y - 103);
+			defaultFont.draw(spriteBatch, "Block ignore: " + String.format("%.0f", meleeWeapon.getBlockChanceIgnored() * 100f) + "%", x + 10, y - 123);
+			defaultFont.draw(spriteBatch, "Base damage: " + meleeWeapon.getBaseDamage(), x + 10, y - 143);
+			defaultFont.draw(spriteBatch, "Base attack speed: " + meleeWeapon.getBaseAttackPeriod() + "s", x + 10, y - 163);
+			defaultFont.draw(spriteBatch, "DPS: " + String.format("%.1f", meleeWeapon.getBaseDamage()/meleeWeapon.getBaseAttackPeriod()), x + 10, y - 183);
+		}
 	}
 
 

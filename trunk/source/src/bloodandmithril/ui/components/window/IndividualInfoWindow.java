@@ -28,7 +28,7 @@ public class IndividualInfoWindow extends Window {
 	 * Constructor
 	 */
 	public IndividualInfoWindow(Individual indivudual, int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight) {
-		super(x, y, length, height, title, active, minLength, minHeight, true, true);
+		super(x, y, length, height, title, active, minLength, minHeight, true, true, true);
 		individual = indivudual;
 	}
 

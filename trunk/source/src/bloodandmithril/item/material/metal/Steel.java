@@ -67,4 +67,11 @@ public class Steel extends Metal {
 	public String getName() {
 		return "Steel";
 	}
+
+
+	@Override
+	public float getCombatMultiplier() {
+		// TODO Auto-generated method stub
+		return 1.15f;
+	}
 }

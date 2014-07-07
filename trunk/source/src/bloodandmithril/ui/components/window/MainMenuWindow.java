@@ -33,8 +33,8 @@ public class MainMenuWindow extends Window {
 	/**
 	 * Overloaded constructor - uses default colors
 	 */
-	public MainMenuWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable) {
-		super(x, y, length, height, title, active, minLength, minHeight, minimizable, false);
+	public MainMenuWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean closeable) {
+		super(x, y, length, height, title, active, minLength, minHeight, minimizable, false, closeable);
 		loadButtons();
 	}
 
@@ -135,6 +135,7 @@ public class MainMenuWindow extends Window {
 												false,
 												200,
 												110,
+												false,
 												false
 											)
 										);

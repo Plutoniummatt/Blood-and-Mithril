@@ -35,7 +35,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	private static Map<Class<? extends Material>, TextureRegion> materialTextureRegionMap = Maps.newHashMap();
 	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMap = Maps.newHashMap();
-	
+
 	static {
 		materialTextureRegionMap.put(Iron.class, new TextureRegion(Domain.individualTexture, 0, 800, 63, 17));
 		materialTextureRegionMap.put(Steel.class, new TextureRegion(Domain.individualTexture, 0, 834, 63, 17));
@@ -72,7 +72,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	public String getDescription() {
-		return "A heavy military sword, made from " + getMaterial().getName();
+		return "A heavy military sword, made from " + Material.getMaterial(getMaterial()).getName();
 	}
 
 
@@ -90,7 +90,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
 		TextureRegion texture = getTextureRegion();
-		
+
 		spriteBatch.draw(
 			Domain.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
@@ -193,7 +193,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	public float getBaseDamage() {
-		return 0f;
+		return 0f * Material.getMaterial(getMaterial()).getCombatMultiplier();
 	}
 
 
@@ -209,8 +209,8 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 			case ATTACK_LEFT_ONE_HANDED_WEAPON:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
 				return specialEffectsMap.get(individual.getClass());
-				
-			default: 
+
+			default:
 				return null;
 		}
 	}
@@ -232,8 +232,8 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	public float getBlockChance() {
 		return 0.35f;
 	}
-	
-	
+
+
 	@Override
 	public Sound getBlockSound() {
 		return SoundService.broadSwordBlock;
@@ -243,5 +243,11 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	@Override
 	public float getBlockChanceIgnored() {
 		return 0.05f;
+	}
+
+
+	@Override
+	public float getDisarmChance() {
+		return 0.1f;
 	}
 }

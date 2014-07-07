@@ -85,7 +85,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			boolean active,
 			int minLength,
 			int minHeight) {
-		super(x, y, length, height, title, active, minLength, minHeight, true, true);
+		super(x, y, length, height, title, active, minLength, minHeight, true, true, true);
 		this.host = host;
 		buildItems(host.getEquipped(), host.getInventory(), true);
 		inventoryListingPanel.setScrollWheelActive(true);
@@ -373,7 +373,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			Color.WHITE,
 			null
 		) :
-			
+
 		new MenuItem(
 			"Equip",
 			() -> {

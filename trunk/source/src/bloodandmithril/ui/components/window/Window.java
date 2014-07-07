@@ -41,8 +41,8 @@ public abstract class Window extends Component {
 	/** Whether or not this {@link Window} is currently being positioned */
 	private boolean positioning = false;
 
-	/** Whether or not this {@link Window} can be minimized */
-	public final boolean minimizable;
+	/** Whether or not this {@link Window} can be minimized/closed */
+	public final boolean minimizable, closeable;
 
 	/** True if this window is always active */
 	private boolean alwaysActive;
@@ -62,7 +62,7 @@ public abstract class Window extends Component {
 	/**
 	 * Constructor
 	 */
-	public Window(int x, int y, int length, int height, Color borderColor, Color backGroundColor, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable) {
+	public Window(int x, int y, int length, int height, Color borderColor, Color backGroundColor, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, boolean closeable) {
 		this.x = x;
 		this.y = y;
 		this.width = length;
@@ -71,6 +71,7 @@ public abstract class Window extends Component {
 		this.backGroundColor = backGroundColor;
 		this.title = title;
 		this.resizeable = resizeable;
+		this.closeable = closeable;
 		this.setActive(active);
 		this.minLength = minLength;
 		this.minHeight = minHeight;
@@ -83,8 +84,8 @@ public abstract class Window extends Component {
 	/**
 	 * Overloaded contructor, uses default colors
 	 */
-	public Window(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable) {
-		this(x, y, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable, resizeable);
+	public Window(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, boolean closeable) {
+		this(x, y, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable, resizeable, closeable);
 	}
 
 
@@ -100,7 +101,7 @@ public abstract class Window extends Component {
 
 	@Override
 	public boolean keyPressed(int keyCode) {
-		if (keyCode == Input.Keys.ESCAPE) {
+		if (keyCode == Input.Keys.ESCAPE && closeable) {
 			setClosing(true);
 			return true;
 		}
@@ -118,7 +119,7 @@ public abstract class Window extends Component {
 		if (UserInterface.contextMenus.isEmpty()) {
 			if (isMouseWithin()) {
 
-				if (closeButton.click()) {
+				if (closeButton.click() && closeable) {
 					setClosing(true);
 					return false;
 				}
@@ -337,12 +338,14 @@ public abstract class Window extends Component {
 	 * Renders the window buttons of this {@link Window}
 	 */
 	private void renderWindowButtons() {
-		closeButton.render(
-			x + width - 7,
-			y - close.getRegionHeight() - top.getRegionHeight() + 5,
-			isActive(),
-			isActive() ? getAlpha() : getAlpha() * 0.5f
-		);
+		if (closeable) {
+			closeButton.render(
+				x + width - 7,
+				y - close.getRegionHeight() - top.getRegionHeight() + 5,
+				isActive(),
+				isActive() ? getAlpha() : getAlpha() * 0.5f
+			);
+		}
 
 		if (minimizable) {
 			minimizeButton.render(

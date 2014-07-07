@@ -56,7 +56,7 @@ public class ConstructionWindow extends Window implements Refreshable {
 	 * Constructor
 	 */
 	public ConstructionWindow(int x, int y, String title, boolean active, Individual individual, Construction construction) {
-		super(x, y, 600, 300, title, active, 600, 300, true, true);
+		super(x, y, 600, 300, title, active, 600, 300, true, true, true);
 		this.individual = individual;
 		this.construction = construction;
 

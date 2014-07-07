@@ -34,7 +34,7 @@ public class SelectedIndividualsControlWindow extends Window {
 	 * Constructor
 	 */
 	public SelectedIndividualsControlWindow(int x, int y, int length, int height, String title, boolean active) {
-		super(x, y, length, height, title, active, length, height, true, false);
+		super(x, y, length, height, title, active, length, height, true, false, true);
 		setupButtons();
 		setAlwaysActive(true);
 	}
@@ -115,7 +115,7 @@ public class SelectedIndividualsControlWindow extends Window {
 		if (keyCode == Keys.ESCAPE) {
 			return false;
 		}
-		
+
 		if (super.keyPressed(keyCode)) {
 			return true;
 		}
