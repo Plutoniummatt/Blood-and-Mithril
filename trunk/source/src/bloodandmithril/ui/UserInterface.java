@@ -61,6 +61,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.bar.BottomBar;
+import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Fonts;
@@ -71,6 +72,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -777,6 +779,26 @@ public class UserInterface {
 				return true;
 			}
 		}
+		
+		if (keyCode == Keys.I) {
+			if (Domain.getSelectedIndividuals().size() == 1) {
+				Individual individual = Domain.getSelectedIndividuals().iterator().next();
+				String simpleName = individual.getId().getSimpleName();
+				
+				UserInterface.addLayeredComponentUnique(
+					new InventoryWindow(
+						individual,
+						WIDTH/2 - ((simpleName + " - Inventory").length() * 10 + 50)/2,
+						HEIGHT/2 + 150,
+						(simpleName + " - Inventory").length() * 10 + 50,
+						300,
+						simpleName + " - Inventory",
+						true,
+						150, 300
+					)
+				);
+			}
+		}
 
 		return false;
 	}
@@ -861,7 +883,7 @@ public class UserInterface {
 							secondaryMenu.x = getMouseScreenX();
 							secondaryMenu.y = getMouseScreenY();
 						},
-						Color.WHITE,
+						Color.CYAN,
 						Color.GREEN,
 						Color.GRAY,
 						secondaryMenu
@@ -880,7 +902,7 @@ public class UserInterface {
 							secondaryMenu.x = getMouseScreenX();
 							secondaryMenu.y = getMouseScreenY();
 						},
-						Color.WHITE,
+						Color.ORANGE,
 						Color.GREEN,
 						Color.GRAY,
 						secondaryMenu
