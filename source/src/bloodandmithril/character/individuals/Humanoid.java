@@ -30,6 +30,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 	static {
 		Map<Integer, ParameterizedTask<Individual>> attackUnarmed = newHashMap();
 		Map<Integer, ParameterizedTask<Individual>> attackOneHanded = newHashMap();
+		Map<Integer, ParameterizedTask<Individual>> attackOneHandedStab = newHashMap();
 
 		attackUnarmed.put(
 			3,
@@ -54,11 +55,23 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				);
 			}
 		);
+		
+		attackOneHandedStab.put(
+			3,
+			individual -> {
+				individual.attack();
+				SoundService.swordSlash.play(
+					SoundService.getVolumne(individual.getState().position),
+					1f,
+					SoundService.getPan(individual.getState().position)
+				);
+			}
+		);
 
 		actionFrames.put(ATTACK_LEFT_UNARMED, attackUnarmed);
 		actionFrames.put(ATTACK_RIGHT_UNARMED, attackUnarmed);
-		actionFrames.put(ATTACK_LEFT_ONE_HANDED_WEAPON_STAB, attackUnarmed);
-		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB, attackUnarmed);
+		actionFrames.put(ATTACK_LEFT_ONE_HANDED_WEAPON_STAB, attackOneHandedStab);
+		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB, attackOneHandedStab);
 		actionFrames.put(ATTACK_LEFT_ONE_HANDED_WEAPON, attackOneHanded);
 		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON, attackOneHanded);
 	}

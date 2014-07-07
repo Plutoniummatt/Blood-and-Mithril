@@ -33,6 +33,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
@@ -345,7 +346,7 @@ public class Elf extends Humanoid {
 
 
 	@Override
-	protected float getUnarmedDamage() {
+	public float getUnarmedDamage() {
 		return 0f;
 	}
 
@@ -376,6 +377,10 @@ public class Elf extends Humanoid {
 
 	@Override
 	public void moan() {
+		if (Util.roll(0.85f)) {
+			return;
+		}
+		
 		SoundService.femaleHit.play(
 			SoundService.getVolumne(getState().position),
 			1f,
