@@ -32,12 +32,12 @@ public class BottomBar extends Component {
 
 
 	private final Button mainMenu = new Button(UserInterface.uiTexture, 25, 16, 53, 0, 50, 32,
-		() -> {}, 
+		() -> {},
 		UIRef.BL
 	);
 
 	private final Button windows = new Button(UserInterface.uiTexture, 85, 16, 103, 0, 50, 32,
-		() -> {}, 
+		() -> {},
 		UIRef.BL
 	);
 
@@ -130,7 +130,7 @@ public class BottomBar extends Component {
 				null
 			)
 		);
-		
+
 		if (ClientServerInterface.isClient() && !ClientServerInterface.isServer())
 		contextMenu.addMenuItem(
 			new MenuItem(
@@ -286,7 +286,8 @@ public class BottomBar extends Component {
 					true,
 					200,
 					110,
-					false
+					false,
+					true
 				)
 			);
 		} else {

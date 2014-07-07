@@ -22,6 +22,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
@@ -70,7 +71,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	 * Constructor
 	 */
 	public CraftingStationWindow(int x, int y, String title, Individual individual, CraftingStation craftingStation) {
-		super(x, y, 750, 300, title, true, 750, 300, true, true);
+		super(x, y, 750, 300, title, true, 750, 300, true, true, true);
 		this.individual = individual;
 		this.craftingStation = craftingStation;
 
@@ -327,14 +328,14 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			isActive() && (craftingStation.getCurrentlyBeingCrafted() == null || !craftingStation.isOccupied()) && !craftingStation.isFinished() && (enoughMaterials || craftingStation.getCurrentlyBeingCrafted() != null) && customCanCraft(),
 			getAlpha()
 		);
-		
+
 		takeFinishedItemButton.render(
 			x + width / 2 + 11,
 			y - 85,
 			isActive() && craftingStation.isFinished(),
 			getAlpha()
 		);
-		
+
 		spriteBatch.flush();
 	}
 

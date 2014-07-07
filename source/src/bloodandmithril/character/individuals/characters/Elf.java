@@ -74,7 +74,7 @@ public class Elf extends Humanoid {
 
 	/** Hair/eye colors */
 	private SerializableColor hairColor, eyeColor;
-	
+
 	/** Biography of this Elf */
 	private String biography = "";
 
@@ -83,7 +83,7 @@ public class Elf extends Humanoid {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			ArrayList<WrapperForTwo<Animation, ShaderProgram>> walkSequence = newArrayList(	
+			ArrayList<WrapperForTwo<Animation, ShaderProgram>> walkSequence = newArrayList(
 				wrap(AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.13f, Animation.LOOP), Shaders.replaceColor),		// HEAD
 				wrap(AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.13f, Animation.LOOP), Shaders.filter),				// HAIR
 				wrap(AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.13f, Animation.LOOP), Shaders.pass),				// BACK ARM
@@ -347,7 +347,7 @@ public class Elf extends Humanoid {
 
 	@Override
 	public float getUnarmedDamage() {
-		return 0f;
+		return 0.5f;
 	}
 
 
@@ -380,7 +380,7 @@ public class Elf extends Humanoid {
 		if (Util.roll(0.85f)) {
 			return;
 		}
-		
+
 		SoundService.femaleHit.play(
 			SoundService.getVolumne(getState().position),
 			1f,

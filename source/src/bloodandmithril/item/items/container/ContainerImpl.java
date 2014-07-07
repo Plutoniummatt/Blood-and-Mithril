@@ -229,7 +229,7 @@ public class ContainerImpl implements Container, Serializable {
 	}
 
 
-	public static void discard(Individual individual, final Item item, int quantity) {
+	public static void discard(Individual individual, final Item item, int quantity, Vector2 v) {
 		if (isServer()) {
 			Vector2 pos = individual.getState().position;
 			for (int i = quantity; i !=0; i--) {
@@ -237,7 +237,7 @@ public class ContainerImpl implements Container, Serializable {
 					Domain.addItem(
 						item.copy(),
 						new Vector2(pos.x, pos.y + individual.getHeight()/2),
-						new Vector2(100f, 0).rotate(Util.getRandom().nextFloat() * 180f),
+						v,
 						Domain.getWorlds().get(individual.getWorldId())
 					);
 				} else {
@@ -247,6 +247,11 @@ public class ContainerImpl implements Container, Serializable {
 		} else {
 			ClientServerInterface.SendRequest.sendDiscardItemRequest(individual, item, quantity);
 		}
+	}
+
+
+	public static void discard(Individual individual, final Item item, int quantity) {
+		discard(individual, item, quantity, new Vector2(100f, 0).rotate(Util.getRandom().nextFloat() * 180f));
 	}
 
 

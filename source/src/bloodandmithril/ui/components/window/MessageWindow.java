@@ -36,7 +36,7 @@ public class MessageWindow extends Window {
 	 */
 	@Deprecated
 	public MessageWindow(String message, Color messageColor, int x, int y, int length, int height, Color borderColor, Color backGroundColor, String title, boolean active, int minLength, int minHeight) {
-		super(x, y, length, height, borderColor, backGroundColor, title, active, minLength, minHeight, false, true);
+		super(x, y, length, height, borderColor, backGroundColor, title, active, minLength, minHeight, false, true, true);
 		this.message = message;
 		this.messageColor = messageColor;
 	}
@@ -46,7 +46,7 @@ public class MessageWindow extends Window {
 	 * Overloaded constructor - uses default colors
 	 */
 	public MessageWindow(String message, Color messageColor, int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight) {
-		super(x, y, length, height, title, active, minLength, minHeight, false, true);
+		super(x, y, length, height, title, active, minLength, minHeight, false, true, true);
 		this.message = message;
 		this.messageColor = messageColor;
 	}
@@ -56,7 +56,7 @@ public class MessageWindow extends Window {
 	 * Overloaded constructor - uses default colors, has a button
 	 */
 	public MessageWindow(String message, Color messageColor, int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Task buttonAction) {
-		super(x, y, length, height, title, active, minLength, minHeight, false, true);
+		super(x, y, length, height, title, active, minLength, minHeight, false, true, true);
 		this.message = message;
 		this.messageColor = messageColor;
 

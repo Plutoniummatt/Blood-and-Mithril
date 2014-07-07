@@ -27,7 +27,7 @@ public class OptionsWindow extends Window {
 	 * Constructor
 	 */
 	public OptionsWindow() {
-		super(BloodAndMithrilClient.WIDTH/2 - 125, BloodAndMithrilClient.HEIGHT/2 + 125, 250, 350, "Options", true, 250, 350, false, false);
+		super(BloodAndMithrilClient.WIDTH/2 - 125, BloodAndMithrilClient.HEIGHT/2 + 125, 250, 350, "Options", true, 250, 350, false, false, true);
 
 		this.changeRes = new Button(
 			"Change resolution",

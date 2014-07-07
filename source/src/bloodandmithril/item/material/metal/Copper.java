@@ -62,4 +62,10 @@ public class Copper extends Metal {
 	public String getName() {
 		return "Copper";
 	}
+
+
+	@Override
+	public float getCombatMultiplier() {
+		return 0.8f;
+	}
 }

@@ -290,32 +290,32 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		return true;
 	}
-	
-	
+
+
 	@SuppressWarnings("rawtypes")
 	public float getBlockChance() {
 		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
 			return equipped instanceof MeleeWeapon;
 		});
-		
+
 		if (weapon.isPresent()) {
 			return ((MeleeWeapon) weapon.get()).getBlockChance();
 		}
-		
+
 		return 0f;
 	}
-	
-	
+
+
 	@SuppressWarnings("rawtypes")
 	public float getBlockChanceIgnored() {
 		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
 			return equipped instanceof MeleeWeapon;
 		});
-		
+
 		if (weapon.isPresent()) {
 			return ((MeleeWeapon) weapon.get()).getBlockChanceIgnored();
 		}
-		
+
 		return 0f;
 	}
 
@@ -361,36 +361,36 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			}
 		}
 	}
-	
-	
+
+
 	private CombatChain combat() {
 		return new CombatChain(this);
 	}
 
-	
+
 	@SuppressWarnings("rawtypes")
 	public Sound getHitSound() {
 		java.util.Optional<Item> meleeWeapon = getEquipped().keySet().stream().filter(item -> {return item instanceof MeleeWeapon;}).findFirst();
-		
+
 		if (meleeWeapon.isPresent()) {
 			return ((MeleeWeapon) meleeWeapon.get()).getHitSound();
 		}
-		
+
 		return null;
 	}
-	
-	
+
+
 	@SuppressWarnings("rawtypes")
 	public Sound getBlockSound() {
 		java.util.Optional<Item> meleeWeapon = getEquipped().keySet().stream().filter(item -> {return item instanceof MeleeWeapon;}).findFirst();
-		
+
 		if (meleeWeapon.isPresent()) {
 			return ((MeleeWeapon) meleeWeapon.get()).getBlockSound();
 		}
-		
+
 		return null;
 	}
-	
+
 
 	@SuppressWarnings("rawtypes")
 	public Box getAttackingHitBox() {
@@ -542,7 +542,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			if (equipped instanceof Weapon) {
 				@SuppressWarnings({ "rawtypes", "unchecked" })
 				WrapperForTwo<Animation, Vector2> attackAnimationEffects = ((Weapon) equipped).getAttackAnimationEffects(this);
-				
+
 				if (equipped instanceof OneHandedMeleeWeapon) {
 					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
 					if (config != null) {
@@ -550,7 +550,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 						toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
 					}
 				}
-				
+
 				if (attackAnimationEffects != null) {
 					TextureRegion keyFrame = attackAnimationEffects.a.getKeyFrame(getAnimationTimer());
 					spriteBatch.draw(
@@ -1156,8 +1156,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			state.health = state.health - amount;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Play a moaning sound, indicating being hurt
 	 */
@@ -1254,9 +1254,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Updates this character */
 	protected abstract void internalUpdate(float delta);
-	
+
 	public abstract float getWalkSpeed();
-	
+
 	public abstract float getRunSpeed();
 
 	/** Responds to commands */
@@ -1468,8 +1468,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public Box getHitBox() {
 		return hitBox;
 	}
-	
-	
+
+
 	public boolean attacking() {
 		return obj(getCurrentAction()).oneOf(
 			ATTACK_LEFT_ONE_HANDED_WEAPON_STAB,

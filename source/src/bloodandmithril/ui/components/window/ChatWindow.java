@@ -44,7 +44,7 @@ public class ChatWindow extends Window {
 	 * Constructor
 	 */
 	public ChatWindow(int x, int y, int length, int height, boolean active, int minLength, int minHeight) {
-		super(x, y, length, height, "Chat", active, minLength, minHeight, true, true);
+		super(x, y, length, height, "Chat", active, minLength, minHeight, true, true, true);
 
 		participants = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder()) {
 			@Override

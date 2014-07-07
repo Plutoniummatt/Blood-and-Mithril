@@ -83,7 +83,7 @@ public class DevWindow extends Window {
 	 * Constructor
 	 */
 	public DevWindow(int x, int y, int length, int height, boolean active) {
-		super(x, y, length, height, "Developer", active, 500, 300, false, true);
+		super(x, y, length, height, "Developer", active, 500, 300, false, true, true);
 
 		panel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder()) {
 			@Override
@@ -213,7 +213,7 @@ public class DevWindow extends Window {
 			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 				elf.giveItem(new Brick());
 			}
-			
+
 			elf.giveItem(dagger(100, Iron.class));
 			elf.giveItem(broadSword(100, Iron.class));
 			elf.giveItem(dagger(100, Steel.class));

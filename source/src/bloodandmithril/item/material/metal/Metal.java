@@ -53,4 +53,9 @@ public abstract class Metal extends Material {
 	 * @return the {@link TextureRegion} for an {@link Ingot} icon.
 	 */
 	public abstract TextureRegion getIngotIconTextureRegion();
+
+	/**
+	 * @return the combat multiplier value for things made from this {@link Metal}
+	 */
+	public abstract float getCombatMultiplier();
 }

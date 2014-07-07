@@ -1,14 +1,19 @@
 package bloodandmithril.character.combat;
 
 import static java.lang.Math.max;
+import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.item.items.container.ContainerImpl;
+import bloodandmithril.item.items.equipment.Equipable;
+import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
+import bloodandmithril.item.items.equipment.weapon.Weapon;
+import bloodandmithril.util.Util;
+import bloodandmithril.util.datastructure.Wrapper;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
-
-import bloodandmithril.audio.SoundService;
-import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.item.items.equipment.weapon.Weapon;
-import bloodandmithril.util.Util;
+import com.google.common.collect.Sets;
 
 /**
  * Class for combat related calculations
@@ -21,7 +26,7 @@ public class CombatChain {
 	private Individual attacker;
 	private Individual target;
 	private Weapon weapon;
-	
+
 	public CombatChain(Individual attacker) {
 		this.attacker = attacker;
 	}
@@ -30,23 +35,21 @@ public class CombatChain {
 		this.target = target;
 		return this;
 	}
-	
+
 	public CombatChain withWeapon(Weapon weapon) {
 		this.weapon = weapon;
 		return this;
 	}
-	
+
 	public void execute() {
 		float knockbackStrength = 50f;
-		
 		if (weapon != null) {
 			knockbackStrength = weapon.getKnockbackStrength();
-			target.damage(weapon.getBaseDamage());
-		} else {
-			target.damage(attacker.getUnarmedDamage());
 		}
-		
-		if (Util.roll(max(0f, target.getBlockChance() - attacker.getBlockChanceIgnored()))) {
+
+		Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().mul(knockbackStrength);
+		boolean blocked = Util.roll(max(0f, target.getBlockChance() - attacker.getBlockChanceIgnored()));
+		if (blocked) {
 			Sound blockSound = attacker.getBlockSound();
 			if (blockSound != null) {
 				blockSound.play(
@@ -56,7 +59,8 @@ public class CombatChain {
 				);
 			}
 		} else {
-			knockbackStrength *= 0.1f;
+			hit(knockbackVector.cpy());
+			knockbackVector.mul(0.1f);
 			Sound hitSound = attacker.getHitSound();
 			if (hitSound != null) {
 				hitSound.play(
@@ -66,7 +70,42 @@ public class CombatChain {
 				);
 			}
 		}
-		Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().mul(knockbackStrength);
+
 		target.getState().velocity.add(knockbackVector);
+	}
+
+
+	@SuppressWarnings("unchecked")
+	private void hit(Vector2 disarmVector) {
+		disarmVector.rotate(90f * (Util.getRandom().nextFloat() - 0.5f));
+		float f = Util.getRandom().nextFloat();
+		float t = 0f;
+		final Wrapper<HumanoidCombatBodyParts> hit = new Wrapper(null);
+
+		for (HumanoidCombatBodyParts p : HumanoidCombatBodyParts.values()) {
+			if (f >= t && f < t + p.getProbability()) {
+				hit.t = p;
+			}
+
+			t += p.getProbability();
+		}
+
+		if (weapon == null) {
+			target.damage(attacker.getUnarmedDamage());
+		} else {
+			target.damage(weapon.getBaseDamage());
+		}
+
+		// Disarming
+		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance()) && !target.getAvailableEquipmentSlots().get(hit.t.getLinkedEquipmentSlot()).call()) {
+			Sets.newHashSet(target.getEquipped().keySet()).stream().filter(
+				item -> {
+					return ((Equipable) item).slot == hit.t.getLinkedEquipmentSlot();
+				}
+			).forEach(item -> {
+				target.unequip((Equipable) item);
+				ContainerImpl.discard(target, item, 1, disarmVector);
+			});
+		}
 	}
 }

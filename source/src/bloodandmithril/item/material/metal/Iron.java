@@ -65,4 +65,10 @@ public class Iron extends Metal {
 	public String getName() {
 		return "Iron";
 	}
+
+
+	@Override
+	public float getCombatMultiplier() {
+		return 1f;
+	}
 }

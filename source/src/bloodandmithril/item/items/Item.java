@@ -282,7 +282,7 @@ public abstract class Item implements Serializable, Affixed {
 			BloodAndMithrilClient.WIDTH/2 - 200,
 			BloodAndMithrilClient.HEIGHT/2 + 250,
 			400,
-			300
+			450
 		);
 	}
 

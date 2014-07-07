@@ -88,7 +88,7 @@ public class TradeWindow extends Window implements Refreshable {
 	 * Constructor
 	 */
 	public TradeWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Individual proposer, Container proposee, Comparator<Item> sortingComparator) {
-		super(x, y, length, height, title, active, minLength, minHeight, false, true);
+		super(x, y, length, height, title, active, minLength, minHeight, false, true, true);
 
 		this.proposer = proposer;
 		this.proposee = proposee;

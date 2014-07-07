@@ -35,7 +35,7 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	private static Map<Class<? extends Material>, TextureRegion> materialTextureRegionMap = Maps.newHashMap();
 	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMap = Maps.newHashMap();
-	
+
 	static {
 		materialTextureRegionMap.put(Iron.class, new TextureRegion(Domain.individualTexture, 0, 784, 43, 13));
 		materialTextureRegionMap.put(Steel.class, new TextureRegion(Domain.individualTexture, 0, 818, 43, 13));
@@ -73,7 +73,7 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	@Override
 	public String getDescription() {
-		return "A short, sharp blade made from " + getMaterial().getName();
+		return "A short, sharp blade made from " + Material.getMaterial(getMaterial()).getName();
 	}
 
 
@@ -91,7 +91,7 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
 		TextureRegion textureRegion = getTextureRegion();
-		
+
 		spriteBatch.draw(
 			Domain.individualTexture,
 			position.x - (flipX ? textureRegion.getRegionWidth() - 15 : 15),
@@ -111,8 +111,8 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 			false
 		);
 	}
-	
-	
+
+
 	@Override
 	public void affect(Individual victim) {
 		victim.damage(Util.getRandom().nextFloat() * 5f);
@@ -194,7 +194,7 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	@Override
 	public float getBaseDamage() {
-		return 0f;
+		return 0.0f * Material.getMaterial(getMaterial()).getCombatMultiplier();
 	}
 
 
@@ -210,8 +210,8 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 		case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
 		case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
 			return specialEffectsMap.get(individual.getClass());
-			
-		default: 
+
+		default:
 			return null;
 	}
 	}
@@ -244,5 +244,11 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 	@Override
 	public float getBlockChanceIgnored() {
 		return 0.25f;
+	}
+
+
+	@Override
+	public float getDisarmChance() {
+		return 0.05f;
 	}
 }

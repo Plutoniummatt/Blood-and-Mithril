@@ -45,8 +45,8 @@ public class Util {
 	public static void draw(TextureRegion region, float x, float y, float angle) {
 		BloodAndMithrilClient.spriteBatch.draw(region, x, y, 0, 0, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, angle);
 	}
-	
-	
+
+
 	public static boolean roll(float probability) {
 		return random.nextFloat() < probability;
 	}
