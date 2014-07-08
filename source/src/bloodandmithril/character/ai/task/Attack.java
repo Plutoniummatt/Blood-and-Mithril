@@ -28,6 +28,14 @@ public class Attack extends CompositeAITask {
 	 * Constructor
 	 */
 	public Attack(Individual host, Individual... toBeAttacked) {
+		this(host, Sets.newHashSet(toBeAttacked));
+	}
+
+
+	/**
+	 * Constructor
+	 */
+	public Attack(Individual host, Set<Individual> toBeAttacked) {
 		super(host.getId(), "Attacking");
 
 		for (Individual individual : toBeAttacked) {
@@ -50,6 +58,7 @@ public class Attack extends CompositeAITask {
 			appendTask(new Idle());
 		}
 	}
+
 
 	/**
 	 * Constructor

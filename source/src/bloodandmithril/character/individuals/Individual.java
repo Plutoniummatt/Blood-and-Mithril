@@ -248,6 +248,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.skills = other.skills;
 		this.setCurrentAction(other.getCurrentAction());
 		this.combatStance = other.combatStance;
+		this.attackTimer = other.attackTimer;
+		this.currentAction = other.currentAction;
+		this.dead = other.dead;
+		this.individualsToBeAttacked = other.individualsToBeAttacked;
 		synchronizeContainer(other.equipperImpl);
 		synchronizeEquipper(other.equipperImpl);
 
@@ -1019,7 +1023,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 									new Attack(indi, thisIndividual)
 								);
 							} else {
-								// TODO Attack over CSI
+								ClientServerInterface.SendRequest.sendRequestAttack(indi, thisIndividual);
 							}
 						}
 					}

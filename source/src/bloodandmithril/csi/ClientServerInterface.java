@@ -25,6 +25,9 @@ import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
+import bloodandmithril.character.ai.task.Attack;
+import bloodandmithril.character.ai.task.Attack.AttackTarget;
+import bloodandmithril.character.ai.task.Attack.WithinAttackRange;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.ai.task.Construct.Constructing;
@@ -64,6 +67,7 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.Response.Responses;
+import bloodandmithril.csi.requests.AttackRequest;
 import bloodandmithril.csi.requests.CSIMineTile;
 import bloodandmithril.csi.requests.CSIOpenCraftingStation;
 import bloodandmithril.csi.requests.CSIOpenCraftingStation.NotifyOpenCraftingStationWindow;
@@ -132,6 +136,7 @@ import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
+import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.RingFunction;
 import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
@@ -216,6 +221,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * The CSI
@@ -382,6 +388,11 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(WithinAttackRange.class);
+		kryo.register(AttackTarget.class);
+		kryo.register(Attack.class);
+		kryo.register(AttackRequest.class);
+		kryo.register(FalseFunction.class);
 		kryo.register(Furniture.class);
 		kryo.register(YellowBrickFloor.class);
 		kryo.register(AITask.class);
@@ -673,6 +684,11 @@ public class ClientServerInterface {
 		public static synchronized void sendRequestTransferLiquidBetweenContainers(Individual individual, LiquidContainer from, LiquidContainer to, float amount) {
 			client.sendTCP(new RequestTransferLiquidBetweenContainers(individual, from, to, amount));
 			Logger.networkDebug("Sending transfer liquid between containers request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendRequestAttack(Individual attacker, Individual... victims) {
+			client.sendTCP(new AttackRequest(attacker, Sets.newHashSet(victims)));
+			Logger.networkDebug("Sending attack request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendRequestConnectedPlayerNamesRequest() {

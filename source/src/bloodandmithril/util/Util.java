@@ -233,5 +233,15 @@ public class Util {
 				1f
 			);
 		}
+
+
+		public static Color lightSkinColor() {
+			return new Color(
+				getRandom().nextFloat() / 5f + 0.8f,
+				getRandom().nextFloat() / 10f + 0.8f,
+				getRandom().nextFloat() + 0.8f,
+				1f
+			);
+		}
 	}
 }

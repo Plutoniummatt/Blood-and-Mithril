@@ -106,13 +106,12 @@ public class MineTile extends CompositeAITask {
 						}
 
 						if (tileToBeDeleted != null && !(tileToBeDeleted instanceof EmptyTile)) {
-							if (ClientServerInterface.isClient()) {
-								SoundService.pickAxe.play(
-									SoundService.getVolumne(tileCoordinate),
-									1f,
-									SoundService.getPan(tileCoordinate)
-								);
-							}
+							SoundService.play(
+								SoundService.pickAxe,
+								SoundService.getVolumne(tileCoordinate),
+								1f,
+								SoundService.getPan(tileCoordinate)
+							);
 
 							if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
 								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);

@@ -161,7 +161,8 @@ public class DevWindow extends Window {
 				20f,
 				Domain.getActiveWorld(),
 				Colors.lightColor(),
-				Colors.randomColor()
+				Colors.randomColor(),
+				Colors.lightSkinColor()
 			);
 
 			elf.getSkills().setObservation(55);

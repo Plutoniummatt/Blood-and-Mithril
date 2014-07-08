@@ -49,7 +49,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 		super(id, state, factionId, inventoryMassCapacity, maxRings, width, height, safetyHeight, interactionBox, worldId, maximumConcurrentMeleeAttackers);
 	}
 
-	
+
 	/**
 	 * @return the Current animated action this {@link GroundTravellingIndividual} is performing.
 	 */
@@ -149,7 +149,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 						setCurrentAction(STAND_RIGHT_COMBAT);
 					}
 				}
-				
+
 			default:
 				return;
 		}
