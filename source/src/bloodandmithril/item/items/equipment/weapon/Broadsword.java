@@ -257,7 +257,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 
 	@Override
 	public float getDisarmChance() {
-		return 0.1f;
+		return 0.025f;
 	}
 
 

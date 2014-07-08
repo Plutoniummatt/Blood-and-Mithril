@@ -145,6 +145,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			long prevFrame = System.currentTimeMillis();
 
 			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+				
 				if (System.currentTimeMillis() - prevFrame > 16) {
 					prevFrame = System.currentTimeMillis();
 					update(Gdx.graphics.getDeltaTime());
@@ -153,6 +159,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		});
 
 
+		updateThread.setPriority(Thread.MAX_PRIORITY);
 		updateThread.setName("Update thread");
 		updateThread.start();
 	}

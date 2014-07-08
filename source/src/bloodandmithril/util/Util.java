@@ -238,8 +238,8 @@ public class Util {
 		public static Color lightSkinColor() {
 			return new Color(
 				getRandom().nextFloat() / 5f + 0.8f,
-				getRandom().nextFloat() / 10f + 0.8f,
-				getRandom().nextFloat() + 0.8f,
+				getRandom().nextFloat() / 20f + 0.8f,
+				getRandom().nextFloat() / -7f + 0.8f,
 				1f
 			);
 		}

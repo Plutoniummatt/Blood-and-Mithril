@@ -3,6 +3,7 @@ package bloodandmithril.audio;
 
 import static bloodandmithril.csi.ClientServerInterface.isClient;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.csi.ClientServerInterface;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -16,17 +17,13 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class SoundService {
 
-	public static Music mainMenu = Gdx.audio.newMusic(Gdx.files.internal("data/music/mainMenu.mp3"));
-
-	public static Sound pickAxe = Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav"));
-
-	public static Sound swordSlash = Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav"));
-
-	public static Sound femaleHit = Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav"));
-
-	public static Sound stab = Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav"));
-
-	public static Sound broadSwordBlock = Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav"));
+	public static Music mainMenu;
+	
+	public static Sound pickAxe;
+	public static Sound swordSlash;
+	public static Sound femaleHit;
+	public static Sound stab;
+	public static Sound broadSwordBlock;
 
 	private static Music current, next;
 
@@ -35,9 +32,25 @@ public class SoundService {
 	private static float volume = 1f;
 
 	private static boolean fadeOut;
+	
+	static {
+		if (ClientServerInterface.isClient()) {
+			mainMenu = Gdx.audio.newMusic(Gdx.files.internal("data/music/mainMenu.mp3"));
+			
+			pickAxe = Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav"));                
+			swordSlash = Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav"));          
+			femaleHit = Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav"));            
+			stab = Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav"));                      
+			broadSwordBlock = Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav"));
+		}
+	}
 
 	/** Returns the pan value in relation to camera location */
 	public static float getPan(Vector2 location) {
+		if (!ClientServerInterface.isClient()) {
+			return 0f;
+		}
+		
 		float panValue = (location.x - BloodAndMithrilClient.cam.position.x) / (BloodAndMithrilClient.WIDTH / 2);
 
 		if (panValue > 0f) {
@@ -99,7 +112,11 @@ public class SoundService {
 
 
 	/** Returns the volume in relation to camera location */
-	public static float getVolumne(Vector2 location) {
+	public static float getVolume(Vector2 location) {
+		if (!ClientServerInterface.isClient()) {
+			return 0f;
+		}
+		
 		Vector2 camPos = new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y);
 
 		float distance = Math.abs(location.cpy().sub(camPos).len());

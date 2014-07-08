@@ -128,6 +128,21 @@ public interface Kinematics {
 				kinematicsBean.jumpedOff = false;
 			}
 		}
+		
+		if (currentTask instanceof CompositeAITask) {
+			AITask subTask = ((CompositeAITask) currentTask).getCurrentTask();
+			if (subTask instanceof GoToLocation) {
+				if (((GoToLocation) subTask).isAboveNext(state.position)) {
+					jumpOff(topography, state, kinematicsBean);
+					kinematicsBean.jumpedOff = false;
+				}
+			} else if (subTask instanceof GoToMovingLocation) {
+				if (((GoToMovingLocation) subTask).isAboveNext(state.position)) {
+					jumpOff(topography, state, kinematicsBean);
+					kinematicsBean.jumpedOff = false;
+				}
+			}
+		}
 
 		if (kinematicsBean.jumpOff != null) {
 			if (kinematicsBean.jumpedOff && !convertToWorldCoord(state.position, false).equals(kinematicsBean.jumpOff)) {

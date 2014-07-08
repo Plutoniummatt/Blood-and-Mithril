@@ -60,7 +60,7 @@ public class CombatChain {
 				if (blockSound != null) {
 					SoundService.play(
 						blockSound,
-						SoundService.getVolumne(target.getState().position),
+						SoundService.getVolume(target.getState().position),
 						1f,
 						SoundService.getPan(target.getState().position)
 					);
@@ -74,7 +74,7 @@ public class CombatChain {
 				if (hitSound != null) {
 					SoundService.play(
 						hitSound,
-						SoundService.getVolumne(target.getState().position),
+						SoundService.getVolume(target.getState().position),
 						1f,
 						SoundService.getPan(target.getState().position)
 					);
