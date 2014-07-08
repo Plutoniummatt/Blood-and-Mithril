@@ -19,7 +19,9 @@ public class Shaders {
 	public static ShaderProgram pass = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/pass.fp"));
 	public static ShaderProgram text = SpriteBatch.createDefaultShader();
 	public static ShaderProgram filter = colorFilterShader();
+	public static ShaderProgram filter2 = colorFilterShader();
 	public static ShaderProgram replaceColor = replaceColorShader();
+	public static ShaderProgram filterIgnoreReplace = filterReplaceIgnoreColorShader();
 
 	public static ShaderProgram invertY = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYAxis.fp"));
 	public static ShaderProgram invertYBlendWithOcclusionBackground = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYBlendWithOcclusionBackground.fp"));
@@ -45,6 +47,11 @@ public class Shaders {
 	public static void setup() {
 		ShaderProgram.pedantic = false;
 		Logger.generalDebug("Shaders loaded", LogLevel.DEBUG);
+	}
+
+	private static ShaderProgram filterReplaceIgnoreColorShader() {
+		ShaderProgram shaderProgram = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/filterIgnoreReplace.fp"));
+		return shaderProgram;
 	}
 
 	/**

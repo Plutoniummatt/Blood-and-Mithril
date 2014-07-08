@@ -11,6 +11,7 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Ingot;
@@ -37,9 +38,11 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMap = Maps.newHashMap();
 
 	static {
-		materialTextureRegionMap.put(Iron.class, new TextureRegion(Domain.individualTexture, 0, 784, 43, 13));
-		materialTextureRegionMap.put(Steel.class, new TextureRegion(Domain.individualTexture, 0, 818, 43, 13));
-		specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(10f, 34f)));
+		if (ClientServerInterface.isClient()) {
+			materialTextureRegionMap.put(Iron.class, new TextureRegion(Domain.individualTexture, 0, 784, 43, 13));
+			materialTextureRegionMap.put(Steel.class, new TextureRegion(Domain.individualTexture, 0, 818, 43, 13));
+			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(10f, 34f)));
+		}
 	}
 
 
@@ -251,8 +254,8 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 	public float getDisarmChance() {
 		return 0.05f;
 	}
-	
-	
+
+
 	@Override
 	public String getType() {
 		return "Dagger";

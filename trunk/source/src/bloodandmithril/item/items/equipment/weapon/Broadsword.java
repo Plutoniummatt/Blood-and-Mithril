@@ -11,6 +11,7 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Ingot;
@@ -38,10 +39,12 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMapStab = Maps.newHashMap();
 
 	static {
-		materialTextureRegionMap.put(Iron.class, new TextureRegion(Domain.individualTexture, 0, 800, 63, 17));
-		materialTextureRegionMap.put(Steel.class, new TextureRegion(Domain.individualTexture, 0, 834, 63, 17));
-		specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
-		specialEffectsMapStab.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(18f, 32f)));
+		if (ClientServerInterface.isClient()) {
+			materialTextureRegionMap.put(Iron.class, new TextureRegion(Domain.individualTexture, 0, 800, 63, 17));
+			materialTextureRegionMap.put(Steel.class, new TextureRegion(Domain.individualTexture, 0, 834, 63, 17));
+			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
+			specialEffectsMapStab.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(18f, 32f)));
+		}
 	}
 
 	/**
@@ -211,7 +214,7 @@ public class Broadsword<T extends Metal> extends OneHandedMeleeWeapon<T> impleme
 			case ATTACK_LEFT_ONE_HANDED_WEAPON:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
 				return specialEffectsMap.get(individual.getClass());
-				
+
 			case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
 				return specialEffectsMapStab.get(individual.getClass());

@@ -354,7 +354,8 @@ public class BloodAndMithrilServer {
 					20f,
 					Domain.getActiveWorld(),
 					Colors.lightColor(),
-					Colors.lightColor()
+					Colors.lightColor(),
+					Colors.lightSkinColor()
 				);
 
 				elf.getSkills().setSmithing(50);

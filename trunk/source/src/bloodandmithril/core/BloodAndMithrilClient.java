@@ -127,8 +127,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	@Override
 	public void create() {
 		// Load client-side resources
-		loadResources();
 		ClientServerInterface.setClient(true);
+		loadResources();
 
 		spriteBatch = new SpriteBatch();
 

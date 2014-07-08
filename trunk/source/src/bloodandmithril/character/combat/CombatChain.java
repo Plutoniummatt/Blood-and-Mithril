@@ -3,6 +3,7 @@ package bloodandmithril.character.combat;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
@@ -47,31 +48,37 @@ public class CombatChain {
 		}
 
 		Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().mul(knockbackStrength);
-		
+
 		boolean blocked = Util.roll(
 			target.getBlockChance() * (1f - attacker.getBlockChanceIgnored())
 		);
-		
+
 		if (blocked) {
 			disarm(knockbackVector);
-			Sound blockSound = attacker.getBlockSound();
-			if (blockSound != null) {
-				blockSound.play(
-					SoundService.getVolumne(target.getState().position),
-					1f,
-					SoundService.getPan(target.getState().position)
-				);
+			if (ClientServerInterface.isClient()) {
+				Sound blockSound = attacker.getBlockSound();
+				if (blockSound != null) {
+					SoundService.play(
+						blockSound,
+						SoundService.getVolumne(target.getState().position),
+						1f,
+						SoundService.getPan(target.getState().position)
+					);
+				}
 			}
 		} else {
 			knockbackVector.mul(0.1f);
 			hit(knockbackVector.cpy());
-			Sound hitSound = attacker.getHitSound();
-			if (hitSound != null) {
-				hitSound.play(
-					SoundService.getVolumne(target.getState().position),
-					1f,
-					SoundService.getPan(target.getState().position)
-				);
+			if (ClientServerInterface.isClient()) {
+				Sound hitSound = attacker.getHitSound();
+				if (hitSound != null) {
+					SoundService.play(
+						hitSound,
+						SoundService.getVolumne(target.getState().position),
+						1f,
+						SoundService.getPan(target.getState().position)
+					);
+				}
 			}
 		}
 
@@ -95,7 +102,7 @@ public class CombatChain {
 		}
 	}
 
-	
+
 	@SuppressWarnings("unchecked")
 	private void hit(Vector2 disarmVector) {
 		disarmVector.rotate(90f * (Util.getRandom().nextFloat() - 0.5f));

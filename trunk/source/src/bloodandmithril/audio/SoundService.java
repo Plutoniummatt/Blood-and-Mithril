@@ -1,6 +1,7 @@
 package bloodandmithril.audio;
 
 
+import static bloodandmithril.csi.ClientServerInterface.isClient;
 import bloodandmithril.core.BloodAndMithrilClient;
 
 import com.badlogic.gdx.Gdx;
@@ -18,13 +19,13 @@ public class SoundService {
 	public static Music mainMenu = Gdx.audio.newMusic(Gdx.files.internal("data/music/mainMenu.mp3"));
 
 	public static Sound pickAxe = Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav"));
-	
+
 	public static Sound swordSlash = Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav"));
-	
+
 	public static Sound femaleHit = Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav"));
-	
+
 	public static Sound stab = Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav"));
-	
+
 	public static Sound broadSwordBlock = Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav"));
 
 	private static Music current, next;
@@ -43,6 +44,15 @@ public class SoundService {
 			return Math.min(panValue, 0.99f);
 		} else {
 			return Math.max(panValue, -0.99f);
+		}
+	}
+
+
+	public static void play(Sound sound, float volume, float pitch, float pan) {
+		if (isClient()) {
+			sound.play(volume, pitch, pan);
+		} else {
+			// Maybe?? TODO Sound over CSI
 		}
 	}
 
