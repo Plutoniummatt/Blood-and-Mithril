@@ -246,13 +246,13 @@ public class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements 
 
 	@Override
 	public float getBlockChanceIgnored() {
-		return 0.25f;
+		return 0.35f;
 	}
 
 
 	@Override
 	public float getDisarmChance() {
-		return 0.05f;
+		return 0.01f;
 	}
 
 

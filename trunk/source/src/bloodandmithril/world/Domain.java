@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+ 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -114,6 +115,12 @@ public class Domain {
 			activeWorld = world;
 		} else {
 			activeWorld = worlds.get(1);
+		}
+		
+		try {
+			Thread.sleep(50);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 
 		fluidThread = new Thread(() -> {

@@ -108,7 +108,7 @@ public class MineTile extends CompositeAITask {
 						if (tileToBeDeleted != null && !(tileToBeDeleted instanceof EmptyTile)) {
 							SoundService.play(
 								SoundService.pickAxe,
-								SoundService.getVolumne(tileCoordinate),
+								SoundService.getVolume(tileCoordinate),
 								1f,
 								SoundService.getPan(tileCoordinate)
 							);

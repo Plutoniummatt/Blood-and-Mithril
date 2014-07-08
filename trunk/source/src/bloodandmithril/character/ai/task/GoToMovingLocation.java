@@ -1,6 +1,7 @@
 package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.util.SerializableFunction;
@@ -71,6 +72,14 @@ public class GoToMovingLocation extends AITask {
 		}
 
 		return Domain.getIndividuals().get(hostId.getId()).getDistanceFrom(destination) < tolerance;
+	}
+	
+	
+	/**
+	 * See {@link Path#isDirectlyAboveNext(Vector2)}
+	 */
+	public boolean isAboveNext(Vector2 location) {
+		return this.currentGoToLocation.getPath().isDirectlyAboveNext(location);
 	}
 
 
