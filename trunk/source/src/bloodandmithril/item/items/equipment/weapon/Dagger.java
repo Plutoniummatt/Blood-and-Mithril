@@ -114,8 +114,14 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 
 	@Override
-	public float getBaseDamage() {
-		return 2.5f * Material.getMaterial(getMaterial()).getCombatMultiplier();
+	public float getBaseMinDamage() {
+		return 1.5f * Material.getMaterial(getMaterial()).getCombatMultiplier();
+	}
+	
+	
+	@Override
+	public float getBaseMaxDamage() {
+		return 3.5f * Material.getMaterial(getMaterial()).getCombatMultiplier();
 	}
 
 
@@ -151,7 +157,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 
 	@Override
-	public float getBlockChance() {
+	public float getParryChance() {
 		return 0.05f;
 	}
 
@@ -163,7 +169,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 
 	@Override
-	public float getBlockChanceIgnored() {
+	public float getParryChanceIgnored() {
 		return 0.35f;
 	}
 

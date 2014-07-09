@@ -17,9 +17,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreen;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
-import static bloodandmithril.ui.UserInterface.addFloatingText;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.util.ComparisonUtil.obj;
 import static com.google.common.collect.Lists.newArrayList;
@@ -67,6 +65,7 @@ import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Task;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
@@ -306,7 +305,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		});
 
 		if (weapon.isPresent()) {
-			return ((MeleeWeapon) weapon.get()).getBlockChance();
+			return ((MeleeWeapon) weapon.get()).getParryChance();
 		}
 
 		return 0f;
@@ -320,7 +319,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		});
 
 		if (weapon.isPresent()) {
-			return ((MeleeWeapon) weapon.get()).getBlockChanceIgnored();
+			return ((MeleeWeapon) weapon.get()).getParryChanceIgnored();
 		}
 
 		return 0f;
@@ -360,21 +359,38 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
 					if (weapon.isPresent()) {
-						addFloatingText(
-							Float.toString(combat().target(toBeAttacked).withWeapon((Weapon) weapon.get()).execute()),
-							Color.RED,
-							worldToScreen(toBeAttacked.getState().position.cpy().add(0f, toBeAttacked.getHeight()))
-						);
+						float damage = combat().target(toBeAttacked).withWeapon((Weapon) weapon.get()).execute();
+						if (damage > 0f) {
+							toBeAttacked.addFloatingText(
+								String.format("%.2f", -damage),
+								Color.RED
+							);
+						}
 					} else {
-						addFloatingText(
-							Float.toString(combat().target(toBeAttacked).execute()),
-							Color.RED,
-							worldToScreen(toBeAttacked.getState().position.cpy().add(0f, toBeAttacked.getHeight()))
-						);
+						float damage = combat().target(toBeAttacked).execute();
+						if (damage > 0f) {
+							toBeAttacked.addFloatingText(
+								String.format("%.2f", -damage),
+								Color.RED
+							);
+						}
 					}
 				}
 			}
 		}
+	}
+	
+	
+	public void addFloatingText(String text, Color color) {
+		if (!ClientServerInterface.isClient()) {
+			return;
+		}
+		
+		UserInterface.addFloatingText(
+			text,
+			color,
+			getState().position.cpy().add(0f, getHeight()).add(new Vector2(0, 15f).rotate(Util.getRandom().nextFloat() * 360f)).add(WIDTH/2, HEIGHT/2)
+		);
 	}
 
 

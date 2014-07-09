@@ -12,6 +12,7 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Wrapper;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 
@@ -55,7 +56,7 @@ public class CombatChain {
 		);
 
 		if (blocked) {
-			disarmLogic(knockbackVector);
+			blockDisarmLogic(knockbackVector);
 			if (ClientServerInterface.isClient()) {
 				Sound blockSound = attacker.getBlockSound();
 				if (blockSound != null) {
@@ -89,20 +90,26 @@ public class CombatChain {
 	}
 
 
-	private void disarmLogic(Vector2 disarmVector) {
-		if (weapon == null) {
-			target.damage(attacker.getUnarmedDamage());
-		} else {
-			target.damage(weapon.getBaseDamage());
-		}
-
+	private void blockDisarmLogic(Vector2 disarmVector) {
 		// Disarming
 		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance())) {
 			Sets.newHashSet(target.getEquipped().keySet()).stream().forEach(item -> {
 				target.unequip((Equipable) item);
 				ContainerImpl.discard(target, item, 1, disarmVector);
 			});
+			
+			target.addFloatingText(
+				"Disarmed!", 
+				Color.YELLOW
+			);
+			
+			return;
 		}
+		
+		target.addFloatingText(
+			"Parried!", 
+			Color.GREEN
+		);
 	}
 
 
@@ -138,10 +145,11 @@ public class CombatChain {
 		if (weapon == null) {
 			damage = attacker.getUnarmedDamage();
 		} else {
+			float weaponDamage = weapon.getBaseMinDamage() + (weapon.getBaseMaxDamage() - weapon.getBaseMinDamage()) * Util.getRandom().nextFloat();
 			if (Util.roll(weapon.getBaseCritChance())) {
-				damage = weapon.getBaseDamage() * weapon.getCritDamageMultiplier();
+				damage = weaponDamage * weapon.getCritDamageMultiplier();
 			} else {
-				damage = weapon.getBaseDamage();
+				damage = weaponDamage;
 			}
 		}
 
