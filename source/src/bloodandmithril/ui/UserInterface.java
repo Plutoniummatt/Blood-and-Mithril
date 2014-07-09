@@ -17,6 +17,7 @@ import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.GameSaver.isSaving;
 import static bloodandmithril.ui.KeyMappings.leftClick;
 import static bloodandmithril.ui.KeyMappings.rightClick;
+import static bloodandmithril.ui.UserInterface.FloatingText.floatingText;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
@@ -65,6 +66,7 @@ import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -139,6 +141,8 @@ public class UserInterface {
 	public static TextureRegion finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
 	public static TextureRegion currentArrow = new TextureRegion(UserInterface.uiTexture, 0, 0, 11, 8);
 	public static TextureRegion followArrow = new TextureRegion(UserInterface.uiTexture, 0, 34, 11, 8);
+
+	private static final List<FloatingText> floatingTexts = Lists.newLinkedList();
 
 	/**
 	 * Setup for UI, makes everything it needs.
@@ -287,6 +291,7 @@ public class UserInterface {
 
 		if (BloodAndMithrilClient.domain != null) {
 			renderUIText();
+			renderFloatingText();
 		}
 		renderButtons();
 
@@ -607,6 +612,22 @@ public class UserInterface {
 		defaultFont.draw(spriteBatch, "Framerate: " + fpsDisplayed, 5, HEIGHT - 65);
 	}
 
+
+	private static void renderFloatingText() {
+		Lists.newArrayList(floatingTexts).stream().forEach(text -> {
+			defaultFont.setColor(Colors.modulateAlpha(text.color, text.life / text.maxLife));
+			defaultFont.draw(spriteBatch, text.text, text.screenPosition.x - text.text.length() * 5, text.screenPosition.y);
+			text.screenPosition.y += 0.5f;
+			text.life -= Gdx.graphics.getDeltaTime();
+
+			if (text.life <= 0f) {
+				synchronized(floatingTexts) {
+					floatingTexts.remove(text);
+				}
+			}
+		});
+	}
+
 	/** Debug text */
 	private static void renderDebugText() {
 		defaultFont.setColor(Color.YELLOW);
@@ -749,6 +770,13 @@ public class UserInterface {
 	}
 
 
+	public static void addFloatingText(String text, Color color, Vector2 position) {
+		synchronized(floatingTexts) {
+			floatingTexts.add(floatingText(text, color, position));
+		}
+	}
+
+
 	/**
 	 * Called when the scroll wheel is scrolled.
 	 */
@@ -779,12 +807,12 @@ public class UserInterface {
 				return true;
 			}
 		}
-		
+
 		if (keyCode == Keys.I) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				Individual individual = Domain.getSelectedIndividuals().iterator().next();
 				String simpleName = individual.getId().getSimpleName();
-				
+
 				UserInterface.addLayeredComponentUnique(
 					new InventoryWindow(
 						individual,
@@ -979,6 +1007,37 @@ public class UserInterface {
 				150
 			)
 		);
+	}
+
+
+	/**
+	 * Floating text that is rendered at UI layer
+	 *
+	 * @author Matt
+	 */
+	public static class FloatingText {
+		public final String text;
+		public final SerializableColor color;
+		public final Vector2 screenPosition;
+		public float maxLife = 1f, life = 1f;
+
+		private FloatingText(String text, SerializableColor color, Vector2 screenPosition) {
+			this.text = text;
+			this.color = color;
+			this.screenPosition = screenPosition;
+		}
+
+		public static FloatingText floatingText(String text, Color color, Vector2 screenPosition) {
+			return new FloatingText(text, new SerializableColor(color), screenPosition);
+		}
+
+
+		public static FloatingText floatingText(String text, Color color, Vector2 screenPosition, float life) {
+			FloatingText floatingText = new FloatingText(text, new SerializableColor(color), screenPosition);
+			floatingText.maxLife = life;
+			floatingText.life = life;
+			return floatingText;
+		}
 	}
 
 

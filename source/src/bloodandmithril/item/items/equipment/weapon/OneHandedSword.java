@@ -12,11 +12,12 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Craftable;
-import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
-import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.util.AnimationHelper;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
@@ -27,49 +28,50 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
-public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
+public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
 	@SuppressWarnings("rawtypes")
-	private static Map<Class<? extends Dagger>, TextureRegion> textureRegionMap = Maps.newHashMap();
+	private static Map<Class<? extends OneHandedSword>, TextureRegion> textureRegionMap = Maps.newHashMap();
 	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMap = Maps.newHashMap();
+	private static Map<Class<? extends Individual>, WrapperForTwo<Animation, Vector2>> specialEffectsMapStab = Maps.newHashMap();
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			textureRegionMap.put(BushKnife.class, new TextureRegion(Domain.individualTexture, 0, 784, 43, 13));
-			textureRegionMap.put(CombatKnife.class, new TextureRegion(Domain.individualTexture, 0, 818, 43, 13));
-			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(10f, 34f)));
+			textureRegionMap.put(Machette.class, new TextureRegion(Domain.individualTexture, 0, 800, 63, 17));
+			textureRegionMap.put(Broadsword.class, new TextureRegion(Domain.individualTexture, 0, 834, 63, 17));
+			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
+			specialEffectsMapStab.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(18f, 32f)));
 		}
 	}
-
 
 	/**
 	 * Constructor
 	 */
-	protected Dagger(float mass, long value, Class<T> metal) {
+	protected OneHandedSword(float mass, long value, Class<T> metal) {
 		super(mass, true, value, metal);
 	}
 
 
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
-		TextureRegion textureRegion = getTextureRegion();
+		TextureRegion texture = getTextureRegion();
 
 		spriteBatch.draw(
 			Domain.individualTexture,
-			position.x - (flipX ? textureRegion.getRegionWidth() - 15 : 15),
-			position.y - 7,
-			flipX ? textureRegion.getRegionWidth() - 15 : 15,
-			7,
-			textureRegion.getRegionWidth(),
-			textureRegion.getRegionHeight(),
+			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
+			position.y - 9,
+			flipX ? texture.getRegionWidth() - 17 : 17,
+			9,
+			texture.getRegionWidth(),
+			texture.getRegionHeight(),
 			1f,
 			1f,
 			angle,
-			textureRegion.getRegionX(),
-			textureRegion.getRegionY(),
-			textureRegion.getRegionWidth(),
-			textureRegion.getRegionHeight(),
+			texture.getRegionX(),
+			texture.getRegionY(),
+			texture.getRegionWidth(),
+			texture.getRegionHeight(),
 			flipX,
 			false
 		);
@@ -96,7 +98,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 	@Override
 	public float getBaseAttackPeriod() {
-		return 1f;
+		return 2f;
 	}
 
 
@@ -104,10 +106,10 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 	public Box getActionFrameHitBox(Individual individual) {
 		return new Box(
 			new Vector2(
-				individual.getHitBox().position.x + (individual.getCurrentAction().flipXAnimation() ? - individual.getHitBox().width * (2f/3f) : individual.getHitBox().width * (2f/3f)),
+				individual.getHitBox().position.x + (individual.getCurrentAction().flipXAnimation() ? - individual.getHitBox().width * (3f/4f) : individual.getHitBox().width  * (3f/4f)),
 				individual.getHitBox().position.y
 			),
-			individual.getHitBox().width * 2 / 3,
+			individual.getHitBox().width,
 			individual.getHitBox().height
 		);
 	}
@@ -115,22 +117,26 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 	@Override
 	public float getBaseDamage() {
-		return 2.5f * Material.getMaterial(getMaterial()).getCombatMultiplier();
+		return 5.5f * Material.getMaterial(getMaterial()).getCombatMultiplier();
 	}
 
 
 	@Override
 	public boolean stab() {
-		return true;
+		return Util.getRandom().nextBoolean();
 	}
 
 
 	@Override
 	public WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(Individual individual) {
 		switch (individual.getCurrentAction()) {
+			case ATTACK_LEFT_ONE_HANDED_WEAPON:
+			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
+				return specialEffectsMap.get(individual.getClass());
+
 			case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
-				return specialEffectsMap.get(individual.getClass());
+				return specialEffectsMapStab.get(individual.getClass());
 
 			default:
 				return null;
@@ -140,7 +146,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 	@Override
 	public float getKnockbackStrength() {
-		return 50;
+		return 350;
 	}
 
 
@@ -152,7 +158,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 	@Override
 	public float getBlockChance() {
-		return 0.05f;
+		return 0.35f;
 	}
 
 
@@ -164,19 +170,19 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 	@Override
 	public float getBlockChanceIgnored() {
-		return 0.35f;
+		return 0.05f;
 	}
 
 
 	@Override
 	public float getDisarmChance() {
-		return 0.01f;
+		return 0.025f;
 	}
 
 
 	@Override
 	public String getType() {
-		return "Dagger";
+		return "One-handed sword";
 	}
 
 
@@ -188,12 +194,12 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 	@Override
 	public float getBaseCritChance() {
-		return 0.35f;
+		return 0.2f;
 	}
 
 
 	@Override
 	public float getCritDamageMultiplier() {
-		return 2f;
+		return 1.5f;
 	}
 }

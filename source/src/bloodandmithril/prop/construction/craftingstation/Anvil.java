@@ -1,13 +1,12 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.item.items.equipment.weapon.Broadsword.broadSword;
-import static bloodandmithril.item.items.equipment.weapon.Dagger.dagger;
-
 import java.util.Map;
 
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.material.metal.Iron;
-import bloodandmithril.item.material.metal.Steel;
+import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
+import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
@@ -22,10 +21,10 @@ public class Anvil extends CraftingStation {
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
 
 	static {
-		craftables.put(dagger(0, Iron.class), 1);
-		craftables.put(dagger(0, Steel.class), 1);
-		craftables.put(broadSword(0, Iron.class), 1);
-		craftables.put(broadSword(0, Steel.class), 1);
+		craftables.put(new BushKnife(), 1);
+		craftables.put(new CombatKnife(), 1);
+		craftables.put(new Machette(), 1);
+		craftables.put(new Broadsword(), 1);
 	}
 
 	private static final long serialVersionUID = -7172034409582382182L;

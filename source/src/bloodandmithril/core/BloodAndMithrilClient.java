@@ -150,7 +150,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
-				
+
 				if (System.currentTimeMillis() - prevFrame > 16) {
 					prevFrame = System.currentTimeMillis();
 					update(Gdx.graphics.getDeltaTime());
@@ -513,6 +513,14 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	public static float worldToScreenX(float worldX) {
 		return Gdx.graphics.getWidth()/2 + (worldX - cam.position.x);
+	}
+
+
+	/**
+	 * Converts world coordinates to screen coordinates
+	 */
+	public static Vector2 worldToScreen(Vector2 world) {
+		return new Vector2(worldToScreenX(world.x), worldToScreenY(world.y));
 	}
 
 

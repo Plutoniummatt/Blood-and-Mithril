@@ -139,8 +139,13 @@ import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.RingFunction;
 import bloodandmithril.item.items.equipment.weapon.Dagger;
+import bloodandmithril.item.items.equipment.weapon.OneHandedAxe;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
+import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
+import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.DeathCap;
@@ -388,6 +393,11 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(OneHandedAxe.class);
+		kryo.register(Machette.class);
+		kryo.register(Broadsword.class);
+		kryo.register(CombatKnife.class);
+		kryo.register(BushKnife.class);
 		kryo.register(WithinAttackRange.class);
 		kryo.register(AttackTarget.class);
 		kryo.register(Attack.class);

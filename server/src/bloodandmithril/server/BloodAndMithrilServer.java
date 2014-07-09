@@ -1,7 +1,5 @@
 package bloodandmithril.server;
 
-import static bloodandmithril.item.items.equipment.weapon.Dagger.dagger;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +22,10 @@ import bloodandmithril.csi.Response.Responses;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucket;
+import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
+import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.DeathCap;
@@ -34,7 +36,6 @@ import bloodandmithril.item.items.misc.Currency;
 import bloodandmithril.item.liquid.Blood;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Water;
-import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.wood.Pine;
@@ -386,7 +387,10 @@ public class BloodAndMithrilServer {
 				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
 					elf.giveItem(new Brick());
 				}
-				elf.giveItem(dagger(100, Iron.class));
+				elf.giveItem(new BushKnife());
+				elf.giveItem(new CombatKnife());
+				elf.giveItem(new Machette());
+				elf.giveItem(new Broadsword());
 
 				Domain.getIndividuals().put(elf.getId().getId(), elf);
 			}

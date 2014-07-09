@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
-public abstract class Weapon<T extends Material> extends Equipable implements Affector {
+public abstract class Weapon<T extends Material> extends Equipable {
 	private static final long serialVersionUID = -1099406999441510716L;
 
 	private Class<T> material;
@@ -31,13 +31,13 @@ public abstract class Weapon<T extends Material> extends Equipable implements Af
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return Material.getMaterial(material).getName() + " " + weaponGetSingular(firstCap);
+		return weaponGetSingular(firstCap);
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return Material.getMaterial(material).getName() + " " + weaponGetPlural(firstCap);
+		return weaponGetPlural(firstCap);
 	}
 
 	/**
@@ -62,10 +62,15 @@ public abstract class Weapon<T extends Material> extends Equipable implements Af
 	public abstract float getBaseDamage();
 
 	/**
+	 * @return The crit multiplier of this {@link Weapon}
+	 */
+	public abstract float getCritDamageMultiplier();
+
+	/**
 	 * @return the {@link Action} that this {@link Weapon} causes.
 	 */
 	public abstract Action getAttackAction(boolean right);
-	
+
 	/**
 	 * @return the knock back strength
 	 */
@@ -75,7 +80,19 @@ public abstract class Weapon<T extends Material> extends Equipable implements Af
 	 * @return the special effects animation when attacking
 	 */
 	public abstract WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(Individual individual);
-	
+
+	/**
+	 * Weapon-specific special effects
+	 *
+	 * @param individual to apply the effect to
+	 */
+	public abstract void specialEffect(Individual individual);
+
+	/**
+	 * @return the base crit chance
+	 */
+	public abstract float getBaseCritChance();
+
 	/**
 	 * @return The {@link Material} this {@link Weapon} is made from
 	 */

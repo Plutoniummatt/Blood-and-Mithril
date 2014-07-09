@@ -41,7 +41,8 @@ public class CombatChain {
 		return this;
 	}
 
-	public void execute() {
+	public float execute() {
+		float damageDone = 0f;
 		float knockbackStrength = 50f;
 		if (weapon != null) {
 			knockbackStrength = weapon.getKnockbackStrength();
@@ -54,7 +55,7 @@ public class CombatChain {
 		);
 
 		if (blocked) {
-			disarm(knockbackVector);
+			disarmLogic(knockbackVector);
 			if (ClientServerInterface.isClient()) {
 				Sound blockSound = attacker.getBlockSound();
 				if (blockSound != null) {
@@ -68,7 +69,7 @@ public class CombatChain {
 			}
 		} else {
 			knockbackVector.mul(0.1f);
-			hit(knockbackVector.cpy());
+			damageDone = hit(knockbackVector.cpy());
 			if (ClientServerInterface.isClient()) {
 				Sound hitSound = attacker.getHitSound();
 				if (hitSound != null) {
@@ -83,10 +84,12 @@ public class CombatChain {
 		}
 
 		target.getState().velocity.add(knockbackVector);
+
+		return damageDone;
 	}
 
 
-	private void disarm(Vector2 disarmVector) {
+	private void disarmLogic(Vector2 disarmVector) {
 		if (weapon == null) {
 			target.damage(attacker.getUnarmedDamage());
 		} else {
@@ -104,7 +107,7 @@ public class CombatChain {
 
 
 	@SuppressWarnings("unchecked")
-	private void hit(Vector2 disarmVector) {
+	private float hit(Vector2 disarmVector) {
 		disarmVector.rotate(90f * (Util.getRandom().nextFloat() - 0.5f));
 		float f = Util.getRandom().nextFloat();
 		float t = 0f;
@@ -114,14 +117,7 @@ public class CombatChain {
 			if (f >= t && f < t + p.getProbability()) {
 				hit.t = p;
 			}
-
 			t += p.getProbability();
-		}
-
-		if (weapon == null) {
-			target.damage(attacker.getUnarmedDamage());
-		} else {
-			target.damage(weapon.getBaseDamage());
 		}
 
 		// Disarming
@@ -131,9 +127,25 @@ public class CombatChain {
 					return ((Equipable) item).slot == hit.t.getLinkedEquipmentSlot();
 				}
 			).forEach(item -> {
-				target.unequip((Equipable) item);
-				ContainerImpl.discard(target, item, 1, disarmVector);
+				if (item instanceof Weapon) {
+					target.unequip((Equipable) item);
+					ContainerImpl.discard(target, item, 1, disarmVector);
+				}
 			});
 		}
+
+		float damage = 0f;
+		if (weapon == null) {
+			damage = attacker.getUnarmedDamage();
+		} else {
+			if (Util.roll(weapon.getBaseCritChance())) {
+				damage = weapon.getBaseDamage() * weapon.getCritDamageMultiplier();
+			} else {
+				damage = weapon.getBaseDamage();
+			}
+		}
+
+		target.damage(damage);
+		return damage;
 	}
 }

@@ -71,7 +71,6 @@ public class Steel extends Metal {
 
 	@Override
 	public float getCombatMultiplier() {
-		// TODO Auto-generated method stub
-		return 1.15f;
+		return 1.25f;
 	}
 }
