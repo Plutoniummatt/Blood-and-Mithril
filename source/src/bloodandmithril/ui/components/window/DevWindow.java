@@ -155,7 +155,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Input.Keys.E) {
-			IndividualState state = new IndividualState(10f, 0.01f, 0.02f, 0f, 0f);
+			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
 			state.position = new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);

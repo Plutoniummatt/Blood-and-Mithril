@@ -118,8 +118,14 @@ public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon
 
 
 	@Override
-	public float getBaseDamage() {
-		return 8f * Material.getMaterial(getMaterial()).getCombatMultiplier();
+	public float getBaseMinDamage() {
+		return 7f * Material.getMaterial(getMaterial()).getCombatMultiplier();
+	}
+	
+	
+	@Override
+	public float getBaseMaxDamage() {
+		return 9f * Material.getMaterial(getMaterial()).getCombatMultiplier();
 	}
 
 
@@ -155,7 +161,7 @@ public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon
 
 
 	@Override
-	public float getBlockChance() {
+	public float getParryChance() {
 		return 0.25f;
 	}
 
@@ -167,7 +173,7 @@ public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon
 
 
 	@Override
-	public float getBlockChanceIgnored() {
+	public float getParryChanceIgnored() {
 		return 0f;
 	}
 

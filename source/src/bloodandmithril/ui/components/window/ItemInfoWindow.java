@@ -101,12 +101,12 @@ public class ItemInfoWindow extends Window {
 	private void weapon(Weapon weapon) {
 		if (weapon instanceof MeleeWeapon) {
 			MeleeWeapon meleeWeapon = (MeleeWeapon) weapon;
-			defaultFont.draw(spriteBatch, "Block chance: " + String.format("%.0f", meleeWeapon.getBlockChance() * 100f) + "%", x + 10, y - 103);
-			defaultFont.draw(spriteBatch, "Block ignore: " + String.format("%.0f", meleeWeapon.getBlockChanceIgnored() * 100f) + "%", x + 10, y - 123);
+			defaultFont.draw(spriteBatch, "Parry chance: " + String.format("%.0f", meleeWeapon.getParryChance() * 100f) + "%", x + 10, y - 103);
+			defaultFont.draw(spriteBatch, "Parry ignore: " + String.format("%.0f", meleeWeapon.getParryChanceIgnored() * 100f) + "%", x + 10, y - 123);
 			defaultFont.draw(spriteBatch, "Base disarm chance: " + String.format("%.0f", meleeWeapon.getDisarmChance() * 100f) + "%", x + 10, y - 143);
-			defaultFont.draw(spriteBatch, "Base damage: " + meleeWeapon.getBaseDamage(), x + 10, y - 163);
+			defaultFont.draw(spriteBatch, "Base damage: " + String.format("%.1f", meleeWeapon.getBaseMinDamage()) + " - " + String.format("%.1f", meleeWeapon.getBaseMaxDamage()), x + 10, y - 163);
 			defaultFont.draw(spriteBatch, "Base attack duration: " + String.format("%.1f", meleeWeapon.getBaseAttackPeriod()) + "s", x + 10, y - 183);
-			defaultFont.draw(spriteBatch, "DPS: " + String.format("%.1f", meleeWeapon.getBaseDamage()/meleeWeapon.getBaseAttackPeriod()), x + 10, y - 203);
+			defaultFont.draw(spriteBatch, "DPS: " + String.format("%.1f", (meleeWeapon.getBaseMinDamage() + meleeWeapon.getBaseMaxDamage()) / 2f /meleeWeapon.getBaseAttackPeriod()), x + 10, y - 203);
 		}
 	}
 

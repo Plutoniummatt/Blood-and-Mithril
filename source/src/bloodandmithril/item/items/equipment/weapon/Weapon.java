@@ -57,9 +57,14 @@ public abstract class Weapon<T extends Material> extends Equipable {
 	public abstract float getBaseAttackPeriod();
 
 	/**
-	 * @return The base damage of this {@link Weapon}
+	 * @return The base minimum damage of this {@link Weapon}
 	 */
-	public abstract float getBaseDamage();
+	public abstract float getBaseMinDamage();
+	
+	/**
+	 * @return The base maximum damage of this {@link Weapon}
+	 */
+	public abstract float getBaseMaxDamage();
 
 	/**
 	 * @return The crit multiplier of this {@link Weapon}
