@@ -101,7 +101,7 @@ public class Attack extends CompositeAITask {
 
 	@Override
 	public void uponCompletion() {
-		// Do nothing
+		Domain.getIndividuals().get(hostId.getId()).clearCommands();
 	}
 
 

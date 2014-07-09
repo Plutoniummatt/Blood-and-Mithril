@@ -17,7 +17,9 @@ import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreen;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
+import static bloodandmithril.ui.UserInterface.addFloatingText;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.util.ComparisonUtil.obj;
 import static com.google.common.collect.Lists.newArrayList;
@@ -358,9 +360,17 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
 					if (weapon.isPresent()) {
-						combat().target(toBeAttacked).withWeapon((Weapon) weapon.get()).execute();
+						addFloatingText(
+							Float.toString(combat().target(toBeAttacked).withWeapon((Weapon) weapon.get()).execute()),
+							Color.RED,
+							worldToScreen(toBeAttacked.getState().position.cpy().add(0f, toBeAttacked.getHeight()))
+						);
 					} else {
-						combat().target(toBeAttacked).execute();
+						addFloatingText(
+							Float.toString(combat().target(toBeAttacked).execute()),
+							Color.RED,
+							worldToScreen(toBeAttacked.getState().position.cpy().add(0f, toBeAttacked.getHeight()))
+						);
 					}
 				}
 			}
