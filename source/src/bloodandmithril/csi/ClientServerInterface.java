@@ -67,6 +67,7 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.Response.Responses;
+import bloodandmithril.csi.requests.AddFloatingTextNotification;
 import bloodandmithril.csi.requests.AttackRequest;
 import bloodandmithril.csi.requests.CSIMineTile;
 import bloodandmithril.csi.requests.CSIOpenCraftingStation;
@@ -180,6 +181,7 @@ import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.Furniture;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.Plant;
+import bloodandmithril.ui.UserInterface.FloatingText;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -393,6 +395,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(FloatingText.class);
+		kryo.register(AddFloatingTextNotification.class);
 		kryo.register(OneHandedAxe.class);
 		kryo.register(Machette.class);
 		kryo.register(Broadsword.class);
@@ -845,6 +849,16 @@ public class ClientServerInterface {
 				true,
 				true,
 				new SynchronizeItems()
+			);
+		}
+
+
+		public static synchronized void notifyAddFloatingText(FloatingText floatingText) {
+			sendNotification(
+				-1,
+				true,
+				true,
+				new AddFloatingTextNotification(floatingText)
 			);
 		}
 

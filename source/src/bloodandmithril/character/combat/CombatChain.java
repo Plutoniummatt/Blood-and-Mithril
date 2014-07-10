@@ -84,30 +84,37 @@ public class CombatChain {
 			}
 		}
 
-		target.getState().velocity.add(knockbackVector);
+		if (ClientServerInterface.isServer()) {
+			target.getState().velocity.add(knockbackVector);
+			return damageDone;
+		}
 
-		return damageDone;
+		return 0f;
 	}
 
 
 	private void blockDisarmLogic(Vector2 disarmVector) {
+		if (!ClientServerInterface.isServer()) {
+			return;
+		}
+
 		// Disarming
 		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance())) {
 			Sets.newHashSet(target.getEquipped().keySet()).stream().forEach(item -> {
 				target.unequip((Equipable) item);
 				ContainerImpl.discard(target, item, 1, disarmVector);
 			});
-			
+
 			target.addFloatingText(
-				"Disarmed!", 
+				"Disarmed!",
 				Color.YELLOW
 			);
-			
+
 			return;
 		}
-		
+
 		target.addFloatingText(
-			"Parried!", 
+			"Parried!",
 			Color.GREEN
 		);
 	}
@@ -115,6 +122,10 @@ public class CombatChain {
 
 	@SuppressWarnings("unchecked")
 	private float hit(Vector2 disarmVector) {
+		if (!ClientServerInterface.isServer()) {
+			return 0f;
+		}
+
 		disarmVector.rotate(90f * (Util.getRandom().nextFloat() - 0.5f));
 		float f = Util.getRandom().nextFloat();
 		float t = 0f;
