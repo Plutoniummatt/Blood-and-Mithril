@@ -13,6 +13,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.ping;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.csi.ClientServerInterface.isClient;
 import static bloodandmithril.csi.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.GameSaver.isSaving;
 import static bloodandmithril.ui.KeyMappings.leftClick;
@@ -35,6 +36,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,8 +120,8 @@ public class UserInterface {
 	public static ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	/** The texture atlas for other UI elements */
-	public static final Texture uiTexture = new Texture(files.internal("data/image/ui.png"));
-	public static final Texture iconTexture = new Texture(files.internal("data/image/icons.png"));
+	public static Texture uiTexture;
+	public static Texture iconTexture;
 
 	/** Initial coordinates for the drag box, see {@link #renderDragBox()} */
 	private static Vector2 initialLeftMouseDragCoordinates = null;
@@ -138,11 +140,21 @@ public class UserInterface {
 	private static int fpsTimer, fps, fpsDisplayed;
 
 	/** Texture regions */
-	public static TextureRegion finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
-	public static TextureRegion currentArrow = new TextureRegion(UserInterface.uiTexture, 0, 0, 11, 8);
-	public static TextureRegion followArrow = new TextureRegion(UserInterface.uiTexture, 0, 34, 11, 8);
+	public static TextureRegion finalWaypointTexture;
+	public static TextureRegion currentArrow;
+	public static TextureRegion followArrow;
 
 	private static final List<FloatingText> floatingTexts = Lists.newLinkedList();
+
+	static {
+		if (ClientServerInterface.isClient()) {
+			uiTexture = new Texture(files.internal("data/image/ui.png"));
+			iconTexture = new Texture(files.internal("data/image/icons.png"));
+			finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
+			currentArrow = new TextureRegion(UserInterface.uiTexture, 0, 0, 11, 8);
+			followArrow = new TextureRegion(UserInterface.uiTexture, 0, 34, 11, 8);
+		}
+	}
 
 	/**
 	 * Setup for UI, makes everything it needs.
@@ -618,17 +630,17 @@ public class UserInterface {
 		Lists.newArrayList(floatingTexts).stream().forEach(text -> {
 			defaultFont.setColor(Colors.modulateAlpha(Color.BLACK, text.life / text.maxLife));
 			defaultFont.draw(
-				spriteBatch, 
-				text.text, 
-				text.worldPosition.x - cam.position.x - text.text.length() * 5 - 1, 
+				spriteBatch,
+				text.text,
+				text.worldPosition.x - cam.position.x - text.text.length() * 5 - 1,
 				text.worldPosition.y - cam.position.y - 1
 			);
 			defaultFont.setColor(Colors.modulateAlpha(text.color, text.life / text.maxLife));
 			defaultFont.draw(
-				spriteBatch, 
-				text.text, 
-				text.worldPosition.x  - cam.position.x- text.text.length() * 5, 
-				text.worldPosition.y  - cam.position.y
+				spriteBatch,
+				text.text,
+				text.worldPosition.x - cam.position.x - text.text.length() * 5,
+				text.worldPosition.y - cam.position.y
 			);
 			text.worldPosition.y += 0.5f;
 			text.life -= Gdx.graphics.getDeltaTime();
@@ -785,8 +797,27 @@ public class UserInterface {
 
 
 	public static void addFloatingText(String text, Color color, Vector2 position) {
-		synchronized(floatingTexts) {
-			floatingTexts.add(floatingText(text, color, position));
+		addFloatingText(floatingText(text, color, position), false);
+	}
+
+
+	public static void addFloatingText(FloatingText floatingText, boolean csi) {
+		if (isServer()) {
+			if (isClient()) {
+				synchronized(floatingTexts) {
+					floatingTexts.add(floatingText);
+				}
+			} else {
+				ClientServerInterface.SendNotification.notifyAddFloatingText(floatingText);
+			}
+
+			return;
+		}
+
+		if (csi) {
+			synchronized(floatingTexts) {
+				floatingTexts.add(floatingText);
+			}
 		}
 	}
 
@@ -1029,7 +1060,9 @@ public class UserInterface {
 	 *
 	 * @author Matt
 	 */
-	public static class FloatingText {
+	public static class FloatingText implements Serializable {
+		private static final long serialVersionUID = -2300891549168870979L;
+
 		public final String text;
 		public final SerializableColor color;
 		public final Vector2 worldPosition;

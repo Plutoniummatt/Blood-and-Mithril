@@ -379,13 +379,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			}
 		}
 	}
-	
-	
+
+
 	public void addFloatingText(String text, Color color) {
-		if (!ClientServerInterface.isClient()) {
-			return;
-		}
-		
 		UserInterface.addFloatingText(
 			text,
 			color,
