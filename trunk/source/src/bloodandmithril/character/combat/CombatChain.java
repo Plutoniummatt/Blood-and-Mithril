@@ -52,7 +52,7 @@ public class CombatChain {
 		Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().mul(knockbackStrength);
 
 		boolean blocked = Util.roll(
-			target.getBlockChance() * (1f - attacker.getBlockChanceIgnored())
+			target.getParryChance() * (1f - attacker.getParryChanceIgnored())
 		);
 
 		if (blocked) {

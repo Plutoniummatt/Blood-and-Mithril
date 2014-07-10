@@ -54,11 +54,12 @@ public class GenerateChunk implements Request {
 					ChunkData fData = Domain.getWorld(worldId).getTopography().getChunkMap().get(x).get(y).getChunkData(true);
 					ChunkData bData = Domain.getWorld(worldId).getTopography().getChunkMap().get(x).get(y).getChunkData(false);
 					response = new GenerateChunkResponse(fData, bData, worldId);
-				}
-				try {
-					Thread.sleep(50);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
+				} else {
+					try {
+						Thread.sleep(50);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
 				}
 			} while (!Domain.getWorld(worldId).getTopography().getChunkMap().doesChunkExist(x, y) || response == null);
 
