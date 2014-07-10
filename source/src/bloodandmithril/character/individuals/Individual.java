@@ -198,7 +198,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private Action previousActionFrameAction;
 	private int previousActionFrame;
 
-
 	/**
 	 * Constructor
 	 */
@@ -299,7 +298,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	@SuppressWarnings("rawtypes")
-	public float getBlockChance() {
+	public float getParryChance() {
 		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
 			return equipped instanceof MeleeWeapon;
 		});
@@ -313,7 +312,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	@SuppressWarnings("rawtypes")
-	public float getBlockChanceIgnored() {
+	public float getParryChanceIgnored() {
 		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
 			return equipped instanceof MeleeWeapon;
 		});

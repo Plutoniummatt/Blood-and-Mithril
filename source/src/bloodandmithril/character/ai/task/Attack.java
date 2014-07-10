@@ -5,6 +5,7 @@ import java.util.Set;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 
@@ -101,7 +102,9 @@ public class Attack extends CompositeAITask {
 
 	@Override
 	public void uponCompletion() {
-		Domain.getIndividuals().get(hostId.getId()).clearCommands();
+		Individual host = Domain.getIndividuals().get(hostId.getId());
+		host.sendCommand(KeyMappings.moveRight, false);
+		host.sendCommand(KeyMappings.moveLeft, false);
 	}
 
 
