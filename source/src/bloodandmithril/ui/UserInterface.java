@@ -632,15 +632,15 @@ public class UserInterface {
 			defaultFont.draw(
 				spriteBatch,
 				text.text,
-				text.worldPosition.x - cam.position.x - text.text.length() * 5 - 1,
-				text.worldPosition.y - cam.position.y - 1
+				text.worldPosition.x - cam.position.x + WIDTH/2 - text.text.length() * 5 - 1,
+				text.worldPosition.y - cam.position.y + HEIGHT/2 - 1
 			);
 			defaultFont.setColor(Colors.modulateAlpha(text.color, text.life / text.maxLife));
 			defaultFont.draw(
 				spriteBatch,
 				text.text,
-				text.worldPosition.x - cam.position.x - text.text.length() * 5,
-				text.worldPosition.y - cam.position.y
+				text.worldPosition.x - cam.position.x + WIDTH/2 - text.text.length() * 5,
+				text.worldPosition.y - cam.position.y + HEIGHT/2
 			);
 			text.worldPosition.y += 0.5f;
 			text.life -= Gdx.graphics.getDeltaTime();

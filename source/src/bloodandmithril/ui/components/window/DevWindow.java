@@ -1,7 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 
@@ -148,10 +146,6 @@ public class DevWindow extends Window {
 	public boolean keyPressed(int keyCode) {
 		if (super.keyPressed(keyCode)) {
 			return true;
-		}
-
-		if (keyCode == Input.Keys.Z) {
-			UserInterface.addFloatingText("Hello world", Colors.randomColor(), new Vector2(Util.getRandom().nextFloat() * WIDTH, Util.getRandom().nextFloat() * HEIGHT));
 		}
 
 		if (keyCode == Input.Keys.E) {

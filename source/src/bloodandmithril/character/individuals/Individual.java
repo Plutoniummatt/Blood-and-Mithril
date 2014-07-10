@@ -385,7 +385,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		UserInterface.addFloatingText(
 			text,
 			color,
-			getState().position.cpy().add(0f, getHeight()).add(new Vector2(0, 15f).rotate(Util.getRandom().nextFloat() * 360f)).add(WIDTH/2, HEIGHT/2)
+			getState().position.cpy().add(0f, getHeight()).add(new Vector2(0, 15f).rotate(Util.getRandom().nextFloat() * 360f))
 		);
 	}
 
