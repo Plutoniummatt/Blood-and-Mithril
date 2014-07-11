@@ -224,7 +224,7 @@ public class EquipperImpl implements Equipper, Serializable {
 	 *
 	 * @author Matt
 	 */
-	public class AlwaysTrueFunction implements SerializableFunction<Boolean> {
+	public static class AlwaysTrueFunction implements SerializableFunction<Boolean> {
 		private static final long serialVersionUID = -6919306076788382244L;
 
 		@Override

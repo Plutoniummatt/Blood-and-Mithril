@@ -2,6 +2,7 @@ package bloodandmithril.audio;
 
 
 import static bloodandmithril.csi.ClientServerInterface.isClient;
+import static bloodandmithril.csi.ClientServerInterface.isServer;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.csi.ClientServerInterface;
 
@@ -18,7 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 public class SoundService {
 
 	public static Music mainMenu;
-	
+
 	public static Sound pickAxe;
 	public static Sound swordSlash;
 	public static Sound femaleHit;
@@ -32,15 +33,15 @@ public class SoundService {
 	private static float volume = 1f;
 
 	private static boolean fadeOut;
-	
+
 	static {
 		if (ClientServerInterface.isClient()) {
 			mainMenu = Gdx.audio.newMusic(Gdx.files.internal("data/music/mainMenu.mp3"));
-			
-			pickAxe = Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav"));                
-			swordSlash = Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav"));          
-			femaleHit = Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav"));            
-			stab = Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav"));                      
+
+			pickAxe = Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav"));
+			swordSlash = Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav"));
+			femaleHit = Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav"));
+			stab = Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav"));
 			broadSwordBlock = Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav"));
 		}
 	}
@@ -50,7 +51,7 @@ public class SoundService {
 		if (!ClientServerInterface.isClient()) {
 			return 0f;
 		}
-		
+
 		float panValue = (location.x - BloodAndMithrilClient.cam.position.x) / (BloodAndMithrilClient.WIDTH / 2);
 
 		if (panValue > 0f) {
@@ -61,11 +62,15 @@ public class SoundService {
 	}
 
 
-	public static void play(Sound sound, float volume, float pitch, float pan) {
-		if (isClient()) {
+	public static void play(Sound sound, float volume, float pitch, float pan, boolean requiresServerAuthority) {
+		if (isServer()) {
+			if (isClient()) {
+				sound.play(volume, pitch, pan);
+			} else if (requiresServerAuthority) {
+				// Notify clients
+			}
+		} else if (!requiresServerAuthority) {
 			sound.play(volume, pitch, pan);
-		} else {
-			// Maybe?? TODO Sound over CSI
 		}
 	}
 
@@ -116,7 +121,7 @@ public class SoundService {
 		if (!ClientServerInterface.isClient()) {
 			return 0f;
 		}
-		
+
 		Vector2 camPos = new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y);
 
 		float distance = Math.abs(location.cpy().sub(camPos).len());

@@ -1,12 +1,16 @@
 package bloodandmithril.util;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.util.datastructure.Wrapper;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.base.Function;
+import com.google.common.collect.Sets;
 
 public class Util {
 
@@ -49,6 +53,19 @@ public class Util {
 
 	public static boolean roll(float probability) {
 		return random.nextFloat() < probability;
+	}
+
+
+	public static <A, B> Set<B> transformSet(Set<A> setOfA, Function<A, B> transformationFunction) {
+		HashSet<B> newHashSet = Sets.newHashSet();
+
+		for (A a : setOfA) {
+			if (!newHashSet.add(transformationFunction.apply(a))) {
+				throw new RuntimeException("Transformation function can not transform all elements of " + a.getClass().getSimpleName() + " uniquely.");
+			}
+		}
+
+		return newHashSet;
 	}
 
 
