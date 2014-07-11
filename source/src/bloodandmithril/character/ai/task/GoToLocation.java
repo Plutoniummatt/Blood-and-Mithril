@@ -10,6 +10,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Performance;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
@@ -35,6 +36,9 @@ public class GoToLocation extends AITask {
 	/** Used to calculate whether the {@link #host} is stuck */
 	private int stuckCounter = 0;
 
+	/** Optional termination function */
+	private SerializableFunction<Boolean> function;
+
 	/**
 	 * Constructor
 	 */
@@ -49,6 +53,25 @@ public class GoToLocation extends AITask {
 		this.path = fly ?
 			pathFinder.findShortestPathAir(new WayPoint(host.getState().position), destination, Domain.getWorld(host.getWorldId())):
 			pathFinder.findShortestPathGround(new WayPoint(host.getState().position), destination, blockspan, safe ? host.getSafetyHeight() : 1000, forceTolerance, Domain.getWorld(host.getWorldId()));
+	}
+	
+	
+
+	/**
+	 * Constructor
+	 */
+	public GoToLocation(Individual host, WayPoint destination, boolean fly, SerializableFunction<Boolean> function, boolean safe) {
+		super(host.getId());
+		this.fly = fly;
+		this.function = function;
+
+		int blockspan = host.getHeight()/Topography.TILE_SIZE + (host.getHeight() % Topography.TILE_SIZE == 0 ? 0 : 1) - 1;
+
+		PathFinder pathFinder = new AStarPathFinder();
+
+		this.path = fly ?
+			pathFinder.findShortestPathAir(new WayPoint(host.getState().position), destination, Domain.getWorld(host.getWorldId())):
+			pathFinder.findShortestPathGround(new WayPoint(host.getState().position), destination, blockspan, safe ? host.getSafetyHeight() : 1000, 150f, Domain.getWorld(host.getWorldId()));
 	}
 
 
@@ -185,6 +208,12 @@ public class GoToLocation extends AITask {
 	 */
 	@Override
 	public boolean isComplete() {
+		if (function != null) {
+			if (function.call()) {
+				return true;
+			}
+		}
+		
 		Individual host = Domain.getIndividuals().get(hostId.getId());
 
 		boolean finalWayPointCheck = false;
@@ -213,12 +242,14 @@ public class GoToLocation extends AITask {
 
 
 	@Override
-	public void uponCompletion() {
+	public boolean uponCompletion() {
 		Individual host = Domain.getIndividuals().get(hostId.getId());
 
 		host.sendCommand(KeyMappings.moveRight, false);
 		host.sendCommand(KeyMappings.moveLeft, false);
 		host.sendCommand(KeyMappings.walk, host.isWalking());
 		host.setJumpOffToNull();
+		
+		return false;
 	}
 }

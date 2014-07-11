@@ -38,6 +38,7 @@ public class Idle extends AITask {
 
 
 	@Override
-	public void uponCompletion() {
+	public boolean uponCompletion() {
+		return false;
 	}
 }

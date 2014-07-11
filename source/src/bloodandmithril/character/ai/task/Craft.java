@@ -83,7 +83,8 @@ public class Craft extends CompositeAITask {
 
 
 		@Override
-		public void uponCompletion() {
+		public boolean uponCompletion() {
+			return false;
 		}
 
 

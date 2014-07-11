@@ -123,7 +123,8 @@ public class TradeWith extends CompositeAITask {
 		}
 
 		@Override
-		public void uponCompletion() {
+		public boolean uponCompletion() {
+			return false;
 		}
 
 		@Override

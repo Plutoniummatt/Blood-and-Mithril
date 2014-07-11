@@ -61,7 +61,8 @@ public class Construct extends CompositeAITask {
 
 
 		@Override
-		public void uponCompletion() {
+		public boolean uponCompletion() {
+			return false;
 		}
 
 

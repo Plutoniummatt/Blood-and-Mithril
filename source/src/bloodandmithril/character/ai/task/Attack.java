@@ -51,7 +51,8 @@ public class Attack extends CompositeAITask {
 			appendTask(new GoToMovingLocation(
 				hostId,
 				location,
-				new WithinAttackRange(hostId, alive.getId())
+				new WithinAttackRange(hostId, alive.getId()),
+				true
 			));
 
 			appendTask(new AttackTarget(host.getId()));
@@ -78,7 +79,8 @@ public class Attack extends CompositeAITask {
 			appendTask(new GoToMovingLocation(
 				hostId,
 				location,
-				new WithinAttackRange(hostId, alive.getId())
+				new WithinAttackRange(hostId, alive.getId()),
+				true
 			));
 
 			appendTask(new AttackTarget(hostId));
@@ -101,10 +103,11 @@ public class Attack extends CompositeAITask {
 
 
 	@Override
-	public void uponCompletion() {
+	public boolean uponCompletion() {
 		Individual host = Domain.getIndividuals().get(hostId.getId());
 		host.sendCommand(KeyMappings.moveRight, false);
 		host.sendCommand(KeyMappings.moveLeft, false);
+		return false;
 	}
 
 
@@ -170,8 +173,9 @@ public class Attack extends CompositeAITask {
 
 
 		@Override
-		public void uponCompletion() {
+		public boolean uponCompletion() {
 			Domain.getIndividuals().get(hostId.getId()).getAI().setCurrentTask(new Attack(hostId, toBeAttacked));
+			return false;
 		}
 
 

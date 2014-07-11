@@ -105,7 +105,7 @@ public class TakeItem extends CompositeAITask {
 
 
 		@Override
-		public void uponCompletion() {
+		public boolean uponCompletion() {
 			if (ClientServerInterface.isClient()) {
 				UserInterface.refreshRefreshableWindows();
 			} else {
@@ -116,6 +116,7 @@ public class TakeItem extends CompositeAITask {
 			}
 
 			takeNextItem();
+			return false;
 		}
 
 

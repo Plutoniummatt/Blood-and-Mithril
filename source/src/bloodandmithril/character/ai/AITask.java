@@ -30,7 +30,7 @@ public abstract class AITask implements Serializable {
 	public abstract boolean isComplete();
 
 	/** Called upon task completion */
-	public abstract void uponCompletion();
+	public abstract boolean uponCompletion();
 
 	/** Execute the implementation of this task. */
 	public abstract void execute(float delta);

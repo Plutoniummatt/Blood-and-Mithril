@@ -22,6 +22,9 @@ public class GoToMovingLocation extends AITask {
 	private final float tolerance;
 	private GoToLocation currentGoToLocation;
 	private SerializableFunction<Boolean> condition;
+	private boolean terminates;
+
+	private SerializableFunction<Boolean> repathCondition;
 
 	/**
 	 * Constructor
@@ -39,16 +42,39 @@ public class GoToMovingLocation extends AITask {
 			true
 		);
 	}
+	
 
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> condition) {
+	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> condition, boolean terminates) {
 		super(hostId);
 		this.destination = destination;
 		this.condition = condition;
+		this.terminates = terminates;
 		this.tolerance = -1f;
 
+		this.currentGoToLocation = new GoToLocation(
+			Domain.getIndividuals().get(hostId.getId()),
+			new WayPoint(destination),
+			false,
+			150f,
+			true
+		);
+	}
+	
+	
+	/**
+	 * Constructor
+	 */
+	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> condition, SerializableFunction<Boolean> repathCondition, boolean terminates) {
+		super(hostId);
+		this.destination = destination;
+		this.condition = condition;
+		this.repathCondition = repathCondition;
+		this.terminates = terminates;
+		this.tolerance = -1f;
+		
 		this.currentGoToLocation = new GoToLocation(
 			Domain.getIndividuals().get(hostId.getId()),
 			new WayPoint(destination),
@@ -68,7 +94,7 @@ public class GoToMovingLocation extends AITask {
 	@Override
 	public boolean isComplete() {
 		if (condition != null) {
-			return condition.call();
+			return condition.call() && terminates;
 		}
 
 		return Domain.getIndividuals().get(hostId.getId()).getDistanceFrom(destination) < tolerance;
@@ -84,15 +110,17 @@ public class GoToMovingLocation extends AITask {
 
 
 	@Override
-	public void uponCompletion() {
+	public boolean uponCompletion() {
 		Domain.getIndividuals().get(hostId.getId()).clearCommands();
+		return false;
 	}
 
 
 	@Override
 	public void execute(float delta) {
 		getCurrentGoToLocation().execute(delta);
-		if (getCurrentGoToLocation().isComplete()) {
+		
+		if (repathCondition == null ? getCurrentGoToLocation().isComplete() : repathCondition.call()) {
 			this.currentGoToLocation = new GoToLocation(
 				Domain.getIndividuals().get(hostId.getId()),
 				new WayPoint(destination),

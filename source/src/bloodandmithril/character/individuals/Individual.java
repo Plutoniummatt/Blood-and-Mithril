@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import bloodandmithril.character.ai.task.Follow;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.TradeWith;
@@ -1055,6 +1056,26 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			Colors.UI_DARK_ORANGE,
 			null
 		);
+		
+		MenuItem follow = new MenuItem(
+			"Follow",
+			() -> {
+				for (Individual indi : Domain.getSelectedIndividuals()) {
+					if (indi != thisIndividual) {
+						if (isServer()) {
+							indi.getAI().setCurrentTask(
+								new Follow(indi, thisIndividual, 10)
+							);
+						} else {
+						}
+					}
+				}
+			},
+			Color.RED,
+			getToolTipTextColor(),
+			Colors.UI_DARK_ORANGE,
+			null
+		);
 
 		MenuItem showStatusWindowItem = new MenuItem(
 			"Status",
@@ -1092,6 +1113,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.getSelectedIndividuals().contains(thisIndividual))) {
 			contextMenuToReturn.addMenuItem(attack);
+			contextMenuToReturn.addMenuItem(follow);
 			contextMenuToReturn.addMenuItem(tradeMenuItem);
 
 			if (Domain.getSelectedIndividuals().size() > 1) {

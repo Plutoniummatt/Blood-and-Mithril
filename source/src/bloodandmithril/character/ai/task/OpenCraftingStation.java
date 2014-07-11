@@ -94,7 +94,8 @@ public class OpenCraftingStation extends CompositeAITask {
 		}
 
 		@Override
-		public void uponCompletion() {
+		public boolean uponCompletion() {
+			return false;
 		}
 
 		@Override
