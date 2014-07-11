@@ -747,7 +747,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			Sets.newHashSet(beingAttackedBy.keySet()).stream().forEach(i -> {
 				Individual individual = Domain.getIndividuals().get(i);
 				if (beingAttackedBy.get(i) <= System.currentTimeMillis() - round(individual.getAttackPeriod() * 1000D) - 1000L) {
-					System.out.println("lal");
 					beingAttackedBy.remove(i);
 				} else {
 					AITask currentTask = individual.getAI().getCurrentTask();
