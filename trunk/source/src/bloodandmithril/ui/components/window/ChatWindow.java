@@ -86,7 +86,7 @@ public class ChatWindow extends Window {
 	private void renderTextInputPanel() {
 		textInputPanel.x = x + 7;
 		textInputPanel.y = y - height + 5;
-		textInputPanel.width = width - 110;
+		textInputPanel.width = width - 180;
 
 		textInputPanel.render();
 	}
@@ -101,7 +101,7 @@ public class ChatWindow extends Window {
 			String temp = "";
 			temp = temp.concat(next.sender) + ": ";
 			temp = temp.concat(next.message);
-			temp = Util.fitToWindow(temp, width - 100, Integer.MAX_VALUE);
+			temp = Util.fitToWindow(temp, width - 170, Integer.MAX_VALUE);
 			string = string.concat(temp + "\n");
 		}
 
@@ -120,7 +120,7 @@ public class ChatWindow extends Window {
 			lines--;
 		}
 
-		Fonts.defaultFont.drawWrapped(BloodAndMithrilClient.spriteBatch, string, x + 10, y - 30, width - 100);
+		Fonts.defaultFont.drawWrapped(BloodAndMithrilClient.spriteBatch, string, x + 10, y - 30, width - 170);
 
 		BloodAndMithrilClient.spriteBatch.flush();
 	}
@@ -141,9 +141,9 @@ public class ChatWindow extends Window {
 
 
 	private void renderPlayerList() {
-		participants.x = x + width - 100;
+		participants.x = x + width - 170;
 		participants.y = y;
-		participants.width = 100;
+		participants.width = 170;
 		participants.height = height;
 
 		participants.render();
@@ -154,7 +154,7 @@ public class ChatWindow extends Window {
 		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
 		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
 		UserInterface.shapeRenderer.filledRect(
-			x + width - 100,
+			x + width - 170,
 			y - height,
 			2,
 			height - 21,

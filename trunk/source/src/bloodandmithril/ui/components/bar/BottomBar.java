@@ -73,6 +73,7 @@ public class BottomBar extends Component {
 
 		if (factions.click()) {
 			factionsClicked();
+			return true;
 		}
 
 		if (isActive() && isWithin()) {
@@ -101,7 +102,7 @@ public class BottomBar extends Component {
 			}
 		}
 
-		UserInterface.addLayeredComponent(
+		UserInterface.addLayeredComponentUnique(
 			new FactionsWindow(
 				BloodAndMithrilClient.WIDTH/2 - 125,
 				BloodAndMithrilClient.HEIGHT/2 + 150,

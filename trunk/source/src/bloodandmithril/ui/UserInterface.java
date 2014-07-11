@@ -778,7 +778,7 @@ public class UserInterface {
 
 		List<ContextMenu> contextMenuCopy = new ArrayList<ContextMenu>(contextMenus);
 
-		if (!layeredComponents.isEmpty()) {
+		if (!layeredComponents.isEmpty() && contextMenus.isEmpty()) {
 			ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
 			Iterator<Component> iter = layeredComponents.descendingIterator();
 			while (iter.hasNext()) {
