@@ -22,34 +22,19 @@ public class Follow extends CompositeAITask {
 		this.distance = distance;
 		this.terminationCondition = terminationCondition;
 
-		SerializableFunction<Boolean> function = () -> {
-			AITask currentTask = getCurrentTask();
-			if (currentTask instanceof GoToMovingLocation) {
-				return ((GoToMovingLocation)currentTask).getCurrentGoToLocation().getPath().getSize() <= distance;
-			}
-
-			return true;
-		};
-
-		SerializableFunction<Boolean> repathFunction = () -> {
-			AITask currentTask = getCurrentTask();
-			if (currentTask instanceof GoToMovingLocation) {
-				return ((GoToMovingLocation)currentTask).getCurrentGoToLocation().getPath().getSize() == distance + 1;
-			}
-
-			return true;
-		};
+		WithinNumberOfWaypointsFunction condition = new WithinNumberOfWaypointsFunction();
+		RepathCondition repathCondition = new RepathCondition();
 
 		appendTask(
 			new GoToMovingLocation(
 				follower.getId(),
 				followee.getState().position,
-				function,
-				repathFunction
+				condition,
+				repathCondition
 			)
 		);
 
-		if (!function.call()) {
+		if (!condition.call()) {
 			appendTask(
 				new Wait(follower, Util.getRandom().nextFloat() * 2f)
 			);
@@ -89,6 +74,36 @@ public class Follow extends CompositeAITask {
 		} else {
 			Individual follower = Domain.getIndividuals().get(hostId.getId());
 			follower.getAI().setCurrentTask(new Follow(follower, followee, distance, terminationCondition));
+			return true;
+		}
+	}
+
+
+	public class WithinNumberOfWaypointsFunction implements SerializableFunction<Boolean> {
+		private static final long serialVersionUID = -4758106924647625767L;
+
+		@Override
+		public Boolean call() {
+			AITask currentTask = getCurrentTask();
+			if (currentTask instanceof GoToMovingLocation) {
+				return ((GoToMovingLocation)currentTask).getCurrentGoToLocation().getPath().getSize() <= distance;
+			}
+
+			return true;
+		}
+	}
+
+
+	public class RepathCondition implements SerializableFunction<Boolean> {
+		private static final long serialVersionUID = -2157220355764032631L;
+
+		@Override
+		public Boolean call() {
+			AITask currentTask = getCurrentTask();
+			if (currentTask instanceof GoToMovingLocation) {
+				return ((GoToMovingLocation)currentTask).getCurrentGoToLocation().getPath().getSize() == distance + 1;
+			}
+
 			return true;
 		}
 	}

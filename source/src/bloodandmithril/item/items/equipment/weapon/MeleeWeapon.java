@@ -5,8 +5,6 @@ import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.util.datastructure.Box;
 
-import com.badlogic.gdx.audio.Sound;
-
 /**
  * A {@link Weapon} used in close quarters combat
  *
@@ -28,9 +26,9 @@ public abstract class MeleeWeapon<T extends Material> extends Weapon<T> {
 	 */
 	public abstract Box getActionFrameHitBox(Individual individual);
 
-	public abstract Sound getHitSound();
+	public abstract int getHitSound();
 
-	public abstract Sound getBlockSound();
+	public abstract int getBlockSound();
 
 	public abstract float getDisarmChance();
 

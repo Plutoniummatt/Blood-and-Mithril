@@ -46,6 +46,18 @@ public class Util {
 	}
 
 
+	/**
+	 * @return - The truncated string appended with ...
+	 */
+	public static String truncate(String toTruncate, int length) {
+		if (toTruncate.length() < length) {
+			return toTruncate;
+		} else {
+			return toTruncate.substring(0, length) + "...";
+		}
+	}
+
+
 	public static void draw(TextureRegion region, float x, float y, float angle) {
 		BloodAndMithrilClient.spriteBatch.draw(region, x, y, 0, 0, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, angle);
 	}
@@ -226,6 +238,17 @@ public class Util {
 		 */
 		public static Color modulateAlpha(Color color, float alphaFactor) {
 			Color toReturn = new Color(color);
+			toReturn.a = toReturn.a * alphaFactor;
+
+			return toReturn;
+		}
+
+
+		/**
+		 * @return A {@link Color} with an adjusted alpha value.
+		 */
+		public static Color modulateAlpha(SerializableColor color, float alphaFactor) {
+			Color toReturn = new Color(color.r, color.g, color.b, color.a);
 			toReturn.a = toReturn.a * alphaFactor;
 
 			return toReturn;

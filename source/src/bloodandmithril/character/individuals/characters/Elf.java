@@ -28,7 +28,7 @@ import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
-import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.SerializableColor;
@@ -264,12 +264,12 @@ public class Elf extends Humanoid {
 	public void render() {
 		Shaders.filterIgnoreReplace.begin();
 		Shaders.filterIgnoreReplace.setUniformf("toReplace", Color.RED);
-		Shaders.filterIgnoreReplace.setUniformf("color", eyeColor);
-		Shaders.filterIgnoreReplace.setUniformf("filter", skinColor);
+		Shaders.filterIgnoreReplace.setUniformf("color", eyeColor.r, eyeColor.g, eyeColor.b, eyeColor.a);
+		Shaders.filterIgnoreReplace.setUniformf("filter", skinColor.r, skinColor.g, skinColor.b, skinColor.a);
 		Shaders.filterIgnoreReplace.setUniformf("ignore", Color.WHITE);
 
 		Shaders.filter.begin();
-		Shaders.filter.setUniformf("color", hairColor);
+		Shaders.filter.setUniformf("color", hairColor.r, hairColor.g, hairColor.b, hairColor.a);
 		super.render();
 	}
 
@@ -314,7 +314,17 @@ public class Elf extends Humanoid {
 
 	@Override
 	public Individual copy() {
-		Elf elf = new Elf(getId(), getState(), getFactionId(), female, getMaxCapacity(), getWorldId(), hairColor, eyeColor, skinColor);
+		Elf elf = new Elf(
+			getId(),
+			getState(),
+			getFactionId(),
+			female,
+			getMaxCapacity(),
+			getWorldId(),
+			new Color(hairColor.r, hairColor.g, hairColor.b, hairColor.a),
+			new Color(eyeColor.r, eyeColor.g, eyeColor.b, eyeColor.a),
+			new Color(skinColor.r, skinColor.g, skinColor.b, skinColor.a)
+		);
 		elf.copyFrom(this);
 		return elf;
 	}
@@ -390,9 +400,7 @@ public class Elf extends Humanoid {
 		if (ClientServerInterface.isClient()) {
 			SoundService.play(
 				SoundService.femaleHit,
-				SoundService.getVolume(getState().position),
-				1f,
-				SoundService.getPan(getState().position),
+				getState().position,
 				true
 			);
 		}

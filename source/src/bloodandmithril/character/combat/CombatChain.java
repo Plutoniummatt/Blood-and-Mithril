@@ -3,15 +3,14 @@ package bloodandmithril.character.combat;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Wrapper;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
@@ -57,14 +56,12 @@ public class CombatChain {
 
 		if (blocked) {
 			blockDisarmLogic(knockbackVector);
-			if (ClientServerInterface.isClient()) {
-				Sound blockSound = attacker.getBlockSound();
-				if (blockSound != null) {
+			if (ClientServerInterface.isServer()) {
+				int blockSound = attacker.getBlockSound();
+				if (blockSound != 0) {
 					SoundService.play(
 						blockSound,
-						SoundService.getVolume(target.getState().position),
-						1f,
-						SoundService.getPan(target.getState().position),
+						target.getState().position,
 						true
 					);
 				}
@@ -72,14 +69,12 @@ public class CombatChain {
 		} else {
 			knockbackVector.mul(0.1f);
 			damageDone = hit(knockbackVector.cpy());
-			if (ClientServerInterface.isClient()) {
-				Sound hitSound = attacker.getHitSound();
-				if (hitSound != null) {
+			if (ClientServerInterface.isServer()) {
+				int hitSound = attacker.getHitSound();
+				if (hitSound != 0) {
 					SoundService.play(
 						hitSound,
-						SoundService.getVolume(target.getState().position),
-						1f,
-						SoundService.getPan(target.getState().position),
+						target.getState().position,
 						true
 					);
 				}

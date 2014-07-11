@@ -1,7 +1,7 @@
 package bloodandmithril.character.ai.pathfinding.implementations;
 
-import static bloodandmithril.csi.ClientServerInterface.isClient;
-import static bloodandmithril.csi.ClientServerInterface.isServer;
+import static bloodandmithril.networking.ClientServerInterface.isClient;
+import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.Logger.aiDebug;
 import static bloodandmithril.util.Logger.LogLevel.DEBUG;
 import static bloodandmithril.util.Logger.LogLevel.INFO;

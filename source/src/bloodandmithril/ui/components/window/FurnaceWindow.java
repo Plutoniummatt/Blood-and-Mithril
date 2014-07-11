@@ -10,13 +10,13 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.earth.Ashes;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.mineral.Coal;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;

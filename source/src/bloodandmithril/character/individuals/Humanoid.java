@@ -65,9 +65,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				individual.attack();
 				SoundService.play(
 					SoundService.swordSlash,
-					SoundService.getVolume(individual.getState().position),
-					1f,
-					SoundService.getPan(individual.getState().position),
+					individual.getState().position,
 					false
 				);
 			}
@@ -79,9 +77,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				individual.attack();
 				SoundService.play(
 					SoundService.swordSlash,
-					SoundService.getVolume(individual.getState().position),
-					1f,
-					SoundService.getPan(individual.getState().position),
+					individual.getState().position,
 					false
 				);
 			}
@@ -93,9 +89,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				individual.attack();
 				SoundService.play(
 					SoundService.swordSlash,
-					SoundService.getVolume(individual.getState().position),
-					1f,
-					SoundService.getPan(individual.getState().position),
+					individual.getState().position,
 					false
 				);
 			}

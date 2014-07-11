@@ -7,7 +7,7 @@ import java.util.Deque;
 import java.util.List;
 
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;

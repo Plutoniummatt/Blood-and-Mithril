@@ -13,8 +13,8 @@ import static bloodandmithril.core.BloodAndMithrilClient.ping;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
-import static bloodandmithril.csi.ClientServerInterface.isClient;
-import static bloodandmithril.csi.ClientServerInterface.isServer;
+import static bloodandmithril.networking.ClientServerInterface.isClient;
+import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.GameSaver.isSaving;
 import static bloodandmithril.ui.KeyMappings.leftClick;
 import static bloodandmithril.ui.KeyMappings.rightClick;
@@ -53,11 +53,11 @@ import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.Interface;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Prop;
@@ -640,18 +640,27 @@ public class UserInterface {
 		spriteBatch.begin();
 		Lists.newArrayList(floatingTexts).stream().forEach(text -> {
 			defaultFont.setColor(Colors.modulateAlpha(Color.BLACK, text.life / text.maxLife));
+
+			Vector2 renderPos = new Vector2();
+			if (text.ui) {
+				renderPos = text.worldPosition;
+			} else {
+				renderPos.x = text.worldPosition.x - cam.position.x + WIDTH/2 - text.text.length() * 5;
+				renderPos.y = text.worldPosition.y - cam.position.y + HEIGHT/2;
+			}
+
 			defaultFont.draw(
 				spriteBatch,
 				text.text,
-				text.worldPosition.x - cam.position.x + WIDTH/2 - text.text.length() * 5 - 1,
-				text.worldPosition.y - cam.position.y + HEIGHT/2 - 1
+				renderPos.x - 1,
+				renderPos.y - 1
 			);
 			defaultFont.setColor(Colors.modulateAlpha(text.color, text.life / text.maxLife));
 			defaultFont.draw(
 				spriteBatch,
 				text.text,
-				text.worldPosition.x - cam.position.x + WIDTH/2 - text.text.length() * 5,
-				text.worldPosition.y - cam.position.y + HEIGHT/2
+				renderPos.x,
+				renderPos.y
 			);
 			text.worldPosition.y += 0.5f;
 			text.life -= Gdx.graphics.getDeltaTime();
@@ -807,8 +816,8 @@ public class UserInterface {
 	}
 
 
-	public static void addFloatingText(String text, Color color, Vector2 position) {
-		addFloatingText(floatingText(text, color, position), false);
+	public static void addFloatingText(String text, Color color, Vector2 position, boolean ui) {
+		addFloatingText(floatingText(text, color, position, ui), false);
 	}
 
 
@@ -830,6 +839,11 @@ public class UserInterface {
 				floatingTexts.add(floatingText);
 			}
 		}
+	}
+
+
+	public static void addUIFloatingText(String text, Color color, Vector2 position) {
+		addFloatingText(floatingText(text, color, position, true), false);
 	}
 
 
@@ -1078,20 +1092,22 @@ public class UserInterface {
 		public final SerializableColor color;
 		public final Vector2 worldPosition;
 		public float maxLife = 1f, life = 1f;
+		public boolean ui;
 
-		private FloatingText(String text, SerializableColor color, Vector2 worldPosition) {
+		private FloatingText(String text, SerializableColor color, Vector2 worldPosition, boolean ui) {
 			this.text = text;
 			this.color = color;
 			this.worldPosition = worldPosition;
+			this.ui = ui;
 		}
 
-		public static FloatingText floatingText(String text, Color color, Vector2 worldPosition) {
-			return new FloatingText(text, new SerializableColor(color), worldPosition);
+		public static FloatingText floatingText(String text, Color color, Vector2 worldPosition, boolean ui) {
+			return new FloatingText(text, new SerializableColor(color), worldPosition, ui);
 		}
 
 
-		public static FloatingText floatingText(String text, Color color, Vector2 worldPosition, float life) {
-			FloatingText floatingText = new FloatingText(text, new SerializableColor(color), worldPosition);
+		public static FloatingText floatingText(String text, Color color, Vector2 worldPosition, float life, boolean ui) {
+			FloatingText floatingText = new FloatingText(text, new SerializableColor(color), worldPosition, ui);
 			floatingText.maxLife = life;
 			floatingText.life = life;
 			return floatingText;

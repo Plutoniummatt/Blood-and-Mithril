@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;

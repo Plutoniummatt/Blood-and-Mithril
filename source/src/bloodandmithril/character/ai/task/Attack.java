@@ -11,6 +11,7 @@ import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 
@@ -60,6 +61,7 @@ public class Attack extends CompositeAITask {
 
 				appendTask(new AttackTarget(host.getId()));
 			} else {
+				host.addFloatingText("Waiting...", Color.ORANGE);
 				appendTask(new Follow(host, alive, 8, new Countdown(3000)));
 				appendTask(new ReevaluateAttack(hostId));
 			}

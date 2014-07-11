@@ -6,8 +6,8 @@ import java.util.concurrent.BlockingQueue;
 import org.lwjgl.opengl.Display;
 
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.Structures;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;

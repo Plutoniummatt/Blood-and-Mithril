@@ -1,8 +1,9 @@
 package bloodandmithril.persistence;
 
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.character.IndividualLoader;
+import bloodandmithril.persistence.item.ItemLoader;
 import bloodandmithril.persistence.prop.PropLoader;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.world.Epoch;
@@ -26,13 +27,14 @@ public class GameLoader {
 		ChunkLoader.loadWorlds();
 		IndividualLoader.loadAll();
 		PropLoader.loadAll();
+		ItemLoader.loadAll();
 		if (ClientServerInterface.isClient()) {
 			loadCameraPosition();
 		}
 		loadCurrentEpoch();
 	}
 
-	
+
 	/** Sets current {@link Epoch} to a saved one */
 	private static void loadCurrentEpoch() {
 		Epoch epoch = ParameterPersistenceService.getParameters().getCurrentEpoch();

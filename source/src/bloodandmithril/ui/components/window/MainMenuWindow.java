@@ -10,7 +10,7 @@ import java.util.List;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;

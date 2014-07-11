@@ -1,8 +1,8 @@
 package bloodandmithril.prop.construction.craftingstation;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import static bloodandmithril.csi.ClientServerInterface.isClient;
 import static bloodandmithril.item.items.material.Ingot.ingot;
+import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.ui.UserInterface.refreshRefreshableWindows;
 import static com.google.common.collect.Maps.newHashMap;
 

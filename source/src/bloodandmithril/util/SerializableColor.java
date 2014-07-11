@@ -9,10 +9,15 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
-public class SerializableColor extends Color implements Serializable {
+public class SerializableColor implements Serializable {
 	private static final long serialVersionUID = -6646062971215942066L;
 
+	public float r, g, b, a;
+
 	public SerializableColor(Color color) {
-		super(color);
+		this.r = color.r;
+		this.g = color.g;
+		this.b = color.b;
+		this.a = color.a;
 	}
 }
