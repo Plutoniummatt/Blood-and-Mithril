@@ -248,4 +248,10 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				throw new RuntimeException("Unexpected action: " + getCurrentAction());
 		}
 	}
+
+
+	@Override
+	public int getConcurrentAttackNumber() {
+		return 2;
+	}
 }

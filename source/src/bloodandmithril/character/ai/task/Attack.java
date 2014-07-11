@@ -110,6 +110,11 @@ public class Attack extends CompositeAITask {
 	}
 
 
+	public Set<Integer> getTargets() {
+		return toBeAttacked;
+	}
+
+
 	public static class WithinAttackRange implements SerializableFunction<Boolean> {
 		private static final long serialVersionUID = -927709499203093624L;
 		private IndividualIdentifier attacker;
@@ -214,8 +219,15 @@ public class Attack extends CompositeAITask {
 				return;
 			}
 
+			Individual attacker = Domain.getIndividuals().get(hostId.getId());
+			if (!alive.canBeAttacked(attacker)) {
+				return;
+			} else {
+				alive.addAttacker(attacker);
+			}
+
 			if (new WithinAttackRange(hostId, alive.getId()).call()) {
-				complete = Domain.getIndividuals().get(hostId.getId()).attack(toBeAttacked);
+				complete = attacker.attack(toBeAttacked);
 			} else {
 				complete = true;
 			}
