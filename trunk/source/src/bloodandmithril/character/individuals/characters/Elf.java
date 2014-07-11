@@ -392,7 +392,8 @@ public class Elf extends Humanoid {
 				SoundService.femaleHit,
 				SoundService.getVolume(getState().position),
 				1f,
-				SoundService.getPan(getState().position)
+				SoundService.getPan(getState().position),
+				true
 			);
 		}
 	}

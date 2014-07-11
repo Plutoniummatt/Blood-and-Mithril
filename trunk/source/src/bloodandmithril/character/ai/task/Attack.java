@@ -1,5 +1,7 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.util.Util.transformSet;
+
 import java.util.Set;
 
 import bloodandmithril.character.ai.AITask;
@@ -38,6 +40,7 @@ public class Attack extends CompositeAITask {
 	 */
 	public Attack(Individual host, Set<Individual> toBeAttacked) {
 		super(host.getId(), "Attacking");
+		host.setCombatStance(true);
 
 		for (Individual individual : toBeAttacked) {
 			this.toBeAttacked.add(individual.getId().getId());
@@ -48,14 +51,18 @@ public class Attack extends CompositeAITask {
 		if (alive != null) {
 			Vector2 location = alive.getState().position;
 
-			appendTask(new GoToMovingLocation(
-				hostId,
-				location,
-				new WithinAttackRange(hostId, alive.getId()),
-				true
-			));
+			if (alive.canBeAttacked(host)) {
+				appendTask(new GoToMovingLocation(
+					hostId,
+					location,
+					new WithinAttackRange(hostId, alive.getId())
+				));
 
-			appendTask(new AttackTarget(host.getId()));
+				appendTask(new AttackTarget(host.getId()));
+			} else {
+				appendTask(new Follow(host, alive, 8, new Countdown(3000)));
+				appendTask(new ReevaluateAttack(hostId));
+			}
 		} else {
 			appendTask(new Idle());
 		}
@@ -66,27 +73,7 @@ public class Attack extends CompositeAITask {
 	 * Constructor
 	 */
 	public Attack(IndividualIdentifier hostId, Set<Integer> toBeAttacked) {
-		super(hostId, "Attacking");
-
-		this.toBeAttacked.clear();
-		this.toBeAttacked.addAll(toBeAttacked);
-
-		Individual alive = getAlive();
-		if (alive != null) {
-			Domain.getIndividuals().get(hostId.getId()).setCombatStance(true);
-			Vector2 location = alive.getState().position;
-
-			appendTask(new GoToMovingLocation(
-				hostId,
-				location,
-				new WithinAttackRange(hostId, alive.getId()),
-				true
-			));
-
-			appendTask(new AttackTarget(hostId));
-		} else {
-			appendTask(new Idle());
-		}
+		this(Domain.getIndividuals().get(hostId.getId()), transformSet(toBeAttacked, id -> {return Domain.getIndividuals().get(id);}));
 	}
 
 
@@ -147,6 +134,47 @@ public class Attack extends CompositeAITask {
 
 
 	/**
+	 * Re-evaluates whether an individual can attack another
+	 *
+	 * @author Matt
+	 */
+	public class ReevaluateAttack extends AITask {
+		private static final long serialVersionUID = 7740671063229381512L;
+
+		/**
+		 * Constructor
+		 */
+		public ReevaluateAttack(IndividualIdentifier hostId) {
+			super(hostId);
+		}
+
+
+		@Override
+		public String getDescription() {
+			return "";
+		}
+
+
+		@Override
+		public boolean isComplete() {
+			return true;
+		}
+
+
+		@Override
+		public boolean uponCompletion() {
+			Domain.getIndividuals().get(hostId.getId()).getAI().setCurrentTask(new Attack(hostId, toBeAttacked));
+			return false;
+		}
+
+
+		@Override
+		public void execute(float delta) {
+		}
+	}
+
+
+	/**
 	 * AITask representing the actual attack
 	 *
 	 * @author Matt
@@ -191,6 +219,23 @@ public class Attack extends CompositeAITask {
 			} else {
 				complete = true;
 			}
+		}
+	}
+
+
+	public static class Countdown implements SerializableFunction<Boolean> {
+		private static final long serialVersionUID = -5761537304910257687L;
+		private final long startTime;
+		private final long duration;
+
+		public Countdown(long duration) {
+			this.duration = duration;
+			this.startTime = System.currentTimeMillis();
+		}
+
+		@Override
+		public Boolean call() {
+			return System.currentTimeMillis() - duration >= startTime;
 		}
 	}
 }

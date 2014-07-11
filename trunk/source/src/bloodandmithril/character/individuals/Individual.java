@@ -33,9 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import bloodandmithril.character.ai.task.Follow;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Attack;
+import bloodandmithril.character.ai.task.Follow;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.combat.CombatChain;
 import bloodandmithril.character.conditions.Condition;
@@ -50,6 +50,7 @@ import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
+import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
@@ -1056,7 +1057,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			Colors.UI_DARK_ORANGE,
 			null
 		);
-		
+
 		MenuItem follow = new MenuItem(
 			"Follow",
 			() -> {
@@ -1064,7 +1065,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					if (indi != thisIndividual) {
 						if (isServer()) {
 							indi.getAI().setCurrentTask(
-								new Follow(indi, thisIndividual, 10)
+								new Follow(indi, thisIndividual, 10, new AlwaysTrueFunction())
 							);
 						} else {
 						}
@@ -1515,6 +1516,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	public Box getHitBox() {
 		return hitBox;
+	}
+
+
+	public boolean canBeAttacked(Individual by) {
+		return Iterables.tryFind(getEquipped().keySet(), item -> {
+			return item instanceof Weapon;
+		}).isPresent();
 	}
 
 

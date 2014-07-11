@@ -22,7 +22,6 @@ public class GoToMovingLocation extends AITask {
 	private final float tolerance;
 	private GoToLocation currentGoToLocation;
 	private SerializableFunction<Boolean> condition;
-	private boolean terminates;
 
 	private SerializableFunction<Boolean> repathCondition;
 
@@ -42,16 +41,15 @@ public class GoToMovingLocation extends AITask {
 			true
 		);
 	}
-	
+
 
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> condition, boolean terminates) {
+	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> condition) {
 		super(hostId);
 		this.destination = destination;
 		this.condition = condition;
-		this.terminates = terminates;
 		this.tolerance = -1f;
 
 		this.currentGoToLocation = new GoToLocation(
@@ -62,19 +60,18 @@ public class GoToMovingLocation extends AITask {
 			true
 		);
 	}
-	
-	
+
+
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> condition, SerializableFunction<Boolean> repathCondition, boolean terminates) {
+	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> condition, SerializableFunction<Boolean> repathCondition) {
 		super(hostId);
 		this.destination = destination;
 		this.condition = condition;
 		this.repathCondition = repathCondition;
-		this.terminates = terminates;
 		this.tolerance = -1f;
-		
+
 		this.currentGoToLocation = new GoToLocation(
 			Domain.getIndividuals().get(hostId.getId()),
 			new WayPoint(destination),
@@ -94,13 +91,13 @@ public class GoToMovingLocation extends AITask {
 	@Override
 	public boolean isComplete() {
 		if (condition != null) {
-			return condition.call() && terminates;
+			return condition.call();
 		}
 
 		return Domain.getIndividuals().get(hostId.getId()).getDistanceFrom(destination) < tolerance;
 	}
-	
-	
+
+
 	/**
 	 * See {@link Path#isDirectlyAboveNext(Vector2)}
 	 */
@@ -119,7 +116,7 @@ public class GoToMovingLocation extends AITask {
 	@Override
 	public void execute(float delta) {
 		getCurrentGoToLocation().execute(delta);
-		
+
 		if (repathCondition == null ? getCurrentGoToLocation().isComplete() : repathCondition.call()) {
 			this.currentGoToLocation = new GoToLocation(
 				Domain.getIndividuals().get(hostId.getId()),

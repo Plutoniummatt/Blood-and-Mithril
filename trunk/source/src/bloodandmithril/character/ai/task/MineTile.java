@@ -111,7 +111,8 @@ public class MineTile extends CompositeAITask {
 								SoundService.pickAxe,
 								SoundService.getVolume(tileCoordinate),
 								1f,
-								SoundService.getPan(tileCoordinate)
+								SoundService.getPan(tileCoordinate),
+								true
 							);
 
 							if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
