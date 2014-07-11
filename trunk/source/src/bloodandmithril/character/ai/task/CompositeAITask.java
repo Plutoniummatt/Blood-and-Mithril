@@ -85,7 +85,8 @@ public class CompositeAITask extends AITask {
 
 
 	@Override
-	public void uponCompletion() {
+	public boolean uponCompletion() {
+		return false;
 	}
 
 

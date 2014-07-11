@@ -47,7 +47,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -596,8 +598,17 @@ public class UserInterface {
 				AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
 					shapeRenderer.setColor(Color.WHITE);
-					// ((GoToLocation)currentTask).renderPath();
+//					((GoToLocation)currentTask).renderPath();
 					((GoToLocation)currentTask).renderFinalWayPoint();
+				} else if (currentTask instanceof CompositeAITask) {
+					AITask subTask = ((CompositeAITask) currentTask).getCurrentTask();
+					if (subTask instanceof GoToLocation) {
+//						((GoToLocation)subTask).renderPath();
+//						((GoToLocation)subTask).renderFinalWayPoint();
+					} else if (subTask instanceof GoToMovingLocation) {
+//						((GoToMovingLocation)subTask).getCurrentGoToLocation().renderPath();
+//						((GoToMovingLocation)subTask).getCurrentGoToLocation().renderFinalWayPoint();
+					}
 				}
 			}
 			indi.renderUIDecorations();

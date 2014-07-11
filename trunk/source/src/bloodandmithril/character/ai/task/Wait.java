@@ -55,6 +55,7 @@ public class Wait extends AITask {
 
 
 	@Override
-	public void uponCompletion() {
+	public boolean uponCompletion() {
+		return false;
 	}
 }

@@ -74,7 +74,8 @@ public class LockUnlockContainer extends CompositeAITask {
 		}
 
 		@Override
-		public void uponCompletion() {
+		public boolean uponCompletion() {
+			return false;
 		}
 
 		@Override

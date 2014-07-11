@@ -55,7 +55,8 @@ public class Trading extends AITask {
 
 
 	@Override
-	public void uponCompletion() {
+	public boolean uponCompletion() {
+		return false;
 	}
 
 
