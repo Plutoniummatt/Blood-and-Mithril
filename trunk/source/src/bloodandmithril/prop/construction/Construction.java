@@ -5,13 +5,13 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.csi.requests.RefreshWindows.RefreshWindowsResponse;
-import bloodandmithril.csi.requests.SynchronizeIndividual;
-import bloodandmithril.csi.requests.SynchronizePropRequest;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
+import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.networking.requests.SynchronizeIndividual;
+import bloodandmithril.networking.requests.SynchronizePropRequest;
+import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.ui.UserInterface;

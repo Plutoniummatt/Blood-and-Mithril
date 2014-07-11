@@ -1,7 +1,7 @@
 package bloodandmithril.character.ai.task;
 
-import static bloodandmithril.csi.ClientServerInterface.isClient;
-import static bloodandmithril.csi.ClientServerInterface.isServer;
+import static bloodandmithril.networking.ClientServerInterface.isClient;
+import static bloodandmithril.networking.ClientServerInterface.isServer;
 
 import java.util.Map;
 
@@ -9,10 +9,10 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.liquid.Liquid;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;

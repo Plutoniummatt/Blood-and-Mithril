@@ -1,15 +1,19 @@
 package bloodandmithril.audio;
 
 
-import static bloodandmithril.csi.ClientServerInterface.isClient;
-import static bloodandmithril.csi.ClientServerInterface.isServer;
+import static bloodandmithril.networking.ClientServerInterface.isClient;
+import static bloodandmithril.networking.ClientServerInterface.isServer;
+
+import java.util.Map;
+
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.networking.ClientServerInterface;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
 
 /**
  * Master class for audio-related things
@@ -20,11 +24,13 @@ public class SoundService {
 
 	public static Music mainMenu;
 
-	public static Sound pickAxe;
-	public static Sound swordSlash;
-	public static Sound femaleHit;
-	public static Sound stab;
-	public static Sound broadSwordBlock;
+	public static final int pickAxe 			= 1;
+	public static final int swordSlash 			= 2;
+	public static final int femaleHit 			= 3;
+	public static final int stab 				= 4;
+	public static final int broadSwordBlock 	= 5;
+
+	private static Map<Integer, Sound> sounds = Maps.newHashMap();
 
 	private static Music current, next;
 
@@ -38,11 +44,11 @@ public class SoundService {
 		if (ClientServerInterface.isClient()) {
 			mainMenu = Gdx.audio.newMusic(Gdx.files.internal("data/music/mainMenu.mp3"));
 
-			pickAxe = Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav"));
-			swordSlash = Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav"));
-			femaleHit = Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav"));
-			stab = Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav"));
-			broadSwordBlock = Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav"));
+			sounds.put(pickAxe, 			Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav")));
+			sounds.put(swordSlash, 			Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav")));
+			sounds.put(femaleHit, 			Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav")));
+			sounds.put(stab, 				Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav")));
+			sounds.put(broadSwordBlock, 	Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav")));
 		}
 	}
 
@@ -62,15 +68,15 @@ public class SoundService {
 	}
 
 
-	public static void play(Sound sound, float volume, float pitch, float pan, boolean requiresServerAuthority) {
+	public static void play(int sound, Vector2 location, boolean requiresServerAuthority) {
 		if (isServer()) {
 			if (isClient()) {
-				sound.play(volume, pitch, pan);
+				sounds.get(sound).play(getVolume(location), 1f, getPan(location));
 			} else if (requiresServerAuthority) {
-				// Notify clients
+				ClientServerInterface.SendNotification.notifyPlaySound(-1, sound, location);
 			}
 		} else if (!requiresServerAuthority) {
-			sound.play(volume, pitch, pan);
+			sounds.get(sound).play(getVolume(location), 1f, getPan(location));
 		}
 	}
 
@@ -117,7 +123,7 @@ public class SoundService {
 
 
 	/** Returns the volume in relation to camera location */
-	public static float getVolume(Vector2 location) {
+	private static float getVolume(Vector2 location) {
 		if (!ClientServerInterface.isClient()) {
 			return 0f;
 		}

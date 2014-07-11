@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.container;
 
-import static bloodandmithril.csi.ClientServerInterface.isServer;
+import static bloodandmithril.networking.ClientServerInterface.isServer;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 

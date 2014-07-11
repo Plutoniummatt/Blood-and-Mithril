@@ -3,10 +3,9 @@ package bloodandmithril.persistence;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-
-
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.persistence.character.IndividualSaver;
+import bloodandmithril.persistence.item.ItemSaver;
 import bloodandmithril.persistence.prop.PropSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.persistence.world.ChunkSaver;
@@ -58,10 +57,10 @@ public class GameSaver {
 				ParameterPersistenceService.saveParameters();
 			}
 		);
-		
+
 		// Save chunks + generation data
 		ChunkSaver.save();
-		
+
 		// Save all individuals
 		saverTasks.add(
 			() -> {
@@ -69,11 +68,12 @@ public class GameSaver {
 				saveCompleted();
 			}
 		);
-		
+
 		PropSaver.saveAll();
+		ItemSaver.saveAll();
 	}
-	
-	
+
+
 	/** Notifies this class that saving is complete */
 	private static synchronized void saveCompleted() {
 		saving = false;

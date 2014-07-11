@@ -3,8 +3,8 @@ package bloodandmithril.character.ai.task;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.items.container.Container;
+import bloodandmithril.networking.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 

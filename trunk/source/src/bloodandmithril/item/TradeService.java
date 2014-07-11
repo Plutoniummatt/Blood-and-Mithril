@@ -5,10 +5,10 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.skill.Skills;
-import bloodandmithril.csi.ClientServerInterface;
-import bloodandmithril.csi.requests.TransferItems.TradeEntity;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
+import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.networking.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.Prop;
 
 /**

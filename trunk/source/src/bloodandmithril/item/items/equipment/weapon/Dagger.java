@@ -10,18 +10,17 @@ import java.util.Map;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Metal;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -117,8 +116,8 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 	public float getBaseMinDamage() {
 		return 1.5f * Material.getMaterial(getMaterial()).getCombatMultiplier();
 	}
-	
-	
+
+
 	@Override
 	public float getBaseMaxDamage() {
 		return 3.5f * Material.getMaterial(getMaterial()).getCombatMultiplier();
@@ -151,7 +150,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 
 	@Override
-	public Sound getHitSound() {
+	public int getHitSound() {
 		return SoundService.stab;
 	}
 
@@ -163,7 +162,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 
 	@Override
-	public Sound getBlockSound() {
+	public int getBlockSound() {
 		return SoundService.broadSwordBlock;
 	}
 

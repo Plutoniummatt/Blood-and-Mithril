@@ -54,8 +54,8 @@ public class ChunkSaver {
 			GameSaver.saverThread.start();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Processes items in the saver thread
 	 */
@@ -81,20 +81,20 @@ public class ChunkSaver {
 				FileHandle structures = Gdx.files.local(GameSaver.savePath + "/world/structures.txt");
 				FileHandle worlds = Gdx.files.local(GameSaver.savePath + "/world/worlds.txt");
 				FileHandle layers = Gdx.files.local(GameSaver.savePath + "/world/layers.txt");
-				
+
 				structures.writeString(encode(Structures.getStructures()), false);
 				worlds.writeString(encode(Domain.getWorlds()), false);
 				layers.writeString(encode(Layers.layers), false);
-				
+
 				for (Entry<Integer, World> world : Domain.getWorlds().entrySet()) {
 					saveStructureData(world);
-					
+
 					ZipHelper zip = new ZipHelper(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()), "/chunkData.zip");
-					
+
 					for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> columnToSave : world.getValue().getTopography().getChunkMap().chunkMap.entrySet()) {
 						saveColumn(columnToSave.getKey(), columnToSave.getValue(), zip);
 					}
-					
+
 					zip.makeZip();
 				}
 			});
@@ -111,7 +111,7 @@ public class ChunkSaver {
 		FileHandle superStructureKeys = Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/superStructureKeys.txt");
 		FileHandle subStructureKeys = Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/subStructureKeys.txt");
 		FileHandle surfaceHeight = Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/surfaceHeight.txt");
-		
+
 		superStructureKeys.writeString(encode(world.getValue().getTopography().getStructures().getSuperStructureKeys()), false);
 		subStructureKeys.writeString(encode(world.getValue().getTopography().getStructures().getSubStructureKeys()), false);
 		surfaceHeight.writeString(encode(world.getValue().getTopography().getStructures().getSurfaceHeight()), false);

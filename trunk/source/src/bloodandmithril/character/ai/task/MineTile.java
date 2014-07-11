@@ -6,7 +6,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.csi.ClientServerInterface;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
@@ -109,9 +109,7 @@ public class MineTile extends CompositeAITask {
 						if (tileToBeDeleted != null && !(tileToBeDeleted instanceof EmptyTile)) {
 							SoundService.play(
 								SoundService.pickAxe,
-								SoundService.getVolume(tileCoordinate),
-								1f,
-								SoundService.getPan(tileCoordinate),
+								tileCoordinate,
 								true
 							);
 

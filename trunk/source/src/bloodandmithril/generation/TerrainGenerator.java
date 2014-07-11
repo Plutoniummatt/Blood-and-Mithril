@@ -2,9 +2,9 @@ package bloodandmithril.generation;
 
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSuperStructureChunkWidth;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSurfaceHeight;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.generation.superstructure.Caves;
 import bloodandmithril.generation.tools.BiomeDecider;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Chunk;

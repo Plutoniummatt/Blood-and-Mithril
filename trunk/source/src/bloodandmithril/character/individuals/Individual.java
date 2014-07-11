@@ -17,7 +17,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import static bloodandmithril.csi.ClientServerInterface.isServer;
+import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.util.ComparisonUtil.obj;
 import static com.google.common.collect.Lists.newArrayList;
@@ -45,7 +45,6 @@ import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.csi.ClientServerInterface;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -55,6 +54,7 @@ import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -77,7 +77,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -393,7 +392,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		UserInterface.addFloatingText(
 			text,
 			color,
-			getState().position.cpy().add(0f, getHeight()).add(new Vector2(0, 15f).rotate(Util.getRandom().nextFloat() * 360f))
+			getState().position.cpy().add(0f, getHeight()).add(new Vector2(0, 15f).rotate(Util.getRandom().nextFloat() * 360f)),
+			false
 		);
 	}
 
@@ -404,26 +404,26 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	@SuppressWarnings("rawtypes")
-	public Sound getHitSound() {
+	public int getHitSound() {
 		java.util.Optional<Item> meleeWeapon = getEquipped().keySet().stream().filter(item -> {return item instanceof MeleeWeapon;}).findFirst();
 
 		if (meleeWeapon.isPresent()) {
 			return ((MeleeWeapon) meleeWeapon.get()).getHitSound();
 		}
 
-		return null;
+		return 0;
 	}
 
 
 	@SuppressWarnings("rawtypes")
-	public Sound getBlockSound() {
+	public int getBlockSound() {
 		java.util.Optional<Item> meleeWeapon = getEquipped().keySet().stream().filter(item -> {return item instanceof MeleeWeapon;}).findFirst();
 
 		if (meleeWeapon.isPresent()) {
 			return ((MeleeWeapon) meleeWeapon.get()).getBlockSound();
 		}
 
-		return null;
+		return 0;
 	}
 
 
