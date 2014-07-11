@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.Follow;
@@ -86,6 +87,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
@@ -195,6 +197,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** When this timer reaches 0, this {@link Individual} will no longer be in combat stance */
 	private float combatTimer;
+
+	/** IDs of individuals that are currently attacking this one, along with a timer */
+	private Map<Integer, Long> beingAttackedBy = Maps.newHashMap();
+
+	private int maxConcurrentAttackers = 4;
 
 	/** These variables are needed to prevent duplicate executions of action frames */
 	private Action previousActionFrameAction;
@@ -735,6 +742,26 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		if (isAlive()) {
 			updateVitals(delta);
 		}
+
+		synchronized (beingAttackedBy) {
+			Sets.newHashSet(beingAttackedBy.keySet()).stream().forEach(i -> {
+				Individual individual = Domain.getIndividuals().get(i);
+				if (beingAttackedBy.get(i) <= System.currentTimeMillis() - round(individual.getAttackPeriod() * 1000D) - 1000L) {
+					System.out.println("lal");
+					beingAttackedBy.remove(i);
+				} else {
+					AITask currentTask = individual.getAI().getCurrentTask();
+					if (currentTask instanceof Attack) {
+						if (!((Attack) currentTask).getTargets().contains(getId().getId())) {
+							beingAttackedBy.remove(i);
+						}
+					} else {
+						beingAttackedBy.remove(i);
+					}
+				}
+			});
+		}
+
 		internalUpdate(delta);
 
 		try {
@@ -1520,10 +1547,28 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	public boolean canBeAttacked(Individual by) {
-		return Iterables.tryFind(getEquipped().keySet(), item -> {
-			return item instanceof Weapon;
-		}).isPresent();
+		synchronized (beingAttackedBy) {
+			if (beingAttackedBy.containsKey(by.getId().getId())) {
+				return true;
+			} else {
+				int totalConcurrentAttackNumber = beingAttackedBy.keySet().stream().mapToInt(i -> {
+					return Domain.getIndividuals().get(i).getConcurrentAttackNumber();
+				}).sum();
+
+				return totalConcurrentAttackNumber + by.getConcurrentAttackNumber() <= this.maxConcurrentAttackers;
+			}
+		}
 	}
+
+
+	public void addAttacker(Individual attacker) {
+		if (canBeAttacked(attacker)) {
+			this.beingAttackedBy.put(attacker.getId().getId(), System.currentTimeMillis());
+		}
+	}
+
+
+	public abstract int getConcurrentAttackNumber();
 
 
 	public boolean attacking() {
