@@ -6,7 +6,6 @@ import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
 
-
 /**
  * AI for elves
  *
