@@ -3,7 +3,9 @@ package bloodandmithril.character.ai.task;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 
@@ -21,7 +23,7 @@ public class GoToMovingLocation extends AITask {
 	private final Vector2 destination;
 	private final float tolerance;
 	private GoToLocation currentGoToLocation;
-	private SerializableFunction<Boolean> condition;
+	private SerializableFunction<Boolean> terminationCondition;
 
 	private SerializableFunction<Boolean> repathCondition;
 
@@ -46,10 +48,10 @@ public class GoToMovingLocation extends AITask {
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> condition) {
+	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> terminationCondition) {
 		super(hostId);
 		this.destination = destination;
-		this.condition = condition;
+		this.terminationCondition = terminationCondition;
 		this.tolerance = -1f;
 
 		this.currentGoToLocation = new GoToLocation(
@@ -65,10 +67,10 @@ public class GoToMovingLocation extends AITask {
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> condition, SerializableFunction<Boolean> repathCondition) {
+	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> terminationCondition, SerializableFunction<Boolean> repathCondition) {
 		super(hostId);
 		this.destination = destination;
-		this.condition = condition;
+		this.terminationCondition = terminationCondition;
 		this.repathCondition = repathCondition;
 		this.tolerance = -1f;
 
@@ -90,8 +92,8 @@ public class GoToMovingLocation extends AITask {
 
 	@Override
 	public boolean isComplete() {
-		if (condition != null) {
-			return condition.call();
+		if (terminationCondition != null) {
+			return terminationCondition.call();
 		}
 
 		return Domain.getIndividuals().get(hostId.getId()).getDistanceFrom(destination) < tolerance;
@@ -108,7 +110,12 @@ public class GoToMovingLocation extends AITask {
 
 	@Override
 	public boolean uponCompletion() {
-		Domain.getIndividuals().get(hostId.getId()).clearCommands();
+		Individual host = Domain.getIndividuals().get(hostId.getId());
+
+		host.sendCommand(KeyMappings.moveRight, false);
+		host.sendCommand(KeyMappings.moveLeft, false);
+		host.sendCommand(KeyMappings.walk, host.isWalking());
+		
 		return false;
 	}
 

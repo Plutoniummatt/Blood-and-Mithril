@@ -22,19 +22,19 @@ public class Follow extends CompositeAITask {
 		this.distance = distance;
 		this.terminationCondition = terminationCondition;
 
-		WithinNumberOfWaypointsFunction condition = new WithinNumberOfWaypointsFunction();
+		WithinNumberOfWaypointsFunction termCondition = new WithinNumberOfWaypointsFunction();
 		RepathCondition repathCondition = new RepathCondition();
 
 		appendTask(
 			new GoToMovingLocation(
 				follower.getId(),
 				followee.getState().position,
-				condition,
+				termCondition,
 				repathCondition
 			)
 		);
 
-		if (!condition.call()) {
+		if (!termCondition.call()) {
 			appendTask(
 				new Wait(follower, Util.getRandom().nextFloat() * 2f)
 			);

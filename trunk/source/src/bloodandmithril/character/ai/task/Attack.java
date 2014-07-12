@@ -1,6 +1,7 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.util.Util.transformSet;
+import static bloodandmithril.world.Domain.getIndividuals;
 
 import java.util.Set;
 
@@ -56,7 +57,7 @@ public class Attack extends CompositeAITask {
 				appendTask(new GoToMovingLocation(
 					hostId,
 					location,
-					new WithinAttackRange(hostId, alive.getId())
+					new WithinAttackRangeOrCantAttack(hostId, alive.getId())
 				));
 
 				appendTask(new AttackTarget(host.getId()));
@@ -117,7 +118,7 @@ public class Attack extends CompositeAITask {
 	}
 
 
-	public static class WithinAttackRange implements SerializableFunction<Boolean> {
+	public class WithinAttackRangeOrCantAttack implements SerializableFunction<Boolean> {
 		private static final long serialVersionUID = -927709499203093624L;
 		private IndividualIdentifier attacker;
 		private IndividualIdentifier attackee;
@@ -125,7 +126,7 @@ public class Attack extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		public WithinAttackRange(IndividualIdentifier attacker, IndividualIdentifier attackee) {
+		public WithinAttackRangeOrCantAttack(IndividualIdentifier attacker, IndividualIdentifier attackee) {
 			this.attacker = attacker;
 			this.attackee = attackee;
 		}
@@ -133,9 +134,18 @@ public class Attack extends CompositeAITask {
 
 		@Override
 		public Boolean call() {
-			return Domain.getIndividuals().get(attacker.getId()).getAttackingHitBox().overlapsWith(
-				Domain.getIndividuals().get(attackee.getId()).getHitBox()
-			);
+			Individual atker = getIndividuals().get(attacker.getId());
+			Individual victim = getIndividuals().get(attackee.getId());
+			
+			boolean closeEnough = false;
+			AITask subTask = getCurrentTask();
+			if (subTask instanceof GoToMovingLocation) {
+				closeEnough = ((GoToMovingLocation) subTask).getCurrentGoToLocation().getPath().getSize() < 9;
+			}
+			
+			return atker.getAttackingHitBox().overlapsWith(
+				victim.getHitBox()
+			) || (closeEnough && !victim.canBeAttacked(atker));
 		}
 	}
 
@@ -229,7 +239,7 @@ public class Attack extends CompositeAITask {
 				alive.addAttacker(attacker);
 			}
 
-			if (new WithinAttackRange(hostId, alive.getId()).call()) {
+			if (new WithinAttackRangeOrCantAttack(hostId, alive.getId()).call()) {
 				complete = attacker.attack(toBeAttacked);
 			} else {
 				complete = true;
