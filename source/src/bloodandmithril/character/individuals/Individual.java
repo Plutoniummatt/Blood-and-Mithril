@@ -63,6 +63,7 @@ import bloodandmithril.ui.components.window.IndividualStatusWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
+import bloodandmithril.util.Fonts;
 import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
@@ -76,6 +77,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -560,6 +562,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			animationIndex++;
 		}
 		Gdx.gl.glDisable(GL20.GL_BLEND);
+		
 		spriteBatch.end();
 		spriteBatch.flush();
 	}
@@ -641,6 +644,18 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			);
 			shapeRenderer.end();
 			shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
+		}
+		
+		if (isMouseOver() && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))) {
+			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.getSelectedIndividuals().contains(this) || Domain.getSelectedIndividuals().size() > 1)) {
+				spriteBatch.setShader(Shaders.filter);
+				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+				Shaders.filter.setUniformf("color", Color.BLACK);
+				Fonts.defaultFont.draw(spriteBatch, "Attack", getMouseScreenX() + 14, getMouseScreenY() - 26);
+				spriteBatch.flush();
+				Shaders.filter.setUniformf("color", Color.ORANGE);
+				Fonts.defaultFont.draw(spriteBatch, "Attack", getMouseScreenX() + 15, getMouseScreenY() - 25);
+			}
 		}
 	}
 

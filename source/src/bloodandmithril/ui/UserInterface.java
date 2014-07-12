@@ -272,26 +272,7 @@ public class UserInterface {
 			renderMouseOverTileHighlightBox();
 		}
 
-		if (getCursorBoundTask() != null) {
-			renderMouseOverTileHighlightBox();
-			spriteBatch.begin();
-			Fonts.defaultFont.setColor(Color.BLACK);
-			Fonts.defaultFont.draw(
-				spriteBatch,
-				getCursorBoundTask().getShortDescription(),
-				BloodAndMithrilClient.getMouseScreenX() + 20,
-				BloodAndMithrilClient.getMouseScreenY() - 20
-			);
-			Fonts.defaultFont.setColor(Color.WHITE);
-			Fonts.defaultFont.draw(
-				spriteBatch,
-				getCursorBoundTask().getShortDescription(),
-				BloodAndMithrilClient.getMouseScreenX() + 21,
-				BloodAndMithrilClient.getMouseScreenY() - 21
-			);
-			spriteBatch.end();
-		}
-
+		renderCursorBoundTask();
 		renderFloatingText();
 		renderDragBox();
 		renderLayeredComponents();
@@ -316,6 +297,29 @@ public class UserInterface {
 
 		if (RENDER_TOPOGRAPHY) {
 			TopographyDebugRenderer.render();
+		}
+	}
+
+
+	private static void renderCursorBoundTask() {
+		if (getCursorBoundTask() != null) {
+			renderMouseOverTileHighlightBox();
+			spriteBatch.begin();
+			Fonts.defaultFont.setColor(Color.BLACK);
+			Fonts.defaultFont.draw(
+				spriteBatch,
+				getCursorBoundTask().getShortDescription(),
+				BloodAndMithrilClient.getMouseScreenX() + 20,
+				BloodAndMithrilClient.getMouseScreenY() - 20
+			);
+			Fonts.defaultFont.setColor(Color.WHITE);
+			Fonts.defaultFont.draw(
+				spriteBatch,
+				getCursorBoundTask().getShortDescription(),
+				BloodAndMithrilClient.getMouseScreenX() + 21,
+				BloodAndMithrilClient.getMouseScreenY() - 21
+			);
+			spriteBatch.end();
 		}
 	}
 
@@ -598,21 +602,20 @@ public class UserInterface {
 				AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
 					shapeRenderer.setColor(Color.WHITE);
-//					((GoToLocation)currentTask).renderPath();
+					// ((GoToLocation)currentTask).renderPath();
 					((GoToLocation)currentTask).renderFinalWayPoint();
 				} else if (currentTask instanceof CompositeAITask) {
 					AITask subTask = ((CompositeAITask) currentTask).getCurrentTask();
 					if (subTask instanceof GoToLocation) {
-//						((GoToLocation)subTask).renderPath();
-//						((GoToLocation)subTask).renderFinalWayPoint();
+						// ((GoToLocation)subTask).renderPath();
+						// ((GoToLocation)subTask).renderFinalWayPoint();
 					} else if (subTask instanceof GoToMovingLocation) {
-//						((GoToMovingLocation)subTask).getCurrentGoToLocation().renderPath();
-//						((GoToMovingLocation)subTask).getCurrentGoToLocation().renderFinalWayPoint();
+						// ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderPath();
+						// ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderFinalWayPoint();
 					}
 				}
 			}
 			indi.renderUIDecorations();
-			spriteBatch.flush();
 		}
 		spriteBatch.end();
 	}
