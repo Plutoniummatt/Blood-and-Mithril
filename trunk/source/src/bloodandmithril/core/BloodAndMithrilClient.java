@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.generation.component.PrefabricatedComponent;
@@ -292,7 +293,26 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		boolean uiClicked = false;
 		rightDoubleClickTimer = 0f;
 
-		if (!Gdx.input.isKeyPressed(KeyMappings.contextMenuBypass)) {
+		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+			if (!Domain.getSelectedIndividuals().isEmpty()) {
+				for (final Individual indi : Domain.getIndividuals().values()) {
+					if (indi.isMouseOver()) {
+						for (Individual selected : Domain.getSelectedIndividuals()) {
+							if (indi == selected) {
+								continue;
+							}
+							
+							if (ClientServerInterface.isServer()) {
+								selected.getAI().setCurrentTask(new Attack(selected, indi));
+							} else {
+								ClientServerInterface.SendRequest.sendRequestAttack(selected, indi);
+							}
+						}
+						break;
+					}
+				}
+			}
+		} else if (!Gdx.input.isKeyPressed(KeyMappings.contextMenuBypass)) {
 			uiClicked = UserInterface.rightClick();
 		}
 
