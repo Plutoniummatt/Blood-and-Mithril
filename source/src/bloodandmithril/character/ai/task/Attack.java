@@ -140,7 +140,8 @@ public class Attack extends CompositeAITask {
 			boolean closeEnough = false;
 			AITask subTask = getCurrentTask();
 			if (subTask instanceof GoToMovingLocation) {
-				closeEnough = ((GoToMovingLocation) subTask).getCurrentGoToLocation().getPath().getSize() < 9;
+				int size = ((GoToMovingLocation) subTask).getCurrentGoToLocation().getPath().getSize();
+				closeEnough = size < 8;
 			}
 			
 			return atker.getAttackingHitBox().overlapsWith(

@@ -889,17 +889,17 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		MenuItem showInfoMenuItem = showInfo();
 		MenuItem showStatusWindowItem = showStatus();
 		
-		final ContextMenu actionMenu = actionMenu();
-		MenuItem action = new MenuItem(
-			"Actions", 
+		final ContextMenu controlMenu = controls();
+		MenuItem controls = new MenuItem(
+			"Control", 
 			() -> {
-				actionMenu.x = getMouseScreenX();
-				actionMenu.y = getMouseScreenY();
+				controlMenu.x = getMouseScreenX();
+				controlMenu.y = getMouseScreenY();
 			}, 
 			Color.ORANGE, 
 			getToolTipTextColor(), 
 			Color.GRAY, 
-			actionMenu
+			controlMenu
 		);
 		
 		final ContextMenu interactMenu = interactMenu();
@@ -910,7 +910,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				interactMenu.y = getMouseScreenY();
 			}, 
 			Color.GREEN, 
-			getToolTipTextColor(), 
+			Colors.UI_DARK_GREEN, 
 			Color.GRAY, 
 			interactMenu
 		);
@@ -937,7 +937,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		contextMenuToReturn.addMenuItem(showStatusWindowItem);
 		
 		if (isControllable()) {
-			contextMenuToReturn.addMenuItem(action);
+			contextMenuToReturn.addMenuItem(controls);
 			contextMenuToReturn.addMenuItem(edit);
 		}
 
@@ -949,7 +949,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	private ContextMenu actionMenu() {
+	private ContextMenu controls() {
 		return new ContextMenu(0, 0,
 			selectDeselect(this), 
 			inventory()
