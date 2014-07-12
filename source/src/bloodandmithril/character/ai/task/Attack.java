@@ -223,6 +223,7 @@ public class Attack extends CompositeAITask {
 
 			Individual attacker = Domain.getIndividuals().get(hostId.getId());
 			if (!alive.canBeAttacked(attacker)) {
+				complete = true;
 				return;
 			} else {
 				alive.addAttacker(attacker);
