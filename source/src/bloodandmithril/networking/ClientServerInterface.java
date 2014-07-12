@@ -29,7 +29,7 @@ import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.Attack.AttackTarget;
 import bloodandmithril.character.ai.task.Attack.Countdown;
 import bloodandmithril.character.ai.task.Attack.ReevaluateAttack;
-import bloodandmithril.character.ai.task.Attack.WithinAttackRange;
+import bloodandmithril.character.ai.task.Attack.WithinAttackRangeOrCantAttack;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.ai.task.Construct.Constructing;
@@ -414,7 +414,7 @@ public class ClientServerInterface {
 		kryo.register(Broadsword.class);
 		kryo.register(CombatKnife.class);
 		kryo.register(BushKnife.class);
-		kryo.register(WithinAttackRange.class);
+		kryo.register(WithinAttackRangeOrCantAttack.class);
 		kryo.register(AttackTarget.class);
 		kryo.register(Attack.class);
 		kryo.register(AttackRequest.class);
