@@ -50,7 +50,6 @@ import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
-import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
@@ -887,66 +886,230 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Constructs a {@link ContextMenu} */
 	public ContextMenu getContextMenu() {
+		MenuItem showInfoMenuItem = showInfo();
+		MenuItem showStatusWindowItem = showStatus();
+		
+		final ContextMenu actionMenu = actionMenu();
+		MenuItem action = new MenuItem(
+			"Actions", 
+			() -> {
+				actionMenu.x = getMouseScreenX();
+				actionMenu.y = getMouseScreenY();
+			}, 
+			Color.ORANGE, 
+			getToolTipTextColor(), 
+			Color.GRAY, 
+			actionMenu
+		);
+		
+		final ContextMenu interactMenu = interactMenu();
+		MenuItem interact = new MenuItem(
+			"Interact", 
+			() -> {
+				interactMenu.x = getMouseScreenX();
+				interactMenu.y = getMouseScreenY();
+			}, 
+			Color.GREEN, 
+			getToolTipTextColor(), 
+			Color.GRAY, 
+			interactMenu
+		);
+
+		final ContextMenu editMenu = editSubMenu();
+		MenuItem edit = new MenuItem(
+			"Edit",
+			() -> {
+				editMenu.x = getMouseScreenX();
+				editMenu.y = getMouseScreenY();
+			},
+			Color.ORANGE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			editMenu
+		);
+
 		ContextMenu contextMenuToReturn = new ContextMenu(0, 0);
+		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.getSelectedIndividuals().contains(this))) {
+			contextMenuToReturn.addMenuItem(interact);
+		}
+		
+		contextMenuToReturn.addMenuItem(showInfoMenuItem);
+		contextMenuToReturn.addMenuItem(showStatusWindowItem);
+		
+		if (isControllable()) {
+			contextMenuToReturn.addMenuItem(action);
+			contextMenuToReturn.addMenuItem(edit);
+		}
 
+		for (MenuItem item : internalGetContextMenuItems()) {
+			contextMenuToReturn.addMenuItem(item);
+		}
+
+		return contextMenuToReturn;
+	}
+
+
+	private ContextMenu actionMenu() {
+		return new ContextMenu(0, 0,
+			selectDeselect(this), 
+			inventory()
+		);
+	}
+
+
+	private ContextMenu interactMenu() {
+		return new ContextMenu(0, 0,
+			trade(this),
+			follow(this),
+			attack(this)
+		);
+	}
+
+
+	private MenuItem showStatus() {
 		final Individual thisIndividual = this;
-
-		MenuItem controlOrReleaseMenuItem = Domain.getSelectedIndividuals().contains(thisIndividual) ?
-		new MenuItem(
-			"Deselect",
+		
+		return new MenuItem(
+			"Show status",
 			() -> {
-				if (isServer()) {
-					thisIndividual.deselect(false, 0);
-					Domain.getSelectedIndividuals().remove(thisIndividual);
-					clearCommands();
-				} else {
-					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.getId(), false);
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		) :
-
-		new MenuItem(
-			"Select",
-			() -> {
-				if (isServer()) {
-					Domain.getSelectedIndividuals().add(thisIndividual);
-					thisIndividual.select(0);
-				} else {
-					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.getId(), true);
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-
-		MenuItem showInfoMenuItem = new MenuItem(
-			"Show info",
-			() -> {
-				IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
-					thisIndividual,
-					WIDTH/2 - 150,
-					HEIGHT/2 + 160,
-					300,
-					320,
-					id.getSimpleName() + " - Info",
-					true,
-					250, 200
+				UserInterface.addLayeredComponentUnique(
+					new IndividualStatusWindow(
+						thisIndividual,
+						WIDTH/2 - 200,
+						HEIGHT/2 + 200,
+						400,
+						400,
+						id.getSimpleName() + " - Status",
+						true
+					)
 				);
-				UserInterface.addLayeredComponentUnique(individualInfoWindow);
 			},
 			Color.WHITE,
 			getToolTipTextColor(),
 			Color.GRAY,
 			null
 		);
+	}
 
-		final ContextMenu secondaryMenu = new ContextMenu(0, 0,
+
+	private MenuItem follow(final Individual thisIndividual) {
+		return new MenuItem(
+			"Follow",
+			() -> {
+				for (Individual indi : Domain.getSelectedIndividuals()) {
+					if (indi != thisIndividual) {
+						if (isServer()) {
+							indi.getAI().setCurrentTask(
+								new Follow(indi, thisIndividual, 10, null)
+							);
+						} else {
+							// TODO
+						}
+					}
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+	}
+
+
+	private MenuItem attack(final Individual thisIndividual) {
+		return new MenuItem(
+			"Attack",
+				() -> {
+					for (Individual indi : Domain.getSelectedIndividuals()) {
+						if (indi != thisIndividual) {
+							if (isServer()) {
+								indi.getAI().setCurrentTask(
+									new Attack(indi, thisIndividual)
+								);
+							} else {
+								ClientServerInterface.SendRequest.sendRequestAttack(indi, thisIndividual);
+							}
+						}
+					}
+				},
+			Color.RED,
+			getToolTipTextColor(),
+			Colors.UI_DARK_ORANGE,
+			null
+		);
+	}
+
+
+	private MenuItem trade(final Individual thisIndividual) {
+		return new MenuItem(
+			"Trade with",
+			() -> {
+				if (Domain.getSelectedIndividuals().size() > 1) {
+					return;
+				}
+				
+				for (Individual indi : Domain.getSelectedIndividuals()) {
+					if (isServer()) {
+						if (indi != thisIndividual) {
+							indi.getAI().setCurrentTask(
+								new TradeWith(indi, thisIndividual)
+							);
+						}
+					} else {
+						ClientServerInterface.SendRequest.sendTradeWithIndividualRequest(indi, thisIndividual);
+					}
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			new ContextMenu(0, 0,
+				new MenuItem(
+					"You have multiple individuals selected",
+					() -> {},
+					Colors.UI_GRAY,
+					Colors.UI_GRAY,
+					Colors.UI_GRAY,
+					null
+				)
+			),
+			() -> { 
+				return Domain.getSelectedIndividuals().size() > 1; 
+			}
+		);
+	}
+
+
+	private MenuItem inventory() {
+		final Individual thisIndividual = this;
+		
+		return new MenuItem(
+			"Inventory",
+			() -> {
+				InventoryWindow inventoryWindow = new InventoryWindow(
+					thisIndividual,
+					WIDTH/2 - ((id.getSimpleName() + " - Inventory").length() * 10 + 50)/2,
+					HEIGHT/2 + 150,
+					(id.getSimpleName() + " - Inventory").length() * 10 + 50,
+					300,
+					id.getSimpleName() + " - Inventory",
+					true,
+					150, 300
+				);
+				UserInterface.addLayeredComponentUnique(inventoryWindow);
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+	}
+
+
+	private ContextMenu editSubMenu() {
+		final Individual thisIndividual = this;
+		
+		return new ContextMenu(0, 0,
 			new MenuItem(
 				"Change nickname",
 				() -> {
@@ -1008,53 +1171,68 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				null
 			)
 		);
+	}
 
-		MenuItem editMenuItem = new MenuItem(
-			"Edit",
-			() -> {
-				secondaryMenu.x = getMouseScreenX();
-				secondaryMenu.y = getMouseScreenY();
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			secondaryMenu
-		);
 
-		MenuItem inventoryMenuItem = new MenuItem(
-			"Inventory",
+	/**
+	 * @return The show info {@link MenuItem} for this individual
+	 */
+	private MenuItem showInfo() {
+		final Individual thisIndividual = this;
+		
+		return new MenuItem(
+			"Show info",
 			() -> {
-				InventoryWindow inventoryWindow = new InventoryWindow(
+				IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
 					thisIndividual,
-					WIDTH/2 - ((id.getSimpleName() + " - Inventory").length() * 10 + 50)/2,
-					HEIGHT/2 + 150,
-					(id.getSimpleName() + " - Inventory").length() * 10 + 50,
+					WIDTH/2 - 150,
+					HEIGHT/2 + 160,
 					300,
-					id.getSimpleName() + " - Inventory",
+					320,
+					id.getSimpleName() + " - Info",
 					true,
-					150, 300
+					250, 200
 				);
-				UserInterface.addLayeredComponentUnique(inventoryWindow);
+				UserInterface.addLayeredComponentUnique(individualInfoWindow);
 			},
 			Color.WHITE,
 			getToolTipTextColor(),
 			Color.GRAY,
 			null
 		);
+	}
 
-		MenuItem tradeMenuItem = new MenuItem(
-			"Trade with",
+
+	/**
+	 * @return The {@link MenuItem} to select/deselect this individual
+	 */
+	private MenuItem selectDeselect(final Individual thisIndividual) {
+		return Domain.getSelectedIndividuals().contains(thisIndividual) ?
+		new MenuItem(
+			"Deselect",
 			() -> {
-				for (Individual indi : Domain.getSelectedIndividuals()) {
-					if (isServer()) {
-						if (indi != thisIndividual) {
-							indi.getAI().setCurrentTask(
-								new TradeWith(indi, thisIndividual)
-							);
-						}
-					} else {
-						ClientServerInterface.SendRequest.sendTradeWithIndividualRequest(indi, thisIndividual);
-					}
+				if (isServer()) {
+					thisIndividual.deselect(false, 0);
+					Domain.getSelectedIndividuals().remove(thisIndividual);
+					clearCommands();
+				} else {
+					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.getId(), false);
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		) :
+
+		new MenuItem(
+			"Select",
+			() -> {
+				if (isServer()) {
+					Domain.getSelectedIndividuals().add(thisIndividual);
+					thisIndividual.select(0);
+				} else {
+					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.getId(), true);
 				}
 			},
 			Color.WHITE,
@@ -1062,114 +1240,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			Color.GRAY,
 			null
 		);
-
-		MenuItem attack = new MenuItem(
-			"Attack",
-				() -> {
-					for (Individual indi : Domain.getSelectedIndividuals()) {
-						if (indi != thisIndividual) {
-							if (isServer()) {
-								indi.getAI().setCurrentTask(
-									new Attack(indi, thisIndividual)
-								);
-							} else {
-								ClientServerInterface.SendRequest.sendRequestAttack(indi, thisIndividual);
-							}
-						}
-					}
-				},
-			Color.RED,
-			getToolTipTextColor(),
-			Colors.UI_DARK_ORANGE,
-			null
-		);
-
-		MenuItem follow = new MenuItem(
-			"Follow",
-			() -> {
-				for (Individual indi : Domain.getSelectedIndividuals()) {
-					if (indi != thisIndividual) {
-						if (isServer()) {
-							indi.getAI().setCurrentTask(
-								new Follow(indi, thisIndividual, 10, new AlwaysTrueFunction())
-							);
-						} else {
-						}
-					}
-				}
-			},
-			Color.RED,
-			getToolTipTextColor(),
-			Colors.UI_DARK_ORANGE,
-			null
-		);
-
-		MenuItem showStatusWindowItem = new MenuItem(
-			"Status",
-			() -> {
-				UserInterface.addLayeredComponentUnique(
-					new IndividualStatusWindow(
-						thisIndividual,
-						WIDTH/2 - 200,
-						HEIGHT/2 + 200,
-						400,
-						400,
-						id.getSimpleName() + " - Status",
-						true
-					)
-				);
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-
-		if (isControllable()) {
-			contextMenuToReturn.addMenuItem(controlOrReleaseMenuItem);
-		}
-
-		contextMenuToReturn.addMenuItem(showInfoMenuItem);
-		contextMenuToReturn.addMenuItem(showStatusWindowItem);
-
-		if (isControllable()) {
-			contextMenuToReturn.addMenuItem(inventoryMenuItem);
-			contextMenuToReturn.addMenuItem(editMenuItem);
-		}
-
-
-		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.getSelectedIndividuals().contains(thisIndividual))) {
-			contextMenuToReturn.addMenuItem(attack);
-			contextMenuToReturn.addMenuItem(follow);
-			contextMenuToReturn.addMenuItem(tradeMenuItem);
-
-			if (Domain.getSelectedIndividuals().size() > 1) {
-				final ContextMenu contextMenu = new ContextMenu(0, 0,
-					new MenuItem(
-						"You have multiple individuals selected",
-						() -> {},
-						Colors.UI_GRAY,
-						Colors.UI_GRAY,
-						Colors.UI_GRAY,
-						null
-					)
-				);
-				tradeMenuItem.menu = contextMenu;
-				tradeMenuItem.button.setTask(() -> {
-					contextMenu.x = getMouseScreenX();
-					contextMenu.y = getMouseScreenY();
-				});
-				tradeMenuItem.button.setIdleColor(Colors.UI_GRAY);
-				tradeMenuItem.button.setOverColor(Colors.UI_GRAY);
-				tradeMenuItem.button.setDownColor(Colors.UI_GRAY);
-			}
-		}
-
-		for (MenuItem item : internalGetContextMenuItems()) {
-			contextMenuToReturn.addMenuItem(item);
-		}
-
-		return contextMenuToReturn;
 	}
 
 
