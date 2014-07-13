@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Attack;
@@ -367,18 +369,18 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
 					if (weapon.isPresent()) {
-						float damage = combat().target(toBeAttacked).withWeapon((Weapon) weapon.get()).execute();
-						if (damage > 0f) {
+						String floatingText = combat().target(toBeAttacked).withWeapon((Weapon) weapon.get()).execute();
+						if (!StringUtils.isBlank(floatingText)) {
 							toBeAttacked.addFloatingText(
-								String.format("%.2f", -damage),
+								floatingText,
 								Color.RED
 							);
 						}
 					} else {
-						float damage = combat().target(toBeAttacked).execute();
-						if (damage > 0f) {
+						String floatingText = combat().target(toBeAttacked).execute();
+						if (!StringUtils.isBlank(floatingText)) {
 							toBeAttacked.addFloatingText(
-								String.format("%.2f", -damage),
+								floatingText,
 								Color.RED
 							);
 						}
