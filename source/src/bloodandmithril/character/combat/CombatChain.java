@@ -41,8 +41,8 @@ public class CombatChain {
 		return this;
 	}
 
-	public float execute() {
-		float damageDone = 0f;
+	public String execute() {
+		String text = "";
 		float knockbackStrength = 50f;
 		if (weapon != null) {
 			knockbackStrength = weapon.getKnockbackStrength();
@@ -68,7 +68,7 @@ public class CombatChain {
 			}
 		} else {
 			knockbackVector.mul(0.1f);
-			damageDone = hit(knockbackVector.cpy());
+			text = hit(knockbackVector.cpy());
 			if (ClientServerInterface.isServer()) {
 				int hitSound = attacker.getHitSound();
 				if (hitSound != 0) {
@@ -83,10 +83,10 @@ public class CombatChain {
 
 		if (ClientServerInterface.isServer()) {
 			target.getState().velocity.add(knockbackVector);
-			return damageDone;
+			return text;
 		}
 
-		return 0f;
+		return null;
 	}
 
 
@@ -118,9 +118,9 @@ public class CombatChain {
 
 
 	@SuppressWarnings("unchecked")
-	private float hit(Vector2 disarmVector) {
+	private String hit(Vector2 disarmVector) {
 		if (!ClientServerInterface.isServer()) {
-			return 0f;
+			return "";
 		}
 
 		disarmVector.rotate(90f * (Util.getRandom().nextFloat() - 0.5f));
@@ -150,11 +150,13 @@ public class CombatChain {
 		}
 
 		float damage = 0f;
+		boolean crit = false;
 		if (weapon == null) {
 			damage = attacker.getUnarmedDamage();
 		} else {
 			float weaponDamage = weapon.getBaseMinDamage() + (weapon.getBaseMaxDamage() - weapon.getBaseMinDamage()) * Util.getRandom().nextFloat();
 			if (Util.roll(weapon.getBaseCritChance())) {
+				crit = true;
 				damage = weaponDamage * weapon.getCritDamageMultiplier();
 			} else {
 				damage = weaponDamage;
@@ -162,6 +164,6 @@ public class CombatChain {
 		}
 
 		target.damage(damage);
-		return damage;
+		return String.format("%.2f", damage) + (crit ? " (Crit!)" : "");
 	}
 }
