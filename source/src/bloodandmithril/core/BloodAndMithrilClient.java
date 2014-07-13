@@ -293,6 +293,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		boolean uiClicked = false;
 		rightDoubleClickTimer = 0f;
 
+		UserInterface.initialRightMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
+
 		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
 			if (!Domain.getSelectedIndividuals().isEmpty()) {
 				for (final Individual indi : Domain.getIndividuals().values()) {
@@ -301,7 +303,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							if (indi == selected) {
 								continue;
 							}
-							
+
 							if (ClientServerInterface.isServer()) {
 								selected.getAI().setCurrentTask(new Attack(selected, indi));
 							} else {
