@@ -127,7 +127,7 @@ public class UserInterface {
 
 	/** Initial coordinates for the drag box, see {@link #renderDragBox()} */
 	private static Vector2 initialLeftMouseDragCoordinates = null;
-	private static Vector2 initialRightMouseDragCoordinates = null;
+	public static Vector2 initialRightMouseDragCoordinates = null;
 
 	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
 	public static boolean renderAvailableInterfaces = true, renderComponentBoundaries = true;
@@ -1014,12 +1014,6 @@ public class UserInterface {
 
 		if (!newMenu.getMenuItems().isEmpty()) {
 			contextMenus.add(newMenu);
-		}
-
-		if (!clicked) {
-			initialRightMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
-		} else {
-			initialRightMouseDragCoordinates = null;
 		}
 
 		return clicked;
