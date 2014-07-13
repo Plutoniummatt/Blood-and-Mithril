@@ -39,6 +39,11 @@ public abstract class Weapon<T extends Material> extends Equipable {
 	protected String internalGetPlural(boolean firstCap) {
 		return weaponGetPlural(firstCap);
 	}
+	
+	/**
+	 * @return the concurrent attack number of this weapon
+	 */
+	public abstract int getAttackNumber(Individual attacker);
 
 	/**
 	 * @return The name of the {@link Weapon}

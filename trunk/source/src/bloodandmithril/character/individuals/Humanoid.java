@@ -6,17 +6,21 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEF
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
+import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Probablistic;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
 
 /**
  * Uses standard humanoid animations
@@ -245,7 +249,16 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	public int getConcurrentAttackNumber() {
+		Optional<Item> equippedWeapon = tryFind(getEquipped().keySet(), item -> {
+			return item instanceof Weapon;
+		});
+		
+		if (equippedWeapon.isPresent()) {
+			return ((Weapon) equippedWeapon.get()).getAttackNumber(this);
+		}
+		
 		return 2;
 	}
 }
