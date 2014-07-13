@@ -201,7 +201,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** IDs of individuals that are currently attacking this one, along with a timer */
 	private Map<Integer, Long> beingAttackedBy = Maps.newHashMap();
 
-	private int maxConcurrentAttackers = 4;
+	private int maxConcurrentAttackers = 3;
 
 	/** These variables are needed to prevent duplicate executions of action frames */
 	private Action previousActionFrameAction;

@@ -8,6 +8,7 @@ import static com.badlogic.gdx.graphics.g2d.Animation.NORMAL;
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.item.Craftable;
@@ -148,6 +149,16 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 		return 50;
 	}
 
+	
+	@Override
+	public int getAttackNumber(Individual attacker) {
+		if (attacker instanceof Humanoid) {
+			return 2;
+		}
+		
+		return 0;
+	}
+	
 
 	@Override
 	public int getHitSound() {

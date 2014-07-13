@@ -1,7 +1,12 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.util.Util.Colors.lightColor;
+import static bloodandmithril.util.Util.Colors.randomColor;
+import static bloodandmithril.world.Domain.getActiveWorld;
+import static com.badlogic.gdx.Gdx.input;
 
 import java.util.Comparator;
 import java.util.Deque;
@@ -15,7 +20,6 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
-import bloodandmithril.character.individuals.Names;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
@@ -58,14 +62,12 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
-import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.fluid.Fluid;
 import bloodandmithril.world.topography.fluid.FluidFraction;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -150,20 +152,20 @@ public class DevWindow extends Window {
 
 		if (keyCode == Input.Keys.E) {
 			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
-			state.position = new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY());
+			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
 
-			IndividualIdentifier id = Names.getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
+			IndividualIdentifier id = getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
 			id.setNickName("Elfie");
 
 			Elf elf = new Elf(
-				id, state, Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
+				id, state, input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
 				20f,
-				Domain.getActiveWorld(),
-				Colors.lightColor(),
-				Colors.randomColor(),
-				Colors.randomColor()
+				getActiveWorld(),
+				lightColor(),
+				randomColor(),
+				randomColor()
 			);
 
 			elf.getSkills().setObservation(55);
