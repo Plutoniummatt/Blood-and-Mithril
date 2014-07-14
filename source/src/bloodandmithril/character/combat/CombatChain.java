@@ -3,13 +3,16 @@ package bloodandmithril.character.combat;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.graphics.TracerParticle;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Wrapper;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -78,6 +81,16 @@ public class CombatChain {
 						true
 					);
 				}
+			}
+			for (int i = 0; i < 35; i++) {
+				Domain.getActiveWorld().getParticles().add(new TracerParticle(
+					target.getState().position.cpy().add(0, 50f),
+					new Vector2(Util.getRandom().nextFloat() * 300f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockbackVector),
+					Color.RED,
+					0,
+					Domain.getActiveWorld().getWorldId(),
+					new Countdown(2000L)
+				));
 			}
 		}
 

@@ -20,6 +20,7 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
+import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Line;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -34,6 +35,7 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.graphics.TracerParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.persistence.GameSaver;
@@ -288,7 +290,12 @@ public class Domain {
 		}
 
 		shapeRenderer.end();
+		Domain.shapeRenderer.begin(Line);
+		for (TracerParticle p : Domain.getActiveWorld().getParticles()) {
+			p.render(Gdx.graphics.getDeltaTime());
+		}
 		gl20.glDisable(GL20.GL_BLEND);
+		Domain.shapeRenderer.end();
 		fBuffer.end();
 
 		GaussianLightingRenderer.render(camX, camY);
@@ -312,6 +319,13 @@ public class Domain {
 
 			for (Prop prop : props.values()) {
 				prop.update(d);
+			}
+
+			for (TracerParticle p : getActiveWorld().getParticles()) {
+				if (p.getRemovalCondition().call()) {
+					getActiveWorld().getParticles().remove(p);
+				}
+				p.update(d);
 			}
 
 			for (Item item : items.values()) {

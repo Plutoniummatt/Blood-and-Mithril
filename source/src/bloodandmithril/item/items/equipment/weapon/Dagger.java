@@ -149,16 +149,16 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 		return 50;
 	}
 
-	
+
 	@Override
 	public int getAttackNumber(Individual attacker) {
 		if (attacker instanceof Humanoid) {
 			return 2;
 		}
-		
+
 		return 0;
 	}
-	
+
 
 	@Override
 	public int getHitSound() {
@@ -180,7 +180,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 	@Override
 	public float getParryChanceIgnored() {
-		return 0.35f;
+		return 0.5f;
 	}
 
 
