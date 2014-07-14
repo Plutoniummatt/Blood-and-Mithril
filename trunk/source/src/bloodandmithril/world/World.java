@@ -1,15 +1,18 @@
 package bloodandmithril.world;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
-
-import com.google.common.collect.Sets;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.graphics.TracerParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
+
+import com.google.common.collect.Sets;
 
 /**
  * A World, holds info about the {@link Topography}, {@link Prop}s, {@link Individual}s and any related entities.
@@ -21,22 +24,25 @@ public class World implements Serializable {
 
 	/** Unique identifier of this {@link World} */
 	private final int worldId;
-	
+
 	/** Gravity on this world */
 	private float gravity;
 
 	/** Individuals that are currently in this {@link World} */
-	private Set<Integer> individuals 	= Sets.newHashSet();
-	
+	private Set<Integer> individuals 					= Sets.newHashSet();
+
 	/** {@link Prop}s that are on this {@link World} */
-	private Set<Integer> props 			= Sets.newHashSet();
-	
+	private Set<Integer> props 							= Sets.newHashSet();
+
 	/** {@link Light}s that are present on this {@link World} */
-	private Set<Integer> lights 		= Sets.newHashSet();
-	
+	private Set<Integer> lights 						= Sets.newHashSet();
+
 	/** {@link Item}s that are present on this {@link World} */
-	private Set<Integer> items			= Sets.newHashSet();
-	
+	private Set<Integer> items							= Sets.newHashSet();
+
+	/** Particles on this {@link World} */
+	private Collection<TracerParticle> particles			= new ConcurrentLinkedDeque<>();
+
 	/**
 	 * Constructor
 	 */
@@ -46,14 +52,14 @@ public class World implements Serializable {
 		Domain.addTopography(worldId, new Topography(worldId));
 	}
 
-	
+
 	/**
 	 * @return the {@link #topography}
 	 */
 	public Topography getTopography() {
 		return Domain.getTopography(worldId);
 	}
-	
+
 
 	public float getGravity() {
 		return gravity;
@@ -87,5 +93,10 @@ public class World implements Serializable {
 
 	public Set<Integer> getItems() {
 		return items;
+	}
+
+
+	public Collection<TracerParticle> getParticles() {
+		return particles;
 	}
 }

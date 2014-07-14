@@ -9,6 +9,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.ui.KeyMappings;
+import bloodandmithril.util.Countdown;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 
@@ -136,17 +137,17 @@ public class Attack extends CompositeAITask {
 		public Boolean call() {
 			Individual atker = getIndividuals().get(attacker.getId());
 			Individual victim = getIndividuals().get(attackee.getId());
-			
+
 			boolean closeEnough = false;
 			AITask subTask = getCurrentTask();
 			if (subTask instanceof GoToMovingLocation) {
 				int size = ((GoToMovingLocation) subTask).getCurrentGoToLocation().getPath().getSize();
 				closeEnough = size < 8;
 			}
-			
+
 			return atker.getAttackingHitBox().overlapsWith(
 				victim.getHitBox()
-			) || (closeEnough && !victim.canBeAttacked(atker));
+			) || closeEnough && !victim.canBeAttacked(atker);
 		}
 	}
 
@@ -245,23 +246,6 @@ public class Attack extends CompositeAITask {
 			} else {
 				complete = true;
 			}
-		}
-	}
-
-
-	public static class Countdown implements SerializableFunction<Boolean> {
-		private static final long serialVersionUID = -5761537304910257687L;
-		private final long startTime;
-		private final long duration;
-
-		public Countdown(long duration) {
-			this.duration = duration;
-			this.startTime = System.currentTimeMillis();
-		}
-
-		@Override
-		public Boolean call() {
-			return System.currentTimeMillis() - duration >= startTime;
 		}
 	}
 }
