@@ -69,6 +69,16 @@ public class CombatChain {
 					);
 				}
 			}
+			for (int i = 0; i < 35; i++) {
+				Domain.getActiveWorld().getParticles().add(new TracerParticle(
+					target.getState().position.cpy().add(0, 50f),
+					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockbackVector).mul(2f),
+					Util.getRandom().nextBoolean() ? Color.YELLOW : Color.WHITE,
+					2f,
+					Domain.getActiveWorld().getWorldId(),
+					new Countdown(Util.getRandom().nextInt(100))
+				));
+			}
 		} else {
 			knockbackVector.mul(0.1f);
 			text = hit(knockbackVector.cpy());
@@ -85,11 +95,11 @@ public class CombatChain {
 			for (int i = 0; i < 35; i++) {
 				Domain.getActiveWorld().getParticles().add(new TracerParticle(
 					target.getState().position.cpy().add(0, 50f),
-					new Vector2(Util.getRandom().nextFloat() * 300f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockbackVector),
+					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockbackVector).mul(5f),
 					Color.RED,
-					0,
+					2f,
 					Domain.getActiveWorld().getWorldId(),
-					new Countdown(2000L)
+					new Countdown(Util.getRandom().nextInt(2500))
 				));
 			}
 		}

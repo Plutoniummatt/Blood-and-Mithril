@@ -41,7 +41,7 @@ public class World implements Serializable {
 	private Set<Integer> items							= Sets.newHashSet();
 
 	/** Particles on this {@link World} */
-	private Collection<TracerParticle> particles			= new ConcurrentLinkedDeque<>();
+	private Collection<TracerParticle> particles		= new ConcurrentLinkedDeque<>();
 
 	/**
 	 * Constructor

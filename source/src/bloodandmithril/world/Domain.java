@@ -291,11 +291,24 @@ public class Domain {
 
 		shapeRenderer.end();
 		Domain.shapeRenderer.begin(Line);
-		for (TracerParticle p : Domain.getActiveWorld().getParticles()) {
-			p.render(Gdx.graphics.getDeltaTime());
+		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
+		Gdx.gl20.glLineWidth(3f);
+		if (Domain.getActiveWorld().getParticles() != null) {
+			for (TracerParticle p : Domain.getActiveWorld().getParticles()) {
+				p.render(Gdx.graphics.getDeltaTime());
+			}
 		}
-		gl20.glDisable(GL20.GL_BLEND);
 		Domain.shapeRenderer.end();
+		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
+		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
+		Gdx.gl20.glLineWidth(3f);
+		if (Domain.getActiveWorld().getParticles() != null) {
+			for (TracerParticle p : Domain.getActiveWorld().getParticles()) {
+				p.renderPoint(Gdx.graphics.getDeltaTime());
+			}
+		}
+		Domain.shapeRenderer.end();
+		gl20.glDisable(GL20.GL_BLEND);
 		fBuffer.end();
 
 		GaussianLightingRenderer.render(camX, camY);
@@ -319,13 +332,6 @@ public class Domain {
 
 			for (Prop prop : props.values()) {
 				prop.update(d);
-			}
-
-			for (TracerParticle p : getActiveWorld().getParticles()) {
-				if (p.getRemovalCondition().call()) {
-					getActiveWorld().getParticles().remove(p);
-				}
-				p.update(d);
 			}
 
 			for (Item item : items.values()) {
