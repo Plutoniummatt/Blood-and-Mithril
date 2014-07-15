@@ -17,30 +17,30 @@ public class FluidDynamicsProcessor {
 
 	/** The {@link Topography} instance this processor is responsible for */
 	private Topography topography;
-	
+
 	/** The frozen snapshot of the current state of the {@link FluidMap} */
 	private FluidMap currentSnapshot;
-	
+
 	/** Constants used */
 	private static final float MAX_DEPTH = TILE_SIZE;
-	private static final float MAX_COMPRESSION = TILE_SIZE * 0.06f;
+	private static final float MAX_COMPRESSION = TILE_SIZE;
 	private static final float MAX_FLOW = TILE_SIZE;
 	private static final float DIFFUSION_COEFFICIENT = 250f;
-	
+
 	/**
 	 * Constructor
 	 */
 	public FluidDynamicsProcessor(Topography topography) {
 		this.topography = topography;
 	}
-	
-	
+
+
 	/**
 	 * Process all {@link Fluid}s on the {@link #topography}
 	 */
 	public void process() {
 		currentSnapshot = topography.getFluids().deepCopy();
-		
+
 		currentSnapshot.getAllFluids().stream()
 		.sorted((e1, e2) -> {
 			return e1.y.compareTo(e2.y);
@@ -59,30 +59,33 @@ public class FluidDynamicsProcessor {
 	 * Process a single fluid
 	 */
 	private void processFluid(DualKeyEntry<Integer, Integer, Fluid> entry) {
-		synchronized (topography.getFluids()) {
-			diffuse(entry.x, entry.y, entry.value);
-		}
-		
+		// synchronized (topography.getFluids()) {
+		// 	diffuse(entry.x, entry.y, entry.value);
+		// }
+
 		flow(entry.x, entry.y, entry.value);
-		if (entry.value.getDepth() < 0.02f) {
+		if (entry.value.getDepth() < 0.05f) {
 			topography.getFluids().remove(entry.x, entry.y);
 		}
 	}
 
-	
+
 	/**
 	 * Handles diffusion.
+	 *
+	 * This this unused, as it causes performance problems, not in itself, but it disallows the "freezing" of fluids
 	 */
+	@SuppressWarnings("unused")
 	private void diffuse(Integer x, Integer y, Fluid fluid) {
 		// Diffusion downward
 		Fluid down = topography.getFluids().get(x, y - 1);
 		if (down != null) {
 			float exchangeAmount = min(fluid.getDepth() / DIFFUSION_COEFFICIENT, down.getDepth() / DIFFUSION_COEFFICIENT);
-			
+
 			topography.getFluids().get(x, y).add(topography.getFluids().get(x, y - 1).sub(exchangeAmount));
 			topography.getFluids().get(x, y - 1).add(topography.getFluids().get(x, y).sub(exchangeAmount));
 		}
-		
+
 		// Diffusion upward
 		Fluid up = topography.getFluids().get(x, y + 1);
 		if (up != null && up.getDepth() > 2f) {
@@ -90,7 +93,7 @@ public class FluidDynamicsProcessor {
 			topography.getFluids().get(x, y).add(topography.getFluids().get(x, y + 1).sub(exchangeAmount));
 			topography.getFluids().get(x, y + 1).add(topography.getFluids().get(x, y).sub(exchangeAmount));
 		}
-		
+
 		// Diffusion sideways
 		Fluid left = topography.getFluids().get(x - 1, y);
 		Fluid right = topography.getFluids().get(x + 1, y);
@@ -100,13 +103,13 @@ public class FluidDynamicsProcessor {
 			if (Util.getRandom().nextBoolean()) {
 				topography.getFluids().get(x, y).add(topography.getFluids().get(x - 1, y).sub(exchangeAmount));
 				topography.getFluids().get(x - 1, y).add(topography.getFluids().get(x, y).sub(exchangeAmount));
-				
+
 				topography.getFluids().get(x, y).add(topography.getFluids().get(x + 1, y).sub(exchangeAmount));
 				topography.getFluids().get(x + 1, y).add(topography.getFluids().get(x, y).sub(exchangeAmount));
 			} else {
 				topography.getFluids().get(x, y).add(topography.getFluids().get(x + 1, y).sub(exchangeAmount));
 				topography.getFluids().get(x + 1, y).add(topography.getFluids().get(x, y).sub(exchangeAmount));
-				
+
 				topography.getFluids().get(x, y).add(topography.getFluids().get(x - 1, y).sub(exchangeAmount));
 				topography.getFluids().get(x - 1, y).add(topography.getFluids().get(x, y).sub(exchangeAmount));
 			}
@@ -190,7 +193,7 @@ public class FluidDynamicsProcessor {
 		if (isFlowable(x, y + 1)) {
 			flow = currentDepth - stableStateFunction(currentDepth + getSnapshotDepth(x, y + 1));
 			flow = constrain(flow, 0f, min(MAX_FLOW, currentDepth));
-			
+
 			Fluid nextAbove = topography.getFluids().get(x, y + 1);
 			if (nextAbove == null) {
 				topography.getFluids().put(x, y + 1, topography.getFluids().get(x, y).sub(flow));
@@ -200,8 +203,8 @@ public class FluidDynamicsProcessor {
 			currentDepth -= flow;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Calculates the stable state between two vertically adjacent fluids by their total mass
 	 */
@@ -214,8 +217,8 @@ public class FluidDynamicsProcessor {
 			return (totalDepth + MAX_COMPRESSION) / 2f;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Gets the depth of a fluid from the current frozen snapshot of the {@link FluidMap}
 	 */
@@ -224,10 +227,10 @@ public class FluidDynamicsProcessor {
 		if (fluid == null) {
 			return 0f;
 		}
-		
+
 		return fluid.getDepth();
 	}
-	
+
 
 	/**
 	 * Constrains a float between boundaries
@@ -241,7 +244,7 @@ public class FluidDynamicsProcessor {
 			return f;
 		}
 	}
-	
+
 
 	/**
 	 * @return true if tile at specified location is passable, indicating that fluid can flow through it.

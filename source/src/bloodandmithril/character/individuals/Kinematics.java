@@ -66,6 +66,7 @@ public interface Kinematics {
 		//If position below is a platform tile and the next waypoint is directly below current position, skip ground detection
 		if (groundDetectionCriteriaMet(topography, state, ai, kinematicsBean) && !kinematicsBean.steppingUp) {
 			state.velocity.y = 0f;
+			friction(individual, state);
 
 			if (state.position.y >= 0f) {
 				if ((int)state.position.y % TILE_SIZE == 0) {
@@ -79,14 +80,10 @@ public interface Kinematics {
 		} else if (state.position.y == 0f && !(topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
 			state.velocity.y = 0f;
 		} else {
-			if ((individual.isCommandActive(KeyMappings.moveRight) && state.velocity.x < 0f) ||
-				(individual.isCommandActive(KeyMappings.moveLeft) && state.velocity.x > 0f) ||
-				(!individual.isCommandActive(KeyMappings.moveLeft) && !individual.isCommandActive(KeyMappings.moveRight))) {
-				state.velocity.x = state.velocity.x * 0.4f;
-			}
+			friction(individual, state);
 			state.acceleration.x = 0f;
 		}
-		
+
 		if (abs(individual.getState().velocity.x) > individual.getRunSpeed() * 1.5f) {
 			state.velocity.x = state.velocity.x * 0.65f;
 		}
@@ -117,6 +114,15 @@ public interface Kinematics {
 	}
 
 
+	static void friction(Individual individual, IndividualState state) {
+		if (individual.isCommandActive(KeyMappings.moveRight) && state.velocity.x < 0f ||
+			individual.isCommandActive(KeyMappings.moveLeft) && state.velocity.x > 0f ||
+			!individual.isCommandActive(KeyMappings.moveLeft) && !individual.isCommandActive(KeyMappings.moveRight)) {
+			state.velocity.x = state.velocity.x * 0.4f;
+		}
+	}
+
+
 	/**
 	 * Sets {@link #jumpOff} to null if we've passed it
 	 */
@@ -128,7 +134,7 @@ public interface Kinematics {
 				kinematicsBean.jumpedOff = false;
 			}
 		}
-		
+
 		if (currentTask instanceof CompositeAITask) {
 			AITask subTask = ((CompositeAITask) currentTask).getCurrentTask();
 			if (subTask instanceof GoToLocation) {

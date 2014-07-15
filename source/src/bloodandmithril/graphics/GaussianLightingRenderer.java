@@ -6,6 +6,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.cam;
 import static bloodandmithril.core.BloodAndMithrilClient.camMarginX;
 import static bloodandmithril.core.BloodAndMithrilClient.camMarginY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreen;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 public class GaussianLightingRenderer {
 	public static boolean SEE_ALL = false;
 
+	public static FrameBuffer lightingFBO;
 	public static FrameBuffer workingDownSampled;
 	public static FrameBuffer workingDownSampledXBlurColorBuffer;
 	public static FrameBuffer workingDownSampledYBlurColorBuffer;
@@ -46,6 +48,7 @@ public class GaussianLightingRenderer {
 	 */
 	public static void render(float camX, float camY) {
 		weather();
+		lighting();
 		backgroundLighting();
 		foregroundLighting();
 		background();
@@ -90,6 +93,13 @@ public class GaussianLightingRenderer {
 			RGBA8888,
 			(WIDTH + camMarginX) / 16,
 			(HEIGHT + camMarginY) / 16,
+			false
+		);
+
+		lightingFBO = new FrameBuffer(
+			RGBA8888,
+			WIDTH,
+			HEIGHT,
 			false
 		);
 
@@ -145,6 +155,38 @@ public class GaussianLightingRenderer {
 
 	private static void weather() {
 		Weather.render();
+	}
+
+
+	/**
+	 * Handles rendering to the lighting FBO.
+	 */
+	private static void lighting() {
+		workingFBO.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		workingFBO.end();
+
+		lightingFBO.begin();
+		spriteBatch.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.setShader(Shaders.lightingFBO);
+		Shaders.lightingFBO.begin();
+
+		Domain.getActiveWorld().getParticles().stream().filter(p -> {
+			return p.glowIntensity != 0f;
+		}).forEach(p -> {
+			Shaders.lightingFBO.setUniformf("intensity", p.glowIntensity);
+			Shaders.lightingFBO.setUniformf("color", p.color);
+			Shaders.lightingFBO.setUniformf("position", worldToScreen(p.position));
+			Shaders.lightingFBO.setUniformf("resolution", WIDTH, HEIGHT);
+			spriteBatch.draw(workingFBO.getColorBufferTexture(), 0, 0);
+			spriteBatch.flush();
+		});
+
+		spriteBatch.end();
+		lightingFBO.end();
 	}
 
 
@@ -493,8 +535,10 @@ public class GaussianLightingRenderer {
 			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
+			lightingFBO.getColorBufferTexture().bind(3);
 			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion", 1);
 			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion2", 2);
+			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion3", 3);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
