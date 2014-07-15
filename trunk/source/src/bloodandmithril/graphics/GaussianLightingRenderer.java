@@ -169,11 +169,10 @@ public class GaussianLightingRenderer {
 
 		lightingFBO.begin();
 		spriteBatch.begin();
-		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.setShader(Shaders.lightingFBO);
 		Shaders.lightingFBO.begin();
-
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Domain.getActiveWorld().getParticles().stream().filter(p -> {
 			return p.glowIntensity != 0f;
 		}).forEach(p -> {
