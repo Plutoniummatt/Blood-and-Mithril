@@ -23,6 +23,7 @@ import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.graphics.TracerParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.GlassBottle;
 import bloodandmithril.item.items.container.WoodenBucket;
@@ -237,6 +238,10 @@ public class DevWindow extends Window {
 
 		if (keyCode == Input.Keys.L) {
 			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickTile.class);
+		}
+		
+		if (keyCode == Input.Keys.A) {
+			Domain.getActiveWorld().getParticles().add(new TracerParticle(new Vector2(getMouseWorldX(), getMouseWorldY()), new Vector2(), Color.GREEN, 2, Domain.getActiveWorld().getWorldId(), () -> {return false;}, 10f));
 		}
 
 		if (keyCode == Input.Keys.P) {

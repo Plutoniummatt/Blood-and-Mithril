@@ -292,21 +292,21 @@ public class Domain {
 		shapeRenderer.end();
 		Domain.shapeRenderer.begin(Line);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
-		Gdx.gl20.glLineWidth(3f);
 		if (Domain.getActiveWorld().getParticles() != null) {
 			for (TracerParticle p : Domain.getActiveWorld().getParticles()) {
+				Gdx.gl20.glLineWidth(p.radius + 1f);
 				p.render(Gdx.graphics.getDeltaTime());
 			}
 		}
 		Domain.shapeRenderer.end();
 		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
-		Gdx.gl20.glLineWidth(3f);
 		if (Domain.getActiveWorld().getParticles() != null) {
 			for (TracerParticle p : Domain.getActiveWorld().getParticles()) {
 				p.renderPoint(Gdx.graphics.getDeltaTime());
 			}
 		}
+		Gdx.gl20.glLineWidth(1f);
 		Domain.shapeRenderer.end();
 		gl20.glDisable(GL20.GL_BLEND);
 		fBuffer.end();

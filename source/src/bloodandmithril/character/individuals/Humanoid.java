@@ -220,6 +220,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					case 9: return new SpacialConfiguration(new Vector2(27, 44f), -7f, false);
 				}
 			case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
+			case ATTACK_LEFT_UNARMED:
 				switch (frameIndex) {
 					case 0: return new SpacialConfiguration(new Vector2(17, 45f), 40f, true);
 					case 1: return new SpacialConfiguration(new Vector2(18, 46f), 35f, true);
@@ -231,6 +232,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					case 7: return new SpacialConfiguration(new Vector2(-28, 48f), 0f, true);
 				}
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
+			case ATTACK_RIGHT_UNARMED:
 				switch (frameIndex) {
 					case 0: return new SpacialConfiguration(new Vector2(-17, 46f), -40f, false);
 					case 1: return new SpacialConfiguration(new Vector2(-18, 46f), -35f, false);
