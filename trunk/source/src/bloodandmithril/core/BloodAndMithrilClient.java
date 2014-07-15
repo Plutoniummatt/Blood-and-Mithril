@@ -12,6 +12,7 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.graphics.TracerParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
@@ -113,6 +114,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static long ping = 0;
 
 	public static Thread updateThread;
+	public static Thread particleUpdateThread;
 
 	private long topographyBacklogExecutionTimer;
 
@@ -158,11 +160,40 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				}
 			}
 		});
+		
+		particleUpdateThread = new Thread(() -> {
+			long prevFrame = System.currentTimeMillis();
+			
+			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+				
+				if (System.currentTimeMillis() - prevFrame > 16) {
+					prevFrame = System.currentTimeMillis();
+					try {
+						for (TracerParticle p : Domain.getActiveWorld().getParticles()) {
+							if (p.getRemovalCondition().call()) {
+								Domain.getActiveWorld().getParticles().remove(p);
+							}
+							p.update(Gdx.graphics.getDeltaTime());
+						}
+					} catch (NullPointerException e) {
+						// DO nothing
+					}
+				}
+			}
+		});
 
 
 		updateThread.setPriority(Thread.MAX_PRIORITY);
 		updateThread.setName("Update thread");
 		updateThread.start();
+		
+		particleUpdateThread.setName("Particle thread");
+		particleUpdateThread.start();
 	}
 
 

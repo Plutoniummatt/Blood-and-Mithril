@@ -2,8 +2,6 @@ package bloodandmithril.graphics;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static java.lang.Math.abs;
-import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.tile.Tile;
@@ -20,24 +18,29 @@ public class TracerParticle {
 
 	public final float lightRadius;
 	public final int worldId;
-	public SerializableColor color;
+	public Color color;
 	private Vector2 position, velocity;
 	private SerializableFunction<Boolean> removalCondition;
 
 	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition) {
 		this.position = position;
 		this.velocity = velocity;
-		this.color = new SerializableColor(color);
+		this.color = color;
 		this.lightRadius = radius;
 		this.worldId = worldId;
 		this.removalCondition = removalCondition;
 	}
+	
+	
+	public void renderPoint(float delta) {
+		Domain.shapeRenderer.setColor(color);
+		Domain.shapeRenderer.filledCircle(position.x, position.y, lightRadius);
+	}
 
 
 	public void render(float delta) {
-		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
-		Domain.shapeRenderer.setColor(Color.RED);
-		Domain.shapeRenderer.line(position.x, position.y, position.x + velocity.x * delta, position.y + velocity.y * delta);
+		Domain.shapeRenderer.setColor(color);
+		Domain.shapeRenderer.line(position.x, position.y, position.x - velocity.x * delta, position.y - velocity.y * delta);
 	}
 
 
@@ -57,6 +60,7 @@ public class TracerParticle {
 			velocity.y = velocity.y * 0.8f;
 		}
 
+		velocity.mul(0.98f);
 		Tile tileUnder = Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true);
 
 		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
