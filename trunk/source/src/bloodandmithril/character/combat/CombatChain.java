@@ -74,9 +74,10 @@ public class CombatChain {
 					target.getState().position.cpy().add(0, 50f),
 					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockbackVector).mul(2f),
 					Util.getRandom().nextBoolean() ? Color.YELLOW : Color.WHITE,
-					2f,
+					1f,
 					Domain.getActiveWorld().getWorldId(),
-					new Countdown(Util.getRandom().nextInt(100))
+					new Countdown(Util.getRandom().nextInt(100)),
+					5f
 				));
 			}
 		} else {
@@ -99,7 +100,8 @@ public class CombatChain {
 					Color.RED,
 					2f,
 					Domain.getActiveWorld().getWorldId(),
-					new Countdown(Util.getRandom().nextInt(2500))
+					new Countdown(Util.getRandom().nextInt(2500)),
+					0f
 				));
 			}
 		}

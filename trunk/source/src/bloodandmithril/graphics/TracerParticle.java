@@ -16,25 +16,27 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class TracerParticle {
 
-	public final float lightRadius;
+	public final float radius;
 	public final int worldId;
 	public Color color;
-	private Vector2 position, velocity;
+	public float glowIntensity;
+	public Vector2 position, velocity;
 	private SerializableFunction<Boolean> removalCondition;
 
-	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition) {
+	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity) {
 		this.position = position;
 		this.velocity = velocity;
 		this.color = color;
-		this.lightRadius = radius;
+		this.radius = radius;
 		this.worldId = worldId;
 		this.removalCondition = removalCondition;
+		this.glowIntensity = glowIntensity;
 	}
-	
-	
+
+
 	public void renderPoint(float delta) {
 		Domain.shapeRenderer.setColor(color);
-		Domain.shapeRenderer.filledCircle(position.x, position.y, lightRadius);
+		Domain.shapeRenderer.filledCircle(position.x, position.y, radius);
 	}
 
 
