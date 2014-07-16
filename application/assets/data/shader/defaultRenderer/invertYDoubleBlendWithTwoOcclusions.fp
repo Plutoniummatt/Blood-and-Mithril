@@ -19,6 +19,6 @@ void main()
   float factor2 = texture2D(occlusion2, inverted).r;
   float factor = factor1 * factor2;
   
-  vec4 sum = texture2D(u_texture, inverted) * (vec4(factor, factor, factor, 1.0) * dayLightColor + texture2D(occlusion3, v_texCoords));
+  vec4 sum = texture2D(u_texture, inverted) * (vec4(factor, factor, factor, 1.0) * dayLightColor + texture2D(occlusion3, v_texCoords)) * vec4(factor1, factor1, factor1, 1.0);
   gl_FragColor = sum;
 }
