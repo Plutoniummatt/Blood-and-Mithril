@@ -4,6 +4,7 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static java.lang.Math.abs;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;
@@ -71,9 +72,9 @@ public class TracerParticle {
 
 			if (Domain.getWorld(worldId).getTopography().getTile(trial.x, trial.y, true).isPassable()) {
 				if (previousVelocity.y <= 0f && previousVelocity.y != 0f) {
-					velocity.x = velocity.x * 0.3f;
+					velocity.x = velocity.x * 0.6f;
 					velocity.y = 0f;
-					position.y = Domain.getWorld(worldId).getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(position, true).y;
+					position.y = Topography.convertToWorldCoord(Topography.convertToWorldTileCoord(position.y), true) + TILE_SIZE;
 				} else {
 					position = previousPosition;
 					velocity.y = -previousVelocity.y;

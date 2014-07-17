@@ -190,7 +190,7 @@ public class Topography {
 	 * Converts chunk coord + chunk tile coord to world tile coord
 	 */
 	public static int convertToWorldTileCoord(float coord) {
-		return convertToWorldTileCoord(convertToChunkCoord(coord), convertToTileCoord(coord));
+		return convertToWorldTileCoord(convertToChunkCoord(coord), convertToChunkTileCoord(coord));
 	}
 
 
@@ -201,8 +201,8 @@ public class Topography {
 
 	public static Vector2 convertToWorldCoord(float x, float y, boolean floor) {
 		return new Vector2(
-			convertToWorldCoord(convertToWorldTileCoord(convertToChunkCoord(x), convertToTileCoord(x)), false),
-			convertToWorldCoord(convertToWorldTileCoord(convertToChunkCoord(y), convertToTileCoord(y)), floor)
+			convertToWorldCoord(convertToWorldTileCoord(convertToChunkCoord(x), convertToChunkTileCoord(x)), false),
+			convertToWorldCoord(convertToWorldTileCoord(convertToChunkCoord(y), convertToChunkTileCoord(y)), floor)
 		);
 	}
 
@@ -210,7 +210,7 @@ public class Topography {
 	/**
 	 * Converts a world coordinate into a (chunk)tile coordinate
 	 */
-	public static int convertToTileCoord(float worldCoord) {
+	public static int convertToChunkTileCoord(float worldCoord) {
 		int worldCoordinateIntegerized = (int) worldCoord;
 
 		if (worldCoordinateIntegerized >= 0) {
@@ -230,8 +230,8 @@ public class Topography {
 	public synchronized Tile deleteTile(float worldX, float worldY, boolean foreGround) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
-		int tileX = convertToTileCoord(worldX);
-		int tileY = convertToTileCoord(worldY);
+		int tileX = convertToChunkTileCoord(worldX);
+		int tileY = convertToChunkTileCoord(worldY);
 
 		try {
 			if (getTile(worldX, worldY, foreGround) instanceof EmptyTile) {
@@ -258,8 +258,8 @@ public class Topography {
 	public synchronized void changeTile(float worldX, float worldY, boolean foreGround, Class<? extends Tile> toChangeTo) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
-		int tileX = convertToTileCoord(worldX);
-		int tileY = convertToTileCoord(worldY);
+		int tileX = convertToChunkTileCoord(worldX);
+		int tileY = convertToChunkTileCoord(worldY);
 
 		getFluids().remove(
 			convertToWorldTileCoord(worldX),
@@ -283,8 +283,8 @@ public class Topography {
 	public synchronized void changeTile(float worldX, float worldY, boolean foreGround, Tile toChangeTo) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
-		int tileX = convertToTileCoord(worldX);
-		int tileY = convertToTileCoord(worldY);
+		int tileX = convertToChunkTileCoord(worldX);
+		int tileY = convertToChunkTileCoord(worldY);
 
 		getFluids().remove(
 			convertToWorldTileCoord(worldX),
@@ -344,8 +344,8 @@ public class Topography {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
 
-		int tileX = convertToTileCoord(worldX);
-		int tileY = convertToTileCoord(worldY);
+		int tileX = convertToChunkTileCoord(worldX);
+		int tileY = convertToChunkTileCoord(worldY);
 
 		return getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 	}
@@ -358,8 +358,8 @@ public class Topography {
 		int chunkX = convertToChunkCoord(convertToWorldCoord(tileX, false));
 		int chunkY = convertToChunkCoord(convertToWorldCoord(tileY, false));
 
-		int chunkTileX = convertToTileCoord(convertToWorldCoord(tileX, false));
-		int chunkTileY = convertToTileCoord(convertToWorldCoord(tileY, false));
+		int chunkTileX = convertToChunkTileCoord(convertToWorldCoord(tileX, false));
+		int chunkTileY = convertToChunkTileCoord(convertToWorldCoord(tileY, false));
 
 		try {
 			return getChunkMap().get(chunkX).get(chunkY).getTile(chunkTileX, chunkTileY, foreGround);

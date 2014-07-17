@@ -10,6 +10,7 @@ uniform sampler2D occlusion;
 uniform sampler2D occlusion2;
 uniform sampler2D occlusion3;
 uniform sampler2D occlusion4;
+uniform sampler2D occlusion5;
 uniform vec4 dayLightColor;
 
 void main()
@@ -17,6 +18,7 @@ void main()
   vec2 inverted = vec2(v_texCoords.x, 1.0 - v_texCoords.y);
   float factor = texture2D(occlusion, inverted).r;
   float shadowFactor = texture2D(occlusion2, inverted).r * 0.35;
+  vec4 particle = texture2D(occlusion5, v_texCoords);
   vec4 innerShadow = vec4(shadowFactor, shadowFactor, shadowFactor, 0.0);
   
   vec4 sample3 = texture2D(occlusion3, inverted);
@@ -25,7 +27,7 @@ void main()
   float backgroundBlend = max(backgroundOcclusionNearest.g - backgroundOcclusionNearest.r, 0.0);
   vec4 foregroundDropShadow = vec4(1.0, 1.0, 1.0, 0.0) * max(0.0, extraShadow * backgroundBlend) * 0.3;
   
-  vec4 sampleBlendedWithDaylight = texture2D(u_texture, inverted) * vec4(factor, factor, factor, 1.0) * dayLightColor;
+  vec4 sampleBlendedWithDaylight = texture2D(u_texture, inverted) * (vec4(factor, factor, factor, 1.0) + particle) * dayLightColor;
   
   gl_FragColor = sampleBlendedWithDaylight - innerShadow - foregroundDropShadow;
 }
