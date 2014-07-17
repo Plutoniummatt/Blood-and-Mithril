@@ -61,6 +61,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
+import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
@@ -241,7 +242,30 @@ public class DevWindow extends Window {
 		}
 		
 		if (keyCode == Input.Keys.A) {
-			Domain.getActiveWorld().getParticles().add(new TracerParticle(new Vector2(getMouseWorldX(), getMouseWorldY()), new Vector2(), Color.GREEN, 2, Domain.getActiveWorld().getWorldId(), () -> {return false;}, 10f));
+			for (int i = 0; i<20; i++) {
+				Domain.getActiveWorld().getParticles().add(
+					new TracerParticle(
+						new Vector2(getMouseWorldX(), getMouseWorldY()), 
+						new Vector2(Util.getRandom().nextInt(4000), 0f).rotate(Util.getRandom().nextFloat() * 6f - 3f), 
+						Color.WHITE, 
+						2, 
+						Domain.getActiveWorld().getWorldId(), 
+						new Countdown(Util.getRandom().nextInt(2000)), 
+						10f
+					)
+				);
+				Domain.getActiveWorld().getParticles().add(
+					new TracerParticle(
+						new Vector2(getMouseWorldX(), getMouseWorldY()), 
+						new Vector2(-Util.getRandom().nextInt(4000), 0f).rotate(Util.getRandom().nextFloat() * 6f - 3f), 
+						Color.WHITE, 
+						2, 
+						Domain.getActiveWorld().getWorldId(), 
+						new Countdown(Util.getRandom().nextInt(2000)), 
+						10f
+					)
+				);
+			}
 		}
 
 		if (keyCode == Input.Keys.P) {

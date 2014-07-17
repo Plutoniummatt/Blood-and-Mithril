@@ -73,7 +73,7 @@ public class CombatChain {
 				Domain.getActiveWorld().getParticles().add(new TracerParticle(
 					target.getState().position.cpy().add(0, 50f),
 					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockbackVector).mul(2f),
-					Util.getRandom().nextBoolean() ? Color.YELLOW : Color.WHITE,
+					Color.WHITE,
 					1f,
 					Domain.getActiveWorld().getWorldId(),
 					new Countdown(Util.getRandom().nextInt(100)),
