@@ -27,7 +27,7 @@ void main()
   float backgroundBlend = max(backgroundOcclusionNearest.g - backgroundOcclusionNearest.r, 0.0);
   vec4 foregroundDropShadow = vec4(1.0, 1.0, 1.0, 0.0) * max(0.0, extraShadow * backgroundBlend) * 0.3;
   
-  vec4 sampleBlendedWithDaylight = texture2D(u_texture, inverted) * (vec4(factor, factor, factor, 1.0) + particle) * dayLightColor;
+  vec4 sampleBlendedWithDaylight = texture2D(u_texture, inverted) * (vec4(factor, factor, factor, 1.0) * dayLightColor + particle);
   
   gl_FragColor = sampleBlendedWithDaylight - innerShadow - foregroundDropShadow;
 }

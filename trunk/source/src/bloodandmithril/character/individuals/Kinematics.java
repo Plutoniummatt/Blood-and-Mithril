@@ -64,9 +64,9 @@ public interface Kinematics {
 		//If the position is not on an empty tile and is not a platform tile run the ground detection routine
 		//If the position is on a platform tile and if the tile below current position is not an empty tile, run ground detection routine
 		//If position below is a platform tile and the next waypoint is directly below current position, skip ground detection
+		friction(individual, state);
 		if (groundDetectionCriteriaMet(topography, state, ai, kinematicsBean) && !kinematicsBean.steppingUp) {
 			state.velocity.y = 0f;
-			friction(individual, state);
 
 			if (state.position.y >= 0f) {
 				if ((int)state.position.y % TILE_SIZE == 0) {
@@ -80,7 +80,6 @@ public interface Kinematics {
 		} else if (state.position.y == 0f && !(topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
 			state.velocity.y = 0f;
 		} else {
-			friction(individual, state);
 			state.acceleration.x = 0f;
 		}
 
