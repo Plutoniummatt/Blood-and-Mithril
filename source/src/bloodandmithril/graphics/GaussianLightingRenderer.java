@@ -450,12 +450,14 @@ public class GaussianLightingRenderer {
 			backgroundShadowFBO.getColorBufferTexture().bind(2);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(3);
 			backgroundOcclusionFBONearest.getColorBufferTexture().bind(4);
+			lightingFBO.getColorBufferTexture().bind(5);
 			Color daylight = Weather.getDaylightColor();
 			Shaders.invertYBlendWithOcclusionBackground.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion", 1);
 			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion2", 2);
 			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion3", 3);
 			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion4", 4);
+			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion5", 5);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
