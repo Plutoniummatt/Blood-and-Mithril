@@ -21,11 +21,12 @@ public class TracerParticle {
 	public final int worldId;
 	public Color color;
 	public float glowIntensity;
-	public Vector2 position, velocity;
+	public Vector2 prevPosition, position, velocity;
 	private SerializableFunction<Boolean> removalCondition;
 
 	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity) {
 		this.position = position;
+		this.prevPosition = position.cpy();
 		this.velocity = velocity;
 		this.color = color;
 		this.radius = radius;
@@ -43,7 +44,7 @@ public class TracerParticle {
 
 	public void render(float delta) {
 		Domain.shapeRenderer.setColor(color);
-		Domain.shapeRenderer.line(position.x, position.y, position.x - velocity.x * delta, position.y - velocity.y * delta);
+		Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
 	}
 
 
@@ -51,6 +52,9 @@ public class TracerParticle {
 	 * Performs kinetics updates on this particle
 	 */
 	public void update(float delta) {
+		prevPosition.x = position.x;
+		prevPosition.y = position.y;
+		
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 
