@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
@@ -20,6 +21,7 @@ import bloodandmithril.util.SerializableFunction;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class EquipperImpl implements Equipper, Serializable {
 	private static final long serialVersionUID = -4489215845226338399L;
 

@@ -3,6 +3,7 @@ package bloodandmithril.item.items.material;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Plank extends bloodandmithril.item.items.material.Material implements Craftable {
 	private static final long serialVersionUID = 8519886397429197864L;
 

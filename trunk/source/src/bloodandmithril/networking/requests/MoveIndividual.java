@@ -3,6 +3,7 @@ package bloodandmithril.networking.requests;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * {@link Request} to move an {@link Individual}
  */
+@Copyright("Matthew Peck 2014")
 public class MoveIndividual implements Request {
 
 	/** id of the {@link Individual} to be moved */

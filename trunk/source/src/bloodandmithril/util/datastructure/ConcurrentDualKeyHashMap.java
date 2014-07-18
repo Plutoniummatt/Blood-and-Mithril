@@ -2,24 +2,27 @@ package bloodandmithril.util.datastructure;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * A concurrent two-dimensional HashMap
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ConcurrentDualKeyHashMap<X, Y, V> {
-	
+
 	/** The underlying data structue */
 	private ConcurrentHashMap<X, ConcurrentHashMap<Y, V>> data = new ConcurrentHashMap<X, ConcurrentHashMap<Y, V>>();
-	
+
 	/**
 	 * @return the value enquired upon
 	 */
 	public V get(X x, Y y) {
-		return data.get(x) == null ? null : data.get(x).get(y); 
+		return data.get(x) == null ? null : data.get(x).get(y);
 	}
 
-	
+
 	/**
 	 * Put an entry into this {@link ConcurrentDualKeyHashMap}
 	 */
@@ -29,8 +32,8 @@ public class ConcurrentDualKeyHashMap<X, Y, V> {
 		}
 		return data.get(x).put(y, v);
 	}
-	
-	
+
+
 	/**
 	 * Put an entry into this {@link ConcurrentDualKeyHashMap}
 	 */

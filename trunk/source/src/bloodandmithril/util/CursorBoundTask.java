@@ -1,11 +1,14 @@
 package bloodandmithril.util;
 
+import bloodandmithril.core.Copyright;
+
 
 /**
  * Binds a {@link Task} to the cursor.
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class CursorBoundTask {
 
 	private JITTask task;

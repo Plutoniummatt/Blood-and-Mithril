@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.misc.Ring;
@@ -14,6 +15,7 @@ import bloodandmithril.util.SerializableFunction;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public interface Equipper extends Container {
 
 

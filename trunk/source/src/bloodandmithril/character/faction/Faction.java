@@ -1,11 +1,14 @@
 package bloodandmithril.character.faction;
 
+import bloodandmithril.core.Copyright;
+
 
 /**
  * Class representing a faction
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Faction {
 
 	public final String name;

@@ -1,9 +1,11 @@
 package bloodandmithril.world.topography.tile.tiles.glass;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Glass;
 import bloodandmithril.world.topography.tile.tiles.GlassTile;
 
+@Copyright("Matthew Peck 2014")
 public class ClearGlassTile extends GlassTile {
 	private static final long serialVersionUID = -6196904136714852677L;
 

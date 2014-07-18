@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.persistence.GameSaver;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.files.FileHandle;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ChunkSaver {
 
 	/** The current chunk coordinates that is in the queue to be saved/flushed */

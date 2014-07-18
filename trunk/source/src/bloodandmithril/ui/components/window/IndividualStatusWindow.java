@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -36,6 +37,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class IndividualStatusWindow extends Window {
 
 	private final Individual individual;

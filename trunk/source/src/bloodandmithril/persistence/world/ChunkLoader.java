@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.zip.ZipFile;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.TerrainGenerator;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.Gdx;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ChunkLoader {
 
 	/** The thread responsible for loading */

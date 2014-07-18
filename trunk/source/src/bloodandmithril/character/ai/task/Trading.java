@@ -3,6 +3,7 @@ package bloodandmithril.character.ai.task;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.Prop;
@@ -13,6 +14,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Trading extends AITask {
 	private static final long serialVersionUID = 6325569855563214762L;
 

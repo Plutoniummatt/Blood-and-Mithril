@@ -5,13 +5,14 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.networking.requests.SynchronizePropRequest;
-import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.ui.UserInterface;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Construction extends Prop implements Container {
 	private static final long serialVersionUID = -7772373095960462479L;
 

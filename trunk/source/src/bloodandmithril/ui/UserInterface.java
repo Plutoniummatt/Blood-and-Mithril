@@ -53,6 +53,7 @@ import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.Interface;
@@ -93,6 +94,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class UserInterface {
 
 	private static final Color DARK_SCREEN_COLOR = new Color(0f, 0f, 0f, 0.8f);

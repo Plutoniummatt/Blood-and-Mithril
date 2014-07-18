@@ -3,6 +3,7 @@ package bloodandmithril.world.topography.tile;
 import java.io.Serializable;
 
 import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.datastructure.BinaryTree;
@@ -22,6 +23,7 @@ import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Tile implements Serializable {
 	private static final long serialVersionUID = -2331827246047876705L;
 
@@ -166,7 +168,7 @@ public abstract class Tile implements Serializable {
 	 * @return an {@link Item} that is obtained when this {@link Tile} is mined. See {@link MineTile}
 	 */
 	public abstract Item mine();
-	
+
 
 	/**
 	 * @return true if {@link #isStair}

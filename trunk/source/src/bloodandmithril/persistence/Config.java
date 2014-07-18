@@ -2,11 +2,14 @@ package bloodandmithril.persistence;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Config class
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Config implements Serializable {
 	private static final long serialVersionUID = -1737356527689517262L;
 

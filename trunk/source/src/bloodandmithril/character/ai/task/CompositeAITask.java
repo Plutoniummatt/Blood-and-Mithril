@@ -4,12 +4,14 @@ import java.util.ArrayDeque;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 
 /**
  * An {@link AITask} that is a composite of multiple {@link AITask}s
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class CompositeAITask extends AITask {
 	private static final long serialVersionUID = -3769737563309697525L;
 

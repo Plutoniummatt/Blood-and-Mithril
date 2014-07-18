@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.lwjgl.opengl.GL11;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Operator;
 import bloodandmithril.util.Util;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Chunk {
 
 	/**

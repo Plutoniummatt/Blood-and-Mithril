@@ -1,8 +1,10 @@
 package bloodandmithril.generation.patterns;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator2D;
 import bloodandmithril.world.topography.tile.Tile;
 
+@Copyright("Matthew Peck 2014")
 public class UndergroundWithCaves {
 
 	private static PerlinNoiseGenerator2D spaceArea = new PerlinNoiseGenerator2D(100, 0.6f, 3);

@@ -1,5 +1,6 @@
 package bloodandmithril.generation.superstructure;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -11,19 +12,20 @@ import bloodandmithril.world.topography.ChunkMap;
  *
  * @author Sam, Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class SuperStructure extends Structure {
 	private static final long serialVersionUID = -4187785116665052403L;
-	
+
 	/** The edges of this SuperStructure, in chunk coordinates */
 	private Boundaries boundaries;
-	
+
 	/**
 	 * Constructor
 	 */
 	protected SuperStructure(int worldId) {
 		super(worldId);
 	}
-	
+
 
 	/**
 	 * Finds Space for the structure.

@@ -2,6 +2,7 @@ package bloodandmithril.networking.requests;
 
 import static bloodandmithril.ui.UserInterface.FloatingText.floatingText;
 import static com.google.common.collect.Iterables.tryFind;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class SendChatMessage implements Request {
 
 	private final Message message;

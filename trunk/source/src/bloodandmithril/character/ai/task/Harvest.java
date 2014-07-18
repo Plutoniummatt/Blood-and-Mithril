@@ -5,6 +5,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
@@ -25,6 +26,7 @@ import com.google.common.collect.Iterables;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Harvest extends CompositeAITask {
 	private static final long serialVersionUID = -4098455998844182430L;
 

@@ -12,6 +12,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.util.ParameterizedTask;
@@ -27,6 +28,7 @@ import com.google.common.base.Optional;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Humanoid extends GroundTravellingIndividual {
 	private static final long serialVersionUID = 7634760818045237827L;
 
@@ -256,11 +258,11 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		Optional<Item> equippedWeapon = tryFind(getEquipped().keySet(), item -> {
 			return item instanceof Weapon;
 		});
-		
+
 		if (equippedWeapon.isPresent()) {
 			return ((Weapon) equippedWeapon.get()).getAttackNumber(this);
 		}
-		
+
 		return 2;
 	}
 }

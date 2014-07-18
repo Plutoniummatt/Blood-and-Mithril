@@ -2,6 +2,7 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
@@ -9,6 +10,7 @@ import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 import bloodandmithril.world.Domain;
 
+@Copyright("Matthew Peck 2014")
 public class RequestStartCrafting implements Request {
 
 	private final int individualId;

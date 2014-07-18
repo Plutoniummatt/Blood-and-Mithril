@@ -1,8 +1,10 @@
 package bloodandmithril.prop.furniture;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain.Depth;
 
+@Copyright("Matthew Peck 2014")
 public abstract class Furniture extends Prop {
 	private static final long serialVersionUID = -1643197661469081725L;
 

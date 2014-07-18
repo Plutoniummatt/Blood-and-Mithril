@@ -5,6 +5,7 @@ import static bloodandmithril.generation.settings.GlobalGenerationSettings.plain
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.plainsMaxWidth;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.plainsMinHeight;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.plainsMinWidth;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.generation.patterns.UndergroundWithCaves;
@@ -21,6 +22,7 @@ import bloodandmithril.world.topography.tile.Tile;
  *
  * @author Sam, Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Plains extends SuperStructure {
 	private static final long serialVersionUID = -182152409042364632L;
 
@@ -32,8 +34,8 @@ public class Plains extends SuperStructure {
 	public Plains(int worldId) {
 		super(worldId);
 	}
-	
-	
+
+
 	@Override
 	protected Boundaries findSpace(int startingChunkX, int startingChunkY) {
 		//calculates where the structure can go

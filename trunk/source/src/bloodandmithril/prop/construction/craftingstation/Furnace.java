@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -40,6 +41,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Furnace extends CraftingStation implements Container {
 	private static final long serialVersionUID = 7693386784097531328L;
 

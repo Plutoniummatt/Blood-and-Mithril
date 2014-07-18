@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -44,6 +45,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class TradeWindow extends Window implements Refreshable {
 
 	/** Panels of involved traders */

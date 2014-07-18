@@ -3,6 +3,7 @@ package bloodandmithril.item.material.wood;
 import java.util.HashMap;
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Log;
@@ -10,6 +11,7 @@ import bloodandmithril.item.items.material.Log;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
+@Copyright("Matthew Peck 2014")
 public class Pine extends Wood {
 	private static final long serialVersionUID = 2072576595725963733L;
 

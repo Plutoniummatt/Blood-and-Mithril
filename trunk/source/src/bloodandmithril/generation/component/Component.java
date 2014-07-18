@@ -3,6 +3,7 @@ package bloodandmithril.generation.component;
 import java.io.Serializable;
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.TerrainGenerator;
@@ -20,6 +21,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Component implements Serializable {
 	private static final long serialVersionUID = 7335059774362898508L;
 
@@ -91,7 +93,7 @@ public abstract class Component implements Serializable {
 
 	/**
 	 * Attempt to stem a component on a structure, from this component.
-	 * 
+	 *
 	 * 10 consecutive failed attempts will result in a {@link DummyComponent} being returned, thus breaking the component stem-chain
 	 */
 	private <T extends Component> Component attemptStem(Structure on, Class<T> with, Function<? extends ComponentCreationCustomization<T>> customFunction, int attempts) {
@@ -99,7 +101,7 @@ public abstract class Component implements Serializable {
 		if (attempts >= 10) {
 			return DummyComponent.getInstance();
 		}
-		
+
 		// Clear and regenerate interfaces
 		getAvailableInterfaces().clear();
 		generateInterfaces();
@@ -110,7 +112,7 @@ public abstract class Component implements Serializable {
 		// Clear and regenerate interfaces again, strictly speaking this isn't necessary, it is merely more convenient for development
 		getAvailableInterfaces().clear();
 		generateInterfaces();
-		
+
 		// If it was not possible to stem a component, then try again, otherwise we can add the stemmed component to the component list on the structure
 		if (stemmedComponent == null) {
 			return attemptStem(on, with, customFunction, attempts + 1);
@@ -122,18 +124,18 @@ public abstract class Component implements Serializable {
 			return stemmedComponent;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Attempt to stem from this {@link Component}, another {@link Component}, returning the stemmed component if the attempt was successful, null otherwise
 	 */
 	public <T extends Component> Component stem(Structure on, Class<T> with, Function<? extends ComponentCreationCustomization<T>> customFunction, int times) {
 		Component last = stem(on, with, customFunction);
-		
+
 		for (int i = 1; i < times; i++) {
 			last = last.stem(on, with, customFunction);
 		}
-		
+
 		return last;
 	}
 
@@ -194,10 +196,10 @@ public abstract class Component implements Serializable {
 	public int getStructureKey() {
 		return structureKey;
 	}
-	
-	
+
+
 	/**
-	 * Generates horizontal {@link RectangularInterface}s, of unit thickness, which takes into account the {@link #existingInterfaces} 
+	 * Generates horizontal {@link RectangularInterface}s, of unit thickness, which takes into account the {@link #existingInterfaces}
 	 */
 	protected void generateUnitThicknessHorizontalInterfaces(int y, int left, int right) {
 		Integer mostRightAvailableX = null;
@@ -236,7 +238,7 @@ public abstract class Component implements Serializable {
 
 
 	/**
-	 * Generates vertical {@link RectangularInterface}s, of unit thickness, which takes into account the {@link #existingInterfaces} 
+	 * Generates vertical {@link RectangularInterface}s, of unit thickness, which takes into account the {@link #existingInterfaces}
 	 */
 	protected void generateUnitThicknessVerticalInterfaces(int x, int top, int bottom) {
 		Integer highestAvailableY = null;

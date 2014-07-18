@@ -2,6 +2,7 @@ package bloodandmithril.generation.component;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component.ComponentCreationCustomization;
 
 import com.badlogic.gdx.graphics.Color;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Interface implements Serializable {
 	private static final long serialVersionUID = -4317621291194222673L;
 

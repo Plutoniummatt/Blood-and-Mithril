@@ -1,6 +1,7 @@
 package bloodandmithril.networking.requests;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -10,6 +11,7 @@ import bloodandmithril.networking.Response.Responses;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Ping implements Request {
 
 	/** The ping */
@@ -53,7 +55,7 @@ public class Ping implements Request {
 		public void acknowledge() {
 			BloodAndMithrilClient.ping = System.currentTimeMillis() - ping;
 		}
-		
+
 		@Override
 		public int forClient() {
 			return -1;

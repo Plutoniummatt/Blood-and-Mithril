@@ -1,5 +1,6 @@
 package bloodandmithril.item;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 
@@ -9,6 +10,7 @@ import bloodandmithril.prop.construction.craftingstation.Furnace;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public interface Fuel {
 
 	/** The duration which this {@link Fuel} will combust at a temperature of {@link Furnace#MIN_TEMP} */

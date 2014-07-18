@@ -11,6 +11,7 @@ import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSu
 
 import java.util.HashMap;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.Corridor;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
@@ -41,6 +42,7 @@ import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
  *
  * @author Sam, Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Desert extends SuperStructure {
 	private static final long serialVersionUID = 4034191268168150728L;
 

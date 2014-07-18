@@ -7,6 +7,7 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIG
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
@@ -16,6 +17,7 @@ import bloodandmithril.item.material.Material;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeapon<T> {
 	private static final long serialVersionUID = 2320214226123580597L;
 

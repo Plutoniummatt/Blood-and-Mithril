@@ -47,6 +47,7 @@ import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -97,6 +98,7 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private static final long serialVersionUID = 2821835360311044658L;
 
@@ -564,7 +566,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			animationIndex++;
 		}
 		Gdx.gl.glDisable(GL20.GL_BLEND);
-		
+
 		spriteBatch.end();
 		spriteBatch.flush();
 	}
@@ -647,7 +649,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			shapeRenderer.end();
 			shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 		}
-		
+
 		if (isMouseOver() && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))) {
 			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.getSelectedIndividuals().contains(this) || Domain.getSelectedIndividuals().size() > 1)) {
 				spriteBatch.setShader(Shaders.filter);
@@ -905,30 +907,30 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public ContextMenu getContextMenu() {
 		MenuItem showInfoMenuItem = showInfo();
 		MenuItem showStatusWindowItem = showStatus();
-		
+
 		final ContextMenu controlMenu = controls();
 		MenuItem controls = new MenuItem(
-			"Control", 
+			"Control",
 			() -> {
 				controlMenu.x = getMouseScreenX();
 				controlMenu.y = getMouseScreenY();
-			}, 
-			Color.ORANGE, 
-			getToolTipTextColor(), 
-			Color.GRAY, 
+			},
+			Color.ORANGE,
+			getToolTipTextColor(),
+			Color.GRAY,
 			controlMenu
 		);
-		
+
 		final ContextMenu interactMenu = interactMenu();
 		MenuItem interact = new MenuItem(
-			"Interact", 
+			"Interact",
 			() -> {
 				interactMenu.x = getMouseScreenX();
 				interactMenu.y = getMouseScreenY();
-			}, 
-			Color.GREEN, 
-			Colors.UI_DARK_GREEN, 
-			Color.GRAY, 
+			},
+			Color.GREEN,
+			Colors.UI_DARK_GREEN,
+			Color.GRAY,
 			interactMenu
 		);
 
@@ -949,10 +951,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.getSelectedIndividuals().contains(this))) {
 			contextMenuToReturn.addMenuItem(interact);
 		}
-		
+
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
 		contextMenuToReturn.addMenuItem(showStatusWindowItem);
-		
+
 		if (isControllable()) {
 			contextMenuToReturn.addMenuItem(controls);
 			contextMenuToReturn.addMenuItem(edit);
@@ -968,7 +970,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	private ContextMenu controls() {
 		return new ContextMenu(0, 0,
-			selectDeselect(this), 
+			selectDeselect(this),
 			inventory()
 		);
 	}
@@ -985,7 +987,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	private MenuItem showStatus() {
 		final Individual thisIndividual = this;
-		
+
 		return new MenuItem(
 			"Show status",
 			() -> {
@@ -1064,7 +1066,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				if (Domain.getSelectedIndividuals().size() > 1) {
 					return;
 				}
-				
+
 				for (Individual indi : Domain.getSelectedIndividuals()) {
 					if (isServer()) {
 						if (indi != thisIndividual) {
@@ -1090,8 +1092,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					null
 				)
 			),
-			() -> { 
-				return Domain.getSelectedIndividuals().size() > 1; 
+			() -> {
+				return Domain.getSelectedIndividuals().size() > 1;
 			}
 		);
 	}
@@ -1099,7 +1101,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	private MenuItem inventory() {
 		final Individual thisIndividual = this;
-		
+
 		return new MenuItem(
 			"Inventory",
 			() -> {
@@ -1125,7 +1127,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	private ContextMenu editSubMenu() {
 		final Individual thisIndividual = this;
-		
+
 		return new ContextMenu(0, 0,
 			new MenuItem(
 				"Change nickname",
@@ -1196,7 +1198,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 */
 	private MenuItem showInfo() {
 		final Individual thisIndividual = this;
-		
+
 		return new MenuItem(
 			"Show info",
 			() -> {

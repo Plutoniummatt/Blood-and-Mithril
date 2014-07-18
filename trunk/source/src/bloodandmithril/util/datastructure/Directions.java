@@ -2,9 +2,12 @@ package bloodandmithril.util.datastructure;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
+
+@Copyright("Matthew Peck 2014")
 public class Directions implements Serializable {
 	private static final long serialVersionUID = 7651314851840206122L;
-	
+
 	public boolean up;
 	public boolean down;
 	public boolean left;

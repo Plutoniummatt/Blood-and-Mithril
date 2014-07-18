@@ -3,6 +3,7 @@ package bloodandmithril.persistence;
 import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.persistence.PersistenceUtil.encode;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ParameterPersistenceService {
 
 	/** THE current set of {@link Parameters} */

@@ -3,6 +3,7 @@ package bloodandmithril.networking.requests;
 import java.util.HashMap;
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
@@ -25,6 +26,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class RequestClientList implements Request {
 
 

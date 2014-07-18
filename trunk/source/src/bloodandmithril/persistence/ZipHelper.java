@@ -7,15 +7,18 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Helper class for writing zip files
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ZipHelper {
-	
+
 	private ZipOutputStream out;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -26,8 +29,8 @@ public class ZipHelper {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Adds a file in the specified directory with the specified name filled with the specified content
 	 */
@@ -39,11 +42,11 @@ public class ZipHelper {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * Finalize the zip creation by writing it to disk
 	 */
@@ -54,18 +57,18 @@ public class ZipHelper {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 	/** Reads a zip entry as a string */
 	public static String readEntry(ZipFile zip, String zipEntry) {
-		
+
 		try {
 			ZipEntry entry = zip.getEntry(zipEntry);
 			BufferedReader fIn = new BufferedReader(new InputStreamReader(zip.getInputStream(entry), "UTF-8"));
-			
+
 			char[] chars = new char[(int)entry.getSize()];
 			fIn.read(chars);
-			
+
 			return new String(chars);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

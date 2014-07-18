@@ -17,6 +17,7 @@ import bloodandmithril.character.ai.task.DiscardLiquid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.ContainerImpl;
@@ -52,6 +53,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class InventoryWindow extends Window implements Refreshable {
 
 	/** Inventory listing maps */

@@ -4,6 +4,7 @@ import java.util.Set;
 
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.world.Domain;
@@ -15,6 +16,7 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class AttackRequest implements Request {
 
 	private Set<Integer> victims = Sets.newHashSet();

@@ -1,5 +1,6 @@
 package bloodandmithril.networking.requests;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Response;
 import bloodandmithril.world.Domain;
 
@@ -8,6 +9,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class DestroyPropNotification implements Response {
 
 	private final int propId;

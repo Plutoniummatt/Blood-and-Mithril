@@ -1,5 +1,7 @@
 package bloodandmithril.util;
 
+import bloodandmithril.core.Copyright;
+
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -7,12 +9,13 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class SpacialConfiguration {
-	
+
 	public Vector2 position;
 	public float orientation;
 	public boolean flipX;
-	
+
 	/**
 	 * Constructor
 	 */

@@ -7,6 +7,7 @@ import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Performance;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class GoToLocation extends AITask {
 	private static final long serialVersionUID = -4121947217713585991L;
 
@@ -54,8 +56,8 @@ public class GoToLocation extends AITask {
 			pathFinder.findShortestPathAir(new WayPoint(host.getState().position), destination, Domain.getWorld(host.getWorldId())):
 			pathFinder.findShortestPathGround(new WayPoint(host.getState().position), destination, blockspan, safe ? host.getSafetyHeight() : 1000, forceTolerance, Domain.getWorld(host.getWorldId()));
 	}
-	
-	
+
+
 
 	/**
 	 * Constructor
@@ -213,7 +215,7 @@ public class GoToLocation extends AITask {
 				return true;
 			}
 		}
-		
+
 		Individual host = Domain.getIndividuals().get(hostId.getId());
 
 		boolean finalWayPointCheck = false;
@@ -249,7 +251,7 @@ public class GoToLocation extends AITask {
 		host.sendCommand(KeyMappings.moveLeft, false);
 		host.sendCommand(KeyMappings.walk, host.isWalking());
 		host.setJumpOffToNull();
-		
+
 		return false;
 	}
 }

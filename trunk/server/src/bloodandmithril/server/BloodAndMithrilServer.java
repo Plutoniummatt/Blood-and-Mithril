@@ -15,6 +15,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.Names;
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucket;
@@ -69,6 +70,7 @@ import com.esotericsoftware.kryonet.Server;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class BloodAndMithrilServer {
 
 	public static final GameServer server = new GameServer();

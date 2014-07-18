@@ -1,5 +1,6 @@
 package bloodandmithril.generation.tools;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.Topography;
 
@@ -8,6 +9,7 @@ import bloodandmithril.world.topography.Topography;
  *
  * @author Sam
  */
+@Copyright("Matthew Peck 2014")
 public class RectangularSpaceCalculator {
 
 

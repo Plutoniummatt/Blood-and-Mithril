@@ -1,5 +1,8 @@
 package bloodandmithril.item.affix;
 
+import bloodandmithril.core.Copyright;
+
+@Copyright("Matthew Peck 2014")
 public abstract class PostAffix extends Affix {
 	private static final long serialVersionUID = -870702724623019310L;
 

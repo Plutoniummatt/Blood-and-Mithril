@@ -5,6 +5,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
@@ -18,6 +19,7 @@ import bloodandmithril.world.topography.Topography;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class LockUnlockContainer extends CompositeAITask {
 	private static final long serialVersionUID = -1797728018857618555L;
 	private Container container;

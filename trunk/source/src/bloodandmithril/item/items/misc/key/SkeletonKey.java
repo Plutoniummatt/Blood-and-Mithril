@@ -5,6 +5,7 @@ import static com.google.common.collect.Iterables.tryFind;
 import java.util.Collections;
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 
 /**
@@ -12,17 +13,18 @@ import bloodandmithril.item.items.Item;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class SkeletonKey extends Key {
 	private static final long serialVersionUID = -5499080091518772541L;
-	
+
 	private final List<Integer> teeth;
-	
+
 	/**
 	 * Constructor
 	 */
 	protected SkeletonKey(List<Integer> teeth) {
 		super(0.01f, 0);
-		
+
 		if (teeth.size() != 7) {
 			throw new RuntimeException("Must have 7 teeth");
 		}
@@ -32,7 +34,7 @@ public abstract class SkeletonKey extends Key {
 		}).isPresent()) {
 			throw new RuntimeException("Each tooth must have a height between 0 and 10 inclusive");
 		}
-		
+
 		this.teeth = Collections.unmodifiableList(teeth);
 	}
 
@@ -48,18 +50,18 @@ public abstract class SkeletonKey extends Key {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
-	
+
 	public boolean match(List<Integer> toMatch) {
 		for (int i = 6; i >= 0; i--) {
 			if (teeth.get(i) != toMatch.get(i)) {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 }

@@ -5,6 +5,7 @@ import static bloodandmithril.world.WorldState.getCurrentEpoch;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.world.Epoch;
 
 /**
@@ -12,6 +13,7 @@ import bloodandmithril.world.Epoch;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class IndividualIdentifier implements Serializable {
 	private static final long serialVersionUID = 468971814825676707L;
 

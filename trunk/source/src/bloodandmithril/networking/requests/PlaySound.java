@@ -1,10 +1,12 @@
 package bloodandmithril.networking.requests;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Response;
 
 import com.badlogic.gdx.math.Vector2;
 
+@Copyright("Matthew Peck 2014")
 public class PlaySound implements Response {
 
 	private final int client;

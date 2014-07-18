@@ -1,5 +1,6 @@
 package bloodandmithril.world.topography.tile.tiles;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -8,6 +9,7 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class FluidTile extends EmptyTile {
 	private static final long serialVersionUID = -2071316573173011290L;
 
@@ -15,7 +17,7 @@ public class FluidTile extends EmptyTile {
 	 * The depth of this {@link FluidTile}
 	 */
 	private int depth;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -23,23 +25,23 @@ public class FluidTile extends EmptyTile {
 		super();
 	}
 
-	
+
 	@Override
 	protected float getTexCoordYSpecific() {
 		return 12;
 	}
 
-	
+
 	@Override
 	public void changeToStair() {
 	}
 
-	
+
 	@Override
 	public void changeToSmoothCeiling() {
 	}
 
-	
+
 	@Override
 	public Item mine() {
 		return null;

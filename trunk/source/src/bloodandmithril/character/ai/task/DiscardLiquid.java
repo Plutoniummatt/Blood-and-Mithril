@@ -9,6 +9,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.liquid.Liquid;
@@ -20,6 +21,7 @@ import bloodandmithril.world.topography.fluid.Fluid;
 
 import com.badlogic.gdx.math.Vector2;
 
+@Copyright("Matthew Peck 2014")
 public class DiscardLiquid extends CompositeAITask {
 	private static final long serialVersionUID = -7380303651201784970L;
 	private LiquidContainer container;

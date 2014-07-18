@@ -8,6 +8,7 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class ArtificialIntelligence implements Serializable {
 	private static final long serialVersionUID = 272133135274740547L;
 

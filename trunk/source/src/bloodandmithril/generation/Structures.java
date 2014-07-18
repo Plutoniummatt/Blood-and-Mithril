@@ -3,6 +3,7 @@ package bloodandmithril.generation;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -18,6 +19,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Structures {
 
 	/** Stores a key on some chunk coordinates. */

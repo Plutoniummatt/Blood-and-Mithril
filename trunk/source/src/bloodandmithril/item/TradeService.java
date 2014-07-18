@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.skill.Skills;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.ClientServerInterface;
@@ -16,6 +17,7 @@ import bloodandmithril.prop.Prop;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class TradeService {
 
 	/**

@@ -2,6 +2,7 @@ package bloodandmithril.item.material.metal;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.material.Material;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Metal extends Material {
 	private static final long serialVersionUID = 8576471967416805489L;
 

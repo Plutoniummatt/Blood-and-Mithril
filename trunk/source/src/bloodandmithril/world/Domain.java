@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.TracerParticle;
 import bloodandmithril.item.items.Item;
@@ -61,6 +62,7 @@ import com.google.common.base.Predicate;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Domain {
 
 	/** The current active {@link World} */

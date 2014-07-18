@@ -2,10 +2,12 @@ package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
+@Copyright("Matthew Peck 2014")
 public class Follow extends CompositeAITask {
 	private static final long serialVersionUID = 6587958819221672725L;
 

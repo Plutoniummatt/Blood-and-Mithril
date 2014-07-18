@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Button;
@@ -37,6 +38,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 	/** Datastructure that backs this listing panel */

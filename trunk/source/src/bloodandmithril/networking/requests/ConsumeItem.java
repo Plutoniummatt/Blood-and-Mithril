@@ -1,6 +1,7 @@
 package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.Request;
@@ -13,6 +14,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ConsumeItem implements Request {
 
 	private final int individualId;

@@ -1,6 +1,7 @@
 package bloodandmithril.item.items.misc.key;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Key extends Item {
 	private static final long serialVersionUID = 607926655790662998L;
 	public static final String description = "A key is a device that is used to operate a lock.";

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class GroundTravellingIndividual extends Individual {
 	private static final long serialVersionUID = 7634760818045237827L;
 

@@ -1,5 +1,6 @@
 package bloodandmithril.networking;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Response.Responses;
 
 
@@ -8,6 +9,7 @@ import bloodandmithril.networking.Response.Responses;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public interface Request {
 
 	/** Respond to the request */

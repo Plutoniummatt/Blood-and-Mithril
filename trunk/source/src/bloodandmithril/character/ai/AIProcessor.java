@@ -5,6 +5,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -16,6 +17,7 @@ import bloodandmithril.util.Task;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class AIProcessor {
 
 	/** Threads that handles AI, priority thread for processing selected individuals */
@@ -85,8 +87,8 @@ public class AIProcessor {
 			pathFinderThread.start();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Processes items in the AI thread
 	 */

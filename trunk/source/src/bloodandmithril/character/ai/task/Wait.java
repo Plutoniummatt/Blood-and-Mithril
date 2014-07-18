@@ -2,6 +2,7 @@ package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.world.Domain;
 
 /**
@@ -9,6 +10,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Wait extends AITask {
 	private static final long serialVersionUID = 1131002096994485862L;
 

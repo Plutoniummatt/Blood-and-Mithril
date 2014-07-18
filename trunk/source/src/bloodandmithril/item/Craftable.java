@@ -3,6 +3,7 @@ package bloodandmithril.item;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 
@@ -11,6 +12,7 @@ import bloodandmithril.prop.construction.craftingstation.CraftingStation;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public interface Craftable {
 
 	/**

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldState;
 
@@ -16,6 +17,7 @@ import com.badlogic.gdx.Gdx;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Names {
 
 	private static ArrayList<String> elfMale = new ArrayList<String>();

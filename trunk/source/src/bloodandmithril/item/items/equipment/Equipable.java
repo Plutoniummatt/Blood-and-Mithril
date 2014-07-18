@@ -1,6 +1,7 @@
 package bloodandmithril.item.items.equipment;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Equipable extends Item implements Affixed {
 	private static final long serialVersionUID = 6029877977431123172L;
 
@@ -29,7 +31,7 @@ public abstract class Equipable extends Item implements Affixed {
 		this.slot = slot;
 	}
 
-	
+
 	/** Renders this {@link Equipable} */
 	public abstract void render(Vector2 position, float angle, boolean flipX);
 

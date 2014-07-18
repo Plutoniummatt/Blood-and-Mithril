@@ -1,12 +1,14 @@
 package bloodandmithril.character.conditions;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 
 /**
  * Drains health
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Poison extends Condition {
 	private static final long serialVersionUID = 1741945471582031402L;
 

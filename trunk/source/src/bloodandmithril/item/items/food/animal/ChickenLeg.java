@@ -3,6 +3,7 @@ package bloodandmithril.item.items.food.animal;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
@@ -12,6 +13,7 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+@Copyright("Matthew Peck 2014")
 public class ChickenLeg extends Food {
 	private static final long serialVersionUID = 327664484386522545L;
 

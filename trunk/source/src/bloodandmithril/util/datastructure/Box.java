@@ -4,6 +4,8 @@ import static bloodandmithril.ui.UserInterface.shapeRenderer;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
+
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -11,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Box implements Serializable {
 	private static final long serialVersionUID = 13257061764372640L;
 
@@ -59,8 +62,8 @@ public class Box implements Serializable {
 
 	    return true; // boxes overlap
 	}
-	
-	
+
+
 	public void render() {
 		shapeRenderer.rect(
 			position.x - width / 2,

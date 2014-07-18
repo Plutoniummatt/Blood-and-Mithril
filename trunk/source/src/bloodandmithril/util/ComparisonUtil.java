@@ -1,10 +1,13 @@
 package bloodandmithril.util;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Utility class for using comparisons
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ComparisonUtil<T> {
 
 	/** Instance being compared */

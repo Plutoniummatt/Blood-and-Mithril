@@ -6,11 +6,14 @@ import static java.lang.Math.pow;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Epoch representing an instance in time.
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Epoch implements Serializable {
 	private static final long serialVersionUID = -5123582798866732144L;
 

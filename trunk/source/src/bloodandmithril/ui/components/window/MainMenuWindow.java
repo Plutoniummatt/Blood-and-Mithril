@@ -10,6 +10,7 @@ import java.util.List;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.ui.UserInterface;
@@ -26,6 +27,7 @@ import com.badlogic.gdx.graphics.Color;
 /**
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class MainMenuWindow extends Window {
 
 	private Button connect, options, exit;

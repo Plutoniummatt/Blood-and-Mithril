@@ -1,5 +1,6 @@
 package bloodandmithril.networking.requests;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Response;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.fluid.FluidMap;
@@ -9,8 +10,9 @@ import bloodandmithril.world.topography.fluid.FluidMap;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class SyncFluidsNotification implements Response {
-	
+
 	private FluidMap toSend;
 
 	/**
@@ -21,19 +23,19 @@ public class SyncFluidsNotification implements Response {
 			this.toSend = toSend.deepCopy();
 		}
 	}
-	
+
 
 	@Override
 	public void acknowledge() {
 		Domain.getActiveWorld().getTopography().setFluids(toSend);
 	}
-	
+
 
 	@Override
 	public int forClient() {
 		return -1;
 	}
-	
+
 
 	@Override
 	public void prepare() {

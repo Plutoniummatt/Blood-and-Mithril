@@ -4,11 +4,13 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+@Copyright("Matthew Peck 2014")
 public class Silver extends Metal {
 	private static final long serialVersionUID = 2380898580519004901L;
 

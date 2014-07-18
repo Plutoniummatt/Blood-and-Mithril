@@ -3,6 +3,7 @@ package bloodandmithril.generation;
 import java.io.Serializable;
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
@@ -16,9 +17,10 @@ import com.google.common.collect.Lists;
  *
  * @author Sam, Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Structure implements Serializable {
 	private static final long serialVersionUID = -5890196858721145717L;
-	
+
 	/** Unique ID of the world that holds the {@link Topography} in which this {@link Structure} exists */
 	protected final int worldId;
 
@@ -39,8 +41,8 @@ public abstract class Structure implements Serializable {
 	public boolean allChunksGenerated() {
 		return getChunksLeftToBeGenerated() == 0;
 	}
-	
-	
+
+
 	/**
 	 * Constructor
 	 */

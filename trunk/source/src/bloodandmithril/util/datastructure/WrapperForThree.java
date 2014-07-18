@@ -1,5 +1,8 @@
 package bloodandmithril.util.datastructure;
 
+import bloodandmithril.core.Copyright;
+
+@Copyright("Matthew Peck 2014")
 public class WrapperForThree<A, B, C> {
 
 	public A a;

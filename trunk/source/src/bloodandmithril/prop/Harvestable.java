@@ -1,6 +1,7 @@
 package bloodandmithril.prop;
 
 import static bloodandmithril.world.Domain.Depth.FOREGOUND;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 
 /**
@@ -8,6 +9,7 @@ import bloodandmithril.item.items.Item;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Harvestable extends Prop {
 	private static final long serialVersionUID = 2548436846590756693L;
 

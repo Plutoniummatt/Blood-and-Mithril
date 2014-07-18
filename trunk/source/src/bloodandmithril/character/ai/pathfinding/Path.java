@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Performance;
 import bloodandmithril.world.topography.Topography;
@@ -21,6 +22,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Path implements Serializable {
 	private static final long serialVersionUID = -2569430046328226956L;
 

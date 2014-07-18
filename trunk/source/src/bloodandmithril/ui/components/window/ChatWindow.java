@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.requests.SendChatMessage.Message;
 import bloodandmithril.ui.UserInterface;
@@ -32,6 +33,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ChatWindow extends Window {
 
 	public final ScrollableListingPanel<String, Object> participants;

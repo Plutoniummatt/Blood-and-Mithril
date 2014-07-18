@@ -3,11 +3,14 @@ package bloodandmithril.world.topography;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import bloodandmithril.core.Copyright;
+
 import com.badlogic.gdx.math.Vector2;
 
 /**
  * Contains a list of an array of chunks. The map of tiles.
  */
+@Copyright("Matthew Peck 2014")
 public class ChunkMap {
 
 	/** The chunk map - an array list of columns */
@@ -73,8 +76,8 @@ public class ChunkMap {
 	public ConcurrentHashMap<Integer, Chunk> get(int chunkX) {
 		return chunkMap.get(chunkX);
 	}
-	
-	
+
+
 	/**
 	 * See {@link #chunkMap}
 	 */

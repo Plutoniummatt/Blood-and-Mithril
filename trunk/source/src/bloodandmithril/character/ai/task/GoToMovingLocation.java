@@ -5,6 +5,7 @@ import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class GoToMovingLocation extends AITask {
 	private static final long serialVersionUID = 3940840091194740269L;
 
@@ -115,7 +117,7 @@ public class GoToMovingLocation extends AITask {
 		host.sendCommand(KeyMappings.moveRight, false);
 		host.sendCommand(KeyMappings.moveLeft, false);
 		host.sendCommand(KeyMappings.walk, host.isWalking());
-		
+
 		return false;
 	}
 

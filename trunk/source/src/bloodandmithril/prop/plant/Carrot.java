@@ -5,6 +5,7 @@ import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
@@ -23,9 +24,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Carrot extends Plant {
 	private static final long serialVersionUID = -4581900482709094877L;
-	
+
 	/** {@link TextureRegion} of the {@link Carrot} */
 	public static TextureRegion carrot;
 

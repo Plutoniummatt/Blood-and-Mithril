@@ -2,6 +2,7 @@ package bloodandmithril.persistence.character;
 
 import static bloodandmithril.persistence.PersistenceUtil.encode;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.world.Domain;
 
@@ -13,6 +14,7 @@ import com.badlogic.gdx.files.FileHandle;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class IndividualSaver {
 
 	/**

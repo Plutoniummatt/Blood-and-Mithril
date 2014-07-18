@@ -1,15 +1,17 @@
 package bloodandmithril.item.liquid;
 
-import com.badlogic.gdx.graphics.Color;
-
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Util.Colors;
+
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * Water, only quenches thirst
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Water extends Liquid {
 	private static final long serialVersionUID = -4641409972631236862L;
 
@@ -21,7 +23,7 @@ public class Water extends Liquid {
 	public void drink(float amount, Individual affected) {
 		affected.increaseThirst(amount);
 	}
-	
+
 	@Override
 	public String getDescription() {
 		return "The liquid that keeps you alive.";

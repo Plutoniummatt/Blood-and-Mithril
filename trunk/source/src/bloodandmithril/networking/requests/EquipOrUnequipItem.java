@@ -1,6 +1,7 @@
 package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
@@ -12,6 +13,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class EquipOrUnequipItem implements Request {
 
 	private final int individualId;

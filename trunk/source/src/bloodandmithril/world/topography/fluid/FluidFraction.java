@@ -2,11 +2,13 @@ package bloodandmithril.world.topography.fluid;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.liquid.Liquid;
 
+@Copyright("Matthew Peck 2014")
 public class FluidFraction implements Serializable {
 	private static final long serialVersionUID = 1071666818872722760L;
-	
+
 	private Liquid liquid;
 	private float depth;
 
@@ -17,11 +19,11 @@ public class FluidFraction implements Serializable {
 		this.liquid = liquid;
 		this.depth = depth;
 	}
-	
+
 	public static <T extends Liquid> FluidFraction fraction(T liquid, float fraction) {
 		return new FluidFraction(liquid, fraction);
 	}
-	
+
 	public Liquid getLiquid() {
 		return liquid;
 	}

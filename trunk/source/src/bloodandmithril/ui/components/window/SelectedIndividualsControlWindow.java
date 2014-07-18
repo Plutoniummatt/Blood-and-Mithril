@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
@@ -26,6 +27,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class SelectedIndividualsControlWindow extends Window {
 
 	HashMap<Integer, Button> buttons = newHashMap();

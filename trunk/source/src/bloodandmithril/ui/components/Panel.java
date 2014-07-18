@@ -6,11 +6,14 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import java.util.Deque;
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * A renderable panel that sits inside {@link Component}s
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Panel extends Component {
 
 	/** Position of this {@link Panel} */

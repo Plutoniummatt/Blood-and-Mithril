@@ -12,6 +12,7 @@ import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static java.lang.Math.round;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.weather.Weather;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class GaussianLightingRenderer {
 	public static boolean SEE_ALL = false;
 

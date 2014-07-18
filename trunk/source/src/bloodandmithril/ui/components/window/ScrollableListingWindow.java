@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -27,6 +28,7 @@ import com.google.common.base.Function;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class ScrollableListingWindow<T, A> extends Window implements Refreshable {
 
 	/**

@@ -2,6 +2,7 @@ package bloodandmithril.item.material.wood;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Log;
 import bloodandmithril.item.items.material.Plank;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Wood extends Material {
 	private static final long serialVersionUID = 232426834124731122L;
 
