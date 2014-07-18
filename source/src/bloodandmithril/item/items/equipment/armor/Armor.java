@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.equipment.armor;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
@@ -9,6 +10,7 @@ import bloodandmithril.item.material.Material;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Armor<T extends Material> extends Equipable {
 	private static final long serialVersionUID = -1573984410574358125L;
 

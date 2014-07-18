@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.earth.Ashes;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class FurnaceWindow extends TradeWindow {
 
 	/** The {@link Furnace} backing this {@link FurnaceWindow} */

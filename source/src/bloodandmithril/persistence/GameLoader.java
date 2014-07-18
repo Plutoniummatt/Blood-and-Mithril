@@ -1,6 +1,7 @@
 package bloodandmithril.persistence;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.character.IndividualLoader;
 import bloodandmithril.persistence.item.ItemLoader;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class GameLoader {
 
 	/**

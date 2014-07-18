@@ -2,11 +2,13 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+@Copyright("Matthew Peck 2014")
 public class Hematite extends Mineral {
 	private static final long serialVersionUID = -634057726346348061L;
 

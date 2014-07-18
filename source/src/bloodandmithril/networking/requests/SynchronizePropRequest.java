@@ -1,5 +1,6 @@
 package bloodandmithril.networking.requests;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
@@ -14,6 +15,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class SynchronizePropRequest implements Request {
 
 	private final int propId;

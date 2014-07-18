@@ -7,6 +7,7 @@ import java.util.List;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Util;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class IndividualInfoWindow extends Window {
 
 	/** The {@link Individual} this window displays info for */

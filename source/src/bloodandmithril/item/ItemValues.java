@@ -1,10 +1,13 @@
 package bloodandmithril.item;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Class of constants to consolidate values of items
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ItemValues {
 	public static final int CURRENCY = 100;
 	public static final int ASHES = 5;

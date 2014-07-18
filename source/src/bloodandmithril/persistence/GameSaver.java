@@ -4,6 +4,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import bloodandmithril.character.ai.AIProcessor;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.character.IndividualSaver;
 import bloodandmithril.persistence.item.ItemSaver;
 import bloodandmithril.persistence.prop.PropSaver;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.Gdx;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class GameSaver {
 
 	/** The thread responsible for loading */

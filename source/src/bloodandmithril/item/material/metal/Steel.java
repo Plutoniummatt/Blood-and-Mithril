@@ -4,6 +4,7 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Ingot;
@@ -12,6 +13,7 @@ import bloodandmithril.item.material.mineral.Coal;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+@Copyright("Matthew Peck 2014")
 public class Steel extends Metal {
 	private static final long serialVersionUID = 5907951500410886363L;
 

@@ -4,6 +4,7 @@ import static bloodandmithril.item.items.material.Plank.plank;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucket;
 import bloodandmithril.item.items.furniture.WoodenChest;
@@ -17,6 +18,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class WorkBench extends CraftingStation {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();

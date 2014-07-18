@@ -3,6 +3,7 @@ package bloodandmithril.ui.components.window;
 import java.util.Deque;
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class TextInputWindow extends Window {
 
 	/** The text input panel */

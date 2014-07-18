@@ -1,6 +1,7 @@
 package bloodandmithril.item.items.food.plant;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Carrot extends Food {
 	private static final long serialVersionUID = 3714624810622084079L;
 	public static final String description = "The carrot is a root vegetable, usually orange in color. It has a crisp texture when fresh.";

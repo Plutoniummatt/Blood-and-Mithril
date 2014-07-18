@@ -6,6 +6,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -28,6 +29,7 @@ import com.google.common.collect.Iterables;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class MineTile extends CompositeAITask {
 	private static final long serialVersionUID = -4098496856332182430L;
 

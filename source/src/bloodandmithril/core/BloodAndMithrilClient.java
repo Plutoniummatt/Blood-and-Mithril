@@ -73,6 +73,7 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class BloodAndMithrilClient implements ApplicationListener, InputProcessor {
 
 	/** The maximum spread of individuals when going to location */
@@ -160,17 +161,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				}
 			}
 		});
-		
+
 		particleUpdateThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
-			
+
 			while (true) {
 				try {
 					Thread.sleep(1);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
-				
+
 				if (System.currentTimeMillis() - prevFrame > 16) {
 					prevFrame = System.currentTimeMillis();
 					try {
@@ -191,7 +192,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		updateThread.setPriority(Thread.MAX_PRIORITY);
 		updateThread.setName("Update thread");
 		updateThread.start();
-		
+
 		particleUpdateThread.setName("Particle thread");
 		particleUpdateThread.start();
 	}

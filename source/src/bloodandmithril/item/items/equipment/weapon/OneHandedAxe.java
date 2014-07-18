@@ -11,6 +11,7 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
@@ -32,6 +33,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 
@@ -171,16 +173,16 @@ public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon
 		return SoundService.broadSwordBlock;
 	}
 
-	
+
 	@Override
 	public int getAttackNumber(Individual attacker) {
 		if (attacker instanceof Humanoid) {
 			return 2;
 		}
-		
+
 		return 0;
 	}
-	
+
 
 	@Override
 	public float getParryChanceIgnored() {

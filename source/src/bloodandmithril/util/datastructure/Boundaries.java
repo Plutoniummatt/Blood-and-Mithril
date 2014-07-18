@@ -2,11 +2,14 @@ package bloodandmithril.util.datastructure;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Stores 4 ints (inclusive) to be used as boundaries for a rectangle.
  *
  * @author Sam, Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Boundaries implements Serializable {
 	private static final long serialVersionUID = -4985478591963928423L;
 
@@ -111,16 +114,16 @@ public class Boundaries implements Serializable {
 	public boolean isWithin(Boundaries other) {
 		return left >= other.left && right <= other.right && bottom >= other.bottom && top <= other.top;
 	}
-	
-	
+
+
 	/**
 	 * @return The width of this {@link Boundaries}
 	 */
 	public int getWidth() {
 		return right - left + 1;
 	}
-	
-	
+
+
 	/**
 	 * @return The height of this {@link Boundaries}
 	 */

@@ -2,6 +2,8 @@ package bloodandmithril.character.individuals;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
+
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -9,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class IndividualKineticsProcessingData implements Serializable {
 	private static final long serialVersionUID = 9001152449205822919L;
 

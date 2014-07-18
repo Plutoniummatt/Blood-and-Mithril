@@ -7,14 +7,17 @@ import static java.lang.Math.pow;
 import java.io.Serializable;
 import java.util.Random;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * One dimensional perlin noise generator
  *
  * @author Sam
  */
+@Copyright("Matthew Peck 2014")
 public class PerlinNoiseGenerator1D implements Serializable {
 	private static final long serialVersionUID = 4830716048266970103L;
-	
+
 	/**
 	 * How much the perlin noise is stretched by, bigger numbers mean tiles
 	 * change less sharply.

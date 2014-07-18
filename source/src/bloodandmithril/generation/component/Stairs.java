@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.util.Util;
@@ -19,6 +20,7 @@ import com.google.common.collect.Collections2;
  *
  * @author Matt, Sam
  */
+@Copyright("Matthew Peck 2014")
 public class Stairs extends Component {
 	private static final long serialVersionUID = -5878621523794581673L;
 

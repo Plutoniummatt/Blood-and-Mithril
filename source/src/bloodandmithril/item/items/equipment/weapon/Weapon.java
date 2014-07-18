@@ -2,6 +2,7 @@ package bloodandmithril.item.items.equipment.weapon;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Weapon<T extends Material> extends Equipable {
 	private static final long serialVersionUID = -1099406999441510716L;
 
@@ -39,7 +41,7 @@ public abstract class Weapon<T extends Material> extends Equipable {
 	protected String internalGetPlural(boolean firstCap) {
 		return weaponGetPlural(firstCap);
 	}
-	
+
 	/**
 	 * @return the concurrent attack number of this weapon
 	 */
@@ -65,7 +67,7 @@ public abstract class Weapon<T extends Material> extends Equipable {
 	 * @return The base minimum damage of this {@link Weapon}
 	 */
 	public abstract float getBaseMinDamage();
-	
+
 	/**
 	 * @return The base maximum damage of this {@link Weapon}
 	 */

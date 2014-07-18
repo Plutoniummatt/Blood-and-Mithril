@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
@@ -16,6 +17,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class RequestTakeItem implements Request {
 
 	private final int individualId;

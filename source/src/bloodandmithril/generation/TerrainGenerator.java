@@ -2,6 +2,7 @@ package bloodandmithril.generation;
 
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSuperStructureChunkWidth;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSurfaceHeight;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.superstructure.Caves;
 import bloodandmithril.generation.tools.BiomeDecider;
 import bloodandmithril.networking.ClientServerInterface;
@@ -16,6 +17,7 @@ import bloodandmithril.world.topography.tile.Tile;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class TerrainGenerator {
 
 	/** Decides which biomes to generate */

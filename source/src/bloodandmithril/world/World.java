@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.TracerParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -19,6 +20,7 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class World implements Serializable {
 	private static final long serialVersionUID = -739119449225954631L;
 

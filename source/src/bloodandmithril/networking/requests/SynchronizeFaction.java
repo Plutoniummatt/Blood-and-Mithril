@@ -1,6 +1,7 @@
 package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.faction.Faction;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -11,6 +12,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class SynchronizeFaction implements Request {
 
 

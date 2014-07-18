@@ -2,11 +2,14 @@ package bloodandmithril.util;
 
 import java.util.Date;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Various static methods used for logging.
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Logger {
 
 	// Log levels

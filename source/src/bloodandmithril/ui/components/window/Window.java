@@ -9,6 +9,7 @@ import java.util.Deque;
 import java.util.List;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.graphics.GL10;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Window extends Component {
 
 	/** Colors of this window */

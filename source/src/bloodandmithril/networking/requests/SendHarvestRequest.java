@@ -2,6 +2,7 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.prop.Harvestable;
@@ -13,6 +14,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class SendHarvestRequest implements Request {
 
 	private final int individualId;

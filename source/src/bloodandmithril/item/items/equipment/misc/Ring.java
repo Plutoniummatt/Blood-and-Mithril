@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.equipment.misc;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Ring extends Equipable implements Craftable {
 	private static final long serialVersionUID = -4877588926698088468L;
 

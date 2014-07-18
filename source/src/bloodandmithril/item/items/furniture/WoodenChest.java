@@ -5,6 +5,7 @@ import static bloodandmithril.item.items.material.Ingot.ingot;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
@@ -23,6 +24,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class WoodenChest extends Furniture implements Craftable {
 	private static final long serialVersionUID = -6430848300222528418L;
 

@@ -1,10 +1,13 @@
 package bloodandmithril.util;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Calculates gaussian weights
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class GaussianFactorCalculator {
 
 	/**

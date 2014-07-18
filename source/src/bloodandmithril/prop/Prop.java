@@ -3,6 +3,7 @@ package bloodandmithril.prop;
 import java.io.Serializable;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Prop implements Serializable {
 	private static final long serialVersionUID = -1659783923740689585L;
 

@@ -2,6 +2,7 @@ package bloodandmithril.world.topography.fluid;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static java.lang.Math.min;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
@@ -13,6 +14,7 @@ import bloodandmithril.world.topography.Topography;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class FluidDynamicsProcessor {
 
 	/** The {@link Topography} instance this processor is responsible for */

@@ -1,6 +1,7 @@
 package bloodandmithril.item;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 
 /**
@@ -8,6 +9,7 @@ import bloodandmithril.item.items.Item;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public interface Consumable {
 
 	/** Affect the {@link Individual} that has consumed this {@link Consumable} */

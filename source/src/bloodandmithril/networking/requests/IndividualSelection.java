@@ -1,6 +1,7 @@
 package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -9,6 +10,7 @@ import bloodandmithril.world.Domain;
 /**
  * {@link Request} to select/deselect an {@link Individual}
  */
+@Copyright("Matthew Peck 2014")
 public class IndividualSelection implements Request {
 
 	/** id of the {@link Individual} to be selected or deselected */
@@ -87,7 +89,7 @@ public class IndividualSelection implements Request {
 				Domain.getSelectedIndividuals().remove(individual);
 			}
 		}
-		
+
 		@Override
 		public int forClient() {
 			return -1;

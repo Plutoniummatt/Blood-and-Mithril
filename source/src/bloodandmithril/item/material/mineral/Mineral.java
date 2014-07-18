@@ -2,6 +2,7 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.items.material.Slab;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Mineral extends Material {
 	private static final long serialVersionUID = 9102235184805389671L;
 

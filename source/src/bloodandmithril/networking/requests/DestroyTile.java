@@ -1,5 +1,6 @@
 package bloodandmithril.networking.requests;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -10,6 +11,7 @@ import bloodandmithril.world.topography.tile.Tile;
 /**
  * A {@link Request} to destroy a {@link Tile} from {@link Topography}
  */
+@Copyright("Matthew Peck 2014")
 public class DestroyTile implements Request {
 
 	public final float worldX, worldY;
@@ -60,7 +62,7 @@ public class DestroyTile implements Request {
 		public void acknowledge() {
 			Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground);
 		}
-		
+
 		@Override
 		public int forClient() {
 			return -1;

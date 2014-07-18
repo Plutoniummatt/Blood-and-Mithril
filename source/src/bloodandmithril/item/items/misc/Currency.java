@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.misc;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Currency extends Misc {
 	private static final long serialVersionUID = -7059495735666011863L;
 

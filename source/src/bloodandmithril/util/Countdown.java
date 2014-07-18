@@ -1,5 +1,8 @@
 package bloodandmithril.util;
 
+import bloodandmithril.core.Copyright;
+
+@Copyright("Matthew Peck 2014")
 public class Countdown implements SerializableFunction<Boolean> {
 	private static final long serialVersionUID = -5761537304910257687L;
 	private final long startTime;

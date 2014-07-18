@@ -1,6 +1,7 @@
 package bloodandmithril.persistence.item;
 
 import static bloodandmithril.persistence.PersistenceUtil.encode;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.world.Domain;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.files.FileHandle;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ItemSaver {
 
 	/**

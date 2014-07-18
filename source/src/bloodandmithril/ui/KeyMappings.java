@@ -2,6 +2,8 @@ package bloodandmithril.ui;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
+
 import com.badlogic.gdx.Input;
 import com.google.common.collect.Maps;
 
@@ -11,6 +13,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class KeyMappings {
 
 	public static final Map<Integer, String> keyMap = Maps.newHashMap();

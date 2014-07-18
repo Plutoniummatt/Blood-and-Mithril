@@ -1,5 +1,6 @@
 package bloodandmithril.generation.component.prefab;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.Interface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
@@ -18,11 +19,12 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	private static final long serialVersionUID = 4185881549137827481L;
 
 	private static final int width = 325, height = 100;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -36,7 +38,7 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 
 		generateInterfaces();
 	}
-	
+
 
 	private static Boundaries boundaries(int worldX, int worldY) {
 		return new Boundaries(worldY, worldY - height - 1, worldX, worldX + width - 1);
@@ -44,7 +46,7 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 
 
 	private static ComponentBlueprint blueprint(Class<? extends Tile> backgroundTile, Class<? extends Tile> wallTile) {
-		
+
 		Tile[][] fTiles = new Tile[width][height];
 		Tile[][] bTiles = new Tile[width][height];
 

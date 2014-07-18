@@ -1,6 +1,7 @@
 package bloodandmithril.generation.component;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component.ComponentCreationCustomization;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.Room.RoomCreationCustomization;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class RectangularInterface extends Interface {
 	private static final long serialVersionUID = -2025423443070618814L;
 

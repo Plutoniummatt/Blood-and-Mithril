@@ -1,12 +1,14 @@
 package bloodandmithril.util.datastructure;
 
 import static java.lang.Math.log;
+import bloodandmithril.core.Copyright;
 
 /**
  * A binary tree
- * 
+ *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class BinaryTree<T> {
 
 	/** The root node of the binary tree */
@@ -72,7 +74,7 @@ public class BinaryTree<T> {
 
 	/**
 	 * Performs a 'bit-increment' operation on a boolean array.
-	 * 
+	 *
 	 * @param i - the index to increment
 	 */
 	private void bitIncrementKeySequence(int i, boolean[] keySequence) {
@@ -113,7 +115,7 @@ public class BinaryTree<T> {
 
 	/**
 	 * A Node
-	 * 
+	 *
 	 * @author Matt
 	 */
 	private class Node {

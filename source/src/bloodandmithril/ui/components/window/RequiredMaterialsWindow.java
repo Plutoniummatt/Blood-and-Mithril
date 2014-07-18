@@ -6,12 +6,14 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
+@Copyright("Matthew Peck 2014")
 public class RequiredMaterialsWindow extends ScrollableListingWindow<Item, String> {
 
 	private Container materialsContainer;

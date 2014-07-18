@@ -9,6 +9,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
@@ -26,6 +27,7 @@ import bloodandmithril.world.topography.Topography;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class TakeItem extends CompositeAITask {
 	private static final long serialVersionUID = 1L;
 	private Item item;

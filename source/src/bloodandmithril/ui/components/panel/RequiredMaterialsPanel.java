@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.ui.UserInterface;
@@ -28,6 +29,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String> {
 
 	private Container materialsContainer;

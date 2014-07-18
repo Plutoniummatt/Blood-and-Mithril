@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.List;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class TextInputFieldPanel extends Panel {
 
 	/** Text being input */

@@ -2,6 +2,7 @@ package bloodandmithril.item.items.food.plant;
 
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class DeathCap extends Food {
 	private static final long serialVersionUID = -7125731448429674227L;
 

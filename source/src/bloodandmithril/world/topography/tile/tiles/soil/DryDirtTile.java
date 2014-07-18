@@ -1,9 +1,11 @@
 package bloodandmithril.world.topography.tile.tiles.soil;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.earth.Dirt;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
+@Copyright("Matthew Peck 2014")
 public class DryDirtTile extends SoilTile {
 	private static final long serialVersionUID = 8728088158152709991L;
 

@@ -11,6 +11,7 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
+@Copyright("Matthew Peck 2014")
 public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
 	private static final long serialVersionUID = -8932319773500235186L;
 

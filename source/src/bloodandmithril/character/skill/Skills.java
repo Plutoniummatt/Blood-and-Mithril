@@ -2,11 +2,14 @@ package bloodandmithril.character.skill;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Class representing a skill set
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Skills implements Serializable {
 	private static final long serialVersionUID = 2154775669521547748L;
 

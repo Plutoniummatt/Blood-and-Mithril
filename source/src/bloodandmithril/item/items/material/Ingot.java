@@ -3,6 +3,7 @@ package bloodandmithril.item.items.material;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @param <T> a type of {@link Metal}
  */
+@Copyright("Matthew Peck 2014")
 public class Ingot extends bloodandmithril.item.items.material.Material implements Craftable {
 	private static final long serialVersionUID = -5952793507591312790L;
 

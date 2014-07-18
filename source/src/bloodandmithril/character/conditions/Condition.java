@@ -3,12 +3,14 @@ package bloodandmithril.character.conditions;
 import java.io.Serializable;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 
 /**
  * A condition that applies to a character
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Condition implements Serializable {
 	private static final long serialVersionUID = -1125485475556985426L;
 

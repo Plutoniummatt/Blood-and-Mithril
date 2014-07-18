@@ -8,6 +8,7 @@ import java.util.Set;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.SerializableFunction;
@@ -25,6 +26,7 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Attack extends CompositeAITask {
 	private static final long serialVersionUID = 1106295624210596573L;
 

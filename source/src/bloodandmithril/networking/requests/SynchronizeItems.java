@@ -3,6 +3,7 @@ package bloodandmithril.networking.requests;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.Response;
 import bloodandmithril.world.Domain;
@@ -14,6 +15,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class SynchronizeItems implements Response {
 
 	private HashMap<Integer, Item> items;

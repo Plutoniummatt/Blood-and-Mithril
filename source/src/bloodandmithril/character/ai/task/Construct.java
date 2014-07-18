@@ -4,6 +4,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.world.Domain;
 
@@ -12,6 +13,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Construct extends CompositeAITask {
 	private static final long serialVersionUID = 8175661093571274804L;
 

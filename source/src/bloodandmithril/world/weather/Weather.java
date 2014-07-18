@@ -16,6 +16,7 @@ import static java.lang.Math.sin;
 
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Weather {
 
 	private static ShapeRenderer shapeRenderer 			= new ShapeRenderer();

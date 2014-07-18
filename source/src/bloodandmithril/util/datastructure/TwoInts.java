@@ -2,14 +2,17 @@ package bloodandmithril.util.datastructure;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Stores two integers.
- * 
+ *
  * @author Sam
  */
+@Copyright("Matthew Peck 2014")
 public class TwoInts implements Serializable {
 	private static final long serialVersionUID = 5733873972689677971L;
-	
+
 	/** Two integers. */
 	public int a, b;
 
@@ -21,7 +24,7 @@ public class TwoInts implements Serializable {
 		this.b = b;
 	}
 
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof TwoInts) {

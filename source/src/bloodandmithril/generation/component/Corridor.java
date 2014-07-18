@@ -1,5 +1,6 @@
 package bloodandmithril.generation.component;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.generation.component.Room.RoomCreationCustomization;
@@ -16,6 +17,7 @@ import bloodandmithril.world.topography.tile.Tile;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Corridor extends Component {
 	private static final long serialVersionUID = 3194155344105601040L;
 

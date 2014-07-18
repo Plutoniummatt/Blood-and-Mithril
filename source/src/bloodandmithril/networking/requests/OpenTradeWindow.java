@@ -2,6 +2,7 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
@@ -13,6 +14,7 @@ import bloodandmithril.world.Domain;
 /**
  * {@link Request} to open a trade window
  */
+@Copyright("Matthew Peck 2014")
 public class OpenTradeWindow implements Request {
 
 	private final int proposerId;

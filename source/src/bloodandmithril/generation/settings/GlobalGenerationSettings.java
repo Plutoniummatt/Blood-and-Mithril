@@ -1,11 +1,14 @@
 package bloodandmithril.generation.settings;
 
+import bloodandmithril.core.Copyright;
+
+@Copyright("Matthew Peck 2014")
 public class GlobalGenerationSettings {
 
 	// General generation settings
 	public final static int maxSuperStructureChunkWidth = 5; // Chunks
 	public final static int defaultSurfaceHeight = 10; // Tiles
-	
+
 	// Surface settings
 	public final static int maxSurfaceHeight = 20; //Chunks
 
@@ -14,19 +17,19 @@ public class GlobalGenerationSettings {
 	public final static int maxLayerHeight = 40; // Tiles
 	public static final int minLayerStretch = 10; // Tiles
 	public final static int maxLayerStretch = 30; // Tiles
-	
+
 	// Plains settings
 	public final static int plainsMinWidth = 10; //Chunks
 	public final static int plainsMaxWidth = 50; // Chunks
 	public final static int plainsMinHeight = 5; // Tiles
 	public final static int plainsMaxHeight = 15; // Tiles
-	
+
 	// Hills settings
 	public final static int hillsMinWidth = 20; //Chunks
 	public final static int hillsMaxWidth = 50; // Chunks
 	public final static int hillsMinHeight = 20; // Tiles
 	public final static int hillsMaxHeight = 80; // Tiles
-	
+
 	// Desert settings
 	public final static int desertMinWidth = 50; //Chunks
 	public final static int desertMaxWidth = 150; // Chunks
@@ -34,7 +37,7 @@ public class GlobalGenerationSettings {
 	public final static int desertMaxTransitionDepth = -100; // Tiles
 	public final static int desertMaxSandstoneDepth = -200; // Tiles
 	public final static int desertTransitionWidth = 400; // Tiles
-	
+
 	// Underground settings
 	// Caves settings
 	public final static int cavesMaxWidth = 5; //Chunks, max is twice this really

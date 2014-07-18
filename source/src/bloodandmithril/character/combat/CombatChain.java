@@ -3,6 +3,7 @@ package bloodandmithril.character.combat;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.TracerParticle;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -23,6 +24,7 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 @SuppressWarnings("rawtypes")
 public class CombatChain {
 

@@ -14,6 +14,7 @@ import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRe
 import java.util.Deque;
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Shaders;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Component {
 
 	protected static final TextureRegion topLeft 		= new TextureRegion(uiTexture, 0, 8, 2, 2);

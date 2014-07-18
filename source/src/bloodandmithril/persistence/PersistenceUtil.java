@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 
 import biz.source_code.base64Coder.Base64Coder;
+import bloodandmithril.core.Copyright;
 
 import com.badlogic.gdx.files.FileHandle;
 
@@ -20,6 +21,7 @@ import com.badlogic.gdx.files.FileHandle;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class PersistenceUtil {
 
 
@@ -56,8 +58,8 @@ public class PersistenceUtil {
 	public static <T> T decode(FileHandle file) {
 		return decode(file.readString());
 	}
-	
-	
+
+
 	/** Writes a file to disk at the root directory with a specified name and content */
 	public static void writeFile(String fileName, String content) {
 		try {
@@ -68,8 +70,8 @@ public class PersistenceUtil {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 	/** Reads and returns the content of a file */
 	public static String readFile(String fileName) throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader(fileName));

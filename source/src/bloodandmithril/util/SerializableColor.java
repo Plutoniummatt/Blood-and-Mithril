@@ -2,6 +2,8 @@ package bloodandmithril.util;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
+
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -9,6 +11,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class SerializableColor implements Serializable {
 	private static final long serialVersionUID = -6646062971215942066L;
 

@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 import bloodandmithril.character.conditions.Condition;
+import bloodandmithril.core.Copyright;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -14,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class IndividualState implements Serializable {
 	private static final long serialVersionUID = 3678630824613212498L;
 

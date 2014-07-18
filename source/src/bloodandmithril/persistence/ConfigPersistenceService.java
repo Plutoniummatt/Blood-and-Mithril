@@ -6,23 +6,26 @@ import static bloodandmithril.persistence.PersistenceUtil.readFile;
 
 import java.io.IOException;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Persistence service for {@link Config}
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ConfigPersistenceService {
-	
+
 	private static Config config = loadConfig();
-	
+
 	/**
 	 * @return the single instance of config
 	 */
 	public static Config getConfig() {
 		return config == null ? loadConfig() : config;
 	}
-	
-	
+
+
 	/**
 	 * Loads config from disk
 	 */
@@ -33,8 +36,8 @@ public class ConfigPersistenceService {
 			return new Config();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Saves the config to disk
 	 */

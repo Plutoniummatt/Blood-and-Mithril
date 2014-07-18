@@ -2,6 +2,7 @@ package bloodandmithril.prop.construction.craftingstation;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
@@ -16,6 +17,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Anvil extends CraftingStation {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();

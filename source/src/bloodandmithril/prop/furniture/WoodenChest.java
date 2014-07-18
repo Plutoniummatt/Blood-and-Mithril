@@ -8,6 +8,7 @@ import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 /**
  * A chest made from wood
  */
+@Copyright("Matthew Peck 2014")
 public class WoodenChest extends Furniture implements Container {
 	private static final long serialVersionUID = -8935044324226731703L;
 

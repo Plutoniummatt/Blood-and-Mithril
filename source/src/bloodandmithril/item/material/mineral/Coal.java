@@ -2,6 +2,7 @@ package bloodandmithril.item.material.mineral;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
@@ -9,6 +10,7 @@ import bloodandmithril.item.items.earth.Ashes;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+@Copyright("Matthew Peck 2014")
 public class Coal extends Mineral implements Fuel {
 	private static final long serialVersionUID = -3925049718035013900L;
 

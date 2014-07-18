@@ -11,11 +11,12 @@ import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.networking.requests.SynchronizePropRequest;
 import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
+import bloodandmithril.networking.requests.SynchronizePropRequest;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
@@ -37,6 +38,7 @@ import com.google.common.collect.Iterables;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class CraftingStation extends Construction {
 	private static final long serialVersionUID = 2177296386331588828L;
 

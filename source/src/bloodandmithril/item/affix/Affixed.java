@@ -2,6 +2,7 @@ package bloodandmithril.item.affix;
 
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 
 /**
@@ -9,6 +10,7 @@ import bloodandmithril.item.items.Item;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public interface Affixed {
 
 	/**

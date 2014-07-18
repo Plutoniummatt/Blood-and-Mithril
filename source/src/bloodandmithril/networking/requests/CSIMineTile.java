@@ -2,6 +2,7 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.world.Domain;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class CSIMineTile implements Request {
 
 	private final int individualId;

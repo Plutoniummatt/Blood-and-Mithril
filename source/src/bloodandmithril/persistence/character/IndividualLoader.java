@@ -9,6 +9,7 @@ import static com.badlogic.gdx.Gdx.files;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Logger.LogLevel;
 
 /**
@@ -16,6 +17,7 @@ import bloodandmithril.util.Logger.LogLevel;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class IndividualLoader {
 
 	/**

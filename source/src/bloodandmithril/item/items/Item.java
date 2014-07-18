@@ -12,6 +12,7 @@ import java.util.List;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.affix.Affix;
 import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.affix.MinorAffix;
@@ -47,6 +48,7 @@ import com.google.common.collect.Iterables;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Item implements Serializable, Affixed {
 	private static final long serialVersionUID = -7733840667288631158L;
 

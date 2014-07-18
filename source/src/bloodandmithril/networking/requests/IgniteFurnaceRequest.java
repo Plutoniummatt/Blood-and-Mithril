@@ -2,6 +2,7 @@ package bloodandmithril.networking.requests;
 
 import java.util.Map.Entry;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.Request;
@@ -10,6 +11,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.world.Domain;
 
+@Copyright("Matthew Peck 2014")
 public class IgniteFurnaceRequest implements Request {
 
 	private int furnaceId;
@@ -20,8 +22,8 @@ public class IgniteFurnaceRequest implements Request {
 	public IgniteFurnaceRequest(int furnaceId) {
 		this.furnaceId = furnaceId;
 	}
-	
-	
+
+
 	@Override
 	public Responses respond() {
 		Prop prop = Domain.getProps().get(furnaceId);
@@ -41,17 +43,17 @@ public class IgniteFurnaceRequest implements Request {
 		} else {
 			throw new RuntimeException("Expected a furnace, but got a " + prop.getClass().getSimpleName());
 		}
-		
+
 		return new Responses(false);
 	}
 
-	
+
 	@Override
 	public boolean tcp() {
 		return false;
 	}
 
-	
+
 	@Override
 	public boolean notifyOthers() {
 		return false;

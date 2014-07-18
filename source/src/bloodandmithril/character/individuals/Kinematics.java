@@ -9,6 +9,7 @@ import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public interface Kinematics {
 
 	/**

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import bloodandmithril.core.Copyright;
+
 import com.google.common.collect.Lists;
 
 /**
@@ -12,9 +14,10 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class LiquidMixtureAnalyzer {
 
-	
+
 	/**
 	 * @return The description of this fluid.
 	 */
@@ -23,7 +26,7 @@ public class LiquidMixtureAnalyzer {
 		Collections.sort(list, (e1, e2) -> {
 			return e1.getValue().compareTo(e1.getValue());
 		});
-		
+
 		if (list.get(0).getValue() > 0.75f * total) {
 			try {
 				return "mostly " + list.get(0).getKey().getSimpleName() + "; " + list.get(0).getKey().newInstance().getDescription();
@@ -34,8 +37,8 @@ public class LiquidMixtureAnalyzer {
 			return "a mixture of different liquids... Impossible to tell without proper analysis.";
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return The title of this fluid.
 	 */
@@ -44,7 +47,7 @@ public class LiquidMixtureAnalyzer {
 		Collections.sort(list, (e1, e2) -> {
 			return e1.getValue().compareTo(e1.getValue());
 		});
-		
+
 		if (list.get(0).getValue() > 0.75f * total) {
 			return list.get(0).getKey().getSimpleName();
 		} else {

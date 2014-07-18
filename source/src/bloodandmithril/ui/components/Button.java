@@ -3,6 +3,7 @@ package bloodandmithril.ui.components;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Util.fitToTextInputBox;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.JITTask;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt, Sam
  */
+@Copyright("Matthew Peck 2014")
 public class Button {
 
 	/** Texture regions used to draw this button */
@@ -128,16 +130,16 @@ public class Button {
 		over = new TextureRegion(buttonAtlas, atlasX, atlasY + height, width, height);
 		down = new TextureRegion(buttonAtlas, atlasX, atlasY + 2 * height, width, height);
 	}
-	
-	
+
+
 	/**
 	 * Overloaded constructor, no sound required
 	 */
 	public Button(Texture buttonAtlas, int offsetX, int offsetY, int atlasX, int atlasY, int width, int height, Task task, UIRef ref) {
 		this(buttonAtlas, offsetX, offsetY, atlasX, atlasY, width, height, null, task, ref);
 	}
-	
-	
+
+
 	/**
 	 * Renders this button
 	 */
@@ -179,8 +181,8 @@ public class Button {
 			}
 		}
 	}
-	
-	
+
+
 	public void render(boolean active, float alpha) {
 		render(active, alpha, 0);
 	}
@@ -226,8 +228,8 @@ public class Button {
 
 		render(active, alpha);
 	}
-	
-	
+
+
 	/**
 	 * Renders this button at an override location and whether or not this button is 'active', plus an alpha value, and maximum width, truncating the rest
 	 */
@@ -235,7 +237,7 @@ public class Button {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
-		
+
 		render(active, alpha, maxWidth);
 	}
 
@@ -337,43 +339,43 @@ public class Button {
 			return mouseX >= vec.x && mouseX <= vec.x + width && mouseY <= vec.y + height && mouseY >= vec.y;
 		}
 	}
-	
-	
+
+
 	public Color getIdle() {
 		return idleColor;
 	}
-	
-	
+
+
 	public Color getOverColor() {
 		return overColor;
 	}
-	
-	
+
+
 	public Color getDownColor() {
 		return downColor;
 	}
-	
-	
+
+
 	public void setOverColor(Color overColor) {
 		this.overColor = overColor;
 	}
-	
-	
+
+
 	public void setDownColor(Color downColor) {
 		this.downColor = downColor;
 	}
-	
+
 
 	public void setIdleColor(Color color) {
 		this.idleColor = color;
 	}
-	
-	
+
+
 	public void setTask(Task task) {
 		this.task = task;
 	}
-	
-	
+
+
 	public Task getTask() {
 		return task;
 	}

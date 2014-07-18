@@ -2,6 +2,7 @@ package bloodandmithril.graphics;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static java.lang.Math.abs;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class TracerParticle {
 
 	public final float radius;
@@ -54,7 +56,7 @@ public class TracerParticle {
 	public void update(float delta) {
 		prevPosition.x = position.x;
 		prevPosition.y = position.y;
-		
+
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 

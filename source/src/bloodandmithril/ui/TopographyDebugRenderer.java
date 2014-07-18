@@ -4,6 +4,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.superstructure.SuperStructure;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class TopographyDebugRenderer {
 
 	/** The tile coordinates of the internal 'topography camera', this represents the bottom left corner of the window */

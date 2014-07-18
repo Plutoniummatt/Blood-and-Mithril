@@ -1,10 +1,13 @@
 package bloodandmithril.world;
 
+import bloodandmithril.core.Copyright;
+
 /**
  * Represents the world state - Weather, Time, Events etc.
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class WorldState {
 
 	/** THE current epoch */

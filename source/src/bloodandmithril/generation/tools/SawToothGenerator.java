@@ -3,6 +3,7 @@ package bloodandmithril.generation.tools;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Util;
 
 
@@ -11,9 +12,10 @@ import bloodandmithril.util.Util;
  *
  * @author Sam
  */
+@Copyright("Matthew Peck 2014")
 public class SawToothGenerator implements Serializable {
 	private static final long serialVersionUID = 8666913840394916203L;
-	
+
 	private final int period;
 	private int counter;
 

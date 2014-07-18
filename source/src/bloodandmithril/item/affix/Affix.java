@@ -2,6 +2,7 @@ package bloodandmithril.item.affix;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 
 /**
@@ -9,6 +10,7 @@ import bloodandmithril.item.items.Item;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Affix implements Serializable {
 	private static final long serialVersionUID = 4446739414723141218L;
 

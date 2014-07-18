@@ -3,6 +3,7 @@ package bloodandmithril.character.ai;
 import java.io.Serializable;
 
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Task;
 
 /**
@@ -10,6 +11,7 @@ import bloodandmithril.util.Task;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class AITask implements Serializable {
 	private static final long serialVersionUID = -3599103577896385879L;
 

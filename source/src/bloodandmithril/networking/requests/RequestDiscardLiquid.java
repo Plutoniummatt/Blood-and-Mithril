@@ -2,6 +2,7 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.ai.task.DiscardLiquid;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.networking.Request;
@@ -14,6 +15,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class RequestDiscardLiquid implements Request {
 
 	private final int individualId;

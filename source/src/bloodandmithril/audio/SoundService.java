@@ -7,6 +7,7 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 import java.util.Map;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 
 import com.badlogic.gdx.Gdx;
@@ -20,6 +21,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class SoundService {
 
 	public static Music mainMenu;

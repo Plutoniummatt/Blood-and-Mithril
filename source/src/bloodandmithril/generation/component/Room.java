@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
@@ -22,6 +23,7 @@ import com.google.common.collect.Collections2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Room extends Component {
 	private static final long serialVersionUID = -4828689126496857514L;
 
@@ -53,7 +55,7 @@ public class Room extends Component {
 	}
 
 
-	
+
 
 	@Override
 	protected <T extends Component> Component internalStem(Class<T> with, ComponentCreationCustomization<T> custom) {
@@ -101,7 +103,7 @@ public class Room extends Component {
 		if (interfacesToUse.size() == 0) {
 			return null;
 		}
-		
+
 		int interfaceIndex = Util.getRandom().nextInt(interfacesToUse.size());
 		List<Interface> interfacesToUseList = new ArrayList<>(interfacesToUse);
 

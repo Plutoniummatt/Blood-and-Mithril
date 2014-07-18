@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Epoch;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Parameters implements Serializable {
 	private static final long serialVersionUID = -4405235813990330113L;
 

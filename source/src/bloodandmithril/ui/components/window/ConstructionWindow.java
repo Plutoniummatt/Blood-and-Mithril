@@ -8,6 +8,7 @@ import java.util.List;
 
 import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
@@ -26,6 +27,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ConstructionWindow extends Window implements Refreshable {
 
 	/** The construction and individual this window represents */

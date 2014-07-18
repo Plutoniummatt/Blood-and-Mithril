@@ -7,6 +7,7 @@ import static bloodandmithril.util.Util.Colors.modulateAlpha;
 import java.util.Deque;
 import java.util.List;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ItemInfoWindow extends Window {
 
 	private final Item item;

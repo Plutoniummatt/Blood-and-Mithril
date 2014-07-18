@@ -2,6 +2,8 @@ package bloodandmithril.util.datastructure;
 
 import java.io.Serializable;
 
+import bloodandmithril.core.Copyright;
+
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -9,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Sam
  */
+@Copyright("Matthew Peck 2014")
 public class Line implements Serializable {
 	private static final long serialVersionUID = -2775197848532953106L;
 
@@ -55,7 +58,7 @@ public class Line implements Serializable {
 			return true;
 		}
 	}
-	
+
 
 	/**
 	 * Put the two coordinates left first, or if they're on top of each other, bottom first.

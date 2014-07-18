@@ -5,6 +5,7 @@ import static bloodandmithril.generation.settings.GlobalGenerationSettings.hills
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.hillsMinHeight;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.hillsMinWidth;
 import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSurfaceHeight;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.generation.patterns.UndergroundWithCaves;
@@ -21,9 +22,10 @@ import bloodandmithril.world.topography.tile.Tile;
  *
  * @author Sam, Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Hills extends SuperStructure {
 	private static final long serialVersionUID = -2162566918693231667L;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -31,7 +33,7 @@ public class Hills extends SuperStructure {
 		super(worldId);
 	}
 
-	
+
 	@Override
 	protected Boundaries findSpace(int startingChunkX, int startingChunkY) {
 		//calculates where the structure can go

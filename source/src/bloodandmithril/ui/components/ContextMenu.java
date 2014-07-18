@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Function;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class ContextMenu extends Component {
 
 	private final List<MenuItem> menuItems = new ArrayList<MenuItem>();

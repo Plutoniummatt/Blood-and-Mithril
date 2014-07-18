@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.item.material.metal.Steel;
@@ -13,6 +14,7 @@ import bloodandmithril.item.material.metal.Steel;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
+@Copyright("Matthew Peck 2014")
 public class CombatKnife extends Dagger<Steel> {
 	private static final long serialVersionUID = 7540318665466689612L;
 

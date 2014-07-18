@@ -1,6 +1,7 @@
 package trunkapp;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.DevWindow;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Main {
 	public static BloodAndMithrilClient client;
 

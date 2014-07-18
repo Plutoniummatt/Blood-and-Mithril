@@ -1,5 +1,7 @@
 package bloodandmithril.util;
 
+import bloodandmithril.core.Copyright;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Fonts {
 
 	/** The default font to use */

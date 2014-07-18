@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
@@ -49,6 +50,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class CraftingStationWindow extends Window implements Refreshable {
 
 	private final Individual individual;

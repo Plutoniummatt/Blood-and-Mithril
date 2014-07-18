@@ -3,6 +3,7 @@ package bloodandmithril.networking.requests;
 import java.util.HashMap;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -16,6 +17,7 @@ import bloodandmithril.world.Domain;
 /**
  * A {@link Request} for transfer of items between two {@link Container}s
  */
+@Copyright("Matthew Peck 2014")
 public class TransferItems implements Request {
 
 	private final HashMap<Item, Integer> proposerItemsToTransfer;

@@ -3,6 +3,7 @@ package bloodandmithril.item.material;
 import java.io.Serializable;
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.item.material.mineral.Mineral;
 import bloodandmithril.item.material.wood.Wood;
@@ -14,6 +15,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public abstract class Material implements Serializable {
 	private static final long serialVersionUID = 5771671188230385115L;
 

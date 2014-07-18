@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.world.Domain;
 
@@ -23,34 +24,35 @@ import com.badlogic.gdx.graphics.Color;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 	private static final long serialVersionUID = 2940941435333092614L;
-	
+
 	@SuppressWarnings("unused")
 	private Fluid() {}
-	
+
 	/**
 	 * Constructor
 	 */
 	public Fluid(FluidFraction... fluids) {
 		addAll(newArrayList(fluids));
 	}
-	
-	
+
+
 	/**
 	 * Constructor
 	 */
 	public Fluid(Collection<FluidFraction> fluids) {
 		addAll(fluids);
 	}
-	
-	
+
+
 	/**
 	 * Constructor
 	 */
 	public Fluid(Map<Class<? extends Liquid>, Float> map) {
 		Collection<FluidFraction> fractions = newArrayList();
-		
+
 		try {
 			for (Entry<Class<? extends Liquid>, Float> entry : map.entrySet()) {
 				fractions.add(FluidFraction.fraction(entry.getKey().newInstance(), entry.getValue()));
@@ -58,48 +60,48 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		addAll(fractions);
 	}
-	
-	
+
+
 	/**
 	 * Render this liquid
 	 */
 	public synchronized void render(int x, int y) {
 		Color color = new Color();
-		
+
 		Gdx.gl.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		
+
 		stream().forEach(fluidFraction -> {
 			color.add(fluidFraction.getLiquid().getColor().cpy().mul(fluidFraction.getDepth() / getDepth()));
 		});
-		
+
 		Domain.shapeRenderer.setColor(color);
 		Domain.shapeRenderer.filledRect(
-			TILE_SIZE * x, 
-			TILE_SIZE * y, 
-			TILE_SIZE, 
+			TILE_SIZE * x,
+			TILE_SIZE * y,
+			TILE_SIZE,
 			min(TILE_SIZE, getDepth())
 		);
 	}
-	
-	
+
+
 	/**
 	 * Returns a copy of this object
 	 */
 	public synchronized Fluid copy(float depth) {
 		float fraction = depth / getDepth();
-		
+
 		Collection<FluidFraction> newFracs = newArrayList();
 		stream().forEach(toCopy -> {
 			newFracs.add(FluidFraction.fraction(toCopy.getLiquid(), toCopy.getDepth() * fraction));
 		});
-		
+
 		return new Fluid(newFracs);
 	}
-	
-	
+
+
 	/**
 	 * Returns a copy of this object
 	 */
@@ -108,18 +110,18 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 		stream().forEach(toCopy -> {
 			newFracs.add(FluidFraction.fraction(toCopy.getLiquid(), toCopy.getDepth()));
 		});
-		
+
 		return new Fluid(newFracs);
 	}
-	
-	
+
+
 	public synchronized float getDepth() {
 		return (float) stream().mapToDouble(fraction -> {
-			return (double) fraction.getDepth();
+			return fraction.getDepth();
 		}).sum();
 	}
 
-	
+
 	/**
 	 * Add another fluid to this one, returning how much was added
 	 */
@@ -139,7 +141,7 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 		});
 	}
 
-	
+
 	/**
 	 * Subtract from this fluid, returning how much was subtracted
 	 */
@@ -152,7 +154,7 @@ public class Fluid extends LinkedList<FluidFraction> implements Serializable {
 			Fluid toReturn = copy(amount);
 			float fraction = amount / getDepth();
 			stream().forEach(toMultiply -> {
-				toMultiply.setDepth(toMultiply.getDepth() - (toMultiply.getDepth() * fraction));
+				toMultiply.setDepth(toMultiply.getDepth() - toMultiply.getDepth() * fraction);
 			});
 			return toReturn;
 		}

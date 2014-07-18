@@ -1,5 +1,6 @@
 package bloodandmithril.networking.requests;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -11,6 +12,7 @@ import bloodandmithril.ui.UserInterface;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class RefreshWindows implements Request {
 
 	@Override

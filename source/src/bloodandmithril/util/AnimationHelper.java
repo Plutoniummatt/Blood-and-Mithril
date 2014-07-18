@@ -1,5 +1,6 @@
 package bloodandmithril.util;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class AnimationHelper {
 
 

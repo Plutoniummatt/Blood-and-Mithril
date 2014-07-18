@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import bloodandmithril.core.Copyright;
+
 import com.google.common.collect.Lists;
 
 
@@ -14,20 +16,21 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class DualKeyHashMap<X, Y, V> implements Serializable {
 	private static final long serialVersionUID = 200088372379639439L;
-	
+
 	/** The underlying data structue */
 	private HashMap<X, HashMap<Y, V>> data = new HashMap<X, HashMap<Y, V>>();
-	
+
 	/**
 	 * @return the value enquired upon
 	 */
 	public V get(X x, Y y) {
-		return data.get(x) == null ? null : data.get(x).get(y); 
+		return data.get(x) == null ? null : data.get(x).get(y);
 	}
 
-	
+
 	/**
 	 * Put an entry into this {@link ConcurrentDualKeyHashMap}
 	 */
@@ -37,8 +40,8 @@ public class DualKeyHashMap<X, Y, V> implements Serializable {
 		}
 		return data.get(x).put(y, v);
 	}
-	
-	
+
+
 	/**
 	 * Put an entry into this {@link ConcurrentDualKeyHashMap}
 	 */
@@ -48,34 +51,34 @@ public class DualKeyHashMap<X, Y, V> implements Serializable {
 		}
 		return data.get(x).remove(y);
 	}
-	
-	
+
+
 	/**
 	 * Returns a {@link Collection} of {@link DualKeyEntry}s contained within {@link #data}
 	 */
 	public List<DualKeyEntry<X, Y, V>> getAllEntries() {
 		List<DualKeyEntry<X, Y, V>> entries = Lists.newLinkedList();
-		
+
 		for (Entry<X, HashMap<Y, V>> outerEntry : data.entrySet()) {
 			for (Entry<Y, V> innerEntry : outerEntry.getValue().entrySet()) {
 				entries.add(new DualKeyEntry<X, Y, V>(outerEntry.getKey(), innerEntry.getKey(), innerEntry.getValue()));
 			}
 		}
-		
+
 		return entries;
 	}
-	
-	
+
+
 	/**
 	 * Dual key version of a java util map entry.
-	 * 
+	 *
 	 * @author Matt
 	 */
 	public static class DualKeyEntry<X, Y, V> {
 		public X x;
 		public Y y;
 		public V value;
-		
+
 		/**
 		 * Constructor
 		 */

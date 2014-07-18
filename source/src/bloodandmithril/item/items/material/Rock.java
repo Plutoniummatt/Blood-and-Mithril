@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.material;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.mineral.Mineral;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Rock extends bloodandmithril.item.items.material.Material {
 	private static final long serialVersionUID = -7786694866208809183L;
 

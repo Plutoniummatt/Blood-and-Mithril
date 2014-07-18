@@ -1,5 +1,6 @@
 package bloodandmithril.util;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.WorldState;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Shaders {
 
 	public static ShaderProgram pass = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/pass.fp"));

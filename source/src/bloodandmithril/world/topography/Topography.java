@@ -6,6 +6,7 @@ import java.util.concurrent.BlockingQueue;
 import org.lwjgl.opengl.Display;
 
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.world.ChunkLoader;
@@ -33,6 +34,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class Topography {
 
 	/** Unique ID of the {@link World} that this {@link Topography} lives on */

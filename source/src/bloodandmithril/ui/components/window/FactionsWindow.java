@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -33,6 +34,7 @@ import com.google.common.collect.Maps;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class FactionsWindow extends Window {
 
 	private ScrollableListingPanel<String, Object> factionsPanel;

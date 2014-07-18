@@ -5,6 +5,7 @@ import static java.lang.Math.pow;
 
 import java.util.Random;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.ParameterPersistenceService;
 
 /**
@@ -12,6 +13,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
  *
  * @author Sam, Matt
  */
+@Copyright("Matthew Peck 2014")
 public class PerlinNoiseGenerator2D {
 
 	/** Initial seed */

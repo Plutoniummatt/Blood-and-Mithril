@@ -7,6 +7,7 @@ import static com.badlogic.gdx.Gdx.files;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
@@ -16,6 +17,7 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class PropLoader {
 
 	/**
