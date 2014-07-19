@@ -89,6 +89,13 @@ public class TopographyDebugRenderer {
 
 		UserInterface.shapeRenderer.end();
 
+		UserInterface.shapeRenderer.begin(ShapeType.FilledCircle);
+		for (Entry<Integer, Integer> h : Domain.getActiveWorld().getTopography().getStructures().getSurfaceHeight().entrySet()) {
+			UserInterface.shapeRenderer.filledCircle(h.getKey() - topoX, h.getValue() - topoY, 1);
+		}
+		UserInterface.shapeRenderer.end();
+
+
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			topoX = topoX - 10;
 		}

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import bloodandmithril.character.ai.task.DiscardLiquid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -35,8 +34,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
-import bloodandmithril.util.CursorBoundTask;
-import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
@@ -473,38 +470,11 @@ public class InventoryWindow extends Window implements Refreshable {
 									return;
 								}
 
-								BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(
-									new JITTask() {
-										@Override
-										public void execute(Object... args) {
-											if (ClientServerInterface.isServer()) {
-												((Individual)host).getAI().setCurrentTask(
-													new DiscardLiquid(
-														(Individual) host,
-														(int) args[0],
-														(int) args[1],
-														(LiquidContainer) item,
-														amount
-													)
-												);
-											} else {
-												ClientServerInterface.SendRequest.sendDiscardLiquidRequest(
-													(int) args[0],
-													(int) args[1],
-													(Individual) host,
-													(LiquidContainer) item,
-													amount
-												);
-											}
-										}
-									},
-									true
-								) {
-									@Override
-									public String getShortDescription() {
-										return "Discard contents";
-									}
-								});
+								if (ClientServerInterface.isServer()) {
+									((LiquidContainer) item).subtract(amount);
+								} else {
+									// TODO CSI
+								}
 
 								setClosing(true);
 							} catch (NumberFormatException e) {

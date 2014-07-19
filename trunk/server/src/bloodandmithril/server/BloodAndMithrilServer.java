@@ -32,7 +32,6 @@ import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.items.misc.Currency;
 import bloodandmithril.item.liquid.Blood;
 import bloodandmithril.item.liquid.Liquid;
-import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.wood.Pine;
@@ -51,8 +50,6 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.fluid.Fluid;
-import bloodandmithril.world.topography.fluid.FluidFraction;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -175,10 +172,6 @@ public class BloodAndMithrilServer {
 								ClientServerInterface.SendNotification.notifySyncFaction(faction);
 							}
 
-							if (Domain.getActiveWorld() != null && Domain.getActiveWorld().getTopography() != null && Domain.getActiveWorld().getTopography().getFluids() != null) {
-								ClientServerInterface.SendNotification.notifySyncFluids();
-							}
-
 							ClientServerInterface.SendNotification.notifySyncItems();
 						}
 
@@ -264,22 +257,6 @@ public class BloodAndMithrilServer {
 
 			if (keycode == Input.Keys.S) {
 				GameSaver.save(false);
-			}
-
-			if (keycode == Input.Keys.J) {
-				Domain.getActiveWorld().getTopography().getFluids().put(
-					0,
-					50,
-					new Fluid(FluidFraction.fraction(new Water(), 16f))
-				);
-			}
-
-			if (keycode == Input.Keys.K) {
-				Domain.getActiveWorld().getTopography().getFluids().put(
-					0,
-					50,
-					new Fluid(FluidFraction.fraction(new Blood(), 16f))
-				);
 			}
 
 			if (keycode == Input.Keys.P) {

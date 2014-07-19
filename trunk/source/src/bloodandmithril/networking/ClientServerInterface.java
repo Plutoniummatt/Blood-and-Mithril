@@ -34,8 +34,6 @@ import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.ai.task.Construct.Constructing;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.Craft.Crafting;
-import bloodandmithril.character.ai.task.DiscardLiquid;
-import bloodandmithril.character.ai.task.DiscardLiquid.Discard;
 import bloodandmithril.character.ai.task.Follow;
 import bloodandmithril.character.ai.task.Follow.RepathCondition;
 import bloodandmithril.character.ai.task.Follow.WithinNumberOfWaypointsFunction;
@@ -154,7 +152,6 @@ import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse
 import bloodandmithril.networking.requests.RequestClientList;
 import bloodandmithril.networking.requests.RequestClientList.RequestClientListResponse;
 import bloodandmithril.networking.requests.RequestDiscardItem;
-import bloodandmithril.networking.requests.RequestDiscardLiquid;
 import bloodandmithril.networking.requests.RequestStartCrafting;
 import bloodandmithril.networking.requests.RequestTakeItem;
 import bloodandmithril.networking.requests.RequestTakeItemFromCraftingStation;
@@ -164,7 +161,6 @@ import bloodandmithril.networking.requests.SendChatMessage.Message;
 import bloodandmithril.networking.requests.SendChatMessage.SendChatMessageResponse;
 import bloodandmithril.networking.requests.SendHarvestRequest;
 import bloodandmithril.networking.requests.SetAIIdle;
-import bloodandmithril.networking.requests.SyncFluidsNotification;
 import bloodandmithril.networking.requests.SynchronizeFaction;
 import bloodandmithril.networking.requests.SynchronizeFaction.SynchronizeFactionResponse;
 import bloodandmithril.networking.requests.SynchronizeIndividual;
@@ -204,9 +200,6 @@ import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.fluid.Fluid;
-import bloodandmithril.world.topography.fluid.FluidFraction;
-import bloodandmithril.world.topography.fluid.FluidMap;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.DebugTile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -237,11 +230,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-/**
- * The CSI
- *
- * @author Matt
- */
 @Copyright("Matthew Peck 2014")
 public class ClientServerInterface {
 
@@ -481,8 +469,6 @@ public class ClientServerInterface {
 		kryo.register(DestroyTile.class);
 		kryo.register(DestroyTileResponse.class);
 		kryo.register(Dirt.class);
-		kryo.register(Discard.class);
-		kryo.register(DiscardLiquid.class);
 		kryo.register(Domain.getIndividuals().keySet().getClass());
 		kryo.register(DrinkLiquid.class);
 		kryo.register(DryDirtTile.class);
@@ -497,9 +483,6 @@ public class ClientServerInterface {
 		kryo.register(EquipperImpl.class);
 		kryo.register(Exhaustion.class);
 		kryo.register(Faction.class);
-		kryo.register(Fluid.class);
-		kryo.register(FluidFraction.class);
-		kryo.register(FluidMap.class);
 		kryo.register(Furnace.class);
 		kryo.register(GenerateChunk.class);
 		kryo.register(GenerateChunkResponse.class);
@@ -563,7 +546,6 @@ public class ClientServerInterface {
 		kryo.register(RequestClientList.class);
 		kryo.register(RequestClientListResponse.class);
 		kryo.register(RequestDiscardItem.class);
-		kryo.register(RequestDiscardLiquid.class);
 		kryo.register(RequestStartCrafting.class);
 		kryo.register(RequestTakeItem.class);
 		kryo.register(RequestTakeItemFromCraftingStation.class);
@@ -587,7 +569,6 @@ public class ClientServerInterface {
 		kryo.register(StandardSoilTile.class);
 		kryo.register(Steel.class);
 		kryo.register(StoneTile.class);
-		kryo.register(SyncFluidsNotification.class);
 		kryo.register(SynchronizeFaction.class);
 		kryo.register(SynchronizeFactionResponse.class);
 		kryo.register(SynchronizeIndividual.class);
@@ -648,12 +629,6 @@ public class ClientServerInterface {
 		public static synchronized void sendUpdateBiographyRequest(Individual individual, String description) {
 			client.sendTCP(new ChangeIndividualBiography(individual, description));
 			Logger.networkDebug("Sending change individual description request", LogLevel.DEBUG);
-		}
-
-
-		public static synchronized void sendDiscardLiquidRequest(int x, int y, Individual individual, LiquidContainer container, float amount) {
-			client.sendTCP(new RequestDiscardLiquid(individual, container, amount, x, y));
-			Logger.networkDebug("Sending discard liquid request", LogLevel.DEBUG);
 		}
 
 
@@ -993,16 +968,6 @@ public class ClientServerInterface {
 				false,
 				false,
 				new SynchronizeIndividualResponse(id, System.currentTimeMillis())
-			);
-		}
-
-
-		public static synchronized void notifySyncFluids() {
-			sendNotification(
-				-1,
-				false,
-				false,
-				new SyncFluidsNotification(Domain.getActiveWorld().getTopography().getFluids())
 			);
 		}
 	}

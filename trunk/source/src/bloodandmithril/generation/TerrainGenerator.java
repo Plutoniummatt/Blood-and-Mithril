@@ -1,9 +1,7 @@
 package bloodandmithril.generation;
 
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSuperStructureChunkWidth;
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSurfaceHeight;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.superstructure.Caves;
+import bloodandmithril.generation.superstructure.Underground;
 import bloodandmithril.generation.tools.BiomeDecider;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
@@ -22,6 +20,9 @@ public class TerrainGenerator {
 
 	/** Decides which biomes to generate */
 	private BiomeDecider biomeDecider = new BiomeDecider();
+
+	public static final int maxSuperStructureChunkWidth = 5;
+	public static final int maxSurfaceHeightInChunks = 20;
 
 	/**
 	 * Generates a chunk, based on passed in chunk coordinates
@@ -76,8 +77,8 @@ public class TerrainGenerator {
 	/** Handles the generation of non-surface structures */
 	private void generateAboveAndBelowSurface(int x, int y, World world) {
 		if (!world.getTopography().getStructures().structureExists(x, y, true)) {
-			if (y < maxSurfaceHeight) {
-				Caves caves = new Caves(world.getWorldId()); // TODO make this procedural, not hard coded
+			if (y < maxSurfaceHeightInChunks) {
+				Underground caves = new Underground(world.getWorldId()); // TODO make this procedural, not hard coded
 				caves.generate(x, y, true);
 			} else {
 				// TODO above surface structure
@@ -91,8 +92,8 @@ public class TerrainGenerator {
 		for (int tempX = chunkX - maxSuperStructureChunkWidth; tempX <= chunkX + maxSuperStructureChunkWidth; tempX++) {
 			boolean generatingToRight = tempX >= chunkX;
 
-			if (!world.getTopography().getStructures().structureExists(tempX, maxSurfaceHeight, true) && !world.getTopography().getChunkMap().doesChunkExist(tempX, maxSurfaceHeight)) {
-				biomeDecider.decideAndGetBiome(world).generate(tempX, maxSurfaceHeight, generatingToRight);
+			if (!world.getTopography().getStructures().structureExists(tempX, maxSurfaceHeightInChunks, true) && !world.getTopography().getChunkMap().doesChunkExist(tempX, maxSurfaceHeightInChunks)) {
+				biomeDecider.decideAndGetBiome(world).generate(tempX, maxSurfaceHeightInChunks, generatingToRight);
 			}
 		}
 	}

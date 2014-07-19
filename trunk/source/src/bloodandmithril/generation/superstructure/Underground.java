@@ -1,7 +1,5 @@
 package bloodandmithril.generation.superstructure;
 
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.cavesMaxHeight;
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.cavesMaxWidth;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.generation.patterns.UndergroundWithCaves;
@@ -16,13 +14,13 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Sam, Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Caves extends SuperStructure {
+public class Underground extends SuperStructure {
 	private static final long serialVersionUID = -9034605400597129907L;
 
 	/**
 	 * Constructor
 	 */
-	public Caves(int worldId) {
+	public Underground(int worldId) {
 		super(worldId);
 	}
 
@@ -30,12 +28,12 @@ public class Caves extends SuperStructure {
 	@Override
 	protected Boundaries findSpace(int startingChunkX, int startingChunkY) {
 		// Find space for the cave
-		return RectangularSpaceCalculator.calculateBoundaries(
+		return RectangularSpaceCalculator.calculateBoundariesForUnderground(
 			true,
 			startingChunkX,
 			startingChunkY,
-			cavesMaxWidth,
-			cavesMaxHeight,
+			20,
+			20,
 			Domain.getWorld(worldId).getTopography()
 		);
 	}
