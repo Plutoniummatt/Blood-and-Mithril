@@ -39,7 +39,6 @@ import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.TracerParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
-import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger.LogLevel;
@@ -104,10 +103,6 @@ public class Domain {
 	public static FrameBuffer fBufferQuantized;
 	public static FrameBuffer combinedBufferQuantized;
 
-	private long topographyUpdateTimer;
-
-	private static Thread fluidThread;
-
 	/**
 	 * Constructor
 	 */
@@ -124,25 +119,6 @@ public class Domain {
 			Thread.sleep(50);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-
-		fluidThread = new Thread(() -> {
-			while (true) {
-				updateFluids(Gdx.graphics.getDeltaTime());
-			}
-		});
-
-		fluidThread.setName("Fluid thread");
-		fluidThread.start();
-	}
-
-
-	/**
-	 * Fluid update method
-	 */
-	private void updateFluids(float delta) {
-		if (!BloodAndMithrilClient.paused && !GameSaver.isSaving()) {
-			updateFluids();
 		}
 	}
 
@@ -285,12 +261,6 @@ public class Domain {
 		shapeRenderer.begin(ShapeType.FilledRectangle);
 		shapeRenderer.setProjectionMatrix(cam.combined);
 
-		synchronized (getActiveWorld().getTopography().getFluids()) {
-			getActiveWorld().getTopography().getFluids().getAllFluids().stream().forEach(entry -> {
-				entry.value.render(entry.x, entry.y);
-			});
-		}
-
 		shapeRenderer.end();
 		Domain.shapeRenderer.begin(Line);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
@@ -343,14 +313,6 @@ public class Domain {
 					// Don't update
 				}
 			}
-		}
-	}
-
-
-	public void updateFluids() {
-		if (System.currentTimeMillis() - topographyUpdateTimer > 10) {
-			topographyUpdateTimer = System.currentTimeMillis();
-			getActiveWorld().getTopography().update();
 		}
 	}
 

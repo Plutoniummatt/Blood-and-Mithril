@@ -1,18 +1,13 @@
 package bloodandmithril.generation.superstructure;
 
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.defaultSurfaceHeight;
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.desertMaxSandstoneDepth;
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.desertMaxSurfaceHeightVariation;
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.desertMaxTransitionDepth;
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.desertMaxWidth;
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.desertMinWidth;
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.desertTransitionWidth;
-import static bloodandmithril.generation.settings.GlobalGenerationSettings.maxSurfaceHeight;
+import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
+import static java.lang.Math.max;
 
 import java.util.HashMap;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
+import bloodandmithril.generation.TerrainGenerator;
 import bloodandmithril.generation.component.Corridor;
 import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.Room;
@@ -47,7 +42,7 @@ public class Desert extends SuperStructure {
 	private static final long serialVersionUID = 4034191268168150728L;
 
 	/** Generates the wavey surface of the desert */
-	private final PerlinNoiseGenerator1D perlinSurfaceGenerator = new PerlinNoiseGenerator1D(30, ParameterPersistenceService.getParameters().getSeed());
+	private final PerlinNoiseGenerator1D perlinSurfaceGenerator = new PerlinNoiseGenerator1D(30, ParameterPersistenceService.getParameters().getSeed(), 1, 0f);
 
 	/** The boundary from which sand is generated */
 	private final HashMap<Integer, Integer> sandBase = new HashMap<>();
@@ -55,25 +50,33 @@ public class Desert extends SuperStructure {
 	/** The boundary from which dry dirt is generated */
 	private final HashMap<Integer, Integer> transitionBase = new HashMap<>();
 
+	/** Dimensions of this {@link Desert} */
+	private int cWidth, cHeight, tDuneVariationHeight, tSandStoneDepth, tTransitionWidth;
+
 	/**
 	 * Constructor
 	 */
-	public Desert(int worldId) {
+	public Desert(int worldId, int cWidth, int cHeight, int tDuneVariationHeight, int tSandStoneDepth, int tTransitionWidth) {
 		super(worldId);
+		this.cWidth = cWidth;
+		this.cHeight = cHeight;
+		this.tDuneVariationHeight = tDuneVariationHeight;
+		this.tSandStoneDepth = tSandStoneDepth;
+		this.tTransitionWidth = tTransitionWidth;
 	}
 
 
 	@Override
 	protected Boundaries findSpace(int startingChunkX, int startingChunkY) {
 		//calculates where the structure can go
-		return RectangularSpaceCalculator.calculateBoundaries(
+		return RectangularSpaceCalculator.calculateBoundariesConfineWithinTwoHeights(
 			true,
 			startingChunkX,
 			startingChunkY,
-			(desertMaxWidth - desertMinWidth) / 2 + 1,
-			maxSurfaceHeight - desertMaxSandstoneDepth / Topography.CHUNK_SIZE + 1,
-			maxSurfaceHeight,
-			desertMaxSandstoneDepth / Topography.CHUNK_SIZE - 1,
+			cWidth,
+			cHeight,
+			TerrainGenerator.maxSurfaceHeightInChunks,
+			TerrainGenerator.maxSurfaceHeightInChunks - cHeight,
 			Domain.getWorld(worldId).getTopography()
 		);
 	}
@@ -97,7 +100,10 @@ public class Desert extends SuperStructure {
 		int entranceX = (getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE;
 		getComponents().add(new UndergroundDesertTempleEntrance(
 			entranceX,
-			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(310 + entranceX) + 90,
+			max(
+				Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(300 + entranceX) + 90,
+				Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(15 + entranceX) + 90
+			),
 			getStructureKey(),
 			false,
 			YellowBrickTile.class,
@@ -226,13 +232,13 @@ public class Desert extends SuperStructure {
 			if (structures.getSurfaceHeight().get(leftMostTile - 1) != null) {
 				startingHeight = structures.getSurfaceHeight().get(leftMostTile - 1);
 			} else {
-				startingHeight = defaultSurfaceHeight;
+				startingHeight = 0;
 			}
 		} else {
 			if (structures.getSurfaceHeight().get(rightMostTile + 1) != null) {
 				startingHeight = structures.getSurfaceHeight().get(rightMostTile + 1);
 			} else {
-				startingHeight = defaultSurfaceHeight;
+				startingHeight = 0;
 			}
 		}
 
@@ -241,14 +247,14 @@ public class Desert extends SuperStructure {
 			for (int x = leftMostTile; x <= rightMostTile; x++) {
 				structures.getSurfaceHeight().put(
 					x,
-					(int)(startingHeight + desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(x, 1) - desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(leftMostTile, 1))
+					(int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(leftMostTile, 1))
 				);
 			}
 		} else {
 			for (int x = rightMostTile; x >= leftMostTile; x--) {
 				structures.getSurfaceHeight().put(
 					x,
-					(int)(startingHeight + desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(x, 1) - desertMaxSurfaceHeightVariation * perlinSurfaceGenerator.generate(rightMostTile, 1))
+					(int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(rightMostTile, 1))
 				);
 			}
 		}
@@ -260,7 +266,9 @@ public class Desert extends SuperStructure {
 		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
 		HashMap<Integer, Integer> left = new HashMap<>();
 		HashMap<Integer, Integer> right = new HashMap<>();
-		SawToothGenerator transitionBaseGenerator = new SawToothGenerator(desertMaxTransitionDepth, desertMaxTransitionDepth + 20, 3, 2, 150);
+
+		int depth = getBoundaries().bottom + tSandStoneDepth;
+		SawToothGenerator transitionBaseGenerator = new SawToothGenerator(depth, depth + 20, 3, 2, 150);
 		if (generatingToRight) {
 			right.put(leftMostTile, structures.getSurfaceHeight().get(leftMostTile));
 			for (int x = leftMostTile + 1; x <= rightMostTile; x++) {
@@ -291,27 +299,27 @@ public class Desert extends SuperStructure {
 		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
 		HashMap<Integer, Integer> left = new HashMap<>();
 		HashMap<Integer, Integer> right = new HashMap<>();
-		SawToothGenerator sandBaseGenerator = new SawToothGenerator(desertMaxSandstoneDepth, desertMaxSandstoneDepth + 20, 2, 1, 100);
+		SawToothGenerator sandBaseGenerator = new SawToothGenerator(convertToWorldTileCoord(getBoundaries().bottom, 0), convertToWorldTileCoord(getBoundaries().bottom, 0) + 20, 2, 1, 100);
 		if (generatingToRight) {
-			right.put(leftMostTile + desertTransitionWidth, structures.getSurfaceHeight().get(leftMostTile + desertTransitionWidth));
-			for (int x = leftMostTile + desertTransitionWidth+ 1; x <= rightMostTile - desertTransitionWidth; x++) {
+			right.put(leftMostTile + tTransitionWidth, structures.getSurfaceHeight().get(leftMostTile + tTransitionWidth));
+			for (int x = leftMostTile + tTransitionWidth+ 1; x <= rightMostTile - tTransitionWidth; x++) {
 				sandBaseGenerator.generateSurfaceHeight(x, generatingToRight, right);
 			}
-			left.put(rightMostTile - desertTransitionWidth, structures.getSurfaceHeight().get(rightMostTile - desertTransitionWidth));
-			for (int x = rightMostTile - desertTransitionWidth - 1; x >= leftMostTile + desertTransitionWidth; x--) {
+			left.put(rightMostTile - tTransitionWidth, structures.getSurfaceHeight().get(rightMostTile - tTransitionWidth));
+			for (int x = rightMostTile - tTransitionWidth - 1; x >= leftMostTile + tTransitionWidth; x--) {
 				sandBaseGenerator.generateSurfaceHeight(x, !generatingToRight, left);
 			}
 		} else {
-			left.put(rightMostTile - desertTransitionWidth, structures.getSurfaceHeight().get(rightMostTile - desertTransitionWidth));
-			for (int x = rightMostTile - desertTransitionWidth - 1; x >= leftMostTile + desertTransitionWidth; x--) {
+			left.put(rightMostTile - tTransitionWidth, structures.getSurfaceHeight().get(rightMostTile - tTransitionWidth));
+			for (int x = rightMostTile - tTransitionWidth - 1; x >= leftMostTile + tTransitionWidth; x--) {
 				sandBaseGenerator.generateSurfaceHeight(x, generatingToRight, left);
 			}
-			right.put(leftMostTile + desertTransitionWidth, structures.getSurfaceHeight().get(leftMostTile + desertTransitionWidth));
-			for (int x = leftMostTile + desertTransitionWidth+ 1; x <= rightMostTile - desertTransitionWidth; x++) {
+			right.put(leftMostTile + tTransitionWidth, structures.getSurfaceHeight().get(leftMostTile + tTransitionWidth));
+			for (int x = leftMostTile + tTransitionWidth+ 1; x <= rightMostTile - tTransitionWidth; x++) {
 				sandBaseGenerator.generateSurfaceHeight(x, !generatingToRight, right);
 			}
 		}
-		for (int x = leftMostTile + desertTransitionWidth; x <= rightMostTile - desertTransitionWidth; x++) {
+		for (int x = leftMostTile + tTransitionWidth; x <= rightMostTile - tTransitionWidth; x++) {
 			sandBase.put(x, Math.max(right.get(x), left.get(x)));
 		}
 	}

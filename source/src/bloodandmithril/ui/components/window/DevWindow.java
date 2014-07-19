@@ -41,7 +41,6 @@ import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.items.misc.Currency;
 import bloodandmithril.item.liquid.Blood;
 import bloodandmithril.item.liquid.Liquid;
-import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.metal.Copper;
 import bloodandmithril.item.material.metal.Gold;
 import bloodandmithril.item.material.metal.Iron;
@@ -66,9 +65,6 @@ import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.fluid.Fluid;
-import bloodandmithril.world.topography.fluid.FluidFraction;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 import com.badlogic.gdx.Input;
@@ -276,14 +272,6 @@ public class DevWindow extends Window {
 
 		if (keyCode == Input.Keys.I) {
 			Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), getMouseWorldY(), true).changeToSmoothCeiling();
-		}
-
-		if (keyCode == Input.Keys.J) {
-			Domain.getActiveWorld().getTopography().getFluids().put(
-				Topography.convertToWorldTileCoord(getMouseWorldX()),
-				Topography.convertToWorldTileCoord(getMouseWorldY()),
-				new Fluid(FluidFraction.fraction(new Water(), 16f))
-			);
 		}
 
 		if (keyCode == Input.Keys.H) {

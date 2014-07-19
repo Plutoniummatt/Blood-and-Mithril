@@ -17,8 +17,6 @@ import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
-import bloodandmithril.world.topography.fluid.FluidDynamicsProcessor;
-import bloodandmithril.world.topography.fluid.FluidMap;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -67,11 +65,6 @@ public class Topography {
 	/** The current chunk coordinates that have already been requested for generation */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> requestedForGeneration = new ConcurrentDualKeyHashMap<>();
 
-	/** {@link FluidMap} of this {@link Topography} */
-	private FluidMap fluidMap = new FluidMap();
-
-	private final FluidDynamicsProcessor fluidDynamicsProcessor;
-
 	/**
 	 * @param generator - The type of generator to use
 	 */
@@ -79,7 +72,6 @@ public class Topography {
 		this.worldId = worldId;
 		this.chunkMap = new ChunkMap();
 		this.structures = new Structures();
-		this.fluidDynamicsProcessor = new FluidDynamicsProcessor(this);
 	}
 
 
@@ -98,12 +90,6 @@ public class Topography {
 				topographyTasks.poll().execute();
 			}
 		}
-	}
-
-
-	/** Updates the {@link Topography} */
-	public void update() {
-		fluidDynamicsProcessor.process();
 	}
 
 
@@ -263,11 +249,6 @@ public class Topography {
 		int tileX = convertToChunkTileCoord(worldX);
 		int tileY = convertToChunkTileCoord(worldY);
 
-		getFluids().remove(
-			convertToWorldTileCoord(worldX),
-			convertToWorldTileCoord(worldY)
-		);
-
 		try {
 			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
 		} catch (NullPointerException e) {
@@ -287,11 +268,6 @@ public class Topography {
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToChunkTileCoord(worldX);
 		int tileY = convertToChunkTileCoord(worldY);
-
-		getFluids().remove(
-			convertToWorldTileCoord(worldX),
-			convertToWorldTileCoord(worldY)
-		);
 
 		try {
 			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
@@ -417,15 +393,5 @@ public class Topography {
 
 	public Structures getStructures() {
 		return structures;
-	}
-
-
-	public FluidMap getFluids() {
-		return fluidMap;
-	}
-
-
-	public void setFluids(FluidMap fluidMap) {
-		this.fluidMap = fluidMap;
 	}
 }

@@ -25,12 +25,23 @@ public class PerlinNoiseGenerator1D implements Serializable {
 	private final int stretch;
 	private final int seed;
 
+	/** The Number of times Perlin noise is iterated, it adds smaller noise to bigger noise */
+	private final int numberOfOctaves;
+
+	/**
+	 * Persistence determines how much the strength fades by through consecutive iterations
+	 * Smaller numbers means smoother curves
+	 */
+	private final float perlinIterationPersistence;
+
 	/**
 	 * Constructor
 	 */
-	public PerlinNoiseGenerator1D(int stretch, int seed) {
+	public PerlinNoiseGenerator1D(int stretch, int seed, int octaves, float perlinIterationPersistence) {
 		this.stretch = stretch;
 		this.seed = seed;
+		this.numberOfOctaves = octaves;
+		this.perlinIterationPersistence = perlinIterationPersistence;
 	}
 
 
@@ -55,7 +66,7 @@ public class PerlinNoiseGenerator1D implements Serializable {
 	private float smoothNoise(float x, int factor) {
 		float smoothNoise = 0;
 		for (int offset = -factor; offset <= factor; offset++) {
-			smoothNoise =+ (factor - abs(offset) + 1) * noise(x + offset) / (float) pow(factor + 1, 2);
+			smoothNoise += (factor - abs(offset) + 1) * noise(x + offset) / (float) pow(factor + 1, 2);
 		}
 		return smoothNoise;
 	}
@@ -103,6 +114,16 @@ public class PerlinNoiseGenerator1D implements Serializable {
 	 */
 	public float generate(int tileX, int factor) {
 		float x = (float) tileX / stretch;
-		return interpolatedNoise(x, factor);
+
+	    float total = 0;
+	    float maxTotal = 0;
+	    for (int i = 0; i < numberOfOctaves; i++) {
+	    	int frequency = (int)pow(2, i);
+	    	float amplitude = (float)pow(perlinIterationPersistence, i);
+	    	maxTotal = maxTotal + amplitude;
+	    	total = total + interpolatedNoise(x * frequency, factor) * amplitude;
+	    }
+
+		return total/maxTotal;
 	}
 }

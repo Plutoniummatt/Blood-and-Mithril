@@ -157,7 +157,7 @@ public class PerlinNoiseGenerator2D {
 	    	maxTotal = maxTotal + amplitude;
 	    	total = total + interpolatedNoise(x * frequency, y * frequency) * amplitude;
 	    }
-
+	    System.out.println(total/maxTotal);
 	    return total/maxTotal;
 	}
 }
