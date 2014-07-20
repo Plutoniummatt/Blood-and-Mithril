@@ -13,12 +13,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/gdx-freetype-natives.jar"/>
-	<classpathentry kind="lib" path="libs/base64coder/target/base64coder.jar" sourcepath="libs/base64coder/src"/>
 	<classpathentry kind="lib" path="libs/guava-15.0.jar" sourcepath="libs/guava-15.0-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/kryonet"/>
 	<classpathentry kind="lib" path="libs/kryo-debug-2.20.jar" sourcepath="C:/Users/Matt/Desktop/kryo-2.20-sources.jar"/>
 	<classpathentry kind="lib" path="libs/commons-lang3-3.2.1.jar"/>
 	<classpathentry kind="lib" path="/kryonet/lib/kryo-2.23.1-SNAPSHOT-all-debug.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/base64coder.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
