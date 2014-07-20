@@ -101,8 +101,8 @@ public class Desert extends SuperStructure {
 		getComponents().add(new UndergroundDesertTempleEntrance(
 			entranceX,
 			max(
-				Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(300 + entranceX) + 90,
-				Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(15 + entranceX) + 90
+				Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(366 + entranceX) + 80,
+				Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(24 + entranceX) + 80
 			),
 			getStructureKey(),
 			false,
