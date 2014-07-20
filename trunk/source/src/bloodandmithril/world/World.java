@@ -45,6 +45,9 @@ public class World implements Serializable {
 	/** Particles on this {@link World} */
 	private Collection<TracerParticle> particles		= new ConcurrentLinkedDeque<>();
 
+	/** The world y-coordinate for the water level */
+	private float waterLevel = 500f;
+
 	/**
 	 * Constructor
 	 */
@@ -100,5 +103,15 @@ public class World implements Serializable {
 
 	public Collection<TracerParticle> getParticles() {
 		return particles;
+	}
+
+
+	public float getWaterLevel() {
+		return waterLevel;
+	}
+
+
+	public void setWaterLevel(float waterLevel) {
+		this.waterLevel = waterLevel;
 	}
 }

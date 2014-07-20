@@ -7,6 +7,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.camMarginX;
 import static bloodandmithril.core.BloodAndMithrilClient.camMarginY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreen;
+import static bloodandmithril.world.Domain.getActiveWorld;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
@@ -447,19 +448,19 @@ public class GaussianLightingRenderer {
 				0, 0
 			);
 		} else {
-			spriteBatch.setShader(Shaders.invertYBlendWithOcclusionBackground);
+			spriteBatch.setShader(Shaders.backgroundShader);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundShadowFBO.getColorBufferTexture().bind(2);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(3);
 			backgroundOcclusionFBONearest.getColorBufferTexture().bind(4);
 			lightingFBO.getColorBufferTexture().bind(5);
 			Color daylight = Weather.getDaylightColor();
-			Shaders.invertYBlendWithOcclusionBackground.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
-			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion", 1);
-			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion2", 2);
-			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion3", 3);
-			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion4", 4);
-			Shaders.invertYBlendWithOcclusionBackground.setUniformi("occlusion5", 5);
+			Shaders.backgroundShader.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
+			Shaders.backgroundShader.setUniformi("occlusion", 1);
+			Shaders.backgroundShader.setUniformi("occlusion2", 2);
+			Shaders.backgroundShader.setUniformi("occlusion3", 3);
+			Shaders.backgroundShader.setUniformi("occlusion4", 4);
+			Shaders.backgroundShader.setUniformi("occlusion5", 5);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
@@ -493,13 +494,13 @@ public class GaussianLightingRenderer {
 				0, 0
 			);
 		} else {
-			spriteBatch.setShader(Shaders.invertYDoubleBlendWithTwoOcclusions);
+			spriteBatch.setShader(Shaders.foregroundShader);
 			Color daylight = Weather.getDaylightColor();
 			Shaders.invertYBlendWithOcclusion.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
-			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion", 1);
-			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion2", 2);
+			Shaders.foregroundShader.setUniformi("occlusion", 1);
+			Shaders.foregroundShader.setUniformi("occlusion2", 2);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
@@ -533,15 +534,18 @@ public class GaussianLightingRenderer {
 				0, 0
 			);
 		} else {
-			spriteBatch.setShader(Shaders.invertYDoubleBlendWithTwoOcclusions);
+			spriteBatch.setShader(Shaders.foregroundShader);
 			Color daylight = Weather.getDaylightColor();
-			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
+			Shaders.foregroundShader.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
 			lightingFBO.getColorBufferTexture().bind(3);
-			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion", 1);
-			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion2", 2);
-			Shaders.invertYDoubleBlendWithTwoOcclusions.setUniformi("occlusion3", 3);
+			Shaders.foregroundShader.setUniformi("occlusion", 1);
+			Shaders.foregroundShader.setUniformi("occlusion2", 2);
+			Shaders.foregroundShader.setUniformi("occlusion3", 3);
+			Shaders.foregroundShader.setUniformf("waterColor", 0.1f, 0.75f, 0.75f, 1f);
+			Shaders.foregroundShader.setUniformf("waterLevel", (-getActiveWorld().getWaterLevel() + cam.position.y + HEIGHT/2) / HEIGHT);
+			Shaders.foregroundShader.setUniformf("height", HEIGHT);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
