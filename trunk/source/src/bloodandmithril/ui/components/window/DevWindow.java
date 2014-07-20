@@ -24,7 +24,6 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
-import bloodandmithril.graphics.TracerParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.GlassBottle;
 import bloodandmithril.item.items.container.WoodenBucket;
@@ -61,7 +60,6 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
-import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
@@ -237,33 +235,6 @@ public class DevWindow extends Window {
 
 		if (keyCode == Input.Keys.L) {
 			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickTile.class);
-		}
-
-		if (keyCode == Input.Keys.A) {
-			for (int i = 0; i<20; i++) {
-				Domain.getActiveWorld().getParticles().add(
-					new TracerParticle(
-						new Vector2(getMouseWorldX(), getMouseWorldY()),
-						new Vector2(Util.getRandom().nextInt(4000), 0f).rotate(Util.getRandom().nextFloat() * 6f - 3f),
-						Color.WHITE,
-						2,
-						Domain.getActiveWorld().getWorldId(),
-						new Countdown(Util.getRandom().nextInt(2000)),
-						10f
-					)
-				);
-				Domain.getActiveWorld().getParticles().add(
-					new TracerParticle(
-						new Vector2(getMouseWorldX(), getMouseWorldY()),
-						new Vector2(-Util.getRandom().nextInt(4000), 0f).rotate(Util.getRandom().nextFloat() * 6f - 3f),
-						Color.WHITE,
-						2,
-						Domain.getActiveWorld().getWorldId(),
-						new Countdown(Util.getRandom().nextInt(2000)),
-						10f
-					)
-				);
-			}
 		}
 
 		if (keyCode == Input.Keys.P) {

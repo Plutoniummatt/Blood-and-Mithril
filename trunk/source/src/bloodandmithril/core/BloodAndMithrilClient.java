@@ -12,7 +12,7 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
-import bloodandmithril.graphics.TracerParticle;
+import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
@@ -175,7 +175,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				if (System.currentTimeMillis() - prevFrame > 16) {
 					prevFrame = System.currentTimeMillis();
 					try {
-						for (TracerParticle p : Domain.getActiveWorld().getParticles()) {
+						for (Particle p : Domain.getActiveWorld().getParticles()) {
 							if (p.getRemovalCondition().call()) {
 								Domain.getActiveWorld().getParticles().remove(p);
 							}

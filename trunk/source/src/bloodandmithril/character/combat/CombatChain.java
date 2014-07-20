@@ -4,16 +4,14 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.TracerParticle;
+import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Wrapper;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -71,17 +69,7 @@ public class CombatChain {
 					);
 				}
 			}
-			for (int i = 0; i < 35; i++) {
-				Domain.getActiveWorld().getParticles().add(new TracerParticle(
-					target.getState().position.cpy().add(0, 50f),
-					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockbackVector).mul(2f),
-					Color.WHITE,
-					1f,
-					Domain.getActiveWorld().getWorldId(),
-					new Countdown(Util.getRandom().nextInt(100)),
-					5f
-				));
-			}
+			ParticleService.parrySpark(target.getState().position, knockbackVector);
 		} else {
 			knockbackVector.mul(0.1f);
 			text = hit(knockbackVector.cpy());
@@ -95,17 +83,7 @@ public class CombatChain {
 					);
 				}
 			}
-			for (int i = 0; i < 35; i++) {
-				Domain.getActiveWorld().getParticles().add(new TracerParticle(
-					target.getState().position.cpy().add(0, 50f),
-					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockbackVector).mul(5f),
-					Color.RED,
-					2f,
-					Domain.getActiveWorld().getWorldId(),
-					new Countdown(Util.getRandom().nextInt(2500)),
-					0f
-				));
-			}
+			ParticleService.bloodSplat(target.getState().position, knockbackVector);
 		}
 
 		if (ClientServerInterface.isServer()) {

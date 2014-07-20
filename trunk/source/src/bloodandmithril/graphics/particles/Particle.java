@@ -1,4 +1,4 @@
-package bloodandmithril.graphics;
+package bloodandmithril.graphics.particles;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static java.lang.Math.abs;
@@ -11,52 +11,42 @@ import bloodandmithril.world.topography.tile.Tile;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
-/**
- * A particle that renders like a tracer, the length scales linearly with the velocity of the particle.
- *
- * @author Matt
- */
 @Copyright("Matthew Peck 2014")
-public class TracerParticle {
+public abstract class Particle {
 
-	public final float radius;
 	public final int worldId;
+
 	public Color color;
-	public float glowIntensity;
-	public Vector2 prevPosition, position, velocity;
+	public Vector2 position, velocity;
+	public float radius;
 	private SerializableFunction<Boolean> removalCondition;
 
-	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity) {
+	/**
+	 * Constructor
+	 */
+	protected Particle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition) {
 		this.position = position;
-		this.prevPosition = position.cpy();
 		this.velocity = velocity;
-		this.color = color;
 		this.radius = radius;
+		this.color = color;
 		this.worldId = worldId;
 		this.removalCondition = removalCondition;
-		this.glowIntensity = glowIntensity;
 	}
 
+	/**
+	 * Renders the point of this particle
+	 */
+	public abstract void render(float delta);
 
-	public void renderPoint(float delta) {
-		Domain.shapeRenderer.setColor(color);
-		Domain.shapeRenderer.filledCircle(position.x, position.y, radius);
-	}
-
-
-	public void render(float delta) {
-		Domain.shapeRenderer.setColor(color);
-		Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
-	}
-
+	/**
+	 * Renders the movement line, if required
+	 */
+	public abstract void renderLine(float delta);
 
 	/**
 	 * Performs kinetics updates on this particle
 	 */
 	public void update(float delta) {
-		prevPosition.x = position.x;
-		prevPosition.y = position.y;
-
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 

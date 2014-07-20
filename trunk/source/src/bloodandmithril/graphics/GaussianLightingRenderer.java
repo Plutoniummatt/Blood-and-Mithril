@@ -14,6 +14,7 @@ import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static java.lang.Math.round;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.weather.Weather;
@@ -177,9 +178,9 @@ public class GaussianLightingRenderer {
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Domain.getActiveWorld().getParticles().stream().filter(p -> {
-			return p.glowIntensity != 0f;
+			return p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f;
 		}).forEach(p -> {
-			Shaders.lightingFBO.setUniformf("intensity", p.glowIntensity);
+			Shaders.lightingFBO.setUniformf("intensity", ((TracerParticle) p).glowIntensity);
 			Shaders.lightingFBO.setUniformf("color", p.color);
 			Shaders.lightingFBO.setUniformf("position", worldToScreen(p.position));
 			Shaders.lightingFBO.setUniformf("resolution", WIDTH, HEIGHT);
@@ -462,7 +463,7 @@ public class GaussianLightingRenderer {
 			Shaders.backgroundShader.setUniformf("waterColor", 0.1f, 0.75f, 0.75f, 1f);
 			Shaders.backgroundShader.setUniformf("waterLevel", (-getActiveWorld().getWaterLevel() + cam.position.y + HEIGHT/2) / HEIGHT);
 			Shaders.backgroundShader.setUniformf("height", HEIGHT);
-			Shaders.backgroundShader.setUniformf("falloffDepth", 300f);
+			Shaders.backgroundShader.setUniformf("falloffDepth", Domain.getActiveWorld().getWaterAttenuationDepth());
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
@@ -548,7 +549,7 @@ public class GaussianLightingRenderer {
 			Shaders.foregroundShader.setUniformf("waterColor", 0.1f, 0.75f, 0.75f, 1f);
 			Shaders.foregroundShader.setUniformf("waterLevel", (-getActiveWorld().getWaterLevel() + cam.position.y + HEIGHT/2) / HEIGHT);
 			Shaders.foregroundShader.setUniformf("height", HEIGHT);
-			Shaders.foregroundShader.setUniformf("falloffDepth", 300f);
+			Shaders.foregroundShader.setUniformf("falloffDepth", Domain.getActiveWorld().getWaterAttenuationDepth());
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
