@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.TracerParticle;
+import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
@@ -43,10 +43,13 @@ public class World implements Serializable {
 	private Set<Integer> items							= Sets.newHashSet();
 
 	/** Particles on this {@link World} */
-	private Collection<TracerParticle> particles		= new ConcurrentLinkedDeque<>();
+	private Collection<Particle> particles				= new ConcurrentLinkedDeque<>();
 
 	/** The world y-coordinate for the water level */
 	private float waterLevel = 100f;
+
+	/** The depth at which light can no longer reach */
+	private float waterAttenuationDepth = 500f;
 
 	/**
 	 * Constructor
@@ -101,7 +104,7 @@ public class World implements Serializable {
 	}
 
 
-	public Collection<TracerParticle> getParticles() {
+	public Collection<Particle> getParticles() {
 		return particles;
 	}
 
@@ -113,5 +116,15 @@ public class World implements Serializable {
 
 	public void setWaterLevel(float waterLevel) {
 		this.waterLevel = waterLevel;
+	}
+
+
+	public float getWaterAttenuationDepth() {
+		return waterAttenuationDepth;
+	}
+
+
+	public void setWaterAttenuationDepth(float waterAttenuationDepth) {
+		this.waterAttenuationDepth = waterAttenuationDepth;
 	}
 }

@@ -36,7 +36,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
-import bloodandmithril.graphics.TracerParticle;
+import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -265,17 +265,17 @@ public class Domain {
 		Domain.shapeRenderer.begin(Line);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
-			for (TracerParticle p : Domain.getActiveWorld().getParticles()) {
+			for (Particle p : Domain.getActiveWorld().getParticles()) {
 				Gdx.gl20.glLineWidth(p.radius + 1f);
-				p.render(Gdx.graphics.getDeltaTime());
+				p.renderLine(Gdx.graphics.getDeltaTime());
 			}
 		}
 		Domain.shapeRenderer.end();
 		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
-			for (TracerParticle p : Domain.getActiveWorld().getParticles()) {
-				p.renderPoint(Gdx.graphics.getDeltaTime());
+			for (Particle p : Domain.getActiveWorld().getParticles()) {
+				p.render(Gdx.graphics.getDeltaTime());
 			}
 		}
 		Gdx.gl20.glLineWidth(1f);
