@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.Color;
 public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	private static final long serialVersionUID = 4185881549137827481L;
 
-	private static final int width = 325, height = 100;
+	private static final int width = 387, height = 100;
 
 	/**
 	 * Constructor
@@ -102,9 +102,9 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 	protected void generateInterfaces() {
 		// Generate the bottom interface
 		if (inverted) {
-			generateUnitThicknessHorizontalInterfaces(boundaries.top - 101, boundaries.left + 154, boundaries.left + 170);
+			generateUnitThicknessHorizontalInterfaces(boundaries.top - 101, boundaries.left + 212, boundaries.left + 228);
 		} else {
-			generateUnitThicknessHorizontalInterfaces(boundaries.top - 101, boundaries.right - 170, boundaries.right - 154);
+			generateUnitThicknessHorizontalInterfaces(boundaries.top - 101, boundaries.right - 228, boundaries.right - 212);
 		}
 	}
 
