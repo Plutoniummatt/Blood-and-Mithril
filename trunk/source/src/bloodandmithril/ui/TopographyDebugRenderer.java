@@ -96,17 +96,19 @@ public class TopographyDebugRenderer {
 		UserInterface.shapeRenderer.end();
 
 
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			topoX = topoX - 10;
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			topoX = topoX + 10;
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			topoY = topoY - 10;
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			topoY = topoY + 10;
+		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+				topoX = topoX - 10;
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+				topoX = topoX + 10;
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+				topoY = topoY - 10;
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+				topoY = topoY + 10;
+			}
 		}
 	}
 }
