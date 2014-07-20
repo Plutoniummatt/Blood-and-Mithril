@@ -51,9 +51,9 @@ public class GaussianLightingRenderer {
 	 */
 	public static void render(float camX, float camY) {
 		weather();
-		lighting();
 		backgroundLighting();
 		foregroundLighting();
+		lighting();
 		background();
 		middleground();
 		foreground();
@@ -449,18 +449,20 @@ public class GaussianLightingRenderer {
 			);
 		} else {
 			spriteBatch.setShader(Shaders.backgroundShader);
-			backgroundOcclusionFBO.getColorBufferTexture().bind(1);
-			backgroundShadowFBO.getColorBufferTexture().bind(2);
-			backgroundOcclusionFBO.getColorBufferTexture().bind(3);
-			backgroundOcclusionFBONearest.getColorBufferTexture().bind(4);
-			lightingFBO.getColorBufferTexture().bind(5);
+			backgroundShadowFBO.getColorBufferTexture().bind(1);
+			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
+			backgroundOcclusionFBONearest.getColorBufferTexture().bind(3);
+			lightingFBO.getColorBufferTexture().bind(4);
 			Color daylight = Weather.getDaylightColor();
 			Shaders.backgroundShader.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
-			Shaders.backgroundShader.setUniformi("occlusion", 1);
-			Shaders.backgroundShader.setUniformi("occlusion2", 2);
-			Shaders.backgroundShader.setUniformi("occlusion3", 3);
-			Shaders.backgroundShader.setUniformi("occlusion4", 4);
-			Shaders.backgroundShader.setUniformi("occlusion5", 5);
+			Shaders.backgroundShader.setUniformi("occlusion2", 1);
+			Shaders.backgroundShader.setUniformi("occlusion3", 2);
+			Shaders.backgroundShader.setUniformi("occlusion4", 3);
+			Shaders.backgroundShader.setUniformi("occlusion5", 4);
+			Shaders.backgroundShader.setUniformf("waterColor", 0.1f, 0.75f, 0.75f, 1f);
+			Shaders.backgroundShader.setUniformf("waterLevel", (-getActiveWorld().getWaterLevel() + cam.position.y + HEIGHT/2) / HEIGHT);
+			Shaders.backgroundShader.setUniformf("height", HEIGHT);
+			Shaders.backgroundShader.setUniformf("falloffDepth", 300f);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
@@ -539,13 +541,14 @@ public class GaussianLightingRenderer {
 			Shaders.foregroundShader.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
-			lightingFBO.getColorBufferTexture().bind(3);
+			lightingFBO.getColorBufferTexture().bind(7);
 			Shaders.foregroundShader.setUniformi("occlusion", 1);
 			Shaders.foregroundShader.setUniformi("occlusion2", 2);
-			Shaders.foregroundShader.setUniformi("occlusion3", 3);
+			Shaders.foregroundShader.setUniformi("occlusion3", 7);
 			Shaders.foregroundShader.setUniformf("waterColor", 0.1f, 0.75f, 0.75f, 1f);
 			Shaders.foregroundShader.setUniformf("waterLevel", (-getActiveWorld().getWaterLevel() + cam.position.y + HEIGHT/2) / HEIGHT);
 			Shaders.foregroundShader.setUniformf("height", HEIGHT);
+			Shaders.foregroundShader.setUniformf("falloffDepth", 300f);
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
