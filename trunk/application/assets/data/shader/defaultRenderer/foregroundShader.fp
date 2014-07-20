@@ -30,7 +30,7 @@ void main()
 	if (v_texCoords.y > waterLevel) {
 		float attenuation = max(0.0, (falloffDepth - (v_texCoords.y - waterLevel) * height)) / falloffDepth;
 		vec4 attenuationVector = vec4(attenuation, attenuation, attenuation, 1.0) + lighting;
-		sum = sum * waterColor * attenuationVector + (vec4(factor, factor, factor, 1.0) * waterColor * (1.0 - fg.a * 0.8) * vec4(1.0, 1.0, 1.0, 0.2) * attenuationVector);
+		sum = sum * waterColor * attenuationVector + (vec4(factor, factor, factor, 1.0) * dayLightColor * waterColor * (1.0 - fg.a * 0.8) * vec4(1.0, 1.0, 1.0, 0.35) * attenuationVector);
 	}
 
 	gl_FragColor = sum;
