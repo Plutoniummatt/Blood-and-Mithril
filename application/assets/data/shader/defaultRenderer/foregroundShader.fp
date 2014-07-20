@@ -10,6 +10,9 @@ uniform sampler2D occlusion;
 uniform sampler2D occlusion2;
 uniform sampler2D occlusion3;
 uniform vec4 dayLightColor;
+uniform vec4 waterColor;
+uniform float waterLevel;
+uniform float height;
 
 void main()
 {
@@ -20,5 +23,11 @@ void main()
   float factor = factor1 * factor2;
   
   vec4 sum = texture2D(u_texture, inverted) * (vec4(factor, factor, factor, 1.0) * dayLightColor + texture2D(occlusion3, v_texCoords)) * vec4(factor1, factor1, factor1, 1.0);
+  if (v_texCoords.y > waterLevel) {
+  	float attenuation = max(0, (100 - (v_texCoords.y - waterLevel) * height)) / 100;
+  	vec4 attenuationVector = vec4(attenuation, attenuation, attenuation, 1.0);
+	sum = sum * waterColor * attenuationVector;
+  }
+  
   gl_FragColor = sum;
 }
