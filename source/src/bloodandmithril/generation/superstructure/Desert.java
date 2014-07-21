@@ -53,8 +53,14 @@ public class Desert extends SuperStructure {
 	/** Dimensions of this {@link Desert} */
 	private int cWidth, cHeight, tDuneVariationHeight, tSandStoneDepth, tTransitionWidth;
 
+
 	/**
-	 * Constructor
+	 * @param worldId - The ID of the world.
+	 * @param cWidth - The Width of the desert in chunks.
+	 * @param cHeight - The Height of the desert in chunks.
+	 * @param tDuneVariationHeight - How much the surface height can vary by.
+	 * @param tSandStoneDepth - The world coordinate of the tile height where normal underground continues.
+	 * @param tTransitionWidth - The width in tiles of the dry soil areas either side of the sand.
 	 */
 	public Desert(int worldId, int cWidth, int cHeight, int tDuneVariationHeight, int tSandStoneDepth, int tTransitionWidth) {
 		super(worldId);
