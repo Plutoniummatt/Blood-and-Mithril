@@ -68,8 +68,8 @@ public class CombatChain {
 						true
 					);
 				}
+				ParticleService.parrySpark(target.getState().position, knockbackVector);
 			}
-			ParticleService.parrySpark(target.getState().position, knockbackVector);
 		} else {
 			knockbackVector.mul(0.1f);
 			text = hit(knockbackVector.cpy());
@@ -82,8 +82,8 @@ public class CombatChain {
 						true
 					);
 				}
+				ParticleService.bloodSplat(target.getState().position, knockbackVector);
 			}
-			ParticleService.bloodSplat(target.getState().position, knockbackVector);
 		}
 
 		if (ClientServerInterface.isServer()) {
@@ -166,6 +166,7 @@ public class CombatChain {
 			} else {
 				damage = weaponDamage;
 			}
+			weapon.specialEffect(target);
 		}
 
 		target.damage(damage);

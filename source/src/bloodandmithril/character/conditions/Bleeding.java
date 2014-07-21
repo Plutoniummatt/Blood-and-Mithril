@@ -1,7 +1,15 @@
 package bloodandmithril.character.conditions;
 
+import static bloodandmithril.util.Util.getRandom;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.TracerParticle;
+import bloodandmithril.util.Countdown;
+import bloodandmithril.util.Util;
+import bloodandmithril.world.Domain;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Drains health
@@ -19,6 +27,25 @@ public class Bleeding extends Condition {
 	public Bleeding(float severity) {
 		this.severity = severity;
 	}
+
+
+	@Override
+	public void clientSideEffects(Individual affected, float delta) {
+		if (Util.roll(severity)) {
+			Domain.getWorld(affected.getWorldId()).getParticles().add(
+				new TracerParticle(
+					affected.getState().position.cpy().add(0, affected.getHeight() / 3).add(getRandom().nextFloat() * affected.getWidth() / 4, getRandom().nextFloat() * affected.getWidth() / 4),
+					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f),
+					Color.RED,
+					2f,
+					Domain.getActiveWorld().getWorldId(),
+					new Countdown(Util.getRandom().nextInt(1000)),
+					0f
+				)
+			);
+		}
+	}
+
 
 	@Override
 	public void affect(Individual affected, float delta) {

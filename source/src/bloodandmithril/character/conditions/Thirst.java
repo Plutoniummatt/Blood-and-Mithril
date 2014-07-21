@@ -98,4 +98,9 @@ public class Thirst extends Condition {
 	@Override
 	public void stack(Condition condition) {
 	}
+
+
+	@Override
+	public void clientSideEffects(Individual affected, float delta) {
+	}
 }

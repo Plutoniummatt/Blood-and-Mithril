@@ -133,7 +133,6 @@ public class PerlinNoiseGenerator1D implements Serializable {
 	    	maxTotal = maxTotal + amplitude;
 	    	total = total + interpolatedNoise(x * frequency, smoothingFactor) * amplitude;
 	    }
-	    System.out.println(total/maxTotal);
 		return total/maxTotal;
 	}
 }

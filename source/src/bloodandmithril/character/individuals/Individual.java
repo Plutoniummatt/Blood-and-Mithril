@@ -17,6 +17,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.util.ComparisonUtil.obj;
@@ -791,9 +792,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		Kinematics.kinetics(delta, Domain.getWorld(getWorldId()), this);
 
-		if (isServer()) {
-			updateConditions(delta);
-		}
+		updateConditions(delta);
 	}
 
 
@@ -873,14 +872,22 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 */
 	private void updateConditions(float delta) {
 		// Reset regeneration values
-		state.reset();
+		if (isServer()) {
+			state.reset();
 
-		for (Condition condition : newArrayList(state.currentConditions)) {
-			if (condition.isExpired()) {
-				condition.uponExpiry();
-				state.currentConditions.remove(condition);
-			} else {
-				condition.affect(this, delta);
+			for (Condition condition : newArrayList(state.currentConditions)) {
+				if (condition.isExpired()) {
+					condition.uponExpiry();
+					state.currentConditions.remove(condition);
+				} else {
+					condition.affect(this, delta);
+				}
+			}
+		}
+
+		if (isClient()) {
+			for (Condition condition : newArrayList(state.currentConditions)) {
+				condition.clientSideEffects(this, delta);
 			}
 		}
 	}

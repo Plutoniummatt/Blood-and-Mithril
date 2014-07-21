@@ -8,6 +8,7 @@ import static com.badlogic.gdx.graphics.g2d.Animation.NORMAL;
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
@@ -206,7 +207,7 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 
 	@Override
 	public void specialEffect(Individual individual) {
-
+		individual.addCondition(new Bleeding(Util.getRandom().nextFloat()));
 	}
 
 

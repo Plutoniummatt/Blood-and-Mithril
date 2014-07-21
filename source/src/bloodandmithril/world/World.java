@@ -43,7 +43,7 @@ public class World implements Serializable {
 	private Set<Integer> items							= Sets.newHashSet();
 
 	/** Particles on this {@link World} */
-	private Collection<Particle> particles				= new ConcurrentLinkedDeque<>();
+	private transient Collection<Particle> particles	= new ConcurrentLinkedDeque<>();
 
 	/** The world y-coordinate for the water level */
 	private float waterLevel = 100f;
