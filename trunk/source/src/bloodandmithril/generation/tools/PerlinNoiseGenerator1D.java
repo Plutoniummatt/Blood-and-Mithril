@@ -10,7 +10,7 @@ import java.util.Random;
 import bloodandmithril.core.Copyright;
 
 /**
- * One dimensional perlin noise generator
+ * One dimensional Perlin noise generator
  *
  * @author Sam
  */
@@ -35,7 +35,10 @@ public class PerlinNoiseGenerator1D implements Serializable {
 	private final float perlinIterationPersistence;
 
 	/**
-	 * Constructor
+	 * @param stretch - how much the noise is stretched by. More stretch means more values are interpolated.
+	 * @param seed - the seed of the noise.
+	 * @param perlinIterationPersistence - How much effect subsequent iterations of noise have.
+	 * @param numberOfOctaves - the number of iterations of perlin noise put on top of itself.
 	 */
 	public PerlinNoiseGenerator1D(int stretch, int seed, int octaves, float perlinIterationPersistence) {
 		this.stretch = stretch;
@@ -59,14 +62,15 @@ public class PerlinNoiseGenerator1D implements Serializable {
 
 
 	/**
-	 * Smoothes the noise
+	 * Smoothes the noise by taking a weighted average with adjacent points.
+	 * The larger the factor, the more adjacent points it looks at to get the average of.
 	 *
 	 * @return - the smoothed noise
 	 */
-	private float smoothNoise(float x, int factor) {
+	private float smoothNoise(float x, int smoothingFactor) {
 		float smoothNoise = 0;
-		for (int offset = -factor; offset <= factor; offset++) {
-			smoothNoise += (factor - abs(offset) + 1) * noise(x + offset) / (float) pow(factor + 1, 2);
+		for (int offset = -smoothingFactor; offset <= smoothingFactor; offset++) {
+			smoothNoise += (smoothingFactor - abs(offset) + 1) * noise(x + offset) / (float) pow(smoothingFactor + 1, 2);
 		}
 		return smoothNoise;
 	}
@@ -93,26 +97,32 @@ public class PerlinNoiseGenerator1D implements Serializable {
 	 * @param x - world tile x-coord
 	 * @return the smooth, interpolated noise
 	 */
-	private float interpolatedNoise(float x, int factor) {
+	private float interpolatedNoise(float x, int smoothingFactor) {
 		int tempx = (int) floor(x);
 		float remX = x - tempx;
 
-		float v0 = smoothNoise(tempx - 1, factor);
-		float v1 = smoothNoise(tempx, factor);
-		float v2 = smoothNoise(tempx + 1, factor);
-		float v3 = smoothNoise(tempx + 2, factor);
+		float v0 = smoothNoise(tempx - 1, smoothingFactor);
+		float v1 = smoothNoise(tempx, smoothingFactor);
+		float v2 = smoothNoise(tempx + 1, smoothingFactor);
+		float v3 = smoothNoise(tempx + 2, smoothingFactor);
 
 		return cubicInterpolate(v0, v1, v2, v3, remX);
 	}
 
 
 	/**
-	 * Generates Perlin noise
-	 *
+	 * Generates Perlin noise by:
+	 * <ol>
+	 * <li>Generating a value between 0 and 1 depending on the position given.</li>
+	 * <li>Smoothing the noise by taking a weighted average between this point and adjacent points.</li>
+	 * <li>Interpolating the noise using a cubic equation to join the two generated points.</li>
+	 * <li>Iterating the noise depending on the perlinIterationPersistence and numberOfOctaves.</li>
+	 * </ol>
 	 * @param x - world tile x-coord
+	 * @param smoothingFactor - smoothing applied to this area of the noise. See {@link #smoothNoise(float, int) smoothNoise}
 	 * @return The generated value
 	 */
-	public float generate(int tileX, int factor) {
+	public float generate(int tileX, int smoothingFactor) {
 		float x = (float) tileX / stretch;
 
 	    float total = 0;
@@ -121,9 +131,9 @@ public class PerlinNoiseGenerator1D implements Serializable {
 	    	int frequency = (int)pow(2, i);
 	    	float amplitude = (float)pow(perlinIterationPersistence, i);
 	    	maxTotal = maxTotal + amplitude;
-	    	total = total + interpolatedNoise(x * frequency, factor) * amplitude;
+	    	total = total + interpolatedNoise(x * frequency, smoothingFactor) * amplitude;
 	    }
-
+	    System.out.println(total/maxTotal);
 		return total/maxTotal;
 	}
 }

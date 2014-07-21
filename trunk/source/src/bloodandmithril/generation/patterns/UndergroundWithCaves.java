@@ -2,19 +2,25 @@ package bloodandmithril.generation.patterns;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator2D;
+import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.world.topography.tile.Tile;
 
+/**
+ * Uses {@link PerlinNoiseGenerator2D} to carve caves into {@link Layers}.
+ * 
+ * @author Sam
+ */
 @Copyright("Matthew Peck 2014")
 public class UndergroundWithCaves {
 
-	private static PerlinNoiseGenerator2D spaceArea = new PerlinNoiseGenerator2D(100, 0.6f, 3);
-	private static PerlinNoiseGenerator2D mess = new PerlinNoiseGenerator2D(10, 0.5f, 4);
+	private static PerlinNoiseGenerator2D spaceArea = new PerlinNoiseGenerator2D(100, ParameterPersistenceService.getParameters().getSeed(), 0.6f, 3);
+	private static PerlinNoiseGenerator2D mess = new PerlinNoiseGenerator2D(10, ParameterPersistenceService.getParameters().getSeed(), 0.5f, 4);
 
 	private static float messDensity = 0.55f;
 	private static float caveEntranceFrequency = 5f;
 
 	/**
-	 * Gets the tile type calculated.
+	 * Gets the tile.
 	 */
 	public static Tile getTile(int worldTileX, int worldTileY) {
 

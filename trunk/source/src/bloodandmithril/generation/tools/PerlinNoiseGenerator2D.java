@@ -6,7 +6,6 @@ import static java.lang.Math.pow;
 import java.util.Random;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.persistence.ParameterPersistenceService;
 
 /**
  * Two dimensional Perlin noise generator
@@ -17,7 +16,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 public class PerlinNoiseGenerator2D {
 
 	/** Initial seed */
-  private static final int SEED = ParameterPersistenceService.getParameters().getSeed();
+  private int seed;
 
   /** How much the Perlin noise is stretched by, bigger numbers mean tiles change less sharply. */
 	private final int stretch;
@@ -34,31 +33,36 @@ public class PerlinNoiseGenerator2D {
 	/** The Number of times Perlin noise is iterated, it adds smaller noise to bigger noise */
 	private final int numberOfOctaves;
 
+
 	/**
-	 * Constructor
+	 * @param stretch - how much the noise is stretched by. More stretch means more values are interpolated.
+	 * @param seed - the seed of the noise.
+	 * @param perlinIterationPersistence - How much effect subsequent iterations of noise have.
+	 * @param numberOfOctaves - the number of iterations of perlin noise put on top of itself.
 	 */
-	public PerlinNoiseGenerator2D(int stretch, float perlinIterationPersistence, int numberOfOctaves) {
+	public PerlinNoiseGenerator2D(int stretch, int seed, float perlinIterationPersistence, int numberOfOctaves) {
 		this.stretch = stretch;
+		this.seed = seed;
 		this.perlinIterationPersistence = perlinIterationPersistence;
 		this.numberOfOctaves = numberOfOctaves;
 	}
 
 
 	/**
-	 * Generates random noise at x, y
+	 * Generates random noise at x, y.
 	 *
 	 * @param x
 	 * @param y
 	 * @return - a random float between 0 and 1
 	 */
 	private float noise(float x, float y) {
-		random.setSeed((long) (x * 123456 - y * 654321 + SEED));
+		random.setSeed((long) (x * 123456 - y * 654321 + seed));
 		return random.nextFloat();
 	}
 
 
 	/**
-	 * Smoothes the noise
+	 * Smoothes the noise by taking a weighted average with adjacent points.
 	 *
 	 * @return - the smoothed noise
 	 */
@@ -139,8 +143,13 @@ public class PerlinNoiseGenerator2D {
 
 
 	/**
-	 * Generates Perlin noise
-	 *
+	 * Generates Perlin noise by:
+	 * <ol>
+	 * <li>Generating a value between 0 and 1 depending on the position given.</li>
+	 * <li>Smoothing the noise by taking a weighted average between this point and adjacent points.</li>
+	 * <li>Interpolating the noise using a cubic equation to join the two generated points.</li>
+	 * <li>Iterating the noise depending on the perlinIterationPersistence and numberOfOctaves.</li>
+	 * </ol>
 	 * @param x - world tile x-coord
 	 * @param y - world tile y-coord
 	 * @return The generated value
