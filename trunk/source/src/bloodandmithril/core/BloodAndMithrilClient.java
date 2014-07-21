@@ -352,7 +352,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox)) {
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
-				if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+				if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
 					if (ClientServerInterface.isServer()) {
 						indi.getAI().setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
 					} else {
