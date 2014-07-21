@@ -1,6 +1,5 @@
 package bloodandmithril.generation;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.Copyright;
@@ -9,8 +8,6 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.tile.Tile;
-
-import com.google.common.collect.Maps;
 
 /**
  * Contains maps from coordinates to (super/sub) {@link Structure} keys.
@@ -32,7 +29,7 @@ public class Structures {
 	private static ConcurrentHashMap<Integer, Structure> structures;
 
 	// Used to keep the surface height consistent between structures where needed.
-	private HashMap<Integer, Integer> surfaceHeight = Maps.newHashMap();
+	private ConcurrentHashMap<Integer, Integer> surfaceHeight = new ConcurrentHashMap<>();
 
 	/**
 	 * Looks for a substructure and attempts to get a tile, if it's null, get
@@ -217,7 +214,7 @@ public class Structures {
 	/**
 	 * See {@link #surfaceHeight}
 	 */
-	public HashMap<Integer, Integer> getSurfaceHeight() {
+	public ConcurrentHashMap<Integer, Integer> getSurfaceHeight() {
 		return surfaceHeight;
 	}
 
@@ -225,7 +222,7 @@ public class Structures {
 	/**
 	 * See {@link #surfaceHeight}
 	 */
-	public void setSurfaceHeight(HashMap<Integer, Integer> surfaceHeight) {
+	public void setSurfaceHeight(ConcurrentHashMap<Integer, Integer> surfaceHeight) {
 		this.surfaceHeight = surfaceHeight;
 	}
 }

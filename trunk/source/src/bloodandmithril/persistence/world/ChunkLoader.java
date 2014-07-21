@@ -145,11 +145,11 @@ public class ChunkLoader {
 				}
 
 				try {
-					HashMap<Integer, Integer> keys = decode(Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/surfaceHeight.txt"));
+					ConcurrentHashMap<Integer, Integer> keys = decode(Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/surfaceHeight.txt"));
 					world.getValue().getTopography().getStructures().setSurfaceHeight(keys);
 				} catch (Exception e) {
 					Logger.loaderDebug("Failed to load surface height", LogLevel.WARN);
-					HashMap<Integer, Integer> map = new HashMap<>();
+					ConcurrentHashMap<Integer, Integer> map = new ConcurrentHashMap<>();
 					world.getValue().getTopography().getStructures().setSurfaceHeight(map);
 				}
 			}
