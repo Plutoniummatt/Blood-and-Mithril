@@ -17,6 +17,9 @@ public abstract class Condition implements Serializable {
 	/** Affect the character suffering from this condition */
 	public abstract void affect(Individual affected, float delta);
 
+	/** Client-side specific effects */
+	public abstract void clientSideEffects(Individual affected, float delta);
+
 	/** Infect another character */
 	public abstract void infect(Individual infected, float delta);
 

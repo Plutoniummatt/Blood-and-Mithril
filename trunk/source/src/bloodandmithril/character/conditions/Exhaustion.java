@@ -84,4 +84,9 @@ public class Exhaustion extends Condition {
 			default: throw new RuntimeException("Unexpected thirst level");
 		}
 	}
+
+
+	@Override
+	public void clientSideEffects(Individual affected, float delta) {
+	}
 }

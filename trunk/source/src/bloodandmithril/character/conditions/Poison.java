@@ -91,4 +91,9 @@ public class Poison extends Condition {
 		this.persistence = ((Poison)condition).persistence * ((Poison)condition).toxicity/this.toxicity + this.persistence;
 		this.toxicity = ((Poison)condition).toxicity + this.persistence;
 	}
+
+
+	@Override
+	public void clientSideEffects(Individual affected, float delta) {
+	}
 }

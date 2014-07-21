@@ -69,6 +69,8 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.ParticleService.BloodSplat;
+import bloodandmithril.graphics.particles.ParticleService.ParrySpark;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -156,6 +158,7 @@ import bloodandmithril.networking.requests.RequestStartCrafting;
 import bloodandmithril.networking.requests.RequestTakeItem;
 import bloodandmithril.networking.requests.RequestTakeItemFromCraftingStation;
 import bloodandmithril.networking.requests.RequestTransferLiquidBetweenContainers;
+import bloodandmithril.networking.requests.RunStaticMethodNotification;
 import bloodandmithril.networking.requests.SendChatMessage;
 import bloodandmithril.networking.requests.SendChatMessage.Message;
 import bloodandmithril.networking.requests.SendChatMessage.SendChatMessageResponse;
@@ -391,6 +394,9 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(ParrySpark.class);
+		kryo.register(BloodSplat.class);
+		kryo.register(RunStaticMethodNotification.class);
 		kryo.register(PlaySound.class);
 		kryo.register(ReevaluateAttack.class);
 		kryo.register(Countdown.class);
@@ -822,6 +828,16 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendNotification {
+		public static synchronized void notifyRunStaticMethod(int connectionId, Runnable staticMethod) {
+			sendNotification(
+				connectionId,
+				false,
+				true,
+				new RunStaticMethodNotification(staticMethod, connectionId)
+			);
+		}
+
+
 		public static synchronized void notifyPlaySound(int connectionId, int soundId, Vector2 location) {
 			sendNotification(
 				connectionId,
