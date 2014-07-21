@@ -361,7 +361,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	@SuppressWarnings("rawtypes")
 	public void attack() {
 		if (getIndividualsToBeAttacked().isEmpty()) {
-			// TODO Attack environmental objects... maybe?...Could be inefficient (must iterate through potentially lots of props), unless positional indexing is implemented....worth it?????
+			// Attack environmental objects... maybe?...Could be inefficient (must iterate through potentially lots of props), unless positional indexing is implemented....worth it?????
 		} else {
 			for (Integer individualId : getIndividualsToBeAttacked()) {
 				Box attackingBox = getInteractionBox();
@@ -1029,7 +1029,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 								new Follow(indi, thisIndividual, 10, null)
 							);
 						} else {
-							// TODO
+							// TODO Network follow
 						}
 					}
 				}
