@@ -410,6 +410,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private CombatChain combat() {
 		return new CombatChain(this);
 	}
+	
+	
+	/**
+	 * @return the position at which items are discarded from inventory, as well as bleeding
+	 */
+	public abstract Vector2 getEmissionPosition();
 
 
 	@SuppressWarnings("rawtypes")

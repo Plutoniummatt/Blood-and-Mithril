@@ -231,12 +231,11 @@ public class ContainerImpl implements Container, Serializable {
 
 	public static void discard(Individual individual, final Item item, int quantity, Vector2 v) {
 		if (isServer()) {
-			Vector2 pos = individual.getState().position;
 			for (int i = quantity; i !=0; i--) {
 				if (individual.takeItem(item) == 1) {
 					Domain.addItem(
 						item.copy(),
-						new Vector2(pos.x, pos.y + individual.getHeight()/2),
+						individual.getEmissionPosition(),
 						v,
 						Domain.getWorlds().get(individual.getWorldId())
 					);

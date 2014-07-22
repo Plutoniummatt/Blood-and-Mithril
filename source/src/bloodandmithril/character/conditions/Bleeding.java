@@ -34,7 +34,7 @@ public class Bleeding extends Condition {
 		if (Util.roll(severity)) {
 			Domain.getWorld(affected.getWorldId()).getParticles().add(
 				new TracerParticle(
-					affected.getState().position.cpy().add(0, affected.getHeight() / 3).add(getRandom().nextFloat() * affected.getWidth() / 4, getRandom().nextFloat() * affected.getWidth() / 4),
+					affected.getEmissionPosition().add((getRandom().nextFloat() - 1f) * affected.getWidth() / 4, (getRandom().nextFloat() - 1f) * affected.getWidth() / 4),
 					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 					Color.RED,
 					2f,

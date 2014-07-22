@@ -2,8 +2,10 @@ package bloodandmithril.prop.construction;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 
+
 import java.util.Map;
 import java.util.Map.Entry;
+
 
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
@@ -28,6 +30,7 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
@@ -44,7 +47,7 @@ public abstract class Construction extends Prop implements Container {
 	private float constructionProgress;
 
 	/** The rate at which this {@link Construction} is constructed, in units of /s */
-	private float constructionRate;
+	public final float constructionRate;
 
 	/** The container used to store construction materials during the construction stage */
 	private ContainerImpl materialContainer = new ContainerImpl(1000, true);
@@ -70,11 +73,11 @@ public abstract class Construction extends Prop implements Container {
 	public Window getInfoWindow() {
 		return new MessageWindow(
 			getDescription(),
-			Color.RED,
+			Color.YELLOW,
 			BloodAndMithrilClient.WIDTH/2 - 175,
 			BloodAndMithrilClient.HEIGHT/2 + 100,
-			470,
-			120,
+			450,
+			250,
 			getTitle(),
 			true,
 			100,
@@ -241,8 +244,35 @@ public abstract class Construction extends Prop implements Container {
 				}
 			}
 		}
+		
+		for (Entry<Integer, Prop> entry : Domain.getProps().entrySet()) {
+			if (entry.getValue() instanceof Construction && Domain.getActiveWorld().getProps().contains(entry.getKey())) {
+				if (this.overlapsWith(entry.getValue())) {
+					return false;
+				}
+			}
+		}
 
 		return true;
+	}
+	
+	
+	public boolean overlapsWith(Prop other) {
+		float left = position.x - width/2;
+		float right = position.x + width/2;
+		float top = position.y + height;
+		float bottom = position.y;
+		
+		float otherLeft = other.position.x - other.width/2;
+		float otherRight = other.position.x + other.width/2;
+		float otherTop = other.position.y + other.height;
+		float otherBottom = other.position.y;
+		
+		return
+			!(left >= otherRight) &&
+			!(right <= otherLeft) &&
+			!(top <= otherBottom) &&
+			!(bottom >= otherTop);
 	}
 
 

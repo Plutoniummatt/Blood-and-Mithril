@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+
 import java.util.Deque;
 import java.util.List;
 
@@ -79,19 +81,21 @@ public class FurnaceCraftingWindow extends CraftingStationWindow {
 			isActive(),
 			getAlpha()
 		);
-
+		
 		craftButton.render(
 			x + width / 2 + 11,
 			y - 85,
 			isActive() && (craftingStation.getCurrentlyBeingCrafted() == null || !craftingStation.isOccupied()) && !craftingStation.isFinished() && (enoughMaterials || craftingStation.getCurrentlyBeingCrafted() != null) && customCanCraft(),
 			getAlpha()
 		);
-
+		
 		takeFinishedItemButton.render(
 			x + width / 2 + 11,
 			y - 105,
 			isActive() && craftingStation.isFinished(),
 			getAlpha()
 		);
+		
+		spriteBatch.flush();
 	}
 }
