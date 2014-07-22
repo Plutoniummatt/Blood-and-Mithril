@@ -21,6 +21,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.implementations.ElfAI;
@@ -30,6 +31,10 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.construction.Construction;
+import bloodandmithril.prop.construction.craftingstation.Anvil;
+import bloodandmithril.prop.construction.craftingstation.Furnace;
+import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.SerializableColor;
@@ -45,6 +50,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Exceptional at:
@@ -406,5 +412,15 @@ public class Elf extends Humanoid {
 				true
 			);
 		}
+	}
+
+
+	@Override
+	public Set<Construction> getConstructables() {
+		return Sets.newHashSet(
+			new Furnace(0, 0),
+			new WorkBench(0, 0),
+			new Anvil(0, 0)
+		);
 	}
 }

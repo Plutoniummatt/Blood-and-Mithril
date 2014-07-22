@@ -34,6 +34,12 @@ public abstract class CursorBoundTask {
 	}
 
 
+	/**
+	 * Renders any UI guides for this {@link CursorBoundTask}
+	 */
+	public abstract void renderUIGuide();
+
+
 	public boolean isWorldCoordinate() {
 		return isWorldCoordinate;
 	}

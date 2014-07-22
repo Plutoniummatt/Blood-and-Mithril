@@ -289,7 +289,7 @@ public class Furnace extends CraftingStation implements Container {
 
 
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return "A furnace, able to achieve temperatures hot enough to melt most metals";
 	}
 

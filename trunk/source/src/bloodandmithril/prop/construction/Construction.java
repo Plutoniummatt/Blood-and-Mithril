@@ -1,10 +1,13 @@
 package bloodandmithril.prop.construction;
 
+import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+
 import java.util.Map;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -18,12 +21,15 @@ import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.RequiredMaterialsWindow;
+import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * A Construction
@@ -56,6 +62,28 @@ public abstract class Construction extends Prop implements Container {
 	public void render() {
 		internalRender(constructionProgress);
 	}
+
+
+	/**
+	 * @return the info window of this construction
+	 */
+	public Window getInfoWindow() {
+		return new MessageWindow(
+			getDescription(),
+			Color.RED,
+			BloodAndMithrilClient.WIDTH/2 - 175,
+			BloodAndMithrilClient.HEIGHT/2 + 100,
+			470,
+			120,
+			getTitle(),
+			true,
+			100,
+			100
+		);
+	}
+
+
+	public abstract String getDescription();
 
 
 	/**
@@ -171,6 +199,51 @@ public abstract class Construction extends Prop implements Container {
 
 	/** Get the context menu that will be displayed once this {@link Construction} has finished being constructing */
 	protected abstract ContextMenu getCompletedContextMenu();
+
+
+	/**
+	 * @return whether this construction can be built at this constructions location
+	 */
+	public boolean canBuildAtCurrentPosition() {
+		return canBuildAt(position);
+	}
+
+
+	/**
+	 * @return whether this construction can be built at a given location
+	 */
+	public boolean canBuildAt(Vector2 position) {
+		return canBuildAt(position.x, position.y);
+	}
+
+
+	/**
+	 * @return whether this construction can be built at a given location
+	 */
+	public boolean canBuildAt(float x, float y) {
+		float xStep = (float)width / (float)TILE_SIZE;
+		long xSteps = Math.round(Math.ceil(xStep));
+		float xIncrement = (float)width / (float)xSteps;
+
+		float yStep = (float)height / (float)TILE_SIZE;
+		long ySteps = Math.round(Math.ceil(yStep));
+		float yIncrement = (float)height / (float)ySteps;
+
+
+		for (int i = 0; i <= xSteps; i++) {
+			if (Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y - TILE_SIZE/2, true).isPassable()) {
+				return false;
+			}
+
+			for (int j = 1; j <= ySteps; j++) {
+				if (!Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true).isPassable()) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
 
 
 	@Override

@@ -50,7 +50,7 @@ public class Anvil extends CraftingStation {
 
 
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return "An anvil is a basic tool, a block with a hard surface on which another object is struck.  Used to smith metallic objects.";
 	}
 

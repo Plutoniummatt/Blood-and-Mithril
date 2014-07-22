@@ -58,9 +58,6 @@ public abstract class CraftingStation extends Construction {
 	/** Returns the {@link TextureRegion} of the {@link CraftingStation} */
 	protected abstract TextureRegion getTextureRegion();
 
-	/** Returns the string description of this {@link CraftingStation} */
-	protected abstract String getDescription();
-
 	/** Returns the verb that describes the action of this {@link CraftingStation} */
 	public abstract String getAction();
 

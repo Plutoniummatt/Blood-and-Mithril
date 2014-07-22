@@ -49,7 +49,7 @@ public class WorkBench extends CraftingStation {
 
 
 	@Override
-	protected String getDescription() {
+	public String getDescription() {
 		return "The work bench is used to craft various commodities.";
 	}
 
