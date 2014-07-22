@@ -73,7 +73,8 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 		Map<Construction, String> listing = Maps.newHashMap();
 
 		for (Construction construction : builder.getConstructables()) {
-			listing.put(construction, "");
+			float time = construction.constructionRate == 0f ? 0f : 1f/construction.constructionRate;
+			listing.put(construction, String.format("%.1f", time) + "s");
 		}
 		return listing;
 	}
@@ -145,6 +146,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 					if (canBuild) {
 						Domain.getProps().put(toConstruct.id, toConstruct);
+						Domain.getActiveWorld().getProps().add(toConstruct.id);
 					}
 				},
 				true
@@ -162,10 +164,8 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 			boolean canBuild = toConstruct.canBuildAt(getMouseWorldX(), coords.y);
 
-			if (canBuild) {
-				toConstruct.position.x = getMouseWorldX();
-				toConstruct.position.y = coords.y;
-			}
+			toConstruct.position.x = getMouseWorldX();
+			toConstruct.position.y = coords.y;
 
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -180,6 +180,13 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 		@Override
 		public String getShortDescription() {
 			return "Construct " + toConstruct.getTitle();
+		}
+
+
+		@Override
+		public boolean executionConditionMet() {
+			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+			return toConstruct.canBuildAt(getMouseWorldX(), coords.y);
 		}
 	}
 }

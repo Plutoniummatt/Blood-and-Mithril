@@ -423,4 +423,10 @@ public class Elf extends Humanoid {
 			new Anvil(0, 0)
 		);
 	}
+
+
+	@Override
+	public Vector2 getEmissionPosition() {
+		return getState().position.cpy().add(getCurrentAction().flipXAnimation() ? 3 : 7, getHeight() / 2);
+	}
 }

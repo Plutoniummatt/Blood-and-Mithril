@@ -43,6 +43,9 @@ public abstract class CursorBoundTask {
 	public boolean isWorldCoordinate() {
 		return isWorldCoordinate;
 	}
+	
+	
+	public abstract boolean executionConditionMet();
 
 
 	/**
