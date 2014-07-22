@@ -62,11 +62,13 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.bar.BottomBar;
+import bloodandmithril.ui.components.window.BuildWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
@@ -87,6 +89,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 /**
@@ -255,8 +258,7 @@ public class UserInterface {
 
 
 	/**
-	 * Renders the coordinates of the {@link BloodAndMithrilClient#cam} used in
-	 * {@link BloodAndMithrilClient} at the bottom left of the screen.
+	 * Renders the UI
 	 */
 	public static void render() {
 
@@ -305,7 +307,7 @@ public class UserInterface {
 
 	private static void renderCursorBoundTask() {
 		if (getCursorBoundTask() != null) {
-			renderMouseOverTileHighlightBox();
+			getCursorBoundTask().renderUIGuide();
 			spriteBatch.begin();
 			Fonts.defaultFont.setColor(Color.BLACK);
 			Fonts.defaultFont.draw(
@@ -877,6 +879,29 @@ public class UserInterface {
 						simpleName + " - Inventory",
 						true,
 						150, 300
+					)
+				);
+			}
+		}
+
+		if (keyCode == Keys.B) {
+			if (Domain.getSelectedIndividuals().size() == 1) {
+				Individual individual = Domain.getSelectedIndividuals().iterator().next();
+
+				UserInterface.addLayeredComponentUnique(
+					new BuildWindow(
+						WIDTH / 2 - 150,
+						HEIGHT/2 + 100,
+						individual,
+						new Function<Construction, String>() {
+							@Override
+							public String apply(Construction input) {
+								return input.getTitle();
+							}
+						},
+						(c1, c2) -> {
+							return c1.getTitle().compareTo(c2.getTitle());
+						}
 					)
 				);
 			}

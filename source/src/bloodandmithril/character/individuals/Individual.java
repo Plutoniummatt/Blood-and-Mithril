@@ -58,10 +58,12 @@ import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.window.BuildWindow;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.IndividualStatusWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
@@ -89,6 +91,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
@@ -915,9 +918,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		MenuItem showInfoMenuItem = showInfo();
 		MenuItem showStatusWindowItem = showStatus();
 
-		final ContextMenu controlMenu = controls();
-		MenuItem controls = new MenuItem(
-			"Control",
+		final ContextMenu controlMenu = actions();
+		MenuItem actions = new MenuItem(
+			"Actions",
 			() -> {
 				controlMenu.x = getMouseScreenX();
 				controlMenu.y = getMouseScreenY();
@@ -963,7 +966,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		contextMenuToReturn.addMenuItem(showStatusWindowItem);
 
 		if (isControllable()) {
-			contextMenuToReturn.addMenuItem(controls);
+			contextMenuToReturn.addMenuItem(actions);
 			contextMenuToReturn.addMenuItem(edit);
 		}
 
@@ -975,10 +978,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	private ContextMenu controls() {
+	private ContextMenu actions() {
 		return new ContextMenu(0, 0,
 			selectDeselect(this),
-			inventory()
+			inventory(),
+			build()
 		);
 	}
 
@@ -1123,6 +1127,37 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					150, 300
 				);
 				UserInterface.addLayeredComponentUnique(inventoryWindow);
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+	}
+
+
+	private MenuItem build() {
+		final Individual thisIndividual = this;
+
+		return new MenuItem(
+			"Build",
+			() -> {
+				BuildWindow window = new BuildWindow(
+					WIDTH / 2 - 150,
+					HEIGHT/2 + 100,
+					thisIndividual,
+					new Function<Construction, String>() {
+						@Override
+						public String apply(Construction input) {
+							return input.getTitle();
+						}
+					},
+					(c1, c2) -> {
+						return c1.getTitle().compareTo(c2.getTitle());
+					}
+				);
+
+				UserInterface.addLayeredComponentUnique(window);
 			},
 			Color.WHITE,
 			getToolTipTextColor(),
@@ -1449,6 +1484,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** Updates the description for this {@link Individual} */
 	public abstract void updateDescription(String updated);
 
+	/** Returns the set of {@link Construction}s able to be constructed by this {@link Individual} */
+	public abstract Set<Construction> getConstructables();
 
 	/** Returns the {@link SpacialConfiguration} where {@link OneHandedMeleeWeapon} will be rendered */
 	protected abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();

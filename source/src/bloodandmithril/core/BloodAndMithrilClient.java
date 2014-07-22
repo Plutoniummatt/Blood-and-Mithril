@@ -325,6 +325,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		boolean uiClicked = false;
 		rightDoubleClickTimer = 0f;
 
+		if (cursorBoundTask != null) {
+			cursorBoundTask = null;
+			return;
+		}
+
 		UserInterface.initialRightMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 
 		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {

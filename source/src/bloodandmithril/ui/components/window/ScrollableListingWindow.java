@@ -135,13 +135,18 @@ public abstract class ScrollableListingWindow<T, A> extends Window implements Re
 						Color.WHITE,
 						UIRef.BL
 					),
-					null
+					buttonContextMenu(tEntry)
 				),
 				tEntry.getValue()
 			);
 		}
 
 		listings.add(map);
+	}
+
+
+	protected ContextMenu buttonContextMenu(Entry<T, A> tEntry) {
+		return null;
 	}
 
 
