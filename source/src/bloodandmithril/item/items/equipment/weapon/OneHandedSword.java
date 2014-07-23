@@ -207,7 +207,7 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 
 	@Override
 	public void specialEffect(Individual individual) {
-		individual.addCondition(new Bleeding(Util.getRandom().nextFloat()));
+		individual.addCondition(new Bleeding(0.05f));
 	}
 
 
