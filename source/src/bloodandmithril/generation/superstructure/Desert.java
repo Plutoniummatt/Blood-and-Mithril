@@ -90,12 +90,12 @@ public class Desert extends SuperStructure {
 
 	@Override
 	protected void internalGenerate(boolean generatingToRight) {
-		int rightMostTile = (getBoundaries().right + 1) * Topography.CHUNK_SIZE - 1;
-		int leftMostTile = getBoundaries().left * Topography.CHUNK_SIZE;
+		int rightMostTileCoordX = (getBoundaries().right + 1) * Topography.CHUNK_SIZE - 1;
+		int leftMostTileCoordX = getBoundaries().left * Topography.CHUNK_SIZE;
 
-		generateSurface(generatingToRight, rightMostTile, leftMostTile);
-		generateTransitionBase(generatingToRight, rightMostTile, leftMostTile);
-		generateSandBase(generatingToRight, rightMostTile, leftMostTile);
+		generateSurface(generatingToRight, rightMostTileCoordX, leftMostTileCoordX);
+		generateTransitionBase(generatingToRight, rightMostTileCoordX, leftMostTileCoordX);
+		generateSandBase(generatingToRight, rightMostTileCoordX, leftMostTileCoordX);
 		generateDungeon();
 	}
 
@@ -229,20 +229,20 @@ public class Desert extends SuperStructure {
 
 
 	/** Generates the surface layer */
-	private void generateSurface(boolean generatingToRight, int rightMostTile, int leftMostTile) {
+	private void generateSurface(boolean generatingToRight, int rightMostTileCoordX, int leftMostTileCoordX) {
 		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
 		int startingHeight;
 
 		// set starting height
 		if (generatingToRight) {
-			if (structures.getSurfaceHeight().get(leftMostTile - 1) != null) {
-				startingHeight = structures.getSurfaceHeight().get(leftMostTile - 1);
+			if (structures.getSurfaceHeight().get(leftMostTileCoordX - 1) != null) {
+				startingHeight = structures.getSurfaceHeight().get(leftMostTileCoordX - 1);
 			} else {
 				startingHeight = 0;
 			}
 		} else {
-			if (structures.getSurfaceHeight().get(rightMostTile + 1) != null) {
-				startingHeight = structures.getSurfaceHeight().get(rightMostTile + 1);
+			if (structures.getSurfaceHeight().get(rightMostTileCoordX + 1) != null) {
+				startingHeight = structures.getSurfaceHeight().get(rightMostTileCoordX + 1);
 			} else {
 				startingHeight = 0;
 			}
@@ -250,17 +250,17 @@ public class Desert extends SuperStructure {
 
 		//fill surfaceHeight
 		if (generatingToRight) {
-			for (int x = leftMostTile; x <= rightMostTile; x++) {
+			for (int x = leftMostTileCoordX; x <= rightMostTileCoordX; x++) {
 				structures.getSurfaceHeight().put(
 					x,
-					(int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(leftMostTile, 1))
+					(int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(leftMostTileCoordX, 1))
 				);
 			}
 		} else {
-			for (int x = rightMostTile; x >= leftMostTile; x--) {
+			for (int x = rightMostTileCoordX; x >= leftMostTileCoordX; x--) {
 				structures.getSurfaceHeight().put(
 					x,
-					(int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(rightMostTile, 1))
+					(int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(rightMostTileCoordX, 1))
 				);
 			}
 		}
