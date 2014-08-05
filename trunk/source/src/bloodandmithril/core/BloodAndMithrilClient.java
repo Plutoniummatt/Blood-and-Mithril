@@ -51,10 +51,10 @@ import com.google.common.collect.Sets;
  * To-do before ALPHA release
  *
  * <b><p> At least 5 types of NPC                                                                        </b></p>
- * <b><p> Main menu screen                                                                               </b></p>
  *
  * IN PROGRESS
  *
+ * <b><p> Main menu screen                                                                               </b></p>
  * <b><p> Prop and Construction (Prop construction and de-construction framework)                  		 </b></p>
  * <b><p> Resource gathering (At least the following: farming, hunting, foraging)			 	 		 </b></p>
  * <b><p> Combat (New animations, equipment framework + equipment animation framework)                   </b></p>
