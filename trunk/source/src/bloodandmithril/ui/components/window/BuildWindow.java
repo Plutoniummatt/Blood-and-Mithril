@@ -96,6 +96,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 		return new ContextMenu(
 			getMouseScreenX(),
 			getMouseScreenY(),
+			true,
 			new ContextMenu.MenuItem(
 				"Show info",
 				() -> {

@@ -278,6 +278,7 @@ public class IndividualStatusWindow extends Window {
 					new ContextMenu(
 						BloodAndMithrilClient.getMouseScreenX(),
 						BloodAndMithrilClient.getMouseScreenY(),
+						true,
 						new ContextMenu.MenuItem(
 							"Info",
 							() -> {

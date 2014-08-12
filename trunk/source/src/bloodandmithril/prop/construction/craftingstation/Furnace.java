@@ -176,7 +176,7 @@ public class Furnace extends CraftingStation implements Container {
 
 	@Override
 	protected ContextMenu getCompletedContextMenu() {
-		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(),
+		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(), true,
 			new MenuItem(
 				"Show info",
 				() -> {

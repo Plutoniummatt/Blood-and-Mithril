@@ -53,7 +53,7 @@ public class Carrot extends Plant {
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
+		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(), true);
 		final Harvestable thisCarrot = this;
 
 		menu.addMenuItem(

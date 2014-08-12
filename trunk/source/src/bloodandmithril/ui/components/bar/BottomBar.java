@@ -124,6 +124,7 @@ public class BottomBar extends Component {
 		ContextMenu contextMenu = new ContextMenu(
 			BloodAndMithrilClient.getMouseScreenX(),
 			BloodAndMithrilClient.getMouseScreenY() + 44,
+			true,
 			new MenuItem(
 				"Show logs",
 				() -> {},
@@ -200,7 +201,8 @@ public class BottomBar extends Component {
 
 		ContextMenu newMenu = new ContextMenu(
 			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY() + (size + 3) * 22
+			BloodAndMithrilClient.getMouseScreenY() + (size + 3) * 22,
+			true
 		);
 
 		for (MenuItem item : items) {

@@ -365,6 +365,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 				new ContextMenu(
 					getMouseScreenX(),
 					getMouseScreenY(),
+					true,
 					new MenuItem(
 						craftingStation.getCustomMessage(),
 						() -> {},
@@ -384,6 +385,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 					new ContextMenu(
 						getMouseScreenX(),
 						getMouseScreenY(),
+						true,
 						new MenuItem(
 							"Something is currently in progress",
 							() -> {},
@@ -402,6 +404,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 					new ContextMenu(
 						getMouseScreenX(),
 						getMouseScreenY(),
+						true,
 						new MenuItem(
 							"Not enough materials",
 							() -> {},

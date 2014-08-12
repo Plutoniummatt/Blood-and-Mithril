@@ -211,7 +211,8 @@ public class FactionsWindow extends Window {
 
 			final ContextMenu menu = new ContextMenu(
 				BloodAndMithrilClient.getMouseScreenX(),
-				BloodAndMithrilClient.getMouseScreenY()
+				BloodAndMithrilClient.getMouseScreenY(),
+				true
 			);
 
 			if (!BloodAndMithrilClient.controlledFactions.contains(faction.factionId)) {

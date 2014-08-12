@@ -31,11 +31,14 @@ public class ContextMenu extends Component {
 
 	public int x, y;
 
+	private final boolean closeUponButtonClick;
+
 	/** Constructor */
 	@Deprecated
-	public ContextMenu(int x, int y, Color borderColor, Color backGroundColor, MenuItem... items) {
+	public ContextMenu(int x, int y, boolean closeUponButtonClick, Color borderColor, Color backGroundColor, MenuItem... items) {
 		this.x = x;
 		this.y = y;
+		this.closeUponButtonClick = closeUponButtonClick;
 		this.borderColor = borderColor;
 		this.backGroundColor = backGroundColor;
 
@@ -46,8 +49,8 @@ public class ContextMenu extends Component {
 
 
 	/** Constructor with default colors */
-	public ContextMenu(int x, int y, MenuItem... items) {
-		this(x, y, Color.GRAY, Color.BLACK, items);
+	public ContextMenu(int x, int y, boolean closeUponButtonClick, MenuItem... items) {
+		this(x, y, closeUponButtonClick, Color.GRAY, Color.BLACK, items);
 	}
 
 
@@ -116,7 +119,7 @@ public class ContextMenu extends Component {
 	@Override
 	public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		for (MenuItem item : menuItems) {
-			if (item.button.click() && item.menu == null) {
+			if (item.button.click() && item.menu == null && closeUponButtonClick) {
 				copy.clear();
 			}
 			if (item.menu != null && item.button.isMouseOver()) {
@@ -135,6 +138,7 @@ public class ContextMenu extends Component {
 				}
 			}
 		}
+
 		return isInside(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 	}
 
