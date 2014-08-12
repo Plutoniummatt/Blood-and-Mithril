@@ -9,6 +9,7 @@ import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.food.Food;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -132,7 +133,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 *
 	 * @param distance - The maximum distance from the hosts current position that the host wanders.
 	 */
-	public void wander(float distance, boolean fly) {
+	protected void wander(float distance, boolean fly) {
 		Individual host = Domain.getIndividuals().get(hostId.getId());
 
 		if (Util.getRandom().nextBoolean() && getCurrentTask() instanceof Idle) {

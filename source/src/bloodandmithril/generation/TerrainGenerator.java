@@ -21,8 +21,7 @@ public class TerrainGenerator {
 	/** Decides which biomes to generate */
 	private BiomeDecider biomeDecider = new BiomeDecider();
 
-	public static final int maxSuperStructureChunkWidth = 5;
-	public static final int maxSurfaceHeightInChunks = 20;
+	public static final int maxSurfaceHeightInChunks = 50;
 
 	/**
 	 * Generates a chunk, based on passed in chunk coordinates
@@ -89,7 +88,7 @@ public class TerrainGenerator {
 
 	/** Handles the generation of surface structures */
 	private void generateSurface(int chunkX, World world) {
-		for (int tempX = chunkX - maxSuperStructureChunkWidth; tempX <= chunkX + maxSuperStructureChunkWidth; tempX++) {
+		for (int tempX = chunkX - 5; tempX <= chunkX + 5; tempX++) {
 			boolean generatingToRight = tempX >= chunkX;
 
 			if (!world.getTopography().getStructures().structureExists(tempX, maxSurfaceHeightInChunks, true) && !world.getTopography().getChunkMap().doesChunkExist(tempX, maxSurfaceHeightInChunks)) {

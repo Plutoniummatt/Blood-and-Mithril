@@ -2,9 +2,11 @@ package bloodandmithril.character.individuals;
 
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Maps.newHashMap;
@@ -64,11 +66,12 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		Map<Integer, ParameterizedTask<Individual>> attackUnarmed = newHashMap();
 		Map<Integer, ParameterizedTask<Individual>> attackOneHanded = newHashMap();
 		Map<Integer, ParameterizedTask<Individual>> attackOneHandedStab = newHashMap();
+		Map<Integer, ParameterizedTask<Individual>> attackTwoHandedMine = newHashMap();
 
 		attackUnarmed.put(
 			3,
 			individual -> {
-				individual.attack();
+				individual.attack(false);
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
@@ -80,7 +83,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		attackOneHanded.put(
 			6,
 			individual -> {
-				individual.attack();
+				individual.attack(false);
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
@@ -92,7 +95,19 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		attackOneHandedStab.put(
 			3,
 			individual -> {
-				individual.attack();
+				individual.attack(false);
+				SoundService.play(
+					SoundService.swordSlash,
+					individual.getState().position,
+					false
+				);
+			}
+		);
+
+		attackTwoHandedMine.put(
+			3,
+			individual -> {
+				individual.attack(true);
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
@@ -107,6 +122,8 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB, attackOneHandedStab);
 		actionFrames.put(ATTACK_LEFT_ONE_HANDED_WEAPON, attackOneHanded);
 		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON, attackOneHanded);
+		actionFrames.put(ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE, attackTwoHandedMine);
+		actionFrames.put(ATTACK_LEFT_TWO_HANDED_WEAPON_MINE, attackTwoHandedMine);
 	}
 
 	/**
