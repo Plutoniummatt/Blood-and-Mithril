@@ -134,6 +134,7 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 					),
 					new ContextMenu(
 						0, 0,
+						true,
 						new MenuItem(
 							"Show info",
 							() -> {

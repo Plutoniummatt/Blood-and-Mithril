@@ -7,6 +7,7 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
@@ -31,6 +32,8 @@ import bloodandmithril.util.Util.Colors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
@@ -58,6 +61,9 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	/** Used to sort this listing panel */
 	private Comparator<T> sortingComparator;
 
+	/** Filters used to filter this listing panel */
+	private Collection<Predicate<T>> filters;
+
 	/**
 	 * Constructor
 	 */
@@ -73,6 +79,22 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	 */
 	public void refresh(List<HashMap<ListingMenuItem<T>, A>> listings) {
 		this.listings = listings;
+
+		for (HashMap<ListingMenuItem<T>, A> item : Lists.newArrayList(this.listings)) {
+			for (T t : Iterables.transform(item.keySet(), key -> key.t)) {
+				boolean keep = false;
+				for (Predicate<T> predicate : filters) {
+					if (predicate.apply(t)) {
+						keep = true;
+						break;
+					}
+				}
+
+				if (!keep) {
+					item.remove(t);
+				}
+			}
+		}
 	}
 
 

@@ -969,7 +969,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			editMenu
 		);
 
-		ContextMenu contextMenuToReturn = new ContextMenu(0, 0);
+		ContextMenu contextMenuToReturn = new ContextMenu(0, 0, true);
 		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.getSelectedIndividuals().contains(this))) {
 			contextMenuToReturn.addMenuItem(interact);
 		}
@@ -992,6 +992,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	private ContextMenu actions() {
 		return new ContextMenu(0, 0,
+			true,
 			selectDeselect(this),
 			inventory(),
 			build()
@@ -1001,6 +1002,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	private ContextMenu interactMenu() {
 		return new ContextMenu(0, 0,
+			true,
 			trade(this),
 			follow(this),
 			attack(this)
@@ -1106,6 +1108,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			getToolTipTextColor(),
 			Color.GRAY,
 			new ContextMenu(0, 0,
+				true,
 				new MenuItem(
 					"You have multiple individuals selected",
 					() -> {},
@@ -1183,6 +1186,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		final Individual thisIndividual = this;
 
 		return new ContextMenu(0, 0,
+			true,
 			new MenuItem(
 				"Change nickname",
 				() -> {

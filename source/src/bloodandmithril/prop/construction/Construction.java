@@ -2,10 +2,8 @@ package bloodandmithril.prop.construction;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 
-
 import java.util.Map;
 import java.util.Map.Entry;
-
 
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
@@ -29,7 +27,6 @@ import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
-
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -135,7 +132,7 @@ public abstract class Construction extends Prop implements Container {
 		if (constructionProgress == 1f) {
 			return getCompletedContextMenu();
 		} else {
-			ContextMenu menu = new ContextMenu(0, 0);
+			ContextMenu menu = new ContextMenu(0, 0, true);
 
 			if (Domain.getSelectedIndividuals().size() > 0) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
@@ -155,7 +152,7 @@ public abstract class Construction extends Prop implements Container {
 					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
 					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
 					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
-					new ContextMenu(0, 0, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+					new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
 					() -> {
 						return Domain.getSelectedIndividuals().size() > 1;
 					}
@@ -244,7 +241,7 @@ public abstract class Construction extends Prop implements Container {
 				}
 			}
 		}
-		
+
 		for (Entry<Integer, Prop> entry : Domain.getProps().entrySet()) {
 			if (entry.getValue() instanceof Construction && Domain.getActiveWorld().getProps().contains(entry.getKey())) {
 				if (this.overlapsWith(entry.getValue())) {
@@ -255,19 +252,19 @@ public abstract class Construction extends Prop implements Container {
 
 		return true;
 	}
-	
-	
+
+
 	public boolean overlapsWith(Prop other) {
 		float left = position.x - width/2;
 		float right = position.x + width/2;
 		float top = position.y + height;
 		float bottom = position.y;
-		
+
 		float otherLeft = other.position.x - other.width/2;
 		float otherRight = other.position.x + other.width/2;
 		float otherTop = other.position.y + other.height;
 		float otherBottom = other.position.y;
-		
+
 		return
 			!(left >= otherRight) &&
 			!(right <= otherLeft) &&

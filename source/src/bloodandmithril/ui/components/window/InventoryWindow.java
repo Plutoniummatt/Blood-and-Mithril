@@ -34,6 +34,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
+import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
@@ -63,6 +64,21 @@ public class InventoryWindow extends Window implements Refreshable {
 	/** The inventory listing panel, see {@link ScrollableListingPanel} */
 	private ScrollableListingPanel<Item, Integer> equippedListingPanel;
 	private ScrollableListingPanel<Item, Integer> inventoryListingPanel;
+
+	/** Button that controls filtering */
+	private Button filterButton = new Button(
+		"Filters",
+		Fonts.defaultFont,
+		0,
+		0,
+		70,
+		16,
+		() -> {},
+		Color.YELLOW,
+		Color.GREEN,
+		Color.YELLOW,
+		UIRef.BR
+	);
 
 	private static Comparator<Item> inventorySortingOrder = new Comparator<Item>() {
 		@Override
@@ -95,6 +111,18 @@ public class InventoryWindow extends Window implements Refreshable {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		inventoryListingPanel.leftClick(copy, windowsCopy);
 		equippedListingPanel.leftClick(copy, windowsCopy);
+
+		if (filterButton.click()) {
+			new MenuItem("Weapons", () -> {}, Color.GREEN, Color.GREEN, Color.GREEN, null);
+			new MenuItem("Armor", () -> {}, Color.GREEN, Color.GREEN, Color.GREEN, null);
+			new MenuItem("Consumable", () -> {}, Color.GREEN, Color.GREEN, Color.GREEN, null);
+			new MenuItem("Material", () -> {}, Color.GREEN, Color.GREEN, Color.GREEN, null);
+			new MenuItem("Mineral", () -> {}, Color.GREEN, Color.GREEN, Color.GREEN, null);
+
+			copy.add(
+				new ContextMenu(0, 0, false)
+			);
+		}
 	}
 
 
@@ -138,6 +166,9 @@ public class InventoryWindow extends Window implements Refreshable {
 
 		// Render the weight indication text
 		renderWeightIndicationText();
+
+		// Render filter button
+		filterButton.render(x + 290, y - height + 28, isActive(), getAlpha());
 	}
 
 
@@ -307,7 +338,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		}
 
 		if (toReturn == null) {
-			toReturn = new ContextMenu(x, y,InventoryItemContextMenuConstructor.showInfo(item));
+			toReturn = new ContextMenu(x, y, true, InventoryItemContextMenuConstructor.showInfo(item));
 		}
 
 		if (!equipped) {
@@ -396,6 +427,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		);
 
 		return new ContextMenu(x, y,
+			true,
 			InventoryItemContextMenuConstructor.showInfo(item),
 			equipUnequip
 		);
@@ -575,7 +607,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			null
 		);
 
-		ContextMenu contextMenu = new ContextMenu(x, y,
+		ContextMenu contextMenu = new ContextMenu(x, y, true,
 			InventoryItemContextMenuConstructor.showInfo(item)
 		);
 
@@ -608,7 +640,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			null
 		);
 
-		ContextMenu contextMenu = new ContextMenu(x, y,
+		ContextMenu contextMenu = new ContextMenu(x, y, true,
 			InventoryItemContextMenuConstructor.showInfo(item)
 		);
 

@@ -367,7 +367,7 @@ public abstract class Item implements Serializable, Affixed {
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
-			new ContextMenu(0, 0, new MenuItem(
+			new ContextMenu(0, 0, true, new MenuItem(
 				"You have multiple individuals selected",
 				() -> {},
 				Colors.UI_DARK_GRAY,
@@ -378,7 +378,7 @@ public abstract class Item implements Serializable, Affixed {
 			() -> {return Domain.getSelectedIndividuals().size() > 1;}
 		);
 
-		ContextMenu menu = new ContextMenu(0, 0,
+		ContextMenu menu = new ContextMenu(0, 0, true,
 			new MenuItem(
 				"Show info",
 				() -> {

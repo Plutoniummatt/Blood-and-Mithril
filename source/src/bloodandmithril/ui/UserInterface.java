@@ -528,6 +528,7 @@ public class UserInterface {
 					contextMenus.add(new ContextMenu(
 						screenX,
 						screenY,
+						true,
 						new MenuItem(
 							"Take items",
 							() -> {
@@ -543,7 +544,7 @@ public class UserInterface {
 							singleIndividualSelected ? Color.WHITE : Colors.UI_DARK_GRAY,
 							singleIndividualSelected ? Color.GREEN : Colors.UI_DARK_GRAY,
 							singleIndividualSelected ? Color.WHITE : Colors.UI_DARK_GRAY,
-							new ContextMenu(screenX, screenY, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+							new ContextMenu(screenX, screenY, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
 							() -> {
 								return !singleIndividualSelected;
 							}
@@ -790,7 +791,8 @@ public class UserInterface {
 			}
 		}
 
-		contextMenus = contextMenuCopy;
+		contextMenus.clear();
+		contextMenus.addAll(contextMenuCopy);
 
 		if (!clicked) {
 			initialLeftMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
@@ -942,7 +944,7 @@ public class UserInterface {
 		}
 
 		contextMenus.clear();
-		ContextMenu newMenu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
+		ContextMenu newMenu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(), true);
 
 		if (!layeredComponents.isEmpty()) {
 			ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
