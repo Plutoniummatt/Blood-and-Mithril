@@ -1,7 +1,7 @@
 package bloodandmithril.generation.tools;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Map;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Util;
@@ -62,7 +62,7 @@ public class SawToothGenerator implements Serializable {
 
 
 	/**
-	 * @param minSurface - the minimum height the surface can be, takes world tile coord.
+	 * @param minSurface - the minimum height the surface can be, takes world tile coordinate.
 	 */
 	public void setMinSurface(int minSurface) {
 		this.minSurface = minSurface;
@@ -70,11 +70,11 @@ public class SawToothGenerator implements Serializable {
 
 
 	/**
-	 * @param topography - the topography we're generating on
-	 * @param x - the collumn you need the surface height for
+	 * @param x - the column you need the surface height for
 	 * @param generatingToRight - true if generating to the right, false if generating to the left
+	 * @param surfaceHeight - the {@link Map} this method generates on to.
 	 */
-	public void generateSurfaceHeight(int x, boolean generatingToRight, HashMap<Integer, Integer> surfaceHeight) {
+	public void generateSurfaceHeight(int x, boolean generatingToRight, Map<Integer, Integer> surfaceHeight) {
 
 		if (surfaceHeight.get(x) != null) {
 			throw new RuntimeException("Overwriting existing surface heights is not allowed.");

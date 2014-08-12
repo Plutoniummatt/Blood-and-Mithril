@@ -11,7 +11,6 @@ import bloodandmithril.item.items.Item;
  */
 @Copyright("Matthew Peck 2014")
 public abstract class Food extends Item implements Consumable {
-
 	private static final long serialVersionUID = -6616334367982345623L;
 
 	/**

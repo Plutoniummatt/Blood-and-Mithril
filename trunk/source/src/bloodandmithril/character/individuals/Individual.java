@@ -78,6 +78,7 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
+import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -123,6 +124,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB(false),
 		ATTACK_LEFT_TWO_HANDED_WEAPON(true),
 		ATTACK_RIGHT_TWO_HANDED_WEAPON(false),
+		ATTACK_LEFT_TWO_HANDED_WEAPON_MINE(true),
+		ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE(false),
 		ATTACK_LEFT_SPEAR(true),
 		ATTACK_RIGHT_SPEAR(false);
 
@@ -172,6 +175,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** The set of {@link Individual}s currently being attacked by this {@link Individual} */
 	private Set<Integer> individualsToBeAttacked = Sets.newHashSet();
+
+	/** The set of {@link Individual}s currently being attacked by this {@link Individual} */
+	private TwoInts tileToBeMined;
 
 	/** Used to obey attacking periods */
 	private float attackTimer;
@@ -362,7 +368,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed
 	 */
 	@SuppressWarnings("rawtypes")
-	public void attack() {
+	public void attack(boolean mine) {
 		if (getIndividualsToBeAttacked().isEmpty()) {
 			// Attack environmental objects... maybe?...Could be inefficient (must iterate through potentially lots of props), unless positional indexing is implemented....worth it?????
 		} else {
@@ -410,8 +416,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private CombatChain combat() {
 		return new CombatChain(this);
 	}
-	
-	
+
+
 	/**
 	 * @return the position at which items are discarded from inventory, as well as bleeding
 	 */
@@ -1722,5 +1728,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			ATTACK_LEFT_UNARMED,
 			ATTACK_RIGHT_UNARMED
 		);
+	}
+
+
+	public TwoInts getTileToBeMined() {
+		return tileToBeMined;
 	}
 }
