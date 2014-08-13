@@ -2,10 +2,13 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static java.lang.Math.min;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
@@ -23,7 +26,12 @@ import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
+import bloodandmithril.item.items.equipment.armor.Armor;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
+import bloodandmithril.item.items.furniture.Furniture;
+import bloodandmithril.item.items.material.Material;
+import bloodandmithril.item.items.mineral.Mineral;
+import bloodandmithril.item.items.misc.Misc;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
@@ -38,11 +46,14 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -64,6 +75,9 @@ public class InventoryWindow extends Window implements Refreshable {
 	/** The inventory listing panel, see {@link ScrollableListingPanel} */
 	private ScrollableListingPanel<Item, Integer> equippedListingPanel;
 	private ScrollableListingPanel<Item, Integer> inventoryListingPanel;
+
+	/** Filters used to filter this inventory window */
+	private final Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters = Maps.newHashMap();
 
 	/** Button that controls filtering */
 	private Button filterButton = new Button(
@@ -104,6 +118,20 @@ public class InventoryWindow extends Window implements Refreshable {
 		this.host = host;
 		buildItems(host.getEquipped(), host.getInventory(), true);
 		inventoryListingPanel.setScrollWheelActive(true);
+		addFilterItems();
+	}
+
+
+	private void addFilterItems() {
+		filters.put("Weapons", 		WrapperForTwo.wrap(item -> {return item instanceof Weapon;}, true));
+		filters.put("Armor", 		WrapperForTwo.wrap(item -> {return item instanceof Armor;}, true));
+		filters.put("Accesories", 	WrapperForTwo.wrap(item -> {return item instanceof Equipable && !(item instanceof Armor) && !(item instanceof Weapon);}, true));
+		filters.put("Materials", 	WrapperForTwo.wrap(item -> {return item instanceof Material;}, true));
+		filters.put("Minerals", 	WrapperForTwo.wrap(item -> {return item instanceof Mineral;}, true));
+		filters.put("Consumable", 	WrapperForTwo.wrap(item -> {return item instanceof Consumable;}, true));
+		filters.put("Containers", 	WrapperForTwo.wrap(item -> {return item instanceof LiquidContainer;}, true));
+		filters.put("Furniture", 	WrapperForTwo.wrap(item -> {return item instanceof Furniture;}, true));
+		filters.put("Misc", 		WrapperForTwo.wrap(item -> {return item instanceof Misc;}, true));
 	}
 
 
@@ -113,16 +141,39 @@ public class InventoryWindow extends Window implements Refreshable {
 		equippedListingPanel.leftClick(copy, windowsCopy);
 
 		if (filterButton.click()) {
-			new MenuItem("Weapons", () -> {}, Color.GREEN, Color.GREEN, Color.GREEN, null);
-			new MenuItem("Armor", () -> {}, Color.GREEN, Color.GREEN, Color.GREEN, null);
-			new MenuItem("Consumable", () -> {}, Color.GREEN, Color.GREEN, Color.GREEN, null);
-			new MenuItem("Material", () -> {}, Color.GREEN, Color.GREEN, Color.GREEN, null);
-			new MenuItem("Mineral", () -> {}, Color.GREEN, Color.GREEN, Color.GREEN, null);
-
 			copy.add(
-				new ContextMenu(0, 0, false)
+				new ContextMenu(getMouseScreenX(), getMouseScreenY(), false, filterListItems())
 			);
 		}
+	}
+
+
+	private MenuItem[] filterListItems() {
+		Collection<MenuItem> transformed = Collections2.transform(
+			this.filters.entrySet(),
+			entry -> {
+				final MenuItem menuItem = new MenuItem(
+					entry.getKey(),
+					() -> {},
+					entry.getValue().b ? Color.GREEN : Color.RED,
+					entry.getValue().b ? Color.GREEN : Color.RED,
+					entry.getValue().b ? Color.GREEN : Color.RED,
+					null
+				);
+
+				menuItem.button.setTask(() -> {
+					entry.getValue().b = !entry.getValue().b;
+					menuItem.button.setIdleColor(entry.getValue().b ? Color.GREEN : Color.RED);
+					menuItem.button.setOverColor(entry.getValue().b ? Color.GREEN : Color.RED);
+					menuItem.button.setDownColor(entry.getValue().b ? Color.GREEN : Color.RED);
+					refresh();
+				});
+
+				return menuItem;
+			}
+		);
+
+		return Lists.newArrayList(transformed).toArray(new MenuItem[transformed.size()]);
 	}
 
 
@@ -168,7 +219,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		renderWeightIndicationText();
 
 		// Render filter button
-		filterButton.render(x + 290, y - height + 28, isActive(), getAlpha());
+		filterButton.render(x + 290, y - height + 28, isActive() && UserInterface.contextMenus.isEmpty(), getAlpha());
 	}
 
 
@@ -176,6 +227,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	 * Renders the weight display
 	 */
 	private void renderWeightIndicationText() {
+		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		Color activeColor = host.getCurrentLoad() < host.getMaxCapacity() ?
 				new Color(0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, getAlpha()) :
 				Colors.modulateAlpha(Color.RED, getAlpha());
@@ -254,6 +306,18 @@ public class InventoryWindow extends Window implements Refreshable {
 				}
 			};
 		} else {
+			inventoryListingPanel.getFilters().clear();
+			inventoryListingPanel.getFilters().addAll(
+				Collections2.transform(
+					Collections2.filter(this.filters.entrySet(), toKeep -> {
+						return toKeep.getValue().b;
+					}),
+					value -> {
+						return value.getValue().a;
+					}
+				)
+			);
+
 			inventoryListingPanel.refresh(Lists.newArrayList(nonEquippedItemsToDisplay));
 			equippedListingPanel.refresh(Lists.newArrayList(equippedItemsToDisplay));
 		}

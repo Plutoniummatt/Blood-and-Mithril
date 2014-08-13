@@ -2,7 +2,7 @@ package bloodandmithril.world.topography.tile.tiles.sedimentary;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.earth.Sand;
+import bloodandmithril.item.items.mineral.earth.Sand;
 import bloodandmithril.world.topography.tile.tiles.SeditmentaryTile;
 
 @Copyright("Matthew Peck 2014")

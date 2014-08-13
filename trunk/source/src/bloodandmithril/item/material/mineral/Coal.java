@@ -6,7 +6,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.earth.Ashes;
+import bloodandmithril.item.items.mineral.earth.Ashes;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

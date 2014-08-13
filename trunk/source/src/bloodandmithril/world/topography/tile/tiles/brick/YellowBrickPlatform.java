@@ -2,6 +2,7 @@ package bloodandmithril.world.topography.tile.tiles.brick;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.material.Brick;
 import bloodandmithril.world.topography.tile.tiles.BrickTile;
 
 @Copyright("Matthew Peck 2014")
@@ -34,6 +35,6 @@ public class YellowBrickPlatform extends BrickTile {
 
 	@Override
 	public Item mine() {
-		return null;
+		return new Brick();
 	}
 }
