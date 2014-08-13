@@ -9,7 +9,6 @@ import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.item.items.food.Food;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;

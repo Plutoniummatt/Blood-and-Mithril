@@ -80,12 +80,12 @@ public class ContextMenu extends Component {
 		}
 		maxLength = maxLength * 10;
 
-		int renderX = x + maxLength >= BloodAndMithrilClient.WIDTH ? BloodAndMithrilClient.WIDTH - maxLength : x;
-		int renderY = y - maxHeight <= 0 ? maxHeight : y;
+		x = x + maxLength >= BloodAndMithrilClient.WIDTH ? BloodAndMithrilClient.WIDTH - maxLength : x;
+		y = y - maxHeight <= 0 ? maxHeight : y;
 
 		renderRectangle(
-			renderX + bottomLeft.getRegionWidth(),
-			renderY + bottomLeft.getRegionHeight(),
+			x + bottomLeft.getRegionWidth(),
+			y + bottomLeft.getRegionHeight(),
 			maxLength,
 			maxHeight,
 			isActive(),
@@ -93,8 +93,8 @@ public class ContextMenu extends Component {
 		);
 
 		renderBox(
-			renderX,
-			renderY,
+			x,
+			y,
 			maxLength,
 			maxHeight,
 			isActive(),
@@ -105,7 +105,7 @@ public class ContextMenu extends Component {
 		Iterator<MenuItem> iterator = menuItems.iterator();
 		while (iterator.hasNext()) {
 			MenuItem next = iterator.next();
-			next.button.render(renderX + next.button.width/2 + 5, renderY - i * 20, isActive());
+			next.button.render(x + next.button.width/2 + 5, y - i * 20, isActive());
 			i++;
 		}
 
@@ -147,12 +147,14 @@ public class ContextMenu extends Component {
 	 * @return whether or not the location is within the context menu
 	 */
 	public boolean isInside(int locX, int locY) {
-		int height = menuItems.size() + 1;
-		int width = 0;
+		int maxHeight = 20 * (menuItems.size() + 1);
+		int maxLength = 0;
 		for (MenuItem item : menuItems) {
-			width = item.button.getText().length() > width ? item.button.getText().length() + 2 : width;
+			maxLength = item.button.getText().length() + 2 > maxLength ? item.button.getText().length() + 2 : maxLength;
 		}
-		return locX > x && locX < x + width * top.getRegionWidth() && locY < y && locY > y - height * left.getRegionHeight();
+		maxLength = maxLength * 10;
+
+		return locX > x && locX < x + maxLength && locY < y && locY > y - maxHeight;
 	}
 
 

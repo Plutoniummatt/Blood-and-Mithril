@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.generation.TerrainGenerator;
+import bloodandmithril.generation.patterns.Layers;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.generation.tools.SawToothGenerator;
 import bloodandmithril.util.Util;
@@ -11,7 +12,6 @@ import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
-import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
 
 /**
  * A single, very large canyon.
@@ -194,19 +194,19 @@ public class Canyon extends SuperStructure {
 		ConcurrentHashMap<Integer, Integer> surfaceHeightMap = Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight();
 		if (worldTileX < leftCliffStart) {
 			if (worldTileY < surfaceHeightMap.get(worldTileX)) {
-				return new SandStoneTile();
+				return Layers.getTile(worldTileX, worldTileY);
 			} else {
 				return new Tile.EmptyTile();
 			}
 		} else if (worldTileX > rightCliffStart) {
 			if (worldTileY < surfaceHeightMap.get(worldTileX)) {
-				return new SandStoneTile();
+				return Layers.getTile(worldTileX, worldTileY);
 			} else {
 				return new Tile.EmptyTile();
 			}
 		} else {
 			if (leftCliffLine.get(worldTileY) != null && worldTileX < leftCliffLine.get(worldTileY) || rightCliffLine.get(worldTileY) != null && worldTileX > rightCliffLine.get(worldTileY) || worldTileY < surfaceHeightMap.get(worldTileX)) {
-				return new SandStoneTile();
+				return Layers.getTile(worldTileX, worldTileY);
 			} else {
 				return new Tile.EmptyTile();
 			}
@@ -217,21 +217,22 @@ public class Canyon extends SuperStructure {
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
 		ConcurrentHashMap<Integer, Integer> surfaceHeightMap = Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight();
+
 		if (worldTileX < leftCliffStart) {
-			if (worldTileY < surfaceHeightMap.get(worldTileX) && leftCliffLine.get(worldTileY) != null && worldTileX < leftCliffLine.get(worldTileY)) {
-				return new SandStoneTile();
+			if (worldTileY < surfaceHeightMap.get(worldTileX) - 1 && leftCliffLine.get(worldTileY) != null && worldTileX < leftCliffLine.get(worldTileY) - 1) {
+				return Layers.getTile(worldTileX, worldTileY);
 			} else {
 				return new Tile.EmptyTile();
 			}
 		} else if (worldTileX > rightCliffStart) {
-			if (worldTileY < surfaceHeightMap.get(worldTileX) && rightCliffLine.get(worldTileY) != null && worldTileX > rightCliffLine.get(worldTileY)) {
-				return new SandStoneTile();
+			if (worldTileY < surfaceHeightMap.get(worldTileX) - 1 && rightCliffLine.get(worldTileY) != null && worldTileX > rightCliffLine.get(worldTileY) + 1) {
+				return Layers.getTile(worldTileX, worldTileY);
 			} else {
 				return new Tile.EmptyTile();
 			}
 		} else {
-			if (leftCliffLine.get(worldTileY) != null && worldTileX < leftCliffLine.get(worldTileY) || rightCliffLine.get(worldTileY) != null && worldTileX > rightCliffLine.get(worldTileY) || worldTileY < surfaceHeightMap.get(worldTileX)) {
-				return new SandStoneTile();
+			if (leftCliffLine.get(worldTileY) != null && worldTileX < leftCliffLine.get(worldTileY) - 1 || rightCliffLine.get(worldTileY) != null && worldTileX > rightCliffLine.get(worldTileY) + 1 || worldTileY < surfaceHeightMap.get(worldTileX) - 1) {
+				return Layers.getTile(worldTileX, worldTileY);
 			} else {
 				return new Tile.EmptyTile();
 			}

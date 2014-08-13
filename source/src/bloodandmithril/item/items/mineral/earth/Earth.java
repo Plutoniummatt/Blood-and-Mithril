@@ -1,13 +1,14 @@
-package bloodandmithril.item.items.earth;
+package bloodandmithril.item.items.mineral.earth;
 
-import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.mineral.Mineral;
+
 
 /**
  * Earth/Dirt/Clay etc
  *
  * @author Matt
  */
-public abstract class Earth extends Item {
+public abstract class Earth extends Mineral {
 
 	private static final long serialVersionUID = -6616334367982345623L;
 

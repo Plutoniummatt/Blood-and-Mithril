@@ -7,7 +7,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.earth.Sand;
+import bloodandmithril.item.items.mineral.earth.Sand;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;

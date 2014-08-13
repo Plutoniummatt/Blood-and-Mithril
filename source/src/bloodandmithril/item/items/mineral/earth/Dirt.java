@@ -1,43 +1,47 @@
-package bloodandmithril.item.items.earth;
+package bloodandmithril.item.items.mineral.earth;
 
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Ashes extends Earth {
-	private static final long serialVersionUID = 988154990456038686L;
-	public static final String description = "The residue of combustion, mostly consisting of metal oxides.";
+/**
+ * Just a pile of dirt
+ *
+ * @author Matt
+ */
+public class Dirt extends Earth {
+	private static final long serialVersionUID = 6522655675894787083L;
 
 	/**
 	 * Constructor
 	 */
-	public Ashes() {
-		super(0.2f, false, ItemValues.ASHES);
+	public Dirt() {
+		super(0.5f, false, ItemValues.DIRT);
 	}
 
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return "Ashes";
+		return (firstCap ? "D" : "d") + "irt";
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return "Ashes";
+		return (firstCap ? "D" : "d") + "irt";
 	}
 
 
 	@Override
 	public String getDescription() {
-		return description;
+		return "Just a pile of dirt";
 	}
 
 
 	@Override
 	protected boolean internalSameAs(Item other) {
-		return other instanceof Ashes;
+		return other instanceof Dirt;
 	}
 
 
@@ -49,7 +53,7 @@ public class Ashes extends Earth {
 
 	@Override
 	protected Item internalCopy() {
-		return new Ashes();
+		return new Dirt();
 	}
 
 

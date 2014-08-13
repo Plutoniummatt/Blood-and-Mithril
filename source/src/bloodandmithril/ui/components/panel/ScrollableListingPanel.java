@@ -33,8 +33,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * A panel that displays a listing of clickable menu items
@@ -62,7 +62,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	private Comparator<T> sortingComparator;
 
 	/** Filters used to filter this listing panel */
-	private Collection<Predicate<T>> filters;
+	private final Collection<Predicate<T>> filters = Lists.newLinkedList();
 
 	/**
 	 * Constructor
@@ -81,10 +81,10 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		this.listings = listings;
 
 		for (HashMap<ListingMenuItem<T>, A> item : Lists.newArrayList(this.listings)) {
-			for (T t : Iterables.transform(item.keySet(), key -> key.t)) {
+			for (ListingMenuItem<T> t : Sets.newHashSet(item.keySet())) {
 				boolean keep = false;
 				for (Predicate<T> predicate : filters) {
-					if (predicate.apply(t)) {
+					if (predicate.apply(t.t)) {
 						keep = true;
 						break;
 					}
@@ -281,6 +281,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 				i++;
 			}
 		}
+
 		spriteBatch.flush();
 	}
 
@@ -358,5 +359,10 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 	public void setScrollWheelActive(boolean active) {
 		this.scrollWheelActive = active;
+	}
+
+
+	public Collection<Predicate<T>> getFilters() {
+		return filters;
 	}
 }
