@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
- * The topography of the game world.
+ * The legendary and mythical Chunk
  *
  * @author Matt
  */
