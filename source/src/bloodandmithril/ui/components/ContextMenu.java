@@ -158,6 +158,12 @@ public class ContextMenu extends Component {
 	}
 
 
+	public ContextMenu addFirst(MenuItem item) {
+		this.getMenuItems().add(0, item);
+		return this;
+	}
+
+
 	/**
 	 * Item that belongs in a {@link ContextMenu}
 	 *

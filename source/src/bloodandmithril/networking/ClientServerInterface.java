@@ -137,6 +137,7 @@ import bloodandmithril.networking.requests.ConsumeItem;
 import bloodandmithril.networking.requests.DestroyPropNotification;
 import bloodandmithril.networking.requests.DestroyTile;
 import bloodandmithril.networking.requests.DestroyTile.DestroyTileResponse;
+import bloodandmithril.networking.requests.DiscardLiquid;
 import bloodandmithril.networking.requests.DrinkLiquid;
 import bloodandmithril.networking.requests.EquipOrUnequipItem;
 import bloodandmithril.networking.requests.GenerateChunk;
@@ -394,6 +395,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(DiscardLiquid.class);
 		kryo.register(ParrySpark.class);
 		kryo.register(BloodSplat.class);
 		kryo.register(RunStaticMethodNotification.class);
@@ -688,6 +690,11 @@ public class ClientServerInterface {
 		public static synchronized void sendDrinkLiquidRequest(int individualId, LiquidContainer bottleToDrinkFrom, float amount) {
 			client.sendTCP(new DrinkLiquid(individualId, bottleToDrinkFrom, amount));
 			Logger.networkDebug("Sending drink liquid request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendDiscardLiquidRequest(int individualId, LiquidContainer bottleToDiscardFrom, float amount) {
+			client.sendTCP(new DiscardLiquid(individualId, bottleToDiscardFrom, amount));
+			Logger.networkDebug("Sending discard liquid request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendRequestTransferLiquidBetweenContainers(Individual individual, LiquidContainer from, LiquidContainer to, float amount) {

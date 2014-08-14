@@ -177,6 +177,21 @@ public class FactionsWindow extends Window {
 				null
 			);
 
+			ContextMenu.MenuItem showUnits = new ContextMenu.MenuItem(
+				"Show Units",
+				() -> {
+					UserInterface.addLayeredComponentUnique(
+						new UnitsWindow(
+							faction.factionId
+						)
+					);
+				},
+				Color.WHITE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			);
+
 			ContextMenu.MenuItem changePassword = new ContextMenu.MenuItem(
 				"Change control password",
 				() -> {
@@ -220,6 +235,7 @@ public class FactionsWindow extends Window {
 					menu.addMenuItem(control);
 				}
 			} else {
+				menu.addMenuItem(showUnits);
 				menu.addMenuItem(changePassword);
 			}
 
