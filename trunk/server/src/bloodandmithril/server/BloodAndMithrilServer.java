@@ -319,7 +319,7 @@ public class BloodAndMithrilServer {
 
 			if (keycode == Input.Keys.R) {
 				IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
-				state.position = new Vector2(200, 700);
+				state.position = new Vector2(200, 5000);
 				state.velocity = new Vector2(0, 0);
 				state.acceleration = new Vector2(0, 0);
 
