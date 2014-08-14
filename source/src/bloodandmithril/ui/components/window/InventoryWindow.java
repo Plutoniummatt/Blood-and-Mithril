@@ -149,14 +149,14 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	private MenuItem[] filterListItems() {
-		Collection<MenuItem> transformed = Collections2.transform(
+		final Collection<MenuItem> menuItems = Lists.newArrayList(Collections2.transform(
 			this.filters.entrySet(),
 			entry -> {
 				final MenuItem menuItem = new MenuItem(
 					entry.getKey(),
 					() -> {},
 					entry.getValue().b ? Color.GREEN : Color.RED,
-					entry.getValue().b ? Color.GREEN : Color.RED,
+					entry.getValue().b ? Color.WHITE : Color.WHITE,
 					entry.getValue().b ? Color.GREEN : Color.RED,
 					null
 				);
@@ -164,16 +164,68 @@ public class InventoryWindow extends Window implements Refreshable {
 				menuItem.button.setTask(() -> {
 					entry.getValue().b = !entry.getValue().b;
 					menuItem.button.setIdleColor(entry.getValue().b ? Color.GREEN : Color.RED);
-					menuItem.button.setOverColor(entry.getValue().b ? Color.GREEN : Color.RED);
+					menuItem.button.setOverColor(entry.getValue().b ? Color.WHITE : Color.WHITE);
 					menuItem.button.setDownColor(entry.getValue().b ? Color.GREEN : Color.RED);
 					refresh();
 				});
 
 				return menuItem;
 			}
+		));
+		
+		
+		final MenuItem selectAll = new MenuItem(
+			"Select all", 
+			() -> {}, 
+			Color.ORANGE, 
+			Color.WHITE, 
+			Color.ORANGE, 
+			null
 		);
-
-		return Lists.newArrayList(transformed).toArray(new MenuItem[transformed.size()]);
+		
+		
+		final MenuItem deselectAll = new MenuItem(
+			"Deselect all", 
+			() -> {}, 
+			Color.ORANGE, 
+			Color.WHITE, 
+			Color.ORANGE, 
+			null
+		);
+		
+		selectAll.button.setTask(() -> {
+			filters.values().stream().forEach(value -> {
+				value.b = true;
+			});
+			
+			menuItems.stream().forEach(item -> {
+				if (item != deselectAll && item != selectAll) {
+					item.button.setIdleColor(Color.GREEN);
+					item.button.setOverColor(Color.WHITE);
+					item.button.setDownColor(Color.GREEN);	
+				}
+			});
+			refresh();
+		});
+		
+		deselectAll.button.setTask(() -> {
+			filters.values().stream().forEach(value -> {
+				value.b = false;
+			});
+			
+			menuItems.stream().forEach(item -> {
+				if (item != deselectAll && item != selectAll) {
+					item.button.setIdleColor(Color.RED);
+					item.button.setOverColor(Color.WHITE);
+					item.button.setDownColor(Color.RED);	
+				}
+			});
+			refresh();
+		});
+		
+		menuItems.add(selectAll);
+		menuItems.add(deselectAll);
+		return Lists.newArrayList(menuItems).toArray(new MenuItem[menuItems.size()]);
 	}
 
 
@@ -195,7 +247,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		int lineWidth = 23;
 
 		// Set the position and dimensions of the panel
-		inventoryListingPanel.height = height - (equippedItemsToDisplay.isEmpty() ? 0 : (1 + min(5,equippedItemsToDisplay.size())) * lineWidth) - lineWidth;
+		inventoryListingPanel.height = height - (equippedItemsToDisplay.isEmpty() ? 0 : (1 + min(5,equippedItemsToDisplay.size())) * lineWidth) - lineWidth * 3;
 		inventoryListingPanel.width = width;
 		inventoryListingPanel.x = x;
 		inventoryListingPanel.y = y - (equippedItemsToDisplay.isEmpty() ? 0 : (1 + min(5,equippedItemsToDisplay.size())) * lineWidth);
@@ -219,7 +271,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		renderWeightIndicationText();
 
 		// Render filter button
-		filterButton.render(x + 290, y - height + 28, isActive() && UserInterface.contextMenus.isEmpty(), getAlpha());
+		filterButton.render(x + 41, y - height + 53, isActive() && UserInterface.contextMenus.isEmpty(), getAlpha());
 	}
 
 
