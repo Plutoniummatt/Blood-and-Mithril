@@ -23,13 +23,11 @@ public class Canyon extends SuperStructure {
 
 	private int cWidth;
 	private int cHeight;
-	private int surfaceLineVariation;
-	private int maxSurfaceLineHeightDifference;
-	private int maxCanyonDepth;
-	private int minCanyonDepth;
-	private int baseLineVariation;
+	private int tSurfaceLineVariation;
+	private int tMaxSurfaceLineHeightDifference;
+	private int tBaseLineVariation;
 	private int numberOfCliffSteps;
-	private int cliffStepWidth;
+	private int tCliffStepWidth;
 
 	private int middleHeight;
 	private HashMap<Integer, Integer> leftCliffLine = new HashMap<>();
@@ -42,25 +40,21 @@ public class Canyon extends SuperStructure {
 	 * @param worldId - the ID of the world.
 	 * @param cWidth - Width of the structure in chunks.
 	 * @param cHeight - Height of the structure in chunks.
-	 * @param surfaceLineVariation - The variation of the lines at the top of the cliffs.
-	 * @param baseLineVariation - The variation of the line at the base of the cliffs.
-	 * @param maxSurfaceLineHeightDifference - The maximum difference in height off opposite cliffs.
-	 * @param minCanyonDepth - The minimum depth of the canyon.
-	 * @param maxCanyonDepth - The maximum depth of the canyon.
+	 * @param tSurfaceLineVariation - The variation of the lines at the top of the cliffs.
+	 * @param tBaseLineVariation - The variation of the line at the base of the cliffs.
+	 * @param tMaxSurfaceLineHeightDifference - The maximum difference in height off opposite cliffs.
 	 * @param numberOfCliffSteps - The number of times the cliff face steps out.
-	 * @param cliffStepWidth - The width of a step.
+	 * @param tCliffStepWidth - The width of a step.
 	 */
-	public Canyon(int worldId, int cWidth, int cHeight, int surfaceLineVariation, int baseLineVariation, int maxSurfaceLineHeightDifference, int minCanyonDepth, int maxCanyonDepth, int numberOfCliffSteps, int cliffStepWidth) {
+	public Canyon(int worldId, int cWidth, int cHeight, int tSurfaceLineVariation, int tBaseLineVariation, int tMaxSurfaceLineHeightDifference, int numberOfCliffSteps, int tCliffStepWidth) {
 		super(worldId);
 		this.cWidth = cWidth;
 		this.cHeight = cHeight;
-		this.surfaceLineVariation = surfaceLineVariation;
-		this.baseLineVariation = baseLineVariation;
-		this.maxSurfaceLineHeightDifference = maxSurfaceLineHeightDifference;
-		this.minCanyonDepth = minCanyonDepth;
-		this.maxCanyonDepth = maxCanyonDepth;
+		this.tSurfaceLineVariation = tSurfaceLineVariation;
+		this.tBaseLineVariation = tBaseLineVariation;
+		this.tMaxSurfaceLineHeightDifference = tMaxSurfaceLineHeightDifference;
 		this.numberOfCliffSteps = numberOfCliffSteps;
-		this.cliffStepWidth = cliffStepWidth;
+		this.tCliffStepWidth = tCliffStepWidth;
 	}
 
 
@@ -95,24 +89,24 @@ public class Canyon extends SuperStructure {
 			} else {
 				startingHeight = dafaultSurfaceHeight;
 			}
-			otherHeight = startingHeight - maxSurfaceLineHeightDifference/2 + Util.getRandom().nextInt(maxSurfaceLineHeightDifference);
-			leftGround = new SawToothGenerator(startingHeight - surfaceLineVariation/2, startingHeight + surfaceLineVariation/2, 2, 1, 50);
-			rightGround = new SawToothGenerator(otherHeight - surfaceLineVariation/2, otherHeight + surfaceLineVariation/2, 2, 1, 50);
+			otherHeight = startingHeight - tMaxSurfaceLineHeightDifference/2 + Util.getRandom().nextInt(tMaxSurfaceLineHeightDifference);
+			leftGround = new SawToothGenerator(startingHeight - tSurfaceLineVariation/2, startingHeight + tSurfaceLineVariation/2, 2, 1, 50);
+			rightGround = new SawToothGenerator(otherHeight - tSurfaceLineVariation/2, otherHeight + tSurfaceLineVariation/2, 2, 1, 50);
 		} else {
 			if (surfaceHeightMap.get(rightMostTile + 1) != null) {
 				startingHeight = surfaceHeightMap.get(rightMostTile + 1);
 			} else {
 				startingHeight = dafaultSurfaceHeight;
 			}
-			otherHeight = startingHeight - maxSurfaceLineHeightDifference/2 + Util.getRandom().nextInt(maxSurfaceLineHeightDifference);
-			rightGround = new SawToothGenerator(startingHeight - surfaceLineVariation/2, startingHeight + surfaceLineVariation/2, 2, 1, 50);
-			leftGround = new SawToothGenerator(otherHeight - surfaceLineVariation/2, otherHeight + surfaceLineVariation/2, 2, 1, 50);
+			otherHeight = startingHeight - tMaxSurfaceLineHeightDifference/2 + Util.getRandom().nextInt(tMaxSurfaceLineHeightDifference);
+			rightGround = new SawToothGenerator(startingHeight - tSurfaceLineVariation/2, startingHeight + tSurfaceLineVariation/2, 2, 1, 50);
+			leftGround = new SawToothGenerator(otherHeight - tSurfaceLineVariation/2, otherHeight + tSurfaceLineVariation/2, 2, 1, 50);
 		}
-		middleHeight = Math.min(startingHeight, otherHeight) - (minCanyonDepth + Util.getRandom().nextInt(maxCanyonDepth - minCanyonDepth));
-		middleGround = new SawToothGenerator(middleHeight - baseLineVariation, middleHeight + baseLineVariation, 2, 1, 50);
+		middleHeight = getBoundaries().bottom + tBaseLineVariation;
+		middleGround = new SawToothGenerator(middleHeight - tBaseLineVariation, middleHeight + tBaseLineVariation, 2, 1, 50);
 
-		leftCliff = new SawToothGenerator(leftCliffStart, leftCliffStart+ cliffStepWidth, 1, 0, 100);
-		rightCliff = new SawToothGenerator(rightCliffStart - cliffStepWidth, rightCliffStart, 1, 0, 100);
+		leftCliff = new SawToothGenerator(leftCliffStart, leftCliffStart+ tCliffStepWidth, 1, 0, 100);
+		rightCliff = new SawToothGenerator(rightCliffStart - tCliffStepWidth, rightCliffStart, 1, 0, 100);
 		generateSurfaceHeight(generatingToRight, rightMostTile, leftMostTile, otherHeight, leftGround, rightGround, middleGround);
 		generateCliffFaces(generatingToRight, startingHeight, otherHeight, leftCliff, rightCliff);
 	}
@@ -158,14 +152,14 @@ public class Canyon extends SuperStructure {
 		int leftCliffStepPoint = leftStepDifference * (numberOfCliffSteps - 1) + middleHeight;
 		int leftCliffBoundary = leftCliffStart;
 		int rightCliffBoundary = rightCliffStart;
-		for (int y = surfaceHeightMap.get(leftCliffStart - 1); y > middleHeight - baseLineVariation / 2; y--) {
+		for (int y = surfaceHeightMap.get(leftCliffStart - 1); y > middleHeight - tBaseLineVariation / 2; y--) {
 			if (y == surfaceHeightMap.get(leftCliffStart - 1)) {
 				leftCliffLine.put(y, leftCliffStart - 1);
 			} else {
 				if (y == leftCliffStepPoint) {
-					leftCliffBoundary += cliffStepWidth;
+					leftCliffBoundary += tCliffStepWidth;
 					leftCliff.setMinSurface(leftCliffBoundary);
-					leftCliff.setMaxSurface(leftCliffBoundary + cliffStepWidth);
+					leftCliff.setMaxSurface(leftCliffBoundary + tCliffStepWidth);
 					leftCliffStepPoint -= leftStepDifference;
 				}
 				leftCliff.generateSurfaceHeight(y, false, leftCliffLine);
@@ -173,13 +167,13 @@ public class Canyon extends SuperStructure {
 		}
 		int rightStepDifference = ((generatingToRight ? otherHeight : startingHeight) - middleHeight) / numberOfCliffSteps;
 		int rightCliffStepPoint = rightStepDifference * (numberOfCliffSteps - 1) + middleHeight;
-		for (int y = surfaceHeightMap.get(rightCliffStart + 1); y > middleHeight - baseLineVariation / 2; y--) {
+		for (int y = surfaceHeightMap.get(rightCliffStart + 1); y > middleHeight - tBaseLineVariation / 2; y--) {
 			if (y == surfaceHeightMap.get(rightCliffStart + 1)) {
 				rightCliffLine.put(y, rightCliffStart + 1);
 			} else {
 				if (y == rightCliffStepPoint) {
-					rightCliffBoundary -= cliffStepWidth;
-					rightCliff.setMinSurface(rightCliffBoundary - cliffStepWidth);
+					rightCliffBoundary -= tCliffStepWidth;
+					rightCliff.setMinSurface(rightCliffBoundary - tCliffStepWidth);
 					rightCliff.setMaxSurface(rightCliffBoundary);
 					rightCliffStepPoint -= rightStepDifference;
 				}
