@@ -26,14 +26,14 @@ public class Util {
 	 * @return An independent 'deep' structure clone of the array.
 	 */
 	public static <T> T[][] clone2DArray(T[][] array) {
-	    int rows=array.length ;
-	    //int rowIs=array[0].length ;
+	    int rows = array.length ;
 
 	    //clone the 'shallow' structure of array
 	    T[][] newArray = array.clone();
+
 	    //clone the 'deep' structure of array
-	    for(int row=0;row<rows;row++){
-	        newArray[row]= array[row].clone();
+	    for(int row = 0 ; row < rows; row++){
+	        newArray[row] = array[row].clone();
 	    }
 
 	    return newArray;
