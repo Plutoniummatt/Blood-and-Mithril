@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -31,7 +32,7 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class UnitsWindow extends Window {
+public class UnitsWindow extends Window implements Refreshable {
 
 	private ScrollableListingPanel<Individual, String> listing;
 	private final HashMap<ScrollableListingPanel.ListingMenuItem<Individual>, String> individuals = Maps.newHashMap();
@@ -41,35 +42,9 @@ public class UnitsWindow extends Window {
 	 * Constructor
 	 */
 	public UnitsWindow(int factoinId) {
-		super(WIDTH/2 - 150, HEIGHT/2 + 200, 500, 300, "Units", true, 500, 300, true, true, true);
+		super(WIDTH/2 - 150, HEIGHT/2 + 200, 500, 300, Domain.getFactions().get(factoinId).name + " - Members", true, 500, 300, true, true, true);
 		factionId = factoinId;
-
-		populateList();
-		this.listing = new ScrollableListingPanel<Individual, String>(
-			this, (i1, i2) -> {
-				return i1.getId().getSimpleName().compareTo(i2.getId().getSimpleName());
-			}
-		) {
-			@Override
-			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Individual>, String> item) {
-				return item.getKey().t.getAI().getCurrentTask().getDescription();
-			}
-
-			@Override
-			protected int getExtraStringOffset() {
-				return 120;
-			}
-
-			@Override
-			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<Individual>, String>> listings) {
-				listings.add(individuals);
-			}
-
-			@Override
-			public boolean keyPressed(int keyCode) {
-				return false;
-			}
-		};
+		refresh();
 	}
 
 
@@ -162,5 +137,37 @@ public class UnitsWindow extends Window {
 	@Override
 	public void leftClickReleased() {
 		listing.leftClickReleased();
+	}
+
+
+	@Override
+	public void refresh() {
+		individuals.clear();
+		populateList();
+		this.listing = new ScrollableListingPanel<Individual, String>(
+			this, (i1, i2) -> {
+				return i1.getId().getSimpleName().compareTo(i2.getId().getSimpleName());
+			}
+		) {
+			@Override
+			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Individual>, String> item) {
+				return item.getKey().t.getAI().getCurrentTask().getDescription();
+			}
+
+			@Override
+			protected int getExtraStringOffset() {
+				return 120;
+			}
+
+			@Override
+			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<Individual>, String>> listings) {
+				listings.add(individuals);
+			}
+
+			@Override
+			public boolean keyPressed(int keyCode) {
+				return false;
+			}
+		};
 	}
 }

@@ -29,7 +29,7 @@ public class BiomeDecider {
 	 */
 	public SuperStructure decideAndGetBiome(World world) {
 
-		if(Util.getRandom().nextFloat() > 0.5) {
+		if(Util.getRandom().nextFloat() > 0.1) {
 			return new Canyon(world.getWorldId(), 5, cSurfaceStructureHeight, 20, 50, 300, 3, 30);
 		} else {
 			return new Desert(world.getWorldId(), 50, cSurfaceStructureHeight, 30, -400, 200);

@@ -225,7 +225,7 @@ public class DevWindow extends Window {
 			elf.giveItem(new Machette());
 			elf.giveItem(new Broadsword());
 
-			Domain.getIndividuals().put(elf.getId().getId(), elf);
+			Domain.addIndividual(elf);
 			return true;
 		}
 
