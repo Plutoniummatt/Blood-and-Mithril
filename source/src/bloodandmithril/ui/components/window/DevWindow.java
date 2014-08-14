@@ -32,6 +32,7 @@ import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
+import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.DeathCap;
 import bloodandmithril.item.items.material.Brick;
 import bloodandmithril.item.items.material.Ingot;
@@ -171,6 +172,9 @@ public class DevWindow extends Window {
 
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(Ingot.ingot(Iron.class));
+			}
+			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
+				elf.giveItem(new Carrot());
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(Ingot.ingot(Gold.class));

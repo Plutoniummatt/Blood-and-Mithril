@@ -1,11 +1,13 @@
 package bloodandmithril.item.items.food.plant;
 
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -42,6 +44,8 @@ public class Carrot extends Food {
 
 	@Override
 	public boolean consume(Individual consumer) {
+		SoundService.play(6, consumer.getState().position, true);
+		consumer.addFloatingText("+5 Hunger", Color.ORANGE);
 		consumer.increaseHunger(0.05f);
 		return true;
 	}
