@@ -1320,10 +1320,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	public void revive() {
+	public void revive(float health) {
 		if (dead) {
-			// TODO Revive
 			dead = false;
+			heal(health);
+			// TODO revival
 		}
 	}
 

@@ -52,7 +52,7 @@ public class SoundService {
 			sounds.put(femaleHit, 			Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav")));
 			sounds.put(stab, 				Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav")));
 			sounds.put(broadSwordBlock, 	Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav")));
-			sounds.put(crunch, 				Gdx.audio.newSound(Gdx.files.internal("data/music/crunch.wav")));
+//			sounds.put(crunch, 				Gdx.audio.newSound(Gdx.files.internal("data/music/crunch.wav")));
 		}
 	}
 

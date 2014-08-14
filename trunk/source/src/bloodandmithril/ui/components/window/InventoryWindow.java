@@ -172,57 +172,57 @@ public class InventoryWindow extends Window implements Refreshable {
 				return menuItem;
 			}
 		));
-		
-		
+
+
 		final MenuItem selectAll = new MenuItem(
-			"Select all", 
-			() -> {}, 
-			Color.ORANGE, 
-			Color.WHITE, 
-			Color.ORANGE, 
+			"Select all",
+			() -> {},
+			Color.ORANGE,
+			Color.WHITE,
+			Color.ORANGE,
 			null
 		);
-		
-		
+
+
 		final MenuItem deselectAll = new MenuItem(
-			"Deselect all", 
-			() -> {}, 
-			Color.ORANGE, 
-			Color.WHITE, 
-			Color.ORANGE, 
+			"Deselect all",
+			() -> {},
+			Color.ORANGE,
+			Color.WHITE,
+			Color.ORANGE,
 			null
 		);
-		
+
 		selectAll.button.setTask(() -> {
 			filters.values().stream().forEach(value -> {
 				value.b = true;
 			});
-			
+
 			menuItems.stream().forEach(item -> {
 				if (item != deselectAll && item != selectAll) {
 					item.button.setIdleColor(Color.GREEN);
 					item.button.setOverColor(Color.WHITE);
-					item.button.setDownColor(Color.GREEN);	
+					item.button.setDownColor(Color.GREEN);
 				}
 			});
 			refresh();
 		});
-		
+
 		deselectAll.button.setTask(() -> {
 			filters.values().stream().forEach(value -> {
 				value.b = false;
 			});
-			
+
 			menuItems.stream().forEach(item -> {
 				if (item != deselectAll && item != selectAll) {
 					item.button.setIdleColor(Color.RED);
 					item.button.setOverColor(Color.WHITE);
-					item.button.setDownColor(Color.RED);	
+					item.button.setDownColor(Color.RED);
 				}
 			});
 			refresh();
 		});
-		
+
 		menuItems.add(selectAll);
 		menuItems.add(deselectAll);
 		return Lists.newArrayList(menuItems).toArray(new MenuItem[menuItems.size()]);
@@ -621,10 +621,8 @@ public class InventoryWindow extends Window implements Refreshable {
 								if (ClientServerInterface.isServer()) {
 									((LiquidContainer) item).subtract(amount);
 								} else {
-									// TODO CSI
+									ClientServerInterface.SendRequest.sendDiscardLiquidRequest(((Individual)host).getId().getId(), (LiquidContainer) item, amount);
 								}
-
-								setClosing(true);
 							} catch (NumberFormatException e) {
 								UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 							}
