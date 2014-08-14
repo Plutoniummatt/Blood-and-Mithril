@@ -39,8 +39,12 @@ import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.Component;
+import bloodandmithril.ui.components.window.UnitsWindow;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
@@ -354,6 +358,20 @@ public class Domain {
 
 	public static ConcurrentHashMap<Integer, Individual> getIndividuals() {
 		return individuals;
+	}
+
+
+	public static void addIndividual(Individual indi) {
+		individuals.put(indi.getId().getId(), indi);
+		if (ClientServerInterface.isClient()) {
+			for (Component component : UserInterface.layeredComponents) {
+				if (component instanceof UnitsWindow) {
+					((UnitsWindow) component).refresh();
+				}
+			}
+		} else {
+			ClientServerInterface.SendNotification.notifyRefreshWindows();
+		}
 	}
 
 

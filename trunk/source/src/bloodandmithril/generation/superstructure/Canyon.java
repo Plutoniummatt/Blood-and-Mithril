@@ -102,7 +102,7 @@ public class Canyon extends SuperStructure {
 			rightGround = new SawToothGenerator(startingHeight - tSurfaceLineVariation/2, startingHeight + tSurfaceLineVariation/2, 2, 1, 50);
 			leftGround = new SawToothGenerator(otherHeight - tSurfaceLineVariation/2, otherHeight + tSurfaceLineVariation/2, 2, 1, 50);
 		}
-		middleHeight = getBoundaries().bottom + tBaseLineVariation;
+		middleHeight = getBoundaries().bottom * Topography.CHUNK_SIZE + tBaseLineVariation;
 		middleGround = new SawToothGenerator(middleHeight - tBaseLineVariation, middleHeight + tBaseLineVariation, 2, 1, 50);
 
 		leftCliff = new SawToothGenerator(leftCliffStart, leftCliffStart+ tCliffStepWidth, 1, 0, 100);
