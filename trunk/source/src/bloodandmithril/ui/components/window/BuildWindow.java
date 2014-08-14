@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -146,8 +147,12 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 					boolean canBuild = toConstruct.canBuildAt(getMouseWorldX(), coords.y);
 
 					if (canBuild) {
-						Domain.getProps().put(toConstruct.id, toConstruct);
-						Domain.getActiveWorld().getProps().add(toConstruct.id);
+						if (ClientServerInterface.isServer()) {
+							Domain.getProps().put(toConstruct.id, toConstruct);
+							Domain.getActiveWorld().getProps().add(toConstruct.id);
+						} else {
+							ClientServerInterface.SendRequest.sendPlaceConstructionRequest(getMouseWorldX(), coords.y, toConstruct);
+						}
 					}
 				},
 				true

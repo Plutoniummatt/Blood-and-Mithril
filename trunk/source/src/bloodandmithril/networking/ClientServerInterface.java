@@ -149,6 +149,7 @@ import bloodandmithril.networking.requests.MoveIndividual;
 import bloodandmithril.networking.requests.OpenTradeWindow;
 import bloodandmithril.networking.requests.Ping;
 import bloodandmithril.networking.requests.Ping.Pong;
+import bloodandmithril.networking.requests.PlaceConstructionRequest;
 import bloodandmithril.networking.requests.PlaySound;
 import bloodandmithril.networking.requests.RefreshWindows;
 import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
@@ -180,6 +181,7 @@ import bloodandmithril.networking.requests.TransferItems.TradeEntity;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
@@ -395,6 +397,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(PlaceConstructionRequest.class);
 		kryo.register(DiscardLiquid.class);
 		kryo.register(ParrySpark.class);
 		kryo.register(BloodSplat.class);
@@ -625,6 +628,12 @@ public class ClientServerInterface {
 		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request for (" + x + ", " + y + ")", LogLevel.DEBUG);
+		}
+
+
+		public static synchronized void sendPlaceConstructionRequest(float x, float y, Construction construction) {
+			client.sendTCP(new PlaceConstructionRequest(construction, x, y));
+			Logger.networkDebug("Sending construction placement request", LogLevel.DEBUG);
 		}
 
 
