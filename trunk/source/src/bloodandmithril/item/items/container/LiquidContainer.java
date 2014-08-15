@@ -76,7 +76,7 @@ public abstract class LiquidContainer extends Item {
 
 			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(subtracted).entrySet()) {
 				if (entry.getValue() < 0.01f) {
-					subtracted.remove(entry);
+					subtracted.remove(entry.getKey());
 				}
 			}
 

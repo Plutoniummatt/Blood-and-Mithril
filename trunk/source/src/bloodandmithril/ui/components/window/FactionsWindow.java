@@ -37,7 +37,7 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2014")
 public class FactionsWindow extends Window {
 
-	private ScrollableListingPanel<String, Object> factionsPanel;
+	private final ScrollableListingPanel<String, Object> factionsPanel;
 
 	/**
 	 * Constructor
@@ -192,6 +192,30 @@ public class FactionsWindow extends Window {
 				null
 			);
 
+			ContextMenu.MenuItem showInfo = new ContextMenu.MenuItem(
+				"Show info",
+				() -> {
+					UserInterface.addLayeredComponentUnique(
+						new MessageWindow(
+							faction.description,
+							Color.ORANGE,
+							BloodAndMithrilClient.WIDTH/2 - 175,
+							BloodAndMithrilClient.HEIGHT/2 + 100,
+							470,
+							120,
+							faction.name + " - Info",
+							true,
+							100,
+							100
+						)
+					);
+				},
+				Color.WHITE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			);
+
 			ContextMenu.MenuItem changePassword = new ContextMenu.MenuItem(
 				"Change control password",
 				() -> {
@@ -230,6 +254,7 @@ public class FactionsWindow extends Window {
 				true
 			);
 
+			menu.addFirst(showInfo);
 			if (!BloodAndMithrilClient.controlledFactions.contains(faction.factionId)) {
 				if (faction.controllable) {
 					menu.addMenuItem(control);

@@ -79,7 +79,7 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2014")
 public class DevWindow extends Window {
 
-	private ScrollableListingPanel<String, Object> panel;
+	private final ScrollableListingPanel<String, Object> panel;
 
 	/**
 	 * Constructor
