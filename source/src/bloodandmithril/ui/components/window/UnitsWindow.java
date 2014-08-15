@@ -19,6 +19,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
@@ -151,7 +152,7 @@ public class UnitsWindow extends Window implements Refreshable {
 		) {
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Individual>, String> item) {
-				return item.getKey().t.getAI().getCurrentTask().getDescription();
+				return Util.truncate(item.getKey().t.getAI().getCurrentTask().getDescription(), 8);
 			}
 
 			@Override
