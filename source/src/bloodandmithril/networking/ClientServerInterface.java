@@ -140,6 +140,7 @@ import bloodandmithril.networking.requests.DestroyTile.DestroyTileResponse;
 import bloodandmithril.networking.requests.DiscardLiquid;
 import bloodandmithril.networking.requests.DrinkLiquid;
 import bloodandmithril.networking.requests.EquipOrUnequipItem;
+import bloodandmithril.networking.requests.FollowRequest;
 import bloodandmithril.networking.requests.GenerateChunk;
 import bloodandmithril.networking.requests.GenerateChunk.GenerateChunkResponse;
 import bloodandmithril.networking.requests.IgniteFurnaceRequest;
@@ -398,6 +399,7 @@ public class ClientServerInterface {
 		kryo.setReferences(true);
 
 		kryo.register(PlaceConstructionRequest.class);
+		kryo.register(FollowRequest.class);
 		kryo.register(DiscardLiquid.class);
 		kryo.register(ParrySpark.class);
 		kryo.register(BloodSplat.class);
@@ -628,6 +630,12 @@ public class ClientServerInterface {
 		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request for (" + x + ", " + y + ")", LogLevel.DEBUG);
+		}
+
+
+		public static synchronized void sendFollowRequest(Individual follower, Individual followee) {
+			client.sendTCP(new FollowRequest(follower, followee));
+			Logger.networkDebug("Sending chunk follow request", LogLevel.DEBUG);
 		}
 
 
