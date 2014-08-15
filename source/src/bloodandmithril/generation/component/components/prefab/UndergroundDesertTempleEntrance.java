@@ -1,12 +1,12 @@
-package bloodandmithril.generation.component.prefab;
+package bloodandmithril.generation.component.components.prefab;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component;
-import bloodandmithril.generation.component.Interface;
 import bloodandmithril.generation.component.PrefabricatedComponent;
-import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
-import bloodandmithril.generation.component.Stairs;
-import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
+import bloodandmithril.generation.component.components.Stairs;
+import bloodandmithril.generation.component.components.Stairs.StairsCreationCustomization;
+import bloodandmithril.generation.component.interfaces.Interface;
+import bloodandmithril.generation.component.interfaces.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickFloor;

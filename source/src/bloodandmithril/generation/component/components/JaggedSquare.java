@@ -1,19 +1,20 @@
-package bloodandmithril.generation.component;
+package bloodandmithril.generation.component.components;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.tools.SawToothGenerator;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
  * A square with jagged edges.
- * 
+ *
  * @author Sam
  */
 public class JaggedSquare extends Component{
 	private static final long serialVersionUID = 8493868343330973687L;
-	
+
 	protected ConcurrentHashMap<Integer, Integer> top = new ConcurrentHashMap<Integer, Integer>();
 	protected ConcurrentHashMap<Integer, Integer> bottom = new ConcurrentHashMap<Integer, Integer>();
 	protected ConcurrentHashMap<Integer, Integer> left = new ConcurrentHashMap<Integer, Integer>();
@@ -25,8 +26,8 @@ public class JaggedSquare extends Component{
 
 	protected Class<? extends Tile> outerTileType;
 
-	
-	
+
+
 
 	/**
 	 * @param tLineVariation - How far the line of the square can vary inward from the boundaries.
@@ -38,12 +39,12 @@ public class JaggedSquare extends Component{
 		this.tLineVariation = tLineVariation;
 		this.innerTileType = innerTileType;
 		this.outerTileType = outerTileType;
-		
+
 		SawToothGenerator top = new SawToothGenerator(boundaries.top - tLineVariation, boundaries.top, 1, 2, 30);
 		SawToothGenerator bottom = new SawToothGenerator(boundaries.bottom, boundaries.bottom + tLineVariation, 1, 2, 30);
 		SawToothGenerator left = new SawToothGenerator(boundaries.left, boundaries.left + tLineVariation, 1, 2, 30);
 		SawToothGenerator right = new SawToothGenerator(boundaries.right - tLineVariation, boundaries.right, 1, 2, 30);
-		
+
 		for(int x = boundaries.left - 40; x < boundaries.right + 40; x++) {
 			top.generateSurfaceHeight(x, true, this.top);
 			bottom.generateSurfaceHeight(x, true, this.bottom);
