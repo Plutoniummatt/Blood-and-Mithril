@@ -80,6 +80,10 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	public void refresh(List<HashMap<ListingMenuItem<T>, A>> listings) {
 		this.listings = listings;
 
+		if (filters.isEmpty()) {
+			return;
+		}
+		
 		for (HashMap<ListingMenuItem<T>, A> item : Lists.newArrayList(this.listings)) {
 			for (ListingMenuItem<T> t : Sets.newHashSet(item.keySet())) {
 				boolean keep = false;
