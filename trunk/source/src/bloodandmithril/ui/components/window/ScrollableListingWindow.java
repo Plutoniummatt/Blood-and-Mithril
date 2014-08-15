@@ -53,7 +53,7 @@ public abstract class ScrollableListingWindow<T, A> extends Window implements Re
 	 * Builds the {@link ScrollableListingPanel} object
 	 */
 	protected void buildListing(final Map<T, A> mapToBuildFrom, final Comparator<T> sortingOrder) {
-		this.listing = new ScrollableListingPanel<T, A>(this, sortingOrder) {
+		this.listing = new ScrollableListingPanel<T, A>(this, sortingOrder, false) {
 
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<T>, A> item) {

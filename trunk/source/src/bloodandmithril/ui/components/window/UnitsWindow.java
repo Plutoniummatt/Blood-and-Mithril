@@ -146,9 +146,11 @@ public class UnitsWindow extends Window implements Refreshable {
 		individuals.clear();
 		populateList();
 		this.listing = new ScrollableListingPanel<Individual, String>(
-			this, (i1, i2) -> {
+			this, 
+			(i1, i2) -> {
 				return i1.getId().getSimpleName().compareTo(i2.getId().getSimpleName());
-			}
+			}, 
+			false
 		) {
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Individual>, String> item) {

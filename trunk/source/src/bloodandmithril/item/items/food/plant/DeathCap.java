@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.food.plant;
 
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -7,6 +8,7 @@ import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
@@ -32,10 +34,13 @@ public class DeathCap extends Food {
 
 	@Override
 	public boolean consume(Individual consumer) {
+		SoundService.play(6, consumer.getState().position, true);
 		if (cooked) {
 			consumer.increaseHunger(0.1f);
+			consumer.addFloatingText("+10 Hunger", Color.ORANGE);
 		} else {
 			consumer.addCondition(new Poison(0.1f, 0.001f));
+			consumer.addFloatingText("Poisoned!", Color.GREEN);
 		}
 		return true;
 	}

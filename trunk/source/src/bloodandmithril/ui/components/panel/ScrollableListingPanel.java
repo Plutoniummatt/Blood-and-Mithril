@@ -63,13 +63,15 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 	/** Filters used to filter this listing panel */
 	private final Collection<Predicate<T>> filters = Lists.newLinkedList();
+	private final boolean filtered;
 
 	/**
 	 * Constructor
 	 */
-	public ScrollableListingPanel(Component parent, Comparator<T> sortingComparator) {
+	public ScrollableListingPanel(Component parent, Comparator<T> sortingComparator, boolean filtered) {
 		super(parent);
 		this.sortingComparator = sortingComparator;
+		this.filtered = filtered;
 		onSetup(listings);
 	}
 
@@ -80,7 +82,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	public void refresh(List<HashMap<ListingMenuItem<T>, A>> listings) {
 		this.listings = listings;
 
-		if (filters.isEmpty()) {
+		if (filters.isEmpty() || !filtered) {
 			return;
 		}
 		

@@ -32,6 +32,7 @@ public class SoundService {
 	public static final int stab 				= 4;
 	public static final int broadSwordBlock 	= 5;
 	public static final int crunch 				= 6;
+	public static final int swallow				= 7;
 
 	private static Map<Integer, Sound> sounds = Maps.newHashMap();
 
@@ -53,6 +54,7 @@ public class SoundService {
 			sounds.put(stab, 				Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav")));
 			sounds.put(broadSwordBlock, 	Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav")));
 			sounds.put(crunch, 				Gdx.audio.newSound(Gdx.files.internal("data/music/crunch.wav")));
+			sounds.put(swallow,				Gdx.audio.newSound(Gdx.files.internal("data/music/swallow.wav")));
 		}
 	}
 
