@@ -15,15 +15,17 @@ public class Faction {
 	public final int factionId;
 	public final boolean controllable;
 	public String controlPassword = "";
+	public String description;
 	public static final int NPC = 0;
 
 	/**
 	 * Constructor
 	 */
-	public Faction(String name, int factionId, boolean controllable) {
+	public Faction(String name, int factionId, boolean controllable, String description) {
 		this.name = name;
 		this.factionId = factionId;
 		this.controllable = controllable;
+		this.description = description;
 	}
 
 

@@ -205,8 +205,8 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public void create() {
-			Domain.getFactions().put(0, new Faction("NPC", 0, false));
-			Domain.getFactions().put(1, new Faction("Elves", 1, true));
+			Domain.getFactions().put(0, new Faction("Nature", 0, false, ""));
+			Domain.getFactions().put(1, new Faction("Elves", 1, true, "Elves are cool"));
 
 			ClientServerInterface.setServer(true);
 			GameLoader.load();
