@@ -234,7 +234,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	private void createPanels(Comparator<Item> sortingComparator) {
-		proposerPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator) {
+		proposerPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, false) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -257,7 +257,7 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		};
 
-		proposeePanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator) {
+		proposeePanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, false) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -280,7 +280,7 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		};
 
-		proposerTradingPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator) {
+		proposerTradingPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, false) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -304,7 +304,7 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		};
 
-		proposeeTradingPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator) {
+		proposeeTradingPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, false) {
 
 			@Override
 			protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {

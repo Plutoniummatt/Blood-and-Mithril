@@ -57,7 +57,7 @@ public class IndividualStatusWindow extends Window {
 	public IndividualStatusWindow(final Individual individual, int x, int y, int length, int height, String title, boolean active) {
 		super(x, y, length, height, title, active, 400, 400, true, true, true);
 		this.individual = individual;
-		this.conditionsPanel = new ScrollableListingPanel<Condition, Object>(this, sortingOrder) {
+		this.conditionsPanel = new ScrollableListingPanel<Condition, Object>(this, sortingOrder, false) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Condition>, Object> item) {
 				return "";

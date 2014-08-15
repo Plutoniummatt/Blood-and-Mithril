@@ -5,6 +5,7 @@ import static bloodandmithril.util.Util.round2dp;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.items.Item;
@@ -39,12 +40,12 @@ public abstract class LiquidContainer extends Item {
 		float fraction = amount/getTotalAmount();
 
 		try {
+			SoundService.play(7, affected.getState().position, true);
 			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(containedLiquids).entrySet()) {
 				if (fraction >= 1f) {
 					entry.getKey().newInstance().drink(entry.getValue(), affected);
 					containedLiquids.remove(entry.getKey());
 				} else {
-					System.out.println("Drinking " + entry.getValue() * fraction + " of " + entry.getKey().getSimpleName());
 					entry.getKey().newInstance().drink(entry.getValue() * fraction, affected);
 					containedLiquids.put(entry.getKey(), round2dp(entry.getValue() * (1f - fraction)));
 				}
