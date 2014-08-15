@@ -1047,7 +1047,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 								new Follow(indi, thisIndividual, 10, null)
 							);
 						} else {
-							// TODO Network follow
+							ClientServerInterface.SendRequest.sendFollowRequest(indi, thisIndividual);
 						}
 					}
 				}
