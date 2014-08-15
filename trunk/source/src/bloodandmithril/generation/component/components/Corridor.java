@@ -1,10 +1,13 @@
-package bloodandmithril.generation.component;
+package bloodandmithril.generation.component.components;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
-import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
-import bloodandmithril.generation.component.Room.RoomCreationCustomization;
-import bloodandmithril.generation.component.Stairs.StairsCreationCustomization;
+import bloodandmithril.generation.component.Component;
+import bloodandmithril.generation.component.components.Room.RoomCreationCustomization;
+import bloodandmithril.generation.component.components.Stairs.StairsCreationCustomization;
+import bloodandmithril.generation.component.interfaces.Interface;
+import bloodandmithril.generation.component.interfaces.RectangularInterface;
+import bloodandmithril.generation.component.interfaces.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
 

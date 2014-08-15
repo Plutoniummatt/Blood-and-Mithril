@@ -1,6 +1,7 @@
-package bloodandmithril.generation.component;
+package bloodandmithril.generation.component.components;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.generation.component.Component;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**

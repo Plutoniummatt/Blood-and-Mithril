@@ -1,8 +1,9 @@
-package bloodandmithril.generation.component;
+package bloodandmithril.generation.component.interfaces;
 
 import java.io.Serializable;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.Component.ComponentCreationCustomization;
 
 import com.badlogic.gdx.graphics.Color;

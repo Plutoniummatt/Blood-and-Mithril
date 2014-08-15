@@ -1,12 +1,15 @@
-package bloodandmithril.generation.component;
+package bloodandmithril.generation.component.components;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.component.Corridor.CorridorCreationCustomization;
-import bloodandmithril.generation.component.RectangularInterface.RectangularInterfaceCustomization;
+import bloodandmithril.generation.component.Component;
+import bloodandmithril.generation.component.components.Corridor.CorridorCreationCustomization;
+import bloodandmithril.generation.component.interfaces.Interface;
+import bloodandmithril.generation.component.interfaces.RectangularInterface;
+import bloodandmithril.generation.component.interfaces.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.tile.Tile;
@@ -66,7 +69,7 @@ public class Stairs extends Component {
 		if(getBoundaries().isWithin(worldTileX, worldTileY)) {
 
 			// If we're on the stair line, create a stair tile and return it
-			if(worldTileY == slopeGradient * worldTileX + slopeConstant) {
+			if(worldTileY == Math.round(slopeGradient * worldTileX) + slopeConstant) {
 				try {
 					Tile newInstance = stairType.newInstance();
 					newInstance.changeToStair();
@@ -93,7 +96,7 @@ public class Stairs extends Component {
 					Tile newInstance = tileType.newInstance();
 
 					// But if we're also on the ceiling boundary, make it a smooth ceiling tile
-					if (worldTileY == slopeGradient * worldTileX + slopeConstant + corridorHeight + 1) {
+					if (worldTileY == Math.round(slopeGradient * worldTileX) + slopeConstant + corridorHeight + 1) {
 						newInstance.changeToSmoothCeiling();
 					}
 					return newInstance;
