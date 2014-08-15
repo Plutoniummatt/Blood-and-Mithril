@@ -1,7 +1,6 @@
 package bloodandmithril.generation;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.superstructure.Underground;
 import bloodandmithril.generation.tools.BiomeDecider;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
@@ -77,10 +76,9 @@ public class TerrainGenerator {
 	private void generateAboveAndBelowSurface(int x, int y, World world) {
 		if (!world.getTopography().getStructures().structureExists(x, y, true)) {
 			if (y < maxSurfaceHeightInChunks) {
-				Underground caves = new Underground(world.getWorldId()); // TODO make this procedural, not hard coded
-				caves.generate(x, y, true);
+				biomeDecider.decideAndGetSubterraneanBiome(world).generate(x, y, true);
 			} else {
-				// TODO above surface structure
+				biomeDecider.decideAndGetElevatedBiome(world).generate(x, y, true);
 			}
 		}
 	}
@@ -92,7 +90,7 @@ public class TerrainGenerator {
 			boolean generatingToRight = tempX >= chunkX;
 
 			if (!world.getTopography().getStructures().structureExists(tempX, maxSurfaceHeightInChunks, true) && !world.getTopography().getChunkMap().doesChunkExist(tempX, maxSurfaceHeightInChunks)) {
-				biomeDecider.decideAndGetBiome(world).generate(tempX, maxSurfaceHeightInChunks, generatingToRight);
+				biomeDecider.decideAndGetSurfaceBiome(world).generate(tempX, maxSurfaceHeightInChunks, generatingToRight);
 			}
 		}
 	}

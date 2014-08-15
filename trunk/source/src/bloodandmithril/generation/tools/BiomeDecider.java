@@ -4,6 +4,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.superstructure.Canyon;
 import bloodandmithril.generation.superstructure.Desert;
 import bloodandmithril.generation.superstructure.SuperStructure;
+import bloodandmithril.generation.superstructure.Underground;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.World;
 
@@ -15,11 +16,6 @@ import bloodandmithril.world.World;
 @Copyright("Matthew Peck 2014")
 public class BiomeDecider {
 
-	/**
-	 * TODO - TerrainGenerator always generates surface structures from one of the top corners of the superstructure, this means that
-	 * the height of ALL surface structures need to be the same, this restriction has negative consequences, set the Canyon height to 20 and desert to 60,
-	 * and see what happens as a canyon is generated after the desert.
-	 */
 	private static final int cSurfaceStructureHeight = 60;
 
 	/**
@@ -27,12 +23,32 @@ public class BiomeDecider {
 	 *
 	 * @return - the Biome which was decided.
 	 */
-	public SuperStructure decideAndGetBiome(World world) {
+	public SuperStructure decideAndGetSurfaceBiome(World world) {
 
 		if(Util.getRandom().nextFloat() > 0.1) {
 			return new Canyon(world.getWorldId(), 5, cSurfaceStructureHeight, 20, 50, 300, 3, 30);
 		} else {
 			return new Desert(world.getWorldId(), 50, cSurfaceStructureHeight, 30, -400, 200);
 		}
+	}
+
+
+	/**
+	 * Decides which subterranean biome to use.
+	 *
+	 * @return - the Biome which was decided.
+	 */
+	public SuperStructure decideAndGetSubterraneanBiome(World world) {
+		return new Underground(world.getWorldId());
+	}
+
+
+	/**
+	 * Decides which elevated (in the sky) biome to use.
+	 *
+	 * @return - the Biome which was decided.
+	 */
+	public SuperStructure decideAndGetElevatedBiome(World world) {
+		return null;
 	}
 }
