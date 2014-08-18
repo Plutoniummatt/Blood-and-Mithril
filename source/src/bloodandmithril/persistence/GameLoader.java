@@ -1,8 +1,11 @@
 package bloodandmithril.persistence;
 
+import java.util.Set;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.persistence.character.IndividualLoader;
 import bloodandmithril.persistence.item.ItemLoader;
 import bloodandmithril.persistence.prop.PropLoader;
@@ -10,7 +13,10 @@ import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldState;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Sets;
 
 
 /**
@@ -24,7 +30,8 @@ public class GameLoader {
 	/**
 	 * Loads a saved game
 	 */
-	public static void load() {
+	public static void load(String name) {
+		GameSaver.savePath = "save/" + name;
 		ChunkLoader.loadGenerationData();
 		ChunkLoader.loadWorlds();
 		IndividualLoader.loadAll();
@@ -34,6 +41,21 @@ public class GameLoader {
 			loadCameraPosition();
 		}
 		loadCurrentEpoch();
+	}
+
+
+	/** Loads and returns a collection of metadata of saved games */
+	public static Set<PersistenceMetaData> loadMetaData() {
+		Set<PersistenceMetaData> data = Sets.newHashSet();
+
+		FileHandle local = Gdx.files.local("save");
+		for (FileHandle directory : local.list()) {
+			if (directory.isDirectory()) {
+				data.add(PersistenceUtil.decode(directory.child("metadata.txt")));
+			}
+		}
+
+		return data;
 	}
 
 

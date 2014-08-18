@@ -1,11 +1,16 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.persistence.GameSaver.isSaving;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Deque;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.faction.Faction;
@@ -13,12 +18,14 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
+import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
@@ -30,7 +37,7 @@ import com.badlogic.gdx.graphics.Color;
 @Copyright("Matthew Peck 2014")
 public class MainMenuWindow extends Window {
 
-	private Button connect, options, exit;
+	private Button singlePlayer, multiPlayer, options, exit;
 
 	/**
 	 * Overloaded constructor - uses default colors
@@ -43,15 +50,16 @@ public class MainMenuWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		connect.render(width/2 + x, y - 26, isActive() && !isSaving() && BloodAndMithrilClient.domain == null, getAlpha());
-		options.render(width/2 + x, y - 46, isActive() && !isSaving(), getAlpha());
-		exit.render(width/2 + x, y - 66, isActive() && !isSaving(), getAlpha());
+		singlePlayer.render(width/2 + x, y - 26, isActive() && !isSaving(), getAlpha());
+		multiPlayer.render(width/2 + x, y - 46, isActive() && !isSaving() && BloodAndMithrilClient.domain == null, getAlpha());
+		options.render(width/2 + x, y - 66, isActive() && !isSaving(), getAlpha());
+		exit.render(width/2 + x, y - 86, isActive() && !isSaving(), getAlpha());
 	}
 
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		connect.click();
+		multiPlayer.click();
 		exit.click();
 
 		if (options.click()) {
@@ -59,6 +67,74 @@ public class MainMenuWindow extends Window {
 			windowsCopy.addLast(
 				new OptionsWindow()
 			);
+		}
+
+		if (singlePlayer.click()) {
+			copy.add(new ContextMenu(
+				getMouseScreenX(),
+				getMouseScreenY(),
+				true,
+				new ContextMenu.MenuItem(
+					"New game",
+					() -> {
+						singlePlayer();
+					},
+					Color.ORANGE,
+					Color.GREEN,
+					Color.ORANGE,
+					null
+				),
+				new ContextMenu.MenuItem(
+					"Save game",
+					() -> {
+						if (BloodAndMithrilClient.domain == null) {
+							return;
+						}
+
+						UserInterface.addLayeredComponent(
+							new TextInputWindow(
+								BloodAndMithrilClient.WIDTH / 2 - 125,
+								BloodAndMithrilClient.HEIGHT/2 + 50,
+								250,
+								100,
+								"Enter name",
+								250,
+								100,
+								args -> {
+									String input = (String)args[0];
+									input.replace(" ", "");
+
+									if (StringUtils.isBlank(input)) {
+										UserInterface.addMessage("Invalid name", "Please enter a valid name.");
+										return;
+									}
+
+									GameSaver.save(input, false);
+								},
+								"Save",
+								true,
+								""
+							)
+						);
+					},
+					BloodAndMithrilClient.domain == null ? Colors.UI_DARK_GRAY : Color.ORANGE,
+					BloodAndMithrilClient.domain == null ? Colors.UI_DARK_GRAY : Color.GREEN,
+					BloodAndMithrilClient.domain == null ? Colors.UI_DARK_GRAY : Color.ORANGE,
+					null
+				),
+				new ContextMenu.MenuItem(
+					"Load game",
+					() -> {
+						UserInterface.addLayeredComponentUnique(
+							new LoadGameWindow()
+						);
+					},
+					Color.ORANGE,
+					Color.GREEN,
+					Color.ORANGE,
+					null
+				)
+			));
 		}
 	}
 
@@ -72,12 +148,27 @@ public class MainMenuWindow extends Window {
 	 * Loads all buttons
 	 */
 	private void loadButtons() {
-		connect = new Button(
-			"Connect",
+
+		singlePlayer = new Button(
+			"Single player",
 			Fonts.defaultFont,
 			0,
 			8,
-			80,
+			120,
+			16,
+			() -> {},
+			Color.ORANGE,
+			Color.GREEN,
+			Color.GRAY,
+			UIRef.M
+		);
+
+		multiPlayer = new Button(
+			"Multiplayer",
+			Fonts.defaultFont,
+			0,
+			8,
+			100,
 			16,
 			() -> {
 				if (BloodAndMithrilClient.domain != null) {
@@ -102,14 +193,7 @@ public class MainMenuWindow extends Window {
 							}
 
 							if (args[0].toString().equals("local")) {
-								Domain.getFactions().put(0, new Faction("Nature", 0, false, ""));
-								Domain.getFactions().put(1, new Faction("Elves", 1, true, "Elves are cool"));
-								ClientServerInterface.setServer(true);
-								BloodAndMithrilClient.clientCSIThread.execute(() -> {
-									GameLoader.load();
-									BloodAndMithrilClient.domain = new Domain();
-									connected();
-								});
+								singlePlayer();
 							} else {
 								UserInterface.addMessage("Connecting", "Attemping to connect to " + args[0].toString());
 								BloodAndMithrilClient.clientCSIThread.execute(() -> {
@@ -216,9 +300,24 @@ public class MainMenuWindow extends Window {
 
 
 	/**
+	 * Single player mode was selected
+	 */
+	private void singlePlayer() {
+		Domain.getFactions().put(0, new Faction("Nature", 0, false, ""));
+		Domain.getFactions().put(1, new Faction("Elves", 1, true, "Elves are cool"));
+		ClientServerInterface.setServer(true);
+		BloodAndMithrilClient.clientCSIThread.execute(() -> {
+			GameLoader.load("New game - " + new Date().toString());
+			BloodAndMithrilClient.domain = new Domain();
+			connected();
+		});
+	}
+
+
+	/**
 	 * Connection was successful, begin setup.
 	 */
-	private void connected() {
+	public static void connected() {
 		UserInterface.buttons.remove("connect");
 		UserInterface.setup();
 		SoundService.fadeOut(2f);
@@ -230,6 +329,8 @@ public class MainMenuWindow extends Window {
 				component.setClosing(true);
 			}
 		}
+
+		UserInterface.contextMenus.clear();
 	}
 
 
@@ -241,5 +342,11 @@ public class MainMenuWindow extends Window {
 	@Override
 	public Object getUniqueIdentifier() {
 		return getClass();
+	}
+
+
+	@Override
+	public boolean isActive() {
+		return super.isActive() && UserInterface.contextMenus.isEmpty();
 	}
 }

@@ -286,11 +286,11 @@ public class BottomBar extends Component {
 					BloodAndMithrilClient.WIDTH/2 - 100,
 					BloodAndMithrilClient.HEIGHT/2 + 55,
 					200,
-					110,
+					130,
 					"Main menu",
 					true,
 					200,
-					110,
+					130,
 					false,
 					true
 				)

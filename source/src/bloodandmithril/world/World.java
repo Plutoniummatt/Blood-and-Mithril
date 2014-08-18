@@ -127,4 +127,9 @@ public class World implements Serializable {
 	public void setWaterAttenuationDepth(float waterAttenuationDepth) {
 		this.waterAttenuationDepth = waterAttenuationDepth;
 	}
+
+
+	public void setParticles(Collection<Particle> particles) {
+		this.particles = particles;
+	}
 }
