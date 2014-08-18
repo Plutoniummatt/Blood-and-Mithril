@@ -1,6 +1,7 @@
 package bloodandmithril.server;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -209,7 +210,7 @@ public class BloodAndMithrilServer {
 			Domain.getFactions().put(1, new Faction("Elves", 1, true, "Elves are cool"));
 
 			ClientServerInterface.setServer(true);
-			GameLoader.load();
+			GameLoader.load("new game " + new Date().toString());
 			gameWorld = new Domain();
 
 			Gdx.input.setInputProcessor(this);
@@ -254,10 +255,6 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public boolean keyDown(int keycode) {
-
-			if (keycode == Input.Keys.S) {
-				GameSaver.save(false);
-			}
 
 			if (keycode == Input.Keys.P) {
 				Domain.getIndividuals().get(1).addCondition(new Poison(1f, 0.1f));

@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.StringUtils;
+
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -582,7 +584,31 @@ public class DevWindow extends Window {
 					310,
 					16,
 					() -> {
-						GameSaver.save(false);
+						UserInterface.addLayeredComponent(
+							new TextInputWindow(
+								BloodAndMithrilClient.WIDTH / 2 - 125,
+								BloodAndMithrilClient.HEIGHT/2 + 50,
+								250,
+								100,
+								"Enter name",
+								250,
+								100,
+								args -> {
+									String input = (String)args[0];
+									input.replace(" ", "");
+
+									if (StringUtils.isBlank(input)) {
+										UserInterface.addMessage("Invalid name", "Please enter a valid name.");
+										return;
+									}
+
+									GameSaver.save(input, false);
+								},
+								"Save",
+								true,
+								""
+							)
+						);
 					},
 					Color.GREEN,
 					Color.WHITE,

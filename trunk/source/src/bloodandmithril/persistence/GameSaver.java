@@ -1,5 +1,9 @@
 package bloodandmithril.persistence;
 
+import static bloodandmithril.persistence.PersistenceUtil.encode;
+
+import java.io.Serializable;
+import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -13,6 +17,7 @@ import bloodandmithril.persistence.world.ChunkSaver;
 import bloodandmithril.util.Task;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * Class for game saving
@@ -29,7 +34,10 @@ public class GameSaver {
 	public static final BlockingQueue<Task> saverTasks = new ArrayBlockingQueue<Task>(500);
 
 	/** File path for saved games */
-	public static final String savePath = "save/testWorld";
+	public static String savePath;
+
+	/** Name to use for saved game */
+	private static String savedGameName = null;
 
 	/** Boolean switches used for processing */
 	private static boolean pending = false, saving = false, andExit = false, exiting = false;
@@ -37,7 +45,9 @@ public class GameSaver {
 	/**
 	 * Saves the game
 	 */
-	public static synchronized void save(boolean exitAfter) {
+	public static synchronized void save(String name, boolean exitAfter) {
+		savedGameName = name;
+		savePath = "save/" + name;
 		pending = true;
 		andExit = exitAfter;
 	}
@@ -60,6 +70,8 @@ public class GameSaver {
 			}
 		);
 
+		saveMetaData();
+
 		// Save chunks + generation data
 		ChunkSaver.save();
 
@@ -73,6 +85,13 @@ public class GameSaver {
 
 		PropSaver.saveAll();
 		ItemSaver.saveAll();
+	}
+
+
+	/** Saves metadata */
+	private static void saveMetaData() {
+		FileHandle metadata = Gdx.files.local(GameSaver.savePath + "/metadata.txt");
+		metadata.writeString(encode(new PersistenceMetaData(savedGameName)), false);
 	}
 
 
@@ -108,5 +127,22 @@ public class GameSaver {
 	 */
 	private static boolean outstandingTasks() {
 		return AIProcessor.aiThreadTasks.size() + AIProcessor.pathFinderTasks.size() + ChunkLoader.loaderTasks.size() != 0;
+	}
+
+
+	/**
+	 * Persistence meta data, containing meta data of saved games
+	 *
+	 * @author Matt
+	 */
+	public static class PersistenceMetaData implements Serializable {
+		private static final long serialVersionUID = 7818486179446462250L;
+
+		public PersistenceMetaData(String name) {
+			this.name = name;
+		}
+
+		public String name;
+		public Date date = new Date();
 	}
 }
