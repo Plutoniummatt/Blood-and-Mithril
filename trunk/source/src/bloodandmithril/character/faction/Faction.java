@@ -1,5 +1,7 @@
 package bloodandmithril.character.faction;
 
+import java.io.Serializable;
+
 import bloodandmithril.core.Copyright;
 
 
@@ -9,7 +11,8 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Faction {
+public class Faction implements Serializable {
+	private static final long serialVersionUID = -1391877335358331635L;
 
 	public final String name;
 	public final int factionId;

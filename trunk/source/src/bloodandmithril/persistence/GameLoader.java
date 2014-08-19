@@ -1,7 +1,14 @@
 package bloodandmithril.persistence;
 
-import java.util.Set;
+import static bloodandmithril.persistence.GameSaver.savePath;
+import static bloodandmithril.persistence.PersistenceUtil.decode;
+import static bloodandmithril.util.Logger.loaderDebug;
+import static com.badlogic.gdx.Gdx.files;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
@@ -10,6 +17,8 @@ import bloodandmithril.persistence.character.IndividualLoader;
 import bloodandmithril.persistence.item.ItemLoader;
 import bloodandmithril.persistence.prop.PropLoader;
 import bloodandmithril.persistence.world.ChunkLoader;
+import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldState;
 
@@ -34,6 +43,7 @@ public class GameLoader {
 		GameSaver.savePath = "save/" + name;
 		ChunkLoader.loadGenerationData();
 		ChunkLoader.loadWorlds();
+		loadFactions();
 		IndividualLoader.loadAll();
 		PropLoader.loadAll();
 		ItemLoader.loadAll();
@@ -41,6 +51,17 @@ public class GameLoader {
 			loadCameraPosition();
 		}
 		loadCurrentEpoch();
+	}
+
+
+	@SuppressWarnings("unchecked")
+	private static void loadFactions() {
+		try {
+			ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(savePath + "/world/factions.txt"));
+			Domain.setFactions(decoded);;
+		} catch (Exception e) {
+			loaderDebug("Failed to load factions", LogLevel.WARN);
+		}
 	}
 
 
