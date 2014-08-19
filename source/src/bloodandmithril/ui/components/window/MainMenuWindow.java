@@ -102,9 +102,8 @@ public class MainMenuWindow extends Window {
 								100,
 								args -> {
 									String input = (String)args[0];
-									input.replace(" ", "");
 
-									if (StringUtils.isBlank(input)) {
+									if (StringUtils.isBlank(input.replace(" ", ""))) {
 										UserInterface.addMessage("Invalid name", "Please enter a valid name.");
 										return;
 									}

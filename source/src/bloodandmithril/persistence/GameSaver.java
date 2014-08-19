@@ -15,6 +15,7 @@ import bloodandmithril.persistence.prop.PropSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.persistence.world.ChunkSaver;
 import bloodandmithril.util.Task;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -75,6 +76,8 @@ public class GameSaver {
 		// Save chunks + generation data
 		ChunkSaver.save();
 
+		saveFactions();
+
 		// Save all individuals
 		saverTasks.add(
 			() -> {
@@ -85,6 +88,12 @@ public class GameSaver {
 
 		PropSaver.saveAll();
 		ItemSaver.saveAll();
+	}
+
+
+	private static void saveFactions() {
+		FileHandle metadata = Gdx.files.local(GameSaver.savePath + "/world/factions.txt");
+		metadata.writeString(encode(Domain.getFactions()), false);
 	}
 
 
