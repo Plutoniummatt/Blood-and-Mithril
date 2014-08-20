@@ -78,6 +78,7 @@ public class ChunkSaver {
 	 */
 	public static void save() {
 		setup();
+		persistUnloadedChunks();
 		if (GameSaver.saverThread.isAlive()) {
 			GameSaver.saverTasks.add(() -> {
 				FileHandle structures = Gdx.files.local(GameSaver.savePath + "/world/structures.txt");
@@ -102,6 +103,17 @@ public class ChunkSaver {
 			});
 		} else {
 			throw new RuntimeException("Something caused the saver thread to terminate");
+		}
+	}
+
+
+	/**
+	 * Persists any unloaded chunks that have been saved from a previous save.
+	 */
+	private static void persistUnloadedChunks() {
+		if (GameSaver.mostRecentlyLoaded != null) {
+			FileHandle existingSavedChunks = Gdx.files.local("save/" + GameSaver.mostRecentlyLoaded.name + "/world/chunkData.zip");
+			existingSavedChunks.copyTo(Gdx.files.local(GameSaver.savePath + "/world/chunkData.zip"));
 		}
 	}
 

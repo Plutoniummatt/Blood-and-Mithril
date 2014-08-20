@@ -71,7 +71,7 @@ public class ChunkLoader {
 		loaderThread.setDaemon(false);
 		loaderThread.start();
 	}
-
+	
 
 	/**
 	 * Processes items in the loader thread

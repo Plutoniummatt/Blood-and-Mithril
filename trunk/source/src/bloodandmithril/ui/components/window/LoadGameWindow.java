@@ -106,7 +106,7 @@ public class LoadGameWindow extends Window {
 						16,
 						() -> {
 							ClientServerInterface.setServer(true);
-							GameLoader.load(metadata.name);
+							GameLoader.load(metadata, false);
 							BloodAndMithrilClient.domain = new Domain();
 							MainMenuWindow.connected();
 						},

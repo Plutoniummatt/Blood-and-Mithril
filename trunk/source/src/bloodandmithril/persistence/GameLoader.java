@@ -39,8 +39,13 @@ public class GameLoader {
 	/**
 	 * Loads a saved game
 	 */
-	public static void load(String name) {
-		GameSaver.savePath = "save/" + name;
+	public static void load(PersistenceMetaData metadata, boolean newGame) {
+		GameSaver.savePath = "save/" + metadata.name;
+		
+		if (!newGame) {
+			GameSaver.mostRecentlyLoaded = metadata;
+		}
+		
 		ChunkLoader.loadGenerationData();
 		ChunkLoader.loadWorlds();
 		loadFactions();

@@ -42,6 +42,7 @@ import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
@@ -210,7 +211,7 @@ public class BloodAndMithrilServer {
 			Domain.getFactions().put(1, new Faction("Elves", 1, true, "Elves are cool"));
 
 			ClientServerInterface.setServer(true);
-			GameLoader.load("new game " + new Date().toString());
+			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 			gameWorld = new Domain();
 
 			Gdx.input.setInputProcessor(this);
