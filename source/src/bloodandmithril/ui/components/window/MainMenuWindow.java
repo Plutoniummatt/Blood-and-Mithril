@@ -19,6 +19,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -306,7 +307,7 @@ public class MainMenuWindow extends Window {
 		Domain.getFactions().put(1, new Faction("Elves", 1, true, "Elves are cool"));
 		ClientServerInterface.setServer(true);
 		BloodAndMithrilClient.clientCSIThread.execute(() -> {
-			GameLoader.load("New game - " + new Date().toString());
+			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 			BloodAndMithrilClient.domain = new Domain();
 			connected();
 		});

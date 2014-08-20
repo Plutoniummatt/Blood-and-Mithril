@@ -39,14 +39,14 @@ public class TerrainGenerator {
 		// Populate the tile arrays.
 		populateTileArrays(chunkX, chunkY, fTiles, bTiles, world.getTopography().getStructures());
 
+		// Create the chunk and put it in the ChunkMap.
+		Chunk newChunk = new Chunk(fTiles, bTiles, chunkX, chunkY, world.getWorldId());
+		world.getTopography().getChunkMap().addChunk(chunkX, chunkY, newChunk);
+		
 		// If the structure has finished generating, we can delete it from the StructureMap, otherwise, decrement the number of chunks left to be generated on the structure
 		if (world.getTopography().getStructures().structureExists(chunkX, chunkY, true)) {
 			world.getTopography().getStructures().deleteChunkFromStructureKeyMapAndCheckIfStructureCanBeDeleted(chunkX, chunkY, true);
 		}
-
-		// Create the chunk and put it in the ChunkMap.
-		Chunk newChunk = new Chunk(fTiles, bTiles, chunkX, chunkY, world.getWorldId());
-		world.getTopography().getChunkMap().addChunk(chunkX, chunkY, newChunk);
 	}
 
 

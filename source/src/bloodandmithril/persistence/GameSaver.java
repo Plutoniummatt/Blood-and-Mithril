@@ -39,6 +39,9 @@ public class GameSaver {
 
 	/** Name to use for saved game */
 	private static String savedGameName = null;
+	
+	/** The meta data of the most recently loaded saved game */
+	public static PersistenceMetaData mostRecentlyLoaded;
 
 	/** Boolean switches used for processing */
 	private static boolean pending = false, saving = false, andExit = false, exiting = false;
