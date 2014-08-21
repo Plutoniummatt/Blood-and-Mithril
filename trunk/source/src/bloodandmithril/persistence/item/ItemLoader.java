@@ -29,7 +29,7 @@ public class ItemLoader {
 		try {
 			Domain.setItems((ConcurrentHashMap<Integer, Item>) decode(files.local(savePath + "/world/items.txt")));
 		} catch (Exception e) {
-			loaderDebug("Failed to load items", LogLevel.WARN);
+			loaderDebug("Failed to load items", LogLevel.DEBUG);
 		}
 	}
 }

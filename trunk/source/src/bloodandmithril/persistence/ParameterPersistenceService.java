@@ -37,7 +37,7 @@ public class ParameterPersistenceService {
 			parameters = decode(file);
 			return parameters;
 		} catch (Exception e) {
-			Logger.loaderDebug("No parameters found on disk, using new parameter set", LogLevel.WARN);
+			Logger.loaderDebug("No parameters found on disk, using new parameter set", LogLevel.DEBUG);
 			parameters = new Parameters();
 			return parameters;
 		}

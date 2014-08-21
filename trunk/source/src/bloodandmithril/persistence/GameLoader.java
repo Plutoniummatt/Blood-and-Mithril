@@ -41,11 +41,13 @@ public class GameLoader {
 	 */
 	public static void load(PersistenceMetaData metadata, boolean newGame) {
 		GameSaver.savePath = "save/" + metadata.name;
-		
-		if (!newGame) {
+
+		if (newGame) {
+			GameSaver.mostRecentlyLoaded = null;
+		} else {
 			GameSaver.mostRecentlyLoaded = metadata;
 		}
-		
+
 		ChunkLoader.loadGenerationData();
 		ChunkLoader.loadWorlds();
 		loadFactions();
@@ -65,7 +67,7 @@ public class GameLoader {
 			ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(savePath + "/world/factions.txt"));
 			Domain.setFactions(decoded);;
 		} catch (Exception e) {
-			loaderDebug("Failed to load factions", LogLevel.WARN);
+			loaderDebug("Failed to load factions", LogLevel.DEBUG);
 		}
 	}
 
