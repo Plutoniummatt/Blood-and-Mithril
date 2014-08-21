@@ -40,14 +40,15 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 	 */
 	public RequiredMaterialsPanel(Component parent, Container materialsContainer, Map<Item, Integer> requiredMaterials) {
 		super(
-			parent, 
+			parent,
 			new Comparator<Item>() {
 				@Override
 				public int compare(Item o1, Item o2) {
 					return o1.getSingular(false).compareTo(o2.getSingular(false));
 				}
-			}, 
-			false
+			},
+			false,
+			35
 		);
 		this.materialsContainer = materialsContainer;
 		this.requiredMaterials = requiredMaterials;

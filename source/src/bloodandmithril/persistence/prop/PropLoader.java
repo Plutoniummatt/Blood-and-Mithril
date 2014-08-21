@@ -28,7 +28,7 @@ public class PropLoader {
 		try {
 			Domain.setProps((ConcurrentHashMap<Integer, Prop>) decode(files.local(savePath + "/world/props.txt")));
 		} catch (Exception e) {
-			loaderDebug("Failed to load props", LogLevel.WARN);
+			loaderDebug("Failed to load props", LogLevel.DEBUG);
 		}
 	}
 }

@@ -71,7 +71,7 @@ public class ChunkLoader {
 		loaderThread.setDaemon(false);
 		loaderThread.start();
 	}
-	
+
 
 	/**
 	 * Processes items in the loader thread
@@ -123,7 +123,7 @@ public class ChunkLoader {
 			}
 			Domain.setWorlds(worlds);
 		} catch (Exception e) {
-			Logger.loaderDebug("Failed to load worlds", LogLevel.WARN);
+			Logger.loaderDebug("Failed to load worlds", LogLevel.DEBUG);
 		}
 
 		if (!Domain.getWorlds().isEmpty()) {
@@ -134,7 +134,7 @@ public class ChunkLoader {
 					ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/superStructureKeys.txt"));
 					world.getValue().getTopography().getStructures().setSuperStructureKeys(keys);
 				} catch (Exception e) {
-					Logger.loaderDebug("Failed to load chunk super structure structure keys", LogLevel.WARN);
+					Logger.loaderDebug("Failed to load chunk super structure structure keys", LogLevel.DEBUG);
 					ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> map = new ConcurrentHashMap<>();
 					world.getValue().getTopography().getStructures().setSuperStructureKeys(map);
 				}
@@ -143,7 +143,7 @@ public class ChunkLoader {
 					ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/subStructureKeys.txt"));
 					world.getValue().getTopography().getStructures().setSubStructureKeys(keys);
 				} catch (Exception e) {
-					Logger.loaderDebug("Failed to load chunk sub structure keys", LogLevel.WARN);
+					Logger.loaderDebug("Failed to load chunk sub structure keys", LogLevel.DEBUG);
 					ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> map = new ConcurrentHashMap<>();
 					world.getValue().getTopography().getStructures().setSubStructureKeys(map);
 				}
@@ -152,7 +152,7 @@ public class ChunkLoader {
 					ConcurrentHashMap<Integer, Integer> keys = decode(Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/surfaceHeight.txt"));
 					world.getValue().getTopography().getStructures().setSurfaceHeight(keys);
 				} catch (Exception e) {
-					Logger.loaderDebug("Failed to load surface height", LogLevel.WARN);
+					Logger.loaderDebug("Failed to load surface height", LogLevel.DEBUG);
 					ConcurrentHashMap<Integer, Integer> map = new ConcurrentHashMap<>();
 					world.getValue().getTopography().getStructures().setSurfaceHeight(map);
 				}
@@ -168,7 +168,7 @@ public class ChunkLoader {
 				ConcurrentHashMap<Integer, Structure> structures = decode(Gdx.files.local(GameSaver.savePath + "/world/structures.txt"));
 				Structures.setStructures(structures);
 			} catch (Exception e) {
-				Logger.loaderDebug("Failed to load structures", LogLevel.WARN);
+				Logger.loaderDebug("Failed to load structures", LogLevel.DEBUG);
 				Structures.setStructures(new ConcurrentHashMap<Integer, Structure>());
 			}
 		}
@@ -177,7 +177,7 @@ public class ChunkLoader {
 			try {
 				Layers.layers = decode(Gdx.files.local(GameSaver.savePath + "/world/layers.txt"));
 			} catch (Exception e) {
-				Logger.loaderDebug("Failed to load layers", LogLevel.WARN);
+				Logger.loaderDebug("Failed to load layers", LogLevel.DEBUG);
 				Layers.layers = new ConcurrentSkipListMap<Integer, TwoInts>();
 			}
 		}

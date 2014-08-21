@@ -89,7 +89,7 @@ public class DevWindow extends Window {
 	public DevWindow(int x, int y, int length, int height, boolean active) {
 		super(x, y, length, height, "Developer", active, 500, 300, false, true, true);
 
-		panel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false) {
+		panel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
 				return "";

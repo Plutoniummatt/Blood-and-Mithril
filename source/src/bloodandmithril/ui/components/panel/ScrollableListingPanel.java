@@ -64,14 +64,16 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	/** Filters used to filter this listing panel */
 	private final Collection<Predicate<T>> filters = Lists.newLinkedList();
 	private final boolean filtered;
+	private final int extraColumnWidth;
 
 	/**
 	 * Constructor
 	 */
-	public ScrollableListingPanel(Component parent, Comparator<T> sortingComparator, boolean filtered) {
+	public ScrollableListingPanel(Component parent, Comparator<T> sortingComparator, boolean filtered, int extraColumnWidth) {
 		super(parent);
 		this.sortingComparator = sortingComparator;
 		this.filtered = filtered;
+		this.extraColumnWidth = extraColumnWidth;
 		onSetup(listings);
 	}
 
@@ -85,7 +87,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		if (filters.isEmpty() || !filtered) {
 			return;
 		}
-		
+
 		for (HashMap<ListingMenuItem<T>, A> item : Lists.newArrayList(this.listings)) {
 			for (ListingMenuItem<T> t : Sets.newHashSet(item.keySet())) {
 				boolean keep = false;
@@ -280,7 +282,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 					x + item.getKey().button.width/2 + 6,
 					y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25,
 					parent.isActive() && UserInterface.contextMenus.isEmpty(), parent.getAlpha(),
-					width - 35
+					width - extraColumnWidth
 				);
 
 				defaultFont.draw(spriteBatch, getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
