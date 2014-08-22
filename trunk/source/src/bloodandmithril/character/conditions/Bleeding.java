@@ -40,7 +40,7 @@ public class Bleeding extends Condition {
 					2f,
 					Domain.getActiveWorld().getWorldId(),
 					new Countdown(Util.getRandom().nextInt(1000)),
-					5f
+					0f
 				)
 			);
 		}
