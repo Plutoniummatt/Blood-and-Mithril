@@ -8,6 +8,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
+import bloodandmithril.prop.construction.farm.GenericOvergroundFarm;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.Carrot;
 import bloodandmithril.ui.components.ContextMenu;
@@ -75,6 +76,7 @@ public abstract class Prop implements Serializable {
 		Carrot.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 176, 12, 17);
 		Anvil.anvil = new TextureRegion(Domain.gameWorldTexture, 363, 225, 44, 18);
 		WorkBench.workbench = new TextureRegion(Domain.gameWorldTexture, 559, 219, 80, 33);
+		GenericOvergroundFarm.texture = new TextureRegion(Domain.gameWorldTexture, 0, 0, 300, 100);
 	}
 
 

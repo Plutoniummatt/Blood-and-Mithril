@@ -24,9 +24,11 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.RequiredMaterialsWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
+import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -49,12 +51,16 @@ public abstract class Construction extends Prop implements Container {
 	/** The container used to store construction materials during the construction stage */
 	private ContainerImpl materialContainer = new ContainerImpl(1000, true);
 
+	/** Returns whether this {@link Construction} can be built on a tile type */
+	private final SerializableMappingFunction<Tile, Boolean> canBuildOnTopOf;
+
 	/**
 	 * Constructor
 	 */
-	protected Construction(float x, float y, int width, int height, boolean grounded, float constructionRate) {
+	protected Construction(float x, float y, int width, int height, boolean grounded, float constructionRate, SerializableMappingFunction<Tile, Boolean> canBuildOnTopOf) {
 		super(x, y, width, height, grounded, Depth.MIDDLEGROUND);
 		this.constructionRate = constructionRate;
+		this.canBuildOnTopOf = canBuildOnTopOf;
 	}
 
 
@@ -231,12 +237,14 @@ public abstract class Construction extends Prop implements Container {
 
 
 		for (int i = 0; i <= xSteps; i++) {
-			if (Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y - TILE_SIZE/2, true).isPassable()) {
+			Tile tileUnder = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y - TILE_SIZE/2, true);
+			if (tileUnder.isPassable() || canBuildOnTopOf != null && !canBuildOnTopOf.apply(tileUnder)) {
 				return false;
 			}
 
 			for (int j = 1; j <= ySteps; j++) {
-				if (!Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true).isPassable()) {
+				Tile tileOverlapping = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true);
+				if (!tileOverlapping.isPassable()) {
 					return false;
 				}
 			}

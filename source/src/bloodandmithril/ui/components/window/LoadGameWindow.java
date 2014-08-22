@@ -63,7 +63,7 @@ public class LoadGameWindow extends Window {
 				return s1.date.compareTo(s2.date);
 			},
 			false,
-			170
+			200
 		) {
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date> item) {

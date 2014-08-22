@@ -35,6 +35,7 @@ import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
+import bloodandmithril.prop.construction.farm.GenericOvergroundFarm;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.SerializableColor;
@@ -420,7 +421,8 @@ public class Elf extends Humanoid {
 		return Sets.newHashSet(
 			new Furnace(0, 0),
 			new WorkBench(0, 0),
-			new Anvil(0, 0)
+			new Anvil(0, 0),
+			new GenericOvergroundFarm(0, 0)
 		);
 	}
 

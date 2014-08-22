@@ -51,7 +51,7 @@ public abstract class CraftingStation extends Construction {
 	 * Constructor
 	 */
 	protected CraftingStation(float x, float y, int width, int height, float constructionRate) {
-		super(x, y, width, height, true, constructionRate);
+		super(x, y, width, height, true, constructionRate, null);
 	}
 
 
