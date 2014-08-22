@@ -3,16 +3,20 @@ package bloodandmithril.prop.construction.farm;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 
 import java.util.Map;
+import java.util.Set;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.plant.Carrot;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Overground farm for farming....stuff
@@ -76,5 +80,11 @@ public class GenericOvergroundFarm extends Farm {
 		public Boolean apply(Tile t) {
 			return t instanceof SoilTile;
 		}
+	}
+
+
+	@Override
+	public Set<Growable> getGrowables() {
+		return Sets.newHashSet(new Carrot(0, 0));
 	}
 }

@@ -19,6 +19,9 @@ import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.tile.Tile;
+import bloodandmithril.prop.Growable;
+
+import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -131,6 +134,12 @@ public abstract class Farm extends Construction {
 
 		return menu;
 	}
+	
+	
+	/**
+	 * @return A set of {@link Growable}s that are able to be grown on this farm
+	 */
+	public abstract Set<Growable> getGrowables();
 
 
 	@Override
