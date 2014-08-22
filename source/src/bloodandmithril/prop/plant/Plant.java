@@ -1,8 +1,8 @@
 package bloodandmithril.prop.plant;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.Growable;
 
 /**
  * A Plant {@link Prop}
@@ -10,7 +10,7 @@ import bloodandmithril.prop.Prop;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public abstract class Plant extends Harvestable {
+public abstract class Plant extends Growable {
 	private static final long serialVersionUID = -4865430066854382581L;
 
 	/**

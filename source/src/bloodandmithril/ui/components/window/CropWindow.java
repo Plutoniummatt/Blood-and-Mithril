@@ -1,17 +1,40 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+
+
+
+
+
+
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import bloodandmithril.core.BloodAndMithrilClient;
+
+
+
+
+
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.Maps;
+
+
+
+
+
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.construction.farm.Farm;
+import bloodandmithril.ui.UserInterface.UIRef;
+import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
+import bloodandmithril.util.Fonts;
 
 /**
  * Window to show the status of the current crop for a {@link Farm}
@@ -29,8 +52,8 @@ public class CropWindow extends Window {
 	 */
 	public CropWindow(Farm farm) {
 		super(
-			BloodAndMithrilClient.WIDTH - 150,
-			BloodAndMithrilClient.HEIGHT + 200,
+			WIDTH/2 - 150,
+			HEIGHT/2 + 200,
 			300,
 			400,
 			farm.getTitle() + " - Current crop",
@@ -52,18 +75,19 @@ public class CropWindow extends Window {
 		) {
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Growable>, Integer> item) {
-				return null;
+				return Integer.toString(item.getValue()) + "%";
 			}
 
 
 			@Override
 			protected int getExtraStringOffset() {
-				return 0;
+				return 75;
 			}
 
 
 			@Override
 			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<Growable>, Integer>> listings) {
+				listings.add(buildMap());
 			}
 
 
@@ -72,6 +96,39 @@ public class CropWindow extends Window {
 				return false;
 			}
 		};
+	}
+	
+	
+	private HashMap<ScrollableListingPanel.ListingMenuItem<Growable>, Integer> buildMap() {
+		HashMap<ScrollableListingPanel.ListingMenuItem<Growable>, Integer> map = Maps.newHashMap();
+		
+		farm.getGrowables().stream().forEach(growable -> {
+			Integer number = farm.getInventory().get(growable);
+			map.put(
+				new ScrollableListingPanel.ListingMenuItem<>(
+					growable, 
+					new Button(
+						growable.harvest().getSingular(true) + " (" + Integer.toString(number == null ? 0 : number) + ")", 
+						Fonts.defaultFont, 
+						0, 
+						0, 
+						growable.harvest().getSingular(true).length() * 10, 
+						16, 
+						() -> {
+							
+						}, 
+						Color.WHITE, 
+						Color.GREEN, 
+						Color.GRAY, 
+						UIRef.BL
+					), 
+					null
+				), 
+				Math.round(growable.getGrowthProgress() * 100f)
+			);
+		});
+		
+		return map;
 	}
 
 
