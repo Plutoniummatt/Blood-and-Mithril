@@ -140,33 +140,30 @@ public abstract class Construction extends Prop implements Container {
 		} else {
 			ContextMenu menu = new ContextMenu(0, 0, true);
 
-			if (Domain.getSelectedIndividuals().size() > 0) {
-				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-				MenuItem openTransferItemsWindow = new MenuItem(
-					"Construct",
-					() -> {
-						if (Domain.getSelectedIndividuals().size() == 1) {
-							if (ClientServerInterface.isServer()) {
-								selected.getAI().setCurrentTask(
-									new TradeWith(selected, this)
-								);
-							} else {
-								ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
-							}
+			MenuItem openTransferItemsWindow = new MenuItem(
+				"Construct",
+				() -> {
+					if (Domain.getSelectedIndividuals().size() == 1) {
+						Individual selected = Domain.getSelectedIndividuals().iterator().next();
+						if (ClientServerInterface.isServer()) {
+							selected.getAI().setCurrentTask(
+								new TradeWith(selected, this)
+							);
+						} else {
+							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
 						}
-					},
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
-					new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
-					() -> {
-						return Domain.getSelectedIndividuals().size() > 1;
 					}
-				);
+				},
+				Domain.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
+				Domain.getSelectedIndividuals().size() == 1 ? Color.GREEN : Colors.UI_DARK_GRAY,
+				Domain.getSelectedIndividuals().size() == 1 ? Color.GRAY : Colors.UI_DARK_GRAY,
+				new ContextMenu(0, 0, true, new MenuItem("You must select a single individual", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+				() -> {
+					return Domain.getSelectedIndividuals().size() != 1;
+				}
+			);
 
-				menu.addMenuItem(openTransferItemsWindow);
-			}
-
+			menu.addMenuItem(openTransferItemsWindow);
 			return menu;
 		}
 	}
