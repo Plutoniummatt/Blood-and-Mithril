@@ -45,7 +45,7 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.LockUnlockContainer.LockUnlock;
 import bloodandmithril.character.ai.task.MineTile;
-import bloodandmithril.character.ai.task.MineTile.Mine;
+import bloodandmithril.character.ai.task.MineTile.WithinInteractionBox;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.ai.task.OpenCraftingStation.OpenCraftingStationWindow;
 import bloodandmithril.character.ai.task.TakeItem;
@@ -403,6 +403,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(WithinInteractionBox.class);
 		kryo.register(Growable.class);
 		kryo.register(Function.class);
 		kryo.register(SerializableMappingFunction.class);
@@ -546,7 +547,6 @@ public class ClientServerInterface {
 		kryo.register(Message.class);
 		kryo.register(Metal.class);
 		kryo.register(Milk.class);
-		kryo.register(Mine.class);
 		kryo.register(MineTile.class);
 		kryo.register(Mineral.class);
 		kryo.register(MoveIndividual.MoveIndividualResponse.class);

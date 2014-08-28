@@ -14,6 +14,8 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
@@ -105,14 +107,15 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		);
 
 		attackTwoHandedMine.put(
-			3,
+			6,
 			individual -> {
-				individual.attack(true);
-				SoundService.play(
-					SoundService.swordSlash,
-					individual.getState().position,
-					false
-				);
+				AITask currentTask = individual.getAI().getCurrentTask();
+				if (!(currentTask instanceof MineTile)) {
+					return;
+				}
+
+				MineTile mineTileTask = (MineTile) currentTask;
+				MineTile.Mine.mine(individual, mineTileTask.tileCoordinate);
 			}
 		);
 

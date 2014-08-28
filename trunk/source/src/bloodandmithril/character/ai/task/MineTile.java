@@ -1,10 +1,14 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE;
+import static bloodandmithril.util.ComparisonUtil.obj;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
@@ -12,6 +16,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
@@ -34,7 +39,7 @@ public class MineTile extends CompositeAITask {
 	private static final long serialVersionUID = -4098496856332182430L;
 
 	/** Coordinate of the tile to mine */
-	private final Vector2 tileCoordinate;
+	public final Vector2 tileCoordinate;
 
 	/**
 	 * Constructor
@@ -44,34 +49,41 @@ public class MineTile extends CompositeAITask {
 	public MineTile(Individual host, Vector2 coordinate) {
 		super(
 			host.getId(),
-			"Mining",
+			"Mining"
+		);
+
+		appendTask(
 			new GoToLocation(
 				host,
 				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
 				false,
-				50f,
+				new WithinInteractionBox(),
 				true
 			)
 		);
-
-		appendTask(this.new Mine(host.getId()));
+		appendTask(new AttemptMine(hostId));
 
 		this.tileCoordinate = coordinate;
 	}
 
 
-	/**
-	 * Task of mining a tile
-	 *
-	 * @author Matt
-	 */
-	public class Mine extends AITask {
-		private static final long serialVersionUID = 7585777004625914828L;
+	public class WithinInteractionBox implements SerializableFunction<Boolean> {
+		private static final long serialVersionUID = -6658375092168650175L;
+
+		@Override
+		public Boolean call() {
+			return Domain.getIndividuals().get(hostId.getId()).getInteractionBox().isWithinBox(tileCoordinate);
+		}
+	}
+
+
+	public class AttemptMine extends AITask {
+		private static final long serialVersionUID = 2594481517015647682L;
 
 		/**
 		 * Constructor
 		 */
-		public Mine(IndividualIdentifier hostId) {
+		protected AttemptMine(IndividualIdentifier hostId) {
 			super(hostId);
 		}
 
@@ -84,7 +96,9 @@ public class MineTile extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return Domain.getWorld(Domain.getIndividuals().get(hostId.getId()).getWorldId()).getTopography().getTile(tileCoordinate, true) instanceof EmptyTile;
+			return
+				!Domain.getIndividuals().get(hostId.getId()).getInteractionBox().isWithinBox(tileCoordinate) ||
+				Domain.getWorld(Domain.getIndividuals().get(hostId.getId()).getWorldId()).getTopography().getTile(tileCoordinate, true) instanceof EmptyTile;
 		}
 
 
@@ -96,8 +110,39 @@ public class MineTile extends CompositeAITask {
 
 		@Override
 		public void execute(float delta) {
-			final Topography topography = Domain.getWorld(Domain.getIndividuals().get(hostId.getId()).getWorldId()).getTopography();
-			final Individual host = Domain.getIndividuals().get(hostId.getId());
+			Individual host = Domain.getIndividuals().get(hostId.getId());
+
+			if (obj(host.getCurrentAction()).oneOf(ATTACK_LEFT_TWO_HANDED_WEAPON_MINE, ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE)) {
+				return;
+			}
+
+			if (host.getAttackTimer() < host.getAttackPeriod()) {
+				return;
+			}
+
+			host.setAnimationTimer(0f);
+			host.setAttackTimer(0f);
+			if (tileCoordinate.x < host.getState().position.x) {
+				host.setCurrentAction(Action.ATTACK_LEFT_TWO_HANDED_WEAPON_MINE);
+			} else {
+				host.setCurrentAction(Action.ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE);
+			}
+		}
+	}
+
+
+	/**
+	 * Actual mining of a tile
+	 *
+	 * @author Matt
+	 */
+	public static class Mine {
+
+		/**
+		 * Mines the tile
+		 */
+		public static void mine(final Individual host, Vector2 tileCoordinate) {
+			final Topography topography = Domain.getWorld(host.getWorldId()).getTopography();
 
 			if (host.getInteractionBox().isWithinBox(tileCoordinate)) {
 				Topography.addTask(() ->
@@ -123,7 +168,7 @@ public class MineTile extends CompositeAITask {
 									@Override
 									public boolean apply(Component input) {
 										if (input instanceof Window) {
-											return ((Window) input).title.equals(hostId.getSimpleName() + " - Inventory");
+											return ((Window) input).title.equals(host.getId().getSimpleName() + " - Inventory");
 										}
 										return false;
 									}

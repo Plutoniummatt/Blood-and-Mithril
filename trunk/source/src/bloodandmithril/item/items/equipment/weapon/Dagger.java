@@ -106,7 +106,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 	public Box getActionFrameHitBox(Individual individual) {
 		return new Box(
 			new Vector2(
-				individual.getHitBox().position.x + (individual.getCurrentAction().flipXAnimation() ? - individual.getHitBox().width * (2f/3f) : individual.getHitBox().width * (2f/3f)),
+				individual.getHitBox().position.x + (individual.getCurrentAction().left() ? - individual.getHitBox().width * (2f/3f) : individual.getHitBox().width * (2f/3f)),
 				individual.getHitBox().position.y
 			),
 			individual.getHitBox().width * 2 / 3,

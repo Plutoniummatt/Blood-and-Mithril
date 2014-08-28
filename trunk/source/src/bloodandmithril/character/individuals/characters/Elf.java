@@ -2,9 +2,11 @@ package bloodandmithril.character.individuals.characters;
 
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
@@ -221,6 +223,16 @@ public class Elf extends Humanoid {
 			ATTACK_LEFT_ONE_HANDED_WEAPON,
 			slashSequence
 		);
+
+		animationMap.put(
+			ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE,
+			slashSequence
+		);
+
+		animationMap.put(
+			ATTACK_LEFT_TWO_HANDED_WEAPON_MINE,
+			slashSequence
+		);
 	}
 
 	/**
@@ -361,7 +373,7 @@ public class Elf extends Humanoid {
 	protected Box getDefaultAttackingHitBox() {
 		return new Box(
 			new Vector2(
-				getHitBox().position.x + (getCurrentAction().flipXAnimation() ? - getHitBox().width * (1f/3f) : getHitBox().width * (1f/3f)),
+				getHitBox().position.x + (getCurrentAction().left() ? - getHitBox().width * (1f/3f) : getHitBox().width * (1f/3f)),
 				getHitBox().position.y
 			),
 			getHitBox().width * 2 / 3,
@@ -429,6 +441,6 @@ public class Elf extends Humanoid {
 
 	@Override
 	public Vector2 getEmissionPosition() {
-		return getState().position.cpy().add(getCurrentAction().flipXAnimation() ? 3 : 7, getHeight() / 2);
+		return getState().position.cpy().add(getCurrentAction().left() ? 3 : 7, getHeight() / 2);
 	}
 }
