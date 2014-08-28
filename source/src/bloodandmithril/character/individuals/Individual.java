@@ -4,11 +4,13 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEF
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_SPEAR;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_SPEAR;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
@@ -129,14 +131,14 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		ATTACK_LEFT_SPEAR(true),
 		ATTACK_RIGHT_SPEAR(false);
 
-		private boolean flipXAnimation;
+		private boolean left;
 
-		private Action(boolean flipXAnimation) {
-			this.flipXAnimation = flipXAnimation;
+		private Action(boolean left) {
+			this.left = left;
 		}
 
-		public boolean flipXAnimation() {
-			return flipXAnimation;
+		public boolean left() {
+			return left;
 		}
 	}
 
@@ -300,13 +302,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		});
 
 		if (weapon.isPresent()) {
-			if (getCurrentAction().flipXAnimation) {
+			if (getCurrentAction().left) {
 				setCurrentAction(((Weapon) weapon.get()).getAttackAction(false));
 			} else {
 				setCurrentAction(((Weapon) weapon.get()).getAttackAction(true));
 			}
 		} else {
-			if (getCurrentAction().flipXAnimation) {
+			if (getCurrentAction().left) {
 				setCurrentAction(Action.ATTACK_LEFT_UNARMED);
 			} else {
 				setCurrentAction(Action.ATTACK_RIGHT_UNARMED);
@@ -349,7 +351,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	@SuppressWarnings("rawtypes")
-	private float getAttackPeriod() {
+	public float getAttackPeriod() {
 		float attackingPeriod = getDefaultAttackPeriod();
 		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
 			return equipped instanceof Weapon;
@@ -575,7 +577,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				keyFrame.getRegionY(),
 				keyFrame.getRegionWidth(),
 				keyFrame.getRegionHeight(),
-				getCurrentAction().flipXAnimation(),
+				getCurrentAction().left(),
 				false
 			);
 
@@ -612,7 +614,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					TextureRegion keyFrame = attackAnimationEffects.a.getKeyFrame(getAnimationTimer());
 					spriteBatch.draw(
 						keyFrame.getTexture(),
-						getState().position.x - keyFrame.getRegionWidth()/2 + (getCurrentAction().flipXAnimation() ? - attackAnimationEffects.b.x : attackAnimationEffects.b.x),
+						getState().position.x - keyFrame.getRegionWidth()/2 + (getCurrentAction().left() ? - attackAnimationEffects.b.x : attackAnimationEffects.b.x),
 						getState().position.y  + attackAnimationEffects.b.y,
 						keyFrame.getRegionWidth(),
 						keyFrame.getRegionHeight(),
@@ -620,7 +622,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 						keyFrame.getRegionY(),
 						keyFrame.getRegionWidth(),
 						keyFrame.getRegionHeight(),
-						getCurrentAction().flipXAnimation(),
+						getCurrentAction().left(),
 						false
 					);
 				}
@@ -1731,8 +1733,20 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			ATTACK_LEFT_TWO_HANDED_WEAPON,
 			ATTACK_RIGHT_TWO_HANDED_WEAPON,
 			ATTACK_LEFT_UNARMED,
-			ATTACK_RIGHT_UNARMED
+			ATTACK_RIGHT_UNARMED,
+			ATTACK_LEFT_TWO_HANDED_WEAPON_MINE,
+			ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE
 		);
+	}
+
+
+	public float getAttackTimer() {
+		return attackTimer;
+	}
+
+
+	public void setAttackTimer(float timer) {
+		this.attackTimer = timer;
 	}
 
 

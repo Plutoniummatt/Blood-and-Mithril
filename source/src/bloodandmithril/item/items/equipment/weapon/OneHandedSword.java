@@ -119,7 +119,7 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 	public Box getActionFrameHitBox(Individual individual) {
 		return new Box(
 			new Vector2(
-				individual.getHitBox().position.x + (individual.getCurrentAction().flipXAnimation() ? - individual.getHitBox().width * (3f/4f) : individual.getHitBox().width  * (3f/4f)),
+				individual.getHitBox().position.x + (individual.getCurrentAction().left() ? - individual.getHitBox().width * (3f/4f) : individual.getHitBox().width  * (3f/4f)),
 				individual.getHitBox().position.y
 			),
 			individual.getHitBox().width,
