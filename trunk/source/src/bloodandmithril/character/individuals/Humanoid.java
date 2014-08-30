@@ -2,11 +2,11 @@ package bloodandmithril.character.individuals;
 
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Maps.newHashMap;
@@ -125,8 +125,8 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB, attackOneHandedStab);
 		actionFrames.put(ATTACK_LEFT_ONE_HANDED_WEAPON, attackOneHanded);
 		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON, attackOneHanded);
-		actionFrames.put(ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE, attackTwoHandedMine);
-		actionFrames.put(ATTACK_LEFT_TWO_HANDED_WEAPON_MINE, attackTwoHandedMine);
+		actionFrames.put(ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE, attackTwoHandedMine);
+		actionFrames.put(ATTACK_LEFT_ONE_HANDED_WEAPON_MINE, attackTwoHandedMine);
 	}
 
 	/**
@@ -215,6 +215,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					case 6: return new SpacialConfiguration(new Vector2(-10, 35f), 0f, false);
 					case 7: return new SpacialConfiguration(new Vector2(-10, 33f), 0f, false);
 				}
+			case ATTACK_LEFT_ONE_HANDED_WEAPON_MINE:
 			case ATTACK_LEFT_ONE_HANDED_WEAPON:
 				switch (frameIndex) {
 					case 0: return new SpacialConfiguration(new Vector2(19, 48f), 90, false);
@@ -228,6 +229,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					case 8: return new SpacialConfiguration(new Vector2(-27, 44f), 7f, true);
 					case 9: return new SpacialConfiguration(new Vector2(-27, 44f), 7f, true);
 				}
+			case ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
 				switch (frameIndex) {
 					case 0: return new SpacialConfiguration(new Vector2(-19, 48f), -90f, true);

@@ -26,8 +26,9 @@ import com.google.common.collect.Sets;
 @Copyright("Matthew Peck 2014")
 public class GenericOvergroundFarm extends Farm {
 	private static final long serialVersionUID = 4591966874731461699L;
+	
 	public static TextureRegion texture;
-
+	
 	public GenericOvergroundFarm(float x, float y) {
 		super(x, y, 250, 70, 0.1f, new CanBuildOnTopOfSoilTile());
 	}
@@ -59,11 +60,23 @@ public class GenericOvergroundFarm extends Farm {
 
 	@Override
 	public void synchronizeProp(Prop other) {
+		this.setCurrentCrop(((GenericOvergroundFarm) other).getCurrentCrop());
 	}
 
 
 	@Override
 	public void update(float delta) {
+		if (getCurrentCrop() == null) {
+			return;
+		}
+		
+		getCurrentCrop().grow(delta/getCurrentCrop().getGrowthTime());
+		if (getCurrentCrop().getGrowthProgress() >= 1f) {
+			for (int i = 0; i < 10; i++) {
+				giveItem(getCurrentCrop().harvest());
+			}
+			setCurrentCrop(null);
+		}
 	}
 
 

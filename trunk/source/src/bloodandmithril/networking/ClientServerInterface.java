@@ -45,6 +45,7 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.LockUnlockContainer.LockUnlock;
 import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.ai.task.MineTile.AttemptMine;
 import bloodandmithril.character.ai.task.MineTile.WithinInteractionBox;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.ai.task.OpenCraftingStation.OpenCraftingStationWindow;
@@ -403,6 +404,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(AttemptMine.class);
 		kryo.register(WithinInteractionBox.class);
 		kryo.register(Growable.class);
 		kryo.register(Function.class);

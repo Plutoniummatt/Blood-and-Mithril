@@ -125,4 +125,10 @@ public class Carrot extends Plant {
 	@Override
 	public void update(float delta) {
 	}
+
+
+	@Override
+	public float getGrowthTime() {
+		return 60f;
+	}
 }
