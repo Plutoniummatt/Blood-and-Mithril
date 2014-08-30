@@ -1,7 +1,7 @@
 package bloodandmithril.character.ai.task;
 
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON_MINE;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.util.ComparisonUtil.obj;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
@@ -112,7 +112,7 @@ public class MineTile extends CompositeAITask {
 		public void execute(float delta) {
 			Individual host = Domain.getIndividuals().get(hostId.getId());
 
-			if (obj(host.getCurrentAction()).oneOf(ATTACK_LEFT_TWO_HANDED_WEAPON_MINE, ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE)) {
+			if (obj(host.getCurrentAction()).oneOf(ATTACK_LEFT_ONE_HANDED_WEAPON_MINE, ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE)) {
 				return;
 			}
 
@@ -123,9 +123,9 @@ public class MineTile extends CompositeAITask {
 			host.setAnimationTimer(0f);
 			host.setAttackTimer(0f);
 			if (tileCoordinate.x < host.getState().position.x) {
-				host.setCurrentAction(Action.ATTACK_LEFT_TWO_HANDED_WEAPON_MINE);
+				host.setCurrentAction(Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE);
 			} else {
-				host.setCurrentAction(Action.ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE);
+				host.setCurrentAction(Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE);
 			}
 		}
 	}

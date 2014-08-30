@@ -2,11 +2,11 @@ package bloodandmithril.character.individuals.characters;
 
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
@@ -225,12 +225,12 @@ public class Elf extends Humanoid {
 		);
 
 		animationMap.put(
-			ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE,
+			ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE,
 			slashSequence
 		);
 
 		animationMap.put(
-			ATTACK_LEFT_TWO_HANDED_WEAPON_MINE,
+			ATTACK_LEFT_ONE_HANDED_WEAPON_MINE,
 			slashSequence
 		);
 	}

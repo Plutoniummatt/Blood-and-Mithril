@@ -4,13 +4,13 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEF
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_SPEAR;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_SPEAR;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
@@ -126,8 +126,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB(false),
 		ATTACK_LEFT_TWO_HANDED_WEAPON(true),
 		ATTACK_RIGHT_TWO_HANDED_WEAPON(false),
-		ATTACK_LEFT_TWO_HANDED_WEAPON_MINE(true),
-		ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE(false),
+		ATTACK_LEFT_ONE_HANDED_WEAPON_MINE(true),
+		ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE(false),
 		ATTACK_LEFT_SPEAR(true),
 		ATTACK_RIGHT_SPEAR(false);
 
@@ -1734,8 +1734,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			ATTACK_RIGHT_TWO_HANDED_WEAPON,
 			ATTACK_LEFT_UNARMED,
 			ATTACK_RIGHT_UNARMED,
-			ATTACK_LEFT_TWO_HANDED_WEAPON_MINE,
-			ATTACK_RIGHT_TWO_HANDED_WEAPON_MINE
+			ATTACK_LEFT_ONE_HANDED_WEAPON_MINE,
+			ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE
 		);
 	}
 

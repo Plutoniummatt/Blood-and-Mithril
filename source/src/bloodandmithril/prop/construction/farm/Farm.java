@@ -35,6 +35,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public abstract class Farm extends Construction {
 	private static final long serialVersionUID = -6115136894543038411L;
 	private Container crops = new ContainerImpl(2000f, false);
+	private Growable currentCrop;
 
 	/**
 	 * Constructor
@@ -149,5 +150,15 @@ public abstract class Farm extends Construction {
 		} else {
 			return super.getContainerImpl();
 		}
+	}
+	
+
+	public Growable getCurrentCrop() {
+		return currentCrop;
+	}
+	
+
+	public void setCurrentCrop(Growable currentCrop) {
+		this.currentCrop = currentCrop;
 	}
 }

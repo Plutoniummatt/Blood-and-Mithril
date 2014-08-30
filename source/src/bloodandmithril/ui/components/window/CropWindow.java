@@ -100,7 +100,7 @@ public class CropWindow extends Window {
 						growable.harvest().getSingular(true).length() * 10,
 						16,
 						() -> {
-
+							farm.setCurrentCrop(growable);
 						},
 						Color.WHITE,
 						Color.GREEN,
