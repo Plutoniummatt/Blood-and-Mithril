@@ -39,11 +39,13 @@ import static java.lang.Math.min;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
@@ -75,6 +77,7 @@ import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
@@ -152,6 +155,8 @@ public class UserInterface {
 	public static TextureRegion followArrow;
 
 	private static final List<FloatingText> floatingTexts = Lists.newLinkedList();
+	
+	private static final Deque<Task> uiTasks = new ConcurrentLinkedDeque<>();
 
 	static {
 		if (ClientServerInterface.isClient()) {
@@ -180,6 +185,14 @@ public class UserInterface {
 	 */
 	private static void loadBars() {
 		layeredComponents.add(new BottomBar());
+	}
+	
+	
+	/**
+	 * Adds a {@link Task} to the {@link #uiTasks} Deque to be executed in the main thread
+	 */
+	public static void addUITask(Task task) {
+		uiTasks.add(task);
 	}
 
 
@@ -261,6 +274,10 @@ public class UserInterface {
 	 * Renders the UI
 	 */
 	public static void render() {
+		
+		while (!uiTasks.isEmpty()) {
+			uiTasks.poll().execute();
+		}
 
 		//Individual sprites (Selected arrow, movement arrow etc)
 		renderIndividualUISprites();
