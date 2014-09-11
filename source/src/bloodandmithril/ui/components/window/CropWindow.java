@@ -2,6 +2,7 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.Deque;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map.Entry;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.construction.farm.Farm;
+import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -19,6 +21,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.util.Fonts;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
 /**
@@ -27,10 +30,10 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class CropWindow extends Window {
+public class CropWindow extends Window implements Refreshable {
 
 	private final Farm farm;
-	private ScrollableListingPanel<Growable, Integer> cropListing;
+	private ScrollableListingPanel<Growable, Boolean> cropListing;
 
 	/**
 	 * Constructor
@@ -50,7 +53,7 @@ public class CropWindow extends Window {
 			true
 		);
 		this.farm = farm;
-		this.cropListing = new ScrollableListingPanel<Growable, Integer>(
+		this.cropListing = new ScrollableListingPanel<Growable, Boolean>(
 			this,
 			(h1, h2) -> {
 				return h1.getClass().getSimpleName().compareTo(h2.getClass().getSimpleName());
@@ -59,20 +62,19 @@ public class CropWindow extends Window {
 			35
 		) {
 			@Override
-			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Growable>, Integer> item) {
-				Integer number = farm.getInventory().get(item.getKey().t);
-				return Integer.toString(number == null ? 0 : number);
+			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Growable>, Boolean> item) {
+				return item.getValue() ? "Growing" : "Not Growing";
 			}
 
 
 			@Override
 			protected int getExtraStringOffset() {
-				return 75;
+				return 135;
 			}
 
 
 			@Override
-			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<Growable>, Integer>> listings) {
+			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<Growable>, Boolean>> listings) {
 				listings.add(buildMap());
 			}
 
@@ -85,8 +87,8 @@ public class CropWindow extends Window {
 	}
 
 
-	private HashMap<ScrollableListingPanel.ListingMenuItem<Growable>, Integer> buildMap() {
-		HashMap<ScrollableListingPanel.ListingMenuItem<Growable>, Integer> map = Maps.newHashMap();
+	private HashMap<ScrollableListingPanel.ListingMenuItem<Growable>, Boolean> buildMap() {
+		HashMap<ScrollableListingPanel.ListingMenuItem<Growable>, Boolean> map = Maps.newHashMap();
 
 		farm.getGrowables().stream().forEach(growable -> {
 			map.put(
@@ -100,7 +102,8 @@ public class CropWindow extends Window {
 						growable.harvest().getSingular(true).length() * 10,
 						16,
 						() -> {
-							farm.setCurrentCrop(growable);
+							farm.getCurrentCrop().add(growable);
+							refresh();
 						},
 						Color.WHITE,
 						Color.GREEN,
@@ -109,7 +112,9 @@ public class CropWindow extends Window {
 					),
 					null
 				),
-				Math.round(growable.getGrowthProgress() * 100f)
+				Iterables.tryFind(farm.getCurrentCrop(), crop -> {
+					return crop.getClass().equals(growable.getClass());
+				}).isPresent()
 			);
 		});
 
@@ -148,5 +153,12 @@ public class CropWindow extends Window {
 	@Override
 	public void leftClickReleased() {
 		cropListing.leftClickReleased();
+	}
+
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void refresh() {
+		cropListing.refresh(newArrayList(buildMap()));
 	}
 }

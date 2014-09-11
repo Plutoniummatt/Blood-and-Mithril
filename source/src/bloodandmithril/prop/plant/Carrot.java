@@ -129,6 +129,6 @@ public class Carrot extends Plant {
 
 	@Override
 	public float getGrowthTime() {
-		return 60f;
+		return 10f;
 	}
 }

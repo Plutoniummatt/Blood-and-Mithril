@@ -7,9 +7,11 @@ import java.util.Set;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.plant.Carrot;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
@@ -60,7 +62,7 @@ public class GenericOvergroundFarm extends Farm {
 
 	@Override
 	public void synchronizeProp(Prop other) {
-		this.setCurrentCrop(((GenericOvergroundFarm) other).getCurrentCrop());
+		this.currentCrop = (((GenericOvergroundFarm) other).getCurrentCrop());
 	}
 
 
@@ -70,12 +72,20 @@ public class GenericOvergroundFarm extends Farm {
 			return;
 		}
 		
-		getCurrentCrop().grow(delta/getCurrentCrop().getGrowthTime());
-		if (getCurrentCrop().getGrowthProgress() >= 1f) {
-			for (int i = 0; i < 10; i++) {
-				giveItem(getCurrentCrop().harvest());
-			}
-			setCurrentCrop(null);
+		for (Growable crop : getCurrentCrop()) {
+			crop.grow(delta/crop.getGrowthTime());
+			if (crop.getGrowthProgress() >= 1f) {
+				giveItem(crop.harvest());
+				crop.grow(-1f);
+				
+				if (ClientServerInterface.isClient()) {
+					UserInterface.addUITask(() -> {
+						UserInterface.refreshRefreshableWindows();	
+					});
+				} else {
+					ClientServerInterface.SendNotification.notifyRefreshWindows();
+				}
+			}	
 		}
 	}
 

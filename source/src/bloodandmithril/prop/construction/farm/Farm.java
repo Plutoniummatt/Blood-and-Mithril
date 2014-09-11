@@ -25,6 +25,7 @@ import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Sets;
 
 /**
  * A Farm is a {@link Construction} that can be used to produce and harvest {@link Item}s
@@ -35,7 +36,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public abstract class Farm extends Construction {
 	private static final long serialVersionUID = -6115136894543038411L;
 	private Container crops = new ContainerImpl(2000f, false);
-	private Growable currentCrop;
+	protected Set<Growable> currentCrop = Sets.newHashSet();
 
 	/**
 	 * Constructor
@@ -153,12 +154,7 @@ public abstract class Farm extends Construction {
 	}
 	
 
-	public Growable getCurrentCrop() {
+	public Set<Growable> getCurrentCrop() {
 		return currentCrop;
-	}
-	
-
-	public void setCurrentCrop(Growable currentCrop) {
-		this.currentCrop = currentCrop;
 	}
 }
