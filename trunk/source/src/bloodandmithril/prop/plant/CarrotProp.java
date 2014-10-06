@@ -1,6 +1,10 @@
 package bloodandmithril.prop.plant;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+
+import java.util.Collection;
+import java.util.List;
+
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.individuals.Individual;
@@ -18,6 +22,7 @@ import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Lists;
 
 /**
  * The {@link Prop} equivalent to {@link bloodandmithril.item.items.food.plant.Carrot}
@@ -25,16 +30,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Carrot extends Plant {
+public class CarrotProp extends Plant {
 	private static final long serialVersionUID = -4581900482709094877L;
 
-	/** {@link TextureRegion} of the {@link Carrot} */
+	/** {@link TextureRegion} of the {@link CarrotProp} */
 	public static TextureRegion carrot;
 
 	/**
 	 * Constructor
 	 */
-	public Carrot(float x, float y) {
+	public CarrotProp(float x, float y) {
 		super(x, y, 12, 17);
 	}
 
@@ -111,8 +116,10 @@ public class Carrot extends Plant {
 
 
 	@Override
-	public Item harvest() {
-		return new bloodandmithril.item.items.food.plant.Carrot();
+	public Collection<Item> harvest() {
+		List<Item> items = Lists.newArrayList();
+		items.add(new bloodandmithril.item.items.food.plant.Carrot());
+		return items;
 	}
 
 
@@ -124,11 +131,5 @@ public class Carrot extends Plant {
 
 	@Override
 	public void update(float delta) {
-	}
-
-
-	@Override
-	public float getGrowthTime() {
-		return 10f;
 	}
 }

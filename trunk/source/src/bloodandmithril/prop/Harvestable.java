@@ -1,6 +1,9 @@
 package bloodandmithril.prop;
 
 import static bloodandmithril.world.Domain.Depth.FOREGOUND;
+
+import java.util.Collection;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 
@@ -26,7 +29,7 @@ public abstract class Harvestable extends Prop {
 	}
 
 	/** Returns the item that harvesting this {@link Harvestable} provides */
-	public abstract Item harvest();
+	public abstract Collection<Item> harvest();
 
 	/** True if the prop is destroyed upon being harvested */
 	public abstract boolean destroyUponHarvest();

@@ -189,8 +189,6 @@ import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
-import bloodandmithril.prop.construction.farm.Farm;
-import bloodandmithril.prop.construction.farm.GenericOvergroundFarm;
 import bloodandmithril.prop.furniture.Furniture;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.Plant;
@@ -409,9 +407,6 @@ public class ClientServerInterface {
 		kryo.register(Growable.class);
 		kryo.register(Function.class);
 		kryo.register(SerializableMappingFunction.class);
-		kryo.register(GenericOvergroundFarm.CanBuildOnTopOfSoilTile.class);
-		kryo.register(GenericOvergroundFarm.class);
-		kryo.register(Farm.class);
 		kryo.register(PlaceConstructionRequest.class);
 		kryo.register(FollowRequest.class);
 		kryo.register(DiscardLiquid.class);
@@ -630,7 +625,7 @@ public class ClientServerInterface {
 		kryo.register(YellowBrickPlatform.class);
 		kryo.register(YellowBrickTile.class);
 		kryo.register(bloodandmithril.item.items.furniture.WoodenChest.class);
-		kryo.register(bloodandmithril.prop.plant.Carrot.class);
+		kryo.register(bloodandmithril.prop.plant.CarrotProp.class);
 	}
 
 

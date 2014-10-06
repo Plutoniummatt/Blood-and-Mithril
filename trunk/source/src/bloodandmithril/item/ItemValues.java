@@ -13,6 +13,7 @@ public class ItemValues {
 	public static final int ASHES = 5;
 	public static final int GLASSBOTTLE = 200;
 	public static final int CARROT = 25;
+	public static final int CARROT_SEED = 5;
 	public static final int CHICKENLEG = 150;
 	public static final int COAL = 200;
 	public static final int COOKEDCARROT = 100;
