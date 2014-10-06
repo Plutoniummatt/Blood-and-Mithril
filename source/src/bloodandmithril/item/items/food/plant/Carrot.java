@@ -80,7 +80,54 @@ public class Carrot extends Food {
 
 	@Override
 	public TextureRegion getIconTextureRegion() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	public static class CarrotSeed extends Seed {
+		private static final long serialVersionUID = 818272685820694513L;
+
+		/**
+		 * Constructor
+		 */
+		protected CarrotSeed() {
+			super(0.01f, ItemValues.CARROT_SEED);
+		}
+
+
+		@Override
+		protected String internalGetSingular(boolean firstCap) {
+			return firstCap ? "Carrot seed" : "carrot seed";
+		}
+
+
+		@Override
+		protected String internalGetPlural(boolean firstCap) {
+			return firstCap ? "Carrot seeds" : "carrot seeds";
+		}
+
+
+		@Override
+		public String getDescription() {
+			return "Carrot seeds, plant these in soil.";
+		}
+
+
+		@Override
+		protected TextureRegion getTextureRegion() {
+			return null;
+		}
+
+
+		@Override
+		public TextureRegion getIconTextureRegion() {
+			return null;
+		}
+
+
+		@Override
+		protected Item internalCopy() {
+			return new CarrotSeed();
+		}
 	}
 }

@@ -444,7 +444,7 @@ public class DevWindow extends Window {
 					() -> {
 						Individual individual = Domain.getIndividuals().get(1);
 						if (individual != null) {
-							bloodandmithril.prop.plant.Carrot carrot = new bloodandmithril.prop.plant.Carrot(individual.getState().position.x, individual.getState().position.y);
+							bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
 							Domain.getProps().put(carrot.id, carrot);
 						}
 					},

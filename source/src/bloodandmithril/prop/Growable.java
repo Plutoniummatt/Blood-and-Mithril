@@ -41,10 +41,4 @@ public abstract class Growable extends Harvestable {
 			growthProgress = 0f;
 		}
 	}
-	
-	
-	/**
-	 * @return the time required to grow to maturity, in seconds
-	 */
-	public abstract float getGrowthTime();
 }

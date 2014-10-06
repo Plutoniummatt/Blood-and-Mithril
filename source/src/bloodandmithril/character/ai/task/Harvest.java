@@ -1,5 +1,7 @@
 package bloodandmithril.character.ai.task;
 
+import java.util.Collection;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
@@ -107,9 +109,11 @@ public class Harvest extends CompositeAITask {
 					}
 
 					if (ClientServerInterface.isClient() && ClientServerInterface.isServer()) {
-						Item harvested = harvestable.harvest();
-						if (harvested != null) {
-							Domain.getIndividuals().get(hostId.getId()).giveItem(harvested);
+						Collection<Item> harvested = harvestable.harvest();
+						if (harvested != null && !harvested.isEmpty()) {
+							for (Item item : harvested) {
+								Domain.getIndividuals().get(hostId.getId()).giveItem(item);
+							}
 						}
 						InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
 							@Override
@@ -125,9 +129,11 @@ public class Harvest extends CompositeAITask {
 							existingInventoryWindow.refresh();
 						}
 					} else if (ClientServerInterface.isServer()) {
-						Item harvested = harvestable.harvest();
-						if (harvested != null) {
-							ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), harvested);
+						Collection<Item> harvested = harvestable.harvest();
+						if (harvested != null && !harvested.isEmpty()) {
+							for (Item item : harvested) {
+								ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), item);
+							}
 						}
 					}
 				}
