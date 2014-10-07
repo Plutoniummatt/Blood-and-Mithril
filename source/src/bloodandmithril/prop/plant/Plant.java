@@ -1,8 +1,8 @@
 package bloodandmithril.prop.plant;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.Growable;
+import bloodandmithril.prop.Prop;
 
 /**
  * A Plant {@link Prop}
@@ -18,15 +18,5 @@ public abstract class Plant extends Growable {
 	 */
 	protected Plant(float x, float y, int width, int height) {
 		super(x, y, width, height, true);
-	}
-
-
-	/**
-	 * The growth stage of a {@link Plant}
-	 *
-	 * @author Matt
-	 */
-	public enum GrowthStage {
-		PLANTED, GERMINATED, UNRIPE, RIPE, WILTING, DEAD
 	}
 }
