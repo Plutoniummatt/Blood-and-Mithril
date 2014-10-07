@@ -28,6 +28,7 @@ import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.armor.Armor;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
+import bloodandmithril.item.items.food.plant.Seed;
 import bloodandmithril.item.items.furniture.Furniture;
 import bloodandmithril.item.items.material.Material;
 import bloodandmithril.item.items.mineral.Mineral;
@@ -453,6 +454,10 @@ public class InventoryWindow extends Window implements Refreshable {
 			toReturn = equippableMenu(item, equipped);
 		}
 
+		if (item instanceof Seed) {
+			toReturn = seedMenu(item);
+		}
+
 		if (toReturn == null) {
 			toReturn = new ContextMenu(x, y, true, InventoryItemContextMenuConstructor.showInfo(item));
 		}
@@ -500,6 +505,29 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 		return toReturn;
+	}
+
+
+	private ContextMenu seedMenu(Item item) {
+		MenuItem plant = new MenuItem(
+			"Plant",
+			() -> {
+				if (ClientServerInterface.isServer()) {
+				} else {
+				}
+				refresh();
+			},
+			Colors.UI_GRAY,
+			Color.GREEN,
+			Color.WHITE,
+			null
+		);
+
+		return new ContextMenu(x, y,
+			true,
+			InventoryItemContextMenuConstructor.showInfo(item),
+			plant
+		);
 	}
 
 

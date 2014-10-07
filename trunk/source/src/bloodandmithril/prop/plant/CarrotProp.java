@@ -11,6 +11,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
@@ -119,6 +120,8 @@ public class CarrotProp extends Plant {
 	public Collection<Item> harvest() {
 		List<Item> items = Lists.newArrayList();
 		items.add(new bloodandmithril.item.items.food.plant.Carrot());
+		items.add(new CarrotSeed());
+		items.add(new CarrotSeed());
 		return items;
 	}
 

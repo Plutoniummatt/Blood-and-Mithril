@@ -84,13 +84,18 @@ public class Carrot extends Food {
 	}
 
 
+	/**
+	 * Seed of a carrot
+	 *
+	 * @author Matt
+	 */
 	public static class CarrotSeed extends Seed {
 		private static final long serialVersionUID = 818272685820694513L;
 
 		/**
 		 * Constructor
 		 */
-		protected CarrotSeed() {
+		public CarrotSeed() {
 			super(0.01f, ItemValues.CARROT_SEED);
 		}
 

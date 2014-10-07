@@ -112,15 +112,13 @@ public class Furnace extends CraftingStation implements Container {
 	}
 
 
-	public float getCombustionDurationRemaining() {
+	public synchronized float getCombustionDurationRemaining() {
 		return combustionDurationRemaining;
 	}
 
 
 	public synchronized void setCombustionDurationRemaining(float combustionDurationRemaining) {
-		synchronized (this) {
-			this.combustionDurationRemaining = combustionDurationRemaining;
-		}
+		this.combustionDurationRemaining = combustionDurationRemaining;
 	}
 
 
