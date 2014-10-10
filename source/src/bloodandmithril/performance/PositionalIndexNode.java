@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Prop;
 
 import com.google.common.collect.Sets;
@@ -15,6 +16,7 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class PositionalIndexNode implements Serializable {
 	private static final long serialVersionUID = -8256634999855942751L;
 

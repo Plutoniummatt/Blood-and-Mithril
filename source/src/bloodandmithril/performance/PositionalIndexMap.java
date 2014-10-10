@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 
 import com.badlogic.gdx.math.Vector2;
@@ -16,6 +17,7 @@ import com.google.common.collect.Lists;
  *
  * @author Matt
  */
+@Copyright("Matthew Peck 2014")
 public class PositionalIndexMap implements Serializable {
 	private static final long serialVersionUID = 3198970349534676023L;
 
