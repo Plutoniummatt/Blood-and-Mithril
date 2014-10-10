@@ -880,12 +880,12 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyRemoveProp(int propId) {
+		public static synchronized void notifyRemoveProp(int propId, Vector2 position) {
 			sendNotification(
 				-1,
 				true,
 				true,
-				new DestroyPropNotification(propId)
+				new DestroyPropNotification(propId, position)
 			);
 		}
 

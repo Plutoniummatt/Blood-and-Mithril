@@ -11,6 +11,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
@@ -102,10 +103,11 @@ public class Harvest extends CompositeAITask {
 				if (Domain.getProps().containsKey(harvestable.id)) {
 					if (harvestable.destroyUponHarvest()) {
 						Domain.getProps().remove(harvestable.id);
+						Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, harvestable.position.x, harvestable.position.y).remove(harvestable.id);
 					}
 
 					if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
-						ClientServerInterface.SendNotification.notifyRemoveProp(harvestable.id);
+						ClientServerInterface.SendNotification.notifyRemoveProp(harvestable.id, harvestable.position);
 					}
 
 					if (ClientServerInterface.isClient() && ClientServerInterface.isServer()) {
