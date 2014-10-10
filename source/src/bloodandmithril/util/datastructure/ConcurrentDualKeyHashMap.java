@@ -1,5 +1,6 @@
 package bloodandmithril.util.datastructure;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.Copyright;
@@ -10,7 +11,8 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class ConcurrentDualKeyHashMap<X, Y, V> {
+public class ConcurrentDualKeyHashMap<X, Y, V> implements Serializable {
+	private static final long serialVersionUID = -8864426466568336054L;
 
 	/** The underlying data structue */
 	private ConcurrentHashMap<X, ConcurrentHashMap<Y, V>> data = new ConcurrentHashMap<X, ConcurrentHashMap<Y, V>>();
