@@ -20,6 +20,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -153,6 +154,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 						} else {
 							ClientServerInterface.SendRequest.sendPlaceConstructionRequest(getMouseWorldX(), coords.y, toConstruct);
 						}
+						Domain.getActiveWorld().getPositionalIndexMap().get(toConstruct.position.x, toConstruct.position.y).getAllEntitiesForType(Prop.class).add(toConstruct.id);
 					}
 				},
 				true

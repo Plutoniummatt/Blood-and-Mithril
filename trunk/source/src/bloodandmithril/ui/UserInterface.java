@@ -155,7 +155,7 @@ public class UserInterface {
 	public static TextureRegion followArrow;
 
 	private static final List<FloatingText> floatingTexts = Lists.newLinkedList();
-	
+
 	private static final Deque<Task> uiTasks = new ConcurrentLinkedDeque<>();
 
 	static {
@@ -186,8 +186,8 @@ public class UserInterface {
 	private static void loadBars() {
 		layeredComponents.add(new BottomBar());
 	}
-	
-	
+
+
 	/**
 	 * Adds a {@link Task} to the {@link #uiTasks} Deque to be executed in the main thread
 	 */
@@ -274,7 +274,7 @@ public class UserInterface {
 	 * Renders the UI
 	 */
 	public static void render() {
-		
+
 		while (!uiTasks.isEmpty()) {
 			uiTasks.poll().execute();
 		}

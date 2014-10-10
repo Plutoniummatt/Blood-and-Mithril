@@ -3,6 +3,7 @@ package bloodandmithril.networking.requests;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.world.Domain;
 
@@ -33,6 +34,7 @@ public class PlaceConstructionRequest implements Request {
 		if (construction.canBuildAt(x, y)) {
 			Domain.getProps().put(construction.id, construction);
 			Domain.getActiveWorld().getProps().add(construction.id);
+			Domain.getActiveWorld().getPositionalIndexMap().get(construction.position.x, construction.position.y).getAllEntitiesForType(Prop.class).add(construction.id);
 		}
 
 		return new Responses(false);
