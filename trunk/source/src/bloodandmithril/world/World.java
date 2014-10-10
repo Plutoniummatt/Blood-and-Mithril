@@ -9,6 +9,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
@@ -41,6 +42,9 @@ public class World implements Serializable {
 
 	/** {@link Item}s that are present on this {@link World} */
 	private Set<Integer> items							= Sets.newHashSet();
+
+	/** The positional indexing map of this {@link World} */
+	private PositionalIndexMap positionalIndexMap		= new PositionalIndexMap();
 
 	/** Particles on this {@link World} */
 	private transient Collection<Particle> particles	= new ConcurrentLinkedDeque<>();
@@ -131,5 +135,10 @@ public class World implements Serializable {
 
 	public void setParticles(Collection<Particle> particles) {
 		this.particles = particles;
+	}
+
+
+	public PositionalIndexMap getPositionalIndexMap() {
+		return positionalIndexMap;
 	}
 }
