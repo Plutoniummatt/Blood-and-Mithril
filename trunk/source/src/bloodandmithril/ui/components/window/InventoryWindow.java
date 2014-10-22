@@ -48,6 +48,7 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.WrapperForTwo;
+import bloodandmithril.util.cursorboundtask.PlantSeedCursorBoundTask;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -133,6 +134,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		filters.put("Containers", 	WrapperForTwo.wrap(item -> {return item instanceof LiquidContainer;}, true));
 		filters.put("Furniture", 	WrapperForTwo.wrap(item -> {return item instanceof Furniture;}, true));
 		filters.put("Misc", 		WrapperForTwo.wrap(item -> {return item instanceof Misc;}, true));
+		filters.put("Seed", 		WrapperForTwo.wrap(item -> {return item instanceof Seed;}, true));
 	}
 
 
@@ -512,10 +514,9 @@ public class InventoryWindow extends Window implements Refreshable {
 		MenuItem plant = new MenuItem(
 			"Plant",
 			() -> {
-				if (ClientServerInterface.isServer()) {
-				} else {
-				}
-				refresh();
+				BloodAndMithrilClient.setCursorBoundTask(
+					new PlantSeedCursorBoundTask((Seed) item)
+				);
 			},
 			Colors.UI_GRAY,
 			Color.GREEN,

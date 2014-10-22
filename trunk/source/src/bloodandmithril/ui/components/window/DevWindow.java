@@ -188,6 +188,9 @@ public class DevWindow extends Window {
 				elf.giveItem(Ingot.ingot(Copper.class));
 			}
 			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
+				elf.giveItem(new Carrot.CarrotSeed());
+			}
+			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
 				elf.giveItem(Log.log(Pine.class));
 			}
 			for (int i = 40; i > 0; i--) {
