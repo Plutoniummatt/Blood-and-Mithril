@@ -7,6 +7,7 @@ import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 
 import com.badlogic.gdx.graphics.Color;
@@ -140,7 +141,7 @@ public class Carrot extends Food {
 
 		@Override
 		public bloodandmithril.prop.plant.seed.Seed getPropSeed() {
-			return null;
+			return new CarrotSeedProp(0, 0, this);
 		}
 	}
 
@@ -173,7 +174,22 @@ public class Carrot extends Food {
 
 		@Override
 		public ContextMenu getContextMenu() {
-			return null;
+			ContextMenu menu = new ContextMenu(0, 0, true);
+			
+			menu.addMenuItem(
+				new ContextMenu.MenuItem(
+					"Show info", 
+					() -> {
+						UserInterface.addMessage("Carrot seed", "The seed of a carrot, plant this to grow carrots.");
+					}, 
+					Color.WHITE, 
+					Color.GREEN, 
+					Color.WHITE, 
+					null
+				)
+			);
+			
+			return menu;
 		}
 
 
@@ -184,7 +200,13 @@ public class Carrot extends Food {
 
 		@Override
 		public String getContextMenuItemLabel() {
-			return null;
+			return "Carrot seed";
+		}
+
+
+		@Override
+		public boolean destroyUponHarvest() {
+			return true;
 		}
 	}
 }
