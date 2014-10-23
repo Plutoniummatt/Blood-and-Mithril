@@ -29,4 +29,10 @@ public abstract class Seed extends Item {
 	public String getType() {
 		return "Seed";
 	}
+
+
+	/**
+	 * @return a new instance of {@link bloodandmithril.prop.plant.seed.Seed} which represents this {@link Seed}
+	 */
+	public abstract bloodandmithril.prop.plant.seed.Seed getPropSeed();
 }
