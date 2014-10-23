@@ -6,6 +6,8 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
+import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.components.ContextMenu;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -133,6 +135,56 @@ public class Carrot extends Food {
 		@Override
 		protected Item internalCopy() {
 			return new CarrotSeed();
+		}
+
+
+		@Override
+		public bloodandmithril.prop.plant.seed.Seed getPropSeed() {
+			return null;
+		}
+	}
+
+
+	/**
+	 * Seed of a carrot as a prop
+	 *
+	 * @author Matt
+	 */
+	public static class CarrotSeedProp extends bloodandmithril.prop.plant.seed.Seed {
+		private static final long serialVersionUID = 1761994206485966594L;
+
+		/**
+		 * Constructor
+		 */
+		public CarrotSeedProp(float x, float y, Seed seed) {
+			super(x, y, seed);
+		}
+
+
+		@Override
+		public void render() {
+		}
+
+
+		@Override
+		public void synchronizeProp(Prop other) {
+		}
+
+
+		@Override
+		public ContextMenu getContextMenu() {
+			return null;
+		}
+
+
+		@Override
+		public void update(float delta) {
+		}
+
+
+		@Override
+		public String getContextMenuItemLabel() {
+			return null;
 		}
 	}
 }
