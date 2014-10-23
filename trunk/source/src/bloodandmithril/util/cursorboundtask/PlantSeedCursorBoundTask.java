@@ -9,14 +9,20 @@ import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL10.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL10.GL_ONE_MINUS_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
+import bloodandmithril.character.ai.task.PlantSeed;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.food.plant.Seed;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
+
+
+
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -37,15 +43,17 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 		super(
 			args -> {
 				bloodandmithril.prop.plant.seed.Seed propSeed = seed.getPropSeed();
-				
 				Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
-				
 				propSeed.position.x = coords.x;
 				propSeed.position.y = coords.y;
 
-				Domain.getProps().put(propSeed.id, propSeed);
-				planter.takeItem(seed);
-				UserInterface.refreshRefreshableWindows();
+				if (planter instanceof Individual) {
+					if (ClientServerInterface.isServer()) {
+						((Individual) planter).getAI().setCurrentTask(new PlantSeed((Individual) planter, propSeed));
+					} else {
+						ClientServerInterface.SendRequest.sendPlantSeedRequest((Individual) planter, propSeed);
+					}
+				}
 			},
 			true
 		);
