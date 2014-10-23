@@ -1,8 +1,13 @@
 package bloodandmithril.prop.plant.seed;
 
+import java.util.Collection;
+
+import com.google.common.collect.Lists;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography;
 
 /**
@@ -11,7 +16,7 @@ import bloodandmithril.world.topography.Topography;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public abstract class Seed extends Prop {
+public abstract class Seed extends Harvestable {
 	private static final long serialVersionUID = 6958594764600730817L;
 
 	private final bloodandmithril.item.items.food.plant.Seed seedToRepresent;
@@ -21,7 +26,7 @@ public abstract class Seed extends Prop {
 	 * Constructor
 	 */
 	protected Seed(float x, float y, bloodandmithril.item.items.food.plant.Seed seed) {
-		super(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE, true, Depth.FOREGOUND);
+		super(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE, true);
 		this.seedToRepresent = seed;
 	}
 
@@ -31,5 +36,11 @@ public abstract class Seed extends Prop {
 	 */
 	public bloodandmithril.item.items.food.plant.Seed getSeed() {
 		return seedToRepresent;
+	}
+	
+	
+	@Override
+	public Collection<Item> harvest() {
+		return Lists.newArrayList(seedToRepresent);
 	}
 }

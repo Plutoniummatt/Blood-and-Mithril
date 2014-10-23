@@ -515,7 +515,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			"Plant",
 			() -> {
 				BloodAndMithrilClient.setCursorBoundTask(
-					new PlantSeedCursorBoundTask((Seed) item)
+					new PlantSeedCursorBoundTask((Seed) item, host)
 				);
 			},
 			Colors.UI_GRAY,

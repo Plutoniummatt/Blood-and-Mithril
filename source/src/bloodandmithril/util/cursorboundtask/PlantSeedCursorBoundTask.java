@@ -9,6 +9,7 @@ import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL10.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL10.GL_ONE_MINUS_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
+import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.food.plant.Seed;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
@@ -32,10 +33,19 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 	/**
 	 * Constructor
 	 */
-	public PlantSeedCursorBoundTask(Seed seed) {
+	public PlantSeedCursorBoundTask(Seed seed, Container planter) {
 		super(
 			args -> {
+				bloodandmithril.prop.plant.seed.Seed propSeed = seed.getPropSeed();
+				
+				Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+				
+				propSeed.position.x = coords.x;
+				propSeed.position.y = coords.y;
 
+				Domain.getProps().put(propSeed.id, propSeed);
+				planter.takeItem(seed);
+				UserInterface.refreshRefreshableWindows();
 			},
 			true
 		);
@@ -46,17 +56,14 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 	@Override
 	public void renderUIGuide() {
 		Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
-
+		
 		float x = worldToScreenX(getMouseWorldX());
 		float y = worldToScreenY(coords.y);
-
-		Tile tile = Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), coords.y - Topography.TILE_SIZE / 2, true);
-		boolean canPlant = tile instanceof SoilTile && ((SoilTile) tile).canPlant(toPlant);
 
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		spriteBatch.begin();
-		spriteBatch.setColor(canPlant ? Color.GREEN : Color.RED);
+		spriteBatch.setColor(executionConditionMet() ? Color.GREEN : Color.RED);
 		spriteBatch.draw(UserInterface.currentArrow, x - 5, y);
 		spriteBatch.end();
 		gl.glDisable(GL_BLEND);
@@ -65,7 +72,10 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 	@Override
 	public boolean executionConditionMet() {
-		return false;
+		Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+
+		Tile tile = Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), coords.y - Topography.TILE_SIZE / 2, true);
+		return tile instanceof SoilTile && ((SoilTile) tile).canPlant(toPlant);
 	}
 
 
