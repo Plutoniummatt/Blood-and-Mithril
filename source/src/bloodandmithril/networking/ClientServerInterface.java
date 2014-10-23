@@ -49,6 +49,7 @@ import bloodandmithril.character.ai.task.MineTile.AttemptMine;
 import bloodandmithril.character.ai.task.MineTile.WithinInteractionBox;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.ai.task.OpenCraftingStation.OpenCraftingStationWindow;
+import bloodandmithril.character.ai.task.PlantSeed;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.ai.task.TakeItem.Take;
 import bloodandmithril.character.ai.task.TradeWith;
@@ -95,6 +96,8 @@ import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
+import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
+import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
 import bloodandmithril.item.items.food.plant.DeathCap;
 import bloodandmithril.item.items.material.Brick;
 import bloodandmithril.item.items.material.Glass;
@@ -158,6 +161,7 @@ import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse
 import bloodandmithril.networking.requests.RequestClientList;
 import bloodandmithril.networking.requests.RequestClientList.RequestClientListResponse;
 import bloodandmithril.networking.requests.RequestDiscardItem;
+import bloodandmithril.networking.requests.RequestPlantSeed;
 import bloodandmithril.networking.requests.RequestStartCrafting;
 import bloodandmithril.networking.requests.RequestTakeItem;
 import bloodandmithril.networking.requests.RequestTakeItemFromCraftingStation;
@@ -192,6 +196,7 @@ import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.Furniture;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.Plant;
+import bloodandmithril.prop.plant.seed.Seed;
 import bloodandmithril.ui.UserInterface.FloatingText;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Countdown;
@@ -402,6 +407,12 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(PlantSeed.class);
+		kryo.register(RequestPlantSeed.class);
+		kryo.register(CarrotSeedProp.class);
+		kryo.register(CarrotSeed.class);
+		kryo.register(bloodandmithril.item.items.food.plant.Seed.class);
+		kryo.register(Seed.class);
 		kryo.register(AttemptMine.class);
 		kryo.register(WithinInteractionBox.class);
 		kryo.register(Growable.class);
@@ -635,6 +646,12 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendRequest {
+		public static synchronized void sendPlantSeedRequest(Individual planter, Seed toPlant) {
+			client.sendTCP(new RequestPlantSeed(planter, toPlant));
+			Logger.networkDebug("Sending seed planting request", LogLevel.DEBUG);
+		}
+		
+		
 		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request for (" + x + ", " + y + ")", LogLevel.DEBUG);
