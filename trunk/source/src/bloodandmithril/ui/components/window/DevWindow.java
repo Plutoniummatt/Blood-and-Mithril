@@ -322,7 +322,7 @@ public class DevWindow extends Window {
 						Individual individual = Domain.getIndividuals().get(1);
 						if (individual != null) {
 							Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
-							Domain.getProps().put(anvil.id, anvil);
+							Domain.addProp(anvil);
 						}
 					},
 					Color.GREEN,
@@ -362,7 +362,7 @@ public class DevWindow extends Window {
 								Pine.class
 							);
 
-							Domain.getProps().put(pineChest.id, pineChest);
+							Domain.addProp(pineChest);
 						}
 					},
 					Color.GREEN,
@@ -393,7 +393,7 @@ public class DevWindow extends Window {
 								individual.getState().position.y
 							);
 
-							Domain.getProps().put(carpenterWorkshop.id, carpenterWorkshop);
+							Domain.addProp(carpenterWorkshop);
 						}
 					},
 					Color.GREEN,
@@ -421,7 +421,7 @@ public class DevWindow extends Window {
 						if (individual != null) {
 							Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
 							furnace.setConstructionProgress(0f);
-							Domain.getProps().put(furnace.id, furnace);
+							Domain.addProp(furnace);
 						}
 					},
 					Color.GREEN,
@@ -448,7 +448,7 @@ public class DevWindow extends Window {
 						Individual individual = Domain.getIndividuals().get(1);
 						if (individual != null) {
 							bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
-							Domain.getProps().put(carrot.id, carrot);
+							Domain.addProp(carrot);
 						}
 					},
 					Color.GREEN,

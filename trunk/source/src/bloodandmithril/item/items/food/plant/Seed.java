@@ -32,7 +32,7 @@ public abstract class Seed extends Item {
 
 
 	/**
-	 * @return a new instance of {@link bloodandmithril.prop.plant.seed.Seed} which represents this {@link Seed}
+	 * @return a new instance of {@link bloodandmithril.prop.plant.seed.SeedProp} which represents this {@link Seed}
 	 */
-	public abstract bloodandmithril.prop.plant.seed.Seed getPropSeed();
+	public abstract bloodandmithril.prop.plant.seed.SeedProp getPropSeed();
 }

@@ -248,7 +248,7 @@ public abstract class Construction extends Prop implements Container {
 		}
 
 		for (Integer propId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, x, y)) {
-			Prop prop = Domain.getProps().get(propId);
+			Prop prop = Domain.getProp(propId);
 			if (prop instanceof Construction && Domain.getActiveWorld().getProps().contains(propId)) {
 				if (this.overlapsWith(prop)) {
 					return false;

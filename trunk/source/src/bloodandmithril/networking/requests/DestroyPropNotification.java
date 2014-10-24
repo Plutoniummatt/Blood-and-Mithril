@@ -2,10 +2,7 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Response;
-import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A {@link Response} to notifiy clients that a prop has been removed
@@ -16,19 +13,16 @@ import com.badlogic.gdx.math.Vector2;
 public class DestroyPropNotification implements Response {
 
 	private final int propId;
-	private Vector2 position;
 
 	/** Constructor */
-	public DestroyPropNotification(int propId, Vector2 position) {
+	public DestroyPropNotification(int propId) {
 		this.propId = propId;
-		this.position = position;
 	}
 
 
 	@Override
 	public void acknowledge() {
-		Domain.getProps().remove(propId);
-		Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, position.x, position.y).remove(propId);
+		Domain.removeProp(propId);
 	}
 
 

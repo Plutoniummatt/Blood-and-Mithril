@@ -196,7 +196,7 @@ import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.Furniture;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.Plant;
-import bloodandmithril.prop.plant.seed.Seed;
+import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.ui.UserInterface.FloatingText;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Countdown;
@@ -412,7 +412,7 @@ public class ClientServerInterface {
 		kryo.register(CarrotSeedProp.class);
 		kryo.register(CarrotSeed.class);
 		kryo.register(bloodandmithril.item.items.food.plant.Seed.class);
-		kryo.register(Seed.class);
+		kryo.register(SeedProp.class);
 		kryo.register(AttemptMine.class);
 		kryo.register(WithinInteractionBox.class);
 		kryo.register(Growable.class);
@@ -646,12 +646,12 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendRequest {
-		public static synchronized void sendPlantSeedRequest(Individual planter, Seed toPlant) {
+		public static synchronized void sendPlantSeedRequest(Individual planter, SeedProp toPlant) {
 			client.sendTCP(new RequestPlantSeed(planter, toPlant));
 			Logger.networkDebug("Sending seed planting request", LogLevel.DEBUG);
 		}
-		
-		
+
+
 		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request for (" + x + ", " + y + ")", LogLevel.DEBUG);
@@ -897,12 +897,12 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyRemoveProp(int propId, Vector2 position) {
+		public static synchronized void notifyRemoveProp(int propId) {
 			sendNotification(
 				-1,
 				true,
 				true,
-				new DestroyPropNotification(propId, position)
+				new DestroyPropNotification(propId)
 			);
 		}
 

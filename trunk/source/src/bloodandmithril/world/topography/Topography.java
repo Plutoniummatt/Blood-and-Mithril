@@ -138,17 +138,11 @@ public class Topography {
 
 
 	/** Get the lowest empty tile world coordinates */
-	public synchronized Vector2 getLowestEmptyOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) {
-		return getLowestEmptyTileOrPlatformTileWorldCoords(new Vector2(worldX, worldY), floor);
-	}
-
-
-	/** Get the lowest empty tile world coordinates */
 	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) {
 		return getLowestEmptyTileOrPlatformTileWorldCoords(worldCoords.x, worldCoords.y, floor);
 	}
-	
-	
+
+
 	/** Get the lowest empty tile world coordinates */
 	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) {
 		if (getTile(worldX, worldY, true) instanceof EmptyTile) {
@@ -161,7 +155,7 @@ public class Topography {
 				worldY = worldY + TILE_SIZE;
 			}
 		}
-		
+
 		return new Vector2(
 			convertToWorldCoord(convertToWorldTileCoord(worldX), false),
 			convertToWorldCoord(convertToWorldTileCoord(worldY), floor)

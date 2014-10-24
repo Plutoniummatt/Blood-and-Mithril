@@ -21,10 +21,6 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
-
-
-
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
@@ -43,9 +39,9 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 	public PlantSeedCursorBoundTask(Seed seed, Container planter) {
 		super(
 			args -> {
-				bloodandmithril.prop.plant.seed.Seed propSeed = seed.getPropSeed();
-				Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
-				propSeed.position.x = coords.x;
+				bloodandmithril.prop.plant.seed.SeedProp propSeed = seed.getPropSeed();
+				Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+				propSeed.position.x = getMouseWorldX();
 				propSeed.position.y = coords.y;
 
 				if (planter instanceof Individual) {
@@ -64,8 +60,8 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 	@Override
 	public void renderUIGuide() {
-		Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
-		
+		Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+
 		float x = worldToScreenX(getMouseWorldX());
 		float y = worldToScreenY(coords.y);
 
@@ -81,7 +77,7 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 	@Override
 	public boolean executionConditionMet() {
-		Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+		Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
 		Tile tile = Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), coords.y - Topography.TILE_SIZE / 2, true);
 		return tile instanceof SoilTile && ((SoilTile) tile).canPlant(toPlant);

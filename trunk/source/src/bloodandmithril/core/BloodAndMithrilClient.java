@@ -241,35 +241,40 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public void render() {
-		cameraMovement();
-		if (!GameSaver.isSaving()) {
-			SoundService.update(Gdx.graphics.getDeltaTime());
-			Shaders.updateShaderUniforms();
+		try {
+			cameraMovement();
+			if (!GameSaver.isSaving()) {
+				SoundService.update(Gdx.graphics.getDeltaTime());
+				Shaders.updateShaderUniforms();
+			}
+
+			// Topography backlog ---------- /
+			if (System.currentTimeMillis() - topographyBacklogExecutionTimer > 100) {
+				Topography.executeBackLog();
+				topographyBacklogExecutionTimer = System.currentTimeMillis();
+			}
+
+			// Camera --------------------- /
+			cam.update();
+			UserInterface.update();
+
+			// Blending --------------------- /
+			Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			Gdx.gl20.glEnable(GL20.GL_BLEND);
+			Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+			// Rendering --------------------- /
+			if (domain == null) {
+				renderMainMenuBackDrop();
+			} else {
+				domain.render((int) cam.position.x, (int) cam.position.y);
+			}
+			UserInterface.render();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Gdx.app.exit();
 		}
-
-		// Topography backlog ---------- /
-		if (System.currentTimeMillis() - topographyBacklogExecutionTimer > 100) {
-			Topography.executeBackLog();
-			topographyBacklogExecutionTimer = System.currentTimeMillis();
-		}
-
-		// Camera --------------------- /
-		cam.update();
-		UserInterface.update();
-
-		// Blending --------------------- /
-		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl20.glEnable(GL20.GL_BLEND);
-		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-		// Rendering --------------------- /
-		if (domain == null) {
-			renderMainMenuBackDrop();
-		} else {
-			domain.render((int) cam.position.x, (int) cam.position.y);
-		}
-		UserInterface.render();
 	}
 
 
@@ -291,20 +296,25 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if (GameSaver.isSaving()) {
-			return false;
-		}
+		try {
+			if (GameSaver.isSaving()) {
+				return false;
+			}
 
-		if (button == KeyMappings.leftClick) {
-			leftClick(screenX, screenY);
-		}
+			if (button == KeyMappings.leftClick) {
+				leftClick(screenX, screenY);
+			}
 
-		if (button == KeyMappings.rightClick) {
-			rightClick();
-		}
+			if (button == KeyMappings.rightClick) {
+				rightClick();
+			}
 
-		if (button == KeyMappings.middleClick) {
-			middleClick(screenX, screenY);
+			if (button == KeyMappings.middleClick) {
+				middleClick(screenX, screenY);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Gdx.app.exit();
 		}
 
 		return false;
@@ -474,12 +484,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (GameSaver.isSaving()) {
-			return false;
-		}
+		try {
+			if (GameSaver.isSaving()) {
+				return false;
+			}
 
-		if (UserInterface.keyPressed(keycode)) {
-		  return false;
+			if (UserInterface.keyPressed(keycode)) {
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Gdx.app.exit();
 		}
 
 		return false;
@@ -500,13 +515,19 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if (button == KeyMappings.leftClick) {
-			UserInterface.leftClickRelease(screenX, Gdx.graphics.getHeight() - screenY);
+		try {
+			if (button == KeyMappings.leftClick) {
+				UserInterface.leftClickRelease(screenX, Gdx.graphics.getHeight() - screenY);
+			}
+
+			if (button == KeyMappings.rightClick) {
+				UserInterface.rightClickRelease(screenX, Gdx.graphics.getHeight() - screenY);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Gdx.app.exit();
 		}
 
-		if (button == KeyMappings.rightClick) {
-			UserInterface.rightClickRelease(screenX, Gdx.graphics.getHeight() - screenY);
-		}
 		return false;
 	}
 
@@ -533,7 +554,13 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public boolean scrolled(int amount) {
-		UserInterface.scrolled(amount);
+		try {
+			UserInterface.scrolled(amount);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Gdx.app.exit();
+		}
+
 		return false;
 	}
 
@@ -598,16 +625,21 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * constant.
 	 */
 	private void update(float delta) {
-		GameSaver.update();
+		try {
+			GameSaver.update();
 
-		// Do not update if game is paused
-		// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-		if (!paused && !GameSaver.isSaving() && domain != null) {
-			domain.update((int) cam.position.x, (int) cam.position.y);
+			// Do not update if game is paused
+			// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
+			if (!paused && !GameSaver.isSaving() && domain != null) {
+				domain.update((int) cam.position.x, (int) cam.position.y);
+			}
+
+			leftDoubleClickTimer += delta;
+			rightDoubleClickTimer += delta;
+		} catch (Exception e) {
+			e.printStackTrace();
+			Gdx.app.exit();
 		}
-
-		leftDoubleClickTimer += delta;
-		rightDoubleClickTimer += delta;
 	}
 
 

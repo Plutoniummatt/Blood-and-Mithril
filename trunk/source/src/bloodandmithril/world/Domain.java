@@ -361,6 +361,27 @@ public class Domain {
 	}
 
 
+	public static boolean hasProp(int key) {
+		return props.containsKey(key);
+	}
+
+
+	public static Prop removeProp(int key) {
+		Prop prop = getProp(key);
+		Domain.getActiveWorld().getProps().remove(key);
+		Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, prop.position.x, prop.position.y).remove(prop.id);
+		return props.remove(key);
+	}
+
+
+	/**
+	 * @return an {@link Individual} with the specified key
+	 */
+	public static Individual getIndividual(int key) {
+		return individuals.get(key);
+	}
+
+
 	public static void addIndividual(Individual indi) {
 		individuals.put(indi.getId().getId(), indi);
 		if (ClientServerInterface.isClient()) {
@@ -382,6 +403,21 @@ public class Domain {
 
 	public static ConcurrentHashMap<Integer, Prop> getProps() {
 		return props;
+	}
+
+
+	public static void addProp(Prop prop) {
+		props.put(prop.id, prop);
+		getActiveWorld().getProps().add(prop.id);
+		getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, prop.position).add(prop.id);
+	}
+
+
+	/**
+	 * @return a prop with the specified ID
+	 */
+	public static Prop getProp(int key) {
+		return props.get(key);
 	}
 
 

@@ -28,7 +28,7 @@ public class SynchronizePropRequest implements Request {
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(false);
-		responses.add(new SynchronizePropResponse(Domain.getProps().get(propId)));
+		responses.add(new SynchronizePropResponse(Domain.getProp(propId)));
 		responses.add(new RefreshWindowsResponse());
 		return responses;
 	}
@@ -57,8 +57,8 @@ public class SynchronizePropRequest implements Request {
 
 		@Override
 		public void acknowledge() {
-			if (Domain.getProps().containsKey(prop.id)) {
-				Prop propToSync = Domain.getProps().get(prop.id);
+			if (Domain.hasProp(prop.id)) {
+				Prop propToSync = Domain.getProp(prop.id);
 				propToSync.synchronizeProp(prop);
 				if (propToSync instanceof Container) {
 					((Container) propToSync).synchronizeContainer((Container) prop);
@@ -67,7 +67,7 @@ public class SynchronizePropRequest implements Request {
 					((Construction) propToSync).synchronizeConstruction((Construction) prop);
 				}
 			} else {
-				Domain.getProps().put(prop.id, prop);
+				Domain.addProp(prop);
 			}
 		}
 

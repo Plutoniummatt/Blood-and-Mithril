@@ -92,8 +92,8 @@ public class Craft extends CompositeAITask {
 
 		@Override
 		public void execute(float delta) {
-			CraftingStation craftingStation = (CraftingStation) Domain.getProps().get(craftingStationId);
-			Individual individual = Domain.getIndividuals().get(hostId.getId());
+			CraftingStation craftingStation = (CraftingStation) Domain.getProp(craftingStationId);
+			Individual individual = Domain.getIndividual(hostId.getId());
 
 			if (!craftingStation.craft(item, individual, delta)) {
 				occupied = true;
