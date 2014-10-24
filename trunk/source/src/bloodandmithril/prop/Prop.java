@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
@@ -75,6 +76,7 @@ public abstract class Prop implements Serializable {
 		CarrotProp.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 176, 12, 17);
 		Anvil.anvil = new TextureRegion(Domain.gameWorldTexture, 363, 225, 44, 18);
 		WorkBench.workbench = new TextureRegion(Domain.gameWorldTexture, 559, 219, 80, 33);
+		CarrotSeedProp.carrotSeed = new TextureRegion(Domain.gameWorldTexture, 389, 177, 16, 16);
 	}
 
 
