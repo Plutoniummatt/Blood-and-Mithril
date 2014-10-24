@@ -369,7 +369,7 @@ public class Domain {
 	public static Prop removeProp(int key) {
 		Prop prop = getProp(key);
 		Domain.getActiveWorld().getProps().remove(key);
-		Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, prop.position.x, prop.position.y).remove(prop.id);
+		Domain.getActiveWorld().getPositionalIndexMap().get(prop.position.x, prop.position.y).removeProp(prop.id);
 		return props.remove(key);
 	}
 
@@ -384,6 +384,7 @@ public class Domain {
 
 	public static void addIndividual(Individual indi) {
 		individuals.put(indi.getId().getId(), indi);
+		Domain.getActiveWorld().getIndividuals().add(indi.getId().getId());
 		if (ClientServerInterface.isClient()) {
 			for (Component component : UserInterface.layeredComponents) {
 				if (component instanceof UnitsWindow) {
@@ -409,7 +410,7 @@ public class Domain {
 	public static void addProp(Prop prop) {
 		props.put(prop.id, prop);
 		getActiveWorld().getProps().add(prop.id);
-		getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, prop.position).add(prop.id);
+		getActiveWorld().getPositionalIndexMap().get(prop.position.x, prop.position.y).addProp(prop.id);
 	}
 
 

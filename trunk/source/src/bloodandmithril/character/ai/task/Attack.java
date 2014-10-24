@@ -1,7 +1,7 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.util.Util.transformSet;
-import static bloodandmithril.world.Domain.getIndividuals;
+import static bloodandmithril.world.Domain.getIndividual;
 
 import java.util.Set;
 
@@ -79,7 +79,7 @@ public class Attack extends CompositeAITask {
 	 * Constructor
 	 */
 	public Attack(IndividualIdentifier hostId, Set<Integer> toBeAttacked) {
-		this(Domain.getIndividuals().get(hostId.getId()), transformSet(toBeAttacked, id -> {return Domain.getIndividuals().get(id);}));
+		this(Domain.getIndividual(hostId.getId()), transformSet(toBeAttacked, id -> {return Domain.getIndividual(id);}));
 	}
 
 
@@ -97,7 +97,7 @@ public class Attack extends CompositeAITask {
 
 	@Override
 	public boolean uponCompletion() {
-		Individual host = Domain.getIndividuals().get(hostId.getId());
+		Individual host = Domain.getIndividual(hostId.getId());
 		host.sendCommand(KeyMappings.moveRight, false);
 		host.sendCommand(KeyMappings.moveLeft, false);
 		return false;
@@ -106,7 +106,7 @@ public class Attack extends CompositeAITask {
 
 	private Individual getAlive() {
 		for (Integer id : toBeAttacked) {
-			Individual individual = Domain.getIndividuals().get(id);
+			Individual individual = Domain.getIndividual(id);
 			if (individual.getState().health > 0f) {
 				return individual;
 			}
@@ -137,8 +137,8 @@ public class Attack extends CompositeAITask {
 
 		@Override
 		public Boolean call() {
-			Individual atker = getIndividuals().get(attacker.getId());
-			Individual victim = getIndividuals().get(attackee.getId());
+			Individual atker = getIndividual(attacker.getId());
+			Individual victim = getIndividual(attackee.getId());
 
 			boolean closeEnough = false;
 			AITask subTask = getCurrentTask();
@@ -184,7 +184,7 @@ public class Attack extends CompositeAITask {
 
 		@Override
 		public boolean uponCompletion() {
-			Domain.getIndividuals().get(hostId.getId()).getAI().setCurrentTask(new Attack(hostId, toBeAttacked));
+			Domain.getIndividual(hostId.getId()).getAI().setCurrentTask(new Attack(hostId, toBeAttacked));
 			return false;
 		}
 
@@ -223,7 +223,7 @@ public class Attack extends CompositeAITask {
 
 		@Override
 		public boolean uponCompletion() {
-			Domain.getIndividuals().get(hostId.getId()).getAI().setCurrentTask(new Attack(hostId, toBeAttacked));
+			Domain.getIndividual(hostId.getId()).getAI().setCurrentTask(new Attack(hostId, toBeAttacked));
 			return false;
 		}
 
@@ -235,7 +235,7 @@ public class Attack extends CompositeAITask {
 				return;
 			}
 
-			Individual attacker = Domain.getIndividuals().get(hostId.getId());
+			Individual attacker = Domain.getIndividual(hostId.getId());
 			if (!alive.canBeAttacked(attacker)) {
 				complete = true;
 				return;

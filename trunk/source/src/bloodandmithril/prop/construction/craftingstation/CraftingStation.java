@@ -175,7 +175,7 @@ public abstract class CraftingStation extends Construction {
 	@Override
 	public void update(float delta) {
 		if (currentlyBeingCrafted != null && occupiedBy != null) {
-			occupiedBy = Domain.getIndividuals().get(occupiedBy).getAI().getCurrentTask() instanceof Craft ? occupiedBy : null;
+			occupiedBy = Domain.getIndividual(occupiedBy).getAI().getCurrentTask() instanceof Craft ? occupiedBy : null;
 		}
 	}
 

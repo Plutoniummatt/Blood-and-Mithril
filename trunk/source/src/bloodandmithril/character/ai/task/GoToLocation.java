@@ -123,8 +123,8 @@ public class GoToLocation extends AITask {
 
 		if (nextPoint != null && nextPoint.waypoint != null) {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			float startX = Domain.getIndividuals().get(hostId.getId()).getState().position.x;
-			float startY = Domain.getIndividuals().get(hostId.getId()).getState().position.y;
+			float startX = Domain.getIndividual(hostId.getId()).getState().position.x;
+			float startY = Domain.getIndividual(hostId.getId()).getState().position.y;
 			float endX = nextPoint.waypoint.x;
 			float endY = nextPoint.waypoint.y;
 
@@ -166,7 +166,7 @@ public class GoToLocation extends AITask {
 	 * Goes to a {@link WayPoint} in the {@link #path}, removing it upon arrival
 	 */
 	private void goToWayPoint(WayPoint wayPoint, int stuckTolerance) {
-		Individual host = Domain.getIndividuals().get(hostId.getId());
+		Individual host = Domain.getIndividual(hostId.getId());
 
 		// If we're outside WayPoint.tolerance, then move toward WayPoint.wayPoint
 		boolean notReached;
@@ -216,7 +216,7 @@ public class GoToLocation extends AITask {
 			}
 		}
 
-		Individual host = Domain.getIndividuals().get(hostId.getId());
+		Individual host = Domain.getIndividual(hostId.getId());
 
 		boolean finalWayPointCheck = false;
 
@@ -245,7 +245,7 @@ public class GoToLocation extends AITask {
 
 	@Override
 	public boolean uponCompletion() {
-		Individual host = Domain.getIndividuals().get(hostId.getId());
+		Individual host = Domain.getIndividual(hostId.getId());
 
 		host.sendCommand(KeyMappings.moveRight, false);
 		host.sendCommand(KeyMappings.moveLeft, false);

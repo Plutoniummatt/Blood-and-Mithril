@@ -37,7 +37,7 @@ public class RequestTakeItem implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 		Collection<Item> serverItems = Lists.newArrayList();
 		for (Integer id : items) {
 			Item item = Domain.getItems().get(id);

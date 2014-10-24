@@ -20,8 +20,8 @@ public class Hunger extends Condition {
 	 */
 	public Hunger(int affected) {
 		this.affected = affected;
-		float healthRegen = Domain.getIndividuals().get(affected).getState().healthRegen;
-		Domain.getIndividuals().get(affected).changeHealthRegen(healthRegen * 0.5f);
+		float healthRegen = Domain.getIndividual(affected).getState().healthRegen;
+		Domain.getIndividual(affected).changeHealthRegen(healthRegen * 0.5f);
 	}
 
 
@@ -52,7 +52,7 @@ public class Hunger extends Condition {
 
 	@Override
 	public boolean isExpired() {
-		return Domain.getIndividuals().get(affected).getState().hunger > 0.75f;
+		return Domain.getIndividual(affected).getState().hunger > 0.75f;
 	}
 
 
@@ -70,7 +70,7 @@ public class Hunger extends Condition {
 
 	@Override
 	public String getName() {
-		return getName(Domain.getIndividuals().get(affected).getState().hunger);
+		return getName(Domain.getIndividual(affected).getState().hunger);
 	}
 
 

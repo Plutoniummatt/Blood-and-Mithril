@@ -32,7 +32,7 @@ public class EquipOrUnequipItem implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 
 		if (equip) {
 			individual.equip(equipable);

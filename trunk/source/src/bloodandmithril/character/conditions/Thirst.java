@@ -20,8 +20,8 @@ public class Thirst extends Condition {
 	 */
 	public Thirst(int affected) {
 		this.affected = affected;
-		float staminaRegen = Domain.getIndividuals().get(affected).getState().staminaRegen;
-		Domain.getIndividuals().get(affected).changeStaminaRegen(staminaRegen * 0.5f);
+		float staminaRegen = Domain.getIndividual(affected).getState().staminaRegen;
+		Domain.getIndividual(affected).changeStaminaRegen(staminaRegen * 0.5f);
 	}
 
 
@@ -46,7 +46,7 @@ public class Thirst extends Condition {
 
 	@Override
 	public boolean isExpired() {
-		return Domain.getIndividuals().get(affected).getState().thirst > 0.75f;
+		return Domain.getIndividual(affected).getState().thirst > 0.75f;
 	}
 
 
@@ -64,7 +64,7 @@ public class Thirst extends Condition {
 
 	@Override
 	public String getName() {
-		return getName(Domain.getIndividuals().get(affected).getState().thirst);
+		return getName(Domain.getIndividual(affected).getState().thirst);
 	}
 
 

@@ -33,7 +33,7 @@ public class RequestTransferLiquidBetweenContainers implements Request {
 	@Override
 	public Responses respond() {
 		LiquidContainer.transfer(
-			Domain.getIndividuals().get(individualId),
+			Domain.getIndividual(individualId),
 			from,
 			to,
 			amount

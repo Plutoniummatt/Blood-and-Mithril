@@ -344,7 +344,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
 			if (!Domain.getSelectedIndividuals().isEmpty()) {
-				for (final Individual indi : Domain.getIndividuals().values()) {
+				for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+					Individual indi = Domain.getIndividual(indiKey);
 					if (indi.isMouseOver()) {
 						for (Individual selected : Domain.getSelectedIndividuals()) {
 							if (indi == selected) {
@@ -414,9 +415,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		boolean uiClicked = UserInterface.leftClick();
 
 		Individual individualClicked = null;
-		for (Individual indi : Domain.getIndividuals().values()) {
-			if (indi.isMouseOver()) {
-				individualClicked = indi;
+		if (Domain.getActiveWorld() != null) {
+			for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+				Individual indi = Domain.getIndividual(indiKey);
+				if (indi.isMouseOver()) {
+					individualClicked = indi;
+				}
 			}
 		}
 

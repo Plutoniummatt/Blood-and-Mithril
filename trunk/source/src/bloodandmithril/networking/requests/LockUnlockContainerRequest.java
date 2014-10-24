@@ -38,7 +38,7 @@ public class LockUnlockContainerRequest implements Request {
 			throw new RuntimeException("Can not lock/unlock non-container");
 		}
 
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 		individual.getAI().setCurrentTask(
 			new LockUnlockContainer(individual, container, lock)
 		);

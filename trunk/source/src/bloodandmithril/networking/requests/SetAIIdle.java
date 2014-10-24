@@ -29,7 +29,7 @@ public class SetAIIdle implements Request {
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(false);
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 		if (individual.getSelectedByClient().isEmpty()) {
 			individual.getAI().setToAuto(true);
 		} else {

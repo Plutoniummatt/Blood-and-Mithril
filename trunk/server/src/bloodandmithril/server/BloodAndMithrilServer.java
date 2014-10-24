@@ -9,7 +9,6 @@ import java.util.function.Function;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
-import bloodandmithril.character.conditions.Poison;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -255,10 +254,6 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public boolean keyDown(int keycode) {
-
-			if (keycode == Input.Keys.P) {
-				Domain.getIndividuals().get(1).addCondition(new Poison(1f, 0.1f));
-			}
 
 			if (keycode == Input.Keys.T) {
 				Individual individual = Domain.getIndividuals().get(1);

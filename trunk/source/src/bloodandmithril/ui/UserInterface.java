@@ -980,7 +980,8 @@ public class UserInterface {
 			}
 		}
 
-		for (final Individual indi : Domain.getIndividuals().values()) {
+		for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+			Individual indi = Domain.getIndividual(indiKey);
 			if (indi.isMouseOver()) {
 				final ContextMenu secondaryMenu = indi.getContextMenu();
 				newMenu.getMenuItems().add(

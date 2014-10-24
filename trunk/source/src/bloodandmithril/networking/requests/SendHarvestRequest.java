@@ -31,7 +31,7 @@ public class SendHarvestRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 		Prop prop = Domain.getProp(propId);
 		Harvestable harvestable = null;
 

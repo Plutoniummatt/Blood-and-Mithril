@@ -34,7 +34,7 @@ public class Wait extends AITask {
 
 	@Override
 	public void execute(float delta) {
-		Domain.getIndividuals().get(hostId.getId()).clearCommands();
+		Domain.getIndividual(hostId.getId()).clearCommands();
 		if (time < 0f) {
 			complete = true;
 			return;

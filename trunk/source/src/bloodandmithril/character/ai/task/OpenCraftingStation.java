@@ -112,18 +112,18 @@ public class OpenCraftingStation extends CompositeAITask {
 
 		@Override
 		public void execute(float delta) {
-			if (Domain.getIndividuals().get(hostId.getId()).getDistanceFrom(Domain.getProp(craftingStationId).position) > 64f) {
+			if (Domain.getIndividual(hostId.getId()).getDistanceFrom(Domain.getProp(craftingStationId).position) > 64f) {
 				return;
 			}
 
 			if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
 				ClientServerInterface.SendNotification.notifyOpenCraftingStationWindow(hostId.getId(), craftingStationId, connectionId);
 			} else if (ClientServerInterface.isClient()) {
-				openCraftingStationWindow(Domain.getIndividuals().get(hostId.getId()), (CraftingStation) Domain.getProp(craftingStationId));
+				openCraftingStationWindow(Domain.getIndividual(hostId.getId()), (CraftingStation) Domain.getProp(craftingStationId));
 			}
 
 			opened = true;
-			Domain.getIndividuals().get(hostId.getId()).clearCommands();
+			Domain.getIndividual(hostId.getId()).clearCommands();
 		}
 	}
 

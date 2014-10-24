@@ -37,11 +37,11 @@ public class CSITradeWith implements Request {
 	public Responses respond() {
 		Responses response = new Response.Responses(false);
 
-		Individual proposer = Domain.getIndividuals().get(proposerId);
+		Individual proposer = Domain.getIndividual(proposerId);
 		Container proposee = null;
 
 		if (this.proposee == TradeEntity.INDIVIDUAL) {
-			proposee = Domain.getIndividuals().get(proposeeId);
+			proposee = Domain.getIndividual(proposeeId);
 		} else {
 			Prop prop = Domain.getProp(proposeeId);
 			if (prop instanceof Container) {

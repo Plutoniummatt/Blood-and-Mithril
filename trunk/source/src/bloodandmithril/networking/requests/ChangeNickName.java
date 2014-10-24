@@ -30,7 +30,7 @@ public class ChangeNickName implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 		if (individual != null) {
 			individual.getId().setNickName(toChangeTo);
 		}

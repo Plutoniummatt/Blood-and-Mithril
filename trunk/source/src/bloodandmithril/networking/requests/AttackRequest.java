@@ -35,11 +35,11 @@ public class AttackRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual attackingIndividual = Domain.getIndividuals().get(attacker);
+		Individual attackingIndividual = Domain.getIndividual(attacker);
 		Set<Individual> toBeAttacked = Sets.newHashSet();
 
 		for (Integer i : victims) {
-			toBeAttacked.add(Domain.getIndividuals().get(i));
+			toBeAttacked.add(Domain.getIndividual(i));
 		}
 
 		if (attackingIndividual == null || toBeAttacked.isEmpty()) {

@@ -29,10 +29,10 @@ public class Trading extends AITask {
 	public Trading(IndividualIdentifier hostId, int otherId, TradeEntity entity) {
 		super(hostId);
 		this.entity = entity;
-		this.proposer = Domain.getIndividuals().get(hostId.getId());
+		this.proposer = Domain.getIndividual(hostId.getId());
 
 		if (entity == TradeEntity.INDIVIDUAL) {
-			this.proposee = Domain.getIndividuals().get(otherId);
+			this.proposee = Domain.getIndividual(otherId);
 		} else {
 			prop = Domain.getProp(otherId);
 			this.proposee = (Container) prop;

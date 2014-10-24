@@ -29,7 +29,7 @@ public class ConstructionRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 		individual.getAI().setCurrentTask(new Construct(individual, (Construction)Domain.getProp(constructionId)));
 		return new Responses(false);
 	}

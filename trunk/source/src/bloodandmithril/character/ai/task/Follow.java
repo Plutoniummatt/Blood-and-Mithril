@@ -74,7 +74,7 @@ public class Follow extends CompositeAITask {
 		if (terminationCondition != null && terminationCondition.call()) {
 			return false;
 		} else {
-			Individual follower = Domain.getIndividuals().get(hostId.getId());
+			Individual follower = Domain.getIndividual(hostId.getId());
 			follower.getAI().setCurrentTask(new Follow(follower, followee, distance, terminationCondition));
 			return true;
 		}
