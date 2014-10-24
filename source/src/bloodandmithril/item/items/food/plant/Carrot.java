@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.food.plant;
 
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -153,6 +154,9 @@ public class Carrot extends Food {
 	 */
 	public static class CarrotSeedProp extends bloodandmithril.prop.plant.seed.Seed {
 		private static final long serialVersionUID = 1761994206485966594L;
+		
+		/** {@link TextureRegion} of this seed */
+		public static TextureRegion carrotSeed;
 
 		/**
 		 * Constructor
@@ -164,6 +168,7 @@ public class Carrot extends Food {
 
 		@Override
 		public void render() {
+			spriteBatch.draw(carrotSeed, position.x - width / 2, position.y);
 		}
 
 

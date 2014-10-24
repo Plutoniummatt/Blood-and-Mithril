@@ -145,23 +145,26 @@ public class Topography {
 
 	/** Get the lowest empty tile world coordinates */
 	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) {
-		float x = worldCoords.x;
-		float y = worldCoords.y;
-
-		if (getTile(worldCoords, true) instanceof EmptyTile) {
-			while (getTile(x, y, true) instanceof EmptyTile) {
-				y = y - TILE_SIZE;
+		return getLowestEmptyTileOrPlatformTileWorldCoords(worldCoords.x, worldCoords.y, floor);
+	}
+	
+	
+	/** Get the lowest empty tile world coordinates */
+	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) {
+		if (getTile(worldX, worldY, true) instanceof EmptyTile) {
+			while (getTile(worldX, worldY, true) instanceof EmptyTile) {
+				worldY = worldY - TILE_SIZE;
 			}
-			y = y + TILE_SIZE;
+			worldY = worldY + TILE_SIZE;
 		} else {
-			while (!(getTile(x, y, true) instanceof EmptyTile)) {
-				y = y + TILE_SIZE;
+			while (!(getTile(worldX, worldY, true) instanceof EmptyTile)) {
+				worldY = worldY + TILE_SIZE;
 			}
 		}
-
+		
 		return new Vector2(
-			convertToWorldCoord(convertToWorldTileCoord(x), false),
-			convertToWorldCoord(convertToWorldTileCoord(y), floor)
+			convertToWorldCoord(convertToWorldTileCoord(worldX), false),
+			convertToWorldCoord(convertToWorldTileCoord(worldY), floor)
 		);
 	}
 
