@@ -96,7 +96,7 @@ public class Harvest extends CompositeAITask {
 		@Override
 		public void execute(float delta) {
 
-			Individual host = Domain.getIndividuals().get(hostId.getId());
+			Individual host = Domain.getIndividual(hostId.getId());
 
 			if (host.getInteractionBox().isWithinBox(harvestable.position)) {
 				if (Domain.hasProp(harvestable.id)) {
@@ -112,7 +112,7 @@ public class Harvest extends CompositeAITask {
 						Collection<Item> harvested = harvestable.harvest();
 						if (harvested != null && !harvested.isEmpty()) {
 							for (Item item : harvested) {
-								Domain.getIndividuals().get(hostId.getId()).giveItem(item);
+								Domain.getIndividual(hostId.getId()).giveItem(item);
 							}
 						}
 						InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {

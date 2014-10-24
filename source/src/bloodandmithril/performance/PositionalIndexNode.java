@@ -42,4 +42,24 @@ public class PositionalIndexNode implements Serializable {
 
 		throw new RuntimeException("Unrecognised class: " + clazz.getSimpleName());
 	}
+
+
+	public void removeIndividual(int key) {
+		individuals.remove(key);
+	}
+
+
+	public void removeProp(int key) {
+		props.remove(key);
+	}
+
+
+	public void addIndividual(int key) {
+		individuals.add(key);
+	}
+
+
+	public void addProp(int key) {
+		props.add(key);
+	}
 }

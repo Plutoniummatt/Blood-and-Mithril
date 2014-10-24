@@ -33,7 +33,7 @@ public class DiscardLiquid implements Request {
 	@Override
 	public Responses respond() {
 
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 		if (individual.takeItem(bottleToDiscardFrom) == 1) {
 			LiquidContainer newBottle = bottleToDiscardFrom.clone();
 			newBottle.subtract(amount);

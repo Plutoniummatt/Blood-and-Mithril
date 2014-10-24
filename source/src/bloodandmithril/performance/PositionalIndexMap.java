@@ -1,5 +1,7 @@
 package bloodandmithril.performance;
 
+import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
+import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 
 import java.io.Serializable;
@@ -36,17 +38,36 @@ public class PositionalIndexMap implements Serializable {
 	public Collection<Integer> getNearbyEntities(Class<?> clazz, float x, float y) {
 		LinkedList<Integer> entities = Lists.newLinkedList();
 
+		int i = CHUNK_SIZE * TILE_SIZE;
 		entities.addAll(get(x, y).getAllEntitiesForType(clazz));
-		entities.addAll(get(x, y + 1).getAllEntitiesForType(clazz));
-		entities.addAll(get(x + 1, y + 1).getAllEntitiesForType(clazz));
-		entities.addAll(get(x + 1, y).getAllEntitiesForType(clazz));
-		entities.addAll(get(x + 1, y - 1).getAllEntitiesForType(clazz));
-		entities.addAll(get(x, y - 1).getAllEntitiesForType(clazz));
-		entities.addAll(get(x - 1, y - 1).getAllEntitiesForType(clazz));
-		entities.addAll(get(x - 1, y).getAllEntitiesForType(clazz));
-		entities.addAll(get(x - 1, y + 1).getAllEntitiesForType(clazz));
+		entities.addAll(get(x, y + i).getAllEntitiesForType(clazz));
+		entities.addAll(get(x + i, y + i).getAllEntitiesForType(clazz));
+		entities.addAll(get(x + i, y).getAllEntitiesForType(clazz));
+		entities.addAll(get(x + i, y - i).getAllEntitiesForType(clazz));
+		entities.addAll(get(x, y - i).getAllEntitiesForType(clazz));
+		entities.addAll(get(x - i, y - i).getAllEntitiesForType(clazz));
+		entities.addAll(get(x - i, y).getAllEntitiesForType(clazz));
+		entities.addAll(get(x - i, y + i).getAllEntitiesForType(clazz));
 
 		return entities;
+	}
+
+
+	public Collection<PositionalIndexNode> getNearbyNodes(float x, float y) {
+		LinkedList<PositionalIndexNode> nodes = Lists.newLinkedList();
+
+		int i = CHUNK_SIZE * TILE_SIZE;
+		nodes.add(get(x, y));
+		nodes.add(get(x, y + i));
+		nodes.add(get(x + i, y + i));
+		nodes.add(get(x + i, y));
+		nodes.add(get(x + i, y - i));
+		nodes.add(get(x, y - i));
+		nodes.add(get(x - i, y - i));
+		nodes.add(get(x - i, y));
+		nodes.add(get(x - i, y + i));
+
+		return nodes;
 	}
 
 

@@ -1,16 +1,16 @@
 package bloodandmithril.character.individuals;
 
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_SPEAR;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_TWO_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_SPEAR;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
@@ -60,6 +60,7 @@ import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
@@ -380,7 +381,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					return equipped instanceof Weapon;
 				});
 
-				Individual toBeAttacked = Domain.getIndividuals().get(individualId);
+				Individual toBeAttacked = Domain.getIndividual(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
 					if (weapon.isPresent()) {
 						String floatingText = combat().target(toBeAttacked).withWeapon((Weapon) weapon.get()).execute();
@@ -781,7 +782,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		synchronized (beingAttackedBy) {
 			Sets.newHashSet(beingAttackedBy.keySet()).stream().forEach(i -> {
-				Individual individual = Domain.getIndividuals().get(i);
+				Individual individual = Domain.getIndividual(i);
 				if (beingAttackedBy.get(i) <= System.currentTimeMillis() - round(individual.getAttackPeriod() * 1000D) - 1000L) {
 					beingAttackedBy.remove(i);
 				} else {
@@ -810,6 +811,16 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		Kinematics.kinetics(delta, Domain.getWorld(getWorldId()), this);
 
 		updateConditions(delta);
+		updatePositionalIndex();
+	}
+
+
+	private void updatePositionalIndex() {
+		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(state.position.x, state.position.y)) {
+			node.removeIndividual(id.getId());
+		}
+
+		Domain.getWorld(worldId).getPositionalIndexMap().get(state.position.x, state.position.y).addIndividual(id.getId());
 	}
 
 
@@ -1703,7 +1714,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				return true;
 			} else {
 				int totalConcurrentAttackNumber = beingAttackedBy.keySet().stream().mapToInt(i -> {
-					return Domain.getIndividuals().get(i).getConcurrentAttackNumber();
+					return Domain.getIndividual(i).getConcurrentAttackNumber();
 				}).sum();
 
 				return totalConcurrentAttackNumber + by.getConcurrentAttackNumber() <= this.maxConcurrentAttackers;

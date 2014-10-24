@@ -33,7 +33,7 @@ public class IndividualSelection implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 		if (select) {
 			individual.select(clientId);
 			Domain.getSelectedIndividuals().remove(individual);
@@ -79,7 +79,7 @@ public class IndividualSelection implements Request {
 
 		@Override
 		public void acknowledge() {
-			Individual individual = Domain.getIndividuals().get(individualId);
+			Individual individual = Domain.getIndividual(individualId);
 			if (select) {
 				individual.select(0);
 				Domain.getSelectedIndividuals().remove(individual);

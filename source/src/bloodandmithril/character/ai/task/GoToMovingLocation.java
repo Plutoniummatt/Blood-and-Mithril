@@ -38,7 +38,7 @@ public class GoToMovingLocation extends AITask {
 		this.tolerance = tolerance;
 
 		this.currentGoToLocation = new GoToLocation(
-			Domain.getIndividuals().get(hostId.getId()),
+			Domain.getIndividual(hostId.getId()),
 			new WayPoint(destination),
 			false,
 			150f,
@@ -57,7 +57,7 @@ public class GoToMovingLocation extends AITask {
 		this.tolerance = -1f;
 
 		this.currentGoToLocation = new GoToLocation(
-			Domain.getIndividuals().get(hostId.getId()),
+			Domain.getIndividual(hostId.getId()),
 			new WayPoint(destination),
 			false,
 			150f,
@@ -77,7 +77,7 @@ public class GoToMovingLocation extends AITask {
 		this.tolerance = -1f;
 
 		this.currentGoToLocation = new GoToLocation(
-			Domain.getIndividuals().get(hostId.getId()),
+			Domain.getIndividual(hostId.getId()),
 			new WayPoint(destination),
 			false,
 			150f,
@@ -98,7 +98,7 @@ public class GoToMovingLocation extends AITask {
 			return terminationCondition.call();
 		}
 
-		return Domain.getIndividuals().get(hostId.getId()).getDistanceFrom(destination) < tolerance;
+		return Domain.getIndividual(hostId.getId()).getDistanceFrom(destination) < tolerance;
 	}
 
 
@@ -112,7 +112,7 @@ public class GoToMovingLocation extends AITask {
 
 	@Override
 	public boolean uponCompletion() {
-		Individual host = Domain.getIndividuals().get(hostId.getId());
+		Individual host = Domain.getIndividual(hostId.getId());
 
 		host.sendCommand(KeyMappings.moveRight, false);
 		host.sendCommand(KeyMappings.moveLeft, false);
@@ -128,7 +128,7 @@ public class GoToMovingLocation extends AITask {
 
 		if (repathCondition == null ? getCurrentGoToLocation().isComplete() : repathCondition.call()) {
 			this.currentGoToLocation = new GoToLocation(
-				Domain.getIndividuals().get(hostId.getId()),
+				Domain.getIndividual(hostId.getId()),
 				new WayPoint(destination),
 				false,
 				150f,

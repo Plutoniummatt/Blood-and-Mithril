@@ -1006,7 +1006,7 @@ public class ClientServerInterface {
 
 
 		public static synchronized void notifyGiveItem(int individualId, Item item) {
-			Domain.getIndividuals().get(individualId).giveItem(item);
+			Domain.getIndividual(individualId).giveItem(item);
 			sendNotification(
 				-1,
 				true,

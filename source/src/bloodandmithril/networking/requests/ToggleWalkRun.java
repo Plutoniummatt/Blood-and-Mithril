@@ -27,7 +27,7 @@ public class ToggleWalkRun implements Request {
 
 	@Override
 	public Responses respond() {
-		Domain.getIndividuals().get(individualId).setWalking(walk);
+		Domain.getIndividual(individualId).setWalking(walk);
 		return new Responses(false);
 	}
 

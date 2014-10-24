@@ -170,7 +170,7 @@ public class TradeWindow extends Window implements Refreshable {
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized void refresh() {
-		proposer = Domain.getIndividuals().get(((Individual) proposer).getId().getId());
+		proposer = Domain.getIndividual(((Individual) proposer).getId().getId());
 
 		HashMap<ListingMenuItem<Item>, Integer> proposerToTrade = newHashMap(proposerItemsToTrade);
 		HashMap<ListingMenuItem<Item>, Integer> proposeeToTrade = newHashMap(proposeeItemsToTrade);

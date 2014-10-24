@@ -127,7 +127,7 @@ public class TakeItem extends CompositeAITask {
 				Integer next = itemIds.poll();
 				if (Domain.getItems().get(next) != null) {
 					appendTask(new TakeItem(
-						Domain.getIndividuals().get(hostId.getId()),
+						Domain.getIndividual(hostId.getId()),
 						Domain.getItems().get(next),
 						itemIds
 					));
@@ -140,7 +140,7 @@ public class TakeItem extends CompositeAITask {
 
 		@Override
 		public void execute(float delta) {
-			Individual individual = Domain.getIndividuals().get(hostId.getId());
+			Individual individual = Domain.getIndividual(hostId.getId());
 			if (individual.getInteractionBox().isWithinBox(item.getPosition())) {
 				individual.giveItem(item);
 				if (item instanceof Equipable) {

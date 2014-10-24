@@ -38,7 +38,7 @@ public class MoveIndividual implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 		if (individual != null && Domain.getSelectedIndividuals().contains(individual)) {
 			AIProcessor.sendPathfindingRequest(
 					individual,

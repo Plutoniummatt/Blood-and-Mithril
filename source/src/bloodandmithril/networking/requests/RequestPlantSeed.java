@@ -13,10 +13,10 @@ import bloodandmithril.world.Domain;
  * @author Matt
  */
 public class RequestPlantSeed implements Request {
-	
+
 	int planterId;
 	SeedProp toPlant;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -24,23 +24,23 @@ public class RequestPlantSeed implements Request {
 		this.planterId = planter.getId().getId();
 		this.toPlant = seed;
 	}
-	
+
 
 	@Override
 	public Responses respond() {
-		Individual planter = Domain.getIndividuals().get(planterId);
-		((Individual) planter).getAI().setCurrentTask(new PlantSeed((Individual) planter, toPlant));
-		
+		Individual planter = Domain.getIndividual(planterId);
+		planter.getAI().setCurrentTask(new PlantSeed(planter, toPlant));
+
 		return new Responses(false);
 	}
 
-	
+
 	@Override
 	public boolean tcp() {
 		return true;
 	}
 
-	
+
 	@Override
 	public boolean notifyOthers() {
 		return false;

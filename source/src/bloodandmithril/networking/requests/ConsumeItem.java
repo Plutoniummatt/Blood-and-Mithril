@@ -33,7 +33,7 @@ public class ConsumeItem implements Request {
 	public Responses respond() {
 		Responses responses = new Responses(true);
 
-		Individual individual = Domain.getIndividuals().get(individualId);
+		Individual individual = Domain.getIndividual(individualId);
 
 		if (consumable.consume(individual)) {
 			individual.takeItem((Item)consumable);

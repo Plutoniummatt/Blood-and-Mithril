@@ -93,9 +93,9 @@ public class OpenTradeWindow implements Request {
 
 		@Override
 		public void acknowledge() {
-			Individual proposer = Domain.getIndividuals().get(proposerId);
+			Individual proposer = Domain.getIndividual(proposerId);
 			if (proposeeEntity == TradeEntity.INDIVIDUAL) {
-				Individual proposee = Domain.getIndividuals().get(proposeeId);
+				Individual proposee = Domain.getIndividual(proposeeId);
 				TradeWith.openTradeWindowWithIndividual(proposer, proposee);
 			} else {
 				Prop proposee = Domain.getProp(proposeeId);

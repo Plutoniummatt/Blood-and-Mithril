@@ -50,12 +50,12 @@ public class TransferItems implements Request {
 		Individual proposer;
 		Container proposee;
 
-		proposer = Domain.getIndividuals().get(proposerId);
+		proposer = Domain.getIndividual(proposerId);
 		response.add(new SynchronizeIndividual.SynchronizeIndividualResponse(proposer.getId().getId(), System.currentTimeMillis()));
 
 		switch(proposeeEntityType) {
 		case INDIVIDUAL:
-			proposee = Domain.getIndividuals().get(proposeeId);
+			proposee = Domain.getIndividual(proposeeId);
 			response.add(new SynchronizeIndividual.SynchronizeIndividualResponse(((Individual)proposee).getId().getId(), System.currentTimeMillis()));
 			break;
 

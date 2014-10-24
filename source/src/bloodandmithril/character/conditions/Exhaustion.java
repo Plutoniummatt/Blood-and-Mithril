@@ -32,7 +32,7 @@ public class Exhaustion extends Condition {
 
 	@Override
 	public boolean isExpired() {
-		return Domain.getIndividuals().get(affected).getState().stamina > 0.75f;
+		return Domain.getIndividual(affected).getState().stamina > 0.75f;
 	}
 
 
@@ -60,7 +60,7 @@ public class Exhaustion extends Condition {
 
 	@Override
 	public String getName() {
-		return getName(Domain.getIndividuals().get(affected).getState().stamina);
+		return getName(Domain.getIndividual(affected).getState().stamina);
 	}
 
 

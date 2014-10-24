@@ -29,8 +29,8 @@ public class FollowRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual follower = Domain.getIndividuals().get(followerId);
-		Individual followee = Domain.getIndividuals().get(followeeId);
+		Individual follower = Domain.getIndividual(followerId);
+		Individual followee = Domain.getIndividual(followeeId);
 		follower.getAI().setCurrentTask(new Follow(follower, followee, 10, null));
 
 		return new Responses(false);

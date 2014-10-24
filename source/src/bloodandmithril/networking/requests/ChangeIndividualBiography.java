@@ -28,7 +28,7 @@ public class ChangeIndividualBiography implements Request {
 
 	@Override
 	public Responses respond() {
-		Domain.getIndividuals().get(individualId).updateDescription(description);
+		Domain.getIndividual(individualId).updateDescription(description);
 		Responses responses = new Responses(false);
 		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individualId, System.currentTimeMillis()));
 		return responses;

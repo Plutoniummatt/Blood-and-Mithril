@@ -30,7 +30,7 @@ public class RequestDiscardItem implements Request {
 	@Override
 	public Responses respond() {
 		ContainerImpl.discard(
-			Domain.getIndividuals().get(hostId),
+			Domain.getIndividual(hostId),
 			item,
 			quantity
 		);
