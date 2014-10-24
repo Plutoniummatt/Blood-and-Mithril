@@ -11,7 +11,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
-import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
@@ -84,7 +83,7 @@ public class Harvest extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return !Domain.getProps().containsKey(harvestable.id);
+			return !Domain.hasProp(harvestable.id);
 		}
 
 
@@ -100,14 +99,13 @@ public class Harvest extends CompositeAITask {
 			Individual host = Domain.getIndividuals().get(hostId.getId());
 
 			if (host.getInteractionBox().isWithinBox(harvestable.position)) {
-				if (Domain.getProps().containsKey(harvestable.id)) {
+				if (Domain.hasProp(harvestable.id)) {
 					if (harvestable.destroyUponHarvest()) {
-						Domain.getProps().remove(harvestable.id);
-						Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, harvestable.position.x, harvestable.position.y).remove(harvestable.id);
+						Domain.removeProp(harvestable.id);
 					}
 
 					if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
-						ClientServerInterface.SendNotification.notifyRemoveProp(harvestable.id, harvestable.position);
+						ClientServerInterface.SendNotification.notifyRemoveProp(harvestable.id);
 					}
 
 					if (ClientServerInterface.isClient() && ClientServerInterface.isServer()) {

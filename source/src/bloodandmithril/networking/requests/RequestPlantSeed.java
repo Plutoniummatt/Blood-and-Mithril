@@ -4,23 +4,23 @@ import bloodandmithril.character.ai.task.PlantSeed;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
-import bloodandmithril.prop.plant.seed.Seed;
+import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.world.Domain;
 
 /**
- * A {@link Request} for an {@link Individual} to plant a {@link Seed}
+ * A {@link Request} for an {@link Individual} to plant a {@link SeedProp}
  *
  * @author Matt
  */
 public class RequestPlantSeed implements Request {
 	
 	int planterId;
-	Seed toPlant;
+	SeedProp toPlant;
 	
 	/**
 	 * Constructor
 	 */
-	public RequestPlantSeed(Individual planter, Seed seed) {
+	public RequestPlantSeed(Individual planter, SeedProp seed) {
 		this.planterId = planter.getId().getId();
 		this.toPlant = seed;
 	}

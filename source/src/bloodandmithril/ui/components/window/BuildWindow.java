@@ -144,13 +144,12 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 		public BuildCursorBoundTask(Construction toConstruct) {
 			super(
 				args -> {
-					Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+					Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 					boolean canBuild = toConstruct.canBuildAt(getMouseWorldX(), coords.y);
 
 					if (canBuild) {
 						if (ClientServerInterface.isServer()) {
-							Domain.getProps().put(toConstruct.id, toConstruct);
-							Domain.getActiveWorld().getProps().add(toConstruct.id);
+							Domain.addProp(toConstruct);
 						} else {
 							ClientServerInterface.SendRequest.sendPlaceConstructionRequest(getMouseWorldX(), coords.y, toConstruct);
 						}
@@ -165,7 +164,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 		@Override
 		public void renderUIGuide() {
-			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
 			float x = worldToScreenX(getMouseWorldX());
 			float y = worldToScreenY(coords.y);
@@ -193,7 +192,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 		@Override
 		public boolean executionConditionMet() {
-			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 			return toConstruct.canBuildAt(getMouseWorldX(), coords.y);
 		}
 	}

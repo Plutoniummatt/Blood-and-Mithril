@@ -167,7 +167,6 @@ public class BloodAndMithrilServer {
 						if (counter % 2 == 0) {
 							for (Prop prop : Domain.getProps().values()) {
 								ClientServerInterface.SendNotification.notifySyncProp(prop);
-
 							}
 
 							for (Faction faction : Domain.getFactions().values()) {
@@ -275,7 +274,7 @@ public class BloodAndMithrilServer {
 						},
 						Pine.class
 					);
-					Domain.getProps().put(pineChest.id, pineChest);
+					Domain.addProp(pineChest);
 				}
 			}
 
@@ -286,7 +285,7 @@ public class BloodAndMithrilServer {
 						individual.getState().position.x,
 						individual.getState().position.y
 					);
-					Domain.getProps().put(anvil.id, anvil);
+					Domain.addProp(anvil);
 				}
 			}
 
@@ -295,7 +294,7 @@ public class BloodAndMithrilServer {
 				if (individual != null) {
 					Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
 					furnace.setConstructionProgress(0f);
-					Domain.getProps().put(furnace.id, furnace);
+					Domain.addProp(furnace);
 				}
 			}
 
@@ -303,7 +302,7 @@ public class BloodAndMithrilServer {
 				Individual individual = Domain.getIndividuals().get(1);
 				if (individual != null) {
 					bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
-					Domain.getProps().put(carrot.id, carrot);
+					Domain.addProp(carrot);
 				}
 			}
 
@@ -311,7 +310,7 @@ public class BloodAndMithrilServer {
 				Individual individual = Domain.getIndividuals().get(1);
 				if (individual != null) {
 					Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
-					Domain.getProps().put(anvil.id, anvil);
+					Domain.addProp(anvil);
 				}
 			}
 

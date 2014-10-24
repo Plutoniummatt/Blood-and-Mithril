@@ -7,7 +7,9 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
+import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.plant.CarrotProp;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 
@@ -141,7 +143,7 @@ public class Carrot extends Food {
 
 
 		@Override
-		public bloodandmithril.prop.plant.seed.Seed getPropSeed() {
+		public bloodandmithril.prop.plant.seed.SeedProp getPropSeed() {
 			return new CarrotSeedProp(0, 0, this);
 		}
 	}
@@ -152,9 +154,9 @@ public class Carrot extends Food {
 	 *
 	 * @author Matt
 	 */
-	public static class CarrotSeedProp extends bloodandmithril.prop.plant.seed.Seed {
+	public static class CarrotSeedProp extends bloodandmithril.prop.plant.seed.SeedProp {
 		private static final long serialVersionUID = 1761994206485966594L;
-		
+
 		/** {@link TextureRegion} of this seed */
 		public static TextureRegion carrotSeed;
 
@@ -180,26 +182,21 @@ public class Carrot extends Food {
 		@Override
 		public ContextMenu getContextMenu() {
 			ContextMenu menu = new ContextMenu(0, 0, true);
-			
+
 			menu.addMenuItem(
 				new ContextMenu.MenuItem(
-					"Show info", 
+					"Show info",
 					() -> {
 						UserInterface.addMessage("Carrot seed", "The seed of a carrot, plant this to grow carrots.");
-					}, 
-					Color.WHITE, 
-					Color.GREEN, 
-					Color.WHITE, 
+					},
+					Color.WHITE,
+					Color.GREEN,
+					Color.WHITE,
 					null
 				)
 			);
-			
+
 			return menu;
-		}
-
-
-		@Override
-		public void update(float delta) {
 		}
 
 
@@ -212,6 +209,18 @@ public class Carrot extends Food {
 		@Override
 		public boolean destroyUponHarvest() {
 			return true;
+		}
+
+
+		@Override
+		public Growable germinate() {
+			return new CarrotProp(position.x, position.y);
+		}
+
+
+		@Override
+		protected void growth(float delta) {
+			setGerminationProgress(getGerminationProgress() + delta / 10f);
 		}
 	}
 }

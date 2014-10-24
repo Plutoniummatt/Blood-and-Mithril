@@ -26,7 +26,7 @@ public class IgniteFurnaceRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Prop prop = Domain.getProps().get(furnaceId);
+		Prop prop = Domain.getProp(furnaceId);
 		if (prop instanceof Furnace) {
 			float finalDuration = 0f;
 			for (Entry<Item, Integer> entry : ((Furnace) prop).getInventory().entrySet()) {

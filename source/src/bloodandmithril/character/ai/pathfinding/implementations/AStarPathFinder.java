@@ -293,8 +293,8 @@ public class AStarPathFinder extends PathFinder {
 					}
 				}
 				cascadeDownAndProcessPlatforms(to.x, to.y - TILE_SIZE, parent, destination, height, safeHeight, world);
-				changeToDebugTile(to.x, world.getTopography().getLowestEmptyOrPlatformTileWorldCoords(to.x, to.y, false).y, world);
-				return -round(to.y - world.getTopography().getLowestEmptyOrPlatformTileWorldCoords(to.x, to.y, false).y) / TILE_SIZE;
+				changeToDebugTile(to.x, world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(to.x, to.y, false).y, world);
+				return -round(to.y - world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(to.x, to.y, false).y) / TILE_SIZE;
 
 			// If the tile is not empty and not a platform, we check that all tiles above it (within specified height) are also empty, if so, we return 1, otherwise we return 2.
 			} else if (!tile.isPlatformTile) {

@@ -30,7 +30,7 @@ public class ConstructionRequest implements Request {
 	@Override
 	public Responses respond() {
 		Individual individual = Domain.getIndividuals().get(individualId);
-		individual.getAI().setCurrentTask(new Construct(individual, (Construction)Domain.getProps().get(constructionId)));
+		individual.getAI().setCurrentTask(new Construct(individual, (Construction)Domain.getProp(constructionId)));
 		return new Responses(false);
 	}
 

@@ -50,7 +50,7 @@ public class OpenTradeWindow implements Request {
 		} else {
 			responses.add(
 				new SynchronizePropRequest.SynchronizePropResponse(
-					Domain.getProps().get(proposeeId)
+					Domain.getProp(proposeeId)
 				)
 			);
 		}
@@ -98,7 +98,7 @@ public class OpenTradeWindow implements Request {
 				Individual proposee = Domain.getIndividuals().get(proposeeId);
 				TradeWith.openTradeWindowWithIndividual(proposer, proposee);
 			} else {
-				Prop proposee = Domain.getProps().get(proposeeId);
+				Prop proposee = Domain.getProp(proposeeId);
 				if (proposee instanceof Prop && proposee instanceof Container) {
 					TradeWith.openTradeWindowWithProp(proposer, (Container) proposee);
 				}

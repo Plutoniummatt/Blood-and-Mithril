@@ -999,7 +999,8 @@ public class UserInterface {
 			}
 		}
 
-		for (final Prop prop : Domain.getProps().values()) {
+		for (final int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())) {
+			Prop prop = Domain.getProp(propKey);
 			if (prop.isMouseOver()) {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
 				newMenu.getMenuItems().add(

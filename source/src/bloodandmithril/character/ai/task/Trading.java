@@ -34,7 +34,7 @@ public class Trading extends AITask {
 		if (entity == TradeEntity.INDIVIDUAL) {
 			this.proposee = Domain.getIndividuals().get(otherId);
 		} else {
-			prop = Domain.getProps().get(otherId);
+			prop = Domain.getProp(otherId);
 			this.proposee = (Container) prop;
 		}
 	}

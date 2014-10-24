@@ -33,7 +33,7 @@ public class CSIOpenCraftingStation implements Request {
 		Responses response = new Response.Responses(false);
 
 		Individual individual = Domain.getIndividuals().get(individualId);
-		Prop prop = Domain.getProps().get(craftingStationId);
+		Prop prop = Domain.getProp(craftingStationId);
 		if (prop instanceof CraftingStation) {
 			individual.getAI().setCurrentTask(
 				new OpenCraftingStation(individual, (CraftingStation) prop, connectionId)
@@ -68,7 +68,7 @@ public class CSIOpenCraftingStation implements Request {
 
 		@Override
 		public void acknowledge() {
-			Prop prop = Domain.getProps().get(craftingStationId);
+			Prop prop = Domain.getProp(craftingStationId);
 			if (prop instanceof CraftingStation) {
 				OpenCraftingStation.openCraftingStationWindow(Domain.getIndividuals().get(individualId), (CraftingStation)prop);
 			}
