@@ -35,6 +35,7 @@ public class CarrotProp extends Plant {
 	private static final long serialVersionUID = -4581900482709094877L;
 
 	/** {@link TextureRegion} of the {@link CarrotProp} */
+	public static TextureRegion halfCarrot;
 	public static TextureRegion carrot;
 
 	/**
@@ -47,7 +48,11 @@ public class CarrotProp extends Plant {
 
 	@Override
 	public void render() {
-		spriteBatch.draw(carrot, position.x - width / 2, position.y);
+		if (getGrowthProgress() < 1.0f) {
+			spriteBatch.draw(halfCarrot, position.x - width / 2, position.y);
+		} else {
+			spriteBatch.draw(carrot, position.x - width / 2, position.y);
+		}
 	}
 
 
@@ -68,7 +73,7 @@ public class CarrotProp extends Plant {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new MessageWindow(
-							bloodandmithril.item.items.food.plant.Carrot.description,
+							bloodandmithril.item.items.food.plant.Carrot.description + (getGrowthProgress() == 1f ? "" : " This carrot is still growing."),
 							Color.ORANGE,
 							BloodAndMithrilClient.WIDTH/2 - 250,
 							BloodAndMithrilClient.HEIGHT/2 + 125,
@@ -89,7 +94,7 @@ public class CarrotProp extends Plant {
 		);
 
 		if (Domain.getSelectedIndividuals().size() == 1 &&
-		  !(Domain.getSelectedIndividuals().iterator().next().getAI().getCurrentTask() instanceof Trading)) {
+		  !(Domain.getSelectedIndividuals().iterator().next().getAI().getCurrentTask() instanceof Trading) && getGrowthProgress() == 1f) {
 
 			menu.addMenuItem(
 				new MenuItem(
@@ -134,6 +139,7 @@ public class CarrotProp extends Plant {
 
 	@Override
 	public void update(float delta) {
+		grow(delta / 100f);
 	}
 
 

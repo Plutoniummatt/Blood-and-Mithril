@@ -220,7 +220,7 @@ public class Carrot extends Food {
 
 		@Override
 		protected void growth(float delta) {
-			setGerminationProgress(getGerminationProgress() + delta / 10f);
+			setGerminationProgress(getGerminationProgress() + delta / 100f);
 		}
 	}
 }
