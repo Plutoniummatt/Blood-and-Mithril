@@ -23,11 +23,6 @@ public abstract class Harvestable extends Prop {
 		super(x, y, width, height, grounded, FOREGOUND);
 	}
 
-	@Override
-	public String getContextMenuItemLabel() {
-		return getClass().getSimpleName();
-	}
-
 	/** Returns the item that harvesting this {@link Harvestable} provides */
 	public abstract Collection<Item> harvest();
 
