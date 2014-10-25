@@ -135,4 +135,10 @@ public class CarrotProp extends Plant {
 	@Override
 	public void update(float delta) {
 	}
+
+
+	@Override
+	public String getContextMenuItemLabel() {
+		return "Carrot";
+	}
 }
