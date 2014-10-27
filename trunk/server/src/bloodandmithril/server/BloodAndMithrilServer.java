@@ -260,7 +260,7 @@ public class BloodAndMithrilServer {
 				if (individual != null) {
 					WoodenChest pineChest = new WoodenChest(
 						individual.getState().position.x,
-						individual.getState().position.y, 100f, true,
+						individual.getState().position.y, 100f, 200, true,
 						new Function<Item, Boolean>() {
 							@Override
 							public Boolean apply(Item t) {

@@ -28,7 +28,7 @@ public class Ingot extends bloodandmithril.item.items.material.Material implemen
 	 * Constructor
 	 */
 	private Ingot(Class<? extends Metal> metal) {
-		super(1f, false);
+		super(1f, 5, false);
 		this.metal = metal;
 		setValue(Material.getMaterial(metal).getIngotValue());
 	}

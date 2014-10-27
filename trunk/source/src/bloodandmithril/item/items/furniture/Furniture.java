@@ -16,15 +16,8 @@ public abstract class Furniture extends Item {
 	/**
 	 * Protected constructor
 	 */
-	protected Furniture(float mass, boolean equippable, long value) {
-		super(mass, equippable, value);
-	}
-
-	/**
-	 * Protected constructor
-	 */
-	protected Furniture(float mass, boolean equippable) {
-		super(mass, equippable);
+	protected Furniture(float mass, int volume, long value) {
+		super(mass, volume, false, value);
 	}
 
 

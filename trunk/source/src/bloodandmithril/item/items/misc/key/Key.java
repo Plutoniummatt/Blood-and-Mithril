@@ -22,7 +22,7 @@ public abstract class Key extends Item {
 	 * Constructor
 	 */
 	protected Key(float mass, long value) {
-		super(mass, false, value);
+		super(mass, 0, false, value);
 	}
 
 

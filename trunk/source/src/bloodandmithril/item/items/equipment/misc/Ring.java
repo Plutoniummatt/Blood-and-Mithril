@@ -23,7 +23,7 @@ public abstract class Ring extends Equipable implements Craftable {
 	 * Constructor
 	 */
 	protected Ring(long value, Class<? extends Material> material) {
-		super(0f, true, value, EquipmentSlot.RING);
+		super(0f, 0, true, value, EquipmentSlot.RING);
 		this.material = material;
 	}
 

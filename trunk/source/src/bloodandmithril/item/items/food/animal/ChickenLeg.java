@@ -21,7 +21,7 @@ public class ChickenLeg extends Food {
 	 * Constructor
 	 */
 	public ChickenLeg() {
-		super(0.25f, false, ItemValues.CHICKENLEG);
+		super(0.25f, 3, false, ItemValues.CHICKENLEG);
 	}
 
 

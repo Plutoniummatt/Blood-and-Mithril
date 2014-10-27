@@ -48,8 +48,8 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 	/**
 	 * Constructor
 	 */
-	protected Dagger(float mass, long value, Class<T> metal) {
-		super(mass, true, value, metal);
+	protected Dagger(float mass, int volume, long value, Class<T> metal) {
+		super(mass, volume, true, value, metal);
 	}
 
 

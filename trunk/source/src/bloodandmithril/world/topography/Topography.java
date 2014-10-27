@@ -76,19 +76,15 @@ public class Topography {
 
 
 	/** Adds a task to be processed */
-	public static void addTask(Task task) {
-		synchronized(topographyTasks) {
-			topographyTasks.add(task);
-		}
+	public static synchronized void addTask(Task task) {
+		topographyTasks.add(task);
 	}
 
 
 	/** Executes any tasks queued in {@link #topographyTasks} by other threads */
-	public static void executeBackLog() {
-		synchronized(topographyTasks) {
-			while (!topographyTasks.isEmpty()) {
-				topographyTasks.poll().execute();
-			}
+	public static synchronized void executeBackLog() {
+		while (!topographyTasks.isEmpty()) {
+			topographyTasks.poll().execute();
 		}
 	}
 

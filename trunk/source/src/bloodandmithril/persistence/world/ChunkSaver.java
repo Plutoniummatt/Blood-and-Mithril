@@ -3,8 +3,8 @@ package bloodandmithril.persistence.world;
 import static bloodandmithril.persistence.PersistenceUtil.encode;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
@@ -37,7 +37,7 @@ public class ChunkSaver {
 	/**
 	 * Sets up this class
 	 */
-	private static void setup() {
+	private static synchronized void setup() {
 		if (GameSaver.saverThread == null) {
 			GameSaver.saverThread = new Thread(() -> {
 				while (true) {
@@ -94,7 +94,7 @@ public class ChunkSaver {
 
 					ZipHelper zip = new ZipHelper(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()), "/chunkData.zip");
 
-					for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> columnToSave : world.getValue().getTopography().getChunkMap().chunkMap.entrySet()) {
+					for (Entry<Integer, HashMap<Integer, Chunk>> columnToSave : world.getValue().getTopography().getChunkMap().chunkMap.entrySet()) {
 						saveColumn(columnToSave.getKey(), columnToSave.getValue(), zip);
 					}
 
@@ -135,7 +135,7 @@ public class ChunkSaver {
 	/**
 	 * @param columnToSave
 	 */
-	private static void saveColumn(int x, ConcurrentHashMap<Integer, Chunk> columnToSave, ZipHelper zip) {
+	private static void saveColumn(int x, HashMap<Integer, Chunk> columnToSave, ZipHelper zip) {
 		for (Entry<Integer, Chunk> chunkToSave : columnToSave.entrySet()) {
 			saveChunk(chunkToSave.getValue(), x, chunkToSave.getKey(), zip);
 		}

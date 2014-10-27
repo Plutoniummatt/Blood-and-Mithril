@@ -18,8 +18,8 @@ public abstract class MeleeWeapon<T extends Material> extends Weapon<T> {
 	/**
 	 * Protected constructor
 	 */
-	protected MeleeWeapon(float mass, boolean equippable, long value, EquipmentSlot slot, Class<T> material) {
-		super(mass, equippable, value, slot, material);
+	protected MeleeWeapon(float mass, int volume, boolean equippable, long value, EquipmentSlot slot, Class<T> material) {
+		super(mass, volume, equippable, value, slot, material);
 	}
 
 

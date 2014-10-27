@@ -17,7 +17,7 @@ public class Dirt extends Earth {
 	 * Constructor
 	 */
 	public Dirt() {
-		super(0.5f, false, ItemValues.DIRT);
+		super(10f, 10, false, ItemValues.DIRT);
 	}
 
 

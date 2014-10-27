@@ -19,7 +19,7 @@ public class BushKnife extends Dagger<Iron> {
 	private static final long serialVersionUID = 7641873863821117364L;
 
 	public BushKnife() {
-		super(0.5f, 50, Iron.class);
+		super(0.5f, 3, 50, Iron.class);
 	}
 
 

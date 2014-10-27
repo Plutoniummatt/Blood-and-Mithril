@@ -352,6 +352,7 @@ public class DevWindow extends Window {
 								individual.getState().position.x,
 								individual.getState().position.y,
 								100f,
+								200,
 								true,
 								new Function<Item, Boolean>() {
 									@Override

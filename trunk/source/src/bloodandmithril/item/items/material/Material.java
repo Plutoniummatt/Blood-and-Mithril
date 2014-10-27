@@ -16,15 +16,15 @@ public abstract class Material extends Item {
 	/**
 	 * Protected constructor
 	 */
-	protected Material(float mass, boolean equippable, long value) {
-		super(mass, equippable, value);
+	protected Material(float mass, int volume, boolean equippable, long value) {
+		super(mass, volume, equippable, value);
 	}
 
 	/**
 	 * Protected constructor
 	 */
-	protected Material(float mass, boolean equippable) {
-		super(mass, equippable);
+	protected Material(float mass, int volume, boolean equippable) {
+		super(mass, volume, equippable);
 	}
 
 

@@ -22,7 +22,7 @@ public class Rock extends bloodandmithril.item.items.material.Material {
 	 * Private constructor
 	 */
 	private Rock(Class<? extends Mineral> mineral) {
-		super(2f, false);
+		super(2f, 5, false);
 		this.mineral = mineral;
 		setValue(Material.getMaterial(mineral).getRockValue());
 	}

@@ -1,5 +1,6 @@
 package bloodandmithril.generation;
 
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.Copyright;
@@ -20,13 +21,13 @@ import bloodandmithril.world.topography.tile.Tile;
 public class Structures {
 
 	/** Stores a key on some chunk coordinates. */
-	private ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> superStructureKeys = new ConcurrentHashMap<>();
+	private HashMap<Integer, HashMap<Integer, Integer>> superStructureKeys = new HashMap<>();
 
 	/** Stores a key on some chunk coordinates. */
-	private ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> subStructureKeys = new ConcurrentHashMap<>();
+	private HashMap<Integer, HashMap<Integer, Integer>> subStructureKeys = new HashMap<>();
 
 	/** Stores which structure corresponds to which key. */
-	private static ConcurrentHashMap<Integer, Structure> structures;
+	private static HashMap<Integer, Structure> structures;
 
 	// Used to keep the surface height consistent between structures where needed.
 	private ConcurrentHashMap<Integer, Integer> surfaceHeight = new ConcurrentHashMap<>();
@@ -71,7 +72,7 @@ public class Structures {
 	 * Gets the underlying {@link SuperStructure} or {@link SubStructure} from the key maps, given chunk coordinates.
 	 */
 	private Structure getStructure(int chunkX, int chunkY, boolean superStructure) {
-		ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keyMapToUse = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
+		HashMap<Integer, HashMap<Integer, Integer>> keyMapToUse = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
 
 		if (keyMapToUse.get(chunkX) == null) {
 			return null;
@@ -99,7 +100,7 @@ public class Structures {
 	 * Determines whether a {@link Structure} in the key maps.
 	 */
 	public boolean structureExists(int chunkX, int chunkY, boolean superStructure) {
-		ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keyMapToUse = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
+		HashMap<Integer, HashMap<Integer, Integer>> keyMapToUse = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
 
 		if (keyMapToUse.get(chunkX) == null) {
 			return false;
@@ -115,7 +116,7 @@ public class Structures {
 	public void deleteChunkFromStructureKeyMapAndCheckIfStructureCanBeDeleted(int chunkX, int chunkY, boolean superStructure) {
 
 		// Grab the specified key map
-		ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keyMapToUse = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
+		HashMap<Integer, HashMap<Integer, Integer>> keyMapToUse = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
 
 		// Delete the key from key map
 		int key = keyMapToUse.get(chunkX).get(chunkY);
@@ -139,18 +140,18 @@ public class Structures {
 	 * @param structure - {@link Structure} to add.
 	 * @param superStructure - true if you're adding a {@link SuperStructure}
 	 */
-	public int addStructure(Boundaries boundaries, Structure structure, boolean superStructure) {
-		ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> structureKeys = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
+	public synchronized int addStructure(Boundaries boundaries, Structure structure, boolean superStructure) {
+		HashMap<Integer, HashMap<Integer, Integer>> structureKeys = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
 
 		int structureKey = ParameterPersistenceService.getParameters().getNextStructureKey();
-		if (getStructures().get(structureKey) == null) {
-			getStructures().put(structureKey, structure);
+		if (structures.get(structureKey) == null) {
+			structures.put(structureKey, structure);
 		} else {
 			throw new RuntimeException("key already used");
 		}
 		for (int x = boundaries.left; x <= boundaries.right; x++) {
 			if (structureKeys.get(x) == null) {
-				structureKeys.put(x, new ConcurrentHashMap<Integer, Integer>());
+				structureKeys.put(x, new HashMap<Integer, Integer>());
 			}
 			for (int y = boundaries.top; y >= boundaries.bottom; y--) {
 				if (structureKeys.get(x).get(y) != null) {
@@ -166,7 +167,7 @@ public class Structures {
 	/**
 	 * See {@link #structures}
 	 */
-	public static ConcurrentHashMap<Integer, Structure> getStructures() {
+	public synchronized static HashMap<Integer, Structure> getStructures() {
 		return structures;
 	}
 
@@ -174,7 +175,7 @@ public class Structures {
 	/**
 	 * See {@link #structures}
 	 */
-	public static void setStructures(ConcurrentHashMap<Integer, Structure> structures) {
+	public synchronized static void setStructures(HashMap<Integer, Structure> structures) {
 		Structures.structures = structures;
 	}
 
@@ -182,7 +183,7 @@ public class Structures {
 	/**
 	 * See {@link #superStructureKeys}
 	 */
-	public ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> getSuperStructureKeys() {
+	public HashMap<Integer, HashMap<Integer, Integer>> getSuperStructureKeys() {
 		return superStructureKeys;
 	}
 
@@ -190,7 +191,7 @@ public class Structures {
 	/**
 	 * See {@link #superStructureKeys}
 	 */
-	public void setSuperStructureKeys(ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> superStructureKeys) {
+	public void setSuperStructureKeys(HashMap<Integer, HashMap<Integer, Integer>> superStructureKeys) {
 		this.superStructureKeys = superStructureKeys;
 	}
 
@@ -198,7 +199,7 @@ public class Structures {
 	/**
 	 * See {@link #subStructureKeys}
 	 */
-	public ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> getSubStructureKeys() {
+	public HashMap<Integer, HashMap<Integer, Integer>> getSubStructureKeys() {
 		return subStructureKeys;
 	}
 
@@ -206,7 +207,7 @@ public class Structures {
 	/**
 	 * See {@link #subStructureKeys}
 	 */
-	public void setSubStructureKeys(ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> subStructureKeys) {
+	public void setSubStructureKeys(HashMap<Integer, HashMap<Integer, Integer>> subStructureKeys) {
 		this.subStructureKeys = subStructureKeys;
 	}
 

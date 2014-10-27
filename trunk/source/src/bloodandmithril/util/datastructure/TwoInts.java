@@ -37,4 +37,13 @@ public class TwoInts implements Serializable {
 			return false;
 		}
 	}
+
+
+	@Override
+	public int hashCode() {
+		int hashcode = 23;
+		hashcode = hashcode * 37 + a;
+		hashcode = hashcode * 37 + b;
+		return hashcode;
+	}
 }

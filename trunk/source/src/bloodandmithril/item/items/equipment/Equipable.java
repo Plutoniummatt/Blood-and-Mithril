@@ -26,8 +26,8 @@ public abstract class Equipable extends Item implements Affixed {
 	/**
 	 * Protected constructor
 	 */
-	protected Equipable(float mass, boolean equippable, long value, EquipmentSlot slot) {
-		super(mass, equippable, value);
+	protected Equipable(float mass, int volume, boolean equippable, long value, EquipmentSlot slot) {
+		super(mass, volume, equippable, value);
 		this.slot = slot;
 	}
 

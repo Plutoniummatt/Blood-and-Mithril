@@ -52,8 +52,8 @@ public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon
 	/**
 	 * Constructor
 	 */
-	protected OneHandedAxe(float mass, long value, Class<T> metal) {
-		super(mass, true, value, metal);
+	protected OneHandedAxe(float mass, int volume, long value, Class<T> metal) {
+		super(mass, volume, true, value, metal);
 	}
 
 

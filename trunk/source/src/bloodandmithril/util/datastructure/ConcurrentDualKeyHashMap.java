@@ -1,7 +1,7 @@
 package bloodandmithril.util.datastructure;
 
 import java.io.Serializable;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 import bloodandmithril.core.Copyright;
 
@@ -15,12 +15,12 @@ public class ConcurrentDualKeyHashMap<X, Y, V> implements Serializable {
 	private static final long serialVersionUID = -8864426466568336054L;
 
 	/** The underlying data structue */
-	private ConcurrentHashMap<X, ConcurrentHashMap<Y, V>> data = new ConcurrentHashMap<X, ConcurrentHashMap<Y, V>>();
+	private HashMap<X, HashMap<Y, V>> data = new HashMap<X, HashMap<Y, V>>();
 
 	/**
 	 * @return the value enquired upon
 	 */
-	public V get(X x, Y y) {
+	public synchronized V get(X x, Y y) {
 		return data.get(x) == null ? null : data.get(x).get(y);
 	}
 
@@ -28,9 +28,9 @@ public class ConcurrentDualKeyHashMap<X, Y, V> implements Serializable {
 	/**
 	 * Put an entry into this {@link ConcurrentDualKeyHashMap}
 	 */
-	public V put(X x, Y y, V v) {
+	public synchronized V put(X x, Y y, V v) {
 		if (data.get(x) == null) {
-			data.put(x, new ConcurrentHashMap<Y, V>());
+			data.put(x, new HashMap<Y, V>());
 		}
 		return data.get(x).put(y, v);
 	}
@@ -39,7 +39,7 @@ public class ConcurrentDualKeyHashMap<X, Y, V> implements Serializable {
 	/**
 	 * Put an entry into this {@link ConcurrentDualKeyHashMap}
 	 */
-	public V remove(X x, Y y) {
+	public synchronized V remove(X x, Y y) {
 		if (data.get(x) == null) {
 			return null;
 		}

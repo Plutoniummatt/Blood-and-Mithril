@@ -16,8 +16,8 @@ public abstract class Food extends Item implements Consumable {
 	/**
 	 * Protected constructor
 	 */
-	protected Food(float mass, boolean equippable, long value) {
-		super(mass, equippable, value);
+	protected Food(float mass, int volume, boolean equippable, long value) {
+		super(mass, volume, equippable, value);
 	}
 
 

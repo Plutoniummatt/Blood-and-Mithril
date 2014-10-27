@@ -25,8 +25,8 @@ public abstract class Weapon<T extends Material> extends Equipable {
 	/**
 	 * Constructor
 	 */
-	protected Weapon(float mass, boolean equippable, long value, EquipmentSlot slot, Class<T> material) {
-		super(mass, equippable, value, slot);
+	protected Weapon(float mass, int volume, boolean equippable, long value, EquipmentSlot slot, Class<T> material) {
+		super(mass, volume, equippable, value, slot);
 		this.material = material;
 	}
 

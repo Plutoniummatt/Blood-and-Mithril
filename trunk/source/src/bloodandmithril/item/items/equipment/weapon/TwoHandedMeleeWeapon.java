@@ -24,8 +24,8 @@ public abstract class TwoHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	/**
 	 * Protected constructor
 	 */
-	protected TwoHandedMeleeWeapon(float mass, boolean equippable, long value, Class<T> material) {
-		super(mass, equippable, value, EquipmentSlot.RIGHTHAND, material);
+	protected TwoHandedMeleeWeapon(float mass, int volume, boolean equippable, long value, Class<T> material) {
+		super(mass, volume, equippable, value, EquipmentSlot.RIGHTHAND, material);
 	}
 
 

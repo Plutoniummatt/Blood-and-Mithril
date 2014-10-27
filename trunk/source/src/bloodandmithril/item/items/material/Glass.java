@@ -22,7 +22,7 @@ public class Glass extends bloodandmithril.item.items.material.Material implemen
 	 * Constructor
 	 */
 	public Glass() {
-		super(0.5f, false, ItemValues.GLASS);
+		super(0.5f, 4, false, ItemValues.GLASS);
 	}
 
 

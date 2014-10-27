@@ -15,7 +15,7 @@ public abstract class Seed extends Item {
 	 * Constructor
 	 */
 	protected Seed(float mass, long value) {
-		super(mass, false, value);
+		super(mass, 0, false, value);
 	}
 
 

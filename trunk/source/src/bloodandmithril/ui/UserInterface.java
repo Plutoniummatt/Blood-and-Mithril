@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import bloodandmithril.character.ai.AIProcessor;
@@ -688,7 +687,7 @@ public class UserInterface {
 
 		int chunksInMemory = 0;
 		if (ClientServerInterface.isServer()) {
-			for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> entry : Domain.getActiveWorld().getTopography().getChunkMap().chunkMap.entrySet()) {
+			for (Entry<Integer, HashMap<Integer, Chunk>> entry : Domain.getActiveWorld().getTopography().getChunkMap().chunkMap.entrySet()) {
 				chunksInMemory = chunksInMemory + entry.getValue().size();
 			}
 		}
