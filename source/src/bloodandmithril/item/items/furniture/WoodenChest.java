@@ -34,7 +34,7 @@ public class WoodenChest extends Furniture implements Craftable {
 	 * Constructor
 	 */
 	public WoodenChest(Class<? extends Wood> wood) {
-		super(10f, false, ItemValues.WOODENCHEST);
+		super(10f, 300, ItemValues.WOODENCHEST);
 		this.wood = wood;
 	}
 

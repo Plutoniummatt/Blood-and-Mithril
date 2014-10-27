@@ -16,15 +16,15 @@ public abstract class Misc extends Item {
 	/**
 	 * Protected constructor
 	 */
-	protected Misc(float mass, boolean equippable, long value) {
-		super(mass, equippable, value);
+	protected Misc(float mass, int volume, boolean equippable, long value) {
+		super(mass, volume, equippable, value);
 	}
 
 	/**
 	 * Protected constructor
 	 */
-	protected Misc(float mass, boolean equippable) {
-		super(mass, equippable);
+	protected Misc(float mass, int volume, boolean equippable) {
+		super(mass, volume, equippable);
 	}
 
 

@@ -30,7 +30,7 @@ public class AIProcessor {
 	/**
 	 * Sets up this class
 	 */
-	public static void setup() {
+	public static synchronized void setup() {
 		if (aiThread == null && ClientServerInterface.isServer()) {
 			aiThread = new Thread(() -> {
 

@@ -19,7 +19,7 @@ public class CombatKnife extends Dagger<Steel> {
 	private static final long serialVersionUID = 7540318665466689612L;
 
 	public CombatKnife() {
-		super(0.6f, 100, Steel.class);
+		super(0.6f, 3, 100, Steel.class);
 	}
 
 

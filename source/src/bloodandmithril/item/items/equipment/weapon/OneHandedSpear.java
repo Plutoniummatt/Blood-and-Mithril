@@ -43,8 +43,8 @@ public abstract class OneHandedSpear<T extends Metal> extends OneHandedMeleeWeap
 	/**
 	 * Constructor
 	 */
-	protected OneHandedSpear(float mass, long value, Class<T> metal) {
-		super(mass, true, value, metal);
+	protected OneHandedSpear(float mass, int volume, long value, Class<T> metal) {
+		super(mass, volume, true, value, metal);
 	}
 
 

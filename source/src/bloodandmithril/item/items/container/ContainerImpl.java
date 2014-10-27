@@ -25,13 +25,12 @@ import com.badlogic.gdx.math.Vector2;
 public class ContainerImpl implements Container, Serializable {
 	private static final long serialVersionUID = -8874868600941684035L;
 
-	/** How much this {@link ContainerImpl} can carry in mass */
+	/** How much this {@link ContainerImpl} can carry in mass and volume */
 	private float inventoryMassCapacity;
+	private int inventoryVolumeCapacity;
 
 	protected float currentLoad;
-
-	/** Whether this container can hold more than its capacity */
-	private boolean canExceedCapacity;
+	protected int currentVolume;
 
 	/** What this {@link ContainerImpl} has in its inventory, maps an Item to the quantity of said item */
 	protected Map<Item, Integer> inventory = new ConcurrentHashMap<>();
@@ -45,9 +44,9 @@ public class ContainerImpl implements Container, Serializable {
 	/**
 	 * Constructor for non-lockable container.
 	 */
-	public ContainerImpl(float inventoryMassCapacity, boolean canExceedCapacity) {
+	public ContainerImpl(float inventoryMassCapacity, int inventoryVolumeCapacity) {
 		this.inventoryMassCapacity = inventoryMassCapacity;
-		this.canExceedCapacity = canExceedCapacity;
+		this.inventoryVolumeCapacity = inventoryVolumeCapacity;
 		this.locked = false;
 		this.lockable = false;
 	}
@@ -56,9 +55,9 @@ public class ContainerImpl implements Container, Serializable {
 	/**
 	 * Constructor for a lockable container.
 	 */
-	public ContainerImpl(float inventoryMassCapacity, boolean canExceedCapacity, boolean locked, Function<Item, Boolean> unlockingFunction) {
+	public ContainerImpl(float inventoryMassCapacity, int inventoryVolumeCapacity, boolean locked, Function<Item, Boolean> unlockingFunction) {
 		this.inventoryMassCapacity = inventoryMassCapacity;
-		this.canExceedCapacity = canExceedCapacity;
+		this.inventoryVolumeCapacity = inventoryVolumeCapacity;
 		this.locked = locked;
 		this.setUnlockingFunction(unlockingFunction);
 		this.lockable = true;
@@ -71,12 +70,13 @@ public class ContainerImpl implements Container, Serializable {
 		this.inventory.putAll(other.getInventory());
 
 		this.inventoryMassCapacity = other.getMaxCapacity();
+		this.inventoryVolumeCapacity = other.getMaxVolume();
 		this.currentLoad = other.getCurrentLoad();
-		this.canExceedCapacity = other.canExceedCapacity();
+		this.currentVolume = other.getCurrentVolume();
 		this.locked = other.isLocked();
 		this.lockable = other.isLockable();
 
-		refreshCurrentLoad();
+		refreshCurrentLoadAndVolume();
 	}
 
 
@@ -102,7 +102,7 @@ public class ContainerImpl implements Container, Serializable {
 		}
 
 		inventory = copy;
-		refreshCurrentLoad();
+		refreshCurrentLoadAndVolume();
 	}
 
 
@@ -124,7 +124,7 @@ public class ContainerImpl implements Container, Serializable {
 		}
 
 		inventory = copy;
-		refreshCurrentLoad();
+		refreshCurrentLoadAndVolume();
 		return taken;
 	}
 
@@ -147,25 +147,22 @@ public class ContainerImpl implements Container, Serializable {
 	}
 
 
-	@Override
-	public void setCurrentLoad(float currentLoad) {
-		this.currentLoad = currentLoad;
-	}
-
-
 	/** Refreshes the {@link #currentLoad} */
-	private void refreshCurrentLoad() {
+	private void refreshCurrentLoadAndVolume() {
 		float weight = 0f;
+		int volume = 0;
 		for (Entry<Item, Integer> entry : inventory.entrySet()) {
 			weight = weight + entry.getValue() * entry.getKey().getMass();
+			volume = volume + entry.getValue() * entry.getKey().getVolume();
 		}
 		currentLoad = weight;
+		currentVolume = volume;
 	}
 
 
 	@Override
-	public boolean canExceedCapacity() {
-		return canExceedCapacity;
+	public int getMaxVolume() {
+		return inventoryVolumeCapacity;
 	}
 
 
@@ -257,5 +254,23 @@ public class ContainerImpl implements Container, Serializable {
 	@Override
 	public Container getContainerImpl() {
 		return this;
+	}
+
+
+	@Override
+	public int getCurrentVolume() {
+		return currentVolume;
+	}
+
+
+	@Override
+	public void setCurrentVolume(int volume) {
+		this.currentVolume = volume;
+	}
+
+
+	@Override
+	public void setCurrentLoad(float currentLoad) {
+		this.currentLoad = currentLoad;
 	}
 }

@@ -15,7 +15,7 @@ public abstract class Mineral extends Item {
 	/**
 	 * Protected constructor
 	 */
-	protected Mineral(float mass, boolean equippable, long value) {
-		super(mass, equippable, value);
+	protected Mineral(float mass, int volume, boolean equippable, long value) {
+		super(mass, volume, equippable, value);
 	}
 }

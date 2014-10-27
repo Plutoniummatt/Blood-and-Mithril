@@ -74,7 +74,7 @@ public class Furnace extends CraftingStation implements Container {
 	 */
 	public Furnace(float x, float y) {
 		super(x, y, 49, 76, 0.1f);
-		this.container = new ContainerImpl(500f, true);
+		this.container = new ContainerImpl(500f, 300);
 	}
 
 

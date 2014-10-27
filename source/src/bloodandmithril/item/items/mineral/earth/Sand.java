@@ -19,7 +19,7 @@ public class Sand extends Earth {
 	 * Constructor
 	 */
 	public Sand() {
-		super(10f, false, ItemValues.YELLOWSAND);
+		super(10f, 10, false, ItemValues.YELLOWSAND);
 	}
 
 

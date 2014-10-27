@@ -3,8 +3,8 @@ package bloodandmithril.ui;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 
+import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -71,7 +71,7 @@ public class TopographyDebugRenderer {
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		UserInterface.shapeRenderer.setColor(Colors.modulateAlpha(Color.CYAN, 0.2f));
-		for (Entry<Integer, ConcurrentHashMap<Integer, Chunk>> outerEntry : Domain.getActiveWorld().getTopography().getChunkMap().getChunkMap().entrySet()) {
+		for (Entry<Integer, HashMap<Integer, Chunk>> outerEntry : Domain.getActiveWorld().getTopography().getChunkMap().getChunkMap().entrySet()) {
 			for (Entry<Integer, Chunk> innerEntry : outerEntry.getValue().entrySet()) {
 				UserInterface.shapeRenderer.rect(
 					outerEntry.getKey() * Topography.CHUNK_SIZE - topoX,

@@ -47,8 +47,8 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.util.cursorboundtask.PlantSeedCursorBoundTask;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -271,17 +271,17 @@ public class InventoryWindow extends Window implements Refreshable {
 		}
 
 		// Render the weight indication text
-		renderWeightIndicationText();
+		renderCapacityIndicationText();
 
 		// Render filter button
-		filterButton.render(x + 41, y - height + 53, isActive() && UserInterface.contextMenus.isEmpty(), getAlpha());
+		filterButton.render(x + 41, y - height + 73, isActive() && UserInterface.contextMenus.isEmpty(), getAlpha());
 	}
 
 
 	/**
 	 * Renders the weight display
 	 */
-	private void renderWeightIndicationText() {
+	private void renderCapacityIndicationText() {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		Color activeColor = host.getCurrentLoad() < host.getMaxCapacity() ?
 				new Color(0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, getAlpha()) :
@@ -292,7 +292,8 @@ public class InventoryWindow extends Window implements Refreshable {
 					Colors.modulateAlpha(Color.RED, 0.6f * getAlpha());
 
 		defaultFont.setColor(isActive() ? activeColor : inactiveColor);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate("Weight: " + String.format("%.2f", host.getCurrentLoad()) + "/" + String.format("%.2f", host.getMaxCapacity())), x + 6, y - height + 20);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate("Weight: " + String.format("%.2f", host.getCurrentLoad()) + "/" + String.format("%.2f", host.getMaxCapacity())), x + 6, y - height + 40);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate("Volume: " + host.getCurrentVolume() + "/" + host.getMaxVolume()), x + 6, y - height + 20);
 	}
 
 

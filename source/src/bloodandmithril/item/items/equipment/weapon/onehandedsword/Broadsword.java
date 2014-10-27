@@ -19,7 +19,7 @@ public class Broadsword extends OneHandedSword<Steel> {
 	private static final long serialVersionUID = 9190548689838579213L;
 
 	public Broadsword() {
-		super(3f, 100, Steel.class);
+		super(3f, 10, 100, Steel.class);
 	}
 
 

@@ -26,7 +26,7 @@ public class Plank extends bloodandmithril.item.items.material.Material implemen
 	 * Constructor
 	 */
 	private Plank(Class<? extends Wood> wood) {
-		super(5f, false);
+		super(5f, 2, false);
 		this.wood = wood;
 		setValue(Material.getMaterial(wood).getPlankValue());
 	}

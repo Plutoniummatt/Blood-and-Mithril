@@ -21,7 +21,7 @@ public class Machette extends OneHandedSword<Iron> {
 
 
 	public Machette() {
-		super(2.5f, 100, Iron.class);
+		super(2.5f, 10, 100, Iron.class);
 	}
 
 

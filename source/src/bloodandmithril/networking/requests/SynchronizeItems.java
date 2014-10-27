@@ -1,7 +1,6 @@
 package bloodandmithril.networking.requests;
 
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
@@ -21,10 +20,7 @@ public class SynchronizeItems implements Response {
 	private HashMap<Integer, Item> items;
 
 	public SynchronizeItems() {
-		ConcurrentHashMap<Integer, Item> domainItems = Domain.getItems();
-		synchronized (domainItems) {
-			items = Maps.newHashMap(domainItems);
-		}
+		items = Maps.newHashMap(Domain.getItems());
 	}
 
 

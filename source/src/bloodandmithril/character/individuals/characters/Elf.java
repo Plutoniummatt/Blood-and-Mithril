@@ -1,12 +1,12 @@
 package bloodandmithril.character.individuals.characters;
 
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON;
-import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
@@ -247,7 +247,7 @@ public class Elf extends Humanoid {
 			Color hairColor,
 			Color eyeColor,
 			Color skinColor) {
-		super(id, state, factionId, capacity, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId(), 2);
+		super(id, state, factionId, capacity, 100, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId(), 2);
 
 		this.female = female;
 		this.setAi(new ElfAI(this));
@@ -270,7 +270,7 @@ public class Elf extends Humanoid {
 			Color hairColor,
 			Color eyeColor,
 			Color skinColor) {
-		super(id, state, factionId, capacity, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId, 2);
+		super(id, state, factionId, capacity, 100, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId, 2);
 
 		this.female = female;
 		this.setAi(new ElfAI(this));

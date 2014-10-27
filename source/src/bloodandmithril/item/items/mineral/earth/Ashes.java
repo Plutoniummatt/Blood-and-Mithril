@@ -13,7 +13,7 @@ public class Ashes extends Earth {
 	 * Constructor
 	 */
 	public Ashes() {
-		super(0.2f, false, ItemValues.ASHES);
+		super(5f, 10, false, ItemValues.ASHES);
 	}
 
 

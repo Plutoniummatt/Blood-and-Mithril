@@ -29,8 +29,8 @@ public abstract class LiquidContainer extends Item {
 	/**
 	 * Constructor
 	 */
-	protected LiquidContainer(float mass, float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids, long value) {
-		super(mass, false, value);
+	protected LiquidContainer(float mass, int volume, float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids, long value) {
+		super(mass, volume, false, value);
 		this.maxAmount = maxAmount;
 		this.containedLiquids = containedLiquids;
 	}

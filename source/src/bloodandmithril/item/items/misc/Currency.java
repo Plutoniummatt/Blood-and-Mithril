@@ -19,7 +19,7 @@ public class Currency extends Misc {
 	 * Constructor
 	 */
 	public Currency() {
-		super(0f, false, ItemValues.CURRENCY);
+		super(0f, 0, false, ItemValues.CURRENCY);
 	}
 
 

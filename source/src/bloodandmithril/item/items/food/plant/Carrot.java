@@ -32,7 +32,7 @@ public class Carrot extends Food {
 	 * Constructor
 	 */
 	public Carrot() {
-		super(0.1f, false, ItemValues.CARROT);
+		super(0.1f, 1, false, ItemValues.CARROT);
 	}
 
 

@@ -15,8 +15,8 @@ public abstract class Earth extends Mineral {
 	/**
 	 * Protected constructor
 	 */
-	protected Earth(float mass, boolean equippable, long value) {
-		super(mass, equippable, value);
+	protected Earth(float mass, int volume, boolean equippable, long value) {
+		super(mass, volume, equippable, value);
 	}
 
 

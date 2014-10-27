@@ -40,9 +40,9 @@ public class EquipperImpl implements Equipper, Serializable {
 	/**
 	 * @param inventoryMassCapacity
 	 */
-	public EquipperImpl(float inventoryMassCapacity, int maxRings) {
+	public EquipperImpl(float inventoryMassCapacity, int inventoryVolumeCapacity, int maxRings) {
 		this.maxRings = maxRings;
-		this.containerImpl = new ContainerImpl(inventoryMassCapacity, true);
+		this.containerImpl = new ContainerImpl(inventoryMassCapacity, inventoryVolumeCapacity);
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			if (slot != EquipmentSlot.RING) {
 				availableEquipmentSlots.put(
@@ -167,13 +167,17 @@ public class EquipperImpl implements Equipper, Serializable {
 	/** Refreshes the {@link #currentLoad} */
 	private void refreshCurrentLoad() {
 		float weight = 0f;
+		int volume = 0;
 		for (Entry<Item, Integer> entry : containerImpl.getInventory().entrySet()) {
 			weight = weight + entry.getValue() * entry.getKey().getMass();
+			volume = volume + entry.getValue() * entry.getKey().getVolume();
 		}
 		for (Entry<Item, Integer> entry : equippedItems.entrySet()) {
 			weight = weight + entry.getValue() * entry.getKey().getMass();
+			volume = volume + entry.getValue() * entry.getKey().getVolume();
 		}
 		containerImpl.setCurrentLoad(weight);
+		containerImpl.setCurrentVolume(volume);
 	}
 
 

@@ -1,7 +1,7 @@
 package bloodandmithril.world.topography;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.Copyright;
 
@@ -14,20 +14,20 @@ import com.badlogic.gdx.math.Vector2;
 public class ChunkMap {
 
 	/** The chunk map - an array list of columns */
-	public ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Chunk>> chunkMap;
+	public HashMap<Integer, HashMap<Integer, Chunk>> chunkMap;
 
 	/**
 	 * Constructor
 	 */
 	public ChunkMap() {
-		chunkMap = new ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Chunk>>();
+		chunkMap = new HashMap<Integer, HashMap<Integer, Chunk>>();
 	}
 
 
 	/**
 	 * Puts a column of chunks into the chunkMap
 	 */
-	public void putColumn(int x, ConcurrentHashMap<Integer, Chunk> chunks) {
+	public synchronized void putColumn(int x, HashMap<Integer, Chunk> chunks) {
 		chunkMap.put(x, chunks);
 	}
 
@@ -37,7 +37,7 @@ public class ChunkMap {
 	 * @param chunkY - y-world chunk coord
 	 * @return whether or not a chunk at chunk coordinates x, y exists.
 	 */
-	public boolean doesChunkExist(int chunkX, int chunkY) {
+	public synchronized boolean doesChunkExist(int chunkX, int chunkY) {
 		if (chunkMap.get(chunkX) == null) {
 			return false;
 		} else {
@@ -73,7 +73,7 @@ public class ChunkMap {
 	 * @param chunkX - the x chunk coordinate of the chunk column you want to get.
 	 * @return the column of chunks you wanted.
 	 */
-	public ConcurrentHashMap<Integer, Chunk> get(int chunkX) {
+	public synchronized HashMap<Integer, Chunk> get(int chunkX) {
 		return chunkMap.get(chunkX);
 	}
 
@@ -81,7 +81,7 @@ public class ChunkMap {
 	/**
 	 * See {@link #chunkMap}
 	 */
-	public Map<Integer, ConcurrentHashMap<Integer, Chunk>> getChunkMap() {
+	public synchronized Map<Integer, HashMap<Integer, Chunk>> getChunkMap() {
 		return chunkMap;
 	}
 
@@ -89,9 +89,9 @@ public class ChunkMap {
 	/**
 	 * Adds a chunk to the chunkMap
 	 */
-	public Chunk addChunk(int chunkX, int chunkY, Chunk chunk) {
+	public synchronized Chunk addChunk(int chunkX, int chunkY, Chunk chunk) {
 		if (chunkMap.get(chunkX) == null) {
-			chunkMap.put(chunkX, new ConcurrentHashMap<Integer, Chunk>());
+			chunkMap.put(chunkX, new HashMap<Integer, Chunk>());
 		}
 		return chunkMap.get(chunkX).put(chunkY, chunk);
 	}

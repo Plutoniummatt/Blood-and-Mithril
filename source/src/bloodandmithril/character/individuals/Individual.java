@@ -232,6 +232,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			IndividualState state,
 			int factionId,
 			float inventoryMassCapacity,
+			int inventoryVolumeCapacity,
 			int maxRings,
 			int width,
 			int height,
@@ -239,7 +240,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			Box interactionBox,
 			int worldId,
 			int maximumConcurrentMeleeAttackers) {
-		this.equipperImpl = new EquipperImpl(inventoryMassCapacity, maxRings);
+		this.equipperImpl = new EquipperImpl(inventoryMassCapacity, inventoryVolumeCapacity, maxRings);
 		this.id = id;
 		this.state = state;
 		this.setFactionId(factionId);

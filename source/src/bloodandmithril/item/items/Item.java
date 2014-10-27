@@ -64,6 +64,9 @@ public abstract class Item implements Serializable, Affixed {
 	/** The mass of this item */
 	private float mass;
 
+	/** The volume of this item */
+	private int volume;
+
 	/** The value of this item */
 	private long value;
 
@@ -82,8 +85,9 @@ public abstract class Item implements Serializable, Affixed {
 	/**
 	 * Constructor
 	 */
-	protected Item(float mass, boolean equippable) {
+	protected Item(float mass, int volume, boolean equippable) {
 		this.mass = mass;
+		this.volume = volume;
 		this.equippable = equippable;
 
 		this.angle = rotates() ? Util.getRandom().nextFloat() * 360f : 0f;
@@ -92,8 +96,9 @@ public abstract class Item implements Serializable, Affixed {
 	/**
 	 * Constructor
 	 */
-	protected Item(float mass, boolean equippable, long value) {
+	protected Item(float mass, int volume, boolean equippable, long value) {
 		this.mass = mass;
+		this.volume = volume;
 		this.equippable = equippable;
 		this.value = value;
 
@@ -495,5 +500,13 @@ public abstract class Item implements Serializable, Affixed {
 		}
 
 		return toReturn;
+	}
+
+	public int getVolume() {
+		return volume;
+	}
+
+	public void setVolume(int volume) {
+		this.volume = volume;
 	}
 }

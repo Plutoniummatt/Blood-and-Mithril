@@ -1,5 +1,7 @@
 package bloodandmithril.character.ai;
 
+import static bloodandmithril.util.Util.firstNonNull;
+
 import java.io.Serializable;
 
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -99,7 +101,9 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 
 	/** Returns the current {@link AITask} */
-	public abstract AITask getCurrentTask();
+	public synchronized AITask getCurrentTask() {
+		return firstNonNull(currentTask, new Idle());
+	}
 
 	/** Implementation-specific update method */
 	protected abstract void determineCurrentTask();

@@ -28,7 +28,7 @@ public class GlassBottle extends LiquidContainer implements Craftable {
 	 * Constructor
 	 */
 	public GlassBottle(Map<Class<? extends Liquid>, Float> containedLiquids) {
-		super(0.1f, 2f, containedLiquids, ItemValues.GLASSBOTTLE);
+		super(0.1f, 4, 2f, containedLiquids, ItemValues.GLASSBOTTLE);
 	}
 
 

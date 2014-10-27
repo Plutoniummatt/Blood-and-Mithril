@@ -53,8 +53,8 @@ public abstract class Pickaxe<T extends Metal> extends TwoHandedMeleeWeapon<T> i
 	/**
 	 * Constructor
 	 */
-	protected Pickaxe(float mass, long value, Class<T> metal) {
-		super(mass, true, value, metal);
+	protected Pickaxe(float mass, int volume, long value, Class<T> metal) {
+		super(mass, volume, true, value, metal);
 	}
 
 

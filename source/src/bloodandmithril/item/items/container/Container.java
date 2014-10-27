@@ -79,6 +79,22 @@ public interface Container {
 	/**
 	 * @return the current weight that is stored in the {@link ContainerImpl}
 	 */
+	public default int getCurrentVolume() {
+		return getContainerImpl().getCurrentVolume();
+	}
+
+
+	/**
+	 * @return the current weight that is stored in the {@link ContainerImpl}
+	 */
+	public default void setCurrentVolume(int volume) {
+		getContainerImpl().setCurrentVolume(volume);
+	}
+
+
+	/**
+	 * @return the current weight that is stored in the {@link ContainerImpl}
+	 */
 	public default void setCurrentLoad(float currentLoad) {
 		getContainerImpl().setCurrentLoad(currentLoad);
 	}
@@ -87,8 +103,8 @@ public interface Container {
 	/**
 	 * @return whether or not this {@link Container} can exceed the max capacity.
 	 */
-	public default boolean canExceedCapacity() {
-		return getContainerImpl().canExceedCapacity();
+	public default int getMaxVolume() {
+		return getContainerImpl().getMaxVolume();
 	}
 
 

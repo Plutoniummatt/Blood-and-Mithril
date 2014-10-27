@@ -27,7 +27,7 @@ public class DeathCap extends Food {
 	 * Constructor
 	 */
 	public DeathCap(boolean cooked) {
-		super(0.01f, false, ItemValues.DEATHCAP);
+		super(0.01f, 1, false, ItemValues.DEATHCAP);
 		this.cooked = cooked;
 	}
 

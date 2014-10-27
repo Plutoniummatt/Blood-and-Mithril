@@ -41,6 +41,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 			IndividualState state,
 			int factionId,
 			float inventoryMassCapacity,
+			int inventoryVolumeCapacity,
 			int maxRings,
 			int width,
 			int height,
@@ -48,7 +49,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 			Box interactionBox,
 			int worldId,
 			int maximumConcurrentMeleeAttackers) {
-		super(id, state, factionId, inventoryMassCapacity, maxRings, width, height, safetyHeight, interactionBox, worldId, maximumConcurrentMeleeAttackers);
+		super(id, state, factionId, inventoryMassCapacity, inventoryVolumeCapacity, maxRings, width, height, safetyHeight, interactionBox, worldId, maximumConcurrentMeleeAttackers);
 	}
 
 

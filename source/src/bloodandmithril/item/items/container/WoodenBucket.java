@@ -31,7 +31,7 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 	 * Constructor
 	 */
 	public WoodenBucket(Map<Class<? extends Liquid>, Float> containedLiquids, Class<? extends Wood> wood) {
-		super(1f, 16f, containedLiquids, ItemValues.WOODENBUCKET);
+		super(1f, 20, 16f, containedLiquids, ItemValues.WOODENBUCKET);
 		this.wood = wood;
 	}
 
@@ -40,7 +40,7 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 	 * Constructor
 	 */
 	public WoodenBucket(Class<? extends Wood> wood) {
-		super(1f, 16f, Maps.newHashMap(), ItemValues.WOODENBUCKET);
+		super(1f, 20, 16f, Maps.newHashMap(), ItemValues.WOODENBUCKET);
 		this.wood = wood;
 	}
 
