@@ -890,8 +890,8 @@ public class ClientServerInterface {
 				new MessageWindowNotification(connectionId, title, message, function)
 			);
 		}
-		
-		
+
+
 		public static synchronized void notifyRunStaticMethod(int connectionId, Runnable staticMethod) {
 			sendNotification(
 				connectionId,
