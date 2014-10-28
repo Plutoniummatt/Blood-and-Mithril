@@ -297,6 +297,7 @@ public class BloodAndMithrilServer {
 				Individual individual = Domain.getIndividuals().get(1);
 				if (individual != null) {
 					bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
+					carrot.grow(1f);
 					Domain.addProp(carrot);
 				}
 			}

@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.container;
 
+import java.util.Collection;
 import java.util.Map;
 
 import bloodandmithril.item.items.Item;
@@ -145,5 +146,13 @@ public interface Container {
 	 */
 	public default boolean canReceive(Item item) {
 		return getContainerImpl().canReceive(item);
+	}
+	
+	
+	/**
+	 * @return whether this {@link Container} can take a collection of items
+	 */
+	public default boolean canReceive(Collection<Item> items) {
+		return getContainerImpl().canReceive(items);
 	}
 }

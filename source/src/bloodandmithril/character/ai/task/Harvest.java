@@ -10,6 +10,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.networking.functions.IndividualSelected;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -99,6 +100,13 @@ public class Harvest extends CompositeAITask {
 			Individual host = Domain.getIndividual(hostId.getId());
 
 			if (host.getInteractionBox().isWithinBox(harvestable.position)) {
+				
+				if (!host.canReceive(harvestable.harvest())) {
+					UserInterface.addMessage("Can not harvest", host.getId().getSimpleName() + " does not have enough inventory space.", new IndividualSelected(host.getId().getId()));
+					host.getAI().setCurrentTask(new Idle());
+					return;
+				}
+				
 				if (Domain.hasProp(harvestable.id)) {
 					if (harvestable.destroyUponHarvest()) {
 						Domain.removeProp(harvestable.id);

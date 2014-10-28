@@ -60,6 +60,7 @@ import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.interfaces.Interface;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
@@ -76,6 +77,7 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.SerializableColor;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
@@ -1132,20 +1134,36 @@ public class UserInterface {
 
 
 	public static void addMessage(String title, String message) {
-		addLayeredComponent(
-			new MessageWindow(
-				message,
-				Color.ORANGE,
-				WIDTH / 2 - 150,
-				HEIGHT / 2 + 75,
-				300,
-				150,
-				title,
-				true,
-				300,
-				150
-			)
-		);
+		addMessage(title, message, -1, new AlwaysTrueFunction());
+	}
+	
+	
+	@SuppressWarnings("rawtypes")
+	public static void addMessage(String title, String message, SerializableFunction function) {
+		addMessage(title, message, -1, function);
+	}
+	
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static void addMessage(String title, String message, int client, SerializableFunction function) {
+		if (ClientServerInterface.isClient()) {
+			addLayeredComponent(
+				new MessageWindow(
+					message,
+					Color.ORANGE,
+					WIDTH / 2 - 150,
+					HEIGHT / 2 + 75,
+					300,
+					150,
+					title,
+					true,
+					300,
+					150
+				)
+			);
+		} else {
+			ClientServerInterface.SendNotification.notifyMessage(client, title, message, function);
+		}
 	}
 
 

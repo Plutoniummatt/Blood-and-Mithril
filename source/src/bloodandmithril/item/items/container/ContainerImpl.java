@@ -3,6 +3,7 @@ package bloodandmithril.item.items.container;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -282,6 +283,28 @@ public class ContainerImpl implements Container, Serializable {
 		}
 
 		if (currentVolume + item.getVolume() > inventoryVolumeCapacity) {
+			return false;
+		}
+
+		return true;
+	}
+	
+	
+	@Override
+	public boolean canReceive(Collection<Item> items) {
+		float totalMass = 0f;
+		float totalVolume = 0;
+		
+		for (Item item : items) {
+			totalMass += item.getMass();
+			totalVolume += item.getVolume();
+		}
+		
+		if (currentLoad + totalMass > inventoryMassCapacity) {
+			return false;
+		}
+
+		if (currentVolume + totalVolume > inventoryVolumeCapacity) {
 			return false;
 		}
 
