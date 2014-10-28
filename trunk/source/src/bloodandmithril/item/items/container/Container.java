@@ -138,4 +138,12 @@ public interface Container {
 	public default boolean lock(Item with) {
 		return getContainerImpl().lock(with);
 	}
+
+
+	/**
+	 * @return whether this {@link Container} can take another item
+	 */
+	public default boolean canReceive(Item item) {
+		return getContainerImpl().canReceive(item);
+	}
 }

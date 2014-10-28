@@ -273,4 +273,18 @@ public class ContainerImpl implements Container, Serializable {
 	public void setCurrentLoad(float currentLoad) {
 		this.currentLoad = currentLoad;
 	}
+
+
+	@Override
+	public boolean canReceive(Item item) {
+		if (currentLoad + item.getMass() > inventoryMassCapacity) {
+			return false;
+		}
+
+		if (currentVolume + item.getVolume() > inventoryVolumeCapacity) {
+			return false;
+		}
+
+		return true;
+	}
 }
