@@ -39,6 +39,7 @@ import static java.lang.Math.min;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -92,6 +93,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
@@ -286,6 +288,7 @@ public class UserInterface {
 
 		if (DEBUG && isServer()) {
 			renderComponentInterfaces();
+			renderPositionalIndexes();
 			if (renderComponentBoundaries) {
 				renderComponentBoundaries();
 			}
@@ -318,6 +321,49 @@ public class UserInterface {
 		if (RENDER_TOPOGRAPHY) {
 			TopographyDebugRenderer.render();
 		}
+	}
+
+
+	private static void renderPositionalIndexes() {
+		defaultFont.setColor(Color.YELLOW);
+		Collection<Object> nearbyEntities = Lists.newLinkedList();
+		
+		nearbyEntities.addAll(
+			Lists.newArrayList(
+				Iterables.transform(
+					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY()), 
+					id -> {
+						return Domain.getIndividual(id);
+					}
+				)
+			)
+		);
+		
+		nearbyEntities.addAll(
+			Lists.newArrayList(
+				Iterables.transform(
+					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY()), 
+					id -> {
+						return Domain.getProp(id);
+					}
+				)
+			)
+		);
+		
+		int position = BloodAndMithrilClient.HEIGHT - 270;
+		spriteBatch.begin();
+		Fonts.defaultFont.draw(spriteBatch, "Entities near cursor:", 5, position + 40);
+		for (Object nearbyEntity : nearbyEntities) {
+			if (nearbyEntity instanceof Individual) {
+				Fonts.defaultFont.draw(spriteBatch, ((Individual) nearbyEntity).getId().getSimpleName() + " (" + nearbyEntity.getClass().getSimpleName() + ")", 5, position);
+			}
+			
+			if (nearbyEntity instanceof Prop) {
+				Fonts.defaultFont.draw(spriteBatch, ((Prop) nearbyEntity).getClass().getSimpleName() + " " + nearbyEntity.hashCode(), 5, position);
+			}
+			position = position - 20;
+		}
+		spriteBatch.end();
 	}
 
 
@@ -693,7 +739,7 @@ public class UserInterface {
 		}
 
 		defaultFont.setColor(Color.GREEN);
-		defaultFont.draw(spriteBatch, "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 55);
+		defaultFont.draw(spriteBatch, "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 105);
 		defaultFont.draw(spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, Gdx.graphics.getHeight() - 125);
 		defaultFont.draw(spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoader.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);
 		defaultFont.draw(spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, Gdx.graphics.getHeight() - 165);
