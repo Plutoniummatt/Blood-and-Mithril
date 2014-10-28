@@ -124,6 +124,7 @@ import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.mineral.Mineral;
 import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.networking.Response.Responses;
+import bloodandmithril.networking.functions.IndividualSelected;
 import bloodandmithril.networking.requests.AddFloatingTextNotification;
 import bloodandmithril.networking.requests.AttackRequest;
 import bloodandmithril.networking.requests.CSIMineTile;
@@ -150,6 +151,7 @@ import bloodandmithril.networking.requests.GenerateChunk.GenerateChunkResponse;
 import bloodandmithril.networking.requests.IgniteFurnaceRequest;
 import bloodandmithril.networking.requests.IndividualSelection;
 import bloodandmithril.networking.requests.LockUnlockContainerRequest;
+import bloodandmithril.networking.requests.MessageWindowNotification;
 import bloodandmithril.networking.requests.MoveIndividual;
 import bloodandmithril.networking.requests.OpenTradeWindow;
 import bloodandmithril.networking.requests.Ping;
@@ -203,6 +205,7 @@ import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.SerializableColor;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
@@ -407,6 +410,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(IndividualSelected.class);
+		kryo.register(MessageWindowNotification.class);
 		kryo.register(PlantSeed.class);
 		kryo.register(RequestPlantSeed.class);
 		kryo.register(CarrotSeedProp.class);
@@ -877,6 +882,16 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendNotification {
+		public static synchronized void notifyMessage(int connectionId, String title, String message, SerializableFunction<Boolean> function) {
+			sendNotification(
+				connectionId,
+				true,
+				false,
+				new MessageWindowNotification(connectionId, title, message, function)
+			);
+		}
+		
+		
 		public static synchronized void notifyRunStaticMethod(int connectionId, Runnable staticMethod) {
 			sendNotification(
 				connectionId,
