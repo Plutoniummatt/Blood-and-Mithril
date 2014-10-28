@@ -16,18 +16,19 @@ public class MessageWindowNotification implements Response {
 	private int client;
 	private String title, message;
 	private SerializableFunction<Boolean> function;
-	
+
 	/**
 	 * Constructor
-	 * @param function 
+	 * @param function
 	 */
 	public MessageWindowNotification(int client, String title, String message, SerializableFunction<Boolean> function) {
+		this.client = client;
 		this.title = title;
 		this.message = message;
 		this.function = function;
 	}
-	
-	
+
+
 	@Override
 	public void acknowledge() {
 		if (function.call()) {
@@ -35,13 +36,13 @@ public class MessageWindowNotification implements Response {
 		}
 	}
 
-	
+
 	@Override
 	public int forClient() {
 		return client;
 	}
 
-	
+
 	@Override
 	public void prepare() {
 	}
