@@ -13,6 +13,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.networking.functions.IndividualSelected;
 import bloodandmithril.networking.requests.RefreshWindows;
 import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.ui.UserInterface;
@@ -142,6 +143,12 @@ public class TakeItem extends CompositeAITask {
 		public void execute(float delta) {
 			Individual individual = Domain.getIndividual(hostId.getId());
 			if (individual.getInteractionBox().isWithinBox(item.getPosition())) {
+				if (!individual.canReceive(item)) {
+					UserInterface.addMessage("Inventory full", "Can not pick up item, inventory is full.", new IndividualSelected(individual.getId().getId()));
+					individual.getAI().setCurrentTask(new Idle());
+					return;
+				}
+
 				individual.giveItem(item);
 				if (item instanceof Equipable) {
 					if (individual.getAvailableEquipmentSlots().get(((Equipable) item).slot).call()) {

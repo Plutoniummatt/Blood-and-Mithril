@@ -95,4 +95,9 @@ public class PositionalIndexMap implements Serializable {
 
 		return positionalIndex;
 	}
+
+
+	public Collection<PositionalIndexNode> getAllNodes() {
+		return indexes.getAllValues();
+	}
 }

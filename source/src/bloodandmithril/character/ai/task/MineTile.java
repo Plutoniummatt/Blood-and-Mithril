@@ -11,11 +11,9 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.Component;
-import bloodandmithril.ui.components.window.InventoryWindow;
-import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
@@ -23,8 +21,6 @@ import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  * Mine a {@link Tile}, a {@link CompositeAITask} comprising of:
@@ -160,27 +156,26 @@ public class MineTile extends CompositeAITask {
 								true
 							);
 
+							Item mined = tileToBeDeleted.mine();
 							if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
 								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
-								host.giveItem(tileToBeDeleted.mine());
-
-								InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
-									@Override
-									public boolean apply(Component input) {
-										if (input instanceof Window) {
-											return ((Window) input).title.equals(host.getId().getSimpleName() + " - Inventory");
-										}
-										return false;
-									}
-								}, null);
-
-								if (existingInventoryWindow != null) {
-									existingInventoryWindow.refresh();
+								if (host.canReceive(mined)) {
+									host.giveItem(mined);
+								} else {
+									Domain.addItem(mined, tileCoordinate.cpy(), new Vector2(), Domain.getActiveWorld());
 								}
+
+								UserInterface.refreshRefreshableWindows();
 							} else if (ClientServerInterface.isServer()) {
 								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
 								ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, host.getWorldId());
-								ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine());
+
+								if (host.canReceive(mined)) {
+									ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine());
+								} else {
+									Domain.addItem(mined, tileCoordinate.cpy(), new Vector2(), Domain.getActiveWorld());
+									ClientServerInterface.SendNotification.notifySyncItems();
+								}
 							}
 						}
 					}

@@ -1,9 +1,12 @@
 package bloodandmithril.util.datastructure;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 
 import bloodandmithril.core.Copyright;
+
+import com.google.common.collect.Lists;
 
 /**
  * A concurrent two-dimensional HashMap
@@ -44,5 +47,19 @@ public class ConcurrentDualKeyHashMap<X, Y, V> implements Serializable {
 			return null;
 		}
 		return data.get(x).remove(y);
+	}
+
+
+	/**
+	 * @return All mapped values
+	 */
+	public synchronized Collection<V> getAllValues() {
+		final Collection<V> col = Lists.newLinkedList();
+
+		data.values().stream().forEach(each -> {
+			col.addAll(each.values());
+		});
+
+		return col;
 	}
 }

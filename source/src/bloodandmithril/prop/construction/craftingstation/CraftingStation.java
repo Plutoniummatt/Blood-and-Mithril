@@ -30,6 +30,7 @@ import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
@@ -271,10 +272,17 @@ public abstract class CraftingStation extends Construction {
 	}
 
 
+	/**
+	 * Take the currently crafted item from this {@link CraftingStation}, if the inventory is full, it will be dropped instead
+	 */
 	public void takeItem(Individual individual) {
 		if (currentlyBeingCrafted != null && finished) {
 			for (int i = currentlyBeingCrafted.s; i > 0; i--) {
-				individual.giveItem(currentlyBeingCrafted.t);
+				if (individual.canReceive(currentlyBeingCrafted.t)) {
+					individual.giveItem(currentlyBeingCrafted.t);
+				} else {
+					Domain.addItem(currentlyBeingCrafted.t.copy(), position.cpy().add(0f, height), new Vector2(), Domain.getActiveWorld());
+				}
 			}
 			setCurrentlyBeingCrafted(null);
 			craftingProgress = 0f;
