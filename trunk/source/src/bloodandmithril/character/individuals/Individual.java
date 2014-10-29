@@ -816,7 +816,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	private void updatePositionalIndex() {
+	public void updatePositionalIndex() {
 		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(state.position.x, state.position.y)) {
 			node.removeIndividual(id.getId());
 		}

@@ -9,8 +9,10 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.networking.functions.IndividualSelected;
 import bloodandmithril.networking.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.UserInterface;
 
 /**
  * Evaluates a trade proposal.
@@ -65,6 +67,30 @@ public class TradeService {
 	 * The trade proposal was accepted by the proposee, this method transfers the {@link Item}s and finalizes the trade
 	 */
 	public synchronized static void transferItems(HashMap<Item, Integer> proposerItemsToTrade, Container proposer, HashMap<Item, Integer> proposeeItemsToTrade, Container proposee) {
+
+		float proposerItemsToTradeMass = (float) proposerItemsToTrade.entrySet().stream().mapToDouble(entry -> {
+			return entry.getKey().getMass() * entry.getValue();
+		}).sum();
+		float proposeeItemsToTradeMass = (float) proposeeItemsToTrade.entrySet().stream().mapToDouble(entry -> {
+			return entry.getKey().getMass() * entry.getValue();
+		}).sum();
+		int proposerItemsToTradeVolume = proposerItemsToTrade.entrySet().stream().mapToInt(entry -> {
+			return entry.getKey().getVolume() * entry.getValue();
+		}).sum();
+		int proposeeItemsToTradeVolume = proposeeItemsToTrade.entrySet().stream().mapToInt(entry -> {
+			return entry.getKey().getVolume() * entry.getValue();
+		}).sum();
+
+		if (
+			proposer.getCurrentLoad() - proposerItemsToTradeMass + proposeeItemsToTradeMass > proposer.getMaxCapacity() ||
+			proposee.getCurrentLoad() + proposerItemsToTradeMass - proposeeItemsToTradeMass > proposee.getMaxCapacity() ||
+			proposer.getCurrentVolume() - proposerItemsToTradeVolume + proposeeItemsToTradeVolume > proposer.getMaxVolume() ||
+			proposee.getCurrentVolume() + proposerItemsToTradeVolume - proposeeItemsToTradeVolume > proposee.getMaxVolume()
+		) {
+			UserInterface.addMessage("Can not trade", "One or more parties do not have enough inventory space.", new IndividualSelected(((Individual) proposer).getId().getId()));
+			return;
+		}
+
 		if (ClientServerInterface.isServer()) {
 			for (Entry<Item, Integer> proposerToTradeItem : proposerItemsToTrade.entrySet()) {
 				for (int i = proposerToTradeItem.getValue(); i > 0; i--) {

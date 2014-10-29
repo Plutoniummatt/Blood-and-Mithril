@@ -62,4 +62,10 @@ public class PositionalIndexNode implements Serializable {
 	public void addProp(int key) {
 		props.add(key);
 	}
+
+
+	public void clear() {
+		props.clear();
+		individuals.clear();
+	}
 }
