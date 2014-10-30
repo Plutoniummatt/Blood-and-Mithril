@@ -320,7 +320,6 @@ public class MainMenuWindow extends Window {
 	public static void connected() {
 		UserInterface.buttons.remove("connect");
 		UserInterface.setup();
-		SoundService.fadeOut(2f);
 
 		for (Component component : UserInterface.layeredComponents) {
 			if (component instanceof Window && ((Window) component).title.equals("Connecting") ||
@@ -330,6 +329,7 @@ public class MainMenuWindow extends Window {
 			}
 		}
 
+		SoundService.fadeOut(2f);
 		UserInterface.contextMenus.clear();
 	}
 

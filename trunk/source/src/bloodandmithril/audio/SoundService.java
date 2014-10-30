@@ -164,13 +164,12 @@ public class SoundService {
 
 
 	public static void fadeOut(float transitionTime) {
-		if (decreasing != 0f) {
-			return;
+		if (decreasing == 0f) {
+			decreasing = 1f;
 		}
 
 		fadeOut = true;
 
-		decreasing = 1f;
 		increasing = 0f;
 
 		rate = transitionTime;
