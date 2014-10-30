@@ -296,8 +296,6 @@ public class Domain {
 	 */
 	public void update(int camX, int camY) {
 		if (getActiveWorld() != null) {
-			getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam(camX, camY);
-
 			float d = 1f/60f;
 
 			getCurrentEpoch().incrementTime(d);

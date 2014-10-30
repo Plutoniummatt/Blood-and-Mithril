@@ -5,6 +5,7 @@ import static bloodandmithril.networking.ClientServerInterface.isClient;
 import java.io.Serializable;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Util;
@@ -31,7 +32,8 @@ public class ParticleService {
 					2f,
 					Domain.getActiveWorld().getWorldId(),
 					new Countdown(Util.getRandom().nextInt(2500)),
-					0f
+					0f,
+					MovementMode.GRAVITY
 				));
 			}
 		} else {
@@ -51,7 +53,8 @@ public class ParticleService {
 					1f,
 					Domain.getActiveWorld().getWorldId(),
 					new Countdown(Util.getRandom().nextInt(100)),
-					5f
+					5f,
+					MovementMode.EMBER
 				));
 			}
 		} else {

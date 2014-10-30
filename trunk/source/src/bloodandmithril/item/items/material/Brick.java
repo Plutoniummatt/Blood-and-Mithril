@@ -20,7 +20,7 @@ public class Brick extends bloodandmithril.item.items.material.Material {
 	 * Constructor
 	 */
 	public Brick() {
-		super(10f, 4, false, ItemValues.YELLOWBRICK);
+		super(1f, 4, false, ItemValues.YELLOWBRICK);
 	}
 
 

@@ -4,6 +4,7 @@ import static bloodandmithril.util.Util.getRandom;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.TracerParticle;
+import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
@@ -40,7 +41,8 @@ public class Bleeding extends Condition {
 					2f,
 					Domain.getActiveWorld().getWorldId(),
 					new Countdown(Util.getRandom().nextInt(1000)),
-					0f
+					0f,
+					MovementMode.GRAVITY
 				)
 			);
 		}
