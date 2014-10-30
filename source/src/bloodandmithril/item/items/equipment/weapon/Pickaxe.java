@@ -1,24 +1,17 @@
 package bloodandmithril.item.items.equipment.weapon;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
-import static bloodandmithril.world.Domain.individualTexture;
-import static com.badlogic.gdx.graphics.g2d.Animation.NORMAL;
 
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
-import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
-import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
@@ -44,9 +37,6 @@ public abstract class Pickaxe<T extends Metal> extends TwoHandedMeleeWeapon<T> i
 	static {
 		if (ClientServerInterface.isClient()) {
 			// TODO
-			textureRegionMap.put(Machette.class, new TextureRegion(Domain.individualTexture, 0, 800, 63, 17));
-			textureRegionMap.put(Broadsword.class, new TextureRegion(Domain.individualTexture, 0, 834, 63, 17));
-			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
 		}
 	}
 
@@ -141,8 +131,8 @@ public abstract class Pickaxe<T extends Metal> extends TwoHandedMeleeWeapon<T> i
 	@Override
 	public WrapperForTwo<Animation, Vector2> getAttackAnimationEffects(Individual individual) {
 		switch (individual.getCurrentAction()) {
-			case ATTACK_LEFT_ONE_HANDED_WEAPON:
-			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
+			case ATTACK_LEFT_TWO_HANDED_WEAPON:
+			case ATTACK_RIGHT_TWO_HANDED_WEAPON:
 				return specialEffectsMap.get(individual.getClass());
 
 			default:

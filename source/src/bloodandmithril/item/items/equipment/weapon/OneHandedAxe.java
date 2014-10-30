@@ -13,8 +13,6 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
-import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
-import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.networking.ClientServerInterface;
@@ -43,8 +41,6 @@ public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			textureRegionMap.put(Machette.class, new TextureRegion(Domain.individualTexture, 0, 800, 63, 17));
-			textureRegionMap.put(Broadsword.class, new TextureRegion(Domain.individualTexture, 0, 834, 63, 17));
 			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
 		}
 	}
