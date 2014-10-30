@@ -20,17 +20,19 @@ public abstract class Particle {
 	public Vector2 position, velocity;
 	public float radius;
 	private SerializableFunction<Boolean> removalCondition;
+	private MovementMode movementMode = MovementMode.GRAVITY;
 
 	/**
 	 * Constructor
 	 */
-	protected Particle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition) {
+	protected Particle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, MovementMode movementMode) {
 		this.position = position;
 		this.velocity = velocity;
 		this.radius = radius;
 		this.color = color;
 		this.worldId = worldId;
 		this.removalCondition = removalCondition;
+		this.movementMode = movementMode;
 	}
 
 	/**
@@ -52,16 +54,9 @@ public abstract class Particle {
 
 		position.add(velocity.cpy().mul(delta));
 
-		float gravity = Domain.getWorld(worldId).getGravity();
-		if (abs((velocity.y - gravity * delta) * delta) < TILE_SIZE/2) {
-			velocity.y = velocity.y - delta * gravity;
-		} else {
-			velocity.y = velocity.y * 0.8f;
-		}
-
-		velocity.mul(0.98f);
+		movement(delta);
+		
 		Tile tileUnder = Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true);
-
 		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
 			Vector2 trial = position.cpy();
 			trial.y += -previousVelocity.y*delta;
@@ -82,8 +77,43 @@ public abstract class Particle {
 		}
 	}
 
+	
+	private void movement(float delta) {
+		switch (movementMode) {
+		case GRAVITY:
+			gravitational(delta);
+			break;
+		case EMBER:
+			ember(delta);
+			break;
+		default:
+		}
+	}
+
+	
+	private void ember(float delta) {
+		velocity.y = velocity.y + delta * 150f;
+		velocity.mul(0.98f);
+	}
+
+	
+	private void gravitational(float delta) {
+		float gravity = Domain.getWorld(worldId).getGravity();
+		if (abs((velocity.y - gravity * delta) * delta) < TILE_SIZE/2) {
+			velocity.y = velocity.y - delta * gravity;
+		} else {
+			velocity.y = velocity.y * 0.8f;
+		}
+		velocity.mul(0.98f);
+	}
+
 
 	public SerializableFunction<Boolean> getRemovalCondition() {
 		return removalCondition;
+	}
+	
+	
+	public enum MovementMode {
+		GRAVITY, EMBER
 	}
 }

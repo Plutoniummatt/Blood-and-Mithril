@@ -12,7 +12,6 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
@@ -27,29 +26,12 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.container.GlassBottle;
-import bloodandmithril.item.items.container.WoodenBucket;
-import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
-import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
-import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
-import bloodandmithril.item.items.food.animal.ChickenLeg;
-import bloodandmithril.item.items.food.plant.Carrot;
-import bloodandmithril.item.items.food.plant.DeathCap;
 import bloodandmithril.item.items.material.Brick;
 import bloodandmithril.item.items.material.Ingot;
-import bloodandmithril.item.items.material.Log;
 import bloodandmithril.item.items.material.Rock;
-import bloodandmithril.item.items.misc.Currency;
-import bloodandmithril.item.liquid.Blood;
-import bloodandmithril.item.liquid.Liquid;
-import bloodandmithril.item.material.metal.Copper;
-import bloodandmithril.item.material.metal.Gold;
-import bloodandmithril.item.material.metal.Iron;
-import bloodandmithril.item.material.metal.Silver;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
-import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
@@ -172,63 +154,12 @@ public class DevWindow extends Window {
 			elf.getSkills().setObservation(55);
 			elf.getSkills().setSmithing(55);
 
-			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(Ingot.ingot(Iron.class));
-			}
-			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(new Carrot());
-			}
-			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(Ingot.ingot(Gold.class));
-			}
-			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(Ingot.ingot(Silver.class));
-			}
-			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(Ingot.ingot(Copper.class));
-			}
-			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(new Carrot.CarrotSeed());
-			}
-			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(Log.log(Pine.class));
-			}
-			for (int i = 40; i > 0; i--) {
-				elf.giveItem(Ingot.ingot(Steel.class));
-			}
-			for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-				elf.giveItem(Rock.rock(Hematite.class));
-			}
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
+			for (int i = 10; i > 0; i--) {
 				elf.giveItem(Rock.rock(Coal.class));
 			}
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new DeathCap(false));
-			}
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new ChickenLeg());
-			}
-			for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-				elf.giveItem(new WoodenBucket(Pine.class));
-			}
-			for (int i = Util.getRandom().nextInt(50) + 10; i > 0; i--) {
-				Map<Class<? extends Liquid>, Float> liquids = new HashMap<>();
-				if (Util.getRandom().nextBoolean()) {
-					liquids.put(Blood.class, 2f);
-				}
-				elf.giveItem(new GlassBottle(liquids));
-			}
-			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
-				elf.giveItem(new Currency());
-			}
-			for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
+			for (int i = 5; i > 0; i--) {
 				elf.giveItem(new Brick());
 			}
-
-			elf.giveItem(new BushKnife());
-			elf.giveItem(new CombatKnife());
-			elf.giveItem(new Machette());
-			elf.giveItem(new Broadsword());
 
 			Domain.addIndividual(elf);
 			return true;

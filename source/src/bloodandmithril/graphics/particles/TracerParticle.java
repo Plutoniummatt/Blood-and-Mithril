@@ -19,8 +19,8 @@ public class TracerParticle extends Particle {
 	public float glowIntensity;
 	public Vector2 prevPosition;
 
-	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity) {
-		super(position, velocity, color, radius, worldId, removalCondition);
+	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity, MovementMode movementMode) {
+		super(position, velocity, color, radius, worldId, removalCondition, movementMode);
 		this.prevPosition = position.cpy();
 		this.radius = radius;
 		this.glowIntensity = glowIntensity;

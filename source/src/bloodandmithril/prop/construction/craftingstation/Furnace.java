@@ -12,6 +12,8 @@ import java.util.Map.Entry;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.TracerParticle;
+import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -31,9 +33,13 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.CraftingStationWindow;
 import bloodandmithril.ui.components.window.FurnaceCraftingWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.util.Countdown;
+import bloodandmithril.util.Util;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 /**
@@ -144,6 +150,17 @@ public class Furnace extends CraftingStation implements Container {
 					}
 				}
 			}
+			
+			Domain.getActiveWorld().getParticles().add(new TracerParticle(
+				position.cpy().add(0f, height - 45f).add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)), 
+				new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f), 
+				Color.ORANGE, 
+				1f, 
+				Domain.getActiveWorld().getWorldId(),
+				new Countdown(Util.getRandom().nextInt(1000)),
+				Util.getRandom().nextFloat() * 15f,
+				MovementMode.EMBER
+			));
 		}
 	}
 

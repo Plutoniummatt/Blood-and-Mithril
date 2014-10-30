@@ -116,6 +116,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static long ping = 0;
 
 	public static Thread updateThread;
+	public static Thread topographyQueryThread;
 	public static Thread particleUpdateThread;
 
 	private long topographyBacklogExecutionTimer;
@@ -162,6 +163,24 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				}
 			}
 		});
+		
+		topographyQueryThread = new Thread(() -> {
+			long prevFrame = System.currentTimeMillis();
+			
+			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+				
+				if (System.currentTimeMillis() - prevFrame > 16) {
+					if (Domain.getActiveWorld() != null) {
+						Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam((int) cam.position.x, (int) cam.position.y);
+					}
+				}
+			}
+		});
 
 		particleUpdateThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
@@ -196,6 +215,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		particleUpdateThread.setName("Particle thread");
 		particleUpdateThread.start();
+		
+		topographyQueryThread.setName("Topography query thread");
+		topographyQueryThread.start();
 	}
 
 
