@@ -27,6 +27,7 @@ import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -353,6 +354,17 @@ public abstract class Item implements Serializable, Affixed {
 				setPosition(previousPosition);
 			}
 		}
+
+		updatePositionalIndex();
+	}
+
+
+	public void updatePositionalIndex() {
+		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
+			node.removeItem(id);
+		}
+
+		Domain.getWorld(worldId).getPositionalIndexMap().get(position.x, position.y).addIndividual(id);
 	}
 
 

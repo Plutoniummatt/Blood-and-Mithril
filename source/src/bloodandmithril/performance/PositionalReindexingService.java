@@ -2,6 +2,7 @@ package bloodandmithril.performance;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -30,6 +31,10 @@ public class PositionalReindexingService {
 
 			for (Individual individual : Domain.getIndividuals().values()) {
 				individual.updatePositionalIndex();
+			}
+
+			for (Item item : Domain.getItems().values()) {
+				item.updatePositionalIndex();;
 			}
 		}
 	}

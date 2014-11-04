@@ -141,7 +141,8 @@ public class Domain {
 		item.setId(ParameterPersistenceService.getParameters().getNextItemId());
 		item.setPosition(position);
 		item.setVelocity(velocity);
-		getItems().put(item.getId(), item);
+		items.put(item.getId(), item);
+
 		return item.getId();
 	}
 
@@ -356,6 +357,21 @@ public class Domain {
 
 	public static ConcurrentHashMap<Integer, Individual> getIndividuals() {
 		return individuals;
+	}
+
+
+	public static Item getItem(int key) {
+		return items.get(key);
+	}
+
+
+	public static boolean hasItem(int key) {
+		return items.containsKey(key);
+	}
+
+
+	public static void removeItem(int key) {
+		items.remove(key);
 	}
 
 
