@@ -163,17 +163,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				}
 			}
 		});
-		
+
 		topographyQueryThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
-			
+
 			while (true) {
 				try {
 					Thread.sleep(1);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
-				
+
 				if (System.currentTimeMillis() - prevFrame > 16) {
 					if (Domain.getActiveWorld() != null) {
 						Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam((int) cam.position.x, (int) cam.position.y);
@@ -215,7 +215,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		particleUpdateThread.setName("Particle thread");
 		particleUpdateThread.start();
-		
+
 		topographyQueryThread.setName("Topography query thread");
 		topographyQueryThread.start();
 	}
@@ -610,7 +610,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	/**
 	 * Converts screen coordinates to world coordinates
 	 */
-	private static float screenToWorldX(float screenX) {
+	public static float screenToWorldX(float screenX) {
 		return cam.position.x - Gdx.graphics.getWidth()/2 + screenX;
 	}
 
@@ -618,7 +618,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	/**
 	 * Converts screen coordinates to world coordinates
 	 */
-	private static float screenToWorldY(float screenY) {
+	public static float screenToWorldY(float screenY) {
 		return cam.position.y - Gdx.graphics.getHeight()/2 + screenY;
 	}
 

@@ -10,6 +10,8 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.core.BloodAndMithrilClient.paused;
 import static bloodandmithril.core.BloodAndMithrilClient.ping;
+import static bloodandmithril.core.BloodAndMithrilClient.screenToWorldX;
+import static bloodandmithril.core.BloodAndMithrilClient.screenToWorldY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
@@ -573,7 +575,19 @@ public class UserInterface {
 			}
 
 			List<Item> items = Lists.newLinkedList();
-			Domain.getItems().values().stream().filter(toKeep -> {
+
+			Lists.newLinkedList(Iterables.transform(
+				Domain.getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
+					Item.class,
+					screenToWorldX(left),
+					screenToWorldX(right),
+					screenToWorldY(top),
+					screenToWorldY(bottom)
+				),
+				id -> {
+					return Domain.getItem(id);
+				}
+			)).stream().filter(toKeep -> {
 				return toKeep.getWorldId() == Domain.getActiveWorld().getWorldId();
 			}).filter(item -> {
 				return
