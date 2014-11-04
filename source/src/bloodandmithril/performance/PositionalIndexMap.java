@@ -53,6 +53,31 @@ public class PositionalIndexMap implements Serializable {
 	}
 
 
+	/**
+	 * @return a {@link Collection} of entities of that are contained (roughly) within a defined box.
+	 *
+	 * Roughly because the indexing nodes are quantised.
+	 */
+	public Collection<Integer> getEntitiesWithinBounds(Class<?> clazz, float left, float right, float top, float bottom) {
+		LinkedList<Integer> entities = Lists.newLinkedList();
+
+		int i = CHUNK_SIZE * TILE_SIZE;
+
+		float xDifference = right - left + i;
+		float yDifference = top - bottom + i;
+
+		while (yDifference > 0) {
+			while (xDifference > 0) {
+				entities.addAll(get(left + xDifference, bottom + yDifference).getAllEntitiesForType(clazz));
+				xDifference -= i;
+			}
+			yDifference -= i;
+		}
+
+		return entities;
+	}
+
+
 	public Collection<PositionalIndexNode> getNearbyNodes(float x, float y) {
 		LinkedList<PositionalIndexNode> nodes = Lists.newLinkedList();
 
