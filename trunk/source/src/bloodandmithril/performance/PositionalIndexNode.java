@@ -6,6 +6,7 @@ import java.util.Set;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 
 import com.google.common.collect.Sets;
@@ -22,6 +23,7 @@ public class PositionalIndexNode implements Serializable {
 
 	private Set<Integer> props = Sets.newConcurrentHashSet();
 	private Set<Integer> individuals = Sets.newConcurrentHashSet();
+	private Set<Integer> items = Sets.newConcurrentHashSet();
 
 	/**
 	 * Constructor
@@ -34,6 +36,10 @@ public class PositionalIndexNode implements Serializable {
 	public synchronized Collection<Integer> getAllEntitiesForType(Class<?> clazz) {
 		if (clazz.equals(Individual.class)) {
 			return individuals;
+		}
+
+		if (clazz.equals(Item.class)) {
+			return items;
 		}
 
 		if (clazz.equals(Prop.class)) {
@@ -54,6 +60,11 @@ public class PositionalIndexNode implements Serializable {
 	}
 
 
+	public void removeItem(int key) {
+		items.remove(key);
+	}
+
+
 	public void addIndividual(int key) {
 		individuals.add(key);
 	}
@@ -61,6 +72,11 @@ public class PositionalIndexNode implements Serializable {
 
 	public void addProp(int key) {
 		props.add(key);
+	}
+
+
+	public void addItem(int key) {
+		items.add(key);
 	}
 
 

@@ -329,29 +329,29 @@ public class UserInterface {
 	private static void renderPositionalIndexes() {
 		defaultFont.setColor(Color.YELLOW);
 		Collection<Object> nearbyEntities = Lists.newLinkedList();
-		
+
 		nearbyEntities.addAll(
 			Lists.newArrayList(
 				Iterables.transform(
-					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY()), 
+					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
 						return Domain.getIndividual(id);
 					}
 				)
 			)
 		);
-		
+
 		nearbyEntities.addAll(
 			Lists.newArrayList(
 				Iterables.transform(
-					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY()), 
+					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
 						return Domain.getProp(id);
 					}
 				)
 			)
 		);
-		
+
 		int position = BloodAndMithrilClient.HEIGHT - 270;
 		spriteBatch.begin();
 		Fonts.defaultFont.draw(spriteBatch, "Entities near cursor:", 5, position + 40);
@@ -359,7 +359,7 @@ public class UserInterface {
 			if (nearbyEntity instanceof Individual) {
 				Fonts.defaultFont.draw(spriteBatch, ((Individual) nearbyEntity).getId().getSimpleName() + " (" + nearbyEntity.getClass().getSimpleName() + ")", 5, position);
 			}
-			
+
 			if (nearbyEntity instanceof Prop) {
 				Fonts.defaultFont.draw(spriteBatch, ((Prop) nearbyEntity).getClass().getSimpleName() + " " + nearbyEntity.hashCode(), 5, position);
 			}
@@ -1067,7 +1067,8 @@ public class UserInterface {
 			}
 		}
 
-		for (final Item item : Domain.getItems().values()) {
+		for (final Integer itemId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Item.class, BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())) {
+			final Item item = Domain.getItem(itemId);
 			if (item.isMouseOver()) {
 				final ContextMenu secondaryMenu = item.getContextMenu();
 				newMenu.getMenuItems().add(
@@ -1136,14 +1137,14 @@ public class UserInterface {
 	public static void addMessage(String title, String message) {
 		addMessage(title, message, -1, new AlwaysTrueFunction());
 	}
-	
-	
+
+
 	@SuppressWarnings("rawtypes")
 	public static void addMessage(String title, String message, SerializableFunction function) {
 		addMessage(title, message, -1, function);
 	}
-	
-	
+
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void addMessage(String title, String message, int client, SerializableFunction function) {
 		if (ClientServerInterface.isClient()) {
