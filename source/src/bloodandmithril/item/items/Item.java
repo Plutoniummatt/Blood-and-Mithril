@@ -364,7 +364,7 @@ public abstract class Item implements Serializable, Affixed {
 			node.removeItem(id);
 		}
 
-		Domain.getWorld(worldId).getPositionalIndexMap().get(position.x, position.y).addIndividual(id);
+		Domain.getWorld(worldId).getPositionalIndexMap().get(position.x, position.y).addItem(id);
 	}
 
 
