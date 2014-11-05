@@ -63,17 +63,15 @@ public class PositionalIndexMap implements Serializable {
 
 		int i = CHUNK_SIZE * TILE_SIZE;
 
-		float xDifference = right - left + i;
-		float yDifference = top - bottom + i;
+		int xSteps = ((int)(right - left)) / i + 1;
+		int ySteps = ((int)(top - bottom)) / i + 1;
 
-		while (yDifference > 0) {
-			while (xDifference > 0) {
-				entities.addAll(get(left + xDifference, bottom + yDifference).getAllEntitiesForType(clazz));
-				xDifference -= i;
+		for (int x = 0; x <= xSteps; x++) {
+			for (int y = 0; y <= ySteps; y++) {
+				entities.addAll(get(left + x * i, bottom + y * i).getAllEntitiesForType(clazz));
 			}
-			yDifference -= i;
 		}
-
+		
 		return entities;
 	}
 
