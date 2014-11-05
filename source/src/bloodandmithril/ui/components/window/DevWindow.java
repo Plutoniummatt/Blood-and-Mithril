@@ -1,6 +1,8 @@
 package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.util.Util.Colors.lightColor;
@@ -26,11 +28,8 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
 import bloodandmithril.item.items.material.Brick;
-import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.items.material.Rock;
-import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.persistence.GameSaver;
@@ -48,7 +47,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -133,76 +131,6 @@ public class DevWindow extends Window {
 			return true;
 		}
 
-		if (keyCode == Input.Keys.E) {
-			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
-			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
-			state.velocity = new Vector2(0, 0);
-			state.acceleration = new Vector2(0, 0);
-
-			IndividualIdentifier id = getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
-			id.setNickName("Elfie");
-
-			Elf elf = new Elf(
-				id, state, input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
-				20f,
-				getActiveWorld(),
-				lightColor(),
-				randomColor(),
-				randomColor()
-			);
-
-			elf.getSkills().setObservation(55);
-			elf.getSkills().setSmithing(55);
-
-			for (int i = 10; i > 0; i--) {
-				elf.giveItem(Rock.rock(Coal.class));
-			}
-			for (int i = 5; i > 0; i--) {
-				elf.giveItem(new Brick());
-			}
-
-			Domain.addIndividual(elf);
-			return true;
-		}
-
-		if (keyCode == Input.Keys.O) {
-			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), false);
-		}
-
-		if (keyCode == Input.Keys.K) {
-			Domain.getActiveWorld().getTopography().deleteTile(getMouseWorldX(), getMouseWorldY(), true);
-		}
-
-		if (keyCode == Input.Keys.L) {
-			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), true, YellowBrickTile.class);
-		}
-
-		if (keyCode == Input.Keys.P) {
-			Domain.getActiveWorld().getTopography().changeTile(getMouseWorldX(), getMouseWorldY(), false, YellowBrickTile.class);
-		}
-
-		if (keyCode == Input.Keys.I) {
-			Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), getMouseWorldY(), true).changeToSmoothCeiling();
-		}
-
-		if (keyCode == Input.Keys.H) {
-			Domain.addItem(
-				new CombatKnife(),
-				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
-				new Vector2(new Vector2(800f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
-				Domain.getActiveWorld()
-			);
-		}
-
-		if (keyCode == Input.Keys.B) {
-			Domain.addItem(
-				Ingot.ingot(Steel.class),
-				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()),
-				new Vector2(new Vector2(500f, 0f).rotate(Util.getRandom().nextFloat() * 360)),
-				Domain.getActiveWorld()
-			);
-		}
-
 		return false;
 	}
 
@@ -220,175 +148,164 @@ public class DevWindow extends Window {
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
-				"Spawn Elf - E",
+				"Spawn Elf on cursor",
 				new Button(
-					"Spawn Elf - E",
+					"Spawn Elf on cursor",
 					Fonts.defaultFont,
 					0,
 					0,
 					130,
 					16,
+					() -> {
+						IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
+						state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
+						state.velocity = new Vector2(0, 0);
+						state.acceleration = new Vector2(0, 0);
+
+						IndividualIdentifier id = getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
+						id.setNickName("Elfie");
+
+						Elf elf = new Elf(
+							id, state, input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
+							20f,
+							getActiveWorld(),
+							lightColor(),
+							randomColor(),
+							randomColor()
+						);
+
+						elf.getSkills().setObservation(55);
+						elf.getSkills().setSmithing(55);
+
+						for (int i = 10; i > 0; i--) {
+							elf.giveItem(Rock.rock(Coal.class));
+						}
+						for (int i = 5; i > 0; i--) {
+							elf.giveItem(new Brick());
+						}
+
+						Domain.addIndividual(elf);
+					},
+					Color.GREEN,
+					Color.WHITE,
+					Color.GREEN,
+					UIRef.BL
+				),
+				null
+			),
+			0
+		);
+
+		newHashMap.put(
+			new ListingMenuItem<String>(
+				"Spawn Prop on first individual",
+				new Button(
+					"Spawn Prop on first individual",
+					Fonts.defaultFont,
+					0,
+					0,
+					310,
+					16,
 					() -> {},
-					Color.CYAN,
-					Color.CYAN,
-					Color.CYAN,
-					UIRef.BL
-				),
-				null
-			),
-			0
-		);
-
-		newHashMap.put(
-			new ListingMenuItem<String>(
-				"Spawn Anvil on first individual",
-				new Button(
-					"Spawn Anvil on first individual",
-					Fonts.defaultFont,
-					0,
-					0,
-					310,
-					16,
-					() -> {
-						Individual individual = Domain.getIndividuals().get(1);
-						if (individual != null) {
-							Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
-							Domain.addProp(anvil);
-						}
-					},
 					Color.GREEN,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL
 				),
-				null
-			),
-			0
-		);
+				new ContextMenu(
+					getMouseScreenX(),
+					getMouseScreenY(),
+					true,
+					new ContextMenu.MenuItem(
+						"Anvil",
+						() -> {
+							Individual individual = Domain.getIndividuals().get(1);
+							if (individual != null) {
+								Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
+								Domain.addProp(anvil);
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					),
+					new ContextMenu.MenuItem(
+						"Pine Chest",
+						() -> {
+							Individual individual = Domain.getIndividuals().get(1);
+							if (individual != null) {
+								WoodenChest pineChest = new WoodenChest(
+									individual.getState().position.x,
+									individual.getState().position.y,
+									100f,
+									200,
+									true,
+									new Function<Item, Boolean>() {
+										@Override
+										public Boolean apply(Item item) {
+											return true;
+										}
+									},
+									Pine.class
+								);
 
-		newHashMap.put(
-			new ListingMenuItem<String>(
-				"Spawn Chest on first individual",
-				new Button(
-					"Spawn Chest on first individual",
-					Fonts.defaultFont,
-					0,
-					0,
-					310,
-					16,
-					() -> {
-						Individual individual = Domain.getIndividuals().get(1);
-						if (individual != null) {
-							WoodenChest pineChest = new WoodenChest(
-								individual.getState().position.x,
-								individual.getState().position.y,
-								100f,
-								200,
-								true,
-								new Function<Item, Boolean>() {
-									@Override
-									public Boolean apply(Item item) {
-										return true;
-									}
-								},
-								Pine.class
-							);
+								Domain.addProp(pineChest);
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					),
+					new ContextMenu.MenuItem(
+						"Workbench",
+						() -> {
+							Individual individual = Domain.getIndividuals().get(1);
+							if (individual != null) {
+								WorkBench carpenterWorkshop = new WorkBench(
+									individual.getState().position.x,
+									individual.getState().position.y
+								);
 
-							Domain.addProp(pineChest);
-						}
-					},
-					Color.GREEN,
-					Color.WHITE,
-					Color.GREEN,
-					UIRef.BL
-				),
-				null
-			),
-			0
-		);
-
-		newHashMap.put(
-			new ListingMenuItem<String>(
-				"Spawn work bench on first individual",
-				new Button(
-					"Spawn work bench on first individual",
-					Fonts.defaultFont,
-					0,
-					0,
-					360,
-					16,
-					() -> {
-						Individual individual = Domain.getIndividuals().get(1);
-						if (individual != null) {
-							WorkBench carpenterWorkshop = new WorkBench(
-								individual.getState().position.x,
-								individual.getState().position.y
-							);
-
-							Domain.addProp(carpenterWorkshop);
-						}
-					},
-					Color.GREEN,
-					Color.WHITE,
-					Color.GREEN,
-					UIRef.BL
-				),
-				null
-			),
-			0
-		);
-
-		newHashMap.put(
-			new ListingMenuItem<String>(
-				"Spawn Furnace on first individual",
-				new Button(
-					"Spawn Furnace on first individual",
-					Fonts.defaultFont,
-					0,
-					0,
-					310,
-					16,
-					() -> {
-						Individual individual = Domain.getIndividuals().get(1);
-						if (individual != null) {
-							Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-							furnace.setConstructionProgress(0f);
-							Domain.addProp(furnace);
-						}
-					},
-					Color.GREEN,
-					Color.WHITE,
-					Color.GREEN,
-					UIRef.BL
-				),
-				null
-			),
-			0
-		);
-
-		newHashMap.put(
-			new ListingMenuItem<String>(
-				"Spawn Carrot on first individual",
-				new Button(
-					"Spawn Carrot on first individual",
-					Fonts.defaultFont,
-					0,
-					0,
-					310,
-					16,
-					() -> {
-						Individual individual = Domain.getIndividuals().get(1);
-						if (individual != null) {
-							bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
-							Domain.addProp(carrot);
-						}
-					},
-					Color.GREEN,
-					Color.WHITE,
-					Color.GREEN,
-					UIRef.BL
-				),
-				null
+								Domain.addProp(carpenterWorkshop);
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					),
+					new ContextMenu.MenuItem(
+						"Furnace",
+						() -> {
+							Individual individual = Domain.getIndividuals().get(1);
+							if (individual != null) {
+								Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
+								furnace.setConstructionProgress(0f);
+								Domain.addProp(furnace);
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					),
+					new ContextMenu.MenuItem(
+						"Carrot",
+						() -> {
+							Individual individual = Domain.getIndividuals().get(1);
+							if (individual != null) {
+								bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
+								Domain.addProp(carrot);
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					)
+				)
 			),
 			0
 		);
