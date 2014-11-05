@@ -371,6 +371,8 @@ public class Domain {
 
 
 	public static void removeItem(int key) {
+		Item item = Domain.getItem(key);
+		Domain.getWorld(item.getWorldId()).getPositionalIndexMap().get(item.getPosition().x, item.getPosition().y).removeItem(key);
 		items.remove(key);
 	}
 
