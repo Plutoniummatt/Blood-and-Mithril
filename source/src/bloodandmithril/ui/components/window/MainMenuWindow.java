@@ -17,6 +17,7 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.performance.PositionalReindexingService;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
@@ -331,6 +332,7 @@ public class MainMenuWindow extends Window {
 
 		SoundService.fadeOut(2f);
 		UserInterface.contextMenus.clear();
+		PositionalReindexingService.reindex();
 	}
 
 

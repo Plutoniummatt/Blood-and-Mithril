@@ -300,6 +300,11 @@ public abstract class Item implements Serializable, Affixed {
 		if (getId() == null) {
 			return;
 		}
+		
+		
+		if (!Domain.getWorld(getWorldId()).getTopography().getChunkMap().doesChunkExist(position)) {
+			return;
+		}
 
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();

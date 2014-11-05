@@ -24,17 +24,19 @@ public class PositionalReindexingService {
 				node.clear();
 			}
 
-			for (Prop prop : Domain.getProps().values()) {
-				Domain.getActiveWorld().getPositionalIndexMap().get(prop.position.x, prop.position.x).removeProp(prop.id);
-				Domain.getActiveWorld().getPositionalIndexMap().get(prop.position.x, prop.position.x).addProp(prop.id);
-			}
-
-			for (Individual individual : Domain.getIndividuals().values()) {
+			for (int individualId : world.getIndividuals()) {
+				Individual individual = Domain.getIndividual(individualId);
 				individual.updatePositionalIndex();
 			}
 
-			for (Item item : Domain.getItems().values()) {
-				item.updatePositionalIndex();;
+			for (int itemId : world.getItems()) {
+				Item item = Domain.getItem(itemId);
+				item.updatePositionalIndex();
+			}
+			
+			for (int propId : world.getProps()) {
+				Prop prop = Domain.getProp(propId);
+				prop.updatePositionIndex();
 			}
 		}
 	}

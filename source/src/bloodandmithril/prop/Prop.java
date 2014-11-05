@@ -5,6 +5,7 @@ import java.io.Serializable;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
+import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
@@ -65,6 +66,15 @@ public abstract class Prop implements Serializable {
 
 	/** Updates this prop */
 	public abstract void update(float delta);
+	
+	/** Reindexes this item */
+	public void updatePositionIndex() {
+		for (PositionalIndexNode node : Domain.getActiveWorld().getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
+			node.removeProp(id);
+		}
+
+		Domain.getActiveWorld().getPositionalIndexMap().get(position.x, position.y).addProp(id);
+	}
 
 	/** Returns the label to use for the right click context menu */
 	public abstract String getContextMenuItemLabel();
