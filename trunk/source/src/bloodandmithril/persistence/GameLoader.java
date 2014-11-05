@@ -59,8 +59,6 @@ public class GameLoader {
 			loadCameraPosition();
 		}
 		loadCurrentEpoch();
-
-		PositionalReindexingService.reindex();
 	}
 
 
