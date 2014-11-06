@@ -227,15 +227,15 @@ public class ContainerImpl implements Container, Serializable {
 	}
 
 
-	public static void discard(Individual individual, final Item item, int quantity, Vector2 v) {
+	public static void discard(Individual individual, final Item item, int quantity, bloodandmithril.util.Function<Vector2> v) {
 		if (isServer()) {
 			for (int i = quantity; i !=0; i--) {
 				if (individual.takeItem(item) == 1) {
 					Domain.addItem(
 						item.copy(),
 						individual.getEmissionPosition(),
-						v,
-						Domain.getWorlds().get(individual.getWorldId())
+						v.call(),
+						individual.getWorldId()
 					);
 				} else {
 					break;
@@ -248,7 +248,9 @@ public class ContainerImpl implements Container, Serializable {
 
 
 	public static void discard(Individual individual, final Item item, int quantity) {
-		discard(individual, item, quantity, new Vector2(100f, 0).rotate(Util.getRandom().nextFloat() * 180f));
+		discard(individual, item, quantity, () -> {
+			return new Vector2(100f, 0).rotate(Util.getRandom().nextFloat() * 180f);
+		});
 	}
 
 

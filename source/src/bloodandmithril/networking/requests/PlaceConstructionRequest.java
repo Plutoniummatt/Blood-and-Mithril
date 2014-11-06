@@ -15,23 +15,25 @@ import bloodandmithril.world.Domain;
 public class PlaceConstructionRequest implements Request {
 
 	private final Construction construction;
+	private final int worldId;
 	private final float x;
 	private final float y;
 
 	/**
 	 * Constructor
 	 */
-	public PlaceConstructionRequest(Construction construction, float x, float y) {
+	public PlaceConstructionRequest(Construction construction, float x, float y, int worldId) {
 		this.construction = construction;
 		this.x = x;
 		this.y = y;
+		this.worldId = worldId;
 	}
 
 
 	@Override
 	public Responses respond() {
 		if (construction.canBuildAt(x, y)) {
-			Domain.addProp(construction);
+			Domain.addProp(construction, worldId);
 		}
 
 		return new Responses(false);

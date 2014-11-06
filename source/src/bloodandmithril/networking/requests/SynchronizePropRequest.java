@@ -67,7 +67,7 @@ public class SynchronizePropRequest implements Request {
 					((Construction) propToSync).synchronizeConstruction((Construction) prop);
 				}
 			} else {
-				Domain.addProp(prop);
+				Domain.addProp(prop, prop.getWorldId());
 			}
 		}
 

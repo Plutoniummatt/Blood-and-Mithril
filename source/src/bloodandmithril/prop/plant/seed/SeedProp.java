@@ -72,7 +72,7 @@ public abstract class SeedProp extends Harvestable {
 			germinationProgress = 1f;
 			Growable germinate = germinate();
 			Domain.removeProp(id);
-			Domain.addProp(germinate);
+			Domain.addProp(germinate, getWorldId());
 		} else {
 			growth(delta);
 		}
