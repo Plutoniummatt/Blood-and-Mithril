@@ -113,7 +113,7 @@ public class SynchronizeIndividual implements Request {
 		private void syncSingleIndividual() {
 			Individual got = Domain.getIndividual(individual.getId().getId());
 			if (got == null) {
-				Domain.addIndividual(individual);
+				Domain.addIndividual(individual, individual.getWorldId());
 			} else {
 				if (timeStamp < got.getTimeStamp()) {
 					// Received snapshot is older than the most recently updated snapshot

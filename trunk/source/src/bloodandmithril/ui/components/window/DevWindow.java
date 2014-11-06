@@ -184,7 +184,7 @@ public class DevWindow extends Window {
 							elf.giveItem(new Brick());
 						}
 
-						Domain.addIndividual(elf);
+						Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
 					},
 					Color.GREEN,
 					Color.WHITE,
@@ -222,7 +222,7 @@ public class DevWindow extends Window {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
 								Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
-								Domain.addProp(anvil);
+								Domain.addProp(anvil, Domain.getActiveWorld().getWorldId());
 							}
 						},
 						Color.GREEN,
@@ -250,7 +250,7 @@ public class DevWindow extends Window {
 									Pine.class
 								);
 
-								Domain.addProp(pineChest);
+								Domain.addProp(pineChest, Domain.getActiveWorld().getWorldId());
 							}
 						},
 						Color.GREEN,
@@ -268,7 +268,7 @@ public class DevWindow extends Window {
 									individual.getState().position.y
 								);
 
-								Domain.addProp(carpenterWorkshop);
+								Domain.addProp(carpenterWorkshop, Domain.getActiveWorld().getWorldId());
 							}
 						},
 						Color.GREEN,
@@ -283,7 +283,7 @@ public class DevWindow extends Window {
 							if (individual != null) {
 								Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
 								furnace.setConstructionProgress(0f);
-								Domain.addProp(furnace);
+								Domain.addProp(furnace, Domain.getActiveWorld().getWorldId());
 							}
 						},
 						Color.GREEN,
@@ -297,7 +297,7 @@ public class DevWindow extends Window {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
 								bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
-								Domain.addProp(carrot);
+								Domain.addProp(carrot, Domain.getActiveWorld().getWorldId());
 							}
 						},
 						Color.GREEN,

@@ -132,12 +132,12 @@ public class Domain {
 	}
 
 
-	public static int addItem(Item item, Vector2 position, Vector2 velocity, World world) {
+	public static int addItem(Item item, Vector2 position, Vector2 velocity, int worldId) {
 		if (item.rotates()) {
 			item.setAngularVelocity((Util.getRandom().nextFloat() - 0.5f) * 40f);
 		}
 
-		item.setWorldId(world.getWorldId());
+		item.setWorldId(worldId);
 		item.setId(ParameterPersistenceService.getParameters().getNextItemId());
 		item.setPosition(position);
 		item.setVelocity(velocity);
@@ -384,8 +384,8 @@ public class Domain {
 
 	public static Prop removeProp(int key) {
 		Prop prop = getProp(key);
-		Domain.getActiveWorld().getProps().remove(key);
-		Domain.getActiveWorld().getPositionalIndexMap().get(prop.position.x, prop.position.y).removeProp(prop.id);
+		Domain.getWorld(prop.getWorldId()).getProps().remove(key);
+		Domain.getWorld(prop.getWorldId()).getPositionalIndexMap().get(prop.position.x, prop.position.y).removeProp(prop.id);
 		return props.remove(key);
 	}
 
@@ -398,9 +398,9 @@ public class Domain {
 	}
 
 
-	public static void addIndividual(Individual indi) {
+	public static void addIndividual(Individual indi, int worldId) {
 		individuals.put(indi.getId().getId(), indi);
-		Domain.getActiveWorld().getIndividuals().add(indi.getId().getId());
+		Domain.getWorld(worldId).getIndividuals().add(indi.getId().getId());
 		if (ClientServerInterface.isClient()) {
 			for (Component component : UserInterface.layeredComponents) {
 				if (component instanceof UnitsWindow) {
@@ -423,10 +423,11 @@ public class Domain {
 	}
 
 
-	public static void addProp(Prop prop) {
+	public static void addProp(Prop prop, int worldId) {
+		prop.setWorldId(worldId);
 		props.put(prop.id, prop);
-		getActiveWorld().getProps().add(prop.id);
-		getActiveWorld().getPositionalIndexMap().get(prop.position.x, prop.position.y).addProp(prop.id);
+		Domain.getWorld(worldId).getProps().add(prop.id);
+		Domain.getWorld(worldId).getPositionalIndexMap().get(prop.position.x, prop.position.y).addProp(prop.id);
 	}
 
 
@@ -487,8 +488,8 @@ public class Domain {
 		private static Predicate<Individual> offPlatform = new Predicate<Individual>() {
 			@Override
 			public boolean apply(Individual individual) {
-				if (getActiveWorld().getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
-					getActiveWorld().getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
+				if (Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
+					Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
 					return false;
 				} else {
 					return true;

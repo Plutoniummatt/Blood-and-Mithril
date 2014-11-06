@@ -269,7 +269,7 @@ public class BloodAndMithrilServer {
 						},
 						Pine.class
 					);
-					Domain.addProp(pineChest);
+					Domain.addProp(pineChest, Domain.getActiveWorld().getWorldId());
 				}
 			}
 
@@ -280,7 +280,7 @@ public class BloodAndMithrilServer {
 						individual.getState().position.x,
 						individual.getState().position.y
 					);
-					Domain.addProp(anvil);
+					Domain.addProp(anvil, Domain.getActiveWorld().getWorldId());
 				}
 			}
 
@@ -289,7 +289,7 @@ public class BloodAndMithrilServer {
 				if (individual != null) {
 					Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
 					furnace.setConstructionProgress(0f);
-					Domain.addProp(furnace);
+					Domain.addProp(furnace, Domain.getActiveWorld().getWorldId());
 				}
 			}
 
@@ -298,7 +298,7 @@ public class BloodAndMithrilServer {
 				if (individual != null) {
 					bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
 					carrot.grow(1f);
-					Domain.addProp(carrot);
+					Domain.addProp(carrot, Domain.getActiveWorld().getWorldId());
 				}
 			}
 
@@ -306,7 +306,7 @@ public class BloodAndMithrilServer {
 				Individual individual = Domain.getIndividuals().get(1);
 				if (individual != null) {
 					Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
-					Domain.addProp(anvil);
+					Domain.addProp(anvil, Domain.getActiveWorld().getWorldId());
 				}
 			}
 

@@ -149,9 +149,9 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 					if (canBuild) {
 						if (ClientServerInterface.isServer()) {
-							Domain.addProp(toConstruct);
+							Domain.addProp(toConstruct, Domain.getActiveWorld().getWorldId());
 						} else {
-							ClientServerInterface.SendRequest.sendPlaceConstructionRequest(getMouseWorldX(), coords.y, toConstruct);
+							ClientServerInterface.SendRequest.sendPlaceConstructionRequest(getMouseWorldX(), coords.y, toConstruct, Domain.getActiveWorld().getWorldId());
 						}
 						Domain.getActiveWorld().getPositionalIndexMap().get(toConstruct.position.x, toConstruct.position.y).getAllEntitiesForType(Prop.class).add(toConstruct.id);
 					}

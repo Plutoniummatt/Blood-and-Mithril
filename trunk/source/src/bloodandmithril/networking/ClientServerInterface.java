@@ -669,8 +669,8 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void sendPlaceConstructionRequest(float x, float y, Construction construction) {
-			client.sendTCP(new PlaceConstructionRequest(construction, x, y));
+		public static synchronized void sendPlaceConstructionRequest(float x, float y, Construction construction, int worldId) {
+			client.sendTCP(new PlaceConstructionRequest(construction, x, y, worldId));
 			Logger.networkDebug("Sending construction placement request", LogLevel.DEBUG);
 		}
 

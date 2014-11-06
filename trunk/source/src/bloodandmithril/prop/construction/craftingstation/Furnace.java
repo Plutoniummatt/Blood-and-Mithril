@@ -151,7 +151,7 @@ public class Furnace extends CraftingStation implements Container {
 				}
 			}
 			
-			Domain.getActiveWorld().getParticles().add(new TracerParticle(
+			Domain.getWorld(getWorldId()).getParticles().add(new TracerParticle(
 				position.cpy().add(0f, height - 45f).add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)), 
 				new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f), 
 				Color.ORANGE, 

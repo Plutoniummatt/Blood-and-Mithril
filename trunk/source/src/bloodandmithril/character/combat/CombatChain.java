@@ -95,7 +95,7 @@ public class CombatChain {
 	}
 
 
-	private void blockDisarmLogic(Vector2 disarmVector) {
+	private void blockDisarmLogic(final Vector2 disarmVector) {
 		if (!ClientServerInterface.isServer()) {
 			return;
 		}
@@ -104,7 +104,9 @@ public class CombatChain {
 		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance())) {
 			Sets.newHashSet(target.getEquipped().keySet()).stream().forEach(item -> {
 				target.unequip((Equipable) item);
-				ContainerImpl.discard(target, item, 1, disarmVector);
+				ContainerImpl.discard(target, item, 1, ()-> { 
+					return disarmVector.cpy();
+				});
 			});
 
 			target.addFloatingText(
@@ -123,7 +125,7 @@ public class CombatChain {
 
 
 	@SuppressWarnings("unchecked")
-	private String hit(Vector2 disarmVector) {
+	private String hit(final Vector2 disarmVector) {
 		if (!ClientServerInterface.isServer()) {
 			return "";
 		}
@@ -149,7 +151,9 @@ public class CombatChain {
 			).forEach(item -> {
 				if (item instanceof Weapon) {
 					target.unequip((Equipable) item);
-					ContainerImpl.discard(target, item, 1, disarmVector);
+					ContainerImpl.discard(target, item, 1, () -> {
+						return disarmVector.cpy();	
+					});
 				}
 			});
 		}

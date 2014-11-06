@@ -81,7 +81,7 @@ public class PlantSeed extends CompositeAITask {
 		@Override
 		public void execute(float delta) {
 			planted = true;
-			Domain.addProp(toPlant);
+			Domain.addProp(toPlant, Domain.getIndividual(hostId.getId()).getWorldId());
 			Domain.getIndividual(hostId.getId()).takeItem(toPlant.getSeed());
 			UserInterface.refreshRefreshableWindows();
 		}

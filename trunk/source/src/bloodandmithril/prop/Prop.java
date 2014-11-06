@@ -42,6 +42,8 @@ public abstract class Prop implements Serializable {
 
 	/** True if this {@link Prop} must be placed on the ground */
 	protected final boolean grounded;
+	
+	private int worldId;
 
 	/**
 	 * Constructor
@@ -69,11 +71,11 @@ public abstract class Prop implements Serializable {
 	
 	/** Reindexes this item */
 	public void updatePositionIndex() {
-		for (PositionalIndexNode node : Domain.getActiveWorld().getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
+		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
 			node.removeProp(id);
 		}
 
-		Domain.getActiveWorld().getPositionalIndexMap().get(position.x, position.y).addProp(id);
+		Domain.getWorld(worldId).getPositionalIndexMap().get(position.x, position.y).addProp(id);
 	}
 
 	/** Returns the label to use for the right click context menu */
@@ -115,5 +117,13 @@ public abstract class Prop implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	public int getWorldId() {
+		return worldId;
+	}
+
+	public void setWorldId(int worldId) {
+		this.worldId = worldId;
 	}
 }
