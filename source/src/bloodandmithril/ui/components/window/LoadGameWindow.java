@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.performance.PositionalReindexingService;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.ui.UserInterface.UIRef;

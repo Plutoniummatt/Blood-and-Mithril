@@ -12,7 +12,6 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.performance.PositionalReindexingService;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.persistence.character.IndividualLoader;
 import bloodandmithril.persistence.item.ItemLoader;
