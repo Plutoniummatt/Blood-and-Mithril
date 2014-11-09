@@ -12,20 +12,22 @@ import java.util.Map.Entry;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
+import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.container.GlassBottle;
-import bloodandmithril.item.items.material.Brick;
+import bloodandmithril.item.items.material.Bricks;
 import bloodandmithril.item.items.material.Glass;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
+import bloodandmithril.item.material.mineral.Mineral;
+import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -34,6 +36,7 @@ import bloodandmithril.ui.components.window.CraftingStationWindow;
 import bloodandmithril.ui.components.window.FurnaceCraftingWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Countdown;
+import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
@@ -52,7 +55,7 @@ public class Furnace extends CraftingStation implements Container {
 	private static final long serialVersionUID = 7693386784097531328L;
 
 	/** {@link TextureRegion} of the {@link Furnace} */
-	public static TextureRegion FURANCE, FURNACE_BURNING;
+	public static TextureRegion FURNACE, FURNACE_BURNING;
 
 	/** The amount of time taken to smelt one batch of material, in seconds */
 	public static final float SMELTING_DURATION = 10f;
@@ -65,6 +68,9 @@ public class Furnace extends CraftingStation implements Container {
 
 	/** The {@link Container} of this {@link Furnace} */
 	private ContainerImpl container;
+	
+	/** The {@link Mineral} this {@link Furnace} is made from */
+	private Class<? extends Mineral> material;
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
 
@@ -78,8 +84,9 @@ public class Furnace extends CraftingStation implements Container {
 	/**
 	 * Constructor
 	 */
-	public Furnace(float x, float y) {
-		super(x, y, 49, 76, 0.1f);
+	public Furnace(Class<? extends Mineral> material, float x, float y) {
+		super(x, y, 100, 46, 0.1f);
+		this.material = material;
 		this.container = new ContainerImpl(500f, 300);
 	}
 
@@ -113,7 +120,7 @@ public class Furnace extends CraftingStation implements Container {
 		if (burning) {
 			spriteBatch.draw(FURNACE_BURNING, position.x - width / 2, position.y);
 		} else {
-			spriteBatch.draw(FURANCE, position.x - width / 2, position.y);
+			spriteBatch.draw(FURNACE, position.x - width / 2, position.y);
 		}
 	}
 
@@ -152,8 +159,8 @@ public class Furnace extends CraftingStation implements Container {
 			}
 			
 			Domain.getWorld(getWorldId()).getParticles().add(new TracerParticle(
-				position.cpy().add(0f, height - 45f).add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)), 
-				new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f), 
+				position.cpy().add(0f, height - 38f).add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)), 
+				new Vector2(Util.getRandom().nextFloat() * 30f, 0f).rotate(Util.getRandom().nextFloat() * 360f), 
 				Color.ORANGE, 
 				1f, 
 				Domain.getActiveWorld().getWorldId(),
@@ -225,7 +232,8 @@ public class Furnace extends CraftingStation implements Container {
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
-		requiredItems.put(new Brick(), 5);
+		requiredItems.put(Rock.rock(SandStone.class), 5);
+		requiredItems.put(Bricks.bricks(SandStone.class), 5);
 		return requiredItems;
 	}
 
@@ -330,5 +338,11 @@ public class Furnace extends CraftingStation implements Container {
 			individual,
 			this
 		);
+	}
+
+
+	@Override
+	public void preRender() {
+		Shaders.filter.setUniformf("color", Material.getMaterial(material).getColor());	
 	}
 }

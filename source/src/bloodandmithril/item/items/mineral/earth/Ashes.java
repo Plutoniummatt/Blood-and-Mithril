@@ -42,7 +42,7 @@ public class Ashes extends Earth {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return null;
 	}
 

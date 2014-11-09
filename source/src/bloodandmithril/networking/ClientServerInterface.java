@@ -99,7 +99,7 @@ import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
 import bloodandmithril.item.items.food.plant.DeathCap;
-import bloodandmithril.item.items.material.Brick;
+import bloodandmithril.item.items.material.Bricks;
 import bloodandmithril.item.items.material.Glass;
 import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.items.material.Rock;
@@ -465,7 +465,7 @@ public class ClientServerInterface {
 		kryo.register(Blood.class);
 		kryo.register(BoarAI.class);
 		kryo.register(Box.class);
-		kryo.register(Brick.class);
+		kryo.register(Bricks.class);
 		kryo.register(BrickTile.class);
 		kryo.register(Dagger.class);
 		kryo.register(CSIMineTile.class);

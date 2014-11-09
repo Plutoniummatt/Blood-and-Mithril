@@ -65,7 +65,7 @@ public class Log extends bloodandmithril.item.items.material.Material {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return Material.getMaterial(wood).getLogTextureRegion();
 	}
 

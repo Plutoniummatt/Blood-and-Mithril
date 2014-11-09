@@ -78,7 +78,7 @@ public class ChickenLeg extends Food {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return null;
 	}
 

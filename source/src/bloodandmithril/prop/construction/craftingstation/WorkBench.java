@@ -70,4 +70,9 @@ public class WorkBench extends CraftingStation {
 	public Map<Item, Integer> getCraftables() {
 		return craftables;
 	}
+
+
+	@Override
+	public void preRender() {
+	}
 }

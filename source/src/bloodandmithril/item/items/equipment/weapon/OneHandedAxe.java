@@ -85,7 +85,7 @@ public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return textureRegionMap.get(getClass());
 	}
 

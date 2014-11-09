@@ -6,6 +6,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 @Copyright("Matthew Peck 2014")
@@ -70,5 +71,10 @@ public class Hematite extends Mineral {
 	@Override
 	public String getMineralDescription() {
 		return "Hematite is a mineral, colored black to steel or silver-gray, brown to reddish brown, or red. It is mined as the main ore of iron.";
+	}
+
+	@Override
+	public Color getColor() {
+		return Color.RED;
 	}
 }

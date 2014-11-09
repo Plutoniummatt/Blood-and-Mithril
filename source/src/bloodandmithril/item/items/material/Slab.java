@@ -87,7 +87,7 @@ public class Slab extends bloodandmithril.item.items.material.Material implement
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return Material.getMaterial(mineral).getSlabTextureRegion();
 	}
 

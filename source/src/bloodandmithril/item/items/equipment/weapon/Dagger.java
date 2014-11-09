@@ -85,7 +85,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return textureRegionMap.get(getClass());
 	}
 

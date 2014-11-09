@@ -82,8 +82,8 @@ public abstract class Prop implements Serializable {
 	public abstract String getContextMenuItemLabel();
 
 	public static void setup() {
-		Furnace.FURANCE = new TextureRegion(Domain.gameWorldTexture, 453, 176, 49, 76);
-		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 503, 176, 49, 76);
+		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 453, 176, 100, 46);
+		Furnace.FURNACE = new TextureRegion(Domain.gameWorldTexture, 453, 223, 100, 46);
 		WoodenChest.woodenChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);
 		CarrotProp.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 176, 12, 17);
 		Anvil.anvil = new TextureRegion(Domain.gameWorldTexture, 363, 225, 44, 18);
@@ -126,4 +126,6 @@ public abstract class Prop implements Serializable {
 	public void setWorldId(int worldId) {
 		this.worldId = worldId;
 	}
+
+	public abstract void preRender();
 }

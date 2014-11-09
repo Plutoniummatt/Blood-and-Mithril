@@ -19,6 +19,8 @@ import bloodandmithril.item.affix.MinorAffix;
 import bloodandmithril.item.affix.PostAffix;
 import bloodandmithril.item.affix.PreAffix;
 import bloodandmithril.item.items.food.plant.Carrot;
+import bloodandmithril.item.items.material.Bricks;
+import bloodandmithril.item.items.mineral.earth.Dirt;
 import bloodandmithril.item.material.metal.Copper;
 import bloodandmithril.item.material.metal.Gold;
 import bloodandmithril.item.material.metal.Iron;
@@ -26,6 +28,7 @@ import bloodandmithril.item.material.metal.Silver;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.Hematite;
+import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.ui.UserInterface;
@@ -192,7 +195,7 @@ public abstract class Item implements Serializable, Affixed {
 	}
 
 	/** Gets the {@link TextureRegion} of this {@link Item} */
-	protected abstract TextureRegion getTextureRegion();
+	public abstract TextureRegion getTextureRegion();
 
 	/** Gets the {@link TextureRegion} for the Icon of this {@link Item} */
 	public abstract TextureRegion getIconTextureRegion();
@@ -207,6 +210,8 @@ public abstract class Item implements Serializable, Affixed {
 		item.mass = mass;
 		item.setValue(value);
 		item.minorAffixes = newArrayList(minorAffixes);
+		item.preAffix = preAffix;
+		item.postAffix = postAffix;
 
 		return item;
 	}
@@ -274,12 +279,16 @@ public abstract class Item implements Serializable, Affixed {
 		Hematite.HEMATITE = new TextureRegion(Domain.gameWorldTexture, 372, 253, 18, 11);
 		Coal.COAL = new TextureRegion(Domain.gameWorldTexture, 372, 265, 18, 11);
 		Carrot.CARROT = new TextureRegion(Domain.gameWorldTexture, 365, 180, 23, 13);
+		SandStone.SANDSTONE = new TextureRegion(Domain.gameWorldTexture, 372, 277, 18, 11);
 
 		Silver.SILVERINGOTICON = new TextureRegion(UserInterface.iconTexture, 0, 0, 64, 64);
 		Iron.IRONINGOTICON = new TextureRegion(UserInterface.iconTexture, 65, 0, 64, 64);
 		Steel.STEELINGOTICON = new TextureRegion(UserInterface.iconTexture, 130, 0, 64, 64);
 		Copper.COPPERINGOTICON = new TextureRegion(UserInterface.iconTexture, 195, 0, 64, 64);
 		Gold.GOLDINGOTICON = new TextureRegion(UserInterface.iconTexture, 260, 0, 64, 64);
+		
+		Bricks.BRICKS = new TextureRegion(Domain.gameWorldTexture, 392, 253, 25, 11);
+		Dirt.DIRT_PILE = new TextureRegion(Domain.gameWorldTexture, 392, 265, 20, 11);
 	}
 
 
@@ -301,11 +310,11 @@ public abstract class Item implements Serializable, Affixed {
 			return;
 		}
 		
-		
 		if (!Domain.getWorld(getWorldId()).getTopography().getChunkMap().doesChunkExist(position)) {
 			return;
 		}
 
+		affixEffects();
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 
@@ -363,6 +372,20 @@ public abstract class Item implements Serializable, Affixed {
 		updatePositionalIndex();
 	}
 
+
+	public void affixEffects() {
+		if (preAffix != null) {
+			preAffix.itemEffects(this);
+		}
+	}
+	
+	
+	public void affixEffects(Individual individual) {
+		if (preAffix != null) {
+			preAffix.itemEffects(individual, this);
+		}
+	}
+	
 
 	public void updatePositionalIndex() {
 		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {

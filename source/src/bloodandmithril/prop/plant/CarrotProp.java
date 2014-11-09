@@ -147,4 +147,9 @@ public class CarrotProp extends Plant {
 	public String getContextMenuItemLabel() {
 		return "Carrot";
 	}
+
+
+	@Override
+	public void preRender() {
+	}
 }

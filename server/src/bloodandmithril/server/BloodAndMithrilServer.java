@@ -2,39 +2,14 @@ package bloodandmithril.server;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.function.Function;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.character.individuals.IndividualState;
-import bloodandmithril.character.individuals.Names;
-import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.PrefabricatedComponent;
-import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.container.WoodenBucket;
-import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
-import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
-import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
-import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
-import bloodandmithril.item.items.food.animal.ChickenLeg;
-import bloodandmithril.item.items.food.plant.Carrot;
-import bloodandmithril.item.items.food.plant.DeathCap;
-import bloodandmithril.item.items.material.Brick;
-import bloodandmithril.item.items.material.Ingot;
-import bloodandmithril.item.items.material.Rock;
-import bloodandmithril.item.items.misc.Currency;
-import bloodandmithril.item.liquid.Blood;
-import bloodandmithril.item.liquid.Liquid;
-import bloodandmithril.item.material.metal.Steel;
-import bloodandmithril.item.material.mineral.Coal;
-import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
@@ -43,22 +18,15 @@ import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.construction.craftingstation.Anvil;
-import bloodandmithril.prop.construction.craftingstation.Furnace;
-import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.util.Util;
-import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -254,118 +222,6 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public boolean keyDown(int keycode) {
-
-			if (keycode == Input.Keys.T) {
-				Individual individual = Domain.getIndividuals().get(1);
-				if (individual != null) {
-					WoodenChest pineChest = new WoodenChest(
-						individual.getState().position.x,
-						individual.getState().position.y, 100f, 200, true,
-						new Function<Item, Boolean>() {
-							@Override
-							public Boolean apply(Item t) {
-								return true;
-							}
-						},
-						Pine.class
-					);
-					Domain.addProp(pineChest, Domain.getActiveWorld().getWorldId());
-				}
-			}
-
-			if (keycode == Input.Keys.Z) {
-				Individual individual = Domain.getIndividuals().get(1);
-				if (individual != null) {
-					Anvil anvil = new Anvil(
-						individual.getState().position.x,
-						individual.getState().position.y
-					);
-					Domain.addProp(anvil, Domain.getActiveWorld().getWorldId());
-				}
-			}
-
-			if (keycode == Input.Keys.M) {
-				Individual individual = Domain.getIndividuals().get(1);
-				if (individual != null) {
-					Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
-					furnace.setConstructionProgress(0f);
-					Domain.addProp(furnace, Domain.getActiveWorld().getWorldId());
-				}
-			}
-
-			if (keycode == Input.Keys.N) {
-				Individual individual = Domain.getIndividuals().get(1);
-				if (individual != null) {
-					bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
-					carrot.grow(1f);
-					Domain.addProp(carrot, Domain.getActiveWorld().getWorldId());
-				}
-			}
-
-			if (keycode == Input.Keys.Y) {
-				Individual individual = Domain.getIndividuals().get(1);
-				if (individual != null) {
-					Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
-					Domain.addProp(anvil, Domain.getActiveWorld().getWorldId());
-				}
-			}
-
-			if (keycode == Input.Keys.R) {
-				IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
-				state.position = new Vector2(200, 5000);
-				state.velocity = new Vector2(0, 0);
-				state.acceleration = new Vector2(0, 0);
-
-				IndividualIdentifier id = Names.getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
-				id.setNickName("Elfie");
-
-				Elf elf = new Elf(
-					id,
-					state,
-					Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1,
-					true,
-					20f,
-					Domain.getActiveWorld(),
-					Colors.lightColor(),
-					Colors.lightColor(),
-					Colors.lightSkinColor()
-				);
-
-				elf.getSkills().setSmithing(50);
-
-				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-					elf.giveItem(new Carrot());
-				}
-				for (int i = Util.getRandom().nextInt(50) + 40; i > 0; i--) {
-					elf.giveItem(Ingot.ingot(Steel.class));
-				}
-				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-					elf.giveItem(Rock.rock(Coal.class));
-				}
-				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-					elf.giveItem(new DeathCap(false));
-				}
-				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-					elf.giveItem(new ChickenLeg());
-				}
-				for (int i = Util.getRandom().nextInt(50); i > 0; i--) {
-					Map<Class<? extends Liquid>, Float> liquids = new HashMap<>();
-					liquids.put(Blood.class, 16f);
-					elf.giveItem(new WoodenBucket(liquids, Pine.class));
-				}
-				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
-					elf.giveItem(new Currency());
-				}
-				for (int i = Util.getRandom().nextInt(1000); i > 0; i--) {
-					elf.giveItem(new Brick());
-				}
-				elf.giveItem(new BushKnife());
-				elf.giveItem(new CombatKnife());
-				elf.giveItem(new Machette());
-				elf.giveItem(new Broadsword());
-
-				Domain.getIndividuals().put(elf.getId().getId(), elf);
-			}
 			return false;
 		}
 

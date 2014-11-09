@@ -2,6 +2,8 @@ package bloodandmithril.world.topography.tile.tiles.stone;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.material.Rock;
+import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.world.topography.tile.tiles.StoneTile;
 
 @Copyright("Matthew Peck 2014")
@@ -34,7 +36,6 @@ public class SandStoneTile extends StoneTile {
 
 	@Override
 	public Item mine() {
-		// TODO Auto-generated method stub
-		return null;
+		return Rock.rock(SandStone.class);
 	}
 }

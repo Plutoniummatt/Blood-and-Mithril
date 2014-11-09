@@ -80,7 +80,7 @@ public abstract class OneHandedSpear<T extends Metal> extends OneHandedMeleeWeap
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return textureRegionMap.get(getClass()); // TODO
 	}
 

@@ -73,7 +73,7 @@ public class Carrot extends Food {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return CARROT;
 	}
 
@@ -125,7 +125,7 @@ public class Carrot extends Food {
 
 
 		@Override
-		protected TextureRegion getTextureRegion() {
+		public TextureRegion getTextureRegion() {
 			return null;
 		}
 
@@ -221,6 +221,11 @@ public class Carrot extends Food {
 		@Override
 		protected void growth(float delta) {
 			setGerminationProgress(getGerminationProgress() + delta / 100f);
+		}
+
+
+		@Override
+		public void preRender() {
 		}
 	}
 }

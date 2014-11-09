@@ -156,7 +156,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 
 	@Override
-	protected SpacialConfiguration getOneHandedWeaponSpatialConfigration() {
+	public SpacialConfiguration getOneHandedWeaponSpatialConfigration() {
 		int frameIndex = getCurrentAnimation().get(0).a.getKeyFrameIndex(getAnimationTimer());
 
 		switch(getCurrentAction()) {

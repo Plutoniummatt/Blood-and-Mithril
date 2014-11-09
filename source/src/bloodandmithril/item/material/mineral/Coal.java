@@ -8,6 +8,7 @@ import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.mineral.earth.Ashes;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 @Copyright("Matthew Peck 2014")
@@ -84,5 +85,10 @@ public class Coal extends Mineral implements Fuel {
 	@Override
 	public Item consume() {
 		return new Ashes();
+	}
+
+	@Override
+	public Color getColor() {
+		return Color.GRAY;
 	}
 }

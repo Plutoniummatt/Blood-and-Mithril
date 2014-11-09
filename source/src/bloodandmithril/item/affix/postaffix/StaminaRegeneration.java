@@ -1,6 +1,8 @@
-package bloodandmithril.item.affix;
+package bloodandmithril.item.affix.postaffix;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.affix.Affix;
+import bloodandmithril.item.affix.PostAffix;
 
 /**
  * Improves health regeneration

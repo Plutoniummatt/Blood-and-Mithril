@@ -8,6 +8,7 @@ import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.items.material.Slab;
 import bloodandmithril.item.material.Material;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -22,6 +23,7 @@ public abstract class Mineral extends Material {
 	public static void minerals(Map<Class<? extends Material>, Material> materials) {
 		materials.put(Hematite.class, new Hematite());
 		materials.put(Coal.class, new Coal());
+		materials.put(SandStone.class, new SandStone());
 	}
 
 	/**
@@ -63,4 +65,9 @@ public abstract class Mineral extends Material {
 	 * @return the description of this {@link Mineral}
 	 */
 	public abstract String getMineralDescription();
+	
+	/**
+	 * @return the color of this {@link Mineral}
+	 */
+	public abstract Color getColor();
 }

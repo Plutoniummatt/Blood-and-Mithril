@@ -240,4 +240,9 @@ public class WoodenChest extends Furniture implements Container {
 	public String getContextMenuItemLabel() {
 		return "Wooden chest" + (isLocked() ? " (Locked)" : "");
 	}
+
+
+	@Override
+	public void preRender() {
+	}
 }

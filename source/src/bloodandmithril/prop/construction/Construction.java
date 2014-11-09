@@ -49,7 +49,7 @@ public abstract class Construction extends Prop implements Container {
 	public final float constructionRate;
 
 	/** The container used to store construction materials during the construction stage */
-	private ContainerImpl materialContainer = new ContainerImpl(100000, 100000);
+	private ContainerImpl materialContainer = new ContainerImpl(10000000, 10000000);
 
 	/** Returns whether this {@link Construction} can be built on a tile type */
 	private final SerializableMappingFunction<Tile, Boolean> canBuildOnTopOf;
