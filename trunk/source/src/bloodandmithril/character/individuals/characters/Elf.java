@@ -32,6 +32,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
@@ -430,7 +431,7 @@ public class Elf extends Humanoid {
 	@Override
 	public Set<Construction> getConstructables() {
 		return Sets.newHashSet(
-			new Furnace(0, 0),
+			new Furnace(SandStone.class, 0, 0),
 			new WorkBench(0, 0),
 			new Anvil(0, 0)
 		);

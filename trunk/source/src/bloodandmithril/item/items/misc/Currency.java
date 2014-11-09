@@ -48,7 +48,7 @@ public class Currency extends Misc {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return null;
 	}
 

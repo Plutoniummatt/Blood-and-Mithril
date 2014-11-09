@@ -87,7 +87,7 @@ public class WoodenChest extends Furniture implements Craftable {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		throw new IllegalStateException("Should not be calling this method");
 	}
 

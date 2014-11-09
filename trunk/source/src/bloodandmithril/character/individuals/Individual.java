@@ -608,7 +608,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
 					if (config != null) {
 						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
-						toRender.render(config.position.add(getState().position), config.orientation, config.flipX);
+						Vector2 pos = config.position.add(getState().position);
+						toRender.render(pos, config.orientation, config.flipX);
+						if (config.flipX) {
+							equipped.setPosition(pos.add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? config.orientation + 180f : -config.orientation)));
+						} else {
+							equipped.setPosition(pos.add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? -config.orientation : config.orientation)));
+						}
 					}
 				}
 
@@ -813,6 +819,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		updateConditions(delta);
 		updatePositionalIndex();
+		
+		for (Item equipped : getEquipped().keySet()) {
+			equipped.affixEffects(this);
+		}
 	}
 
 
@@ -1519,7 +1529,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public abstract Set<Construction> getConstructables();
 
 	/** Returns the {@link SpacialConfiguration} where {@link OneHandedMeleeWeapon} will be rendered */
-	protected abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();
+	public abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();
 
 
 	/** True if mouse is over */

@@ -12,6 +12,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class Dirt extends Earth {
 	private static final long serialVersionUID = 6522655675894787083L;
+	
+	/** {@link TextureRegion} of the {@link Dirt} */
+	public static TextureRegion DIRT_PILE;
 
 	/**
 	 * Constructor
@@ -46,7 +49,7 @@ public class Dirt extends Earth {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return null;
 	}
 
@@ -59,7 +62,6 @@ public class Dirt extends Earth {
 
 	@Override
 	public TextureRegion getIconTextureRegion() {
-		// TODO Auto-generated method stub
-		return null;
+		return DIRT_PILE;
 	}
 }

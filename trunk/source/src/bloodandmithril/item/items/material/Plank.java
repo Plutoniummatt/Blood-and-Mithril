@@ -69,7 +69,7 @@ public class Plank extends bloodandmithril.item.items.material.Material implemen
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return Material.getMaterial(wood).getPlankTextureRegion();
 	}
 

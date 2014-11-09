@@ -106,7 +106,7 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return null; // TODO wooden bucket texture region
 	}
 

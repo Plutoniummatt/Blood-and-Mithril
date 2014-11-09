@@ -93,7 +93,7 @@ public class GlassBottle extends LiquidContainer implements Craftable {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return null;
 	}
 

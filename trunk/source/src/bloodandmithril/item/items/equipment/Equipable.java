@@ -34,7 +34,7 @@ public abstract class Equipable extends Item implements Affixed {
 
 	/** Renders this {@link Equipable} */
 	public abstract void render(Vector2 position, float angle, boolean flipX);
-
+	
 
 	/**
 	 * @return The animation index where this {@link Equipable} will be rendered immediately before

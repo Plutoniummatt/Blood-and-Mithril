@@ -74,7 +74,7 @@ public class DeathCap extends Food {
 
 
 	@Override
-	protected TextureRegion getTextureRegion() {
+	public TextureRegion getTextureRegion() {
 		return null;
 	}
 

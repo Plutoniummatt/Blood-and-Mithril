@@ -27,10 +27,13 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.item.affix.preaffix.Glowing;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Brick;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
+import bloodandmithril.item.items.material.Bricks;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.material.mineral.Coal;
+import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
@@ -181,7 +184,15 @@ public class DevWindow extends Window {
 							elf.giveItem(Rock.rock(Coal.class));
 						}
 						for (int i = 5; i > 0; i--) {
-							elf.giveItem(new Brick());
+							elf.giveItem(Bricks.bricks(SandStone.class));
+						}
+						for (int i = 5; i > 0; i--) {
+							elf.giveItem(Rock.rock(SandStone.class));
+						}
+						for (int i = 5; i > 0; i--) {
+							Broadsword item = new Broadsword();
+							item.setPreAffix(new Glowing(Color.GREEN));
+							elf.giveItem(item);
 						}
 
 						Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
@@ -281,7 +292,7 @@ public class DevWindow extends Window {
 						() -> {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								Furnace furnace = new Furnace(individual.getState().position.x, individual.getState().position.y);
+								Furnace furnace = new Furnace(SandStone.class, individual.getState().position.x, individual.getState().position.y);
 								furnace.setConstructionProgress(0f);
 								Domain.addProp(furnace, Domain.getActiveWorld().getWorldId());
 							}

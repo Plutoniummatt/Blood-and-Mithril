@@ -233,10 +233,11 @@ public class Domain {
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.pass);
-		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
+		spriteBatch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
 		for (Prop prop : getProps().values()) {
 			if (prop.depth == MIDDLEGROUND) {
+				prop.preRender();
 				prop.render();
 			}
 		}
@@ -247,10 +248,12 @@ public class Domain {
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
 		Domain.individualTexture.setFilter(Linear, Linear);
 		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.pass);
-		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
+		spriteBatch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
+		Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 		for (Prop prop : getProps().values()) {
 			if (prop.depth == FOREGOUND) {
+				prop.preRender();
 				prop.render();
 			}
 		}
