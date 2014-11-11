@@ -8,6 +8,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Countdown;
+import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
@@ -38,6 +39,24 @@ public class ParticleService {
 			}
 		} else {
 			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new BloodSplat(position.cpy(), knockBack));
+		}
+	}
+
+	
+	public static void flameEmber(Vector2 position, Color color, float glow) {
+		if (isClient()) {
+			Domain.getActiveWorld().getParticles().add(new TracerParticle(
+				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
+				new Vector2(Util.getRandom().nextFloat() * 30f, 0f).rotate(Util.getRandom().nextFloat() * 360f),
+				color,
+				1f,
+				Domain.getActiveWorld().getWorldId(),
+				new Countdown(Util.getRandom().nextInt(1000)),
+				glow,
+				MovementMode.EMBER
+			));
+		} else {
+			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), new SerializableColor(color), glow));
 		}
 	}
 
@@ -93,6 +112,25 @@ public class ParticleService {
 		@Override
 		public void run() {
 			ParticleService.bloodSplat(position, knockBack);
+		}
+	}
+	
+	
+	public static class FlameEmber implements Runnable, Serializable {
+		private static final long serialVersionUID = -8479201463865952655L;
+		private Vector2 position;
+		private SerializableColor color;
+		private float glow;
+		
+		public FlameEmber(Vector2 position, SerializableColor color, float glow) {
+			this.position = position;
+			this.color = color;
+			this.glow = glow;
+		}
+		
+		@Override
+		public void run() {
+			ParticleService.flameEmber(position, color.getColor(), glow);
 		}
 	}
 }

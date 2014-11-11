@@ -193,7 +193,7 @@ public class DevWindow extends Window {
 						}
 						for (int i = 1; i > 0; i--) {
 							Broadsword item = new Broadsword();
-							item.setPreAffix(new Glowing(Color.GREEN));
+							item.setPreAffix(new Glowing(Color.PINK));
 							elf.giveItem(item);
 						}
 

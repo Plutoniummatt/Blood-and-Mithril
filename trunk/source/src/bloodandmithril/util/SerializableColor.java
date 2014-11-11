@@ -23,4 +23,9 @@ public class SerializableColor implements Serializable {
 		this.b = color.b;
 		this.a = color.a;
 	}
+	
+	
+	public Color getColor() {
+		return new Color(r, g, b, a);
+	}
 }

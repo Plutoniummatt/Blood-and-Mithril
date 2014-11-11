@@ -72,6 +72,7 @@ import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.ParticleService.BloodSplat;
+import bloodandmithril.graphics.particles.ParticleService.FlameEmber;
 import bloodandmithril.graphics.particles.ParticleService.ParrySpark;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
@@ -410,6 +411,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(FlameEmber.class);
 		kryo.register(IndividualSelected.class);
 		kryo.register(MessageWindowNotification.class);
 		kryo.register(PlantSeed.class);

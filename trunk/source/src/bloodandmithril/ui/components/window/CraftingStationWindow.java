@@ -73,7 +73,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	 * Constructor
 	 */
 	public CraftingStationWindow(int x, int y, String title, Individual individual, CraftingStation craftingStation) {
-		super(x, y, 750, 300, title, true, 750, 300, true, true, true);
+		super(x, y, 800, 300, title, true, 800, 300, true, true, true);
 		this.individual = individual;
 		this.craftingStation = craftingStation;
 

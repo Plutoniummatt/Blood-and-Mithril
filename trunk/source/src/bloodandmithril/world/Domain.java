@@ -36,7 +36,6 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
-import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.ClientServerInterface;
@@ -278,18 +277,18 @@ public class Domain {
 		Domain.shapeRenderer.begin(Line);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
-			for (Particle p : Domain.getActiveWorld().getParticles()) {
+			Domain.getActiveWorld().getParticles().stream().forEach(p -> {
 				Gdx.gl20.glLineWidth(p.radius + 1f);
 				p.renderLine(Gdx.graphics.getDeltaTime());
-			}
+			});
 		}
 		Domain.shapeRenderer.end();
 		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
-			for (Particle p : Domain.getActiveWorld().getParticles()) {
+			Domain.getActiveWorld().getParticles().stream().forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime());
-			}
+			});
 		}
 		Gdx.gl20.glLineWidth(1f);
 		Domain.shapeRenderer.end();
