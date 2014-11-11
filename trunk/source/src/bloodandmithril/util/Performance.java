@@ -9,4 +9,5 @@ import bloodandmithril.core.Copyright;
  */
 @Copyright("Matthew Peck 2014")
 public @interface Performance {
+	String explanation();
 }

@@ -38,6 +38,7 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
@@ -68,7 +69,7 @@ public class Furnace extends CraftingStation implements Container {
 
 	/** The {@link Container} of this {@link Furnace} */
 	private ContainerImpl container;
-	
+
 	/** The {@link Mineral} this {@link Furnace} is made from */
 	private Class<? extends Mineral> material;
 
@@ -157,12 +158,12 @@ public class Furnace extends CraftingStation implements Container {
 					}
 				}
 			}
-			
+
 			Domain.getWorld(getWorldId()).getParticles().add(new TracerParticle(
-				position.cpy().add(0f, height - 38f).add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)), 
-				new Vector2(Util.getRandom().nextFloat() * 30f, 0f).rotate(Util.getRandom().nextFloat() * 360f), 
-				Color.ORANGE, 
-				1f, 
+				position.cpy().add(0f, height - 38f).add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
+				new Vector2(Util.getRandom().nextFloat() * 30f, 0f).rotate(Util.getRandom().nextFloat() * 360f),
+				Color.ORANGE,
+				1f,
 				Domain.getActiveWorld().getWorldId(),
 				new Countdown(Util.getRandom().nextInt(1000)),
 				Util.getRandom().nextFloat() * 15f,
@@ -343,6 +344,10 @@ public class Furnace extends CraftingStation implements Container {
 
 	@Override
 	public void preRender() {
-		Shaders.filter.setUniformf("color", Material.getMaterial(material).getColor());	
+		if (getConstructionProgress() == 0f) {
+			Shaders.filter.setUniformf("color", Colors.modulateAlpha(Material.getMaterial(material).getColor(), 0.90f));
+		} else {
+			Shaders.filter.setUniformf("color", Material.getMaterial(material).getColor());
+		}
 	}
 }

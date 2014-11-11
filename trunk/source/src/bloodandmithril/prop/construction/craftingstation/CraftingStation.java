@@ -24,6 +24,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.CraftingStationWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 import bloodandmithril.world.Domain;
@@ -84,6 +85,9 @@ public abstract class CraftingStation extends Construction {
 
 	@Override
 	protected void internalRender(float constructionProgress) {
+		if (constructionProgress == 0f) {
+			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 0.90f);
+		}
 		spriteBatch.draw(getTextureRegion(), position.x - width / 2, position.y);
 	}
 
