@@ -8,6 +8,7 @@ import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
 import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
+import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.WoodenChest;
@@ -82,6 +83,7 @@ public abstract class Prop implements Serializable {
 	public abstract String getContextMenuItemLabel();
 
 	public static void setup() {
+		Campfire.CAMPFIRE = new TextureRegion(Domain.gameWorldTexture, 554, 176, 64, 32);
 		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 453, 176, 100, 46);
 		Furnace.FURNACE = new TextureRegion(Domain.gameWorldTexture, 453, 223, 100, 46);
 		WoodenChest.woodenChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);

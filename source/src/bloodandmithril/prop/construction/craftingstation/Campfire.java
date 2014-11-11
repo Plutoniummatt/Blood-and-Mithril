@@ -3,9 +3,11 @@ package bloodandmithril.prop.construction.craftingstation;
 import java.util.Map;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.util.Util;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -20,6 +22,8 @@ import com.google.common.collect.Maps;
 public class Campfire extends CraftingStation {
 	private static final long serialVersionUID = -8876217926271589078L;
 	private boolean lit;
+	
+	public static TextureRegion CAMPFIRE;
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
 	static {
@@ -37,7 +41,7 @@ public class Campfire extends CraftingStation {
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return Furnace.FURNACE;
+		return CAMPFIRE;
 	}
 
 
@@ -79,6 +83,17 @@ public class Campfire extends CraftingStation {
 	@Override
 	public boolean customCanCraft() {
 		return lit;
+	}
+	
+	
+	@Override
+	public void update(float delta) {
+		super.update(delta);
+		
+		if (lit) {
+			ParticleService.flameEmber(position.cpy().add(0, 15f), Color.ORANGE, Util.getRandom().nextFloat() * 15f);
+			ParticleService.flameEmber(position.cpy().add(0, 15f), Color.BLACK, 0f);
+		}
 	}
 
 

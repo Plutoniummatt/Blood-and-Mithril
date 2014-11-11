@@ -308,7 +308,7 @@ public abstract class CraftingStation extends Construction {
 
 	public CraftingStationWindow getCraftingStationWindow(Individual individual) {
 		return new CraftingStationWindow(
-			BloodAndMithrilClient.WIDTH/2 - 375,
+			BloodAndMithrilClient.WIDTH/2 - 400,
 			BloodAndMithrilClient.HEIGHT/2 + 150,
 			individual.getId().getFirstName() + " interacting with " + getTitle(),
 			individual,
