@@ -1,9 +1,12 @@
 package bloodandmithril.item.items.food.animal;
 
+import java.util.Map;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
@@ -12,28 +15,39 @@ import bloodandmithril.ui.components.window.MessageWindow;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Maps;
 
 @Copyright("Matthew Peck 2014")
-public class ChickenLeg extends Food {
+public class ChickenLeg extends Food implements Craftable {
 	private static final long serialVersionUID = 327664484386522545L;
+	private boolean cooked;
 
 	/**
 	 * Constructor
 	 */
-	public ChickenLeg() {
-		super(0.25f, 3, false, ItemValues.CHICKENLEG);
+	public ChickenLeg(boolean cooked) {
+		super(0.25f, 3, false, cooked ? ItemValues.CHICKENLEG : ItemValues.COOKEDCHICKENLEG);
+		this.cooked = cooked;
 	}
 
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return firstCap ? "Chicken leg" : "chicken leg";
+		if (cooked) {
+			return firstCap ? "Cooked chicken leg" : "cooked chicken leg";
+		} else {
+			return firstCap ? "Raw chicken leg" : "raw chicken leg";
+		}
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return firstCap ? "Chicken legs" : "chicken legs";
+		if (cooked) {
+			return firstCap ? "Cooked chicken legs" : "cooked chicken legs";
+		} else {
+			return firstCap ? "Raw chicken legs" : "raw chicken legs";
+		}
 	}
 
 
@@ -71,7 +85,7 @@ public class ChickenLeg extends Food {
 	@Override
 	protected boolean internalSameAs(Item other) {
 		if (other instanceof ChickenLeg) {
-			return true;
+			return ((ChickenLeg) other).cooked == this.cooked;
 		}
 		return false;
 	}
@@ -85,7 +99,7 @@ public class ChickenLeg extends Food {
 
 	@Override
 	protected Item internalCopy() {
-		return new ChickenLeg();
+		return new ChickenLeg(cooked);
 	}
 
 
@@ -93,5 +107,25 @@ public class ChickenLeg extends Food {
 	public TextureRegion getIconTextureRegion() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public boolean canBeCraftedBy(Individual individual) {
+		return individual.getSkills().getCookking() >= 5;
+	}
+
+
+	@Override
+	public Map<Item, Integer> getRequiredMaterials() {
+		Map<Item, Integer> map = Maps.newHashMap();
+		map.put(new ChickenLeg(false), 1);
+		return map;
+	}
+
+
+	@Override
+	public float getCraftingDuration() {
+		return 10;
 	}
 }

@@ -37,6 +37,7 @@ import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
+import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.WoodenChest;
@@ -295,6 +296,20 @@ public class DevWindow extends Window {
 								Furnace furnace = new Furnace(SandStone.class, individual.getState().position.x, individual.getState().position.y);
 								furnace.setConstructionProgress(0f);
 								Domain.addProp(furnace, Domain.getActiveWorld().getWorldId());
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					),
+					new ContextMenu.MenuItem(
+						"Campfire",
+						() -> {
+							Individual individual = Domain.getIndividuals().get(1);
+							if (individual != null) {
+								Campfire campfire = new Campfire(individual.getState().position.x, individual.getState().position.y);
+								Domain.addProp(campfire, Domain.getActiveWorld().getWorldId());
 							}
 						},
 						Color.GREEN,

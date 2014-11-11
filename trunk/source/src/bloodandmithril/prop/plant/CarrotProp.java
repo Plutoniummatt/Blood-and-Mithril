@@ -31,7 +31,7 @@ import com.google.common.collect.Lists;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class CarrotProp extends Plant {
+public class CarrotProp extends PlantProp {
 	private static final long serialVersionUID = -4581900482709094877L;
 
 	/** {@link TextureRegion} of the {@link CarrotProp} */

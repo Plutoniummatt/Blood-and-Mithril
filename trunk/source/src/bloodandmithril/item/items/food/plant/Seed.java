@@ -1,10 +1,10 @@
 package bloodandmithril.item.items.food.plant;
 
 import bloodandmithril.item.items.Item;
-import bloodandmithril.prop.plant.Plant;
+import bloodandmithril.prop.plant.PlantProp;
 
 /**
- * A seed, for growing {@link Plant}s
+ * A seed, for growing {@link PlantProp}s
  *
  * @author Matt
  */
