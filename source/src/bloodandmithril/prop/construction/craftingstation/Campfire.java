@@ -5,7 +5,9 @@ import java.util.Map;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
+import bloodandmithril.ui.components.ContextMenu;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
@@ -69,7 +71,34 @@ public class Campfire extends CraftingStation {
 
 
 	@Override
+	public String getCustomMessage() {
+		return "The campfire is not lit.";
+	}
+
+
+	@Override
 	public boolean customCanCraft() {
 		return lit;
+	}
+
+
+	@Override
+	protected ContextMenu getCompletedContextMenu() {
+		ContextMenu superCompletedContextMenu = super.getCompletedContextMenu();
+		final Campfire thisCampfire = this;
+		superCompletedContextMenu.addMenuItem(
+			new ContextMenu.MenuItem(
+				"Ignite",
+				() -> {
+					thisCampfire.lit = true;
+				},
+				Color.WHITE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			)
+		);
+
+		return superCompletedContextMenu;
 	}
 }
