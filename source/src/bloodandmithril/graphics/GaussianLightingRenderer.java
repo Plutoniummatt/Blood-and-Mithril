@@ -15,6 +15,7 @@ import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static java.lang.Math.round;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.TracerParticle;
+import bloodandmithril.util.Performance;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.weather.Weather;
@@ -165,6 +166,7 @@ public class GaussianLightingRenderer {
 	/**
 	 * Handles rendering to the lighting FBO.
 	 */
+	@Performance(explanation = "This method draws a screen sized FBO per particle, surely this can be improved")
 	private static void lighting() {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);

@@ -178,11 +178,13 @@ public class Domain {
 		Shaders.invertAlphaSolidColor.begin();
 		getActiveWorld().getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {});
 		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.pass);
+		spriteBatch.setShader(Shaders.filter);
 		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
 		for (Prop prop : getProps().values()) {
 			if (prop.depth == BACKGROUND) {
+				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.render();
+				spriteBatch.flush();
 			}
 		}
 		spriteBatch.end();
@@ -237,8 +239,10 @@ public class Domain {
 		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
 		for (Prop prop : getProps().values()) {
 			if (prop.depth == MIDDLEGROUND) {
+				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
 				prop.render();
+				spriteBatch.flush();
 			}
 		}
 		spriteBatch.end();
@@ -250,11 +254,12 @@ public class Domain {
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
-		Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 		for (Prop prop : getProps().values()) {
 			if (prop.depth == FOREGOUND) {
+				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
 				prop.render();
+				spriteBatch.flush();
 			}
 		}
 		for (Item item : getItems().values()) {

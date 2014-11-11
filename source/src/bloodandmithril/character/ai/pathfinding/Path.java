@@ -91,8 +91,7 @@ public class Path implements Serializable {
 	/**
 	 * Renders all the waypoint of this {@link Path}
 	 */
-	@Deprecated
-	@Performance
+	@Performance(explanation = "Renders a dot for each waypoint, inefficient if path contains many waypoints")
 	public void render() {
 		LinkedList<WayPoint> waypointsCopy = Lists.newLinkedList(waypoints);
 		Iterator<WayPoint> waypointsIterator = waypointsCopy.iterator();

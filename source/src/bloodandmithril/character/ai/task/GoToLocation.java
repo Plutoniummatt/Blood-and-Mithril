@@ -116,8 +116,7 @@ public class GoToLocation extends AITask {
 	 *
 	 * Use with care, due to the inefficiency of this method, it is deprecated, intended for debugging purposes only
 	 */
-	@Deprecated
-	@Performance
+	@Performance(explanation = "This method draws a dot and a line between each waypoint, rather inefficient if the path is long")
 	public void renderPath() {
 		WayPoint nextPoint = path.getNextPoint();
 
