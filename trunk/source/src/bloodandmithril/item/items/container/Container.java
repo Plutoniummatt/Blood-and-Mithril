@@ -11,6 +11,12 @@ import bloodandmithril.item.items.Item;
  * @author Matt
  */
 public interface Container {
+	
+	
+	/**
+	 * @return whether the container contains anything at all
+	 */
+	public boolean isEmpty();
 
 
 	/**

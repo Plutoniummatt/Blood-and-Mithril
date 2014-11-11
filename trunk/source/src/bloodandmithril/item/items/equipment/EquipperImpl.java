@@ -266,4 +266,10 @@ public class EquipperImpl implements Equipper, Serializable {
 			return equippedRings.size() < maxRings;
 		}
 	}
+
+	
+	@Override
+	public boolean isEmpty() {
+		return containerImpl.isEmpty();
+	}
 }

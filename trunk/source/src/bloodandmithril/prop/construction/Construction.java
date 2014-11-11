@@ -162,8 +162,32 @@ public abstract class Construction extends Prop implements Container {
 					return Domain.getSelectedIndividuals().size() != 1;
 				}
 			);
+			
+			MenuItem cancel = new MenuItem(
+				"Cancel",
+				() -> {
+					if (Domain.getSelectedIndividuals().size() == 1) {
+						Individual selected = Domain.getSelectedIndividuals().iterator().next();
+						if (ClientServerInterface.isServer()) {
+							selected.getAI().setCurrentTask(
+								new TradeWith(selected, this)
+							);
+						} else {
+							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
+						}
+					}
+				},
+				materialContainer.isEmpty() && getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.WHITE,
+				materialContainer.isEmpty() && getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.GREEN,
+				materialContainer.isEmpty() && getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.GRAY,
+				new ContextMenu(0, 0, true, new MenuItem("Construction has already been started", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+				() -> {
+					return !materialContainer.isEmpty() && getConstructionProgress() != 0f;
+				}
+			);
 
 			menu.addMenuItem(openTransferItemsWindow);
+			menu.addMenuItem(cancel);
 			return menu;
 		}
 	}
@@ -351,6 +375,16 @@ public abstract class Construction extends Prop implements Container {
 			return getContainerImpl().lock(with);
 		} else {
 			return false;
+		}
+	}
+	
+	
+	@Override
+	public boolean isEmpty() {
+		if (constructionProgress == 1f) {
+			return getContainerImpl().isEmpty();
+		} else {
+			return materialContainer.isEmpty();
 		}
 	}
 }
