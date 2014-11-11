@@ -312,4 +312,10 @@ public class ContainerImpl implements Container, Serializable {
 
 		return true;
 	}
+
+
+	@Override
+	public boolean isEmpty() {
+		return inventory.isEmpty();
+	}
 }

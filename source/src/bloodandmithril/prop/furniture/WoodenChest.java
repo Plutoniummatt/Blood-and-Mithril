@@ -245,4 +245,10 @@ public class WoodenChest extends Furniture implements Container {
 	@Override
 	public void preRender() {
 	}
+
+
+	@Override
+	public boolean isEmpty() {
+		return container.isEmpty();
+	}
 }

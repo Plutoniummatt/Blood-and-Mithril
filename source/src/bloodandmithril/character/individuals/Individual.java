@@ -1566,6 +1566,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public boolean isLockable() {
 		return false;
 	}
+	
+	
+	@Override
+	public boolean isEmpty() {
+		return equipperImpl.isEmpty();
+	}
 
 
 	@Override
