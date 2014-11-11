@@ -42,6 +42,8 @@ import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Harvest.HarvestItem;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.task.LightCampfire;
+import bloodandmithril.character.ai.task.LightCampfire.LightFire;
 import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.LockUnlockContainer.LockUnlock;
 import bloodandmithril.character.ai.task.MineTile;
@@ -164,6 +166,7 @@ import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse
 import bloodandmithril.networking.requests.RequestClientList;
 import bloodandmithril.networking.requests.RequestClientList.RequestClientListResponse;
 import bloodandmithril.networking.requests.RequestDiscardItem;
+import bloodandmithril.networking.requests.RequestLightCampfire;
 import bloodandmithril.networking.requests.RequestPlantSeed;
 import bloodandmithril.networking.requests.RequestStartCrafting;
 import bloodandmithril.networking.requests.RequestTakeItem;
@@ -193,6 +196,7 @@ import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
+import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
@@ -411,6 +415,10 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(RequestLightCampfire.class);
+		kryo.register(LightFire.class);
+		kryo.register(LightCampfire.class);
+		kryo.register(Campfire.class);
 		kryo.register(FlameEmber.class);
 		kryo.register(IndividualSelected.class);
 		kryo.register(MessageWindowNotification.class);
@@ -653,6 +661,12 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendRequest {
+		public static synchronized void sendLightCampfireRequest(Individual host, Campfire campfire) {
+			client.sendTCP(new RequestLightCampfire(host, campfire));
+			Logger.networkDebug("Sending light campfire request", LogLevel.DEBUG);
+		}
+
+
 		public static synchronized void sendPlantSeedRequest(Individual planter, SeedProp toPlant) {
 			client.sendTCP(new RequestPlantSeed(planter, toPlant));
 			Logger.networkDebug("Sending seed planting request", LogLevel.DEBUG);

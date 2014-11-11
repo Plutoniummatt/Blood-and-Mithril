@@ -2,12 +2,18 @@ package bloodandmithril.prop.construction.craftingstation;
 
 import java.util.Map;
 
+import bloodandmithril.character.ai.task.LightCampfire;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -22,7 +28,7 @@ import com.google.common.collect.Maps;
 public class Campfire extends CraftingStation {
 	private static final long serialVersionUID = -8876217926271589078L;
 	private boolean lit;
-	
+
 	public static TextureRegion CAMPFIRE;
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
@@ -84,14 +90,19 @@ public class Campfire extends CraftingStation {
 	public boolean customCanCraft() {
 		return lit;
 	}
-	
-	
+
+
+	public void setLit(boolean lit) {
+		this.lit = lit;
+	}
+
+
 	@Override
 	public void update(float delta) {
 		super.update(delta);
-		
+
 		if (lit) {
-			ParticleService.flameEmber(position.cpy().add(0, 15f), Color.ORANGE, Util.getRandom().nextFloat() * 15f);
+			ParticleService.flameEmber(position.cpy().add(0, 15f), Color.ORANGE, Util.getRandom().nextFloat() * 8f);
 			ParticleService.flameEmber(position.cpy().add(0, 15f), Color.BLACK, 0f);
 		}
 	}
@@ -101,18 +112,43 @@ public class Campfire extends CraftingStation {
 	protected ContextMenu getCompletedContextMenu() {
 		ContextMenu superCompletedContextMenu = super.getCompletedContextMenu();
 		final Campfire thisCampfire = this;
-		superCompletedContextMenu.addMenuItem(
-			new ContextMenu.MenuItem(
-				"Ignite",
-				() -> {
-					thisCampfire.lit = true;
-				},
-				Color.WHITE,
-				Color.GREEN,
-				Color.GRAY,
-				null
-			)
+
+		MenuItem ignite = new MenuItem(
+			"Ignite",
+			() -> {
+				if (Domain.getSelectedIndividuals().size() > 1) {
+					return;
+				}
+
+				Individual selected = Domain.getSelectedIndividuals().iterator().next();
+				if (ClientServerInterface.isServer()) {
+					selected.getAI().setCurrentTask(new LightCampfire(selected, thisCampfire));
+				} else {
+					ClientServerInterface.SendRequest.sendLightCampfireRequest(selected, thisCampfire);
+				}
+			},
+			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.WHITE,
+			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GREEN,
+			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GRAY,
+			new ContextMenu(0, 0,
+				true,
+				new MenuItem(
+					"You have multiple individuals selected",
+					() -> {},
+					Colors.UI_GRAY,
+					Colors.UI_GRAY,
+					Colors.UI_GRAY,
+					null
+				)
+			),
+			() -> {
+				return Domain.getSelectedIndividuals().size() > 1;
+			}
 		);
+
+		if (Domain.getSelectedIndividuals().size() == 1) {
+			superCompletedContextMenu.addMenuItem(ignite);
+		}
 
 		return superCompletedContextMenu;
 	}
