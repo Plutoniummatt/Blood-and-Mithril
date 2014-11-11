@@ -162,20 +162,20 @@ public abstract class Construction extends Prop implements Container {
 					return Domain.getSelectedIndividuals().size() != 1;
 				}
 			);
-			
+
 			MenuItem cancel = new MenuItem(
 				"Cancel",
 				() -> {
-					if (materialContainer.isEmpty() && getConstructionProgress() != 0f) {
+					if (getConstructionProgress() == 0f) {
 						Domain.removeProp(id);
 					}
 				},
-				materialContainer.isEmpty() && getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.WHITE,
-				materialContainer.isEmpty() && getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.GREEN,
-				materialContainer.isEmpty() && getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.GRAY,
+				getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.WHITE,
+				getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.GREEN,
+				getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.GRAY,
 				new ContextMenu(0, 0, true, new MenuItem("Construction has already been started", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
 				() -> {
-					return !materialContainer.isEmpty() && getConstructionProgress() != 0f;
+					return getConstructionProgress() != 0f;
 				}
 			);
 
@@ -370,8 +370,8 @@ public abstract class Construction extends Prop implements Container {
 			return false;
 		}
 	}
-	
-	
+
+
 	@Override
 	public boolean isEmpty() {
 		if (constructionProgress == 1f) {
