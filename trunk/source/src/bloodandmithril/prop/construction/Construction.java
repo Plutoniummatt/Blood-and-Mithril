@@ -166,15 +166,8 @@ public abstract class Construction extends Prop implements Container {
 			MenuItem cancel = new MenuItem(
 				"Cancel",
 				() -> {
-					if (Domain.getSelectedIndividuals().size() == 1) {
-						Individual selected = Domain.getSelectedIndividuals().iterator().next();
-						if (ClientServerInterface.isServer()) {
-							selected.getAI().setCurrentTask(
-								new TradeWith(selected, this)
-							);
-						} else {
-							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
-						}
+					if (materialContainer.isEmpty() && getConstructionProgress() != 0f) {
+						Domain.removeProp(id);
 					}
 				},
 				materialContainer.isEmpty() && getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.WHITE,
