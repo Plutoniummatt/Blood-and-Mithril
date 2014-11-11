@@ -2,12 +2,19 @@ package bloodandmithril.prop.construction.craftingstation;
 
 import java.util.Map;
 
+import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
+/**
+ * A campfire, provides light, warm, and something to cook with.
+ *
+ * @author Matt
+ */
+@Copyright("Matthew Peck 2014")
 public class Campfire extends CraftingStation {
 	private static final long serialVersionUID = -8876217926271589078L;
 	private boolean lit;
