@@ -12,6 +12,11 @@ public class Campfire extends CraftingStation {
 	private static final long serialVersionUID = -8876217926271589078L;
 	private boolean lit;
 
+	private static final Map<Item, Integer> craftables = Maps.newHashMap();
+	static {
+		craftables.put(new ChickenLeg(true), 1);
+	}
+
 	/**
 	 * Constructor
 	 */
@@ -35,9 +40,7 @@ public class Campfire extends CraftingStation {
 
 	@Override
 	public Map<Item, Integer> getCraftables() {
-		Map<Item, Integer> map = Maps.newHashMap();
-		map.put(new ChickenLeg(true), 1);
-		return map;
+		return craftables;
 	}
 
 
