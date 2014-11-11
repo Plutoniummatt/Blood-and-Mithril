@@ -30,6 +30,7 @@ import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.affix.preaffix.Glowing;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
+import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.material.Bricks;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.material.mineral.Coal;
@@ -188,9 +189,9 @@ public class DevWindow extends Window {
 							elf.giveItem(Bricks.bricks(SandStone.class));
 						}
 						for (int i = 5; i > 0; i--) {
-							elf.giveItem(Rock.rock(SandStone.class));
+							elf.giveItem(new ChickenLeg(false));
 						}
-						for (int i = 5; i > 0; i--) {
+						for (int i = 1; i > 0; i--) {
 							Broadsword item = new Broadsword();
 							item.setPreAffix(new Glowing(Color.GREEN));
 							elf.giveItem(item);
