@@ -15,6 +15,7 @@ public class ItemValues {
 	public static final int CARROT = 25;
 	public static final int CARROT_SEED = 5;
 	public static final int CHICKENLEG = 150;
+	public static final int COOKEDCHICKENLEG = 250;
 	public static final int COAL = 200;
 	public static final int SANDSTONE = 30;
 	public static final int SANDSTONESLAB = 50;

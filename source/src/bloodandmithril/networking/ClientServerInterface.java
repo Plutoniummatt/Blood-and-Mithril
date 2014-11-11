@@ -197,7 +197,7 @@ import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.Furniture;
 import bloodandmithril.prop.furniture.WoodenChest;
-import bloodandmithril.prop.plant.Plant;
+import bloodandmithril.prop.plant.PlantProp;
 import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.ui.UserInterface.FloatingText;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
@@ -573,7 +573,7 @@ public class ClientServerInterface {
 		kryo.register(Path.class);
 		kryo.register(Pine.class);
 		kryo.register(Ping.class);
-		kryo.register(Plant.class);
+		kryo.register(PlantProp.class);
 		kryo.register(Poison.class);
 		kryo.register(Pong.class);
 		kryo.register(RefreshFactionWindow.class);

@@ -22,6 +22,7 @@ public class Skills implements Serializable {
 	private int carpentry = 0;				// Carpentry
 	private int masonry = 0;				// Masonry
 	private int glassworking = 0;			// Glassworking
+	private int cookking = 0;				// Cooking
 
 	/**
 	 * Constructor
@@ -81,5 +82,13 @@ public class Skills implements Serializable {
 
 	public void setGlassworking(int glassworking) {
 		this.glassworking = glassworking;
+	}
+
+	public int getCookking() {
+		return cookking;
+	}
+
+	public void setCookking(int cookking) {
+		this.cookking = cookking;
 	}
 }
