@@ -1153,14 +1153,12 @@ public class UserInterface {
 	}
 
 
-	@SuppressWarnings("rawtypes")
-	public static void addMessage(String title, String message, SerializableFunction function) {
+	public static void addMessage(String title, String message, SerializableFunction<Boolean> function) {
 		addMessage(title, message, -1, function);
 	}
 
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static void addMessage(String title, String message, int client, SerializableFunction function) {
+	public static void addMessage(String title, String message, int client, SerializableFunction<Boolean> function) {
 		if (ClientServerInterface.isClient()) {
 			addLayeredComponent(
 				new MessageWindow(
