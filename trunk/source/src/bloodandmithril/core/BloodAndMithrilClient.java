@@ -51,6 +51,7 @@ import com.google.common.collect.Sets;
  * To-do before ALPHA release
  *
  * <b><p> At least 5 types of NPC                                                                        </b></p>
+ * <b><p> Ranged Combat 																                 </b></p>
  *
  * IN PROGRESS
  *

@@ -264,7 +264,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 	@Override
 	protected void internalWindowRender() {
-		if (individual.getState().position.cpy().sub(craftingStation.position).len() > 64f) {
+		if (individual.getState().position.cpy().sub(craftingStation.position).len() > 96f) {
 			setClosing(true);
 		}
 
