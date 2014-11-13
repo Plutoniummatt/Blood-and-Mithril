@@ -29,7 +29,7 @@ public abstract class Misc extends Item {
 
 
 	@Override
-	public String getType() {
-		return "Miscellaneous";
+	public Category getType() {
+		return Category.MISC;
 	}
 }

@@ -47,7 +47,7 @@ public abstract class Key extends Item {
 	 * @return the description of the item type
 	 */
 	@Override
-	public String getType() {
-		return "Key";
+	public Category getType() {
+		return Category.KEY;
 	}
 }

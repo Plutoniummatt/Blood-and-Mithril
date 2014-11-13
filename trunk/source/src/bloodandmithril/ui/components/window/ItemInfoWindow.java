@@ -87,7 +87,7 @@ public class ItemInfoWindow extends Window {
 	@SuppressWarnings("rawtypes")
 	private void renderBasicStats() {
 		defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, getAlpha() * (isActive() ? 1f : 0.6f)));
-		defaultFont.draw(spriteBatch, "Type: " + item.getType(), x + 10, y - 33);
+		defaultFont.draw(spriteBatch, "Type: " + item.getType().getValue(), x + 10, y - 33);
 		defaultFont.draw(spriteBatch, "Mass: " + item.getMass() + "kg", x + 10, y - 53);
 		defaultFont.draw(spriteBatch, "Value: " + item.getValue(), x + 10, y - 73);
 

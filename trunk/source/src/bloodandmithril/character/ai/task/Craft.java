@@ -61,7 +61,7 @@ public class Craft extends CompositeAITask {
 	public class Crafting extends AITask {
 		private static final long serialVersionUID = 7987930854206245256L;
 		private int craftingStationId;
-		private boolean occupied;
+		private boolean occupied, stop;
 
 		/**
 		 * Constructor
@@ -80,7 +80,7 @@ public class Craft extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return occupied || quantity == 0;
+			return occupied || quantity == 0 || stop;
 		}
 
 
@@ -94,6 +94,11 @@ public class Craft extends CompositeAITask {
 		public void execute(float delta) {
 			CraftingStation craftingStation = (CraftingStation) Domain.getProp(craftingStationId);
 			Individual individual = Domain.getIndividual(hostId.getId());
+
+			if (individual == null || craftingStation == null) {
+				stop = true;
+				return;
+			}
 
 			if (!craftingStation.craft(item, individual, delta)) {
 				occupied = true;

@@ -22,7 +22,7 @@ public abstract class Food extends Item implements Consumable {
 
 
 	@Override
-	public String getType() {
-		return "Food";
+	public Category getType() {
+		return Category.FOOD;
 	}
 }

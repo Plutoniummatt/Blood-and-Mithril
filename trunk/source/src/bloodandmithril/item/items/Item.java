@@ -286,7 +286,7 @@ public abstract class Item implements Serializable, Affixed {
 		Steel.STEELINGOTICON = new TextureRegion(UserInterface.iconTexture, 130, 0, 64, 64);
 		Copper.COPPERINGOTICON = new TextureRegion(UserInterface.iconTexture, 195, 0, 64, 64);
 		Gold.GOLDINGOTICON = new TextureRegion(UserInterface.iconTexture, 260, 0, 64, 64);
-		
+
 		Bricks.BRICKS = new TextureRegion(Domain.gameWorldTexture, 392, 253, 25, 11);
 		Dirt.DIRT_PILE = new TextureRegion(Domain.gameWorldTexture, 392, 265, 20, 11);
 	}
@@ -309,7 +309,7 @@ public abstract class Item implements Serializable, Affixed {
 		if (getId() == null) {
 			return;
 		}
-		
+
 		if (!Domain.getWorld(getWorldId()).getTopography().getChunkMap().doesChunkExist(position)) {
 			return;
 		}
@@ -378,14 +378,14 @@ public abstract class Item implements Serializable, Affixed {
 			preAffix.itemEffects(this);
 		}
 	}
-	
-	
+
+
 	public void affixEffects(Individual individual) {
 		if (preAffix != null) {
 			preAffix.itemEffects(individual, this);
 		}
 	}
-	
+
 
 	public void updatePositionalIndex() {
 		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
@@ -527,7 +527,7 @@ public abstract class Item implements Serializable, Affixed {
 	/**
 	 * @return the description of the item type
 	 */
-	public abstract String getType();
+	public abstract Category getType();
 
 	@Override
 	public String modifyName(String original) {
@@ -548,5 +548,32 @@ public abstract class Item implements Serializable, Affixed {
 
 	public void setVolume(int volume) {
 		this.volume = volume;
+	}
+
+
+	public enum Category {
+		ONEHANDEDSWORD("One-handed sword"),
+		DAGGER("Dagger"),
+		EARTH("Earth"),
+		FOOD("Food"),
+		KEY("Key"),
+		FURNITURE("Furniture"),
+		CONTAINER("Container"),
+		ONEHANDEDAXE("One-handed axe"),
+		ONEHANDEDSPEAR("One-handed spear"),
+		MISC("Miscellaneous"),
+		MATERIAL("Material"),
+		PICKAXE("Pickaxe"),
+		RING("Ring"),
+		SEED("Seed");
+
+		private String value;
+		private Category(String value) {
+			this.value = value;
+		}
+
+		public String getValue() {
+			return value;
+		}
 	}
 }

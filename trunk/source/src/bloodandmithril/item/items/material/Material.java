@@ -29,7 +29,7 @@ public abstract class Material extends Item {
 
 
 	@Override
-	public String getType() {
-		return "Material";
+	public Category getType() {
+		return Category.MATERIAL;
 	}
 }

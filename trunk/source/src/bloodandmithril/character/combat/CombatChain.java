@@ -68,7 +68,7 @@ public class CombatChain {
 						true
 					);
 				}
-				ParticleService.parrySpark(target.getState().position, knockbackVector);
+				ParticleService.parrySpark(target.getState().position.cpy().add(0, 50), knockbackVector);
 			}
 		} else {
 			knockbackVector.mul(0.1f);
@@ -104,7 +104,7 @@ public class CombatChain {
 		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance())) {
 			Sets.newHashSet(target.getEquipped().keySet()).stream().forEach(item -> {
 				target.unequip((Equipable) item);
-				ContainerImpl.discard(target, item, 1, ()-> { 
+				ContainerImpl.discard(target, item, 1, ()-> {
 					return disarmVector.cpy();
 				});
 			});
@@ -152,7 +152,7 @@ public class CombatChain {
 				if (item instanceof Weapon) {
 					target.unequip((Equipable) item);
 					ContainerImpl.discard(target, item, 1, () -> {
-						return disarmVector.cpy();	
+						return disarmVector.cpy();
 					});
 				}
 			});

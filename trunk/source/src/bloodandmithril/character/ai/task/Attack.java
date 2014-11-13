@@ -107,7 +107,7 @@ public class Attack extends CompositeAITask {
 	private Individual getAlive() {
 		for (Integer id : toBeAttacked) {
 			Individual individual = Domain.getIndividual(id);
-			if (individual.getState().health > 0f) {
+			if (individual != null && individual.getState().health > 0f) {
 				return individual;
 			}
 		}

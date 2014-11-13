@@ -29,6 +29,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.affix.preaffix.Glowing;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.material.Bricks;
@@ -199,6 +200,7 @@ public class DevWindow extends Window {
 							item.setPreAffix(new Glowing(Color.PINK));
 							elf.giveItem(item);
 						}
+						elf.giveItem(new FlintAndFiresteel());
 
 						Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
 					},
