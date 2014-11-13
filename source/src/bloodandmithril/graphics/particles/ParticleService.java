@@ -42,7 +42,7 @@ public class ParticleService {
 		}
 	}
 
-	
+
 	public static void flameEmber(Vector2 position, Color color, float glow) {
 		if (isClient()) {
 			Domain.getActiveWorld().getParticles().add(new TracerParticle(
@@ -66,14 +66,14 @@ public class ParticleService {
 		if (isClient()) {
 			for (int i = 0; i < 35; i++) {
 				Domain.getActiveWorld().getParticles().add(new TracerParticle(
-					position.cpy().add(0, 50f),
+					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).mul(2f),
 					Color.WHITE,
 					1f,
 					Domain.getActiveWorld().getWorldId(),
 					new Countdown(Util.getRandom().nextInt(100)),
 					5f,
-					MovementMode.EMBER
+					MovementMode.GRAVITY
 				));
 			}
 		} else {
@@ -114,20 +114,20 @@ public class ParticleService {
 			ParticleService.bloodSplat(position, knockBack);
 		}
 	}
-	
-	
+
+
 	public static class FlameEmber implements Runnable, Serializable {
 		private static final long serialVersionUID = -8479201463865952655L;
 		private Vector2 position;
 		private SerializableColor color;
 		private float glow;
-		
+
 		public FlameEmber(Vector2 position, SerializableColor color, float glow) {
 			this.position = position;
 			this.color = color;
 			this.glow = glow;
 		}
-		
+
 		@Override
 		public void run() {
 			ParticleService.flameEmber(position, color.getColor(), glow);

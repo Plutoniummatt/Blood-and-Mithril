@@ -188,7 +188,7 @@ public abstract class Pickaxe<T extends Metal> extends TwoHandedMeleeWeapon<T> i
 
 
 	@Override
-	public String getType() {
-		return "Pickaxe";
+	public Category getType() {
+		return Category.PICKAXE;
 	}
 }

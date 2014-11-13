@@ -26,8 +26,8 @@ public abstract class Seed extends Item {
 
 
 	@Override
-	public String getType() {
-		return "Seed";
+	public Category getType() {
+		return Category.SEED;
 	}
 
 

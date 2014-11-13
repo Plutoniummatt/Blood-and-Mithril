@@ -40,6 +40,7 @@ public class Construct extends CompositeAITask {
 	public static class Constructing extends AITask {
 		private static final long serialVersionUID = -6557725570349017304L;
 		private int constructionId;
+		private boolean stop;
 
 		/**
 		 * Constructor
@@ -58,7 +59,7 @@ public class Construct extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return ((Construction) Domain.getProp(constructionId)).getConstructionProgress() == 1f;
+			return ((Construction) Domain.getProp(constructionId)).getConstructionProgress() == 1f || stop;
 		}
 
 
@@ -71,7 +72,11 @@ public class Construct extends CompositeAITask {
 		@Override
 		public void execute(float delta) {
 			Construction construction = (Construction) Domain.getProp(constructionId);
-			construction.construct(Domain.getIndividual(hostId.getId()), delta);
+			if (construction != null) {
+				construction.construct(Domain.getIndividual(hostId.getId()), delta);
+			} else {
+				stop = true;
+			}
 		}
 	}
 }

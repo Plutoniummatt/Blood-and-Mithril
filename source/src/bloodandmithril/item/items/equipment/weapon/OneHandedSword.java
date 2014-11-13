@@ -200,8 +200,8 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 
 
 	@Override
-	public String getType() {
-		return "One-handed sword";
+	public Category getType() {
+		return Category.ONEHANDEDSWORD;
 	}
 
 

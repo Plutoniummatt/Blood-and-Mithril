@@ -22,7 +22,7 @@ public abstract class Furniture extends Item {
 
 
 	@Override
-	public String getType() {
-		return "Furniture";
+	public Category getType() {
+		return Category.FURNITURE;
 	}
 }

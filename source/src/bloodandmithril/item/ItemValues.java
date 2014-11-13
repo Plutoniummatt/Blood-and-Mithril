@@ -22,6 +22,7 @@ public class ItemValues {
 	public static final int COOKEDCARROT = 100;
 	public static final int DEATHCAP = 250;
 	public static final int FELBERRIES = 150;
+	public static final int FLINTANDFIRESTEEL = 5000;
 	public static final int CARROTSEED = 5;
 	public static final int YELLOWBRICK = 10;
 	public static final int YELLOWSAND = 5;

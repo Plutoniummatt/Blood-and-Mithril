@@ -21,7 +21,7 @@ public abstract class Earth extends Mineral {
 
 
 	@Override
-	public String getType() {
-		return "Earth";
+	public Category getType() {
+		return Category.EARTH;
 	}
 }
