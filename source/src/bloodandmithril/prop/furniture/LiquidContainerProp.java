@@ -5,10 +5,11 @@ import java.util.Map;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.liquid.Liquid;
-import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.window.TransferLiquidsWindow;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
@@ -22,7 +23,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public abstract class LiquidContainerProp extends Furniture {
 	private static final long serialVersionUID = 5555138707601557563L;
-	private LiquidContainer container;
+	private final LiquidContainer container;
 
 	/**
 	 * Constructor
@@ -36,6 +37,7 @@ public abstract class LiquidContainerProp extends Furniture {
 	@Override
 	public ContextMenu getContextMenu() {
 		ContextMenu menu = new ContextMenu(0, 0, true);
+		final LiquidContainerProp prop = this;
 
 		MenuItem openContainer = new MenuItem(
 			"Transfer liquids",
@@ -44,9 +46,9 @@ public abstract class LiquidContainerProp extends Furniture {
 					return;
 				} else {
 					Individual selected = Domain.getSelectedIndividuals().iterator().next();
-					if (ClientServerInterface.isServer()) {
-					} else {
-					}
+					UserInterface.addLayeredComponentUnique(
+						new TransferLiquidsWindow(selected, prop)
+					);
 				}
 			},
 			Domain.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
@@ -60,6 +62,11 @@ public abstract class LiquidContainerProp extends Furniture {
 
 		menu.addMenuItem(openContainer);
 		return menu;
+	}
+
+
+	public LiquidContainer getContainer() {
+		return container;
 	}
 
 
