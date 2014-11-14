@@ -3,6 +3,7 @@ package bloodandmithril.prop.furniture;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
@@ -12,6 +13,7 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * A {@link Prop} that represents a container of liquids
@@ -20,16 +22,14 @@ import com.badlogic.gdx.graphics.Color;
  */
 public abstract class LiquidContainerProp extends Furniture {
 	private static final long serialVersionUID = 5555138707601557563L;
-
-	protected Map<Class<? extends Liquid>, Float> containedLiquids;
-	protected final float maxAmount;
+	private LiquidContainer container;
 
 	/**
 	 * Constructor
 	 */
-	protected LiquidContainerProp(float x, float y, int width, int height, boolean grounded, boolean snapToGrid, float maxAmount) {
+	protected LiquidContainerProp(float x, float y, int width, int height, boolean grounded, boolean snapToGrid, float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids) {
 		super(x, y, width, height, grounded, false);
-		this.maxAmount = maxAmount;
+		this.container = new PropLiquidContainer(maxAmount, containedLiquids);
 	}
 
 
@@ -45,9 +45,7 @@ public abstract class LiquidContainerProp extends Furniture {
 				} else {
 					Individual selected = Domain.getSelectedIndividuals().iterator().next();
 					if (ClientServerInterface.isServer()) {
-
 					} else {
-
 					}
 				}
 			},
@@ -62,5 +60,66 @@ public abstract class LiquidContainerProp extends Furniture {
 
 		menu.addMenuItem(openContainer);
 		return menu;
+	}
+
+
+	/**
+	 * This should only be used for {@link LiquidContainerProp}s
+	 *
+	 * @author Matt
+	 */
+	public static class PropLiquidContainer extends LiquidContainer {
+		private static final long serialVersionUID = 5157248940455259595L;
+
+		public PropLiquidContainer(float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids) {
+			super(0f, 0, maxAmount, containedLiquids, 0);
+		}
+
+
+		@Override
+		protected LiquidContainer copyContainer() {
+			throw new RuntimeException("This should not be called");
+		}
+
+
+		@Override
+		protected String getCotainerTitle() {
+			throw new RuntimeException("This should not be called");
+		}
+
+		@Override
+		public LiquidContainer clone() {
+			throw new RuntimeException("This should not be called");
+		}
+
+
+		@Override
+		protected String internalGetSingular(boolean firstCap) {
+			throw new RuntimeException("This should not be called");
+		}
+
+
+		@Override
+		protected String internalGetPlural(boolean firstCap) {
+			throw new RuntimeException("This should not be called");
+		}
+
+
+		@Override
+		public String getDescription() {
+			throw new RuntimeException("This should not be called");
+		}
+
+
+		@Override
+		public TextureRegion getTextureRegion() {
+			throw new RuntimeException("This should not be called");
+		}
+
+
+		@Override
+		public TextureRegion getIconTextureRegion() {
+			throw new RuntimeException("This should not be called");
+		}
 	}
 }

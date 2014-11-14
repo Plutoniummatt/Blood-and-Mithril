@@ -89,6 +89,7 @@ import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.RingFunction;
+import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.item.items.equipment.weapon.OneHandedAxe;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
@@ -415,6 +416,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(FlintAndFiresteel.class);
 		kryo.register(RequestLightCampfire.class);
 		kryo.register(LightFire.class);
 		kryo.register(LightCampfire.class);
