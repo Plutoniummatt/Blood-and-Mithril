@@ -10,6 +10,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.liquid.Liquid;
+import bloodandmithril.prop.furniture.LiquidContainerProp.PropLiquidContainer;
 import bloodandmithril.ui.components.window.ItemInfoWindow;
 import bloodandmithril.ui.components.window.Window;
 
@@ -236,6 +237,25 @@ public abstract class LiquidContainer extends Item {
 			newContainer.add(remainder);
 		}
 		individual.giveItem(newContainer);
+		individual.giveItem(to);
+	}
+
+
+	public static void transfer(Individual individual, PropLiquidContainer from, LiquidContainer to, float amount) {
+		individual.takeItem(to);
+		if (amount >= 0f) {
+			Map<Class<? extends Liquid>, Float> subtracted = from.subtract(amount);
+			Map<Class<? extends Liquid>, Float> remainder = to.add(subtracted);
+			if (!remainder.isEmpty()) {
+				from.add(remainder);
+			}
+		} else {
+			Map<Class<? extends Liquid>, Float> subtracted = to.subtract(amount);
+			Map<Class<? extends Liquid>, Float> remainder = from.add(subtracted);
+			if (!remainder.isEmpty()) {
+				to.add(remainder);
+			}
+		}
 		individual.giveItem(to);
 	}
 
