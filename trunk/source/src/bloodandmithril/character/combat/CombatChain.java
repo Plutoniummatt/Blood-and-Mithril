@@ -68,7 +68,7 @@ public class CombatChain {
 						true
 					);
 				}
-				ParticleService.parrySpark(target.getState().position.cpy().add(0, 50), knockbackVector);
+				ParticleService.parrySpark(target.getEmissionPosition(), knockbackVector);
 			}
 		} else {
 			knockbackVector.mul(0.1f);
@@ -82,7 +82,7 @@ public class CombatChain {
 						true
 					);
 				}
-				ParticleService.bloodSplat(target.getState().position, knockbackVector);
+				ParticleService.bloodSplat(target.getEmissionPosition(), knockbackVector);
 			}
 		}
 

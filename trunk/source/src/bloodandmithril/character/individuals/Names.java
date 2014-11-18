@@ -35,6 +35,12 @@ public class Names {
 	private static Random random = new Random();
 
 	private static boolean setup = false;
+	
+	public static IndividualIdentifier getUnknownNatureIdentifier(boolean female, int age) {
+		setup();
+		return new IndividualIdentifier("?", "", new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), WorldState.getCurrentEpoch().year - age));
+	}
+	
 
 	public static IndividualIdentifier getRandomElfIdentifier(boolean female, int age) {
 		setup();

@@ -20,7 +20,7 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
-import bloodandmithril.character.ai.implementations.BoarAI;
+import bloodandmithril.character.ai.implementations.HareAI;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -475,7 +475,7 @@ public class ClientServerInterface {
 		kryo.register(Ashes.class);
 		kryo.register(Bleeding.class);
 		kryo.register(Blood.class);
-		kryo.register(BoarAI.class);
+		kryo.register(HareAI.class);
 		kryo.register(Box.class);
 		kryo.register(Bricks.class);
 		kryo.register(BrickTile.class);
