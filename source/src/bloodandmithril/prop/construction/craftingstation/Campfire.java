@@ -5,6 +5,7 @@ import java.util.Map;
 import bloodandmithril.character.ai.task.LightCampfire;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
@@ -102,8 +103,8 @@ public class Campfire extends CraftingStation {
 		super.update(delta);
 
 		if (lit) {
-			ParticleService.flameEmber(position.cpy().add(0, 15f), Color.ORANGE, Util.getRandom().nextFloat() * 8f);
-			ParticleService.flameEmber(position.cpy().add(0, 15f), Color.BLACK, 0f);
+			ParticleService.randomVelocity(position.cpy().add(0, 15f), Color.ORANGE, Util.getRandom().nextFloat() * 8f, MovementMode.EMBER);
+			ParticleService.randomVelocity(position.cpy().add(0, 15f), Color.BLACK, 0f, MovementMode.EMBER);
 		}
 	}
 

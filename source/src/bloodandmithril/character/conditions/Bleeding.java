@@ -3,8 +3,8 @@ package bloodandmithril.character.conditions;
 import static bloodandmithril.util.Util.getRandom;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
+import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
@@ -42,7 +42,8 @@ public class Bleeding extends Condition {
 					affected.getWorldId(),
 					new Countdown(Util.getRandom().nextInt(1000)),
 					0f,
-					MovementMode.GRAVITY
+					MovementMode.GRAVITY,
+					false
 				)
 			);
 		}

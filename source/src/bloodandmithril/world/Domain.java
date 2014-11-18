@@ -262,22 +262,29 @@ public class Domain {
 			}
 		}
 		for (Item item : getItems().values()) {
+			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			item.render();
+			spriteBatch.flush();
 		}
 		spriteBatch.end();
 		Domain.individualTexture.setFilter(Nearest, Nearest);
+		backgroundParticles();
 		IndividualPlatformFilteringRenderer.renderIndividuals();
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
+		foregroundParticles();
+		fBuffer.end();
 
+		GaussianLightingRenderer.render(camX, camY);
+	}
+
+
+	private void backgroundParticles() {
 		gl20.glEnable(GL20.GL_BLEND);
-		shapeRenderer.begin(ShapeType.FilledRectangle);
-		shapeRenderer.setProjectionMatrix(cam.combined);
-
-		shapeRenderer.end();
 		Domain.shapeRenderer.begin(Line);
+		shapeRenderer.setProjectionMatrix(cam.combined);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
-			Domain.getActiveWorld().getParticles().stream().forEach(p -> {
+			Domain.getActiveWorld().getParticles().stream().filter(p -> p.background).forEach(p -> {
 				Gdx.gl20.glLineWidth(p.radius + 1f);
 				p.renderLine(Gdx.graphics.getDeltaTime());
 			});
@@ -286,16 +293,38 @@ public class Domain {
 		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
-			Domain.getActiveWorld().getParticles().stream().forEach(p -> {
+			Domain.getActiveWorld().getParticles().stream().filter(p -> p.background).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime());
 			});
 		}
 		Gdx.gl20.glLineWidth(1f);
 		Domain.shapeRenderer.end();
 		gl20.glDisable(GL20.GL_BLEND);
-		fBuffer.end();
+	}
 
-		GaussianLightingRenderer.render(camX, camY);
+
+	private void foregroundParticles() {
+		gl20.glEnable(GL20.GL_BLEND);
+		Domain.shapeRenderer.begin(Line);
+		shapeRenderer.setProjectionMatrix(cam.combined);
+		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
+		if (Domain.getActiveWorld().getParticles() != null) {
+			Domain.getActiveWorld().getParticles().stream().filter(p -> !p.background).forEach(p -> {
+				Gdx.gl20.glLineWidth(p.radius + 1f);
+				p.renderLine(Gdx.graphics.getDeltaTime());
+			});
+		}
+		Domain.shapeRenderer.end();
+		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
+		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
+		if (Domain.getActiveWorld().getParticles() != null) {
+			Domain.getActiveWorld().getParticles().stream().filter(p -> !p.background).forEach(p -> {
+				p.render(Gdx.graphics.getDeltaTime());
+			});
+		}
+		Gdx.gl20.glLineWidth(1f);
+		Domain.shapeRenderer.end();
+		gl20.glDisable(GL20.GL_BLEND);
 	}
 
 

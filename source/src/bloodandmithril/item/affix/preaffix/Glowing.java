@@ -38,13 +38,14 @@ public class Glowing extends PreAffix {
 	public void itemEffects(Item item) {
 		Domain.getWorld(item.getWorldId()).getParticles().add(new TracerParticle(
 			item.getPosition().cpy().add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)), 
-			new Vector2(Util.getRandom().nextFloat() * 30f, 0f).rotate(Util.getRandom().nextFloat() * 360f), 
+			new Vector2(Util.getRandom().nextFloat() * 60f, 0f).rotate(Util.getRandom().nextFloat() * 360f), 
 			color, 
 			1f, 
 			Domain.getActiveWorld().getWorldId(),
 			new Countdown(Util.getRandom().nextInt(1000)),
 			Util.getRandom().nextFloat() * 15f,
-			MovementMode.EMBER
+			MovementMode.WEIGHTLESS,
+			false
 		));
 	}
 	
@@ -54,13 +55,14 @@ public class Glowing extends PreAffix {
 		try {
 			Domain.getWorld(individual.getWorldId()).getParticles().add(new TracerParticle(
 				item.getPosition().cpy().add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)), 
-				new Vector2(Util.getRandom().nextFloat() * 30f, 0f).rotate(Util.getRandom().nextFloat() * 360f), 
+				new Vector2(Util.getRandom().nextFloat() * 60f, 0f).rotate(Util.getRandom().nextFloat() * 360f), 
 				color, 
 				1f, 
 				Domain.getActiveWorld().getWorldId(),
 				new Countdown(Util.getRandom().nextInt(1000)),
 				Util.getRandom().nextFloat() * 15f,
-				MovementMode.EMBER
+				MovementMode.WEIGHTLESS,
+				false
 			));		
 		} catch (NullPointerException e) {}
 	}

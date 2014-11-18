@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
@@ -155,7 +156,7 @@ public class Furnace extends CraftingStation implements Container {
 				}
 			}
 
-			ParticleService.flameEmber(position.cpy().add(0, height - 38), Color.ORANGE, Util.getRandom().nextFloat() * 15f);
+			ParticleService.randomVelocity(position.cpy().add(0, height - 38), Color.ORANGE, Util.getRandom().nextFloat() * 15f, MovementMode.EMBER);
 		}
 	}
 

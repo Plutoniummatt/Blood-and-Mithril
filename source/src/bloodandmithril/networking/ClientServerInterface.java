@@ -74,6 +74,7 @@ import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService.BloodSplat;
 import bloodandmithril.graphics.particles.ParticleService.FlameEmber;
 import bloodandmithril.graphics.particles.ParticleService.ParrySpark;
@@ -417,6 +418,7 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(MovementMode.class);
 		kryo.register(HareAI.class);
 		kryo.register(Hare.class);
 		kryo.register(FlintAndFiresteel.class);
