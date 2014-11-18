@@ -111,13 +111,19 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 	/** Calculates the distance from an individual */
 	protected float distanceFrom(Individual other) {
-		return Domain.getIndividual(hostId.getId()).getState().position.cpy().sub(other.getState().position).len();
+		return getHost().getState().position.cpy().sub(other.getState().position).len();
 	}
 
 
 	/** Calculates the distance to a location */
 	protected float distanceFrom(Vector2 location) {
-		return Domain.getIndividual(hostId.getId()).getState().position.cpy().sub(location).len();
+		return getHost().getState().position.cpy().sub(location).len();
+	}
+	
+	
+	/** Returns the host */
+	protected Individual getHost() {
+		return Domain.getIndividual(hostId.getId());  
 	}
 
 

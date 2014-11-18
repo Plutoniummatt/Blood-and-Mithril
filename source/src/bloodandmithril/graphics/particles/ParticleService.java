@@ -27,7 +27,7 @@ public class ParticleService {
 		if (isClient()) {
 			for (int i = 0; i < 35; i++) {
 				Domain.getActiveWorld().getParticles().add(new TracerParticle(
-					position.cpy().add(0, 50f),
+					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).mul(5f),
 					Color.RED,
 					2f,

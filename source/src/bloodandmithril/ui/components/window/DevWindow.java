@@ -1,6 +1,7 @@
 package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
+import static bloodandmithril.character.individuals.Names.getUnknownNatureIdentifier;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
@@ -24,6 +25,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
@@ -55,6 +57,7 @@ import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
@@ -136,7 +139,62 @@ public class DevWindow extends Window {
 		if (super.keyPressed(keyCode)) {
 			return true;
 		}
+		
+		if (keyCode == Keys.E) {
+			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
+			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
+			state.velocity = new Vector2(0, 0);
+			state.acceleration = new Vector2(0, 0);
 
+			IndividualIdentifier id = getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
+			id.setNickName("Elfie");
+
+			Elf elf = new Elf(
+				id, state, input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
+				20f,
+				getActiveWorld(),
+				lightColor(),
+				randomColor(),
+				randomColor()
+			);
+
+			elf.getSkills().setObservation(55);
+			elf.getSkills().setSmithing(55);
+
+			for (int i = 10; i > 0; i--) {
+				elf.giveItem(Rock.rock(Coal.class));
+			}
+			for (int i = 5; i > 0; i--) {
+				elf.giveItem(Bricks.bricks(SandStone.class));
+			}
+			for (int i = 5; i > 0; i--) {
+				elf.giveItem(Rock.rock(SandStone.class));
+			}
+			for (int i = 5; i > 0; i--) {
+				elf.giveItem(new ChickenLeg(false));
+			}
+			for (int i = 1; i > 0; i--) {
+				Broadsword item = new Broadsword();
+				item.setPreAffix(new Glowing(Color.PINK));
+				elf.giveItem(item);
+			}
+
+			Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
+		}
+		
+		if (keyCode == Keys.R) {
+			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
+			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
+			state.velocity = new Vector2(0, 0);
+			state.acceleration = new Vector2(0, 0);
+
+			IndividualIdentifier id = getUnknownNatureIdentifier(Util.getRandom().nextBoolean(), Util.getRandom().nextInt(5));
+			id.setNickName("Rabbit");
+
+			Hare hare = new Hare(id, state, Faction.NPC, getActiveWorld().getWorldId());
+			Domain.addIndividual(hare, Domain.getActiveWorld().getWorldId());
+		}
+		
 		return false;
 	}
 
@@ -151,68 +209,6 @@ public class DevWindow extends Window {
 
 	private HashMap<ListingMenuItem<String>, Object> buildMap() {
 		HashMap<ListingMenuItem<String>, Object> newHashMap = Maps.newHashMap();
-
-		newHashMap.put(
-			new ListingMenuItem<String>(
-				"Spawn Elf on cursor",
-				new Button(
-					"Spawn Elf on cursor",
-					Fonts.defaultFont,
-					0,
-					0,
-					130,
-					16,
-					() -> {
-						IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
-						state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
-						state.velocity = new Vector2(0, 0);
-						state.acceleration = new Vector2(0, 0);
-
-						IndividualIdentifier id = getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
-						id.setNickName("Elfie");
-
-						Elf elf = new Elf(
-							id, state, input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
-							20f,
-							getActiveWorld(),
-							lightColor(),
-							randomColor(),
-							randomColor()
-						);
-
-						elf.getSkills().setObservation(55);
-						elf.getSkills().setSmithing(55);
-
-						for (int i = 10; i > 0; i--) {
-							elf.giveItem(Rock.rock(Coal.class));
-						}
-						for (int i = 5; i > 0; i--) {
-							elf.giveItem(Bricks.bricks(SandStone.class));
-						}
-						for (int i = 5; i > 0; i--) {
-							elf.giveItem(Rock.rock(SandStone.class));
-						}
-						for (int i = 5; i > 0; i--) {
-							elf.giveItem(new ChickenLeg(false));
-						}
-						for (int i = 1; i > 0; i--) {
-							Broadsword item = new Broadsword();
-							item.setPreAffix(new Glowing(Color.PINK));
-							elf.giveItem(item);
-						}
-						elf.giveItem(new FlintAndFiresteel());
-
-						Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
-					},
-					Color.GREEN,
-					Color.WHITE,
-					Color.GREEN,
-					UIRef.BL
-				),
-				null
-			),
-			0
-		);
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
