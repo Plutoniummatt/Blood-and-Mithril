@@ -20,8 +20,8 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
-import bloodandmithril.character.ai.implementations.HareAI;
 import bloodandmithril.character.ai.implementations.ElfAI;
+import bloodandmithril.character.ai.implementations.HareAI;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
@@ -70,6 +70,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualKineticsProcessingData;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -416,6 +417,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(HareAI.class);
+		kryo.register(Hare.class);
 		kryo.register(FlintAndFiresteel.class);
 		kryo.register(RequestLightCampfire.class);
 		kryo.register(LightFire.class);
