@@ -34,7 +34,8 @@ public class ParticleService {
 					Domain.getActiveWorld().getWorldId(),
 					new Countdown(Util.getRandom().nextInt(2500)),
 					0f,
-					MovementMode.GRAVITY
+					MovementMode.GRAVITY,
+					false
 				));
 			}
 		} else {
@@ -43,7 +44,7 @@ public class ParticleService {
 	}
 
 
-	public static void flameEmber(Vector2 position, Color color, float glow) {
+	public static void randomVelocity(Vector2 position, Color color, float glow, MovementMode mode) {
 		if (isClient()) {
 			Domain.getActiveWorld().getParticles().add(new TracerParticle(
 				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
@@ -53,10 +54,11 @@ public class ParticleService {
 				Domain.getActiveWorld().getWorldId(),
 				new Countdown(Util.getRandom().nextInt(1000)),
 				glow,
-				MovementMode.EMBER
+				mode,
+				true
 			));
 		} else {
-			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), new SerializableColor(color), glow));
+			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), new SerializableColor(color), glow, mode));
 		}
 	}
 
@@ -73,7 +75,8 @@ public class ParticleService {
 					Domain.getActiveWorld().getWorldId(),
 					new Countdown(Util.getRandom().nextInt(100)),
 					5f,
-					MovementMode.GRAVITY
+					MovementMode.GRAVITY,
+					false
 				));
 			}
 		} else {
@@ -121,16 +124,18 @@ public class ParticleService {
 		private Vector2 position;
 		private SerializableColor color;
 		private float glow;
+		private MovementMode mode;
 
-		public FlameEmber(Vector2 position, SerializableColor color, float glow) {
+		public FlameEmber(Vector2 position, SerializableColor color, float glow, MovementMode mode) {
 			this.position = position;
 			this.color = color;
 			this.glow = glow;
+			this.mode = mode;
 		}
 
 		@Override
 		public void run() {
-			ParticleService.flameEmber(position, color.getColor(), glow);
+			ParticleService.randomVelocity(position, color.getColor(), glow, mode);
 		}
 	}
 }

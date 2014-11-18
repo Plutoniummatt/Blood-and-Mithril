@@ -2,6 +2,9 @@ package bloodandmithril.graphics.particles;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static java.lang.Math.abs;
+
+import java.io.Serializable;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
@@ -19,13 +22,14 @@ public abstract class Particle {
 	public Color color;
 	public Vector2 position, velocity;
 	public float radius;
+	public final boolean background;
 	private SerializableFunction<Boolean> removalCondition;
 	private MovementMode movementMode = MovementMode.GRAVITY;
 
 	/**
 	 * Constructor
 	 */
-	protected Particle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, MovementMode movementMode) {
+	protected Particle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, MovementMode movementMode, boolean background) {
 		this.position = position;
 		this.velocity = velocity;
 		this.radius = radius;
@@ -33,6 +37,7 @@ public abstract class Particle {
 		this.worldId = worldId;
 		this.removalCondition = removalCondition;
 		this.movementMode = movementMode;
+		this.background = background;
 	}
 
 	/**
@@ -86,11 +91,19 @@ public abstract class Particle {
 		case EMBER:
 			ember(delta);
 			break;
+		case WEIGHTLESS:
+			weightless(delta);
+			break;
 		default:
 		}
 	}
 
 	
+	private void weightless(float delta) {
+		velocity.mul(0.98f);		
+	}
+	
+
 	private void ember(float delta) {
 		velocity.y = velocity.y + delta * 150f;
 		velocity.mul(0.98f);
@@ -113,7 +126,7 @@ public abstract class Particle {
 	}
 	
 	
-	public enum MovementMode {
-		GRAVITY, EMBER
+	public enum MovementMode implements Serializable {
+		GRAVITY, EMBER, WEIGHTLESS
 	}
 }
