@@ -34,6 +34,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
+import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
 import bloodandmithril.item.items.material.Bricks;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.material.mineral.Coal;
@@ -182,6 +183,9 @@ public class DevWindow extends Window {
 				BushKnife item = new BushKnife();
 				item.setPreAffix(new Glowing(Util.randomOneOf(Color.CYAN, Color.GREEN, Color.YELLOW, Color.RED)));
 				elf.giveItem(item);
+			}
+			for (int i = 100; i > 0; i--) {
+				elf.giveItem(new CarrotSeed());
 			}
 
 			Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
