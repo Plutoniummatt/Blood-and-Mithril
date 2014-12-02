@@ -1,5 +1,7 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.character.individuals.Individual.Action.JUMP_LEFT;
+import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
@@ -59,6 +61,11 @@ public abstract class GroundTravellingIndividual extends Individual {
 	protected void updateCurrentAction() {
 		// If we're attacking, return
 		if (attacking()) {
+			return;
+		}
+
+		// If we're jumping, return
+		if (obj(getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT)) {
 			return;
 		}
 

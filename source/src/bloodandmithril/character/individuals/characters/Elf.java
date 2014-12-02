@@ -8,6 +8,8 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIG
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
+import static bloodandmithril.character.individuals.Individual.Action.JUMP_LEFT;
+import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
@@ -115,6 +117,16 @@ public class Elf extends Humanoid {
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace)		// FRONT ARM
 		);
 
+		ArrayList<WrapperForTwo<Animation, ShaderProgram>> jumpequence = newArrayList(
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// HEAD
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filter),					// HAIR
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK ARM
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK LEG
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// TORSO
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 560, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// FRONT LEG
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace)		// FRONT ARM
+		);
+
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> standSequenceCombat = newArrayList(
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1216, 112, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// HEAD
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1216, 0,   64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filter),					// HAIR
@@ -153,6 +165,16 @@ public class Elf extends Humanoid {
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1792, 224, 64, 112, 10, 0.07f, Animation.NORMAL), server ? null : Shaders.filterIgnoreReplace),// TORSO
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1792, 560, 64, 112, 10, 0.07f, Animation.NORMAL), server ? null : Shaders.filterIgnoreReplace),// FRONT LEG
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1792, 336, 64, 112, 10, 0.07f, Animation.NORMAL), server ? null : Shaders.filterIgnoreReplace)	// FRONT ARM
+		);
+
+		animationMap.put(
+			JUMP_RIGHT,
+			jumpequence
+		);
+
+		animationMap.put(
+			JUMP_LEFT,
+			jumpequence
 		);
 
 		animationMap.put(

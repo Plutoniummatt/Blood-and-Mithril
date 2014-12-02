@@ -1,5 +1,10 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.character.individuals.Individual.Action.JUMP_LEFT;
+import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
+import static bloodandmithril.util.ComparisonUtil.obj;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static java.lang.Math.abs;
@@ -9,6 +14,7 @@ import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.world.Domain;
@@ -69,6 +75,9 @@ public interface Kinematics {
 		friction(individual, state);
 		if (groundDetectionCriteriaMet(topography, state, ai, kinematicsBean) && !kinematicsBean.steppingUp) {
 			state.velocity.y = 0f;
+			if (obj(individual.getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT)) {
+				individual.setCurrentAction(state.velocity.x > 0 ? STAND_RIGHT : STAND_LEFT);
+			}
 
 			if (state.position.y >= 0f) {
 				if ((int)state.position.y % TILE_SIZE == 0) {
@@ -86,7 +95,7 @@ public interface Kinematics {
 		}
 
 		if (abs(individual.getState().velocity.x) > individual.getRunSpeed() * 1.5f) {
-			state.velocity.x = state.velocity.x * 0.65f;
+			state.velocity.x = state.velocity.x * (obj(individual.getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT) ? 0.99f : 0.65f);
 		}
 
 		//Wall check routine, only perform this if we're moving
@@ -119,6 +128,11 @@ public interface Kinematics {
 		if (individual.isCommandActive(KeyMappings.moveRight) && state.velocity.x < 0f ||
 			individual.isCommandActive(KeyMappings.moveLeft) && state.velocity.x > 0f ||
 			!individual.isCommandActive(KeyMappings.moveLeft) && !individual.isCommandActive(KeyMappings.moveRight)) {
+
+			if (obj(individual.getCurrentAction()).oneOf(Action.JUMP_LEFT, Action.JUMP_RIGHT)) {
+				return;
+			}
+
 			state.velocity.x = state.velocity.x * 0.4f;
 		}
 	}
