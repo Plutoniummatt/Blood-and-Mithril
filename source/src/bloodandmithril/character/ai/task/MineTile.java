@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.character.ai.task.GoToLocation.goToWithTerminationFunction;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.util.ComparisonUtil.obj;
@@ -49,8 +50,9 @@ public class MineTile extends CompositeAITask {
 		);
 
 		appendTask(
-			new GoToLocation(
+			goToWithTerminationFunction(
 				host,
+				host.getState().position.cpy(),
 				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
 				false,
 				new WithinInteractionBox(),

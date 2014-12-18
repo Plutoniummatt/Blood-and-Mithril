@@ -1,5 +1,7 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+
 import java.util.Collection;
 
 import bloodandmithril.character.ai.AITask;
@@ -45,8 +47,9 @@ public class Harvest extends CompositeAITask {
 		super(
 			host.getId(),
 			"Mining",
-			new GoToLocation(
+			goTo(
 				host,
+				host.getState().position.cpy(),
 				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(harvestable.position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
 				false,
 				50f,
@@ -100,13 +103,13 @@ public class Harvest extends CompositeAITask {
 			Individual host = Domain.getIndividual(hostId.getId());
 
 			if (host.getInteractionBox().isWithinBox(harvestable.position)) {
-				
+
 				if (!host.canReceive(harvestable.harvest())) {
 					UserInterface.addMessage("Can not harvest", host.getId().getSimpleName() + " does not have enough inventory space.", new IndividualSelected(host.getId().getId()));
 					host.getAI().setCurrentTask(new Idle());
 					return;
 				}
-				
+
 				if (Domain.hasProp(harvestable.id)) {
 					if (harvestable.destroyUponHarvest()) {
 						Domain.removeProp(harvestable.id);

@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -37,8 +38,10 @@ public class GoToMovingLocation extends AITask {
 		this.destination = destination;
 		this.tolerance = tolerance;
 
-		this.currentGoToLocation = new GoToLocation(
-			Domain.getIndividual(hostId.getId()),
+		Individual host = Domain.getIndividual(hostId.getId());
+		this.currentGoToLocation = goTo(
+			host,
+			host.getState().position.cpy(),
 			new WayPoint(destination),
 			false,
 			150f,
@@ -56,8 +59,10 @@ public class GoToMovingLocation extends AITask {
 		this.terminationCondition = terminationCondition;
 		this.tolerance = -1f;
 
-		this.currentGoToLocation = new GoToLocation(
-			Domain.getIndividual(hostId.getId()),
+		Individual host = Domain.getIndividual(hostId.getId());
+		this.currentGoToLocation = goTo(
+			host,
+			host.getState().position.cpy(),
 			new WayPoint(destination),
 			false,
 			150f,
@@ -76,8 +81,10 @@ public class GoToMovingLocation extends AITask {
 		this.repathCondition = repathCondition;
 		this.tolerance = -1f;
 
-		this.currentGoToLocation = new GoToLocation(
-			Domain.getIndividual(hostId.getId()),
+		Individual host = Domain.getIndividual(hostId.getId());
+		this.currentGoToLocation = goTo(
+			host,
+			host.getState().position.cpy(),
 			new WayPoint(destination),
 			false,
 			150f,
@@ -127,8 +134,10 @@ public class GoToMovingLocation extends AITask {
 		getCurrentGoToLocation().execute(delta);
 
 		if (repathCondition == null ? getCurrentGoToLocation().isComplete() : repathCondition.call()) {
-			this.currentGoToLocation = new GoToLocation(
-				Domain.getIndividual(hostId.getId()),
+			Individual host = Domain.getIndividual(hostId.getId());
+			this.currentGoToLocation = goTo(
+				host,
+				host.getState().position.cpy(),
 				new WayPoint(destination),
 				false,
 				150f,

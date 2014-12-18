@@ -1,15 +1,21 @@
 package bloodandmithril.character.ai;
 
+import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+
 import java.util.concurrent.ArrayBlockingQueue;
 
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.GoToLocation;
+import bloodandmithril.character.ai.task.Jump;
+import bloodandmithril.character.ai.task.Travel;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
+
+import com.badlogic.gdx.math.Vector2;
 
 
 /**
@@ -103,15 +109,43 @@ public class AIProcessor {
 
 
 	/**
-	 * Queue a task for {@link #pathFinderThread}.
+	 * Queue a task for {@link #pathFinderThread} for {@link GoToLocation}.
 	 */
-	public static void sendPathfindingRequest(final Individual host, final WayPoint destination, final boolean fly, final float forceTolerance, final boolean safe) {
+	public static void sendPathfindingRequest(final Individual host, final WayPoint destination, final boolean fly, final float forceTolerance, final boolean safe, boolean add) {
 		pathFinderTasks.add(
 			() -> {
 				synchronized (host) {
-					host.getAI().setCurrentTask(new GoToLocation(host, destination, fly, forceTolerance, safe));
+					AITask currentTask = host.getAI().getCurrentTask();
+					if (currentTask instanceof Travel && add) {
+						((Travel) currentTask).addGotoLocation(goTo(host, host.getState().position.cpy(), destination, fly, forceTolerance, safe));
+					} else {
+						Travel travel = new Travel(host.getId());
+						travel.addGotoLocation(goTo(host, host.getState().position.cpy(), destination, fly, forceTolerance, safe));
+						host.getAI().setCurrentTask(travel);
+					}
 				}
 			}
 		);
+	}
+
+
+	/**
+	 * Queue a task for {@link #pathFinderThread} for a jump.
+	 */
+	public static void sendJumpResolutionRequest(final Individual host, final Vector2 start, final Vector2 destination, boolean add) {
+		pathFinderTasks.add(
+				() -> {
+					synchronized (host) {
+						AITask currentTask = host.getAI().getCurrentTask();
+						if (currentTask instanceof Travel && add) {
+							((Travel) currentTask).addJump(new Jump(host.getId(), start, destination));
+						} else {
+							Travel travel = new Travel(host.getId());
+							travel.addJump(new Jump(host.getId(), start, destination));
+							host.getAI().setCurrentTask(travel);
+						}
+					}
+				}
+			);
 	}
 }

@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
@@ -26,8 +27,9 @@ public class TransferLiquidFromContainer extends CompositeAITask {
 		super(
 			host.getId(),
 			"Transfer liquids",
-			new GoToLocation(
+			goTo(
 				host,
+				host.getState().position.cpy(),
 				new WayPoint(container.position, 32),
 				false,
 				32f,

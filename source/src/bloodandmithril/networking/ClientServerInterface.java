@@ -42,6 +42,7 @@ import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Harvest.HarvestItem;
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.task.Jump;
 import bloodandmithril.character.ai.task.LightCampfire;
 import bloodandmithril.character.ai.task.LightCampfire.LightFire;
 import bloodandmithril.character.ai.task.LockUnlockContainer;
@@ -57,6 +58,7 @@ import bloodandmithril.character.ai.task.TakeItem.Take;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
+import bloodandmithril.character.ai.task.Travel;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.conditions.Exhaustion;
@@ -418,6 +420,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Jump.class);
+		kryo.register(Travel.class);
 		kryo.register(MovementMode.class);
 		kryo.register(HareAI.class);
 		kryo.register(Hare.class);
@@ -842,8 +846,8 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending individual selection request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendMoveIndividualRequest(int id, Vector2 destinationCoordinates, boolean forceMove) {
-			client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove));
+		public static synchronized void sendMoveIndividualRequest(int id, Vector2 destinationCoordinates, boolean forceMove, boolean add) {
+			client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove, add));
 			Logger.networkDebug("Sending move individual request", LogLevel.DEBUG);
 		}
 

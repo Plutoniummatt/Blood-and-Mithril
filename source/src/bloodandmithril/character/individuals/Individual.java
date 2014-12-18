@@ -998,20 +998,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			editMenu
 		);
 
-		Individual thisIndividual = this;
-		MenuItem jump = new MenuItem(
-			"Jump",
-			() -> {
-				thisIndividual.getState().velocity.x += 500f;
-				thisIndividual.getState().velocity.y += 500f;
-				thisIndividual.setCurrentAction(Action.JUMP_RIGHT);
-			},
-			Color.ORANGE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-
 		ContextMenu contextMenuToReturn = new ContextMenu(0, 0, true);
 		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.getSelectedIndividuals().contains(this))) {
 			contextMenuToReturn.addMenuItem(interact);
@@ -1028,7 +1014,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		for (MenuItem item : internalGetContextMenuItems()) {
 			contextMenuToReturn.addMenuItem(item);
 		}
-		contextMenuToReturn.addMenuItem(jump);
 
 		return contextMenuToReturn;
 	}
