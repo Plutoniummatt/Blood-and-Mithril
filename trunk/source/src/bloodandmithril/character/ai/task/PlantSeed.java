@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
@@ -29,8 +30,9 @@ public class PlantSeed extends CompositeAITask {
 		super(
 			host.getId(),
 			"Planting seed",
-			new GoToLocation(
+			goTo(
 				host,
+				host.getState().position.cpy(),
 				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(toPlant.position, 10, Domain.getWorld(host.getWorldId())), Topography.TILE_SIZE),
 				false,
 				50f,

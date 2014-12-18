@@ -25,6 +25,7 @@ import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * An {@link Individual} that is grounded, moves on ground.
@@ -187,5 +188,15 @@ public abstract class GroundTravellingIndividual extends Individual {
 	protected void internalUpdate(float delta) {
 		respondToCommands();
 		updateCurrentAction();
+	}
+
+
+	/**
+	 * Performs a jump at the specified jump vector.
+	 */
+	public void jump(Vector2 jumpVector) {
+		getState().velocity.x = jumpVector.x;
+		getState().velocity.y = jumpVector.y;
+		setCurrentAction(getCurrentAction().left() ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
 	}
 }

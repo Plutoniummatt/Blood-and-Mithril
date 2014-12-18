@@ -44,7 +44,7 @@ public class GoToLocation extends AITask {
 	/**
 	 * Constructor
 	 */
-	public GoToLocation(Individual host, WayPoint destination, boolean fly, float forceTolerance, boolean safe) {
+	private GoToLocation(Individual host, Vector2 start, WayPoint destination, boolean fly, float forceTolerance, boolean safe) {
 		super(host.getId());
 		this.fly = fly;
 
@@ -53,16 +53,15 @@ public class GoToLocation extends AITask {
 		PathFinder pathFinder = new AStarPathFinder();
 
 		this.path = fly ?
-			pathFinder.findShortestPathAir(new WayPoint(host.getState().position), destination, Domain.getWorld(host.getWorldId())):
-			pathFinder.findShortestPathGround(new WayPoint(host.getState().position), destination, blockspan, safe ? host.getSafetyHeight() : 1000, forceTolerance, Domain.getWorld(host.getWorldId()));
+			pathFinder.findShortestPathAir(new WayPoint(start), destination, Domain.getWorld(host.getWorldId())):
+			pathFinder.findShortestPathGround(new WayPoint(start), destination, blockspan, safe ? host.getSafetyHeight() : 1000, forceTolerance, Domain.getWorld(host.getWorldId()));
 	}
-
 
 
 	/**
 	 * Constructor
 	 */
-	public GoToLocation(Individual host, WayPoint destination, boolean fly, SerializableFunction<Boolean> function, boolean safe) {
+	private GoToLocation(Individual host, Vector2 start, WayPoint destination, boolean fly, SerializableFunction<Boolean> function, boolean safe) {
 		super(host.getId());
 		this.fly = fly;
 		this.function = function;
@@ -72,8 +71,18 @@ public class GoToLocation extends AITask {
 		PathFinder pathFinder = new AStarPathFinder();
 
 		this.path = fly ?
-			pathFinder.findShortestPathAir(new WayPoint(host.getState().position), destination, Domain.getWorld(host.getWorldId())):
-			pathFinder.findShortestPathGround(new WayPoint(host.getState().position), destination, blockspan, safe ? host.getSafetyHeight() : 1000, 150f, Domain.getWorld(host.getWorldId()));
+			pathFinder.findShortestPathAir(new WayPoint(start), destination, Domain.getWorld(host.getWorldId())):
+			pathFinder.findShortestPathGround(new WayPoint(start), destination, blockspan, safe ? host.getSafetyHeight() : 1000, 150f, Domain.getWorld(host.getWorldId()));
+	}
+
+
+	public static GoToLocation goTo(Individual host, Vector2 start, WayPoint destination, boolean fly, float forceTolerance, boolean safe) {
+		return new GoToLocation(host, start, destination, fly, forceTolerance, safe);
+	}
+
+
+	public static GoToLocation goToWithTerminationFunction(Individual host, Vector2 start, WayPoint destination, boolean fly, SerializableFunction<Boolean> function, boolean safe) {
+		return new GoToLocation(host, start, destination, fly, function, safe);
 	}
 
 

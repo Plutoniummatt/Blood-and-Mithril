@@ -25,14 +25,16 @@ public class MoveIndividual implements Request {
 
 	/** Whether or not to force move */
 	private final boolean forceMove;
+	private boolean add;
 
 	/**
 	 * Constructor
 	 */
-	public MoveIndividual(int individualId, Vector2 destinationCoordinates, boolean forceMove) {
+	public MoveIndividual(int individualId, Vector2 destinationCoordinates, boolean forceMove, boolean add) {
 		this.individualId = individualId;
 		this.destinationCoordinates = destinationCoordinates;
 		this.forceMove = forceMove;
+		this.add = add;
 	}
 
 
@@ -45,7 +47,8 @@ public class MoveIndividual implements Request {
 				new WayPoint(destinationCoordinates),
 				false,
 				150f,
-				!forceMove
+				!forceMove,
+				add
 			);
 		}
 

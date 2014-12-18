@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
@@ -30,8 +31,9 @@ public class LightCampfire extends CompositeAITask {
 		super(
 			host.getId(),
 			"Mining",
-			new GoToLocation(
+			goTo(
 				host,
+				host.getState().position.cpy(),
 				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(campfire.position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
 				false,
 				50f,

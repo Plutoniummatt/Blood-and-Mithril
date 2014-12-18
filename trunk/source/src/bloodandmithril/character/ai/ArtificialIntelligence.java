@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai;
 
+import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import static bloodandmithril.util.Util.firstNonNull;
 
 import java.io.Serializable;
@@ -119,11 +120,11 @@ public abstract class ArtificialIntelligence implements Serializable {
 	protected float distanceFrom(Vector2 location) {
 		return getHost().getState().position.cpy().sub(location).len();
 	}
-	
-	
+
+
 	/** Returns the host */
 	protected Individual getHost() {
-		return Domain.getIndividual(hostId.getId());  
+		return Domain.getIndividual(hostId.getId());
 	}
 
 
@@ -156,7 +157,8 @@ public abstract class ArtificialIntelligence implements Serializable {
 				),
 				fly,
 				0f,
-				true
+				true,
+				false
 			);
 		} else if (currentTask instanceof Idle) {
 			setCurrentTask(new Wait(host, Util.getRandom().nextFloat() * 3f + 1f));
@@ -173,7 +175,16 @@ public abstract class ArtificialIntelligence implements Serializable {
 	public void goToIndividual(Individual individual, float tolerance, boolean fly) {
 		if (distanceFrom(individual) > tolerance) {
 			Individual host = Domain.getIndividual(hostId.getId());
-			setCurrentTask(new GoToLocation(host, new WayPoint(individual.getState().position), fly, individual.getWidth() * 2, true));
+			setCurrentTask(
+				goTo(
+					host,
+					host.getState().position.cpy(),
+					new WayPoint(individual.getState().position),
+					fly,
+					individual.getWidth() * 2,
+					true
+				)
+			);
 		}
 	}
 }

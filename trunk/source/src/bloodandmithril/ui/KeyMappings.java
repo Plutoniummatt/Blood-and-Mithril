@@ -24,11 +24,13 @@ public class KeyMappings {
 	public static int moveLeft = Input.Keys.A;
 	public static int moveRight = Input.Keys.D;
 	public static int walk = Input.Keys.SHIFT_RIGHT;
-	public static int rightClickDragBox = Input.Keys.CONTROL_LEFT;
+	public static int rightClickDragBox = Input.Keys.X;
 	public static int contextMenuBypass = Input.Keys.SHIFT_LEFT;
 	public static int forceMove = Input.Keys.ALT_LEFT;
 	public static int jump = Input.Keys.SPACE;
 	public static int toggleWalkRun = Input.Keys.W;
+	public static int addWayPoint = Input.Keys.CONTROL_LEFT;
+	public static int mineTile = Input.Keys.Q;
 
 	public static void setup() {
 		keyMap.put(Input.Keys.NUM_0, "0");

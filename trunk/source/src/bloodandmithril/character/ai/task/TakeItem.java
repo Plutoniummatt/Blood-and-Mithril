@@ -1,5 +1,7 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
@@ -41,8 +43,9 @@ public class TakeItem extends CompositeAITask {
 		super(
 			host.getId(),
 			"Taking item",
-			new GoToLocation(
+			goTo(
 				host,
+				host.getState().position.cpy(),
 				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(item.getPosition(), 10, Domain.getWorld(host.getWorldId())), Topography.TILE_SIZE),
 				false,
 				50f,

@@ -33,7 +33,6 @@ import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -392,11 +391,21 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox)) {
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
-				if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+				if (Gdx.input.isKeyPressed(KeyMappings.mineTile)) {
 					if (ClientServerInterface.isServer()) {
 						indi.getAI().setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
 					} else {
 						ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
+					}
+				} else if (Gdx.input.isKeyPressed(KeyMappings.jump)) {
+					if (ClientServerInterface.isServer()) {
+						AIProcessor.sendJumpResolutionRequest(
+							indi,
+							indi.getState().position.cpy(),
+							new Vector2(getMouseWorldX(), getMouseWorldY()),
+							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
+						);
+					} else {
 					}
 				} else {
 					float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), INDIVIDUAL_SPREAD);
@@ -411,7 +420,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							),
 							false,
 							150f,
-							!Gdx.input.isKeyPressed(KeyMappings.forceMove)
+							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
+							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
 						);
 					} else {
 						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
@@ -419,7 +429,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 								getMouseWorldX() + spread,
 								getMouseWorldY()
 							),
-							!Gdx.input.isKeyPressed(KeyMappings.forceMove)
+							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
+							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
 						);
 					}
 				}

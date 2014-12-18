@@ -24,8 +24,9 @@ public class Construct extends CompositeAITask {
 		super(
 			host.getId(),
 			"Constructing",
-			new GoToLocation(
+			GoToLocation.goTo(
 				host,
+				host.getState().position.cpy(),
 				new WayPoint(construction.position, 32),
 				false,
 				32f,
