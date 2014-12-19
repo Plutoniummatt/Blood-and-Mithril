@@ -1,5 +1,9 @@
 package bloodandmithril.character.ai.task;
 
+import com.badlogic.gdx.math.Vector2;
+
+import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
+import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 
@@ -23,7 +27,7 @@ public class Travel extends CompositeAITask {
 	/**
 	 * Adds a {@link GoToLocation} task
 	 */
-	public void addGotoLocation(GoToLocation goToLocation) {
+	public void addGotoLocation(JitGoToLocation goToLocation) {
 		appendTask(goToLocation);
 	}
 
@@ -33,5 +37,15 @@ public class Travel extends CompositeAITask {
 	 */
 	public void addJump(Jump jump) {
 		appendTask(jump);
+	}
+	
+	
+	public Vector2 getDestination() {
+		AITask task = getCurrentTask();
+		if (task instanceof GoToLocation) {
+			return ((GoToLocation) task).getPath().getDestinationWayPoint().waypoint.cpy();
+		} else {
+			return ((Jump) task).getDestination();
+		}
 	}
 }

@@ -365,7 +365,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		UserInterface.initialRightMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 
-		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+		if (Gdx.input.isKeyPressed(KeyMappings.attack)) {
 			if (!Domain.getSelectedIndividuals().isEmpty()) {
 				for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 					Individual indi = Domain.getIndividual(indiKey);
@@ -389,7 +389,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			uiClicked = UserInterface.rightClick();
 		}
 
-		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox)) {
+		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox) && !Gdx.input.isKeyPressed(KeyMappings.attack)) {
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
 				if (Gdx.input.isKeyPressed(KeyMappings.mineTile)) {
 					if (ClientServerInterface.isServer()) {
