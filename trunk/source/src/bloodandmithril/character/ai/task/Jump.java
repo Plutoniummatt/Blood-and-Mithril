@@ -8,6 +8,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.util.SerializableFunction;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -20,18 +21,22 @@ import com.badlogic.gdx.math.Vector2;
 public class Jump extends AITask {
 	private static final long serialVersionUID = -3954194589753060040L;
 
-	private final Vector2 from, to, jumpVector;
+	private final SerializableFunction<Vector2> from;
+	private final Vector2 to;
 	private boolean jumped;
 
 	/**
 	 * Constructor
 	 */
-	public Jump(IndividualIdentifier hostId, Vector2 from, Vector2 to) {
+	public Jump(IndividualIdentifier hostId, SerializableFunction<Vector2> from, Vector2 to) {
 		super(hostId);
 		this.from = from;
 		this.to = to;
-
-		jumpVector = resolveJumpVector();
+	}
+	
+	
+	public Vector2 getDestination() {
+		return to.cpy();
 	}
 
 
@@ -43,7 +48,7 @@ public class Jump extends AITask {
 
 	@Override
 	public boolean isComplete() {
-		return getIndividual(hostId.getId()).getDistanceFrom(to) < 16f;
+		return jumped && !obj(getIndividual(hostId.getId()).getCurrentAction()).oneOf(Action.JUMP_LEFT, Action.JUMP_RIGHT);
 	}
 
 
@@ -66,13 +71,18 @@ public class Jump extends AITask {
 
 		if (host instanceof GroundTravellingIndividual) {
 			host.clearCommands();
-			((GroundTravellingIndividual) host).jump(jumpVector);
+			((GroundTravellingIndividual) host).jump(resolveJumpVector());
 			jumped = true;
 		}
 	}
 
 
 	private Vector2 resolveJumpVector() {
-		return new Vector2(500, 500);
+		Vector2 call = from.call();
+		Vector2 nor = to.cpy().sub(call).nor();
+		if (nor.y < 0f) {
+			return new Vector2();
+		}
+		return nor.mul(600);
 	}
 }

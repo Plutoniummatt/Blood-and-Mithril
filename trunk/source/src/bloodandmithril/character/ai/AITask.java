@@ -24,7 +24,11 @@ public abstract class AITask implements Serializable {
 	protected AITask(IndividualIdentifier hostId) {
 		this.hostId = hostId;
 	}
-
+	
+	public IndividualIdentifier getHostId() {
+		return hostId;
+	}
+	
 	/** @return the description of the task */
 	public abstract String getDescription();
 

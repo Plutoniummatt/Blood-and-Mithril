@@ -16,7 +16,7 @@ public class CompositeAITask extends AITask {
 	private static final long serialVersionUID = -3769737563309697525L;
 
 	/** A list of tasks to be executed in order */
-	private final ArrayDeque<AITask> tasks = new ArrayDeque<>();
+	protected final ArrayDeque<AITask> tasks = new ArrayDeque<>();
 
 	/** Current task of this {@link CompositeAITask} */
 	private AITask currentTask;
