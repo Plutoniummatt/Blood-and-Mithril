@@ -56,6 +56,7 @@ import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.TakeItem;
+import bloodandmithril.character.ai.task.Travel;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -668,19 +669,21 @@ public class UserInterface {
 					shapeRenderer.setColor(Color.WHITE);
 					// ((GoToLocation)currentTask).renderPath();
 					((GoToLocation)currentTask).renderFinalWayPoint();
+				} else if (currentTask instanceof Travel) {
+					((Travel) currentTask).renderWaypoints();
 				} else if (currentTask instanceof CompositeAITask) {
 					AITask subTask = ((CompositeAITask) currentTask).getCurrentTask();
 					if (subTask instanceof GoToLocation) {
 						// ((GoToLocation)subTask).renderPath();
-						 ((GoToLocation)subTask).renderFinalWayPoint();
+						// ((GoToLocation)subTask).renderFinalWayPoint();
 					} else if (subTask instanceof GoToMovingLocation) {
 						// ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderPath();
-						 ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderFinalWayPoint();
+						// ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderFinalWayPoint();
 					} else if (subTask instanceof JitGoToLocation) {
-						GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)subTask).getTask();
-						if (goToLocation != null) {
-							goToLocation.renderFinalWayPoint();
-						}
+						// GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)subTask).getTask();
+						// if (goToLocation != null) {
+						// 	goToLocation.renderFinalWayPoint();
+						// }
 					}
 				}
 			}

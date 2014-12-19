@@ -161,8 +161,10 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
+			case JUMP_LEFT:
 				return new SpacialConfiguration(new Vector2(10, 35f), 0f, true);
 			case STAND_RIGHT:
+			case JUMP_RIGHT:
 				return new SpacialConfiguration(new Vector2(-10, 35f), 0f, false);
 			case STAND_LEFT_COMBAT:
 				return new SpacialConfiguration(new Vector2(19, 48f), 90f, false);

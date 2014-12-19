@@ -8,8 +8,10 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.SerializableFunction;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -70,6 +72,12 @@ public class Jump extends AITask {
 		}
 
 		if (host instanceof GroundTravellingIndividual) {
+			if (host.getState().stamina < 0.1f) {
+				UserInterface.addFloatingText("Not enough stamina", Color.ORANGE, host.getEmissionPosition().cpy(), false);
+				jumped = true;
+				return;
+			}
+			
 			host.clearCommands();
 			((GroundTravellingIndividual) host).jump(resolveJumpVector());
 			jumped = true;
@@ -83,6 +91,6 @@ public class Jump extends AITask {
 		if (nor.y < 0f) {
 			return new Vector2();
 		}
-		return nor.mul(600);
+		return nor.mul(500       );
 	}
 }
