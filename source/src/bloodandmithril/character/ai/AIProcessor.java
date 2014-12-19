@@ -173,9 +173,15 @@ public class AIProcessor {
 	
 	public static class JitGoToLocation extends JitAITask {
 		private static final long serialVersionUID = 7866039883039620197L;
+		private WayPoint destination;
 
 		public JitGoToLocation(IndividualIdentifier hostId, WayPoint destination, boolean fly, float forceTolerance, boolean safe) {
 			super(hostId, new JitGoToLocationFunction(hostId.getId(), destination, fly, forceTolerance, safe));
+			this.destination = destination;
+		}
+
+		public WayPoint getDestination() {
+			return destination;
 		}
 	}
 	

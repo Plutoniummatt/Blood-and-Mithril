@@ -1,5 +1,7 @@
 package bloodandmithril.core;
 
+import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
+
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -413,9 +415,16 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						AIProcessor.sendPathfindingRequest(
 							indi,
 							new WayPoint(
-								new Vector2(
-									getMouseWorldX() + spread,
-									getMouseWorldY()
+								Topography.convertToWorldCoord(
+									getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+										new Vector2(
+											getMouseWorldX() + spread,
+											getMouseWorldY()
+										),
+										10,
+										Domain.getWorld(indi.getWorldId())
+									),
+									true
 								)
 							),
 							false,
@@ -425,9 +434,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						);
 					} else {
 						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
-							indi.getId().getId(), new Vector2(
-								getMouseWorldX() + spread,
-								getMouseWorldY()
+							indi.getId().getId(), 
+							Topography.convertToWorldCoord(
+								getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+									new Vector2(
+										getMouseWorldX() + spread,
+										getMouseWorldY()
+									),
+									10,
+									Domain.getWorld(indi.getWorldId())
+								),
+								true
 							),
 							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
 							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
