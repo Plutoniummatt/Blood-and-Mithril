@@ -8,6 +8,7 @@ import static bloodandmithril.util.ComparisonUtil.obj;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static java.lang.Math.abs;
+import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.CompositeAITask;
@@ -162,6 +163,16 @@ public interface Kinematics {
 					jumpOff(topography, state, kinematicsBean);
 					kinematicsBean.jumpedOff = false;
 				}
+			} else if (subTask instanceof JitGoToLocation) {
+				AITask task = ((JitGoToLocation) subTask).getTask();
+				if (task == null) {
+					((JitGoToLocation) subTask).initialise();
+				}
+				task = ((JitGoToLocation) subTask).getTask();
+				if (((GoToLocation) task).isAboveNext(state.position)) {
+					jumpOff(topography, state, kinematicsBean);
+					kinematicsBean.jumpedOff = false;
+				}
 			}
 		}
 
@@ -240,6 +251,13 @@ public interface Kinematics {
 					return !((GoToLocation)subTask).isPartOfPath(new Vector2(x, y + TILE_SIZE));
 				} else if (subTask instanceof GoToMovingLocation) {
 					return !((GoToMovingLocation)subTask).getCurrentGoToLocation().isPartOfPath(new Vector2(x, y + TILE_SIZE));
+				} else if (subTask instanceof JitGoToLocation) {
+					AITask task = ((JitGoToLocation) subTask).getTask();
+					if (task == null) {
+						((JitGoToLocation) subTask).initialise();
+					}
+					task = ((JitGoToLocation) subTask).getTask();
+					return !((GoToLocation) task).isPartOfPath(new Vector2(x, y + TILE_SIZE));
 				} else {
 					return true;
 				}
