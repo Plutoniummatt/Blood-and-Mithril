@@ -91,6 +91,6 @@ public class Jump extends AITask {
 		if (nor.y < 0f) {
 			return new Vector2();
 		}
-		return nor.mul(500       );
+		return nor.mul(500);
 	}
 }

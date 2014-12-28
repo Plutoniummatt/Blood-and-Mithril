@@ -75,7 +75,7 @@ public class Travel extends CompositeAITask {
 			Vector2 waypoint = ((Jump) task).getDestination();
 			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-			BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
+			BloodAndMithrilClient.spriteBatch.draw(UserInterface.jumpWaypointTexture, waypoint.x - UserInterface.jumpWaypointTexture.getRegionWidth(), waypoint.y);
 		}
 	}
 }
