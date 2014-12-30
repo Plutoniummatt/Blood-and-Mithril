@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -14,7 +15,6 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -39,7 +39,7 @@ public class World implements Serializable {
 	private Set<Integer> 										individuals 			= Sets.newHashSet();
 
 	/** All {@link FluidBody}s on this {@link World} */
-	private Collection<FluidBody> 								fluids					= Lists.newLinkedList();
+	private Collection<FluidBody> 								fluids					= new ConcurrentLinkedQueue<>();
 
 	/** The positional indexing map of this {@link World} */
 	private PositionalIndexMap 									positionalIndexMap		= new PositionalIndexMap();
@@ -152,7 +152,6 @@ public class World implements Serializable {
 		fluids.stream().forEach(
 			fluid -> {
 				fluid.render();
-				fluid.renderBindingBox();
 			}
 		);
 	}

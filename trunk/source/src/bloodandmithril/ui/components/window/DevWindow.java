@@ -172,7 +172,7 @@ public class DevWindow extends Window {
 			int y = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY());
 
 			Map<Integer, Set<Integer>> coords = Maps.newHashMap();
-			coords.put(y, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
+			coords.put(y, Sets.newConcurrentHashSet(Lists.newArrayList(x, x+1, x+2)));
 			coords.put(y + 1, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
 			coords.put(y + 2, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
 			coords.put(y + 3, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
