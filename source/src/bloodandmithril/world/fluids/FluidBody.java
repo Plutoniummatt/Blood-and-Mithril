@@ -153,7 +153,7 @@ public class FluidBody implements Serializable {
 			}
 			occupiedCoordinates.put(y, newRow);
 		} else if (topLayerVolume > spreadHeight) {
-			// Spreading
+			// Top layer spreading
 			Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
 			final int y = lastEntry.getKey();
 			Set<Integer> realRow = lastEntry.getValue();
@@ -184,6 +184,22 @@ public class FluidBody implements Serializable {
 	 */
 	public void add(float volume) {
 		this.volume += volume;
+	}
+
+
+	/**
+	 * Subtract from this fluid body
+	 */
+	public float subtract(float volume) {
+		float subtracted = 0f;
+		if (volume > this.volume) {
+			subtracted = this.volume;
+			this.volume = 0f;
+		} else {
+			subtracted = volume;
+			this.volume -= volume;
+		}
+		return subtracted;
 	}
 
 
