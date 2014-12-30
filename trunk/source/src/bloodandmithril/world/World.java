@@ -170,7 +170,7 @@ public class World implements Serializable {
 	/**
 	 * Updates this world, delta is in seconds
 	 */
-	public void update(float delta) {
+	public void updateFluids() {
 		for (FluidBody fluid : fluids) {
 			fluid.update();
 		}

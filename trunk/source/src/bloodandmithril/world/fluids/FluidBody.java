@@ -56,7 +56,7 @@ public class FluidBody implements Serializable {
 	 */
 	public void render() {
 		Domain.shapeRenderer.begin(ShapeType.FilledRectangle);
-		Domain.shapeRenderer.setColor(0f, 0.8f, 0.4f, 0.95f);
+		Domain.shapeRenderer.setColor(0f, 0.2f, 1f, 0.92f);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		// Split the occupied coordinates into y-layers
 		float workingVolume = volume;
