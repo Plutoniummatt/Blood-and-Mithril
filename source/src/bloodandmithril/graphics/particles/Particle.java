@@ -57,10 +57,10 @@ public abstract class Particle {
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 
-		position.add(velocity.cpy().mul(delta));
+		position.add(velocity.cpy().mul(0.016f));
 
 		movement(delta);
-		
+
 		Tile tileUnder = Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true);
 		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
 			Vector2 trial = position.cpy();
@@ -82,7 +82,7 @@ public abstract class Particle {
 		}
 	}
 
-	
+
 	private void movement(float delta) {
 		switch (movementMode) {
 		case GRAVITY:
@@ -98,18 +98,18 @@ public abstract class Particle {
 		}
 	}
 
-	
+
 	private void weightless(float delta) {
-		velocity.mul(0.98f);		
+		velocity.mul(0.98f);
 	}
-	
+
 
 	private void ember(float delta) {
 		velocity.y = velocity.y + delta * 150f;
 		velocity.mul(0.98f);
 	}
 
-	
+
 	private void gravitational(float delta) {
 		float gravity = Domain.getWorld(worldId).getGravity();
 		if (abs((velocity.y - gravity * delta) * delta) < TILE_SIZE/2) {
@@ -124,8 +124,8 @@ public abstract class Particle {
 	public SerializableFunction<Boolean> getRemovalCondition() {
 		return removalCondition;
 	}
-	
-	
+
+
 	public enum MovementMode implements Serializable {
 		GRAVITY, EMBER, WEIGHTLESS
 	}

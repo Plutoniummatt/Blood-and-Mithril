@@ -14,7 +14,9 @@ import static com.badlogic.gdx.Gdx.input;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
@@ -31,6 +33,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.affix.preaffix.Glowing;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
@@ -56,11 +59,15 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.fluids.FluidBody;
+import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -140,7 +147,29 @@ public class DevWindow extends Window {
 		if (super.keyPressed(keyCode)) {
 			return true;
 		}
-		
+
+		if (keyCode == Keys.T) {
+			Domain.getActiveWorld().getTopography().changeTile(
+				BloodAndMithrilClient.getMouseWorldX(),
+				BloodAndMithrilClient.getMouseWorldY(),
+				true,
+				YellowBrickTile.class
+			);
+		}
+
+		if (keyCode == Keys.F) {
+			int x = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldX());
+			int y = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY());
+
+			Map<Integer, LinkedList<Integer>> coords = Maps.newHashMap();
+			coords.put(y, Lists.newLinkedList(Lists.newArrayList(x, x+1, x+2)));
+			coords.put(y + 1, Lists.newLinkedList(Lists.newArrayList(x, x+1, x+2)));
+			coords.put(y + 2, Lists.newLinkedList(Lists.newArrayList(x, x+1, x+2)));
+
+			FluidBody fluid = new FluidBody(coords, 6.4f);
+			Domain.addFluid(fluid);
+		}
+
 		if (keyCode == Keys.E) {
 			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
@@ -164,6 +193,9 @@ public class DevWindow extends Window {
 
 			for (int i = 10; i > 0; i--) {
 				elf.giveItem(Rock.rock(Coal.class));
+			}
+			for (int i = 10; i > 0; i--) {
+				elf.giveItem(new FlintAndFiresteel());
 			}
 			for (int i = 5; i > 0; i--) {
 				elf.giveItem(Bricks.bricks(SandStone.class));
@@ -190,7 +222,7 @@ public class DevWindow extends Window {
 
 			Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
 		}
-		
+
 		if (keyCode == Keys.R) {
 			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
@@ -203,7 +235,7 @@ public class DevWindow extends Window {
 			Hare hare = new Hare(id, state, Faction.NPC, getActiveWorld().getWorldId());
 			Domain.addIndividual(hare, Domain.getActiveWorld().getWorldId());
 		}
-		
+
 		return false;
 	}
 

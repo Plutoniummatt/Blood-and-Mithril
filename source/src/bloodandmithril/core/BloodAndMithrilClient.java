@@ -63,6 +63,7 @@ import com.google.common.collect.Sets;
  * <b><p> Terraforming - Mining & Placing blocks                                                         </b></p>
  * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
  * <b><p> Generation                                                                                     </b></p>
+ * <b><p> Fluids	                                                                                     </b></p>
  *
  * DONE
  *
@@ -434,7 +435,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						);
 					} else {
 						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
-							indi.getId().getId(), 
+							indi.getId().getId(),
 							Topography.convertToWorldCoord(
 								getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
 									new Vector2(

@@ -27,6 +27,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.round;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,6 +48,7 @@ import bloodandmithril.ui.components.window.UnitsWindow;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
+import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.Gdx;
@@ -58,6 +60,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 
 /**
  * Class representing the entire domain governing the game.
@@ -90,6 +93,8 @@ public class Domain {
 
 	/** Every {@link Item} that exists that is not stored in a {@link Container} */
 	private static ConcurrentHashMap<Integer, Item> 			items	 				= new ConcurrentHashMap<>();
+
+	private static Collection<FluidBody> 						fluids					= Lists.newLinkedList();
 
 	/** Domain-specific {@link ShapeRenderer} */
 	public static ShapeRenderer shapeRenderer;
@@ -166,6 +171,11 @@ public class Domain {
 		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+	}
+
+
+	public static void addFluid(FluidBody fluid) {
+		fluids.add(fluid);
 	}
 
 
@@ -272,8 +282,15 @@ public class Domain {
 		IndividualPlatformFilteringRenderer.renderIndividuals();
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
 		foregroundParticles();
+		gl20.glEnable(GL20.GL_BLEND);
+		fluids.stream().forEach(
+			fluid -> {
+				fluid.render();
+				fluid.renderBindingBox();
+			}
+		);
 		fBuffer.end();
-
+		gl20.glDisable(GL20.GL_BLEND);
 		GaussianLightingRenderer.render(camX, camY);
 	}
 

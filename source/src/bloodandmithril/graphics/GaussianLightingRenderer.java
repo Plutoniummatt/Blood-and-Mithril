@@ -7,7 +7,6 @@ import static bloodandmithril.core.BloodAndMithrilClient.camMarginX;
 import static bloodandmithril.core.BloodAndMithrilClient.camMarginY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreen;
-import static bloodandmithril.world.Domain.getActiveWorld;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
@@ -462,10 +461,7 @@ public class GaussianLightingRenderer {
 			Shaders.backgroundShader.setUniformi("occlusion3", 2);
 			Shaders.backgroundShader.setUniformi("occlusion4", 3);
 			Shaders.backgroundShader.setUniformi("occlusion5", 4);
-			Shaders.backgroundShader.setUniformf("waterColor", 0.1f, 0.75f, 0.75f, 1f);
-			Shaders.backgroundShader.setUniformf("waterLevel", (-getActiveWorld().getWaterLevel() + cam.position.y + HEIGHT/2) / HEIGHT);
 			Shaders.backgroundShader.setUniformf("height", HEIGHT);
-			Shaders.backgroundShader.setUniformf("falloffDepth", Domain.getActiveWorld().getWaterAttenuationDepth());
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(
@@ -548,10 +544,6 @@ public class GaussianLightingRenderer {
 			Shaders.foregroundShader.setUniformi("occlusion", 1);
 			Shaders.foregroundShader.setUniformi("occlusion2", 2);
 			Shaders.foregroundShader.setUniformi("occlusion3", 7);
-			Shaders.foregroundShader.setUniformf("waterColor", 0.1f, 0.75f, 0.75f, 1f);
-			Shaders.foregroundShader.setUniformf("waterLevel", (-getActiveWorld().getWaterLevel() + cam.position.y + HEIGHT/2) / HEIGHT);
-			Shaders.foregroundShader.setUniformf("height", HEIGHT);
-			Shaders.foregroundShader.setUniformf("falloffDepth", Domain.getActiveWorld().getWaterAttenuationDepth());
 			gl.glActiveTexture(GL_TEXTURE0);
 
 			spriteBatch.draw(

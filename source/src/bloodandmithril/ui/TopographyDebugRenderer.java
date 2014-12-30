@@ -1,8 +1,5 @@
 package bloodandmithril.ui;
 
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
-import static bloodandmithril.world.topography.Topography.TILE_SIZE;
-
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -97,12 +94,6 @@ public class TopographyDebugRenderer {
 			UserInterface.shapeRenderer.filledCircle(h.getKey() - topoX, h.getValue() - topoY, 1);
 		}
 		UserInterface.shapeRenderer.end();
-
-		UserInterface.shapeRenderer.begin(ShapeType.Line);
-		UserInterface.shapeRenderer.setColor(Color.CYAN);
-		UserInterface.shapeRenderer.line(0, Domain.getActiveWorld().getWaterLevel()/TILE_SIZE  - topoY, WIDTH, Domain.getActiveWorld().getWaterLevel()/TILE_SIZE - topoY);
-		UserInterface.shapeRenderer.end();
-
 
 		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
 			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
