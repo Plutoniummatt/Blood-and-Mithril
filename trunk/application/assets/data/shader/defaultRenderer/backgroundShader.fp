@@ -11,10 +11,6 @@ uniform sampler2D occlusion3;
 uniform sampler2D occlusion4;
 uniform sampler2D occlusion5;
 uniform vec4 dayLightColor;
-uniform vec4 waterColor;
-uniform float waterLevel;
-uniform float height;
-uniform float falloffDepth;
 
 void main()
 {
@@ -34,12 +30,6 @@ void main()
   vec4 sampleBlendedWithDaylight = texture2D(u_texture, inverted) * (vec4(factor, factor, factor, 1.0) * dayLightColor + particle);
   
   vec4 sum = sampleBlendedWithDaylight - innerShadow - foregroundDropShadow;
-  
-  	if (v_texCoords.y > waterLevel) {
-		float attenuation = max(0.0, (falloffDepth - (v_texCoords.y - waterLevel) * height)) / falloffDepth;
-		vec4 attenuationVector = vec4(attenuation, attenuation, attenuation, 1.0) + particle;
-		sum = sum * waterColor * attenuationVector;
-	}
   
   gl_FragColor = sum;
 }
