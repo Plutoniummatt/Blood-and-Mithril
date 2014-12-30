@@ -4,7 +4,6 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 
 import java.io.Serializable;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -17,6 +16,7 @@ import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -98,7 +98,7 @@ public class FluidBody implements Serializable {
 	/**
 	 * Updates this {@link FluidBody}
 	 */
-	public void update() {
+	public synchronized void update() {
 		// Update binding box.
 		// Remove rows when fluid is no longer occupying a row.
 		Integer minX = null, maxX = null;
@@ -117,8 +117,10 @@ public class FluidBody implements Serializable {
 			} else {
 				workingVolume -= layer.getValue().size();
 			}
+			
+			final int y = layer.getKey();
 
-			for (int x : layer.getValue()) {
+			for (int x : Lists.newLinkedList(layer.getValue())) {
 				if (minX == null) {
 					minX = x;
 				}
@@ -134,6 +136,31 @@ public class FluidBody implements Serializable {
 				if (x > maxX) {
 					maxX = x;
 				}
+				
+				// Flow and Spread
+				if (Domain.getWorld(worldId).getTopography().getTile(x, y - 1, true).isPassable()) {
+					if (occupiedCoordinates.containsKey(y - 1)) {
+						occupiedCoordinates.get(y - 1).add(x);
+					} else {
+						Set<Integer> newRow = Sets.newConcurrentHashSet();
+						newRow.add(x);
+						occupiedCoordinates.put(y - 1, newRow);
+					}
+				} else if (workingVolume != 0f || topLayerVolume > spreadHeight) {
+					if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable()) {
+						layer.getValue().add(x + 1);
+					}
+					
+					if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable()) {
+						layer.getValue().add(x - 1);
+					}
+				}
+				
+				if (Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f) {
+					if (occupiedCoordinates.containsKey(y + 1)) {
+						occupiedCoordinates.get(y + 1).add(x);
+					}
+				}
 			}
 		}
 		bindingBox.bottom = occupiedCoordinates.firstKey();
@@ -145,27 +172,13 @@ public class FluidBody implements Serializable {
 			// Make sure the fluid has "elasticity", i.e. it will expand when compressed.
 			Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
 			final int y = lastEntry.getKey() + 1;
-			LinkedHashSet<Integer> newRow = Sets.newLinkedHashSet();
+			Set<Integer> newRow = Sets.newConcurrentHashSet();
 			for (int x : lastEntry.getValue()) {
 				if (Domain.getWorld(worldId).getTopography().getTile(x, y, true).isPassable()) {
 					newRow.add(x);
 				}
 			}
 			occupiedCoordinates.put(y, newRow);
-		} else if (topLayerVolume > spreadHeight) {
-			// Top layer spreading
-			Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
-			final int y = lastEntry.getKey();
-			Set<Integer> realRow = lastEntry.getValue();
-			Set<Integer> row = Sets.newLinkedHashSet(realRow);
-			for (int x : row) {
-				if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable()) {
-					realRow.add(x - 1);
-				}
-				if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable()) {
-					realRow.add(x + 1);
-				}
-			}
 		}
 
 		// Evaporation
