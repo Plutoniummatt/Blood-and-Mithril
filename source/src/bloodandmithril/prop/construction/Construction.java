@@ -167,7 +167,7 @@ public abstract class Construction extends Prop implements Container {
 				"Cancel",
 				() -> {
 					if (getConstructionProgress() == 0f) {
-						Domain.removeProp(id);
+						Domain.getWorld(getWorldId()).props().removeProp(id);
 					}
 				},
 				getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.WHITE,
@@ -265,8 +265,8 @@ public abstract class Construction extends Prop implements Container {
 		}
 
 		for (Integer propId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, x, y)) {
-			Prop prop = Domain.getProp(propId);
-			if (prop instanceof Construction && Domain.getActiveWorld().getProps().contains(propId)) {
+			Prop prop = Domain.getActiveWorld().props().getProp(propId);
+			if (prop instanceof Construction && Domain.getActiveWorld().props().hasProp(propId)) {
 				if (this.overlapsWith(prop)) {
 					return false;
 				}

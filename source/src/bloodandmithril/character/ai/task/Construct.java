@@ -60,7 +60,7 @@ public class Construct extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return ((Construction) Domain.getProp(constructionId)).getConstructionProgress() == 1f || stop;
+			return ((Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId)).getConstructionProgress() == 1f || stop;
 		}
 
 
@@ -72,7 +72,7 @@ public class Construct extends CompositeAITask {
 
 		@Override
 		public void execute(float delta) {
-			Construction construction = (Construction) Domain.getProp(constructionId);
+			Construction construction = (Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId);
 			if (construction != null) {
 				construction.construct(Domain.getIndividual(hostId.getId()), delta);
 			} else {

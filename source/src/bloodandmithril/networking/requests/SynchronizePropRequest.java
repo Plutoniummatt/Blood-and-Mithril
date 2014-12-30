@@ -19,16 +19,18 @@ import bloodandmithril.world.Domain;
 public class SynchronizePropRequest implements Request {
 
 	private final int propId;
+	private final int worldId;
 
-	public SynchronizePropRequest(int propId) {
+	public SynchronizePropRequest(int propId, int worldId) {
 		this.propId = propId;
+		this.worldId = worldId;
 	}
 
 
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(false);
-		responses.add(new SynchronizePropResponse(Domain.getProp(propId)));
+		responses.add(new SynchronizePropResponse(Domain.getWorld(worldId).props().getProp(propId)));
 		responses.add(new RefreshWindowsResponse());
 		return responses;
 	}
@@ -57,8 +59,8 @@ public class SynchronizePropRequest implements Request {
 
 		@Override
 		public void acknowledge() {
-			if (Domain.hasProp(prop.id)) {
-				Prop propToSync = Domain.getProp(prop.id);
+			if (Domain.getWorld(prop.getWorldId()).props().hasProp(prop.id)) {
+				Prop propToSync = Domain.getWorld(prop.getWorldId()).props().getProp(prop.id);
 				propToSync.synchronizeProp(prop);
 				if (propToSync instanceof Container) {
 					((Container) propToSync).synchronizeContainer((Container) prop);
@@ -67,7 +69,7 @@ public class SynchronizePropRequest implements Request {
 					((Construction) propToSync).synchronizeConstruction((Construction) prop);
 				}
 			} else {
-				Domain.addProp(prop, prop.getWorldId());
+				Domain.getWorld(prop.getWorldId()).props().addProp(prop);
 			}
 		}
 

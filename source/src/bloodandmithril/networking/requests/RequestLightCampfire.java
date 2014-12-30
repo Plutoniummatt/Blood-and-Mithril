@@ -30,7 +30,7 @@ public class RequestLightCampfire implements Request {
 	@Override
 	public Responses respond() {
 		Individual individual = Domain.getIndividual(individualId);
-		individual.getAI().setCurrentTask(new LightCampfire(individual, (Campfire) Domain.getProp(campfireId)));
+		individual.getAI().setCurrentTask(new LightCampfire(individual, (Campfire) Domain.getWorld(Domain.getIndividual(individualId).getWorldId()).props().getProp(campfireId)));
 		return new Responses(false);
 	}
 

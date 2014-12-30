@@ -132,16 +132,16 @@ public class BloodAndMithrilServer {
 							Logger.generalDebug(e.getMessage(), LogLevel.WARN, e);
 						}
 						if (counter % 2 == 0) {
-							for (Prop prop : Domain.getProps().values()) {
-								ClientServerInterface.SendNotification.notifySyncProp(prop);
-							}
-
 							for (Faction faction : Domain.getFactions().values()) {
 								ClientServerInterface.SendNotification.notifySyncFaction(faction);
 							}
 
 							for (int worldId : Domain.getWorlds().keySet()) {
 								ClientServerInterface.SendNotification.notifySyncItems(worldId);
+
+								for (Prop prop : Domain.getWorld(worldId).props().getProps()) {
+									ClientServerInterface.SendNotification.notifySyncProp(prop);
+								}
 							}
 						}
 

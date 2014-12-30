@@ -27,7 +27,6 @@ import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.round;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,8 +44,6 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.UnitsWindow;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.world.fluids.FluidBody;
-import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -56,7 +53,6 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
 
 /**
  * Class representing the entire domain governing the game.
@@ -72,9 +68,6 @@ public class Domain {
 	/** {@link World}s */
 	private static HashMap<Integer, World> 						worlds 					= newHashMap();
 
-	/** {@link Topography}s */
-	private static HashMap<Integer, Topography>					topographies			= newHashMap();
-
 	/** {@link Individual} that are selected for manual control */
 	private static Set<Individual> 								selectedIndividuals 	= newHashSet();
 
@@ -82,12 +75,7 @@ public class Domain {
 	private static ConcurrentHashMap<Integer, Individual> 		individuals 			= new ConcurrentHashMap<>();
 
 	/** Every {@link Prop} that exists */
-	private static ConcurrentHashMap<Integer, Prop> 			props 					= new ConcurrentHashMap<>();
-
-	/** Every {@link Prop} that exists */
 	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
-
-	private static Collection<FluidBody> 						fluids					= Lists.newLinkedList();
 
 	/** Domain-specific {@link ShapeRenderer} */
 	public static ShapeRenderer shapeRenderer;
@@ -124,16 +112,6 @@ public class Domain {
 	}
 
 
-	public static Topography getTopography(int id) {
-		return topographies.get(id);
-	}
-
-
-	public static Topography addTopography(int id, Topography topography) {
-		return topographies.put(id, topography);
-	}
-
-
 	public static void setup() {
 		gameWorldTexture 					= new Texture(files.internal("data/image/gameWorld.png"));
 		individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
@@ -152,11 +130,6 @@ public class Domain {
 	}
 
 
-	public static void addFluid(FluidBody fluid) {
-		fluids.add(fluid);
-	}
-
-
 	/**
 	 * Renders the game world
 	 */
@@ -167,7 +140,7 @@ public class Domain {
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.filter);
 		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
-		for (Prop prop : getProps().values()) {
+		for (Prop prop : activeWorld.props().getProps()) {
 			if (prop.depth == BACKGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.render();
@@ -224,7 +197,7 @@ public class Domain {
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
-		for (Prop prop : getProps().values()) {
+		for (Prop prop : activeWorld.props().getProps()) {
 			if (prop.depth == MIDDLEGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
@@ -241,7 +214,7 @@ public class Domain {
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
-		for (Prop prop : getProps().values()) {
+		for (Prop prop : activeWorld.props().getProps()) {
 			if (prop.depth == FOREGOUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
@@ -261,12 +234,7 @@ public class Domain {
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
 		foregroundParticles();
 		gl20.glEnable(GL20.GL_BLEND);
-		fluids.stream().forEach(
-			fluid -> {
-				fluid.render();
-				fluid.renderBindingBox();
-			}
-		);
+		activeWorld.renderFluids();
 		fBuffer.end();
 		gl20.glDisable(GL20.GL_BLEND);
 		GaussianLightingRenderer.render(camX, camY);
@@ -337,7 +305,7 @@ public class Domain {
 				indi.update(d);
 			}
 
-			for (Prop prop : props.values()) {
+			for (Prop prop : world.props().getProps()) {
 				prop.update(d);
 			}
 
@@ -392,19 +360,6 @@ public class Domain {
 	}
 
 
-	public static boolean hasProp(int key) {
-		return props.containsKey(key);
-	}
-
-
-	public static Prop removeProp(int key) {
-		Prop prop = getProp(key);
-		Domain.getWorld(prop.getWorldId()).getProps().remove(key);
-		Domain.getWorld(prop.getWorldId()).getPositionalIndexMap().get(prop.position.x, prop.position.y).removeProp(prop.id);
-		return props.remove(key);
-	}
-
-
 	/**
 	 * @return an {@link Individual} with the specified key
 	 */
@@ -430,32 +385,6 @@ public class Domain {
 
 	public static void setIndividuals(ConcurrentHashMap<Integer, Individual> individuals) {
 		Domain.individuals = individuals;
-	}
-
-
-	public static ConcurrentHashMap<Integer, Prop> getProps() {
-		return props;
-	}
-
-
-	public static void addProp(Prop prop, int worldId) {
-		prop.setWorldId(worldId);
-		props.put(prop.id, prop);
-		Domain.getWorld(worldId).getProps().add(prop.id);
-		Domain.getWorld(worldId).getPositionalIndexMap().get(prop.position.x, prop.position.y).addProp(prop.id);
-	}
-
-
-	/**
-	 * @return a prop with the specified ID
-	 */
-	public static Prop getProp(int key) {
-		return props.get(key);
-	}
-
-
-	public static void setProps(ConcurrentHashMap<Integer, Prop> props) {
-		Domain.props = props;
 	}
 
 

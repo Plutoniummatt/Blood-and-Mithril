@@ -13,16 +13,18 @@ import bloodandmithril.world.Domain;
 public class DestroyPropNotification implements Response {
 
 	private final int propId;
+	private final int worldId;
 
 	/** Constructor */
-	public DestroyPropNotification(int propId) {
+	public DestroyPropNotification(int propId, int worldId) {
 		this.propId = propId;
+		this.worldId = worldId;
 	}
 
 
 	@Override
 	public void acknowledge() {
-		Domain.removeProp(propId);
+		Domain.getWorld(worldId).props().removeProp(propId);
 	}
 
 

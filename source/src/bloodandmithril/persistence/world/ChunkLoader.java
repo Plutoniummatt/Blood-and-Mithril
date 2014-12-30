@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.zip.ZipFile;
 
@@ -118,9 +117,6 @@ public class ChunkLoader {
 	public static void loadWorlds() {
 		try {
 			HashMap<Integer, World> worlds = decode(Gdx.files.local(GameSaver.savePath + "/world/worlds.txt"));
-			for (World world : worlds.values()) {
-				world.setParticles(new ConcurrentLinkedDeque<>());
-			}
 			Domain.setWorlds(worlds);
 		} catch (Exception e) {
 			Logger.loaderDebug("Failed to load worlds", LogLevel.DEBUG);
@@ -128,7 +124,7 @@ public class ChunkLoader {
 
 		if (!Domain.getWorlds().isEmpty()) {
 			for (Entry<Integer, World> world : Domain.getWorlds().entrySet()) {
-				Domain.addTopography(world.getKey(), new Topography(world.getKey()));
+				world.getValue().setTopography(new Topography(world.getKey()));
 
 				try {
 					ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/superStructureKeys.txt"));

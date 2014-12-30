@@ -14,7 +14,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.persistence.character.IndividualLoader;
-import bloodandmithril.persistence.prop.PropLoader;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
@@ -51,7 +50,6 @@ public class GameLoader {
 		ChunkLoader.loadWorlds();
 		loadFactions();
 		IndividualLoader.loadAll();
-		PropLoader.loadAll();
 		if (ClientServerInterface.isClient()) {
 			loadCameraPosition();
 		}

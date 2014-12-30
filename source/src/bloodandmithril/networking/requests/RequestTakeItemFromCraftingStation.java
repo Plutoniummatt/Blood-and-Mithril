@@ -30,11 +30,11 @@ public class RequestTakeItemFromCraftingStation implements Request {
 
 	@Override
 	public Responses respond() {
-		((CraftingStation)Domain.getProp(craftingStationId)).takeItem(Domain.getIndividual(individualId));
+		((CraftingStation)Domain.getWorld(Domain.getIndividual(individualId).getWorldId()).props().getProp(craftingStationId)).takeItem(Domain.getIndividual(individualId));
 
 		Responses responses = new Responses(true);
 		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(individualId, System.currentTimeMillis()));
-		responses.add(new SynchronizePropRequest.SynchronizePropResponse(Domain.getProp(craftingStationId)));
+		responses.add(new SynchronizePropRequest.SynchronizePropResponse(Domain.getWorld(Domain.getIndividual(individualId).getWorldId()).props().getProp(craftingStationId)));
 		responses.add(new RefreshWindowsResponse());
 		return responses;
 	}

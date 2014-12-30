@@ -33,8 +33,7 @@ public class PositionalReindexingService {
 				item.updatePositionalIndex();
 			}
 
-			for (int propId : world.getProps()) {
-				Prop prop = Domain.getProp(propId);
+			for (Prop prop : world.props().getProps()) {
 				prop.updatePositionIndex();
 			}
 		}

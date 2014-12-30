@@ -15,18 +15,20 @@ import bloodandmithril.world.Domain;
 public class IgniteFurnaceRequest implements Request {
 
 	private int furnaceId;
+	private int worldId;
 
 	/**
 	 * Constructor
 	 */
-	public IgniteFurnaceRequest(int furnaceId) {
+	public IgniteFurnaceRequest(int furnaceId, int worldId) {
 		this.furnaceId = furnaceId;
+		this.worldId = worldId;
 	}
 
 
 	@Override
 	public Responses respond() {
-		Prop prop = Domain.getProp(furnaceId);
+		Prop prop = Domain.getWorld(worldId).props().getProp(furnaceId);
 		if (prop instanceof Furnace) {
 			float finalDuration = 0f;
 			for (Entry<Item, Integer> entry : ((Furnace) prop).getInventory().entrySet()) {
