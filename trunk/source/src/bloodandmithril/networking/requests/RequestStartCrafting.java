@@ -32,7 +32,7 @@ public class RequestStartCrafting implements Request {
 	@Override
 	public Responses respond() {
 		Individual individual = Domain.getIndividual(individualId);
-		CraftingStation craftingStation = (CraftingStation) Domain.getProp(craftingStationId);
+		CraftingStation craftingStation = (CraftingStation) Domain.getWorld(Domain.getIndividual(individualId).getWorldId()).props().getProp(craftingStationId);
 		individual.getAI().setCurrentTask(new Craft(individual, craftingStation, item, quantity));
 
 		return new Responses(false);

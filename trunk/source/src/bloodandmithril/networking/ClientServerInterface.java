@@ -727,7 +727,7 @@ public class ClientServerInterface {
 
 
 		public static synchronized void sendOpenCraftingStationRequest(Individual individual, CraftingStation craftingStation) {
-			client.sendTCP(new CSIOpenCraftingStation(individual.getId().getId(), craftingStation.id, client.getID()));
+			client.sendTCP(new CSIOpenCraftingStation(individual.getId().getId(), craftingStation.id, client.getID(), individual.getWorldId()));
 			Logger.networkDebug("Sending smith request", LogLevel.DEBUG);
 		}
 
@@ -796,8 +796,8 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending take item request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendIgniteFurnaceRequest(int furnaceId) {
-			client.sendTCP(new IgniteFurnaceRequest(furnaceId));
+		public static synchronized void sendIgniteFurnaceRequest(int furnaceId, int worldId) {
+			client.sendTCP(new IgniteFurnaceRequest(furnaceId, worldId));
 			Logger.networkDebug("Sending ignite furnace request", LogLevel.DEBUG);
 		}
 
@@ -939,12 +939,12 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyRemoveProp(int propId) {
+		public static synchronized void notifyRemoveProp(int propId, int worldId) {
 			sendNotification(
 				-1,
 				true,
 				true,
-				new DestroyPropNotification(propId)
+				new DestroyPropNotification(propId, worldId)
 			);
 		}
 
@@ -969,12 +969,12 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyOpenCraftingStationWindow(int individualId, int craftingStationId, int connectionId) {
+		public static synchronized void notifyOpenCraftingStationWindow(int individualId, int craftingStationId, int connectionId, int worldId) {
 			sendNotification(
 				connectionId,
 				true,
 				true,
-				new CSIOpenCraftingStation.NotifyOpenCraftingStationWindow(individualId, craftingStationId)
+				new CSIOpenCraftingStation.NotifyOpenCraftingStationWindow(individualId, craftingStationId, worldId)
 			);
 		}
 

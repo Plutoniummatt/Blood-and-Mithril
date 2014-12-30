@@ -94,7 +94,7 @@ public class Craft extends CompositeAITask {
 
 		@Override
 		public void execute(float delta) {
-			CraftingStation craftingStation = (CraftingStation) Domain.getProp(craftingStationId);
+			CraftingStation craftingStation = (CraftingStation) Domain.getWorld(getHost().getWorldId()).props().getProp(craftingStationId);
 			Individual individual = Domain.getIndividual(hostId.getId());
 
 			if (individual == null || craftingStation == null) {

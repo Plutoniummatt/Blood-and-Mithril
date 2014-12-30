@@ -11,8 +11,10 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -30,29 +32,36 @@ public class World implements Serializable {
 	/** Gravity on this world */
 	private float gravity;
 
-	/** Individuals that are currently in this {@link World} */
-	private Set<Integer> individuals 					= Sets.newHashSet();
+	/** {@link Topography} of this {@link World} */
+	private transient Topography topography;
 
-	/** {@link Prop}s that are on this {@link World} */
-	private Set<Integer> props 							= Sets.newHashSet();
+	/** Individuals that are currently in this {@link World} */
+	private Set<Integer> 										individuals 			= Sets.newHashSet();
+
+	/** All {@link FluidBody}s on this {@link World} */
+	private Collection<FluidBody> 								fluids					= Lists.newLinkedList();
+
+	/** The positional indexing map of this {@link World} */
+	private PositionalIndexMap 									positionalIndexMap		= new PositionalIndexMap();
+
+	/** Particles on this {@link World} */
+	private transient Collection<Particle> 						particles				= new ConcurrentLinkedDeque<>();
 
 	/** The items of this {@link World} */
 	private WorldItems items;
 
-	/** The positional indexing map of this {@link World} */
-	private PositionalIndexMap positionalIndexMap		= new PositionalIndexMap();
-
-	/** Particles on this {@link World} */
-	private transient Collection<Particle> particles	= new ConcurrentLinkedDeque<>();
+	/** The props of this {@link World} */
+	private WorldProps props;
 
 	/**
 	 * Constructor
 	 */
 	public World(float gravity) {
 		this.worldId = ParameterPersistenceService.getParameters().getNextWorldKey();
-		this.setGravity(gravity);
+		this.gravity = gravity;
 		this.items = new WorldItems(worldId);
-		Domain.addTopography(worldId, new Topography(worldId));
+		this.props = new WorldProps(worldId);
+		this.topography = new Topography(worldId);
 	}
 
 
@@ -60,25 +69,45 @@ public class World implements Serializable {
 	 * @return the {@link #topography}
 	 */
 	public Topography getTopography() {
-		return Domain.getTopography(worldId);
+		return topography;
 	}
 
 
+	/**
+	 * @return the {@link #topography}
+	 */
+	public void setTopography(Topography topography) {
+		this.topography = topography;
+	}
+
+
+	/**
+	 * @return The {@link WorldItems}
+	 */
 	public WorldItems items() {
 		return items;
 	}
 
 
+	/**
+	 * @return the {@link WorldProps}
+	 */
+	public WorldProps props() {
+		return props;
+	}
+
+
+	/**
+	 * @return the gravity of this world
+	 */
 	public float getGravity() {
 		return gravity;
 	}
 
 
-	public void setGravity(float gravity) {
-		this.gravity = gravity;
-	}
-
-
+	/**
+	 * @return the world id
+	 */
 	public int getWorldId() {
 		return worldId;
 	}
@@ -89,22 +118,42 @@ public class World implements Serializable {
 	}
 
 
-	public Set<Integer> getProps() {
-		return props;
-	}
-
-
+	/**
+	 * @return The transient collection of particles
+	 */
 	public Collection<Particle> getParticles() {
+		if (particles == null) {
+			particles = new ConcurrentLinkedDeque<>();
+		}
 		return particles;
 	}
 
 
-	public void setParticles(Collection<Particle> particles) {
-		this.particles = particles;
+	/**
+	 * @return the positional index map of this {@link World}
+	 */
+	public PositionalIndexMap getPositionalIndexMap() {
+		return positionalIndexMap;
 	}
 
 
-	public PositionalIndexMap getPositionalIndexMap() {
-		return positionalIndexMap;
+	/**
+	 * Adds a {@link FluidBody} to this {@link World}
+	 */
+	public void addFluid(FluidBody fluid) {
+		fluids.add(fluid);
+	}
+
+
+	/**
+	 * Renders the fluids
+	 */
+	public void renderFluids() {
+		fluids.stream().forEach(
+			fluid -> {
+				fluid.render();
+				fluid.renderBindingBox();
+			}
+		);
 	}
 }

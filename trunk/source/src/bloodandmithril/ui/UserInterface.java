@@ -352,7 +352,7 @@ public class UserInterface {
 				Iterables.transform(
 					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
-						return Domain.getProp(id);
+						return Domain.getActiveWorld().props().getProp(id);
 					}
 				)
 			)
@@ -1073,7 +1073,7 @@ public class UserInterface {
 		}
 
 		for (final int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())) {
-			Prop prop = Domain.getProp(propKey);
+			Prop prop = Domain.getActiveWorld().props().getProp(propKey);
 			if (prop.isMouseOver()) {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
 				newMenu.getMenuItems().add(

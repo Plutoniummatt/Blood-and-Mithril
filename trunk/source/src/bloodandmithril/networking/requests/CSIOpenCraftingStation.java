@@ -17,14 +17,16 @@ public class CSIOpenCraftingStation implements Request {
 	private final int craftingStationId;
 	private final int individualId;
 	private final int connectionId;
+	private final int worldId;
 
 	/**
 	 * Constructor
 	 */
-	public CSIOpenCraftingStation(int individualId, int craftingStationId, int connectionId) {
+	public CSIOpenCraftingStation(int individualId, int craftingStationId, int connectionId, int worldId) {
 		this.individualId = individualId;
 		this.craftingStationId = craftingStationId;
 		this.connectionId = connectionId;
+		this.worldId = worldId;
 	}
 
 
@@ -33,7 +35,7 @@ public class CSIOpenCraftingStation implements Request {
 		Responses response = new Response.Responses(false);
 
 		Individual individual = Domain.getIndividual(individualId);
-		Prop prop = Domain.getProp(craftingStationId);
+		Prop prop = Domain.getWorld(worldId).props().getProp(craftingStationId);
 		if (prop instanceof CraftingStation) {
 			individual.getAI().setCurrentTask(
 				new OpenCraftingStation(individual, (CraftingStation) prop, connectionId)
@@ -60,15 +62,17 @@ public class CSIOpenCraftingStation implements Request {
 
 		private final int individualId;
 		private final int craftingStationId;
+		private final int worldId;
 
-		public NotifyOpenCraftingStationWindow(int individualId, int craftingStationId) {
+		public NotifyOpenCraftingStationWindow(int individualId, int craftingStationId, int worldId) {
 			this.individualId = individualId;
 			this.craftingStationId = craftingStationId;
+			this.worldId = worldId;
 		}
 
 		@Override
 		public void acknowledge() {
-			Prop prop = Domain.getProp(craftingStationId);
+			Prop prop = Domain.getWorld(worldId).props().getProp(craftingStationId);
 			if (prop instanceof CraftingStation) {
 				OpenCraftingStation.openCraftingStationWindow(Domain.getIndividual(individualId), (CraftingStation)prop);
 			}

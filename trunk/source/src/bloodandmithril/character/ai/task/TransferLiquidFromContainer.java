@@ -72,7 +72,7 @@ public class TransferLiquidFromContainer extends CompositeAITask {
 
 		@Override
 		public void execute(float delta) {
-			if (Domain.getIndividual(hostId.getId()).getDistanceFrom(Domain.getProp(containerId).position) > 64f) {
+			if (Domain.getIndividual(hostId.getId()).getDistanceFrom(Domain.getWorld(getHost().getWorldId()).props().getProp(containerId).position) > 64f) {
 				return;
 			}
 

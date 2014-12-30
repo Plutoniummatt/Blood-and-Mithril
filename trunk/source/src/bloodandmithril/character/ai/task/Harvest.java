@@ -87,7 +87,7 @@ public class Harvest extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return !Domain.hasProp(harvestable.id);
+			return !Domain.getWorld(getHost().getWorldId()).props().hasProp(harvestable.id);
 		}
 
 
@@ -110,13 +110,13 @@ public class Harvest extends CompositeAITask {
 					return;
 				}
 
-				if (Domain.hasProp(harvestable.id)) {
+				if (Domain.getWorld(host.getWorldId()).props().hasProp(harvestable.id)) {
 					if (harvestable.destroyUponHarvest()) {
-						Domain.removeProp(harvestable.id);
+						Domain.getWorld(host.getWorldId()).props().removeProp(harvestable.id);
 					}
 
 					if (ClientServerInterface.isServer() && !ClientServerInterface.isClient()) {
-						ClientServerInterface.SendNotification.notifyRemoveProp(harvestable.id);
+						ClientServerInterface.SendNotification.notifyRemoveProp(harvestable.id, harvestable.getWorldId());
 					}
 
 					if (ClientServerInterface.isClient() && ClientServerInterface.isServer()) {

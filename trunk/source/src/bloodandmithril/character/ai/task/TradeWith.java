@@ -186,7 +186,7 @@ public class TradeWith extends CompositeAITask {
 	 */
 	public static void openTradeWindowWithProp(Individual proposer, Container container) {
 		if (container instanceof Prop) {
-			Prop prop = Domain.getProp(((Prop) container).id);
+			Prop prop = Domain.getWorld(proposer.getWorldId()).props().getProp(((Prop) container).id);
 
 			if (prop instanceof Construction) {
 				if (((Construction) prop).getConstructionProgress() != 1f) {

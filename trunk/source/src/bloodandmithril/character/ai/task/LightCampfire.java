@@ -68,7 +68,7 @@ public class LightCampfire extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return Domain.hasProp(campfireId) && lit;
+			return Domain.getWorld(getHost().getWorldId()).props().hasProp(campfireId) && lit;
 		}
 
 
@@ -82,11 +82,11 @@ public class LightCampfire extends CompositeAITask {
 		public void execute(float delta) {
 			Individual host = Domain.getIndividual(hostId.getId());
 
-			if (!Domain.hasProp(campfireId)) {
+			if (!Domain.getWorld(host.getWorldId()).props().hasProp(campfireId)) {
 				return;
 			}
 
-			Campfire campfire = (Campfire) Domain.getProp(campfireId);
+			Campfire campfire = (Campfire) Domain.getWorld(host.getWorldId()).props().getProp(campfireId);
 			if (host.getInteractionBox().isWithinBox(campfire.position)) {
 				if (host.has(new FlintAndFiresteel()) > 0) {
 					ParticleService.parrySpark(campfire.position.cpy().add(0, 7), new Vector2());

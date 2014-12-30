@@ -40,7 +40,7 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2014")
 public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
-	private Individual builder;
+	private final Individual builder;
 
 	/**
 	 * Constructor
@@ -114,8 +114,10 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 			new ContextMenu.MenuItem(
 				"Construct",
 				() -> {
+					Construction toConstruct = tEntry.getKey();
+					toConstruct.setWorldId(builder.getWorldId());
 					BloodAndMithrilClient.setCursorBoundTask(
-						new BuildCursorBoundTask(tEntry.getKey())
+						new BuildCursorBoundTask(toConstruct)
 					);
 					this.setClosing(true);
 				},
@@ -149,7 +151,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 					if (canBuild) {
 						if (ClientServerInterface.isServer()) {
-							Domain.addProp(toConstruct, Domain.getActiveWorld().getWorldId());
+							Domain.getWorld(toConstruct.getWorldId()).props().addProp(toConstruct);
 						} else {
 							ClientServerInterface.SendRequest.sendPlaceConstructionRequest(getMouseWorldX(), coords.y, toConstruct, Domain.getActiveWorld().getWorldId());
 						}

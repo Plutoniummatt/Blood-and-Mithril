@@ -33,7 +33,7 @@ public class PlaceConstructionRequest implements Request {
 	@Override
 	public Responses respond() {
 		if (construction.canBuildAt(x, y)) {
-			Domain.addProp(construction, worldId);
+			Domain.getWorld(worldId).props().addProp(construction);
 		}
 
 		return new Responses(false);

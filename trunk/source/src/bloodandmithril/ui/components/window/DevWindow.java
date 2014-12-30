@@ -167,7 +167,7 @@ public class DevWindow extends Window {
 			coords.put(y + 2, Lists.newLinkedList(Lists.newArrayList(x, x+1, x+2)));
 
 			FluidBody fluid = new FluidBody(coords, 6.4f);
-			Domain.addFluid(fluid);
+			Domain.getActiveWorld().addFluid(fluid);
 		}
 
 		if (keyCode == Keys.E) {
@@ -277,7 +277,7 @@ public class DevWindow extends Window {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
 								Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
-								Domain.addProp(anvil, Domain.getActiveWorld().getWorldId());
+								Domain.getWorld(individual.getWorldId()).props().addProp(anvil);
 							}
 						},
 						Color.GREEN,
@@ -305,7 +305,7 @@ public class DevWindow extends Window {
 									Pine.class
 								);
 
-								Domain.addProp(pineChest, Domain.getActiveWorld().getWorldId());
+								Domain.getWorld(individual.getWorldId()).props().addProp(pineChest);
 							}
 						},
 						Color.GREEN,
@@ -323,7 +323,7 @@ public class DevWindow extends Window {
 									individual.getState().position.y
 								);
 
-								Domain.addProp(carpenterWorkshop, Domain.getActiveWorld().getWorldId());
+								Domain.getWorld(individual.getWorldId()).props().addProp(carpenterWorkshop);
 							}
 						},
 						Color.GREEN,
@@ -338,7 +338,7 @@ public class DevWindow extends Window {
 							if (individual != null) {
 								Furnace furnace = new Furnace(SandStone.class, individual.getState().position.x, individual.getState().position.y);
 								furnace.setConstructionProgress(0f);
-								Domain.addProp(furnace, Domain.getActiveWorld().getWorldId());
+								Domain.getWorld(individual.getWorldId()).props().addProp(furnace);
 							}
 						},
 						Color.GREEN,
@@ -352,7 +352,7 @@ public class DevWindow extends Window {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
 								Campfire campfire = new Campfire(individual.getState().position.x, individual.getState().position.y);
-								Domain.addProp(campfire, Domain.getActiveWorld().getWorldId());
+								Domain.getWorld(individual.getWorldId()).props().addProp(campfire);
 							}
 						},
 						Color.GREEN,
@@ -366,7 +366,7 @@ public class DevWindow extends Window {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
 								bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
-								Domain.addProp(carrot, Domain.getActiveWorld().getWorldId());
+								Domain.getWorld(individual.getWorldId()).props().addProp(carrot);
 							}
 						},
 						Color.GREEN,

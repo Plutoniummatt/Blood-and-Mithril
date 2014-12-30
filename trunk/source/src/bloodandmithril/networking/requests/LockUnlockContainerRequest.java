@@ -33,7 +33,7 @@ public class LockUnlockContainerRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Prop container = Domain.getProp(containerId);
+		Prop container = Domain.getWorld(Domain.getIndividual(individualId).getWorldId()).props().getProp(containerId);
 		if (!(container instanceof Container)) {
 			throw new RuntimeException("Can not lock/unlock non-container");
 		}

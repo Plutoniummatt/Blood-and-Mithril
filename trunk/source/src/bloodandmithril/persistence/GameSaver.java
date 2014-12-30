@@ -10,7 +10,6 @@ import java.util.concurrent.BlockingQueue;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.character.IndividualSaver;
-import bloodandmithril.persistence.prop.PropSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.persistence.world.ChunkSaver;
 import bloodandmithril.util.Task;
@@ -87,8 +86,6 @@ public class GameSaver {
 				saveCompleted();
 			}
 		);
-
-		PropSaver.saveAll();
 	}
 
 

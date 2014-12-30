@@ -60,7 +60,7 @@ public class TransferItems implements Request {
 			break;
 
 		case PROP:
-			Prop prop = Domain.getProp(proposeeId);
+			Prop prop = Domain.getWorld(proposer.getWorldId()).props().getProp(proposeeId);
 			proposee = (Container) prop;
 			response.add(new SynchronizePropRequest.SynchronizePropResponse(prop));
 			break;

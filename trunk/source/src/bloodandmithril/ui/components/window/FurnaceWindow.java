@@ -200,7 +200,7 @@ public class FurnaceWindow extends TradeWindow {
 			furnace.setCombustionDurationRemaining(finalDuration);
 			furnace.ignite();
 		} else {
-			ClientServerInterface.SendRequest.sendIgniteFurnaceRequest(furnace.id);
+			ClientServerInterface.SendRequest.sendIgniteFurnaceRequest(furnace.id, furnace.getWorldId());
 		}
 	}
 }
