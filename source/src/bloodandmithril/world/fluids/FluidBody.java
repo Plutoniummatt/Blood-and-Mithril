@@ -4,6 +4,7 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -29,13 +30,21 @@ public class FluidBody implements Serializable {
 
 	private volatile float volume;
 	private final ConcurrentSkipListMap<Integer, Set<Integer>> occupiedCoordinates = new ConcurrentSkipListMap<>();
+	private final int worldId;
 	private Boundaries bindingBox = new Boundaries(0, 0, 0, 0);
+
+	/** The height at which surface tension is no longer able to prevent the fluid from spreading */
+	private static final float spreadHeight = 0.1f;
+
+	/** How fast the fluid in this body of water will evaporate per second per tile exposed to air that has a non-passable tile underneath */
+	private static final float evaporationRate = 0.0003f;
 
 
 	/**
 	 * Constructor
 	 */
-	public FluidBody(Map<Integer, Set<Integer>> occupiedCoordinates, float volume) {
+	public FluidBody(Map<Integer, Set<Integer>> occupiedCoordinates, float volume, int worldId) {
+		this.worldId = worldId;
 		this.occupiedCoordinates.putAll(occupiedCoordinates);
 		this.volume = volume;
 		update();
@@ -90,10 +99,11 @@ public class FluidBody implements Serializable {
 	 * Updates this {@link FluidBody}
 	 */
 	public void update() {
+		// Update binding box.
+		// Remove rows when fluid is no longer occupying a row.
 		Integer minX = null, maxX = null;
-
 		float workingVolume = volume;
-
+		float topLayerVolume = 0f;
 		for (Entry<Integer, Set<Integer>> layer : occupiedCoordinates.entrySet()) {
 
 			if (workingVolume == 0f) {
@@ -102,6 +112,7 @@ public class FluidBody implements Serializable {
 			}
 
 			if (workingVolume < layer.getValue().size()) {
+				topLayerVolume = workingVolume / layer.getValue().size();
 				workingVolume = 0f;
 			} else {
 				workingVolume -= layer.getValue().size();
@@ -129,6 +140,50 @@ public class FluidBody implements Serializable {
 		bindingBox.top = occupiedCoordinates.lastKey();
 		bindingBox.left = minX;
 		bindingBox.right = maxX;
+
+		if (workingVolume > 0f) {
+			// Make sure the fluid has "elasticity", i.e. it will expand when compressed.
+			Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
+			final int y = lastEntry.getKey() + 1;
+			LinkedHashSet<Integer> newRow = Sets.newLinkedHashSet();
+			for (int x : lastEntry.getValue()) {
+				if (Domain.getWorld(worldId).getTopography().getTile(x, y, true).isPassable()) {
+					newRow.add(x);
+				}
+			}
+			occupiedCoordinates.put(y, newRow);
+		} else if (topLayerVolume > spreadHeight) {
+			// Spreading
+			Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
+			final int y = lastEntry.getKey();
+			Set<Integer> realRow = lastEntry.getValue();
+			Set<Integer> row = Sets.newLinkedHashSet(realRow);
+			for (int x : row) {
+				if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable()) {
+					realRow.add(x - 1);
+				}
+				if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable()) {
+					realRow.add(x + 1);
+				}
+			}
+		}
+
+		// Evaporation
+		Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
+		final int y = lastEntry.getKey();
+		for (int x : lastEntry.getValue()) {
+			if (Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable()) {
+				volume -= evaporationRate / 60f;
+			}
+		}
+	}
+
+
+	/**
+	 * Add to this fluid body
+	 */
+	public void add(float volume) {
+		this.volume += volume;
 	}
 
 

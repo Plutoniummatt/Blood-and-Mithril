@@ -198,6 +198,6 @@ public abstract class GroundTravellingIndividual extends Individual {
 		getState().velocity.x = jumpVector.x;
 		getState().velocity.y = jumpVector.y;
 		decreaseStamina(0.1f);
-		setCurrentAction(getCurrentAction().left() ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
+		setCurrentAction(jumpVector.x < 0f ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
 	}
 }
