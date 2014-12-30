@@ -949,12 +949,12 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifySyncItems() {
+		public static synchronized void notifySyncItems(int worldId) {
 			sendNotification(
 				-1,
 				true,
 				true,
-				new SynchronizeItems()
+				new SynchronizeItems(worldId)
 			);
 		}
 

@@ -73,7 +73,7 @@ public class TakeItem extends CompositeAITask {
 
 		appendTask(new TakeItem(
 			host,
-			Domain.getItem(itemIds.poll()),
+			Domain.getWorld(host.getWorldId()).items().getItem(itemIds.poll()),
 			itemIds
 		));
 	}
@@ -106,7 +106,7 @@ public class TakeItem extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return !Domain.hasItem(item.getId());
+			return !Domain.getWorld(getHost().getWorldId()).items().hasItem(item.getId());
 		}
 
 
@@ -129,10 +129,11 @@ public class TakeItem extends CompositeAITask {
 		private void takeNextItem() {
 			if (!itemIds.isEmpty()) {
 				Integer next = itemIds.poll();
-				if (Domain.getItem(next) != null) {
+				Individual individual = Domain.getIndividual(hostId.getId());
+				if (Domain.getWorld(individual.getWorldId()).items().getItem(next) != null) {
 					appendTask(new TakeItem(
-						Domain.getIndividual(hostId.getId()),
-						Domain.getItem(next),
+						individual,
+						Domain.getWorld(individual.getWorldId()).items().getItem(next),
 						itemIds
 					));
 				} else {
@@ -158,7 +159,7 @@ public class TakeItem extends CompositeAITask {
 						individual.equip((Equipable) item);
 					}
 				}
-				Domain.removeItem(item.getId());
+				Domain.getWorld(individual.getWorldId()).items().removeItem(item.getId());
 			}
 		}
 	}

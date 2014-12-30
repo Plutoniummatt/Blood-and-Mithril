@@ -285,7 +285,11 @@ public abstract class CraftingStation extends Construction {
 				if (individual.canReceive(currentlyBeingCrafted.t)) {
 					individual.giveItem(currentlyBeingCrafted.t);
 				} else {
-					Domain.addItem(currentlyBeingCrafted.t.copy(), position.cpy().add(0f, height), new Vector2(), getWorldId());
+					Domain.getWorld(getWorldId()).items().addItem(
+						currentlyBeingCrafted.t.copy(),
+						position.cpy().add(0f, height),
+						new Vector2()
+					);
 				}
 			}
 			setCurrentlyBeingCrafted(null);

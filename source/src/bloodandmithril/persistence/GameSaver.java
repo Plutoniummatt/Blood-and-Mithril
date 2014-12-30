@@ -10,7 +10,6 @@ import java.util.concurrent.BlockingQueue;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.character.IndividualSaver;
-import bloodandmithril.persistence.item.ItemSaver;
 import bloodandmithril.persistence.prop.PropSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.persistence.world.ChunkSaver;
@@ -39,7 +38,7 @@ public class GameSaver {
 
 	/** Name to use for saved game */
 	private static String savedGameName = null;
-	
+
 	/** The meta data of the most recently loaded saved game */
 	public static PersistenceMetaData mostRecentlyLoaded;
 
@@ -90,7 +89,6 @@ public class GameSaver {
 		);
 
 		PropSaver.saveAll();
-		ItemSaver.saveAll();
 	}
 
 

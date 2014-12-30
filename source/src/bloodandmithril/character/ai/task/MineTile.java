@@ -164,7 +164,7 @@ public class MineTile extends CompositeAITask {
 								if (host.canReceive(mined)) {
 									host.giveItem(mined);
 								} else {
-									Domain.addItem(mined, tileCoordinate.cpy(), new Vector2(), host.getWorldId());
+									Domain.getWorld(host.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
 								}
 
 								UserInterface.refreshRefreshableWindows();
@@ -175,8 +175,8 @@ public class MineTile extends CompositeAITask {
 								if (host.canReceive(mined)) {
 									ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine());
 								} else {
-									Domain.addItem(mined, tileCoordinate.cpy(), new Vector2(), host.getWorldId());
-									ClientServerInterface.SendNotification.notifySyncItems();
+									Domain.getWorld(host.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
+									ClientServerInterface.SendNotification.notifySyncItems(host.getWorldId());
 								}
 							}
 						}

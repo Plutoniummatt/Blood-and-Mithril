@@ -37,7 +37,7 @@ public class RequestDiscardItem implements Request {
 
 		Responses responses = new Responses(true);
 		responses.add(new SynchronizeIndividual.SynchronizeIndividualResponse(hostId, System.currentTimeMillis()));
-		responses.add(new SynchronizeItems());
+		responses.add(new SynchronizeItems(Domain.getIndividual(hostId).getWorldId()));
 		responses.add(new RefreshWindows.RefreshWindowsResponse());
 		return responses;
 	}

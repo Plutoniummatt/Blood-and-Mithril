@@ -29,11 +29,10 @@ public class PositionalReindexingService {
 				individual.updatePositionalIndex();
 			}
 
-			for (int itemId : world.getItems()) {
-				Item item = Domain.getItem(itemId);
+			for (Item item : world.items().getItems()) {
 				item.updatePositionalIndex();
 			}
-			
+
 			for (int propId : world.getProps()) {
 				Prop prop = Domain.getProp(propId);
 				prop.updatePositionIndex();
