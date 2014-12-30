@@ -150,12 +150,6 @@ public class DevWindow extends Window {
 			return true;
 		}
 
-		if (keyCode == Keys.A) {
-			for (FluidBody fluid : Domain.getActiveWorld().fluids) {
-				fluid.add(0.1f);
-			}
-		}
-
 		if (keyCode == Keys.T) {
 			Domain.getActiveWorld().getTopography().changeTile(
 				BloodAndMithrilClient.getMouseWorldX(),
