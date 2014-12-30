@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle;
-import bloodandmithril.item.items.Item;
 import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
@@ -37,11 +36,8 @@ public class World implements Serializable {
 	/** {@link Prop}s that are on this {@link World} */
 	private Set<Integer> props 							= Sets.newHashSet();
 
-	/** {@link Light}s that are present on this {@link World} */
-	private Set<Integer> lights 						= Sets.newHashSet();
-
-	/** {@link Item}s that are present on this {@link World} */
-	private Set<Integer> items							= Sets.newHashSet();
+	/** The items of this {@link World} */
+	private WorldItems items;
 
 	/** The positional indexing map of this {@link World} */
 	private PositionalIndexMap positionalIndexMap		= new PositionalIndexMap();
@@ -49,18 +45,13 @@ public class World implements Serializable {
 	/** Particles on this {@link World} */
 	private transient Collection<Particle> particles	= new ConcurrentLinkedDeque<>();
 
-	/** The world y-coordinate for the water level */
-	private float waterLevel = 100f;
-
-	/** The depth at which light can no longer reach */
-	private float waterAttenuationDepth = 500f;
-
 	/**
 	 * Constructor
 	 */
 	public World(float gravity) {
 		this.worldId = ParameterPersistenceService.getParameters().getNextWorldKey();
 		this.setGravity(gravity);
+		this.items = new WorldItems(worldId);
 		Domain.addTopography(worldId, new Topography(worldId));
 	}
 
@@ -70,6 +61,11 @@ public class World implements Serializable {
 	 */
 	public Topography getTopography() {
 		return Domain.getTopography(worldId);
+	}
+
+
+	public WorldItems items() {
+		return items;
 	}
 
 
@@ -98,38 +94,8 @@ public class World implements Serializable {
 	}
 
 
-	public Set<Integer> getLights() {
-		return lights;
-	}
-
-
-	public Set<Integer> getItems() {
-		return items;
-	}
-
-
 	public Collection<Particle> getParticles() {
 		return particles;
-	}
-
-
-	public float getWaterLevel() {
-		return waterLevel;
-	}
-
-
-	public void setWaterLevel(float waterLevel) {
-		this.waterLevel = waterLevel;
-	}
-
-
-	public float getWaterAttenuationDepth() {
-		return waterAttenuationDepth;
-	}
-
-
-	public void setWaterAttenuationDepth(float waterAttenuationDepth) {
-		this.waterAttenuationDepth = waterAttenuationDepth;
 	}
 
 

@@ -40,7 +40,7 @@ public class RequestTakeItem implements Request {
 		Individual individual = Domain.getIndividual(individualId);
 		Collection<Item> serverItems = Lists.newArrayList();
 		for (Integer id : items) {
-			Item item = Domain.getItem(id);
+			Item item = Domain.getWorld(individual.getWorldId()).items().getItem(id);
 			if (item != null) {
 				serverItems.add(item);
 			}

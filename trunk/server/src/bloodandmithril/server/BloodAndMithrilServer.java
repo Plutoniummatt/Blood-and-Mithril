@@ -140,7 +140,9 @@ public class BloodAndMithrilServer {
 								ClientServerInterface.SendNotification.notifySyncFaction(faction);
 							}
 
-							ClientServerInterface.SendNotification.notifySyncItems();
+							for (int worldId : Domain.getWorlds().keySet()) {
+								ClientServerInterface.SendNotification.notifySyncItems(worldId);
+							}
 						}
 
 						if (counter >= 100) {

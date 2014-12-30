@@ -18,16 +18,18 @@ import com.google.common.collect.Maps;
 public class SynchronizeItems implements Response {
 
 	private HashMap<Integer, Item> items;
+	private int worldId;
 
-	public SynchronizeItems() {
-		items = Maps.newHashMap(Domain.getItems());
+	public SynchronizeItems(int worldId) {
+		this.worldId = worldId;
+		items = Maps.newHashMap(Domain.getWorld(worldId).items().getItemsMap());
 	}
 
 
 	@Override
 	public void acknowledge() {
-		Domain.getItems().clear();
-		Domain.getItems().putAll(items);
+		Domain.getWorld(worldId).items().getItemsMap().clear();
+		Domain.getWorld(worldId).items().getItemsMap().putAll(items);;
 	}
 
 

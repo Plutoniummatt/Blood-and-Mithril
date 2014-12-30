@@ -2,9 +2,11 @@ package bloodandmithril.character.ai;
 
 import java.io.Serializable;
 
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Task;
+import bloodandmithril.world.Domain;
 
 /**
  * Abstract {@link Task}, see {@link ArtificialIntelligence#ArtificialIntelligence(bloodandmithril.character.individuals.Individual)}
@@ -24,11 +26,15 @@ public abstract class AITask implements Serializable {
 	protected AITask(IndividualIdentifier hostId) {
 		this.hostId = hostId;
 	}
-	
+
 	public IndividualIdentifier getHostId() {
 		return hostId;
 	}
-	
+
+	protected Individual getHost() {
+		return Domain.getIndividual(hostId.getId());
+	}
+
 	/** @return the description of the task */
 	public abstract String getDescription();
 

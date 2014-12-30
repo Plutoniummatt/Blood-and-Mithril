@@ -589,7 +589,7 @@ public class UserInterface {
 					screenToWorldY(bottom)
 				),
 				id -> {
-					return Domain.getItem(id);
+					return Domain.getActiveWorld().items().getItem(id);
 				}
 			)).stream().filter(toKeep -> {
 				return toKeep.getWorldId() == Domain.getActiveWorld().getWorldId();
@@ -1093,7 +1093,7 @@ public class UserInterface {
 		}
 
 		for (final Integer itemId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Item.class, BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())) {
-			final Item item = Domain.getItem(itemId);
+			final Item item = Domain.getActiveWorld().items().getItem(itemId);
 			if (item.isMouseOver()) {
 				final ContextMenu secondaryMenu = item.getContextMenu();
 				newMenu.getMenuItems().add(

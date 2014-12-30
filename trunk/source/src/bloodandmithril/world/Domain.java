@@ -38,16 +38,13 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.UnitsWindow;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.util.Util;
 import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
 
@@ -58,7 +55,6 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
@@ -90,9 +86,6 @@ public class Domain {
 
 	/** Every {@link Prop} that exists */
 	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
-
-	/** Every {@link Item} that exists that is not stored in a {@link Container} */
-	private static ConcurrentHashMap<Integer, Item> 			items	 				= new ConcurrentHashMap<>();
 
 	private static Collection<FluidBody> 						fluids					= Lists.newLinkedList();
 
@@ -133,21 +126,6 @@ public class Domain {
 
 	public static Topography getTopography(int id) {
 		return topographies.get(id);
-	}
-
-
-	public static int addItem(Item item, Vector2 position, Vector2 velocity, int worldId) {
-		if (item.rotates()) {
-			item.setAngularVelocity((Util.getRandom().nextFloat() - 0.5f) * 40f);
-		}
-
-		item.setWorldId(worldId);
-		item.setId(ParameterPersistenceService.getParameters().getNextItemId());
-		item.setPosition(position);
-		item.setVelocity(velocity);
-		items.put(item.getId(), item);
-
-		return item.getId();
 	}
 
 
@@ -271,7 +249,7 @@ public class Domain {
 				spriteBatch.flush();
 			}
 		}
-		for (Item item : getItems().values()) {
+		for (Item item : getActiveWorld().items().getItems()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			item.render();
 			spriteBatch.flush();
@@ -349,7 +327,8 @@ public class Domain {
 	 * Updates the game world
 	 */
 	public void update(int camX, int camY) {
-		if (getActiveWorld() != null) {
+		World world = getActiveWorld();
+		if (world != null) {
 			float d = 1f/60f;
 
 			getCurrentEpoch().incrementTime(d);
@@ -362,7 +341,7 @@ public class Domain {
 				prop.update(d);
 			}
 
-			for (Item item : items.values()) {
+			for (Item item : world.items().getItems()) {
 				try {
 					item.update(d);
 				} catch (NullPointerException e) {
@@ -410,23 +389,6 @@ public class Domain {
 
 	public static ConcurrentHashMap<Integer, Individual> getIndividuals() {
 		return individuals;
-	}
-
-
-	public static Item getItem(int key) {
-		return items.get(key);
-	}
-
-
-	public static boolean hasItem(int key) {
-		return items.containsKey(key);
-	}
-
-
-	public static void removeItem(int key) {
-		Item item = Domain.getItem(key);
-		Domain.getWorld(item.getWorldId()).getPositionalIndexMap().get(item.getPosition().x, item.getPosition().y).removeItem(key);
-		items.remove(key);
 	}
 
 
@@ -504,16 +466,6 @@ public class Domain {
 
 	public static void setFactions(ConcurrentHashMap<Integer, Faction> factions) {
 		Domain.factions = factions;
-	}
-
-
-	public synchronized static ConcurrentHashMap<Integer, Item> getItems() {
-		return items;
-	}
-
-
-	public static void setItems(ConcurrentHashMap<Integer, Item> items) {
-		Domain.items = items;
 	}
 
 

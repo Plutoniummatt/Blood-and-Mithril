@@ -231,11 +231,10 @@ public class ContainerImpl implements Container, Serializable {
 		if (isServer()) {
 			for (int i = quantity; i !=0; i--) {
 				if (individual.takeItem(item) == 1) {
-					Domain.addItem(
+					Domain.getWorld(individual.getWorldId()).items().addItem(
 						item.copy(),
 						individual.getEmissionPosition(),
-						v.call(),
-						individual.getWorldId()
+						v.call()
 					);
 				} else {
 					break;
@@ -290,18 +289,18 @@ public class ContainerImpl implements Container, Serializable {
 
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public boolean canReceive(Collection<Item> items) {
 		float totalMass = 0f;
 		float totalVolume = 0;
-		
+
 		for (Item item : items) {
 			totalMass += item.getMass();
 			totalVolume += item.getVolume();
 		}
-		
+
 		if (currentLoad + totalMass > inventoryMassCapacity) {
 			return false;
 		}
