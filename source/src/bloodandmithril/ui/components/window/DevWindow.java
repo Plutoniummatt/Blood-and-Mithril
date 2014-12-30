@@ -14,10 +14,10 @@ import static com.badlogic.gdx.Gdx.input;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +69,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Window containing dev features
@@ -157,16 +158,28 @@ public class DevWindow extends Window {
 			);
 		}
 
+		if (keyCode == Keys.D) {
+			Domain.getActiveWorld().getTopography().deleteTile(
+				BloodAndMithrilClient.getMouseWorldX(),
+				BloodAndMithrilClient.getMouseWorldY(),
+				true
+			);
+		}
+
 		if (keyCode == Keys.F) {
 			int x = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldX());
 			int y = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY());
 
-			Map<Integer, LinkedList<Integer>> coords = Maps.newHashMap();
-			coords.put(y, Lists.newLinkedList(Lists.newArrayList(x, x+1, x+2)));
-			coords.put(y + 1, Lists.newLinkedList(Lists.newArrayList(x, x+1, x+2)));
-			coords.put(y + 2, Lists.newLinkedList(Lists.newArrayList(x, x+1, x+2)));
+			Map<Integer, Set<Integer>> coords = Maps.newHashMap();
+			coords.put(y, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
+			coords.put(y + 1, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
+			coords.put(y + 2, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
+			coords.put(y + 3, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
+			coords.put(y + 4, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
+			coords.put(y + 5, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
+			coords.put(y + 6, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
 
-			FluidBody fluid = new FluidBody(coords, 6.4f);
+			FluidBody fluid = new FluidBody(coords, 27.4f);
 			Domain.getActiveWorld().addFluid(fluid);
 		}
 

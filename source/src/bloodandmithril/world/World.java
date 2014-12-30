@@ -152,8 +152,27 @@ public class World implements Serializable {
 		fluids.stream().forEach(
 			fluid -> {
 				fluid.render();
-				fluid.renderBindingBox();
 			}
 		);
+	}
+
+
+	/**
+	 * Post-processing of tile deletion, for fluids
+	 */
+	public void tileDeletion(int worldTileX, int worldTileY) {
+		for (FluidBody fluid : fluids) {
+			fluid.newSpace(worldTileX, worldTileY);
+		}
+	}
+
+
+	/**
+	 * Updates this world, delta is in seconds
+	 */
+	public void update(float delta) {
+		for (FluidBody fluid : fluids) {
+			fluid.update();
+		}
 	}
 }
