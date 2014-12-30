@@ -316,6 +316,8 @@ public class Domain {
 					// Don't update
 				}
 			}
+
+			world.update(d);
 		}
 	}
 

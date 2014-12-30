@@ -221,6 +221,7 @@ public class Topography {
 			Tile tile = getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 			getChunkMap().get(chunkX).get(chunkY).deleteTile(tileX, tileY, foreGround);
 			Logger.generalDebug("Deleting tile at (" + convertToWorldTileCoord(chunkX, tileX) + ", " + convertToWorldTileCoord(chunkY, tileY) + "), World coord: (" + worldX + ", " + worldY + ")", LogLevel.TRACE);
+			Domain.getWorld(worldId).tileDeletion(convertToWorldTileCoord(chunkX, tileX), convertToWorldTileCoord(chunkY, tileY));
 			return tile;
 
 		} catch (NullPointerException e) {
@@ -237,15 +238,10 @@ public class Topography {
 	 * @param worldY
 	 */
 	public synchronized void changeTile(float worldX, float worldY, boolean foreGround, Class<? extends Tile> toChangeTo) {
-		int chunkX = convertToChunkCoord(worldX);
-		int chunkY = convertToChunkCoord(worldY);
-		int tileX = convertToChunkTileCoord(worldX);
-		int tileY = convertToChunkTileCoord(worldY);
-
 		try {
-			getChunkMap().get(chunkX).get(chunkY).changeTile(tileX, tileY, foreGround, toChangeTo);
-		} catch (NullPointerException e) {
-			Logger.generalDebug("can't change a null tile", LogLevel.WARN);
+			changeTile(worldX, worldY, foreGround, toChangeTo.newInstance());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -257,6 +253,10 @@ public class Topography {
 	 * @param worldY
 	 */
 	public synchronized void changeTile(float worldX, float worldY, boolean foreGround, Tile toChangeTo) {
+		if (toChangeTo instanceof EmptyTile) {
+			throw new IllegalStateException("Can't change tile to empty tile");
+		}
+
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToChunkTileCoord(worldX);
