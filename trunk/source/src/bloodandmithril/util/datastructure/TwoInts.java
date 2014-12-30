@@ -46,4 +46,10 @@ public class TwoInts implements Serializable {
 		hashcode = hashcode * 37 + b;
 		return hashcode;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "(" + a + ", " + b + ")";
+	}
 }
