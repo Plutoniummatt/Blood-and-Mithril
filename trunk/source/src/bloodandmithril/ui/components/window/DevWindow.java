@@ -150,6 +150,12 @@ public class DevWindow extends Window {
 			return true;
 		}
 
+		if (keyCode == Keys.A) {
+			for (FluidBody fluid : Domain.getActiveWorld().fluids) {
+				fluid.add(0.1f);
+			}
+		}
+
 		if (keyCode == Keys.T) {
 			Domain.getActiveWorld().getTopography().changeTile(
 				BloodAndMithrilClient.getMouseWorldX(),
@@ -180,7 +186,7 @@ public class DevWindow extends Window {
 			coords.put(y + 5, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
 			coords.put(y + 6, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
 
-			FluidBody fluid = new FluidBody(coords, 27.4f);
+			FluidBody fluid = new FluidBody(coords, 27.4f, Domain.getActiveWorld().getWorldId());
 			Domain.getActiveWorld().addFluid(fluid);
 		}
 

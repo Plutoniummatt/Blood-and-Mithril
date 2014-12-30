@@ -39,7 +39,7 @@ public class World implements Serializable {
 	private Set<Integer> 										individuals 			= Sets.newHashSet();
 
 	/** All {@link FluidBody}s on this {@link World} */
-	private Collection<FluidBody> 								fluids					= Lists.newLinkedList();
+	public Collection<FluidBody> 								fluids					= Lists.newLinkedList();
 
 	/** The positional indexing map of this {@link World} */
 	private PositionalIndexMap 									positionalIndexMap		= new PositionalIndexMap();
@@ -152,6 +152,7 @@ public class World implements Serializable {
 		fluids.stream().forEach(
 			fluid -> {
 				fluid.render();
+				fluid.renderBindingBox();
 			}
 		);
 	}
