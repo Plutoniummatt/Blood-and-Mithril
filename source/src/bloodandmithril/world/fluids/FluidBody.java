@@ -56,7 +56,7 @@ public class FluidBody implements Serializable {
 	 */
 	public void render() {
 		Domain.shapeRenderer.begin(ShapeType.FilledRectangle);
-		Domain.shapeRenderer.setColor(0f, 0.3f, 0.8f, 0.9f);
+		Domain.shapeRenderer.setColor(0f, 0.8f, 0.4f, 0.95f);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		// Split the occupied coordinates into y-layers
 		float workingVolume = volume;
@@ -70,7 +70,7 @@ public class FluidBody implements Serializable {
 				workingVolume -= layer.getValue().size();
 			}
 
-			for (int x : layer.getValue()) {
+			for (int x : Lists.newLinkedList(layer.getValue())) {
 				renderFluidElement(x, layer.getKey(), renderVolume);
 			}
 		}
@@ -138,7 +138,9 @@ public class FluidBody implements Serializable {
 				}
 				
 				// Flow and Spread
-				if (Domain.getWorld(worldId).getTopography().getTile(x, y - 1, true).isPassable()) {
+				boolean tileBelowPassable = Domain.getWorld(worldId).getTopography().getTile(x, y - 1, true).isPassable();
+				boolean tileBelowOccupied = hasFluid(x, y - 1);
+				if (tileBelowPassable && !tileBelowOccupied) {
 					if (occupiedCoordinates.containsKey(y - 1)) {
 						occupiedCoordinates.get(y - 1).add(x);
 					} else {
@@ -146,7 +148,7 @@ public class FluidBody implements Serializable {
 						newRow.add(x);
 						occupiedCoordinates.put(y - 1, newRow);
 					}
-				} else if (workingVolume != 0f || topLayerVolume > spreadHeight) {
+				} else if ((workingVolume != 0f || topLayerVolume > spreadHeight) && pillarTouchingFloor(x, y)) {
 					if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable()) {
 						layer.getValue().add(x + 1);
 					}
@@ -188,6 +190,32 @@ public class FluidBody implements Serializable {
 			if (Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable()) {
 				volume -= evaporationRate / 60f;
 			}
+		}
+	}
+	
+	
+	/**
+	 * @return whether the specified coordinates is part of a pillar of fluid whose base sits on a non passable tile
+	 */
+	private boolean pillarTouchingFloor(int x, int y) {
+		while (hasFluid(x, y)) {
+			y = y - 1;
+		}
+		
+		return !Domain.getWorld(worldId).getTopography().getTile(x, y, true).isPassable();
+	}
+
+
+	/**
+	 * @return whether the specified coordates are occupied
+	 */
+	private boolean hasFluid(int x, int y) {
+		Set<Integer> row = occupiedCoordinates.get(y);
+		
+		if (row == null) {
+			return false;
+		} else {
+			return row.contains(x);
 		}
 	}
 
