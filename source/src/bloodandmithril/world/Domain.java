@@ -316,8 +316,13 @@ public class Domain {
 					// Don't update
 				}
 			}
-
-			world.update(d);
+		}
+	}
+	
+	
+	public void updateFluids() {
+		for (World world : worlds.values()) {
+			world.updateFluids();
 		}
 	}
 
