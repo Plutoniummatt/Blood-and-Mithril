@@ -29,8 +29,10 @@ public class TracerParticle extends Particle {
 
 	@Override
 	public void render(float delta) {
-		Domain.shapeRenderer.setColor(color);
-		Domain.shapeRenderer.filledCircle(position.x, position.y, radius);
+		if (Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true).isPassable()) {
+			Domain.shapeRenderer.setColor(color);
+			Domain.shapeRenderer.filledCircle(position.x, position.y, radius);
+		}
 	}
 
 
@@ -45,7 +47,9 @@ public class TracerParticle extends Particle {
 
 	@Override
 	public void renderLine(float delta) {
-		Domain.shapeRenderer.setColor(color);
-		Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
+		if (Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true).isPassable()) {
+			Domain.shapeRenderer.setColor(color);
+			Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
+		}
 	}
 }

@@ -233,10 +233,13 @@ public class Domain {
 		IndividualPlatformFilteringRenderer.renderIndividuals();
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
 		foregroundParticles();
-		gl20.glEnable(GL20.GL_BLEND);
-		activeWorld.renderFluids();
 		fBuffer.end();
+		fBuffer.begin();
+		gl20.glEnable(GL20.GL_BLEND);
+		gl20.glBlendFuncSeparate(GL20.GL_ONE_MINUS_DST_ALPHA, GL20.GL_SRC_COLOR, GL20.GL_ONE_MINUS_DST_ALPHA, GL20.GL_ONE);
+		activeWorld.renderFluids();
 		gl20.glDisable(GL20.GL_BLEND);
+		fBuffer.end();
 		GaussianLightingRenderer.render(camX, camY);
 	}
 
