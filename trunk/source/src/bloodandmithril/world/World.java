@@ -15,6 +15,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -160,20 +161,10 @@ public class World implements Serializable {
 
 
 	/**
-	 * Post-processing of tile deletion, for fluids
-	 */
-	public void tileDeletion(int worldTileX, int worldTileY) {
-		for (FluidBody fluid : fluids) {
-			fluid.newSpace(worldTileX, worldTileY);
-		}
-	}
-
-
-	/**
 	 * Updates this world, delta is in seconds
 	 */
 	public void updateFluids() {
-		for (FluidBody fluid : fluids) {
+		for (FluidBody fluid : Lists.newLinkedList(fluids)) {
 			fluid.update(false);
 		}
 	}
@@ -181,5 +172,10 @@ public class World implements Serializable {
 
 	public boolean removeFluid(FluidBody fluid) {
 		return fluids.remove(fluid);
+	}
+
+
+	public Collection<FluidBody> getFluids() {
+		return fluids;
 	}
 }

@@ -153,7 +153,7 @@ public abstract class Component implements Serializable {
 			if (component == this) {
 				continue;
 			} else {
-				if (component.getBoundaries().doesOverlapWith(createdComponent.getBoundaries())) {
+				if (component.getBoundaries().overlapsWith(createdComponent.getBoundaries())) {
 					Logger.generationDebug("Overlap detected when stemming " + getClass().getSimpleName(), LogLevel.INFO);
 					return null;
 				}

@@ -171,16 +171,10 @@ public class DevWindow extends Window {
 			int x = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldX());
 			int y = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY());
 
-			Map<Integer, Set<Integer>> coords = Maps.newHashMap();
-			coords.put(y, Sets.newConcurrentHashSet(Lists.newArrayList(x, x+1, x+2)));
-			coords.put(y + 1, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
-			coords.put(y + 2, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
-			coords.put(y + 3, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
-			coords.put(y + 4, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
-			coords.put(y + 5, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
-			coords.put(y + 6, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
+			Map<Integer, Set<Integer>> coords = Maps.newConcurrentMap();
+			coords.put(y, Sets.newConcurrentHashSet(Lists.newArrayList(x)));
 
-			FluidBody fluid = new FluidBody(coords, 20.4f, Domain.getActiveWorld().getWorldId());
+			FluidBody fluid = new FluidBody(coords, 1f, Domain.getActiveWorld().getWorldId());
 			Domain.getActiveWorld().addFluid(fluid);
 		}
 
