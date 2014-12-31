@@ -195,19 +195,6 @@ public class FluidBody implements Serializable {
 			}
 		}
 
-		if (workingVolume > 0f) {
-			// Make sure the fluid has "elasticity", i.e. it will expand when compressed.
-			Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
-			final int y = lastEntry.getKey() + 1;
-			Set<Integer> newRow = Sets.newConcurrentHashSet();
-			for (int x : lastEntry.getValue()) {
-				if (Domain.getWorld(worldId).getTopography().getTile(x, y, true).isPassable()) {
-					newRow.add(x);
-				}
-			}
-			occupiedCoordinates.put(y, newRow);
-		}
-
 		updateBindingBox();
 
 		// Evaporation
