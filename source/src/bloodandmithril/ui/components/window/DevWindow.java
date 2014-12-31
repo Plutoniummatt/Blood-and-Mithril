@@ -172,9 +172,12 @@ public class DevWindow extends Window {
 			int y = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY());
 
 			Map<Integer, Set<Integer>> coords = Maps.newConcurrentMap();
-			coords.put(y, Sets.newConcurrentHashSet(Lists.newArrayList(x)));
+			coords.put(y, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
+			coords.put(y + 1, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
+			coords.put(y + 2, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
+			coords.put(y + 3, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
 
-			FluidBody fluid = new FluidBody(coords, 1f, Domain.getActiveWorld().getWorldId());
+			FluidBody fluid = new FluidBody(coords, 16f, Domain.getActiveWorld().getWorldId());
 			Domain.getActiveWorld().addFluid(fluid);
 		}
 
