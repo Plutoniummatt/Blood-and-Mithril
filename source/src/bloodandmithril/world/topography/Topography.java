@@ -221,7 +221,6 @@ public class Topography {
 			Tile tile = getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 			getChunkMap().get(chunkX).get(chunkY).deleteTile(tileX, tileY, foreGround);
 			Logger.generalDebug("Deleting tile at (" + convertToWorldTileCoord(chunkX, tileX) + ", " + convertToWorldTileCoord(chunkY, tileY) + "), World coord: (" + worldX + ", " + worldY + ")", LogLevel.TRACE);
-			Domain.getWorld(worldId).tileDeletion(convertToWorldTileCoord(chunkX, tileX), convertToWorldTileCoord(chunkY, tileY));
 			return tile;
 
 		} catch (NullPointerException e) {

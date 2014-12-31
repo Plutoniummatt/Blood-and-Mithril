@@ -4,7 +4,6 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 
 import java.io.Serializable;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -74,7 +73,7 @@ public class FluidBody implements Serializable {
 				workingVolume -= layer.getValue().size();
 			}
 
-			for (int x : Lists.newLinkedList(layer.getValue())) {
+			for (int x : layer.getValue()) {
 				renderFluidElement(x, layer.getKey(), renderVolume);
 			}
 		}
@@ -146,6 +145,7 @@ public class FluidBody implements Serializable {
 			}
 
 			final int y = layer.getKey();
+			boolean merged = false;
 			for (int x : Lists.newLinkedList(layer.getValue())) {
 				// Flow and Spread
 				boolean tileBelowPassable = Domain.getWorld(worldId).getTopography().getTile(x, y - 1, true).isPassable();
@@ -153,18 +153,34 @@ public class FluidBody implements Serializable {
 				if (tileBelowPassable && !tileBelowOccupied) {
 					if (occupiedCoordinates.containsKey(y - 1)) {
 						occupiedCoordinates.get(y - 1).add(x);
+						if (checkMerge(x, y - 1)) {
+							merged = true;
+							break;
+						}
 					} else {
 						Set<Integer> newRow = Sets.newConcurrentHashSet();
 						newRow.add(x);
 						occupiedCoordinates.put(y - 1, newRow);
+						if (checkMerge(x, y - 1)) {
+							merged = true;
+							break;
+						}
 					}
 				} else if ((workingVolume != 0f || topLayerVolume > spreadHeight) && pillarTouchingFloor(x, y)) {
 					if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable()) {
 						layer.getValue().add(x + 1);
+						if (checkMerge(x + 1, y)) {
+							merged = true;
+							break;
+						}
 					}
 
 					if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable()) {
 						layer.getValue().add(x - 1);
+						if (checkMerge(x - 1, y)) {
+							merged = true;
+							break;
+						}
 					}
 				}
 
@@ -174,6 +190,22 @@ public class FluidBody implements Serializable {
 					}
 				}
 			}
+			if (merged) {
+				break;
+			}
+		}
+
+		if (workingVolume > 0f) {
+			// Make sure the fluid has "elasticity", i.e. it will expand when compressed.
+			Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
+			final int y = lastEntry.getKey() + 1;
+			Set<Integer> newRow = Sets.newConcurrentHashSet();
+			for (int x : lastEntry.getValue()) {
+				if (Domain.getWorld(worldId).getTopography().getTile(x, y, true).isPassable()) {
+					newRow.add(x);
+				}
+			}
+			occupiedCoordinates.put(y, newRow);
 		}
 
 		updateBindingBox();
@@ -193,6 +225,52 @@ public class FluidBody implements Serializable {
 	}
 
 
+	/**
+	 * Checks whether this {@link FluidBody} is flowing into another {@link FluidBody} and handles merging.
+	 */
+	private boolean checkMerge(int x, int y) {
+		for (FluidBody fluid : Domain.getWorld(worldId).getFluids()) {
+			if (fluid == this) {
+				continue;
+			}
+
+			if (fluid.bindingBox.isWithin(x, y)) {
+				Set<Integer> row = fluid.occupiedCoordinates.get(y);
+				if (row == null) {
+					continue;
+				} else {
+					if (row.contains(x)) {
+						fluid.merge(this);
+						Domain.getWorld(worldId).removeFluid(this);
+						return true;
+					} else {
+						continue;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	private void merge(FluidBody other) {
+		this.volume = this.volume + other.volume;
+
+		for (Entry<Integer, Set<Integer>> otherEntry : other.occupiedCoordinates.entrySet()) {
+			Set<Integer> thisRow = this.occupiedCoordinates.get(otherEntry.getKey());
+			if (thisRow == null) {
+				this.occupiedCoordinates.put(otherEntry.getKey(), otherEntry.getValue());
+			} else {
+				thisRow.addAll(otherEntry.getValue());
+			}
+		}
+	}
+
+
+	/**
+	 * Updates the binding box of this {@link FluidBody}.
+	 */
 	private void updateBindingBox() {
 		Integer minX = null, maxX = null;
 		for (Entry<Integer, Set<Integer>> layer : Lists.newLinkedList(occupiedCoordinates.entrySet())) {
@@ -230,7 +308,7 @@ public class FluidBody implements Serializable {
 		Map<Integer, Set<Integer>> occupiedCoordinatesCopy = Maps.newHashMap();
 
 		for (Entry<Integer, Set<Integer>> entry : occupiedCoordinates.entrySet()) {
-			occupiedCoordinatesCopy.put(entry.getKey(), Sets.newHashSet(entry.getValue()));
+			occupiedCoordinatesCopy.put(new Integer(entry.getKey()), Sets.newHashSet(entry.getValue()));
 		}
 
 		Map<Set<TwoInts>, Float> fragments = Maps.newHashMap();
@@ -262,11 +340,11 @@ public class FluidBody implements Serializable {
 
 		for (TwoInts element : fragmentElements) {
 			if (map.containsKey(element.b)) {
-				map.get(element.b).add(element.a);
+				map.get(element.b).add(new Integer(element.a));
 			} else {
-				LinkedHashSet<Integer> newRow = Sets.newLinkedHashSet();
+				Set<Integer> newRow = Sets.newConcurrentHashSet();
 				newRow.add(element.a);
-				map.put(element.b, newRow);
+				map.put(new Integer(element.b), newRow);
 			}
 		}
 
@@ -388,55 +466,6 @@ public class FluidBody implements Serializable {
 			this.volume -= volume;
 		}
 		return subtracted;
-	}
-
-
-	/**
-	 * @return whether a world tile coordinate is adjacent to an occupied fluid coordinate or inside a body of fluid
-	 */
-	private boolean isTileCoordinateAdjacentOrInside(int x, int y) {
-		if (x > bindingBox.right + 1 ||
-			y > bindingBox.top + 1 ||
-			x < bindingBox.left - 1 ||
-			y < bindingBox.bottom - 1) {
-			return false;
-		}
-
-		if (occupiedCoordinates.containsKey(y)) {
-			if (occupiedCoordinates.get(y).contains(x) || occupiedCoordinates.get(y).contains(x + 1) || occupiedCoordinates.get(y).contains(x - 1)) {
-				return true;
-			}
-		}
-
-		if (occupiedCoordinates.containsKey(y + 1)) {
-			if (occupiedCoordinates.get(y + 1).contains(x)) {
-				return true;
-			}
-		}
-
-		if (occupiedCoordinates.containsKey(y - 1)) {
-			if (occupiedCoordinates.get(y - 1).contains(x)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-
-	/**
-	 * Checks whether this {@link FluidBody} can flow into a newly created space.
-	 */
-	public void newSpace(int x, int y) {
-		if (isTileCoordinateAdjacentOrInside(x, y)) {
-			if (occupiedCoordinates.get(y) == null) {
-				Set<Integer> row = Sets.newLinkedHashSet();
-				row.add(x);
-				occupiedCoordinates.put(y, row);
-			} else {
-				occupiedCoordinates.get(y).add(x);
-			}
-		}
 	}
 
 

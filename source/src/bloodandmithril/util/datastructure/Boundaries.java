@@ -135,7 +135,7 @@ public class Boundaries implements Serializable {
 	/**
 	 * True if this {@link Boundaries} overlaps with another
 	 */
-	public boolean doesOverlapWith(Boundaries other) {
+	public boolean overlapsWith(Boundaries other) {
 		return
 			!(left >= other.right) &&
 			!(right <= other.left) &&
