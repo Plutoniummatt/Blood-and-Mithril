@@ -152,7 +152,8 @@ public class World implements Serializable {
 		fluids.stream().forEach(
 			fluid -> {
 				fluid.render();
-				fluid.renderBindingBox();
+				// fluid.renderElementBoxes();
+				// fluid.renderBindingBox();
 			}
 		);
 	}
@@ -173,11 +174,11 @@ public class World implements Serializable {
 	 */
 	public void updateFluids() {
 		for (FluidBody fluid : fluids) {
-			fluid.update();
+			fluid.update(false);
 		}
 	}
-	
-	
+
+
 	public boolean removeFluid(FluidBody fluid) {
 		return fluids.remove(fluid);
 	}

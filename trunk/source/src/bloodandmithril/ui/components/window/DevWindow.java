@@ -180,7 +180,7 @@ public class DevWindow extends Window {
 			coords.put(y + 5, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
 			coords.put(y + 6, Sets.newLinkedHashSet(Lists.newArrayList(x, x+1, x+2)));
 
-			FluidBody fluid = new FluidBody(coords, 27.4f, Domain.getActiveWorld().getWorldId());
+			FluidBody fluid = new FluidBody(coords, 20.4f, Domain.getActiveWorld().getWorldId());
 			Domain.getActiveWorld().addFluid(fluid);
 		}
 
