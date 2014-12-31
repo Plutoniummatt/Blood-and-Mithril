@@ -178,7 +178,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					throw new RuntimeException(e);
 				}
 
-				if (System.currentTimeMillis() - prevFrame > 40) {
+				if (System.currentTimeMillis() - prevFrame > 70) {
 					prevFrame = System.currentTimeMillis();
 					if (domain != null) {
 						domain.updateFluids();
