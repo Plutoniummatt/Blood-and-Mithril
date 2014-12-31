@@ -318,9 +318,9 @@ public class Domain {
 			}
 		}
 	}
-	
-	
-	public void updateFluids() {
+
+
+	public static void updateFluids() {
 		for (World world : worlds.values()) {
 			world.updateFluids();
 		}

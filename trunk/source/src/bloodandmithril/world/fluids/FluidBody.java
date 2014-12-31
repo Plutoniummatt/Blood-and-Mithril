@@ -42,6 +42,30 @@ public class FluidBody implements Serializable {
 	/** How fast the fluid in this body of water will evaporate per second per tile exposed to air that has a non-passable tile underneath */
 	private static final float evaporationRate = 0.0003f;
 
+	private static Thread fluidThread;
+
+	static {
+		fluidThread = new Thread(() -> {
+			long prevFrame = System.currentTimeMillis();
+
+			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+
+				if (System.currentTimeMillis() - prevFrame > 70) {
+					prevFrame = System.currentTimeMillis();
+					Domain.updateFluids();
+				}
+			}
+		});
+
+		fluidThread.setName("Fluid thread");
+		fluidThread.start();
+	}
+
 
 	/**
 	 * Constructor
