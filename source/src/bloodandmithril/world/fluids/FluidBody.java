@@ -175,6 +175,10 @@ public class FluidBody implements Serializable {
 			for (int x : Lists.newLinkedList(layer.getValue())) {
 				// Flow and Spread
 				boolean tileBelowPassable = Domain.getWorld(worldId).getTopography().getTile(x, y - 1, true).isPassable();
+				boolean tileRightBottomPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y - 1, true).isPassable();
+				boolean tileRightPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable();
+				boolean tileLeftPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable();
+				boolean tileLeftBottomPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y - 1, true).isPassable();
 				boolean tileBelowOccupied = hasFluid(x, y - 1);
 				if (tileBelowPassable && !tileBelowOccupied) {
 					if (occupiedCoordinates.containsKey(y - 1)) {
@@ -193,8 +197,8 @@ public class FluidBody implements Serializable {
 							break;
 						}
 					}
-				} else if ((workingVolume != 0f || topLayerVolume > spreadHeight) && pillarTouchingFloor(x, y)) {
-					if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable()) {
+				} else if ((workingVolume != 0f || topLayerVolume > spreadHeight) && (pillarTouchingFloor(x, y) || !tileRightBottomPassable || !tileLeftBottomPassable)) {
+					if (tileRightPassable && (!tileBelowPassable || (hasFluid(x, y - 1) && !tileRightBottomPassable))) {
 						suppressTopSpread = layer.getValue().add(x + 1) || suppressTopSpread;
 						if (checkMerge(x + 1, y)) {
 							merged = true;
@@ -202,7 +206,7 @@ public class FluidBody implements Serializable {
 						}
 					}
 
-					if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable()) {
+					if (tileLeftPassable && (!tileBelowPassable || (hasFluid(x, y - 1) && !tileLeftBottomPassable))) {
 						suppressTopSpread = layer.getValue().add(x - 1) || suppressTopSpread;
 						if (checkMerge(x - 1, y)) {
 							merged = true;
@@ -233,7 +237,10 @@ public class FluidBody implements Serializable {
 
 			int y = layer.getKey();
 			for (int x : Lists.newLinkedList(layer.getValue())) {
-				if (!suppressTopSpread && Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f) {
+				boolean rightPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable();
+				boolean leftPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable();
+				if (!suppressTopSpread && Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f && 
+					(hasFluid(x - 1, y) || !leftPassable) && (hasFluid(x + 1, y) || !rightPassable)) {
 					if (occupiedCoordinates.containsKey(y + 1)) {
 						occupiedCoordinates.get(y + 1).add(x);
 					}
