@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -55,7 +56,7 @@ public class FluidBody implements Serializable {
 					throw new RuntimeException(e);
 				}
 
-				if (System.currentTimeMillis() - prevFrame > 70) {
+				if (System.currentTimeMillis() - prevFrame > 65) {
 					prevFrame = System.currentTimeMillis();
 					Domain.updateFluids();
 				}
@@ -151,6 +152,7 @@ public class FluidBody implements Serializable {
 		float workingVolume = volume;
 		float topLayerVolume = 0f;
 		boolean layerRemoved = false;
+		boolean suppressTopSpread = false;
 		for (Entry<Integer, Set<Integer>> layer : Lists.newLinkedList(occupiedCoordinates.entrySet())) {
 
 			// Remove rows when fluid is no longer occupying a row.
@@ -176,7 +178,7 @@ public class FluidBody implements Serializable {
 				boolean tileBelowOccupied = hasFluid(x, y - 1);
 				if (tileBelowPassable && !tileBelowOccupied) {
 					if (occupiedCoordinates.containsKey(y - 1)) {
-						occupiedCoordinates.get(y - 1).add(x);
+						suppressTopSpread = occupiedCoordinates.get(y - 1).add(x) || suppressTopSpread;
 						if (checkMerge(x, y - 1)) {
 							merged = true;
 							break;
@@ -185,6 +187,7 @@ public class FluidBody implements Serializable {
 						Set<Integer> newRow = Sets.newConcurrentHashSet();
 						newRow.add(x);
 						occupiedCoordinates.put(y - 1, newRow);
+						suppressTopSpread = true;
 						if (checkMerge(x, y - 1)) {
 							merged = true;
 							break;
@@ -192,7 +195,7 @@ public class FluidBody implements Serializable {
 					}
 				} else if ((workingVolume != 0f || topLayerVolume > spreadHeight) && pillarTouchingFloor(x, y)) {
 					if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable()) {
-						layer.getValue().add(x + 1);
+						suppressTopSpread = layer.getValue().add(x + 1) || suppressTopSpread;
 						if (checkMerge(x + 1, y)) {
 							merged = true;
 							break;
@@ -200,22 +203,41 @@ public class FluidBody implements Serializable {
 					}
 
 					if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable()) {
-						layer.getValue().add(x - 1);
+						suppressTopSpread = layer.getValue().add(x - 1) || suppressTopSpread;
 						if (checkMerge(x - 1, y)) {
 							merged = true;
 							break;
 						}
 					}
 				}
+			}
 
-				if (Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f) {
+			if (merged) {
+				break;
+			}
+		}
+
+		TreeMap<Integer, Set<Integer>> mapCopy = Maps.newTreeMap(occupiedCoordinates);
+		mapCopy.entrySet().stream().forEach(entry -> {
+			entry.setValue(Sets.newLinkedHashSet(entry.getValue()));
+		});
+		workingVolume = volume;
+		for (Entry<Integer, Set<Integer>> layer : mapCopy.entrySet()) {
+
+			if (workingVolume < layer.getValue().size()) {
+				topLayerVolume = workingVolume / layer.getValue().size();
+				workingVolume = 0f;
+			} else {
+				workingVolume -= layer.getValue().size();
+			}
+
+			int y = layer.getKey();
+			for (int x : Lists.newLinkedList(layer.getValue())) {
+				if (!suppressTopSpread && Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f) {
 					if (occupiedCoordinates.containsKey(y + 1)) {
 						occupiedCoordinates.get(y + 1).add(x);
 					}
 				}
-			}
-			if (merged) {
-				break;
 			}
 		}
 
