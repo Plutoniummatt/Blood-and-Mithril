@@ -153,32 +153,32 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		updateThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
-			
+
 			while (true) {
 				try {
 					Thread.sleep(1);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
-				
+
 				if (System.currentTimeMillis() - prevFrame > 16) {
 					prevFrame = System.currentTimeMillis();
 					update(Gdx.graphics.getDeltaTime());
 				}
 			}
 		});
-		
+
 		fluidThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
-			
+
 			while (true) {
 				try {
 					Thread.sleep(1);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
-				
-				if (System.currentTimeMillis() - prevFrame > 3000) {
+
+				if (System.currentTimeMillis() - prevFrame > 40) {
 					prevFrame = System.currentTimeMillis();
 					if (domain != null) {
 						domain.updateFluids();
@@ -235,7 +235,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		updateThread.setPriority(Thread.MAX_PRIORITY);
 		updateThread.setName("Update thread");
 		updateThread.start();
-		
+
 		fluidThread.setName("Fluid thread");
 		fluidThread.start();
 

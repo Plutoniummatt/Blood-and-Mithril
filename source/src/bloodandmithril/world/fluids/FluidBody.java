@@ -51,7 +51,7 @@ public class FluidBody implements Serializable {
 		this.worldId = worldId;
 		this.occupiedCoordinates.putAll(occupiedCoordinates);
 		this.volume = volume;
-		update();
+		updateBindingBox();
 	}
 
 
@@ -83,6 +83,28 @@ public class FluidBody implements Serializable {
 
 
 	/**
+	 * Renders this {@link FluidBody}, called from main thread
+	 */
+	public void renderElementBoxes() {
+		Domain.shapeRenderer.begin(ShapeType.Rectangle);
+		Domain.shapeRenderer.setColor(0f, 1f, 0f, 1f);
+		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
+		// Split the occupied coordinates into y-layers
+		for (Entry<Integer, Set<Integer>> layer : occupiedCoordinates.entrySet()) {
+			for (int x : Lists.newLinkedList(layer.getValue())) {
+				Domain.shapeRenderer.rect(
+					convertToWorldCoord(x, true),
+					convertToWorldCoord(layer.getKey(), true),
+					TILE_SIZE,
+					TILE_SIZE
+				);
+			}
+		}
+		Domain.shapeRenderer.end();
+	}
+
+
+	/**
 	 * Renders this {@link FluidBody}s binding box
 	 */
 	public void renderBindingBox() {
@@ -102,18 +124,17 @@ public class FluidBody implements Serializable {
 	/**
 	 * Updates this {@link FluidBody}
 	 */
-	public synchronized void update() {
-		// Update binding box.
-		// Remove rows when fluid is no longer occupying a row.
-		Integer minX = null, maxX = null;
+	public synchronized void update(boolean suppressSplitting) {
 		float workingVolume = volume;
 		float topLayerVolume = 0f;
-		for (Entry<Integer, Set<Integer>> layer : occupiedCoordinates.entrySet()) {
+		boolean layerRemoved = false;
+		for (Entry<Integer, Set<Integer>> layer : Lists.newLinkedList(occupiedCoordinates.entrySet())) {
 
+			// Remove rows when fluid is no longer occupying a row.
 			if (workingVolume == 0f) {
 				occupiedCoordinates.remove(layer.getKey());
 				// After this step, this fluid body may have to be split into multiple bodies
-				calculatePossibleSplit();
+				layerRemoved = true;
 				continue;
 			}
 
@@ -123,9 +144,59 @@ public class FluidBody implements Serializable {
 			} else {
 				workingVolume -= layer.getValue().size();
 			}
-			
-			final int y = layer.getKey();
 
+			final int y = layer.getKey();
+			for (int x : Lists.newLinkedList(layer.getValue())) {
+				// Flow and Spread
+				boolean tileBelowPassable = Domain.getWorld(worldId).getTopography().getTile(x, y - 1, true).isPassable();
+				boolean tileBelowOccupied = hasFluid(x, y - 1);
+				if (tileBelowPassable && !tileBelowOccupied) {
+					if (occupiedCoordinates.containsKey(y - 1)) {
+						occupiedCoordinates.get(y - 1).add(x);
+					} else {
+						Set<Integer> newRow = Sets.newConcurrentHashSet();
+						newRow.add(x);
+						occupiedCoordinates.put(y - 1, newRow);
+					}
+				} else if ((workingVolume != 0f || topLayerVolume > spreadHeight) && pillarTouchingFloor(x, y)) {
+					if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable()) {
+						layer.getValue().add(x + 1);
+					}
+
+					if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable()) {
+						layer.getValue().add(x - 1);
+					}
+				}
+
+				if (Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f) {
+					if (occupiedCoordinates.containsKey(y + 1)) {
+						occupiedCoordinates.get(y + 1).add(x);
+					}
+				}
+			}
+		}
+
+		updateBindingBox();
+
+		// Evaporation
+		Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
+		final int y = lastEntry.getKey();
+		for (int x : lastEntry.getValue()) {
+			if (Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable()) {
+				volume -= evaporationRate / 60f;
+			}
+		}
+
+		if (layerRemoved && !suppressSplitting) {
+			calculatePossibleSplit();
+		}
+	}
+
+
+	private void updateBindingBox() {
+		Integer minX = null, maxX = null;
+		for (Entry<Integer, Set<Integer>> layer : Lists.newLinkedList(occupiedCoordinates.entrySet())) {
+			// Update binding box.
 			for (int x : Lists.newLinkedList(layer.getValue())) {
 				if (minX == null) {
 					minX = x;
@@ -142,79 +213,31 @@ public class FluidBody implements Serializable {
 				if (x > maxX) {
 					maxX = x;
 				}
-				
-				// Flow and Spread
-				boolean tileBelowPassable = Domain.getWorld(worldId).getTopography().getTile(x, y - 1, true).isPassable();
-				boolean tileBelowOccupied = hasFluid(x, y - 1);
-				if (tileBelowPassable && !tileBelowOccupied) {
-					if (occupiedCoordinates.containsKey(y - 1)) {
-						occupiedCoordinates.get(y - 1).add(x);
-					} else {
-						Set<Integer> newRow = Sets.newConcurrentHashSet();
-						newRow.add(x);
-						occupiedCoordinates.put(y - 1, newRow);
-					}
-				} else if ((workingVolume != 0f || topLayerVolume > spreadHeight) && pillarTouchingFloor(x, y)) {
-					if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable()) {
-						layer.getValue().add(x + 1);
-					}
-					
-					if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable()) {
-						layer.getValue().add(x - 1);
-					}
-				}
-				
-				if (Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f) {
-					if (occupiedCoordinates.containsKey(y + 1)) {
-						occupiedCoordinates.get(y + 1).add(x);
-					}
-				}
 			}
 		}
+
 		bindingBox.bottom = occupiedCoordinates.firstKey();
 		bindingBox.top = occupiedCoordinates.lastKey();
 		bindingBox.left = minX;
 		bindingBox.right = maxX;
-
-		if (workingVolume > 0f) {
-			// Make sure the fluid has "elasticity", i.e. it will expand when compressed.
-			Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
-			final int y = lastEntry.getKey() + 1;
-			Set<Integer> newRow = Sets.newConcurrentHashSet();
-			for (int x : lastEntry.getValue()) {
-				if (Domain.getWorld(worldId).getTopography().getTile(x, y, true).isPassable()) {
-					newRow.add(x);
-				}
-			}
-			occupiedCoordinates.put(y, newRow);
-		}
-
-		// Evaporation
-		Entry<Integer, Set<Integer>> lastEntry = occupiedCoordinates.lastEntry();
-		final int y = lastEntry.getKey();
-		for (int x : lastEntry.getValue()) {
-			if (Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable()) {
-				volume -= evaporationRate / 60f;
-			}
-		}
 	}
-	
-	
+
+
 	/**
 	 * Calculate and performs splitting into multiple {@link FluidBody}s
 	 */
 	private void calculatePossibleSplit() {
 		Map<Integer, Set<Integer>> occupiedCoordinatesCopy = Maps.newHashMap();
-		
+
 		for (Entry<Integer, Set<Integer>> entry : occupiedCoordinates.entrySet()) {
 			occupiedCoordinatesCopy.put(entry.getKey(), Sets.newHashSet(entry.getValue()));
 		}
 
 		Map<Set<TwoInts>, Float> fragments = Maps.newHashMap();
 		while (!occupiedCoordinatesCopy.isEmpty()) {
-			fragments.put(extractFragment(occupiedCoordinatesCopy), 0f);
+  			fragments.put(extractFragment(occupiedCoordinatesCopy), 0f);
 		}
-		
+
 		int totalElements = fragments.keySet().stream().mapToInt(set -> {
 			return set.size();
 		}).sum();
@@ -222,7 +245,7 @@ public class FluidBody implements Serializable {
 		fragments.entrySet().forEach(entry -> {
 			entry.setValue(volume * entry.getKey().size() / totalElements);
 		});
-		
+
 		World world = Domain.getWorld(worldId);
 		world.removeFluid(this);
 		for (Entry<Set<TwoInts>, Float> fragment : fragments.entrySet()) {
@@ -246,7 +269,7 @@ public class FluidBody implements Serializable {
 				map.put(element.b, newRow);
 			}
 		}
-		
+
 		return map;
 	}
 
@@ -264,8 +287,8 @@ public class FluidBody implements Serializable {
 			}
 			break;
 		}
-		
-		if (!fragment.isEmpty()) {
+
+		if (fragment != null && !fragment.isEmpty()) {
 			fragment.stream().forEach(element -> {
 				Set<Integer> row = occupiedCoordinatesCopy.get(element.b);
 				row.remove(element.a);
@@ -274,49 +297,49 @@ public class FluidBody implements Serializable {
 				}
 			});
 		}
-		
+
 		return fragment;
 	}
-	
-	
+
+
 	/**
 	 * @return a set of coordinates
 	 */
 	private Set<TwoInts> findFragment(int x, int y) {
 		Set<TwoInts> fragment = Sets.newLinkedHashSet();
 		Set<Integer> row = occupiedCoordinates.get(y);
-		
+
 		if (row == null) {
 			throw new RuntimeException("Fragment seed is not occupied");
 		} else {
 			processFragmentElement(fragment, x, y);
 		}
-		
+
 		return fragment;
 	}
-	
-	
+
+
 	private void processFragmentElement(Set<TwoInts> fragment, int x, int y) {
 		if (!occupiedCoordinates.containsKey(y)) {
 			return;
 		}
-		
+
 		if (fragment.contains(new TwoInts(x, y))) {
 			return;
 		}
-		
+
 		if (occupiedCoordinates.get(y).contains(x)) {
 			fragment.add(new TwoInts(x, y));
 		} else {
 			return;
 		}
-		
+
 		processFragmentElement(fragment, x - 1, y);
 		processFragmentElement(fragment, x + 1, y);
 		processFragmentElement(fragment, x, y + 1);
 		processFragmentElement(fragment, x, y - 1);
 	}
-	
+
 
 	/**
 	 * @return whether the specified coordinates is part of a pillar of fluid whose base sits on a non passable tile
@@ -325,7 +348,7 @@ public class FluidBody implements Serializable {
 		while (hasFluid(x, y)) {
 			y = y - 1;
 		}
-		
+
 		return !Domain.getWorld(worldId).getTopography().getTile(x, y, true).isPassable();
 	}
 
@@ -335,7 +358,7 @@ public class FluidBody implements Serializable {
 	 */
 	private boolean hasFluid(int x, int y) {
 		Set<Integer> row = occupiedCoordinates.get(y);
-		
+
 		if (row == null) {
 			return false;
 		} else {
