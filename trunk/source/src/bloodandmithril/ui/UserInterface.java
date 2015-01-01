@@ -673,6 +673,23 @@ public class UserInterface {
 					((GoToLocation)currentTask).renderFinalWayPoint();
 				} else if (currentTask instanceof Travel) {
 					((Travel) currentTask).renderWaypoints();
+					
+					if (Gdx.input.isKeyPressed(KeyMappings.jump)) {
+						Vector2 destination = ((Travel) currentTask).getFinalGoToLocationWaypoint();
+						Vector2 start;
+						if (destination != null) {
+							if (Gdx.input.isKeyPressed(KeyMappings.addWayPoint)) {
+								start = destination;
+							} else {
+								start = indi.getState().position.cpy();
+							}
+							
+							renderJumpArrow(
+								start, 
+								new Vector2(getMouseWorldX(), getMouseWorldY())
+							);
+						}
+					}
 				} else if (currentTask instanceof CompositeAITask) {
 					AITask subTask = ((CompositeAITask) currentTask).getCurrentTask();
 					if (subTask instanceof GoToLocation) {
@@ -688,10 +705,59 @@ public class UserInterface {
 						// }
 					}
 				}
+				
+				if (!(currentTask instanceof Travel)) {
+					if (Gdx.input.isKeyPressed(KeyMappings.jump)) {
+						renderJumpArrow(
+							indi.getState().position.cpy(), 
+							new Vector2(getMouseWorldX(), getMouseWorldY())
+						);
+					}
+				}
 			}
 			indi.renderUIDecorations();
 		}
 		spriteBatch.end();
+	}
+
+
+	/**
+	 * Renders the jump arrow, coordniates are world coordinates
+	 */
+	public static void renderJumpArrow(Vector2 start, Vector2 finish) {
+		Vector2 difference = finish.cpy().sub(start);
+		Vector2 arrowHead = start.cpy().add(
+			difference.cpy().nor().mul(Math.min(difference.len(), 75f))
+		);
+		
+		spriteBatch.flush();
+		shapeRenderer.begin(ShapeType.Line);
+		Gdx.gl20.glLineWidth(2f);
+		shapeRenderer.setColor(Color.GREEN);
+		shapeRenderer.line(
+			worldToScreenX(start.x), 
+			worldToScreenY(start.y), 
+			worldToScreenX(arrowHead.x), 
+			worldToScreenY(arrowHead.y)
+		);
+		shapeRenderer.end();
+		
+		shapeRenderer.begin(ShapeType.FilledTriangle);
+		shapeRenderer.setColor(Color.GREEN);
+		
+		Vector2 point = arrowHead.cpy().add(difference.cpy().nor().mul(5f));
+		Vector2 corner1 = arrowHead.cpy().sub(difference.cpy().nor().rotate(25f).mul(15f));
+		Vector2 corner2 = arrowHead.cpy().sub(difference.cpy().nor().rotate(-25f).mul(15f));
+		
+		shapeRenderer.filledTriangle(
+			worldToScreenX(point.x), 
+			worldToScreenY(point.y), 
+			worldToScreenX(corner1.x), 
+			worldToScreenY(corner1.y), 
+			worldToScreenX(corner2.x), 
+			worldToScreenY(corner2.y)
+		);
+		shapeRenderer.end();
 	}
 
 
@@ -710,6 +776,39 @@ public class UserInterface {
 		}
 
 		defaultFont.draw(spriteBatch, "Framerate: " + fpsDisplayed, 5, HEIGHT - 65);
+		
+		boolean jumpPressed = Gdx.input.isKeyPressed(KeyMappings.jump);
+		boolean addWayPointPressed = Gdx.input.isKeyPressed(KeyMappings.addWayPoint);
+		boolean forceMovePressed = Gdx.input.isKeyPressed(KeyMappings.forceMove);
+		
+		if (!Domain.getSelectedIndividuals().isEmpty() &&
+			(jumpPressed || addWayPointPressed || forceMovePressed)) {
+			
+			String text = "";
+			if (jumpPressed) {
+				if (!addWayPointPressed) {
+					text = "Jump";
+				} else {
+					text = "Add jump waypoint";
+				}
+			} else if (addWayPointPressed) {
+				if (forceMovePressed) {
+					text = "Add force move waypoint";
+				} else {
+					text = "Add waypoint";
+				}
+			} else if (forceMovePressed) {
+				text = "Force move";
+			}
+			
+			spriteBatch.setShader(Shaders.filter);
+			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+			Shaders.filter.setUniformf("color", Color.BLACK);
+			Fonts.defaultFont.draw(spriteBatch, text, getMouseScreenX() + 14, getMouseScreenY() - 26);
+			spriteBatch.flush();
+			Shaders.filter.setUniformf("color", Color.ORANGE);
+			Fonts.defaultFont.draw(spriteBatch, text, getMouseScreenX() + 15, getMouseScreenY() - 25);
+		}
 	}
 
 

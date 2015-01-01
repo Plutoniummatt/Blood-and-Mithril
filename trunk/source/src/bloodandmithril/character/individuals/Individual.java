@@ -691,7 +691,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				Shaders.filter.setUniformf("color", Color.ORANGE);
 				Fonts.defaultFont.draw(spriteBatch, "Attack", getMouseScreenX() + 15, getMouseScreenY() - 25);
 			}
-		}
+		} 
 	}
 
 

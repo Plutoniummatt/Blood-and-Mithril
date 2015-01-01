@@ -39,6 +39,9 @@ public class Travel extends CompositeAITask {
 	 * Adds a {@link GoToLocation} task
 	 */
 	public void addJump(Jump jump) {
+		if (getCurrentTask() instanceof Jump || tasks.peekLast() instanceof Jump) {
+			return;
+		}
 		appendTask(jump);
 	}
 	
@@ -53,29 +56,63 @@ public class Travel extends CompositeAITask {
 	}
 	
 	
+	public Vector2 getFinalGoToLocationWaypoint() {
+		AITask peekLast = tasks.peekLast();
+		if (peekLast == null) {
+			AITask currentTask = getCurrentTask();
+			if (currentTask != null && currentTask instanceof JitGoToLocation) {
+				return ((JitGoToLocation) currentTask).getDestination().waypoint.cpy();
+			} else {
+				return null; 
+			}
+		} else {
+			if (peekLast instanceof JitGoToLocation) {
+				return ((JitGoToLocation) peekLast).getDestination().waypoint.cpy();
+			}
+			return null;
+		}
+	}
+	
+	
 	/**
 	 * Renders all waypoints in this {@link Travel} task
 	 */
 	public void renderWaypoints() {
-		renderForTask(getCurrentTask());
+		renderForTask(null, getCurrentTask());
 		
+		AITask previousTask = null;
 		for (AITask task : tasks) {
-			renderForTask(task);
+			renderForTask(previousTask, task);
+			previousTask = task;
 		}
 	}
 
 
-	private void renderForTask(AITask task) {
+	private void renderForTask(AITask previousTask, AITask task) {
 		if (task instanceof JitGoToLocation) {
 			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
 			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
 			BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
 		} else if (task instanceof Jump) {
-			Vector2 waypoint = ((Jump) task).getDestination();
-			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
-			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-			BloodAndMithrilClient.spriteBatch.draw(UserInterface.jumpWaypointTexture, waypoint.x - UserInterface.jumpWaypointTexture.getRegionWidth(), waypoint.y);
+			Vector2 start = null;
+			
+			if (previousTask instanceof JitGoToLocation) {
+				start = ((JitGoToLocation) previousTask).getDestination().waypoint.cpy();
+			} else {
+				AITask currentTask = getCurrentTask();
+				if (currentTask instanceof JitGoToLocation) {
+					start = ((JitGoToLocation) currentTask).getDestination().waypoint;
+				}
+			}
+			
+			if (start != null) {
+				Vector2 waypoint = ((Jump) task).getDestination();
+				UserInterface.renderJumpArrow(
+					start, 
+					waypoint
+				);
+			}
 		}
 	}
 }
