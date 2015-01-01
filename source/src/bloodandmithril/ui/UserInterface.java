@@ -732,7 +732,7 @@ public class UserInterface {
 		
 		spriteBatch.flush();
 		shapeRenderer.begin(ShapeType.Line);
-		Gdx.gl20.glLineWidth(2f);
+		Gdx.gl20.glLineWidth(3f);
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.line(
 			worldToScreenX(start.x), 
@@ -758,6 +758,7 @@ public class UserInterface {
 			worldToScreenY(corner2.y)
 		);
 		shapeRenderer.end();
+		Gdx.gl20.glLineWidth(1f);
 	}
 
 
