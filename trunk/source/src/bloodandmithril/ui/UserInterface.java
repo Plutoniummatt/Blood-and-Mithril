@@ -673,7 +673,7 @@ public class UserInterface {
 					((GoToLocation)currentTask).renderFinalWayPoint();
 				} else if (currentTask instanceof Travel) {
 					((Travel) currentTask).renderWaypoints();
-					
+
 					if (Gdx.input.isKeyPressed(KeyMappings.jump)) {
 						Vector2 destination = ((Travel) currentTask).getFinalGoToLocationWaypoint();
 						Vector2 start;
@@ -683,9 +683,9 @@ public class UserInterface {
 							} else {
 								start = indi.getState().position.cpy();
 							}
-							
+
 							renderJumpArrow(
-								start, 
+								start,
 								new Vector2(getMouseWorldX(), getMouseWorldY())
 							);
 						}
@@ -705,11 +705,11 @@ public class UserInterface {
 						// }
 					}
 				}
-				
+
 				if (!(currentTask instanceof Travel)) {
 					if (Gdx.input.isKeyPressed(KeyMappings.jump)) {
 						renderJumpArrow(
-							indi.getState().position.cpy(), 
+							indi.getState().position.cpy(),
 							new Vector2(getMouseWorldX(), getMouseWorldY())
 						);
 					}
@@ -729,32 +729,32 @@ public class UserInterface {
 		Vector2 arrowHead = start.cpy().add(
 			difference.cpy().nor().mul(Math.min(difference.len(), 75f))
 		);
-		
+
 		spriteBatch.flush();
 		shapeRenderer.begin(ShapeType.Line);
 		Gdx.gl20.glLineWidth(3f);
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.line(
-			worldToScreenX(start.x), 
-			worldToScreenY(start.y), 
-			worldToScreenX(arrowHead.x), 
+			worldToScreenX(start.x),
+			worldToScreenY(start.y),
+			worldToScreenX(arrowHead.x),
 			worldToScreenY(arrowHead.y)
 		);
 		shapeRenderer.end();
-		
+
 		shapeRenderer.begin(ShapeType.FilledTriangle);
 		shapeRenderer.setColor(Color.GREEN);
-		
+
 		Vector2 point = arrowHead.cpy().add(difference.cpy().nor().mul(5f));
 		Vector2 corner1 = arrowHead.cpy().sub(difference.cpy().nor().rotate(25f).mul(15f));
 		Vector2 corner2 = arrowHead.cpy().sub(difference.cpy().nor().rotate(-25f).mul(15f));
-		
+
 		shapeRenderer.filledTriangle(
-			worldToScreenX(point.x), 
-			worldToScreenY(point.y), 
-			worldToScreenX(corner1.x), 
-			worldToScreenY(corner1.y), 
-			worldToScreenX(corner2.x), 
+			worldToScreenX(point.x),
+			worldToScreenY(point.y),
+			worldToScreenX(corner1.x),
+			worldToScreenY(corner1.y),
+			worldToScreenX(corner2.x),
 			worldToScreenY(corner2.y)
 		);
 		shapeRenderer.end();
@@ -777,14 +777,14 @@ public class UserInterface {
 		}
 
 		defaultFont.draw(spriteBatch, "Framerate: " + fpsDisplayed, 5, HEIGHT - 65);
-		
+
 		boolean jumpPressed = Gdx.input.isKeyPressed(KeyMappings.jump);
 		boolean addWayPointPressed = Gdx.input.isKeyPressed(KeyMappings.addWayPoint);
 		boolean forceMovePressed = Gdx.input.isKeyPressed(KeyMappings.forceMove);
-		
+
 		if (!Domain.getSelectedIndividuals().isEmpty() &&
 			(jumpPressed || addWayPointPressed || forceMovePressed)) {
-			
+
 			String text = "";
 			if (jumpPressed) {
 				if (!addWayPointPressed) {
@@ -801,7 +801,7 @@ public class UserInterface {
 			} else if (forceMovePressed) {
 				text = "Force move";
 			}
-			
+
 			spriteBatch.setShader(Shaders.filter);
 			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 			Shaders.filter.setUniformf("color", Color.BLACK);
