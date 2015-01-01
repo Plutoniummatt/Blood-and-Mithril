@@ -87,10 +87,11 @@ public class Jump extends AITask {
 
 	private Vector2 resolveJumpVector() {
 		Vector2 call = from.call();
-		Vector2 nor = to.cpy().sub(call).nor();
+		Vector2 difference = to.cpy().sub(call);
+		Vector2 nor = difference.cpy().nor();
 		if (nor.y < 0f) {
 			return new Vector2();
 		}
-		return nor.mul(500);
+		return nor.mul(500f * Math.min(difference.len() / 75f, 1f));
 	}
 }
