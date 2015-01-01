@@ -44,8 +44,8 @@ public class Travel extends CompositeAITask {
 		}
 		appendTask(jump);
 	}
-	
-	
+
+
 	public Vector2 getDestination() {
 		AITask task = getCurrentTask();
 		if (task instanceof GoToLocation) {
@@ -54,8 +54,8 @@ public class Travel extends CompositeAITask {
 			return ((Jump) task).getDestination();
 		}
 	}
-	
-	
+
+
 	public Vector2 getFinalGoToLocationWaypoint() {
 		AITask peekLast = tasks.peekLast();
 		if (peekLast == null) {
@@ -63,7 +63,7 @@ public class Travel extends CompositeAITask {
 			if (currentTask != null && currentTask instanceof JitGoToLocation) {
 				return ((JitGoToLocation) currentTask).getDestination().waypoint.cpy();
 			} else {
-				return null; 
+				return null;
 			}
 		} else {
 			if (peekLast instanceof JitGoToLocation) {
@@ -72,14 +72,14 @@ public class Travel extends CompositeAITask {
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Renders all waypoints in this {@link Travel} task
 	 */
 	public void renderWaypoints() {
 		renderForTask(null, getCurrentTask());
-		
+
 		AITask previousTask = null;
 		for (AITask task : tasks) {
 			renderForTask(previousTask, task);
@@ -96,7 +96,7 @@ public class Travel extends CompositeAITask {
 			BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
 		} else if (task instanceof Jump) {
 			Vector2 start = null;
-			
+
 			if (previousTask instanceof JitGoToLocation) {
 				start = ((JitGoToLocation) previousTask).getDestination().waypoint.cpy();
 			} else {
@@ -105,11 +105,11 @@ public class Travel extends CompositeAITask {
 					start = ((JitGoToLocation) currentTask).getDestination().waypoint;
 				}
 			}
-			
+
 			if (start != null) {
 				Vector2 waypoint = ((Jump) task).getDestination();
 				UserInterface.renderJumpArrow(
-					start, 
+					start,
 					waypoint
 				);
 			}

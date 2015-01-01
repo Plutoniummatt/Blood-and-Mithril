@@ -419,7 +419,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 								Topography.convertToWorldCoord(
 									getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
 										new Vector2(
-											getMouseWorldX() + spread,
+											getMouseWorldX() + (Gdx.input.isKeyPressed(KeyMappings.forceMove) ? 0f : spread),
 											getMouseWorldY()
 										),
 										10,
@@ -439,7 +439,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							Topography.convertToWorldCoord(
 								getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
 									new Vector2(
-										getMouseWorldX() + spread,
+										getMouseWorldX() + (Gdx.input.isKeyPressed(KeyMappings.forceMove) ? 0f : spread),
 										getMouseWorldY()
 									),
 									10,
