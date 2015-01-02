@@ -821,7 +821,7 @@ public class UserInterface {
 				boolean canAttackRanged = false;
 				for (Individual indi : Domain.getSelectedIndividuals()) {
 					if (indi.canAttackRanged()) {
-						renderArrow(indi.getEmissionPosition(), new Vector2(getMouseWorldX(), getMouseWorldY()), Color.RED, 2f, 0f, 75f);
+						renderArrow(indi.getEmissionPosition(), new Vector2(getMouseWorldX(), getMouseWorldY()), Color.RED, 2f, 0f, 150f);
 						canAttackRanged = true;
 					}
 				}

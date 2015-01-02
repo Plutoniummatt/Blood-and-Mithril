@@ -223,11 +223,6 @@ public class Domain {
 				spriteBatch.flush();
 			}
 		}
-		for (Projectile projectile : getActiveWorld().projectiles().getProjectiles()) {
-			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-			projectile.render();
-			spriteBatch.flush();
-		}
 		for (Item item : getActiveWorld().items().getItems()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			item.render();
@@ -237,6 +232,15 @@ public class Domain {
 		Domain.individualTexture.setFilter(Nearest, Nearest);
 		backgroundParticles();
 		IndividualPlatformFilteringRenderer.renderIndividuals();
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
+		for (Projectile projectile : getActiveWorld().projectiles().getProjectiles()) {
+			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
+			projectile.render();
+			spriteBatch.flush();
+		}
+		spriteBatch.end();
 		gl20.glEnable(GL20.GL_BLEND);
 		gl20.glBlendFuncSeparate(GL20.GL_ONE, GL20.GL_SRC_COLOR, GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		activeWorld.renderFluids();

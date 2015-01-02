@@ -1799,7 +1799,17 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		RangedWeapon rangedWeapon = (RangedWeapon) getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).findAny().get();
 		if (rangedWeapon != null) {
 			Vector2 emissionPosition = getEmissionPosition();
-			Projectile fired = rangedWeapon.fire(emissionPosition, target.cpy().sub(emissionPosition).mul(10f));
+			Vector2 firingVector = target.cpy().sub(emissionPosition);
+			Projectile fired = rangedWeapon.fire(
+				emissionPosition, 
+				firingVector.cpy().nor().mul(
+					Math.min(
+						1f, 
+						firingVector.len() / 150f
+					)
+				)
+			);
+			fired.ignoreIndividual(this);
 			Domain.getWorld(getWorldId()).projectiles().addProjectile(fired);
 		}
 	}

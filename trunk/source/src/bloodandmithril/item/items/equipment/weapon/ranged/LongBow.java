@@ -191,7 +191,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 
 	@Override
 	public Projectile fire(Vector2 origin, Vector2 direction) {
-		Arrow<Iron> arrow = new Arrow<>(Iron.class, origin, direction);
+		Arrow<Iron> arrow = new Arrow<>(Iron.class, origin, direction.cpy().mul(2000f));
 		return arrow;
 	}
 }
