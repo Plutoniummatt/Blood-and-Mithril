@@ -23,7 +23,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 	/**
 	 * Constructor
 	 */
-	protected LongBow(float mass, int volume, boolean equippable, long value, Class<T> material) {
+	public LongBow(float mass, int volume, boolean equippable, long value, Class<T> material) {
 		super(mass, volume, equippable, value, material);
 	}
 	

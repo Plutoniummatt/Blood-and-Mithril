@@ -36,6 +36,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
+import bloodandmithril.item.items.equipment.weapon.ranged.LongBow;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
@@ -230,6 +231,10 @@ public class DevWindow extends Window {
 				Broadsword item = new Broadsword();
 				item.setPreAffix(new Glowing(Util.randomOneOf(Color.CYAN, Color.GREEN, Color.YELLOW, Color.RED)));
 				elf.giveItem(item);
+			}
+			for (int i = 1; i > 0; i--) {
+				LongBow<Pine> bow = new LongBow<>(10f, 5, true, 10, Pine.class);
+				elf.giveItem(bow);
 			}
 			for (int i = 1; i > 0; i--) {
 				BushKnife item = new BushKnife();

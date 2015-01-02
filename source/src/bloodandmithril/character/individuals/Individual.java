@@ -59,7 +59,9 @@ import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.armor.Armor;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
+import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
+import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.prop.construction.Construction;
@@ -1785,5 +1787,19 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	public TwoInts getTileToBeMined() {
 		return tileToBeMined;
+	}
+	
+	
+	public boolean canAttackRanged() {
+		return getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).count() != 0;
+	}
+
+
+	public void attackRanged(Vector2 target) {
+		RangedWeapon rangedWeapon = (RangedWeapon) getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).findAny().get();
+		if (rangedWeapon != null) {
+			Vector2 emissionPosition = getEmissionPosition();
+			Projectile fired = rangedWeapon.fire(emissionPosition, target.cpy().sub(emissionPosition));
+		}
 	}
 }
