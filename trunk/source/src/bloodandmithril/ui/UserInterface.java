@@ -722,17 +722,19 @@ public class UserInterface {
 	
 	
 	public static void renderJumpArrow(Vector2 start, Vector2 finish) {
-		renderArrow(start, finish, Color.GREEN, 3f, 0f);
+		if (!Gdx.input.isKeyPressed(KeyMappings.attack)) {
+			renderArrow(start, finish, Color.GREEN, 3f, 0f, 75f);
+		}
 	}
 
 
 	/**
 	 * Renders the jump arrow, coordniates are world coordinates
 	 */
-	private static void renderArrow(Vector2 start, Vector2 finish, Color color, float lineWidth, float arrowSize) {
+	private static void renderArrow(Vector2 start, Vector2 finish, Color color, float lineWidth, float arrowSize, float maxLength) {
 		Vector2 difference = finish.cpy().sub(start);
 		Vector2 arrowHead = start.cpy().add(
-			difference.cpy().nor().mul(Math.min(difference.len(), 75f))
+			difference.cpy().nor().mul(Math.min(difference.len(), maxLength))
 		);
 
 		spriteBatch.flush();
@@ -786,34 +788,54 @@ public class UserInterface {
 		boolean jumpPressed = Gdx.input.isKeyPressed(KeyMappings.jump);
 		boolean addWayPointPressed = Gdx.input.isKeyPressed(KeyMappings.addWayPoint);
 		boolean forceMovePressed = Gdx.input.isKeyPressed(KeyMappings.forceMove);
+		boolean attackPressed = Gdx.input.isKeyPressed(KeyMappings.attack);
 
-		if (!Domain.getSelectedIndividuals().isEmpty() &&
-			(jumpPressed || addWayPointPressed || forceMovePressed)) {
+		if (!Domain.getSelectedIndividuals().isEmpty()) {
 
-			String text = "";
-			if (jumpPressed) {
-				if (!addWayPointPressed) {
-					text = "Jump";
-				} else {
-					text = "Add jump waypoint";
+			if ((jumpPressed || addWayPointPressed || forceMovePressed) && !attackPressed) {
+				String text = "";
+				if (jumpPressed) {
+					if (!addWayPointPressed) {
+						text = "Jump";
+					} else {
+						text = "Add jump waypoint";
+					}
+				} else if (addWayPointPressed) {
+					if (forceMovePressed) {
+						text = "Add force move waypoint";
+					} else {
+						text = "Add waypoint";
+					}
+				} else if (forceMovePressed) {
+					text = "Force move";
 				}
-			} else if (addWayPointPressed) {
-				if (forceMovePressed) {
-					text = "Add force move waypoint";
-				} else {
-					text = "Add waypoint";
+
+				spriteBatch.setShader(Shaders.filter);
+				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+				Shaders.filter.setUniformf("color", Color.BLACK);
+				Fonts.defaultFont.draw(spriteBatch, text, getMouseScreenX() + 14, getMouseScreenY() - 26);
+				spriteBatch.flush();
+				Shaders.filter.setUniformf("color", Color.ORANGE);
+				Fonts.defaultFont.draw(spriteBatch, text, getMouseScreenX() + 15, getMouseScreenY() - 25);
+			} else if (attackPressed) {
+				boolean canAttackRanged = false;
+				for (Individual indi : Domain.getSelectedIndividuals()) {
+					if (indi.canAttackRanged()) {
+						renderArrow(indi.getEmissionPosition(), new Vector2(getMouseWorldX(), getMouseWorldY()), Color.RED, 2f, 0f, 75f);
+						canAttackRanged = true;
+					}
 				}
-			} else if (forceMovePressed) {
-				text = "Force move";
+				
+				if (canAttackRanged) {
+					spriteBatch.setShader(Shaders.filter);
+					Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+					Shaders.filter.setUniformf("color", Color.BLACK);
+					Fonts.defaultFont.draw(spriteBatch, "Attack ranged", getMouseScreenX() + 14, getMouseScreenY() - 26);
+					spriteBatch.flush();
+					Shaders.filter.setUniformf("color", Color.ORANGE);
+					Fonts.defaultFont.draw(spriteBatch, "Attack ranged", getMouseScreenX() + 15, getMouseScreenY() - 25);
+				}
 			}
-
-			spriteBatch.setShader(Shaders.filter);
-			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
-			Shaders.filter.setUniformf("color", Color.BLACK);
-			Fonts.defaultFont.draw(spriteBatch, text, getMouseScreenX() + 14, getMouseScreenY() - 26);
-			spriteBatch.flush();
-			Shaders.filter.setUniformf("color", Color.ORANGE);
-			Fonts.defaultFont.draw(spriteBatch, text, getMouseScreenX() + 15, getMouseScreenY() - 25);
 		}
 	}
 

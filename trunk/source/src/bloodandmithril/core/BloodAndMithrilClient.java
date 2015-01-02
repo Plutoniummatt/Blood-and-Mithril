@@ -370,6 +370,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		if (Gdx.input.isKeyPressed(KeyMappings.attack)) {
 			if (!Domain.getSelectedIndividuals().isEmpty()) {
+				boolean attacked = false;
 				for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 					Individual indi = Domain.getIndividual(indiKey);
 					if (indi.isMouseOver()) {
@@ -384,7 +385,20 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 								ClientServerInterface.SendRequest.sendRequestAttack(selected, indi);
 							}
 						}
+						attacked = true;
 						break;
+					}
+				}
+				
+				if (!attacked) {
+					for (Individual selected : Domain.getSelectedIndividuals()) {
+						if (selected.canAttackRanged()) {
+							if (ClientServerInterface.isServer()) {
+								selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
+							} else {
+								// TODO
+							}
+						}
 					}
 				}
 			}

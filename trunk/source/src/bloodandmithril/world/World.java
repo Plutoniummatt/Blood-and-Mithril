@@ -53,6 +53,9 @@ public class World implements Serializable {
 
 	/** The props of this {@link World} */
 	private WorldProps props;
+	
+	/** The projectiles of this {@link World} */
+	private WorldProjectiles projectiles;
 
 	/**
 	 * Constructor
