@@ -719,12 +719,17 @@ public class UserInterface {
 		}
 		spriteBatch.end();
 	}
+	
+	
+	public static void renderJumpArrow(Vector2 start, Vector2 finish) {
+		renderArrow(start, finish, Color.GREEN, 3f, 0f);
+	}
 
 
 	/**
 	 * Renders the jump arrow, coordniates are world coordinates
 	 */
-	public static void renderJumpArrow(Vector2 start, Vector2 finish) {
+	private static void renderArrow(Vector2 start, Vector2 finish, Color color, float lineWidth, float arrowSize) {
 		Vector2 difference = finish.cpy().sub(start);
 		Vector2 arrowHead = start.cpy().add(
 			difference.cpy().nor().mul(Math.min(difference.len(), 75f))
@@ -732,8 +737,8 @@ public class UserInterface {
 
 		spriteBatch.flush();
 		shapeRenderer.begin(ShapeType.Line);
-		Gdx.gl20.glLineWidth(3f);
-		shapeRenderer.setColor(Color.GREEN);
+		Gdx.gl20.glLineWidth(lineWidth);
+		shapeRenderer.setColor(color);
 		shapeRenderer.line(
 			worldToScreenX(start.x),
 			worldToScreenY(start.y),
@@ -743,11 +748,11 @@ public class UserInterface {
 		shapeRenderer.end();
 
 		shapeRenderer.begin(ShapeType.FilledTriangle);
-		shapeRenderer.setColor(Color.GREEN);
+		shapeRenderer.setColor(color);
 
-		Vector2 point = arrowHead.cpy().add(difference.cpy().nor().mul(5f));
-		Vector2 corner1 = arrowHead.cpy().sub(difference.cpy().nor().rotate(25f).mul(15f));
-		Vector2 corner2 = arrowHead.cpy().sub(difference.cpy().nor().rotate(-25f).mul(15f));
+		Vector2 point = arrowHead.cpy().add(difference.cpy().nor().mul(5f + arrowSize));
+		Vector2 corner1 = arrowHead.cpy().sub(difference.cpy().nor().rotate(25f).mul(15f + arrowSize / 2f));
+		Vector2 corner2 = arrowHead.cpy().sub(difference.cpy().nor().rotate(-25f).mul(15f + arrowSize / 2f));
 
 		shapeRenderer.filledTriangle(
 			worldToScreenX(point.x),
