@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai;
 
+import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import static bloodandmithril.util.Util.firstNonNull;
 
@@ -17,6 +18,7 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -150,9 +152,16 @@ public abstract class ArtificialIntelligence implements Serializable {
 			AIProcessor.sendPathfindingRequest(
 				host,
 				new WayPoint(
-					new Vector2(
-						host.getState().position.x + (0.5f - Util.getRandom().nextFloat()) * distance,
-						host.getState().position.y + host.getHeight() / 2
+					Topography.convertToWorldCoord(
+						getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+							new Vector2(
+								host.getState().position.x + (0.5f - Util.getRandom().nextFloat()) * distance,
+								host.getState().position.y + host.getHeight() / 2
+							),
+							10,
+							Domain.getWorld(host.getWorldId())
+						),
+						true
 					)
 				),
 				fly,

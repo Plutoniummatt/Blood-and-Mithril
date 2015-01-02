@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck 2014")
 public class Travel extends CompositeAITask {
 	private static final long serialVersionUID = -1118542666642761349L;
+	private float currentWaypointRenderPositionOffsetTimer = 0f;
 
 	/**
 	 * Constructor
@@ -78,22 +79,37 @@ public class Travel extends CompositeAITask {
 	 * Renders all waypoints in this {@link Travel} task
 	 */
 	public void renderWaypoints() {
-		renderForTask(null, getCurrentTask());
+		renderForTask(null, getCurrentTask(), true);
 
 		AITask previousTask = null;
 		for (AITask task : tasks) {
-			renderForTask(previousTask, task);
+			renderForTask(previousTask, task, false);
 			previousTask = task;
 		}
 	}
+	
+	
+	@Override
+	public void setCurrentTask(AITask currentTask) {
+		currentWaypointRenderPositionOffsetTimer = 0f;
+		super.setCurrentTask(currentTask);
+	}
 
 
-	private void renderForTask(AITask previousTask, AITask task) {
+	private void renderForTask(AITask previousTask, AITask task, boolean isCurrentTask) {
 		if (task instanceof JitGoToLocation) {
+			
+			float offset = 0f;
+			if (isCurrentTask) {
+				offset = (float) Math.cos(currentWaypointRenderPositionOffsetTimer + Math.PI) + 1f;
+				currentWaypointRenderPositionOffsetTimer += 0.1f;
+			}
+			
+			
 			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
 			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-			BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
+			BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y + offset * 10f);
 		} else if (task instanceof Jump) {
 			Vector2 start = null;
 
