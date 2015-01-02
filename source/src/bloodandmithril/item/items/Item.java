@@ -562,6 +562,7 @@ public abstract class Item implements Serializable, Affixed {
 		ONEHANDEDAXE("One-handed axe"),
 		ONEHANDEDSPEAR("One-handed spear"),
 		MISC("Miscellaneous"),
+		BOW("Bow"),
 		MATERIAL("Material"),
 		PICKAXE("Pickaxe"),
 		RING("Ring"),
