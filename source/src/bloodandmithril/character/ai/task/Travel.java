@@ -102,7 +102,7 @@ public class Travel extends CompositeAITask {
 			float offset = 0f;
 			if (isCurrentTask) {
 				offset = (float) Math.cos(currentWaypointRenderPositionOffsetTimer + Math.PI) + 1f;
-				currentWaypointRenderPositionOffsetTimer += 0.1f;
+				currentWaypointRenderPositionOffsetTimer += 0.15f;
 			}
 			
 			
