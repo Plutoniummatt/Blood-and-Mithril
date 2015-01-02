@@ -53,7 +53,7 @@ public class World implements Serializable {
 
 	/** The props of this {@link World} */
 	private WorldProps props;
-	
+
 	/** The projectiles of this {@link World} */
 	private WorldProjectiles projectiles;
 
@@ -65,6 +65,7 @@ public class World implements Serializable {
 		this.gravity = gravity;
 		this.items = new WorldItems(worldId);
 		this.props = new WorldProps(worldId);
+		this.projectiles = new WorldProjectiles(worldId);
 		this.topography = new Topography(worldId);
 	}
 
@@ -98,6 +99,14 @@ public class World implements Serializable {
 	 */
 	public WorldProps props() {
 		return props;
+	}
+
+
+	/**
+	 * @return the {@link WorldProjectiles}
+	 */
+	public WorldProjectiles projectiles() {
+		return projectiles;
 	}
 
 

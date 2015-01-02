@@ -7,6 +7,7 @@ import java.util.Set;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
 
 import com.google.common.collect.Sets;
@@ -24,6 +25,7 @@ public class PositionalIndexNode implements Serializable {
 	private Set<Integer> props = Sets.newConcurrentHashSet();
 	private Set<Integer> individuals = Sets.newConcurrentHashSet();
 	private Set<Integer> items = Sets.newConcurrentHashSet();
+	private Set<Integer> projectiles = Sets.newConcurrentHashSet();
 
 	/**
 	 * Constructor
@@ -46,6 +48,10 @@ public class PositionalIndexNode implements Serializable {
 			return props;
 		}
 
+		if (clazz.equals(Projectile.class)) {
+			return projectiles;
+		}
+
 		throw new RuntimeException("Unrecognised class: " + clazz.getSimpleName());
 	}
 
@@ -65,6 +71,11 @@ public class PositionalIndexNode implements Serializable {
 	}
 
 
+	public void removeProjectile(int key) {
+		projectiles.remove(key);
+	}
+
+
 	public void addIndividual(int key) {
 		individuals.add(key);
 	}
@@ -80,8 +91,15 @@ public class PositionalIndexNode implements Serializable {
 	}
 
 
+	public void addProjectile(int key) {
+		projectiles.add(key);
+	}
+
+
 	public void clear() {
 		props.clear();
 		individuals.clear();
+		items.clear();
+		projectiles.clear();
 	}
 }
