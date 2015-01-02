@@ -41,6 +41,9 @@ import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
 import bloodandmithril.item.items.material.Bricks;
 import bloodandmithril.item.items.material.Rock;
+import bloodandmithril.item.liquid.Blood;
+import bloodandmithril.item.liquid.Liquid;
+import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.Pine;
@@ -177,7 +180,10 @@ public class DevWindow extends Window {
 			coords.put(y + 2, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
 			coords.put(y + 3, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
 
-			FluidBody fluid = new FluidBody(coords, 16f, Domain.getActiveWorld().getWorldId());
+			Map<Class<? extends Liquid>, Integer> composition = Maps.newHashMap();
+			composition.put(Util.randomOneOf(Water.class, Blood.class), 100);
+
+			FluidBody fluid = new FluidBody(coords, 16f, Domain.getActiveWorld().getWorldId(), composition);
 			Domain.getActiveWorld().addFluid(fluid);
 		}
 
