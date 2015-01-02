@@ -5,6 +5,8 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedProjectileWeapon;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
+import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
@@ -26,14 +28,14 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 	public LongBow(float mass, int volume, boolean equippable, long value, Class<T> material) {
 		super(mass, volume, equippable, value, material);
 	}
-	
+
 
 	@Override
 	public boolean stab() {
 		return false;
 	}
 
-	
+
 	@Override
 	public Box getActionFrameHitBox(Individual individual) {
 		return new Box(
@@ -46,55 +48,55 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 		);
 	}
 
-	
+
 	@Override
 	public int getHitSound() {
 		return SoundService.stab;
 	}
 
-	
+
 	@Override
 	public int getBlockSound() {
 		return SoundService.broadSwordBlock;
 	}
 
-	
+
 	@Override
 	public float getDisarmChance() {
 		return 0;
 	}
 
-	
+
 	@Override
 	public float getParryChance() {
 		return 0.2f;
 	}
 
-	
+
 	@Override
 	public float getParryChanceIgnored() {
 		return 0;
 	}
 
-	
+
 	@Override
 	public int getAttackNumber(Individual attacker) {
 		return 2;
 	}
 
-	
+
 	@Override
 	protected String weaponGetSingular(boolean firstCap) {
 		return Wood.getMaterial(getMaterial()).getName() + " longbow";
 	}
 
-	
+
 	@Override
 	protected String weaponGetPlural(boolean firstCap) {
 		return Wood.getMaterial(getMaterial()).getName() + " longbows";
 	}
 
-	
+
 	@Override
 	public float getBaseAttackPeriod() {
 		return 3f;
@@ -106,13 +108,13 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 		return 1.5f;
 	}
 
-	
+
 	@Override
 	public float getBaseMaxDamage() {
 		return 2.5f;
 	}
 
-	
+
 	@Override
 	public float getCritDamageMultiplier() {
 		return 1.2f;
@@ -130,7 +132,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 		return null;
 	}
 
-	
+
 	@Override
 	public void specialEffect(Individual individual) {
 	}
@@ -141,12 +143,12 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 		return 0.1f;
 	}
 
-	
+
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "A longbow is a type of bow that has extended range.";
@@ -162,13 +164,13 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 		return false;
 	}
 
-	
+
 	@Override
 	public TextureRegion getTextureRegion() {
 		return null;
 	}
 
-	
+
 	@Override
 	public TextureRegion getIconTextureRegion() {
 		return null;
@@ -184,5 +186,12 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 	@Override
 	public Category getType() {
 		return Category.BOW;
+	}
+
+
+	@Override
+	public Projectile fire(Vector2 origin, Vector2 direction) {
+		Arrow<Iron> arrow = new Arrow<>(Iron.class, origin, direction);
+		return arrow;
 	}
 }

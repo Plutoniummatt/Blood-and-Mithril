@@ -3,6 +3,7 @@ package bloodandmithril.performance;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -35,6 +36,10 @@ public class PositionalReindexingService {
 
 			for (Prop prop : world.props().getProps()) {
 				prop.updatePositionIndex();
+			}
+
+			for (Projectile projectile : world.projectiles().getProjectiles()) {
+				projectile.updatePositionIndex();
 			}
 		}
 	}

@@ -6,6 +6,7 @@ import java.util.Random;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Epoch;
 
@@ -27,6 +28,7 @@ public class Parameters implements Serializable {
 	private int propIdCounter = 0;
 	private int worldIdCounter = 0;
 	private int itemCounter = 0;
+	private int projectileCounter = 0;
 
 	private Vector2 camera;
 	private Epoch currentEpoch;
@@ -74,6 +76,15 @@ public class Parameters implements Serializable {
 	public synchronized int getNextItemId() {
 		itemCounter++;
 		return itemCounter;
+	}
+
+
+	/**
+	 * Returns the next unique identifier to use for {@link Projectile}
+	 */
+	public synchronized int getNextProjectileId() {
+		projectileCounter++;
+		return projectileCounter;
 	}
 
 

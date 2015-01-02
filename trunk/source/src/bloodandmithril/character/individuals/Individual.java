@@ -693,7 +693,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				Shaders.filter.setUniformf("color", Color.ORANGE);
 				Fonts.defaultFont.draw(spriteBatch, "Attack", getMouseScreenX() + 15, getMouseScreenY() - 25);
 			}
-		} 
+		}
 	}
 
 
@@ -1788,8 +1788,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public TwoInts getTileToBeMined() {
 		return tileToBeMined;
 	}
-	
-	
+
+
 	public boolean canAttackRanged() {
 		return getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).count() != 0;
 	}
@@ -1799,7 +1799,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		RangedWeapon rangedWeapon = (RangedWeapon) getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).findAny().get();
 		if (rangedWeapon != null) {
 			Vector2 emissionPosition = getEmissionPosition();
-			Projectile fired = rangedWeapon.fire(emissionPosition, target.cpy().sub(emissionPosition));
+			Projectile fired = rangedWeapon.fire(emissionPosition, target.cpy().sub(emissionPosition).mul(10f));
+			Domain.getWorld(getWorldId()).projectiles().addProjectile(fired);
 		}
 	}
 }

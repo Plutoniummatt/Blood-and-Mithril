@@ -37,6 +37,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -222,6 +223,11 @@ public class Domain {
 				spriteBatch.flush();
 			}
 		}
+		for (Projectile projectile : getActiveWorld().projectiles().getProjectiles()) {
+			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
+			projectile.render();
+			spriteBatch.flush();
+		}
 		for (Item item : getActiveWorld().items().getItems()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			item.render();
@@ -308,6 +314,10 @@ public class Domain {
 
 			for (Prop prop : world.props().getProps()) {
 				prop.update(d);
+			}
+
+			for (Projectile projectile : world.projectiles().getProjectiles()) {
+				projectile.update(d);
 			}
 
 			for (Item item : world.items().getItems()) {
