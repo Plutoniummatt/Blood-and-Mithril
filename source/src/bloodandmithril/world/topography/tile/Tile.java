@@ -178,14 +178,6 @@ public abstract class Tile implements Serializable {
 	}
 
 
-	/**
-	 * @return true if smooth ceiling
-	 */
-	public boolean isSmoothCeiling() {
-		return smoothCeiling;
-	}
-
-
 	@Override
 	public String toString() {
 		return "Tile: " + Integer.toHexString(hashCode()) + "\n" + this.getClass().getSimpleName() + ", " + orientation;

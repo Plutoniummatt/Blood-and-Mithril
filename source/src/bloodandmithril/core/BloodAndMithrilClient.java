@@ -63,10 +63,10 @@ import com.google.common.collect.Sets;
  * <b><p> Terraforming - Mining & Placing blocks                                                         </b></p>
  * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
  * <b><p> Generation                                                                                     </b></p>
+ * <b><p> Fluids	                                                                                     </b></p>
  *
  * DONE
  *
- * <b><p> Fluids	                                                                                     </b></p>
  * <b><p> Stockpiling                                              										 </b></p>
  * <b><p> Dynamic tile-driven lighting                                      							 </b></p>
  * <b><p> Crafting and cooking                                     										 </b></p>

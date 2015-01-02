@@ -4,7 +4,6 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 
 import java.io.Serializable;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -45,22 +44,12 @@ public class FluidBody implements Serializable {
 	private static final float evaporationRate = 0.0003f;
 
 	private static Thread fluidThread;
-	public static volatile boolean paused = false;
 
 	static {
 		fluidThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
 
 			while (true) {
-				if (paused) {
-					try {
-						Thread.sleep(10);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-
-					continue;
-				}
 				try {
 					Thread.sleep(1);
 				} catch (Exception e) {
@@ -95,7 +84,7 @@ public class FluidBody implements Serializable {
 	 */
 	public void render() {
 		Domain.shapeRenderer.begin(ShapeType.FilledRectangle);
-		Domain.shapeRenderer.setColor(0.2f, 0.5f, 1f, 0.8f);
+		Domain.shapeRenderer.setColor(0.2f, 0.5f, 1.0f, 0.85f);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		// Split the occupied coordinates into y-layers
 		float workingVolume = volume;
@@ -159,19 +148,11 @@ public class FluidBody implements Serializable {
 	/**
 	 * Updates this {@link FluidBody}
 	 */
-	public void update(boolean suppressSplitting) {
-		if (volume <= 0f || occupiedCoordinates.isEmpty()) {
-			Domain.getWorld(worldId).removeFluid(this);
-			return;
-		}
-
+	public synchronized void update(boolean suppressSplitting) {
 		float workingVolume = volume;
 		float topLayerVolume = 0f;
 		boolean layerRemoved = false;
-		boolean possibleTileSplit = false;
 		boolean suppressTopSpread = false;
-		boolean merged = false;
-		Set<TwoInts> downflowSuppression = Sets.newLinkedHashSet();
 		for (Entry<Integer, Set<Integer>> layer : Lists.newLinkedList(occupiedCoordinates.entrySet())) {
 
 			// Remove rows when fluid is no longer occupying a row.
@@ -190,105 +171,51 @@ public class FluidBody implements Serializable {
 			}
 
 			final int y = layer.getKey();
+			boolean merged = false;
 			for (int x : Lists.newLinkedList(layer.getValue())) {
-				FluidBody overlapsWith = overlapsWith(x, y);
-				FluidBody overlapsWithLeft = overlapsWith(x - 1, y);
-				FluidBody overlapsWithRight = overlapsWith(x + 1, y);
-
-				boolean sideRemoval = false;
-				if (overlapsWithLeft != null) {
-					sideRemoval = overlapsWithLeft.occupiedCoordinates.lastKey() == y || sideRemoval;
-					downflowSuppression.add(new TwoInts(x, y + 1));
-				}
-				if (overlapsWithRight != null) {
-					sideRemoval = overlapsWithRight.occupiedCoordinates.lastKey() == y || sideRemoval;
-					downflowSuppression.add(new TwoInts(x, y + 1));
-				}
-
-				if (!Domain.getWorld(worldId).getTopography().getTile(x, y, true).isPassable() || overlapsWith != null && overlapsWith.occupiedCoordinates.lastKey() >= y || sideRemoval) {
-					occupiedCoordinates.get(y).remove(x);
-					possibleTileSplit = true;
-					if (occupiedCoordinates.get(y).isEmpty()) {
-						occupiedCoordinates.remove(y);
-						layerRemoved = true;
-					}
-					continue;
-				}
-
 				// Flow and Spread
 				boolean tileBelowPassable = Domain.getWorld(worldId).getTopography().getTile(x, y - 1, true).isPassable();
 				boolean tileRightBottomPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y - 1, true).isPassable();
 				boolean tileRightPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable();
 				boolean tileLeftPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable();
 				boolean tileLeftBottomPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y - 1, true).isPassable();
-				boolean tileBelowOccupied = hasFluidInThisFluid(x, y - 1);
-				if (tileBelowPassable && !tileBelowOccupied && !downflowSuppression.contains(new TwoInts(x, y))) {
+				boolean tileBelowOccupied = hasFluid(x, y - 1);
+				if (tileBelowPassable && !tileBelowOccupied) {
 					if (occupiedCoordinates.containsKey(y - 1)) {
-						FluidBody transferWith = overlapsWith(x, y - 1);
-						if (transferWith == null) {
-							suppressTopSpread = occupiedCoordinates.get(y - 1).add(x) || suppressTopSpread;
-						} else {
-							TransferState transferState = transferWith(transferWith);
-							if (transferState == TransferState.MERGED) {
-								merged = true;
-								break;
-							} else {
-								suppressTopSpread = transferState == TransferState.TRANSFERRED_FROM || suppressTopSpread;
-								continue;
-							}
+						suppressTopSpread = occupiedCoordinates.get(y - 1).add(x) || suppressTopSpread;
+						if (checkMerge(x, y - 1)) {
+							merged = true;
+							break;
 						}
 					} else {
-						FluidBody transferWith = overlapsWith(x, y - 1);;
-						if (transferWith == null) {
-							Set<Integer> newRow = Sets.newConcurrentHashSet();
-							newRow.add(x);
-							occupiedCoordinates.put(y - 1, newRow);
-							suppressTopSpread = true;
-						} else {
-							TransferState transferState = transferWith(transferWith);
-							if (transferState == TransferState.MERGED) {
-								merged = true;
-								break;
-							} else {
-								suppressTopSpread = transferState == TransferState.TRANSFERRED_FROM || suppressTopSpread;
-								continue;
-							}
+						Set<Integer> newRow = Sets.newConcurrentHashSet();
+						newRow.add(x);
+						occupiedCoordinates.put(y - 1, newRow);
+						suppressTopSpread = true;
+						if (checkMerge(x, y - 1)) {
+							merged = true;
+							break;
 						}
 					}
 				} else if ((workingVolume != 0f || topLayerVolume > spreadHeight) && (pillarTouchingFloor(x, y) || !tileRightBottomPassable || !tileLeftBottomPassable)) {
-					if (tileRightPassable && (!tileBelowPassable || hasFluidInThisFluid(x, y - 1) && !tileRightBottomPassable)) {
-						FluidBody transferWith = overlapsWith(x + 1, y);
-						if (transferWith == null) {
-							suppressTopSpread = layer.getValue().add(x + 1) || suppressTopSpread;
-						} else {
-							TransferState transferState = transferWith(transferWith);
-							if (transferState == TransferState.MERGED) {
-								merged = true;
-								break;
-							} else {
-								suppressTopSpread = transferState == TransferState.TRANSFERRED_FROM || suppressTopSpread;
-								continue;
-							}
+					if (tileRightPassable && (!tileBelowPassable || (hasFluid(x, y - 1) && !tileRightBottomPassable))) {
+						suppressTopSpread = layer.getValue().add(x + 1) || suppressTopSpread;
+						if (checkMerge(x + 1, y)) {
+							merged = true;
+							break;
 						}
 					}
 
-					if (tileLeftPassable && (!tileBelowPassable || hasFluidInThisFluid(x, y - 1) && !tileLeftBottomPassable)) {
-						FluidBody transferWith = overlapsWith(x - 1, y);
-						if (transferWith == null) {
-							suppressTopSpread = layer.getValue().add(x - 1) || suppressTopSpread;
-						} else {
-							TransferState transferState = transferWith(transferWith);
-							if (transferState == TransferState.MERGED) {
-								merged = true;
-								break;
-							} else {
-								suppressTopSpread = transferState == TransferState.TRANSFERRED_FROM || suppressTopSpread;
-								continue;
-							}
+					if (tileLeftPassable && (!tileBelowPassable || (hasFluid(x, y - 1) && !tileLeftBottomPassable))) {
+						suppressTopSpread = layer.getValue().add(x - 1) || suppressTopSpread;
+						if (checkMerge(x - 1, y)) {
+							merged = true;
+							break;
 						}
 					}
 				}
 			}
+
 			if (merged) {
 				break;
 			}
@@ -299,56 +226,26 @@ public class FluidBody implements Serializable {
 			entry.setValue(Sets.newLinkedHashSet(entry.getValue()));
 		});
 		workingVolume = volume;
+		for (Entry<Integer, Set<Integer>> layer : mapCopy.entrySet()) {
 
-		if (!suppressTopSpread && downflowSuppression.isEmpty()) {
-			for (Entry<Integer, Set<Integer>> layer : mapCopy.entrySet()) {
+			if (workingVolume < layer.getValue().size()) {
+				topLayerVolume = workingVolume / layer.getValue().size();
+				workingVolume = 0f;
+			} else {
+				workingVolume -= layer.getValue().size();
+			}
 
-				if (workingVolume < layer.getValue().size()) {
-					topLayerVolume = workingVolume / layer.getValue().size();
-					workingVolume = 0f;
-				} else {
-					workingVolume -= layer.getValue().size();
-				}
-
-				int y = layer.getKey();
-				boolean rowAdded = false;
-				for (int x : Lists.newLinkedList(layer.getValue())) {
-					boolean rightPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable();
-					boolean leftPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable();
-					if (Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f &&
-						(hasFluidInThisFluid(x - 1, y) || !leftPassable) && (hasFluidInThisFluid(x + 1, y) || !rightPassable)) {
-						if (occupiedCoordinates.containsKey(y + 1)) {
-							rowAdded = occupiedCoordinates.get(y + 1).add(x) || rowAdded;
-						} else {
-							LinkedHashSet<Integer> newRow = Sets.newLinkedHashSet();
-							newRow.add(x);
-							occupiedCoordinates.put(y + 1, newRow);
-							rowAdded = true;
-						}
-					}
-				}
-
-				if (rowAdded) {
-					for (int x : Lists.newLinkedList(occupiedCoordinates.get(y + 1))) {
-						boolean rightPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y + 1, true).isPassable();
-						boolean leftPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y + 1, true).isPassable();
-						boolean rightBottomPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable();
-						boolean leftBottomPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable();
-						if ((hasFluidInThisFluid(x - 1, y) || !leftBottomPassable) && (hasFluidInThisFluid(x + 1, y) || !rightBottomPassable)) {
-							if (!hasFluidInThisFluid(x - 1, y + 1) && leftPassable) {
-								occupiedCoordinates.get(y + 1).add(x - 1);
-							} else if (!hasFluidInThisFluid(x + 1, y + 1) && rightPassable) {
-								occupiedCoordinates.get(y + 1).add(x + 1);
-							}
-						}
+			int y = layer.getKey();
+			for (int x : Lists.newLinkedList(layer.getValue())) {
+				boolean rightPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable();
+				boolean leftPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable();
+				if (!suppressTopSpread && Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f && 
+					(hasFluid(x - 1, y) || !leftPassable) && (hasFluid(x + 1, y) || !rightPassable)) {
+					if (occupiedCoordinates.containsKey(y + 1)) {
+						occupiedCoordinates.get(y + 1).add(x);
 					}
 				}
 			}
-		}
-
-		if (volume <= 0f || occupiedCoordinates.isEmpty()) {
-			Domain.getWorld(worldId).removeFluid(this);
-			return;
 		}
 
 		updateBindingBox();
@@ -362,33 +259,16 @@ public class FluidBody implements Serializable {
 			}
 		}
 
-		if ((layerRemoved || possibleTileSplit) && !suppressSplitting) {
+		if (layerRemoved && !suppressSplitting) {
 			calculatePossibleSplit();
 		}
 	}
 
 
 	/**
-	 * @param handles fluid transfer logic with another {@link FluidBody}
+	 * Checks whether this {@link FluidBody} is flowing into another {@link FluidBody} and handles merging.
 	 */
-	private TransferState transferWith(FluidBody other) {
-		if (this.occupiedCoordinates.lastKey() > other.occupiedCoordinates.lastKey()) {
-			other.add(subtract(1f));
-			return TransferState.TRANSFERRED_FROM;
-		} else if (this.occupiedCoordinates.lastKey() < other.occupiedCoordinates.lastKey()) {
-			add(other.subtract(1f));
-			return TransferState.TRANSFERRED_TO;
-		} else {
-			merge(other);
-			return TransferState.MERGED;
-		}
-	}
-
-
-	/**
-	 * Checks whether this {@link FluidBody} is flowing into another {@link FluidBody}, returning the {@link FluidBody} to transfer with.
-	 */
-	private FluidBody overlapsWith(int x, int y) {
+	private boolean checkMerge(int x, int y) {
 		for (FluidBody fluid : Domain.getWorld(worldId).getFluids()) {
 			if (fluid == this) {
 				continue;
@@ -400,7 +280,9 @@ public class FluidBody implements Serializable {
 					continue;
 				} else {
 					if (row.contains(x)) {
-						return fluid;
+						fluid.merge(this);
+						Domain.getWorld(worldId).removeFluid(this);
+						return true;
 					} else {
 						continue;
 					}
@@ -408,15 +290,11 @@ public class FluidBody implements Serializable {
 			}
 		}
 
-		return null;
+		return false;
 	}
 
 
-	/**
-	 * @param merges this body with another
-	 */
 	private void merge(FluidBody other) {
-		System.out.println(hashCode() + "is merging with " + other.hashCode());
 		this.volume = this.volume + other.volume;
 
 		for (Entry<Integer, Set<Integer>> otherEntry : other.occupiedCoordinates.entrySet()) {
@@ -427,8 +305,6 @@ public class FluidBody implements Serializable {
 				thisRow.addAll(otherEntry.getValue());
 			}
 		}
-
-		Domain.getWorld(worldId).removeFluid(other);
 	}
 
 
@@ -487,12 +363,6 @@ public class FluidBody implements Serializable {
 		fragments.entrySet().forEach(entry -> {
 			entry.setValue(volume * entry.getKey().size() / totalElements);
 		});
-
-		if (fragments.size() == 1) {
-			return;
-		}
-
-		System.out.println(hashCode() + "Has split");
 
 		World world = Domain.getWorld(worldId);
 		world.removeFluid(this);
@@ -593,7 +463,7 @@ public class FluidBody implements Serializable {
 	 * @return whether the specified coordinates is part of a pillar of fluid whose base sits on a non passable tile
 	 */
 	private boolean pillarTouchingFloor(int x, int y) {
-		while (hasFluidInThisFluid(x, y)) {
+		while (hasFluid(x, y)) {
 			y = y - 1;
 		}
 
@@ -602,9 +472,9 @@ public class FluidBody implements Serializable {
 
 
 	/**
-	 * @return whether the specified coordinates are occupied
+	 * @return whether the specified coordates are occupied
 	 */
-	private boolean hasFluidInThisFluid(int x, int y) {
+	private boolean hasFluid(int x, int y) {
 		Set<Integer> row = occupiedCoordinates.get(y);
 
 		if (row == null) {
@@ -643,25 +513,11 @@ public class FluidBody implements Serializable {
 	 * Renders an individual fluid element
 	 */
 	private void renderFluidElement(int x, int y, float volume) {
-		boolean left = false;
-		boolean right = false;
-		if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isSmoothCeiling()) {
-			left = true;
-		}
-		if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isSmoothCeiling()) {
-			right = true;
-		}
-
 		Domain.shapeRenderer.filledRect(
-			convertToWorldCoord(x - (left ? 1 : 0), true),
+			convertToWorldCoord(x, true),
 			convertToWorldCoord(y, true),
-			TILE_SIZE + (right ? TILE_SIZE : 0),
+			TILE_SIZE,
 			TILE_SIZE * volume
 		);
-	}
-
-
-	private enum TransferState {
-		TRANSFERRED_FROM, TRANSFERRED_TO, MERGED;
 	}
 }
