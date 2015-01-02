@@ -331,4 +331,9 @@ public abstract class Tile implements Serializable {
 			throw new RuntimeException("Can not mine an empty tile");
 		}
 	}
+
+
+	public boolean isSmoothCeiling() {
+		return smoothCeiling;
+	}
 }

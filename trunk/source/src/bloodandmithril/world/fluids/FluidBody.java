@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
@@ -43,6 +44,9 @@ public class FluidBody implements Serializable {
 	/** How fast the fluid in this body of water will evaporate per second per tile exposed to air that has a non-passable tile underneath */
 	private static final float evaporationRate = 0.0003f;
 
+	/** Composition of this {@link FluidBody} */
+	private Map<Class<? extends Liquid>, Integer> composition = Maps.newHashMap();
+
 	private static Thread fluidThread;
 
 	static {
@@ -71,11 +75,27 @@ public class FluidBody implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public FluidBody(Map<Integer, Set<Integer>> occupiedCoordinates, float volume, int worldId) {
+	public FluidBody(Map<Integer, Set<Integer>> occupiedCoordinates, float volume, int worldId, Map<Class<? extends Liquid>, Integer> composition) {
 		this.worldId = worldId;
 		this.occupiedCoordinates.putAll(occupiedCoordinates);
 		this.volume = volume;
+		this.composition.putAll(composition);
 		updateBindingBox();
+	}
+
+
+	private Color determineColor() {
+		Color finalColor = new Color(0, 0, 0, 0);
+		for (Entry<Class<? extends Liquid>, Integer> entry : composition.entrySet()) {
+			try {
+				Liquid liquid = entry.getKey().newInstance();
+				finalColor = finalColor.add(liquid.getColor().cpy().mul(0.01f * (float) entry.getValue()));
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		return finalColor;
 	}
 
 
@@ -84,7 +104,7 @@ public class FluidBody implements Serializable {
 	 */
 	public void render() {
 		Domain.shapeRenderer.begin(ShapeType.FilledRectangle);
-		Domain.shapeRenderer.setColor(0.2f, 0.5f, 1.0f, 0.85f);
+		Domain.shapeRenderer.setColor(determineColor());
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		// Split the occupied coordinates into y-layers
 		float workingVolume = volume;
@@ -153,6 +173,7 @@ public class FluidBody implements Serializable {
 		float topLayerVolume = 0f;
 		boolean layerRemoved = false;
 		boolean suppressTopSpread = false;
+		boolean possibleTileSplit = false;
 		for (Entry<Integer, Set<Integer>> layer : Lists.newLinkedList(occupiedCoordinates.entrySet())) {
 
 			// Remove rows when fluid is no longer occupying a row.
@@ -173,6 +194,16 @@ public class FluidBody implements Serializable {
 			final int y = layer.getKey();
 			boolean merged = false;
 			for (int x : Lists.newLinkedList(layer.getValue())) {
+				if (!Domain.getWorld(worldId).getTopography().getTile(x, y, true).isPassable()) {
+					occupiedCoordinates.get(y).remove(x);
+					possibleTileSplit = true;
+					if (occupiedCoordinates.get(y).isEmpty()) {
+						occupiedCoordinates.remove(y);
+						layerRemoved = true;
+					}
+					continue;
+				}
+
 				// Flow and Spread
 				boolean tileBelowPassable = Domain.getWorld(worldId).getTopography().getTile(x, y - 1, true).isPassable();
 				boolean tileRightBottomPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y - 1, true).isPassable();
@@ -198,7 +229,7 @@ public class FluidBody implements Serializable {
 						}
 					}
 				} else if ((workingVolume != 0f || topLayerVolume > spreadHeight) && (pillarTouchingFloor(x, y) || !tileRightBottomPassable || !tileLeftBottomPassable)) {
-					if (tileRightPassable && (!tileBelowPassable || (hasFluid(x, y - 1) && !tileRightBottomPassable))) {
+					if (tileRightPassable && (!tileBelowPassable || hasFluid(x, y - 1) && !tileRightBottomPassable)) {
 						suppressTopSpread = layer.getValue().add(x + 1) || suppressTopSpread;
 						if (checkMerge(x + 1, y)) {
 							merged = true;
@@ -206,7 +237,7 @@ public class FluidBody implements Serializable {
 						}
 					}
 
-					if (tileLeftPassable && (!tileBelowPassable || (hasFluid(x, y - 1) && !tileLeftBottomPassable))) {
+					if (tileLeftPassable && (!tileBelowPassable || hasFluid(x, y - 1) && !tileLeftBottomPassable)) {
 						suppressTopSpread = layer.getValue().add(x - 1) || suppressTopSpread;
 						if (checkMerge(x - 1, y)) {
 							merged = true;
@@ -239,7 +270,7 @@ public class FluidBody implements Serializable {
 			for (int x : Lists.newLinkedList(layer.getValue())) {
 				boolean rightPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable();
 				boolean leftPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable();
-				if (!suppressTopSpread && Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f && 
+				if (!suppressTopSpread && Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f &&
 					(hasFluid(x - 1, y) || !leftPassable) && (hasFluid(x + 1, y) || !rightPassable)) {
 					if (occupiedCoordinates.containsKey(y + 1)) {
 						occupiedCoordinates.get(y + 1).add(x);
@@ -259,7 +290,7 @@ public class FluidBody implements Serializable {
 			}
 		}
 
-		if (layerRemoved && !suppressSplitting) {
+		if ((layerRemoved || possibleTileSplit) && !suppressSplitting) {
 			calculatePossibleSplit();
 		}
 	}
@@ -295,6 +326,8 @@ public class FluidBody implements Serializable {
 
 
 	private void merge(FluidBody other) {
+		float preMergeVolume = this.volume;
+		float preMergeOtherVolume = other.volume;
 		this.volume = this.volume + other.volume;
 
 		for (Entry<Integer, Set<Integer>> otherEntry : other.occupiedCoordinates.entrySet()) {
@@ -305,6 +338,41 @@ public class FluidBody implements Serializable {
 				thisRow.addAll(otherEntry.getValue());
 			}
 		}
+
+		Map<Class<? extends Liquid>, Float> fractions = Maps.newHashMap();
+		Map<Class<? extends Liquid>, Integer> percentages = Maps.newHashMap();
+		for (Entry<Class<? extends Liquid>, Integer> entry : composition.entrySet()) {
+			fractions.put(entry.getKey(), preMergeVolume * (float) entry.getValue() * 0.01f);
+		}
+
+		for (Entry<Class<? extends Liquid>, Integer> entry : other.composition.entrySet()) {
+			Float existing = fractions.get(entry.getKey());
+			if (existing == null) {
+				fractions.put(entry.getKey(), preMergeOtherVolume * (float) entry.getValue() * 0.01f);
+			} else {
+				fractions.put(entry.getKey(), existing + preMergeOtherVolume * (float) entry.getValue() * 0.01f);
+			}
+		}
+
+		for (Entry<Class<? extends Liquid>, Float> fraction : fractions.entrySet()) {
+			percentages.put(fraction.getKey(), Math.round(100f * fraction.getValue() / this.volume));
+		}
+
+		int total = percentages.values().stream().mapToInt(val -> {return val;}).sum();
+		while (total != 100) {
+			if (total > 100) {
+				Entry<Class<? extends Liquid>, Integer> entry = percentages.entrySet().stream().findAny().get();
+				percentages.put(entry.getKey(), entry.getValue() - 1);
+				total--;
+			} else {
+				Entry<Class<? extends Liquid>, Integer> entry = percentages.entrySet().stream().findAny().get();
+				percentages.put(entry.getKey(), entry.getValue() + 1);
+				total++;
+			}
+		}
+
+		composition.clear();
+		composition.putAll(percentages);
 	}
 
 
@@ -367,7 +435,7 @@ public class FluidBody implements Serializable {
 		World world = Domain.getWorld(worldId);
 		world.removeFluid(this);
 		for (Entry<Set<TwoInts>, Float> fragment : fragments.entrySet()) {
-			world.addFluid(new FluidBody(convertToFluidBodyMap(fragment.getKey()), fragment.getValue(), world.getWorldId()));
+			world.addFluid(new FluidBody(convertToFluidBodyMap(fragment.getKey()), fragment.getValue(), world.getWorldId(), composition));
 		}
 	}
 
@@ -513,10 +581,21 @@ public class FluidBody implements Serializable {
 	 * Renders an individual fluid element
 	 */
 	private void renderFluidElement(int x, int y, float volume) {
+		boolean left = false;
+		boolean right = false;
+		if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isSmoothCeiling() &&
+			hasFluid(x - 1, y - 1)) {
+			left = true;
+		}
+		if (Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isSmoothCeiling() &&
+			hasFluid(x + 1, y - 1)) {
+			right = true;
+		}
+
 		Domain.shapeRenderer.filledRect(
-			convertToWorldCoord(x, true),
+			convertToWorldCoord(x - (left ? 1 : 0), true),
 			convertToWorldCoord(y, true),
-			TILE_SIZE,
+			TILE_SIZE + (right ? TILE_SIZE : 0),
 			TILE_SIZE * volume
 		);
 	}
