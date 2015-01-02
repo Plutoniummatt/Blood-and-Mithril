@@ -2,6 +2,7 @@ package bloodandmithril.world;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -165,7 +166,11 @@ public class World implements Serializable {
 	 */
 	public void updateFluids() {
 		for (FluidBody fluid : Lists.newLinkedList(fluids)) {
-			fluid.update(false);
+			if (fluids.contains(fluid)) {
+				try {
+					fluid.update(false);
+				} catch (NoSuchElementException e) {}
+			}
 		}
 	}
 

@@ -150,6 +150,10 @@ public class DevWindow extends Window {
 			return true;
 		}
 
+		if (keyCode == Keys.P) {
+			FluidBody.paused = !FluidBody.paused;
+		}
+
 		if (keyCode == Keys.T) {
 			Domain.getActiveWorld().getTopography().changeTile(
 				BloodAndMithrilClient.getMouseWorldX(),
@@ -172,12 +176,18 @@ public class DevWindow extends Window {
 			int y = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY());
 
 			Map<Integer, Set<Integer>> coords = Maps.newConcurrentMap();
-			coords.put(y, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
-			coords.put(y + 1, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
-			coords.put(y + 2, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
-			coords.put(y + 3, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
+			coords.put(y, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3, x + 4)));
+			coords.put(y + 1, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3, x + 4)));
+			coords.put(y + 2, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3, x + 4)));
+			coords.put(y + 3, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3, x + 4)));
+			coords.put(y + 4, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3, x + 4)));
+			coords.put(y + 5, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3, x + 4)));
+			coords.put(y + 6, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3, x + 4)));
+			coords.put(y + 7, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3, x + 4)));
+			coords.put(y + 8, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3, x + 4)));
+			coords.put(y + 9, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3, x + 4)));
 
-			FluidBody fluid = new FluidBody(coords, 16f, Domain.getActiveWorld().getWorldId());
+			FluidBody fluid = new FluidBody(coords, 50f, Domain.getActiveWorld().getWorldId());
 			Domain.getActiveWorld().addFluid(fluid);
 		}
 

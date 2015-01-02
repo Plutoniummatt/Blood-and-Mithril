@@ -25,7 +25,7 @@ public class KeyMappings {
 	public static int moveRight = Input.Keys.D;
 	public static int walk = Input.Keys.SHIFT_RIGHT;
 	public static int rightClickDragBox = Input.Keys.X;
-	public static int contextMenuBypass = Input.Keys.SHIFT_LEFT;
+	public static int contextMenuBypass = Input.Keys.C;
 	public static int forceMove = Input.Keys.ALT_LEFT;
 	public static int jump = Input.Keys.SPACE;
 	public static int toggleWalkRun = Input.Keys.W;
