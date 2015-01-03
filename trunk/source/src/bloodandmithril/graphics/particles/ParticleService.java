@@ -44,11 +44,11 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocity(Vector2 position, Color color, float glow, MovementMode mode) {
+	public static void randomVelocity(Vector2 position, float spawnSpread, float maxVel, Color color, float glow, MovementMode mode) {
 		if (isClient()) {
 			Domain.getActiveWorld().getParticles().add(new TracerParticle(
-				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
-				new Vector2(Util.getRandom().nextFloat() * 30f, 0f).rotate(Util.getRandom().nextFloat() * 360f),
+				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
+				new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 				color,
 				1f,
 				Domain.getActiveWorld().getWorldId(),
@@ -135,7 +135,7 @@ public class ParticleService {
 
 		@Override
 		public void run() {
-			ParticleService.randomVelocity(position, color.getColor(), glow, mode);
+			ParticleService.randomVelocity(position, 10f, 30f, color.getColor(), glow, mode);
 		}
 	}
 }
