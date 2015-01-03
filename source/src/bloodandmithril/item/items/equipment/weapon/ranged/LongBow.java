@@ -6,8 +6,10 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedProjectileWeapon;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.wood.Wood;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 
@@ -192,6 +194,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 	@Override
 	public Projectile fire(Vector2 origin, Vector2 direction) {
 		Arrow<Iron> arrow = new Arrow<>(Iron.class, origin, direction.cpy().mul(2000f));
-		return arrow;
+		FireArrow<Iron> fireArrow = new FireArrow<>(Iron.class, origin, direction.cpy().mul(2000f), 4f);
+		return Util.randomOneOf(arrow, fireArrow);
 	}
 }

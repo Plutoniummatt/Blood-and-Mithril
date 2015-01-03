@@ -156,7 +156,7 @@ public class Furnace extends CraftingStation implements Container {
 				}
 			}
 
-			ParticleService.randomVelocity(position.cpy().add(0, height - 38), Color.ORANGE, Util.getRandom().nextFloat() * 15f, MovementMode.EMBER);
+			ParticleService.randomVelocity(position.cpy().add(0, height - 38), 10f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 15f, MovementMode.EMBER);
 		}
 	}
 

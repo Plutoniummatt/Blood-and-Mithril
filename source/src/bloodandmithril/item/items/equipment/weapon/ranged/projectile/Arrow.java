@@ -4,6 +4,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.item.material.metal.Metal;
@@ -15,6 +16,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * A vanilla arrow
+ * 
+ * @author Matt
+ */
+@Copyright("Matthew Peck 2015")
 public class Arrow<T extends Metal> extends Projectile {
 	private static final long serialVersionUID = -4403381751507847926L;
 	public Class<T> arrowTipMaterial;
