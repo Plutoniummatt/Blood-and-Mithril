@@ -368,7 +368,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		UserInterface.initialRightMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 
-		if (Gdx.input.isKeyPressed(KeyMappings.attack)) {
+		if (Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
 			if (!Domain.getSelectedIndividuals().isEmpty()) {
 				boolean attacked = false;
 				for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
@@ -389,16 +389,14 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						break;
 					}
 				}
-				
-				if (!attacked) {
-					for (Individual selected : Domain.getSelectedIndividuals()) {
-						if (selected.canAttackRanged()) {
-							if (ClientServerInterface.isServer()) {
-								selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
-							} else {
-								// TODO
-							}
-						}
+			}
+		} else if (Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
+			for (Individual selected : Domain.getSelectedIndividuals()) {
+				if (selected.canAttackRanged()) {
+					if (ClientServerInterface.isServer()) {
+						selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
+					} else {
+						// TODO
 					}
 				}
 			}
@@ -406,7 +404,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			uiClicked = UserInterface.rightClick();
 		}
 
-		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox) && !Gdx.input.isKeyPressed(KeyMappings.attack)) {
+		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox) && !Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
 				if (Gdx.input.isKeyPressed(KeyMappings.mineTile)) {
 					if (ClientServerInterface.isServer()) {

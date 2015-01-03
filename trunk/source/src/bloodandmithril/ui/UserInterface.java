@@ -722,7 +722,7 @@ public class UserInterface {
 	
 	
 	public static void renderJumpArrow(Vector2 start, Vector2 finish) {
-		if (!Gdx.input.isKeyPressed(KeyMappings.attack)) {
+		if (!Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
 			renderArrow(start, finish, Color.GREEN, 3f, 0f, 75f);
 		}
 	}
@@ -789,10 +789,11 @@ public class UserInterface {
 		boolean addWayPointPressed = Gdx.input.isKeyPressed(KeyMappings.addWayPoint);
 		boolean forceMovePressed = Gdx.input.isKeyPressed(KeyMappings.forceMove);
 		boolean attackPressed = Gdx.input.isKeyPressed(KeyMappings.attack);
+		boolean rangedAttackPressed = Gdx.input.isKeyPressed(KeyMappings.rangedAttack);
 
 		if (!Domain.getSelectedIndividuals().isEmpty()) {
 
-			if ((jumpPressed || addWayPointPressed || forceMovePressed) && !attackPressed) {
+			if ((jumpPressed || addWayPointPressed || forceMovePressed) && (!attackPressed && !rangedAttackPressed)) {
 				String text = "";
 				if (jumpPressed) {
 					if (!addWayPointPressed) {
@@ -817,7 +818,7 @@ public class UserInterface {
 				spriteBatch.flush();
 				Shaders.filter.setUniformf("color", Color.ORANGE);
 				Fonts.defaultFont.draw(spriteBatch, text, getMouseScreenX() + 15, getMouseScreenY() - 25);
-			} else if (attackPressed) {
+			} else if (rangedAttackPressed) {
 				boolean canAttackRanged = false;
 				for (Individual indi : Domain.getSelectedIndividuals()) {
 					if (indi.canAttackRanged()) {
@@ -830,10 +831,10 @@ public class UserInterface {
 					spriteBatch.setShader(Shaders.filter);
 					Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 					Shaders.filter.setUniformf("color", Color.BLACK);
-					Fonts.defaultFont.draw(spriteBatch, "Attack ranged", getMouseScreenX() + 14, getMouseScreenY() - 26);
+					Fonts.defaultFont.draw(spriteBatch, "Attack Ranged", getMouseScreenX() + 14, getMouseScreenY() - 26);
 					spriteBatch.flush();
 					Shaders.filter.setUniformf("color", Color.ORANGE);
-					Fonts.defaultFont.draw(spriteBatch, "Attack ranged", getMouseScreenX() + 15, getMouseScreenY() - 25);
+					Fonts.defaultFont.draw(spriteBatch, "Attack Ranged", getMouseScreenX() + 15, getMouseScreenY() - 25);
 				}
 			}
 		}

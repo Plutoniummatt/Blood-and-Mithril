@@ -17,6 +17,7 @@ import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -95,7 +96,7 @@ public class TopographyDebugRenderer {
 		}
 		UserInterface.shapeRenderer.end();
 
-		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
 			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 				topoX = topoX - 10;
 			}

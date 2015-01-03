@@ -90,7 +90,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -683,15 +682,15 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 		}
 
-		if (isMouseOver() && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))) {
+		if (isMouseOver() && (Gdx.input.isKeyPressed(KeyMappings.attack)) && (!Gdx.input.isKeyPressed(KeyMappings.rangedAttack))) {
 			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.getSelectedIndividuals().contains(this) || Domain.getSelectedIndividuals().size() > 1)) {
 				spriteBatch.setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
-				Fonts.defaultFont.draw(spriteBatch, "Attack", getMouseScreenX() + 14, getMouseScreenY() - 26);
+				Fonts.defaultFont.draw(spriteBatch, "Attack Melee", getMouseScreenX() + 14, getMouseScreenY() - 26);
 				spriteBatch.flush();
 				Shaders.filter.setUniformf("color", Color.ORANGE);
-				Fonts.defaultFont.draw(spriteBatch, "Attack", getMouseScreenX() + 15, getMouseScreenY() - 25);
+				Fonts.defaultFont.draw(spriteBatch, "Attack Melee", getMouseScreenX() + 15, getMouseScreenY() - 25);
 			}
 		}
 	}
