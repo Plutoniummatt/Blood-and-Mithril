@@ -51,6 +51,9 @@ import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.Particle.MovementMode;
+import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -75,6 +78,7 @@ import bloodandmithril.ui.components.window.IndividualStatusWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
+import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Shaders;
@@ -1796,6 +1800,20 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	public void attackRanged(Vector2 target) {
+		Vector2 emissionPosition1 = getEmissionPosition();
+		Vector2 firingVector2 = target.cpy().sub(emissionPosition1);
+		ParticleService.addParticle(new TracerParticle(
+				emissionPosition1, 
+				firingVector2, 
+				Color.YELLOW, 
+				2f, 
+				Domain.getActiveWorld().getWorldId(), 
+				new Countdown(Util.getRandom().nextInt(1000)), 
+				10f, 
+				MovementMode.GRAVITY, 
+				false
+			));
+		
 		RangedWeapon rangedWeapon = (RangedWeapon) getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).findAny().get();
 		if (rangedWeapon != null) {
 			Vector2 emissionPosition = getEmissionPosition();

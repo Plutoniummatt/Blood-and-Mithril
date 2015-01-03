@@ -58,7 +58,15 @@ public class ParticleService {
 				true
 			));
 		} else {
-			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), new SerializableColor(color), glow, mode));
+			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), spawnSpread, maxVel, new SerializableColor(color), glow, maxLifeTime, mode));
+		}
+	}
+	
+	
+	public static void addParticle(Particle particle) {
+		if (isClient()) {
+			Domain.getActiveWorld().getParticles().add(particle);
+		} else {
 		}
 	}
 
@@ -125,17 +133,23 @@ public class ParticleService {
 		private SerializableColor color;
 		private float glow;
 		private MovementMode mode;
+		private float maxVel;
+		private float spawnSpread;
+		private int maxLifeTime;
 
-		public FlameEmber(Vector2 position, SerializableColor color, float glow, MovementMode mode) {
+		public FlameEmber(Vector2 position, float spawnSpread, float maxVel, SerializableColor color, float glow, int maxLifeTime, MovementMode mode) {
 			this.position = position;
+			this.spawnSpread = spawnSpread;
+			this.maxVel = maxVel;
 			this.color = color;
 			this.glow = glow;
+			this.maxLifeTime = maxLifeTime;
 			this.mode = mode;
 		}
 
 		@Override
 		public void run() {
-			ParticleService.randomVelocity(position, 10f, 30f, color.getColor(), glow, 1000, mode);
+			ParticleService.randomVelocity(position, spawnSpread, maxVel, color.getColor(), glow, maxLifeTime, mode);
 		}
 	}
 }
