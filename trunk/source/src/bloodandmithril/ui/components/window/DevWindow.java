@@ -31,7 +31,6 @@ import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
-import bloodandmithril.item.affix.preaffix.Glowing;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
@@ -230,7 +229,6 @@ public class DevWindow extends Window {
 			}
 			for (int i = 1; i > 0; i--) {
 				Broadsword item = new Broadsword();
-				item.setPreAffix(new Glowing(Util.randomOneOf(Color.CYAN, Color.GREEN, Color.YELLOW, Color.RED)));
 				elf.giveItem(item);
 			}
 			for (int i = 1; i > 0; i--) {
@@ -239,7 +237,6 @@ public class DevWindow extends Window {
 			}
 			for (int i = 1; i > 0; i--) {
 				BushKnife item = new BushKnife();
-				item.setPreAffix(new Glowing(Util.randomOneOf(Color.CYAN, Color.GREEN, Color.YELLOW, Color.RED)));
 				elf.giveItem(item);
 			}
 			for (int i = 100; i > 0; i--) {
