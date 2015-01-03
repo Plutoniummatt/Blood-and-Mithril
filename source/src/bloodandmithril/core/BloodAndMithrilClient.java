@@ -425,26 +425,28 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				} else {
 					float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), INDIVIDUAL_SPREAD);
 					if (ClientServerInterface.isServer()) {
-						AIProcessor.sendPathfindingRequest(
-							indi,
-							new WayPoint(
-								Topography.convertToWorldCoord(
-									getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
-										new Vector2(
-											getMouseWorldX() + (Gdx.input.isKeyPressed(KeyMappings.forceMove) ? 0f : spread),
-											getMouseWorldY()
+						try {
+							AIProcessor.sendPathfindingRequest(
+								indi,
+								new WayPoint(
+									Topography.convertToWorldCoord(
+										getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+											new Vector2(
+												getMouseWorldX() + (Gdx.input.isKeyPressed(KeyMappings.forceMove) ? 0f : spread),
+												getMouseWorldY()
+											),
+											10,
+											Domain.getWorld(indi.getWorldId())
 										),
-										10,
-										Domain.getWorld(indi.getWorldId())
-									),
-									true
-								)
-							),
-							false,
-							150f,
-							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
-							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
-						);
+										true
+									)
+								),
+								false,
+								150f,
+								!Gdx.input.isKeyPressed(KeyMappings.forceMove),
+								Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
+							);
+						} catch (NullPointerException e) {}
 					} else {
 						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
 							indi.getId().getId(),

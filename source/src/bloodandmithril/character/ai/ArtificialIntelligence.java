@@ -149,26 +149,30 @@ public abstract class ArtificialIntelligence implements Serializable {
 		Individual host = Domain.getIndividual(hostId.getId());
 
 		if (Util.getRandom().nextBoolean() && getCurrentTask() instanceof Idle) {
-			AIProcessor.sendPathfindingRequest(
-				host,
-				new WayPoint(
-					Topography.convertToWorldCoord(
-						getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
-							new Vector2(
-								host.getState().position.x + (0.5f - Util.getRandom().nextFloat()) * distance,
-								host.getState().position.y + host.getHeight() / 2
+			try {
+				AIProcessor.sendPathfindingRequest(
+					host,
+					new WayPoint(
+						Topography.convertToWorldCoord(
+							getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+								new Vector2(
+									host.getState().position.x + (0.5f - Util.getRandom().nextFloat()) * distance,
+									host.getState().position.y + host.getHeight() / 2
+								),
+								10,
+								Domain.getWorld(host.getWorldId())
 							),
-							10,
-							Domain.getWorld(host.getWorldId())
-						),
-						true
-					)
-				),
-				fly,
-				0f,
-				true,
-				false
-			);
+							true
+						)
+					),
+					fly,
+					0f,
+					true,
+					false
+				);
+			} catch (NullPointerException e) {
+				setCurrentTask(new Wait(host, Util.getRandom().nextFloat() * 3f + 1f));
+			}
 		} else if (currentTask instanceof Idle) {
 			setCurrentTask(new Wait(host, Util.getRandom().nextFloat() * 3f + 1f));
 		}
