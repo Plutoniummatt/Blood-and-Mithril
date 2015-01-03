@@ -202,7 +202,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							if (p.getRemovalCondition().call()) {
 								Domain.getActiveWorld().getParticles().remove(p);
 							}
-							p.update(Gdx.graphics.getDeltaTime());
+							p.update(1f/60f);
 						}
 					} catch (NullPointerException e) {
 						// DO nothing

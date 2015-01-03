@@ -88,6 +88,7 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
+import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -113,7 +114,6 @@ public class UserInterface {
 	private static final Color DARK_SCREEN_COLOR = new Color(0f, 0f, 0f, 0.8f);
 	private static final Color EXISTING_INTERFACE_COLOR = new Color(1f, 0.2f, 0f, 0.5f);
 	private static final Color AVAILABLE_INTERFACE_COLOR = new Color(0.2f, 1f, 0f, 0.5f);
-	private static final Color MOUSE_OVER_TILE_BOX_COLOR = new Color(0f, 1f, 1f, 0.5f);
 	private static final Color COMPONENT_BOUNDARY_COLOR = new Color(1f, 1f, 1f, 0.5f);
 	private static final Color COMPONENT_FILL_COLOR = new Color(0f, 1f, 0f, 0.15f);
 
@@ -300,7 +300,7 @@ public class UserInterface {
 			if (renderComponentBoundaries) {
 				renderComponentBoundaries();
 			}
-			renderMouseOverTileHighlightBox();
+			renderMouseOverTileHighlightBox(false);
 		}
 
 		renderCursorBoundTask();
@@ -434,17 +434,23 @@ public class UserInterface {
 	/**
 	 * Renders a small rectangle to indicate the current tile the mouse is over
 	 */
-	private static void renderMouseOverTileHighlightBox() {
+	private static boolean renderMouseOverTileHighlightBox(boolean nonEmptyTilesOnly) {
+		if (nonEmptyTilesOnly && Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), getMouseWorldY(), true) instanceof EmptyTile) {
+			return false;
+		}
+		
 		float x = worldToScreenX(TILE_SIZE * convertToWorldTileCoord(getMouseWorldX()));
 		float y = worldToScreenY(TILE_SIZE * convertToWorldTileCoord(getMouseWorldY()));
 
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		shapeRenderer.begin(Rectangle);
-		shapeRenderer.setColor(MOUSE_OVER_TILE_BOX_COLOR);
+		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.rect(x, y, TILE_SIZE, TILE_SIZE);
 		shapeRenderer.end();
 		gl.glDisable(GL_BLEND);
+		
+		return true;
 	}
 
 
@@ -790,10 +796,11 @@ public class UserInterface {
 		boolean forceMovePressed = Gdx.input.isKeyPressed(KeyMappings.forceMove);
 		boolean attackPressed = Gdx.input.isKeyPressed(KeyMappings.attack);
 		boolean rangedAttackPressed = Gdx.input.isKeyPressed(KeyMappings.rangedAttack);
+		boolean mineTIlePressed = Gdx.input.isKeyPressed(KeyMappings.mineTile);
 
 		if (!Domain.getSelectedIndividuals().isEmpty()) {
 
-			if ((jumpPressed || addWayPointPressed || forceMovePressed) && (!attackPressed && !rangedAttackPressed)) {
+			if ((jumpPressed || addWayPointPressed || forceMovePressed) && (!attackPressed && !rangedAttackPressed && !mineTIlePressed)) {
 				String text = "";
 				if (jumpPressed) {
 					if (!addWayPointPressed) {
@@ -835,6 +842,17 @@ public class UserInterface {
 					spriteBatch.flush();
 					Shaders.filter.setUniformf("color", Color.ORANGE);
 					Fonts.defaultFont.draw(spriteBatch, "Attack Ranged", getMouseScreenX() + 15, getMouseScreenY() - 25);
+				}
+			} else if (mineTIlePressed) {
+				spriteBatch.flush();
+				if (renderMouseOverTileHighlightBox(true)) {
+					spriteBatch.setShader(Shaders.filter);
+					Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+					Shaders.filter.setUniformf("color", Color.BLACK);
+					Fonts.defaultFont.draw(spriteBatch, "Mine", getMouseScreenX() + 14, getMouseScreenY() - 26);
+					spriteBatch.flush();
+					Shaders.filter.setUniformf("color", Color.ORANGE);
+					Fonts.defaultFont.draw(spriteBatch, "Mine", getMouseScreenX() + 15, getMouseScreenY() - 25);
 				}
 			}
 		}
