@@ -89,13 +89,13 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 
 	@Override
 	protected String weaponGetSingular(boolean firstCap) {
-		return Wood.getMaterial(getMaterial()).getName() + " longbow";
+		return Wood.getMaterial(getMaterial()).getName() + " Longbow";
 	}
 
 
 	@Override
 	protected String weaponGetPlural(boolean firstCap) {
-		return Wood.getMaterial(getMaterial()).getName() + " longbows";
+		return Wood.getMaterial(getMaterial()).getName() + " Longbows";
 	}
 
 

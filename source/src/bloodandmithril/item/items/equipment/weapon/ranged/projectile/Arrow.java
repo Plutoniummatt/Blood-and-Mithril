@@ -89,7 +89,7 @@ public class Arrow<T extends Metal> extends Projectile {
 
 	@Override
 	public void hit(Individual victim) {
-		float damage = (5f + 5f * Util.getRandom().nextFloat()) * Metal.getMaterial(arrowTipMaterial).getCombatMultiplier();
+		float damage = (velocity.len() / getTerminalVelocity()) * (5f + 5f * Util.getRandom().nextFloat()) * Metal.getMaterial(arrowTipMaterial).getCombatMultiplier();
 		victim.damage(damage);
 		victim.addFloatingText(String.format("%.2f", damage), Color.RED);
 		victim.addCondition(new Bleeding(0.15f));
