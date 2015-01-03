@@ -6,6 +6,7 @@ import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.util.Util;
@@ -18,7 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  * A vanilla arrow
- * 
+ *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
@@ -29,7 +30,7 @@ public class Arrow<T extends Metal> extends Projectile {
 	public static TextureRegion textureRegion;
 	private float angle;
 	private boolean stuck = false;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -38,7 +39,7 @@ public class Arrow<T extends Metal> extends Projectile {
 		this.arrowTipMaterial = metal;
 	}
 
-	
+
 	@Override
 	public void update(float delta) {
 		if (!stuck) {
@@ -46,7 +47,7 @@ public class Arrow<T extends Metal> extends Projectile {
 			super.update(delta);
 		}
 	}
-	
+
 
 	@Override
 	public void render() {
@@ -74,14 +75,14 @@ public class Arrow<T extends Metal> extends Projectile {
 	@Override
 	protected void collision(Vector2 previousPosition) {
 		Tile tile = Domain.getWorld(getWorldId()).getTopography().getTile(position, true);
-		
+
 		Vector2 testPosition = position.cpy();
 		Vector2 velocityCopy = velocity.cpy();
 		while (tile.isPlatformTile || !tile.isPassable()) {
 			testPosition.sub(velocityCopy.nor());
 			tile = Domain.getWorld(getWorldId()).getTopography().getTile(testPosition, true);
 		}
-		
+
 		setPosition(testPosition);
 		stuck = true;
 	}
@@ -89,7 +90,7 @@ public class Arrow<T extends Metal> extends Projectile {
 
 	@Override
 	public void hit(Individual victim) {
-		float damage = (velocity.len() / getTerminalVelocity()) * (5f + 5f * Util.getRandom().nextFloat()) * Metal.getMaterial(arrowTipMaterial).getCombatMultiplier();
+		float damage = velocity.len() / getTerminalVelocity() * (5f + 5f * Util.getRandom().nextFloat()) * Metal.getMaterial(arrowTipMaterial).getCombatMultiplier();
 		victim.damage(damage);
 		victim.addFloatingText(String.format("%.2f", damage), Color.RED);
 		victim.addCondition(new Bleeding(0.15f));
@@ -106,5 +107,71 @@ public class Arrow<T extends Metal> extends Projectile {
 	@Override
 	protected int getHitSound(Individual individual) {
 		return SoundService.stab;
+	}
+
+
+	public static class ArrowItem<T extends Metal> extends ProjectileItem {
+		private static final long serialVersionUID = 1815115944595474845L;
+		protected Class<T> metal;
+
+		/**
+		 * Constructor
+		 */
+		public ArrowItem(Class<T> metal, long value) {
+			super(0.05f, 1, false, value);
+			this.metal = metal;
+		}
+
+
+		@Override
+		protected String internalGetSingular(boolean firstCap) {
+			return Metal.getMaterial(metal).getName() + " Arrow";
+		}
+
+
+		@Override
+		protected String internalGetPlural(boolean firstCap) {
+			return Metal.getMaterial(metal).getName() + " Arrows";
+		}
+
+
+		@Override
+		public String getDescription() {
+			return "An arrow, tipped with " + Metal.getMaterial(metal).getName();
+		}
+
+
+		@Override
+		@SuppressWarnings("rawtypes")
+		protected boolean internalSameAs(Item other) {
+			if (other.getClass().equals(ArrowItem.class)) {
+				return ((ArrowItem) other).metal.equals(metal);
+			}
+			return false;
+		}
+
+
+		@Override
+		public TextureRegion getTextureRegion() {
+			return null;
+		}
+
+
+		@Override
+		public TextureRegion getIconTextureRegion() {
+			return null;
+		}
+
+
+		@Override
+		protected Item internalCopy() {
+			return new ArrowItem<>(metal, getValue());
+		}
+
+
+		@Override
+		public Projectile getProjectile() {
+			return new Arrow<>(metal, null, null);
+		}
 	}
 }

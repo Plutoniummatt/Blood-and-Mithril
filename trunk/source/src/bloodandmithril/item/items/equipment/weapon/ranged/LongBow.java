@@ -5,11 +5,10 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedProjectileWeapon;
+import bloodandmithril.item.items.equipment.weapon.ranged.Projectile.ProjectileItem;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow;
-import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow.ArrowItem;
 import bloodandmithril.item.material.wood.Wood;
-import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 
@@ -23,6 +22,7 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck 2015")
 public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 	private static final long serialVersionUID = -2594506184136140101L;
+	private Item currentAmmo;
 
 	/**
 	 * Constructor
@@ -192,9 +192,33 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	public Projectile fire(Vector2 origin, Vector2 direction) {
-		Arrow<Iron> arrow = new Arrow<>(Iron.class, origin, direction.cpy().mul(2000f));
-		FireArrow<Iron> fireArrow = new FireArrow<>(Iron.class, origin, direction.cpy().mul(2000f), 4f);
-		return Util.randomOneOf(arrow, fireArrow);
+		if (currentAmmo != null) {
+			Arrow arrow = (Arrow) ((ProjectileItem) currentAmmo).getProjectile();
+			arrow.setPosition(origin);
+			arrow.setVelocity(direction.cpy().mul(2000f));
+			return arrow;
+		}
+
+		return null;
+	}
+
+
+	@Override
+	public boolean canFire(Item item) {
+		return item instanceof ArrowItem;
+	}
+
+
+	@Override
+	public void setAmmo(Item item) {
+		this.currentAmmo = item;
+	}
+
+
+	@Override
+	public Item getAmmo() {
+		return currentAmmo;
 	}
 }

@@ -37,6 +37,8 @@ import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.ranged.LongBow;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
@@ -45,7 +47,8 @@ import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.liquid.Blood;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Water;
-import bloodandmithril.item.material.mineral.Coal;
+import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.persistence.GameSaver;
@@ -210,10 +213,9 @@ public class DevWindow extends Window {
 			elf.getSkills().setSmithing(55);
 
 			for (int i = 10; i > 0; i--) {
-				elf.giveItem(Rock.rock(Coal.class));
-			}
-			for (int i = 10; i > 0; i--) {
 				elf.giveItem(new Carrot());
+				elf.giveItem(new Arrow.ArrowItem<>(Steel.class, 10));
+				elf.giveItem(new FireArrow.FireArrowItem<>(Iron.class, 10));
 			}
 			for (int i = 10; i > 0; i--) {
 				elf.giveItem(new FlintAndFiresteel());

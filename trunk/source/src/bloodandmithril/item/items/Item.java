@@ -557,6 +557,7 @@ public abstract class Item implements Serializable, Affixed {
 		EARTH("Earth"),
 		FOOD("Food"),
 		KEY("Key"),
+		AMMO("Ammunition"),
 		FURNITURE("Furniture"),
 		CONTAINER("Container"),
 		ONEHANDEDAXE("One-handed axe"),
