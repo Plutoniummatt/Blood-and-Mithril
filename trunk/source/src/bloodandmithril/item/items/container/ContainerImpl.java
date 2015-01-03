@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
@@ -23,7 +24,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  * @author Matt
  */
-public class ContainerImpl implements Container, Serializable {
+public final class ContainerImpl implements Container, Serializable {
 	private static final long serialVersionUID = -8874868600941684035L;
 
 	/** How much this {@link ContainerImpl} can carry in mass and volume */
@@ -83,6 +84,10 @@ public class ContainerImpl implements Container, Serializable {
 
 	@Override
 	public synchronized void giveItem(Item item) {
+		if (item instanceof RangedWeapon) {
+			((RangedWeapon) item).setAmmo(null);
+		}
+		
 		HashMap<Item, Integer> copy = new HashMap<Item, Integer>(inventory);
 
 		if (inventory.isEmpty()) {
@@ -109,6 +114,10 @@ public class ContainerImpl implements Container, Serializable {
 
 	@Override
 	public synchronized int takeItem(Item item) {
+		if (item instanceof RangedWeapon) {
+			((RangedWeapon) item).setAmmo(null);
+		}
+		
 		int taken = 0;
 		HashMap<Item, Integer> copy = new HashMap<Item, Integer>(inventory);
 		for (Entry<Item, Integer> entry : inventory.entrySet()) {

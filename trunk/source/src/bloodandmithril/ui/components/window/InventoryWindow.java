@@ -581,10 +581,10 @@ public class InventoryWindow extends Window implements Refreshable {
 			equipUnequip
 		);
 
-		if (item instanceof RangedWeapon) {
+		if (item instanceof RangedWeapon && equipped) {
 			contextMenu.addMenuItem(
 				new MenuItem(
-					"Choose Ammunition",
+					"Select Ammunition",
 					() -> {
 					},
 					Colors.UI_GRAY,
@@ -631,6 +631,7 @@ public class InventoryWindow extends Window implements Refreshable {
 					item.getSingular(true),
 					() -> {
 						weapon.setAmmo(item);
+						refresh();
 					},
 					Color.WHITE,
 					Color.GREEN,

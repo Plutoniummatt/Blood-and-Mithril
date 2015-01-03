@@ -14,6 +14,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.equipment.misc.Ring;
+import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.util.SerializableFunction;
 
 /**
@@ -22,7 +23,7 @@ import bloodandmithril.util.SerializableFunction;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class EquipperImpl implements Equipper, Serializable {
+public final class EquipperImpl implements Equipper, Serializable {
 	private static final long serialVersionUID = -4489215845226338399L;
 
 	/** The current equipped {@link Item}s of this {@link Container} */
@@ -100,6 +101,10 @@ public class EquipperImpl implements Equipper, Serializable {
 
 	@Override
 	public void equip(Equipable item) {
+		if (item instanceof RangedWeapon) {
+			((RangedWeapon) item).setAmmo(null);
+		}
+		
 		for (Item equipped : equippedItems.keySet()) {
 			if (equipped.sameAs(item) && item.slot != EquipmentSlot.RING) {
 				return;
@@ -135,6 +140,10 @@ public class EquipperImpl implements Equipper, Serializable {
 
 	@Override
 	public void unequip(Equipable item) {
+		if (item instanceof RangedWeapon) {
+			((RangedWeapon) item).setAmmo(null);
+		}
+		
 		Equipable toUnequip = null;
 		for (Item equipped : equippedItems.keySet()) {
 			if (equipped.sameAs(item)) {
