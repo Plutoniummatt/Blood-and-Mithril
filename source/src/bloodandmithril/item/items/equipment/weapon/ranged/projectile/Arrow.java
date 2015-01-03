@@ -1,6 +1,8 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
@@ -80,8 +82,10 @@ public class Arrow<T extends Metal> extends Projectile {
 
 	@Override
 	public void hit(Individual victim) {
-		victim.damage(10f);
-		victim.addFloatingText("-10.0", Color.RED);
+		float damage = (5f + 5f * Util.getRandom().nextFloat()) * Metal.getMaterial(arrowTipMaterial).getCombatMultiplier();
+		victim.damage(damage);
+		victim.addFloatingText(String.format("%.2f", damage), Color.RED);
+		victim.addCondition(new Bleeding(0.15f));
 		ParticleService.bloodSplat(victim.getEmissionPosition(), new Vector2());
 	}
 
@@ -89,5 +93,11 @@ public class Arrow<T extends Metal> extends Projectile {
 	@Override
 	protected boolean penetrating() {
 		return Util.roll(0.2f);
+	}
+
+
+	@Override
+	protected int getHitSound(Individual individual) {
+		return SoundService.stab;
 	}
 }

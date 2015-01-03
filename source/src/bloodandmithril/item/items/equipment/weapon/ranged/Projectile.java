@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.Set;
 
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
 import bloodandmithril.performance.PositionalIndexNode;
@@ -63,6 +64,7 @@ public abstract class Projectile implements Serializable {
 			Individual individual = Domain.getIndividual(findAny.get());
 			if (canAffect(individual)) {
 				hit(individual);
+				SoundService.play(getHitSound(individual), individual.getState().position, true);
 				ignoreIndividual(individual);
 				if (!penetrating()) {
 					Domain.getWorld(getWorldId()).projectiles().removeProjectile(getId());
@@ -90,6 +92,8 @@ public abstract class Projectile implements Serializable {
 		updatePositionIndex();
 	}
 	
+	protected abstract int getHitSound(Individual individual);
+
 	protected abstract void collision(Vector2 previousPosition);
 
 	protected abstract float getTerminalVelocity();
