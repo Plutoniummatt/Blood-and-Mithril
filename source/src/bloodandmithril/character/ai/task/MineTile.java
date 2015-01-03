@@ -53,7 +53,7 @@ public class MineTile extends CompositeAITask {
 			goToWithTerminationFunction(
 				host,
 				host.getState().position.cpy(),
-				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
+				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10, Domain.getWorld(host.getWorldId())), 0),
 				false,
 				new WithinInteractionBox(),
 				true
