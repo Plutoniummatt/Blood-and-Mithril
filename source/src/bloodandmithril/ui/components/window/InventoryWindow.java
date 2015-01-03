@@ -22,11 +22,13 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.Item.Category;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.armor.Armor;
+import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.item.items.food.plant.Seed;
 import bloodandmithril.item.items.furniture.Furniture;
@@ -135,6 +137,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		filters.put("Furniture", 	WrapperForTwo.wrap(item -> {return item instanceof Furniture;}, true));
 		filters.put("Misc", 		WrapperForTwo.wrap(item -> {return item instanceof Misc;}, true));
 		filters.put("Seed", 		WrapperForTwo.wrap(item -> {return item instanceof Seed;}, true));
+		filters.put("Ammo", 		WrapperForTwo.wrap(item -> {return item.getType() == Category.AMMO;}, true));
 	}
 
 
@@ -572,11 +575,73 @@ public class InventoryWindow extends Window implements Refreshable {
 			null
 		);
 
-		return new ContextMenu(x, y,
+		ContextMenu contextMenu = new ContextMenu(x, y,
 			true,
 			InventoryItemContextMenuConstructor.showInfo(item),
 			equipUnequip
 		);
+
+		if (item instanceof RangedWeapon) {
+			contextMenu.addMenuItem(
+				new MenuItem(
+					"Choose Ammunition",
+					() -> {
+					},
+					Colors.UI_GRAY,
+					Color.GREEN,
+					Color.WHITE,
+					new ContextMenu(
+						getMouseScreenX(),
+						getMouseScreenY(),
+						true,
+						getAmmo((RangedWeapon) item)
+					)
+				)
+			);
+		}
+
+		return contextMenu;
+	}
+
+
+	private MenuItem[] getAmmo(RangedWeapon weapon) {
+		List<Item> ammo = Lists.newArrayList();
+		for (Item item : host.getInventory().keySet()) {
+			if  (weapon.canFire(item)) {
+				ammo.add(item);
+			}
+		}
+
+		MenuItem[] menuItems;
+		if (ammo.isEmpty()) {
+			menuItems = new MenuItem[1];
+			menuItems[0] = new MenuItem(
+				"No suitable ammunition",
+				() -> {},
+				Color.GRAY,
+				Color.GRAY,
+				Color.GRAY,
+				null
+			);
+		} else {
+			menuItems = new MenuItem[ammo.size()];
+			int i = 0;
+			for (Item item : ammo) {
+				menuItems[i] = new MenuItem(
+					item.getSingular(true),
+					() -> {
+						weapon.setAmmo(item);
+					},
+					Color.WHITE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				);
+				i++;
+			}
+		}
+
+		return menuItems;
 	}
 
 

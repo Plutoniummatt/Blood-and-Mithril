@@ -6,6 +6,7 @@ import java.util.Set;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
 import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.world.Domain;
@@ -26,7 +27,7 @@ public abstract class Projectile implements Serializable {
 	public Vector2 position, velocity, acceleration;
 	private int worldId, id;
 	private Set<Integer> ignoredIndividuals = Sets.newHashSet();
-	
+
 	static {
 		Arrow.textureRegion = new TextureRegion(Domain.gameWorldTexture, 619, 176, 50, 3);
 	}
@@ -44,8 +45,8 @@ public abstract class Projectile implements Serializable {
 	 * Renders this {@link Projectile}
 	 */
 	public abstract void render();
-	
-	
+
+
 	/**
 	 * @param called when this {@link Projectile} hits the victim
 	 */
@@ -59,7 +60,7 @@ public abstract class Projectile implements Serializable {
 		Optional<Integer> findAny = Domain.getWorld(getWorldId()).getPositionalIndexMap().getNearbyEntities(Individual.class, position).stream().filter(individual -> {
 			return Domain.getIndividual(individual).getHitBox().isWithinBox(position);
 		}).findAny();
-		
+
 		if (findAny.isPresent()) {
 			Individual individual = Domain.getIndividual(findAny.get());
 			if (canAffect(individual)) {
@@ -71,7 +72,7 @@ public abstract class Projectile implements Serializable {
 				}
 			}
 		}
-		
+
 		if (!Domain.getWorld(getWorldId()).getTopography().getChunkMap().doesChunkExist(position)) {
 			return;
 		}
@@ -83,7 +84,7 @@ public abstract class Projectile implements Serializable {
 		} else {
 			velocity.add(0f, -gravity * delta);
 		}
-		
+
 		Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
 		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
 			collision(previousPosition);
@@ -91,19 +92,19 @@ public abstract class Projectile implements Serializable {
 
 		updatePositionIndex();
 	}
-	
+
 	protected abstract int getHitSound(Individual individual);
 
 	protected abstract void collision(Vector2 previousPosition);
 
 	protected abstract float getTerminalVelocity();
-	
+
 	protected abstract boolean penetrating();
-	
+
 	public void ignoreIndividual(Individual individual) {
 		ignoredIndividuals.add(individual.getId().getId());
 	}
-	
+
 	private boolean canAffect(Individual individual) {
 		return !ignoredIndividuals.contains(individual.getId().getId());
 	}
@@ -154,5 +155,26 @@ public abstract class Projectile implements Serializable {
 		}
 
 		Domain.getWorld(worldId).getPositionalIndexMap().get(position.x, position.y).addProjectile(id);
+	}
+
+
+	public static abstract class ProjectileItem extends Item {
+		private static final long serialVersionUID = -8997843179593339141L;
+
+		/**
+		 * Constructor
+		 */
+		protected ProjectileItem(float mass, int volume, boolean equippable, long value) {
+			super(mass, volume, equippable, value);
+		}
+
+
+		@Override
+		public Category getType() {
+			return Category.AMMO;
+		}
+
+
+		public abstract Projectile getProjectile();
 	}
 }

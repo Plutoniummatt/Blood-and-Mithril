@@ -100,6 +100,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -682,7 +683,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 		}
 
-		if (isMouseOver() && (Gdx.input.isKeyPressed(KeyMappings.attack)) && (!Gdx.input.isKeyPressed(KeyMappings.rangedAttack))) {
+		if (isMouseOver() && Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
 			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.getSelectedIndividuals().contains(this) || Domain.getSelectedIndividuals().size() > 1)) {
 				spriteBatch.setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
@@ -1799,17 +1800,43 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		if (rangedWeapon != null) {
 			Vector2 emissionPosition = getEmissionPosition();
 			Vector2 firingVector = target.cpy().sub(emissionPosition);
-			Projectile fired = rangedWeapon.fire(
-				emissionPosition, 
-				firingVector.cpy().nor().mul(
-					Math.min(
-						1f, 
-						firingVector.len() / 150f
+
+			boolean hasAmmo = false;
+			Item ammo = rangedWeapon.getAmmo();
+
+			if (ammo == null) {
+				addFloatingText("No ammo selected", Color.ORANGE);
+				return;
+			}
+
+			for (Item item : Lists.newArrayList(getInventory().keySet())) {
+				if (ammo.sameAs(item)) {
+					hasAmmo = true;
+					takeItem(item);
+					UserInterface.refreshRefreshableWindows();
+				}
+			}
+
+			if (hasAmmo) {
+				Projectile fired = rangedWeapon.fire(
+					emissionPosition,
+					firingVector.cpy().nor().mul(
+						Math.min(
+							1f,
+							firingVector.len() / 150f
+						)
 					)
-				)
-			);
-			fired.ignoreIndividual(this);
-			Domain.getWorld(getWorldId()).projectiles().addProjectile(fired);
+				);
+
+				if (fired == null) {
+					addFloatingText("No ammo selected", Color.ORANGE);
+				} else {
+					fired.ignoreIndividual(this);
+					Domain.getWorld(getWorldId()).projectiles().addProjectile(fired);
+				}
+			} else {
+				addFloatingText("Out of ammo", Color.ORANGE);
+			}
 		}
 	}
 }
