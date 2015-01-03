@@ -31,7 +31,8 @@ public class KeyMappings {
 	public static int toggleWalkRun = Input.Keys.W;
 	public static int addWayPoint = Input.Keys.SHIFT_LEFT;
 	public static int mineTile = Input.Keys.Q;
-	public static int attack = Input.Keys.CONTROL_LEFT;
+	public static int attack = Input.Keys.A;
+	public static int rangedAttack = Input.Keys.CONTROL_LEFT;
 
 	public static void setup() {
 		keyMap.put(Input.Keys.NUM_0, "0");
