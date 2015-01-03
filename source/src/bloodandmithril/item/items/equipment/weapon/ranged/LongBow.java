@@ -17,6 +17,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 /**
+ * A long bow, fires {@link Arrow}s
+ * 
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
