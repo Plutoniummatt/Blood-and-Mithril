@@ -174,17 +174,18 @@ public class GaussianLightingRenderer {
 
 		lightingFBO.begin();
 		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.lightingFBO);
-		Shaders.lightingFBO.begin();
+		spriteBatch.setShader(Shaders.tracerParticlesFBO);
+		Shaders.tracerParticlesFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Domain.getActiveWorld().getParticles().stream().filter(p -> {
 			return p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f;
 		}).forEach(p -> {
-			Shaders.lightingFBO.setUniformf("intensity", ((TracerParticle) p).glowIntensity);
-			Shaders.lightingFBO.setUniformf("color", p.color);
-			Shaders.lightingFBO.setUniformf("position", worldToScreen(p.position));
-			Shaders.lightingFBO.setUniformf("resolution", WIDTH, HEIGHT);
+			Shaders.tracerParticlesFBO.setUniformf("intensity", ((TracerParticle) p).glowIntensity);
+			Shaders.tracerParticlesFBO.setUniformf("color", p.color);
+			Shaders.tracerParticlesFBO.setUniformf("p2", worldToScreen(p.position));
+			Shaders.tracerParticlesFBO.setUniformf("p1", worldToScreen(((TracerParticle) p).prevPosition));
+			Shaders.tracerParticlesFBO.setUniformf("resolution", WIDTH, HEIGHT);
 			spriteBatch.draw(workingFBO.getColorBufferTexture(), 0, 0);
 			spriteBatch.flush();
 		});
