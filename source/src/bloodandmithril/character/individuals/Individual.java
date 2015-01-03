@@ -1834,8 +1834,15 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					fired.ignoreIndividual(this);
 					Domain.getWorld(getWorldId()).projectiles().addProjectile(fired);
 				}
+				
+				if (has(ammo) == 0) {
+					rangedWeapon.setAmmo(null);
+					UserInterface.refreshRefreshableWindows();
+				}
 			} else {
 				addFloatingText("Out of ammo", Color.ORANGE);
+				rangedWeapon.setAmmo(null);
+				UserInterface.refreshRefreshableWindows();
 			}
 		}
 	}

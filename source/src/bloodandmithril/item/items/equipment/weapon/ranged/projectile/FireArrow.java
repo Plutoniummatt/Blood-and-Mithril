@@ -34,7 +34,9 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 	public void update(float delta) {
 		if (burnDuration > 0f) {
 			burnDuration -= delta;
-			ParticleService.randomVelocity(position, 0f, 30f, Color.ORANGE, 10f, MovementMode.EMBER);
+			ParticleService.randomVelocity(position, 0f, 30f, Color.ORANGE, 10f, 100, MovementMode.EMBER);
+			ParticleService.randomVelocity(position, 0f, 30f, Color.ORANGE, 10f, 400, MovementMode.EMBER);
+			ParticleService.randomVelocity(position, 0f, 30f, Color.GRAY, 0f, 1000, MovementMode.EMBER);
 		}
 
 		super.update(delta);
