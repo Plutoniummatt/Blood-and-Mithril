@@ -241,12 +241,12 @@ public class Domain {
 			spriteBatch.flush();
 		}
 		spriteBatch.end();
+		foregroundParticles();
 		gl20.glEnable(GL20.GL_BLEND);
 		gl20.glBlendFuncSeparate(GL20.GL_ONE, GL20.GL_SRC_COLOR, GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		activeWorld.renderFluids();
 		gl20.glDisable(GL20.GL_BLEND);
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
-		foregroundParticles();
 		fBuffer.end();
 		GaussianLightingRenderer.render(camX, camY);
 	}
