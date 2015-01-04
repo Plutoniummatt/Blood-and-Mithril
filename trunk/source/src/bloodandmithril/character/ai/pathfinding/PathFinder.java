@@ -46,7 +46,8 @@ public abstract class PathFinder implements Serializable {
 		if (closestEmptyOrPlatformSpace == null) {
 			return null;
 		} else {
-			return getGroundLocation(closestEmptyOrPlatformSpace, radius * 2, world);
+			Vector2 groundLocation = getGroundLocation(closestEmptyOrPlatformSpace, radius * 2, world);
+			return groundLocation;
 		}
 	}
 
