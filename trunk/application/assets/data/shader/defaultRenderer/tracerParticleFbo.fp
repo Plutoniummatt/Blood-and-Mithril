@@ -50,6 +50,8 @@ void main()
 				max((totalColor.b + toAdd.b) / 2.0, totalColor.b),
 				totalColor.a + toAdd.a
 			);
+		} else {
+			break;
 		}
 	}
 
