@@ -254,7 +254,7 @@ public class FluidBody implements Serializable {
 
 		TreeMap<Integer, Set<Integer>> mapCopy = Maps.newTreeMap(occupiedCoordinates);
 		mapCopy.entrySet().stream().forEach(entry -> {
-			entry.setValue(Sets.newLinkedHashSet(entry.getValue()));
+			entry.setValue(Sets.newTreeSet(entry.getValue()));
 		});
 		workingVolume = volume;
 		for (Entry<Integer, Set<Integer>> layer : mapCopy.entrySet()) {
@@ -267,14 +267,21 @@ public class FluidBody implements Serializable {
 			}
 
 			int y = layer.getKey();
+			boolean previousExposed = false;
+			Integer previousX = null;
 			for (int x : Lists.newLinkedList(layer.getValue())) {
 				boolean rightPassable = Domain.getWorld(worldId).getTopography().getTile(x + 1, y, true).isPassable();
 				boolean leftPassable = Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isPassable();
-				if (!suppressTopSpread && Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f &&
-					(hasFluid(x - 1, y) || !leftPassable) && (hasFluid(x + 1, y) || !rightPassable)) {
-					if (occupiedCoordinates.containsKey(y + 1)) {
+				boolean exposed = !(hasFluidInMap(x - 1, y, mapCopy) || !leftPassable) && (hasFluidInMap(x + 1, y, mapCopy) || !rightPassable);
+				if (!suppressTopSpread && Domain.getWorld(worldId).getTopography().getTile(x, y + 1, true).isPassable() && workingVolume > 0f) {
+					if (previousExposed && previousX == x - 1) {
+						exposed = true;
+					}
+					if (!exposed && occupiedCoordinates.containsKey(y + 1)) {
 						occupiedCoordinates.get(y + 1).add(x);
 					}
+					previousExposed = exposed;
+					previousX = x;
 				}
 			}
 		}
@@ -543,7 +550,15 @@ public class FluidBody implements Serializable {
 	 * @return whether the specified coordates are occupied
 	 */
 	private boolean hasFluid(int x, int y) {
-		Set<Integer> row = occupiedCoordinates.get(y);
+		return hasFluidInMap(x, y, occupiedCoordinates);
+	}
+	
+	
+	/**
+	 * @return whether the specified coordates are occupied
+	 */
+	private boolean hasFluidInMap(int x, int y, Map<Integer, Set<Integer>> map) {
+		Set<Integer> row = map.get(y);
 
 		if (row == null) {
 			return false;
