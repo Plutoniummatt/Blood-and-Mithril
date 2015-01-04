@@ -10,8 +10,8 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
-import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
-import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
+import bloodandmithril.world.topography.tile.tiles.stone.MagmaTile;
+import bloodandmithril.world.topography.tile.tiles.stone.ObsidianTile;
 
 /**
  * Manages layers
@@ -71,9 +71,9 @@ public class GlobalLayers {
 		}
 
 		if (noise < 0.5) {
-			return new GraniteTile();
+			return new ObsidianTile();
 		} else {
-			return new StandardSoilTile();
+			return new MagmaTile();
 		}
 	}
 }
