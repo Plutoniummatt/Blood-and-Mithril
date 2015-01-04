@@ -31,7 +31,9 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -198,16 +200,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 				if (System.currentTimeMillis() - prevFrame > 16) {
 					prevFrame = System.currentTimeMillis();
-					try {
-						Collection<Particle> particles = Domain.getActiveWorld().getParticles();
+					World world = Domain.getActiveWorld();
+					if (world != null) {
+						Collection<Particle> particles = world.getParticles();
 						for (Particle p : particles) {
 							if (p.getRemovalCondition().call()) {
 								Domain.getActiveWorld().getParticles().remove(p);
 							}
-							p.update(0.012f);
+							try {
+								p.update(0.012f);
+							} catch (NoTileFoundException e) {}
 						}
-					} catch (NullPointerException e) {
-						// DO nothing
 					}
 				}
 			}
@@ -358,7 +361,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Called upon right clicking
 	 */
 	@SuppressWarnings("unused")
-	private void rightClick() {
+	private void rightClick() throws NoTileFoundException {
 		boolean doubleClick = rightDoubleClickTimer < DOUBLE_CLICK_TIME;
 		boolean uiClicked = false;
 		rightDoubleClickTimer = 0f;
@@ -423,32 +426,31 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
 						);
 					} else {
+						// TODO
 					}
 				} else {
 					float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), INDIVIDUAL_SPREAD);
 					if (ClientServerInterface.isServer()) {
-						try {
-							AIProcessor.sendPathfindingRequest(
-								indi,
-								new WayPoint(
-									Topography.convertToWorldCoord(
-										getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
-											new Vector2(
-												getMouseWorldX() + (Gdx.input.isKeyPressed(KeyMappings.forceMove) ? 0f : spread),
-												getMouseWorldY()
-											),
-											10,
-											Domain.getWorld(indi.getWorldId())
+						AIProcessor.sendPathfindingRequest(
+							indi,
+							new WayPoint(
+								Topography.convertToWorldCoord(
+									getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+										new Vector2(
+											getMouseWorldX() + (Gdx.input.isKeyPressed(KeyMappings.forceMove) ? 0f : spread),
+											getMouseWorldY()
 										),
-										true
-									)
-								),
-								false,
-								150f,
-								!Gdx.input.isKeyPressed(KeyMappings.forceMove),
-								Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
-							);
-						} catch (NullPointerException e) {}
+										10,
+										Domain.getWorld(indi.getWorldId())
+									),
+									true
+								)
+							),
+							false,
+							150f,
+							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
+							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
+						);
 					} else {
 						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
 							indi.getId().getId(),

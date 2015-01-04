@@ -210,7 +210,7 @@ public class DevWindow extends Window {
 			elf.getSkills().setObservation(55);
 			elf.getSkills().setSmithing(55);
 
-			for (int i = 10; i > 0; i--) {
+			for (int i = 100; i > 0; i--) {
 				elf.giveItem(new Carrot());
 				elf.giveItem(new Arrow.ArrowItem<>(Steel.class, 10));
 				elf.giveItem(new FireArrow.FireArrowItem<>(Iron.class, 10));

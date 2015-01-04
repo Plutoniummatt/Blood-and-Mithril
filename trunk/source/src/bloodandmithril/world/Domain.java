@@ -45,6 +45,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.UnitsWindow;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -259,7 +260,7 @@ public class Domain {
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
 			Domain.getActiveWorld().getParticles().stream().filter(p -> p.background).forEach(p -> {
-				Gdx.gl20.glLineWidth(p.radius + 1f);
+				Gdx.gl20.glLineWidth(p.radius);
 				p.renderLine(Gdx.graphics.getDeltaTime());
 			});
 		}
@@ -284,7 +285,7 @@ public class Domain {
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
 			Domain.getActiveWorld().getParticles().stream().filter(p -> !p.background).forEach(p -> {
-				Gdx.gl20.glLineWidth(p.radius + 1f);
+				Gdx.gl20.glLineWidth(p.radius);
 				p.renderLine(Gdx.graphics.getDeltaTime());
 			});
 		}
@@ -327,9 +328,7 @@ public class Domain {
 			for (Item item : world.items().getItems()) {
 				try {
 					item.update(d);
-				} catch (NullPointerException e) {
-					// Don't update
-				}
+				} catch (NoTileFoundException e) {}
 			}
 		}
 	}
@@ -431,12 +430,17 @@ public class Domain {
 		private static Predicate<Individual> onPlatform = new Predicate<Individual>() {
 			@Override
 			public boolean apply(Individual individual) {
-				if (getActiveWorld().getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
-						getActiveWorld().getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
-					return true;
-				} else {
+				try {
+					if (getActiveWorld().getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
+							getActiveWorld().getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
+						return true;
+					} else {
+						return false;
+					}
+				} catch (NoTileFoundException e) {
 					return false;
 				}
+
 			};
 		};
 
@@ -444,11 +448,15 @@ public class Domain {
 		private static Predicate<Individual> offPlatform = new Predicate<Individual>() {
 			@Override
 			public boolean apply(Individual individual) {
-				if (Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
-					Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
+				try {
+					if (Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
+							Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
+							return false;
+						} else {
+							return true;
+						}
+				} catch (NoTileFoundException e) {
 					return false;
-				} else {
-					return true;
 				}
 			};
 		};

@@ -11,6 +11,7 @@ import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -27,7 +28,7 @@ public class LightCampfire extends CompositeAITask {
 	/**
 	 * Constructor
 	 */
-	public LightCampfire(Individual host, Campfire campfire) {
+	public LightCampfire(Individual host, Campfire campfire) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Mining",

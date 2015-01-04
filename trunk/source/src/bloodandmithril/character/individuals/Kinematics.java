@@ -21,6 +21,7 @@ import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -39,7 +40,7 @@ public interface Kinematics {
 	/**
 	 * Handles standard kinematics
 	 */
-	static void kinetics(float delta, World world, Individual individual) {
+	static void kinetics(float delta, World world, Individual individual) throws NoTileFoundException {
 		Topography topography = Domain.getWorld(individual.getWorldId()).getTopography();
 		IndividualKineticsProcessingData kinematicsBean = individual.getKinematicsData();
 		IndividualState state = individual.getState();
@@ -142,7 +143,7 @@ public interface Kinematics {
 	/**
 	 * Sets {@link #jumpOff} to null if we've passed it
 	 */
-	static void jumpOffLogic(Topography topography, IndividualKineticsProcessingData kinematicsBean, IndividualState state, ArtificialIntelligence ai) {
+	static void jumpOffLogic(Topography topography, IndividualKineticsProcessingData kinematicsBean, IndividualState state, ArtificialIntelligence ai) throws NoTileFoundException {
 		AITask currentTask = ai.getCurrentTask();
 		if (currentTask instanceof GoToLocation) {
 			if (((GoToLocation) currentTask).isAboveNext(state.position)) {
@@ -190,7 +191,7 @@ public interface Kinematics {
 	/**
 	 * Whether we should be running ground detection
 	 */
-	static boolean groundDetectionCriteriaMet(Topography topography, IndividualState state, ArtificialIntelligence ai, IndividualKineticsProcessingData kinematicsBean) {
+	static boolean groundDetectionCriteriaMet(Topography topography, IndividualState state, ArtificialIntelligence ai, IndividualKineticsProcessingData kinematicsBean) throws NoTileFoundException {
 		Tile currentTile = topography.getTile(state.position.x, state.position.y, true);
 		Tile tileBelow = topography.getTile(state.position.x, state.position.y - TILE_SIZE/2, true);
 		return (!(currentTile instanceof Tile.EmptyTile) && !currentTile.isPlatformTile || currentTile.isPlatformTile && !(tileBelow instanceof EmptyTile)) &&
@@ -199,7 +200,7 @@ public interface Kinematics {
 
 
 	/** Whether this {@link Individual} is obstructed by {@link Tile}s */
-	static boolean obstructed(int offsetX, Topography topography, IndividualState state, int height, ArtificialIntelligence ai, IndividualKineticsProcessingData kinematicsBean) {
+	static boolean obstructed(int offsetX, Topography topography, IndividualState state, int height, ArtificialIntelligence ai, IndividualKineticsProcessingData kinematicsBean) throws NoTileFoundException {
 		int blockspan = height/TILE_SIZE + (height % TILE_SIZE == 0 ? 0 : 1);
 		for (int block = 0; block != blockspan; block++) {
 			if (!isPassable(state.position.x + offsetX, state.position.y + TILE_SIZE/2 + TILE_SIZE * block, topography, kinematicsBean, ai)) {
@@ -213,7 +214,7 @@ public interface Kinematics {
 	/**
 	 * Determines during {@link #kinetics(float)} whether we can step up
 	 */
-	static boolean canStepUp(int offsetX, Topography topography, IndividualState state, int height, ArtificialIntelligence ai, IndividualKineticsProcessingData kinematicsBean) {
+	static boolean canStepUp(int offsetX, Topography topography, IndividualState state, int height, ArtificialIntelligence ai, IndividualKineticsProcessingData kinematicsBean) throws NoTileFoundException {
 		int blockspan = height/TILE_SIZE + (height % TILE_SIZE == 0 ? 0 : 1);
 
 		for (int block = 1; block != blockspan + 1; block++) {
@@ -228,7 +229,7 @@ public interface Kinematics {
 	/**
 	 * True if a {@link Tile#isPassable()}, taking into account the path
 	 */
-	static boolean isPassable(float x, float y, Topography topography, IndividualKineticsProcessingData kinematicsBean, ArtificialIntelligence ai) {
+	static boolean isPassable(float x, float y, Topography topography, IndividualKineticsProcessingData kinematicsBean, ArtificialIntelligence ai) throws NoTileFoundException {
 		AITask current = ai.getCurrentTask();
 		Tile tile = topography.getTile(x, y, true);
 
@@ -274,7 +275,7 @@ public interface Kinematics {
 	/**
 	 * Jump off the tile this {@link Individual} is currently standing on, as long as its a platform
 	 */
-	public static void jumpOff(Topography topography, IndividualState state, IndividualKineticsProcessingData kinematicsBean) {
+	public static void jumpOff(Topography topography, IndividualState state, IndividualKineticsProcessingData kinematicsBean) throws NoTileFoundException {
 		if (topography.getTile(state.position.x, state.position.y - TILE_SIZE/2, true).isPlatformTile) {
 			kinematicsBean.jumpOff = convertToWorldCoord(state.position.x, state.position.y - TILE_SIZE/2, false);
 		}

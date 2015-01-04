@@ -19,6 +19,7 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -170,7 +171,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 					true,
 					false
 				);
-			} catch (NullPointerException e) {
+			} catch (NoTileFoundException e) {
 				setCurrentTask(new Wait(host, Util.getRandom().nextFloat() * 3f + 1f));
 			}
 		} else if (currentTask instanceof Idle) {

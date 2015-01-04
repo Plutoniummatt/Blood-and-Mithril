@@ -2,7 +2,6 @@ package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.audio.SoundService;
-import bloodandmithril.character.conditions.Bleeding;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -11,6 +10,7 @@ import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;
@@ -74,17 +74,19 @@ public class Arrow<T extends Metal> extends Projectile {
 
 	@Override
 	protected void collision(Vector2 previousPosition) {
-		Tile tile = Domain.getWorld(getWorldId()).getTopography().getTile(position, true);
+		try {
+			Tile tile = Domain.getWorld(getWorldId()).getTopography().getTile(position, true);
 
-		Vector2 testPosition = position.cpy();
-		Vector2 velocityCopy = velocity.cpy();
-		while (tile.isPlatformTile || !tile.isPassable()) {
-			testPosition.sub(velocityCopy.nor());
-			tile = Domain.getWorld(getWorldId()).getTopography().getTile(testPosition, true);
-		}
+			Vector2 testPosition = position.cpy();
+			Vector2 velocityCopy = velocity.cpy();
+			while (tile.isPlatformTile || !tile.isPassable()) {
+				testPosition.sub(velocityCopy.nor());
+				tile = Domain.getWorld(getWorldId()).getTopography().getTile(testPosition, true);
+			}
 
-		setPosition(testPosition);
-		stuck = true;
+			setPosition(testPosition);
+			stuck = true;
+		} catch (NoTileFoundException e) {}
 	}
 
 
@@ -93,7 +95,6 @@ public class Arrow<T extends Metal> extends Projectile {
 		float damage = velocity.len() / getTerminalVelocity() * (5f + 5f * Util.getRandom().nextFloat()) * Metal.getMaterial(arrowTipMaterial).getCombatMultiplier();
 		victim.damage(damage);
 		victim.addFloatingText(String.format("%.2f", damage), Color.RED);
-		victim.addCondition(new Bleeding(0.15f));
 		ParticleService.bloodSplat(victim.getEmissionPosition(), new Vector2());
 	}
 
@@ -172,6 +173,17 @@ public class Arrow<T extends Metal> extends Projectile {
 		@Override
 		public Projectile getProjectile() {
 			return new Arrow<>(metal, null, null);
+		}
+	}
+
+
+	@Override
+	protected void targetHitKinematics() {
+		if (Util.roll(0.2f)) {
+			Domain.getWorld(getWorldId()).projectiles().removeProjectile(getId());
+		} else {
+			velocity.mul(0.05f);
+			velocity.x = -velocity.x;
 		}
 	}
 }

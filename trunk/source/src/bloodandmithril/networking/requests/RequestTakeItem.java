@@ -9,6 +9,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.google.common.collect.Lists;
 
@@ -46,7 +47,9 @@ public class RequestTakeItem implements Request {
 			}
 		}
 
-		individual.getAI().setCurrentTask(new TakeItem(individual, serverItems));
+		try {
+			individual.getAI().setCurrentTask(new TakeItem(individual, serverItems));
+		} catch (NoTileFoundException e) {}
 		return new Responses(false);
 	}
 

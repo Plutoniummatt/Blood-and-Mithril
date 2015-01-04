@@ -39,6 +39,7 @@ import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;
@@ -305,7 +306,7 @@ public abstract class Item implements Serializable, Affixed {
 
 
 	/** Update method, delta measured in seconds */
-	public void update(float delta) {
+	public void update(float delta) throws NoTileFoundException {
 		if (getId() == null) {
 			return;
 		}
@@ -403,7 +404,9 @@ public abstract class Item implements Serializable, Affixed {
 				if (Domain.getSelectedIndividuals().size() == 1) {
 					Individual selected = Domain.getSelectedIndividuals().iterator().next();
 					if (ClientServerInterface.isServer()) {
-						selected.getAI().setCurrentTask(new TakeItem(selected, this));
+						try {
+							selected.getAI().setCurrentTask(new TakeItem(selected, this));
+						} catch (NoTileFoundException e) {}
 					} else {
 						ClientServerInterface.SendRequest.sendRequestTakeItem(selected, this);
 					}

@@ -10,6 +10,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
 import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -68,7 +69,7 @@ public abstract class Projectile implements Serializable {
 				SoundService.play(getHitSound(individual), individual.getState().position, true);
 				ignoreIndividual(individual);
 				if (!penetrating()) {
-					Domain.getWorld(getWorldId()).projectiles().removeProjectile(getId());
+					targetHitKinematics();
 				}
 			}
 		}
@@ -85,13 +86,18 @@ public abstract class Projectile implements Serializable {
 			velocity.add(0f, -gravity * delta);
 		}
 
-		Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
-		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
-			collision(previousPosition);
+		try {
+			Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
+			if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
+				collision(previousPosition);
+			}
+		} catch (NoTileFoundException e) {
 		}
 
 		updatePositionIndex();
 	}
+
+	protected abstract void targetHitKinematics() ;
 
 	protected abstract int getHitSound(Individual individual);
 

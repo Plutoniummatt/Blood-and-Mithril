@@ -20,6 +20,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -102,9 +103,12 @@ public class CarrotProp extends PlantProp {
 					() -> {
 						Individual individual = Domain.getSelectedIndividuals().iterator().next();
 						if (ClientServerInterface.isServer()) {
-							individual.getAI().setCurrentTask(
-								new Harvest(individual, thisCarrot)
-							);
+							try {
+								individual.getAI().setCurrentTask(
+									new Harvest(individual, thisCarrot)
+								);
+							} catch (NoTileFoundException e) {
+							}
 						} else {
 							ClientServerInterface.SendRequest.sendHarvestRequest(individual.getId().getId(), id);
 						}

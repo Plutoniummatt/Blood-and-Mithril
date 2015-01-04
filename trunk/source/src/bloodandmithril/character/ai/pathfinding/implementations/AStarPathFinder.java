@@ -24,6 +24,7 @@ import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.DebugTile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -148,14 +149,14 @@ public class AStarPathFinder extends PathFinder {
 			}
 
 			throw new RuntimeException("Failed to find path");
-		} catch (NullPointerException e) {
+		} catch (NoTileFoundException e) {
 			aiDebug("NPE during pathfinding", LogLevel.DEBUG);
 			return new Path();
 		}
 	}
 
 
-	private Vector2 determineWayPointCoords(Vector2 location, boolean floor, boolean finish, World world) {
+	private Vector2 determineWayPointCoords(Vector2 location, boolean floor, boolean finish, World world) throws NoTileFoundException {
 		Tile tile = world.getTopography().getTile(location, true);
 		if (location.y < 0) {
 			tile = world.getTopography().getTile(location.x, location.y + 1, true);
@@ -179,7 +180,7 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Extracts the {@link Path} from the {@link #closedNodes} */
-	private Path extractPath(Node finalNode, float finalTolerance, float forceTolerance, World world) {
+	private Path extractPath(Node finalNode, float finalTolerance, float forceTolerance, World world) throws NoTileFoundException {
 		Path answer = new Path();
 
 		if (finalNode.getF() > 9999999f) {
@@ -219,7 +220,7 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Processes an open {@link Node} */
-	private Node processOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification {
+	private Node processOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
 		aiDebug("Processing open node: " + toProcess.toString(), DEBUG);
 		openNodes.remove(toProcess.x, toProcess.y);
 		closedNodes.put(toProcess.x, toProcess.y, toProcess);
@@ -228,7 +229,7 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Processes the two adjascent locations to the argument */
-	private Node processAdjascentNodesToOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification {
+	private Node processAdjascentNodesToOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
 
 		// Left and right nodes, the tiles immediately to the left/right of the open node to process
 		Node leftNode = new Node(toProcess.x - TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
@@ -276,7 +277,7 @@ public class AStarPathFinder extends PathFinder {
 
 	/** Determines if we can move to an adjascent {@link Node} */
 	@SuppressWarnings("cast")
-	private int processAdjascent(final Node to, int height, boolean right, Node parent, Node destination, int safeHeight, World world) throws UndiscoveredPathNotification {
+	private int processAdjascent(final Node to, int height, boolean right, Node parent, Node destination, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
 		Tile tile;
 
 		try {
@@ -336,12 +337,12 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Cascades downwards and adds all platform tiles to {@link #openNodes} until a non-platform, non-empty {@link Tile} is found */
-	private void cascadeDownAndProcessPlatforms(float x, float y, Node parent, Node destination, int height, int safeHeight, World world) {
+	private void cascadeDownAndProcessPlatforms(float x, float y, Node parent, Node destination, int height, int safeHeight, World world) throws NoTileFoundException {
 		Tile tile;
 		try {
 			tile = world.getTopography().getTile(x, y, true);
 			changeToDebugTile(x, y, world);
-		} catch (NullPointerException e) {
+		} catch (NoTileFoundException e) {
 			aiDebug("Null tile encountered, perhaps not yet generated", INFO);
 			return;
 		}

@@ -88,6 +88,7 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.Gdx;
@@ -435,10 +436,14 @@ public class UserInterface {
 	 * Renders a small rectangle to indicate the current tile the mouse is over
 	 */
 	private static boolean renderMouseOverTileHighlightBox(boolean nonEmptyTilesOnly) {
-		if (nonEmptyTilesOnly && Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), getMouseWorldY(), true) instanceof EmptyTile) {
+		try {
+			if (nonEmptyTilesOnly && Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), getMouseWorldY(), true) instanceof EmptyTile) {
+				return false;
+			}
+		} catch (NoTileFoundException e) {
 			return false;
 		}
-		
+
 		float x = worldToScreenX(TILE_SIZE * convertToWorldTileCoord(getMouseWorldX()));
 		float y = worldToScreenY(TILE_SIZE * convertToWorldTileCoord(getMouseWorldY()));
 
@@ -449,7 +454,7 @@ public class UserInterface {
 		shapeRenderer.rect(x, y, TILE_SIZE, TILE_SIZE);
 		shapeRenderer.end();
 		gl.glDisable(GL_BLEND);
-		
+
 		return true;
 	}
 
@@ -623,7 +628,9 @@ public class UserInterface {
 								if (singleIndividualSelected) {
 									Individual next = Domain.getSelectedIndividuals().iterator().next();
 									if (ClientServerInterface.isServer()) {
-										next.getAI().setCurrentTask(new TakeItem(next, items));
+										try {
+											next.getAI().setCurrentTask(new TakeItem(next, items));
+										} catch (NoTileFoundException e) {}
 									} else {
 										ClientServerInterface.SendRequest.sendRequestTakeItems(next, items);
 									}
@@ -725,8 +732,8 @@ public class UserInterface {
 		}
 		spriteBatch.end();
 	}
-	
-	
+
+
 	public static void renderJumpArrow(Vector2 start, Vector2 finish) {
 		if (!Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
 			renderArrow(start, finish, Color.GREEN, 3f, 0f, 75f);
@@ -800,7 +807,7 @@ public class UserInterface {
 
 		if (!Domain.getSelectedIndividuals().isEmpty()) {
 
-			if ((jumpPressed || addWayPointPressed || forceMovePressed) && (!attackPressed && !rangedAttackPressed && !mineTIlePressed)) {
+			if ((jumpPressed || addWayPointPressed || forceMovePressed) && !attackPressed && !rangedAttackPressed && !mineTIlePressed) {
 				String text = "";
 				if (jumpPressed) {
 					if (!addWayPointPressed) {
@@ -833,7 +840,7 @@ public class UserInterface {
 						canAttackRanged = true;
 					}
 				}
-				
+
 				if (canAttackRanged) {
 					spriteBatch.setShader(Shaders.filter);
 					Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);

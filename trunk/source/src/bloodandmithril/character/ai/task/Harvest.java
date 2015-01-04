@@ -20,6 +20,7 @@ import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -43,7 +44,7 @@ public class Harvest extends CompositeAITask {
 	 *
 	 * @param coordinate - World pixel coordinate of the {@link Harvestable} to harvest.
 	 */
-	public Harvest(Individual host, Harvestable harvestable) {
+	public Harvest(Individual host, Harvestable harvestable) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Mining",

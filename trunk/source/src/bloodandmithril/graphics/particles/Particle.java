@@ -8,6 +8,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;
@@ -52,7 +53,7 @@ public abstract class Particle {
 	/**
 	 * Performs kinetics updates on this particle
 	 */
-	public synchronized void update(float delta) {
+	public synchronized void update(float delta) throws NoTileFoundException {
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 
@@ -82,7 +83,7 @@ public abstract class Particle {
 	}
 
 
-	private void movement(float delta) {
+	private void movement(float delta) throws NoTileFoundException {
 		switch (movementMode) {
 		case GRAVITY:
 			gravitational(delta);
@@ -109,13 +110,19 @@ public abstract class Particle {
 	}
 
 
-	private void gravitational(float delta) {
+	private void gravitational(float delta) throws NoTileFoundException {
 		position.add(velocity.cpy().mul(delta));
 		float gravity = Domain.getWorld(worldId).getGravity();
 		if (velocity.len() > 2000f) {
 			velocity.add(0f, -gravity * delta).mul(0.95f);
 		} else {
 			velocity.add(0f, -gravity * delta);
+		}
+
+		Tile tile = Domain.getWorld(worldId).getTopography().getTile(position.x, position.y - 1, true);
+		if (tile.isPlatformTile || !tile.isPassable()) {
+			velocity.y = 0f;
+			velocity.x = velocity.x * 0.6f;
 		}
 	}
 

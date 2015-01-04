@@ -26,6 +26,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -146,7 +147,13 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 		public BuildCursorBoundTask(Construction toConstruct) {
 			super(
 				args -> {
-					Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+					Vector2 coords;
+					try {
+						coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+					} catch (NoTileFoundException e) {
+						return;
+					}
+
 					boolean canBuild = toConstruct.canBuildAt(getMouseWorldX(), coords.y);
 
 					if (canBuild) {
@@ -166,7 +173,12 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 		@Override
 		public void renderUIGuide() {
-			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+			Vector2 coords;
+			try {
+				coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+			} catch (NoTileFoundException e) {
+				return;
+			}
 
 			float x = worldToScreenX(getMouseWorldX());
 			float y = worldToScreenY(coords.y);
@@ -194,8 +206,12 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 		@Override
 		public boolean executionConditionMet() {
-			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
-			return toConstruct.canBuildAt(getMouseWorldX(), coords.y);
+			try {
+				Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+				return toConstruct.canBuildAt(getMouseWorldX(), coords.y);
+			} catch (NoTileFoundException e) {
+				return false;
+			}
 		}
 	}
 }

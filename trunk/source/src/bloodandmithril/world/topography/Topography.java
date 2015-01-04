@@ -134,13 +134,13 @@ public class Topography {
 
 
 	/** Get the lowest empty tile world coordinates */
-	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) {
+	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) throws NoTileFoundException {
 		return getLowestEmptyTileOrPlatformTileWorldCoords(worldCoords.x, worldCoords.y, floor);
 	}
 
 
 	/** Get the lowest empty tile world coordinates */
-	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) {
+	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) throws NoTileFoundException {
 		if (getTile(worldX, worldY, true) instanceof EmptyTile) {
 			while (getTile(worldX, worldY, true) instanceof EmptyTile) {
 				worldY = worldY - TILE_SIZE;
@@ -223,7 +223,7 @@ public class Topography {
 			Logger.generalDebug("Deleting tile at (" + convertToWorldTileCoord(chunkX, tileX) + ", " + convertToWorldTileCoord(chunkY, tileY) + "), World coord: (" + worldX + ", " + worldY + ")", LogLevel.TRACE);
 			return tile;
 
-		} catch (NullPointerException e) {
+		} catch (NoTileFoundException e) {
 			Logger.generalDebug("can't delete a null tile", LogLevel.WARN);
 			return null;
 		}
@@ -309,22 +309,25 @@ public class Topography {
 	/**
 	 * Gets a tile given the world coordinates
 	 */
-	public synchronized Tile getTile(float worldX, float worldY, boolean foreGround) {
+	public synchronized Tile getTile(float worldX, float worldY, boolean foreGround) throws NoTileFoundException {
+		try {
+			int chunkX = convertToChunkCoord(worldX);
+			int chunkY = convertToChunkCoord(worldY);
 
-		int chunkX = convertToChunkCoord(worldX);
-		int chunkY = convertToChunkCoord(worldY);
+			int tileX = convertToChunkTileCoord(worldX);
+			int tileY = convertToChunkTileCoord(worldY);
 
-		int tileX = convertToChunkTileCoord(worldX);
-		int tileY = convertToChunkTileCoord(worldY);
-
-		return getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
+			return getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
+		} catch (NullPointerException e) {
+			throw new NoTileFoundException();
+		}
 	}
 
 
 	/**
 	 * Gets a tile given the world tile coordinates
 	 */
-	public synchronized Tile getTile(int tileX, int tileY, boolean foreGround) {
+	public synchronized Tile getTile(int tileX, int tileY, boolean foreGround) throws NoTileFoundException {
 		int chunkX = convertToChunkCoord(convertToWorldCoord(tileX, false));
 		int chunkY = convertToChunkCoord(convertToWorldCoord(tileY, false));
 
@@ -334,13 +337,13 @@ public class Topography {
 		try {
 			return getChunkMap().get(chunkX).get(chunkY).getTile(chunkTileX, chunkTileY, foreGround);
 		} catch (NullPointerException e) {
-			return null;
+			throw new NoTileFoundException();
 		}
 	}
 
 
 	/** Overloaded method, see {@link #getTile(float, float)} */
-	public synchronized Tile getTile(Vector2 location, boolean foreGround) {
+	public synchronized Tile getTile(Vector2 location, boolean foreGround) throws NoTileFoundException {
 		return getTile(location.x, location.y, foreGround);
 	}
 
@@ -385,5 +388,10 @@ public class Topography {
 
 	public Structures getStructures() {
 		return structures;
+	}
+
+
+	public static class NoTileFoundException extends Exception {
+		private static final long serialVersionUID = 5955361949995345496L;
 	}
 }

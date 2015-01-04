@@ -11,6 +11,7 @@ import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * {@link CompositeAITask} consisting of:
@@ -26,7 +27,10 @@ public class LockUnlockContainer extends CompositeAITask {
 	private Container container;
 	private boolean lock;
 
-	public LockUnlockContainer(Individual host, Prop container, boolean lock) {
+	/**
+	 * Constructor
+	 */
+	public LockUnlockContainer(Individual host, Prop container, boolean lock) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Locking/Unlocking container",
