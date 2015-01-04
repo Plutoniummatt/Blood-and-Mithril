@@ -54,11 +54,14 @@ public class TracerParticle extends Particle {
 
 	@Override
 	public synchronized void renderLine(float delta) {
-		try {
-			if (Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true).isPassable()) {
-				Domain.shapeRenderer.setColor(color);
-				Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
-			}
-		} catch (NoTileFoundException e) {}
+		Topography topography = Domain.getWorld(worldId).getTopography();
+		if (topography.hasTile(position.x, position.y, true) && topography.hasTile(prevPosition.x, prevPosition.y, true)) {
+			try {
+				if (topography.getTile(position.x, position.y, true).isPassable()) {
+					Domain.shapeRenderer.setColor(color);
+					Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
+				}
+			} catch (NoTileFoundException e) {}
+		}
 	}
 }
