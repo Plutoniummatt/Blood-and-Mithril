@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
-import bloodandmithril.generation.patterns.Layers;
+import bloodandmithril.generation.patterns.GlobalLayers;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ZipHelper;
 import bloodandmithril.util.Logger;
@@ -87,7 +87,7 @@ public class ChunkSaver {
 
 				structures.writeString(encode(Structures.getStructures()), false);
 				worlds.writeString(encode(Domain.getWorlds()), false);
-				layers.writeString(encode(Layers.layers), false);
+				layers.writeString(encode(GlobalLayers.layers), false);
 
 				for (Entry<Integer, World> world : Domain.getWorlds().entrySet()) {
 					saveStructureData(world);

@@ -14,7 +14,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.TerrainGenerator;
-import bloodandmithril.generation.patterns.Layers;
+import bloodandmithril.generation.patterns.GlobalLayers;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ZipHelper;
 import bloodandmithril.util.Logger;
@@ -169,12 +169,12 @@ public class ChunkLoader {
 			}
 		}
 
-		if (Layers.layers == null) {
+		if (GlobalLayers.layers == null) {
 			try {
-				Layers.layers = decode(Gdx.files.local(GameSaver.savePath + "/world/layers.txt"));
+				GlobalLayers.layers = decode(Gdx.files.local(GameSaver.savePath + "/world/layers.txt"));
 			} catch (Exception e) {
 				Logger.loaderDebug("Failed to load layers", LogLevel.DEBUG);
-				Layers.layers = new ConcurrentSkipListMap<Integer, TwoInts>();
+				GlobalLayers.layers = new ConcurrentSkipListMap<Integer, TwoInts>();
 			}
 		}
 	}

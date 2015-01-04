@@ -9,14 +9,13 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.TerrainGenerator;
 import bloodandmithril.generation.component.components.Corridor;
-import bloodandmithril.generation.component.components.Room;
-import bloodandmithril.generation.component.components.Stairs;
 import bloodandmithril.generation.component.components.Corridor.CorridorCreationCustomization;
+import bloodandmithril.generation.component.components.Room;
 import bloodandmithril.generation.component.components.Room.RoomCreationCustomization;
+import bloodandmithril.generation.component.components.Stairs;
 import bloodandmithril.generation.component.components.Stairs.StairsCreationCustomization;
 import bloodandmithril.generation.component.components.prefab.UndergroundDesertTempleEntrance;
-import bloodandmithril.generation.patterns.Layers;
-import bloodandmithril.generation.patterns.UndergroundWithCaves;
+import bloodandmithril.generation.patterns.GlobalLayers;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.generation.tools.SawToothGenerator;
@@ -236,7 +235,7 @@ public class Desert extends SuperStructure {
 
 		// set starting height
 		if (generatingToRight) {
-			if (structures.getSurfaceHeight().get(leftMostTile - 1) != null) { 
+			if (structures.getSurfaceHeight().get(leftMostTile - 1) != null) {
 				startingHeight = structures.getSurfaceHeight().get(leftMostTile - 1);
 			} else {
 				startingHeight = dafaultSurfaceHeight;
@@ -349,12 +348,12 @@ public class Desert extends SuperStructure {
 			}
 		} else {
 			if (sandBase.get(worldTileX) == null) {
-				return UndergroundWithCaves.getTile(worldTileX, worldTileY);
+				return GlobalLayers.getTile(worldTileX, worldTileY);
 			}
 			if (worldTileY > sandBase.get(worldTileX)) {
 				return new SandStoneTile();
 			} else {
-				return UndergroundWithCaves.getTile(worldTileX, worldTileY);
+				return GlobalLayers.getTile(worldTileX, worldTileY);
 			}
 		}
 	}
@@ -386,12 +385,12 @@ public class Desert extends SuperStructure {
 			}
 		} else {
 			if (sandBase.get(worldTileX) == null) {
-				return Layers.getTile(worldTileX, worldTileY);
+				return GlobalLayers.getTile(worldTileX, worldTileY);
 			}
 			if (worldTileY > sandBase.get(worldTileX)) {
 				return new SandStoneTile();
 			} else {
-				return Layers.getTile(worldTileX, worldTileY);
+				return GlobalLayers.getTile(worldTileX, worldTileY);
 			}
 		}
 	}
