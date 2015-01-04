@@ -28,7 +28,7 @@ public class TracerParticle extends Particle {
 
 
 	@Override
-	public void render(float delta) {
+	public synchronized void render(float delta) {
 		if (Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true).isPassable()) {
 			Domain.shapeRenderer.setColor(color);
 			Domain.shapeRenderer.filledCircle(position.x, position.y, radius);
@@ -37,7 +37,7 @@ public class TracerParticle extends Particle {
 
 
 	@Override
-	public void update(float delta) {
+	public synchronized void update(float delta) {
 		prevPosition.x = position.x;
 		prevPosition.y = position.y;
 
@@ -46,7 +46,7 @@ public class TracerParticle extends Particle {
 
 
 	@Override
-	public void renderLine(float delta) {
+	public synchronized void renderLine(float delta) {
 		if (Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true).isPassable()) {
 			Domain.shapeRenderer.setColor(color);
 			Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
