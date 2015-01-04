@@ -1,7 +1,6 @@
 package bloodandmithril.graphics.particles;
 
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
-import static java.lang.Math.abs;
 
 import java.io.Serializable;
 
@@ -53,7 +52,7 @@ public abstract class Particle {
 	/**
 	 * Performs kinetics updates on this particle
 	 */
-	public void update(float delta) {
+	public synchronized void update(float delta) {
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 
@@ -111,13 +110,13 @@ public abstract class Particle {
 
 
 	private void gravitational(float delta) {
+		position.add(velocity.cpy().mul(delta));
 		float gravity = Domain.getWorld(worldId).getGravity();
-		if (abs((velocity.y - gravity * delta) * delta) < TILE_SIZE/2) {
-			velocity.y = velocity.y - delta * gravity;
+		if (velocity.len() > 2000f) {
+			velocity.add(0f, -gravity * delta).mul(0.95f);
 		} else {
-			velocity.y = velocity.y * 0.8f;
+			velocity.add(0f, -gravity * delta);
 		}
-		velocity.mul(0.98f);
 	}
 
 

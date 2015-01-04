@@ -2,6 +2,7 @@ package bloodandmithril.core;
 
 import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -198,11 +199,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				if (System.currentTimeMillis() - prevFrame > 16) {
 					prevFrame = System.currentTimeMillis();
 					try {
-						for (Particle p : Domain.getActiveWorld().getParticles()) {
+						Collection<Particle> particles = Domain.getActiveWorld().getParticles();
+						for (Particle p : particles) {
 							if (p.getRemovalCondition().call()) {
 								Domain.getActiveWorld().getParticles().remove(p);
 							}
-							p.update(1f/60f);
+							p.update(0.012f);
 						}
 					} catch (NullPointerException e) {
 						// DO nothing
