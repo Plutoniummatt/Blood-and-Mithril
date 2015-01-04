@@ -38,6 +38,7 @@ import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.ranged.LongBow;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FlareArrow;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
@@ -214,6 +215,7 @@ public class DevWindow extends Window {
 				elf.giveItem(new Carrot());
 				elf.giveItem(new Arrow.ArrowItem<>(Steel.class, 10));
 				elf.giveItem(new FireArrow.FireArrowItem<>(Iron.class, 10));
+				elf.giveItem(new FlareArrow.FlareArrowItem<>(Iron.class, 10));
 			}
 			for (int i = 10; i > 0; i--) {
 				elf.giveItem(new FlintAndFiresteel());
