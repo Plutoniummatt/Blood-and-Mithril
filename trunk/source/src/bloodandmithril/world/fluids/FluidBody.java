@@ -4,6 +4,8 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -17,10 +19,12 @@ import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -82,6 +86,38 @@ public class FluidBody implements Serializable {
 		this.volume = volume;
 		this.composition.putAll(composition);
 		updateBindingBox();
+	}
+
+
+	public static FluidBody createForWorldCoordinates(Collection<Vector2> occupiedCoordinates, float volume, Class<? extends Liquid> liquid, int worldId) {
+		Collection<TwoInts> tileCoords = Lists.newLinkedList();
+
+		for (Vector2 v : occupiedCoordinates) {
+			tileCoords.add(
+				new TwoInts(
+					Topography.convertToWorldTileCoord(v.x),
+					Topography.convertToWorldTileCoord(v.y)
+				)
+			);
+		}
+
+		return createForTileCoordinates(tileCoords, volume, liquid, worldId);
+	}
+
+
+	public static FluidBody createForTileCoordinates(Collection<TwoInts> occupiedCoordinates, float volume, Class<? extends Liquid> liquid, int worldId) {
+		Map<Integer, Set<Integer>> coords = Maps.newLinkedHashMap();
+		for (TwoInts coordinate : occupiedCoordinates) {
+			if (!coords.containsKey(coordinate.b)) {
+				coords.put(coordinate.b, Sets.newLinkedHashSet());
+			}
+			coords.get(coordinate.b).add(coordinate.a);
+		}
+
+		HashMap<Class<? extends Liquid>, Integer> fluidType = Maps.newHashMap();
+		fluidType.put(liquid, 100);
+
+		return new FluidBody(coords, volume, worldId, fluidType);
 	}
 
 
