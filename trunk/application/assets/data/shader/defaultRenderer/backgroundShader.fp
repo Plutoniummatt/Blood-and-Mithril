@@ -29,7 +29,7 @@ void main()
   vec4 bg = texture2D(u_texture, inverted);
   vec4 sampleBlendedWithDaylight = texture2D(u_texture, inverted) * (vec4(factor, factor, factor, 1.0) * dayLightColor + particle);
   
-  vec4 sum = sampleBlendedWithDaylight - innerShadow - foregroundDropShadow;
+  vec4 sum = sampleBlendedWithDaylight - sampleBlendedWithDaylight * 4.0 * (innerShadow + foregroundDropShadow);
   
   gl_FragColor = sum;
 }
