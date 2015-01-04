@@ -31,7 +31,7 @@ public abstract class Structure implements Serializable {
 	private int chunksLeftToBeGenerated = -1;
 
 	/** {@link Component}s on this {@link Structure} */
-	private final List<Component> components = Lists.newArrayList();
+	private final List<Component> components = Lists.newLinkedList();
 
 	/**
 	 * @return whether this {@link Structure} has finished generating.

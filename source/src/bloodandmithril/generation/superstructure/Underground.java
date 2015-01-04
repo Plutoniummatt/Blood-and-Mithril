@@ -1,8 +1,7 @@
 package bloodandmithril.generation.superstructure;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.patterns.Layers;
-import bloodandmithril.generation.patterns.UndergroundWithCaves;
+import bloodandmithril.generation.patterns.GlobalLayers;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
@@ -46,12 +45,12 @@ public class Underground extends SuperStructure {
 
 	@Override
 	protected Tile internalGetForegroundTile(int worldTileX, int worldTileY) {
-		return UndergroundWithCaves.getTile(worldTileX, worldTileY);
+		return GlobalLayers.getTile(worldTileX, worldTileY);
 	}
 
 
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
-		return Layers.getTile(worldTileX, worldTileY);
+		return GlobalLayers.getTile(worldTileX, worldTileY);
 	}
 }

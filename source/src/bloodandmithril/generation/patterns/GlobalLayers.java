@@ -19,7 +19,7 @@ import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
  * @author Sam
  */
 @Copyright("Matthew Peck 2014")
-public class Layers {
+public class GlobalLayers {
 
 	/** The Perlin generator used to generate the curves of the layers */
 	private static PerlinNoiseGenerator1D noiseGenerator = new PerlinNoiseGenerator1D(1, ParameterPersistenceService.getParameters().getSeed(), 1, 0f);
