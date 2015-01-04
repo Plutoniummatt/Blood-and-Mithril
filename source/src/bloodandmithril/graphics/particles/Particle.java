@@ -23,6 +23,7 @@ public abstract class Particle {
 	public Vector2 position, velocity;
 	public float radius;
 	public final boolean background;
+	protected boolean doNotUpdate;
 	private SerializableFunction<Boolean> removalCondition;
 	private MovementMode movementMode = MovementMode.GRAVITY;
 
@@ -51,9 +52,20 @@ public abstract class Particle {
 	public abstract void renderLine(float delta);
 
 	/**
+	 * Instructs this particle to not move
+	 */
+	public void doNotUpdate() {
+		doNotUpdate = true;
+	}
+
+	/**
 	 * Performs kinetics updates on this particle
 	 */
 	public synchronized void update(float delta) throws NoTileFoundException {
+		if (doNotUpdate) {
+			return;
+		}
+
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 

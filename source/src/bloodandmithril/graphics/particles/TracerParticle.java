@@ -45,6 +45,9 @@ public class TracerParticle extends Particle {
 
 	@Override
 	public synchronized void update(float delta) throws NoTileFoundException {
+		if (doNotUpdate) {
+			return;
+		}
 		prevPosition.x = position.x;
 		prevPosition.y = position.y;
 
