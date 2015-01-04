@@ -8,7 +8,7 @@
 	<classpathentry kind="lib" path="/Client/libs/gdx-backend-lwjgl.jar" sourcepath="/Client/libs/gdx-backend-lwjgl-sources.jar"/>
 	<classpathentry kind="lib" path="/Client/libs/gdx-natives.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Source"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/kryonet"/>
-	<classpathentry kind="lib" path="/kryonet/lib/kryo-2.23.1-SNAPSHOT-all-debug.jar"/>
+	<classpathentry kind="lib" path="/Source/libs/kryo-2.23.1-SNAPSHOT-all-debug.jar"/>
+	<classpathentry kind="lib" path="/Source/libs/kryoSource.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -49,9 +49,11 @@ public class CSITradeWith implements Request {
 			}
 		}
 
-		proposer.getAI().setCurrentTask(
-			new TradeWith(proposer, proposee, connectionId)
-		);
+		if (proposee != null) {
+			proposer.getAI().setCurrentTask(
+				new TradeWith(proposer, proposee, connectionId)
+			);
+		}
 
 		return response;
 	}
