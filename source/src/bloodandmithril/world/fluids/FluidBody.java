@@ -89,6 +89,9 @@ public class FluidBody implements Serializable {
 	}
 
 
+	/**
+	 * @return a {@link FluidBody}, given a collection of world coordinates
+	 */
 	public static FluidBody createForWorldCoordinates(Collection<Vector2> occupiedCoordinates, float volume, Class<? extends Liquid> liquid, int worldId) {
 		Collection<TwoInts> tileCoords = Lists.newLinkedList();
 
@@ -105,6 +108,9 @@ public class FluidBody implements Serializable {
 	}
 
 
+	/**
+	 * @return a {@link FluidBody}, given a collection of tile coordinates
+	 */
 	public static FluidBody createForTileCoordinates(Collection<TwoInts> occupiedCoordinates, float volume, Class<? extends Liquid> liquid, int worldId) {
 		Map<Integer, Set<Integer>> coords = Maps.newLinkedHashMap();
 		for (TwoInts coordinate : occupiedCoordinates) {
@@ -117,7 +123,9 @@ public class FluidBody implements Serializable {
 		HashMap<Class<? extends Liquid>, Integer> fluidType = Maps.newHashMap();
 		fluidType.put(liquid, 100);
 
-		return new FluidBody(coords, volume, worldId, fluidType);
+		FluidBody fluidBody = new FluidBody(coords, volume, worldId, fluidType);
+		fluidBody.calculatePossibleSplit();
+		return fluidBody;
 	}
 
 
