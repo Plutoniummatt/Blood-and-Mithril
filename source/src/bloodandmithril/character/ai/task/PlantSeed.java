@@ -11,6 +11,7 @@ import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * A {@link CompositeAITask} that instructs the host to go to a location and plant a {@link SeedProp}
@@ -26,7 +27,7 @@ public class PlantSeed extends CompositeAITask {
 	/**
 	 * Constructor
 	 */
-	public PlantSeed(Individual host, SeedProp toPlant) {
+	public PlantSeed(Individual host, SeedProp toPlant) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Planting seed",

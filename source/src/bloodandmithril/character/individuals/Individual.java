@@ -88,6 +88,7 @@ import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -761,7 +762,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		// If chunk has not yet been loaded, do not update
 		try {
 			Domain.getWorld(worldId).getTopography().getTile(state.position, true);
-		} catch (NullPointerException e) {
+		} catch (NoTileFoundException e) {
 			return;
 		}
 
@@ -822,7 +823,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		respondToCommands();
 		respondToAttackCommand();
 
-		Kinematics.kinetics(delta, Domain.getWorld(getWorldId()), this);
+		try {
+			Kinematics.kinetics(delta, Domain.getWorld(getWorldId()), this);
+		} catch (NoTileFoundException e) {}
 
 		updateConditions(delta);
 		updatePositionalIndex();
@@ -1834,7 +1837,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					fired.ignoreIndividual(this);
 					Domain.getWorld(getWorldId()).projectiles().addProjectile(fired);
 				}
-				
+
 				if (has(ammo) == 0) {
 					rangedWeapon.setAmmo(null);
 					UserInterface.refreshRefreshableWindows();

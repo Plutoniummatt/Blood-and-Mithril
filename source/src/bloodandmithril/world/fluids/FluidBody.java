@@ -17,6 +17,7 @@ import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -119,7 +120,9 @@ public class FluidBody implements Serializable {
 			}
 
 			for (int x : layer.getValue()) {
-				renderFluidElement(x, layer.getKey(), renderVolume);
+				try {
+					renderFluidElement(x, layer.getKey(), renderVolume);
+				} catch (NoTileFoundException e) {}
 			}
 		}
 		Domain.shapeRenderer.end();
@@ -168,7 +171,7 @@ public class FluidBody implements Serializable {
 	/**
 	 * Updates this {@link FluidBody}
 	 */
-	public synchronized void update(boolean suppressSplitting) {
+	public synchronized void update(boolean suppressSplitting) throws NoTileFoundException {
 		float workingVolume = volume;
 		float topLayerVolume = 0f;
 		boolean layerRemoved = false;
@@ -537,7 +540,7 @@ public class FluidBody implements Serializable {
 	/**
 	 * @return whether the specified coordinates is part of a pillar of fluid whose base sits on a non passable tile
 	 */
-	private boolean pillarTouchingFloor(int x, int y) {
+	private boolean pillarTouchingFloor(int x, int y) throws NoTileFoundException {
 		while (hasFluid(x, y)) {
 			y = y - 1;
 		}
@@ -552,8 +555,8 @@ public class FluidBody implements Serializable {
 	private boolean hasFluid(int x, int y) {
 		return hasFluidInMap(x, y, occupiedCoordinates);
 	}
-	
-	
+
+
 	/**
 	 * @return whether the specified coordates are occupied
 	 */
@@ -595,7 +598,7 @@ public class FluidBody implements Serializable {
 	/**
 	 * Renders an individual fluid element
 	 */
-	private void renderFluidElement(int x, int y, float volume) {
+	private void renderFluidElement(int x, int y, float volume) throws NoTileFoundException {
 		boolean left = false;
 		boolean right = false;
 		if (Domain.getWorld(worldId).getTopography().getTile(x - 1, y, true).isSmoothCeiling() &&

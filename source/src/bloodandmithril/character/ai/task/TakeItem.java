@@ -21,6 +21,7 @@ import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * A {@link CompositeAITask} consisting of:
@@ -39,7 +40,7 @@ public class TakeItem extends CompositeAITask {
 	/**
 	 * Constructor
 	 */
-	public TakeItem(Individual host, Item item) {
+	public TakeItem(Individual host, Item item) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Taking item",
@@ -61,7 +62,7 @@ public class TakeItem extends CompositeAITask {
 	/**
 	 * Take multiple items
 	 */
-	public TakeItem(Individual host, Collection<Item> items) {
+	public TakeItem(Individual host, Collection<Item> items) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Taking items"
@@ -82,7 +83,7 @@ public class TakeItem extends CompositeAITask {
 	/**
 	 * Take multiple items
 	 */
-	public TakeItem(Individual host, Item item, Deque<Integer> itemIds) {
+	public TakeItem(Individual host, Item item, Deque<Integer> itemIds) throws NoTileFoundException {
 		this(host, item);
 
 		for (Integer id : itemIds) {
@@ -131,11 +132,13 @@ public class TakeItem extends CompositeAITask {
 				Integer next = itemIds.poll();
 				Individual individual = Domain.getIndividual(hostId.getId());
 				if (Domain.getWorld(individual.getWorldId()).items().getItem(next) != null) {
-					appendTask(new TakeItem(
-						individual,
-						Domain.getWorld(individual.getWorldId()).items().getItem(next),
-						itemIds
-					));
+					try {
+						appendTask(new TakeItem(
+							individual,
+							Domain.getWorld(individual.getWorldId()).items().getItem(next),
+							itemIds
+						));
+					} catch (NoTileFoundException e) {}
 				} else {
 					takeNextItem();
 				}

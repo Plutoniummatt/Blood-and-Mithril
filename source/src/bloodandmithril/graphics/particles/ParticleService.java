@@ -61,14 +61,6 @@ public class ParticleService {
 			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), spawnSpread, maxVel, new SerializableColor(color), glow, maxLifeTime, mode));
 		}
 	}
-	
-	
-	public static void addParticle(Particle particle) {
-		if (isClient()) {
-			Domain.getActiveWorld().getParticles().add(particle);
-		} else {
-		}
-	}
 
 
 	public static void parrySpark(Vector2 position, Vector2 knockBack) {

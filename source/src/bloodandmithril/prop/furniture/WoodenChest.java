@@ -22,6 +22,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -128,9 +129,11 @@ public class WoodenChest extends Furniture implements Container {
 						() -> {
 							if (Domain.getSelectedIndividuals().size() == 1) {
 								if (ClientServerInterface.isServer()) {
-									selected.getAI().setCurrentTask(
+									try {
+										selected.getAI().setCurrentTask(
 											new LockUnlockContainer(selected, this, true)
-											);
+										);
+									} catch (NoTileFoundException e) {}
 								} else {
 									ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, true);
 								}
@@ -155,9 +158,11 @@ public class WoodenChest extends Furniture implements Container {
 					() -> {
 						if (Domain.getSelectedIndividuals().size() == 1) {
 							if (ClientServerInterface.isServer()) {
-								selected.getAI().setCurrentTask(
+								try {
+									selected.getAI().setCurrentTask(
 										new LockUnlockContainer(selected, this, false)
-										);
+									);
+								} catch (NoTileFoundException e) {}
 							} else {
 								ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, false);
 							}

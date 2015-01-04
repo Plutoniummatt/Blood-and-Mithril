@@ -18,6 +18,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
@@ -40,13 +41,20 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 		super(
 			args -> {
 				bloodandmithril.prop.plant.seed.SeedProp propSeed = seed.getPropSeed();
-				Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+				Vector2 coords;
+				try {
+					coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+				} catch (NoTileFoundException e) {
+					return;
+				}
 				propSeed.position.x = getMouseWorldX();
 				propSeed.position.y = coords.y;
 
 				if (planter instanceof Individual) {
 					if (ClientServerInterface.isServer()) {
-						((Individual) planter).getAI().setCurrentTask(new PlantSeed((Individual) planter, propSeed));
+						try {
+							((Individual) planter).getAI().setCurrentTask(new PlantSeed((Individual) planter, propSeed));
+						} catch (NoTileFoundException e) {}
 					} else {
 						ClientServerInterface.SendRequest.sendPlantSeedRequest((Individual) planter, propSeed);
 					}
@@ -60,27 +68,33 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 	@Override
 	public void renderUIGuide() {
-		Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+		try {
+			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
-		float x = worldToScreenX(getMouseWorldX());
-		float y = worldToScreenY(coords.y);
+			float x = worldToScreenX(getMouseWorldX());
+			float y = worldToScreenY(coords.y);
 
-		gl.glEnable(GL_BLEND);
-		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		spriteBatch.begin();
-		spriteBatch.setColor(executionConditionMet() ? Color.GREEN : Color.RED);
-		spriteBatch.draw(UserInterface.currentArrow, x - 5, y);
-		spriteBatch.end();
-		gl.glDisable(GL_BLEND);
+			gl.glEnable(GL_BLEND);
+			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			spriteBatch.begin();
+			spriteBatch.setColor(executionConditionMet() ? Color.GREEN : Color.RED);
+			spriteBatch.draw(UserInterface.currentArrow, x - 5, y);
+			spriteBatch.end();
+			gl.glDisable(GL_BLEND);
+		} catch (NoTileFoundException e) {}
 	}
 
 
 	@Override
 	public boolean executionConditionMet() {
-		Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+		try {
+			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
-		Tile tile = Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), coords.y - Topography.TILE_SIZE / 2, true);
-		return tile instanceof SoilTile && ((SoilTile) tile).canPlant(toPlant);
+			Tile tile = Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), coords.y - Topography.TILE_SIZE / 2, true);
+			return tile instanceof SoilTile && ((SoilTile) tile).canPlant(toPlant);
+		} catch (NoTileFoundException e) {
+			return false;
+		}
 	}
 
 

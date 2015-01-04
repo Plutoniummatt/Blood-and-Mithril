@@ -8,6 +8,7 @@ import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * A {@link Request} for an {@link Individual} to {@link Harvest} a {@link Harvestable}
@@ -41,9 +42,11 @@ public class SendHarvestRequest implements Request {
 			harvestable = (Harvestable) prop;
 		}
 
-		individual.getAI().setCurrentTask(
-			new Harvest(individual, harvestable)
-		);
+		try {
+			individual.getAI().setCurrentTask(
+				new Harvest(individual, harvestable)
+			);
+		} catch (NoTileFoundException e) {}
 
 		return new Responses(false);
 	}

@@ -7,6 +7,7 @@ import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * A {@link Request} that instructs an individual to {@link LightCampfire}
@@ -30,7 +31,9 @@ public class RequestLightCampfire implements Request {
 	@Override
 	public Responses respond() {
 		Individual individual = Domain.getIndividual(individualId);
-		individual.getAI().setCurrentTask(new LightCampfire(individual, (Campfire) Domain.getWorld(Domain.getIndividual(individualId).getWorldId()).props().getProp(campfireId)));
+		try {
+			individual.getAI().setCurrentTask(new LightCampfire(individual, (Campfire) Domain.getWorld(Domain.getIndividual(individualId).getWorldId()).props().getProp(campfireId)));
+		} catch (NoTileFoundException e) {}
 		return new Responses(false);
 	}
 

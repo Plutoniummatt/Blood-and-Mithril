@@ -3,6 +3,7 @@ package bloodandmithril.graphics.particles;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -29,15 +30,17 @@ public class TracerParticle extends Particle {
 
 	@Override
 	public synchronized void render(float delta) {
-		if (Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true).isPassable()) {
-			Domain.shapeRenderer.setColor(color);
-			Domain.shapeRenderer.filledCircle(position.x, position.y, radius);
-		}
+		try {
+			if (Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true).isPassable()) {
+				Domain.shapeRenderer.setColor(color);
+				Domain.shapeRenderer.filledCircle(position.x, position.y, radius);
+			}
+		} catch (NoTileFoundException e) {}
 	}
 
 
 	@Override
-	public synchronized void update(float delta) {
+	public synchronized void update(float delta) throws NoTileFoundException {
 		prevPosition.x = position.x;
 		prevPosition.y = position.y;
 
@@ -47,9 +50,11 @@ public class TracerParticle extends Particle {
 
 	@Override
 	public synchronized void renderLine(float delta) {
-		if (Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true).isPassable()) {
-			Domain.shapeRenderer.setColor(color);
-			Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
-		}
+		try {
+			if (Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true).isPassable()) {
+				Domain.shapeRenderer.setColor(color);
+				Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
+			}
+		} catch (NoTileFoundException e) {}
 	}
 }

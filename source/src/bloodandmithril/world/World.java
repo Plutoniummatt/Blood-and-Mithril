@@ -14,6 +14,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -177,7 +178,9 @@ public class World implements Serializable {
 	 */
 	public void updateFluids() {
 		for (FluidBody fluid : Lists.newLinkedList(fluids)) {
-			fluid.update(false);
+			try {
+				fluid.update(false);
+			} catch (NoTileFoundException e) {}
 		}
 	}
 

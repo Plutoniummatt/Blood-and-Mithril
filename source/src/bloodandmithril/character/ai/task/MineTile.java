@@ -18,6 +18,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -49,16 +50,18 @@ public class MineTile extends CompositeAITask {
 			"Mining"
 		);
 
-		appendTask(
-			goToWithTerminationFunction(
-				host,
-				host.getState().position.cpy(),
-				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10, Domain.getWorld(host.getWorldId())), 0),
-				false,
-				new WithinInteractionBox(),
-				true
-			)
-		);
+		try {
+			appendTask(
+				goToWithTerminationFunction(
+					host,
+					host.getState().position.cpy(),
+					new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10, Domain.getWorld(host.getWorldId())), 0),
+					false,
+					new WithinInteractionBox(),
+					true
+				)
+			);
+		} catch (NoTileFoundException e) {}
 		appendTask(new AttemptMine(hostId));
 
 		this.tileCoordinate = coordinate;
@@ -94,9 +97,13 @@ public class MineTile extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return
-				!Domain.getIndividual(hostId.getId()).getInteractionBox().isWithinBox(tileCoordinate) ||
-				Domain.getWorld(Domain.getIndividual(hostId.getId()).getWorldId()).getTopography().getTile(tileCoordinate, true) instanceof EmptyTile;
+			try {
+				return
+					!Domain.getIndividual(hostId.getId()).getInteractionBox().isWithinBox(tileCoordinate) ||
+					Domain.getWorld(Domain.getIndividual(hostId.getId()).getWorldId()).getTopography().getTile(tileCoordinate, true) instanceof EmptyTile;
+			} catch (NoTileFoundException e) {
+				return true;
+			}
 		}
 
 
@@ -145,7 +152,12 @@ public class MineTile extends CompositeAITask {
 			if (host.getInteractionBox().isWithinBox(tileCoordinate)) {
 				Topography.addTask(() ->
 					{
-						Tile tileToBeDeleted = topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
+						Tile tileToBeDeleted;
+						try {
+							tileToBeDeleted = topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
+						} catch (NoTileFoundException e) {
+							return;
+						}
 
 						if (!ClientServerInterface.isServer()) {
 							ClientServerInterface.SendRequest.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true, host.getWorldId());

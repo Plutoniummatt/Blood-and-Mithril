@@ -8,6 +8,7 @@ import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * {@link Request} to instruct an {@link Individual} to {@link LockUnlockContainer}
@@ -39,9 +40,11 @@ public class LockUnlockContainerRequest implements Request {
 		}
 
 		Individual individual = Domain.getIndividual(individualId);
-		individual.getAI().setCurrentTask(
-			new LockUnlockContainer(individual, container, lock)
-		);
+		try {
+			individual.getAI().setCurrentTask(
+				new LockUnlockContainer(individual, container, lock)
+			);
+		} catch (NoTileFoundException e) {}
 
 		return new Responses(false);
 	}

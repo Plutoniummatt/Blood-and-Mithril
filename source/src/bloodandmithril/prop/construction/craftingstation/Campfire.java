@@ -15,6 +15,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -123,7 +124,9 @@ public class Campfire extends CraftingStation {
 
 				Individual selected = Domain.getSelectedIndividuals().iterator().next();
 				if (ClientServerInterface.isServer()) {
-					selected.getAI().setCurrentTask(new LightCampfire(selected, thisCampfire));
+					try {
+						selected.getAI().setCurrentTask(new LightCampfire(selected, thisCampfire));
+					} catch (NoTileFoundException e) {}
 				} else {
 					ClientServerInterface.SendRequest.sendLightCampfireRequest(selected, thisCampfire);
 				}

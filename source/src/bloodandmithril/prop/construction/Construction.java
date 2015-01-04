@@ -28,6 +28,7 @@ import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;
@@ -250,18 +251,22 @@ public abstract class Construction extends Prop implements Container {
 		float yIncrement = (float)height / (float)ySteps;
 
 
-		for (int i = 0; i <= xSteps; i++) {
-			Tile tileUnder = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y - TILE_SIZE/2, true);
-			if (tileUnder.isPassable() || canBuildOnTopOf != null && !canBuildOnTopOf.apply(tileUnder)) {
-				return false;
-			}
-
-			for (int j = 1; j <= ySteps; j++) {
-				Tile tileOverlapping = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true);
-				if (!tileOverlapping.isPassable()) {
+		try {
+			for (int i = 0; i <= xSteps; i++) {
+				Tile tileUnder = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y - TILE_SIZE/2, true);
+				if (tileUnder.isPassable() || canBuildOnTopOf != null && !canBuildOnTopOf.apply(tileUnder)) {
 					return false;
 				}
+
+				for (int j = 1; j <= ySteps; j++) {
+					Tile tileOverlapping = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true);
+					if (!tileOverlapping.isPassable()) {
+						return false;
+					}
+				}
 			}
+		} catch (NoTileFoundException e) {
+			return false;
 		}
 
 		for (Integer propId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, x, y)) {

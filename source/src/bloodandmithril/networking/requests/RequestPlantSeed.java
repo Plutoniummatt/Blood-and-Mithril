@@ -6,6 +6,7 @@ import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * A {@link Request} for an {@link Individual} to plant a {@link SeedProp}
@@ -29,7 +30,9 @@ public class RequestPlantSeed implements Request {
 	@Override
 	public Responses respond() {
 		Individual planter = Domain.getIndividual(planterId);
-		planter.getAI().setCurrentTask(new PlantSeed(planter, toPlant));
+		try {
+			planter.getAI().setCurrentTask(new PlantSeed(planter, toPlant));
+		} catch (NoTileFoundException e) {}
 
 		return new Responses(false);
 	}
