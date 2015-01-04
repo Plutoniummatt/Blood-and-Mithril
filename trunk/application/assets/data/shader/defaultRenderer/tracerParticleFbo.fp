@@ -42,7 +42,7 @@ void main()
 				dist = distance(p2, resolution * v_texCoords);
 			}
 			
-			vec4 toAdd = color[index] * intensity[index] * 4.0 / dist / dist;
+			vec4 toAdd = color[index] * intensity[index] / dist;
 			
 			totalColor = vec4(
 				max((totalColor.r + toAdd.r) / 2.0, totalColor.r),
