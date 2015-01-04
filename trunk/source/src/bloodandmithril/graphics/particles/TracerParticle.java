@@ -3,6 +3,7 @@ package bloodandmithril.graphics.particles;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
@@ -30,12 +31,15 @@ public class TracerParticle extends Particle {
 
 	@Override
 	public synchronized void render(float delta) {
-		try {
-			if (Domain.getWorld(worldId).getTopography().getTile(position.x, position.y, true).isPassable()) {
-				Domain.shapeRenderer.setColor(color);
-				Domain.shapeRenderer.filledCircle(position.x, position.y, radius);
-			}
-		} catch (NoTileFoundException e) {}
+		Topography topography = Domain.getWorld(worldId).getTopography();
+		if (topography.hasTile(position.x, position.y, true)) {
+			try {
+				if (topography.getTile(position.x, position.y, true).isPassable()) {
+					Domain.shapeRenderer.setColor(color);
+					Domain.shapeRenderer.filledCircle(position.x, position.y, radius);
+				}
+			} catch (NoTileFoundException e) {}
+		}
 	}
 
 

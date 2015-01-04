@@ -306,6 +306,25 @@ public class Topography {
 	}
 
 
+	public boolean hasTile(float worldX, float worldY, boolean foreGround) {
+		int chunkX = convertToChunkCoord(worldX);
+		int chunkY = convertToChunkCoord(worldY);
+
+		int tileX = convertToChunkTileCoord(worldX);
+		int tileY = convertToChunkTileCoord(worldY);
+
+		if (getChunkMap().get(chunkX) == null) {
+			return false;
+		}
+
+		if (getChunkMap().get(chunkX).get(chunkY) == null) {
+			return false;
+		}
+
+		return getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround) != null;
+	}
+
+
 	/**
 	 * Gets a tile given the world coordinates
 	 */
