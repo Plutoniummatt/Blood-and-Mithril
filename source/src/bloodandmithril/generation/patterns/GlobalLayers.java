@@ -5,11 +5,13 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.TerrainGenerator;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
-import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
+import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
+import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
+import bloodandmithril.world.topography.tile.tiles.stone.LimeStoneTile;
 import bloodandmithril.world.topography.tile.tiles.stone.MagmaTile;
 import bloodandmithril.world.topography.tile.tiles.stone.ObsidianTile;
 
@@ -20,9 +22,6 @@ import bloodandmithril.world.topography.tile.tiles.stone.ObsidianTile;
  */
 @Copyright("Matthew Peck 2014")
 public class GlobalLayers {
-
-	/** The Perlin generator used to generate the curves of the layers */
-	private static PerlinNoiseGenerator1D noiseGenerator = new PerlinNoiseGenerator1D(1, ParameterPersistenceService.getParameters().getSeed(), 1, 0f);
 
 	/** Maps the vertical position of the Layer (referencing the top) to the Layer, which is stored as two ints, horizontal stretch and height. */
 	public static ConcurrentSkipListMap<Integer, TwoInts> layers;
@@ -61,19 +60,32 @@ public class GlobalLayers {
 	 */
 	private static Tile determineTile(int worldTileX, int worldTileY, int layerKeyToUse, TwoInts layerToUse) {
 
-		PerlinNoiseGenerator1D layerGenerator = new PerlinNoiseGenerator1D(layerToUse.a, layerKeyToUse * 100, 1, 0f);
+		PerlinNoiseGenerator1D layerGenerator = new PerlinNoiseGenerator1D(
+				layerToUse.a, layerKeyToUse * 100, 1, 0f);
+		int layerHeight;
 
-		float noise;
-		if (layerKeyToUse - worldTileY < (layerToUse.b - 1) * layerGenerator.generate(worldTileX, 1)) {
-			noise = noiseGenerator.generate(layerKeyToUse, 0);
+		int firstLayerHeight = 0;
+		int secondLayerHeight = -10;
+		int thirdLayerHeight = -25;
+		int lastLayerHeight = -50;
+
+		if (layerKeyToUse - worldTileY < (layerToUse.b - 1)	* layerGenerator.generate(worldTileX, 1)) {
+			layerHeight = layerKeyToUse;
 		} else {
-			noise = noiseGenerator.generate(layerKeyToUse - layerToUse.b, 0);
+			layerHeight = layerKeyToUse - layerToUse.b;
 		}
-
-		if (noise < 0.5) {
+		if (layerHeight > firstLayerHeight * Topography.CHUNK_SIZE) {
+			return new StandardSoilTile();
+		} else if (layerHeight <= firstLayerHeight * Topography.CHUNK_SIZE && layerHeight > secondLayerHeight * Topography.CHUNK_SIZE) {
+			return new GraniteTile();
+		} else if (layerHeight <= secondLayerHeight * Topography.CHUNK_SIZE && layerHeight > thirdLayerHeight * Topography.CHUNK_SIZE) {
+			return new LimeStoneTile();
+		} else if (layerHeight <= thirdLayerHeight * Topography.CHUNK_SIZE && layerHeight > lastLayerHeight * Topography.CHUNK_SIZE) {
 			return new ObsidianTile();
-		} else {
+		} else if (layerHeight <= lastLayerHeight * Topography.CHUNK_SIZE) {
 			return new MagmaTile();
+		} else {
+			return new Tile.DebugTile();
 		}
 	}
 }
