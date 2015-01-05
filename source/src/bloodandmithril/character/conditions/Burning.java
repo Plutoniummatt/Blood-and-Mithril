@@ -46,8 +46,8 @@ public class Burning extends Condition {
 
 	@Override
 	public void clientSideEffects(Individual affected, float delta) {
-		ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, Util.getRandom().nextFloat() * 8f, MovementMode.EMBER, Util.getRandom().nextInt(1000), false);
-		ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 2f, Util.getRandom().nextFloat() * 8f, MovementMode.EMBER, Util.getRandom().nextInt(1400), false);
+		ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 6f, 10f, MovementMode.EMBER, Util.getRandom().nextInt(1000), false);
+		ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 4f, MovementMode.EMBER, Util.getRandom().nextInt(1400), false);
 		ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1500), false);
 	}
 
