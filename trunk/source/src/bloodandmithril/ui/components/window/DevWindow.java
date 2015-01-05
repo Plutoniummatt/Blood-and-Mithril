@@ -7,7 +7,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.util.Util.Colors.lightColor;
-import static bloodandmithril.util.Util.Colors.randomColor;
+import static bloodandmithril.util.Util.Colors.lightSkinColor;
 import static bloodandmithril.world.Domain.getActiveWorld;
 import static com.badlogic.gdx.Gdx.input;
 
@@ -192,7 +192,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.E) {
-			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
+			IndividualState state = new IndividualState(100f, 0.01f, 0.02f, 0f, 0f);
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
@@ -205,8 +205,8 @@ public class DevWindow extends Window {
 				20f,
 				getActiveWorld(),
 				lightColor(),
-				randomColor(),
-				randomColor()
+				lightColor(),
+				lightSkinColor()
 			);
 
 			elf.getSkills().setObservation(55);
