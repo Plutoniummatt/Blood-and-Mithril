@@ -1,5 +1,7 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
+import bloodandmithril.character.conditions.Burning;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -35,12 +37,22 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 	public void update(float delta) {
 		if (burnDuration > 0f) {
 			burnDuration -= delta;
-			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(300));
-			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 2f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(600));
-			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1000));
+			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(300), false);
+			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 2f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(600), false);
+			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1000), false);
 		}
 
 		super.update(delta);
+	}
+
+
+	@Override
+	public void hit(Individual victim) {
+		super.hit(victim);
+
+		if (Util.roll(0.35f)) {
+			victim.addCondition(new Burning(10f));
+		}
 	}
 
 

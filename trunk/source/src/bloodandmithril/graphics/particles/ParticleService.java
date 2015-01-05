@@ -63,7 +63,7 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration) {
+	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration, boolean background) {
 		if (isClient()) {
 			Domain.getActiveWorld().getParticles().add(new DiminishingTracerParticle(
 				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
@@ -73,7 +73,7 @@ public class ParticleService {
 				Domain.getActiveWorld().getWorldId(),
 				glow,
 				mode,
-				true,
+				background,
 				diminishingDuration
 			));
 		}
