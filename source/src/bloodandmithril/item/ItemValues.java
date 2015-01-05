@@ -14,6 +14,7 @@ public class ItemValues {
 	public static final int GLASSBOTTLE = 200;
 	public static final int CARROT = 25;
 	public static final int CARROT_SEED = 5;
+	public static final int ARROW = 50;
 	public static final int CHICKENLEG = 150;
 	public static final int COOKEDCHICKENLEG = 250;
 	public static final int COAL = 200;
@@ -39,4 +40,5 @@ public class ItemValues {
 	public static final int GOLDINGOT = 25000;
 	public static final int SILVERINGOT = 10000;
 	public static final int COPPERINGOT = 750;
+	public static final int MEDIEVALWALLTORCH = 100;
 }

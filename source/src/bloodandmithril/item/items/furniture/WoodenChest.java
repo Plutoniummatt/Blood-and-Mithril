@@ -14,6 +14,8 @@ import bloodandmithril.item.items.material.Plank;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.wood.Wood;
+import bloodandmithril.prop.Prop;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
@@ -102,5 +104,13 @@ public class WoodenChest extends Furniture implements Craftable {
 	public TextureRegion getIconTextureRegion() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public Prop getProp() {
+		bloodandmithril.prop.furniture.WoodenChest woodenChest = new bloodandmithril.prop.furniture.WoodenChest(0, 0, 1000000f, 800, wood);
+		woodenChest.setWorldId(Domain.getActiveWorld().getWorldId());
+		return woodenChest;
 	}
 }

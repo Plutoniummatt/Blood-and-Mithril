@@ -43,8 +43,8 @@ import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Harvest.HarvestItem;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Jump;
-import bloodandmithril.character.ai.task.LightCampfire;
-import bloodandmithril.character.ai.task.LightCampfire.LightFire;
+import bloodandmithril.character.ai.task.LightLightable;
+import bloodandmithril.character.ai.task.LightLightable.LightFire;
 import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.LockUnlockContainer.LockUnlock;
 import bloodandmithril.character.ai.task.MineTile;
@@ -164,7 +164,7 @@ import bloodandmithril.networking.requests.MoveIndividual;
 import bloodandmithril.networking.requests.OpenTradeWindow;
 import bloodandmithril.networking.requests.Ping;
 import bloodandmithril.networking.requests.Ping.Pong;
-import bloodandmithril.networking.requests.PlaceConstructionRequest;
+import bloodandmithril.networking.requests.PlacePropRequest;
 import bloodandmithril.networking.requests.PlaySound;
 import bloodandmithril.networking.requests.RefreshWindows;
 import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
@@ -198,8 +198,8 @@ import bloodandmithril.networking.requests.TransferItems.TradeEntity;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Harvestable;
+import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
@@ -428,7 +428,7 @@ public class ClientServerInterface {
 		kryo.register(FlintAndFiresteel.class);
 		kryo.register(RequestLightCampfire.class);
 		kryo.register(LightFire.class);
-		kryo.register(LightCampfire.class);
+		kryo.register(LightLightable.class);
 		kryo.register(Campfire.class);
 		kryo.register(FlameEmber.class);
 		kryo.register(IndividualSelected.class);
@@ -444,7 +444,7 @@ public class ClientServerInterface {
 		kryo.register(Growable.class);
 		kryo.register(Function.class);
 		kryo.register(SerializableMappingFunction.class);
-		kryo.register(PlaceConstructionRequest.class);
+		kryo.register(PlacePropRequest.class);
 		kryo.register(FollowRequest.class);
 		kryo.register(DiscardLiquid.class);
 		kryo.register(ParrySpark.class);
@@ -672,9 +672,9 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendRequest {
-		public static synchronized void sendLightCampfireRequest(Individual host, Campfire campfire) {
-			client.sendTCP(new RequestLightCampfire(host, campfire));
-			Logger.networkDebug("Sending light campfire request", LogLevel.DEBUG);
+		public static synchronized void sendLightLightableRequest(Individual host, Lightable lightable) {
+			client.sendTCP(new RequestLightCampfire(host, lightable));
+			Logger.networkDebug("Sending light lightable request", LogLevel.DEBUG);
 		}
 
 
@@ -696,9 +696,9 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void sendPlaceConstructionRequest(float x, float y, Construction construction, int worldId) {
-			client.sendTCP(new PlaceConstructionRequest(construction, x, y, worldId));
-			Logger.networkDebug("Sending construction placement request", LogLevel.DEBUG);
+		public static synchronized void sendPlacePropRequest(float x, float y, Prop prop, int worldId) {
+			client.sendTCP(new PlacePropRequest(prop, x, y, worldId));
+			Logger.networkDebug("Sending prop placement request", LogLevel.DEBUG);
 		}
 
 

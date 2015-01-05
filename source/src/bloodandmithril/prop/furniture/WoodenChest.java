@@ -46,7 +46,7 @@ public class WoodenChest extends Furniture implements Container {
 	 * Constructor
 	 */
 	public WoodenChest(float x, float y, float capacity, int volume, Class<? extends Wood> wood) {
-		super(x, y, 44, 35, true, false);
+		super(x, y, 44, 35, true);
 		this.wood = wood;
 		container = new ContainerImpl(capacity, volume);
 	}
@@ -56,7 +56,7 @@ public class WoodenChest extends Furniture implements Container {
 	 * Constructor for lockable {@link WoodenChest}
 	 */
 	public WoodenChest(float x, float y, float capacity, int volume, boolean locked, Function<Item, Boolean> unlockingFunction, Class<? extends Wood> wood) {
-		super(x, y, 44, 35, true, false);
+		super(x, y, 44, 35, true);
 		this.wood = wood;
 		container = new ContainerImpl(capacity, volume, locked, unlockingFunction);
 	}

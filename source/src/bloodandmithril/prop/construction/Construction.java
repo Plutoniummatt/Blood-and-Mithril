@@ -1,7 +1,5 @@
 package bloodandmithril.prop.construction;
 
-import static bloodandmithril.world.topography.Topography.TILE_SIZE;
-
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -28,11 +26,9 @@ import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A Construction
@@ -52,16 +48,12 @@ public abstract class Construction extends Prop implements Container {
 	/** The container used to store construction materials during the construction stage */
 	private ContainerImpl materialContainer = new ContainerImpl(10000000, 10000000);
 
-	/** Returns whether this {@link Construction} can be built on a tile type */
-	private final SerializableMappingFunction<Tile, Boolean> canBuildOnTopOf;
-
 	/**
 	 * Constructor
 	 */
-	protected Construction(float x, float y, int width, int height, boolean grounded, float constructionRate, SerializableMappingFunction<Tile, Boolean> canBuildOnTopOf) {
-		super(x, y, width, height, grounded, Depth.MIDDLEGROUND);
+	protected Construction(float x, float y, int width, int height, boolean grounded, float constructionRate, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
+		super(x, y, width, height, grounded, Depth.MIDDLEGROUND, canPlaceOnTopOf);
 		this.constructionRate = constructionRate;
-		this.canBuildOnTopOf = canBuildOnTopOf;
 	}
 
 
@@ -208,9 +200,12 @@ public abstract class Construction extends Prop implements Container {
 		return getTitle() + (constructionProgress == 1f ? "" : " - Under construction (" + String.format("%.1f", constructionProgress * 100) + "%)");
 	}
 
+	@Override
+	public String getTitle() {
+		return internalGetTitle();
+	}
 
-	/** Returns the string title of this {@link Construction} */
-	public abstract String getTitle();
+	protected abstract String internalGetTitle();
 
 	/** Renders this {@link Construction} based on {@link #constructionProgress} */
 	protected abstract void internalRender(float constructionProgress);
@@ -220,85 +215,6 @@ public abstract class Construction extends Prop implements Container {
 
 	/** Get the context menu that will be displayed once this {@link Construction} has finished being constructing */
 	protected abstract ContextMenu getCompletedContextMenu();
-
-
-	/**
-	 * @return whether this construction can be built at this constructions location
-	 */
-	public boolean canBuildAtCurrentPosition() {
-		return canBuildAt(position);
-	}
-
-
-	/**
-	 * @return whether this construction can be built at a given location
-	 */
-	public boolean canBuildAt(Vector2 position) {
-		return canBuildAt(position.x, position.y);
-	}
-
-
-	/**
-	 * @return whether this construction can be built at a given location
-	 */
-	public boolean canBuildAt(float x, float y) {
-		float xStep = (float)width / (float)TILE_SIZE;
-		long xSteps = Math.round(Math.ceil(xStep));
-		float xIncrement = (float)width / (float)xSteps;
-
-		float yStep = (float)height / (float)TILE_SIZE;
-		long ySteps = Math.round(Math.ceil(yStep));
-		float yIncrement = (float)height / (float)ySteps;
-
-
-		try {
-			for (int i = 0; i <= xSteps; i++) {
-				Tile tileUnder = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y - TILE_SIZE/2, true);
-				if (tileUnder.isPassable() || canBuildOnTopOf != null && !canBuildOnTopOf.apply(tileUnder)) {
-					return false;
-				}
-
-				for (int j = 1; j <= ySteps; j++) {
-					Tile tileOverlapping = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true);
-					if (!tileOverlapping.isPassable()) {
-						return false;
-					}
-				}
-			}
-		} catch (NoTileFoundException e) {
-			return false;
-		}
-
-		for (Integer propId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, x, y)) {
-			Prop prop = Domain.getActiveWorld().props().getProp(propId);
-			if (prop instanceof Construction && Domain.getActiveWorld().props().hasProp(propId)) {
-				if (this.overlapsWith(prop)) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-
-	public boolean overlapsWith(Prop other) {
-		float left = position.x - width/2;
-		float right = position.x + width/2;
-		float top = position.y + height;
-		float bottom = position.y;
-
-		float otherLeft = other.position.x - other.width/2;
-		float otherRight = other.position.x + other.width/2;
-		float otherTop = other.position.y + other.height;
-		float otherBottom = other.position.y;
-
-		return
-			!(left >= otherRight) &&
-			!(right <= otherLeft) &&
-			!(top <= otherBottom) &&
-			!(bottom >= otherTop);
-	}
 
 
 	@Override

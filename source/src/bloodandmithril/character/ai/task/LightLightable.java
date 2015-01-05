@@ -9,7 +9,8 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
-import bloodandmithril.prop.construction.craftingstation.Campfire;
+import bloodandmithril.prop.Lightable;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -17,33 +18,33 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Task that instructs the host to light a {@link Campfire}
+ * Task that instructs the host to light a {@link Lightable}
  *
  * @author Matt
  */
-public class LightCampfire extends CompositeAITask {
+public class LightLightable extends CompositeAITask {
 	private static final long serialVersionUID = -2379179198784328909L;
 
-	private int campfireId;
+	private int lightableId;
 
 	/**
 	 * Constructor
 	 */
-	public LightCampfire(Individual host, Campfire campfire) throws NoTileFoundException {
+	public LightLightable(Individual host, Lightable lightable) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Mining",
 			goTo(
 				host,
 				host.getState().position.cpy(),
-				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(campfire.position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
+				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(((Prop) lightable).position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
 				false,
 				50f,
 				true
 			)
 		);
 
-		this.campfireId = campfire.id;
+		this.lightableId = ((Prop) lightable).id;
 		appendTask(new LightFire(hostId));
 	}
 
@@ -70,7 +71,7 @@ public class LightCampfire extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return Domain.getWorld(getHost().getWorldId()).props().hasProp(campfireId) && lit;
+			return Domain.getWorld(getHost().getWorldId()).props().hasProp(lightableId) && lit;
 		}
 
 
@@ -84,16 +85,16 @@ public class LightCampfire extends CompositeAITask {
 		public void execute(float delta) {
 			Individual host = Domain.getIndividual(hostId.getId());
 
-			if (!Domain.getWorld(host.getWorldId()).props().hasProp(campfireId)) {
+			if (!Domain.getWorld(host.getWorldId()).props().hasProp(lightableId)) {
 				return;
 			}
 
-			Campfire campfire = (Campfire) Domain.getWorld(host.getWorldId()).props().getProp(campfireId);
-			if (host.getInteractionBox().isWithinBox(campfire.position)) {
+			Lightable lightable = (Lightable) Domain.getWorld(host.getWorldId()).props().getProp(lightableId);
+			if (host.getInteractionBox().isWithinBox(((Prop) lightable).position)) {
 				if (host.has(new FlintAndFiresteel()) > 0) {
-					ParticleService.parrySpark(campfire.position.cpy().add(0, 7), new Vector2());
-					SoundService.play(SoundService.flint, campfire.position, true);
-					campfire.setLit(true);
+					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2());
+					SoundService.play(SoundService.flint, ((Prop) lightable).position, true);
+					lightable.light();
 					lit = true;
 				}
 			}

@@ -3,6 +3,8 @@ package bloodandmithril.prop.plant;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.util.SerializableMappingFunction;
+import bloodandmithril.world.topography.tile.Tile;
 
 /**
  * A Plant {@link Prop}
@@ -16,7 +18,7 @@ public abstract class PlantProp extends Growable {
 	/**
 	 * Constructor
 	 */
-	protected PlantProp(float x, float y, int width, int height) {
-		super(x, y, width, height, true);
+	protected PlantProp(float x, float y, int width, int height, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
+		super(x, y, width, height, true, canPlaceOnTopOf);
 	}
 }

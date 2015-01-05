@@ -1,10 +1,14 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+
+import java.util.Map;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.item.material.metal.Metal;
@@ -16,6 +20,7 @@ import bloodandmithril.world.topography.tile.Tile;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
 
 /**
  * A vanilla arrow
@@ -111,7 +116,7 @@ public class Arrow<T extends Metal> extends Projectile {
 	}
 
 
-	public static class ArrowItem<T extends Metal> extends ProjectileItem {
+	public static class ArrowItem<T extends Metal> extends ProjectileItem implements Craftable {
 		private static final long serialVersionUID = 1815115944595474845L;
 		protected Class<T> metal;
 
@@ -173,6 +178,25 @@ public class Arrow<T extends Metal> extends Projectile {
 		@Override
 		public Projectile getProjectile() {
 			return new Arrow<>(metal, null, null);
+		}
+
+
+		@Override
+		public boolean canBeCraftedBy(Individual individual) {
+			return true;
+		}
+
+
+		@Override
+		public Map<Item, Integer> getRequiredMaterials() {
+			Map<Item, Integer> requiredMaterials = Maps.newHashMap();
+			return requiredMaterials;
+		}
+
+
+		@Override
+		public float getCraftingDuration() {
+			return 25f;
 		}
 	}
 
