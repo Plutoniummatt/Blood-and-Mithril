@@ -6,6 +6,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
@@ -17,14 +18,12 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck 2014")
 public class TracerParticle extends Particle {
 
-	public final float radius;
 	public float glowIntensity;
 	public Vector2 prevPosition;
 
 	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity, MovementMode movementMode, boolean background) {
 		super(position, velocity, color, radius, worldId, removalCondition, movementMode, background);
 		this.prevPosition = position.cpy();
-		this.radius = radius;
 		this.glowIntensity = glowIntensity;
 	}
 
@@ -36,7 +35,7 @@ public class TracerParticle extends Particle {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
 					Domain.shapeRenderer.setColor(color);
-					Domain.shapeRenderer.filledCircle(position.x, position.y, radius);
+					Domain.shapeRenderer.filledCircle(position.x, position.y, radius <= 0.01f ? 0.01f : radius);
 				}
 			} catch (NoTileFoundException e) {}
 		}
@@ -61,6 +60,7 @@ public class TracerParticle extends Particle {
 		if (topography.hasTile(position.x, position.y, true) && topography.hasTile(prevPosition.x, prevPosition.y, true)) {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
+					Gdx.gl.glLineWidth(radius == 1f ? 1f : radius + 1f);
 					Domain.shapeRenderer.setColor(color);
 					Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
 				}

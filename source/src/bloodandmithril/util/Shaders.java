@@ -35,6 +35,7 @@ public class Shaders {
 	public static ShaderProgram colorSmearSmallRadius = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/colorSmearSmallRadius.fp"));
 	public static ShaderProgram blendXYandYXSmears = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/blendXYandYXSmears.fp"));
 	public static ShaderProgram tracerParticlesFBO = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/tracerParticleFbo.fp"));
+	public static ShaderProgram lightingFBOBlend = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/lightingFboBlend.fp"));
 
 	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/sun.fp"));
 	public static ShaderProgram shadow = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/shadow.fp"));

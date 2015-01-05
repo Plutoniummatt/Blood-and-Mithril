@@ -104,8 +104,8 @@ public class Campfire extends CraftingStation {
 		super.update(delta);
 
 		if (lit) {
-			ParticleService.randomVelocity(position.cpy().add(0, 15f), 10f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 8f, 1000, MovementMode.EMBER);
-			ParticleService.randomVelocity(position.cpy().add(0, 15f), 10f, 30f, Color.BLACK, 0f, 1000, MovementMode.EMBER);
+			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, Util.getRandom().nextFloat() * 8f, MovementMode.EMBER, Util.getRandom().nextInt(1000));
+			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1500));
 		}
 	}
 

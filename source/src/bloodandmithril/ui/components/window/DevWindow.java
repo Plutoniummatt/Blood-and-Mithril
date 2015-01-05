@@ -48,6 +48,7 @@ import bloodandmithril.item.liquid.Acid;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
+import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.persistence.GameSaver;
@@ -219,6 +220,7 @@ public class DevWindow extends Window {
 			}
 			for (int i = 10; i > 0; i--) {
 				elf.giveItem(new FlintAndFiresteel());
+				elf.giveItem(Rock.rock(Coal.class));
 			}
 			for (int i = 5; i > 0; i--) {
 				elf.giveItem(Bricks.bricks(SandStone.class));
