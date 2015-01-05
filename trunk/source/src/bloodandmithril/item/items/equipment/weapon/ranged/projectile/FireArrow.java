@@ -6,6 +6,7 @@ import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.item.material.metal.Metal;
+import bloodandmithril.util.Util;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -34,9 +35,9 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 	public void update(float delta) {
 		if (burnDuration > 0f) {
 			burnDuration -= delta;
-			ParticleService.randomVelocity(position, 0f, 30f, Color.ORANGE, 10f, 100, MovementMode.EMBER);
-			ParticleService.randomVelocity(position, 0f, 30f, Color.ORANGE, 10f, 400, MovementMode.EMBER);
-			ParticleService.randomVelocity(position, 0f, 30f, Color.GRAY, 0f, 1000, MovementMode.EMBER);
+			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(300));
+			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 2f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(600));
+			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1000));
 		}
 
 		super.update(delta);

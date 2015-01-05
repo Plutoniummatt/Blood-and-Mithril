@@ -44,7 +44,7 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocity(Vector2 position, float spawnSpread, float maxVel, Color color, float glow, int maxLifeTime, MovementMode mode) {
+	public static void randomVelocityTracer(Vector2 position, float spawnSpread, float maxVel, Color color, float glow, int maxLifeTime, MovementMode mode) {
 		if (isClient()) {
 			Domain.getActiveWorld().getParticles().add(new TracerParticle(
 				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
@@ -63,8 +63,24 @@ public class ParticleService {
 	}
 
 
-	public static void parrySpark(Vector2 position, Vector2 knockBack) {
+	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration) {
+		if (isClient()) {
+			Domain.getActiveWorld().getParticles().add(new DiminishingTracerParticle(
+				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
+				new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
+				color,
+				initialRadius,
+				Domain.getActiveWorld().getWorldId(),
+				glow,
+				mode,
+				true,
+				diminishingDuration
+			));
+		}
+	}
 
+
+	public static void parrySpark(Vector2 position, Vector2 knockBack) {
 		if (isClient()) {
 			for (int i = 0; i < 35; i++) {
 				Domain.getActiveWorld().getParticles().add(new TracerParticle(
@@ -141,7 +157,7 @@ public class ParticleService {
 
 		@Override
 		public void run() {
-			ParticleService.randomVelocity(position, spawnSpread, maxVel, color.getColor(), glow, maxLifeTime, mode);
+			ParticleService.randomVelocityTracer(position, spawnSpread, maxVel, color.getColor(), glow, maxLifeTime, mode);
 		}
 	}
 }

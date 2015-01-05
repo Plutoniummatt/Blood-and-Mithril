@@ -260,7 +260,6 @@ public class Domain {
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
 			Domain.getActiveWorld().getParticles().stream().filter(p -> p.background).forEach(p -> {
-				Gdx.gl20.glLineWidth(p.radius);
 				p.renderLine(Gdx.graphics.getDeltaTime());
 			});
 		}
@@ -272,7 +271,6 @@ public class Domain {
 				p.render(Gdx.graphics.getDeltaTime());
 			});
 		}
-		Gdx.gl20.glLineWidth(1f);
 		Domain.shapeRenderer.end();
 		gl20.glDisable(GL20.GL_BLEND);
 	}
@@ -285,7 +283,6 @@ public class Domain {
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
 			Domain.getActiveWorld().getParticles().stream().filter(p -> !p.background).forEach(p -> {
-				Gdx.gl20.glLineWidth(p.radius);
 				p.renderLine(Gdx.graphics.getDeltaTime());
 			});
 		}

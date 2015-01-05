@@ -1,12 +1,12 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
+import bloodandmithril.graphics.particles.DiminishingTracerParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.util.Countdown;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
@@ -39,7 +39,17 @@ public class FlareArrow<T extends Metal> extends Arrow<T> {
 			lightingDuration -= delta;
 			if (ClientServerInterface.isClient()) {
 				if (particle == null) {
-					particle = new TracerParticle(position, velocity, color.getColor(), 2f, getWorldId(), new Countdown(Util.getRandom().nextInt(Integer.MAX_VALUE)), 20f, MovementMode.WEIGHTLESS, false);
+					particle = new DiminishingTracerParticle(
+						position,
+						velocity,
+						color.getColor(),
+						2f,
+						getWorldId(),
+						15f,
+						MovementMode.WEIGHTLESS,
+						false,
+						(long) lightingDuration * 1000
+					);
 					particle.doNotUpdate();
 					Domain.getWorld(getWorldId()).getParticles().add(particle);
 				} else {
@@ -77,19 +87,19 @@ public class FlareArrow<T extends Metal> extends Arrow<T> {
 
 		@Override
 		protected String internalGetSingular(boolean firstCap) {
-			return "Glowing " + super.internalGetSingular(firstCap);
+			return "Flared " + super.internalGetSingular(firstCap);
 		}
 
 
 		@Override
 		protected String internalGetPlural(boolean firstCap) {
-			return "Glowing " + super.internalGetPlural(firstCap);
+			return "Flared " + super.internalGetPlural(firstCap);
 		}
 
 
 		@Override
 		public String getDescription() {
-			return super.getDescription() + ", this one glows.";
+			return super.getDescription() + ", this one has a flare attached to it.";
 		}
 
 
@@ -123,7 +133,7 @@ public class FlareArrow<T extends Metal> extends Arrow<T> {
 
 		@Override
 		public Projectile getProjectile() {
-			return new FlareArrow<>(metal, null, null, 30f, Color.GREEN);
+			return new FlareArrow<>(metal, null, null, 30f, new Color(0.25f, 0.7f, 0f, 1f));
 		}
 	}
 }
