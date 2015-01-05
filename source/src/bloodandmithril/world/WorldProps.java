@@ -17,7 +17,7 @@ public class WorldProps implements Serializable {
 	private static final long serialVersionUID = -4455079330719120993L;
 
 	/** Every {@link Prop} that exists */
-	private static ConcurrentHashMap<Integer, Prop> props = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<Integer, Prop> props = new ConcurrentHashMap<>();
 	private final int worldId;
 
 	/**

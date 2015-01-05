@@ -227,5 +227,11 @@ public class Carrot extends Food {
 		@Override
 		public void preRender() {
 		}
+
+
+		@Override
+		public boolean canBeUsedAsFireSource() {
+			return false;
+		}
 	}
 }

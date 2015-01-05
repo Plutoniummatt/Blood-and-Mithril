@@ -156,4 +156,10 @@ public class CarrotProp extends PlantProp {
 	@Override
 	public void preRender() {
 	}
+
+
+	@Override
+	public boolean canBeUsedAsFireSource() {
+		return false;
+	}
 }

@@ -2,6 +2,7 @@ package bloodandmithril.prop.construction.craftingstation;
 
 import java.util.Map;
 
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.task.LightCampfire;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -155,5 +156,17 @@ public class Campfire extends CraftingStation {
 		}
 
 		return superCompletedContextMenu;
+	}
+
+
+	@Override
+	public boolean canBeUsedAsFireSource() {
+		return lit;
+	}
+
+
+	@Override
+	protected int getCraftingSound() {
+		return SoundService.campfireCooking;
 	}
 }

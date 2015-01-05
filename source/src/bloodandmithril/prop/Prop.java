@@ -43,7 +43,7 @@ public abstract class Prop implements Serializable {
 
 	/** True if this {@link Prop} must be placed on the ground */
 	protected final boolean grounded;
-	
+
 	private int worldId;
 
 	/**
@@ -69,7 +69,10 @@ public abstract class Prop implements Serializable {
 
 	/** Updates this prop */
 	public abstract void update(float delta);
-	
+
+	/** Whether this prop can be used as a source of fire */
+	public abstract boolean canBeUsedAsFireSource();
+
 	/** Reindexes this item */
 	public void updatePositionIndex() {
 		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {

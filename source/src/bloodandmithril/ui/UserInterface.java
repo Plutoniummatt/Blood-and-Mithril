@@ -94,6 +94,7 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -736,7 +737,7 @@ public class UserInterface {
 
 	public static void renderJumpArrow(Vector2 start, Vector2 finish) {
 		if (!Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
-			renderArrow(start, finish, Color.GREEN, 3f, 0f, 75f);
+			renderArrow(start, finish, new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 75f);
 		}
 	}
 
@@ -750,15 +751,20 @@ public class UserInterface {
 			difference.cpy().nor().mul(Math.min(difference.len(), maxLength))
 		);
 
+		Vector2 fin = arrowHead.cpy().sub(
+			difference.cpy().nor().mul(14f)
+		);
+
 		spriteBatch.flush();
 		shapeRenderer.begin(ShapeType.Line);
 		Gdx.gl20.glLineWidth(lineWidth);
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
 		shapeRenderer.setColor(color);
 		shapeRenderer.line(
 			worldToScreenX(start.x),
 			worldToScreenY(start.y),
-			worldToScreenX(arrowHead.x),
-			worldToScreenY(arrowHead.y)
+			worldToScreenX(fin.x),
+			worldToScreenY(fin.y)
 		);
 		shapeRenderer.end();
 
@@ -778,6 +784,7 @@ public class UserInterface {
 			worldToScreenY(corner2.y)
 		);
 		shapeRenderer.end();
+		Gdx.gl20.glDisable(GL20.GL_BLEND);
 		Gdx.gl20.glLineWidth(1f);
 	}
 
@@ -836,7 +843,7 @@ public class UserInterface {
 				boolean canAttackRanged = false;
 				for (Individual indi : Domain.getSelectedIndividuals()) {
 					if (indi.canAttackRanged()) {
-						renderArrow(indi.getEmissionPosition(), new Vector2(getMouseWorldX(), getMouseWorldY()), Color.RED, 2f, 0f, 150f);
+						renderArrow(indi.getEmissionPosition(), new Vector2(getMouseWorldX(), getMouseWorldY()), new Color(1f, 0f, 0f, 0.65f), 2f, 0f, 150f);
 						canAttackRanged = true;
 					}
 				}

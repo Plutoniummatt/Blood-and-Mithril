@@ -75,4 +75,16 @@ public class WorkBench extends CraftingStation {
 	@Override
 	public void preRender() {
 	}
+
+
+	@Override
+	public boolean canBeUsedAsFireSource() {
+		return false;
+	}
+
+
+	@Override
+	protected int getCraftingSound() {
+		return -1;
+	}
 }

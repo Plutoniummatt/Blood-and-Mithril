@@ -21,7 +21,11 @@ void main()
 
 	vec4 fg = texture2D(u_texture, inverted);
 	vec4 lighting = texture2D(occlusion3, v_texCoords);
-	vec4 sum = fg * (vec4(factor, factor, factor, 1.0) * dayLightColor + lighting) * vec4(factor1, factor1, factor1, 1.0);
+	vec4 combinedFactor = (vec4(factor, factor, factor, 1.0) * dayLightColor + lighting) * vec4(factor1, factor1, factor1, 1.0);
+	
+	combinedFactor.a = min(combinedFactor.a, 1.0);
+	
+	vec4 sum = fg * combinedFactor;
 
 	gl_FragColor = sum;
 }

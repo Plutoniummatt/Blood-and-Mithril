@@ -186,4 +186,9 @@ public class Arrow<T extends Metal> extends Projectile {
 			velocity.x = -velocity.x;
 		}
 	}
+
+
+	@Override
+	public void preFireDecorate(Individual individual) {
+	}
 }

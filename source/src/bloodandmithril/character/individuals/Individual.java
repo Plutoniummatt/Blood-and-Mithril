@@ -1834,6 +1834,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				if (fired == null) {
 					addFloatingText("No ammo selected", Color.ORANGE);
 				} else {
+					fired.preFireDecorate(this);
 					fired.ignoreIndividual(this);
 					Domain.getWorld(getWorldId()).projectiles().addProjectile(fired);
 				}

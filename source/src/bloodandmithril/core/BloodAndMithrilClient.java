@@ -53,12 +53,10 @@ import com.google.common.collect.Sets;
  * Main game class, containing the loops
  *
  * To-do before ALPHA release
+ * IN PROGRESS
  *
  * <b><p> At least 5 types of NPC                                                                        </b></p>
  * <b><p> Ranged Combat 																                 </b></p>
- *
- * IN PROGRESS
- *
  * <b><p> Main menu screen                                                                               </b></p>
  * <b><p> Prop and Construction (Prop construction and de-construction framework)                  		 </b></p>
  * <b><p> Resource gathering (At least the following: farming, hunting, foraging)			 	 		 </b></p>
