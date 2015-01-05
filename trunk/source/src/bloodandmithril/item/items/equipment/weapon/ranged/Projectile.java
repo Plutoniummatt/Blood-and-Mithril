@@ -97,16 +97,39 @@ public abstract class Projectile implements Serializable {
 		updatePositionIndex();
 	}
 
-	protected abstract void targetHitKinematics() ;
+	/**
+	 * Called when an {@link Individual} is hit
+	 */
+	protected abstract void targetHitKinematics();
 
+	/**
+	 * @return the hit sound when it hits an {@link Individual}
+	 */
 	protected abstract int getHitSound(Individual individual);
 
+	/**
+	 * Called when this projectile collides with a tile
+	 */
 	protected abstract void collision(Vector2 previousPosition);
 
+	/**
+	 * @return The terminal velocity of this {@link Projectile}
+	 */
 	protected abstract float getTerminalVelocity();
 
+	/**
+	 * @return whether this {@link Projectile} will penetrate
+	 */
 	protected abstract boolean penetrating();
 
+	/**
+	 * called just before the projectile is fired.
+	 */
+	public abstract void preFireDecorate(Individual individual);
+
+	/**
+	 * @param individual to be ignored by this {@link Projectile}
+	 */
 	public void ignoreIndividual(Individual individual) {
 		ignoredIndividuals.add(individual.getId().getId());
 	}

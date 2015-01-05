@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class FlareArrow<T extends Metal> extends Arrow<T> {
+public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 	private static final long serialVersionUID = -6641284233913835594L;
 	private float lightingDuration;
 	private SerializableColor color;
@@ -25,7 +25,7 @@ public class FlareArrow<T extends Metal> extends Arrow<T> {
 	/**
 	 * Constructor
 	 */
-	public FlareArrow(Class<T> metal, Vector2 position, Vector2 velocity, float lightingDuration, Color color) {
+	public GlowStickArrow(Class<T> metal, Vector2 position, Vector2 velocity, float lightingDuration, Color color) {
 		super(metal, position, velocity);
 		this.lightingDuration = lightingDuration;
 		this.previousPosition = position;
@@ -78,36 +78,36 @@ public class FlareArrow<T extends Metal> extends Arrow<T> {
 	}
 
 
-	public static class FlareArrowItem<T extends Metal> extends ArrowItem<T> {
+	public static class GlowStickArrowItem<T extends Metal> extends ArrowItem<T> {
 		private static final long serialVersionUID = 9027137493687956507L;
 
-		public FlareArrowItem(Class<T> metal, long value) {
+		public GlowStickArrowItem(Class<T> metal, long value) {
 			super(metal, value);
 		}
 
 		@Override
 		protected String internalGetSingular(boolean firstCap) {
-			return "Flared " + super.internalGetSingular(firstCap);
+			return "Glowing " + super.internalGetSingular(firstCap);
 		}
 
 
 		@Override
 		protected String internalGetPlural(boolean firstCap) {
-			return "Flared " + super.internalGetPlural(firstCap);
+			return "Glowing " + super.internalGetPlural(firstCap);
 		}
 
 
 		@Override
 		public String getDescription() {
-			return super.getDescription() + ", this one has a flare attached to it.";
+			return super.getDescription() + ", this one has a glowstick attached to it.";
 		}
 
 
 		@Override
 		@SuppressWarnings("rawtypes")
 		protected boolean internalSameAs(Item other) {
-			if (other instanceof FlareArrowItem) {
-				return metal.equals(((FlareArrowItem) other).metal);
+			if (other instanceof GlowStickArrowItem) {
+				return metal.equals(((GlowStickArrowItem) other).metal);
 			}
 			return false;
 		}
@@ -127,13 +127,13 @@ public class FlareArrow<T extends Metal> extends Arrow<T> {
 
 		@Override
 		protected Item internalCopy() {
-			return new FlareArrowItem<>(metal, getValue());
+			return new GlowStickArrowItem<>(metal, getValue());
 		}
 
 
 		@Override
 		public Projectile getProjectile() {
-			return new FlareArrow<>(metal, null, null, 30f, new Color(0.25f, 0.7f, 0f, 1f));
+			return new GlowStickArrow<>(metal, null, null, 30f, new Color(0f, 1f, 0f, 1f));
 		}
 	}
 }

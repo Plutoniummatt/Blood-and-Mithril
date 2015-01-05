@@ -1,6 +1,7 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
@@ -91,6 +92,7 @@ public class LightCampfire extends CompositeAITask {
 			if (host.getInteractionBox().isWithinBox(campfire.position)) {
 				if (host.has(new FlintAndFiresteel()) > 0) {
 					ParticleService.parrySpark(campfire.position.cpy().add(0, 7), new Vector2());
+					SoundService.play(SoundService.flint, campfire.position, true);
 					campfire.setLit(true);
 					lit = true;
 				}

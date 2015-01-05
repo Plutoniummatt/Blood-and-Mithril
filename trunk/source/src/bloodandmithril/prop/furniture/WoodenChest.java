@@ -256,4 +256,10 @@ public class WoodenChest extends Furniture implements Container {
 	public boolean isEmpty() {
 		return container.isEmpty();
 	}
+
+
+	@Override
+	public boolean canBeUsedAsFireSource() {
+		return false;
+	}
 }

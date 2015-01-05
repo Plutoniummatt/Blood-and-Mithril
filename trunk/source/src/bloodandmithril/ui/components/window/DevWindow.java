@@ -15,9 +15,7 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,14 +36,14 @@ import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.ranged.LongBow;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FlareArrow;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrow;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
 import bloodandmithril.item.items.material.Bricks;
+import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.items.material.Rock;
-import bloodandmithril.item.liquid.Acid;
-import bloodandmithril.item.liquid.Liquid;
+import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
@@ -66,6 +64,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
@@ -77,7 +76,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * Window containing dev features
@@ -178,21 +176,30 @@ public class DevWindow extends Window {
 			int x = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldX());
 			int y = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY());
 
-			Map<Integer, Set<Integer>> coords = Maps.newConcurrentMap();
-			coords.put(y, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
-			coords.put(y + 1, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
-			coords.put(y + 2, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
-			coords.put(y + 3, Sets.newConcurrentHashSet(Lists.newArrayList(x, x + 1, x + 2, x + 3)));
+			List<TwoInts> coords = Lists.newArrayList();
+			coords.add(new TwoInts(x + 1, y));
+			coords.add(new TwoInts(x + 2, y));
+			coords.add(new TwoInts(x + 3, y));
+			coords.add(new TwoInts(x + 4, y));
+			coords.add(new TwoInts(x + 1, y + 1));
+			coords.add(new TwoInts(x + 2, y + 1));
+			coords.add(new TwoInts(x + 3, y + 1));
+			coords.add(new TwoInts(x + 4, y + 1));
+			coords.add(new TwoInts(x + 1, y + 2));
+			coords.add(new TwoInts(x + 2, y + 2));
+			coords.add(new TwoInts(x + 3, y + 2));
+			coords.add(new TwoInts(x + 4, y + 2));
+			coords.add(new TwoInts(x + 1, y + 3));
+			coords.add(new TwoInts(x + 2, y + 3));
+			coords.add(new TwoInts(x + 3, y + 3));
+			coords.add(new TwoInts(x + 4, y + 3));
 
-			Map<Class<? extends Liquid>, Integer> composition = Maps.newHashMap();
-			composition.put(Acid.class, 100);
-
-			FluidBody fluid = new FluidBody(coords, 16f, Domain.getActiveWorld().getWorldId(), composition);
+			FluidBody fluid = FluidBody.createForTileCoordinates(coords, 16f, Water.class, Domain.getActiveWorld().getWorldId());
 			Domain.getActiveWorld().addFluid(fluid);
 		}
 
 		if (keyCode == Keys.E) {
-			IndividualState state = new IndividualState(100f, 0.01f, 0.02f, 0f, 0f);
+			IndividualState state = new IndividualState(30f, 0.01f, 0.02f, 0f, 0f);
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
@@ -216,9 +223,10 @@ public class DevWindow extends Window {
 				elf.giveItem(new Carrot());
 				elf.giveItem(new Arrow.ArrowItem<>(Steel.class, 10));
 				elf.giveItem(new FireArrow.FireArrowItem<>(Iron.class, 10));
-				elf.giveItem(new FlareArrow.FlareArrowItem<>(Iron.class, 10));
+				elf.giveItem(new GlowStickArrow.GlowStickArrowItem<>(Iron.class, 10));
 			}
 			for (int i = 10; i > 0; i--) {
+				elf.giveItem(Ingot.ingot(Steel.class));
 				elf.giveItem(new FlintAndFiresteel());
 				elf.giveItem(Rock.rock(Coal.class));
 			}

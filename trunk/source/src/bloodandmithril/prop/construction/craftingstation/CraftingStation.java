@@ -6,6 +6,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
@@ -223,6 +224,8 @@ public abstract class CraftingStation extends Construction {
 						individual.takeItem(requiredItem.getKey());
 					}
 				}
+
+				SoundService.play(getCraftingSound(), position, true);
 			}
 
 			if (ClientServerInterface.isClient()) {
@@ -246,6 +249,12 @@ public abstract class CraftingStation extends Construction {
 
 		return false;
 	}
+
+
+	/**
+	 * @return the ID of the sound that should be played when crafting
+	 */
+	protected abstract int getCraftingSound();
 
 
 	/**

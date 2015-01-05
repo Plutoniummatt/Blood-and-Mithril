@@ -330,7 +330,7 @@ public class MainMenuWindow extends Window {
 			}
 		}
 
-		SoundService.fadeOut(2f);
+		SoundService.changeMusic(2f, SoundService.desertNight);
 		UserInterface.contextMenus.clear();
 		PositionalReindexingService.reindex();
 	}

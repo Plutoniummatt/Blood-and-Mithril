@@ -24,7 +24,7 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2014")
 public class SoundService {
 
-	public static Music mainMenu;
+	public static Music mainMenu, desertNight;
 
 	public static final int pickAxe 			= 1;
 	public static final int swordSlash 			= 2;
@@ -33,6 +33,9 @@ public class SoundService {
 	public static final int broadSwordBlock 	= 5;
 	public static final int crunch 				= 6;
 	public static final int swallow				= 7;
+	public static final int flint				= 8;
+	public static final int campfireCooking		= 9;
+	public static final int anvil				= 10;
 
 	private static Map<Integer, Sound> sounds = Maps.newHashMap();
 
@@ -47,6 +50,7 @@ public class SoundService {
 	static {
 		if (ClientServerInterface.isClient()) {
 			mainMenu = Gdx.audio.newMusic(Gdx.files.internal("data/music/mainMenu.mp3"));
+			desertNight = Gdx.audio.newMusic(Gdx.files.internal("data/music/desertNight.mp3"));
 
 			sounds.put(pickAxe, 			Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav")));
 			sounds.put(swordSlash, 			Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav")));
@@ -55,6 +59,9 @@ public class SoundService {
 			sounds.put(broadSwordBlock, 	Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav")));
 			sounds.put(crunch, 				Gdx.audio.newSound(Gdx.files.internal("data/music/crunch.wav")));
 			sounds.put(swallow,				Gdx.audio.newSound(Gdx.files.internal("data/music/swallow.wav")));
+			sounds.put(flint,				Gdx.audio.newSound(Gdx.files.internal("data/music/flint.wav")));
+			sounds.put(campfireCooking,		Gdx.audio.newSound(Gdx.files.internal("data/music/campfireCooking.wav")));
+			sounds.put(anvil,				Gdx.audio.newSound(Gdx.files.internal("data/music/anvil.wav")));
 		}
 	}
 
@@ -75,6 +82,10 @@ public class SoundService {
 
 
 	public static void play(int sound, Vector2 location, boolean requiresServerAuthority) {
+		if (sound == -1) {
+			return;
+		}
+
 		if (isServer()) {
 			if (isClient()) {
 				sounds.get(sound).play(getVolume(location), 1f, getPan(location));
@@ -120,7 +131,6 @@ public class SoundService {
 		if (increasing == 1f && next != null) {
 			if (current != null) {
 				current.stop();
-				current.dispose();
 			}
 			current = next;
 			next = null;
@@ -151,7 +161,7 @@ public class SoundService {
 	public static void changeMusic(float transitionTime, Music toChangeTo) {
 		fadeOut = false;
 
-		if (toChangeTo == current || decreasing != 0f) {
+		if (toChangeTo == current) {
 			return;
 		}
 
@@ -167,10 +177,10 @@ public class SoundService {
 		if (next != null) {
 			current = next;
 		}
-	
+
 		decreasing = 1f;
 		increasing = 0f;
-		
+
 		fadeOut = true;
 		rate = transitionTime;
 		next = null;

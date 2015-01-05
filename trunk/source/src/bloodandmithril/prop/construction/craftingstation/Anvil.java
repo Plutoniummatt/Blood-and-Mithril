@@ -2,6 +2,7 @@ package bloodandmithril.prop.construction.craftingstation;
 
 import java.util.Map;
 
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
@@ -75,5 +76,17 @@ public class Anvil extends CraftingStation {
 
 	@Override
 	public void preRender() {
+	}
+
+
+	@Override
+	public boolean canBeUsedAsFireSource() {
+		return false;
+	}
+
+
+	@Override
+	protected int getCraftingSound() {
+		return SoundService.anvil;
 	}
 }

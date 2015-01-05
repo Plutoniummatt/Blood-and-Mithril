@@ -339,4 +339,16 @@ public class Furnace extends CraftingStation implements Container {
 			Shaders.filter.setUniformf("color", Material.getMaterial(material).getColor());
 		}
 	}
+
+
+	@Override
+	public boolean canBeUsedAsFireSource() {
+		return burning;
+	}
+
+
+	@Override
+	protected int getCraftingSound() {
+		return -1;
+	}
 }
