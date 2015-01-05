@@ -1,5 +1,7 @@
 package bloodandmithril.prop;
 
+import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+
 import java.io.Serializable;
 
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -7,15 +9,20 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
 import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.persistence.ParameterPersistenceService;
+import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
+import bloodandmithril.prop.furniture.MedievalWallTorch;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.CarrotProp;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
+import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -42,16 +49,21 @@ public abstract class Prop implements Serializable {
 	public Vector2 position;
 
 	/** True if this {@link Prop} must be placed on the ground */
-	protected final boolean grounded;
+	public final boolean grounded;
 
 	private int worldId;
+
+	/** Returns whether this {@link Construction} can be placed on a tile type */
+	private final SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf;
+	private SerializableMappingFunction<Tile, Boolean> canPlaceInFrontOf;
 
 	/**
 	 * Constructor
 	 */
-	protected Prop(float x, float y, int width, int height, boolean grounded, Depth depth) {
+	protected Prop(float x, float y, int width, int height, boolean grounded, Depth depth, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
 		this.width = width;
 		this.height = height;
+		this.canPlaceOnTopOf = canPlaceOnTopOf;
 		position = new Vector2(x, y);
 		this.depth = depth;
 		this.id = ParameterPersistenceService.getParameters().getNextPropId();
@@ -72,6 +84,11 @@ public abstract class Prop implements Serializable {
 
 	/** Whether this prop can be used as a source of fire */
 	public abstract boolean canBeUsedAsFireSource();
+
+	/** Returns the string title of this {@link Prop} */
+	public String getTitle() {
+		return getContextMenuItemLabel();
+	}
 
 	/** Reindexes this item */
 	public void updatePositionIndex() {
@@ -95,6 +112,7 @@ public abstract class Prop implements Serializable {
 		WorkBench.workbench = new TextureRegion(Domain.gameWorldTexture, 559, 219, 80, 33);
 		CarrotSeedProp.carrotSeed = new TextureRegion(Domain.gameWorldTexture, 389, 177, 16, 16);
 		CarrotProp.halfCarrot = new TextureRegion(Domain.gameWorldTexture, 406, 177, 16, 16);
+		MedievalWallTorch.medievalWallTorch = new TextureRegion(Domain.gameWorldTexture, 678, 225, 13, 30);
 	}
 
 
@@ -130,6 +148,90 @@ public abstract class Prop implements Serializable {
 
 	public void setWorldId(int worldId) {
 		this.worldId = worldId;
+	}
+
+	/**
+	 * @return whether this prop can be placed at this props location
+	 */
+	public boolean canPlaceAtCurrentPosition() {
+		return canPlaceAt(position);
+	}
+
+
+	/**
+	 * @return whether this prop can be placed at a given location
+	 */
+	public boolean canPlaceAt(Vector2 position) {
+		return canPlaceAt(position.x, position.y);
+	}
+
+
+	/**
+	 * @return whether this prop can be placed at a given location
+	 */
+	public boolean canPlaceAt(float x, float y) {
+		float xStep = (float)width / (float)TILE_SIZE;
+		long xSteps = Math.round(Math.ceil(xStep));
+		float xIncrement = (float)width / (float)xSteps;
+
+		float yStep = (float)height / (float)TILE_SIZE;
+		long ySteps = Math.round(Math.ceil(yStep));
+		float yIncrement = (float)height / (float)ySteps;
+
+
+		try {
+			for (int i = 0; i <= xSteps; i++) {
+				Tile tileUnder = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y - TILE_SIZE/2, true);
+				if (grounded && (tileUnder.isPassable() || canPlaceOnTopOf != null && !canPlaceOnTopOf.apply(tileUnder))) {
+					return false;
+				}
+
+				for (int j = 1; j <= ySteps; j++) {
+					Tile tileOverlapping = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true);
+					Tile tileUnderlapping = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, false);
+					if (!tileOverlapping.isPassable() || canPlaceInFrontOf != null && !canPlaceInFrontOf.apply(tileUnderlapping)) {
+						return false;
+					}
+				}
+			}
+		} catch (NoTileFoundException e) {
+			return false;
+		}
+
+		for (Integer propId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, x, y)) {
+			Prop prop = Domain.getActiveWorld().props().getProp(propId);
+			if (prop instanceof Construction && Domain.getActiveWorld().props().hasProp(propId)) {
+				if (this.overlapsWith(prop)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+
+	protected void canPlaceInFrontOf(SerializableMappingFunction<Tile, Boolean> function) {
+		this.canPlaceInFrontOf = function;
+	}
+
+
+	private boolean overlapsWith(Prop other) {
+		float left = position.x - width/2;
+		float right = position.x + width/2;
+		float top = position.y + height;
+		float bottom = position.y;
+
+		float otherLeft = other.position.x - other.width/2;
+		float otherRight = other.position.x + other.width/2;
+		float otherTop = other.position.y + other.height;
+		float otherBottom = other.position.y;
+
+		return
+			!(left >= otherRight) &&
+			!(right <= otherLeft) &&
+			!(top <= otherBottom) &&
+			!(bottom >= otherTop);
 	}
 
 	public abstract void preRender();

@@ -3,7 +3,7 @@ package bloodandmithril.prop.construction.craftingstation;
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
-import bloodandmithril.character.ai.task.LightCampfire;
+import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -11,6 +11,7 @@ import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.Lightable;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Util;
@@ -28,7 +29,7 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Campfire extends CraftingStation {
+public class Campfire extends CraftingStation implements Lightable {
 	private static final long serialVersionUID = -8876217926271589078L;
 	private boolean lit;
 
@@ -69,12 +70,6 @@ public class Campfire extends CraftingStation {
 	@Override
 	public String getDescription() {
 		return "A campfire, can be used for some basic cooking, as well as provide some warmth and light.";
-	}
-
-
-	@Override
-	public String getTitle() {
-		return "Campfire";
 	}
 
 
@@ -126,10 +121,10 @@ public class Campfire extends CraftingStation {
 				Individual selected = Domain.getSelectedIndividuals().iterator().next();
 				if (ClientServerInterface.isServer()) {
 					try {
-						selected.getAI().setCurrentTask(new LightCampfire(selected, thisCampfire));
+						selected.getAI().setCurrentTask(new LightLightable(selected, thisCampfire));
 					} catch (NoTileFoundException e) {}
 				} else {
-					ClientServerInterface.SendRequest.sendLightCampfireRequest(selected, thisCampfire);
+					ClientServerInterface.SendRequest.sendLightLightableRequest(selected, thisCampfire);
 				}
 			},
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.WHITE,
@@ -168,5 +163,23 @@ public class Campfire extends CraftingStation {
 	@Override
 	protected int getCraftingSound() {
 		return SoundService.campfireCooking;
+	}
+
+
+	@Override
+	public void light() {
+		this.lit = true;
+	}
+
+
+	@Override
+	public void extinguish() {
+		this.lit = false;
+	}
+
+
+	@Override
+	protected String internalGetTitle() {
+		return "Campfire";
 	}
 }

@@ -55,12 +55,6 @@ public class WorkBench extends CraftingStation {
 
 
 	@Override
-	public String getTitle() {
-		return "Work bench";
-	}
-
-
-	@Override
 	public String getAction() {
 		return "Craft";
 	}
@@ -86,5 +80,11 @@ public class WorkBench extends CraftingStation {
 	@Override
 	protected int getCraftingSound() {
 		return -1;
+	}
+
+
+	@Override
+	protected String internalGetTitle() {
+		return "Work bench";
 	}
 }

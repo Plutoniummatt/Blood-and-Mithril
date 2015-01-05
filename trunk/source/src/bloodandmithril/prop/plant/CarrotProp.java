@@ -19,8 +19,11 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
+import bloodandmithril.world.topography.tile.Tile;
+import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -43,7 +46,7 @@ public class CarrotProp extends PlantProp {
 	 * Constructor
 	 */
 	public CarrotProp(float x, float y) {
-		super(x, y, 12, 17);
+		super(x, y, 12, 17, new SoilTilesOnly());
 	}
 
 
@@ -161,5 +164,15 @@ public class CarrotProp extends PlantProp {
 	@Override
 	public boolean canBeUsedAsFireSource() {
 		return false;
+	}
+
+
+	public static class SoilTilesOnly extends SerializableMappingFunction<Tile, Boolean> {
+		private static final long serialVersionUID = 698418294898570694L;
+
+		@Override
+		public Boolean apply(Tile input) {
+			return input instanceof SoilTile;
+		}
 	}
 }

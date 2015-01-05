@@ -290,12 +290,6 @@ public class Furnace extends CraftingStation implements Container {
 
 
 	@Override
-	public String getTitle() {
-		return "Furnace";
-	}
-
-
-	@Override
 	protected TextureRegion getTextureRegion() {
 		return null;
 	}
@@ -350,5 +344,11 @@ public class Furnace extends CraftingStation implements Container {
 	@Override
 	protected int getCraftingSound() {
 		return -1;
+	}
+
+
+	@Override
+	protected String internalGetTitle() {
+		return "Furnace";
 	}
 }

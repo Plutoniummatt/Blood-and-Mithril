@@ -57,12 +57,6 @@ public class Anvil extends CraftingStation {
 
 
 	@Override
-	public String getTitle() {
-		return "Anvil";
-	}
-
-
-	@Override
 	public String getAction() {
 		return "Smith";
 	}
@@ -88,5 +82,11 @@ public class Anvil extends CraftingStation {
 	@Override
 	protected int getCraftingSound() {
 		return SoundService.anvil;
+	}
+
+
+	@Override
+	protected String internalGetTitle() {
+		return "Anvil";
 	}
 }

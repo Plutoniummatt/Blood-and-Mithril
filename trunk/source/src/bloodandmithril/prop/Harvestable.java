@@ -6,6 +6,8 @@ import java.util.Collection;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.util.SerializableMappingFunction;
+import bloodandmithril.world.topography.tile.Tile;
 
 /**
  * Interface for harvesting
@@ -19,8 +21,8 @@ public abstract class Harvestable extends Prop {
 	/**
 	 * Constructor
 	 */
-	protected Harvestable(float x, float y, int width, int height, boolean grounded) {
-		super(x, y, width, height, grounded, FOREGOUND);
+	protected Harvestable(float x, float y, int width, int height, boolean grounded, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
+		super(x, y, width, height, grounded, FOREGOUND, canPlaceOnTopOf);
 	}
 
 	/** Returns the item that harvesting this {@link Harvestable} provides */

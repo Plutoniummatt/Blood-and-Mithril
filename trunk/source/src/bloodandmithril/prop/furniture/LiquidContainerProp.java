@@ -29,7 +29,7 @@ public abstract class LiquidContainerProp extends Furniture {
 	 * Constructor
 	 */
 	protected LiquidContainerProp(float x, float y, int width, int height, boolean grounded, boolean snapToGrid, float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids) {
-		super(x, y, width, height, grounded, false);
+		super(x, y, width, height, grounded);
 		this.container = new PropLiquidContainer(maxAmount, containedLiquids);
 	}
 

@@ -54,6 +54,7 @@ import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
+import bloodandmithril.prop.furniture.MedievalWallTorch;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -219,7 +220,9 @@ public class DevWindow extends Window {
 			elf.getSkills().setObservation(55);
 			elf.getSkills().setSmithing(55);
 
+			elf.giveItem(new bloodandmithril.item.items.furniture.WoodenChest(Pine.class));
 			for (int i = 100; i > 0; i--) {
+				elf.giveItem(new bloodandmithril.item.items.furniture.MedievalWallTorch());
 				elf.giveItem(new Carrot());
 				elf.giveItem(new Arrow.ArrowItem<>(Steel.class, 10));
 				elf.giveItem(new FireArrow.FireArrowItem<>(Iron.class, 10));
@@ -402,6 +405,20 @@ public class DevWindow extends Window {
 							if (individual != null) {
 								bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(carrot);
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					),
+					new ContextMenu.MenuItem(
+						"Torch",
+						() -> {
+							Individual individual = Domain.getIndividuals().get(1);
+							if (individual != null) {
+								MedievalWallTorch torch = new MedievalWallTorch(individual.getState().position.x, individual.getState().position.y + 100);
+								Domain.getWorld(individual.getWorldId()).props().addProp(torch);
 							}
 						},
 						Color.GREEN,

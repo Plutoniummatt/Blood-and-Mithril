@@ -10,6 +10,7 @@ import bloodandmithril.item.items.food.Food;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.plant.CarrotProp;
+import bloodandmithril.prop.plant.CarrotProp.SoilTilesOnly;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 
@@ -164,7 +165,7 @@ public class Carrot extends Food {
 		 * Constructor
 		 */
 		public CarrotSeedProp(float x, float y, Seed seed) {
-			super(x, y, seed);
+			super(x, y, seed, new SoilTilesOnly());
 		}
 
 

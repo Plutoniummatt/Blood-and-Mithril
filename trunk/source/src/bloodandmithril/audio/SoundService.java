@@ -165,6 +165,10 @@ public class SoundService {
 			return;
 		}
 
+		if (current == null) {
+			current = toChangeTo;
+		}
+
 		decreasing = 1f;
 		increasing = 0f;
 

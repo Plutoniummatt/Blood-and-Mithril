@@ -23,6 +23,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.Item.Category;
+import bloodandmithril.item.items.PropItem;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -36,6 +37,7 @@ import bloodandmithril.item.items.material.Material;
 import bloodandmithril.item.items.mineral.Mineral;
 import bloodandmithril.item.items.misc.Misc;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -49,8 +51,10 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.util.cursorboundtask.PlaceCursorBoundTask;
 import bloodandmithril.util.cursorboundtask.PlantSeedCursorBoundTask;
 import bloodandmithril.util.datastructure.WrapperForTwo;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -464,6 +468,10 @@ public class InventoryWindow extends Window implements Refreshable {
 			toReturn = seedMenu(item);
 		}
 
+		if (item instanceof PropItem) {
+			toReturn = placeableMenu((PropItem) item);
+		}
+
 		if (toReturn == null) {
 			toReturn = new ContextMenu(x, y, true, InventoryItemContextMenuConstructor.showInfo(item));
 		}
@@ -509,8 +517,31 @@ public class InventoryWindow extends Window implements Refreshable {
 			));
 		}
 
-
 		return toReturn;
+	}
+
+
+	private ContextMenu placeableMenu(PropItem item) {
+		MenuItem place = new MenuItem(
+			"Place",
+			() -> {
+				Prop prop = item.getProp();
+				prop.setWorldId(Domain.getActiveWorld().getWorldId());
+				BloodAndMithrilClient.setCursorBoundTask(
+					new PlaceCursorBoundTask(prop)
+				);
+			},
+			Colors.UI_GRAY,
+			Color.GREEN,
+			Color.WHITE,
+			null
+		);
+
+		return new ContextMenu(x, y,
+			true,
+			InventoryItemContextMenuConstructor.showInfo(item),
+			place
+		);
 	}
 
 

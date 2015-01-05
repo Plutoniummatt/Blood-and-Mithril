@@ -1,6 +1,8 @@
 package bloodandmithril.prop;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.util.SerializableMappingFunction;
+import bloodandmithril.world.topography.tile.Tile;
 
 /**
  * Something can grow
@@ -15,8 +17,8 @@ public abstract class Growable extends Harvestable {
 	/**
 	 * Constructor
 	 */
-	protected Growable(float x, float y, int width, int height, boolean grounded) {
-		super(x, y, width, height, grounded);
+	protected Growable(float x, float y, int width, int height, boolean grounded, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
+		super(x, y, width, height, grounded, canPlaceOnTopOf);
 	}
 
 	/**
