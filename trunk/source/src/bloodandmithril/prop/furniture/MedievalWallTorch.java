@@ -1,5 +1,6 @@
 package bloodandmithril.prop.furniture;
 
+import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
@@ -136,7 +137,7 @@ public class MedievalWallTorch extends Furniture implements Lightable {
 
 	@Override
 	public void update(float delta) {
-		if (lit) {
+		if (lit && isOnScreen(position, 50f)) {
 			Vector2 firePosition = position.cpy().add(0, 23);
 			ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(300), true);
 			ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.ORANGE, Util.getRandom().nextFloat() * 2f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(600), true);

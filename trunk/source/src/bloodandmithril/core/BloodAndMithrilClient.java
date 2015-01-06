@@ -683,6 +683,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static Vector2 worldToScreen(Vector2 world) {
 		return new Vector2(worldToScreenX(world.x), worldToScreenY(world.y));
 	}
+	
+	
+	/**
+	 * True is specified world coordinates are on screen within specified tolerance
+	 */
+	public static boolean isOnScreen(Vector2 position, float tolerance) {
+		float screenX = worldToScreenX(position.x);
+		float screenY = worldToScreenY(position.y);
+		
+		return screenX > -tolerance && screenX < WIDTH + tolerance && screenY > -tolerance && screenY < HEIGHT + tolerance;
+	}
 
 
 	/**

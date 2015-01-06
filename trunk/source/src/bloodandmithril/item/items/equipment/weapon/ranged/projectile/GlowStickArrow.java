@@ -45,7 +45,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 						color.getColor(),
 						2f,
 						getWorldId(),
-						15f,
+						20f,
 						MovementMode.WEIGHTLESS,
 						false,
 						(long) lightingDuration * 1000
@@ -58,7 +58,9 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 				}
 			}
 		} else {
-			Domain.getWorld(getWorldId()).getParticles().remove(particle);
+			if (ClientServerInterface.isClient()) {
+				Domain.getWorld(getWorldId()).getParticles().remove(particle);
+			}
 		}
 
 		previousPosition = position.cpy();
@@ -133,7 +135,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 
 		@Override
 		public Projectile getProjectile() {
-			return new GlowStickArrow<>(metal, null, null, 30f, new Color(0f, 1f, 0f, 1f));
+			return new GlowStickArrow<>(metal, null, null, 30f, new Color(0.5f, 1f, 1f, 1f));
 		}
 	}
 }
