@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
+import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 import bloodandmithril.character.conditions.Burning;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -40,7 +41,7 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 
 	@Override
 	public void update(float delta) {
-		if (lit) {
+		if (lit && isOnScreen(position, 50f)) {
 			if (burnDuration > 0f) {
 				burnDuration -= delta;
 			} else {

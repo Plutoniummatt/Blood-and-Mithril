@@ -1,5 +1,7 @@
 package bloodandmithril.prop.construction.craftingstation;
 
+import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
+
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
@@ -99,7 +101,7 @@ public class Campfire extends CraftingStation implements Lightable {
 	public void update(float delta) {
 		super.update(delta);
 
-		if (lit) {
+		if (lit && isOnScreen(position, 50f)) {
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, Util.getRandom().nextFloat() * 8f, MovementMode.EMBER, Util.getRandom().nextInt(1000), true);
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1500), true);
 		}

@@ -5,6 +5,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.cam;
 import static bloodandmithril.core.BloodAndMithrilClient.camMarginX;
 import static bloodandmithril.core.BloodAndMithrilClient.camMarginY;
+import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
@@ -199,7 +200,7 @@ public class GaussianLightingRenderer {
 		float[] colors = new float[MAX_PARTICLES * 4];
 
 		Iterable<Particle> glowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getParticles(), p -> {
-			return p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f && p.background == middle;
+			return p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f && p.background == middle && isOnScreen(p.position, 50f);
 		});
 
 		for (Particle p : glowingTracerParticles) {
@@ -237,7 +238,7 @@ public class GaussianLightingRenderer {
 		spriteBatch.end();
 		lightingFbo.end();
 	}
-
+	
 
 	/**
 	 * Renders the background lighting control occlusion FBO
