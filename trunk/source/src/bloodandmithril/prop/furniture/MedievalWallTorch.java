@@ -137,11 +137,14 @@ public class MedievalWallTorch extends Furniture implements Lightable {
 
 	@Override
 	public void update(float delta) {
-		if (lit && isOnScreen(position, 50f)) {
-			Vector2 firePosition = position.cpy().add(0, 23);
-			ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(300), true);
-			ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.ORANGE, Util.getRandom().nextFloat() * 2f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(600), true);
-			ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1000), true);
+		if (lit) {
+			
+			if (isOnScreen(position, 50f)) {
+				Vector2 firePosition = position.cpy().add(0, 23);
+				ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(300), true);
+				ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.ORANGE, Util.getRandom().nextFloat() * 2f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(600), true);
+				ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1000), true);
+			}
 			burnDurationRemaining -= delta;
 
 			if (burnDurationRemaining <= 0f) {
