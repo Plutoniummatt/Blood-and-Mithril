@@ -307,7 +307,7 @@ public class UserInterface {
 		}
 
 		renderHint();
-		renderCursorBoundTask();
+		renderCursorBoundTaskText();
 		renderFloatingText();
 		renderDragBox();
 		renderLayeredComponents();
@@ -337,7 +337,7 @@ public class UserInterface {
 
 
 	private static void renderHint() {
-		if (contextMenus.isEmpty() && Domain.getActiveWorld() != null) {
+		if (getCursorBoundTask() == null && contextMenus.isEmpty() && Domain.getActiveWorld() != null) {
 			boolean renderHint = false;
 			PositionalIndexMap positionalIndexMap = Domain.getActiveWorld().getPositionalIndexMap();
 			for (int id : positionalIndexMap.getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
@@ -425,18 +425,21 @@ public class UserInterface {
 	}
 
 
-	private static void renderCursorBoundTask() {
+	private static void renderCursorBoundTaskText() {
 		if (getCursorBoundTask() != null) {
 			getCursorBoundTask().renderUIGuide();
 			spriteBatch.begin();
-			Fonts.defaultFont.setColor(Color.BLACK);
+			spriteBatch.setShader(Shaders.filter);
+			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+			Shaders.filter.setUniformf("color", Color.BLACK);
 			Fonts.defaultFont.draw(
 				spriteBatch,
 				getCursorBoundTask().getShortDescription(),
 				BloodAndMithrilClient.getMouseScreenX() + 20,
 				BloodAndMithrilClient.getMouseScreenY() - 20
 			);
-			Fonts.defaultFont.setColor(Color.WHITE);
+			spriteBatch.flush();
+			Shaders.filter.setUniformf("color", Color.WHITE);
 			Fonts.defaultFont.draw(
 				spriteBatch,
 				getCursorBoundTask().getShortDescription(),
@@ -852,7 +855,15 @@ public class UserInterface {
 		}
 
 		defaultFont.draw(spriteBatch, "Framerate: " + fpsDisplayed, 5, HEIGHT - 65);
+		renderMouseText();
+	}
 
+
+	private static void renderMouseText() {
+		if (getCursorBoundTask() != null) {
+			return;
+		}
+		
 		boolean jumpPressed = Gdx.input.isKeyPressed(KeyMappings.jump);
 		boolean addWayPointPressed = Gdx.input.isKeyPressed(KeyMappings.addWayPoint);
 		boolean forceMovePressed = Gdx.input.isKeyPressed(KeyMappings.forceMove);

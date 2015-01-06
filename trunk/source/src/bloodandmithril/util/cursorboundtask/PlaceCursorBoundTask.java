@@ -9,12 +9,16 @@ import static com.badlogic.gdx.graphics.GL10.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL10.GL_ONE_MINUS_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Rectangle;
+import bloodandmithril.character.ai.task.PlaceProp;
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.item.items.PropItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
@@ -32,7 +36,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 		/**
 		 * Constructor
 		 */
-		public PlaceCursorBoundTask(Prop toPlace) {
+		public PlaceCursorBoundTask(Prop toPlace, Individual indi, PropItem propItem) {
 			super(
 				args -> {
 					Vector2 coords;
@@ -58,11 +62,15 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 
 					if (canBuild) {
 						if (ClientServerInterface.isServer()) {
-							Domain.getWorld(toPlace.getWorldId()).props().addProp(toPlace);
+							if (indi == null) {
+								World world = Domain.getWorld(toPlace.getWorldId());
+								world.props().addProp(toPlace);
+							} else {
+								indi.getAI().setCurrentTask(new PlaceProp(indi, coords, propItem));
+							}
 						} else {
-							ClientServerInterface.SendRequest.sendPlacePropRequest(coords.x, coords.y, toPlace, Domain.getActiveWorld().getWorldId());
+							ClientServerInterface.SendRequest.sendPlacePropRequest(indi, propItem, coords.x, coords.y, toPlace, Domain.getActiveWorld().getWorldId());
 						}
-						Domain.getActiveWorld().getPositionalIndexMap().get(toPlace.position.x, toPlace.position.y).getAllEntitiesForType(Prop.class).add(toPlace.id);
 					}
 				},
 				true

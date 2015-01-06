@@ -82,6 +82,7 @@ import bloodandmithril.graphics.particles.ParticleService.FlameEmber;
 import bloodandmithril.graphics.particles.ParticleService.ParrySpark;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.PropItem;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.container.GlassBottle;
@@ -696,8 +697,8 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void sendPlacePropRequest(float x, float y, Prop prop, int worldId) {
-			client.sendTCP(new PlacePropRequest(prop, x, y, worldId));
+		public static synchronized void sendPlacePropRequest(Individual indi, PropItem propItem, float x, float y, Prop prop, int worldId) {
+			client.sendTCP(new PlacePropRequest(propItem, indi == null ? null : indi.getId().getId(), prop, x, y, worldId));
 			Logger.networkDebug("Sending prop placement request", LogLevel.DEBUG);
 		}
 
