@@ -207,6 +207,7 @@ public class Domain {
 				spriteBatch.flush();
 			}
 		}
+		backgroundParticles();
 		spriteBatch.end();
 		mBuffer.end();
 
@@ -231,7 +232,6 @@ public class Domain {
 		}
 		spriteBatch.end();
 		Domain.individualTexture.setFilter(Nearest, Nearest);
-		backgroundParticles();
 		IndividualPlatformFilteringRenderer.renderIndividuals();
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.filter);

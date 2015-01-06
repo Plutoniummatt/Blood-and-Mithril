@@ -35,7 +35,7 @@ import com.google.common.collect.Lists;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class CarrotProp extends PlantProp {
+public class CarrotProp extends PlantProp implements Harvestable {
 	private static final long serialVersionUID = -4581900482709094877L;
 
 	/** {@link TextureRegion} of the {@link CarrotProp} */

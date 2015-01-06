@@ -14,6 +14,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.functions.IndividualSelected;
 import bloodandmithril.prop.Harvestable;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.InventoryWindow;
@@ -37,7 +38,7 @@ public class Harvest extends CompositeAITask {
 	private static final long serialVersionUID = -4098455998844182430L;
 
 	/** Coordinate of the {@link Harvestable} to harvest */
-	private final Harvestable harvestable;
+	private final Prop harvestable;
 
 	/**
 	 * Constructor
@@ -51,7 +52,7 @@ public class Harvest extends CompositeAITask {
 			goTo(
 				host,
 				host.getState().position.cpy(),
-				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(harvestable.position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
+				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(((Prop) harvestable).position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
 				false,
 				50f,
 				true
@@ -60,7 +61,7 @@ public class Harvest extends CompositeAITask {
 
 		appendTask(this.new HarvestItem(host.getId()));
 
-		this.harvestable = harvestable;
+		this.harvestable = (Prop) harvestable;
 	}
 
 
@@ -105,14 +106,14 @@ public class Harvest extends CompositeAITask {
 
 			if (host.getInteractionBox().isWithinBox(harvestable.position)) {
 
-				if (!host.canReceive(harvestable.harvest())) {
+				if (!host.canReceive(((Harvestable)harvestable).harvest())) {
 					UserInterface.addMessage("Can not harvest", host.getId().getSimpleName() + " does not have enough inventory space.", new IndividualSelected(host.getId().getId()));
 					host.getAI().setCurrentTask(new Idle());
 					return;
 				}
 
 				if (Domain.getWorld(host.getWorldId()).props().hasProp(harvestable.id)) {
-					if (harvestable.destroyUponHarvest()) {
+					if (((Harvestable)harvestable).destroyUponHarvest()) {
 						Domain.getWorld(host.getWorldId()).props().removeProp(harvestable.id);
 					}
 
@@ -121,7 +122,7 @@ public class Harvest extends CompositeAITask {
 					}
 
 					if (ClientServerInterface.isClient() && ClientServerInterface.isServer()) {
-						Collection<Item> harvested = harvestable.harvest();
+						Collection<Item> harvested = ((Harvestable)harvestable).harvest();
 						if (harvested != null && !harvested.isEmpty()) {
 							for (Item item : harvested) {
 								Domain.getIndividual(hostId.getId()).giveItem(item);
@@ -141,7 +142,7 @@ public class Harvest extends CompositeAITask {
 							existingInventoryWindow.refresh();
 						}
 					} else if (ClientServerInterface.isServer()) {
-						Collection<Item> harvested = harvestable.harvest();
+						Collection<Item> harvested = ((Harvestable)harvestable).harvest();
 						if (harvested != null && !harvested.isEmpty()) {
 							for (Item item : harvested) {
 								ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), item);

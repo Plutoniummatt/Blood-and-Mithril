@@ -68,7 +68,7 @@ public class CombatChain {
 						true
 					);
 				}
-				ParticleService.parrySpark(target.getEmissionPosition(), knockbackVector);
+				ParticleService.parrySpark(target.getEmissionPosition(), knockbackVector, false);
 			}
 		} else {
 			knockbackVector.mul(0.1f);
