@@ -41,15 +41,17 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 
 	@Override
 	public void update(float delta) {
-		if (lit && isOnScreen(position, 50f)) {
+		if (lit) {
 			if (burnDuration > 0f) {
 				burnDuration -= delta;
 			} else {
 				lit = false;
 			}
-			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(300), false);
-			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 2f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(600), false);
-			ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1000), false);
+			if (isOnScreen(position, 50f)) {
+				ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(300), false);
+				ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 2f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(600), false);
+				ParticleService.randomVelocityDiminishing(position, 0f, 30f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1000), false);
+			}
 		}
 
 		super.update(delta);
