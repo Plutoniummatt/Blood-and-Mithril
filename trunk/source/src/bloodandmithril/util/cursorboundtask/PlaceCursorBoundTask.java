@@ -11,11 +11,14 @@ import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Rectangle;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
@@ -35,21 +38,29 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 					Vector2 coords;
 					try {
 						if (toPlace.grounded) {
-							coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+							coords = new Vector2(
+								getMouseWorldX(),
+								Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
+							);
 						} else {
 							coords = new Vector2(getMouseWorldX(), getMouseWorldY());
+						}
+
+						if (Gdx.input.isKeyPressed(KeyMappings.snapToGrid)) {
+							coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
+							coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 						}
 					} catch (NoTileFoundException e) {
 						return;
 					}
 
-					boolean canBuild = toPlace.canPlaceAt(getMouseWorldX(), coords.y);
+					boolean canBuild = toPlace.canPlaceAt(coords);
 
 					if (canBuild) {
 						if (ClientServerInterface.isServer()) {
 							Domain.getWorld(toPlace.getWorldId()).props().addProp(toPlace);
 						} else {
-							ClientServerInterface.SendRequest.sendPlacePropRequest(getMouseWorldX(), coords.y, toPlace, Domain.getActiveWorld().getWorldId());
+							ClientServerInterface.SendRequest.sendPlacePropRequest(coords.x, coords.y, toPlace, Domain.getActiveWorld().getWorldId());
 						}
 						Domain.getActiveWorld().getPositionalIndexMap().get(toPlace.position.x, toPlace.position.y).getAllEntitiesForType(Prop.class).add(toPlace.id);
 					}
@@ -65,20 +76,27 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 			Vector2 coords;
 			try {
 				if (toPlace.grounded) {
-					coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+					coords = new Vector2(
+						getMouseWorldX(),
+						Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
+					);
 				} else {
 					coords = new Vector2(getMouseWorldX(), getMouseWorldY());
+				}
+				if (Gdx.input.isKeyPressed(KeyMappings.snapToGrid)) {
+					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
+					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}
 			} catch (NoTileFoundException e) {
 				return;
 			}
 
-			float x = worldToScreenX(getMouseWorldX());
+			float x = worldToScreenX(coords.x);
 			float y = worldToScreenY(coords.y);
 
-			boolean canBuild = toPlace.canPlaceAt(getMouseWorldX(), coords.y);
+			boolean canBuild = toPlace.canPlaceAt(coords);
 
-			toPlace.position.x = getMouseWorldX();
+			toPlace.position.x = coords.x;
 			toPlace.position.y = coords.y;
 
 			gl.glEnable(GL_BLEND);
@@ -100,8 +118,16 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 		@Override
 		public boolean executionConditionMet() {
 			try {
-				Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
-				return toPlace.canPlaceAt(getMouseWorldX(), coords.y);
+				Vector2 coords = new Vector2(
+					getMouseWorldX(),
+					Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
+				);
+
+				if (Gdx.input.isKeyPressed(KeyMappings.snapToGrid)) {
+					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
+					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
+				}
+				return toPlace.canPlaceAt(coords);
 			} catch (NoTileFoundException e) {
 				return false;
 			}

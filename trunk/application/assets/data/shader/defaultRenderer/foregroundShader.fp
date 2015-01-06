@@ -9,6 +9,7 @@ uniform sampler2D u_texture;
 uniform sampler2D occlusion;
 uniform sampler2D occlusion2;
 uniform sampler2D occlusion3;
+uniform sampler2D mgLighting;
 uniform vec4 dayLightColor;
 
 void main()
@@ -21,7 +22,13 @@ void main()
 
 	vec4 fg = texture2D(u_texture, inverted);
 	vec4 lighting = texture2D(occlusion3, v_texCoords);
-	vec4 combinedFactor = (vec4(factor, factor, factor, 1.0) * dayLightColor + lighting) * vec4(factor1, factor1, factor1, 1.0);
+	vec4 mLighting = texture2D(mgLighting, v_texCoords);
+
+	if (length(mLighting.rgb) > 0.4) {
+		mLighting = vec4(normalize(mLighting.rgb) * 0.4, mLighting.a);
+	}	
+	
+	vec4 combinedFactor = (vec4(factor, factor, factor, 1.0) * dayLightColor + lighting + mLighting) * vec4(factor1, factor1, factor1, 1.0);
 	
 	combinedFactor.a = min(combinedFactor.a, 1.0);
 	

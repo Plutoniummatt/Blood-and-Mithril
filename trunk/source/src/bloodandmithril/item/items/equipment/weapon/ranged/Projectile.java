@@ -8,7 +8,6 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
-import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
@@ -93,8 +92,6 @@ public abstract class Projectile implements Serializable {
 			}
 		} catch (NoTileFoundException e) {
 		}
-
-		updatePositionIndex();
 	}
 
 	/**
@@ -175,15 +172,6 @@ public abstract class Projectile implements Serializable {
 
 	public Integer getId() {
 		return id;
-	}
-
-
-	public void updatePositionIndex() {
-		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
-			node.removeProjectile(id);
-		}
-
-		Domain.getWorld(worldId).getPositionalIndexMap().get(position.x, position.y).addProjectile(id);
 	}
 
 

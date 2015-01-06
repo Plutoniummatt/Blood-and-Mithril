@@ -33,6 +33,7 @@ public class KeyMappings {
 	public static int mineTile = Input.Keys.Q;
 	public static int attack = Input.Keys.A;
 	public static int rangedAttack = Input.Keys.CONTROL_LEFT;
+	public static int snapToGrid = Input.Keys.G;
 
 	public static void setup() {
 		keyMap.put(Input.Keys.NUM_0, "0");

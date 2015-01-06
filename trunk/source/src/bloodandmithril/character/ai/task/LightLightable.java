@@ -1,6 +1,5 @@
 package bloodandmithril.character.ai.task;
 
-import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -11,6 +10,7 @@ import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -33,19 +33,31 @@ public class LightLightable extends CompositeAITask {
 	public LightLightable(Individual host, Lightable lightable) throws NoTileFoundException {
 		super(
 			host.getId(),
-			"Mining",
-			goTo(
-				host,
-				host.getState().position.cpy(),
-				new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(((Prop) lightable).position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
-				false,
-				50f,
-				true
-			)
+			"Mining"
 		);
+
+		appendTask(
+		GoToLocation.goToWithTerminationFunction(
+			host,
+			host.getState().position.cpy(),
+			new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(((Prop) lightable).position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
+			false,
+			new WithinInteractionBox(),
+			true
+		));
 
 		this.lightableId = ((Prop) lightable).id;
 		appendTask(new LightFire(hostId));
+	}
+
+
+	public class WithinInteractionBox implements SerializableFunction<Boolean> {
+		private static final long serialVersionUID = -6658375092168650175L;
+
+		@Override
+		public Boolean call() {
+			return Domain.getIndividual(hostId.getId()).getInteractionBox().isWithinBox(Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId).position);
+		}
 	}
 
 
@@ -92,7 +104,7 @@ public class LightLightable extends CompositeAITask {
 			Lightable lightable = (Lightable) Domain.getWorld(host.getWorldId()).props().getProp(lightableId);
 			if (host.getInteractionBox().isWithinBox(((Prop) lightable).position)) {
 				if (host.has(new FlintAndFiresteel()) > 0) {
-					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2());
+					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), true);
 					SoundService.play(SoundService.flint, ((Prop) lightable).position, true);
 					lightable.light();
 					lit = true;

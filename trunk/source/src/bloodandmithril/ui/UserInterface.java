@@ -66,6 +66,7 @@ import bloodandmithril.generation.component.interfaces.Interface;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Prop;
@@ -305,6 +306,7 @@ public class UserInterface {
 			renderMouseOverTileHighlightBox(false);
 		}
 
+		renderHint();
 		renderCursorBoundTask();
 		renderFloatingText();
 		renderDragBox();
@@ -330,6 +332,52 @@ public class UserInterface {
 
 		if (RENDER_TOPOGRAPHY) {
 			TopographyDebugRenderer.render();
+		}
+	}
+
+
+	private static void renderHint() {
+		if (contextMenus.isEmpty() && Domain.getActiveWorld() != null) {
+			boolean renderHint = false;
+			PositionalIndexMap positionalIndexMap = Domain.getActiveWorld().getPositionalIndexMap();
+			for (int id : positionalIndexMap.getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+				if (Domain.getIndividual(id).isMouseOver()) {
+					renderHint = true;
+					break;
+				}
+			}
+			for (int id : positionalIndexMap.getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY())) {
+				if (renderHint) {
+					break;
+				}
+
+				if (Domain.getActiveWorld().props().getProp(id).isMouseOver()) {
+					renderHint = true;
+					break;
+				}
+			}
+			for (int id : positionalIndexMap.getNearbyEntities(Item.class, getMouseWorldX(), getMouseWorldY())) {
+				if (renderHint) {
+					break;
+				}
+
+				if (Domain.getActiveWorld().items().getItem(id).isMouseOver()) {
+					renderHint = true;
+					break;
+				}
+			}
+
+			if (renderHint) {
+				spriteBatch.begin();
+				spriteBatch.setShader(Shaders.filter);
+				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+				Shaders.filter.setUniformf("color", Color.BLACK);
+				Fonts.defaultFont.draw(spriteBatch, "?", getMouseScreenX() + 14, getMouseScreenY() - 5);
+				spriteBatch.flush();
+				Shaders.filter.setUniformf("color", Color.ORANGE);
+				Fonts.defaultFont.draw(spriteBatch, "?", getMouseScreenX() + 15, getMouseScreenY() - 5);
+				spriteBatch.end();
+			}
 		}
 	}
 

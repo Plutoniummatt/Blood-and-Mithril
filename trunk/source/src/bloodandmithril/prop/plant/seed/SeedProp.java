@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public abstract class SeedProp extends Harvestable {
+public abstract class SeedProp extends Growable implements Harvestable {
 	private static final long serialVersionUID = 6958594764600730817L;
 
 	private final Seed seedToRepresent;

@@ -44,7 +44,7 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocityTracer(Vector2 position, float spawnSpread, float maxVel, Color color, float glow, int maxLifeTime, MovementMode mode) {
+	public static void randomVelocityTracer(Vector2 position, float spawnSpread, float maxVel, Color color, float glow, int maxLifeTime, MovementMode mode, boolean background) {
 		if (isClient()) {
 			Domain.getActiveWorld().getParticles().add(new TracerParticle(
 				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
@@ -55,10 +55,10 @@ public class ParticleService {
 				new Countdown(Util.getRandom().nextInt(maxLifeTime)),
 				glow,
 				mode,
-				true
+				background
 			));
 		} else {
-			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), spawnSpread, maxVel, new SerializableColor(color), glow, maxLifeTime, mode));
+			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), spawnSpread, maxVel, new SerializableColor(color), glow, maxLifeTime, mode, background));
 		}
 	}
 
@@ -80,7 +80,7 @@ public class ParticleService {
 	}
 
 
-	public static void parrySpark(Vector2 position, Vector2 knockBack) {
+	public static void parrySpark(Vector2 position, Vector2 knockBack, boolean background) {
 		if (isClient()) {
 			for (int i = 0; i < 35; i++) {
 				Domain.getActiveWorld().getParticles().add(new TracerParticle(
@@ -92,11 +92,11 @@ public class ParticleService {
 					new Countdown(Util.getRandom().nextInt(100)),
 					5f,
 					MovementMode.GRAVITY,
-					false
+					background
 				));
 			}
 		} else {
-			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new ParrySpark(position.cpy(), knockBack));
+			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new ParrySpark(position.cpy(), knockBack, background));
 		}
 	}
 
@@ -105,15 +105,17 @@ public class ParticleService {
 		private static final long serialVersionUID = -7518924240885920128L;
 		private Vector2 position;
 		private Vector2 knockBack;
+		private boolean background;
 
-		public ParrySpark(Vector2 position, Vector2 knockBack) {
+		public ParrySpark(Vector2 position, Vector2 knockBack, boolean background) {
 			this.position = position;
 			this.knockBack = knockBack;
+			this.background = background;
 		}
 
 		@Override
 		public void run() {
-			ParticleService.parrySpark(position, knockBack);
+			ParticleService.parrySpark(position, knockBack, background);
 		}
 	}
 
@@ -144,8 +146,9 @@ public class ParticleService {
 		private float maxVel;
 		private float spawnSpread;
 		private int maxLifeTime;
+		private boolean background;
 
-		public FlameEmber(Vector2 position, float spawnSpread, float maxVel, SerializableColor color, float glow, int maxLifeTime, MovementMode mode) {
+		public FlameEmber(Vector2 position, float spawnSpread, float maxVel, SerializableColor color, float glow, int maxLifeTime, MovementMode mode, boolean background) {
 			this.position = position;
 			this.spawnSpread = spawnSpread;
 			this.maxVel = maxVel;
@@ -153,11 +156,12 @@ public class ParticleService {
 			this.glow = glow;
 			this.maxLifeTime = maxLifeTime;
 			this.mode = mode;
+			this.background = background;
 		}
 
 		@Override
 		public void run() {
-			ParticleService.randomVelocityTracer(position, spawnSpread, maxVel, color.getColor(), glow, maxLifeTime, mode);
+			ParticleService.randomVelocityTracer(position, spawnSpread, maxVel, color.getColor(), glow, maxLifeTime, mode, background);
 		}
 	}
 }

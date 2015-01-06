@@ -61,7 +61,12 @@ public class GlobalLayers {
 	private static Tile determineTile(int worldTileX, int worldTileY, int layerKeyToUse, TwoInts layerToUse) {
 
 		PerlinNoiseGenerator1D layerGenerator = new PerlinNoiseGenerator1D(
-				layerToUse.a, layerKeyToUse * 100, 1, 0f);
+			layerToUse.a,
+			layerKeyToUse * 100,
+			1,
+			0f
+		);
+
 		int layerHeight;
 
 		int firstLayerHeight = 0;
