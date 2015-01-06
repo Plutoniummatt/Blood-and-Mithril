@@ -104,7 +104,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 					Construction toConstruct = tEntry.getKey();
 					toConstruct.setWorldId(builder.getWorldId());
 					BloodAndMithrilClient.setCursorBoundTask(
-						new PlaceCursorBoundTask(toConstruct)
+						new PlaceCursorBoundTask(toConstruct, null, null)
 					);
 					this.setClosing(true);
 				},

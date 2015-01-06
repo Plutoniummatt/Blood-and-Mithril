@@ -200,7 +200,7 @@ public abstract class Prop implements Serializable {
 
 		for (Integer propId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, x, y)) {
 			Prop prop = Domain.getActiveWorld().props().getProp(propId);
-			if (prop instanceof Construction && Domain.getActiveWorld().props().hasProp(propId)) {
+			if (Domain.getActiveWorld().props().hasProp(propId)) {
 				if (this.overlapsWith(prop)) {
 					return false;
 				}

@@ -528,7 +528,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				Prop prop = item.getProp();
 				prop.setWorldId(Domain.getActiveWorld().getWorldId());
 				BloodAndMithrilClient.setCursorBoundTask(
-					new PlaceCursorBoundTask(prop)
+					new PlaceCursorBoundTask(prop, (Individual) host, item)
 				);
 			},
 			Colors.UI_GRAY,

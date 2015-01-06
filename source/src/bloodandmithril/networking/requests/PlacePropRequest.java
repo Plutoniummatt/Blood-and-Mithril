@@ -1,6 +1,9 @@
 package bloodandmithril.networking.requests;
 
+import bloodandmithril.character.ai.task.PlaceProp;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.PropItem;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.prop.Prop;
@@ -18,11 +21,16 @@ public class PlacePropRequest implements Request {
 	private final int worldId;
 	private final float x;
 	private final float y;
+	private final Integer individualId;
+	private final PropItem propItem;
 
 	/**
 	 * Constructor
+	 * @param i 
 	 */
-	public PlacePropRequest(Prop prop, float x, float y, int worldId) {
+	public PlacePropRequest(PropItem propItem, Integer individualId, Prop prop, float x, float y, int worldId) {
+		this.propItem = propItem;
+		this.individualId = individualId;
 		this.prop = prop;
 		this.x = x;
 		this.y = y;
@@ -33,7 +41,12 @@ public class PlacePropRequest implements Request {
 	@Override
 	public Responses respond() {
 		if (prop.canPlaceAt(x, y)) {
-			Domain.getWorld(worldId).props().addProp(prop);
+			if (individualId == null) {
+				Domain.getWorld(worldId).props().addProp(prop);
+			} else {
+				Individual individual = Domain.getIndividual(individualId);
+				individual.getAI().setCurrentTask(new PlaceProp(individual, prop.position, propItem));
+			}
 		}
 
 		return new Responses(false);
