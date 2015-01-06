@@ -9,8 +9,8 @@ import bloodandmithril.world.topography.tile.Tile;
 public class Sky extends SuperStructure {
 	private static final long serialVersionUID = 3773635748047662939L;
 	
-	private int cHeight = 1;
-	private int cWidth = 1;
+	private int cHeight = 50;
+	private int cWidth = 50;
 
 	/**
 	 * @param worldId - the ID of the world.
@@ -22,7 +22,16 @@ public class Sky extends SuperStructure {
 	
 	@Override
 	protected Boundaries findSpace(int startingChunkX, int startingChunkY) {
-		return RectangularSpaceCalculator.calculateBoundariesConfineWithinTwoHeights(true, startingChunkX, startingChunkY, cWidth, cHeight, TerrainGenerator.maxSurfaceHeightInChunks, TerrainGenerator.maxSurfaceHeightInChunks - cHeight, Domain.getWorld(worldId).getTopography());
+		return RectangularSpaceCalculator.calculateBoundariesConfineWithinTwoHeights(
+			true, 
+			startingChunkX, 
+			startingChunkY, 
+			cWidth, 
+			cHeight, 
+			Integer.MAX_VALUE, 
+			TerrainGenerator.maxSurfaceHeightInChunks,
+			Domain.getWorld(worldId).getTopography()
+		);
 	}
 
 	
