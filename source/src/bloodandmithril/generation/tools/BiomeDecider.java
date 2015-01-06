@@ -3,6 +3,7 @@ package bloodandmithril.generation.tools;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.superstructure.Canyon;
 import bloodandmithril.generation.superstructure.Desert;
+import bloodandmithril.generation.superstructure.Sky;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.generation.superstructure.Underground;
 import bloodandmithril.util.Util;
@@ -49,6 +50,6 @@ public class BiomeDecider {
 	 * @return - the Biome which was decided.
 	 */
 	public SuperStructure decideAndGetElevatedBiome(World world) {
-		return null;
+		return new Sky(world.getWorldId());
 	}
 }
