@@ -185,4 +185,10 @@ public class Campfire extends CraftingStation implements Lightable {
 	protected String internalGetTitle() {
 		return "Campfire";
 	}
+
+
+	@Override
+	public boolean isLit() {
+		return lit;
+	}
 }

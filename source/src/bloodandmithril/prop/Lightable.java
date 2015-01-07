@@ -19,4 +19,9 @@ public interface Lightable {
 	 * Extinguishes this thing
 	 */
 	public void extinguish();
+	
+	/**
+	 * True if is lit
+	 */
+	public boolean isLit();
 }

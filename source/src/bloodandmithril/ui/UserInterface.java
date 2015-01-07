@@ -417,7 +417,7 @@ public class UserInterface {
 			}
 
 			if (nearbyEntity instanceof Prop) {
-				Fonts.defaultFont.draw(spriteBatch, ((Prop) nearbyEntity).getClass().getSimpleName() + " " + nearbyEntity.hashCode(), 5, position);
+				Fonts.defaultFont.draw(spriteBatch, ((Prop) nearbyEntity).getClass().getSimpleName() + " " + ((Prop) nearbyEntity).id, 5, position);
 			}
 			position = position - 20;
 		}
@@ -456,6 +456,7 @@ public class UserInterface {
 	 */
 	private static void renderComponentBoundaries() {
 		gl.glEnable(GL_BLEND);
+		Gdx.gl20.glLineWidth(2f);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : Structures.getStructures().values()) {
 			for (bloodandmithril.generation.component.Component component : newArrayList(struct.getComponents())) {
@@ -501,6 +502,7 @@ public class UserInterface {
 
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(2f);
 		shapeRenderer.begin(Rectangle);
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.rect(x, y, TILE_SIZE, TILE_SIZE);
@@ -514,6 +516,7 @@ public class UserInterface {
 	private static void renderComponentInterfaces() {
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl20.glLineWidth(2f);
 		for (Structure struct : Structures.getStructures().values()) {
 			for (bloodandmithril.generation.component.Component comp : newArrayList(struct.getComponents())) {
 				if (renderAvailableInterfaces) {
@@ -525,6 +528,7 @@ public class UserInterface {
 				} else {
 					for (Interface in : newArrayList(comp.getExistingInterfaces())) {
 						if (in != null) {
+							
 							in.render(EXISTING_INTERFACE_COLOR);
 						}
 					}

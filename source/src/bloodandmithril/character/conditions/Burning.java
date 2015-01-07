@@ -36,7 +36,7 @@ public class Burning extends Condition {
 		affected.damage(delta * 2f);
 		duration -= delta;
 
-		Collection<Integer> nearbyIndividualIds = Domain.getWorld(affected.getWorldId()).getPositionalIndexMap().getNearbyEntities(Individual.class, affected.getState().position);
+		Collection<Integer> nearbyIndividualIds = Domain.getWorld(affected.getWorldId()).getPositionalIndexMap().getNearbyEntityIds(Individual.class, affected.getState().position);
 		for (int id : nearbyIndividualIds) {
 			Individual toInfect = Domain.getIndividual(id);
 			if (id != affected.getId().getId() && toInfect.getHitBox().overlapsWith(affected.getHitBox())) {

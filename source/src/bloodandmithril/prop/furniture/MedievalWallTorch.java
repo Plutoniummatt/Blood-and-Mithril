@@ -29,11 +29,12 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MedievalWallTorch extends Furniture implements Lightable {
 	private static final long serialVersionUID = -7830128026417134792L;
+	private static final float BURN_DURATION = 10f;
 
 	/** {@link TextureRegion} of the {@link MedievalWallTorch} */
 	public static TextureRegion medievalWallTorch;
 	private boolean lit = false;
-	private float burnDurationRemaining = 300f;
+	private float burnDurationRemaining = BURN_DURATION;
 
 	/**
 	 * Constructor
@@ -178,7 +179,7 @@ public class MedievalWallTorch extends Furniture implements Lightable {
 
 	@Override
 	public void light() {
-		this.burnDurationRemaining = 300f;
+		this.burnDurationRemaining = BURN_DURATION;
 		this.lit = true;
 	}
 
@@ -186,5 +187,11 @@ public class MedievalWallTorch extends Furniture implements Lightable {
 	@Override
 	public void extinguish() {
 		this.lit = false;
+	}
+
+
+	@Override
+	public boolean isLit() {
+		return lit;
 	}
 }
