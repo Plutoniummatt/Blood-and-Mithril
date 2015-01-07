@@ -21,6 +21,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
@@ -46,7 +47,7 @@ public class CarrotProp extends PlantProp implements Harvestable {
 	 * Constructor
 	 */
 	public CarrotProp(float x, float y) {
-		super(x, y, 12, 17, new SoilTilesOnly());
+		super(x, y, 12, 17, Depth.MIDDLEGROUND, new SoilTilesOnly());
 	}
 
 

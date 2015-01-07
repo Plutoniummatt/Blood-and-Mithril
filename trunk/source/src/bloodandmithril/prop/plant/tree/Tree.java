@@ -5,6 +5,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.plant.PlantProp;
 import bloodandmithril.prop.plant.tree.trunksegments.TestTrunkSegment;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.world.Domain.Depth;
 
 /**
  * A tree
@@ -18,7 +19,7 @@ public class Tree extends PlantProp {
 	private TrunkSegment stump;
 
 	public Tree(float x, float y, int width, int height) {
-		super(x, y, width, height, null);
+		super(x, y, width, height, Depth.BACKGROUND, null);
 		stump = new TestTrunkSegment(true);
 	}
 
@@ -55,7 +56,7 @@ public class Tree extends PlantProp {
 
 	@Override
 	public String getContextMenuItemLabel() {
-		return null;
+		return "Tree";
 	}
 
 

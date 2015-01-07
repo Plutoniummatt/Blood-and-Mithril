@@ -4,6 +4,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableMappingFunction;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
@@ -18,7 +19,7 @@ public abstract class PlantProp extends Growable {
 	/**
 	 * Constructor
 	 */
-	protected PlantProp(float x, float y, int width, int height, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
-		super(x, y, width, height, true, canPlaceOnTopOf);
+	protected PlantProp(float x, float y, int width, int height, Depth depth, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
+		super(x, y, width, height, true, depth, canPlaceOnTopOf);
 	}
 }

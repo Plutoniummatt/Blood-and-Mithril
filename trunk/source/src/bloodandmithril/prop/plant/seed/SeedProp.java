@@ -10,6 +10,7 @@ import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 
@@ -33,7 +34,7 @@ public abstract class SeedProp extends Growable implements Harvestable {
 	 * Constructor
 	 */
 	protected SeedProp(float x, float y, Seed seed, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
-		super(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE, true, canPlaceOnTopOf);
+		super(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE, true, Depth.MIDDLEGROUND, canPlaceOnTopOf);
 		this.seedToRepresent = seed;
 	}
 

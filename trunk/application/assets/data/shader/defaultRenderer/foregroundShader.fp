@@ -26,7 +26,7 @@ void main()
 
 	if (length(mLighting.rgb) > 0.4) {
 		mLighting = vec4(normalize(mLighting.rgb) * 0.4, mLighting.a);
-	}	
+	}
 	
 	vec4 combinedFactor = (vec4(factor, factor, factor, 1.0) * dayLightColor + lighting + mLighting) * vec4(factor1, factor1, factor1, 1.0);
 	
