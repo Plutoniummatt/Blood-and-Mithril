@@ -56,6 +56,7 @@ import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.MedievalWallTorch;
 import bloodandmithril.prop.furniture.WoodenChest;
+import bloodandmithril.prop.plant.tree.Tree;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -419,6 +420,20 @@ public class DevWindow extends Window {
 							if (individual != null) {
 								MedievalWallTorch torch = new MedievalWallTorch(individual.getState().position.x, individual.getState().position.y + 100);
 								Domain.getWorld(individual.getWorldId()).props().addProp(torch);
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					),
+					new ContextMenu.MenuItem(
+						"Tree",
+						() -> {
+							Individual individual = Domain.getIndividuals().get(1);
+							if (individual != null) {
+								Tree tree = new Tree(individual.getState().position.x, individual.getState().position.y, 100, 100);
+								Domain.getWorld(individual.getWorldId()).props().addProp(tree);
 							}
 						},
 						Color.GREEN,
