@@ -19,6 +19,7 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.Gdx;
@@ -58,8 +59,8 @@ public class GaussianLightingRenderer {
 		weather();
 		backgroundLighting();
 		foregroundLighting();
-		lighting(foregroundLightingFBO, false);
-		lighting(middleGroundLightingFBO, true);
+		lighting(foregroundLightingFBO, Depth.FOREGOUND);
+		lighting(middleGroundLightingFBO, Depth.MIDDLEGROUND);
 		background();
 		middleground();
 		foreground();
@@ -170,7 +171,7 @@ public class GaussianLightingRenderer {
 	/**
 	 * Handles rendering to the lighting FBO.
 	 */
-	private static void lighting(FrameBuffer lightingFbo, boolean middle) {
+	private static void lighting(FrameBuffer lightingFbo, Depth depth) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -192,7 +193,7 @@ public class GaussianLightingRenderer {
 		float[] colors = new float[MAX_PARTICLES * 4];
 
 		Iterable<Particle> glowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getParticles(), p -> {
-			return p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f && p.background == middle && isOnScreen(p.position, 50f);
+			return p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f && p.depth == depth && isOnScreen(p.position, 50f);
 		});
 
 		for (Particle p : glowingTracerParticles) {
@@ -230,7 +231,7 @@ public class GaussianLightingRenderer {
 		spriteBatch.end();
 		lightingFbo.end();
 	}
-	
+
 
 	/**
 	 * Renders the background lighting control occlusion FBO

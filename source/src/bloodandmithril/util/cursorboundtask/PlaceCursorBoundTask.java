@@ -82,6 +82,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 		@Override
 		public void renderUIGuide() {
 			Vector2 coords;
+			Gdx.gl20.glLineWidth(2f);
 			try {
 				if (toPlace.grounded) {
 					coords = new Vector2(

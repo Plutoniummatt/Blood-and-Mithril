@@ -19,6 +19,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
@@ -102,8 +103,8 @@ public class Campfire extends CraftingStation implements Lightable {
 		super.update(delta);
 
 		if (lit && isOnScreen(position, 50f)) {
-			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, Util.getRandom().nextFloat() * 10f, MovementMode.EMBER, Util.getRandom().nextInt(1000), true);
-			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1500), true);
+			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, Util.getRandom().nextFloat() * 10f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND);
+			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.BACKGROUND);
 		}
 	}
 

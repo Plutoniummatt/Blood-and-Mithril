@@ -59,6 +59,7 @@ public class TextInputFieldPanel extends Panel {
 
 	@Override
 	public void render() {
+		Gdx.gl20.glLineWidth(2f);
 		Component.shapeRenderer.begin(ShapeType.FilledRectangle);
 		Component.shapeRenderer.setColor(0f, 0f, 0f, parent.isActive() ? 0.9f * parent.getAlpha(): 0.4f * parent.getAlpha());
 		Component.shapeRenderer.filledRect(x, y - height, width, 22);

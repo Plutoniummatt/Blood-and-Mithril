@@ -12,6 +12,7 @@ import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
@@ -104,7 +105,7 @@ public class LightLightable extends CompositeAITask {
 			Lightable lightable = (Lightable) Domain.getWorld(host.getWorldId()).props().getProp(lightableId);
 			if (host.getInteractionBox().isWithinBox(((Prop) lightable).position)) {
 				if (host.has(new FlintAndFiresteel()) > 0) {
-					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), true);
+					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND);
 					SoundService.play(SoundService.flint, ((Prop) lightable).position, true);
 					lightable.light();
 					lit = true;
