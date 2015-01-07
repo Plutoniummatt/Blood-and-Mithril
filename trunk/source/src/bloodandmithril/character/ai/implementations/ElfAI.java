@@ -1,5 +1,9 @@
 package bloodandmithril.character.ai.implementations;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.ai.task.Wait;
@@ -10,6 +14,9 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
+
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 /**
  * AI for elves
@@ -35,12 +42,15 @@ public class ElfAI extends ArtificialIntelligence {
 			wander(200f, false);
 		} else if (!(getCurrentTask() instanceof Wait) && !(getCurrentTask() instanceof LightLightable)) {
 			Individual host = getHost();
-			for (Prop prop : Domain.getWorld(host.getWorldId()).getPositionalIndexMap().getNearbyEntities(Prop.class, host.getState().position)) {
-				if (prop instanceof Lightable && !((Lightable) prop).isLit()) {
-					try {
-						setCurrentTask(new LightLightable(host, (Lightable) prop));
-					} catch (NoTileFoundException e) {}
-				}
+			List<Prop> nearbyEntities = Lists.newLinkedList(Domain.getWorld(host.getWorldId()).getPositionalIndexMap().getNearbyEntities(Prop.class, host.getState().position));
+			Collections.shuffle(nearbyEntities);
+			LinkedList<Prop> lightables = Lists.newLinkedList(Collections2.filter(nearbyEntities, prop -> {
+				return prop instanceof Lightable && !((Lightable) prop).isLit();
+			}));
+			if (!lightables.isEmpty()) {
+				try {
+					setCurrentTask(new LightLightable(host, (Lightable) lightables.get(0)));
+				} catch (NoTileFoundException e) {}
 			}
 		}
 	}
