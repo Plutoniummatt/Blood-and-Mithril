@@ -27,6 +27,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.round;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -149,6 +150,7 @@ public class Domain {
 				spriteBatch.flush();
 			}
 		}
+		renderParticles(Depth.BACKGROUND);
 		spriteBatch.end();
 		bBuffer.end();
 
@@ -207,7 +209,7 @@ public class Domain {
 				spriteBatch.flush();
 			}
 		}
-		backgroundParticles();
+		renderParticles(Depth.MIDDLEGROUND);
 		spriteBatch.end();
 		mBuffer.end();
 
@@ -242,7 +244,7 @@ public class Domain {
 			spriteBatch.flush();
 		}
 		spriteBatch.end();
-		foregroundParticles();
+		renderParticles(Depth.FOREGOUND);
 		gl20.glEnable(GL20.GL_BLEND);
 		gl20.glBlendFuncSeparate(GL20.GL_ONE, GL20.GL_SRC_COLOR, GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		activeWorld.renderFluids();
@@ -253,13 +255,14 @@ public class Domain {
 	}
 
 
-	private void backgroundParticles() {
+	private void renderParticles(Depth depth) {
 		gl20.glEnable(GL20.GL_BLEND);
+		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		Domain.shapeRenderer.begin(Line);
 		shapeRenderer.setProjectionMatrix(cam.combined);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
-			Domain.getActiveWorld().getParticles().stream().filter(p -> p.background).forEach(p -> {
+			Domain.getActiveWorld().getParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
 				p.renderLine(Gdx.graphics.getDeltaTime());
 			});
 		}
@@ -267,34 +270,10 @@ public class Domain {
 		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getParticles() != null) {
-			Domain.getActiveWorld().getParticles().stream().filter(p -> p.background).forEach(p -> {
+			Domain.getActiveWorld().getParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime());
 			});
 		}
-		Domain.shapeRenderer.end();
-		gl20.glDisable(GL20.GL_BLEND);
-	}
-
-
-	private void foregroundParticles() {
-		gl20.glEnable(GL20.GL_BLEND);
-		Domain.shapeRenderer.begin(Line);
-		shapeRenderer.setProjectionMatrix(cam.combined);
-		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
-		if (Domain.getActiveWorld().getParticles() != null) {
-			Domain.getActiveWorld().getParticles().stream().filter(p -> !p.background).forEach(p -> {
-				p.renderLine(Gdx.graphics.getDeltaTime());
-			});
-		}
-		Domain.shapeRenderer.end();
-		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
-		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
-		if (Domain.getActiveWorld().getParticles() != null) {
-			Domain.getActiveWorld().getParticles().stream().filter(p -> !p.background).forEach(p -> {
-				p.render(Gdx.graphics.getDeltaTime());
-			});
-		}
-		Gdx.gl20.glLineWidth(1f);
 		Domain.shapeRenderer.end();
 		gl20.glDisable(GL20.GL_BLEND);
 	}
@@ -475,7 +454,7 @@ public class Domain {
 	}
 
 
-	public enum Depth {
+	public enum Depth implements Serializable {
 		BACKGROUND, FOREGOUND, MIDDLEGROUND
 	}
 }

@@ -38,6 +38,7 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -157,8 +158,9 @@ public class Furnace extends CraftingStation implements Container {
 			}
 
 			if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 5f, 30f, Color.ORANGE, 2f, 8f, MovementMode.EMBER, Util.getRandom().nextInt(800), true);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 5f, 30f, Color.ORANGE, 1f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(1200), true);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 12f, 10f, Color.ORANGE, 2f, 8f, MovementMode.EMBER, Util.getRandom().nextInt(600), Depth.MIDDLEGROUND);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 12f, 10f, Color.ORANGE, 1f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 30f, 10f, Colors.LIGHT_SMOKE, 20f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND);
 			}
 		}
 	}

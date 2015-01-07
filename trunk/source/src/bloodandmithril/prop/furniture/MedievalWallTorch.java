@@ -18,6 +18,7 @@ import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -138,12 +139,11 @@ public class MedievalWallTorch extends Furniture implements Lightable {
 	@Override
 	public void update(float delta) {
 		if (lit) {
-			
+
 			if (isOnScreen(position, 50f)) {
 				Vector2 firePosition = position.cpy().add(0, 23);
-				ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(300), true);
-				ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.ORANGE, Util.getRandom().nextFloat() * 2f, 5f, MovementMode.EMBER, Util.getRandom().nextInt(600), true);
-				ParticleService.randomVelocityDiminishing(firePosition, 3f, 20f, Color.GRAY, 1f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(1000), true);
+				ParticleService.randomVelocityDiminishing(firePosition, 3f, 15f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 7f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND);
+				ParticleService.randomVelocityDiminishing(firePosition, 3f, 10f, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND);
 			}
 			burnDurationRemaining -= delta;
 

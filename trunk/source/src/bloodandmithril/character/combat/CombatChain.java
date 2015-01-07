@@ -12,6 +12,7 @@ import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Wrapper;
+import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -68,7 +69,7 @@ public class CombatChain {
 						true
 					);
 				}
-				ParticleService.parrySpark(target.getEmissionPosition(), knockbackVector, false);
+				ParticleService.parrySpark(target.getEmissionPosition(), knockbackVector, Depth.FOREGOUND);
 			}
 		} else {
 			knockbackVector.mul(0.1f);

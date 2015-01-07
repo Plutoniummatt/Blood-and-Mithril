@@ -7,6 +7,7 @@ import java.io.Serializable;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
@@ -22,7 +23,7 @@ public abstract class Particle {
 	public Color color;
 	public Vector2 position, velocity;
 	public float radius;
-	public final boolean background;
+	public final Depth depth;
 	protected boolean doNotUpdate;
 	private SerializableFunction<Boolean> removalCondition;
 	private MovementMode movementMode = MovementMode.GRAVITY;
@@ -30,7 +31,7 @@ public abstract class Particle {
 	/**
 	 * Constructor
 	 */
-	protected Particle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, MovementMode movementMode, boolean background) {
+	protected Particle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, MovementMode movementMode, Depth depth) {
 		this.position = position;
 		this.velocity = velocity;
 		this.radius = radius;
@@ -38,7 +39,7 @@ public abstract class Particle {
 		this.worldId = worldId;
 		this.removalCondition = removalCondition;
 		this.movementMode = movementMode;
-		this.background = background;
+		this.depth = depth;
 	}
 
 	/**

@@ -3,6 +3,7 @@ package bloodandmithril.graphics.particles;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
@@ -21,8 +22,8 @@ public class TracerParticle extends Particle {
 	public float glowIntensity;
 	public Vector2 prevPosition;
 
-	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity, MovementMode movementMode, boolean background) {
-		super(position, velocity, color, radius, worldId, removalCondition, movementMode, background);
+	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity, MovementMode movementMode, Depth depth) {
+		super(position, velocity, color, radius, worldId, removalCondition, movementMode, depth);
 		this.prevPosition = position.cpy();
 		this.glowIntensity = glowIntensity;
 	}
@@ -35,7 +36,7 @@ public class TracerParticle extends Particle {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
 					Domain.shapeRenderer.setColor(color);
-					Domain.shapeRenderer.filledCircle(position.x, position.y, radius <= 0.01f ? 0.01f : radius);
+					Domain.shapeRenderer.filledCircle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
 				}
 			} catch (NoTileFoundException e) {}
 		}

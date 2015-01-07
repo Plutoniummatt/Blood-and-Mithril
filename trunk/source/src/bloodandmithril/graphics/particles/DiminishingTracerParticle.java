@@ -1,6 +1,7 @@
 package bloodandmithril.graphics.particles;
 
 import bloodandmithril.util.Countdown;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
@@ -26,9 +27,9 @@ public class DiminishingTracerParticle extends TracerParticle {
 			int worldId,
 			float glowIntensity,
 			MovementMode movementMode,
-			boolean background,
+			Depth depth,
 			long diminishingDuration) {
-		super(position, velocity, color, radius, worldId, new Countdown(diminishingDuration), glowIntensity, movementMode, background);
+		super(position, velocity, color, radius, worldId, new Countdown(diminishingDuration), glowIntensity, movementMode, depth);
 		this.originalRadius = radius;
 		this.originalGlowIntensity = glowIntensity;
 		this.diminishingDuration = diminishingDuration;

@@ -11,6 +11,7 @@ import bloodandmithril.util.Countdown;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -46,7 +47,7 @@ public class Glowing extends PreAffix {
 			new Countdown(Util.getRandom().nextInt(1000)),
 			Util.getRandom().nextFloat() * 15f,
 			MovementMode.WEIGHTLESS,
-			false
+			Depth.FOREGOUND
 		));
 	}
 
@@ -62,7 +63,7 @@ public class Glowing extends PreAffix {
 			new Countdown(Util.getRandom().nextInt(1000)),
 			Util.getRandom().nextFloat() * 15f,
 			MovementMode.WEIGHTLESS,
-			false
+			Depth.FOREGOUND
 		));
 	}
 

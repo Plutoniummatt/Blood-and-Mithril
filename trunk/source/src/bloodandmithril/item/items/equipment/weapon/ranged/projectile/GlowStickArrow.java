@@ -10,6 +10,7 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -47,7 +48,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 						getWorldId(),
 						20f,
 						MovementMode.WEIGHTLESS,
-						false,
+						Depth.FOREGOUND,
 						(long) lightingDuration * 1000
 					);
 					particle.doNotUpdate();

@@ -236,6 +236,9 @@ public class Util {
 		public static final Color MILK = new Color(1f, 0.98f, 0.96f, 1f);
 		public static final Color CRUDEOIL = new Color(0.08f, 0.035f, 0f, 1f);
 
+		public static final Color LIGHT_SMOKE = new Color(0.1f, 0.1f, 0.1f, 0.2f);
+		public static final Color DARK_SMOKE = new Color(0f, 0f, 0f, 0.9f);
+
 		/**
 		 * @return A {@link Color} with an adjusted alpha value.
 		 */
