@@ -13,7 +13,6 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
-import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.math.Vector2;
@@ -41,7 +40,7 @@ public class LightLightable extends CompositeAITask {
 		GoToLocation.goToWithTerminationFunction(
 			host,
 			host.getState().position.cpy(),
-			new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(((Prop) lightable).position, 10, Domain.getWorld(host.getWorldId())), 3 * Topography.TILE_SIZE),
+			new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(((Prop) lightable).position, 10, Domain.getWorld(host.getWorldId())), 0f),
 			false,
 			new WithinInteractionBox(),
 			true

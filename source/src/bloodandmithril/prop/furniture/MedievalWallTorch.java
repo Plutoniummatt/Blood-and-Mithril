@@ -29,7 +29,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MedievalWallTorch extends Furniture implements Lightable {
 	private static final long serialVersionUID = -7830128026417134792L;
-	private static final float BURN_DURATION = 10f;
+	private static final float BURN_DURATION = 300f;
 
 	/** {@link TextureRegion} of the {@link MedievalWallTorch} */
 	public static TextureRegion medievalWallTorch;
