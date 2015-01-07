@@ -1,5 +1,7 @@
 package bloodandmithril.generation.patterns;
 
+import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
+
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import bloodandmithril.core.Copyright;
@@ -68,29 +70,27 @@ public class GlobalLayers {
 		);
 
 		int layerHeight;
-
 		int firstLayerHeight = 0;
-		int secondLayerHeight = -10;
-		int thirdLayerHeight = -25;
-		int lastLayerHeight = -50;
+		int secondLayerHeight = -10 * CHUNK_SIZE;
+		int thirdLayerHeight = -25 * CHUNK_SIZE;
+		int lastLayerHeight = -50 * CHUNK_SIZE;
 
 		if (layerKeyToUse - worldTileY < (layerToUse.b - 1)	* layerGenerator.generate(worldTileX, 1)) {
 			layerHeight = layerKeyToUse;
 		} else {
 			layerHeight = layerKeyToUse - layerToUse.b;
 		}
-		if (layerHeight > firstLayerHeight * Topography.CHUNK_SIZE) {
+
+		if (layerHeight > firstLayerHeight) {
 			return new StandardSoilTile();
-		} else if (layerHeight <= firstLayerHeight * Topography.CHUNK_SIZE && layerHeight > secondLayerHeight * Topography.CHUNK_SIZE) {
+		} else if (layerHeight <= firstLayerHeight && layerHeight > secondLayerHeight) {
 			return new GraniteTile();
-		} else if (layerHeight <= secondLayerHeight * Topography.CHUNK_SIZE && layerHeight > thirdLayerHeight * Topography.CHUNK_SIZE) {
+		} else if (layerHeight <= secondLayerHeight && layerHeight > thirdLayerHeight) {
 			return new LimeStoneTile();
-		} else if (layerHeight <= thirdLayerHeight * Topography.CHUNK_SIZE && layerHeight > lastLayerHeight * Topography.CHUNK_SIZE) {
+		} else if (layerHeight <= thirdLayerHeight && layerHeight > lastLayerHeight) {
 			return new ObsidianTile();
-		} else if (layerHeight <= lastLayerHeight * Topography.CHUNK_SIZE) {
-			return new MagmaTile();
 		} else {
-			return new Tile.DebugTile();
+			return new MagmaTile();
 		}
 	}
 }
