@@ -73,7 +73,7 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 	public void preFireDecorate(Individual individual) {
 		World world = Domain.getWorld(individual.getWorldId());
 
-		for (int propId : world.getPositionalIndexMap().getNearbyEntities(Prop.class, individual.getState().position)) {
+		for (int propId : world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, individual.getState().position)) {
 			Prop prop = world.props().getProp(propId);
 			if (prop.canBeUsedAsFireSource() && individual.getInteractionBox().overlapsWith(new Box(prop.position.cpy().add(0, prop.height/2), prop.width, prop.height))) {
 				lit = true;

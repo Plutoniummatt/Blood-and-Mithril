@@ -44,7 +44,7 @@ public class World implements Serializable {
 	private Collection<FluidBody> 								fluids					= new ConcurrentLinkedQueue<>();
 
 	/** The positional indexing map of this {@link World} */
-	private PositionalIndexMap 									positionalIndexMap		= new PositionalIndexMap();
+	private PositionalIndexMap 									positionalIndexMap;
 
 	/** Particles on this {@link World} */
 	private transient Collection<Particle> 						particles				= new ConcurrentLinkedDeque<>();
@@ -68,6 +68,7 @@ public class World implements Serializable {
 		this.props = new WorldProps(worldId);
 		this.projectiles = new WorldProjectiles(worldId);
 		this.topography = new Topography(worldId);
+		this.positionalIndexMap = new PositionalIndexMap(worldId);
 	}
 
 

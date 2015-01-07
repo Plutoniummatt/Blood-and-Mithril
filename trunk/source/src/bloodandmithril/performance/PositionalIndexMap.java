@@ -8,10 +8,15 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 /**
@@ -22,6 +27,7 @@ import com.google.common.collect.Lists;
 @Copyright("Matthew Peck 2014")
 public class PositionalIndexMap implements Serializable {
 	private static final long serialVersionUID = 3198970349534676023L;
+	private final int worldId;
 
 	/** Index datastructure */
 	private ConcurrentDualKeyHashMap<Integer, Integer, PositionalIndexNode> indexes = new ConcurrentDualKeyHashMap<>();
@@ -29,7 +35,9 @@ public class PositionalIndexMap implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public PositionalIndexMap() {}
+	public PositionalIndexMap(int worldId) {
+		this.worldId = worldId;
+	}
 
 
 	/**
@@ -97,8 +105,40 @@ public class PositionalIndexMap implements Serializable {
 	/**
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
-	public Collection<Integer> getNearbyEntities(Class<?> clazz, Vector2 position) {
+	public Collection<Integer> getNearbyEntityIds(Class<?> clazz, Vector2 position) {
 		return getNearbyEntities(clazz, position.x, position.y);
+	}
+	
+	
+	/**
+	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> Collection<T> getNearbyEntities(Class<T> clazz, Vector2 position) {
+		Collection<T> ts = Lists.newLinkedList();
+
+		Function<Integer, T> function;
+		if (clazz.equals(Individual.class)) {
+			function = id -> {
+				return (T) Domain.getIndividual(id);
+			};
+		} else if (clazz.equals(Prop.class)) {
+			function = id -> {
+				return (T) Domain.getWorld(worldId).props().getProp(id);
+			};
+		} else if (clazz.equals(Item.class)) {
+			function = id -> {
+				return (T) Domain.getWorld(worldId).items().getItem(id);
+			};
+		} else {
+			throw new RuntimeException("Unrecongized class : " + clazz.getSimpleName());
+		}
+		
+		for (int id : getNearbyEntities(clazz, position.x, position.y)) {
+			ts.add(function.apply(id));
+		}
+		
+		return ts;
 	}
 
 

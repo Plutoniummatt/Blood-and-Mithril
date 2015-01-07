@@ -57,7 +57,7 @@ public abstract class Projectile implements Serializable {
 	 * Updates this {@link Projectile}
 	 */
 	public void update(float delta) {
-		Optional<Integer> findAny = Domain.getWorld(getWorldId()).getPositionalIndexMap().getNearbyEntities(Individual.class, position).stream().filter(individual -> {
+		Optional<Integer> findAny = Domain.getWorld(getWorldId()).getPositionalIndexMap().getNearbyEntityIds(Individual.class, position).stream().filter(individual -> {
 			return Domain.getIndividual(individual).getHitBox().isWithinBox(position);
 		}).findAny();
 
