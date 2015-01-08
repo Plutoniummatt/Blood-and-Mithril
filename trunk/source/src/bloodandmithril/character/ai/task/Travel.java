@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai.task;
 
+import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -7,6 +8,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Util;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -33,6 +35,9 @@ public class Travel extends CompositeAITask {
 	 */
 	public void addGotoLocation(JitGoToLocation goToLocation) {
 		appendTask(goToLocation);
+		if (getHost().isSelected() && Util.roll(0.3f)) {
+			UserInterface.addTextBubble(Speech.getRandomAffirmativeSpeech(), getHost().getState().position, 1000, 0, getHost().getHeight() + 40);
+		}
 	}
 
 
@@ -87,8 +92,8 @@ public class Travel extends CompositeAITask {
 			previousTask = task;
 		}
 	}
-	
-	
+
+
 	@Override
 	public void setCurrentTask(AITask currentTask) {
 		currentWaypointRenderPositionOffsetTimer = 0f;
@@ -98,14 +103,14 @@ public class Travel extends CompositeAITask {
 
 	private void renderForTask(AITask previousTask, AITask task, boolean isCurrentTask) {
 		if (task instanceof JitGoToLocation) {
-			
+
 			float offset = 0f;
 			if (isCurrentTask) {
 				offset = (float) Math.cos(currentWaypointRenderPositionOffsetTimer + Math.PI) + 1f;
 				currentWaypointRenderPositionOffsetTimer += 0.15f;
 			}
-			
-			
+
+
 			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
 			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);

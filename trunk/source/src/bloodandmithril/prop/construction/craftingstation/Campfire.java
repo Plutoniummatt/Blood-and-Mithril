@@ -124,7 +124,7 @@ public class Campfire extends CraftingStation implements Lightable {
 				Individual selected = Domain.getSelectedIndividuals().iterator().next();
 				if (ClientServerInterface.isServer()) {
 					try {
-						selected.getAI().setCurrentTask(new LightLightable(selected, thisCampfire));
+						selected.getAI().setCurrentTask(new LightLightable(selected, thisCampfire, false));
 					} catch (NoTileFoundException e) {}
 				} else {
 					ClientServerInterface.SendRequest.sendLightLightableRequest(selected, thisCampfire);

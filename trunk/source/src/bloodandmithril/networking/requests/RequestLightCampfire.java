@@ -33,7 +33,7 @@ public class RequestLightCampfire implements Request {
 	public Responses respond() {
 		Individual individual = Domain.getIndividual(individualId);
 		try {
-			individual.getAI().setCurrentTask(new LightLightable(individual, (Lightable) Domain.getWorld(Domain.getIndividual(individualId).getWorldId()).props().getProp(lightable)));
+			individual.getAI().setCurrentTask(new LightLightable(individual, (Lightable) Domain.getWorld(Domain.getIndividual(individualId).getWorldId()).props().getProp(lightable), false));
 		} catch (NoTileFoundException e) {}
 		return new Responses(false);
 	}
