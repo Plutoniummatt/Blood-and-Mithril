@@ -25,16 +25,19 @@ import com.badlogic.gdx.math.Vector2;
 public class LightLightable extends CompositeAITask {
 	private static final long serialVersionUID = -2379179198784328909L;
 
+	private boolean auto;
 	private int lightableId;
 
 	/**
 	 * Constructor
 	 */
-	public LightLightable(Individual host, Lightable lightable) throws NoTileFoundException {
+	public LightLightable(Individual host, Lightable lightable, boolean auto) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Mining"
 		);
+
+		this.auto = auto;
 
 		appendTask(
 		GoToLocation.goToWithTerminationFunction(
@@ -56,7 +59,8 @@ public class LightLightable extends CompositeAITask {
 
 		@Override
 		public Boolean call() {
-			return Domain.getIndividual(hostId.getId()).getInteractionBox().isWithinBox(Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId).position);
+			Lightable prop = (Lightable) Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId);
+			return prop == null || prop.isLit() && auto || getHost().getInteractionBox().isWithinBox(Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId).position);
 		}
 	}
 
@@ -83,7 +87,8 @@ public class LightLightable extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return Domain.getWorld(getHost().getWorldId()).props().hasProp(lightableId) && lit;
+			Prop prop = Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId);
+			return prop != null && (lit || ((Lightable) prop).isLit());
 		}
 
 

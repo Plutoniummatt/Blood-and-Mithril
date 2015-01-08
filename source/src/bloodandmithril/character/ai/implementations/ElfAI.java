@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.ai.task.Wait;
@@ -11,6 +12,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -49,9 +51,13 @@ public class ElfAI extends ArtificialIntelligence {
 			}));
 			if (!lightables.isEmpty()) {
 				try {
-					setCurrentTask(new LightLightable(host, (Lightable) lightables.get(0)));
+					setCurrentTask(new LightLightable(host, (Lightable) lightables.get(0), true));
 				} catch (NoTileFoundException e) {}
 			}
+		}
+
+		if (Util.roll(0.0005f)) {
+			UserInterface.addTextBubble(Speech.getRandomIdleSpeech(), getHost().getState().position, 2500, 0, getHost().getHeight() + 40);
 		}
 	}
 }

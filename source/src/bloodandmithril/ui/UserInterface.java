@@ -75,11 +75,13 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.TextBubble;
 import bloodandmithril.ui.components.bar.BottomBar;
 import bloodandmithril.ui.components.window.BuildWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
@@ -135,6 +137,9 @@ public class UserInterface {
 
 	/** {@link Window}s */
 	public static ArrayDeque<Component> layeredComponents = new ArrayDeque<Component>();
+
+	/** {@link TextBubble}s */
+	public static ArrayDeque<TextBubble> textBubbles = new ArrayDeque<TextBubble>();
 
 	/** Shape renderer */
 	public static ShapeRenderer shapeRenderer = new ShapeRenderer();
@@ -306,9 +311,11 @@ public class UserInterface {
 			renderMouseOverTileHighlightBox(false);
 		}
 
+
+		renderFloatingText();
+		renderTextBubbles();
 		renderHint();
 		renderCursorBoundTaskText();
-		renderFloatingText();
 		renderDragBox();
 		renderLayeredComponents();
 		renderContextMenus();
@@ -332,6 +339,42 @@ public class UserInterface {
 
 		if (RENDER_TOPOGRAPHY) {
 			TopographyDebugRenderer.render();
+		}
+	}
+
+
+	private static synchronized void renderTextBubbles() {
+		spriteBatch.begin();
+
+		ArrayDeque<TextBubble> newBubbles = new ArrayDeque<>();
+		for (TextBubble bubble : textBubbles) {
+			bubble.render();
+			if (bubble.removalFunction.call()) {
+				bubble.setClosing(true);
+			}
+
+			if (!(bubble.getAlpha() <= 0f && bubble.isClosing())) {
+				newBubbles.add(bubble);
+			}
+		}
+
+		textBubbles = newBubbles;
+		spriteBatch.end();
+	}
+
+
+	public static synchronized void addTextBubble(String text, Vector2 position, long duration, int xOffset, int yOffset) {
+		if (ClientServerInterface.isClient()) {
+			textBubbles.add(new TextBubble(
+				text,
+				position,
+				new Countdown(duration),
+				xOffset,
+				yOffset
+			)
+		);
+		} else {
+			// TODO
 		}
 	}
 
@@ -528,7 +571,7 @@ public class UserInterface {
 				} else {
 					for (Interface in : newArrayList(comp.getExistingInterfaces())) {
 						if (in != null) {
-							
+
 							in.render(EXISTING_INTERFACE_COLOR);
 						}
 					}
@@ -867,7 +910,7 @@ public class UserInterface {
 		if (getCursorBoundTask() != null) {
 			return;
 		}
-		
+
 		boolean jumpPressed = Gdx.input.isKeyPressed(KeyMappings.jump);
 		boolean addWayPointPressed = Gdx.input.isKeyPressed(KeyMappings.addWayPoint);
 		boolean forceMovePressed = Gdx.input.isKeyPressed(KeyMappings.forceMove);
