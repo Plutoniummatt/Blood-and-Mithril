@@ -12,10 +12,8 @@ import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.window.ConstructionWindow;
 import bloodandmithril.ui.components.window.FurnaceWindow;
 import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.world.Domain;
@@ -52,7 +50,7 @@ public class TradeWith extends CompositeAITask {
 			location = ((Prop) proposee).position;
 		}
 
-		setCurrentTask(new GoToMovingLocation(
+		appendTask(new GoToMovingLocation(
 			proposer.getId(),
 			location,
 			50f
@@ -187,23 +185,6 @@ public class TradeWith extends CompositeAITask {
 	public static void openTradeWindowWithProp(Individual proposer, Container container) {
 		if (container instanceof Prop) {
 			Prop prop = Domain.getWorld(proposer.getWorldId()).props().getProp(((Prop) container).id);
-
-			if (prop instanceof Construction) {
-				if (((Construction) prop).getConstructionProgress() != 1f) {
-					UserInterface.addLayeredComponentUnique(
-						new ConstructionWindow(
-							BloodAndMithrilClient.WIDTH/2 - 300,
-							BloodAndMithrilClient.HEIGHT/2 + 150,
-							proposer.getId().getSimpleName() + " interacting with " + ((Construction)prop).getTitle(),
-							true,
-							proposer,
-							(Construction) prop
-						)
-					);
-					return;
-				}
-			}
-
 			if (prop instanceof Furnace) {
 				UserInterface.addLayeredComponentUnique(
 					new FurnaceWindow(

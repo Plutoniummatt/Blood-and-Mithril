@@ -17,20 +17,22 @@ import bloodandmithril.world.Domain;
 public class ConstructionRequest implements Request {
 
 	private int individualId, constructionId;
+	private final boolean deconstruct;
 
 	/**
 	 * Constructor
 	 */
-	public ConstructionRequest(int individualId, int constructionId) {
+	public ConstructionRequest(int individualId, int constructionId, boolean deconstruct) {
 		this.individualId = individualId;
 		this.constructionId = constructionId;
+		this.deconstruct = deconstruct;
 	}
 
 
 	@Override
 	public Responses respond() {
 		Individual individual = Domain.getIndividual(individualId);
-		individual.getAI().setCurrentTask(new Construct(individual, (Construction)Domain.getWorld(individual.getWorldId()).props().getProp(constructionId)));
+		individual.getAI().setCurrentTask(new Construct(individual, (Construction)Domain.getWorld(individual.getWorldId()).props().getProp(constructionId), deconstruct));
 		return new Responses(false);
 	}
 

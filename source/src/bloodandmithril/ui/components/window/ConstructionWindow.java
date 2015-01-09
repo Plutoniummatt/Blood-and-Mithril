@@ -19,6 +19,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.RequiredMaterialsPanel;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -44,7 +45,7 @@ public class ConstructionWindow extends Window implements Refreshable {
 		90,
 		16,
 		() -> {
-			beginConstruction();
+			beginConstruction(false);
 		},
 		Color.ORANGE,
 		Color.WHITE,
@@ -52,6 +53,22 @@ public class ConstructionWindow extends Window implements Refreshable {
 		UIRef.BL
 	);
 
+	private Button deconstructButton= new Button(
+		"Deconstruct",
+		defaultFont,
+		0,
+		0,
+		110,
+		16,
+		() -> {
+			beginConstruction(true);
+		},
+		Color.ORANGE,
+		Color.WHITE,
+		Color.GREEN,
+		UIRef.BL
+	);
+	
 	private RequiredMaterialsPanel requiredMaterialsPanel;
 
 	/**
@@ -72,14 +89,12 @@ public class ConstructionWindow extends Window implements Refreshable {
 	}
 
 
-	private void beginConstruction() {
+	private void beginConstruction(boolean deconstruct) {
 		refresh();
-		if (enoughMaterialsToCraft || construction.getConstructionProgress() != 0f) {
-			if (ClientServerInterface.isServer()) {
-				individual.getAI().setCurrentTask(new Construct(individual, construction));
-			} else {
-				ClientServerInterface.SendRequest.sendConstructRequest(individual.getId().getId(), construction.id);
-			}
+		if (ClientServerInterface.isServer()) {
+			individual.getAI().setCurrentTask(new Construct(individual, construction, deconstruct));
+		} else {
+			ClientServerInterface.SendRequest.sendConstructRequest(individual.getId().getId(), construction.id, deconstruct);
 		}
 	}
 
@@ -90,7 +105,7 @@ public class ConstructionWindow extends Window implements Refreshable {
 			setClosing(true);
 		}
 
-		if (construction.getConstructionProgress() >= 1f) {
+		if (!Domain.getWorld(construction.getWorldId()).props().hasProp(construction.id)) {
 			setClosing(true);
 		}
 
@@ -100,7 +115,8 @@ public class ConstructionWindow extends Window implements Refreshable {
 		requiredMaterialsPanel.height = height - 110;
 		requiredMaterialsPanel.render();
 
-		constructButton.render(x + 60, y - 45, isActive() && (enoughMaterialsToCraft || construction.getConstructionProgress() != 0f), isActive() ? getAlpha() : getAlpha() * 0.6f);
+		constructButton.render(x + 60, y - 55, isActive() && (enoughMaterialsToCraft || construction.getConstructionProgress() != 0f) && construction.getConstructionProgress() != 1f, isActive() ? getAlpha() : getAlpha() * 0.6f);
+		deconstructButton.render(x + 70, y - 74, isActive() && (construction.canDeconstruct()), isActive() ? getAlpha() : getAlpha() * 0.6f);
 
 		defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.GREEN, getAlpha()) : Colors.modulateAlpha(Color.GREEN, 0.5f * getAlpha()));
 		String progress = "(" + String.format("%.1f", 100f * construction.getConstructionProgress()) + "%)";
@@ -114,6 +130,9 @@ public class ConstructionWindow extends Window implements Refreshable {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		if (enoughMaterialsToCraft || construction.getConstructionProgress() != 0f) {
 			constructButton.click();
+		}
+		if (Domain.getWorld(construction.getWorldId()).props().hasProp(construction.id) && construction.canDeconstruct()) {
+			deconstructButton.click();
 		}
 
 		requiredMaterialsPanel.leftClick(copy, windowsCopy);

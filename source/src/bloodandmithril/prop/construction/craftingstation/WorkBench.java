@@ -87,4 +87,10 @@ public class WorkBench extends CraftingStation {
 	protected String internalGetTitle() {
 		return "Work bench";
 	}
+
+
+	@Override
+	public boolean canDeconstruct() {
+		return true;
+	}
 }
