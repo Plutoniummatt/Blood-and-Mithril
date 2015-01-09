@@ -89,4 +89,10 @@ public class Anvil extends CraftingStation {
 	protected String internalGetTitle() {
 		return "Anvil";
 	}
+
+
+	@Override
+	public boolean canDeconstruct() {
+		return true;
+	}
 }

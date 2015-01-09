@@ -355,4 +355,10 @@ public class Furnace extends CraftingStation implements Container {
 	protected String internalGetTitle() {
 		return "Furnace";
 	}
+
+
+	@Override
+	public boolean canDeconstruct() {
+		return !burning && container.isEmpty();
+	}
 }

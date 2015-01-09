@@ -1,9 +1,12 @@
 package bloodandmithril.prop.construction;
 
+import static bloodandmithril.networking.ClientServerInterface.client;
+import static bloodandmithril.networking.ClientServerInterface.isServer;
+
 import java.util.Map;
 import java.util.Map.Entry;
 
-import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.ai.task.ConstructDeconstruct;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -115,6 +118,21 @@ public abstract class Construction extends Prop implements Container {
 			constructionProgress = constructionProgress + time * constructionRate >= 1f ? 1f : constructionProgress + time * constructionRate;
 		}
 	}
+	
+	
+	/**
+	 * Regresses the construction of this {@link Construction}, in time units measured in seconds
+	 */
+	public synchronized void deconstruct(Individual individual, float time) {
+		if (canDeconstruct()) {
+			if (constructionProgress <= 0f) {
+				Domain.getWorld(getWorldId()).props().removeProp(id);
+				// TODO return some construction materials
+			} else {
+				constructionProgress = constructionProgress - time * constructionRate <= 0f ? 0f : constructionProgress - time * constructionRate;
+			}	
+		}
+	}
 
 
 	/**
@@ -129,7 +147,32 @@ public abstract class Construction extends Prop implements Container {
 	@Override
 	public ContextMenu getContextMenu() {
 		if (constructionProgress == 1f) {
-			return getCompletedContextMenu();
+			MenuItem deconstruct = new MenuItem(
+				"Deconstruct",
+				() -> {
+					if (Domain.getSelectedIndividuals().size() == 1) {
+						Individual selected = Domain.getSelectedIndividuals().iterator().next();
+						if (isServer()) {
+							selected.getAI().setCurrentTask(
+								new ConstructDeconstruct(selected, this, isServer() ? 0 : client.getID())
+							);
+						} else {
+							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
+						}
+					}
+				},
+				Domain.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
+				Domain.getSelectedIndividuals().size() == 1 ? Color.GREEN : Colors.UI_DARK_GRAY,
+				Domain.getSelectedIndividuals().size() == 1 ? Color.GRAY : Colors.UI_DARK_GRAY,
+				new ContextMenu(0, 0, true, new MenuItem("You must select a single individual", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+				() -> {
+					return Domain.getSelectedIndividuals().size() != 1;
+				}
+			);
+			
+			ContextMenu completedContextMenu = getCompletedContextMenu();
+			completedContextMenu.addMenuItem(deconstruct);
+			return completedContextMenu;
 		} else {
 			ContextMenu menu = new ContextMenu(0, 0, true);
 
@@ -138,9 +181,9 @@ public abstract class Construction extends Prop implements Container {
 				() -> {
 					if (Domain.getSelectedIndividuals().size() == 1) {
 						Individual selected = Domain.getSelectedIndividuals().iterator().next();
-						if (ClientServerInterface.isServer()) {
+						if (isServer()) {
 							selected.getAI().setCurrentTask(
-								new TradeWith(selected, this)
+								new ConstructDeconstruct(selected, this, isServer() ? 0 : client.getID())
 							);
 						} else {
 							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
@@ -215,7 +258,9 @@ public abstract class Construction extends Prop implements Container {
 
 	/** Get the context menu that will be displayed once this {@link Construction} has finished being constructing */
 	protected abstract ContextMenu getCompletedContextMenu();
-
+	
+	/** Whether this {@link Construction} can be deconstructed */
+	public abstract boolean canDeconstruct();
 
 	@Override
 	public void synchronizeContainer(Container other) {

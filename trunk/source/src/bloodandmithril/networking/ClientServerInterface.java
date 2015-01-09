@@ -162,6 +162,7 @@ import bloodandmithril.networking.requests.IndividualSelection;
 import bloodandmithril.networking.requests.LockUnlockContainerRequest;
 import bloodandmithril.networking.requests.MessageWindowNotification;
 import bloodandmithril.networking.requests.MoveIndividual;
+import bloodandmithril.networking.requests.NotifyOpenConstructionWindow;
 import bloodandmithril.networking.requests.OpenTradeWindow;
 import bloodandmithril.networking.requests.Ping;
 import bloodandmithril.networking.requests.Ping.Pong;
@@ -171,6 +172,7 @@ import bloodandmithril.networking.requests.RefreshWindows;
 import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
 import bloodandmithril.networking.requests.RequestClientList;
 import bloodandmithril.networking.requests.RequestClientList.RequestClientListResponse;
+import bloodandmithril.networking.requests.RequestConstructDeconstruct;
 import bloodandmithril.networking.requests.RequestDiscardItem;
 import bloodandmithril.networking.requests.RequestLightCampfire;
 import bloodandmithril.networking.requests.RequestPlantSeed;
@@ -742,8 +744,8 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending harvest request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendConstructRequest(int individualId, int propId) {
-			client.sendTCP(new ConstructionRequest(individualId, propId));
+		public static synchronized void sendConstructRequest(int individualId, int propId, boolean deconstruct) {
+			client.sendTCP(new ConstructionRequest(individualId, propId, deconstruct));
 			Logger.networkDebug("Sending construction request", LogLevel.DEBUG);
 		}
 
@@ -840,6 +842,11 @@ public class ClientServerInterface {
 		public static synchronized void sendTradeWithPropRequest(Individual proposer, int propId) {
 			client.sendTCP(new CSITradeWith(proposer.getId().getId(), TradeEntity.PROP, propId, client.getID()));
 			Logger.networkDebug("Sending trade with prop request", LogLevel.DEBUG);
+		}
+		
+		public static synchronized void sendConstructionRequest(Individual constructor, int propId) {
+			client.sendTCP(new RequestConstructDeconstruct(constructor.getId().getId(), propId, client.getID()));
+			Logger.networkDebug("Sending construction/deconstruction request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendIndividualSelectionRequest(int id, boolean select) {
@@ -1043,6 +1050,19 @@ public class ClientServerInterface {
 					proposerId,
 					proposee,
 					proposeeId
+				)
+			);
+		}
+		
+		
+		public static synchronized void notifyConstructionWindowOpen(int individualId, int construction, int connectionId) {
+			sendNotification(
+				connectionId,
+				true,
+				false,
+				new NotifyOpenConstructionWindow(
+					individualId,
+					construction
 				)
 			);
 		}

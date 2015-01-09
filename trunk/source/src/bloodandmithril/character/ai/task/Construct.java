@@ -20,7 +20,7 @@ public class Construct extends CompositeAITask {
 	/**
 	 * Constructor
 	 */
-	public Construct(Individual host, Construction construction) {
+	public Construct(Individual host, Construction construction, boolean deconstruct) {
 		super(
 			host.getId(),
 			"Constructing",
@@ -34,7 +34,7 @@ public class Construct extends CompositeAITask {
 			)
 		);
 
-		appendTask(new Constructing(hostId, construction.id));
+		appendTask(new Constructing(hostId, construction.id, deconstruct));
 	}
 
 
@@ -42,13 +42,15 @@ public class Construct extends CompositeAITask {
 		private static final long serialVersionUID = -6557725570349017304L;
 		private int constructionId;
 		private boolean stop;
+		private boolean deconstruct;
 
 		/**
 		 * Constructor
 		 */
-		public Constructing(IndividualIdentifier hostId, int constructionId) {
+		public Constructing(IndividualIdentifier hostId, int constructionId, boolean deconstruct) {
 			super(hostId);
 			this.constructionId = constructionId;
+			this.deconstruct = deconstruct;
 		}
 
 
@@ -60,7 +62,11 @@ public class Construct extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
-			return ((Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId)).getConstructionProgress() == 1f || stop;
+			if (deconstruct) {
+				return !Domain.getWorld(getHost().getWorldId()).props().hasProp(constructionId) || stop || !((Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId)).canDeconstruct();
+			} else {
+				return ((Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId)).getConstructionProgress() == 1f || stop;
+			}
 		}
 
 
@@ -74,7 +80,11 @@ public class Construct extends CompositeAITask {
 		public void execute(float delta) {
 			Construction construction = (Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId);
 			if (construction != null) {
-				construction.construct(Domain.getIndividual(hostId.getId()), delta);
+				if (deconstruct) {
+					construction.deconstruct(Domain.getIndividual(hostId.getId()), delta);
+				} else {
+					construction.construct(Domain.getIndividual(hostId.getId()), delta);
+				}
 			} else {
 				stop = true;
 			}

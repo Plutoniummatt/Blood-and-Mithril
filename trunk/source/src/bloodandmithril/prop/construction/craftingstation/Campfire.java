@@ -191,4 +191,10 @@ public class Campfire extends CraftingStation implements Lightable {
 	public boolean isLit() {
 		return lit;
 	}
+
+
+	@Override
+	public boolean canDeconstruct() {
+		return !lit;
+	}
 }
