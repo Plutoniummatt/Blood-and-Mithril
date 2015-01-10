@@ -661,7 +661,11 @@ public class InventoryWindow extends Window implements Refreshable {
 				menuItems[i] = new MenuItem(
 					item.getSingular(true),
 					() -> {
-						weapon.setAmmo(item);
+						if (ClientServerInterface.isServer()) {
+							weapon.setAmmo(item);
+						} else {
+							ClientServerInterface.SendRequest.sendRequestChangeAmmo((Individual) host, weapon, item);
+						}
 						refresh();
 					},
 					Color.WHITE,

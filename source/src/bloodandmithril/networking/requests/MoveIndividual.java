@@ -25,16 +25,27 @@ public class MoveIndividual implements Request {
 
 	/** Whether or not to force move */
 	private final boolean forceMove;
-	private boolean add;
+	
+	/** Whether to add to existing task */
+	private final boolean add;
+	
+	/** Whether to jump */
+	private final boolean jump;
+
+	/** Coordinates of the jump destination */
+	private final Vector2 jumpFrom, jumpCoords;
 
 	/**
 	 * Constructor
 	 */
-	public MoveIndividual(int individualId, Vector2 destinationCoordinates, boolean forceMove, boolean add) {
+	public MoveIndividual(int individualId, Vector2 destinationCoordinates, boolean forceMove, boolean add, boolean jump, Vector2 jumpFrom, Vector2 jumpCoords) {
 		this.individualId = individualId;
 		this.destinationCoordinates = destinationCoordinates;
 		this.forceMove = forceMove;
 		this.add = add;
+		this.jump = jump;
+		this.jumpFrom = jumpFrom;
+		this.jumpCoords = jumpCoords;
 	}
 
 
@@ -42,47 +53,37 @@ public class MoveIndividual implements Request {
 	public Responses respond() {
 		Individual individual = Domain.getIndividual(individualId);
 		if (individual != null && Domain.getSelectedIndividuals().contains(individual)) {
-			AIProcessor.sendPathfindingRequest(
+			if (jump) {
+				AIProcessor.sendJumpResolutionRequest(
+					individual, 
+					jumpFrom, 
+					jumpCoords, 
+					add
+				);
+			} else {
+				AIProcessor.sendPathfindingRequest(
 					individual,
-				new WayPoint(destinationCoordinates),
-				false,
-				150f,
-				!forceMove,
-				add
-			);
+					new WayPoint(destinationCoordinates),
+					false,
+					150f,
+					!forceMove,
+					add
+				);
+			}
 		}
-
-		Response response = new MoveIndividualResponse();
-		Responses responses = new Response.Responses(false);
-		responses.add(response);
-		return responses;
+		
+		return new Response.Responses(false);
 	}
 
 
 	@Override
 	public boolean tcp() {
-		return false;
+		return true;
 	}
 
 
 	@Override
 	public boolean notifyOthers() {
 		return false;
-	}
-
-
-	public static class MoveIndividualResponse implements Response {
-		@Override
-		public void acknowledge() {
-		}
-
-		@Override
-		public int forClient() {
-			return -1;
-		}
-
-		@Override
-		public void prepare() {
-		}
 	}
 }

@@ -399,7 +399,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					if (ClientServerInterface.isServer()) {
 						selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
 					} else {
-						// TODO
+						ClientServerInterface.SendRequest.sendAttackRangedRequest(selected, new Vector2(getMouseWorldX(), getMouseWorldY()));
 					}
 				}
 			}
@@ -424,7 +424,15 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
 						);
 					} else {
-						// TODO
+						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
+							indi.getId().getId(),
+							null,
+							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
+							Gdx.input.isKeyPressed(KeyMappings.addWayPoint),
+							true, 
+							indi.getState().position.cpy(), 
+							new Vector2(getMouseWorldX(), getMouseWorldY())
+						);
 					}
 				} else {
 					float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), INDIVIDUAL_SPREAD);
@@ -464,7 +472,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 								true
 							),
 							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
-							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
+							Gdx.input.isKeyPressed(KeyMappings.addWayPoint),
+							false, null, null
 						);
 					}
 				}

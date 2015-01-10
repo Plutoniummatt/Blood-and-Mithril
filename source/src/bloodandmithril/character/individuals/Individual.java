@@ -43,6 +43,7 @@ import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.Follow;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.character.ai.task.Travel;
 import bloodandmithril.character.combat.CombatChain;
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.conditions.Exhaustion;
@@ -220,6 +221,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** When this timer reaches 0, this {@link Individual} will no longer be in combat stance */
 	private float combatTimer;
+	
+	/** The timer that controls the {@link Travel} icon */
+	private float travelIconTimer;
 
 	/** IDs of individuals that are currently attacking this one, along with a timer */
 	private Map<Integer, Long> beingAttackedBy = Maps.newHashMap();
@@ -286,6 +290,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.dead = other.dead;
 		this.individualsToBeAttacked = other.individualsToBeAttacked;
 		this.combatTimer = other.combatTimer;
+		this.travelIconTimer = other.travelIconTimer;
 		synchronizeContainer(other.equipperImpl);
 		synchronizeEquipper(other.equipperImpl);
 
@@ -758,6 +763,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 */
 	public void update(float delta) {
 		float aiTaskDelay = 0.05f;
+		travelIconTimer += 0.15f;
 
 		// If chunk has not yet been loaded, do not update
 		try {
@@ -1849,5 +1855,15 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				UserInterface.refreshRefreshableWindows();
 			}
 		}
+	}
+
+
+	public float getTravelIconTimer() {
+		return travelIconTimer;
+	}
+
+
+	public void setTravelIconTimer(float travelIconTimer) {
+		this.travelIconTimer = travelIconTimer;
 	}
 }
