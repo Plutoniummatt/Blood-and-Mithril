@@ -8,6 +8,7 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
@@ -29,7 +30,9 @@ public abstract class Projectile implements Serializable {
 	private Set<Integer> ignoredIndividuals = Sets.newHashSet();
 
 	static {
-		Arrow.textureRegion = new TextureRegion(Domain.gameWorldTexture, 619, 176, 50, 3);
+		if (ClientServerInterface.isClient()) {
+			Arrow.textureRegion = new TextureRegion(Domain.gameWorldTexture, 619, 176, 50, 3);
+		}
 	}
 
 	/**

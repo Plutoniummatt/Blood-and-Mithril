@@ -41,6 +41,11 @@ public class WorldProjectiles implements Serializable {
 	public Collection<Projectile> getProjectiles() {
 		return projectiles.values();
 	}
+	
+	
+	public ConcurrentHashMap<Integer, Projectile> getProjectilesMap() {
+		return projectiles;
+	}
 
 
 	public void removeProjectile(Integer id) {

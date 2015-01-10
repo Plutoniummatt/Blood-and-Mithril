@@ -18,6 +18,9 @@ import java.util.concurrent.ExecutorService;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import bloodandmithril.character.ai.AIProcessor;
+import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
+import bloodandmithril.character.ai.AIProcessor.JitGoToLocationFunction;
+import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.implementations.ElfAI;
@@ -98,16 +101,26 @@ import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.item.items.equipment.weapon.OneHandedAxe;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
+import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
+import bloodandmithril.item.items.equipment.weapon.ranged.LongBow;
+import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow.ArrowItem;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow.FireArrowItem;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrow;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrow.GlowStickArrowItem;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
 import bloodandmithril.item.items.food.plant.DeathCap;
+import bloodandmithril.item.items.furniture.MedievalWallTorch;
 import bloodandmithril.item.items.material.Bricks;
 import bloodandmithril.item.items.material.Glass;
 import bloodandmithril.item.items.material.Ingot;
@@ -131,6 +144,7 @@ import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.mineral.Mineral;
+import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.Pine;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.networking.functions.IndividualSelected;
@@ -170,12 +184,14 @@ import bloodandmithril.networking.requests.PlacePropRequest;
 import bloodandmithril.networking.requests.PlaySound;
 import bloodandmithril.networking.requests.RefreshWindows;
 import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
+import bloodandmithril.networking.requests.RequestAttackRanged;
 import bloodandmithril.networking.requests.RequestClientList;
 import bloodandmithril.networking.requests.RequestClientList.RequestClientListResponse;
 import bloodandmithril.networking.requests.RequestConstructDeconstruct;
 import bloodandmithril.networking.requests.RequestDiscardItem;
 import bloodandmithril.networking.requests.RequestLightCampfire;
 import bloodandmithril.networking.requests.RequestPlantSeed;
+import bloodandmithril.networking.requests.RequestSetAmmo;
 import bloodandmithril.networking.requests.RequestStartCrafting;
 import bloodandmithril.networking.requests.RequestTakeItem;
 import bloodandmithril.networking.requests.RequestTakeItemFromCraftingStation;
@@ -191,6 +207,7 @@ import bloodandmithril.networking.requests.SynchronizeFaction.SynchronizeFaction
 import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.networking.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
 import bloodandmithril.networking.requests.SynchronizeItems;
+import bloodandmithril.networking.requests.SynchronizeProjectiles;
 import bloodandmithril.networking.requests.SynchronizePropRequest;
 import bloodandmithril.networking.requests.SynchronizePropRequest.SynchronizePropResponse;
 import bloodandmithril.networking.requests.SynchronizeWorldState;
@@ -228,6 +245,7 @@ import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.Epoch;
+import bloodandmithril.world.WorldProjectiles;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
@@ -423,6 +441,24 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(WorldProjectiles.class);
+		kryo.register(Projectile.class);
+		kryo.register(SynchronizeProjectiles.class);
+		kryo.register(RequestAttackRanged.class);
+		kryo.register(RequestSetAmmo.class);
+		kryo.register(ReturnIndividualPosition.class);
+		kryo.register(SandStone.class);
+		kryo.register(LongBow.class);
+		kryo.register(bloodandmithril.prop.furniture.MedievalWallTorch.class);
+		kryo.register(MedievalWallTorch.class);
+		kryo.register(GlowStickArrowItem.class);
+		kryo.register(GlowStickArrow.class);
+		kryo.register(FireArrowItem.class);
+		kryo.register(FireArrow.class);
+		kryo.register(ArrowItem.class);
+		kryo.register(Arrow.class);
+		kryo.register(JitGoToLocationFunction.class);
+		kryo.register(JitGoToLocation.class);
 		kryo.register(Jump.class);
 		kryo.register(Travel.class);
 		kryo.register(MovementMode.class);
@@ -586,7 +622,6 @@ public class ClientServerInterface {
 		kryo.register(Milk.class);
 		kryo.register(MineTile.class);
 		kryo.register(Mineral.class);
-		kryo.register(MoveIndividual.MoveIndividualResponse.class);
 		kryo.register(MoveIndividual.class);
 		kryo.register(NotifyOpenCraftingStationWindow.class);
 		kryo.register(OneHandedMeleeWeapon.class);
@@ -778,6 +813,16 @@ public class ClientServerInterface {
 			client.sendTCP(new RequestTransferLiquidBetweenContainers(individual, from, to, amount));
 			Logger.networkDebug("Sending transfer liquid between containers request", LogLevel.DEBUG);
 		}
+		
+		public static synchronized void sendAttackRangedRequest(Individual individual, Vector2 direction) {
+			client.sendTCP(new RequestAttackRanged(individual.getId().getId(), direction));
+			Logger.networkDebug("Sending ranged attack request", LogLevel.DEBUG);
+		}
+		
+		public static synchronized void sendRequestChangeAmmo(Individual individual, RangedWeapon weapon, Item ammo) {
+			client.sendTCP(new RequestSetAmmo(individual.getId().getId(), weapon, ammo));
+			Logger.networkDebug("Sending change ammo request", LogLevel.DEBUG);
+		}
 
 		public static synchronized void sendRequestAttack(Individual attacker, Individual... victims) {
 			client.sendTCP(new AttackRequest(attacker, Sets.newHashSet(victims)));
@@ -854,8 +899,8 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending individual selection request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendMoveIndividualRequest(int id, Vector2 destinationCoordinates, boolean forceMove, boolean add) {
-			client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove, add));
+		public static synchronized void sendMoveIndividualRequest(int id, Vector2 destinationCoordinates, boolean forceMove, boolean add, boolean jump, Vector2 jumpFrom, Vector2 jumpTo) {
+			client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove, add, jump, jumpFrom, jumpTo));
 			Logger.networkDebug("Sending move individual request", LogLevel.DEBUG);
 		}
 
@@ -963,6 +1008,16 @@ public class ClientServerInterface {
 				true,
 				true,
 				new SynchronizeItems(worldId)
+			);
+		}
+		
+		
+		public static synchronized void notifySyncProjectiles(int worldId) {
+			sendNotification(
+				-1,
+				true,
+				true,
+				new SynchronizeProjectiles(worldId)
 			);
 		}
 

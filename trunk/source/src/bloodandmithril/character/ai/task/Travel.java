@@ -20,7 +20,6 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck 2014")
 public class Travel extends CompositeAITask {
 	private static final long serialVersionUID = -1118542666642761349L;
-	private float currentWaypointRenderPositionOffsetTimer = 0f;
 
 	/**
 	 * Constructor
@@ -96,20 +95,18 @@ public class Travel extends CompositeAITask {
 
 	@Override
 	public void setCurrentTask(AITask currentTask) {
-		currentWaypointRenderPositionOffsetTimer = 0f;
+		getHost().setTravelIconTimer(0f);
 		super.setCurrentTask(currentTask);
 	}
-
-
+	
+	
 	private void renderForTask(AITask previousTask, AITask task, boolean isCurrentTask) {
 		if (task instanceof JitGoToLocation) {
 
 			float offset = 0f;
 			if (isCurrentTask) {
-				offset = (float) Math.cos(currentWaypointRenderPositionOffsetTimer + Math.PI) + 1f;
-				currentWaypointRenderPositionOffsetTimer += 0.15f;
+				offset = (float) Math.cos(getHost().getTravelIconTimer() + Math.PI) + 1f;
 			}
-
 
 			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
 			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
