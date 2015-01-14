@@ -27,7 +27,7 @@ public class ParticleService {
 	public static void bloodSplat(Vector2 position, Vector2 knockBack) {
 		if (isClient()) {
 			for (int i = 0; i < 35; i++) {
-				Domain.getActiveWorld().getParticles().add(new TracerParticle(
+				Domain.getActiveWorld().getClientParticles().add(new TracerParticle(
 					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).mul(5f),
 					Color.RED,
@@ -47,7 +47,7 @@ public class ParticleService {
 
 	public static void randomVelocityTracer(Vector2 position, float spawnSpread, float maxVel, Color color, float glow, int maxLifeTime, MovementMode mode, Depth depth) {
 		if (isClient()) {
-			Domain.getActiveWorld().getParticles().add(new TracerParticle(
+			Domain.getActiveWorld().getClientParticles().add(new TracerParticle(
 				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 				new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 				color,
@@ -66,7 +66,7 @@ public class ParticleService {
 
 	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth) {
 		if (isClient()) {
-			Domain.getActiveWorld().getParticles().add(new DiminishingTracerParticle(
+			Domain.getActiveWorld().getClientParticles().add(new DiminishingTracerParticle(
 				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 				new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 				color,
@@ -84,7 +84,7 @@ public class ParticleService {
 	public static void parrySpark(Vector2 position, Vector2 knockBack, Depth depth) {
 		if (isClient()) {
 			for (int i = 0; i < 35; i++) {
-				Domain.getActiveWorld().getParticles().add(new TracerParticle(
+				Domain.getActiveWorld().getClientParticles().add(new TracerParticle(
 					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).mul(2f),
 					Color.WHITE,

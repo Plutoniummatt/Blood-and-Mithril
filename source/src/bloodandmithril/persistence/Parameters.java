@@ -5,6 +5,7 @@ import java.util.Random;
 
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
@@ -24,11 +25,11 @@ public class Parameters implements Serializable {
 	private int structureKeyCounter = 0;
 	private int initialSeed = 0;
 	private int individualIdCounter = 0;
-	private int lightCounter = 0;
 	private int propIdCounter = 0;
 	private int worldIdCounter = 0;
 	private int itemCounter = 0;
 	private int projectileCounter = 0;
+	private long particleCounter = 0;
 
 	private Vector2 camera;
 	private Epoch currentEpoch;
@@ -89,11 +90,11 @@ public class Parameters implements Serializable {
 
 
 	/**
-	 * Returns the next unique identifier to use for {@link Light}
+	 * Returns the next unique identifier to use for {@link Particle}
 	 */
-	public synchronized int getNextLightId() {
-		lightCounter++;
-		return lightCounter;
+	public synchronized long getNextParticleId() {
+		particleCounter++;
+		return particleCounter;
 	}
 
 

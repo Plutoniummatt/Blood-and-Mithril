@@ -5,6 +5,8 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import java.io.Serializable;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.persistence.ParameterPersistenceService;
+import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
@@ -16,11 +18,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 @Copyright("Matthew Peck 2014")
-public abstract class Particle {
+public abstract class Particle implements Serializable {
+	private static final long serialVersionUID = 3353509929496197072L;
 
 	public final int worldId;
 
-	public Color color;
+	public final long particleId;
+	public SerializableColor color;
 	public Vector2 position, velocity;
 	public float radius;
 	public final Depth depth;
@@ -35,11 +39,12 @@ public abstract class Particle {
 		this.position = position;
 		this.velocity = velocity;
 		this.radius = radius;
-		this.color = color;
+		this.color = new SerializableColor(color);
 		this.worldId = worldId;
 		this.removalCondition = removalCondition;
 		this.movementMode = movementMode;
 		this.depth = depth;
+		this.particleId = ParameterPersistenceService.getParameters().getNextParticleId();
 	}
 
 	/**

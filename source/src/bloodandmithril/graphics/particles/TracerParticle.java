@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 @Copyright("Matthew Peck 2014")
 public class TracerParticle extends Particle {
+	private static final long serialVersionUID = 4646397525209769227L;
 
 	public float glowIntensity;
 	public Vector2 prevPosition;
@@ -35,7 +36,7 @@ public class TracerParticle extends Particle {
 		if (topography.hasTile(position.x, position.y, true)) {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
-					Domain.shapeRenderer.setColor(color);
+					Domain.shapeRenderer.setColor(color.getColor());
 					Domain.shapeRenderer.filledCircle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
 				}
 			} catch (NoTileFoundException e) {}
@@ -62,7 +63,7 @@ public class TracerParticle extends Particle {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
 					Gdx.gl.glLineWidth(radius == 1f ? 1f : radius + 1f);
-					Domain.shapeRenderer.setColor(color);
+					Domain.shapeRenderer.setColor(color.getColor());
 					Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
 				}
 			} catch (NoTileFoundException e) {}

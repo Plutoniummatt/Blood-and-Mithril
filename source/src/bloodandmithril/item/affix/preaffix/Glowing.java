@@ -38,7 +38,7 @@ public class Glowing extends PreAffix {
 
 	@Override
 	public void itemEffects(Item item) {
-		Domain.getWorld(item.getWorldId()).getParticles().add(new TracerParticle(
+		Domain.getWorld(item.getWorldId()).getClientParticles().add(new TracerParticle(
 			item.getPosition().cpy().add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 			new Vector2(Util.getRandom().nextFloat() * 60f, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 			color.getColor(),
@@ -54,7 +54,7 @@ public class Glowing extends PreAffix {
 
 	@Override
 	public void itemEffects(Individual individual, Item item) {
-		Domain.getWorld(individual.getWorldId()).getParticles().add(new TracerParticle(
+		Domain.getWorld(individual.getWorldId()).getClientParticles().add(new TracerParticle(
 			item.getPosition().cpy().add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 			new Vector2(Util.getRandom().nextFloat() * 60f, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 			color.getColor(),

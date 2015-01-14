@@ -1,8 +1,9 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
+import static bloodandmithril.networking.ClientServerInterface.isServer;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
+import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
-import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.item.material.metal.Metal;
@@ -21,7 +22,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 	private float lightingDuration;
 	private SerializableColor color;
 	private Vector2 previousPosition;
-	private transient TracerParticle particle;
+	private Long particleId;
 
 	/**
 	 * Constructor
@@ -38,9 +39,9 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 	public void update(float delta) {
 		if (lightingDuration > 0f) {
 			lightingDuration -= delta;
-			if (ClientServerInterface.isClient()) {
-				if (particle == null) {
-					particle = new DiminishingTracerParticle(
+			if (particleId == null) {
+				if (isServer()) {
+					Particle particle = new DiminishingTracerParticle(
 						position,
 						velocity,
 						color.getColor(),
@@ -52,15 +53,17 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 						(long) lightingDuration * 1000
 					);
 					particle.doNotUpdate();
-					Domain.getWorld(getWorldId()).getParticles().add(particle);
-				} else {
-					particle.position = position;
-					particle.prevPosition = previousPosition;
+					Domain.getWorld(getWorldId()).getServerParticles().put(particle.particleId, particle);
+					particleId = particle.particleId;
 				}
+			} else {
+				DiminishingTracerParticle particle = (DiminishingTracerParticle) Domain.getWorld(getWorldId()).getServerParticles().get(particleId);
+				particle.position = position;
+				particle.prevPosition = previousPosition;
 			}
 		} else {
-			if (ClientServerInterface.isClient()) {
-				Domain.getWorld(getWorldId()).getParticles().remove(particle);
+			if (ClientServerInterface.isServer()) {
+				Domain.getWorld(getWorldId()).getServerParticles().remove(particleId);
 			}
 		}
 
@@ -73,7 +76,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 	protected void targetHitKinematics() {
 		if (Util.roll(0.2f)) {
 			Domain.getWorld(getWorldId()).projectiles().removeProjectile(getId());
-			Domain.getWorld(getWorldId()).getParticles().remove(particle);
+			Domain.getWorld(getWorldId()).getServerParticles().remove(particleId);
 		} else {
 			velocity.mul(0.05f);
 			velocity.x = -velocity.x;
