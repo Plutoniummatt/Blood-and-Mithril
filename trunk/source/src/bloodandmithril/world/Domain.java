@@ -261,16 +261,26 @@ public class Domain {
 		Domain.shapeRenderer.begin(Line);
 		shapeRenderer.setProjectionMatrix(cam.combined);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
-		if (Domain.getActiveWorld().getParticles() != null) {
-			Domain.getActiveWorld().getParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
+		if (Domain.getActiveWorld().getClientParticles() != null) {
+			Domain.getActiveWorld().getClientParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
+				p.renderLine(Gdx.graphics.getDeltaTime());
+			});
+		}
+		if (Domain.getActiveWorld().getServerParticles() != null) {
+			Domain.getActiveWorld().getServerParticles().values().stream().filter(p -> p.depth == depth).forEach(p -> {
 				p.renderLine(Gdx.graphics.getDeltaTime());
 			});
 		}
 		Domain.shapeRenderer.end();
 		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
-		if (Domain.getActiveWorld().getParticles() != null) {
-			Domain.getActiveWorld().getParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
+		if (Domain.getActiveWorld().getClientParticles() != null) {
+			Domain.getActiveWorld().getClientParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
+				p.render(Gdx.graphics.getDeltaTime());
+			});
+		}
+		if (Domain.getActiveWorld().getServerParticles() != null) {
+			Domain.getActiveWorld().getServerParticles().values().stream().filter(p -> p.depth == depth).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime());
 			});
 		}

@@ -3,6 +3,7 @@ package bloodandmithril.world;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -47,7 +48,10 @@ public class World implements Serializable {
 	private PositionalIndexMap 									positionalIndexMap;
 
 	/** Particles on this {@link World} */
-	private transient Collection<Particle> 						particles				= new ConcurrentLinkedDeque<>();
+	private transient Collection<Particle> 						clientParticles			= new ConcurrentLinkedDeque<>();
+
+	/** Particles on this {@link World}, this one is saved, and synchronized with server */
+	private ConcurrentHashMap<Long, Particle> 					serverParticles			= new ConcurrentHashMap<>();
 
 	/** The items of this {@link World} */
 	private WorldItems items;
@@ -136,11 +140,22 @@ public class World implements Serializable {
 	/**
 	 * @return The transient collection of particles
 	 */
-	public Collection<Particle> getParticles() {
-		if (particles == null) {
-			particles = new ConcurrentLinkedDeque<>();
+	public Collection<Particle> getClientParticles() {
+		if (clientParticles == null) {
+			clientParticles = new ConcurrentLinkedDeque<>();
 		}
-		return particles;
+		return clientParticles;
+	}
+
+
+	/**
+	 * @return The transient collection of particles
+	 */
+	public ConcurrentHashMap<Long, Particle> getServerParticles() {
+		if (serverParticles == null) {
+			serverParticles = new ConcurrentHashMap<>();
+		}
+		return serverParticles;
 	}
 
 

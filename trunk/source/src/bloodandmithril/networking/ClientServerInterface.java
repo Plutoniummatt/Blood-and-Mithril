@@ -79,10 +79,13 @@ import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.skill.Skills;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.DiminishingTracerParticle;
+import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService.BloodSplat;
 import bloodandmithril.graphics.particles.ParticleService.FlameEmber;
 import bloodandmithril.graphics.particles.ParticleService.ParrySpark;
+import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.PropItem;
@@ -207,6 +210,7 @@ import bloodandmithril.networking.requests.SynchronizeFaction.SynchronizeFaction
 import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.networking.requests.SynchronizeIndividual.SynchronizeIndividualResponse;
 import bloodandmithril.networking.requests.SynchronizeItems;
+import bloodandmithril.networking.requests.SynchronizeParticles;
 import bloodandmithril.networking.requests.SynchronizeProjectiles;
 import bloodandmithril.networking.requests.SynchronizePropRequest;
 import bloodandmithril.networking.requests.SynchronizePropRequest.SynchronizePropResponse;
@@ -441,6 +445,10 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(Particle.class);
+		kryo.register(TracerParticle.class);
+		kryo.register(DiminishingTracerParticle.class);
+		kryo.register(SynchronizeParticles.class);
 		kryo.register(WorldProjectiles.class);
 		kryo.register(Projectile.class);
 		kryo.register(SynchronizeProjectiles.class);
@@ -813,12 +821,12 @@ public class ClientServerInterface {
 			client.sendTCP(new RequestTransferLiquidBetweenContainers(individual, from, to, amount));
 			Logger.networkDebug("Sending transfer liquid between containers request", LogLevel.DEBUG);
 		}
-		
+
 		public static synchronized void sendAttackRangedRequest(Individual individual, Vector2 direction) {
 			client.sendTCP(new RequestAttackRanged(individual.getId().getId(), direction));
 			Logger.networkDebug("Sending ranged attack request", LogLevel.DEBUG);
 		}
-		
+
 		public static synchronized void sendRequestChangeAmmo(Individual individual, RangedWeapon weapon, Item ammo) {
 			client.sendTCP(new RequestSetAmmo(individual.getId().getId(), weapon, ammo));
 			Logger.networkDebug("Sending change ammo request", LogLevel.DEBUG);
@@ -888,7 +896,7 @@ public class ClientServerInterface {
 			client.sendTCP(new CSITradeWith(proposer.getId().getId(), TradeEntity.PROP, propId, client.getID()));
 			Logger.networkDebug("Sending trade with prop request", LogLevel.DEBUG);
 		}
-		
+
 		public static synchronized void sendConstructionRequest(Individual constructor, int propId) {
 			client.sendTCP(new RequestConstructDeconstruct(constructor.getId().getId(), propId, client.getID()));
 			Logger.networkDebug("Sending construction/deconstruction request", LogLevel.DEBUG);
@@ -1010,14 +1018,24 @@ public class ClientServerInterface {
 				new SynchronizeItems(worldId)
 			);
 		}
-		
-		
+
+
 		public static synchronized void notifySyncProjectiles(int worldId) {
 			sendNotification(
 				-1,
 				true,
 				true,
 				new SynchronizeProjectiles(worldId)
+			);
+		}
+
+
+		public static synchronized void notifySyncParticles(int worldId) {
+			sendNotification(
+				-1,
+				true,
+				true,
+				new SynchronizeParticles(worldId)
 			);
 		}
 
@@ -1108,8 +1126,8 @@ public class ClientServerInterface {
 				)
 			);
 		}
-		
-		
+
+
 		public static synchronized void notifyConstructionWindowOpen(int individualId, int construction, int connectionId) {
 			sendNotification(
 				connectionId,

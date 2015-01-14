@@ -192,11 +192,38 @@ public class GaussianLightingRenderer {
 		float[] previousPositions = new float[MAX_PARTICLES * 2];
 		float[] colors = new float[MAX_PARTICLES * 4];
 
-		Iterable<Particle> glowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getParticles(), p -> {
+		Iterable<Particle> clientSideGlowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getClientParticles(), p -> {
+			return p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f && p.depth == depth && isOnScreen(p.position, 50f);
+		});
+		Iterable<Particle> serverSideGlowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getServerParticles().values(), p -> {
 			return p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f && p.depth == depth && isOnScreen(p.position, 50f);
 		});
 
-		for (Particle p : glowingTracerParticles) {
+		for (Particle p : serverSideGlowingTracerParticles) {
+			if (index == MAX_PARTICLES) {
+				break;
+			}
+			if (p instanceof TracerParticle) {
+				currentPositions[positionIndex] = worldToScreenX(p.position.x);
+				currentPositions[positionIndex + 1] = worldToScreenY(p.position.y);
+
+				previousPositions[positionIndex] = worldToScreenX(((TracerParticle) p).prevPosition.x);
+				previousPositions[positionIndex + 1] = worldToScreenY(((TracerParticle) p).prevPosition.y);
+
+				colors[colorIndex] = p.color.r;
+				colors[colorIndex + 1] = p.color.g;
+				colors[colorIndex + 2] = p.color.b;
+				colors[colorIndex + 3] = p.color.a;
+
+				intensities[index] = ((TracerParticle) p).glowIntensity;
+
+				index ++;
+				positionIndex += 2;
+				colorIndex += 4;
+			}
+		}
+
+		for (Particle p : clientSideGlowingTracerParticles) {
 			if (index == MAX_PARTICLES) {
 				break;
 			}

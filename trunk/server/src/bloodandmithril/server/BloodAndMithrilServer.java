@@ -170,9 +170,11 @@ public class BloodAndMithrilServer {
 							for (int worldId : Domain.getWorlds().keySet()) {
 								ClientServerInterface.SendNotification.notifySyncItems(worldId);
 								ClientServerInterface.SendNotification.notifySyncProjectiles(worldId);
+								ClientServerInterface.SendNotification.notifySyncParticles(worldId);
 								for (Prop prop : Domain.getWorld(worldId).props().getProps()) {
 									ClientServerInterface.SendNotification.notifySyncProp(prop);
 								}
+
 							}
 						}
 
@@ -255,7 +257,7 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public boolean keyDown(int keycode) {
-			
+
 			if (keycode == Keys.I) {
 				IndividualState state = new IndividualState(30f, 0.01f, 0.02f, 0f, 0f);
 				state.position = new Vector2(0, 2500);
@@ -317,7 +319,7 @@ public class BloodAndMithrilServer {
 
 				Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
 			}
-			
+
 			return false;
 		}
 

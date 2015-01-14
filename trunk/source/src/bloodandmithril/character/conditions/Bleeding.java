@@ -34,7 +34,7 @@ public class Bleeding extends Condition {
 	@Override
 	public void clientSideEffects(Individual affected, float delta) {
 		if (Util.roll(severity)) {
-			Domain.getWorld(affected.getWorldId()).getParticles().add(
+			Domain.getWorld(affected.getWorldId()).getClientParticles().add(
 				new TracerParticle(
 					affected.getEmissionPosition().add((getRandom().nextFloat() - 1f) * affected.getWidth() / 4, (getRandom().nextFloat() - 1f) * affected.getWidth() / 4),
 					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f),

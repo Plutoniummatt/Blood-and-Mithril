@@ -200,10 +200,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					prevFrame = System.currentTimeMillis();
 					World world = Domain.getActiveWorld();
 					if (world != null) {
-						Collection<Particle> particles = world.getParticles();
+						Collection<Particle> particles = world.getClientParticles();
 						for (Particle p : particles) {
 							if (p.getRemovalCondition().call()) {
-								Domain.getActiveWorld().getParticles().remove(p);
+								Domain.getActiveWorld().getClientParticles().remove(p);
 							}
 							try {
 								p.update(0.012f);
