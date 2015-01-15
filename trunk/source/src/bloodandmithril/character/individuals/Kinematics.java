@@ -18,7 +18,6 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.KeyMappings;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
@@ -121,7 +120,7 @@ public interface Kinematics {
 				if (check) {
 					state.velocity.x = 0;
 					ai.setCurrentTask(new Idle());
-					UserInterface.addTextBubble("Looks like something is in the way...", individual.getState().position, 1000, 0, individual.getHeight() + 40);
+					individual.speak("Looks like something is in the way...", 1000);
 				}
 			}
 		}

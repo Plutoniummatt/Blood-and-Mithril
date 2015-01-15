@@ -1,5 +1,8 @@
 package bloodandmithril.performance;
 
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.cam;
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
@@ -62,6 +65,20 @@ public class PositionalIndexMap implements Serializable {
 
 
 	/**
+	 * @return a {@link Collection} of entities of the same type, that are on screen
+	 */
+	public Collection<Integer> getOnScreenEntities(Class<?> clazz) {
+		return getEntitiesWithinBounds(
+			clazz,
+			cam.position.x - WIDTH,
+			cam.position.x + WIDTH,
+			cam.position.y + HEIGHT,
+			cam.position.y - HEIGHT
+		);
+	}
+
+
+	/**
 	 * @return a {@link Collection} of entities of that are contained (roughly) within a defined box.
 	 *
 	 * Roughly because the indexing nodes are quantised.
@@ -71,15 +88,15 @@ public class PositionalIndexMap implements Serializable {
 
 		int i = CHUNK_SIZE * TILE_SIZE;
 
-		int xSteps = ((int)(right - left)) / i + 1;
-		int ySteps = ((int)(top - bottom)) / i + 1;
+		int xSteps = (int)(right - left) / i + 1;
+		int ySteps = (int)(top - bottom) / i + 1;
 
 		for (int x = 0; x <= xSteps; x++) {
 			for (int y = 0; y <= ySteps; y++) {
 				entities.addAll(get(left + x * i, bottom + y * i).getAllEntitiesForType(clazz));
 			}
 		}
-		
+
 		return entities;
 	}
 
@@ -108,8 +125,8 @@ public class PositionalIndexMap implements Serializable {
 	public Collection<Integer> getNearbyEntityIds(Class<?> clazz, Vector2 position) {
 		return getNearbyEntities(clazz, position.x, position.y);
 	}
-	
-	
+
+
 	/**
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
@@ -133,11 +150,11 @@ public class PositionalIndexMap implements Serializable {
 		} else {
 			throw new RuntimeException("Unrecongized class : " + clazz.getSimpleName());
 		}
-		
+
 		for (int id : getNearbyEntities(clazz, position.x, position.y)) {
 			ts.add(function.apply(id));
 		}
-		
+
 		return ts;
 	}
 

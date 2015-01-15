@@ -114,7 +114,8 @@ public class GoToLocation extends AITask {
 					if (Domain.getWorld(getHost().getWorldId()).getTopography().getTile(waypoint.x, waypoint.y - Topography.TILE_SIZE / 2, true).isPassable() &&
 						Domain.getWorld(getHost().getWorldId()).getTopography().getTile(waypoint.x, waypoint.y - 3 * Topography.TILE_SIZE / 2, true).isPassable() &&
 						!Domain.getWorld(getHost().getWorldId()).getTopography().getTile(waypoint.x, waypoint.y - Topography.TILE_SIZE / 2, true).isPlatformTile) {
-						UserInterface.addTextBubble("Looks like I'm stuck...", getHost().getState().position, 1500, 0, getHost().getHeight() + 40);
+
+						getHost().speak("Looks like I'm stuck...", 1500);
 						path.clear();
 					} else {
 						goToWayPoint(path.getNextPoint(), 4);
@@ -214,7 +215,7 @@ public class GoToLocation extends AITask {
 
 			if (stuckCounter > stuckTolerance) {
 				path.clear();
-				UserInterface.addTextBubble("Looks like I'm stuck...", host.getState().position, 1500, 0, host.getHeight() + 40);
+				getHost().speak("Looks like I'm stuck...", 1500);
 			}
 
 		// If we've reached the waypoint, and the next waypoint in the path is non-null, then move to the next one in the path.
