@@ -35,7 +35,7 @@ public class Travel extends CompositeAITask {
 	public void addGotoLocation(JitGoToLocation goToLocation) {
 		appendTask(goToLocation);
 		if (getHost().isSelected() && Util.roll(0.3f)) {
-			UserInterface.addTextBubble(Speech.getRandomAffirmativeSpeech(), getHost().getState().position, 1000, 0, getHost().getHeight() + 40);
+			getHost().speak(Speech.getRandomAffirmativeSpeech(), 1000);
 		}
 	}
 
@@ -98,8 +98,8 @@ public class Travel extends CompositeAITask {
 		getHost().setTravelIconTimer(0f);
 		super.setCurrentTask(currentTask);
 	}
-	
-	
+
+
 	private void renderForTask(AITask previousTask, AITask task, boolean isCurrentTask) {
 		if (task instanceof JitGoToLocation) {
 

@@ -180,6 +180,7 @@ import bloodandmithril.networking.requests.LockUnlockContainerRequest;
 import bloodandmithril.networking.requests.MessageWindowNotification;
 import bloodandmithril.networking.requests.MoveIndividual;
 import bloodandmithril.networking.requests.NotifyOpenConstructionWindow;
+import bloodandmithril.networking.requests.NotifyTextBubble;
 import bloodandmithril.networking.requests.OpenTradeWindow;
 import bloodandmithril.networking.requests.Ping;
 import bloodandmithril.networking.requests.Ping.Pong;
@@ -234,6 +235,7 @@ import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.PlantProp;
 import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.ui.UserInterface.FloatingText;
+import bloodandmithril.ui.components.TextBubble.TextBubbleSerializableBean;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Logger;
@@ -445,6 +447,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(NotifyTextBubble.class);
+		kryo.register(TextBubbleSerializableBean.class);
 		kryo.register(Particle.class);
 		kryo.register(TracerParticle.class);
 		kryo.register(DiminishingTracerParticle.class);
@@ -976,6 +980,16 @@ public class ClientServerInterface {
 				true,
 				false,
 				new MessageWindowNotification(connectionId, title, message, function)
+			);
+		}
+
+
+		public static synchronized void notifyTextBubble(String text, SerializableFunction<Vector2> position, long duration, int xOffset, int yOffset, int connectionId) {
+			sendNotification(
+				connectionId,
+				false,
+				true,
+				new NotifyTextBubble(position, text, duration, xOffset, yOffset)
 			);
 		}
 

@@ -76,6 +76,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.TextBubble;
+import bloodandmithril.ui.components.TextBubble.TextBubbleSerializableBean;
 import bloodandmithril.ui.components.bar.BottomBar;
 import bloodandmithril.ui.components.window.BuildWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
@@ -349,7 +350,7 @@ public class UserInterface {
 		ArrayDeque<TextBubble> newBubbles = new ArrayDeque<>();
 		for (TextBubble bubble : textBubbles) {
 			bubble.render();
-			if (bubble.removalFunction.call()) {
+			if (bubble.getBean().removalFunction.call()) {
 				bubble.setClosing(true);
 			}
 
@@ -363,18 +364,18 @@ public class UserInterface {
 	}
 
 
-	public static synchronized void addTextBubble(String text, Vector2 position, long duration, int xOffset, int yOffset) {
+	public static synchronized void addTextBubble(String text, SerializableFunction<Vector2> position, long duration, int xOffset, int yOffset) {
 		if (ClientServerInterface.isClient()) {
-			textBubbles.add(new TextBubble(
-				text,
-				position,
-				new Countdown(duration),
-				xOffset,
-				yOffset
-			)
-		);
+			textBubbles.add(
+				new TextBubble(
+					new TextBubbleSerializableBean(text, new Countdown(duration)),
+					position,
+					xOffset,
+					yOffset
+				)
+			);
 		} else {
-			// TODO
+			ClientServerInterface.SendNotification.notifyTextBubble(text, position, duration, xOffset, yOffset, -1);
 		}
 	}
 

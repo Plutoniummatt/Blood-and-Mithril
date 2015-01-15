@@ -38,6 +38,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Attack;
@@ -221,7 +222,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** When this timer reaches 0, this {@link Individual} will no longer be in combat stance */
 	private float combatTimer;
-	
+
 	/** The timer that controls the {@link Travel} icon */
 	private float travelIconTimer;
 
@@ -1865,5 +1866,18 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	public void setTravelIconTimer(float travelIconTimer) {
 		this.travelIconTimer = travelIconTimer;
+	}
+
+
+	public void speak(String text, long duration) {
+		if (ClientServerInterface.isServer()) {
+			UserInterface.addTextBubble(
+				text,
+				new ReturnIndividualPosition(this),
+				duration,
+				0,
+				getHeight() + 40
+			);
+		}
 	}
 }
