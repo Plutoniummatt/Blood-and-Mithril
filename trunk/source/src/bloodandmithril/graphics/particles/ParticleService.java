@@ -62,6 +62,24 @@ public class ParticleService {
 			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), spawnSpread, maxVel, new SerializableColor(color), glow, maxLifeTime, mode, depth));
 		}
 	}
+	
+	
+
+	public static void randomVelocityTextureBackedParticle(Vector2 position, float spawnSpread, float maxVel, Color color, int maxLifeTime, MovementMode mode, Depth depth) {
+		if (isClient()) {
+			Domain.getActiveWorld().getClientParticles().add(new TextureBackedParticle(
+				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
+				new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
+				color,
+				Util.getRandom().nextFloat() * 2f,
+				Domain.getActiveWorld().getWorldId(),
+				new Countdown(Util.getRandom().nextInt(maxLifeTime)),
+				mode,
+				depth,
+				0.1f
+			));
+		}
+	}
 
 
 	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth) {

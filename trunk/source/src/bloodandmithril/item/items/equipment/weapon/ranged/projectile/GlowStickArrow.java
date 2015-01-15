@@ -58,8 +58,10 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 				}
 			} else {
 				DiminishingTracerParticle particle = (DiminishingTracerParticle) Domain.getWorld(getWorldId()).getServerParticles().get(particleId);
-				particle.position = position;
-				particle.prevPosition = previousPosition;
+				if (particle != null) {
+					particle.position = position;
+					particle.prevPosition = previousPosition;
+				}
 			}
 		} else {
 			if (ClientServerInterface.isServer()) {
@@ -139,7 +141,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 
 		@Override
 		public Projectile getProjectile() {
-			return new GlowStickArrow<>(metal, null, null, 30f, new Color(0.5f, 1f, 1f, 1f));
+			return new GlowStickArrow<>(metal, null, null, 10f, new Color(0.5f, 1f, 1f, 1f));
 		}
 	}
 }

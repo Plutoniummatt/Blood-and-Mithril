@@ -1,6 +1,7 @@
 package bloodandmithril.graphics.particles;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.util.Performance;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Performance(explanation = "Use with care, these don't perform as well as we hope")
 public class TracerParticle extends Particle {
 	private static final long serialVersionUID = 4646397525209769227L;
 
