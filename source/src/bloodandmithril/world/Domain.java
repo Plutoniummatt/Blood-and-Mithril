@@ -243,8 +243,8 @@ public class Domain {
 			projectile.render();
 			spriteBatch.flush();
 		}
-		spriteBatch.end();
 		renderParticles(Depth.FOREGOUND);
+		spriteBatch.end();
 		gl20.glEnable(GL20.GL_BLEND);
 		gl20.glBlendFuncSeparate(GL20.GL_ONE, GL20.GL_SRC_COLOR, GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		activeWorld.renderFluids();

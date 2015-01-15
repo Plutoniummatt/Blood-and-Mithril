@@ -50,7 +50,7 @@ public class GaussianLightingRenderer {
 	public static FrameBuffer foregroundShadowFBO;
 	public static FrameBuffer workingFBO;
 
-	private static final int MAX_PARTICLES = 256;
+	private static final int MAX_PARTICLES = 50;
 
 	/**
 	 * Master render method.
@@ -193,17 +193,18 @@ public class GaussianLightingRenderer {
 		float[] colors = new float[MAX_PARTICLES * 4];
 
 		Iterable<Particle> clientSideGlowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getClientParticles(), p -> {
-			return p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f && p.depth == depth && isOnScreen(p.position, 50f);
+			return p.depth == depth && isOnScreen(p.position, 50f);
 		});
+		
 		Iterable<Particle> serverSideGlowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getServerParticles().values(), p -> {
-			return p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f && p.depth == depth && isOnScreen(p.position, 50f);
+			return p.depth == depth && isOnScreen(p.position, 50f);
 		});
-
+		
 		for (Particle p : serverSideGlowingTracerParticles) {
 			if (index == MAX_PARTICLES) {
 				break;
 			}
-			if (p instanceof TracerParticle) {
+			if (p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f) {
 				currentPositions[positionIndex] = worldToScreenX(p.position.x);
 				currentPositions[positionIndex + 1] = worldToScreenY(p.position.y);
 
@@ -227,7 +228,8 @@ public class GaussianLightingRenderer {
 			if (index == MAX_PARTICLES) {
 				break;
 			}
-			if (p instanceof TracerParticle) {
+			
+			if (p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f) {
 				currentPositions[positionIndex] = worldToScreenX(p.position.x);
 				currentPositions[positionIndex + 1] = worldToScreenY(p.position.y);
 
@@ -254,11 +256,10 @@ public class GaussianLightingRenderer {
 		Shaders.tracerParticlesFBO.setUniform4fv("color[0]", colors, 0, MAX_PARTICLES * 4);
 		spriteBatch.draw(workingFBO.getColorBufferTexture(), 0, 0);
 		spriteBatch.flush();
-
 		spriteBatch.end();
 		lightingFbo.end();
 	}
-
+	
 
 	/**
 	 * Renders the background lighting control occlusion FBO
@@ -539,7 +540,7 @@ public class GaussianLightingRenderer {
 		if (SEE_ALL) {
 			spriteBatch.setShader(Shaders.invertY);
 			spriteBatch.draw(
-				workingFBO.getColorBufferTexture(),
+				foregroundLightingFBO.getColorBufferTexture(),
 				0, 0
 			);
 		} else {

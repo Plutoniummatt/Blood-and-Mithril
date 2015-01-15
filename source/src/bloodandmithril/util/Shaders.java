@@ -1,9 +1,7 @@
 package bloodandmithril.util;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.world.WorldState;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -51,6 +49,8 @@ public class Shaders {
 	public static void setup() {
 		ShaderProgram.pedantic = false;
 		Logger.generalDebug("Shaders loaded", LogLevel.DEBUG);
+		
+		System.out.println(tracerParticlesFBO.getLog());
 	}
 
 	private static ShaderProgram filterReplaceIgnoreColorShader() {
@@ -101,12 +101,7 @@ public class Shaders {
 	 */
 	public static void updateShaderUniforms() {
 		defaultBackGroundTiles.begin();
-		defaultBackGroundTiles.setUniformf("dayLight", WorldState.getCurrentEpoch().dayLight());
 		defaultBackGroundTiles.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		defaultBackGroundTiles.end();
-
-		defaultForeGroundTiles.begin();
-		defaultForeGroundTiles.setUniformf("debugSwitch", GaussianLightingRenderer.SEE_ALL ? 1f : 0f);
-		defaultForeGroundTiles.end();
 	}
 }

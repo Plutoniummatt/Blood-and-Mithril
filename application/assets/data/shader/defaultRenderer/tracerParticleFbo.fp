@@ -7,17 +7,17 @@ precision mediump float;
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
 
-uniform vec2 currentPosition[256];
-uniform vec2 previousPosition[256];
-uniform vec4 color[256];
-uniform float intensity[256];
+uniform vec2 currentPosition[50];
+uniform vec2 previousPosition[50];
+uniform vec4 color[50];
+uniform float intensity[50];
 uniform vec2 resolution;
 
 void main()
 {
 
 	vec4 totalColor = vec4(0.0, 0.0, 0.0, 0.0);
-	for (int index = 0; index < 256; index++) {
+	for (int index = 0; index < 101; index++) {
 	
 		vec2 p2 = currentPosition[index];
 		vec2 p1 = previousPosition[index];
