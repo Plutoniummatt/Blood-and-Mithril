@@ -124,11 +124,13 @@ import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
 import bloodandmithril.item.items.food.plant.DeathCap;
 import bloodandmithril.item.items.furniture.MedievalWallTorch;
+import bloodandmithril.item.items.material.ArrowHead;
 import bloodandmithril.item.items.material.Bricks;
 import bloodandmithril.item.items.material.Glass;
 import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.items.material.Slab;
+import bloodandmithril.item.items.material.Stick;
 import bloodandmithril.item.items.mineral.earth.Ashes;
 import bloodandmithril.item.items.mineral.earth.Dirt;
 import bloodandmithril.item.items.mineral.earth.Sand;
@@ -148,7 +150,7 @@ import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.mineral.Mineral;
 import bloodandmithril.item.material.mineral.SandStone;
-import bloodandmithril.item.material.wood.Pine;
+import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.networking.functions.IndividualSelected;
 import bloodandmithril.networking.requests.AddFloatingTextNotification;
@@ -447,6 +449,8 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(ArrowHead.class);
+		kryo.register(Stick.class);
 		kryo.register(NotifyTextBubble.class);
 		kryo.register(TextBubbleSerializableBean.class);
 		kryo.register(Particle.class);
@@ -642,7 +646,7 @@ public class ClientServerInterface {
 		kryo.register(OpenTradeWindow.OpenTradeWindowResponse.class);
 		kryo.register(OpenTradeWindow.class);
 		kryo.register(Path.class);
-		kryo.register(Pine.class);
+		kryo.register(StandardWood.class);
 		kryo.register(Ping.class);
 		kryo.register(PlantProp.class);
 		kryo.register(Poison.class);

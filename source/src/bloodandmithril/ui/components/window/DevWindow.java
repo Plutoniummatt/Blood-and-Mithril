@@ -48,7 +48,7 @@ import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.SandStone;
-import bloodandmithril.item.material.wood.Pine;
+import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
@@ -221,7 +221,7 @@ public class DevWindow extends Window {
 			elf.getSkills().setObservation(55);
 			elf.getSkills().setSmithing(55);
 
-			elf.giveItem(new bloodandmithril.item.items.furniture.WoodenChest(Pine.class));
+			elf.giveItem(new bloodandmithril.item.items.furniture.WoodenChest(StandardWood.class));
 			for (int i = 100; i > 0; i--) {
 				elf.giveItem(new bloodandmithril.item.items.furniture.MedievalWallTorch());
 				elf.giveItem(new Carrot());
@@ -248,7 +248,7 @@ public class DevWindow extends Window {
 				elf.giveItem(item);
 			}
 			for (int i = 1; i > 0; i--) {
-				LongBow<Pine> bow = new LongBow<>(10f, 5, true, 10, Pine.class);
+				LongBow<StandardWood> bow = new LongBow<>(10f, 5, true, 10, StandardWood.class);
 				elf.giveItem(bow);
 			}
 			for (int i = 1; i > 0; i--) {
@@ -341,7 +341,7 @@ public class DevWindow extends Window {
 											return true;
 										}
 									},
-									Pine.class
+									StandardWood.class
 								);
 
 								Domain.getWorld(individual.getWorldId()).props().addProp(pineChest);

@@ -9,9 +9,14 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.Craftable;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
+import bloodandmithril.item.items.material.ArrowHead;
+import bloodandmithril.item.items.material.Stick;
+import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Metal;
+import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -123,9 +128,18 @@ public class Arrow<T extends Metal> extends Projectile {
 		/**
 		 * Constructor
 		 */
-		public ArrowItem(Class<T> metal, long value) {
-			super(0.05f, 1, false, value);
+		private ArrowItem(Class<T> metal) {
+			super(0.05f, 1, false, Material.getMaterial(metal).getIngot().getValue() / 25 + ItemValues.WOODSTICK);
 			this.metal = metal;
+		}
+
+
+		/**
+		 * Static instance getter
+		 */
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		public static ArrowItem arrowItem(Class<? extends Metal> metal) {
+			return new ArrowItem(metal);
 		}
 
 
@@ -171,7 +185,7 @@ public class Arrow<T extends Metal> extends Projectile {
 
 		@Override
 		protected Item internalCopy() {
-			return new ArrowItem<>(metal, getValue());
+			return new ArrowItem<>(metal);
 		}
 
 
@@ -190,6 +204,8 @@ public class Arrow<T extends Metal> extends Projectile {
 		@Override
 		public Map<Item, Integer> getRequiredMaterials() {
 			Map<Item, Integer> requiredMaterials = Maps.newHashMap();
+			requiredMaterials.put(Stick.stick(StandardWood.class), 1);
+			requiredMaterials.put(ArrowHead.arrowHead(metal), 1);
 			return requiredMaterials;
 		}
 
