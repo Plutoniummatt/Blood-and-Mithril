@@ -7,8 +7,10 @@ import java.util.Map;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucket;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow.ArrowItem;
 import bloodandmithril.item.items.furniture.WoodenChest;
-import bloodandmithril.item.material.wood.Pine;
+import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.material.wood.StandardWood;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
@@ -24,9 +26,10 @@ public class WorkBench extends CraftingStation {
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
 
 	static {
-		craftables.put(plank(Pine.class), 5);
-		craftables.put(new WoodenBucket(Pine.class), 1);
-		craftables.put(new WoodenChest(Pine.class), 1);
+		craftables.put(ArrowItem.arrowItem(Iron.class), 1);
+		craftables.put(plank(StandardWood.class), 5);
+		craftables.put(new WoodenBucket(StandardWood.class), 1);
+		craftables.put(new WoodenChest(StandardWood.class), 1);
 	}
 
 	private static final long serialVersionUID = 3667802131168466770L;

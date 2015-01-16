@@ -50,7 +50,7 @@ public class Log extends bloodandmithril.item.items.material.Material {
 
 	@Override
 	public String getDescription() {
-		return "A wooden log, made from " + Material.getMaterial(wood).getName() + ".";
+		return "A log, made from " + Material.getMaterial(wood).getName() + ".";
 	}
 
 

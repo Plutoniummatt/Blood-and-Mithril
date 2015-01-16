@@ -60,4 +60,11 @@ public abstract class Metal extends Material {
 	 * @return the combat multiplier value for things made from this {@link Metal}
 	 */
 	public abstract float getCombatMultiplier();
+
+	/**
+	 * @return an ingot made from this metal
+	 */
+	public Ingot getIngot() {
+		return Ingot.ingot(getClass());
+	}
 }

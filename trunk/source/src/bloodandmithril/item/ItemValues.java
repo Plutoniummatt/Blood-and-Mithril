@@ -32,8 +32,9 @@ public class ItemValues {
 	public static final int IRONINGOT = 1100;
 	public static final int STEELINGOT = 1200;
 	public static final int WOODENCHEST = 500;
-	public static final int PINELOG = 150;
-	public static final int PINEPLANK = 20;
+	public static final int WOODLOG = 150;
+	public static final int WOODSTICK = 5;
+	public static final int WOODPLANK = 20;
 	public static final int CLAY = 50;
 	public static final int DIRT = 1;
 	public static final int GLASS = 100;

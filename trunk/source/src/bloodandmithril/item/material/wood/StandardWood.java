@@ -12,27 +12,27 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
 @Copyright("Matthew Peck 2014")
-public class Pine extends Wood {
+public class StandardWood extends Wood {
 	private static final long serialVersionUID = 2072576595725963733L;
 
-	public static TextureRegion PINEPLANK;
-	public static TextureRegion PINELOG;
+	public static TextureRegion WOODPLANK;
+	public static TextureRegion WOODLOG;
 
 	/**
 	 * Package protected constructor
 	 */
-	Pine() {}
+	StandardWood() {}
 
 
 	@Override
 	public long getLogValue() {
-		return ItemValues.PINELOG;
+		return ItemValues.WOODLOG;
 	}
 
 
 	@Override
 	public long getPlankValue() {
-		return ItemValues.PINEPLANK;
+		return ItemValues.WOODPLANK;
 	}
 
 
@@ -58,24 +58,24 @@ public class Pine extends Wood {
 
 	@Override
 	public TextureRegion getPlankTextureRegion() {
-		return PINEPLANK;
+		return WOODPLANK;
 	}
 
 
 	@Override
 	public TextureRegion getLogTextureRegion() {
-		return PINELOG;
+		return WOODLOG;
 	}
 
 
 	@Override
 	public String getWoodDescription() {
-		return "An evergreen coniferous tree which has clusters of long needle-shaped leaves. Many kinds are grown for the soft timber, which is widely used for furniture.";
+		return "Wood is a porous and fibrous structural tissue found in the stems and roots of trees and other woody plants. It has been used for thousands of years for both fuel and as a construction material";
 	}
 
 
 	@Override
 	public String getName() {
-		return "Pine";
+		return "Wood";
 	}
 }

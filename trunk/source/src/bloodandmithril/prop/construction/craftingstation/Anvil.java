@@ -1,5 +1,7 @@
 package bloodandmithril.prop.construction.craftingstation;
 
+import static bloodandmithril.item.items.material.ArrowHead.arrowHead;
+
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
@@ -9,6 +11,7 @@ import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
+import bloodandmithril.item.material.metal.Iron;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
@@ -28,6 +31,7 @@ public class Anvil extends CraftingStation {
 		craftables.put(new CombatKnife(), 1);
 		craftables.put(new Machette(), 1);
 		craftables.put(new Broadsword(), 1);
+		craftables.put(arrowHead(Iron.class), 25);
 	}
 
 	private static final long serialVersionUID = -7172034409582382182L;

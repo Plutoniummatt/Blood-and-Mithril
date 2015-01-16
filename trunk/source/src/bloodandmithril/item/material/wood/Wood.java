@@ -20,7 +20,7 @@ public abstract class Wood extends Material {
 	private static final long serialVersionUID = 232426834124731122L;
 
 	public static void woods(Map<Class<? extends Material>, Material> materials) {
-		materials.put(Pine.class, new Pine());
+		materials.put(StandardWood.class, new StandardWood());
 	}
 
 	/**
