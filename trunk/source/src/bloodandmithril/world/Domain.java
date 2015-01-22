@@ -91,6 +91,7 @@ public class Domain {
 	public static FrameBuffer fBuffer;
 	public static FrameBuffer mBuffer;
 	public static FrameBuffer bBuffer;
+	public static FrameBuffer workingQuantized;
 	public static FrameBuffer bBufferQuantized;
 	public static FrameBuffer fBufferQuantized;
 	public static FrameBuffer combinedBufferQuantized;
@@ -125,6 +126,7 @@ public class Domain {
 		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
+		workingQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 		bBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 		fBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
@@ -154,35 +156,50 @@ public class Domain {
 		spriteBatch.end();
 		bBuffer.end();
 
-		bBufferQuantized.begin();
 		int xOffset = round(cam.position.x) % TILE_SIZE;
 		int yOffset = round(cam.position.y) % TILE_SIZE;
+		
+		workingQuantized.begin();
 		cam.position.x = cam.position.x - xOffset;
 		cam.position.y = cam.position.y - yOffset;
 		cam.update();
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.invertAlphaSolidColor);
-		Shaders.invertAlphaSolidColor.setUniformf("c", 1.0f, 0.0f, 0.0f, 1.0f);
-		spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0);
-		spriteBatch.end();
+		getActiveWorld().getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {});
 		cam.position.x = cam.position.x + xOffset;
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();
+		workingQuantized.end();
+		
+		bBufferQuantized.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.invertAlphaSolidColor);
+		Shaders.invertAlphaSolidColor.setUniformf("c", 1.0f, 0.0f, 0.0f, 1.0f);
+		spriteBatch.draw(workingQuantized.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
+		spriteBatch.end();
 		bBufferQuantized.end();
 
-		fBufferQuantized.begin();
+		workingQuantized.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		cam.position.x = cam.position.x - xOffset;
 		cam.position.y = cam.position.y - yOffset;
 		cam.update();
+		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
+		cam.position.x = cam.position.x + xOffset;
+		cam.position.y = cam.position.y + yOffset;
+		cam.update();
+		workingQuantized.end();
+		
+		fBufferQuantized.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertAlphaSolidColor);
 		Shaders.invertAlphaSolidColor.setUniformf("c", 0.0f, 1.0f, 0.0f, 1.0f);
-		spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0);
+		spriteBatch.draw(workingQuantized.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
 		spriteBatch.end();
-		cam.position.x = cam.position.x + xOffset;
-		cam.position.y = cam.position.y + yOffset;
-		cam.update();
 		fBufferQuantized.end();
 
 		combinedBufferQuantized.begin();

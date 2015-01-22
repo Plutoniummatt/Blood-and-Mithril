@@ -535,10 +535,6 @@ public class GaussianLightingRenderer {
 		spriteBatch.begin();
 		if (SEE_ALL) {
 			spriteBatch.setShader(Shaders.invertY);
-			spriteBatch.draw(
-				middleGroundLightingFBO.getColorBufferTexture(),
-				0, 0
-			);
 		} else {
 			spriteBatch.setShader(Shaders.foregroundShader);
 			Color daylight = Weather.getDaylightColor();
