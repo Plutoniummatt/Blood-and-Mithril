@@ -109,7 +109,7 @@ public abstract class Tile implements Serializable {
 			}
 		}
 
-		return foreGround ? texX * Topography.textureCoordinateQuantization : (texX + 21) * Topography.textureCoordinateQuantization;
+		return foreGround ? texX * Topography.textureCoordinateQuantization : (texX + 20) * Topography.textureCoordinateQuantization;
 	}
 
 
