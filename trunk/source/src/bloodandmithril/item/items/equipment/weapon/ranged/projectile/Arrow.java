@@ -128,7 +128,7 @@ public class Arrow<T extends Metal> extends Projectile {
 		/**
 		 * Constructor
 		 */
-		private ArrowItem(Class<T> metal) {
+		protected ArrowItem(Class<T> metal) {
 			super(0.05f, 1, false, Material.getMaterial(metal).getIngot().getValue() / 25 + ItemValues.WOODSTICK);
 			this.metal = metal;
 		}

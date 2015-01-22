@@ -283,7 +283,7 @@ public class BloodAndMithrilServer {
 				for (int i = 100; i > 0; i--) {
 					elf.giveItem(new bloodandmithril.item.items.furniture.MedievalWallTorch());
 					elf.giveItem(new Carrot());
-					elf.giveItem(new Arrow.ArrowItem<>(Steel.class, 10));
+					elf.giveItem(Arrow.ArrowItem.arrowItem(Steel.class));
 					elf.giveItem(new FireArrow.FireArrowItem<>(Iron.class, 10));
 					elf.giveItem(new GlowStickArrow.GlowStickArrowItem<>(Iron.class, 10));
 				}
