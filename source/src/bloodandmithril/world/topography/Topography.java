@@ -48,7 +48,7 @@ public class Topography {
 	public static Texture atlas;
 
 	/** The texture coordinate increment representing one tile in the texture atlas. (1/128) */
-	public static final float textureCoordinateQuantization = 0.0078125f;
+	public static final float textureCoordinateQuantization = 0.015625f;
 
 	/** The chunk map of the topography. */
 	private final ChunkMap chunkMap;

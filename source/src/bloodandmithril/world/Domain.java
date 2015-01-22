@@ -160,9 +160,11 @@ public class Domain {
 		cam.position.x = cam.position.x - xOffset;
 		cam.position.y = cam.position.y - yOffset;
 		cam.update();
-		getActiveWorld().getTopography().renderBackGround(camX, camY, Shaders.invertAlphaSolidColor, shader -> {
-			shader.setUniformf("c", 1.0f, 0.0f, 0.0f, 1.0f);
-		});
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.invertAlphaSolidColor);
+		Shaders.invertAlphaSolidColor.setUniformf("c", 1.0f, 0.0f, 0.0f, 1.0f);
+		spriteBatch.draw(bBuffer.getColorBufferTexture(), 0, 0);
+		spriteBatch.end();
 		cam.position.x = cam.position.x + xOffset;
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();
@@ -173,9 +175,11 @@ public class Domain {
 		cam.position.y = cam.position.y - yOffset;
 		cam.update();
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.invertAlphaSolidColor, shader -> {
-			shader.setUniformf("c", 0.0f, 1.0f, 0.0f, 1.0f);
-		});
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.invertAlphaSolidColor);
+		Shaders.invertAlphaSolidColor.setUniformf("c", 0.0f, 1.0f, 0.0f, 1.0f);
+		spriteBatch.draw(fBuffer.getColorBufferTexture(), 0, 0);
+		spriteBatch.end();
 		cam.position.x = cam.position.x + xOffset;
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();

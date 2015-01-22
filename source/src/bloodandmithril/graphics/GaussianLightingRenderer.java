@@ -494,10 +494,6 @@ public class GaussianLightingRenderer {
 		spriteBatch.begin();
 		if (SEE_ALL) {
 			spriteBatch.setShader(Shaders.invertY);
-			spriteBatch.draw(
-				workingFBO.getColorBufferTexture(),
-				0, 0
-			);
 		} else {
 			spriteBatch.setShader(Shaders.backgroundShader);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
@@ -540,7 +536,7 @@ public class GaussianLightingRenderer {
 		if (SEE_ALL) {
 			spriteBatch.setShader(Shaders.invertY);
 			spriteBatch.draw(
-				foregroundLightingFBO.getColorBufferTexture(),
+				middleGroundLightingFBO.getColorBufferTexture(),
 				0, 0
 			);
 		} else {
@@ -590,7 +586,7 @@ public class GaussianLightingRenderer {
 		if (SEE_ALL) {
 			spriteBatch.setShader(Shaders.invertY);
 			spriteBatch.draw(
-				workingFBO.getColorBufferTexture(),
+				Domain.fBufferQuantized.getColorBufferTexture(),
 				0, 0
 			);
 		} else {
