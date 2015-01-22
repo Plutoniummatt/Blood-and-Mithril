@@ -1,5 +1,9 @@
 package bloodandmithril.world.topography;
 
+import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
+import static bloodandmithril.world.topography.Topography.TILE_SIZE;
+import static bloodandmithril.world.topography.Topography.textureCoordinateQuantization;
+
 import java.io.Serializable;
 
 import org.lwjgl.opengl.GL11;
@@ -46,6 +50,9 @@ public class Chunk {
 	/**	The chunk data */
 	private final ChunkData fData;
 	private final ChunkData bData;
+
+	/**	Rendering size of tiles */
+	private static final int tileRenderSize = 32;
 
 	/**
 	 * Constructor
@@ -116,25 +123,25 @@ public class Chunk {
 	 * Populates the vertex attributes of a quad.
 	 */
 	private void populateQuadVertexAttributes(int x, int y, float texX, float texY, ChunkData data, float[] vertexAttributes) {
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 0] = data.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + x * Topography.TILE_SIZE;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 1] = data.yChunkCoord	* Topography.CHUNK_SIZE * Topography.TILE_SIZE + y * Topography.TILE_SIZE;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 2] = texX;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 3] = texY;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 0] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 1] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 2] = texX;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 3] = texY;
 
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 4] = data.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + x * Topography.TILE_SIZE + Topography.TILE_SIZE;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 5] = data.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + y * Topography.TILE_SIZE;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 6] = texX + Topography.textureCoordinateQuantization;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 7] = texY;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 4] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 5] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 6] = texX + textureCoordinateQuantization;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 7] = texY;
 
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 8] = data.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + x * Topography.TILE_SIZE + Topography.TILE_SIZE;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 9] = data.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + y * Topography.TILE_SIZE + Topography.TILE_SIZE;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 10] = texX + Topography.textureCoordinateQuantization;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 11] = texY - Topography.textureCoordinateQuantization;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 8] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 9] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 10] = texX + textureCoordinateQuantization;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 11] = texY - textureCoordinateQuantization;
 
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 12] = data.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + x * Topography.TILE_SIZE;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 13] = data.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE + y * Topography.TILE_SIZE + Topography.TILE_SIZE;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 14] = texX;
-		vertexAttributes[16 * x * Topography.CHUNK_SIZE + y * 16 + 15] = texY - Topography.textureCoordinateQuantization;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 12] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 13] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 + tileRenderSize/2;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 14] = texX;
+		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 15] = texY - textureCoordinateQuantization;
 	}
 
 

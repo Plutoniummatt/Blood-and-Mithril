@@ -92,7 +92,7 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 		private static final long serialVersionUID = 9027137493687956507L;
 
 		public FireArrowItem(Class<T> metal, long value) {
-			super(metal, value);
+			super(metal);
 		}
 
 		@Override
