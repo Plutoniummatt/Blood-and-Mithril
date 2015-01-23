@@ -158,7 +158,7 @@ public class Domain {
 
 		int xOffset = round(cam.position.x) % TILE_SIZE;
 		int yOffset = round(cam.position.y) % TILE_SIZE;
-		
+
 		workingQuantized.begin();
 		cam.position.x = cam.position.x - xOffset;
 		cam.position.y = cam.position.y - yOffset;
@@ -168,7 +168,7 @@ public class Domain {
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();
 		workingQuantized.end();
-		
+
 		bBufferQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -190,10 +190,9 @@ public class Domain {
 		cam.position.y = cam.position.y + yOffset;
 		cam.update();
 		workingQuantized.end();
-		
+
 		fBufferQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertAlphaSolidColor);
