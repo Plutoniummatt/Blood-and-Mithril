@@ -13,9 +13,6 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
-import bloodandmithril.world.topography.tile.tiles.stone.LimeStoneTile;
-import bloodandmithril.world.topography.tile.tiles.stone.MagmaTile;
-import bloodandmithril.world.topography.tile.tiles.stone.ObsidianTile;
 
 /**
  * Manages layers
@@ -86,11 +83,11 @@ public class GlobalLayers {
 		} else if (layerHeight <= firstLayerHeight && layerHeight > secondLayerHeight) {
 			return new GraniteTile();
 		} else if (layerHeight <= secondLayerHeight && layerHeight > thirdLayerHeight) {
-			return new LimeStoneTile();
+			return new GraniteTile();
 		} else if (layerHeight <= thirdLayerHeight && layerHeight > lastLayerHeight) {
-			return new ObsidianTile();
+			return new GraniteTile();
 		} else {
-			return new MagmaTile();
+			return new GraniteTile();
 		}
 	}
 }
