@@ -38,6 +38,7 @@ import com.google.common.collect.Iterables;
 public class GaussianLightingRenderer {
 	public static boolean SEE_ALL = false;
 
+	public static FrameBuffer foregroundLightingFBOSmall, middleGroundLightingFBOSmall;
 	public static FrameBuffer foregroundLightingFBO, middleGroundLightingFBO;
 	public static FrameBuffer workingDownSampled;
 	public static FrameBuffer workingDownSampledXBlurColorBuffer;
@@ -50,7 +51,8 @@ public class GaussianLightingRenderer {
 	public static FrameBuffer foregroundShadowFBO;
 	public static FrameBuffer workingFBO;
 
-	private static final int MAX_PARTICLES = 50;
+	public static final int MAX_PARTICLES = 100;
+	private static final int LIGHTING_FBO_DOWNSIZE_SAMPLER = 6;
 
 	/**
 	 * Master render method.
@@ -59,8 +61,8 @@ public class GaussianLightingRenderer {
 		weather();
 		backgroundLighting();
 		foregroundLighting();
-		lighting(foregroundLightingFBO, Depth.FOREGOUND);
-		lighting(middleGroundLightingFBO, Depth.MIDDLEGROUND);
+		lighting(foregroundLightingFBOSmall, foregroundLightingFBO, Depth.FOREGOUND);
+		lighting(middleGroundLightingFBOSmall, middleGroundLightingFBO, Depth.MIDDLEGROUND);
 		background();
 		middleground();
 		foreground();
@@ -119,7 +121,21 @@ public class GaussianLightingRenderer {
 			HEIGHT,
 			false
 		);
-
+		
+		foregroundLightingFBOSmall = new FrameBuffer(
+			RGBA8888,
+			WIDTH/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			HEIGHT/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			false
+		);
+		
+		middleGroundLightingFBOSmall = new FrameBuffer(
+			RGBA8888,
+			WIDTH/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			HEIGHT/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			false
+		);
+		
 		workingFBO = new FrameBuffer(
 			RGBA8888,
 			WIDTH,
@@ -160,6 +176,8 @@ public class GaussianLightingRenderer {
 		workingDownSampledXBlurColorBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		workingDownSampledYBlurColorBuffer2.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		workingDownSampledYBlurColorBuffer.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		middleGroundLightingFBOSmall.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		foregroundLightingFBOSmall.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	}
 
 
@@ -171,13 +189,13 @@ public class GaussianLightingRenderer {
 	/**
 	 * Handles rendering to the lighting FBO.
 	 */
-	private static void lighting(FrameBuffer lightingFbo, Depth depth) {
+	private static void lighting(FrameBuffer lightingFboSmall, FrameBuffer lightingFbo, Depth depth) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		workingFBO.end();
 
-		lightingFbo.begin();
+		lightingFboSmall.begin();
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.tracerParticlesFBO);
 		Shaders.tracerParticlesFBO.begin();
@@ -256,6 +274,15 @@ public class GaussianLightingRenderer {
 		Shaders.tracerParticlesFBO.setUniform4fv("color[0]", colors, 0, MAX_PARTICLES * 4);
 		spriteBatch.draw(workingFBO.getColorBufferTexture(), 0, 0);
 		spriteBatch.flush();
+		spriteBatch.end();
+		lightingFboSmall.end();
+		
+		lightingFbo.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.invertY);
+		spriteBatch.draw(lightingFboSmall.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
 		spriteBatch.end();
 		lightingFbo.end();
 	}
@@ -581,10 +608,6 @@ public class GaussianLightingRenderer {
 		spriteBatch.begin();
 		if (SEE_ALL) {
 			spriteBatch.setShader(Shaders.invertY);
-			spriteBatch.draw(
-				Domain.fBufferQuantized.getColorBufferTexture(),
-				0, 0
-			);
 		} else {
 			spriteBatch.setShader(Shaders.foregroundShader);
 			Color daylight = Weather.getDaylightColor();

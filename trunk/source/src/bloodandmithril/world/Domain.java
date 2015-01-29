@@ -5,6 +5,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.cam;
 import static bloodandmithril.core.BloodAndMithrilClient.camMarginX;
 import static bloodandmithril.core.BloodAndMithrilClient.camMarginY;
+import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.world.Domain.Depth.BACKGROUND;
@@ -46,6 +47,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.UnitsWindow;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.datastructure.Wrapper;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.Gdx;
@@ -295,13 +297,17 @@ public class Domain {
 		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getClientParticles() != null) {
-			Domain.getActiveWorld().getClientParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
+			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
+			Domain.getActiveWorld().getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f) && counter.t < GaussianLightingRenderer.MAX_PARTICLES).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime());
+				counter.t++;
 			});
 		}
 		if (Domain.getActiveWorld().getServerParticles() != null) {
-			Domain.getActiveWorld().getServerParticles().values().stream().filter(p -> p.depth == depth).forEach(p -> {
+			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
+			Domain.getActiveWorld().getServerParticles().values().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f) && counter.t < GaussianLightingRenderer.MAX_PARTICLES).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime());
+				counter.t++;
 			});
 		}
 		Domain.shapeRenderer.end();
