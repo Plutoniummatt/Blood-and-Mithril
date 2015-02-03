@@ -6,21 +6,17 @@ import static bloodandmithril.persistence.GameSaver.isSaving;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Deque;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import bloodandmithril.audio.SoundService;
-import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.performance.PositionalReindexingService;
-import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -304,14 +300,12 @@ public class MainMenuWindow extends Window {
 	 * Single player mode was selected
 	 */
 	private void singlePlayer() {
-		Domain.getFactions().put(0, new Faction("Nature", 0, false, ""));
-		Domain.getFactions().put(1, new Faction("Elves", 1, true, "Elves are cool"));
-		ClientServerInterface.setServer(true);
-		BloodAndMithrilClient.clientCSIThread.execute(() -> {
-			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
-			BloodAndMithrilClient.domain = new Domain();
-			connected();
-		});
+		for (Component component : UserInterface.layeredComponents) {
+			if (component instanceof MainMenuWindow) {
+				component.setClosing(true);
+			}
+		}
+		UserInterface.addLayeredComponentUnique(new NewGameWindow());
 	}
 
 
@@ -325,7 +319,8 @@ public class MainMenuWindow extends Window {
 		for (Component component : UserInterface.layeredComponents) {
 			if (component instanceof Window && ((Window) component).title.equals("Connecting") ||
 				component instanceof Window && ((Window) component).title.equals("Enter IP") ||
-				component instanceof MainMenuWindow) {
+				component instanceof MainMenuWindow ||
+				component instanceof NewGameWindow) {
 				component.setClosing(true);
 			}
 		}
