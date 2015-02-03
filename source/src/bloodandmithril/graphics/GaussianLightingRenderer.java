@@ -121,21 +121,21 @@ public class GaussianLightingRenderer {
 			HEIGHT,
 			false
 		);
-		
+
 		foregroundLightingFBOSmall = new FrameBuffer(
 			RGBA8888,
 			WIDTH/LIGHTING_FBO_DOWNSIZE_SAMPLER,
 			HEIGHT/LIGHTING_FBO_DOWNSIZE_SAMPLER,
 			false
 		);
-		
+
 		middleGroundLightingFBOSmall = new FrameBuffer(
 			RGBA8888,
 			WIDTH/LIGHTING_FBO_DOWNSIZE_SAMPLER,
 			HEIGHT/LIGHTING_FBO_DOWNSIZE_SAMPLER,
 			false
 		);
-		
+
 		workingFBO = new FrameBuffer(
 			RGBA8888,
 			WIDTH,
@@ -213,11 +213,11 @@ public class GaussianLightingRenderer {
 		Iterable<Particle> clientSideGlowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getClientParticles(), p -> {
 			return p.depth == depth && isOnScreen(p.position, 50f);
 		});
-		
+
 		Iterable<Particle> serverSideGlowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getServerParticles().values(), p -> {
 			return p.depth == depth && isOnScreen(p.position, 50f);
 		});
-		
+
 		for (Particle p : serverSideGlowingTracerParticles) {
 			if (index == MAX_PARTICLES) {
 				break;
@@ -246,7 +246,7 @@ public class GaussianLightingRenderer {
 			if (index == MAX_PARTICLES) {
 				break;
 			}
-			
+
 			if (p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f) {
 				currentPositions[positionIndex] = worldToScreenX(p.position.x);
 				currentPositions[positionIndex + 1] = worldToScreenY(p.position.y);
@@ -276,7 +276,7 @@ public class GaussianLightingRenderer {
 		spriteBatch.flush();
 		spriteBatch.end();
 		lightingFboSmall.end();
-		
+
 		lightingFbo.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -286,7 +286,7 @@ public class GaussianLightingRenderer {
 		spriteBatch.end();
 		lightingFbo.end();
 	}
-	
+
 
 	/**
 	 * Renders the background lighting control occlusion FBO
