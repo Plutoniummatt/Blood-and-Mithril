@@ -5,7 +5,6 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.persistence.GameSaver.isSaving;
 import static bloodandmithril.util.Fonts.defaultFont;
 
-import java.io.IOException;
 import java.util.Deque;
 import java.util.List;
 
@@ -195,10 +194,12 @@ public class MainMenuWindow extends Window {
 								UserInterface.addMessage("Connecting", "Attemping to connect to " + args[0].toString());
 								BloodAndMithrilClient.clientCSIThread.execute(() -> {
 									try {
+										removeWindows();
+										Thread.sleep(1000);
 										ClientServerInterface.setupAndConnect(args[0].toString());
 										BloodAndMithrilClient.domain = new Domain();
 										connected();
-									} catch (IOException e) {
+									} catch (Exception e) {
 
 										// Deactivate all windows, close the connecting message pop-up.
 										for (Component component : UserInterface.layeredComponents) {
@@ -313,9 +314,16 @@ public class MainMenuWindow extends Window {
 	 * Connection was successful, begin setup.
 	 */
 	public static void connected() {
-		UserInterface.buttons.remove("connect");
 		UserInterface.setup();
 
+		SoundService.changeMusic(2f, SoundService.desertNight);
+		UserInterface.contextMenus.clear();
+		PositionalReindexingService.reindex();
+	}
+
+
+	public static void removeWindows() {
+		UserInterface.buttons.remove("connect");
 		for (Component component : UserInterface.layeredComponents) {
 			if (component instanceof Window && ((Window) component).title.equals("Connecting") ||
 				component instanceof Window && ((Window) component).title.equals("Enter IP") ||
@@ -324,10 +332,6 @@ public class MainMenuWindow extends Window {
 				component.setClosing(true);
 			}
 		}
-
-		SoundService.changeMusic(2f, SoundService.desertNight);
-		UserInterface.contextMenus.clear();
-		PositionalReindexingService.reindex();
 	}
 
 

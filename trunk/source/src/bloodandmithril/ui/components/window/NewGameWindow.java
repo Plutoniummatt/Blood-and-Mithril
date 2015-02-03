@@ -49,6 +49,10 @@ public class NewGameWindow extends Window {
 			Domain.getFactions().put(1, new Faction("Elves", 1, true, "Elves are cool"));
 			ClientServerInterface.setServer(true);
 			BloodAndMithrilClient.clientCSIThread.execute(() -> {
+				MainMenuWindow.removeWindows();
+				try {
+					Thread.sleep(1000);
+				} catch (Exception e) {}
 				GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 				BloodAndMithrilClient.domain = new Domain();
 				MainMenuWindow.connected();
