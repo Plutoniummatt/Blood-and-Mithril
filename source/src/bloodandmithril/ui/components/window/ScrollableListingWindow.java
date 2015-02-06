@@ -68,7 +68,7 @@ public abstract class ScrollableListingWindow<T, A> extends Window implements Re
 
 
 			@Override
-			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<T>, A>> listings) {
+			protected void populateListings(List<HashMap<ScrollableListingPanel.ListingMenuItem<T>, A>> listings) {
 				populateListing(mapToBuildFrom, listings);
 			}
 

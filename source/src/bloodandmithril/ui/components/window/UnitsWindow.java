@@ -164,7 +164,7 @@ public class UnitsWindow extends Window implements Refreshable {
 			}
 
 			@Override
-			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<Individual>, String>> listings) {
+			protected void populateListings(List<HashMap<ScrollableListingPanel.ListingMenuItem<Individual>, String>> listings) {
 				listings.add(individuals);
 			}
 

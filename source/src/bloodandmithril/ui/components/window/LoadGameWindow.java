@@ -78,7 +78,7 @@ public class LoadGameWindow extends Window {
 
 
 			@Override
-			protected void onSetup(List<HashMap<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date>> listings) {
+			protected void populateListings(List<HashMap<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date>> listings) {
 				populateList(listings);
 			}
 

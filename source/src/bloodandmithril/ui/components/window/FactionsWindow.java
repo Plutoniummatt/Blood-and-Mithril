@@ -63,7 +63,7 @@ public class FactionsWindow extends Window {
 			}
 
 			@Override
-			protected void onSetup(final List<HashMap<ListingMenuItem<String>, Object>> listings) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<String>, Object>> listings) {
 				listings.clear();
 				listings.add(buildMap(true));
 				listings.add(buildMap(false));

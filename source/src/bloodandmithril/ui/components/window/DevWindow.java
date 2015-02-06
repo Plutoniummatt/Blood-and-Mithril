@@ -107,7 +107,7 @@ public class DevWindow extends Window {
 			}
 
 			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem<String>, Object>> listings) {
+			protected void populateListings(List<HashMap<ListingMenuItem<String>, Object>> listings) {
 				HashMap<ListingMenuItem<String>, Object> newHashMap = buildMap();
 
 				listings.add(newHashMap);

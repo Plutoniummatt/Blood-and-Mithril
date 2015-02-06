@@ -327,7 +327,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		if (newPanels) {
 			inventoryListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder, true, 35) {
 				@Override
-				protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+				protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 					listings.add(nonEquippedItemsToDisplay);
 				}
 
@@ -349,7 +349,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 			equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder, true, 35) {
 				@Override
-				protected void onSetup(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+				protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 					listings.add(equippedItemsToDisplay);
 				}
 

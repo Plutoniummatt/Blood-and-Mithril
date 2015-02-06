@@ -74,7 +74,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		this.sortingComparator = sortingComparator;
 		this.filtered = filtered;
 		this.extraColumnWidth = extraColumnWidth;
-		onSetup(listings);
+		populateListings(listings);
 	}
 
 
@@ -121,7 +121,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	/**
 	 * Populates the datastructure {@link #listings}
 	 */
-	protected abstract void onSetup(List<HashMap<ListingMenuItem<T>, A>> listings);
+	protected abstract void populateListings(List<HashMap<ListingMenuItem<T>, A>> listings);
 
 
 	@Override

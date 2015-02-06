@@ -113,7 +113,7 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 
 
 	@Override
-	protected void onSetup(List<HashMap<ListingMenuItem<Item>, String>> listings) {
+	protected void populateListings(List<HashMap<ListingMenuItem<Item>, String>> listings) {
 	}
 
 
