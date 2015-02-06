@@ -69,7 +69,7 @@ public class IndividualStatusWindow extends Window {
 			}
 
 			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem<Condition>, Object>> listings) {
+			protected void populateListings(List<HashMap<ListingMenuItem<Condition>, Object>> listings) {
 				refreshLisitng(individual, listings);
 			}
 

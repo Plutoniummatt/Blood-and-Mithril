@@ -60,7 +60,7 @@ public class ChatWindow extends Window {
 			}
 
 			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem<String>, Object>> listings) {
+			protected void populateListings(List<HashMap<ListingMenuItem<String>, Object>> listings) {
 			}
 
 			@Override

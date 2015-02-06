@@ -92,7 +92,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			}
 
 			@Override
-			protected void onSetup(List<HashMap<ListingMenuItem<Item>, String>> listings) {
+			protected void populateListings(List<HashMap<ListingMenuItem<Item>, String>> listings) {
 				listings.add(constructCraftablesListing());
 			}
 
