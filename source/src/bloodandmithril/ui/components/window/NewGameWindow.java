@@ -5,19 +5,15 @@ import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
@@ -26,7 +22,6 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
-import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
@@ -125,38 +120,11 @@ public class NewGameWindow extends Window {
 
 	public class ChooseStartingEntitiesPanel extends Panel {
 
-		private ScrollableListingPanel<Item, String> items;
-
 		/**
 		 * Constructor
 		 */
 		public ChooseStartingEntitiesPanel(Component parent) {
 			super(parent);
-			items = new ScrollableListingPanel<Item, String>(this, new Comparator<Item>() {
-				@Override
-				public int compare(Item i1, Item i2) {
-					return i1.getSingular(false).compareTo(i2.getSingular(false));
-				}
-			}, true, 35) {
-				@Override
-				protected void populateListings(List<HashMap<ListingMenuItem<Item>, String>> listings) {
-				}
-
-				@Override
-				protected int getExtraStringOffset() {
-					return 0;
-				}
-
-				@Override
-				protected String getExtraString(Entry<ListingMenuItem<Item>, String> item) {
-					return "";
-				}
-
-				@Override
-				public boolean keyPressed(int keyCode) {
-					return false;
-				}
-			};
 		}
 
 

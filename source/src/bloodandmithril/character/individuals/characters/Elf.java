@@ -62,9 +62,8 @@ import com.google.common.collect.Sets;
  * Exceptional at:
  *
  * - Archery
- * - Walking/Running on water
- * - Infinite stamina
- * - Longer natural lifespan
+ * - Physical activities do not deplete stamina
+ * - Longer natural life span
  * - Better vision
  * - Natural wound healing
  * - Better at magic
