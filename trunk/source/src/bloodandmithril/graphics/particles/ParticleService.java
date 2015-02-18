@@ -82,19 +82,34 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth) {
+	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth, boolean tracer) {
 		if (isClient()) {
-			Domain.getActiveWorld().getClientParticles().add(new DiminishingTracerParticle(
-				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
-				new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
-				color,
-				initialRadius,
-				Domain.getActiveWorld().getWorldId(),
-				glow,
-				mode,
-				depth,
-				diminishingDuration
-			));
+			if (tracer) {
+				Domain.getActiveWorld().getClientParticles().add(new DiminishingTracerParticle(
+					position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
+					new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
+					color,
+					initialRadius,
+					Domain.getActiveWorld().getWorldId(),
+					glow,
+					mode,
+					depth,
+					diminishingDuration
+				));
+			} else {
+				Domain.getActiveWorld().getClientParticles().add(new DiminishingParticle(
+					position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
+					new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
+					color,
+					initialRadius,
+					Domain.getActiveWorld().getWorldId(),
+					glow,
+					mode,
+					depth,
+					diminishingDuration
+				));
+			}
+
 		}
 	}
 
