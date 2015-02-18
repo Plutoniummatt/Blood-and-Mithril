@@ -62,8 +62,8 @@ public class ParticleService {
 			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), spawnSpread, maxVel, new SerializableColor(color), glow, maxLifeTime, mode, depth));
 		}
 	}
-	
-	
+
+
 
 	public static void randomVelocityTextureBackedParticle(Vector2 position, float spawnSpread, float maxVel, Color color, int maxLifeTime, MovementMode mode, Depth depth) {
 		if (isClient()) {
@@ -82,7 +82,7 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth, boolean tracer) {
+	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth, boolean tracer, Color toChangeTo) {
 		if (isClient()) {
 			if (tracer) {
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingTracerParticle(
@@ -97,10 +97,11 @@ public class ParticleService {
 					diminishingDuration
 				));
 			} else {
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingParticle(
+				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 					new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 					color,
+					toChangeTo,
 					initialRadius,
 					Domain.getActiveWorld().getWorldId(),
 					glow,
