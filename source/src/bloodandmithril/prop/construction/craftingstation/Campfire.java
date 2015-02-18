@@ -103,8 +103,8 @@ public class Campfire extends CraftingStation implements Lightable {
 		super.update(delta);
 
 		if (lit && isOnScreen(position, 50f)) {
-			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, Util.getRandom().nextFloat() * 10f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND);
-			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.BACKGROUND);
+			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 15f, Color.ORANGE, Util.getRandom().nextFloat() * 4f, Util.getRandom().nextFloat() * 10f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false);
+			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 15f), 7f, 30f, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.BACKGROUND, false);
 		}
 	}
 
