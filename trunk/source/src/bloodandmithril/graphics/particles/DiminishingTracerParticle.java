@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 public class DiminishingTracerParticle extends TracerParticle {
 	private static final long serialVersionUID = -2839758227577685427L;
 
-	private long diminishingDuration;
+	protected long diminishingDuration;
 	private float originalRadius, originalGlowIntensity;
 
 	/**
