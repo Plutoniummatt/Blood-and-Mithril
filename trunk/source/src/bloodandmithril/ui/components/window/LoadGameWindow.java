@@ -106,10 +106,17 @@ public class LoadGameWindow extends Window {
 						metadata.name.length() * 9,
 						16,
 						() -> {
+							setClosing(true);
 							ClientServerInterface.setServer(true);
-							GameLoader.load(metadata, false);
-							BloodAndMithrilClient.domain = new Domain();
-							MainMenuWindow.connected();
+							BloodAndMithrilClient.clientCSIThread.execute(() -> {
+								MainMenuWindow.removeWindows();
+								try {
+									Thread.sleep(1000);
+								} catch (Exception e) {}
+								GameLoader.load(metadata, false);
+								BloodAndMithrilClient.domain = new Domain();
+								MainMenuWindow.connected();
+							});
 						},
 						Color.ORANGE,
 						Color.GREEN,
