@@ -629,7 +629,7 @@ public class GaussianLightingRenderer {
 		}
 
 		spriteBatch.setShader(Shaders.lightingFBOBlend);
-		Shaders.lightingFBOBlend.setUniformf("color", 1f, 1f, 1f, 0.4f);
+		Shaders.lightingFBOBlend.setUniformf("color", 1f, 1f, 1f, 0.35f);
 		spriteBatch.draw(
 			foregroundLightingFBO.getColorBufferTexture(),
 			0, 0
