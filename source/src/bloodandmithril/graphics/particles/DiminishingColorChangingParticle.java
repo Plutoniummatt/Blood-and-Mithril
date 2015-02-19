@@ -13,6 +13,8 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class DiminishingColorChangingParticle extends DiminishingTracerParticle {
 	private static final long serialVersionUID = 4485079922391112334L;
+	
+	private boolean changeColor = false;
 	private float rStep = 0f;
 	private float gStep = 0f;
 	private float bStep = 0f;
@@ -39,6 +41,7 @@ public class DiminishingColorChangingParticle extends DiminishingTracerParticle 
 			this.gStep = colorToChangeTo.g - color.g;
 			this.bStep = colorToChangeTo.b - color.b;
 			this.aStep = colorToChangeTo.a - color.a;
+			this.changeColor = true;
 		}
 	}
 
@@ -48,10 +51,12 @@ public class DiminishingColorChangingParticle extends DiminishingTracerParticle 
 		super.update(delta);
 		float step = diminishingDuration / 1000f;
 
-		color.r += rStep * (delta / step);
-		color.g += gStep * (delta / step);
-		color.b += bStep * (delta / step);
-		color.a += aStep * (delta / step);
+		if (changeColor) {
+			color.r += rStep * (delta / step);
+			color.g += gStep * (delta / step);
+			color.b += bStep * (delta / step);
+			color.a += aStep * (delta / step);
+		}
 	}
 
 

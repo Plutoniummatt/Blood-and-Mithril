@@ -26,6 +26,7 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -139,6 +140,8 @@ public class IndividualStatusWindow extends Window {
 		int barLengthModifier = 80;
 
 		shapeRenderer.begin(FilledRectangle);
+		Gdx.gl20.glLineWidth(1);
+		
 		float health = individual.getState().health / individual.getState().maxHealth;
 		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY, (width - barLengthModifier) * health, barThickness,
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
