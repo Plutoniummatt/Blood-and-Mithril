@@ -20,23 +20,14 @@ public class Speech {
 		randomIdleSpeech.add("No you");
 		randomIdleSpeech.add("Sometimes I wish I was a fish");
 		randomIdleSpeech.add("Metal gear is already active!?");
-		randomIdleSpeech.add("Do you think love can bloom even on a battlefield?");
-		randomIdleSpeech.add("I need scissors! 61!");
 		randomIdleSpeech.add("Some days, you feed on a tree frog");
-		randomIdleSpeech.add("Even if a pawn becomes a queen, it is still just a playing piece");
-		randomIdleSpeech.add("Death is tragic... But life is miserable");
 		randomIdleSpeech.add("Sometimes when I close my eyes...I can't see");
-		randomIdleSpeech.add("I would say something...But I don't want to spoil the silence");
-		randomIdleSpeech.add("Who's that chick with the helmet?");
-		randomIdleSpeech.add("When will this game be released?");
-		randomIdleSpeech.add("Maybe one day you'll change your mind, but it'll be too late");
 		randomIdleSpeech.add("Don't look at me in that tone of voice");
 		randomIdleSpeech.add("My friend threw a rock at the ground and missed");
 		randomIdleSpeech.add("Wanna buy a waterproof towel?");
-		randomIdleSpeech.add("The road to success is always under construction");
 		randomIdleSpeech.add("Peace sells, but who's buyin'?");
 		randomIdleSpeech.add("It's not important to win, It's important to make the other guy lose");
-		randomIdleSpeech.add("The greatest pleasure in life is doing what people say you cannot do");
+		randomIdleSpeech.add("Cuz we never go out of style");
 
 		affirmativeSpeech.add("OK");
 		affirmativeSpeech.add("As you wish...");
