@@ -158,7 +158,7 @@ public class NewGameWindow extends Window {
 		} else if (currentPanel instanceof ChooseStartingIndividualsPanel) {
 			return startingIndividuals.size() > 1;
 		}
-		
+
 		throw new IllegalStateException("Unexpected panel");
 	}
 
@@ -197,10 +197,10 @@ public class NewGameWindow extends Window {
 			if (!startingIndividuals.keySet().isEmpty()) {
 				selectedIndividual = Iterables.get(startingIndividuals.keySet(), 0).t;
 			}
-			
+
 			startingIndividuals.put(
 				new ListingMenuItem<Individual>(
-					null, 
+					null,
 					new Button(
 						"Add new individual",
 						defaultFont,
@@ -212,19 +212,19 @@ public class NewGameWindow extends Window {
 							if (assignablePoints < 10) {
 								return;
 							}
-							
+
 							addIndividual();
 						},
 						Color.GREEN,
 						Color.WHITE,
 						Color.GREEN,
 						UIRef.BL
-					), 
+					),
 					null
-				), 
+				),
 				null
 			);
-			
+
 			individuals = new ScrollableListingPanel<Individual, String>(
 				NewGameWindow.this,
 				new Comparator<Individual>() {
@@ -310,7 +310,7 @@ public class NewGameWindow extends Window {
 		private void addIndividual() {
 			Individual newIndividual = newIndividual(selectedRace);
 			ListingMenuItem<Individual> listingItem = new ListingMenuItem<Individual>(
-				newIndividual, 
+				newIndividual,
 				new Button(
 					newIndividual.getId().getSimpleName(),
 					defaultFont,
@@ -324,10 +324,10 @@ public class NewGameWindow extends Window {
 					Color.WHITE,
 					Color.ORANGE,
 					UIRef.BL
-				), 
+				),
 				null
 			);
-			
+
 			listingItem.button.setTask(
 				() -> {
 					if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
@@ -337,6 +337,9 @@ public class NewGameWindow extends Window {
 						startingIndividuals.remove(listingItem);
 						refreshSkillListing();
 						assignablePoints += 10;
+						for (Skill skill : listingItem.t.getSkills().getAllSkills()) {
+							assignablePoints += skill.getLevel();
+						}
 					} else {
 						selectedIndividual = newIndividual;
 						refreshSkillListing();
@@ -352,16 +355,16 @@ public class NewGameWindow extends Window {
 					}
 				}
 			);
-			
+
 			startingIndividuals.put(
-				listingItem, 
+				listingItem,
 				null
 			);
-			
+
 			assignablePoints -= 10;
 		}
-		
-		
+
+
 		private void refreshSkillListing() {
 			ChooseStartingIndividualsPanel.this.skills.getListing().clear();
 			HashMap<ListingMenuItem<Skill>, String> newHashMap = Maps.newHashMap();
@@ -397,7 +400,7 @@ public class NewGameWindow extends Window {
 						),
 						null
 					);
-					
+
 					newHashMap.put(
 						item,
 						Integer.toString(skill.getLevel())
@@ -429,7 +432,7 @@ public class NewGameWindow extends Window {
 
 				return elf;
 			}
-			
+
 			throw new RuntimeException("Expected to have a race selected");
 		}
 
@@ -466,12 +469,12 @@ public class NewGameWindow extends Window {
 
 			individuals.render();
 			skills.render();
-			
+
 			spriteBatch.setShader(Shaders.text);
 			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
 			defaultFont.draw(spriteBatch, "Choose starting individuals and skills", x + width / 2 - 170, y - 40);
 			defaultFont.draw(spriteBatch, "Hold LEFT CTRL and click to remove", x + width / 2 - 165, y - 60);
-			
+
 			defaultFont.setColor(Colors.modulateAlpha(Color.ORANGE, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
 			defaultFont.draw(spriteBatch, "Points left: " + assignablePoints, x + 10, y - 100);
 		}
