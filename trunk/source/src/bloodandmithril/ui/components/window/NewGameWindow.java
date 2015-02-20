@@ -290,7 +290,7 @@ public class NewGameWindow extends Window {
 			individuals.width = width/2;
 			individuals.height = height;;
 
-			skills.x = x;
+			skills.x = x + width/2;
 			skills.y = y;
 			skills.width = width/2;
 			skills.height = height;;
