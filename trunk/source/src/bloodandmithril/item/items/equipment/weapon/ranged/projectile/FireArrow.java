@@ -51,7 +51,7 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 			}
 			if (isOnScreen(position, 50f)) {
 				ParticleService.randomVelocityDiminishing(position, 0f, 20f, Color.ORANGE, Util.getRandom().nextFloat() * 4f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(600), Depth.FOREGOUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(position, 0f, 10f, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
+				ParticleService.randomVelocityDiminishing(position, 0f, 10f, Colors.LIGHT_SMOKE, 4f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
 			}
 		}
 
