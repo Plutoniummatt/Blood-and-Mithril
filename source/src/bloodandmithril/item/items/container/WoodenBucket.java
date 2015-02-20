@@ -87,7 +87,7 @@ public class WoodenBucket extends LiquidContainer implements Craftable {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getCarpentry() >= 0;
+		return individual.getSkills().getCarpentry().getLevel() >= 0;
 	}
 
 

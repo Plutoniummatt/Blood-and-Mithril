@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.container;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -10,9 +11,9 @@ import bloodandmithril.item.items.Item;
  *
  * @author Matt
  */
-public interface Container {
-	
-	
+public interface Container extends Serializable {
+
+
 	/**
 	 * @return whether the container contains anything at all
 	 */
@@ -153,8 +154,8 @@ public interface Container {
 	public default boolean canReceive(Item item) {
 		return getContainerImpl().canReceive(item);
 	}
-	
-	
+
+
 	/**
 	 * @return whether this {@link Container} can take a collection of items
 	 */

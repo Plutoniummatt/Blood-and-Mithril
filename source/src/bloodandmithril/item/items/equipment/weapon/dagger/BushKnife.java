@@ -55,7 +55,7 @@ public class BushKnife extends Dagger<Iron> {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getSmithing() >= 3;
+		return individual.getSkills().getSmithing().getLevel() >= 3;
 	}
 
 

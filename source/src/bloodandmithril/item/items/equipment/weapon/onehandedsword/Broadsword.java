@@ -61,7 +61,7 @@ public class Broadsword extends OneHandedSword<Steel> {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getSmithing() >= 10;
+		return individual.getSkills().getSmithing().getLevel() >= 10;
 	}
 
 

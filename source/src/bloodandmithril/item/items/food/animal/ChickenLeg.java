@@ -112,7 +112,7 @@ public class ChickenLeg extends Food implements Craftable {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getCookking() >= 5;
+		return individual.getSkills().getCookking().getLevel() >= 5;
 	}
 
 

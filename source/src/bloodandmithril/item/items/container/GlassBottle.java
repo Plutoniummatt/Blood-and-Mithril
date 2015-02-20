@@ -74,7 +74,7 @@ public class GlassBottle extends LiquidContainer implements Craftable {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getGlassworking() >= 0;
+		return individual.getSkills().getGlassworking().getLevel() >= 0;
 	}
 
 
