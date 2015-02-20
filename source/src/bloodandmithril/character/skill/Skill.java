@@ -55,6 +55,16 @@ public abstract class Skill implements Serializable {
 	public void setLevel(int level) {
 		this.level = level;
 	}
+	
+	
+	public void levelUp() {
+		this.level = level + 1 > MAX_SKILL_LEVEL ? MAX_SKILL_LEVEL : level + 1;
+	}
+	
+	
+	public void levelDown() {
+		this.level = level - 1 < 0 ? 0 : level - 1;
+	}
 
 
 	/**

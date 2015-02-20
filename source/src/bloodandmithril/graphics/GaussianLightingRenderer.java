@@ -14,6 +14,9 @@ import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static java.lang.Math.round;
+
+import java.util.List;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.TracerParticle;
@@ -28,6 +31,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 /**
  * Class that encapsulates rendering things to the screen, lighting model is based on efficient large radius Gaussian blurred occlusion mapping
@@ -210,70 +214,84 @@ public class GaussianLightingRenderer {
 		float[] previousPositions = new float[MAX_PARTICLES * 2];
 		float[] colors = new float[MAX_PARTICLES * 4];
 
-		Iterable<Particle> clientSideGlowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getClientParticles(), p -> {
+		List<Particle> clientSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(Domain.getActiveWorld().getClientParticles(), p -> {
 			return p.depth == depth && isOnScreen(p.position, 50f);
-		});
+		}));
 
-		Iterable<Particle> serverSideGlowingTracerParticles = Iterables.filter(Domain.getActiveWorld().getServerParticles().values(), p -> {
+		List<Particle> serverSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(Domain.getActiveWorld().getServerParticles().values(), p -> {
 			return p.depth == depth && isOnScreen(p.position, 50f);
-		});
-
-		for (Particle p : serverSideGlowingTracerParticles) {
-			if (index == MAX_PARTICLES) {
-				break;
-			}
-			if (p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f) {
-				currentPositions[positionIndex] = worldToScreenX(p.position.x);
-				currentPositions[positionIndex + 1] = worldToScreenY(p.position.y);
-
-				previousPositions[positionIndex] = worldToScreenX(((TracerParticle) p).prevPosition.x);
-				previousPositions[positionIndex + 1] = worldToScreenY(((TracerParticle) p).prevPosition.y);
-
-				colors[colorIndex] = p.color.r;
-				colors[colorIndex + 1] = p.color.g;
-				colors[colorIndex + 2] = p.color.b;
-				colors[colorIndex + 3] = p.color.a;
-
-				intensities[index] = ((TracerParticle) p).glowIntensity;
-
-				index ++;
-				positionIndex += 2;
-				colorIndex += 4;
-			}
+		}));
+		
+		List<List<Particle>> particleCollections = Lists.newLinkedList();
+		
+		for (int i = clientSideGlowingTracerParticles.size(); i > 0; i -= 100) {
+			particleCollections.add(clientSideGlowingTracerParticles.subList(i - 100 < 0 ? 0 : i - 100, i));
 		}
-
-		for (Particle p : clientSideGlowingTracerParticles) {
-			if (index == MAX_PARTICLES) {
-				break;
-			}
-
-			if (p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f) {
-				currentPositions[positionIndex] = worldToScreenX(p.position.x);
-				currentPositions[positionIndex + 1] = worldToScreenY(p.position.y);
-
-				previousPositions[positionIndex] = worldToScreenX(((TracerParticle) p).prevPosition.x);
-				previousPositions[positionIndex + 1] = worldToScreenY(((TracerParticle) p).prevPosition.y);
-
-				colors[colorIndex] = p.color.r;
-				colors[colorIndex + 1] = p.color.g;
-				colors[colorIndex + 2] = p.color.b;
-				colors[colorIndex + 3] = p.color.a;
-
-				intensities[index] = ((TracerParticle) p).glowIntensity;
-
-				index ++;
-				positionIndex += 2;
-				colorIndex += 4;
-			}
+		
+		for (int i = serverSideGlowingTracerParticles.size(); i > 0; i -= 100) {
+			particleCollections.add(serverSideGlowingTracerParticles.subList(i - 100 < 0 ? 0 : i - 100, i));
 		}
+		
+		
 
-		Shaders.tracerParticlesFBO.setUniformf("resolution", WIDTH, HEIGHT);
-		Shaders.tracerParticlesFBO.setUniform1fv("intensity[0]", intensities, 0, MAX_PARTICLES);
-		Shaders.tracerParticlesFBO.setUniform2fv("currentPosition[0]", currentPositions, 0, MAX_PARTICLES * 2);
-		Shaders.tracerParticlesFBO.setUniform2fv("previousPosition[0]", previousPositions, 0, MAX_PARTICLES * 2);
-		Shaders.tracerParticlesFBO.setUniform4fv("color[0]", colors, 0, MAX_PARTICLES * 4);
-		spriteBatch.draw(workingFBO.getColorBufferTexture(), 0, 0);
-		spriteBatch.flush();
+		for (List<Particle> collection : particleCollections) {
+			for (Particle p : collection) {
+				if (index == MAX_PARTICLES) {
+					break;
+				}
+				if (p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f) {
+					currentPositions[positionIndex] = worldToScreenX(p.position.x);
+					currentPositions[positionIndex + 1] = worldToScreenY(p.position.y);
+
+					previousPositions[positionIndex] = worldToScreenX(((TracerParticle) p).prevPosition.x);
+					previousPositions[positionIndex + 1] = worldToScreenY(((TracerParticle) p).prevPosition.y);
+
+					colors[colorIndex] = p.color.r;
+					colors[colorIndex + 1] = p.color.g;
+					colors[colorIndex + 2] = p.color.b;
+					colors[colorIndex + 3] = p.color.a;
+
+					intensities[index] = ((TracerParticle) p).glowIntensity;
+
+					index ++;
+					positionIndex += 2;
+					colorIndex += 4;
+				}
+			}
+
+			for (Particle p : clientSideGlowingTracerParticles) {
+				if (index == MAX_PARTICLES) {
+					break;
+				}
+
+				if (p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f) {
+					currentPositions[positionIndex] = worldToScreenX(p.position.x);
+					currentPositions[positionIndex + 1] = worldToScreenY(p.position.y);
+
+					previousPositions[positionIndex] = worldToScreenX(((TracerParticle) p).prevPosition.x);
+					previousPositions[positionIndex + 1] = worldToScreenY(((TracerParticle) p).prevPosition.y);
+
+					colors[colorIndex] = p.color.r;
+					colors[colorIndex + 1] = p.color.g;
+					colors[colorIndex + 2] = p.color.b;
+					colors[colorIndex + 3] = p.color.a;
+
+					intensities[index] = ((TracerParticle) p).glowIntensity;
+
+					index ++;
+					positionIndex += 2;
+					colorIndex += 4;
+				}
+			}
+
+			Shaders.tracerParticlesFBO.setUniformf("resolution", WIDTH, HEIGHT);
+			Shaders.tracerParticlesFBO.setUniform1fv("intensity[0]", intensities, 0, MAX_PARTICLES);
+			Shaders.tracerParticlesFBO.setUniform2fv("currentPosition[0]", currentPositions, 0, MAX_PARTICLES * 2);
+			Shaders.tracerParticlesFBO.setUniform2fv("previousPosition[0]", previousPositions, 0, MAX_PARTICLES * 2);
+			Shaders.tracerParticlesFBO.setUniform4fv("color[0]", colors, 0, MAX_PARTICLES * 4);
+			spriteBatch.draw(workingFBO.getColorBufferTexture(), 0, 0);
+			spriteBatch.flush();
+		}
 		spriteBatch.end();
 		lightingFboSmall.end();
 

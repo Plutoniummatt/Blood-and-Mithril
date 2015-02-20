@@ -83,6 +83,10 @@ public class ParticleService {
 
 
 	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth, boolean tracer, Color toChangeTo) {
+		if (diminishingDuration < 100) {
+			diminishingDuration = 100;
+		}
+		
 		if (isClient()) {
 			if (tracer) {
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingTracerParticle(
