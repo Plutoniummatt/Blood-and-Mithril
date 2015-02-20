@@ -1,6 +1,7 @@
 package bloodandmithril.character.skill;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import bloodandmithril.character.skill.skills.Carpentry;
 import bloodandmithril.character.skill.skills.Cooking;
@@ -9,6 +10,8 @@ import bloodandmithril.character.skill.skills.Masonry;
 import bloodandmithril.character.skill.skills.Smithing;
 import bloodandmithril.character.skill.skills.Trading;
 import bloodandmithril.core.Copyright;
+
+import com.google.common.collect.Lists;
 
 /**
  * Class representing a skill set
@@ -55,5 +58,16 @@ public class Skills implements Serializable {
 
 	public Glassworking getGlassworking() {
 		return glassworking;
+	}
+
+	public Collection<Skill> getAllSkills() {
+		return Lists.newArrayList(
+			trading,
+			smithing,
+			carpentry,
+			masonry,
+			cooking,
+			glassworking
+		);
 	}
 }
