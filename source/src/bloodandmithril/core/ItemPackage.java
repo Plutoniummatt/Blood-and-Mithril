@@ -13,14 +13,11 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
-import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.furniture.WoodenChest;
 import bloodandmithril.item.items.material.Plank;
-import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.items.misc.Currency;
-import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.persistence.PersistenceUtil;
 import bloodandmithril.util.Logger;
@@ -84,12 +81,10 @@ public class ItemPackage implements Serializable {
 	private static void addDefaults() {
 		Container prop = (Container) new WoodenChest(StandardWood.class).getProp();
 		prop.giveItem(new Currency(), 1000);
-		prop.giveItem(Rock.rock(Coal.class), 10);
 		prop.giveItem(new FlintAndFiresteel(), 1);
 		prop.giveItem(Plank.plank(StandardWood.class), 20);
 		prop.giveItem(new Carrot(), 15);
 		prop.giveItem(new ChickenLeg(true), 5);
-		prop.giveItem(new Machette(), 1);
 		prop.giveItem(new BushKnife(), 1);
 
 		availableItemPackages.add(
