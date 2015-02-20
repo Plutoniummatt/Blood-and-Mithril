@@ -10,6 +10,7 @@ uniform vec4 c;
 
 void main()
 {
-  vec4 a = texture2D(u_texture, v_texCoords);
-  gl_FragColor = vec4(c.rgb, 1.0 - a.a);
+	vec2 inverted = vec2(v_texCoords.x, 1.0 - v_texCoords.y);
+	vec4 a = texture2D(u_texture, inverted);
+	gl_FragColor = vec4(c.rgb, 1.0 - a.a);
 }
