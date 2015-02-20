@@ -16,6 +16,7 @@ import java.util.Queue;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.character.skill.Skill;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
@@ -96,7 +97,7 @@ public class NewGameWindow extends Window {
 			defaultFont,
 			0,
 			0,
-			100,
+			50,
 			16,
 			() -> {
 				currentPanel = panels.poll();
@@ -157,7 +158,7 @@ public class NewGameWindow extends Window {
 	public class ChooseStartingIndividualsPanel extends Panel {
 
 		private ScrollableListingPanel<Individual, String> individuals;
-		private ScrollableListingPanel<String, String> skills;
+		private ScrollableListingPanel<Skill, String> skills;
 		private Individual selectedIndividual;
 
 		/**
@@ -206,19 +207,19 @@ public class NewGameWindow extends Window {
 			};
 
 
-			skills = new ScrollableListingPanel<String, String>(
+			skills = new ScrollableListingPanel<Skill, String>(
 				NewGameWindow.this,
-				new Comparator<String>() {
+				new Comparator<Skill>() {
 					@Override
-					public int compare(String o1, String o2) {
-						return o1.compareTo(o2);
+					public int compare(Skill o1, Skill o2) {
+						return o1.getName().compareTo(o2.getName());
 					}
 				},
 				false,
 				0
 			) {
 				@Override
-				protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<String>, String> item) {
+				protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Skill>, String> item) {
 					return item.getValue();
 				}
 
@@ -230,10 +231,35 @@ public class NewGameWindow extends Window {
 
 
 				@Override
-				protected void populateListings(List<HashMap<ListingMenuItem<String>, String>> listings) {
-					if (selectedIndividual != null) {
-						HashMap<ListingMenuItem<String>, String> skillsMap = Maps.newHashMap();
-						listings.add(skillsMap);
+				protected void populateListings(List<HashMap<ListingMenuItem<Skill>, String>> listings) {
+					if (selectedIndividual == null) {
+						listings.add(Maps.newHashMap());
+					} else {
+						HashMap<ListingMenuItem<Skill>, String> newHashMap = Maps.newHashMap();
+						for (Skill skill : selectedIndividual.getSkills().getAllSkills()) {
+							newHashMap.put(
+								new ListingMenuItem<Skill>(
+									skill,
+									new Button(
+										skill.getName(),
+										defaultFont,
+										0,
+										0,
+										skill.getName().length() * 10,
+										16,
+										() -> {
+										},
+										Color.WHITE,
+										Color.GREEN,
+										Color.WHITE,
+										UIRef.BL
+									),
+									null
+								),
+								Integer.toString(skill.getLevel())
+							);
+						}
+						listings.add(newHashMap);
 					}
 				}
 
