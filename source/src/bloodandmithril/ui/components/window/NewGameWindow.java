@@ -383,7 +383,7 @@ public class NewGameWindow extends Window {
 										assignablePoints++;
 									}
 								} else {
-									if (skill.getLevel() < 25) {
+									if (skill.getLevel() < 25 && assignablePoints > 0) {
 										skill.levelUp();
 										assignablePoints--;
 									}
