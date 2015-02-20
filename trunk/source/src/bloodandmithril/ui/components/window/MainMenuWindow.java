@@ -10,11 +10,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import bloodandmithril.audio.SoundService;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.performance.PositionalReindexingService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -198,7 +196,7 @@ public class MainMenuWindow extends Window {
 										Thread.sleep(1000);
 										ClientServerInterface.setupAndConnect(args[0].toString());
 										BloodAndMithrilClient.domain = new Domain();
-										connected();
+										BloodAndMithrilClient.setup();
 									} catch (Exception e) {
 
 										// Deactivate all windows, close the connecting message pop-up.
@@ -307,18 +305,6 @@ public class MainMenuWindow extends Window {
 			}
 		}
 		UserInterface.addLayeredComponentUnique(new NewGameWindow());
-	}
-
-
-	/**
-	 * Connection was successful, begin setup.
-	 */
-	public static void connected() {
-		UserInterface.setup();
-
-		SoundService.changeMusic(2f, SoundService.desertNight);
-		UserInterface.contextMenus.clear();
-		PositionalReindexingService.reindex();
 	}
 
 

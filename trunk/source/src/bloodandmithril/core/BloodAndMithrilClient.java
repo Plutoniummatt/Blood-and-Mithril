@@ -19,6 +19,7 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.performance.PositionalReindexingService;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
@@ -429,8 +430,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							null,
 							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
 							Gdx.input.isKeyPressed(KeyMappings.addWayPoint),
-							true, 
-							indi.getState().position.cpy(), 
+							true,
+							indi.getState().position.cpy(),
 							new Vector2(getMouseWorldX(), getMouseWorldY())
 						);
 					}
@@ -692,15 +693,15 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static Vector2 worldToScreen(Vector2 world) {
 		return new Vector2(worldToScreenX(world.x), worldToScreenY(world.y));
 	}
-	
-	
+
+
 	/**
 	 * True is specified world coordinates are on screen within specified tolerance
 	 */
 	public static boolean isOnScreen(Vector2 position, float tolerance) {
 		float screenX = worldToScreenX(position.x);
 		float screenY = worldToScreenY(position.y);
-		
+
 		return screenX > -tolerance && screenX < WIDTH + tolerance && screenY > -tolerance && screenY < HEIGHT + tolerance;
 	}
 
@@ -805,5 +806,14 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static void setCursorBoundTask(CursorBoundTask cursorBoundTask) {
 		BloodAndMithrilClient.cursorBoundTask = cursorBoundTask;
+	}
+
+
+	public static void setup() {
+		UserInterface.setup();
+
+		SoundService.changeMusic(2f, SoundService.desertNight);
+		UserInterface.contextMenus.clear();
+		PositionalReindexingService.reindex();
 	}
 }

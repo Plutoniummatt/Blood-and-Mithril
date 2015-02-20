@@ -115,7 +115,7 @@ public class LoadGameWindow extends Window {
 								} catch (Exception e) {}
 								GameLoader.load(metadata, false);
 								BloodAndMithrilClient.domain = new Domain();
-								MainMenuWindow.connected();
+								BloodAndMithrilClient.setup();
 							});
 						},
 						Color.ORANGE,

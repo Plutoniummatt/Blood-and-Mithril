@@ -11,7 +11,7 @@ import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.character.IndividualSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
-import bloodandmithril.persistence.world.ChunkSaver;
+import bloodandmithril.persistence.world.WorldSaver;
 import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 
@@ -75,7 +75,7 @@ public class GameSaver {
 		saveMetaData();
 
 		// Save chunks + generation data
-		ChunkSaver.save();
+		WorldSaver.save();
 
 		saveFactions();
 
