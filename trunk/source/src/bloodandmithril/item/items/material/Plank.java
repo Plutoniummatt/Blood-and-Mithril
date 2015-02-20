@@ -82,7 +82,7 @@ public class Plank extends bloodandmithril.item.items.material.Material implemen
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getCarpentry() >= Material.getMaterial(wood).getPlankCraftingLevel();
+		return individual.getSkills().getCarpentry().getLevel() >= Material.getMaterial(wood).getPlankCraftingLevel();
 	}
 
 

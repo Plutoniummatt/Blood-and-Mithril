@@ -5,9 +5,13 @@ import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Queue;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
@@ -22,12 +26,16 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
+import bloodandmithril.ui.components.panel.ScrollableListingPanel;
+import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Window for selecting starting units/items
@@ -37,6 +45,7 @@ import com.google.common.collect.Lists;
 @Copyright("Matthew Peck 2015")
 public class NewGameWindow extends Window {
 
+	private Button next;
 	private Button startGame = new Button(
 		"Start Game",
 		defaultFont,
@@ -67,8 +76,10 @@ public class NewGameWindow extends Window {
 
 	private Panel currentPanel;
 
-	private ChooseRacePanel chooseRacePanel;
+	private Queue<Panel> panels = Lists.newLinkedList();
+
 	private Class<? extends Individual> selectedRace;
+	private HashMap<ListingMenuItem<Individual>, String> startingIndividuals = Maps.newHashMap();
 
 	/**
 	 * Constructor
@@ -76,29 +87,53 @@ public class NewGameWindow extends Window {
 	public NewGameWindow() {
 		super(WIDTH/2 - 200, HEIGHT/2 + 150, 400, 300, "New game", true, 400, 300, false, true, false);
 
-		chooseRacePanel = new ChooseRacePanel(this);
+		panels.add(new ChooseRacePanel(this));
+		panels.add(new ChooseStartingIndividualsPanel(this));
 
-		currentPanel = chooseRacePanel;
+		currentPanel = panels.poll();
+		next = new Button(
+			"Next",
+			defaultFont,
+			0,
+			0,
+			100,
+			16,
+			() -> {
+				currentPanel = panels.poll();
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.WHITE,
+			UIRef.BL
+		);
 	}
 
 
 	@Override
 	protected void internalWindowRender() {
-		chooseRacePanel.x = x;
-		chooseRacePanel.y = y;
-		chooseRacePanel.width = width;
-		chooseRacePanel.height = height;
-
+		currentPanel.x = x;
+		currentPanel.y = y;
+		currentPanel.width = width;
+		currentPanel.height = height;
 		currentPanel.render();
 
-		startGame.render(x + width / 2, y - height + 30, isActive(), getAlpha());
+		if (selectedRace != null && !startingIndividuals.entrySet().isEmpty()) {
+			startGame.render(x + width / 2, y - height + 30, isActive(), getAlpha());
+		}
+
+		next.render(x + width / 2, y - height + 30, isActive(), getAlpha());
 	}
 
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		currentPanel.leftClick(copy, windowsCopy);
-		startGame.click();
+
+		if (selectedRace != null && !startingIndividuals.entrySet().isEmpty()) {
+			startGame.click();
+		}
+
+		next.click();
 	}
 
 
@@ -119,13 +154,95 @@ public class NewGameWindow extends Window {
 
 
 
-	public class ChooseStartingEntitiesPanel extends Panel {
+	public class ChooseStartingIndividualsPanel extends Panel {
+
+		private ScrollableListingPanel<Individual, String> individuals;
+		private ScrollableListingPanel<String, String> skills;
+		private Individual selectedIndividual;
 
 		/**
 		 * Constructor
 		 */
-		public ChooseStartingEntitiesPanel(Component parent) {
+		public ChooseStartingIndividualsPanel(Component parent) {
 			super(parent);
+
+			if (!startingIndividuals.keySet().isEmpty()) {
+				selectedIndividual = Iterables.get(startingIndividuals.keySet(), 0).t;
+			}
+
+			individuals = new ScrollableListingPanel<Individual, String>(
+				NewGameWindow.this,
+				new Comparator<Individual>() {
+					@Override
+					public int compare(Individual o1, Individual o2) {
+						return o1.getId().getSimpleName().compareTo(o2.getId().getSimpleName());
+					}
+				},
+				false,
+				0
+			) {
+				@Override
+				protected String getExtraString(Entry<ListingMenuItem<Individual>, String> item) {
+					return "";
+				}
+
+
+				@Override
+				protected int getExtraStringOffset() {
+					return 0;
+				}
+
+
+				@Override
+				protected void populateListings(List<HashMap<ListingMenuItem<Individual>, String>> listings) {
+					listings.add(startingIndividuals);
+				}
+
+
+				@Override
+				public boolean keyPressed(int keyCode) {
+					return false;
+				}
+			};
+
+
+			skills = new ScrollableListingPanel<String, String>(
+				NewGameWindow.this,
+				new Comparator<String>() {
+					@Override
+					public int compare(String o1, String o2) {
+						return o1.compareTo(o2);
+					}
+				},
+				false,
+				0
+			) {
+				@Override
+				protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<String>, String> item) {
+					return item.getValue();
+				}
+
+
+				@Override
+				protected int getExtraStringOffset() {
+					return 0;
+				}
+
+
+				@Override
+				protected void populateListings(List<HashMap<ListingMenuItem<String>, String>> listings) {
+					if (selectedIndividual != null) {
+						HashMap<ListingMenuItem<String>, String> skillsMap = Maps.newHashMap();
+						listings.add(skillsMap);
+					}
+				}
+
+
+				@Override
+				public boolean keyPressed(int keyCode) {
+					return false;
+				}
+			};
 		}
 
 
@@ -142,6 +259,18 @@ public class NewGameWindow extends Window {
 
 		@Override
 		public void render() {
+			individuals.x = x;
+			individuals.y = y;
+			individuals.width = width/2;
+			individuals.height = height;;
+
+			skills.x = x;
+			skills.y = y;
+			skills.width = width/2;
+			skills.height = height;;
+
+			individuals.render();
+			skills.render();
 		}
 
 

@@ -63,7 +63,7 @@ public class Machette extends OneHandedSword<Iron> {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getSmithing() >= 8;
+		return individual.getSkills().getSmithing().getLevel() >= 8;
 	}
 
 

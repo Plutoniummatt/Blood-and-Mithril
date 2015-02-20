@@ -44,7 +44,7 @@ public class Ingot extends bloodandmithril.item.items.material.Material implemen
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getSmithing() >= Material.getMaterial(metal).getIngotCraftingLevel();
+		return individual.getSkills().getSmithing().getLevel() >= Material.getMaterial(metal).getIngotCraftingLevel();
 	}
 
 

@@ -64,7 +64,7 @@ public class Glass extends bloodandmithril.item.items.material.Material implemen
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getGlassworking() >= 0;
+		return individual.getSkills().getGlassworking().getLevel() >= 0;
 	}
 
 

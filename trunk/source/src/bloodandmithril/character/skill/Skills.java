@@ -2,6 +2,12 @@ package bloodandmithril.character.skill;
 
 import java.io.Serializable;
 
+import bloodandmithril.character.skill.skills.Carpentry;
+import bloodandmithril.character.skill.skills.Cooking;
+import bloodandmithril.character.skill.skills.Glassworking;
+import bloodandmithril.character.skill.skills.Masonry;
+import bloodandmithril.character.skill.skills.Smithing;
+import bloodandmithril.character.skill.skills.Trading;
 import bloodandmithril.core.Copyright;
 
 /**
@@ -13,91 +19,41 @@ import bloodandmithril.core.Copyright;
 public class Skills implements Serializable {
 	private static final long serialVersionUID = 2154775669521547748L;
 
-	public static final int MAX_LEVEL = 100;
-
 	/** Represents skill levels */
-	private int trading = 0;				// Better at trading, trade less for more
-	private int observation = 0;			// Better at identifying the status of an individual
-	private int smithing = 0;				// Blacksmithing
-	private int carpentry = 0;				// Carpentry
-	private int masonry = 0;				// Masonry
-	private int glassworking = 0;			// Glassworking
-	private int cooking = 0;				// Cooking
-	private int fletching = 0;				// Arrow crafting
+	private Trading trading = new Trading(0);
+	private Smithing smithing = new Smithing(0);
+	private Carpentry carpentry = new Carpentry(0);
+	private Masonry masonry = new Masonry(0);
+	private Cooking cooking = new Cooking(0);
+	private Glassworking glassworking = new Glassworking(0);
 
 	/**
 	 * Constructor
 	 */
-	public Skills() {}
+	public Skills() {
+	}
 
-	public synchronized int getTrading() {
+	public Trading getTrading() {
 		return trading;
 	}
 
-	public synchronized void setTrading(int trading) {
-		this.trading = trading;
-	}
-
-	public synchronized int getObservation() {
-		return observation;
-	}
-
-	public synchronized void setObservation(int observation) {
-		this.observation = observation;
-	}
-
-	public int getSmithing() {
+	public Smithing getSmithing() {
 		return smithing;
 	}
 
-	public void setSmithing(int smithing) {
-		this.smithing = smithing;
-	}
-
-	public int getCarpentry() {
+	public Carpentry getCarpentry() {
 		return carpentry;
 	}
 
-	public void setCarpentry(int carpentry) {
-		this.carpentry = carpentry;
-	}
-
-	/**
-	 * @return the ratio of a skill level to that of the max skill level
-	 */
-	public static float getRatioToMax(int skillLevel) {
-		return (float) skillLevel / (float) MAX_LEVEL;
-	}
-
-	public int getMasonry() {
+	public Masonry getMasonry() {
 		return masonry;
 	}
 
-	public void setMasonry(int masonry) {
-		this.masonry = masonry;
-	}
-
-	public int getGlassworking() {
-		return glassworking;
-	}
-
-	public void setGlassworking(int glassworking) {
-		this.glassworking = glassworking;
-	}
-
-	public int getCookking() {
+	public Cooking getCookking() {
 		return cooking;
 	}
 
-	public void setCookking(int cookking) {
-		this.cooking = cookking;
-	}
-
-	public int getFletching() {
-		return fletching;
-	}
-
-	public void setFletching(int fletching) {
-		this.fletching = fletching;
+	public Glassworking getGlassworking() {
+		return glassworking;
 	}
 }

@@ -55,7 +55,7 @@ public class CombatKnife extends Dagger<Steel> {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getSmithing() >= 5;
+		return individual.getSkills().getSmithing().getLevel() >= 5;
 	}
 
 

@@ -42,7 +42,7 @@ public class Slab extends bloodandmithril.item.items.material.Material implement
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getMasonry() >= Material.getMaterial(mineral).getSlabCraftingLevel();
+		return individual.getSkills().getMasonry().getLevel() >= Material.getMaterial(mineral).getSlabCraftingLevel();
 	}
 
 

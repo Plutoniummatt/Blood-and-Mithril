@@ -43,7 +43,7 @@ public class ArrowHead extends bloodandmithril.item.items.material.Material impl
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getSmithing() >= Material.getMaterial(metal).getIngotCraftingLevel() + 2;
+		return individual.getSkills().getSmithing().getLevel() >= Material.getMaterial(metal).getIngotCraftingLevel() + 2;
 	}
 
 

@@ -276,9 +276,6 @@ public class BloodAndMithrilServer {
 					lightSkinColor()
 				);
 
-				elf.getSkills().setObservation(55);
-				elf.getSkills().setSmithing(55);
-
 				elf.giveItem(new bloodandmithril.item.items.furniture.WoodenChest(StandardWood.class));
 				for (int i = 100; i > 0; i--) {
 					elf.giveItem(new bloodandmithril.item.items.furniture.MedievalWallTorch());
