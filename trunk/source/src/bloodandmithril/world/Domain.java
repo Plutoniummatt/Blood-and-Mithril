@@ -298,14 +298,14 @@ public class Domain {
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getClientParticles() != null) {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
-			Domain.getActiveWorld().getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f) && counter.t < GaussianLightingRenderer.MAX_PARTICLES).forEach(p -> {
+			Domain.getActiveWorld().getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime());
 				counter.t++;
 			});
 		}
 		if (Domain.getActiveWorld().getServerParticles() != null) {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
-			Domain.getActiveWorld().getServerParticles().values().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f) && counter.t < GaussianLightingRenderer.MAX_PARTICLES).forEach(p -> {
+			Domain.getActiveWorld().getServerParticles().values().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime());
 				counter.t++;
 			});

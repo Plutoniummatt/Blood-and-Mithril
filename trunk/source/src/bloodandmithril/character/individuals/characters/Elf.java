@@ -270,7 +270,27 @@ public class Elf extends Humanoid {
 			Color hairColor,
 			Color eyeColor,
 			Color skinColor) {
-		super(id, state, factionId, capacity, 100, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), world.getWorldId(), 2);
+		super(
+			id, 
+			state, 
+			factionId, 
+			capacity, 
+			100, 
+			10, 
+			40, 
+			95, 
+			30, 
+			new Box(
+				new Vector2(
+					state.position.x, 
+					state.position.y
+				), 
+				120, 
+				120
+			), 
+			world == null ? 0 : world.getWorldId(),
+			2
+		);
 
 		this.female = female;
 		this.setAi(new ElfAI(this));

@@ -39,7 +39,7 @@ public class LoadGameWindow extends Window {
 	 */
 	public LoadGameWindow() {
 		super(
-			BloodAndMithrilClient.WIDTH/2 - 150,
+			BloodAndMithrilClient.WIDTH/2 - 200,
 			BloodAndMithrilClient.HEIGHT/2 + 100,
 			400,
 			200,
