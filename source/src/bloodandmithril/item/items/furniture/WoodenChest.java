@@ -110,7 +110,9 @@ public class WoodenChest extends Furniture implements Craftable {
 	@Override
 	public Prop getProp() {
 		bloodandmithril.prop.furniture.WoodenChest woodenChest = new bloodandmithril.prop.furniture.WoodenChest(0, 0, 1000000f, 800, wood);
-		woodenChest.setWorldId(Domain.getActiveWorld().getWorldId());
+		if (Domain.getActiveWorld() != null) {
+			woodenChest.setWorldId(Domain.getActiveWorld().getWorldId());
+		}
 		return woodenChest;
 	}
 }

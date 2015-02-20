@@ -102,7 +102,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		UIRef.BR
 	);
 
-	private static Comparator<Item> inventorySortingOrder = new Comparator<Item>() {
+	public static Comparator<Item> inventorySortingOrder = new Comparator<Item>() {
 		@Override
 		public int compare(Item o1, Item o2) {
 			return o1.getSingular(false).compareTo(o2.getSingular(false));
@@ -122,7 +122,19 @@ public class InventoryWindow extends Window implements Refreshable {
 			boolean active,
 			int minLength,
 			int minHeight) {
-		super(x, y, length, height, title, active, minLength, minHeight, true, true, true);
+		super(
+			x,
+			y,
+			length,
+			height,
+			title,
+			active,
+			minLength,
+			minHeight,
+			true,
+			true,
+			true
+		);
 		this.host = host;
 		buildItems(host.getEquipped(), host.getInventory(), true);
 		inventoryListingPanel.setScrollWheelActive(true);

@@ -24,12 +24,12 @@ import com.badlogic.gdx.files.FileHandle;
 
 
 /**
- * Saves {@link Chunk}s using the {@link Serializable} interface
+ * Saves {@link World}s using the {@link Serializable} interface
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class ChunkSaver {
+public class WorldSaver {
 
 	/** The current chunk coordinates that is in the queue to be saved/flushed */
 	private static final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<Integer, Integer, Boolean>();

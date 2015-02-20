@@ -44,6 +44,17 @@ public interface Container extends Serializable {
 
 
 	/**
+	 * @param item to put
+	 * @param quantity of item to put
+	 */
+	public default void giveItem(Item item, int quantity) {
+		for (int i = quantity; i != 0; i--) {
+			getContainerImpl().giveItem(item);
+		}
+	}
+
+
+	/**
 	 * Takes a number of items
 	 * @return the number of items taken.
 	 */

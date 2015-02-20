@@ -3,6 +3,8 @@ package bloodandmithril.ui.components.window;
 import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.lightColor;
@@ -24,9 +26,11 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.skill.Skill;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.ItemPackage;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -76,7 +80,7 @@ public class NewGameWindow extends Window {
 				} catch (Exception e) {}
 				GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 				BloodAndMithrilClient.domain = new Domain();
-				MainMenuWindow.connected();
+				BloodAndMithrilClient.setup();
 			});
 		},
 		Color.WHITE,
@@ -91,6 +95,7 @@ public class NewGameWindow extends Window {
 
 	private Class<? extends Individual> selectedRace;
 	private final HashMap<ListingMenuItem<Individual>, String> startingIndividuals = Maps.newHashMap();
+	private ItemPackage selectedItemPackage;
 
 	/**
 	 * Constructor
@@ -100,6 +105,7 @@ public class NewGameWindow extends Window {
 
 		panels.add(new ChooseRacePanel(this));
 		panels.add(new ChooseStartingIndividualsPanel(this));
+		panels.add(new ChooseStartingItemPackagePanel(this));
 
 		currentPanel = panels.poll();
 		next = new Button(
@@ -157,6 +163,8 @@ public class NewGameWindow extends Window {
 			return selectedRace != null;
 		} else if (currentPanel instanceof ChooseStartingIndividualsPanel) {
 			return startingIndividuals.size() > 1;
+		} else if (currentPanel instanceof ChooseStartingItemPackagePanel) {
+			return selectedItemPackage != null;
 		}
 
 		throw new IllegalStateException("Unexpected panel");
@@ -179,6 +187,154 @@ public class NewGameWindow extends Window {
 		currentPanel.leftClickReleased();
 	}
 
+
+	public class ChooseStartingItemPackagePanel extends Panel {
+
+		private ScrollableListingPanel<ItemPackage, String> itemPackages;
+
+		public ChooseStartingItemPackagePanel(Component parent) {
+			super(parent);
+
+			itemPackages = new ScrollableListingPanel<ItemPackage, String>(
+				NewGameWindow.this,
+				new Comparator<ItemPackage>() {
+					@Override
+					public int compare(ItemPackage o1, ItemPackage o2) {
+						return o1.getName().compareTo(o2.getName());
+					}
+				},
+				false,
+				0
+			) {
+
+				@Override
+				protected String getExtraString(Entry<ListingMenuItem<ItemPackage>, String> item) {
+					return "";
+				}
+
+
+				@Override
+				protected int getExtraStringOffset() {
+					return 0;
+
+				}
+
+				@Override
+				protected void populateListings(List<HashMap<ListingMenuItem<ItemPackage>, String>> listings) {
+					HashMap<ListingMenuItem<ItemPackage>, String> newHashMap = Maps.newHashMap();
+
+					for (ItemPackage pack : ItemPackage.getAvailablePackages()) {
+						ContextMenu.MenuItem select = new ContextMenu.MenuItem(
+							"Select",
+							() -> {
+								NewGameWindow.this.selectedItemPackage = pack;
+								for (HashMap<ListingMenuItem<ItemPackage>, String> item : itemPackages.getListing()) {
+									for (ListingMenuItem<ItemPackage> listingItem : item.keySet()) {
+										if (listingItem.t == selectedItemPackage) {
+											listingItem.button.setIdleColor(Color.CYAN);
+										} else {
+											if (listingItem.t.isDefault()) {
+												listingItem.button.setIdleColor(Color.PINK);
+											} else {
+												listingItem.button.setIdleColor(Color.ORANGE);
+											}
+										}
+									}
+								}
+							},
+							Color.ORANGE,
+							Color.WHITE,
+							Color.GREEN,
+							null
+						);
+
+						ContextMenu.MenuItem inspect = new ContextMenu.MenuItem(
+							"Inspect",
+							() -> {
+								UserInterface.addLayeredComponentUnique(
+									new ContainerInspectionWindow(pack.getContainer(), pack.getName())
+								);
+							},
+							Color.ORANGE,
+							Color.WHITE,
+							Color.GREEN,
+							null
+						);
+
+						newHashMap.put(
+							new ListingMenuItem<ItemPackage>(
+								pack,
+								new Button(
+									pack.getName(),
+									defaultFont,
+									0,
+									0,
+									pack.getName().length() * 10,
+									16,
+									() -> {
+									},
+									pack.isDefault() ? Color.PINK : Color.ORANGE,
+									Color.WHITE,
+									Color.GREEN,
+									UIRef.BL
+								),
+								new ContextMenu(
+									getMouseScreenX(),
+									getMouseScreenY(),
+									true,
+									select,
+									inspect
+								)
+							),
+							""
+						);
+					}
+
+					listings.add(newHashMap);
+				}
+
+
+				@Override
+				public boolean keyPressed(int keyCode) {
+					return false;
+				}
+			};
+		}
+
+
+		@Override
+		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+			return itemPackages.leftClick(copy, windowsCopy);
+		}
+
+
+		@Override
+		public void leftClickReleased() {
+			itemPackages.leftClickReleased();
+		}
+
+
+		@Override
+		public void render() {
+			itemPackages.x = x + 10;
+			itemPackages.y = y - 120;
+			itemPackages.width = width - 10;
+			itemPackages.height = height - 120;
+
+			itemPackages.render();
+
+			spriteBatch.setShader(Shaders.text);
+			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
+			defaultFont.draw(spriteBatch, "Choose starting item packages", x + width / 2 - 150, y - 40);
+			defaultFont.drawWrapped(spriteBatch, "Item packages can be created in-game by placing desired items into a container, then shipping the container.", x + 10, y - 70, width - 20);
+		}
+
+
+		@Override
+		public boolean keyPressed(int keyCode) {
+			return false;
+		}
+	}
 
 
 	public class ChooseStartingIndividualsPanel extends Panel {
