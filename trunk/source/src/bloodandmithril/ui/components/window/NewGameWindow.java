@@ -26,10 +26,13 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.skill.Skill;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Description;
 import bloodandmithril.core.ItemPackage;
+import bloodandmithril.core.Name;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
+import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -60,6 +63,13 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2015")
 public class NewGameWindow extends Window {
 
+	private Panel currentPanel;
+	private Queue<Panel> panels = Lists.newLinkedList();
+
+	private Class<? extends Individual> selectedRace;
+	private final HashMap<ListingMenuItem<Individual>, String> startingIndividuals = Maps.newHashMap();
+	private ItemPackage selectedItemPackage;
+
 	private Button next;
 	private Button startGame = new Button(
 		"Start Game",
@@ -70,8 +80,24 @@ public class NewGameWindow extends Window {
 		16,
 		() -> {
 			setClosing(true);
-			Domain.getFactions().put(0, new Faction("Nature", 0, false, ""));
-			Domain.getFactions().put(1, new Faction("Elves", 1, true, "Elves are cool"));
+
+			Faction nature = new Faction(
+				"Nature",
+				ParameterPersistenceService.getParameters().getNextFactionId(),
+				false,
+				"Mother nature"
+			);
+
+			Faction playerFaction = new Faction(
+				selectedRace.getAnnotation(Name.class).name(),
+				ParameterPersistenceService.getParameters().getNextFactionId(),
+				true,
+				selectedRace.getAnnotation(Description.class).description()
+			);
+
+			Domain.getFactions().put(nature.factionId, nature);
+			Domain.getFactions().put(playerFaction.factionId, playerFaction);
+
 			ClientServerInterface.setServer(true);
 			BloodAndMithrilClient.clientCSIThread.execute(() -> {
 				MainMenuWindow.removeWindows();
@@ -88,14 +114,6 @@ public class NewGameWindow extends Window {
 		Color.WHITE,
 		UIRef.BL
 	);
-
-	private Panel currentPanel;
-
-	private Queue<Panel> panels = Lists.newLinkedList();
-
-	private Class<? extends Individual> selectedRace;
-	private final HashMap<ListingMenuItem<Individual>, String> startingIndividuals = Maps.newHashMap();
-	private ItemPackage selectedItemPackage;
 
 	/**
 	 * Constructor
@@ -714,8 +732,8 @@ public class NewGameWindow extends Window {
 
 
 		private String deriveDescription(Class<? extends Individual> clazz) {
-			if (Elf.class.equals(clazz)) {
-				return "Elves are children of nature, they are nimble creatures with a good grip on magic and excel at archery.";
+			if (selectedRace != null) {
+				return clazz.getAnnotation(Description.class).description();
 			}
 
 			return "Select a race...";

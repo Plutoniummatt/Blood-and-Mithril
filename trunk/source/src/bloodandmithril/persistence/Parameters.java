@@ -26,6 +26,7 @@ public class Parameters implements Serializable {
 	private int initialSeed = 0;
 	private int individualIdCounter = 0;
 	private int propIdCounter = 0;
+	private int factionIdCounter = 0;
 	private int worldIdCounter = 0;
 	private int itemCounter = 0;
 	private int projectileCounter = 0;
@@ -50,6 +51,15 @@ public class Parameters implements Serializable {
 	public synchronized int getNextStructureKey() {
 		structureKeyCounter++;
 		return structureKeyCounter;
+	}
+
+
+	/**
+	 * Returns the faction key counter
+	 */
+	public synchronized int getNextFactionId() {
+		factionIdCounter++;
+		return factionIdCounter;
 	}
 
 

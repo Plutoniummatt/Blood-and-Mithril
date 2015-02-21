@@ -80,12 +80,12 @@ public class ItemPackage implements Serializable {
 
 	private static void addDefaults() {
 		Container prop = (Container) new WoodenChest(StandardWood.class).getProp();
-		prop.giveItem(new Currency(), 1000);
+		prop.giveItem(new Currency(), 2000);
 		prop.giveItem(new FlintAndFiresteel(), 1);
 		prop.giveItem(Plank.plank(StandardWood.class), 20);
 		prop.giveItem(new Carrot(), 15);
 		prop.giveItem(new ChickenLeg(true), 5);
-		prop.giveItem(new BushKnife(), 1);
+		prop.giveItem(new BushKnife(), 2);
 
 		availableItemPackages.add(
 			new ItemPackage(
