@@ -22,7 +22,6 @@ import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
-import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
@@ -89,31 +88,7 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 				entry.getValue().getState().position.x = pos.x;
 				entry.getValue().getState().position.y = pos.y;
 				
-				Box hitBox = entry.getValue().getHitBox();
-				boolean canPlace = Prop.canPlaceAt(
-					pos.x,
-					pos.y, 
-					1, 
-					hitBox.height, 
-					new SerializableMappingFunction<Tile, Boolean>() {
-						private static final long serialVersionUID = 1L;
-						@Override
-						public Boolean apply(Tile input) {
-							return !(input instanceof EmptyTile);
-						}
-					},
-					new SerializableMappingFunction<Tile, Boolean>() {
-						private static final long serialVersionUID = 1L;
-						@Override
-						public Boolean apply(Tile input) {
-							return true;
-						}
-					},
-					true, 
-					() -> {
-						return true;
-					}
-				);
+				boolean canPlace = canPlaceIndividual(entry.getValue());
 				
 				Shaders.filter.setUniformf("color", canPlace ? Color.GREEN : Color.RED);
 				spriteBatch.draw(UserInterface.currentArrow, pos.x - 5, pos.y);
@@ -133,12 +108,45 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 		}
 	}
 
+
+	private boolean canPlaceIndividual(Individual individual) {
+		return Prop.canPlaceAt(
+			individual.getState().position.x,
+			individual.getState().position.y, 
+			1, 
+			individual.getHitBox().height, 
+			new SerializableMappingFunction<Tile, Boolean>() {
+				private static final long serialVersionUID = 1L;
+				@Override
+				public Boolean apply(Tile input) {
+					return !(input instanceof EmptyTile);
+				}
+			},
+			new SerializableMappingFunction<Tile, Boolean>() {
+				private static final long serialVersionUID = 1L;
+				@Override
+				public Boolean apply(Tile input) {
+					return true;
+				}
+			},
+			true, 
+			() -> {
+				return true;
+			}
+		);
+	}
+
 	
 	@Override
 	public boolean executionConditionMet() {
 		Container container = startingItemPackage.getContainer();
 		
 		if (container instanceof Prop) {
+			for (Individual individual : individuals.values()) {
+				if  (!canPlaceIndividual(individual)) {
+					return false;
+				}
+			}
 			return ((Prop) container).canPlaceAtCurrentPosition();
 		}
 		
