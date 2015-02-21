@@ -9,6 +9,8 @@ import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * {@link Request} to place a prop
  *
@@ -40,7 +42,7 @@ public class PlacePropRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		if (prop.canPlaceAt(prop.position)) {
+		if (prop.canPlaceAt(new Vector2(x, y))) {
 			if (individualId == null) {
 				Domain.getWorld(worldId).props().addProp(prop);
 			} else {
