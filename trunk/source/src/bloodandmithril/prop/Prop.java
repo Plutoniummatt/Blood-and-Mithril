@@ -18,6 +18,7 @@ import bloodandmithril.prop.furniture.MedievalWallTorch;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.CarrotProp;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
@@ -162,21 +163,32 @@ public abstract class Prop implements Serializable {
 	 * @return whether this prop can be placed at a given location
 	 */
 	public boolean canPlaceAt(Vector2 position) {
-		return canPlaceAt(position.x, position.y);
+		return canPlaceAt(position.x, position.y, width, height, canPlaceOnTopOf, canPlaceInFrontOf, grounded, () -> {
+			for (Integer propId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, position.x, position.y)) {
+				Prop prop = Domain.getActiveWorld().props().getProp(propId);
+				if (Domain.getActiveWorld().props().hasProp(propId)) {
+					if (this.overlapsWith(prop)) {
+						return false;
+					}
+				}
+			}
+			
+			return true;
+		});
 	}
 
 
 	/**
 	 * @return whether this prop can be placed at a given location
 	 */
-	public boolean canPlaceAt(float x, float y) {
-		float xStep = (float)width / (float)TILE_SIZE;
+	public static boolean canPlaceAt(float x, float y, float width, float height, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf, SerializableMappingFunction<Tile, Boolean> canPlaceInFrontOf, boolean grounded, Function<Boolean> customFunction) {
+		float xStep = width / TILE_SIZE;
 		long xSteps = Math.round(Math.ceil(xStep));
-		float xIncrement = (float)width / (float)xSteps;
+		float xIncrement = width / xSteps;
 
-		float yStep = (float)height / (float)TILE_SIZE;
+		float yStep = height / TILE_SIZE;
 		long ySteps = Math.round(Math.ceil(yStep));
-		float yIncrement = (float)height / (float)ySteps;
+		float yIncrement = height / ySteps;
 
 
 		try {
@@ -198,16 +210,7 @@ public abstract class Prop implements Serializable {
 			return false;
 		}
 
-		for (Integer propId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, x, y)) {
-			Prop prop = Domain.getActiveWorld().props().getProp(propId);
-			if (Domain.getActiveWorld().props().hasProp(propId)) {
-				if (this.overlapsWith(prop)) {
-					return false;
-				}
-			}
-		}
-
-		return true;
+		return customFunction.call();
 	}
 
 

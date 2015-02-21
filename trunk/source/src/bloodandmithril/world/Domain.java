@@ -402,6 +402,7 @@ public class Domain {
 
 
 	public static void addIndividual(Individual indi, int worldId) {
+		indi.setWorldId(worldId);
 		individuals.put(indi.getId().getId(), indi);
 		Domain.getWorld(worldId).getIndividuals().add(indi.getId().getId());
 		if (ClientServerInterface.isClient()) {

@@ -9,6 +9,8 @@ import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.lightColor;
 import static bloodandmithril.util.Util.Colors.lightSkinColor;
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Iterables.transform;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -45,6 +47,7 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.util.cursorboundtask.ChooseStartingLocationCursorBoundTask;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
@@ -54,6 +57,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Window for selecting starting units/items
@@ -107,6 +111,18 @@ public class NewGameWindow extends Window {
 				GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 				BloodAndMithrilClient.domain = new Domain();
 				BloodAndMithrilClient.setup();
+				
+				BloodAndMithrilClient.setCursorBoundTask(
+					new ChooseStartingLocationCursorBoundTask(
+						Sets.newHashSet(filter(Lists.newArrayList(transform(startingIndividuals.keySet(), listingMenuItem -> {
+							return listingMenuItem.t;
+						})), test -> {
+							return test != null;
+						})), 
+						selectedItemPackage,
+						playerFaction.factionId
+					)
+				);
 			});
 		},
 		Color.WHITE,
@@ -120,11 +136,10 @@ public class NewGameWindow extends Window {
 	 */
 	public NewGameWindow() {
 		super(WIDTH/2 - 350, HEIGHT/2 + 250, 700, 500, "New game", true, 700, 500, false, true, false);
-
 		panels.add(new ChooseRacePanel(this));
 		panels.add(new ChooseStartingIndividualsPanel(this));
 		panels.add(new ChooseStartingItemPackagePanel(this));
-
+		
 		currentPanel = panels.poll();
 		next = new Button(
 			"Next",
