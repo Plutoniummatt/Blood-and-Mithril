@@ -167,10 +167,13 @@ public class SoundService {
 
 		if (current == null) {
 			current = toChangeTo;
+			decreasing = 0f;
+			increasing = 0f;
+		} else {
+			decreasing = 1f;
+			increasing = 0f;
 		}
 
-		decreasing = 1f;
-		increasing = 0f;
 
 		rate = transitionTime;
 		next = toChangeTo;

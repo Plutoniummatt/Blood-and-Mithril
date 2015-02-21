@@ -14,7 +14,6 @@ public class ItemValues {
 	public static final int GLASSBOTTLE = 200;
 	public static final int CARROT = 25;
 	public static final int CARROT_SEED = 5;
-	public static final int ARROW = 50;
 	public static final int CHICKENLEG = 150;
 	public static final int COOKEDCHICKENLEG = 250;
 	public static final int COAL = 200;
@@ -23,7 +22,7 @@ public class ItemValues {
 	public static final int COOKEDCARROT = 100;
 	public static final int DEATHCAP = 250;
 	public static final int FELBERRIES = 150;
-	public static final int FLINTANDFIRESTEEL = 5000;
+	public static final int FLINTANDFIRESTEEL = 1200;
 	public static final int CARROTSEED = 5;
 	public static final int YELLOWBRICK = 10;
 	public static final int YELLOWSAND = 5;
@@ -33,7 +32,7 @@ public class ItemValues {
 	public static final int STEELINGOT = 1200;
 	public static final int WOODENCHEST = 500;
 	public static final int WOODLOG = 150;
-	public static final int WOODSTICK = 5;
+	public static final int WOODSTICK = 50;
 	public static final int WOODPLANK = 20;
 	public static final int CLAY = 50;
 	public static final int DIRT = 1;

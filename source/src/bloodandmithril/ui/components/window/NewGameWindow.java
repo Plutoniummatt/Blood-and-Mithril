@@ -111,6 +111,7 @@ public class NewGameWindow extends Window {
 				GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 				BloodAndMithrilClient.domain = new Domain();
 				BloodAndMithrilClient.setup();
+				BloodAndMithrilClient.controlledFactions.add(playerFaction.factionId);
 				
 				BloodAndMithrilClient.setCursorBoundTask(
 					new ChooseStartingLocationCursorBoundTask(

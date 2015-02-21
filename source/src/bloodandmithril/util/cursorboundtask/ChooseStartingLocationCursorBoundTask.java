@@ -62,7 +62,7 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 		
 		this.startingItemPackage = startingItemPackage;
 		
-		int maxSpread = startingIndividuals.size() * 20;
+		int maxSpread = startingIndividuals.size() * 30;
 		for (Individual individual : startingIndividuals) {
 			this.individuals.put(
 				Util.getRandom().nextInt(maxSpread) - maxSpread / 2, 

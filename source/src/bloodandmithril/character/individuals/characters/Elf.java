@@ -81,8 +81,8 @@ import com.google.common.collect.Sets;
  */
 @Name(name = "Elves")
 @Description(description = "Elves are children of nature, they are nimble creatures with a good grip on magic and excel at archery.")
-@Copyright("Matthew Peck 2014")
 @SuppressWarnings("unchecked")
+@Copyright("Matthew Peck 2014")
 public class Elf extends Humanoid {
 	private static final long serialVersionUID = -5566954059579973505L;
 
