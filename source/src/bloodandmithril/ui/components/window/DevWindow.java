@@ -374,7 +374,7 @@ public class DevWindow extends Window {
 							if (individual != null) {
 								Furnace furnace = new Furnace(SandStone.class, individual.getState().position.x, individual.getState().position.y);
 								furnace.setConstructionProgress(1f);
-								for (int i = 0; i < 200; i++) {
+								for (int i = 0; i < 0; i++) {
 									furnace.giveItem(Rock.rock(Coal.class));
 								}
 								Domain.getWorld(individual.getWorldId()).props().addProp(furnace);

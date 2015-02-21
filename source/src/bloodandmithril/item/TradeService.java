@@ -82,8 +82,8 @@ public class TradeService {
 		}).sum();
 
 		if (
-			proposer.getCurrentLoad() - proposerItemsToTradeMass + proposeeItemsToTradeMass > proposer.getMaxCapacity() ||
-			proposee.getCurrentLoad() + proposerItemsToTradeMass - proposeeItemsToTradeMass > proposee.getMaxCapacity() ||
+			(proposer.getCurrentLoad() - proposerItemsToTradeMass + proposeeItemsToTradeMass > proposer.getMaxCapacity() && proposer.getWeightLimited()) ||
+			(proposee.getCurrentLoad() + proposerItemsToTradeMass - proposeeItemsToTradeMass > proposee.getMaxCapacity() && proposee.getWeightLimited()) ||
 			proposer.getCurrentVolume() - proposerItemsToTradeVolume + proposeeItemsToTradeVolume > proposer.getMaxVolume() ||
 			proposee.getCurrentVolume() + proposerItemsToTradeVolume - proposeeItemsToTradeVolume > proposee.getMaxVolume()
 		) {

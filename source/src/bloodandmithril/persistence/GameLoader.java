@@ -1,6 +1,6 @@
 package bloodandmithril.persistence;
 
-import static bloodandmithril.persistence.GameSaver.savePath;
+import static bloodandmithril.persistence.GameSaver.getSavePath;
 import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.util.Logger.loaderDebug;
 import static com.badlogic.gdx.Gdx.files;
@@ -38,7 +38,7 @@ public class GameLoader {
 	 * Loads a saved game
 	 */
 	public static void load(PersistenceMetaData metadata, boolean newGame) {
-		GameSaver.savePath = "save/" + metadata.name;
+		GameSaver.setSavePath("save/" + metadata.name);
 
 		if (newGame) {
 			GameSaver.mostRecentlyLoaded = null;
@@ -60,7 +60,7 @@ public class GameLoader {
 	@SuppressWarnings("unchecked")
 	private static void loadFactions() {
 		try {
-			ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(savePath + "/world/factions.txt"));
+			ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(getSavePath() + "/world/factions.txt"));
 			Domain.setFactions(decoded);;
 		} catch (Exception e) {
 			loaderDebug("Failed to load factions", LogLevel.DEBUG);

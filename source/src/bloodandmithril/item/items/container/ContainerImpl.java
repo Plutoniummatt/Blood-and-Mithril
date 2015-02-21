@@ -287,11 +287,11 @@ public final class ContainerImpl implements Container {
 
 	@Override
 	public boolean canReceive(Item item) {
-		if (currentLoad + item.getMass() > inventoryMassCapacity) {
+		if (currentLoad + item.getMass() > getMaxCapacity()) {
 			return false;
 		}
 
-		if (currentVolume + item.getVolume() > inventoryVolumeCapacity) {
+		if (currentVolume + item.getVolume() > getMaxVolume()) {
 			return false;
 		}
 
@@ -309,11 +309,11 @@ public final class ContainerImpl implements Container {
 			totalVolume += item.getVolume();
 		}
 
-		if (currentLoad + totalMass > inventoryMassCapacity) {
+		if (currentLoad + totalMass > getMaxCapacity()) {
 			return false;
 		}
 
-		if (currentVolume + totalVolume > inventoryVolumeCapacity) {
+		if (currentVolume + totalVolume > getMaxVolume()) {
 			return false;
 		}
 

@@ -26,12 +26,14 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.RequiredMaterialsWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.SerializableMappingFunction;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * A Construction
@@ -127,7 +129,17 @@ public abstract class Construction extends Prop implements Container {
 		if (canDeconstruct()) {
 			if (constructionProgress <= 0f) {
 				Domain.getWorld(getWorldId()).props().removeProp(id);
-				// TODO return some construction materials
+				for (Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
+					for (int i = entry.getValue(); i > 0; i--) {
+						Item item = entry.getKey();
+						item.setWorldId(getWorldId());
+						Domain.getWorld(getWorldId()).items().addItem(
+							item.copy(), 
+							position.cpy().add(0, 10), 
+							new Vector2(0, 200).rotate(Util.getRandom().nextFloat() * 360f)
+						);
+					}
+				}		
 			} else {
 				constructionProgress = constructionProgress - time * constructionRate <= 0f ? 0f : constructionProgress - time * constructionRate;
 			}	

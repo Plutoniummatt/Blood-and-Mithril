@@ -12,7 +12,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
-import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
@@ -28,16 +27,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * A chest made from wood
+ * A crate made from wood
  */
-@Copyright("Matthew Peck 2014")
-public class WoodenChest extends Furniture implements Container {
-	private static final long serialVersionUID = -8935044324226731703L;
+@Copyright("Matthew Peck 2015")
+public class WoodenCrate extends Furniture implements Container {
+	private static final long serialVersionUID = -7463802693132242218L;
 
+	@SuppressWarnings("unused")
 	private Class<? extends Wood> wood;
 
 	/** {@link TextureRegion} of the {@link WoodenChest} */
-	public static TextureRegion woodenChest;
+	public static TextureRegion woodenCrate;
 
 	/** The {@link Container} of this {@link WoodenChest} */
 	private ContainerImpl container;
@@ -45,7 +45,7 @@ public class WoodenChest extends Furniture implements Container {
 	/**
 	 * Constructor
 	 */
-	public WoodenChest(float x, float y, float capacity, int volume, Class<? extends Wood> wood) {
+	public WoodenCrate(float x, float y, float capacity, int volume, Class<? extends Wood> wood) {
 		super(x, y, 44, 35, true);
 		this.wood = wood;
 		container = new ContainerImpl(capacity, volume);
@@ -55,7 +55,7 @@ public class WoodenChest extends Furniture implements Container {
 	/**
 	 * Constructor for lockable {@link WoodenChest}
 	 */
-	public WoodenChest(float x, float y, float capacity, int volume, boolean locked, Function<Item, Boolean> unlockingFunction, Class<? extends Wood> wood) {
+	public WoodenCrate(float x, float y, float capacity, int volume, boolean locked, Function<Item, Boolean> unlockingFunction, Class<? extends Wood> wood) {
 		super(x, y, 44, 35, true);
 		this.wood = wood;
 		container = new ContainerImpl(capacity, volume, locked, unlockingFunction);
@@ -63,7 +63,7 @@ public class WoodenChest extends Furniture implements Container {
 
 
 	public String description() {
-		return "A chest constructed mostly from wood, used to store items, this one is made from " + Material.getMaterial(wood).getName() + ".";
+		return "A crate constructed mostly from wood, used to store items.";
 	}
 
 
@@ -83,7 +83,7 @@ public class WoodenChest extends Furniture implements Container {
 							BloodAndMithrilClient.HEIGHT/2 + 125,
 							500,
 							250,
-							"Wooden chest",
+							"Wooden crate",
 							true,
 							300,
 							150
@@ -186,17 +186,17 @@ public class WoodenChest extends Furniture implements Container {
 
 	@Override
 	public void synchronizeProp(Prop other) {
-		if (other instanceof WoodenChest) {
-			this.container.synchronizeContainer(((WoodenChest)other).container);
+		if (other instanceof WoodenCrate) {
+			this.container.synchronizeContainer(((WoodenCrate)other).container);
 		} else {
-			throw new RuntimeException("Can not synchronize Wooden Chest with " + other.getClass().getSimpleName());
+			throw new RuntimeException("Can not synchronize Wooden crate with " + other.getClass().getSimpleName());
 		}
 	}
 
 
 	@Override
 	public void render() {
-		spriteBatch.draw(woodenChest, position.x - width / 2, position.y);
+		spriteBatch.draw(woodenCrate, position.x - width / 2, position.y);
 	}
 
 
@@ -243,7 +243,7 @@ public class WoodenChest extends Furniture implements Container {
 
 	@Override
 	public String getContextMenuItemLabel() {
-		return "Wooden chest" + (isLocked() ? " (Locked)" : "");
+		return "Wooden crate";
 	}
 
 

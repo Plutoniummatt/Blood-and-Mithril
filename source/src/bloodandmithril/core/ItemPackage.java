@@ -17,7 +17,7 @@ import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
-import bloodandmithril.item.items.furniture.WoodenChest;
+import bloodandmithril.item.items.furniture.WoodenCrate;
 import bloodandmithril.item.items.material.Plank;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Water;
@@ -83,7 +83,7 @@ public class ItemPackage implements Serializable {
 	}
 
 	private static void addDefaults() {
-		Container prop = (Container) new WoodenChest(StandardWood.class).getProp();
+		Container prop = (Container) new WoodenCrate(StandardWood.class).getProp();
 		prop.giveItem(new FlintAndFiresteel(), 1);
 		prop.giveItem(Plank.plank(StandardWood.class), 20);
 		prop.giveItem(new Carrot(), 25);

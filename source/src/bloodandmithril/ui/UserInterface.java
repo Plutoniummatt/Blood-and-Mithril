@@ -395,7 +395,8 @@ public class UserInterface {
 					break;
 				}
 
-				if (Domain.getActiveWorld().props().getProp(id).isMouseOver()) {
+				Prop prop = Domain.getActiveWorld().props().getProp(id);
+				if (prop != null && prop.isMouseOver()) {
 					renderHint = true;
 					break;
 				}
@@ -405,7 +406,8 @@ public class UserInterface {
 					break;
 				}
 
-				if (Domain.getActiveWorld().items().getItem(id).isMouseOver()) {
+				Item item = Domain.getActiveWorld().items().getItem(id);
+				if (item != null && item.isMouseOver()) {
 					renderHint = true;
 					break;
 				}

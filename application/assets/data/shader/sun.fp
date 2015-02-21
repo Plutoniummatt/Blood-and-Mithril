@@ -30,5 +30,5 @@ void main()
 	gl_FragColor = 
 		tex * color * filter.a + 
 		tex + 
-		color2;
+		color2 * nightSuppression;
 }

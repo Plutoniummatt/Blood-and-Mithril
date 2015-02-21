@@ -1,5 +1,6 @@
 package bloodandmithril.persistence;
 
+import static bloodandmithril.persistence.GameSaver.getSavePath;
 import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.persistence.PersistenceUtil.encode;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -33,7 +34,7 @@ public class ParameterPersistenceService {
 	/** Loads and returns persisted parameters from disk */
 	private synchronized static Parameters loadParameters() {
 		try {
-			FileHandle file = Gdx.files.local(GameSaver.savePath + "/parameters.txt");
+			FileHandle file = Gdx.files.local(getSavePath() + "/parameters.txt");
 			parameters = decode(file);
 			return parameters;
 		} catch (Exception e) {
@@ -46,7 +47,7 @@ public class ParameterPersistenceService {
 
 	/** Saves the {@link Parameters} */
 	public synchronized static void saveParameters() {
-		FileHandle file = Gdx.files.local(GameSaver.savePath + "/parameters.txt");
+		FileHandle file = Gdx.files.local(getSavePath() + "/parameters.txt");
 		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y) : new Vector2());
 		parameters.setCurrentEpoch(WorldState.getCurrentEpoch());
 		file.writeString(encode(parameters), false);

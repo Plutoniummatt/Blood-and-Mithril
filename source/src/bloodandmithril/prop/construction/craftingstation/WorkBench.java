@@ -40,7 +40,7 @@ public class WorkBench extends CraftingStation {
 	 * Constructor
 	 */
 	public WorkBench(float x, float y) {
-		super(x, y, 80, 33, 0f);
+		super(x, y, 80, 33, 0.1f);
 		setConstructionProgress(1f);
 	}
 

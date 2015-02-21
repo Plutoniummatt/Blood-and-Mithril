@@ -1,5 +1,6 @@
 package bloodandmithril.persistence.world;
 
+import static bloodandmithril.persistence.GameSaver.getSavePath;
 import static bloodandmithril.persistence.PersistenceUtil.encode;
 
 import java.io.Serializable;
@@ -81,9 +82,9 @@ public class WorldSaver {
 		persistUnloadedChunks();
 		if (GameSaver.saverThread.isAlive()) {
 			GameSaver.saverTasks.add(() -> {
-				FileHandle structures = Gdx.files.local(GameSaver.savePath + "/world/structures.txt");
-				FileHandle worlds = Gdx.files.local(GameSaver.savePath + "/world/worlds.txt");
-				FileHandle layers = Gdx.files.local(GameSaver.savePath + "/world/layers.txt");
+				FileHandle structures = Gdx.files.local(getSavePath() + "/world/structures.txt");
+				FileHandle worlds = Gdx.files.local(getSavePath() + "/world/worlds.txt");
+				FileHandle layers = Gdx.files.local(getSavePath() + "/world/layers.txt");
 
 				structures.writeString(encode(Structures.getStructures()), false);
 				worlds.writeString(encode(Domain.getWorlds()), false);
@@ -92,7 +93,7 @@ public class WorldSaver {
 				for (Entry<Integer, World> world : Domain.getWorlds().entrySet()) {
 					saveStructureData(world);
 
-					ZipHelper zip = new ZipHelper(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()), "/chunkData.zip");
+					ZipHelper zip = new ZipHelper(getSavePath() + "/world/world" + Integer.toString(world.getKey()), "/chunkData.zip");
 
 					for (Entry<Integer, HashMap<Integer, Chunk>> columnToSave : world.getValue().getTopography().getChunkMap().chunkMap.entrySet()) {
 						saveColumn(columnToSave.getKey(), columnToSave.getValue(), zip);
@@ -112,8 +113,10 @@ public class WorldSaver {
 	 */
 	private static void persistUnloadedChunks() {
 		if (GameSaver.mostRecentlyLoaded != null) {
-			FileHandle existingSavedChunks = Gdx.files.local("save/" + GameSaver.mostRecentlyLoaded.name + "/world/chunkData.zip");
-			existingSavedChunks.copyTo(Gdx.files.local(GameSaver.savePath + "/world/chunkData.zip"));
+			for (Integer world : Domain.getWorlds().keySet()) {
+				FileHandle existingSavedChunks = Gdx.files.local("save/" + GameSaver.mostRecentlyLoaded.name + "/world/world" + Integer.toString(world) + "/chunkData.zip");
+				existingSavedChunks.copyTo(Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world) + "/chunkData.zip"));
+			}
 		}
 	}
 
@@ -122,9 +125,9 @@ public class WorldSaver {
 	 * Saves the data used for generation
 	 */
 	private static void saveStructureData(Entry<Integer, World> world) {
-		FileHandle superStructureKeys = Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/superStructureKeys.txt");
-		FileHandle subStructureKeys = Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/subStructureKeys.txt");
-		FileHandle surfaceHeight = Gdx.files.local(GameSaver.savePath + "/world/world" + Integer.toString(world.getKey()) + "/surfaceHeight.txt");
+		FileHandle superStructureKeys = Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/superStructureKeys.txt");
+		FileHandle subStructureKeys = Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/subStructureKeys.txt");
+		FileHandle surfaceHeight = Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/surfaceHeight.txt");
 
 		superStructureKeys.writeString(encode(world.getValue().getTopography().getStructures().getSuperStructureKeys()), false);
 		subStructureKeys.writeString(encode(world.getValue().getTopography().getStructures().getSubStructureKeys()), false);
@@ -158,7 +161,7 @@ public class WorldSaver {
 	public static void saveAndFlushChunk(final int x, final int y, final Topography topography) {
 		if (chunksInQueue.get(x, y) == null) {
 			GameSaver.saverTasks.add(() -> {
-				ZipHelper zip = new ZipHelper(GameSaver.savePath + "/world", "/chunkData.zip");
+				ZipHelper zip = new ZipHelper(getSavePath() + "/world", "/chunkData.zip");
 				saveChunk(topography.getChunkMap().get(x).get(y), x, y, zip);
 				topography.getChunkMap().get(x).remove(y);
 			});
