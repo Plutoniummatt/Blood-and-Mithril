@@ -34,6 +34,8 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Description;
+import bloodandmithril.core.Name;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
@@ -77,6 +79,8 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
+@Name(name = "Elves")
+@Description(description = "Elves are children of nature, they are nimble creatures with a good grip on magic and excel at archery.")
 @Copyright("Matthew Peck 2014")
 @SuppressWarnings("unchecked")
 public class Elf extends Humanoid {
@@ -271,23 +275,23 @@ public class Elf extends Humanoid {
 			Color eyeColor,
 			Color skinColor) {
 		super(
-			id, 
-			state, 
-			factionId, 
-			capacity, 
-			100, 
-			10, 
-			40, 
-			95, 
-			30, 
+			id,
+			state,
+			factionId,
+			capacity,
+			100,
+			10,
+			40,
+			95,
+			30,
 			new Box(
 				new Vector2(
-					state.position.x, 
+					state.position.x,
 					state.position.y
-				), 
-				120, 
+				),
+				120,
 				120
-			), 
+			),
 			world == null ? 0 : world.getWorldId(),
 			2
 		);

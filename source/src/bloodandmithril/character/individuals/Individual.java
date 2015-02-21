@@ -1867,8 +1867,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public void setTravelIconTimer(float travelIconTimer) {
 		this.travelIconTimer = travelIconTimer;
 	}
-	
-	
+
+
 	public void speak(String text, long duration) {
 		if (ClientServerInterface.isServer()) {
 			UserInterface.addTextBubble(
