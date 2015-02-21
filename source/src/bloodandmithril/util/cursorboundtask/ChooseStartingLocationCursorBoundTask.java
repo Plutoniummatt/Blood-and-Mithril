@@ -85,13 +85,13 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 			Vector2 pos;
 			try {
 				pos = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(mouseX + entry.getKey(), mouseY, true);
-				entry.getValue().getState().position.x = pos.x;
+				entry.getValue().getState().position.x = mouseX;
 				entry.getValue().getState().position.y = pos.y;
 				
 				boolean canPlace = canPlaceIndividual(entry.getValue());
 				
 				Shaders.filter.setUniformf("color", canPlace ? Color.GREEN : Color.RED);
-				spriteBatch.draw(UserInterface.currentArrow, pos.x - 5, pos.y);
+				spriteBatch.draw(UserInterface.currentArrow, mouseX - 5, pos.y);
 				spriteBatch.flush();
 			} catch (NoTileFoundException e) {
 				pos = new Vector2();
