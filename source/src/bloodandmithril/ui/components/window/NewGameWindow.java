@@ -158,6 +158,12 @@ public class NewGameWindow extends Window {
 			UIRef.BL
 		);
 	}
+	
+	
+	@Override
+	public boolean scrolled(int amount) {
+		return currentPanel.scrolled(amount);
+	}
 
 
 	@Override
@@ -334,6 +340,12 @@ public class NewGameWindow extends Window {
 				}
 			};
 		}
+		
+		
+		@Override
+		public boolean scrolled(int amount) {
+			return itemPackages.scrolled(amount);
+		}
 
 
 		@Override
@@ -495,6 +507,11 @@ public class NewGameWindow extends Window {
 					return false;
 				}
 			};
+		}
+		
+		@Override
+		public boolean scrolled(int amount) {
+			return skills.scrolled(amount) || individuals.scrolled(amount);
 		}
 
 		private void addIndividual() {
