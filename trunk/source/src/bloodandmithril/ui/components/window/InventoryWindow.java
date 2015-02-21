@@ -24,6 +24,7 @@ import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.Item.Category;
 import bloodandmithril.item.items.PropItem;
+import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -290,7 +291,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		}
 
 		// Render the weight indication text
-		renderCapacityIndicationText();
+		renderCapacityIndicationText(host, this, 6, -height);
 
 		// Render filter button
 		filterButton.render(x + 41, y - height + 73, isActive() && UserInterface.contextMenus.isEmpty(), getAlpha());
@@ -300,19 +301,25 @@ public class InventoryWindow extends Window implements Refreshable {
 	/**
 	 * Renders the weight display
 	 */
-	private void renderCapacityIndicationText() {
+	public static void renderCapacityIndicationText(Container container, Window parentComponent, int xOffset, int yOffset) {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
-		Color activeColor = host.getCurrentLoad() < host.getMaxCapacity() ?
-				new Color(0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, getAlpha()) :
-				Colors.modulateAlpha(Color.RED, getAlpha());
+		Color activeColor;
+				
+		if (container.getWeightLimited()) {
+			activeColor = container.getCurrentLoad() < container.getMaxCapacity() ?
+				new Color(0.7f * container.getCurrentLoad()/container.getMaxCapacity(), 1f - 0.7f * container.getCurrentLoad()/container.getMaxCapacity(), 0f, parentComponent.getAlpha()) :
+				Colors.modulateAlpha(Color.RED, parentComponent.getAlpha());
+		} else {
+			activeColor = Color.GREEN;
+		}
 
-		Color inactiveColor = host.getCurrentLoad() < host.getMaxCapacity() ?
-				new Color(0.7f*host.getCurrentLoad()/host.getMaxCapacity(), 1f - 0.7f * host.getCurrentLoad()/host.getMaxCapacity(), 0f, 0.6f * getAlpha()) :
-					Colors.modulateAlpha(Color.RED, 0.6f * getAlpha());
+		Color inactiveColor = container.getCurrentLoad() < container.getMaxCapacity() ?
+				new Color(0.7f*container.getCurrentLoad()/container.getMaxCapacity(), 1f - 0.7f * container.getCurrentLoad()/container.getMaxCapacity(), 0f, 0.6f * parentComponent.getAlpha()) :
+					Colors.modulateAlpha(Color.RED, 0.6f * parentComponent.getAlpha());
 
-		defaultFont.setColor(isActive() ? activeColor : inactiveColor);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate("Weight: " + String.format("%.2f", host.getCurrentLoad()) + "/" + String.format("%.2f", host.getMaxCapacity())), x + 6, y - height + 40);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate("Volume: " + host.getCurrentVolume() + "/" + host.getMaxVolume()), x + 6, y - height + 20);
+		defaultFont.setColor(parentComponent.isActive() ? activeColor : inactiveColor);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate("Weight: " + String.format("%.2f", container.getCurrentLoad()) + (container.getWeightLimited() ? "/" + String.format("%.2f", container.getMaxCapacity()) : "")), parentComponent.x + xOffset, parentComponent.y + yOffset + 40);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate("Volume: " + container.getCurrentVolume() + "/" + container.getMaxVolume()), parentComponent.x + xOffset, parentComponent.y + yOffset + 20);
 	}
 
 

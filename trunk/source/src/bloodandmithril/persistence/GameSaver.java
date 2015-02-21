@@ -33,7 +33,7 @@ public class GameSaver {
 	public static final BlockingQueue<Task> saverTasks = new ArrayBlockingQueue<Task>(500);
 
 	/** File path for saved games */
-	public static String savePath;
+	private static String savePath;
 
 	/** Name to use for saved game */
 	private static String savedGameName = null;
@@ -52,6 +52,16 @@ public class GameSaver {
 		savePath = "save/" + name;
 		pending = true;
 		andExit = exitAfter;
+	}
+	
+	
+	public static synchronized void setSavePath(String savePath) {
+		GameSaver.savePath = savePath;
+	}
+	
+	
+	public static String getSavePath() {
+		return savePath;
 	}
 
 
@@ -109,7 +119,7 @@ public class GameSaver {
 	}
 
 
-	public static void update() {
+	public static synchronized void update() {
 		if (pending) {
 			if (!outstandingTasks()) {
 				pending = false;

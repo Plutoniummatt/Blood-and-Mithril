@@ -85,6 +85,14 @@ public interface Container extends Serializable {
 	public default float getMaxCapacity() {
 		return getContainerImpl().getMaxCapacity();
 	}
+	
+	
+	/**
+	 * @return true if this container has a max weight limit.
+	 */
+	public default boolean getWeightLimited() {
+		return true;
+	}
 
 
 	/**

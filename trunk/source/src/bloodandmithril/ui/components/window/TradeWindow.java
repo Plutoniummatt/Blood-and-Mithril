@@ -80,8 +80,8 @@ public class TradeWindow extends Window implements Refreshable {
 		() -> {
 			proposeTrade();
 		},
-		Color.GREEN,
-		Color.ORANGE,
+		Color.YELLOW,
+		Color.GRAY,
 		Color.WHITE,
 		UIRef.BL
 	);
@@ -512,10 +512,13 @@ public class TradeWindow extends Window implements Refreshable {
 				tradeButton.setIdleColor(Color.GREEN);
 			}
 		}
+		
+		InventoryWindow.renderCapacityIndicationText(proposer, this, 6, -height);
+		InventoryWindow.renderCapacityIndicationText(proposee, this, width / 2 + 6, -height);
 
 		tradeButton.render(
-			x + width/2,
-			y - height + 40,
+			x + 71,
+			y - height + 70,
 			tradeButtonClickable(),
 			getAlpha()
 		);
