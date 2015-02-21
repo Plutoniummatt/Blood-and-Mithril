@@ -258,7 +258,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				BloodAndMithrilClient.HEIGHT/2 + 55,
 				200,
 				130,
-				"Main menu",
+				"",
 				true,
 				200,
 				130,
