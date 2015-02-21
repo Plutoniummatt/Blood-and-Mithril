@@ -65,7 +65,7 @@ public abstract class Prop implements Serializable {
 		this.width = width;
 		this.height = height;
 		this.canPlaceOnTopOf = canPlaceOnTopOf;
-		position = new Vector2(x, y);
+		this.position = new Vector2(x, y);
 		this.depth = depth;
 		this.id = ParameterPersistenceService.getParameters().getNextPropId();
 		this.grounded = grounded;
