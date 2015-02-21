@@ -18,11 +18,17 @@ void main()
 	vec4 tex = texture2D(u_texture, v_texCoords);
 	
 	float distanceFromSun = distance(inverted * resolution, sunPosition);
+	
+	vec2 invertedResolution = inverted * resolution;
+	float distanceFromLensFlare = distance(invertedResolution, sunPosition);
 	float func = 2 - distanceFromSun / 1300;
 	float func2 = 100 / distanceFromSun;
 	
 	vec4 color = filter * max(func, 0); 
-	vec4 color2 = filter * max(func2, 0); 
+	vec4 color2 = filter * vec4(1.0, 0.7, 0.7, 1.0) * max(func2, 0);
 	
-	gl_FragColor = tex * color * filter.a + tex + color2 * nightSuppression;
+	gl_FragColor = 
+		tex * color * filter.a + 
+		tex + 
+		color2;
 }
