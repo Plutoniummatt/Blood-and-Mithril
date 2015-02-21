@@ -3,27 +3,20 @@ package bloodandmithril.world.weather;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import static bloodandmithril.world.Domain.gameWorldTexture;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
+import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledCircle;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.lang.Math.PI;
-import static java.lang.Math.cos;
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
-
-import java.util.List;
-
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.world.Domain;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Epoch;
-import bloodandmithril.world.WorldState;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
@@ -39,27 +32,15 @@ public class Weather {
 
 	private static Color dayTopColor 					= new Color(33f/150f, 169f/255f, 255f/255f, 1f);
 	private static Color dayBottomColor 				= new Color(0f, 144f/255f, 1f, 1f);
-	private static Color nightTopColor 					= new Color(87f/255f, 0f, 218f/255f, 1f);
-	private static Color nightBottomColor 				= new Color(33f/255f, 0f, 232f/255f, 1f);
-
-	/** Texture regions for various phases of the moon */
-	private static List<TextureRegion> moonPhases 		= newArrayList();
-
-	private static TextureRegion sunTexture 			= new TextureRegion(gameWorldTexture, 0, 1536, 512, 512);
-	private static TextureRegion sunGlowTexture 		= new TextureRegion(gameWorldTexture, 512, 1536, 512, 512);
-
-	/** Orbital radius of the moon around the {@link #celestialPivot} */
-	private static float celestialOrbitalRadius 		= WIDTH * 3 / 4;
-
-	/** The pivot around which the moon resolves */
-	private static Vector2 celestialPivot 				= new Vector2(WIDTH/2, -HEIGHT/2);
-
-	/** The index to access {@link #moonPhases} with, updated between 11:00 and 13:00 */
-	private static int moonPhaseIndex 					= (int)(12f / 30f * getCurrentEpoch().dayOfMonth);
+	private static Color nightTopColor 					= new Color(33f/255f, 0f, 150f/255f, 1f);
+	private static Color nightBottomColor 				= new Color(60f/255f, 0f, 152f/255f, 1f);
+	
+	private static FrameBuffer skyBuffer				= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
+	
+	private static Vector2 sunPosition					= new Vector2();
 
 	/** Load resources */
 	public static void setup() {
-		populateMoonTextureRegions();
 	}
 
 
@@ -68,8 +49,18 @@ public class Weather {
 	 */
 	public static void render() {
 		renderSky();
-		renderMoon();
 		renderSun();
+	}
+	
+	
+	private static void renderSun() {
+		float time = getCurrentEpoch().getTime();
+		Vector2 pivot = new Vector2(WIDTH/2, 0);
+		float radius = WIDTH/2;
+		Vector2 position = pivot.cpy().add(new Vector2(0f, radius).rotate(-((time - 12f) / 12f) * 180f));
+
+		sunPosition.x = position.x;
+		sunPosition.y = position.y;
 	}
 
 
@@ -78,66 +69,50 @@ public class Weather {
 		Color filter = new Color();
 
 		if (time < 10) {
-			filter.r = (float) (0.1D + 1.2D * exp(-0.100*pow(time-10, 2)));
-			filter.g = (float) (0.1D + 1.2D * exp(-0.150*pow(time-10, 2)));
-			filter.b = (float) (0.1D + 1.2D * exp(-0.200*pow(time-10, 2)));
+			filter.r = (float) (0.1D + 1.1D * exp(-0.100*pow((time-10), 2)));
+			filter.g = (float) (0.1D + 0.9D * exp(-0.150*pow((time-10), 2)));
+			filter.b = (float) (0.1D + 0.7D * exp(-0.200*pow((time-10), 2)));
 		} else if (time >= 10 && time < 14) {
-			filter.r = 1.3f;
-			filter.g = 1.3f;
-			filter.b = 1.3f;
+			filter.r = 1.2f;
+			filter.g = 1.0f;
+			filter.b = 0.8f;
 		} else {
-			filter.r = (float) (0.1D + 1.2D * exp(-0.100*pow(time-14, 2)));
-			filter.g = (float) (0.1D + 1.2D * exp(-0.150*pow(time-14, 2)));
-			filter.b = (float) (0.1D + 1.2D * exp(-0.200*pow(time-14, 2)));
+			filter.r = (float) (0.1D + 1.1D * exp(-0.100*pow((time-14), 2)));
+			filter.g = (float) (0.1D + 0.9D * exp(-0.150*pow((time-14), 2)));
+			filter.b = (float) (0.1D + 0.7D * exp(-0.200*pow((time-14), 2)));
 		}
+		filter.a = 1f;
 
 		return filter;
 	}
-
-
-	/** Renders the sun */
-	private static void renderSun() {
-		float time = WorldState.getCurrentEpoch().getTime();
-
-		double angle = time < 12f ? PI/2f + PI * (time- 2f)/20f : PI + PI * (time - 12f)/20f;
-
-		float x = celestialPivot.x - celestialOrbitalRadius * (float)sin((float)angle) - sunTexture.getRegionWidth()/2;
-		float y = celestialPivot.y - celestialOrbitalRadius * (float)cos((float)angle) - sunTexture.getRegionHeight()/2;
-
-		spriteBatch.begin();
-		Shaders.sun.begin();
-		Shaders.sun.setUniformf("time", time);
-		Shaders.sun.end();
-		spriteBatch.setShader(Shaders.sun);
-		spriteBatch.draw(sunGlowTexture, x - 768, y - 768, 2048, 2048);
-		spriteBatch.setShader(Shaders.pass);
-		spriteBatch.draw(sunTexture, x, y);
-		spriteBatch.end();
-	}
-
-
-	/** Renders the moon */
-	private static void renderMoon() {
+	
+	
+	public static Color getSunColor() {
 		float time = getCurrentEpoch().getTime();
+		Color filter = new Color();
 
-		if (time > 11f && time < 13f) {
-			moonPhaseIndex = (int)(12f / 30f * getCurrentEpoch().dayOfMonth);
+		if (time < 10) {
+			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow((time-10), 2)));
+			filter.g = (float) (0.2D + 0.8D * exp(-0.150*pow((time-10), 2)));
+			filter.b = (float) (0.1D + 0.9D * exp(-0.200*pow((time-10), 2)));
+		} else if (time >= 10 && time < 14) {
+			filter.r = 1.1f;
+			filter.g = 1.1f;
+			filter.b = 1.1f;
+		} else {
+			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow((time-14), 2)));
+			filter.g = (float) (0.2D + 0.8D * exp(-0.150*pow((time-14), 2)));
+			filter.b = (float) (0.1D + 0.9D * exp(-0.200*pow((time-14), 2)));
 		}
+		filter.a = 1f;
 
-		double angle = PI + time < 12f ? PI + PI * time/24f : PI * time/24f;
-
-		float x = celestialPivot.x - celestialOrbitalRadius * (float)sin((float)angle) - moonPhases.get(moonPhaseIndex).getRegionWidth()/2;
-		float y = celestialPivot.y - celestialOrbitalRadius * (float)cos((float)angle) - moonPhases.get(moonPhaseIndex).getRegionHeight()/2;
-
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.moon);
-		spriteBatch.draw(moonPhases.get(moonPhaseIndex), x, y);
-		spriteBatch.end();
+		return filter;
 	}
-
-
+	
+	
 	/** Renders the sky */
 	private static void renderSky() {
+		skyBuffer.begin();
 		shapeRenderer.begin(FilledRectangle);
 		Color filter = getDaylightColor();
 
@@ -149,17 +124,34 @@ public class Weather {
 
 		shapeRenderer.begin(FilledCircle);
 		shapeRenderer.end();
+		skyBuffer.end();
+		
+		float time = getCurrentEpoch().getTime();
+		
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.sun);
+		Shaders.sun.setUniformf("resolution", WIDTH, HEIGHT);
+		Shaders.sun.setUniformf("sunPosition", sunPosition);
+		Shaders.sun.setUniformf("filter", Colors.modulateAlpha(getSunColor(), glareAlpha(time)));
+		Shaders.sun.setUniformf("epoch", getCurrentEpoch().getTime());
+		Shaders.sun.setUniformf("nightSuppression", nightSuppression(time));
+		spriteBatch.draw(skyBuffer.getColorBufferTexture(), 0, 0);
+		spriteBatch.end();
 	}
 
 
-	/** Populates {@link #moonPhases} with the required {@link TextureRegion}s from {@link Domain#gameWorldTexture} */
-	private static void populateMoonTextureRegions() {
-		int sideLength = 175;
-		for (int i = 0; i < 11; i++) {
-			moonPhases.add(new TextureRegion(gameWorldTexture, i * sideLength, 0, sideLength, sideLength));
+	private static float glareAlpha(float time) {
+		if (time <= 4f || time >= 20f) {
+			return 1f;
 		}
-		for (int i = 0; i < 2; i++) {
-			moonPhases.add(new TextureRegion(gameWorldTexture, i * sideLength, 175, sideLength, sideLength));
+		return 1f - (float) pow(sin((time - 4f) * (Math.PI / 16f)), 2f);
+	}
+	
+	
+	private static float nightSuppression(float time) {
+		if (time >= 4f || time <= 20f) {
+			return 1f;
 		}
+		return 1f - (float) pow(sin((time + 4f) * (Math.PI / 8f)), 2f);
 	}
 }

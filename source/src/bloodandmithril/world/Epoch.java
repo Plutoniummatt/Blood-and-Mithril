@@ -27,9 +27,9 @@ public class Epoch implements Serializable {
 	 * Constructor
 	 */
 	public Epoch(float time, int day, int month, int year) {
-		timeOfDay = time;
-		dayOfMonth = day;
-		monthOfYear = month;
+		this.timeOfDay = time;
+		this.dayOfMonth = day;
+		this.monthOfYear = month;
 		this.year = year;
 	}
 
@@ -42,7 +42,7 @@ public class Epoch implements Serializable {
 			timeOfDay = 0;
 			incrementDay();
 		}
-		timeOfDay += 50* 24 * delta / lengthOfDay / 60f;
+		timeOfDay += 500 * 24 * delta / lengthOfDay / 60f;
 	}
 
 
@@ -102,12 +102,12 @@ public class Epoch implements Serializable {
 	 * @return the daylight alpha
 	 */
 	public float dayLight() {
-		if (timeOfDay > 0f && timeOfDay < 8f) {
-			return (float) exp(-pow(timeOfDay - 8f, 2));
-		} else if (timeOfDay > 8f && timeOfDay < 17f) {
+		if (timeOfDay > 0f && timeOfDay < 9f) {
+			return (float) exp(-pow(timeOfDay - 9f, 2));
+		} else if (timeOfDay > 9f && timeOfDay < 16f) {
 			return 1f;
 		} else {
-			return (float) exp(-pow(timeOfDay - 17f, 2));
+			return (float) exp(-pow(timeOfDay - 16f, 2));
 		}
 	}
 }

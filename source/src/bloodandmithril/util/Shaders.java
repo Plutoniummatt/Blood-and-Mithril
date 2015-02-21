@@ -35,7 +35,6 @@ public class Shaders {
 	public static ShaderProgram tracerParticlesFBO = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/tracerParticleFbo.fp"));
 	public static ShaderProgram lightingFBOBlend = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/lightingFboBlend.fp"));
 
-	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/sun.fp"));
 	public static ShaderProgram shadow = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/shadow.fp"));
 	public static ShaderProgram shadowMap = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/1DShadowMap.fp"));
 	public static ShaderProgram defaultBackGroundTiles = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/backGroundTileShader.fp"));
@@ -45,6 +44,7 @@ public class Shaders {
 	public static ShaderProgram moon = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/moonShader.fp"));
 	public static ShaderProgram elfHighLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/elf/highLight.fp"));
 	public static ShaderProgram elfDayLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/elf/dayLight.fp"));
+	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/sun.fp"));
 
 	public static void setup() {
 		ShaderProgram.pedantic = false;
