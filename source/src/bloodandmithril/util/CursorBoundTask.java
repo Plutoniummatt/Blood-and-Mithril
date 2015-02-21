@@ -21,6 +21,11 @@ public abstract class CursorBoundTask {
 		this.task = task;
 		this.isWorldCoordinate = isWorldCoordinate;
 	}
+	
+	
+	protected void setTask(JITTask task) {
+		this.task = task;
+	}
 
 
 	/**

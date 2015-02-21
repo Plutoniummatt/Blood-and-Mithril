@@ -40,7 +40,7 @@ public class PlacePropRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		if (prop.canPlaceAt(x, y)) {
+		if (prop.canPlaceAt(prop.position)) {
 			if (individualId == null) {
 				Domain.getWorld(worldId).props().addProp(prop);
 			} else {

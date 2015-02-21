@@ -81,10 +81,15 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 
 		@Override
 		public void renderUIGuide() {
+			renderGuide(toPlace);
+		}
+
+
+		public static void renderGuide(Prop propToPlace) {
 			Vector2 coords;
 			Gdx.gl20.glLineWidth(2f);
 			try {
-				if (toPlace.grounded) {
+				if (propToPlace.grounded) {
 					coords = new Vector2(
 						getMouseWorldX(),
 						Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
@@ -103,16 +108,16 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 			float x = worldToScreenX(coords.x);
 			float y = worldToScreenY(coords.y);
 
-			boolean canBuild = toPlace.canPlaceAt(coords);
+			boolean canBuild = propToPlace.canPlaceAt(coords);
 
-			toPlace.position.x = coords.x;
-			toPlace.position.y = coords.y;
+			propToPlace.position.x = coords.x;
+			propToPlace.position.y = coords.y;
 
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			UserInterface.shapeRenderer.begin(Rectangle);
 			UserInterface.shapeRenderer.setColor(canBuild ? Color.GREEN : Color.RED);
-			UserInterface.shapeRenderer.rect(x - toPlace.width/2, y, toPlace.width, toPlace.height);
+			UserInterface.shapeRenderer.rect(x - propToPlace.width/2, y, propToPlace.width, propToPlace.height);
 			UserInterface.shapeRenderer.end();
 			gl.glDisable(GL_BLEND);
 		}
