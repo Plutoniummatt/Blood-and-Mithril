@@ -104,7 +104,7 @@ public class NewGameWindow extends Window {
 
 			ClientServerInterface.setServer(true);
 			BloodAndMithrilClient.clientCSIThread.execute(() -> {
-				MainMenuWindow.removeWindows();
+				UserInterface.closeAllWindows();
 				try {
 					Thread.sleep(1000);
 				} catch (Exception e) {}

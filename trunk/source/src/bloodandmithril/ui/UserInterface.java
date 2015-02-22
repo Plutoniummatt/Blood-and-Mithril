@@ -1503,4 +1503,11 @@ public class UserInterface {
 	public enum UIRef {
 		TL, TM, TR, M, BL, BM, BR
 	}
+
+
+	public static void closeAllWindows() {
+		for (Component component : layeredComponents) {
+			component.setClosing(true);
+		}
+	}
 }

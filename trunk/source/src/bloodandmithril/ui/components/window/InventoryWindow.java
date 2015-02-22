@@ -310,7 +310,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				new Color(0.7f * container.getCurrentLoad()/container.getMaxCapacity(), 1f - 0.7f * container.getCurrentLoad()/container.getMaxCapacity(), 0f, parentComponent.getAlpha()) :
 				Colors.modulateAlpha(Color.RED, parentComponent.getAlpha());
 		} else {
-			activeColor = Color.GREEN;
+			activeColor = Colors.modulateAlpha(Color.GREEN, parentComponent.getAlpha());
 		}
 
 		Color inactiveColor = container.getCurrentLoad() < container.getMaxCapacity() ?

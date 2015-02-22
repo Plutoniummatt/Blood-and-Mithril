@@ -42,7 +42,7 @@ public class Weather {
 	/** Load resources */
 	public static void setup() {
 	}
-
+	
 
 	/**
 	 * Renders the {@link Weather}
