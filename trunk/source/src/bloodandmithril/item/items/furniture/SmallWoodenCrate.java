@@ -24,7 +24,7 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class WoodenCrate extends Furniture implements Craftable {
+public class SmallWoodenCrate extends Furniture implements Craftable {
 	private static final long serialVersionUID = -2605696279754562239L;
 	
 	private final Class<? extends Wood> wood;
@@ -32,7 +32,7 @@ public class WoodenCrate extends Furniture implements Craftable {
 	/**
 	 * Constructor
 	 */
-	public WoodenCrate(Class<? extends Wood> wood) {
+	public SmallWoodenCrate(Class<? extends Wood> wood) {
 		super(10f, 300, ItemValues.WOODENCHEST);
 		this.wood = wood;
 	}
@@ -40,25 +40,25 @@ public class WoodenCrate extends Furniture implements Craftable {
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return Material.getMaterial(wood).getName() + " Crate";
+		return "Small" + Material.getMaterial(wood).getName() + " Crate";
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return Material.getMaterial(wood).getName() + " Crates";
+		return "Small" + Material.getMaterial(wood).getName() + " Crates";
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "A crate constructed mostly from wood, used to store items.";
+		return "A small crate constructed mostly from wood, used to store items.";
 	}
 
 
 	@Override
 	protected boolean internalSameAs(Item other) {
-		return other instanceof WoodenCrate;
+		return other instanceof SmallWoodenCrate;
 	}
 
 
@@ -92,7 +92,7 @@ public class WoodenCrate extends Furniture implements Craftable {
 
 	@Override
 	protected Item internalCopy() {
-		return new WoodenCrate(wood);
+		return new SmallWoodenCrate(wood);
 	}
 
 
@@ -105,7 +105,7 @@ public class WoodenCrate extends Furniture implements Craftable {
 
 	@Override
 	public Prop getProp() {
-		bloodandmithril.prop.furniture.WoodenCrate woodenCrate = new bloodandmithril.prop.furniture.WoodenCrate(0, 0, 1000000f, 800, wood);
+		bloodandmithril.prop.furniture.SmallWoodenCrate woodenCrate = new bloodandmithril.prop.furniture.SmallWoodenCrate(0, 0, wood);
 		if (Domain.getActiveWorld() != null) {
 			woodenCrate.setWorldId(Domain.getActiveWorld().getWorldId());
 		}
