@@ -112,8 +112,10 @@ public class LightLightable extends CompositeAITask {
 					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND);
 					SoundService.play(SoundService.flint, ((Prop) lightable).position, true);
 					lightable.light();
-					lit = true;
+				} else {
+					host.speak("I need fire lighting equipment", 2000);
 				}
+				lit = true;
 			}
 		}
 	}

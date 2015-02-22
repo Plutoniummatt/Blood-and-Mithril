@@ -76,6 +76,7 @@ import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.IndividualStatusWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
+import bloodandmithril.ui.components.window.SkillsWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.ParameterizedTask;
@@ -1036,6 +1037,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			true,
 			selectDeselect(this),
 			inventory(),
+			skills(),
 			build()
 		);
 	}
@@ -1049,17 +1051,31 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			attack(this)
 		);
 	}
+	
+	
+	private MenuItem skills() {
+		return new MenuItem(
+		"Skills",
+		() -> {
+			UserInterface.addLayeredComponentUnique(
+				new SkillsWindow(Individual.this)
+			);
+		},
+		Color.WHITE,
+		getToolTipTextColor(),
+		Color.GRAY,
+		null
+	);
+	}
 
 
 	private MenuItem showStatus() {
-		final Individual thisIndividual = this;
-
 		return new MenuItem(
 			"Show status",
 			() -> {
 				UserInterface.addLayeredComponentUnique(
 					new IndividualStatusWindow(
-						thisIndividual,
+						Individual.this,
 						WIDTH/2 - 200,
 						HEIGHT/2 + 200,
 						400,
