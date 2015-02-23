@@ -18,6 +18,7 @@ import static java.lang.Math.round;
 import java.util.List;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.background.BackgroundImages;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.util.Shaders;
@@ -63,6 +64,7 @@ public class GaussianLightingRenderer {
 	 */
 	public static void render(float camX, float camY) {
 		weather();
+		backgroundSprites();
 		backgroundLighting();
 		foregroundLighting();
 		lighting(foregroundLightingFBOSmall, foregroundLightingFBO, Depth.FOREGOUND);
@@ -70,6 +72,11 @@ public class GaussianLightingRenderer {
 		background();
 		middleground();
 		foreground();
+	}
+
+
+	private static void backgroundSprites() {
+		BackgroundImages.renderBackground();
 	}
 
 
