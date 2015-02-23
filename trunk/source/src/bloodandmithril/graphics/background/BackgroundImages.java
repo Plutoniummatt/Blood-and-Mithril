@@ -1,16 +1,19 @@
 package bloodandmithril.graphics.background;
 
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.cam;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.badlogic.gdx.Gdx.files;
-import bloodandmithril.core.BloodAndMithrilClient;
+
+import java.util.List;
+import java.util.Map;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.util.Shaders;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Class to manage background images
@@ -19,71 +22,33 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 @Copyright("Matthew Peck 2015")
 public class BackgroundImages {
-
 	private static Texture backgrounds;
-	
-	public static TextureRegion repeatingOcean;
+
+	public static Map<Integer, TextureRegion> textures = Maps.newHashMap();
+	private static List<Layer> layers = Lists.newArrayList();
 	
 	static {
 		if (ClientServerInterface.isClient()) {
-			backgrounds = new Texture(files.internal("data/image/repeatingOcean.png"));
-			repeatingOcean = new TextureRegion(backgrounds);
+			backgrounds = new Texture(files.internal("data/image/oceanWithIsland.png"));
+			textures.put(1, new TextureRegion(backgrounds, 0, 0, 200, 800));
+			textures.put(2, new TextureRegion(backgrounds, 200, 0, 500, 800));
+			
+			layers.add(new DayLightColorLayer());
 		}
 	}
-	
-	private static Background ocean = new Ocean();
 	
 	/**
 	 * Renders the background images
 	 */
 	public static void renderBackground() {
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.pass);
-		
-		float start = getX() * (1f - ocean.getDistanceX());
-		for (float x = start; x + ocean.getTextureRegion().getRegionWidth() <= WIDTH; x += ocean.getTextureRegion().getRegionWidth()) {
-			ocean.preRender(spriteBatch);
-			spriteBatch.draw(
-				repeatingOcean, 
-				x, 
-				getY() * (1f - ocean.getDistanceY()) + ocean.getOffsetY()
-			);	
+		for (Layer layer : layers) {
+			spriteBatch.begin();
+			layer.preRender();
+			layer.render(
+				(int) cam.position.x, 
+				(int) cam.position.y
+			);
+			spriteBatch.end();
 		}
-		
-		spriteBatch.end();
-	}
-	
-	
-	private static int getX() {
-		return  - (int) BloodAndMithrilClient.cam.position.x;
-	}
-	
-	private static int getY() {
-		return  - (int) BloodAndMithrilClient.cam.position.y;
-	}
-	
-	
-	public static abstract class Background {
-		public abstract TextureRegion getTextureRegion();
-		
-		/**
-		 * @return the perceived distance, 0 being the same as foreground, 1 being infinity
-		 */
-		public abstract float getDistanceX();
-		
-		/**
-		 * @return the perceived distance, 0 being the same as foreground, 1 being infinity
-		 */
-		public abstract float getDistanceY();
-		
-		/**
-		 * @return the height offset
-		 */
-		public abstract float getOffsetY();
-		
-		/**
-		 * Applies shaders and other pre-render processes
-		 */
-		public abstract void preRender(SpriteBatch spriteBatch);
 	}
 }
