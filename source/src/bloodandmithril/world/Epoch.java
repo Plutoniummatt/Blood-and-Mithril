@@ -42,7 +42,7 @@ public class Epoch implements Serializable {
 			timeOfDay = 0;
 			incrementDay();
 		}
-		timeOfDay += 1000* 24 * delta / lengthOfDay / 60f;
+		timeOfDay += 300 * 24 * delta / lengthOfDay / 60f;
 	}
 
 
