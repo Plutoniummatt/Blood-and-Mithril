@@ -69,17 +69,17 @@ public class Weather {
 		Color filter = new Color();
 
 		if (time < 10) {
-			filter.r = (float) (0.1D + 1.1D * exp(-0.100*pow((time-10), 2)));
-			filter.g = (float) (0.1D + 0.9D * exp(-0.150*pow((time-10), 2)));
-			filter.b = (float) (0.1D + 0.7D * exp(-0.200*pow((time-10), 2)));
+			filter.r = (float) (0.06D + 1.1D * exp(-0.100*pow((time-10), 2)));
+			filter.g = (float) (0.06D + 0.9D * exp(-0.150*pow((time-10), 2)));
+			filter.b = (float) (0.06D + 0.7D * exp(-0.200*pow((time-10), 2)));
 		} else if (time >= 10 && time < 14) {
-			filter.r = 1.2f;
-			filter.g = 1.0f;
-			filter.b = 0.8f;
+			filter.r = 1.16f;
+			filter.g = 0.96f;
+			filter.b = 0.76f;
 		} else {
-			filter.r = (float) (0.1D + 1.1D * exp(-0.100*pow((time-14), 2)));
-			filter.g = (float) (0.1D + 0.9D * exp(-0.150*pow((time-14), 2)));
-			filter.b = (float) (0.1D + 0.7D * exp(-0.200*pow((time-14), 2)));
+			filter.r = (float) (0.06D + 1.1D * exp(-0.100*pow((time-14), 2)));
+			filter.g = (float) (0.06D + 0.9D * exp(-0.150*pow((time-14), 2)));
+			filter.b = (float) (0.06D + 0.7D * exp(-0.200*pow((time-14), 2)));
 		}
 		filter.a = 1f;
 
