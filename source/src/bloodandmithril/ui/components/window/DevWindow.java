@@ -210,7 +210,7 @@ public class DevWindow extends Window {
 			id.setNickName("Elfie");
 
 			Elf elf = new Elf(
-				id, state, input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
+				id, state, input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 2, true,
 				20f,
 				getActiveWorld(),
 				lightColor(),
