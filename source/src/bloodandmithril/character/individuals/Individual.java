@@ -707,6 +707,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Select this {@link Individual} */
 	public void select(int clientId) {
+		Domain.getSelectedIndividuals().add(this);
 		getAI().setToManual();
 		selectedByClient.add(clientId);
 
@@ -1363,7 +1364,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			"Select",
 			() -> {
 				if (isServer()) {
-					Domain.getSelectedIndividuals().add(thisIndividual);
 					thisIndividual.select(0);
 				} else {
 					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.getId(), true);

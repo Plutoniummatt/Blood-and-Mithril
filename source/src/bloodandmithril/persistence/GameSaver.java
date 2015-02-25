@@ -8,7 +8,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import bloodandmithril.character.ai.AIProcessor;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.character.IndividualSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.persistence.world.WorldSaver;
@@ -100,8 +102,13 @@ public class GameSaver {
 
 
 	private static void saveFactions() {
-		FileHandle metadata = Gdx.files.local(GameSaver.savePath + "/world/factions.txt");
-		metadata.writeString(encode(Domain.getFactions()), false);
+		FileHandle factiondata = Gdx.files.local(GameSaver.savePath + "/world/factions.txt");
+		factiondata.writeString(encode(Domain.getFactions()), false);
+		
+		if (ClientServerInterface.isClient()) {
+			FileHandle controlled = Gdx.files.local(GameSaver.savePath + "/world/controlledfactions.txt");
+			controlled.writeString(encode(BloodAndMithrilClient.controlledFactions), false);
+		}
 	}
 
 

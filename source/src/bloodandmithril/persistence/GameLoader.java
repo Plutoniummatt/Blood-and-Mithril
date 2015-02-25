@@ -5,6 +5,7 @@ import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.util.Logger.loaderDebug;
 import static com.badlogic.gdx.Gdx.files;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -61,7 +62,13 @@ public class GameLoader {
 	private static void loadFactions() {
 		try {
 			ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(getSavePath() + "/world/factions.txt"));
-			Domain.setFactions(decoded);;
+			HashSet<Integer> controlled = (HashSet<Integer>) decode(files.local(getSavePath() + "/world/controlledfactions.txt"));
+			Domain.setFactions(decoded);
+			if (ClientServerInterface.isClient()) {
+				for (Integer controlledId : controlled) {
+					BloodAndMithrilClient.controlledFactions.add(controlledId);
+				}
+			}
 		} catch (Exception e) {
 			loaderDebug("Failed to load factions", LogLevel.DEBUG);
 		}
