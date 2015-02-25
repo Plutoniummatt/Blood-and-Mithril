@@ -3,7 +3,7 @@ package bloodandmithril.core;
 import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -116,7 +116,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	/** Client-side threadpool */
 	public static ExecutorService clientCSIThread;
 
-	public static final Set<Integer> controlledFactions = Sets.newHashSet();
+	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
 
 	public static long ping = 0;
 

@@ -95,6 +95,11 @@ public abstract class ArtificialIntelligence implements Serializable {
 			currentTask = new Idle();
 		}
 	}
+	
+	
+	public AIMode getAIMode() {
+		return mode;
+	}
 
 
 	/** Instruct the {@link ArtificialIntelligence} to perform a {@link AITask} */

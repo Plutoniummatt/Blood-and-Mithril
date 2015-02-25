@@ -383,11 +383,6 @@ public class Domain {
 	}
 
 
-	public static void setSelectedIndividuals(Set<Individual> selectedIndividuals) {
-		Domain.selectedIndividuals = selectedIndividuals;
-	}
-
-
 	public static ConcurrentHashMap<Integer, Individual> getIndividuals() {
 		return individuals;
 	}

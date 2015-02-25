@@ -238,6 +238,8 @@ public class Util {
 
 		public static final Color LIGHT_SMOKE = new Color(0.1f, 0.1f, 0.1f, 0.25f);
 		public static final Color DARK_SMOKE = new Color(0f, 0f, 0f, 0.9f);
+		public static final Color FIRE_START = new Color(0.7f, 0.4f, 0f, 1.0f);
+		public static final Color FIRE_END = new Color(0.85f, 0.2f, 0f, 1.0f);
 
 		/**
 		 * @return A {@link Color} with an adjusted alpha value.
