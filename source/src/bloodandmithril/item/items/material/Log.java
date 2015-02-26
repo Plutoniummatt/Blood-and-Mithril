@@ -22,7 +22,7 @@ public class Log extends bloodandmithril.item.items.material.Material {
 	 * Constructor
 	 */
 	private Log(Class<? extends Wood> wood) {
-		super(5f, 10, false);
+		super(5f, 25, false);
 		this.wood = wood;
 		setValue(Material.getMaterial(wood).getLogValue());
 	}

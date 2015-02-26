@@ -1,6 +1,8 @@
 package bloodandmithril.prop.construction.craftingstation;
 
 import static bloodandmithril.item.items.material.Plank.plank;
+import static bloodandmithril.item.items.material.Stick.stick;
+import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
@@ -9,6 +11,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucket;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow.ArrowItem;
 import bloodandmithril.item.items.furniture.WoodenChest;
+import bloodandmithril.item.items.material.Plank;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.wood.StandardWood;
 
@@ -28,6 +31,7 @@ public class WorkBench extends CraftingStation {
 	static {
 		craftables.put(ArrowItem.arrowItem(Iron.class), 1);
 		craftables.put(plank(StandardWood.class), 5);
+		craftables.put(stick(StandardWood.class), 5);
 		craftables.put(new WoodenBucket(StandardWood.class), 1);
 		craftables.put(new WoodenChest(StandardWood.class), 1);
 	}
@@ -41,7 +45,7 @@ public class WorkBench extends CraftingStation {
 	 */
 	public WorkBench(float x, float y) {
 		super(x, y, 80, 33, 0.1f);
-		setConstructionProgress(1f);
+		setConstructionProgress(0f);
 	}
 
 
@@ -95,5 +99,19 @@ public class WorkBench extends CraftingStation {
 	@Override
 	public boolean canDeconstruct() {
 		return true;
+	}
+
+
+	@Override
+	public Map<Item, Integer> getRequiredMaterials() {
+		Map<Item, Integer> requiredItems = newHashMap();
+		requiredItems.put(Plank.plank(StandardWood.class), 20);
+		return requiredItems;
+	}
+
+
+	@Override
+	public boolean requiresConstruction() {
+		return false;
 	}
 }

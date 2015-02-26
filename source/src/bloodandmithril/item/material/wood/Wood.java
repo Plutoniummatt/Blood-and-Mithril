@@ -6,6 +6,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Log;
 import bloodandmithril.item.items.material.Plank;
+import bloodandmithril.item.items.material.Stick;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -39,14 +40,24 @@ public abstract class Wood extends Material {
 	public abstract int getPlankCraftingLevel();
 
 	/**
-	 * @return the items required to craft an {@link Plank}
+	 * @return the items required to craft a {@link Plank}
 	 */
 	public abstract Map<Item, Integer> getRequiredMaterialsToCraftPlank();
+
+	/**
+	 * @return the items required to craft a {@link Stick}
+	 */
+	public abstract Map<Item, Integer> getRequiredMaterialsToCraftStick();
 
 	/**
 	 * @return the amount of time it takes to craft a {@link Plank}
 	 */
 	public abstract float getPlankCraftingDuration();
+
+	/**
+	 * @return the amount of time it takes to craft a {@link Stick}
+	 */
+	public abstract float getStickCraftingDuration();
 
 	/**
 	 * @return the {@link TextureRegion} for a {@link Plank}

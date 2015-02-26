@@ -120,8 +120,8 @@ public abstract class Construction extends Prop implements Container {
 			constructionProgress = constructionProgress + time * constructionRate >= 1f ? 1f : constructionProgress + time * constructionRate;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Regresses the construction of this {@link Construction}, in time units measured in seconds
 	 */
@@ -134,15 +134,15 @@ public abstract class Construction extends Prop implements Container {
 						Item item = entry.getKey();
 						item.setWorldId(getWorldId());
 						Domain.getWorld(getWorldId()).items().addItem(
-							item.copy(), 
-							position.cpy().add(0, 10), 
+							item.copy(),
+							position.cpy().add(0, 10),
 							new Vector2(0, 200).rotate(Util.getRandom().nextFloat() * 360f)
 						);
 					}
-				}		
+				}
 			} else {
 				constructionProgress = constructionProgress - time * constructionRate <= 0f ? 0f : constructionProgress - time * constructionRate;
-			}	
+			}
 		}
 	}
 
@@ -160,7 +160,7 @@ public abstract class Construction extends Prop implements Container {
 	public ContextMenu getContextMenu() {
 		if (constructionProgress == 1f) {
 			MenuItem deconstruct = new MenuItem(
-				"Deconstruct",
+				requiresConstruction() ? "Deconstruct" : "Disassemble",
 				() -> {
 					if (Domain.getSelectedIndividuals().size() == 1) {
 						Individual selected = Domain.getSelectedIndividuals().iterator().next();
@@ -181,7 +181,7 @@ public abstract class Construction extends Prop implements Container {
 					return Domain.getSelectedIndividuals().size() != 1;
 				}
 			);
-			
+
 			ContextMenu completedContextMenu = getCompletedContextMenu();
 			completedContextMenu.addMenuItem(deconstruct);
 			return completedContextMenu;
@@ -189,7 +189,7 @@ public abstract class Construction extends Prop implements Container {
 			ContextMenu menu = new ContextMenu(0, 0, true);
 
 			MenuItem openTransferItemsWindow = new MenuItem(
-				"Construct",
+				requiresConstruction() ? "Construct" : "Assemble",
 				() -> {
 					if (Domain.getSelectedIndividuals().size() == 1) {
 						Individual selected = Domain.getSelectedIndividuals().iterator().next();
@@ -252,7 +252,8 @@ public abstract class Construction extends Prop implements Container {
 
 	@Override
 	public String getContextMenuItemLabel() {
-		return getTitle() + (constructionProgress == 1f ? "" : " - Under construction (" + String.format("%.1f", constructionProgress * 100) + "%)");
+		String progress = requiresConstruction() ? "Under construction" : "Incomplete";
+		return getTitle() + (constructionProgress == 1f ? "" : " - " + progress + " (" + String.format("%.1f", constructionProgress * 100) + "%)");
 	}
 
 	@Override
@@ -270,7 +271,7 @@ public abstract class Construction extends Prop implements Container {
 
 	/** Get the context menu that will be displayed once this {@link Construction} has finished being constructing */
 	protected abstract ContextMenu getCompletedContextMenu();
-	
+
 	/** Whether this {@link Construction} can be deconstructed */
 	public abstract boolean canDeconstruct();
 
@@ -358,4 +359,10 @@ public abstract class Construction extends Prop implements Container {
 			return materialContainer.isEmpty();
 		}
 	}
+
+
+	/**
+	 * @return true if this actually requires contructions, rather than mere placement
+	 */
+	public abstract boolean requiresConstruction();
 }
