@@ -53,18 +53,18 @@ public class DayLightColorLayer extends Layer {
 
 	@Override
 	public float getDistanceX() {
-		return 0.9f;
+		return 0.95f;
 	}
 
 
 	@Override
 	public float getDistanceY() {
-		return 0.75f;
+		return 0.95f;
 	}
 
 
 	@Override
 	public float getOffsetY() {
-		return 100;
+		return -300;
 	}
 }
