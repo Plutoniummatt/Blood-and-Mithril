@@ -19,6 +19,7 @@ import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.furniture.SmallWoodenCrate;
 import bloodandmithril.item.items.material.Plank;
+import bloodandmithril.item.items.material.Stick;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.wood.StandardWood;
@@ -86,10 +87,11 @@ public class ItemPackage implements Serializable {
 		Container prop = (Container) new SmallWoodenCrate(StandardWood.class).getProp();
 		prop.giveItem(new FlintAndFiresteel(), 1);
 		prop.giveItem(Plank.plank(StandardWood.class), 20);
+		prop.giveItem(Stick.stick(StandardWood.class), 20);
 		prop.giveItem(new Carrot(), 25);
 		prop.giveItem(new ChickenLeg(false), 5);
 		prop.giveItem(new BushKnife(), 2);
-		
+
 		HashMap<Class<? extends Liquid>, Float> newHashMap = Maps.newHashMap();
 		newHashMap.put(Water.class, 2f);
 		prop.giveItem(new GlassBottle(newHashMap), 5);

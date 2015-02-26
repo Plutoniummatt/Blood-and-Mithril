@@ -1,18 +1,14 @@
 package bloodandmithril.networking.requests;
 
-import java.util.Map.Entry;
-
 import bloodandmithril.core.Copyright;
-import bloodandmithril.item.Fuel;
-import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.construction.craftingstation.Furnace;
+import bloodandmithril.prop.construction.craftingstation.FueledCraftingStation;
 import bloodandmithril.world.Domain;
 
 @Copyright("Matthew Peck 2014")
-public class IgniteFurnaceRequest implements Request {
+public class IgniteFueledCraftingStationRequest implements Request {
 
 	private int furnaceId;
 	private int worldId;
@@ -20,7 +16,7 @@ public class IgniteFurnaceRequest implements Request {
 	/**
 	 * Constructor
 	 */
-	public IgniteFurnaceRequest(int furnaceId, int worldId) {
+	public IgniteFueledCraftingStationRequest(int furnaceId, int worldId) {
 		this.furnaceId = furnaceId;
 		this.worldId = worldId;
 	}
@@ -29,18 +25,9 @@ public class IgniteFurnaceRequest implements Request {
 	@Override
 	public Responses respond() {
 		Prop prop = Domain.getWorld(worldId).props().getProp(furnaceId);
-		if (prop instanceof Furnace) {
-			float finalDuration = 0f;
-			for (Entry<Item, Integer> entry : ((Furnace) prop).getInventory().entrySet()) {
-				Item item = entry.getKey();
-				if (item instanceof Fuel) {
-					finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue();
-				}
-			}
-
-			if (!((Furnace) prop).isBurning()) {
-				((Furnace) prop).setCombustionDurationRemaining(finalDuration);
-				((Furnace) prop).ignite();
+		if (prop instanceof FueledCraftingStation) {
+			if (!((FueledCraftingStation) prop).isBurning()) {
+				((FueledCraftingStation) prop).ignite();
 			}
 		} else {
 			throw new RuntimeException("Expected a furnace, but got a " + prop.getClass().getSimpleName());
