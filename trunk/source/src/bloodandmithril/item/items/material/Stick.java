@@ -91,7 +91,7 @@ public class Stick extends bloodandmithril.item.items.material.Material implemen
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
-		return Material.getMaterial(wood).getRequiredMaterialsToCraftPlank();
+		return Material.getMaterial(wood).getRequiredMaterialsToCraftStick();
 	}
 
 
