@@ -279,7 +279,7 @@ public abstract class Item implements Serializable, Affixed {
 		Steel.STEELINGOT = new TextureRegion(Domain.gameWorldTexture, 392, 246, 18, 6);
 		Hematite.HEMATITE = new TextureRegion(Domain.gameWorldTexture, 372, 253, 18, 11);
 		Coal.COAL = new TextureRegion(Domain.gameWorldTexture, 372, 265, 18, 11);
-		Carrot.CARROT = new TextureRegion(Domain.gameWorldTexture, 365, 180, 23, 13);
+		Carrot.CARROT = new TextureRegion(Domain.gameWorldTexture, 352, 194, 25, 13);
 		SandStone.SANDSTONE = new TextureRegion(Domain.gameWorldTexture, 372, 277, 18, 11);
 
 		Silver.SILVERINGOTICON = new TextureRegion(UserInterface.iconTexture, 0, 0, 64, 64);
