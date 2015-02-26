@@ -176,7 +176,7 @@ import bloodandmithril.networking.requests.EquipOrUnequipItem;
 import bloodandmithril.networking.requests.FollowRequest;
 import bloodandmithril.networking.requests.GenerateChunk;
 import bloodandmithril.networking.requests.GenerateChunk.GenerateChunkResponse;
-import bloodandmithril.networking.requests.IgniteFurnaceRequest;
+import bloodandmithril.networking.requests.IgniteFueledCraftingStationRequest;
 import bloodandmithril.networking.requests.IndividualSelection;
 import bloodandmithril.networking.requests.LockUnlockContainerRequest;
 import bloodandmithril.networking.requests.MessageWindowNotification;
@@ -230,6 +230,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
+import bloodandmithril.prop.construction.craftingstation.FueledCraftingStation;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.Furniture;
@@ -597,6 +598,7 @@ public class ClientServerInterface {
 		kryo.register(EquipperImpl.class);
 		kryo.register(Exhaustion.class);
 		kryo.register(Faction.class);
+		kryo.register(FueledCraftingStation.class);
 		kryo.register(Furnace.class);
 		kryo.register(GenerateChunk.class);
 		kryo.register(GenerateChunkResponse.class);
@@ -614,7 +616,7 @@ public class ClientServerInterface {
 		kryo.register(Hematite.class);
 		kryo.register(Hunger.class);
 		kryo.register(Idle.class);
-		kryo.register(IgniteFurnaceRequest.class);
+		kryo.register(IgniteFueledCraftingStationRequest.class);
 		kryo.register(Individual.class);
 		kryo.register(IndividualIdentifier.class);
 		kryo.register(IndividualKineticsProcessingData.class);
@@ -860,8 +862,8 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending take item request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendIgniteFurnaceRequest(int furnaceId, int worldId) {
-			client.sendTCP(new IgniteFurnaceRequest(furnaceId, worldId));
+		public static synchronized void sendIgniteFueledCraftingStationRequest(int furnaceId, int worldId) {
+			client.sendTCP(new IgniteFueledCraftingStationRequest(furnaceId, worldId));
 			Logger.networkDebug("Sending ignite furnace request", LogLevel.DEBUG);
 		}
 

@@ -11,12 +11,17 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
+import bloodandmithril.item.items.material.Log;
+import bloodandmithril.item.items.material.Plank;
 import bloodandmithril.item.items.material.Stick;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Lightable;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Util;
@@ -35,9 +40,8 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Campfire extends CraftingStation implements Lightable {
+public class Campfire extends FueledCraftingStation implements Lightable {
 	private static final long serialVersionUID = -8876217926271589078L;
-	private boolean lit;
 
 	public static TextureRegion CAMPFIRE;
 
@@ -50,8 +54,18 @@ public class Campfire extends CraftingStation implements Lightable {
 	 * Constructor
 	 */
 	public Campfire(float x, float y) {
-		super(x, y, 64, 32, 0.2f);
+		super(x, y, 64, 32, 0.2f, new ContainerImpl(100f, 200));
 		setConstructionProgress(0f);
+	}
+
+
+	@Override
+	public void synchronizeProp(Prop other) {
+		if (other instanceof Campfire) {
+			super.synchronizeProp(other);
+		} else {
+			throw new RuntimeException("Can not synchronize Campfire with " + other.getClass().getSimpleName());
+		}
 	}
 
 
@@ -70,7 +84,8 @@ public class Campfire extends CraftingStation implements Lightable {
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
-		requiredItems.put(Stick.stick(StandardWood.class), 20);
+		requiredItems.put(Stick.stick(StandardWood.class), 1);
+		requiredItems.put(Plank.plank(StandardWood.class), 1);
 		return requiredItems;
 	}
 
@@ -101,12 +116,7 @@ public class Campfire extends CraftingStation implements Lightable {
 
 	@Override
 	public boolean customCanCraft() {
-		return lit;
-	}
-
-
-	public void setLit(boolean lit) {
-		this.lit = lit;
+		return isBurning();
 	}
 
 
@@ -114,7 +124,7 @@ public class Campfire extends CraftingStation implements Lightable {
 	public void update(float delta) {
 		super.update(delta);
 
-		if (lit && isOnScreen(position, 50f)) {
+		if (isBurning() && isOnScreen(position, 50f)) {
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 10f, 15f, Colors.FIRE_START, Util.getRandom().nextFloat() * 3.5f, Util.getRandom().nextFloat() * 10f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 10f, 15f, Colors.FIRE_START, Util.getRandom().nextFloat() * 3.5f, Util.getRandom().nextFloat() * 10f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 7f, 30f, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.BACKGROUND, false, null);
@@ -172,7 +182,7 @@ public class Campfire extends CraftingStation implements Lightable {
 
 	@Override
 	public boolean canBeUsedAsFireSource() {
-		return lit;
+		return isBurning();
 	}
 
 
@@ -184,13 +194,13 @@ public class Campfire extends CraftingStation implements Lightable {
 
 	@Override
 	public void light() {
-		this.lit = true;
+		ignite();
 	}
 
 
 	@Override
 	public void extinguish() {
-		this.lit = false;
+		super.extinguish();
 	}
 
 
@@ -202,18 +212,32 @@ public class Campfire extends CraftingStation implements Lightable {
 
 	@Override
 	public boolean isLit() {
-		return lit;
+		return isBurning();
 	}
 
 
 	@Override
 	public boolean canDeconstruct() {
-		return !lit;
+		return !isBurning();
 	}
 
 
 	@Override
 	public boolean requiresConstruction() {
 		return false;
+	}
+
+
+	@Override
+	protected void addToFuelDuration(Item item) {
+		if (isBurning()) {
+			setConstructionProgress(getConstructionProgress() + ((Fuel) item).getCombustionDuration());
+		}
+	}
+
+
+	@Override
+	public boolean isValidFuel(Item item) {
+		return item instanceof Plank || item instanceof Stick || item instanceof Log;
 	}
 }

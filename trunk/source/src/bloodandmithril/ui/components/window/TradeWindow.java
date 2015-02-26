@@ -346,7 +346,7 @@ public class TradeWindow extends Window implements Refreshable {
 					entry.getKey().getSingular(true).length() * 10,
 					16,
 					() -> {
-						if (!isItemAvailableToTrade(entry.getKey())) {
+						if (!isItemAvailableToTrade(proposer, proposee, entry.getKey())) {
 							return;
 						}
 
@@ -377,9 +377,9 @@ public class TradeWindow extends Window implements Refreshable {
 							changeList(entry.getKey(), 1, trading, notTrading, false);
 						}
 					},
-					isItemAvailableToTrade(entry.getKey()) ? Colors.UI_GRAY : Colors.UI_DARKER_GRAY,
-					isItemAvailableToTrade(entry.getKey()) ? Color.GREEN : Colors.UI_DARKER_GRAY,
-					isItemAvailableToTrade(entry.getKey()) ? Color.WHITE : Colors.UI_DARKER_GRAY,
+					isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Colors.UI_GRAY : Colors.UI_DARKER_GRAY,
+					isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.GREEN : Colors.UI_DARKER_GRAY,
+					isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.WHITE : Colors.UI_DARKER_GRAY,
 					UIRef.BL
 				),
 				null
@@ -397,7 +397,7 @@ public class TradeWindow extends Window implements Refreshable {
 	/**
 	 * @return whether or not a listing item is able to be selected for trade
 	 */
-	protected boolean isItemAvailableToTrade(Item item) {
+	protected boolean isItemAvailableToTrade(Container proposer, Container proposee, Item item) {
 		return true; // by default
 	}
 
@@ -512,7 +512,7 @@ public class TradeWindow extends Window implements Refreshable {
 				tradeButton.setIdleColor(Color.GREEN);
 			}
 		}
-		
+
 		InventoryWindow.renderCapacityIndicationText(proposer, this, 6, -height);
 		InventoryWindow.renderCapacityIndicationText(proposee, this, width / 2 + 6, -height);
 
