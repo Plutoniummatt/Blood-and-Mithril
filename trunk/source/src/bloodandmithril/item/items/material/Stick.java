@@ -1,6 +1,10 @@
 package bloodandmithril.item.items.material;
 
+import java.util.Map;
+
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.material.Material;
@@ -9,7 +13,7 @@ import bloodandmithril.item.material.wood.Wood;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 @Copyright("Matthew Peck 2015")
-public class Stick extends bloodandmithril.item.items.material.Material {
+public class Stick extends bloodandmithril.item.items.material.Material implements Craftable {
 	private static final long serialVersionUID = 2206871386989760859L;
 
 	private Class<? extends Wood> wood;
@@ -18,7 +22,7 @@ public class Stick extends bloodandmithril.item.items.material.Material {
 	 * Constructor
 	 */
 	private Stick(Class<? extends Wood> wood) {
-		super(0.1f, 1, false, ItemValues.WOODSTICK);
+		super(0.2f, 1, false, ItemValues.WOODSTICK);
 		this.wood = wood;
 	}
 
@@ -76,5 +80,23 @@ public class Stick extends bloodandmithril.item.items.material.Material {
 	@Override
 	protected Item internalCopy() {
 		return stick(wood);
+	}
+
+
+	@Override
+	public boolean canBeCraftedBy(Individual individual) {
+		return true;
+	}
+
+
+	@Override
+	public Map<Item, Integer> getRequiredMaterials() {
+		return Material.getMaterial(wood).getRequiredMaterialsToCraftPlank();
+	}
+
+
+	@Override
+	public float getCraftingDuration() {
+		return Material.getMaterial(wood).getStickCraftingDuration();
 	}
 }

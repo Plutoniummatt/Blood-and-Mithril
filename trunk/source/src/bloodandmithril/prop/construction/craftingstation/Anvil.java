@@ -99,4 +99,10 @@ public class Anvil extends CraftingStation {
 	public boolean canDeconstruct() {
 		return true;
 	}
+
+
+	@Override
+	public boolean requiresConstruction() {
+		return false;
+	}
 }

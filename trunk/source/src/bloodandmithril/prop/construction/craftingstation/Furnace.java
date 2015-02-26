@@ -361,4 +361,10 @@ public class Furnace extends CraftingStation implements Container {
 	public boolean canDeconstruct() {
 		return !burning && container.isEmpty();
 	}
+
+
+	@Override
+	public boolean requiresConstruction() {
+		return true;
+	}
 }

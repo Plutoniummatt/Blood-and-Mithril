@@ -1,6 +1,7 @@
 package bloodandmithril.prop.construction.craftingstation;
 
 import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
+import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
@@ -12,6 +13,8 @@ import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
+import bloodandmithril.item.items.material.Stick;
+import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.ui.components.ContextMenu;
@@ -47,8 +50,8 @@ public class Campfire extends CraftingStation implements Lightable {
 	 * Constructor
 	 */
 	public Campfire(float x, float y) {
-		super(x, y, 64, 32, 0f);
-		setConstructionProgress(1f);
+		super(x, y, 64, 32, 0.2f);
+		setConstructionProgress(0f);
 	}
 
 
@@ -62,6 +65,15 @@ public class Campfire extends CraftingStation implements Lightable {
 	public String getAction() {
 		return "Cook";
 	}
+
+
+	@Override
+	public Map<Item, Integer> getRequiredMaterials() {
+		Map<Item, Integer> requiredItems = newHashMap();
+		requiredItems.put(Stick.stick(StandardWood.class), 20);
+		return requiredItems;
+	}
+
 
 
 	@Override
@@ -197,5 +209,11 @@ public class Campfire extends CraftingStation implements Lightable {
 	@Override
 	public boolean canDeconstruct() {
 		return !lit;
+	}
+
+
+	@Override
+	public boolean requiresConstruction() {
+		return false;
 	}
 }
