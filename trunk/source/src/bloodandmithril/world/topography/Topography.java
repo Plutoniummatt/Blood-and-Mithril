@@ -386,7 +386,7 @@ public class Topography {
 							requestedForGeneration.put(chunkX, chunkY, true);
 						}
 					} else {
-						loadOrGenerateChunk(chunkX, chunkY);
+						loadOrGenerateChunk(chunkX, chunkY, true);
 					}
 				}
 			}
@@ -394,9 +394,9 @@ public class Topography {
 	}
 
 
-	public boolean loadOrGenerateChunk(int chunkX, int chunkY) {
+	public boolean loadOrGenerateChunk(int chunkX, int chunkY, boolean populateChunkMap) {
 		//Attempt to load the chunk from disk - If chunk does not exist, it will be generated
-		return chunkLoader.load(Domain.getWorld(worldId), chunkX, chunkY);
+		return chunkLoader.load(Domain.getWorld(worldId), chunkX, chunkY, populateChunkMap);
 	}
 
 

@@ -12,6 +12,8 @@ import static bloodandmithril.util.Util.Colors.lightSkinColor;
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Iterables.transform;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Deque;
@@ -31,6 +33,8 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
 import bloodandmithril.core.ItemPackage;
 import bloodandmithril.core.Name;
+import bloodandmithril.generation.Structures;
+import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
@@ -49,6 +53,7 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.cursorboundtask.ChooseStartingLocationCursorBoundTask;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -83,54 +88,81 @@ public class NewGameWindow extends Window {
 		100,
 		16,
 		() -> {
-			setClosing(true);
-
-			Faction nature = new Faction(
-				"Nature",
-				ParameterPersistenceService.getParameters().getNextFactionId(),
-				false,
-				"Mother nature"
-			);
-
-			Faction playerFaction = new Faction(
-				selectedRace.getAnnotation(Name.class).name(),
-				ParameterPersistenceService.getParameters().getNextFactionId(),
-				true,
-				selectedRace.getAnnotation(Description.class).description()
-			);
-
-			Domain.getFactions().put(nature.factionId, nature);
-			Domain.getFactions().put(playerFaction.factionId, playerFaction);
-
-			ClientServerInterface.setServer(true);
-			BloodAndMithrilClient.clientCSIThread.execute(() -> {
-				UserInterface.closeAllWindows();
-				try {
-					Thread.sleep(1000);
-				} catch (Exception e) {}
-				GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
-				BloodAndMithrilClient.domain = new Domain();
-				BloodAndMithrilClient.setup();
-				BloodAndMithrilClient.controlledFactions.add(playerFaction.factionId);
-				
-				BloodAndMithrilClient.setCursorBoundTask(
-					new ChooseStartingLocationCursorBoundTask(
-						Sets.newHashSet(filter(Lists.newArrayList(transform(startingIndividuals.keySet(), listingMenuItem -> {
-							return listingMenuItem.t;
-						})), test -> {
-							return test != null;
-						})), 
-						selectedItemPackage,
-						playerFaction.factionId
-					)
-				);
-			});
+			startGame();
 		},
 		Color.WHITE,
 		Color.GREEN,
 		Color.WHITE,
 		UIRef.BL
 	);
+
+	private void startGame() {
+		setClosing(true);
+
+		Faction nature = new Faction(
+			"Nature",
+			ParameterPersistenceService.getParameters().getNextFactionId(),
+			false,
+			"Mother nature"
+		);
+
+		Faction playerFaction = new Faction(
+			selectedRace.getAnnotation(Name.class).name(),
+			ParameterPersistenceService.getParameters().getNextFactionId(),
+			true,
+			selectedRace.getAnnotation(Description.class).description()
+		);
+
+		Domain.getFactions().put(nature.factionId, nature);
+		Domain.getFactions().put(playerFaction.factionId, playerFaction);
+
+		ClientServerInterface.setServer(true);
+		BloodAndMithrilClient.clientCSIThread.execute(() -> {
+			UserInterface.closeAllWindows();
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {}
+			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
+			BloodAndMithrilClient.domain = new Domain();
+			BloodAndMithrilClient.setup();
+			BloodAndMithrilClient.controlledFactions.add(playerFaction.factionId);
+
+			Topography topography = Domain.getActiveWorld().getTopography();
+			topography.loadOrGenerateChunk(0, 0, false);
+
+			SuperStructure superStructure = null;
+			while (superStructure == null || superStructure.getPossibleStartingLocations().isEmpty()) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+
+				superStructure = (SuperStructure) Iterables.tryFind(Structures.getStructures().values(), structure -> {
+					return structure instanceof SuperStructure;
+				}).orNull();
+			}
+
+			ArrayList<Vector2> startingLocations = Lists.newArrayList(superStructure.getPossibleStartingLocations());
+			Collections.shuffle(startingLocations);
+			Vector2 startingPosition = startingLocations.get(0);
+
+			BloodAndMithrilClient.cam.position.x = startingPosition.x;
+			BloodAndMithrilClient.cam.position.y = startingPosition.y;
+
+			BloodAndMithrilClient.setCursorBoundTask(
+				new ChooseStartingLocationCursorBoundTask(
+					Sets.newHashSet(filter(Lists.newArrayList(transform(startingIndividuals.keySet(), listingMenuItem -> {
+						return listingMenuItem.t;
+					})), test -> {
+						return test != null;
+					})),
+					selectedItemPackage,
+					playerFaction.factionId
+				)
+			);
+		});
+	}
 
 	/**
 	 * Constructor
@@ -140,7 +172,7 @@ public class NewGameWindow extends Window {
 		panels.add(new ChooseRacePanel(this));
 		panels.add(new ChooseStartingIndividualsPanel(this));
 		panels.add(new ChooseStartingItemPackagePanel(this));
-		
+
 		currentPanel = panels.poll();
 		next = new Button(
 			"Next",
@@ -158,8 +190,8 @@ public class NewGameWindow extends Window {
 			UIRef.BL
 		);
 	}
-	
-	
+
+
 	@Override
 	public boolean scrolled(int amount) {
 		return currentPanel.scrolled(amount);
@@ -340,8 +372,8 @@ public class NewGameWindow extends Window {
 				}
 			};
 		}
-		
-		
+
+
 		@Override
 		public boolean scrolled(int amount) {
 			return itemPackages.scrolled(amount);
@@ -508,7 +540,7 @@ public class NewGameWindow extends Window {
 				}
 			};
 		}
-		
+
 		@Override
 		public boolean scrolled(int amount) {
 			return skills.scrolled(amount) || individuals.scrolled(amount);

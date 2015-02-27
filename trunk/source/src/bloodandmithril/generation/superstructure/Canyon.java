@@ -3,7 +3,7 @@ package bloodandmithril.generation.superstructure;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import bloodandmithril.generation.TerrainGenerator;
+import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.patterns.GlobalLayers;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.generation.tools.SawToothGenerator;
@@ -60,7 +60,7 @@ public class Canyon extends SuperStructure {
 
 	@Override
 	protected Boundaries findSpace(int startingChunkX, int startingChunkY) {
-		return RectangularSpaceCalculator.calculateBoundariesConfineWithinTwoHeights(true, startingChunkX, startingChunkY, cWidth, cHeight, TerrainGenerator.maxSurfaceHeightInChunks, TerrainGenerator.maxSurfaceHeightInChunks - cHeight, Domain.getWorld(worldId).getTopography());
+		return RectangularSpaceCalculator.calculateBoundariesConfineWithinTwoHeights(true, startingChunkX, startingChunkY, cWidth, cHeight, ChunkGenerator.maxSurfaceHeightInChunks, ChunkGenerator.maxSurfaceHeightInChunks - cHeight, Domain.getWorld(worldId).getTopography());
 	}
 
 
