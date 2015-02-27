@@ -55,7 +55,7 @@ public class Campfire extends FueledCraftingStation implements Lightable {
 	 */
 	public Campfire(float x, float y) {
 		super(x, y, 64, 32, 0.2f, new ContainerImpl(100f, 200));
-		setConstructionProgress(1f);
+		setConstructionProgress(0f);
 	}
 
 
