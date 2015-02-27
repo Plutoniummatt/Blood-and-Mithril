@@ -80,12 +80,24 @@ public class TradeService {
 		int proposeeItemsToTradeVolume = proposeeItemsToTrade.entrySet().stream().mapToInt(entry -> {
 			return entry.getKey().getVolume() * entry.getValue();
 		}).sum();
-
+		
+		boolean proposerOverWeightLimitPostTrade = proposer.getCurrentLoad() - proposerItemsToTradeMass + proposeeItemsToTradeMass > proposer.getMaxCapacity() && proposer.getWeightLimited();
+		boolean proposeeOverWeightLimitPostTrade = proposee.getCurrentLoad() + proposerItemsToTradeMass - proposeeItemsToTradeMass > proposee.getMaxCapacity() && proposee.getWeightLimited();
+		
+		boolean proposerWeightIncreasing = proposeeItemsToTradeMass - proposerItemsToTradeMass > 0;
+		boolean proposeeWeightIncreasing = proposerItemsToTradeMass - proposeeItemsToTradeMass > 0;
+		
+		boolean proposerOverVolumeLimitPostTrade = proposer.getCurrentVolume() - proposerItemsToTradeVolume + proposeeItemsToTradeVolume > proposer.getMaxVolume();
+		boolean proposeeOverVolumeLimitPostTrade = proposee.getCurrentVolume() + proposerItemsToTradeVolume - proposeeItemsToTradeVolume > proposee.getMaxVolume();
+		
+		boolean proposerVolumeIncreasing = proposeeItemsToTradeVolume - proposerItemsToTradeVolume > 0;
+		boolean proposeeVolumeIncreasing = proposerItemsToTradeVolume - proposeeItemsToTradeVolume > 0;
+		
 		if (
-			(proposer.getCurrentLoad() - proposerItemsToTradeMass + proposeeItemsToTradeMass > proposer.getMaxCapacity() && proposer.getWeightLimited()) ||
-			(proposee.getCurrentLoad() + proposerItemsToTradeMass - proposeeItemsToTradeMass > proposee.getMaxCapacity() && proposee.getWeightLimited()) ||
-			proposer.getCurrentVolume() - proposerItemsToTradeVolume + proposeeItemsToTradeVolume > proposer.getMaxVolume() ||
-			proposee.getCurrentVolume() + proposerItemsToTradeVolume - proposeeItemsToTradeVolume > proposee.getMaxVolume()
+			(proposerOverWeightLimitPostTrade && proposerWeightIncreasing) ||
+			(proposeeOverWeightLimitPostTrade && proposeeWeightIncreasing) ||
+			(proposerOverVolumeLimitPostTrade && proposerVolumeIncreasing) ||
+			(proposeeOverVolumeLimitPostTrade && proposeeVolumeIncreasing)
 		) {
 			UserInterface.addMessage("Can not trade", "One or more parties do not have enough inventory space.", new IndividualSelected(((Individual) proposer).getId().getId()));
 			return;

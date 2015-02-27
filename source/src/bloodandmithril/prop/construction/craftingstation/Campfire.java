@@ -55,7 +55,7 @@ public class Campfire extends FueledCraftingStation implements Lightable {
 	 */
 	public Campfire(float x, float y) {
 		super(x, y, 64, 32, 0.2f, new ContainerImpl(100f, 200));
-		setConstructionProgress(0f);
+		setConstructionProgress(1f);
 	}
 
 
@@ -229,15 +229,16 @@ public class Campfire extends FueledCraftingStation implements Lightable {
 
 
 	@Override
-	protected void addToFuelDuration(Item item) {
-		if (isBurning()) {
-			setConstructionProgress(getConstructionProgress() + ((Fuel) item).getCombustionDuration());
-		}
+	public boolean isValidFuel(Item item) {
+		return item instanceof Plank || item instanceof Stick || item instanceof Log;
 	}
 
 
 	@Override
-	public boolean isValidFuel(Item item) {
-		return item instanceof Plank || item instanceof Stick || item instanceof Log;
+	public float deriveCombustionDuration(Item item) {
+		if (isValidFuel(item)) {
+			return ((Fuel) item).getCombustionDuration();
+		}
+		return 0;
 	}
 }

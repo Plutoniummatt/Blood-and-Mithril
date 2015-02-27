@@ -34,7 +34,7 @@ public class LightLightable extends CompositeAITask {
 	public LightLightable(Individual host, Lightable lightable, boolean auto) throws NoTileFoundException {
 		super(
 			host.getId(),
-			"Mining"
+			"Lighting"
 		);
 
 		this.auto = auto;

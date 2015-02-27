@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -16,6 +17,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.mineral.earth.Ashes;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.construction.craftingstation.FueledCraftingStation;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -24,6 +26,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -95,8 +98,8 @@ public class FueledCraftingStationFuelWindow extends TradeWindow {
 		super.internalWindowRender();
 
 		igniteButton.render(
-			x + width/2,
-			y - height + 65,
+			x + width/2 + 35,
+			y - height + 70,
 			isActive() && isProposeeItemsEmpty() && !fueledCraftingStation.isBurning(),
 			getAlpha()
 		);
@@ -122,7 +125,7 @@ public class FueledCraftingStationFuelWindow extends TradeWindow {
 
 		float max = (float) fueledCraftingStation.getInventory().entrySet().stream().mapToDouble(entry -> {
 			if (fueledCraftingStation.isValidFuel(entry.getKey())) {
-				return ((Fuel)entry.getKey()).getCombustionDuration() * entry.getValue();
+				return fueledCraftingStation.deriveCombustionDuration(entry.getKey()) * entry.getValue();
 			} else {
 				return 0D;
 			}
@@ -187,11 +190,21 @@ public class FueledCraftingStationFuelWindow extends TradeWindow {
 			);
 			return;
 		}
-
+		
 		if (ClientServerInterface.isServer()) {
-			fueledCraftingStation.ignite();
+			if (fueledCraftingStation instanceof Lightable && proposer instanceof Individual) {
+				try {
+					((Individual) proposer).getAI().setCurrentTask(new LightLightable((Individual) proposer, (Lightable) fueledCraftingStation, false));
+				} catch (NoTileFoundException e) {}
+			} else {
+				fueledCraftingStation.ignite();
+			}
 		} else {
-			ClientServerInterface.SendRequest.sendIgniteFueledCraftingStationRequest(fueledCraftingStation.id, fueledCraftingStation.getWorldId());
+			if (fueledCraftingStation instanceof Lightable && proposer instanceof Individual) {
+				ClientServerInterface.SendRequest.sendLightLightableRequest((Individual) proposer, (Lightable) fueledCraftingStation);
+			} else {
+				ClientServerInterface.SendRequest.sendIgniteFueledCraftingStationRequest(fueledCraftingStation.id, fueledCraftingStation.getWorldId());
+			}
 		}
 	}
 }

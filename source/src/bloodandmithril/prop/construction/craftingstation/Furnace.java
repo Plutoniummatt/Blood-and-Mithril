@@ -10,7 +10,6 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
-import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
@@ -74,8 +73,8 @@ public class Furnace extends FueledCraftingStation implements Container {
 			spriteBatch.draw(FURNACE, position.x - width / 2, position.y);
 		}
 	}
-
-
+	
+	
 	@Override
 	public synchronized void update(float delta) {
 		super.update(delta);
@@ -158,16 +157,6 @@ public class Furnace extends FueledCraftingStation implements Container {
 
 
 	@Override
-	protected void addToFuelDuration(Item item) {
-		if (isValidFuel(item)) {
-			if (isBurning()) {
-				setCombustionDurationRemaining(getCombustionDurationRemaining() + ((Fuel) item).getCombustionDuration());
-			}
-		}
-	}
-
-
-	@Override
 	public boolean canBeUsedAsFireSource() {
 		return isBurning();
 	}
@@ -176,5 +165,15 @@ public class Furnace extends FueledCraftingStation implements Container {
 	@Override
 	public boolean isValidFuel(Item item) {
 		return item instanceof Rock && ((Rock)item).getMineral().equals(Coal.class);
+	}
+
+
+	@Override
+	public float deriveCombustionDuration(Item item) {
+		if (item instanceof Rock && ((Rock) item).getMineral().equals(Coal.class)) {
+			return Material.getMaterial(Coal.class).getCombustionDuration();
+		}
+		
+		return 0f;
 	}
 }
