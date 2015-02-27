@@ -7,6 +7,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -16,6 +17,7 @@ import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.material.Material;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -23,6 +25,8 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.CraftingStationWindow;
 import bloodandmithril.ui.components.window.FueledCraftingWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.util.Util.Colors;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -95,9 +99,7 @@ public abstract class FueledCraftingStation extends CraftingStation implements C
 		float finalDuration = 0f;
 		for (Entry<Item, Integer> entry : fuel.getInventory().entrySet()) {
 			Item item = entry.getKey();
-			if (item instanceof Fuel) {
-				finalDuration = finalDuration + ((Fuel) item).getCombustionDuration() * entry.getValue();
-			}
+			finalDuration = finalDuration + deriveCombustionDuration(item) * entry.getValue();
 		}
 
 		return finalDuration;
@@ -183,7 +185,36 @@ public abstract class FueledCraftingStation extends CraftingStation implements C
 		);
 
 		addCraftMenuItem(menu);
+		addFuelMenuItem(menu);
 		return menu;
+	}
+
+
+	private void addFuelMenuItem(ContextMenu menu) {
+		if (Domain.getSelectedIndividuals().size() > 0) {
+			final Individual selected = Domain.getSelectedIndividuals().iterator().next();
+			menu.addMenuItem(
+				new MenuItem(
+					"Add fuel",
+					() -> {
+						if (ClientServerInterface.isServer()) {
+							selected.getAI().setCurrentTask(
+								new TradeWith(selected, this)
+							);
+						} else {
+							ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
+						}
+					},
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+					new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+					() -> {
+						return Domain.getSelectedIndividuals().size() > 1;
+					}
+				)
+			);
+		}
 	}
 
 
@@ -198,7 +229,13 @@ public abstract class FueledCraftingStation extends CraftingStation implements C
 	}
 
 
-	protected abstract void addToFuelDuration(Item item);
+	private void addToFuelDuration(Item item) {
+		if (isValidFuel(item)) {
+			if (isBurning()) {
+				setCombustionDurationRemaining(getCombustionDurationRemaining() + deriveCombustionDuration(item));
+			}
+		}
+	}
 
 
 	@Override
@@ -265,4 +302,7 @@ public abstract class FueledCraftingStation extends CraftingStation implements C
 
 
 	public abstract boolean isValidFuel(Item item);
+	
+	
+	public abstract float deriveCombustionDuration(Item item);
 }
