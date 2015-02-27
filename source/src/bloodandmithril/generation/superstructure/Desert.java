@@ -6,8 +6,8 @@ import static java.lang.Math.max;
 import java.util.HashMap;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structures;
-import bloodandmithril.generation.TerrainGenerator;
 import bloodandmithril.generation.component.components.Corridor;
 import bloodandmithril.generation.component.components.Corridor.CorridorCreationCustomization;
 import bloodandmithril.generation.component.components.Room;
@@ -23,6 +23,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
+import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
@@ -80,8 +81,8 @@ public class Desert extends SuperStructure {
 			startingChunkY,
 			cWidth,
 			cHeight,
-			TerrainGenerator.maxSurfaceHeightInChunks,
-			TerrainGenerator.maxSurfaceHeightInChunks - cHeight,
+			ChunkGenerator.maxSurfaceHeightInChunks,
+			ChunkGenerator.maxSurfaceHeightInChunks - cHeight,
 			Domain.getWorld(worldId).getTopography()
 		);
 	}
@@ -103,17 +104,21 @@ public class Desert extends SuperStructure {
 	private void generateDungeon() {
 		// Add the entrance in the middle of this desert
 		int entranceX = (getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE;
+		int entranceY = max(
+			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(366 + entranceX) + 80,
+			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(24 + entranceX) + 80
+		);
+
 		getComponents().add(new UndergroundDesertTempleEntrance(
 			entranceX,
-			max(
-				Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(366 + entranceX) + 80,
-				Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(24 + entranceX) + 80
-			),
+			entranceY,
 			getStructureKey(),
 			false,
 			YellowBrickTile.class,
 			YellowBrickTile.class
 		));
+
+		startingLocations.add(new TwoInts(entranceX + 40, entranceY - 40));
 
 		getComponents().get(0).stem(
 			this,

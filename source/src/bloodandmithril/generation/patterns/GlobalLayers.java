@@ -5,7 +5,7 @@ import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.TerrainGenerator;
+import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.TwoInts;
@@ -40,7 +40,7 @@ public class GlobalLayers {
 
 		//If there are no ceiling keys, make a new layer
 		if (layers.ceilingEntry(worldTileY) == null) {
-			layers.put(TerrainGenerator.maxSurfaceHeightInChunks * Topography.CHUNK_SIZE, getNewLayer());
+			layers.put(ChunkGenerator.maxSurfaceHeightInChunks * Topography.CHUNK_SIZE, getNewLayer());
 		}
 
 		while (layers.ceilingKey(worldTileY) > worldTileY + layers.ceilingEntry(worldTileY).getValue().b) {

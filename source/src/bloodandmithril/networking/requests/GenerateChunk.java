@@ -49,7 +49,7 @@ public class GenerateChunk implements Request {
 		} else {
 			// Chunk does not exist on chunk map, attempt to load/generate
 			Response response = null;
-			Domain.getWorld(worldId).getTopography().loadOrGenerateChunk(x, y);
+			Domain.getWorld(worldId).getTopography().loadOrGenerateChunk(x, y, true);
 
 			do {
 				if (Domain.getWorld(worldId).getTopography().getChunkMap().doesChunkExist(x, y)) {

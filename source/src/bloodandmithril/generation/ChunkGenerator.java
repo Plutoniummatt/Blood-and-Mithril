@@ -15,7 +15,7 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class TerrainGenerator {
+public class ChunkGenerator {
 
 	/** Decides which biomes to generate */
 	private BiomeDecider biomeDecider = new BiomeDecider();
@@ -25,10 +25,7 @@ public class TerrainGenerator {
 	/**
 	 * Generates a chunk, based on passed in chunk coordinates
 	 */
-	public void generate(int chunkX, int chunkY, World world) {
-		// Makes arrays of tiles to work on. both for foreground and background
-		Tile[][] fTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
-		Tile[][] bTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
+	public void generate(int chunkX, int chunkY, World world, boolean populateChunkMap) {
 
 		// If a structure does not exist where the surface should be, generate the surface structure.
 		generateSurface(chunkX, world);
@@ -36,13 +33,21 @@ public class TerrainGenerator {
 		// If a structure still does not exist at the chunk coordinates being generated, it must be outside of the surface structure boundaries.
 		generateAboveAndBelowSurface(chunkX, chunkY, world);
 
+		if (!populateChunkMap) {
+			return;
+		}
+
+		// Makes arrays of tiles to work on. both for foreground and background
+		Tile[][] fTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
+		Tile[][] bTiles = new Tile[Topography.CHUNK_SIZE][Topography.CHUNK_SIZE];
+
 		// Populate the tile arrays.
 		populateTileArrays(chunkX, chunkY, fTiles, bTiles, world.getTopography().getStructures());
 
 		// Create the chunk and put it in the ChunkMap.
 		Chunk newChunk = new Chunk(fTiles, bTiles, chunkX, chunkY, world.getWorldId());
 		world.getTopography().getChunkMap().addChunk(chunkX, chunkY, newChunk);
-		
+
 		// If the structure has finished generating, we can delete it from the StructureMap, otherwise, decrement the number of chunks left to be generated on the structure
 		if (world.getTopography().getStructures().structureExists(chunkX, chunkY, true)) {
 			world.getTopography().getStructures().deleteChunkFromStructureKeyMapAndCheckIfStructureCanBeDeleted(chunkX, chunkY, true);

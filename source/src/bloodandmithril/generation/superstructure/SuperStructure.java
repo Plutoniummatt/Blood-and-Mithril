@@ -1,11 +1,19 @@
 package bloodandmithril.generation.superstructure;
 
+import java.util.Set;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.util.datastructure.Boundaries;
+import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.ChunkMap;
+import bloodandmithril.world.topography.Topography;
+
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Sets;
 
 /**
  * A {@link SuperStructure} is a {@link Structure} that is generated on top of null positions in the {@link ChunkMap} and {@link Structures}.
@@ -18,6 +26,8 @@ public abstract class SuperStructure extends Structure {
 
 	/** The edges of this SuperStructure, in chunk coordinates */
 	private Boundaries boundaries;
+
+	protected final Set<TwoInts> startingLocations = Sets.newHashSet();
 
 	/**
 	 * Constructor
@@ -43,6 +53,16 @@ public abstract class SuperStructure extends Structure {
 
 		// Add to map
 		setStructureKey(addToStructureMap());
+	}
+
+
+	public Set<Vector2> getPossibleStartingLocations() {
+		return Sets.newHashSet(Collections2.transform(startingLocations, location -> {
+			return new Vector2(
+				Topography.convertToWorldCoord(location.a, false),
+				Topography.convertToWorldCoord(location.b, false)
+			);
+		}));
 	}
 
 

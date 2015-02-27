@@ -12,9 +12,9 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.zip.ZipFile;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
-import bloodandmithril.generation.TerrainGenerator;
 import bloodandmithril.generation.patterns.GlobalLayers;
 import bloodandmithril.persistence.ZipHelper;
 import bloodandmithril.util.Logger;
@@ -45,7 +45,7 @@ public class ChunkLoader {
 	public static final BlockingQueue<Task> loaderTasks = new ArrayBlockingQueue<>(5000);
 
 	/** The terrain generator */
-	private final TerrainGenerator generator = new TerrainGenerator();
+	private final ChunkGenerator generator = new ChunkGenerator();
 
 	/** The current chunk coordinates that is in the queue to be loaded/generated */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<>();
@@ -95,12 +95,12 @@ public class ChunkLoader {
 	 *
 	 * @return whether or not the load was successful
 	 */
-	public boolean load(final World world, final int chunkX, final int chunkY) {
+	public boolean load(final World world, final int chunkX, final int chunkY, boolean populateChunkMap) {
 		if (loaderThread.isAlive()) {
 			synchronized (chunksInQueue) {
 				if (chunksInQueue.get(chunkX, chunkY) == null && (world.getTopography().getChunkMap().get(chunkX) == null || world.getTopography().getChunkMap().get(chunkX).get(chunkY) == null)) {
 					loaderTasks.add(() -> {
-						loadSingleChunk(chunkX, chunkY, world);
+						loadSingleChunk(chunkX, chunkY, world, populateChunkMap);
 					});
 					chunksInQueue.put(chunkX, chunkY, true);
 					return true;
@@ -181,7 +181,7 @@ public class ChunkLoader {
 
 
 	/** Loads a single chunk from disk and stores it in the chunkMap */
-	private void loadSingleChunk(int chunkX, int chunkY, World world) {
+	private void loadSingleChunk(int chunkX, int chunkY, World world, boolean populateChunkMap) {
 		synchronized (chunksInQueue) {
 			Logger.loaderDebug("Loading chunk: x=" + chunkX + ", y=" + chunkY, LogLevel.DEBUG);
 
@@ -204,7 +204,7 @@ public class ChunkLoader {
 				Logger.loaderDebug("No chunk found on disk, generating new chunk: " + chunkX + ", " + chunkY, LogLevel.DEBUG);
 				// If load was unsuccessful, the chunk in question remains null and we
 				// generate it.
-				generator.generate(chunkX, chunkY, world);
+				generator.generate(chunkX, chunkY, world, populateChunkMap);
 			}
 
 			// Remove chunk from queue.

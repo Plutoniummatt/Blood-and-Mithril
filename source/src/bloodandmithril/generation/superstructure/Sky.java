@@ -1,6 +1,6 @@
 package bloodandmithril.generation.superstructure;
 
-import bloodandmithril.generation.TerrainGenerator;
+import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
@@ -29,7 +29,7 @@ public class Sky extends SuperStructure {
 			cWidth, 
 			cHeight, 
 			Integer.MAX_VALUE, 
-			TerrainGenerator.maxSurfaceHeightInChunks,
+			ChunkGenerator.maxSurfaceHeightInChunks,
 			Domain.getWorld(worldId).getTopography()
 		);
 	}
