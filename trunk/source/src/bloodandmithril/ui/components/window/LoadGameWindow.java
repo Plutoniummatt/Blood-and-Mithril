@@ -106,17 +106,25 @@ public class LoadGameWindow extends Window {
 						metadata.name.length() * 9,
 						16,
 						() -> {
-							setClosing(true);
-							ClientServerInterface.setServer(true);
-							BloodAndMithrilClient.clientCSIThread.execute(() -> {
-								MainMenuWindow.removeWindows();
-								try {
-									Thread.sleep(1000);
-								} catch (Exception e) {}
-								GameLoader.load(metadata, false);
-								BloodAndMithrilClient.domain = new Domain();
-								BloodAndMithrilClient.setup();
-							});
+							BloodAndMithrilClient.clientCSIThread.execute(
+								() -> {
+									setClosing(true);
+									ClientServerInterface.setServer(true);
+									MainMenuWindow.removeWindows();
+									BloodAndMithrilClient.threadWait(1000);
+									BloodAndMithrilClient.setLoading(true);
+									GameLoader.load(metadata, false);
+									BloodAndMithrilClient.domain = new Domain();
+									BloodAndMithrilClient.setup();
+									
+									while(!BloodAndMithrilClient.areChunksOnScreenGenerated()) {
+										BloodAndMithrilClient.threadWait(100);
+									}
+									
+									BloodAndMithrilClient.threadWait(1000);
+									BloodAndMithrilClient.setLoading(false);
+								}
+							);
 						},
 						Color.ORANGE,
 						Color.GREEN,
