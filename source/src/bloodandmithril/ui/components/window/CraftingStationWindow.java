@@ -23,7 +23,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.prop.construction.craftingstation.Anvil;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
@@ -46,7 +45,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * {@link Anvil} related UI
+ * {@link CraftingStation} related UI
  *
  * @author Matt
  */

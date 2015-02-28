@@ -1,5 +1,8 @@
 package bloodandmithril.world.topography;
 
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -372,10 +375,10 @@ public class Topography {
 	 */
 	public void loadOrGenerateNullChunksAccordingToCam(int camX, int camY) {
 
-		int bottomLeftX = convertToChunkCoord((float)(camX - Display.getWidth() / 2));
-		int bottomLeftY = convertToChunkCoord((float)(camY - Display.getHeight() / 2));
-		int topRightX = bottomLeftX + convertToChunkCoord((float)Display.getWidth());
-		int topRightY = bottomLeftY + convertToChunkCoord((float)Display.getHeight());
+		int bottomLeftX = convertToChunkCoord((float)(camX - WIDTH / 2));
+		int bottomLeftY = convertToChunkCoord((float)(camY - HEIGHT / 2));
+		int topRightX = bottomLeftX + convertToChunkCoord((float)WIDTH);
+		int topRightY = bottomLeftY + convertToChunkCoord((float)HEIGHT);
 
 		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
 			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {

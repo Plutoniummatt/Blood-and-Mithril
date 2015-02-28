@@ -50,7 +50,7 @@ import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.prop.construction.craftingstation.Anvil;
+import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
@@ -312,7 +312,7 @@ public class DevWindow extends Window {
 						() -> {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								Anvil anvil = new Anvil(individual.getState().position.x, individual.getState().position.y);
+								BlacksmithWorkshop anvil = new BlacksmithWorkshop(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(anvil);
 							}
 						},

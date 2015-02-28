@@ -22,7 +22,7 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Anvil extends CraftingStation {
+public class BlacksmithWorkshop extends CraftingStation {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
 
@@ -37,26 +37,26 @@ public class Anvil extends CraftingStation {
 	private static final long serialVersionUID = -7172034409582382182L;
 
 	/** {@link TextureRegion} of the {@link Anvl} */
-	public static TextureRegion anvil;
+	public static TextureRegion blackSmithWorkshop;
 
 	/**
 	 * Constructor
 	 */
-	public Anvil(float x, float y) {
-		super(x, y, 44, 18, 0);
+	public BlacksmithWorkshop(float x, float y) {
+		super(x, y, 71, 31, 0);
 		setConstructionProgress(1f);
 	}
 
 
 	@Override
 	protected TextureRegion getTextureRegion() {
-		return anvil;
+		return blackSmithWorkshop;
 	}
 
 
 	@Override
 	public String getDescription() {
-		return "An anvil is a basic tool, a block with a hard surface on which another object is struck.  Used to smith metallic objects.";
+		return "A blacksmith workshop, with an anvil and necessary tools to shape metal into useful objects.";
 	}
 
 
@@ -91,7 +91,7 @@ public class Anvil extends CraftingStation {
 
 	@Override
 	protected String internalGetTitle() {
-		return "Anvil";
+		return "Blacksmith Workshop";
 	}
 
 
