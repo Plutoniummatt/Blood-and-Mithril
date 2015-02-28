@@ -11,6 +11,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Performance;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -33,9 +34,13 @@ public class Path implements Serializable {
 	 * True if location is part of this {@link Path}
 	 */
 	public synchronized boolean isPartOfPathGroundAndIsNext(Vector2 location) {
-		Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
-		if (!waypoints.isEmpty() && waypoints.getFirst().waypoint.equals(flooredCoords)) {
-			return true;
+		try {
+			Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
+			if (!waypoints.isEmpty() && waypoints.getFirst().waypoint.equals(flooredCoords)) {
+				return true;
+			}
+		} catch (NoTileFoundException e) {
+			return false;
 		}
 		return false;
 	}
@@ -45,14 +50,18 @@ public class Path implements Serializable {
 	 * True if location is directly above the next waypoint in the {@link Path}
 	 */
 	public synchronized boolean isDirectlyAboveNext(Vector2 location) {
-		Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
-		if (location.y < 0) {
-			flooredCoords = Topography.convertToWorldCoord(location.x, location.y + 1, true);
-		}
-		if (!waypoints.isEmpty() &&
-			waypoints.getFirst().waypoint.x == flooredCoords.x &&
-			waypoints.getFirst().waypoint.y < flooredCoords.y) {
-			return true;
+		try {
+			Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
+			if (location.y < 0) {
+				flooredCoords = Topography.convertToWorldCoord(location.x, location.y + 1, true);
+			}
+			if (!waypoints.isEmpty() &&
+					waypoints.getFirst().waypoint.x == flooredCoords.x &&
+					waypoints.getFirst().waypoint.y < flooredCoords.y) {
+				return true;
+			}
+		} catch (NoTileFoundException e) {
+			return false;
 		}
 		return false;
 	}

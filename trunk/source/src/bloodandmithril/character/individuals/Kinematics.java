@@ -288,7 +288,11 @@ public interface Kinematics {
 	 */
 	static boolean isToBeIgnored(Vector2 location, IndividualKineticsProcessingData kinematicsBean) {
 		if (kinematicsBean.jumpOff != null) {
-			return convertToWorldCoord(location, false).equals(kinematicsBean.jumpOff) || convertToWorldCoord(location.x, location.y - 1, false).equals(kinematicsBean.jumpOff);
+			try {
+				return convertToWorldCoord(location, false).equals(kinematicsBean.jumpOff) || convertToWorldCoord(location.x, location.y - 1, false).equals(kinematicsBean.jumpOff);
+			} catch (NoTileFoundException e) {
+				return false;
+			}
 		}
 		return false;
 	}

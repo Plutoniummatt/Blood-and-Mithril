@@ -191,10 +191,14 @@ public class GoToLocation extends AITask {
 		// If we're outside WayPoint.tolerance, then move toward WayPoint.wayPoint
 		boolean notReached;
 		if (wayPoint.tolerance == 0f) {
-			if (host.getState().position.y < 0f) {
-				notReached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(new Vector2(host.getState().position.x, host.getState().position.y + 1), true));
-			} else {
-				notReached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(host.getState().position, true));
+			try {
+				if (host.getState().position.y < 0f) {
+					notReached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(new Vector2(host.getState().position.x, host.getState().position.y + 1), true));
+				} else {
+					notReached = !wayPoint.waypoint.equals(Topography.convertToWorldCoord(host.getState().position, true));
+				}
+			} catch (NoTileFoundException e) {
+				return;
 			}
 		} else {
 			notReached = Math.abs(wayPoint.waypoint.cpy().sub(host.getState().position).len()) > wayPoint.tolerance;

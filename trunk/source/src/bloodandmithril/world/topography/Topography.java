@@ -178,7 +178,10 @@ public class Topography {
 	}
 
 
-	public static Vector2 convertToWorldCoord(Vector2 coords, boolean floor) {
+	public static Vector2 convertToWorldCoord(Vector2 coords, boolean floor) throws NoTileFoundException {
+		if (coords == null) {
+			throw new NoTileFoundException();
+		}
 		return convertToWorldCoord(coords.x, coords.y, floor);
 	}
 
