@@ -343,6 +343,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			if (button == KeyMappings.middleClick) {
 				middleClick(screenX, screenY);
 			}
+		} catch (NoTileFoundException e) {
 		} catch (Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
