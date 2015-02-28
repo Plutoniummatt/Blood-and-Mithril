@@ -108,7 +108,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private int camDragX, camDragY, oldCamX, oldCamY;
 
 	/** True if game is paused */
-	public static boolean paused = false;
+	public static boolean paused = false, loading = false;
 
 	/** The current timer for double clicking */
 	private float leftDoubleClickTimer = 0f;
@@ -849,5 +849,19 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 		
 		return true;
+	}
+	
+	
+	public static void setLoading(boolean loading) {
+		BloodAndMithrilClient.loading = loading;
+	}
+	
+	
+	public static void threadWait(long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

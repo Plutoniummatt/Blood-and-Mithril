@@ -119,9 +119,9 @@ public class NewGameWindow extends Window {
 		ClientServerInterface.setServer(true);
 		BloodAndMithrilClient.clientCSIThread.execute(() -> {
 			UserInterface.closeAllWindows();
-			try {
-				Thread.sleep(1000);
-			} catch (Exception e) {}
+			BloodAndMithrilClient.threadWait(1000);
+			BloodAndMithrilClient.setLoading(true);
+			
 			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 			BloodAndMithrilClient.domain = new Domain();
 			BloodAndMithrilClient.setup();
@@ -132,11 +132,7 @@ public class NewGameWindow extends Window {
 
 			SuperStructure superStructure = null;
 			while (superStructure == null || superStructure.getPossibleStartingLocations().isEmpty()) {
-				try {
-					Thread.sleep(100);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
+				BloodAndMithrilClient.threadWait(1000);
 
 				superStructure = (SuperStructure) Iterables.tryFind(Structures.getStructures().values(), structure -> {
 					return structure instanceof SuperStructure;
@@ -161,6 +157,12 @@ public class NewGameWindow extends Window {
 					playerFaction.factionId
 				)
 			);
+			
+			while(!BloodAndMithrilClient.areChunksOnScreenGenerated()) {
+				BloodAndMithrilClient.threadWait(100);
+			}
+			
+			BloodAndMithrilClient.setLoading(false);
 		});
 	}
 

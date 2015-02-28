@@ -8,6 +8,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.core.BloodAndMithrilClient.loading;
 import static bloodandmithril.core.BloodAndMithrilClient.paused;
 import static bloodandmithril.core.BloodAndMithrilClient.ping;
 import static bloodandmithril.core.BloodAndMithrilClient.screenToWorldX;
@@ -337,6 +338,7 @@ public class UserInterface {
 
 		renderPauseScreen();
 		renderSavingScreen();
+		renderLoadingScreen();
 
 		if (RENDER_TOPOGRAPHY) {
 			TopographyDebugRenderer.render();
@@ -616,6 +618,27 @@ public class UserInterface {
 			if (unpauseButton != null) {
 				unpauseButton.render(true, 1f);
 			}
+
+			gl.glDisable(GL_BLEND);
+			spriteBatch.end();
+		}
+	}
+	
+	
+	/** Draws the loading screen */
+	private static void renderLoadingScreen() {
+		if (loading) {
+			spriteBatch.begin();
+			gl.glEnable(GL_BLEND);
+			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			shapeRenderer.begin(ShapeType.FilledRectangle);
+			shapeRenderer.setColor(Color.BLACK);
+			shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT);
+			shapeRenderer.end();
+			
+			spriteBatch.setShader(Shaders.text);
+			defaultFont.setColor(Color.YELLOW);
+			defaultFont.draw(spriteBatch, "Loading", WIDTH/2 - 30, HEIGHT/2);
 
 			gl.glDisable(GL_BLEND);
 			spriteBatch.end();
