@@ -1,6 +1,7 @@
 package bloodandmithril.core;
 
 import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
+import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -815,5 +816,38 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		SoundService.changeMusic(2f, SoundService.desertNight);
 		UserInterface.contextMenus.clear();
 		PositionalReindexingService.reindex();
+	}
+	
+	
+	public static boolean areChunksOnScreenGenerated() {
+		int camX = (int) cam.position.x;
+		int camY = (int) cam.position.y;
+		
+		int bottomLeftX = convertToChunkCoord((float)(camX - WIDTH / 2));
+		int bottomLeftY = convertToChunkCoord((float)(camY - HEIGHT / 2));
+		int topRightX = bottomLeftX + convertToChunkCoord((float)WIDTH);
+		int topRightY = bottomLeftY + convertToChunkCoord((float)HEIGHT);
+		
+		World activeWorld = Domain.getActiveWorld();
+		
+		if (activeWorld == null) {
+			return true;
+		}
+		
+		Topography topography = activeWorld.getTopography();
+		
+		if (topography == null) {
+			return true;
+		}
+
+		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
+			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {
+				if (topography.getChunkMap().get(chunkX) == null || topography.getChunkMap().get(chunkX).get(chunkY) == null) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 }

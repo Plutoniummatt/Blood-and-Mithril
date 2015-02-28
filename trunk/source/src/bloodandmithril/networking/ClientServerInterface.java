@@ -227,7 +227,7 @@ import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.construction.craftingstation.Anvil;
+import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.prop.construction.craftingstation.FueledCraftingStation;
@@ -532,7 +532,7 @@ public class ClientServerInterface {
 		kryo.register(Acid.class);
 		kryo.register(Action.class);
 		kryo.register(AlwaysTrueFunction.class);
-		kryo.register(Anvil.class);
+		kryo.register(BlacksmithWorkshop.class);
 		kryo.register(ArrayDeque.class);
 		kryo.register(ArrayList.class);
 		kryo.register(ArtificialIntelligence.AIMode.class);

@@ -39,7 +39,7 @@ import bloodandmithril.core.Name;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
-import bloodandmithril.prop.construction.craftingstation.Anvil;
+import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
@@ -479,7 +479,7 @@ public class Elf extends Humanoid {
 		return Sets.newHashSet(
 			new Furnace(SandStone.class, 0, 0),
 			new WorkBench(0, 0),
-			new Anvil(0, 0),
+			new BlacksmithWorkshop(0, 0),
 			new Campfire(0, 0)
 		);
 	}
