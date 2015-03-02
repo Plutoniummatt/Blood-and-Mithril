@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
-import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.component.components.DummyComponent;
 import bloodandmithril.generation.component.interfaces.Interface;
 import bloodandmithril.generation.component.interfaces.RectangularInterface;
@@ -14,6 +14,8 @@ import bloodandmithril.util.Function;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.Boundaries;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.WorldProps;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.google.common.base.Predicate;
@@ -59,6 +61,7 @@ public abstract class Component implements Serializable {
 	protected Component(Boundaries boundaries, int structureKey) {
 		this.boundaries = boundaries;
 		this.structureKey = structureKey;
+		addProps(Domain.getWorld(Structures.get(getStructureKey()).worldId).props());
 	}
 
 
@@ -78,6 +81,12 @@ public abstract class Component implements Serializable {
 	 * Generates all {@link Interface}s
 	 */
 	protected abstract void generateInterfaces();
+
+
+	/**
+	 * Adds props
+	 */
+	protected abstract void addProps(WorldProps props);
 
 
 	/**
