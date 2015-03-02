@@ -7,7 +7,9 @@ import bloodandmithril.generation.component.components.Stairs;
 import bloodandmithril.generation.component.components.Stairs.StairsCreationCustomization;
 import bloodandmithril.generation.component.interfaces.Interface;
 import bloodandmithril.generation.component.interfaces.RectangularInterface.RectangularInterfaceCustomization;
+import bloodandmithril.prop.furniture.MedievalWallTorch;
 import bloodandmithril.util.datastructure.Boundaries;
+import bloodandmithril.world.WorldProps;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickFloor;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
@@ -134,5 +136,12 @@ public class UndergroundDesertTempleEntrance extends PrefabricatedComponent {
 
 		// Check for overlaps
 		return checkForOverlaps(createdInterface, createdComponent);
+	}
+
+
+	@Override
+	protected void addProps(WorldProps props) {
+		Boundaries boundaries = getBoundaries();
+		props.addProp(new MedievalWallTorch(boundaries.left, boundaries.bottom));
 	}
 }

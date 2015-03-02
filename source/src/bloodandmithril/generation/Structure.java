@@ -22,7 +22,7 @@ public abstract class Structure implements Serializable {
 	private static final long serialVersionUID = -5890196858721145717L;
 
 	/** Unique ID of the world that holds the {@link Topography} in which this {@link Structure} exists */
-	protected final int worldId;
+	public final int worldId;
 
 	/** The key used by this {@link Structure} in the {@link Structures} */
 	private int structureKey;
