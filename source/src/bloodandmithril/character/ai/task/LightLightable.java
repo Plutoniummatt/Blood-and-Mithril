@@ -15,6 +15,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -115,7 +116,7 @@ public class LightLightable extends CompositeAITask {
 			
 			if (host.getInteractionBox().isWithinBox(((Prop) lightable).position)) {
 				if (host.has(new FlintAndFiresteel()) > 0) {
-					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND);
+					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND, Color.WHITE, 100);
 					SoundService.play(SoundService.flint, ((Prop) lightable).position, true);
 					lightable.light();
 				} else {
