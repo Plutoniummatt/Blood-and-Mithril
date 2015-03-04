@@ -14,15 +14,15 @@ import bloodandmithril.core.Copyright;
 import com.google.common.collect.Lists;
 
 /**
- * Class representing a skill set
+ * Class representing the proficiencies of an individual
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Skills implements Serializable {
+public class Proficiencies implements Serializable {
 	private static final long serialVersionUID = 2154775669521547748L;
 
-	/** Represents skill levels */
+	/** Represents proficiencies */
 	private Trading trading = new Trading(0);
 	private Smithing smithing = new Smithing(0);
 	private Carpentry carpentry = new Carpentry(0);
@@ -33,7 +33,7 @@ public class Skills implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public Skills() {
+	public Proficiencies() {
 	}
 
 	public Trading getTrading() {
@@ -60,7 +60,7 @@ public class Skills implements Serializable {
 		return glassworking;
 	}
 
-	public Collection<Skill> getAllSkills() {
+	public Collection<Proficiency> getAllProficiencies() {
 		return Lists.newArrayList(
 			trading,
 			smithing,

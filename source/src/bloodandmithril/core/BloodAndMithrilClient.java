@@ -1,7 +1,9 @@
 package bloodandmithril.core;
 
 import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
+import static bloodandmithril.ui.KeyMappings.selectIndividual;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
+import static com.badlogic.gdx.Gdx.input;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -171,7 +173,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		});
 
 		topographyQueryThread = new Thread(() -> {
-			long prevFrame = System.currentTimeMillis();
+			long prevFrame1 = System.currentTimeMillis();
+			long prevFrame2 = System.currentTimeMillis();
 
 			while (true) {
 				try {
@@ -180,10 +183,26 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					throw new RuntimeException(e);
 				}
 
-				if (System.currentTimeMillis() - prevFrame > 16) {
+				if (System.currentTimeMillis() - prevFrame1 > 16) {
 					if (Domain.getActiveWorld() != null) {
-						Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToCam((int) cam.position.x, (int) cam.position.y);
+						Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
+							(int) cam.position.x,
+							(int) cam.position.y
+						);
 					}
+					prevFrame1 = System.currentTimeMillis();
+				}
+
+				if (System.currentTimeMillis() - prevFrame2 > 200) {
+					if (Domain.getActiveWorld() != null) {
+						Domain.getIndividuals().values().stream().forEach(individual -> {
+							Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
+								(int) individual.getState().position.x,
+								(int) individual.getState().position.y
+							);
+						});
+					}
+					prevFrame2 = System.currentTimeMillis();
 				}
 			}
 		});
@@ -543,7 +562,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			} else {
 				for (Individual indi : Domain.getIndividuals().values()) {
-					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId()) {
+					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId() && input.isKeyPressed(selectIndividual)) {
 						if (ClientServerInterface.isServer()) {
 							indi.deselect(false, 0);
 							Domain.getSelectedIndividuals().remove(indi);
@@ -818,25 +837,25 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		UserInterface.contextMenus.clear();
 		PositionalReindexingService.reindex();
 	}
-	
-	
+
+
 	public static boolean areChunksOnScreenGenerated() {
 		int camX = (int) cam.position.x;
 		int camY = (int) cam.position.y;
-		
+
 		int bottomLeftX = convertToChunkCoord((float)(camX - WIDTH / 2));
 		int bottomLeftY = convertToChunkCoord((float)(camY - HEIGHT / 2));
 		int topRightX = bottomLeftX + convertToChunkCoord((float)WIDTH);
 		int topRightY = bottomLeftY + convertToChunkCoord((float)HEIGHT);
-		
+
 		World activeWorld = Domain.getActiveWorld();
-		
+
 		if (activeWorld == null) {
 			return true;
 		}
-		
+
 		Topography topography = activeWorld.getTopography();
-		
+
 		if (topography == null) {
 			return true;
 		}
@@ -848,16 +867,16 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				}
 			}
 		}
-		
+
 		return true;
 	}
-	
-	
+
+
 	public static void setLoading(boolean loading) {
 		BloodAndMithrilClient.loading = loading;
 	}
-	
-	
+
+
 	public static void threadWait(long millis) {
 		try {
 			Thread.sleep(millis);

@@ -76,7 +76,7 @@ import bloodandmithril.character.individuals.IndividualKineticsProcessingData;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.individuals.characters.Hare;
-import bloodandmithril.character.skill.Skills;
+import bloodandmithril.character.skill.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
@@ -673,7 +673,7 @@ public class ClientServerInterface {
 		kryo.register(SerializableColor.class);
 		kryo.register(SetAIIdle.class);
 		kryo.register(SkeletonKey.class);
-		kryo.register(Skills.class);
+		kryo.register(Proficiencies.class);
 		kryo.register(Slab.class);
 		kryo.register(SoilTile.class);
 		kryo.register(StandardSoilTile.class);

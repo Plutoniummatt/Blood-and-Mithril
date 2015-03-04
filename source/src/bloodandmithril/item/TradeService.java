@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.skill.Skill;
+import bloodandmithril.character.skill.Proficiency;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -52,7 +52,7 @@ public class TradeService {
 		// ---------
 		// The minimum trade skill required for the trade to work, would be the lowest skill level that makes the effective
 		// value greater or equal to 400g, in this case, 80.
-		float proposerEffectiveValue = (Skill.getRatioToMax(proposer.getSkills().getTrading().getLevel()) + 1f)/2f * proposerActualValue;
+		float proposerEffectiveValue = (Proficiency.getRatioToMax(proposer.getSkills().getTrading().getLevel()) + 1f)/2f * proposerActualValue;
 		float proposeeEffectiveValue = proposeeActualValue;
 
 		if (proposerEffectiveValue > proposeeEffectiveValue) {
