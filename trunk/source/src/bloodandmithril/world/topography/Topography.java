@@ -376,10 +376,10 @@ public class Topography {
 	/**
 	 * Generates/Loads any missing chunks
 	 */
-	public void loadOrGenerateNullChunksAccordingToCam(int camX, int camY) {
+	public void loadOrGenerateNullChunksAccordingToPosition(int x, int y) {
 
-		int bottomLeftX = convertToChunkCoord((float)(camX - WIDTH / 2));
-		int bottomLeftY = convertToChunkCoord((float)(camY - HEIGHT / 2));
+		int bottomLeftX = convertToChunkCoord((float)(x - WIDTH / 2));
+		int bottomLeftY = convertToChunkCoord((float)(y - HEIGHT / 2));
 		int topRightX = bottomLeftX + convertToChunkCoord((float)WIDTH);
 		int topRightY = bottomLeftY + convertToChunkCoord((float)HEIGHT);
 

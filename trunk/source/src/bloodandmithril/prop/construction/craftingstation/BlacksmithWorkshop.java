@@ -2,6 +2,7 @@ package bloodandmithril.prop.construction.craftingstation;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.item.items.material.ArrowHead.arrowHead;
+import static bloodandmithril.networking.ClientServerInterface.isClient;
 
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 /**
- * An anvil, used to smith metallic items
+ * An blacksmith workshop, used to smith metallic items
  *
  * @author Matt
  */
@@ -48,7 +49,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 	/** {@link TextureRegion} of the {@link Anvl} */
 	public static TextureRegion blackSmithWorkshop;
 	public static TextureRegion blackSmithWorkshopWorking;
-	private int sparkCountdown;
+	private transient int sparkCountdown = 0;
 
 	/**
 	 * Constructor
@@ -57,8 +58,8 @@ public class BlacksmithWorkshop extends CraftingStation {
 		super(x, y, 116, 61, 0);
 		setConstructionProgress(1f);
 	}
-	
-	
+
+
 	@Override
 	protected void internalRender(float constructionProgress) {
 		if (isOccupied()) {
@@ -67,8 +68,8 @@ public class BlacksmithWorkshop extends CraftingStation {
 			spriteBatch.draw(blackSmithWorkshop, position.x - width / 2, position.y);
 		}
 	}
-	
-	
+
+
 	@Override
 	public synchronized void update(float delta) {
 		super.update(delta);
@@ -78,14 +79,14 @@ public class BlacksmithWorkshop extends CraftingStation {
 				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, 2f, 8f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(200), Depth.MIDDLEGROUND, false, Color.RED);
 				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, 1f, 6f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(200), Depth.MIDDLEGROUND, false, Color.RED);
 				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 10f, 10f, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000) + 3000, Depth.BACKGROUND, false, null);
-				
-				
-				if (sparkCountdown == 0) {
+
+
+				if (sparkCountdown == 0 && isClient()) {
 					ParticleService.parrySpark(position.cpy().add(-37, height - 33), new Vector2(-80f, -100f), Depth.MIDDLEGROUND, new Color(1f, 0.85f, 0.5f, 1f), 1000);
 					sparkCountdown = 90;
 				}
 			}
-			
+
 			sparkCountdown--;
 		}
 	}

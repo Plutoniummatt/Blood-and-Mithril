@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author Matt
  */
-public abstract class Skill implements Serializable {
+public abstract class Proficiency implements Serializable {
 	private static final long serialVersionUID = 2602006776166912149L;
 	public static final int MAX_SKILL_LEVEL = 100;
 
@@ -18,7 +18,7 @@ public abstract class Skill implements Serializable {
 	/**
 	 * Constructor
 	 */
-	protected Skill(String name, String description, int level) {
+	protected Proficiency(String name, String description, int level) {
 		this.name = name;
 		this.description = description;
 		this.level = level;
@@ -71,6 +71,6 @@ public abstract class Skill implements Serializable {
 	 * @return the ratio of a skill level to that of the max skill level
 	 */
 	public static float getRatioToMax(int skillLevel) {
-		return skillLevel / (float) Skill.MAX_SKILL_LEVEL;
+		return skillLevel / (float) Proficiency.MAX_SKILL_LEVEL;
 	}
 }

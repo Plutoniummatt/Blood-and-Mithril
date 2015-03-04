@@ -1,13 +1,13 @@
 package bloodandmithril.character.skill.skills;
 
-import bloodandmithril.character.skill.Skill;
+import bloodandmithril.character.skill.Proficiency;
 import bloodandmithril.core.Copyright;
 
 /**
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class Smithing extends Skill {
+public class Smithing extends Proficiency {
 	private static final long serialVersionUID = 8724126639508339386L;
 
 	public Smithing(int level) {

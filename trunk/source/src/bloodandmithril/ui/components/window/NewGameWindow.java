@@ -27,7 +27,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
-import bloodandmithril.character.skill.Skill;
+import bloodandmithril.character.skill.Proficiency;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
@@ -421,7 +421,7 @@ public class NewGameWindow extends Window {
 	public class ChooseStartingIndividualsPanel extends Panel {
 
 		private ScrollableListingPanel<Individual, String> individuals;
-		private ScrollableListingPanel<Skill, String> skills;
+		private ScrollableListingPanel<Proficiency, String> skills;
 		private Individual selectedIndividual;
 		private int assignablePoints = 150;
 
@@ -504,11 +504,11 @@ public class NewGameWindow extends Window {
 			};
 
 
-			skills = new ScrollableListingPanel<Skill, String>(
+			skills = new ScrollableListingPanel<Proficiency, String>(
 				NewGameWindow.this,
-				new Comparator<Skill>() {
+				new Comparator<Proficiency>() {
 					@Override
-					public int compare(Skill o1, Skill o2) {
+					public int compare(Proficiency o1, Proficiency o2) {
 						return o1.getName().compareTo(o2.getName());
 					}
 				},
@@ -516,7 +516,7 @@ public class NewGameWindow extends Window {
 				0
 			) {
 				@Override
-				protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Skill>, String> item) {
+				protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Proficiency>, String> item) {
 					return item.getValue();
 				}
 
@@ -528,7 +528,7 @@ public class NewGameWindow extends Window {
 
 
 				@Override
-				protected void populateListings(List<HashMap<ListingMenuItem<Skill>, String>> listings) {
+				protected void populateListings(List<HashMap<ListingMenuItem<Proficiency>, String>> listings) {
 					if (selectedIndividual == null) {
 						listings.add(Maps.newHashMap());
 					} else {
@@ -579,7 +579,7 @@ public class NewGameWindow extends Window {
 						startingIndividuals.remove(listingItem);
 						refreshSkillListing();
 						assignablePoints += 10;
-						for (Skill skill : listingItem.t.getSkills().getAllSkills()) {
+						for (Proficiency skill : listingItem.t.getSkills().getAllProficiencies()) {
 							assignablePoints += skill.getLevel();
 						}
 					} else {
@@ -609,10 +609,10 @@ public class NewGameWindow extends Window {
 
 		private void refreshSkillListing() {
 			ChooseStartingIndividualsPanel.this.skills.getListing().clear();
-			HashMap<ListingMenuItem<Skill>, String> newHashMap = Maps.newHashMap();
+			HashMap<ListingMenuItem<Proficiency>, String> newHashMap = Maps.newHashMap();
 			if (selectedIndividual != null) {
-				for (Skill skill : selectedIndividual.getSkills().getAllSkills()) {
-					final ListingMenuItem<Skill> item = new ListingMenuItem<Skill>(
+				for (Proficiency skill : selectedIndividual.getSkills().getAllProficiencies()) {
+					final ListingMenuItem<Proficiency> item = new ListingMenuItem<Proficiency>(
 						skill,
 						new Button(
 							skill.getName(),

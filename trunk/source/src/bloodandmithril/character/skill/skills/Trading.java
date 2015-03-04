@@ -1,6 +1,6 @@
 package bloodandmithril.character.skill.skills;
 
-import bloodandmithril.character.skill.Skill;
+import bloodandmithril.character.skill.Proficiency;
 import bloodandmithril.core.Copyright;
 
 /**
@@ -9,7 +9,7 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class Trading extends Skill {
+public class Trading extends Proficiency {
 	private static final long serialVersionUID = -1129808804239818810L;
 
 	/**

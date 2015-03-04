@@ -1,13 +1,13 @@
 package bloodandmithril.character.skill.skills;
 
-import bloodandmithril.character.skill.Skill;
+import bloodandmithril.character.skill.Proficiency;
 import bloodandmithril.core.Copyright;
 
 /**
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class Glassworking extends Skill {
+public class Glassworking extends Proficiency {
 	private static final long serialVersionUID = -8405186147243633432L;
 
 	public Glassworking(int level) {

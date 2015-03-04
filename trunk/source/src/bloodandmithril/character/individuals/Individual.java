@@ -50,7 +50,7 @@ import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
-import bloodandmithril.character.skill.Skills;
+import bloodandmithril.character.skill.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
@@ -75,8 +75,8 @@ import bloodandmithril.ui.components.window.BuildWindow;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.IndividualStatusWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
+import bloodandmithril.ui.components.window.ProficienciesWindow;
 import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
-import bloodandmithril.ui.components.window.SkillsWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.ParameterizedTask;
@@ -158,8 +158,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** Which client number this {@link Individual} is selected by */
 	private Set<Integer> selectedByClient = Sets.newHashSet();
 
-	/** {@link Skills}s of this {@link Individual} */
-	private Skills skills = new Skills();
+	/** {@link Proficiencies}s of this {@link Individual} */
+	private Proficiencies skills = new Proficiencies();
 
 	/** Identifier of this character */
 	private IndividualIdentifier id;
@@ -517,8 +517,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	/** Returns the {@link Skills} of this {@link Individual} */
-	public Skills getSkills() {
+	/** Returns the {@link Proficiencies} of this {@link Individual} */
+	public Proficiencies getSkills() {
 		return skills;
 	}
 
@@ -973,17 +973,17 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		MenuItem showInfoMenuItem = showInfo();
 		MenuItem showStatusWindowItem = showStatus();
 
-		final ContextMenu controlMenu = actions();
+		final ContextMenu actionMenu = actions();
 		MenuItem actions = new MenuItem(
 			"Actions",
 			() -> {
-				controlMenu.x = getMouseScreenX();
-				controlMenu.y = getMouseScreenY();
+				actionMenu.x = getMouseScreenX();
+				actionMenu.y = getMouseScreenY();
 			},
 			Color.ORANGE,
 			getToolTipTextColor(),
 			Color.GRAY,
-			controlMenu
+			actionMenu
 		);
 
 		final ContextMenu interactMenu = interactMenu();
@@ -1021,6 +1021,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		contextMenuToReturn.addMenuItem(showStatusWindowItem);
 
 		if (isControllable()) {
+			contextMenuToReturn.addMenuItem(inventory());
+			contextMenuToReturn.addMenuItem(skills());
 			contextMenuToReturn.addMenuItem(actions);
 			contextMenuToReturn.addMenuItem(edit);
 		}
@@ -1037,8 +1039,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		return new ContextMenu(0, 0,
 			true,
 			selectDeselect(this),
-			inventory(),
-			skills(),
 			build()
 		);
 	}
@@ -1052,21 +1052,21 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			attack(this)
 		);
 	}
-	
-	
+
+
 	private MenuItem skills() {
 		return new MenuItem(
-		"Skills",
-		() -> {
-			UserInterface.addLayeredComponentUnique(
-				new SkillsWindow(Individual.this)
-			);
-		},
-		Color.WHITE,
-		getToolTipTextColor(),
-		Color.GRAY,
-		null
-	);
+			"Proficiencies",
+			() -> {
+				UserInterface.addLayeredComponentUnique(
+					new ProficienciesWindow(Individual.this)
+				);
+			},
+			Color.ORANGE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
 	}
 
 
@@ -1201,7 +1201,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				);
 				UserInterface.addLayeredComponentUnique(inventoryWindow);
 			},
-			Color.WHITE,
+			Color.ORANGE,
 			getToolTipTextColor(),
 			Color.GRAY,
 			null

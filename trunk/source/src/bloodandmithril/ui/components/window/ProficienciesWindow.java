@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.skill.Skill;
-import bloodandmithril.character.skill.Skills;
+import bloodandmithril.character.skill.Proficiencies;
+import bloodandmithril.character.skill.Proficiency;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -27,19 +27,19 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * {@link Window} for displaying {@link Skills} of an {@link Individual}
- * 
+ * {@link Window} for displaying {@link Proficiencies} of an {@link Individual}
+ *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class SkillsWindow extends Window {
+public class ProficienciesWindow extends Window {
 
-	private ScrollableListingPanel<Skill, Integer> skills;
+	private ScrollableListingPanel<Proficiency, Integer> skills;
 	private int individualId;
-	
-	private static Comparator<Skill> sortingComparator = new Comparator<Skill>() {
+
+	private static Comparator<Proficiency> sortingComparator = new Comparator<Proficiency>() {
 		@Override
-		public int compare(Skill o1, Skill o2) {
+		public int compare(Proficiency o1, Proficiency o2) {
 			return o1.getName().compareTo(o2.getName());
 		}
 	};
@@ -47,24 +47,24 @@ public class SkillsWindow extends Window {
 	/**
 	 * Constructor
 	 */
-	public SkillsWindow(Individual individual) {
+	public ProficienciesWindow(Individual individual) {
 		super(
-			WIDTH / 2 - 150, 
-			HEIGHT / 2 + 200, 
-			300, 
-			500, 
-			individual.getId().getSimpleName() + " - Skills", 
-			true, 
-			300, 
-			400, 
-			true, 
-			true, 
+			WIDTH / 2 - 150,
+			HEIGHT / 2 + 200,
+			300,
+			500,
+			individual.getId().getSimpleName() + " - Proficiencies",
+			true,
+			300,
+			400,
+			true,
+			true,
 			true
 		);
-		
-		skills = new ScrollableListingPanel<Skill, Integer>(this, sortingComparator, false, 80) {
+
+		skills = new ScrollableListingPanel<Proficiency, Integer>(this, sortingComparator, false, 80) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Skill>, Integer> item) {
+			protected String getExtraString(Entry<ListingMenuItem<Proficiency>, Integer> item) {
 				return Integer.toString(item.getKey().t.getLevel());
 			}
 
@@ -74,37 +74,37 @@ public class SkillsWindow extends Window {
 			}
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Skill>, Integer>> listings) {
-				HashMap<ListingMenuItem<Skill>, Integer> newHashMap = newHashMap();
-				
-				for (Skill skill : individual.getSkills().getAllSkills()) {
+			protected void populateListings(List<HashMap<ListingMenuItem<Proficiency>, Integer>> listings) {
+				HashMap<ListingMenuItem<Proficiency>, Integer> newHashMap = newHashMap();
+
+				for (Proficiency skill : individual.getSkills().getAllProficiencies()) {
 					ContextMenu.MenuItem showInfo = new ContextMenu.MenuItem(
-						"Show info", 
+						"Show info",
 						() -> {
 							UserInterface.addLayeredComponentUnique(
 								new MessageWindow(
 									skill.getDescription(),
-									Color.ORANGE, 
-									WIDTH / 2 - 250, 
-									HEIGHT / 2 + 150, 
-									500, 
-									300, 
-									"Skill description - " + skill.getName(), 
-									true, 
-									500, 
+									Color.ORANGE,
+									WIDTH / 2 - 250,
+									HEIGHT / 2 + 150,
+									500,
+									300,
+									"Skill description - " + skill.getName(),
+									true,
+									500,
 									300
 								)
 							);
-						}, 
-						Color.ORANGE, 
-						Color.WHITE, 
-						Color.ORANGE, 
+						},
+						Color.ORANGE,
+						Color.WHITE,
+						Color.ORANGE,
 						null
 					);
-					
+
 					newHashMap.put(
-						new ListingMenuItem<Skill>(
-							skill, 
+						new ListingMenuItem<Proficiency>(
+							skill,
 							new Button(
 								skill.getName(),
 								defaultFont,
@@ -114,22 +114,22 @@ public class SkillsWindow extends Window {
 								16,
 								() -> {
 								},
-								Color.WHITE.cpy().sub(new Color(0f, Skill.getRatioToMax(skill.getLevel()), 0f, 0f)),
+								Color.WHITE.cpy().sub(new Color(0f, Proficiency.getRatioToMax(skill.getLevel()), 0f, 0f)),
 								Color.GREEN,
 								Color.WHITE,
 								UIRef.BL
-							), 
+							),
 							new ContextMenu(
-								getMouseScreenX(), 
-								getMouseScreenY(), 
+								getMouseScreenX(),
+								getMouseScreenY(),
 								true ,
 								showInfo
 							)
-						), 
+						),
 						0
 					);
 				}
-				
+
 				listings.add(newHashMap);
 			}
 
@@ -138,22 +138,22 @@ public class SkillsWindow extends Window {
 				return false;
 			}
 		};
-		
+
 		this.individualId = individual.getId().getId();
 	}
 
-	
+
 	@Override
 	protected void internalWindowRender() {
 		skills.x = x;
 		skills.y = y;
 		skills.width = width;
 		skills.height = height;
-		
+
 		skills.render();
 	}
 
-	
+
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		skills.leftClick(copy, windowsCopy);
@@ -164,7 +164,7 @@ public class SkillsWindow extends Window {
 	protected void uponClose() {
 	}
 
-	
+
 	@Override
 	public Object getUniqueIdentifier() {
 		return "SkillsWindow" + individualId;
@@ -175,8 +175,8 @@ public class SkillsWindow extends Window {
 	public void leftClickReleased() {
 		skills.leftClickReleased();
 	}
-	
-	
+
+
 	@Override
 	public boolean scrolled(int amount) {
 		return skills.scrolled(amount);
