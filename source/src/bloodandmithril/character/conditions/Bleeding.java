@@ -39,6 +39,7 @@ public class Bleeding extends Condition {
 					affected.getEmissionPosition().add((getRandom().nextFloat() - 1f) * affected.getWidth() / 4, (getRandom().nextFloat() - 1f) * affected.getWidth() / 4),
 					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 					Color.RED,
+					Color.RED,
 					2f,
 					affected.getWorldId(),
 					new Countdown(Util.getRandom().nextInt(1000)),

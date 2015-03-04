@@ -76,13 +76,13 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 		if (isOccupied()) {
 			if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
-				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, 2f, 8f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(200), Depth.MIDDLEGROUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, 1f, 6f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(200), Depth.MIDDLEGROUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 10f, 10f, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000) + 3000, Depth.BACKGROUND, false, null);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, Color.ORANGE, 2f, 8f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(200), Depth.MIDDLEGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, Color.ORANGE, 1f, 6f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(200), Depth.MIDDLEGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 10f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000) + 3000, Depth.BACKGROUND, false, null);
 
 
 				if (sparkCountdown == 0 && isClient()) {
-					ParticleService.parrySpark(position.cpy().add(-37, height - 33), new Vector2(-80f, -100f), Depth.MIDDLEGROUND, new Color(1f, 0.85f, 0.5f, 1f), 1000);
+					ParticleService.parrySpark(position.cpy().add(-37, height - 33), new Vector2(-30f, -50f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 1000);
 					sparkCountdown = 90;
 				}
 			}

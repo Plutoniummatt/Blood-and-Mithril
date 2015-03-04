@@ -108,15 +108,15 @@ public class LightLightable extends CompositeAITask {
 			}
 
 			Lightable lightable = (Lightable) Domain.getWorld(host.getWorldId()).props().getProp(lightableId);
-			
+
 			if (!lightable.canLight()) {
 				lit = true;
 				return;
 			}
-			
+
 			if (host.getInteractionBox().isWithinBox(((Prop) lightable).position)) {
 				if (host.has(new FlintAndFiresteel()) > 0) {
-					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND, Color.WHITE, 100);
+					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND, Color.WHITE, Color.WHITE, 100);
 					SoundService.play(SoundService.flint, ((Prop) lightable).position, true);
 					lightable.light();
 				} else {

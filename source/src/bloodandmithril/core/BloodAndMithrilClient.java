@@ -562,7 +562,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			} else {
 				for (Individual indi : Domain.getIndividuals().values()) {
-					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId() && input.isKeyPressed(selectIndividual)) {
+					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId() && !input.isKeyPressed(selectIndividual)) {
 						if (ClientServerInterface.isServer()) {
 							indi.deselect(false, 0);
 							Domain.getSelectedIndividuals().remove(indi);

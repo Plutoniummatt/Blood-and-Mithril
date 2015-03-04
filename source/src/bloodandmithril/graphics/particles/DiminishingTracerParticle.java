@@ -25,13 +25,14 @@ public class DiminishingTracerParticle extends TracerParticle {
 			Vector2 position,
 			Vector2 velocity,
 			Color color,
+			Color glowColor,
 			float radius,
 			int worldId,
 			float glowIntensity,
 			MovementMode movementMode,
 			Depth depth,
 			long diminishingDuration) {
-		super(position, velocity, color, radius, worldId, new Countdown(diminishingDuration), glowIntensity, movementMode, depth);
+		super(position, velocity, color, glowColor, radius, worldId, new Countdown(diminishingDuration), glowIntensity, movementMode, depth);
 		this.originalRadius = radius;
 		this.originalGlowIntensity = glowIntensity;
 		this.diminishingDuration = diminishingDuration;
