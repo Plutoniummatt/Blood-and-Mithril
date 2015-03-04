@@ -27,16 +27,17 @@ public class ParticleService {
 	public static void bloodSplat(Vector2 position, Vector2 knockBack) {
 		if (isClient()) {
 			for (int i = 0; i < 35; i++) {
-				Domain.getActiveWorld().getClientParticles().add(new TracerParticle(
+				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
-					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).mul(5f),
+					new Vector2(Util.getRandom().nextFloat() * 40f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).mul(5f),
+					Color.RED,
 					Color.RED,
 					2f,
 					Domain.getActiveWorld().getWorldId(),
-					new Countdown(Util.getRandom().nextInt(2500)),
 					0f,
 					MovementMode.GRAVITY,
-					Depth.FOREGOUND
+					Depth.FOREGOUND,
+					Util.getRandom().nextInt(3000)
 				));
 			}
 		} else {

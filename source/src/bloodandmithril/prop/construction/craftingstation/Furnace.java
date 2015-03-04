@@ -12,7 +12,6 @@ import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
-import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.container.GlassBottle;
 import bloodandmithril.item.items.material.Bricks;
 import bloodandmithril.item.items.material.Glass;
@@ -20,7 +19,6 @@ import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
-import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.Mineral;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.util.Shaders;
@@ -38,7 +36,7 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Furnace extends FueledCraftingStation implements Container {
+public class Furnace extends CraftingStation implements Container {
 	private static final long serialVersionUID = 7693386784097531328L;
 
 	/** {@link TextureRegion} of the {@link Furnace} */
@@ -60,14 +58,14 @@ public class Furnace extends FueledCraftingStation implements Container {
 	 * Constructor
 	 */
 	public Furnace(Class<? extends Mineral> material, float x, float y) {
-		super(x, y, 100, 46, 0.1f, new ContainerImpl(1000f, 500));
+		super(x, y, 95, 56, 0.1f);
 		this.material = material;
 	}
 
 
 	@Override
 	protected void internalRender(float constructionProgress) {
-		if (isBurning()) {
+		if (isOccupied()) {
 			spriteBatch.draw(FURNACE_BURNING, position.x - width / 2, position.y);
 		} else {
 			spriteBatch.draw(FURNACE, position.x - width / 2, position.y);
@@ -79,11 +77,11 @@ public class Furnace extends FueledCraftingStation implements Container {
 	public synchronized void update(float delta) {
 		super.update(delta);
 
-		if (isBurning()) {
+		if (isOccupied()) {
 			if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 12f, 30f, Color.ORANGE, 2f, 8f, MovementMode.EMBER, Util.getRandom().nextInt(600), Depth.MIDDLEGROUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 12f, 30f, Color.ORANGE, 1f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 30f, 10f, Colors.LIGHT_SMOKE, 20f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 6f, 30f, Color.ORANGE, 2f, 8f, MovementMode.EMBER, Util.getRandom().nextInt(600), Depth.MIDDLEGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 6f, 30f, Color.ORANGE, 1f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 30f, 10f, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
 			}
 		}
 	}
@@ -158,22 +156,12 @@ public class Furnace extends FueledCraftingStation implements Container {
 
 	@Override
 	public boolean canBeUsedAsFireSource() {
-		return isBurning();
+		return false;
 	}
 
 
 	@Override
-	public boolean isValidFuel(Item item) {
-		return item instanceof Rock && ((Rock)item).getMineral().equals(Coal.class);
-	}
-
-
-	@Override
-	public float deriveCombustionDuration(Item item) {
-		if (item instanceof Rock && ((Rock) item).getMineral().equals(Coal.class)) {
-			return Material.getMaterial(Coal.class).getCombustionDuration();
-		}
-		
-		return 0f;
+	public boolean canDeconstruct() {
+		return !isOccupied();
 	}
 }

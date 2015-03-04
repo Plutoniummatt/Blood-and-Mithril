@@ -106,8 +106,8 @@ public abstract class Prop implements Serializable {
 
 	public static void setup() {
 		Campfire.CAMPFIRE = new TextureRegion(Domain.gameWorldTexture, 554, 176, 64, 32);
-		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 453, 176, 100, 46);
-		Furnace.FURNACE = new TextureRegion(Domain.gameWorldTexture, 453, 223, 100, 46);
+		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 453, 176, 95, 56);
+		Furnace.FURNACE = new TextureRegion(Domain.gameWorldTexture, 453, 233, 95, 56);
 		WoodenChest.woodenChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);
 		SmallWoodenCrate.woodenCrate = new TextureRegion(Domain.gameWorldTexture, 453, 140, 44, 35);
 		CarrotProp.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 173, 12, 20);

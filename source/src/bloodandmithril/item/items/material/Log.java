@@ -1,9 +1,7 @@
 package bloodandmithril.item.items.material;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.mineral.earth.Ashes;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.wood.Wood;
 
@@ -15,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Log extends bloodandmithril.item.items.material.Material implements Fuel {
+public class Log extends bloodandmithril.item.items.material.Material {
 	private static final long serialVersionUID = 8519886397429197864L;
 
 	private Class<? extends Wood> wood;
@@ -82,17 +80,5 @@ public class Log extends bloodandmithril.item.items.material.Material implements
 	public TextureRegion getIconTextureRegion() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-
-	@Override
-	public float getCombustionDuration() {
-		return 250f;
-	}
-
-
-	@Override
-	public Item consume() {
-		return new Ashes();
 	}
 }

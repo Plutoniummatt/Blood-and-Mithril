@@ -176,7 +176,6 @@ import bloodandmithril.networking.requests.EquipOrUnequipItem;
 import bloodandmithril.networking.requests.FollowRequest;
 import bloodandmithril.networking.requests.GenerateChunk;
 import bloodandmithril.networking.requests.GenerateChunk.GenerateChunkResponse;
-import bloodandmithril.networking.requests.IgniteFueledCraftingStationRequest;
 import bloodandmithril.networking.requests.IndividualSelection;
 import bloodandmithril.networking.requests.LockUnlockContainerRequest;
 import bloodandmithril.networking.requests.MessageWindowNotification;
@@ -230,7 +229,6 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
-import bloodandmithril.prop.construction.craftingstation.FueledCraftingStation;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.Furniture;
@@ -598,7 +596,6 @@ public class ClientServerInterface {
 		kryo.register(EquipperImpl.class);
 		kryo.register(Exhaustion.class);
 		kryo.register(Faction.class);
-		kryo.register(FueledCraftingStation.class);
 		kryo.register(Furnace.class);
 		kryo.register(GenerateChunk.class);
 		kryo.register(GenerateChunkResponse.class);
@@ -616,7 +613,6 @@ public class ClientServerInterface {
 		kryo.register(Hematite.class);
 		kryo.register(Hunger.class);
 		kryo.register(Idle.class);
-		kryo.register(IgniteFueledCraftingStationRequest.class);
 		kryo.register(Individual.class);
 		kryo.register(IndividualIdentifier.class);
 		kryo.register(IndividualKineticsProcessingData.class);
@@ -860,11 +856,6 @@ public class ClientServerInterface {
 		public static synchronized void sendRequestTakeItems(Individual individual, Collection<Item> items) {
 			client.sendTCP(new RequestTakeItem(individual, items));
 			Logger.networkDebug("Sending take item request", LogLevel.DEBUG);
-		}
-
-		public static synchronized void sendIgniteFueledCraftingStationRequest(int furnaceId, int worldId) {
-			client.sendTCP(new IgniteFueledCraftingStationRequest(furnaceId, worldId));
-			Logger.networkDebug("Sending ignite furnace request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendSynchronizeIndividualRequest(int id) {

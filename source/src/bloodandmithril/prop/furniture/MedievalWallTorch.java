@@ -194,4 +194,10 @@ public class MedievalWallTorch extends Furniture implements Lightable {
 	public boolean isLit() {
 		return lit;
 	}
+
+
+	@Override
+	public boolean canLight() {
+		return true;
+	}
 }

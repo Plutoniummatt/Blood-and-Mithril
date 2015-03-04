@@ -9,6 +9,7 @@ import bloodandmithril.generation.component.interfaces.Interface;
 import bloodandmithril.generation.component.interfaces.RectangularInterface;
 import bloodandmithril.generation.component.interfaces.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.util.datastructure.Boundaries;
+import bloodandmithril.world.WorldProps;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
@@ -187,5 +188,10 @@ public class Corridor extends Component {
 			this.height = height;
 			this.tileType = tileType;
 		}
+	}
+
+
+	@Override
+	protected void addProps(WorldProps props) {
 	}
 }

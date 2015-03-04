@@ -3,16 +3,14 @@ package bloodandmithril.item.material.mineral;
 import java.util.Map;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.item.Fuel;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.mineral.earth.Ashes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 @Copyright("Matthew Peck 2014")
-public class Coal extends Mineral implements Fuel {
+public class Coal extends Mineral {
 	private static final long serialVersionUID = -3925049718035013900L;
 
 	public static TextureRegion COAL;
@@ -75,17 +73,6 @@ public class Coal extends Mineral implements Fuel {
 		return "Coal is a combustible black or brownish-black sedimentary rock usually occurring in rock strata in layers or veins called coal beds or coal seams.";
 	}
 
-
-	@Override
-	public float getCombustionDuration() {
-		return 20;
-	}
-
-
-	@Override
-	public Item consume() {
-		return new Ashes();
-	}
 
 	@Override
 	public Color getColor() {

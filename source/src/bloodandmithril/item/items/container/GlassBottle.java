@@ -10,7 +10,9 @@ import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.Glass;
+import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.liquid.Liquid;
+import bloodandmithril.item.material.mineral.Coal;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -82,6 +84,7 @@ public class GlassBottle extends LiquidContainer implements Craftable {
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> map = newHashMap();
 		map.put(new Glass(), 1);
+		map.put(Rock.rock(Coal.class), 1);
 		return map;
 	}
 
