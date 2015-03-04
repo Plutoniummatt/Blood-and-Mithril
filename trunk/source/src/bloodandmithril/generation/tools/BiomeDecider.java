@@ -1,12 +1,10 @@
 package bloodandmithril.generation.tools;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.superstructure.Canyon;
 import bloodandmithril.generation.superstructure.Desert;
 import bloodandmithril.generation.superstructure.Sky;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.generation.superstructure.Underground;
-import bloodandmithril.util.Util;
 import bloodandmithril.world.World;
 
 /**
@@ -25,12 +23,7 @@ public class BiomeDecider {
 	 * @return - the Biome which was decided.
 	 */
 	public SuperStructure decideAndGetSurfaceBiome(World world) {
-
-		if(Util.getRandom().nextFloat() > 0.99) {
-			return new Canyon(world.getWorldId(), 5, cSurfaceStructureHeight, 20, 50, 300, 3, 30);
-		} else {
-			return new Desert(world.getWorldId(), 50, cSurfaceStructureHeight, 30, -400, 200);
-		}
+		return new Desert(world.getWorldId(), 50, cSurfaceStructureHeight, 30, -400, 200);
 	}
 
 
