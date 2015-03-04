@@ -121,13 +121,13 @@ public class Elf extends Humanoid {
 		);
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> jumpequence = newArrayList(
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// HEAD
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filter),					// HAIR
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK ARM
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK LEG
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// TORSO
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 560, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// FRONT LEG
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace)		// FRONT ARM
+			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 112, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// HEAD
+			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 0,   64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filter),					// HAIR
+			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 448, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK ARM
+			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 672, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK LEG
+			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 224, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// TORSO
+			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 560, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace),		// FRONT LEG
+			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 336, 64, 112, 1, 1f, Animation.LOOP), server ? null : Shaders.filterIgnoreReplace)		// FRONT ARM
 		);
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> standSequenceCombat = newArrayList(

@@ -26,6 +26,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.CraftingStationWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 import bloodandmithril.world.Domain;
@@ -294,10 +295,11 @@ public abstract class CraftingStation extends Construction {
 				if (individual.canReceive(currentlyBeingCrafted.t)) {
 					individual.giveItem(currentlyBeingCrafted.t);
 				} else {
+					Item item = currentlyBeingCrafted.t.copy();
 					Domain.getWorld(getWorldId()).items().addItem(
-						currentlyBeingCrafted.t.copy(),
-						position.cpy().add(0f, height),
-						new Vector2()
+						item,
+						position.cpy().add(0f, height / 2),
+						new Vector2(25f, 0f).rotate(Util.getRandom().nextFloat() * 360f)
 					);
 				}
 			}
