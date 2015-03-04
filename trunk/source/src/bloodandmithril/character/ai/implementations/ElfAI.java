@@ -13,7 +13,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.construction.craftingstation.FueledCraftingStation;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -48,9 +47,9 @@ public class ElfAI extends ArtificialIntelligence {
 			List<Prop> nearbyEntities = Lists.newLinkedList(Domain.getWorld(host.getWorldId()).getPositionalIndexMap().getNearbyEntities(Prop.class, host.getState().position));
 			Collections.shuffle(nearbyEntities);
 			LinkedList<Prop> lightables = Lists.newLinkedList(Collections2.filter(nearbyEntities, prop -> {
-				return prop instanceof Lightable && !((Lightable) prop).isLit();
+				return prop instanceof Lightable && !((Lightable) prop).isLit() && ((Lightable) prop).canLight();
 			}));
-			if (!lightables.isEmpty() && host.has(new FlintAndFiresteel()) > 0 && !(lightables.get(0) instanceof FueledCraftingStation)) {
+			if (!lightables.isEmpty() && host.has(new FlintAndFiresteel()) > 0) {
 				try {
 					setCurrentTask(new LightLightable(host, (Lightable) lightables.get(0), true));
 				} catch (NoTileFoundException e) {}

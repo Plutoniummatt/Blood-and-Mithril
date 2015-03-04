@@ -88,7 +88,7 @@ public class LightLightable extends CompositeAITask {
 		@Override
 		public boolean isComplete() {
 			Prop prop = Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId);
-			return prop != null && (lit || ((Lightable) prop).isLit());
+			return prop != null && (lit || ((Lightable) prop).isLit()) || !((Lightable) prop).canLight();
 		}
 
 
@@ -107,6 +107,12 @@ public class LightLightable extends CompositeAITask {
 			}
 
 			Lightable lightable = (Lightable) Domain.getWorld(host.getWorldId()).props().getProp(lightableId);
+			
+			if (!lightable.canLight()) {
+				lit = true;
+				return;
+			}
+			
 			if (host.getInteractionBox().isWithinBox(((Prop) lightable).position)) {
 				if (host.has(new FlintAndFiresteel()) > 0) {
 					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND);

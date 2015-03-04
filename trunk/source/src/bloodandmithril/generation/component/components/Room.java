@@ -13,6 +13,7 @@ import bloodandmithril.generation.component.interfaces.RectangularInterface;
 import bloodandmithril.generation.component.interfaces.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
+import bloodandmithril.world.WorldProps;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
@@ -233,5 +234,10 @@ public class Room extends Component {
 			this.wallThickness = wallThickness;
 			this.tileType = tileType;
 		}
+	}
+
+
+	@Override
+	protected void addProps(WorldProps props) {
 	}
 }

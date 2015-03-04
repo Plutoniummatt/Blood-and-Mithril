@@ -39,6 +39,7 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.persistence.ParameterPersistenceService;
+import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -158,7 +159,7 @@ public class NewGameWindow extends Window {
 				)
 			);
 			
-			while(!BloodAndMithrilClient.areChunksOnScreenGenerated()) {
+			while(!ChunkLoader.loaderTasks.isEmpty()) {
 				BloodAndMithrilClient.threadWait(100);
 			}
 			

@@ -2,6 +2,7 @@ package bloodandmithril.generation.component.components;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component;
+import bloodandmithril.world.WorldProps;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**
@@ -54,5 +55,10 @@ public class DummyComponent extends Component {
 	 */
 	private DummyComponent() {
 		super(null, -1);
+	}
+
+
+	@Override
+	protected void addProps(WorldProps props) {
 	}
 }

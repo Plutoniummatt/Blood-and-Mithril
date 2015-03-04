@@ -11,11 +11,8 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
-import bloodandmithril.item.Fuel;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
-import bloodandmithril.item.items.material.Log;
 import bloodandmithril.item.items.material.Plank;
 import bloodandmithril.item.items.material.Stick;
 import bloodandmithril.item.material.wood.StandardWood;
@@ -40,10 +37,11 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Campfire extends FueledCraftingStation implements Lightable {
+public class Campfire extends CraftingStation implements Lightable {
 	private static final long serialVersionUID = -8876217926271589078L;
 
 	public static TextureRegion CAMPFIRE;
+	private boolean lit = false;
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
 	static {
@@ -54,7 +52,7 @@ public class Campfire extends FueledCraftingStation implements Lightable {
 	 * Constructor
 	 */
 	public Campfire(float x, float y) {
-		super(x, y, 64, 32, 0.2f, new ContainerImpl(100f, 200));
+		super(x, y, 64, 32, 0.2f);
 		setConstructionProgress(0f);
 	}
 
@@ -116,7 +114,7 @@ public class Campfire extends FueledCraftingStation implements Lightable {
 
 	@Override
 	public boolean customCanCraft() {
-		return isBurning();
+		return lit;
 	}
 
 
@@ -124,7 +122,7 @@ public class Campfire extends FueledCraftingStation implements Lightable {
 	public void update(float delta) {
 		super.update(delta);
 
-		if (isBurning() && isOnScreen(position, 50f)) {
+		if (lit && isOnScreen(position, 50f)) {
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 10f, 15f, Colors.FIRE_START, Util.getRandom().nextFloat() * 3.5f, Util.getRandom().nextFloat() * 10f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 10f, 15f, Colors.FIRE_START, Util.getRandom().nextFloat() * 3.5f, Util.getRandom().nextFloat() * 10f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 7f, 30f, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.BACKGROUND, false, null);
@@ -182,7 +180,7 @@ public class Campfire extends FueledCraftingStation implements Lightable {
 
 	@Override
 	public boolean canBeUsedAsFireSource() {
-		return isBurning();
+		return lit;
 	}
 
 
@@ -194,13 +192,13 @@ public class Campfire extends FueledCraftingStation implements Lightable {
 
 	@Override
 	public void light() {
-		ignite();
+		this.lit = true;
 	}
 
 
 	@Override
 	public void extinguish() {
-		super.extinguish();
+		this.lit = false;
 	}
 
 
@@ -212,13 +210,13 @@ public class Campfire extends FueledCraftingStation implements Lightable {
 
 	@Override
 	public boolean isLit() {
-		return isBurning();
+		return lit;
 	}
 
 
 	@Override
 	public boolean canDeconstruct() {
-		return !isBurning();
+		return !lit;
 	}
 
 
@@ -229,16 +227,7 @@ public class Campfire extends FueledCraftingStation implements Lightable {
 
 
 	@Override
-	public boolean isValidFuel(Item item) {
-		return item instanceof Plank || item instanceof Stick || item instanceof Log;
-	}
-
-
-	@Override
-	public float deriveCombustionDuration(Item item) {
-		if (isValidFuel(item)) {
-			return ((Fuel) item).getCombustionDuration();
-		}
-		return 0;
+	public boolean canLight() {
+		return getConstructionProgress() == 1f;
 	}
 }

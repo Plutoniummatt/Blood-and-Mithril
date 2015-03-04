@@ -12,9 +12,7 @@ import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.construction.craftingstation.FueledCraftingStation;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.window.FueledCraftingStationFuelWindow;
 import bloodandmithril.ui.components.window.TradeWindow;
 import bloodandmithril.world.Domain;
 
@@ -185,38 +183,21 @@ public class TradeWith extends CompositeAITask {
 	public static void openTradeWindowWithProp(Individual proposer, Container container) {
 		if (container instanceof Prop) {
 			Prop prop = Domain.getWorld(proposer.getWorldId()).props().getProp(((Prop) container).id);
-			if (prop instanceof FueledCraftingStation) {
 				UserInterface.addLayeredComponentUnique(
-					new FueledCraftingStationFuelWindow(
-						BloodAndMithrilClient.WIDTH/2 - 450,
-						BloodAndMithrilClient.HEIGHT/2 + 150,
-						900,
-						300,
-						proposer.getId().getSimpleName() + " interacting with container",
-						true,
-						900,
-						300,
-						proposer,
-						(FueledCraftingStation) prop
-					)
-				);
-			} else {
-				UserInterface.addLayeredComponentUnique(
-					new TradeWindow(
-						BloodAndMithrilClient.WIDTH/2 - 450,
-						BloodAndMithrilClient.HEIGHT/2 + 150,
-						900,
-						300,
-						proposer.getId().getSimpleName() + " interacting with container",
-						true,
-						900,
-						300,
-						proposer,
-						(Container) prop,
-						sortOrder
-					)
-				);
-			}
+				new TradeWindow(
+					BloodAndMithrilClient.WIDTH/2 - 450,
+					BloodAndMithrilClient.HEIGHT/2 + 150,
+					900,
+					300,
+					proposer.getId().getSimpleName() + " interacting with container",
+					true,
+					900,
+					300,
+					proposer,
+					(Container) prop,
+					sortOrder
+				)
+			);
 		}
 	}
 

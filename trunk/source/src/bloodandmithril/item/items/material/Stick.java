@@ -5,17 +5,15 @@ import java.util.Map;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
-import bloodandmithril.item.Fuel;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.mineral.earth.Ashes;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.wood.Wood;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 @Copyright("Matthew Peck 2015")
-public class Stick extends bloodandmithril.item.items.material.Material implements Craftable, Fuel {
+public class Stick extends bloodandmithril.item.items.material.Material implements Craftable {
 	private static final long serialVersionUID = 2206871386989760859L;
 
 	private Class<? extends Wood> wood;
@@ -100,17 +98,5 @@ public class Stick extends bloodandmithril.item.items.material.Material implemen
 	@Override
 	public float getCraftingDuration() {
 		return Material.getMaterial(wood).getStickCraftingDuration();
-	}
-
-
-	@Override
-	public float getCombustionDuration() {
-		return 10;
-	}
-
-
-	@Override
-	public Item consume() {
-		return new Ashes();
 	}
 }

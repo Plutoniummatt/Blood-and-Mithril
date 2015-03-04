@@ -24,4 +24,9 @@ public interface Lightable {
 	 * True if is lit
 	 */
 	public boolean isLit();
+	
+	/**
+	 * True if is lit
+	 */
+	public boolean canLight();
 }

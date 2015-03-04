@@ -47,6 +47,7 @@ import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
+import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.persistence.GameSaver;
@@ -239,6 +240,9 @@ public class DevWindow extends Window {
 			}
 			for (int i = 5; i > 0; i--) {
 				elf.giveItem(new ChickenLeg(false));
+			}
+			for (int i = 5; i > 0; i--) {
+				elf.giveItem(Rock.rock(Hematite.class));
 			}
 			for (int i = 1; i > 0; i--) {
 				Broadsword item = new Broadsword();

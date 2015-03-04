@@ -12,6 +12,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
+import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -117,7 +118,7 @@ public class LoadGameWindow extends Window {
 									BloodAndMithrilClient.domain = new Domain();
 									BloodAndMithrilClient.setup();
 									
-									while(!BloodAndMithrilClient.areChunksOnScreenGenerated()) {
+									while(!ChunkLoader.loaderTasks.isEmpty()) {
 										BloodAndMithrilClient.threadWait(100);
 									}
 									

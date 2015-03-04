@@ -61,7 +61,9 @@ public abstract class Component implements Serializable {
 	protected Component(Boundaries boundaries, int structureKey) {
 		this.boundaries = boundaries;
 		this.structureKey = structureKey;
-		addProps(Domain.getWorld(Structures.get(getStructureKey()).worldId).props());
+		if (structureKey != -1) {
+			addProps(Domain.getWorld(Structures.get(getStructureKey()).worldId).props());
+		}
 	}
 
 

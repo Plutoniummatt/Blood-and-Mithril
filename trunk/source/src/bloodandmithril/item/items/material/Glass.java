@@ -8,6 +8,7 @@ import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.mineral.earth.Sand;
+import bloodandmithril.item.material.mineral.Coal;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
@@ -72,6 +73,7 @@ public class Glass extends bloodandmithril.item.items.material.Material implemen
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> map = Maps.newHashMap();
 		map.put(new Sand(), 5);
+		map.put(Rock.rock(Coal.class), 1);
 		return map;
 	}
 
