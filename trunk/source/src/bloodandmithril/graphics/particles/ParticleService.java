@@ -133,7 +133,7 @@ public class ParticleService {
 					5f,
 					MovementMode.GRAVITY,
 					depth
-				));
+				).bounce());
 			}
 		} else {
 			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new ParrySpark(position.cpy(), knockBack, depth));

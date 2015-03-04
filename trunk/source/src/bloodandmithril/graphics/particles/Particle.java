@@ -31,6 +31,7 @@ public abstract class Particle implements Serializable {
 	protected boolean doNotUpdate;
 	private SerializableFunction<Boolean> removalCondition;
 	private MovementMode movementMode = MovementMode.GRAVITY;
+	private boolean bounces = false;
 
 	/**
 	 * Constructor
@@ -56,6 +57,16 @@ public abstract class Particle implements Serializable {
 	 * Renders the movement line, if required
 	 */
 	public abstract void renderLine(float delta);
+	
+	
+	/**
+	 * Instruct this particle to bounce
+	 */
+	public Particle bounce() {
+		this.bounces = true;
+		return this;
+	}
+	
 
 	/**
 	 * Instructs this particle to not move
@@ -85,13 +96,13 @@ public abstract class Particle implements Serializable {
 			trial.y += -previousVelocity.y*delta;
 
 			if (Domain.getWorld(worldId).getTopography().getTile(trial.x, trial.y, true).isPassable()) {
-				if (previousVelocity.y <= 0f && previousVelocity.y != 0f) {
+				if (previousVelocity.y <= 0f && previousVelocity.y != 0f && !bounces) {
 					velocity.x = velocity.x * 0.6f;
 					velocity.y = 0f;
 					position.y = Topography.convertToWorldCoord(Topography.convertToWorldTileCoord(position.y), true) + TILE_SIZE;
 				} else {
 					position = previousPosition;
-					velocity.y = -previousVelocity.y;
+					velocity.y = -previousVelocity.y * 0.5f;
 				}
 			} else {
 				velocity.x = 0f;
