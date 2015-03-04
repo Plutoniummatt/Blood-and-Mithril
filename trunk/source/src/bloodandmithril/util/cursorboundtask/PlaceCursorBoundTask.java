@@ -146,4 +146,10 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 				return false;
 			}
 		}
+
+
+		@Override
+		public boolean canCancel() {
+			return true;
+		}
 	}

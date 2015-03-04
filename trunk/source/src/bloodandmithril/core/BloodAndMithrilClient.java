@@ -347,7 +347,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		try {
-			if (GameSaver.isSaving()) {
+			if (GameSaver.isSaving() || loading) {
 				return false;
 			}
 
@@ -386,7 +386,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		boolean uiClicked = false;
 		rightDoubleClickTimer = 0f;
 
-		if (cursorBoundTask != null) {
+		if (cursorBoundTask != null && cursorBoundTask.canCancel()) {
 			cursorBoundTask = null;
 			return;
 		}
@@ -589,7 +589,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	@Override
 	public boolean keyDown(int keycode) {
 		try {
-			if (GameSaver.isSaving()) {
+			if (GameSaver.isSaving() || loading) {
 				return false;
 			}
 
