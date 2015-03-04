@@ -228,18 +228,18 @@ public class GaussianLightingRenderer {
 		List<Particle> serverSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(Domain.getActiveWorld().getServerParticles().values(), p -> {
 			return p.depth == depth && isOnScreen(p.position, 50f);
 		}));
-		
+
 		List<List<Particle>> particleCollections = Lists.newLinkedList();
-		
+
 		for (int i = clientSideGlowingTracerParticles.size(); i > 0; i -= 100) {
 			particleCollections.add(clientSideGlowingTracerParticles.subList(i - 100 < 0 ? 0 : i - 100, i));
 		}
-		
+
 		for (int i = serverSideGlowingTracerParticles.size(); i > 0; i -= 100) {
 			particleCollections.add(serverSideGlowingTracerParticles.subList(i - 100 < 0 ? 0 : i - 100, i));
 		}
-		
-		
+
+
 
 		for (List<Particle> collection : particleCollections) {
 			for (Particle p : collection) {
@@ -253,10 +253,10 @@ public class GaussianLightingRenderer {
 					previousPositions[positionIndex] = worldToScreenX(((TracerParticle) p).prevPosition.x);
 					previousPositions[positionIndex + 1] = worldToScreenY(((TracerParticle) p).prevPosition.y);
 
-					colors[colorIndex] = p.color.r;
-					colors[colorIndex + 1] = p.color.g;
-					colors[colorIndex + 2] = p.color.b;
-					colors[colorIndex + 3] = p.color.a;
+					colors[colorIndex] = ((TracerParticle) p).glowColow.r;
+					colors[colorIndex + 1] = ((TracerParticle) p).glowColow.g;
+					colors[colorIndex + 2] = ((TracerParticle) p).glowColow.b;
+					colors[colorIndex + 3] = ((TracerParticle) p).glowColow.a;
 
 					intensities[index] = ((TracerParticle) p).glowIntensity;
 
@@ -278,10 +278,10 @@ public class GaussianLightingRenderer {
 					previousPositions[positionIndex] = worldToScreenX(((TracerParticle) p).prevPosition.x);
 					previousPositions[positionIndex + 1] = worldToScreenY(((TracerParticle) p).prevPosition.y);
 
-					colors[colorIndex] = p.color.r;
-					colors[colorIndex + 1] = p.color.g;
-					colors[colorIndex + 2] = p.color.b;
-					colors[colorIndex + 3] = p.color.a;
+					colors[colorIndex] = ((TracerParticle) p).glowColow.r;
+					colors[colorIndex + 1] = ((TracerParticle) p).glowColow.g;
+					colors[colorIndex + 2] = ((TracerParticle) p).glowColow.b;
+					colors[colorIndex + 3] = ((TracerParticle) p).glowColow.a;
 
 					intensities[index] = ((TracerParticle) p).glowIntensity;
 

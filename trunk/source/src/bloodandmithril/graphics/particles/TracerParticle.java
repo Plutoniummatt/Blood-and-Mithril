@@ -2,6 +2,7 @@ package bloodandmithril.graphics.particles;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Performance;
+import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
@@ -24,11 +25,13 @@ public class TracerParticle extends Particle {
 
 	public float glowIntensity;
 	public Vector2 prevPosition;
+	public SerializableColor glowColow;
 
-	public TracerParticle(Vector2 position, Vector2 velocity, Color color, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity, MovementMode movementMode, Depth depth) {
+	public TracerParticle(Vector2 position, Vector2 velocity, Color color, Color glowColor, float radius, int worldId, SerializableFunction<Boolean> removalCondition, float glowIntensity, MovementMode movementMode, Depth depth) {
 		super(position, velocity, color, radius, worldId, removalCondition, movementMode, depth);
 		this.prevPosition = position.cpy();
 		this.glowIntensity = glowIntensity;
+		this.glowColow = new SerializableColor(glowColor);
 	}
 
 

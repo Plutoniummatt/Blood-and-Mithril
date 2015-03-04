@@ -44,6 +44,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 					Particle particle = new DiminishingTracerParticle(
 						position,
 						velocity,
+						Color.WHITE,
 						color.getColor(),
 						2f,
 						getWorldId(),

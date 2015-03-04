@@ -41,6 +41,7 @@ public class Glowing extends PreAffix {
 		Domain.getWorld(item.getWorldId()).getClientParticles().add(new TracerParticle(
 			item.getPosition().cpy().add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 			new Vector2(Util.getRandom().nextFloat() * 60f, 0f).rotate(Util.getRandom().nextFloat() * 360f),
+			Color.WHITE,
 			color.getColor(),
 			1f,
 			Domain.getActiveWorld().getWorldId(),
@@ -57,6 +58,7 @@ public class Glowing extends PreAffix {
 		Domain.getWorld(individual.getWorldId()).getClientParticles().add(new TracerParticle(
 			item.getPosition().cpy().add(new Vector2(Util.getRandom().nextFloat() * 10f, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 			new Vector2(Util.getRandom().nextFloat() * 60f, 0f).rotate(Util.getRandom().nextFloat() * 360f),
+			Color.WHITE,
 			color.getColor(),
 			1f,
 			Domain.getActiveWorld().getWorldId(),

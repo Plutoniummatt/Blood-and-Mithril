@@ -32,6 +32,7 @@ public class ParticleService {
 					new Vector2(Util.getRandom().nextFloat() * 40f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).mul(5f),
 					Color.RED,
 					Color.RED,
+					Color.RED,
 					2f,
 					Domain.getActiveWorld().getWorldId(),
 					0f,
@@ -46,12 +47,13 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocityTracer(Vector2 position, float spawnSpread, float maxVel, Color color, float glow, int maxLifeTime, MovementMode mode, Depth depth) {
+	public static void randomVelocityTracer(Vector2 position, float spawnSpread, float maxVel, Color color, Color glowColor, float glow, int maxLifeTime, MovementMode mode, Depth depth) {
 		if (isClient()) {
 			Domain.getActiveWorld().getClientParticles().add(new TracerParticle(
 				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 				new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 				color,
+				glowColor,
 				1f,
 				Domain.getActiveWorld().getWorldId(),
 				new Countdown(Util.getRandom().nextInt(maxLifeTime)),
@@ -60,7 +62,7 @@ public class ParticleService {
 				depth
 			));
 		} else {
-			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), spawnSpread, maxVel, new SerializableColor(color), glow, maxLifeTime, mode, depth));
+			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new FlameEmber(position.cpy(), spawnSpread, maxVel, new SerializableColor(color), new SerializableColor(glowColor), glow, maxLifeTime, mode, depth));
 		}
 	}
 
@@ -83,17 +85,18 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth, boolean tracer, Color toChangeTo) {
+	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, Color glowColor, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth, boolean tracer, Color toChangeTo) {
 		if (diminishingDuration < 100) {
 			diminishingDuration = 100;
 		}
-		
+
 		if (isClient()) {
 			if (tracer) {
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingTracerParticle(
 					position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 					new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 					color,
+					glowColor,
 					initialRadius,
 					Domain.getActiveWorld().getWorldId(),
 					glow,
@@ -106,6 +109,7 @@ public class ParticleService {
 					position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 					new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 					color,
+					glowColor,
 					toChangeTo,
 					initialRadius,
 					Domain.getActiveWorld().getWorldId(),
@@ -120,13 +124,14 @@ public class ParticleService {
 	}
 
 
-	public static void parrySpark(Vector2 position, Vector2 knockBack, Depth depth, Color color, int life) {
+	public static void parrySpark(Vector2 position, Vector2 knockBack, Depth depth, Color color, Color glowColor, int life) {
 		if (isClient()) {
 			for (int i = 0; i < 35; i++) {
 				Domain.getActiveWorld().getClientParticles().add(new TracerParticle(
 					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).mul(2f),
 					color,
+					glowColor,
 					1f,
 					Domain.getActiveWorld().getWorldId(),
 					new Countdown(Util.getRandom().nextInt(life)),
@@ -155,7 +160,7 @@ public class ParticleService {
 
 		@Override
 		public void run() {
-			ParticleService.parrySpark(position, knockBack, depth, Color.WHITE, 100);
+			ParticleService.parrySpark(position, knockBack, depth, Color.WHITE, Color.WHITE, 100);
 		}
 	}
 
@@ -187,12 +192,14 @@ public class ParticleService {
 		private float spawnSpread;
 		private int maxLifeTime;
 		private Depth depth;
+		private SerializableColor glowColor;
 
-		public FlameEmber(Vector2 position, float spawnSpread, float maxVel, SerializableColor color, float glow, int maxLifeTime, MovementMode mode, Depth depth) {
+		public FlameEmber(Vector2 position, float spawnSpread, float maxVel, SerializableColor color, SerializableColor glowColor, float glow, int maxLifeTime, MovementMode mode, Depth depth) {
 			this.position = position;
 			this.spawnSpread = spawnSpread;
 			this.maxVel = maxVel;
 			this.color = color;
+			this.glowColor = glowColor;
 			this.glow = glow;
 			this.maxLifeTime = maxLifeTime;
 			this.mode = mode;
@@ -201,7 +208,7 @@ public class ParticleService {
 
 		@Override
 		public void run() {
-			ParticleService.randomVelocityTracer(position, spawnSpread, maxVel, color.getColor(), glow, maxLifeTime, mode, depth);
+			ParticleService.randomVelocityTracer(position, spawnSpread, maxVel, color.getColor(), glowColor.getColor(), glow, maxLifeTime, mode, depth);
 		}
 	}
 }

@@ -143,8 +143,8 @@ public class MedievalWallTorch extends Furniture implements Lightable {
 
 			if (isOnScreen(position, 50f)) {
 				Vector2 firePosition = position.cpy().add(0, 23);
-				ParticleService.randomVelocityDiminishing(firePosition, 3f, 15f, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 7f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(firePosition, 3f, 10f, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
+				ParticleService.randomVelocityDiminishing(firePosition, 3f, 15f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 7f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(firePosition, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
 			}
 			burnDurationRemaining -= delta;
 

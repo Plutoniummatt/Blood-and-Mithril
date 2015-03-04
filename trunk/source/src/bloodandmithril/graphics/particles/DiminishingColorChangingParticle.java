@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class DiminishingColorChangingParticle extends DiminishingTracerParticle {
 	private static final long serialVersionUID = 4485079922391112334L;
-	
+
 	private boolean changeColor = false;
 	private float rStep = 0f;
 	private float gStep = 0f;
@@ -27,6 +27,7 @@ public class DiminishingColorChangingParticle extends DiminishingTracerParticle 
 			Vector2 position,
 			Vector2 velocity,
 			Color color,
+			Color glowColor,
 			Color colorToChangeTo,
 			float radius,
 			int worldId,
@@ -34,7 +35,7 @@ public class DiminishingColorChangingParticle extends DiminishingTracerParticle 
 			MovementMode movementMode,
 			Depth depth,
 			long diminishingDuration) {
-		super(position, velocity, color, radius, worldId, glowIntensity, movementMode, depth, diminishingDuration);
+		super(position, velocity, color, glowColor, radius, worldId, glowIntensity, movementMode, depth, diminishingDuration);
 
 		if (colorToChangeTo != null) {
 			this.rStep = colorToChangeTo.r - color.r;
