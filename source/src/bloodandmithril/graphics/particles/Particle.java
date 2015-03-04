@@ -57,8 +57,8 @@ public abstract class Particle implements Serializable {
 	 * Renders the movement line, if required
 	 */
 	public abstract void renderLine(float delta);
-	
-	
+
+
 	/**
 	 * Instruct this particle to bounce
 	 */
@@ -66,7 +66,7 @@ public abstract class Particle implements Serializable {
 		this.bounces = true;
 		return this;
 	}
-	
+
 
 	/**
 	 * Instructs this particle to not move
