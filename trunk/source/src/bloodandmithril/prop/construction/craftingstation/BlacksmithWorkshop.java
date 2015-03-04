@@ -1,19 +1,28 @@
 package bloodandmithril.prop.construction.craftingstation;
 
+import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.item.items.material.ArrowHead.arrowHead;
 
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.Particle.MovementMode;
+import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
+import bloodandmithril.world.Domain.Depth;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 /**
@@ -38,13 +47,47 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 	/** {@link TextureRegion} of the {@link Anvl} */
 	public static TextureRegion blackSmithWorkshop;
+	public static TextureRegion blackSmithWorkshopWorking;
+	private int sparkCountdown;
 
 	/**
 	 * Constructor
 	 */
 	public BlacksmithWorkshop(float x, float y) {
-		super(x, y, 71, 31, 0);
+		super(x, y, 116, 61, 0);
 		setConstructionProgress(1f);
+	}
+	
+	
+	@Override
+	protected void internalRender(float constructionProgress) {
+		if (isOccupied()) {
+			spriteBatch.draw(blackSmithWorkshopWorking, position.x - width / 2, position.y);
+		} else {
+			spriteBatch.draw(blackSmithWorkshop, position.x - width / 2, position.y);
+		}
+	}
+	
+	
+	@Override
+	public synchronized void update(float delta) {
+		super.update(delta);
+
+		if (isOccupied()) {
+			if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
+				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, 2f, 8f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(200), Depth.MIDDLEGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, 1f, 6f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(200), Depth.MIDDLEGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 10f, 10f, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000) + 3000, Depth.BACKGROUND, false, null);
+				
+				
+				if (sparkCountdown == 0) {
+					ParticleService.parrySpark(position.cpy().add(-37, height - 33), new Vector2(-80f, -100f), Depth.FOREGOUND, new Color(1f, 0.95f, 0.8f, 1f), 250);
+					sparkCountdown = 90;
+				}
+			}
+			
+			sparkCountdown--;
+		}
 	}
 
 
