@@ -102,4 +102,10 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 	public String getShortDescription() {
 		return "Plant " + toPlant.getSingular(false);
 	}
+
+
+	@Override
+	public boolean canCancel() {
+		return true;
+	}
 }

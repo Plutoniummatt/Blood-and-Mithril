@@ -21,8 +21,8 @@ public abstract class CursorBoundTask {
 		this.task = task;
 		this.isWorldCoordinate = isWorldCoordinate;
 	}
-	
-	
+
+
 	protected void setTask(JITTask task) {
 		this.task = task;
 	}
@@ -45,11 +45,17 @@ public abstract class CursorBoundTask {
 	public abstract void renderUIGuide();
 
 
+	/**
+	 * @return whether this task relates to world coordinate
+	 */
 	public boolean isWorldCoordinate() {
 		return isWorldCoordinate;
 	}
-	
-	
+
+
+	/**
+	 * @return true if this can be executed
+	 */
 	public abstract boolean executionConditionMet();
 
 
@@ -57,4 +63,10 @@ public abstract class CursorBoundTask {
 	 * @return the UI help text that will be displayed next to the cursor when this {@link CursorBoundTask} is bound to the cursor.
 	 */
 	public abstract String getShortDescription();
+
+
+	/**
+	 * @return true if this task can be cancelled
+	 */
+	public abstract boolean canCancel();
 }

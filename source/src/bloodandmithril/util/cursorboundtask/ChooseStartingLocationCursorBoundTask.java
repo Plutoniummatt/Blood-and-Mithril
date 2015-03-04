@@ -38,7 +38,7 @@ import com.google.common.collect.Maps;
  */
 @Copyright("Matthew Peck 2015")
 public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
-	
+
 	private final Map<Integer, Individual> individuals = Maps.newHashMap();
 	private final ItemPackage startingItemPackage;
 
@@ -47,10 +47,10 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	 */
 	public ChooseStartingLocationCursorBoundTask(Set<Individual> startingIndividuals, ItemPackage startingItemPackage, int startingFactionId) {
 		super(
-			null, 
+			null,
 			true
 		);
-		
+
 		setTask(args -> {
 			Domain.getActiveWorld().props().addProp((Prop) startingItemPackage.getContainer());
 			for (Individual individual : individuals.values()) {
@@ -58,13 +58,13 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 				Domain.addIndividual(individual, Domain.getActiveWorld().getWorldId());
 			}
 		});
-		
+
 		this.startingItemPackage = startingItemPackage;
-		
+
 		int maxSpread = startingIndividuals.size() * 30;
 		for (Individual individual : startingIndividuals) {
 			this.individuals.put(
-				Util.getRandom().nextInt(maxSpread) - maxSpread / 2, 
+				Util.getRandom().nextInt(maxSpread) - maxSpread / 2,
 				individual
 			);
 		}
@@ -75,7 +75,7 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	public void renderUIGuide() {
 		float mouseX = getMouseWorldX();
 		float mouseY = getMouseWorldY();
-		
+
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		spriteBatch.begin();
@@ -87,9 +87,9 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 				pos = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(mouseX + entry.getKey(), mouseY, true);
 				entry.getValue().getState().position.x = pos.x;
 				entry.getValue().getState().position.y = pos.y;
-				
+
 				boolean canPlace = canPlaceIndividual(entry.getValue());
-				
+
 				Shaders.filter.setUniformf("color", canPlace ? Color.GREEN : Color.RED);
 				spriteBatch.draw(UserInterface.currentArrow, pos.x - 5, pos.y);
 				spriteBatch.flush();
@@ -99,7 +99,7 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 		}
 		spriteBatch.end();
 		gl.glDisable(GL_BLEND);
-		
+
 		Container container = startingItemPackage.getContainer();
 		if (container instanceof Prop) {
 			((Prop) container).position.x = mouseX;
@@ -112,9 +112,9 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	private boolean canPlaceIndividual(Individual individual) {
 		return Prop.canPlaceAt(
 			individual.getState().position.x,
-			individual.getState().position.y, 
-			1, 
-			individual.getHitBox().height, 
+			individual.getState().position.y,
+			1,
+			individual.getHitBox().height,
 			new SerializableMappingFunction<Tile, Boolean>() {
 				private static final long serialVersionUID = 1L;
 				@Override
@@ -129,18 +129,18 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 					return true;
 				}
 			},
-			true, 
+			true,
 			() -> {
 				return true;
 			}
 		);
 	}
 
-	
+
 	@Override
 	public boolean executionConditionMet() {
 		Container container = startingItemPackage.getContainer();
-		
+
 		if (container instanceof Prop) {
 			for (Individual individual : individuals.values()) {
 				if  (!canPlaceIndividual(individual)) {
@@ -149,13 +149,19 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 			}
 			return ((Prop) container).canPlaceAtCurrentPosition();
 		}
-		
+
 		return false;
 	}
 
-	
+
 	@Override
 	public String getShortDescription() {
 		return "Choose starting location";
+	}
+
+
+	@Override
+	public boolean canCancel() {
+		return false;
 	}
 }
