@@ -1,14 +1,14 @@
-package bloodandmithril.character.skill;
+package bloodandmithril.character.proficiency;
 
 import java.io.Serializable;
 import java.util.Collection;
 
-import bloodandmithril.character.skill.skills.Carpentry;
-import bloodandmithril.character.skill.skills.Cooking;
-import bloodandmithril.character.skill.skills.Glassworking;
-import bloodandmithril.character.skill.skills.Masonry;
-import bloodandmithril.character.skill.skills.Smithing;
-import bloodandmithril.character.skill.skills.Trading;
+import bloodandmithril.character.proficiency.proficiencies.Carpentry;
+import bloodandmithril.character.proficiency.proficiencies.Cooking;
+import bloodandmithril.character.proficiency.proficiencies.Glassworking;
+import bloodandmithril.character.proficiency.proficiencies.Masonry;
+import bloodandmithril.character.proficiency.proficiencies.Smithing;
+import bloodandmithril.character.proficiency.proficiencies.Trading;
 import bloodandmithril.core.Copyright;
 
 import com.google.common.collect.Lists;

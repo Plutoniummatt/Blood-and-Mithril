@@ -76,7 +76,7 @@ import bloodandmithril.character.individuals.IndividualKineticsProcessingData;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.individuals.characters.Hare;
-import bloodandmithril.character.skill.Proficiencies;
+import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;

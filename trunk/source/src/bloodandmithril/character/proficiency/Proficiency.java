@@ -1,4 +1,4 @@
-package bloodandmithril.character.skill;
+package bloodandmithril.character.proficiency;
 
 import java.io.Serializable;
 
