@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.skill.Proficiency;
+import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;

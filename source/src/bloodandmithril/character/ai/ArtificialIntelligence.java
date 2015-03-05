@@ -5,8 +5,12 @@ import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import static bloodandmithril.util.Util.firstNonNull;
 
 import java.io.Serializable;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.perception.Observer;
+import bloodandmithril.character.ai.perception.Sniffer;
+import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Wait;
@@ -40,6 +44,9 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/** {@link AIMode} */
 	private AIMode mode = AIMode.AUTO;
 
+	/** Stimuli as perceived by the host */
+	private transient LinkedBlockingQueue<Stimulus> stimuli = new LinkedBlockingQueue<Stimulus>();
+
 	/**
 	 * Constructor, starts the AI processing thread if it has not been started.
 	 */
@@ -57,6 +64,8 @@ public abstract class ArtificialIntelligence implements Serializable {
 					{
 						switch (mode) {
 						case AUTO:
+							selfStimulate();
+							reactToStimuli();
 							determineCurrentTask();
 							break;
 						case MANUAL:
@@ -67,17 +76,31 @@ public abstract class ArtificialIntelligence implements Serializable {
 				});
 			}
 
-			if (currentTask != null) {
+			if (getCurrentTask() != null) {
 				AITask taskToExecute = getCurrentTask();
 				taskToExecute.execute(delta);
 				Logger.aiDebug(hostId.getSimpleName() + " is: " + taskToExecute.getDescription(), LogLevel.INFO);
 
-				if (currentTask.isComplete() && !currentTask.uponCompletion() && !(currentTask instanceof Idle)) {
+				if (taskToExecute.isComplete() && !taskToExecute.uponCompletion() && !(taskToExecute instanceof Idle)) {
 					setCurrentTask(new Idle());
 				}
 			}
 		} else if (ClientServerInterface.isServer()) {
 			throw new RuntimeException("Something has caused the AI thread to terminate");
+		}
+	}
+
+
+	/**
+	 * Actively self stimulate
+	 */
+	private void selfStimulate() {
+		Individual host = getHost();
+		if (host instanceof Observer) {
+			((Observer) host).observe();
+		}
+		if (host instanceof Sniffer) {
+			((Sniffer) host).sniff();
 		}
 	}
 
@@ -95,8 +118,8 @@ public abstract class ArtificialIntelligence implements Serializable {
 			currentTask = new Idle();
 		}
 	}
-	
-	
+
+
 	public AIMode getAIMode() {
 		return mode;
 	}
@@ -113,13 +136,22 @@ public abstract class ArtificialIntelligence implements Serializable {
 		return firstNonNull(currentTask, new Idle());
 	}
 
+
 	/** Implementation-specific update method */
 	protected abstract void determineCurrentTask();
 
+	/** Reacts to any stimuli */
+	protected abstract void reactToStimuli();
 
 	/** Calculates the distance from an individual */
 	protected float distanceFrom(Individual other) {
 		return getHost().getState().position.cpy().sub(other.getState().position).len();
+	}
+
+
+	/** Gets all stimuli */
+	public synchronized void addStimulus(Stimulus stimulus) {
+		stimuli.add(stimulus);
 	}
 
 

@@ -43,21 +43,31 @@ public class ElfAI extends ArtificialIntelligence {
 		if (Util.roll(0.5f)) {
 			wander(200f, false);
 		} else if (!(getCurrentTask() instanceof Wait) && !(getCurrentTask() instanceof LightLightable)) {
-			Individual host = getHost();
-			List<Prop> nearbyEntities = Lists.newLinkedList(Domain.getWorld(host.getWorldId()).getPositionalIndexMap().getNearbyEntities(Prop.class, host.getState().position));
-			Collections.shuffle(nearbyEntities);
-			LinkedList<Prop> lightables = Lists.newLinkedList(Collections2.filter(nearbyEntities, prop -> {
-				return prop instanceof Lightable && !((Lightable) prop).isLit() && ((Lightable) prop).canLight();
-			}));
-			if (!lightables.isEmpty() && host.has(new FlintAndFiresteel()) > 0) {
-				try {
-					setCurrentTask(new LightLightable(host, (Lightable) lightables.get(0), true));
-				} catch (NoTileFoundException e) {}
-			}
+			igniteLightables();
 		}
 
 		if (Util.roll(0.0005f)) {
 			getHost().speak(Speech.getRandomIdleSpeech(), 2500);
 		}
+	}
+
+
+	private void igniteLightables() {
+		Individual host = getHost();
+		List<Prop> nearbyEntities = Lists.newLinkedList(Domain.getWorld(host.getWorldId()).getPositionalIndexMap().getNearbyEntities(Prop.class, host.getState().position));
+		Collections.shuffle(nearbyEntities);
+		LinkedList<Prop> lightables = Lists.newLinkedList(Collections2.filter(nearbyEntities, prop -> {
+			return prop instanceof Lightable && !((Lightable) prop).isLit() && ((Lightable) prop).canLight();
+		}));
+		if (!lightables.isEmpty() && host.has(new FlintAndFiresteel()) > 0) {
+			try {
+				setCurrentTask(new LightLightable(host, (Lightable) lightables.get(0), true));
+			} catch (NoTileFoundException e) {}
+		}
+	}
+
+
+	@Override
+	protected void reactToStimuli() {
 	}
 }

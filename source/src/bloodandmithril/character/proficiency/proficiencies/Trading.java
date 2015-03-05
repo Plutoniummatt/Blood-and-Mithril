@@ -1,6 +1,6 @@
-package bloodandmithril.character.skill.skills;
+package bloodandmithril.character.proficiency.proficiencies;
 
-import bloodandmithril.character.skill.Proficiency;
+import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.core.Copyright;
 
 /**

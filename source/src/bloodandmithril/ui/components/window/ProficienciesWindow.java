@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.skill.Proficiencies;
-import bloodandmithril.character.skill.Proficiency;
+import bloodandmithril.character.proficiency.Proficiencies;
+import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;

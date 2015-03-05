@@ -50,7 +50,7 @@ import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
-import bloodandmithril.character.skill.Proficiencies;
+import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
@@ -231,6 +231,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private Map<Integer, Long> beingAttackedBy = Maps.newHashMap();
 
 	private int maxConcurrentAttackers = 3;
+
+	/** Whether this individual is allowed to speak */
+	private boolean shutup = false;
 
 	/** These variables are needed to prevent duplicate executions of action frames */
 	private Action previousActionFrameAction;
@@ -1039,6 +1042,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		return new ContextMenu(0, 0,
 			true,
 			selectDeselect(this),
+			shutUpSpeak(),
 			build()
 		);
 	}
@@ -1054,6 +1058,31 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
+	private MenuItem shutUpSpeak() {
+		return new MenuItem(
+			shutup ? "Speak" : "Shut up",
+			() -> {
+				if (isServer()) {
+					if (!shutup) {
+						speak("Fine...", 1000);
+						this.shutup = true;
+					} else {
+						this.shutup = false;
+						speak("Yay!", 1000);
+					}
+				} else {
+					// TODO Shutting up over CSI
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+	}
+
+
+
 	private MenuItem skills() {
 		return new MenuItem(
 			"Proficiencies",
@@ -1062,7 +1091,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					new ProficienciesWindow(Individual.this)
 				);
 			},
-			Color.ORANGE,
+			Color.WHITE,
 			getToolTipTextColor(),
 			Color.GRAY,
 			null
@@ -1201,7 +1230,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				);
 				UserInterface.addLayeredComponentUnique(inventoryWindow);
 			},
-			Color.ORANGE,
+			Color.WHITE,
 			getToolTipTextColor(),
 			Color.GRAY,
 			null
@@ -1886,6 +1915,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	public void speak(String text, long duration) {
+		if (shutup) {
+			return;
+		}
+
 		if (ClientServerInterface.isServer()) {
 			UserInterface.addTextBubble(
 				text,
