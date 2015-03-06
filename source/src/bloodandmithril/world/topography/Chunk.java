@@ -19,7 +19,7 @@ import bloodandmithril.world.topography.tile.Tile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -186,8 +186,8 @@ public class Chunk {
 	 * Renders this chunk
 	 */
 	public void render(boolean foreGround, Camera camera, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
-		Gdx.gl.glEnable(GL10.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		if (foreGround) {
 			shader.begin();
 			shader.setUniformMatrix("u_projTrans", camera.combined);
@@ -205,7 +205,7 @@ public class Chunk {
 		}
 
 		if (UserInterface.DEBUG) {
-			UserInterface.shapeRenderer.begin(ShapeType.Rectangle);
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setProjectionMatrix(camera.combined);
 			UserInterface.shapeRenderer.setColor(new Color(1f, 0.5f, 1f, 0.15f));
 			float x = fData.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE;
@@ -214,7 +214,7 @@ public class Chunk {
 			UserInterface.shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 			UserInterface.shapeRenderer.end();
 		}
-		Gdx.gl.glDisable(GL10.GL_BLEND);
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 	}
 
 

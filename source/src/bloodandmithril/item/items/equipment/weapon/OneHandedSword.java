@@ -3,7 +3,7 @@ package bloodandmithril.item.items.equipment.weapon;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
 import static bloodandmithril.world.Domain.individualTexture;
-import static com.badlogic.gdx.graphics.g2d.Animation.NORMAL;
+import static com.badlogic.gdx.graphics.g2d.Animation.PlayMode.NORMAL;
 
 import java.util.Map;
 

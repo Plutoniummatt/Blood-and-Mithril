@@ -4,9 +4,9 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.badlogic.gdx.Gdx.gl;
-import static com.badlogic.gdx.graphics.GL10.GL_BLEND;
-import static com.badlogic.gdx.graphics.GL10.GL_ONE_MINUS_SRC_ALPHA;
-import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
+import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 
 import java.util.Map;
 import java.util.Map.Entry;

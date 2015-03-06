@@ -40,6 +40,7 @@ import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
@@ -64,15 +65,15 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 	static {
 		boolean server = !ClientServerInterface.isClient();
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> walkSequence = newArrayList(
-			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.08f, Animation.LOOP), server ? null : Shaders.pass)
+			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.08f, PlayMode.LOOP), server ? null : Shaders.pass)
 		);
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> runSequence = newArrayList(
-			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.06f, Animation.LOOP), server ? null : Shaders.pass)
+			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.06f, PlayMode.LOOP), server ? null : Shaders.pass)
 		);
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> standSequence = newArrayList(
-			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 1, 1f, Animation.LOOP), server ? null : Shaders.pass)
+			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 1, 1f, PlayMode.LOOP), server ? null : Shaders.pass)
 		);
 
 		animationMap.put(Action.RUN_LEFT, runSequence);

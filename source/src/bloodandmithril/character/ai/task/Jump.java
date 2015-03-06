@@ -35,8 +35,8 @@ public class Jump extends AITask {
 		this.from = from;
 		this.to = to;
 	}
-	
-	
+
+
 	public Vector2 getDestination() {
 		return to.cpy();
 	}
@@ -77,7 +77,7 @@ public class Jump extends AITask {
 				jumped = true;
 				return;
 			}
-			
+
 			host.clearCommands();
 			((GroundTravellingIndividual) host).jump(resolveJumpVector());
 			jumped = true;
@@ -92,6 +92,6 @@ public class Jump extends AITask {
 		if (nor.y < 0f) {
 			return new Vector2();
 		}
-		return nor.mul(500f * Math.min(difference.len() / 75f, 1f));
+		return nor.scl(500f * Math.min(difference.len() / 75f, 1f));
 	}
 }

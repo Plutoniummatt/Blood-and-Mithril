@@ -60,7 +60,7 @@ public class RayTracingVisibilityChecker {
 			}
 
 			float incrementingDistance = distance - TILE_SIZE / 2 <= 0 ? distance : TILE_SIZE / 2;
-			return check(topography, position.cpy().add(direction.cpy().nor().mul(incrementingDistance)), direction, distance - incrementingDistance);
+			return check(topography, position.cpy().add(direction.cpy().nor().scl(incrementingDistance)), direction, distance - incrementingDistance);
 		} catch (NoTileFoundException e) {
 			return false;
 		}

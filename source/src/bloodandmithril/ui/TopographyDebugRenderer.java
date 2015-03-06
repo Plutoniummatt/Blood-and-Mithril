@@ -37,7 +37,7 @@ public class TopographyDebugRenderer {
 	 * Renders the topography map
 	 */
 	public static void render() {
-		UserInterface.shapeRenderer.begin(ShapeType.Rectangle);
+		UserInterface.shapeRenderer.begin(ShapeType.Line);
 		BloodAndMithrilClient.spriteBatch.begin();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		for (Structure struct : Structures.getStructures().values()) {
@@ -90,9 +90,9 @@ public class TopographyDebugRenderer {
 
 		UserInterface.shapeRenderer.end();
 
-		UserInterface.shapeRenderer.begin(ShapeType.FilledCircle);
+		UserInterface.shapeRenderer.begin(ShapeType.Filled);
 		for (Entry<Integer, Integer> h : Domain.getActiveWorld().getTopography().getStructures().getSurfaceHeight().entrySet()) {
-			UserInterface.shapeRenderer.filledCircle(h.getKey() - topoX, h.getValue() - topoY, 1);
+			UserInterface.shapeRenderer.circle(h.getKey() - topoX, h.getValue() - topoY, 1);
 		}
 		UserInterface.shapeRenderer.end();
 

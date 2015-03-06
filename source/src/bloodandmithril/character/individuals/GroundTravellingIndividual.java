@@ -161,7 +161,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 			case ATTACK_RIGHT_SPEAR:
 			case ATTACK_LEFT_UNARMED:
 			case ATTACK_RIGHT_UNARMED:
-				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).a.animationDuration) {
+				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).a.getAnimationDuration()) {
 					setAnimationTimer(0f);
 					if (getCurrentAction().left()) {
 						setCurrentAction(STAND_LEFT_COMBAT);
@@ -205,7 +205,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 		getState().velocity.x = jumpVector.x;
 		getState().velocity.y = jumpVector.y;
 		decreaseStamina(0.1f);
-		
+
 		SoundService.play(SoundService.femaleHit, getState().position.cpy(), true, getVisible(this));
 		setCurrentAction(jumpVector.x < 0f ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
 	}

@@ -222,7 +222,7 @@ public class Arrow<T extends Metal> extends Projectile {
 		if (Util.roll(0.2f)) {
 			Domain.getWorld(getWorldId()).projectiles().removeProjectile(getId());
 		} else {
-			velocity.mul(0.05f);
+			velocity.scl(0.05f);
 			velocity.x = -velocity.x;
 		}
 	}

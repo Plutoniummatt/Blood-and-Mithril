@@ -60,7 +60,7 @@ public interface Kinematics {
 		}
 
 		//Calculate position
-		state.position.add(state.velocity.cpy().mul(delta));
+		state.position.add(state.velocity.cpy().scl(delta));
 
 		//Calculate velocity based on acceleration, including gravity
 		if (abs((state.velocity.y - world.getGravity() * delta) * delta) < TILE_SIZE/2) {
@@ -68,7 +68,7 @@ public interface Kinematics {
 		} else {
 			state.velocity.y = state.velocity.y * 0.8f;
 		}
-		state.velocity.add(state.acceleration.cpy().mul(delta));
+		state.velocity.add(state.acceleration.cpy().scl(delta));
 
 		//Ground detection
 		//If the position is not on an empty tile and is not a platform tile run the ground detection routine

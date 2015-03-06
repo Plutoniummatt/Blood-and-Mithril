@@ -3,7 +3,6 @@ package bloodandmithril.ui.components.window;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
 
 import java.util.Comparator;
 import java.util.Deque;
@@ -139,11 +138,11 @@ public class IndividualStatusWindow extends Window {
 		int barSeparation = 15;
 		int barLengthModifier = 80;
 
-		shapeRenderer.begin(FilledRectangle);
+		shapeRenderer.begin(ShapeType.Filled);
 		Gdx.gl20.glLineWidth(1);
-		
+
 		float health = individual.getState().health / individual.getState().maxHealth;
-		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY, (width - barLengthModifier) * health, barThickness,
+		shapeRenderer.rect(x + barOffsetX, y - barOffsetY, (width - barLengthModifier) * health, barThickness,
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
@@ -151,7 +150,7 @@ public class IndividualStatusWindow extends Window {
 		);
 
 		float stamina = individual.getState().stamina;
-		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY - 1 * barSeparation, (width - barLengthModifier) * stamina, barThickness,
+		shapeRenderer.rect(x + barOffsetX, y - barOffsetY - 1 * barSeparation, (width - barLengthModifier) * stamina, barThickness,
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
@@ -159,7 +158,7 @@ public class IndividualStatusWindow extends Window {
 		);
 
 		float mana = individual.getState().maxMana == 0f ? 0f : individual.getState().mana / individual.getState().maxMana;
-		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY - 2 * barSeparation, (width - barLengthModifier) * mana, barThickness,
+		shapeRenderer.rect(x + barOffsetX, y - barOffsetY - 2 * barSeparation, (width - barLengthModifier) * mana, barThickness,
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
@@ -167,7 +166,7 @@ public class IndividualStatusWindow extends Window {
 		);
 
 		float hunger = individual.getState().hunger;
-		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY - 4 * barSeparation, (width - barLengthModifier) * hunger, barThickness,
+		shapeRenderer.rect(x + barOffsetX, y - barOffsetY - 4 * barSeparation, (width - barLengthModifier) * hunger, barThickness,
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
@@ -175,7 +174,7 @@ public class IndividualStatusWindow extends Window {
 		);
 
 		float thirst = individual.getState().thirst;
-		shapeRenderer.filledRect(x + barOffsetX, y - barOffsetY - 5 * barSeparation, (width - barLengthModifier) * thirst, barThickness,
+		shapeRenderer.rect(x + barOffsetX, y - barOffsetY - 5 * barSeparation, (width - barLengthModifier) * thirst, barThickness,
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
 			modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)),
@@ -183,7 +182,7 @@ public class IndividualStatusWindow extends Window {
 		);
 		shapeRenderer.end();
 
-		shapeRenderer.begin(ShapeType.Rectangle);
+		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(modulateAlpha(Color.WHITE, getAlpha() * (isActive() ? 1.0f : 0.7f)));
 		shapeRenderer.rect(x + barOffsetX, y - barOffsetY, width - barLengthModifier, barThickness);
 		shapeRenderer.rect(x + barOffsetX, y - barOffsetY - 1 * barSeparation, width - barLengthModifier, barThickness);

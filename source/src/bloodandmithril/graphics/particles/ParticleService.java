@@ -29,7 +29,7 @@ public class ParticleService {
 			for (int i = 0; i < 35; i++) {
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
-					new Vector2(Util.getRandom().nextFloat() * 40f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).mul(5f),
+					new Vector2(Util.getRandom().nextFloat() * 40f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).scl(5f),
 					Color.RED,
 					Color.RED,
 					Color.RED,
@@ -129,7 +129,7 @@ public class ParticleService {
 			for (int i = 0; i < 35; i++) {
 				Domain.getActiveWorld().getClientParticles().add(new TracerParticle(
 					position.cpy(),
-					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).mul(2f),
+					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).scl(2f),
 					color,
 					glowColor,
 					1f,

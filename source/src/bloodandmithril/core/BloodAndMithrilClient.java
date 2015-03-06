@@ -332,8 +332,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Renders the main menu
 	 */
 	private void renderMainMenuBackDrop() {
-		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
-		UserInterface.shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT, Color.BLACK, Color.BLACK, Color.BLACK,Color.BLACK);
+		UserInterface.shapeRenderer.begin(ShapeType.Filled);
+		UserInterface.shapeRenderer.rect(0, 0, WIDTH, HEIGHT, Color.BLACK, Color.BLACK, Color.BLACK,Color.BLACK);
 		UserInterface.shapeRenderer.end();
 	}
 

@@ -5,6 +5,7 @@ import bloodandmithril.networking.ClientServerInterface;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -16,7 +17,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class AnimationHelper {
 
 
-	public static Animation animation(Texture tex, int startX, int startY, int width, int height, int frames, float duration, int playMode) {
+	public static Animation animation(Texture tex, int startX, int startY, int width, int height, int frames, float duration, PlayMode playMode) {
 		if (ClientServerInterface.isClient()) {
 			TextureRegion[] regions = new TextureRegion[frames];
 

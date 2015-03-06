@@ -6,10 +6,9 @@ import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.util.Logger.LogLevel.DEBUG;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
 import static com.badlogic.gdx.Gdx.gl;
-import static com.badlogic.gdx.graphics.GL10.GL_BLEND;
-import static com.badlogic.gdx.graphics.GL10.GL_ONE_MINUS_SRC_ALPHA;
-import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
+import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
+import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 
 import java.util.Deque;
 import java.util.List;
@@ -23,6 +22,7 @@ import bloodandmithril.util.Util.Colors;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * A {@link UserInterface} Component.
@@ -159,7 +159,7 @@ public abstract class Component {
 	 * Renders a rectangle
 	 */
 	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor) {
-		shapeRenderer.begin(FilledRectangle);
+		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(1f, 0f, 0f, 0.5f * getAlpha());
 		shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 		gl.glEnable(GL_BLEND);
@@ -168,7 +168,7 @@ public abstract class Component {
 		float a = active ? 0.7f : 0.3f;
 		Color color = modulateAlpha(backGroundColor, a * getAlpha());
 
-		shapeRenderer.filledRect(
+		shapeRenderer.rect(
 			renderX,
 			renderY - height - bottomLeft.getRegionHeight(),
 			length,
@@ -190,7 +190,7 @@ public abstract class Component {
 	 * Renders a rectangle
 	 */
 	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor, float alphaOverride) {
-		shapeRenderer.begin(FilledRectangle);
+		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(1f, 0f, 0f, 0.5f * alphaOverride);
 		shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 		gl.glEnable(GL_BLEND);
@@ -199,7 +199,7 @@ public abstract class Component {
 		float a = active ? 0.7f : 0.3f;
 		Color color = Colors.modulateAlpha(backGroundColor, a * alphaOverride);
 
-		shapeRenderer.filledRect(
+		shapeRenderer.rect(
 			renderX,
 			renderY - height - bottomLeft.getRegionHeight(),
 			length,

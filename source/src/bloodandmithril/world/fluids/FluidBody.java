@@ -148,7 +148,7 @@ public class FluidBody implements Serializable {
 	 * Renders this {@link FluidBody}, called from main thread
 	 */
 	public void render() {
-		Domain.shapeRenderer.begin(ShapeType.FilledRectangle);
+		Domain.shapeRenderer.begin(ShapeType.Filled);
 		Domain.shapeRenderer.setColor(determineColor());
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		// Split the occupied coordinates into y-layers
@@ -177,7 +177,7 @@ public class FluidBody implements Serializable {
 	 * Renders this {@link FluidBody}, called from main thread
 	 */
 	public void renderElementBoxes() {
-		Domain.shapeRenderer.begin(ShapeType.Rectangle);
+		Domain.shapeRenderer.begin(ShapeType.Line);
 		Domain.shapeRenderer.setColor(0f, 1f, 0f, 1f);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		// Split the occupied coordinates into y-layers
@@ -199,7 +199,7 @@ public class FluidBody implements Serializable {
 	 * Renders this {@link FluidBody}s binding box
 	 */
 	public void renderBindingBox() {
-		Domain.shapeRenderer.begin(ShapeType.Rectangle);
+		Domain.shapeRenderer.begin(ShapeType.Line);
 		Domain.shapeRenderer.setColor(Color.RED);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		Domain.shapeRenderer.rect(
@@ -654,7 +654,7 @@ public class FluidBody implements Serializable {
 			right = true;
 		}
 
-		Domain.shapeRenderer.filledRect(
+		Domain.shapeRenderer.rect(
 			convertToWorldCoord(x - (left ? 1 : 0), true),
 			convertToWorldCoord(y, true),
 			TILE_SIZE + (right ? TILE_SIZE : 0),

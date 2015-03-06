@@ -675,7 +675,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 
 		if (UserInterface.DEBUG) {
-			shapeRenderer.begin(ShapeType.Rectangle);
+			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setProjectionMatrix(UserInterface.UICameraTrackingCam.combined);
 			shapeRenderer.setColor(Color.ORANGE);
 			shapeRenderer.rect(
@@ -1876,7 +1876,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			if (hasAmmo) {
 				Projectile fired = rangedWeapon.fire(
 					emissionPosition,
-					firingVector.cpy().nor().mul(
+					firingVector.cpy().nor().scl(
 						Math.min(
 							1f,
 							firingVector.len() / 150f

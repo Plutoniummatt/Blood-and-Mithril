@@ -304,7 +304,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	public static void renderCapacityIndicationText(Container container, Window parentComponent, int xOffset, int yOffset) {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		Color activeColor;
-				
+
 		if (container.getWeightLimited()) {
 			activeColor = container.getCurrentLoad() < container.getMaxCapacity() ?
 				new Color(0.7f * container.getCurrentLoad()/container.getMaxCapacity(), 1f - 0.7f * container.getCurrentLoad()/container.getMaxCapacity(), 0f, parentComponent.getAlpha()) :
@@ -328,9 +328,9 @@ public class InventoryWindow extends Window implements Refreshable {
 	 */
 	private void renderSeparator() {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
-		shapeRenderer.begin(ShapeType.FilledRectangle);
+		shapeRenderer.begin(ShapeType.Filled);
 		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
-		shapeRenderer.filledRect(x + width - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
+		shapeRenderer.rect(x + width - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
 		shapeRenderer.end();
 	}
 

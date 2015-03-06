@@ -5,10 +5,10 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.Component.ComponentCreationCustomization;
 import bloodandmithril.generation.component.components.Corridor;
-import bloodandmithril.generation.component.components.Room;
-import bloodandmithril.generation.component.components.Stairs;
 import bloodandmithril.generation.component.components.Corridor.CorridorCreationCustomization;
+import bloodandmithril.generation.component.components.Room;
 import bloodandmithril.generation.component.components.Room.RoomCreationCustomization;
+import bloodandmithril.generation.component.components.Stairs;
 import bloodandmithril.generation.component.components.Stairs.StairsCreationCustomization;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Logger;
@@ -264,7 +264,7 @@ public class RectangularInterface extends Interface {
 
 	@Override
 	public void render(Color color) {
-		UserInterface.shapeRenderer.begin(ShapeType.Rectangle);
+		UserInterface.shapeRenderer.begin(ShapeType.Line);
 		UserInterface.shapeRenderer.setColor(color);
 
 		UserInterface.shapeRenderer.rect(

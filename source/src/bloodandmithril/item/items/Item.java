@@ -319,7 +319,7 @@ public abstract class Item implements Serializable, Affixed {
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 
-		position.add(velocity.cpy().mul(delta));
+		position.add(velocity.cpy().scl(delta));
 
 		float gravity = Domain.getWorld(getWorldId()).getGravity();
 		if (abs((velocity.y - gravity * delta) * delta) < TILE_SIZE/2) {
