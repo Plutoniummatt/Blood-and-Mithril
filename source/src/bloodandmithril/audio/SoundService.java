@@ -44,9 +44,9 @@ public class SoundService {
 	public static final int flint				= 8;
 	public static final int campfireCooking		= 9;
 	public static final int anvil				= 10;
-	
+
 	static {
-		
+
 	}
 
 	private static Map<Integer, WrapperForThree<Function<SoundStimulus>, com.badlogic.gdx.audio.Sound, Float>> sounds = Maps.newHashMap();
@@ -109,8 +109,8 @@ public class SoundService {
 			sounds.get(sound).b.play(getVolume(location), 1f, getPan(location));
 		}
 	}
-	
-	
+
+
 	public static Function<SoundStimulus> getSoundStimulusFunction(int id) {
 		return sounds.get(id).a;
 	}
@@ -129,15 +129,15 @@ public class SoundService {
 				return;
 			}
 
+			SoundStimulus stimulus = sounds.get(sound).a.call();
+			stimulus.setEmissionPosition(location);
+
 			if (source != null && listener instanceof Observer) {
-				if (source.isVisibleTo((Observer) listener, Domain.getWorld(listener.getWorldId()))) {
+				if (!((Listener) listener).reactIfVisible(stimulus) && source.isVisibleTo((Observer) listener, Domain.getWorld(listener.getWorldId()))) {
 					return;
 				}
 			}
-			
-			SoundStimulus stimulus = sounds.get(sound).a.call();
-			stimulus.setEmissionPosition(location);
-			
+
 			listener.getAI().addStimulus(stimulus);
 		});
 	}
@@ -248,7 +248,7 @@ public class SoundService {
 		private static final long serialVersionUID = 6466600820010007897L;
 		private final SuspicionLevel suspicionLevel;
 		private Vector2 position;
-		
+
 		/**
 		 * Constructor
 		 */
@@ -261,7 +261,7 @@ public class SoundService {
 		public Vector2 getEmissionPosition() {
 			return position;
 		}
-		
+
 		public SuspicionLevel getSuspicionLevel() {
 			return suspicionLevel;
 		}
@@ -271,12 +271,12 @@ public class SoundService {
 			this.position = position;
 		}
 	}
-	
-	
+
+
 	public static enum SuspicionLevel {
 		NONE(0), PAUSE(1), INVESTIGATE(2), INVESTIGATE_CAUTION(3), BACKUP(4), FLEE(5);
 		public final int severity;
-		
+
 		private SuspicionLevel(int severity) {
 			this.severity = severity;
 		}

@@ -11,7 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import bloodandmithril.audio.SoundService.SuspicionLevel;
+import bloodandmithril.audio.SoundService.SuspiciousSound;
+import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.implementations.HareAI;
+import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
+import bloodandmithril.character.ai.perception.Listener;
+import bloodandmithril.character.ai.perception.Observer;
+import bloodandmithril.character.ai.perception.SightStimulus;
+import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.individuals.GroundTravellingIndividual;
 import bloodandmithril.character.individuals.Individual;
@@ -45,7 +53,7 @@ import com.google.common.collect.Sets;
  */
 @Copyright("Matthew Peck 2014")
 @SuppressWarnings("unchecked")
-public class Hare extends GroundTravellingIndividual implements Visible {
+public class Hare extends GroundTravellingIndividual implements Visible, Listener, Observer {
 	private static final long serialVersionUID = -1907997976760409204L;
 
 	private static final Color brown = new Color(117f/255f, 76f/255f, 36f/255f, 1f);
@@ -238,12 +246,64 @@ public class Hare extends GroundTravellingIndividual implements Visible {
 	public Collection<Vector2> getVisibleLocations() {
 		LinkedList<Vector2> locations = Lists.newLinkedList();
 		locations.add(getState().position.cpy().add(0f, 10f));
+		locations.add(getState().position.cpy().add(0f, 30f));
 		return locations;
 	}
 
 
 	@Override
 	public boolean isVisible() {
+		return true;
+	}
+
+
+	@Override
+	public void listen(SoundStimulus stimulus) {
+		if (stimulus instanceof SuspiciousSound) {
+			SuspicionLevel suspicionLevel = ((SuspiciousSound) stimulus).getSuspicionLevel();
+			if (suspicionLevel.severity >= SuspicionLevel.INVESTIGATE.severity) {
+				speak("!", 1000);
+				if (getState().position.x > stimulus.getEmissionPosition().x) {
+					AIProcessor.sendPathfindingRequest(this, new WayPoint(getState().position.cpy().add(300f, 0f)), false, 300f, false, false);
+				} else {
+					AIProcessor.sendPathfindingRequest(this, new WayPoint(getState().position.cpy().add(-300f, 0f)), false, 300f, false, false);
+				}
+			}
+		}
+	}
+
+
+	@Override
+	public Vector2 getObservationPosition() {
+		return getState().position.cpy().add(0f, 30f);
+	}
+
+
+	@Override
+	public Vector2 getObservationDirection() {
+		return null;
+	}
+
+
+	@Override
+	public Vector2 getFieldOfView() {
+		return null;
+	}
+
+
+	@Override
+	public void reactToSightStimulus(SightStimulus stimulus) {
+	}
+
+
+	@Override
+	public float getViewDistance() {
+		return 1000;
+	}
+
+
+	@Override
+	public boolean reactIfVisible(SoundStimulus stimulus) {
 		return true;
 	}
 }

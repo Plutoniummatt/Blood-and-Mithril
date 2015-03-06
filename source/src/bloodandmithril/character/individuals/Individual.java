@@ -229,7 +229,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** IDs of individuals that are currently attacking this one, along with a timer */
 	private Map<Integer, Long> beingAttackedBy = Maps.newHashMap();
-	
+
 	private int maxConcurrentAttackers = 3;
 
 	/** Whether this individual is allowed to speak */
@@ -1926,7 +1926,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				new ReturnIndividualPosition(this),
 				duration,
 				0,
-				getHeight() + 40
+				(int) (getHeight() * 1.3f)
 			);
 		}
 	}
