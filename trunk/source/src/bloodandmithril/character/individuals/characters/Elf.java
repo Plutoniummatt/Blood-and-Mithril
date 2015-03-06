@@ -558,9 +558,9 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 					setCurrentAction(Action.STAND_RIGHT);
 				}
 				getAI().setCurrentTask(new Wait(this, 3f));
-				
+
 				String speech = Util.randomOneOf("What was that sound?", "Hmm?", "You hear that?", "Huh?", "What?", "I hear something...");
-				
+
 				speak(speech, 1500);
 			}
 		}
@@ -570,5 +570,11 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 	@Override
 	public boolean isVisible() {
 		return true;
+	}
+
+
+	@Override
+	public boolean reactIfVisible(SoundStimulus stimulus) {
+		return false;
 	}
 }
