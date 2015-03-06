@@ -44,8 +44,11 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/** {@link AIMode} */
 	private AIMode mode = AIMode.AUTO;
 
+	/** Self stimulation timer */
+	private float selfStimulationTimer;
+
 	/** Stimuli as perceived by the host */
-	private transient LinkedBlockingQueue<Stimulus> stimuli = new LinkedBlockingQueue<Stimulus>();
+	private LinkedBlockingQueue<Stimulus> stimuli = new LinkedBlockingQueue<Stimulus>();
 
 	/**
 	 * Constructor, starts the AI processing thread if it has not been started.
@@ -64,7 +67,11 @@ public abstract class ArtificialIntelligence implements Serializable {
 					{
 						switch (mode) {
 						case AUTO:
-							selfStimulate();
+							selfStimulationTimer += delta;
+							if (selfStimulationTimer > 0.3f) {
+								selfStimulate();
+								selfStimulationTimer = 0f;
+							}
 							reactToStimuli();
 							determineCurrentTask();
 							break;
@@ -97,7 +104,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	private void selfStimulate() {
 		Individual host = getHost();
 		if (host instanceof Observer) {
-			((Observer) host).observe();
+			((Observer) host).observe(getHost().getWorldId(), hostId.getId());
 		}
 		if (host instanceof Sniffer) {
 			((Sniffer) host).sniff();
@@ -141,7 +148,11 @@ public abstract class ArtificialIntelligence implements Serializable {
 	protected abstract void determineCurrentTask();
 
 	/** Reacts to any stimuli */
-	protected abstract void reactToStimuli();
+	private synchronized void reactToStimuli() {
+		while(!stimuli.isEmpty()) {
+			stimuli.poll().stimulate(getHost());
+		}
+	}
 
 	/** Calculates the distance from an individual */
 	protected float distanceFrom(Individual other) {

@@ -37,4 +37,10 @@ public class ClearGlassTile extends GlassTile {
 	public Item mine() {
 		return new Glass();
 	}
+
+
+	@Override
+	public boolean isTransparent() {
+		return true;
+	}
 }

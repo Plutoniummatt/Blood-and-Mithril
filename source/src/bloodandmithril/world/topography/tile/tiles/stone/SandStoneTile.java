@@ -38,4 +38,10 @@ public class SandStoneTile extends StoneTile {
 	public Item mine() {
 		return Rock.rock(SandStone.class);
 	}
+
+
+	@Override
+	public boolean isTransparent() {
+		return false;
+	}
 }

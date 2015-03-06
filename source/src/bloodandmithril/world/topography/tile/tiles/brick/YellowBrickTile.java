@@ -40,4 +40,10 @@ public class YellowBrickTile extends BrickTile {
 	public Item mine() {
 		return Bricks.bricks(SandStone.class);
 	}
+
+
+	@Override
+	public boolean isTransparent() {
+		return false;
+	}
 }

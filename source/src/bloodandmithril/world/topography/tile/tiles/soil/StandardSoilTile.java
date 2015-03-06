@@ -44,4 +44,10 @@ public class StandardSoilTile extends SoilTile {
 	public boolean canPlant(Seed seed) {
 		return true;
 	}
+
+
+	@Override
+	public boolean isTransparent() {
+		return false;
+	}
 }

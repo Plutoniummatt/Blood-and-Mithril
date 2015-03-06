@@ -37,4 +37,10 @@ public class SandTile extends SeditmentaryTile {
 	public Item mine() {
 		return new Sand();
 	}
+
+
+	@Override
+	public boolean isTransparent() {
+		return false;
+	}
 }

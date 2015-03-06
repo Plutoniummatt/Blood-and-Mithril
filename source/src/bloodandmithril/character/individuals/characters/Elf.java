@@ -23,12 +23,17 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.implementations.ElfAI;
+import bloodandmithril.character.ai.perception.Observer;
+import bloodandmithril.character.ai.perception.SightStimulus;
+import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -83,7 +88,7 @@ import com.google.common.collect.Sets;
 @Description(description = "Elves are children of nature, they are nimble creatures with a good grip on magic and excel at archery.")
 @SuppressWarnings("unchecked")
 @Copyright("Matthew Peck 2014")
-public class Elf extends Humanoid {
+public class Elf extends Humanoid implements Observer, Visible {
 	private static final long serialVersionUID = -5566954059579973505L;
 
 	/** True if female */
@@ -488,5 +493,46 @@ public class Elf extends Humanoid {
 	@Override
 	public Vector2 getEmissionPosition() {
 		return getState().position.cpy().add(getCurrentAction().left() ? 3 : 7, getHeight() / 2);
+	}
+
+
+	@Override
+	public Vector2 getObservationPosition() {
+		return getState().position.cpy().add(0f, getHeight() - 10);
+	}
+
+
+	@Override
+	public Vector2 getDirection() {
+		return null;
+	}
+
+
+	@Override
+	public Vector2 getFieldOfView() {
+		return null;
+	}
+
+
+	@Override
+	public float getViewDistance() {
+		return 300f;
+	}
+
+
+	@Override
+	public void reactToStimulus(SightStimulus stimulus) {
+		speak("I see something", 300);
+	}
+
+
+	@Override
+	public Collection<Vector2> getVisibleLocation() {
+		LinkedList<Vector2> locations = Lists.newLinkedList();
+		locations.add(getState().position.cpy().add(0f, 10f));
+		locations.add(getState().position.cpy().add(0f, 30f));
+		locations.add(getState().position.cpy().add(0f, 60f));
+		locations.add(getState().position.cpy().add(0f, getHeight() - 10f));
+		return locations;
 	}
 }

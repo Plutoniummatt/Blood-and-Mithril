@@ -153,6 +153,12 @@ public abstract class Tile implements Serializable {
 
 
 	/**
+	 * Whether or not this can be seen through
+	 */
+	public abstract boolean isTransparent();
+
+
+	/**
 	 * Changes this tile to a {@link #isStair} tile
 	 */
 	public abstract void changeToStair();
@@ -291,6 +297,12 @@ public abstract class Tile implements Serializable {
 		public Item mine() {
 			throw new RuntimeException("Can not mine a debug tile");
 		}
+
+
+		@Override
+		public boolean isTransparent() {
+			return true;
+		}
 	}
 
 
@@ -329,6 +341,12 @@ public abstract class Tile implements Serializable {
 		@Override
 		public Item mine() {
 			throw new RuntimeException("Can not mine an empty tile");
+		}
+
+
+		@Override
+		public boolean isTransparent() {
+			return true;
 		}
 	}
 
