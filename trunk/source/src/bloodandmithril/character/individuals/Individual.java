@@ -295,6 +295,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.dead = other.dead;
 		this.individualsToBeAttacked = other.individualsToBeAttacked;
 		this.combatTimer = other.combatTimer;
+		this.shutup = other.shutup;
 		this.travelIconTimer = other.travelIconTimer;
 		synchronizeContainer(other.equipperImpl);
 		synchronizeEquipper(other.equipperImpl);

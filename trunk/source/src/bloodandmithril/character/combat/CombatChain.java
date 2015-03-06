@@ -66,6 +66,7 @@ public class CombatChain {
 					SoundService.play(
 						blockSound,
 						target.getState().position,
+						600f,
 						true
 					);
 				}
@@ -80,6 +81,7 @@ public class CombatChain {
 					SoundService.play(
 						hitSound,
 						target.getState().position,
+						300f,
 						true
 					);
 				}

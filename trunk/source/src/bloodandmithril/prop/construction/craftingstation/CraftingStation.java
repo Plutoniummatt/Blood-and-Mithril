@@ -226,7 +226,7 @@ public abstract class CraftingStation extends Construction {
 					}
 				}
 
-				SoundService.play(getCraftingSound(), position, true);
+				SoundService.play(getCraftingSound(), position, 300f, true);
 			}
 
 			if (ClientServerInterface.isClient()) {

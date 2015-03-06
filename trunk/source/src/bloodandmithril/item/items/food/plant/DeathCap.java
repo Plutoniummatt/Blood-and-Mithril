@@ -34,7 +34,7 @@ public class DeathCap extends Food {
 
 	@Override
 	public boolean consume(Individual consumer) {
-		SoundService.play(6, consumer.getState().position, true);
+		SoundService.play(6, consumer.getState().position, 32f, true);
 		if (cooked) {
 			consumer.increaseHunger(0.1f);
 			consumer.addFloatingText("+10 Hunger", Color.ORANGE);

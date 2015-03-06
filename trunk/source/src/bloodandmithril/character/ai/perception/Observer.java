@@ -35,7 +35,7 @@ public interface Observer {
 			}
 
 
-			for (Vector2 visibilityCheckLocation : ((Visible)toBeObserved).getVisibleLocation()) {
+			for (Vector2 visibilityCheckLocation : ((Visible)toBeObserved).getVisibleLocations()) {
 				float dist = visibilityCheckLocation.dst(eyes);
 				if (dist > viewDistance) {
 					continue;
@@ -64,7 +64,7 @@ public interface Observer {
 	/**
 	 * @return the direction the eyes are facing
 	 */
-	public Vector2 getDirection();
+	public Vector2 getObservationDirection();
 
 	/**
 	 * @return the FOV, in degrees

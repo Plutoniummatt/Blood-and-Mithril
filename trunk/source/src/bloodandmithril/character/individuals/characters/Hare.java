@@ -235,7 +235,7 @@ public class Hare extends GroundTravellingIndividual implements Visible {
 
 
 	@Override
-	public Collection<Vector2> getVisibleLocation() {
+	public Collection<Vector2> getVisibleLocations() {
 		LinkedList<Vector2> locations = Lists.newLinkedList();
 		locations.add(getState().position.cpy().add(0f, 10f));
 		return locations;

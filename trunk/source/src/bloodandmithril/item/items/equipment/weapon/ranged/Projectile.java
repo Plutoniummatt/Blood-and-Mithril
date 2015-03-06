@@ -68,7 +68,7 @@ public abstract class Projectile implements Serializable {
 			Individual individual = Domain.getIndividual(findAny.get());
 			if (canAffect(individual)) {
 				hit(individual);
-				SoundService.play(getHitSound(individual), individual.getState().position, true);
+				SoundService.play(getHitSound(individual), individual.getState().position, 0f, true);
 				ignoreIndividual(individual);
 				if (!penetrating()) {
 					targetHitKinematics();
