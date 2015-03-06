@@ -68,7 +68,7 @@ public abstract class Projectile implements Serializable {
 
 		if (findAny.isPresent()) {
 			Individual individual = Domain.getIndividual(findAny.get());
-			
+
 			if (canAffect(individual)) {
 				hit(individual);
 				SoundService.play(getHitSound(individual), individual.getState().position, true, getVisible(individual));
@@ -83,10 +83,10 @@ public abstract class Projectile implements Serializable {
 			return;
 		}
 		Vector2 previousPosition = position.cpy();
-		position.add(velocity.cpy().mul(delta));
+		position.add(velocity.cpy().scl(delta));
 		float gravity = Domain.getWorld(getWorldId()).getGravity();
 		if (velocity.len() > getTerminalVelocity()) {
-			velocity.add(0f, -gravity * delta).mul(0.95f);
+			velocity.add(0f, -gravity * delta).scl(0.95f);
 		} else {
 			velocity.add(0f, -gravity * delta);
 		}

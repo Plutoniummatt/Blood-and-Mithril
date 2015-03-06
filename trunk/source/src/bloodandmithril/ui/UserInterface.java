@@ -29,11 +29,10 @@ import static bloodandmithril.world.topography.Topography.convertToWorldTileCoor
 import static com.badlogic.gdx.Gdx.files;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.Gdx.input;
-import static com.badlogic.gdx.graphics.GL10.GL_BLEND;
-import static com.badlogic.gdx.graphics.GL10.GL_ONE_MINUS_SRC_ALPHA;
-import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Rectangle;
+import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
+import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Filled;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Math.max;
@@ -508,9 +507,9 @@ public class UserInterface {
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		for (Structure struct : Structures.getStructures().values()) {
 			for (bloodandmithril.generation.component.Component component : newArrayList(struct.getComponents())) {
-				shapeRenderer.begin(FilledRectangle);
+				shapeRenderer.begin(Filled);
 				shapeRenderer.setColor(COMPONENT_FILL_COLOR);
-				shapeRenderer.filledRect(
+				shapeRenderer.rect(
 					worldToScreenX(component.getBoundaries().left * TILE_SIZE),
 					worldToScreenY(component.getBoundaries().bottom * TILE_SIZE),
 					(component.getBoundaries().right - component.getBoundaries().left + 1) * TILE_SIZE,
@@ -518,7 +517,7 @@ public class UserInterface {
 				);
 				shapeRenderer.end();
 
-				shapeRenderer.begin(Rectangle);
+				shapeRenderer.begin(ShapeType.Line);
 				shapeRenderer.setColor(COMPONENT_BOUNDARY_COLOR);
 				shapeRenderer.rect(
 					worldToScreenX(component.getBoundaries().left * TILE_SIZE),
@@ -551,7 +550,7 @@ public class UserInterface {
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl20.glLineWidth(2f);
-		shapeRenderer.begin(Rectangle);
+		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.GREEN);
 		shapeRenderer.rect(x, y, TILE_SIZE, TILE_SIZE);
 		shapeRenderer.end();
@@ -593,9 +592,9 @@ public class UserInterface {
 			spriteBatch.begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			shapeRenderer.begin(ShapeType.FilledRectangle);
+			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(DARK_SCREEN_COLOR);
-			shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT);
+			shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
 			shapeRenderer.end();
 			savingButton.render(true, 1f);
 			gl.glDisable(GL_BLEND);
@@ -610,9 +609,9 @@ public class UserInterface {
 			spriteBatch.begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			shapeRenderer.begin(ShapeType.FilledRectangle);
+			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(DARK_SCREEN_COLOR);
-			shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT);
+			shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
 			shapeRenderer.end();
 
 			if (unpauseButton != null) {
@@ -623,19 +622,19 @@ public class UserInterface {
 			spriteBatch.end();
 		}
 	}
-	
-	
+
+
 	/** Draws the loading screen */
 	private static void renderLoadingScreen() {
 		if (loading) {
 			spriteBatch.begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			shapeRenderer.begin(ShapeType.FilledRectangle);
+			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(Color.BLACK);
-			shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT);
+			shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
 			shapeRenderer.end();
-			
+
 			spriteBatch.setShader(Shaders.text);
 			defaultFont.setColor(Color.YELLOW);
 			defaultFont.draw(spriteBatch, "Loading - " + ChunkLoader.loaderTasks.size(), WIDTH/2 - 30, HEIGHT/2);
@@ -781,7 +780,7 @@ public class UserInterface {
 	 */
 	private static void renderDragBox() {
 		if (input.isButtonPressed(leftClick) && initialLeftMouseDragCoordinates != null) {
-			shapeRenderer.begin(Rectangle);
+			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.GREEN);
 			float width = getMouseScreenX() - initialLeftMouseDragCoordinates.x;
 			float height = getMouseScreenY() - initialLeftMouseDragCoordinates.y;
@@ -790,7 +789,7 @@ public class UserInterface {
 		}
 
 		if (input.isButtonPressed(rightClick) && initialRightMouseDragCoordinates != null && Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox)) {
-			shapeRenderer.begin(Rectangle);
+			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.RED);
 			float width = getMouseScreenX() - initialRightMouseDragCoordinates.x;
 			float height = getMouseScreenY() - initialRightMouseDragCoordinates.y;
@@ -872,11 +871,11 @@ public class UserInterface {
 	private static void renderArrow(Vector2 start, Vector2 finish, Color color, float lineWidth, float arrowSize, float maxLength) {
 		Vector2 difference = finish.cpy().sub(start);
 		Vector2 arrowHead = start.cpy().add(
-			difference.cpy().nor().mul(Math.min(difference.len(), maxLength))
+			difference.cpy().nor().scl(Math.min(difference.len(), maxLength))
 		);
 
 		Vector2 fin = arrowHead.cpy().sub(
-			difference.cpy().nor().mul(14f)
+			difference.cpy().nor().scl(14f)
 		);
 
 		spriteBatch.flush();
@@ -892,14 +891,14 @@ public class UserInterface {
 		);
 		shapeRenderer.end();
 
-		shapeRenderer.begin(ShapeType.FilledTriangle);
+		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(color);
 
-		Vector2 point = arrowHead.cpy().add(difference.cpy().nor().mul(5f + arrowSize));
-		Vector2 corner1 = arrowHead.cpy().sub(difference.cpy().nor().rotate(25f).mul(15f + arrowSize / 2f));
-		Vector2 corner2 = arrowHead.cpy().sub(difference.cpy().nor().rotate(-25f).mul(15f + arrowSize / 2f));
+		Vector2 point = arrowHead.cpy().add(difference.cpy().nor().scl(5f + arrowSize));
+		Vector2 corner1 = arrowHead.cpy().sub(difference.cpy().nor().rotate(25f).scl(15f + arrowSize / 2f));
+		Vector2 corner2 = arrowHead.cpy().sub(difference.cpy().nor().rotate(-25f).scl(15f + arrowSize / 2f));
 
-		shapeRenderer.filledTriangle(
+		shapeRenderer.triangle(
 			worldToScreenX(point.x),
 			worldToScreenY(point.y),
 			worldToScreenX(corner1.x),

@@ -21,7 +21,7 @@ import bloodandmithril.util.Shaders;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 
 /**
  * A window, able to be dragged, minimized, stays open until closed (unless game decides it should close).
@@ -277,10 +277,10 @@ public abstract class Window extends Component {
 		BloodAndMithrilClient.spriteBatch.end();
 
 		BloodAndMithrilClient.spriteBatch.begin();
-		Gdx.gl.glEnable(GL10.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		internalWindowRender();
-		Gdx.gl.glDisable(GL10.GL_BLEND);
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 		BloodAndMithrilClient.spriteBatch.end();
 	}
 

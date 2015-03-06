@@ -4,11 +4,11 @@
 	<classpathentry kind="src" path="assets"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Client/libs/gdx-backend-lwjgl-natives.jar"/>
-	<classpathentry kind="lib" path="/Client/libs/gdx-backend-lwjgl-sources.jar"/>
 	<classpathentry kind="lib" path="/Client/libs/gdx-backend-lwjgl.jar" sourcepath="/Client/libs/gdx-backend-lwjgl-sources.jar"/>
 	<classpathentry kind="lib" path="/Client/libs/gdx-natives.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Source"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/kryonet"/>
 	<classpathentry kind="lib" path="/kryonet/lib/kryo-2.23.1-SNAPSHOT-all-debug.jar"/>
+	<classpathentry kind="lib" path="/Source/libs/gdx.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

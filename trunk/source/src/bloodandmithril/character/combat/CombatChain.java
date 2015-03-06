@@ -53,7 +53,7 @@ public class CombatChain {
 			knockbackStrength = weapon.getKnockbackStrength();
 		}
 
-		Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().mul(knockbackStrength);
+		Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().scl(knockbackStrength);
 
 		boolean blocked = Util.roll(
 			target.getParryChance() * (1f - attacker.getParryChanceIgnored())
@@ -74,7 +74,7 @@ public class CombatChain {
 				ParticleService.parrySpark(target.getEmissionPosition(), knockbackVector, Depth.FOREGOUND, Color.WHITE, Color.WHITE, 100);
 			}
 		} else {
-			knockbackVector.mul(0.1f);
+			knockbackVector.scl(0.1f);
 			text = hit(knockbackVector.cpy());
 			if (ClientServerInterface.isServer()) {
 				int hitSound = attacker.getHitSound();

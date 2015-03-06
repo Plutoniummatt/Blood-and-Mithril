@@ -237,11 +237,11 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 		Window p = (Window) parent;
 		Color scrollBarColor = p.isActive() ? Colors.modulateAlpha(p.borderColor, 0.5f * p.getAlpha()) : Colors.modulateAlpha(p.borderColor, 0.2f * p.getAlpha());
-		Component.shapeRenderer.begin(ShapeType.FilledRectangle);
+		Component.shapeRenderer.begin(ShapeType.Filled);
 		Component.shapeRenderer.setColor(scrollBarColor);
-		Component.shapeRenderer.filledRect(x + width - 6, y - 50, 3, 30, scrollBarColor, scrollBarColor, Color.CLEAR, Color.CLEAR);
-		Component.shapeRenderer.filledRect(x + width - 6, y + 52 - height, 3, height - 102);
-		Component.shapeRenderer.filledRect(x + width - 6, y + 22 - height, 3, 30, Color.CLEAR, Color.CLEAR, scrollBarColor, scrollBarColor);
+		Component.shapeRenderer.rect(x + width - 6, y - 50, 3, 30, scrollBarColor, scrollBarColor, Color.CLEAR, Color.CLEAR);
+		Component.shapeRenderer.rect(x + width - 6, y + 52 - height, 3, height - 102);
+		Component.shapeRenderer.rect(x + width - 6, y + 22 - height, 3, 30, Color.CLEAR, Color.CLEAR, scrollBarColor, scrollBarColor);
 	}
 
 
@@ -325,7 +325,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 			Component.shapeRenderer.setColor(0.5f, 0.5f, 0.5f, parent.getAlpha());
 		}
 
-		Component.shapeRenderer.filledRect(x + width - 8, scrollBarButtonPos - 7.5f, 7, 15);
+		Component.shapeRenderer.rect(x + width - 8, scrollBarButtonPos - 7.5f, 7, 15);
 		Component.shapeRenderer.end();
 	}
 

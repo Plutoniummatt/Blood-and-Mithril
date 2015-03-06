@@ -154,8 +154,8 @@ public class ChatWindow extends Window {
 
 	private void renderSeparator() {
 		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
-		UserInterface.shapeRenderer.begin(ShapeType.FilledRectangle);
-		UserInterface.shapeRenderer.filledRect(
+		UserInterface.shapeRenderer.begin(ShapeType.Filled);
+		UserInterface.shapeRenderer.rect(
 			x + width - 170,
 			y - height,
 			2,

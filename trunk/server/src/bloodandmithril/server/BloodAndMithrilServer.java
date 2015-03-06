@@ -1,10 +1,8 @@
 package bloodandmithril.server;
 
-import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
 import static bloodandmithril.util.Util.Colors.lightColor;
 import static bloodandmithril.util.Util.Colors.lightSkinColor;
 import static bloodandmithril.world.Domain.getActiveWorld;
-import static com.badlogic.gdx.Gdx.input;
 
 import java.io.IOException;
 import java.util.Date;
@@ -16,6 +14,7 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
+import bloodandmithril.character.individuals.Names;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.PrefabricatedComponent;
@@ -264,11 +263,11 @@ public class BloodAndMithrilServer {
 				state.velocity = new Vector2(0, 0);
 				state.acceleration = new Vector2(0, 0);
 
-				IndividualIdentifier id = getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
+				IndividualIdentifier id = Names.getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
 				id.setNickName("Elfie");
 
 				Elf elf = new Elf(
-					id, state, input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
+					id, state, Gdx.input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 1, true,
 					20f,
 					getActiveWorld(),
 					lightColor(),

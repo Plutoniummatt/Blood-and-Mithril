@@ -86,7 +86,7 @@ public abstract class Particle implements Serializable {
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 
-		position.add(velocity.cpy().mul(0.016f));
+		position.add(velocity.cpy().scl(0.016f));
 
 		movement(delta);
 
@@ -129,21 +129,21 @@ public abstract class Particle implements Serializable {
 
 
 	private void weightless(float delta) {
-		velocity.mul(0.98f);
+		velocity.scl(0.98f);
 	}
 
 
 	private void ember(float delta) {
 		velocity.y = velocity.y + delta * 150f;
-		velocity.mul(0.98f);
+		velocity.scl(0.98f);
 	}
 
 
 	private void gravitational(float delta) throws NoTileFoundException {
-		position.add(velocity.cpy().mul(delta));
+		position.add(velocity.cpy().scl(delta));
 		float gravity = Domain.getWorld(worldId).getGravity();
 		if (velocity.len() > 2000f) {
-			velocity.add(0f, -gravity * delta).mul(0.95f);
+			velocity.add(0f, -gravity * delta).scl(0.95f);
 		} else {
 			velocity.add(0f, -gravity * delta);
 		}

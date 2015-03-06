@@ -18,7 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  * A long bow, fires {@link Arrow}s
- * 
+ *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
@@ -199,7 +199,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 		if (currentAmmo != null) {
 			Arrow arrow = (Arrow) ((ProjectileItem) currentAmmo).getProjectile();
 			arrow.setPosition(origin);
-			arrow.setVelocity(direction.cpy().mul(2000f));
+			arrow.setVelocity(direction.cpy().scl(2000f));
 			return arrow;
 		}
 

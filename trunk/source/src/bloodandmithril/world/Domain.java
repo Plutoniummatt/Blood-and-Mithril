@@ -16,8 +16,8 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.badlogic.gdx.Gdx.files;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.Gdx.gl20;
-import static com.badlogic.gdx.graphics.GL10.GL_TEXTURE0;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
+import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE0;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
@@ -294,7 +294,7 @@ public class Domain {
 			});
 		}
 		Domain.shapeRenderer.end();
-		Domain.shapeRenderer.begin(ShapeType.FilledCircle);
+		Domain.shapeRenderer.begin(ShapeType.Filled);
 		Domain.shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
 		if (Domain.getActiveWorld().getClientParticles() != null) {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);

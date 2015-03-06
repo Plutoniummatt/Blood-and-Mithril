@@ -42,7 +42,7 @@ public class TracerParticle extends Particle {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
 					Domain.shapeRenderer.setColor(color.getColor());
-					Domain.shapeRenderer.filledCircle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
+					Domain.shapeRenderer.circle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
 				}
 			} catch (NoTileFoundException e) {}
 		}

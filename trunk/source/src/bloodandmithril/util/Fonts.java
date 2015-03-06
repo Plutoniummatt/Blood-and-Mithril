@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 /**
  * Font utility class
@@ -25,7 +26,9 @@ public class Fonts {
 		// Default font
 		FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("data/fonts/default.ttf"));
 
-		defaultFont = fontGenerator.generateFont(15);
+		FreeTypeFontParameter freeTypeFontParameter = new FreeTypeFontParameter();
+		freeTypeFontParameter.size = 15;
+		defaultFont = fontGenerator.generateFont(freeTypeFontParameter);
 		defaultFont.setColor(Color.WHITE);
 
 		fontGenerator.dispose();

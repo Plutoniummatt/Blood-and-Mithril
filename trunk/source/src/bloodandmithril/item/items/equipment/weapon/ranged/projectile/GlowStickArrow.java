@@ -81,7 +81,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 			Domain.getWorld(getWorldId()).projectiles().removeProjectile(getId());
 			Domain.getWorld(getWorldId()).getServerParticles().remove(particleId);
 		} else {
-			velocity.mul(0.05f);
+			velocity.scl(0.05f);
 			velocity.x = -velocity.x;
 		}
 	}

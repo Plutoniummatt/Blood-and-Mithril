@@ -5,10 +5,9 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static com.badlogic.gdx.Gdx.gl;
-import static com.badlogic.gdx.graphics.GL10.GL_BLEND;
-import static com.badlogic.gdx.graphics.GL10.GL_ONE_MINUS_SRC_ALPHA;
-import static com.badlogic.gdx.graphics.GL10.GL_SRC_ALPHA;
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Rectangle;
+import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
+import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import bloodandmithril.character.ai.task.PlaceProp;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.PropItem;
@@ -24,6 +23,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -115,7 +115,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			UserInterface.shapeRenderer.begin(Rectangle);
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(canBuild ? Color.GREEN : Color.RED);
 			UserInterface.shapeRenderer.rect(x - propToPlace.width/2, y, propToPlace.width, propToPlace.height);
 			UserInterface.shapeRenderer.end();

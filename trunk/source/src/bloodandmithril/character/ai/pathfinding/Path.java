@@ -115,8 +115,8 @@ public class Path implements Serializable {
 		float x = BloodAndMithrilClient.worldToScreenX(current.waypoint.x);
 		float y = BloodAndMithrilClient.worldToScreenY(current.waypoint.y);
 
-		UserInterface.shapeRenderer.begin(ShapeType.FilledCircle);
-		UserInterface.shapeRenderer.filledCircle(x, y, 3);
+		UserInterface.shapeRenderer.begin(ShapeType.Filled);
+		UserInterface.shapeRenderer.circle(x, y, 3);
 		UserInterface.shapeRenderer.end();
 
 		do {
@@ -133,8 +133,8 @@ public class Path implements Serializable {
 				UserInterface.shapeRenderer.line(x, y, x2, y2);
 				UserInterface.shapeRenderer.end();
 
-				UserInterface.shapeRenderer.begin(ShapeType.FilledCircle);
-				UserInterface.shapeRenderer.filledCircle(x2, y2, 3);
+				UserInterface.shapeRenderer.begin(ShapeType.Filled);
+				UserInterface.shapeRenderer.circle(x2, y2, 3);
 				UserInterface.shapeRenderer.end();
 			}
 		} while (waypointsIterator.hasNext());

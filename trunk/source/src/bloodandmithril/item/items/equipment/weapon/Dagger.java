@@ -3,7 +3,6 @@ package bloodandmithril.item.items.equipment.weapon;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
 import static bloodandmithril.world.Domain.individualTexture;
-import static com.badlogic.gdx.graphics.g2d.Animation.NORMAL;
 
 import java.util.Map;
 
@@ -24,6 +23,7 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
@@ -40,7 +40,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 		if (ClientServerInterface.isClient()) {
 			textureRegionMap.put(BushKnife.class, new TextureRegion(Domain.individualTexture, 0, 784, 43, 13));
 			textureRegionMap.put(CombatKnife.class, new TextureRegion(Domain.individualTexture, 0, 818, 43, 13));
-			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(10f, 34f)));
+			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, PlayMode.NORMAL), new Vector2(10f, 34f)));
 		}
 	}
 

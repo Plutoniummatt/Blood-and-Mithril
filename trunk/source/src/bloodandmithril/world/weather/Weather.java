@@ -5,8 +5,6 @@ import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledCircle;
-import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.FilledRectangle;
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
@@ -18,6 +16,7 @@ import bloodandmithril.world.Epoch;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -34,15 +33,15 @@ public class Weather {
 	private static Color dayBottomColor 				= new Color(0f, 144f/255f, 1f, 1f);
 	private static Color nightTopColor 					= new Color(33f/255f, 0f, 150f/255f, 1f);
 	private static Color nightBottomColor 				= new Color(60f/255f, 0f, 152f/255f, 1f);
-	
+
 	private static FrameBuffer skyBuffer				= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
-	
+
 	private static Vector2 sunPosition					= new Vector2();
 
 	/** Load resources */
 	public static void setup() {
 	}
-	
+
 
 	/**
 	 * Renders the {@link Weather}
@@ -51,8 +50,8 @@ public class Weather {
 		renderSky();
 		renderSun();
 	}
-	
-	
+
+
 	private static void renderSun() {
 		float time = getCurrentEpoch().getTime();
 		Vector2 pivot = new Vector2(WIDTH/2, 0);
@@ -69,65 +68,62 @@ public class Weather {
 		Color filter = new Color();
 
 		if (time < 10) {
-			filter.r = (float) (0.06D + 1.1D * exp(-0.100*pow((time-10), 2)));
-			filter.g = (float) (0.06D + 0.9D * exp(-0.150*pow((time-10), 2)));
-			filter.b = (float) (0.06D + 0.7D * exp(-0.200*pow((time-10), 2)));
+			filter.r = (float) (0.06D + 1.1D * exp(-0.100*pow(time-10, 2)));
+			filter.g = (float) (0.06D + 0.9D * exp(-0.150*pow(time-10, 2)));
+			filter.b = (float) (0.06D + 0.7D * exp(-0.200*pow(time-10, 2)));
 		} else if (time >= 10 && time < 14) {
 			filter.r = 1.16f;
 			filter.g = 0.96f;
 			filter.b = 0.76f;
 		} else {
-			filter.r = (float) (0.06D + 1.1D * exp(-0.100*pow((time-14), 2)));
-			filter.g = (float) (0.06D + 0.9D * exp(-0.150*pow((time-14), 2)));
-			filter.b = (float) (0.06D + 0.7D * exp(-0.200*pow((time-14), 2)));
+			filter.r = (float) (0.06D + 1.1D * exp(-0.100*pow(time-14, 2)));
+			filter.g = (float) (0.06D + 0.9D * exp(-0.150*pow(time-14, 2)));
+			filter.b = (float) (0.06D + 0.7D * exp(-0.200*pow(time-14, 2)));
 		}
 		filter.a = 1f;
 
 		return filter;
 	}
-	
-	
+
+
 	public static Color getSunColor() {
 		float time = getCurrentEpoch().getTime();
 		Color filter = new Color();
 
 		if (time < 10) {
-			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow((time-10), 2)));
-			filter.g = (float) (0.2D + 0.8D * exp(-0.150*pow((time-10), 2)));
-			filter.b = (float) (0.1D + 0.9D * exp(-0.200*pow((time-10), 2)));
+			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow(time-10, 2)));
+			filter.g = (float) (0.2D + 0.8D * exp(-0.150*pow(time-10, 2)));
+			filter.b = (float) (0.1D + 0.9D * exp(-0.200*pow(time-10, 2)));
 		} else if (time >= 10 && time < 14) {
 			filter.r = 1.1f;
 			filter.g = 1.1f;
 			filter.b = 1.1f;
 		} else {
-			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow((time-14), 2)));
-			filter.g = (float) (0.2D + 0.8D * exp(-0.150*pow((time-14), 2)));
-			filter.b = (float) (0.1D + 0.9D * exp(-0.200*pow((time-14), 2)));
+			filter.r = (float) (0.5D + 0.5D * exp(-0.050*pow(time-14, 2)));
+			filter.g = (float) (0.2D + 0.8D * exp(-0.150*pow(time-14, 2)));
+			filter.b = (float) (0.1D + 0.9D * exp(-0.200*pow(time-14, 2)));
 		}
 		filter.a = 1f;
 
 		return filter;
 	}
-	
-	
+
+
 	/** Renders the sky */
 	private static void renderSky() {
 		skyBuffer.begin();
-		shapeRenderer.begin(FilledRectangle);
+		shapeRenderer.begin(ShapeType.Filled);
 		Color filter = getDaylightColor();
 
 		Color topColor = dayTopColor.cpy().mul(getCurrentEpoch().dayLight()).add(nightTopColor.cpy().mul(1f - getCurrentEpoch().dayLight())).mul(filter);
 		Color bottomColor = dayBottomColor.cpy().mul(getCurrentEpoch().dayLight()).add(nightBottomColor.cpy().mul(1f - getCurrentEpoch().dayLight())).mul(filter);
 
-		shapeRenderer.filledRect(0, 0, WIDTH, HEIGHT, bottomColor, bottomColor, topColor, topColor);
-		shapeRenderer.end();
-
-		shapeRenderer.begin(FilledCircle);
+		shapeRenderer.rect(0, 0, WIDTH, HEIGHT, bottomColor, bottomColor, topColor, topColor);
 		shapeRenderer.end();
 		skyBuffer.end();
-		
+
 		float time = getCurrentEpoch().getTime();
-		
+
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.sun);
 		Shaders.sun.setUniformf("resolution", WIDTH, HEIGHT);
@@ -146,8 +142,8 @@ public class Weather {
 		}
 		return 1f - (float) pow(sin((time - 4f) * (Math.PI / 16f)), 2f);
 	}
-	
-	
+
+
 	private static float nightSuppression(float time) {
 		if (time >= 4f || time <= 20f) {
 			return 1f;
