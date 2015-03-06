@@ -65,9 +65,4 @@ public class ElfAI extends ArtificialIntelligence {
 			} catch (NoTileFoundException e) {}
 		}
 	}
-
-
-	@Override
-	protected void reactToStimuli() {
-	}
 }

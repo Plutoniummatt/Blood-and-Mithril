@@ -21,9 +21,4 @@ public class HareAI extends ArtificialIntelligence {
 	protected void determineCurrentTask() {
 		wander(600f, false);
 	}
-
-
-	@Override
-	protected void reactToStimuli() {
-	}
 }

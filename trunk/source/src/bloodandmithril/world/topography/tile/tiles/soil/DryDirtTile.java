@@ -44,4 +44,10 @@ public class DryDirtTile extends SoilTile {
 	public boolean canPlant(Seed seed) {
 		return false;
 	}
+
+
+	@Override
+	public boolean isTransparent() {
+		return false;
+	}
 }

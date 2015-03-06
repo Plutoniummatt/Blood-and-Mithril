@@ -37,4 +37,10 @@ public class GraniteTile extends StoneTile {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+	@Override
+	public boolean isTransparent() {
+		return false;
+	}
 }

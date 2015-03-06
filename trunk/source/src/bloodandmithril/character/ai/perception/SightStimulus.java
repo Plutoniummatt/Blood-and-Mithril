@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 public interface SightStimulus extends Stimulus {
 
 	/**
-	 * stimulates the listener
+	 * stimulates the spotter
 	 */
 	public void stimulate(Observer observer, Vector2 position);
 

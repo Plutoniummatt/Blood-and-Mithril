@@ -38,4 +38,10 @@ public class YellowBrickPlatform extends BrickTile {
 	public Item mine() {
 		return Bricks.bricks(SandStone.class);
 	}
+
+
+	@Override
+	public boolean isTransparent() {
+		return true;
+	}
 }
