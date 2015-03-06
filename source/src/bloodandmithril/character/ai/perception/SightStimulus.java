@@ -14,11 +14,6 @@ import com.badlogic.gdx.math.Vector2;
 public interface SightStimulus extends Stimulus {
 
 	/**
-	 * stimulates the spotter
-	 */
-	public void stimulate(Observer observer, Vector2 position);
-
-	/**
 	 * @return the position where this stimulus was sighted
 	 */
 	public Vector2 getSightLocation();
@@ -26,7 +21,7 @@ public interface SightStimulus extends Stimulus {
 	@Override
 	public default void stimulate(Individual individual) {
 		if (individual instanceof Observer) {
-			stimulate((Observer) individual, getSightLocation());
+			((Observer) individual).reactToSightStimulus(this);
 		}
 	}
 }

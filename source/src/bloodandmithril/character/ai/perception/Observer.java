@@ -34,27 +34,44 @@ public interface Observer {
 				return;
 			}
 
-
-			for (Vector2 visibilityCheckLocation : ((Visible)toBeObserved).getVisibleLocations()) {
-				float dist = visibilityCheckLocation.dst(eyes);
-				if (dist > viewDistance) {
-					continue;
-				}
-
-				boolean visible = RayTracingVisibilityChecker.check(
-					world.getTopography(),
-					eyes,
-					visibilityCheckLocation.cpy().sub(eyes).nor(),
-					dist
-				);
-
-				if (visible) {
-					host.getAI().addStimulus(new IndividualSighted(toBeObserved.getState().position));
-					break;
-				}
+			if (canSee(((Visible)toBeObserved), world)) {
+				host.getAI().addStimulus(new IndividualSighted(toBeObserved.getState().position, toBeObserved.getId().getId()));
 			}
 		});
 	}
+	
+	/**
+	 * @return whether this {@link Observer} can see a {@link Visible}
+	 */
+	public default boolean canSee(Visible visible, World world) {
+		if (!visible.isVisible()) {
+			return false;
+		}
+		
+		Vector2 eyes = getObservationPosition();
+		float viewDistance = getViewDistance();
+		
+		for (Vector2 visibilityCheckLocation : visible.getVisibleLocations()) {
+			float dist = visibilityCheckLocation.dst(eyes);
+			if (dist > viewDistance) {
+				continue;
+			}
+
+			boolean canSee = RayTracingVisibilityChecker.check(
+				world.getTopography(),
+				eyes,
+				visibilityCheckLocation.cpy().sub(eyes).nor(),
+				dist
+			);
+
+			if (canSee) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 
 	/**
 	 * @return the position of the eyes
@@ -74,7 +91,7 @@ public interface Observer {
 	/**
 	 * Implementation specific reaction method
 	 */
-	public void reactToStimulus(SightStimulus stimulus);
+	public void reactToSightStimulus(SightStimulus stimulus);
 
 	/**
 	 * @return the maximum view distance
@@ -84,21 +101,24 @@ public interface Observer {
 
 	public static class IndividualSighted implements SightStimulus {
 		private static final long serialVersionUID = -8367150474646829719L;
+		private int sightedIndividualId;
 		private Vector2 location;
 
-		public IndividualSighted(Vector2 location) {
+		/**
+		 * Constructor
+		 */
+		public IndividualSighted(Vector2 location, int sightedIndividualId) {
 			this.location = location;
-
-		}
-
-		@Override
-		public void stimulate(Observer observer, Vector2 position) {
-			observer.reactToStimulus(this);
+			this.sightedIndividualId = sightedIndividualId;
 		}
 
 		@Override
 		public Vector2 getSightLocation() {
 			return location;
+		}
+
+		public int getSightedIndividualId() {
+			return sightedIndividualId;
 		}
 	}
 }

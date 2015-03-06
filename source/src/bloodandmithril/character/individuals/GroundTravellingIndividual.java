@@ -1,5 +1,6 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.character.individuals.Individual.Action.JUMP_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
@@ -204,7 +205,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 		getState().velocity.x = jumpVector.x;
 		getState().velocity.y = jumpVector.y;
 		decreaseStamina(0.1f);
-		SoundService.play(SoundService.femaleHit, getState().position, 100f, true);
+		
+		SoundService.play(SoundService.femaleHit, getState().position.cpy(), true, getVisible(this));
 		setCurrentAction(jumpVector.x < 0f ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
 	}
 }

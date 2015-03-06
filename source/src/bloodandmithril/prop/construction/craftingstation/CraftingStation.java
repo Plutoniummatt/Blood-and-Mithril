@@ -1,5 +1,6 @@
 package bloodandmithril.prop.construction.craftingstation;
 
+import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -226,7 +227,7 @@ public abstract class CraftingStation extends Construction {
 					}
 				}
 
-				SoundService.play(getCraftingSound(), position, 300f, true);
+				SoundService.play(getCraftingSound(), position, true, getVisible(this));
 			}
 
 			if (ClientServerInterface.isClient()) {

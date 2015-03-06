@@ -1,8 +1,10 @@
 package bloodandmithril.character.ai.perception;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.world.World;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -12,10 +14,28 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public interface Visible {
+public interface Visible extends Serializable {
 
 	/**
 	 * @return a collection of all visibilty test positions, in world coordinates
 	 */
 	public Collection<Vector2> getVisibleLocations();
+	
+	public default boolean isVisibleTo(Observer observer, World world) {
+		return observer.canSee(this, world) && isVisible();
+	}
+	
+	/**
+	 * @return whether this {@link Visible} is actually visible.
+	 */
+	public boolean isVisible();
+	
+	
+	public static Visible getVisible(Object object) {
+		if (object instanceof Visible) {
+			return (Visible) object;
+		}
+		
+		return null;
+	}
 }

@@ -1,5 +1,7 @@
 package bloodandmithril.item.items.equipment.weapon.ranged;
 
+import static bloodandmithril.character.ai.perception.Visible.getVisible;
+
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.Set;
@@ -66,9 +68,10 @@ public abstract class Projectile implements Serializable {
 
 		if (findAny.isPresent()) {
 			Individual individual = Domain.getIndividual(findAny.get());
+			
 			if (canAffect(individual)) {
 				hit(individual);
-				SoundService.play(getHitSound(individual), individual.getState().position, 0f, true);
+				SoundService.play(getHitSound(individual), individual.getState().position, true, getVisible(individual));
 				ignoreIndividual(individual);
 				if (!penetrating()) {
 					targetHitKinematics();

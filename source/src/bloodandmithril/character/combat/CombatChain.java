@@ -1,5 +1,6 @@
 package bloodandmithril.character.combat;
 
+import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
@@ -66,8 +67,8 @@ public class CombatChain {
 					SoundService.play(
 						blockSound,
 						target.getState().position,
-						600f,
-						true
+						true,
+						getVisible(target)
 					);
 				}
 				ParticleService.parrySpark(target.getEmissionPosition(), knockbackVector, Depth.FOREGOUND, Color.WHITE, Color.WHITE, 100);
@@ -81,8 +82,8 @@ public class CombatChain {
 					SoundService.play(
 						hitSound,
 						target.getState().position,
-						300f,
-						true
+						true,
+						getVisible(target)
 					);
 				}
 				ParticleService.bloodSplat(target.getEmissionPosition(), knockbackVector);

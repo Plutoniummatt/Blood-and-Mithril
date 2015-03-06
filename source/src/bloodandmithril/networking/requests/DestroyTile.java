@@ -66,8 +66,8 @@ public class DestroyTile implements Request {
 			SoundService.play(
 				SoundService.pickAxe,
 				new Vector2(worldX, worldY),
-				600f,
-				false
+				false,
+				null
 			);
 			Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground);
 		}

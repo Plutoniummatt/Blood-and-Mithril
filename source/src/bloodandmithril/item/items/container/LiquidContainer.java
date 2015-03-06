@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.container;
 
+import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.util.Util.round2dp;
 
 import java.util.Map;
@@ -41,7 +42,7 @@ public abstract class LiquidContainer extends Item {
 		float fraction = amount/getTotalAmount();
 
 		try {
-			SoundService.play(7, affected.getState().position, 32f, true);
+			SoundService.play(SoundService.swallow, affected.getState().position, true, getVisible(affected));
 			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(containedLiquids).entrySet()) {
 				if (fraction >= 1f) {
 					entry.getKey().newInstance().drink(entry.getValue(), affected);

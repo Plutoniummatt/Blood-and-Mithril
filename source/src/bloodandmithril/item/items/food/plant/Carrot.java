@@ -1,5 +1,6 @@
 package bloodandmithril.item.items.food.plant;
 
+import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
@@ -51,7 +52,7 @@ public class Carrot extends Food {
 
 	@Override
 	public boolean consume(Individual consumer) {
-		SoundService.play(6, consumer.getState().position, 32f, true);
+		SoundService.play(SoundService.crunch, consumer.getState().position, true, getVisible(consumer));
 		consumer.addFloatingText("+5 Hunger", Color.ORANGE);
 		consumer.increaseHunger(0.05f);
 		return true;
