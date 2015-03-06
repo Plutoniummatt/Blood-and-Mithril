@@ -13,5 +13,8 @@ import bloodandmithril.core.Copyright;
 @Copyright("Matthew Peck 2015")
 public interface Stimulus extends Serializable {
 
+	/**
+	 * Stimulates an individual
+	 */
 	public void stimulate(Individual individual);
 }

@@ -14,19 +14,19 @@ import com.badlogic.gdx.math.Vector2;
 public interface SoundStimulus extends Stimulus {
 
 	/**
-	 * stimulates the listener
-	 */
-	public void stimulate(Listener listener, Vector2 position);
-
-	/**
 	 * @return the position where this sound was emiited
 	 */
 	public Vector2 getEmissionPosition();
 
+	/**
+	 * Sets the emission position.
+	 */
+	public void setEmissionPosition(Vector2 position);
+	
 	@Override
 	public default void stimulate(Individual individual) {
 		if (individual instanceof Listener) {
-			stimulate((Listener) individual, getEmissionPosition());
+			((Listener) individual).listen(this);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.character.ai.task.GoToLocation.goToWithTerminationFunction;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
@@ -162,13 +163,13 @@ public class MineTile extends CompositeAITask {
 						if (!ClientServerInterface.isServer()) {
 							ClientServerInterface.SendRequest.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true, host.getWorldId());
 						}
-
+						
 						if (tileToBeDeleted != null && !(tileToBeDeleted instanceof EmptyTile)) {
 							SoundService.play(
 								SoundService.pickAxe,
 								tileCoordinate,
-								600f,
-								true
+								true,
+								getVisible(host)
 							);
 
 							Item mined = tileToBeDeleted.mine();

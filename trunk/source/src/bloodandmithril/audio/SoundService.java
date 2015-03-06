@@ -3,15 +3,20 @@ package bloodandmithril.audio;
 
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
+import static bloodandmithril.util.datastructure.WrapperForThree.wrap;
 
 import java.util.Map;
 
 import bloodandmithril.character.ai.perception.Listener;
+import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.SoundStimulus;
+import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.util.Function;
+import bloodandmithril.util.datastructure.WrapperForThree;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
@@ -39,8 +44,12 @@ public class SoundService {
 	public static final int flint				= 8;
 	public static final int campfireCooking		= 9;
 	public static final int anvil				= 10;
+	
+	static {
+		
+	}
 
-	private static Map<Integer, com.badlogic.gdx.audio.Sound> sounds = Maps.newHashMap();
+	private static Map<Integer, WrapperForThree<Function<SoundStimulus>, com.badlogic.gdx.audio.Sound, Float>> sounds = Maps.newHashMap();
 
 	private static Music current, next;
 
@@ -55,16 +64,16 @@ public class SoundService {
 			mainMenu = Gdx.audio.newMusic(Gdx.files.internal("data/music/mainMenu.mp3"));
 			desertNight = Gdx.audio.newMusic(Gdx.files.internal("data/music/desertNight.mp3"));
 
-			sounds.put(pickAxe, 			Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav")));
-			sounds.put(swordSlash, 			Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav")));
-			sounds.put(femaleHit, 			Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav")));
-			sounds.put(stab, 				Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav")));
-			sounds.put(broadSwordBlock, 	Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav")));
-			sounds.put(crunch, 				Gdx.audio.newSound(Gdx.files.internal("data/music/crunch.wav")));
-			sounds.put(swallow,				Gdx.audio.newSound(Gdx.files.internal("data/music/swallow.wav")));
-			sounds.put(flint,				Gdx.audio.newSound(Gdx.files.internal("data/music/flint.wav")));
-			sounds.put(campfireCooking,		Gdx.audio.newSound(Gdx.files.internal("data/music/campfireCooking.wav")));
-			sounds.put(anvil,				Gdx.audio.newSound(Gdx.files.internal("data/music/anvil.wav")));
+			sounds.put(pickAxe, 			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav")), 1300f));
+			sounds.put(swordSlash, 			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE_CAUTION);}, Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav")), 300f));
+			sounds.put(femaleHit, 			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav")), 500f));
+			sounds.put(stab, 				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav")), 100f));
+			sounds.put(broadSwordBlock, 	wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE_CAUTION);}, Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav")), 1000f));
+			sounds.put(crunch, 				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/crunch.wav")), 100f));
+			sounds.put(swallow,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.PAUSE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/swallow.wav")), 20f));
+			sounds.put(flint,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.PAUSE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/flint.wav")), 200f));
+			sounds.put(campfireCooking,		wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/campfireCooking.wav")), 300f));
+			sounds.put(anvil,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/anvil.wav")), 1300f));
 		}
 	}
 
@@ -84,25 +93,30 @@ public class SoundService {
 	}
 
 
-	public static void play(int sound, Vector2 location, float triggerRadius, boolean requiresServerAuthority) {
+	public static void play(int sound, Vector2 location, boolean requiresServerAuthority, Visible source) {
 		if (sound == -1) {
 			return;
 		}
 
 		if (isServer()) {
-			triggerListeners(location, triggerRadius);
+			triggerListeners(location, sounds.get(sound).c, sound, source);
 			if (isClient()) {
-				sounds.get(sound).play(getVolume(location), 1f, getPan(location));
+				sounds.get(sound).b.play(getVolume(location), 1f, getPan(location));
 			} else if (requiresServerAuthority) {
 				ClientServerInterface.SendNotification.notifyPlaySound(-1, sound, location);
 			}
 		} else if (!requiresServerAuthority) {
-			sounds.get(sound).play(getVolume(location), 1f, getPan(location));
+			sounds.get(sound).b.play(getVolume(location), 1f, getPan(location));
 		}
+	}
+	
+	
+	public static Function<SoundStimulus> getSoundStimulusFunction(int id) {
+		return sounds.get(id).a;
 	}
 
 
-	private static void triggerListeners(Vector2 location, float triggerRadius) {
+	private static void triggerListeners(Vector2 location, float triggerRadius, int sound, Visible source) {
 		Domain.getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
 			Individual.class,
 			location.x - triggerRadius,
@@ -111,11 +125,20 @@ public class SoundService {
 			location.y - triggerRadius
 		).forEach(individualId -> {
 			Individual listener = Domain.getIndividual(individualId);
-			if (listener == null || !(listener instanceof Listener) || listener.getState().position.cpy().dst(location) > triggerRadius) {
+			if (listener == null || !(listener instanceof Listener) || listener.getState().position.cpy().dst(location) > triggerRadius || listener.isSelected()) {
 				return;
 			}
 
-
+			if (source != null && listener instanceof Observer) {
+				if (source.isVisibleTo((Observer) listener, Domain.getWorld(listener.getWorldId()))) {
+					return;
+				}
+			}
+			
+			SoundStimulus stimulus = sounds.get(sound).a.call();
+			stimulus.setEmissionPosition(location);
+			
+			listener.getAI().addStimulus(stimulus);
 		});
 	}
 
@@ -217,24 +240,45 @@ public class SoundService {
 
 
 	/**
-	 * Sound class that contains sound ID and methods related to perception of sounds by {@link Listener}s
+	 * A suspicious sound.
 	 *
 	 * @author Matt
 	 */
-	public abstract static class Sound {
-		public final int soundId;
-
+	public static class SuspiciousSound implements SoundStimulus {
+		private static final long serialVersionUID = 6466600820010007897L;
+		private final SuspicionLevel suspicionLevel;
+		private Vector2 position;
+		
 		/**
 		 * Constructor
 		 */
-		public Sound(int soundId) {
-			this.soundId = soundId;
+		public SuspiciousSound(Vector2 position, SuspicionLevel suspicionLevel) {
+			this.position = position;
+			this.suspicionLevel = suspicionLevel;
 		}
 
+		@Override
+		public Vector2 getEmissionPosition() {
+			return position;
+		}
+		
+		public SuspicionLevel getSuspicionLevel() {
+			return suspicionLevel;
+		}
 
-		/**
-		 * @return the {@link SoundStimulus}
-		 */
-		public abstract SoundStimulus getStimulus();
+		@Override
+		public void setEmissionPosition(Vector2 position) {
+			this.position = position;
+		}
+	}
+	
+	
+	public static enum SuspicionLevel {
+		NONE(0), PAUSE(1), INVESTIGATE(2), INVESTIGATE_CAUTION(3), BACKUP(4), FLEE(5);
+		public final int severity;
+		
+		private SuspicionLevel(int severity) {
+			this.severity = severity;
+		}
 	}
 }

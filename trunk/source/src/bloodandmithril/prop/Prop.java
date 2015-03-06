@@ -3,7 +3,9 @@ package bloodandmithril.prop;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 
 import java.io.Serializable;
+import java.util.Collection;
 
+import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
@@ -28,6 +30,7 @@ import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 /**
  * A renderable {@link Prop}
@@ -35,7 +38,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public abstract class Prop implements Serializable {
+public abstract class Prop implements Serializable, Visible {
 	private static final long serialVersionUID = -1659783923740689585L;
 
 	/** Dimensions of this {@link Prop} */
@@ -241,4 +244,16 @@ public abstract class Prop implements Serializable {
 	}
 
 	public abstract void preRender();
+	
+
+	@Override
+	public Collection<Vector2> getVisibleLocations() {
+		return Lists.newArrayList(position.cpy());
+	}
+	
+	
+	@Override
+	public boolean isVisible() {
+		return true;
+	}
 }

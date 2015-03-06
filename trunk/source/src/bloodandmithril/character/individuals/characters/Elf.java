@@ -30,10 +30,15 @@ import java.util.Map;
 import java.util.Set;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.audio.SoundService.SuspicionLevel;
+import bloodandmithril.audio.SoundService.SuspiciousSound;
 import bloodandmithril.character.ai.implementations.ElfAI;
+import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.SightStimulus;
+import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -88,7 +93,7 @@ import com.google.common.collect.Sets;
 @Description(description = "Elves are children of nature, they are nimble creatures with a good grip on magic and excel at archery.")
 @SuppressWarnings("unchecked")
 @Copyright("Matthew Peck 2014")
-public class Elf extends Humanoid implements Observer, Visible {
+public class Elf extends Humanoid implements Observer, Visible, Listener {
 	private static final long serialVersionUID = -5566954059579973505L;
 
 	/** True if female */
@@ -473,8 +478,8 @@ public class Elf extends Humanoid implements Observer, Visible {
 			SoundService.play(
 				SoundService.femaleHit,
 				getState().position,
-				100f,
-				true
+				true,
+				this
 			);
 		}
 	}
@@ -517,13 +522,18 @@ public class Elf extends Humanoid implements Observer, Visible {
 
 	@Override
 	public float getViewDistance() {
-		return 300f;
+		return 2000f;
 	}
 
 
 	@Override
-	public void reactToStimulus(SightStimulus stimulus) {
-		speak("I see something", 300);
+	public void reactToSightStimulus(SightStimulus stimulus) {
+		if (stimulus instanceof IndividualSighted) {
+			Individual sighted = Domain.getIndividual(((IndividualSighted) stimulus).getSightedIndividualId());
+			if (sighted != null && Util.roll(0.02f)) {
+				speak(Util.randomOneOf("Nice hair, ", "Hey ", "Look it's ", "I see you, ") + sighted.getId().getFirstName(), 1500);
+			}
+		}
 	}
 
 
@@ -534,5 +544,31 @@ public class Elf extends Humanoid implements Observer, Visible {
 			locations.add(getState().position.cpy().add(0f, i));
 		}
 		return locations;
+	}
+
+
+	@Override
+	public void listen(SoundStimulus stimulus) {
+		if (stimulus instanceof SuspiciousSound) {
+			SuspicionLevel suspicionLevel = ((SuspiciousSound) stimulus).getSuspicionLevel();
+			if (suspicionLevel.severity >= SuspicionLevel.INVESTIGATE.severity) {
+				if (getState().position.x > stimulus.getEmissionPosition().x) {
+					setCurrentAction(Action.STAND_LEFT);
+				} else {
+					setCurrentAction(Action.STAND_RIGHT);
+				}
+				getAI().setCurrentTask(new Wait(this, 3f));
+				
+				String speech = Util.randomOneOf("What was that sound?", "Hmm?", "You hear that?", "Huh?", "What?", "I hear something...");
+				
+				speak(speech, 1500);
+			}
+		}
+	}
+
+
+	@Override
+	public boolean isVisible() {
+		return true;
 	}
 }

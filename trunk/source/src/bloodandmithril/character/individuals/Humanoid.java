@@ -1,5 +1,6 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
@@ -77,8 +78,8 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
-					50f,
-					false
+					false,
+					getVisible(individual)
 				);
 			}
 		);
@@ -90,8 +91,8 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
-					50f,
-					false
+					false,
+					getVisible(individual)
 				);
 			}
 		);
@@ -103,8 +104,8 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
-					50f,
-					false
+					false,
+					getVisible(individual)
 				);
 			}
 		);

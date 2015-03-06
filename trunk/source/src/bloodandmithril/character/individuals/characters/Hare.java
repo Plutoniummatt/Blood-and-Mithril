@@ -240,4 +240,10 @@ public class Hare extends GroundTravellingIndividual implements Visible {
 		locations.add(getState().position.cpy().add(0f, 10f));
 		return locations;
 	}
+
+
+	@Override
+	public boolean isVisible() {
+		return true;
+	}
 }
