@@ -473,6 +473,7 @@ public class Elf extends Humanoid implements Observer, Visible {
 			SoundService.play(
 				SoundService.femaleHit,
 				getState().position,
+				100f,
 				true
 			);
 		}
@@ -503,7 +504,7 @@ public class Elf extends Humanoid implements Observer, Visible {
 
 
 	@Override
-	public Vector2 getDirection() {
+	public Vector2 getObservationDirection() {
 		return null;
 	}
 
@@ -527,7 +528,7 @@ public class Elf extends Humanoid implements Observer, Visible {
 
 
 	@Override
-	public Collection<Vector2> getVisibleLocation() {
+	public Collection<Vector2> getVisibleLocations() {
 		LinkedList<Vector2> locations = Lists.newLinkedList();
 		for (int i = 10; i < getHeight() - 10 ; i += 10) {
 			locations.add(getState().position.cpy().add(0f, i));

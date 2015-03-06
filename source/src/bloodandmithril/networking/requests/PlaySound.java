@@ -29,7 +29,7 @@ public class PlaySound implements Response {
 
 	@Override
 	public void acknowledge() {
-		SoundService.play(soundId, location, false);
+		SoundService.play(soundId, location, 0f, false);
 	}
 
 

@@ -167,6 +167,7 @@ public class MineTile extends CompositeAITask {
 							SoundService.play(
 								SoundService.pickAxe,
 								tileCoordinate,
+								600f,
 								true
 							);
 

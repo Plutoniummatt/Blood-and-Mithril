@@ -41,7 +41,7 @@ public abstract class LiquidContainer extends Item {
 		float fraction = amount/getTotalAmount();
 
 		try {
-			SoundService.play(7, affected.getState().position, true);
+			SoundService.play(7, affected.getState().position, 32f, true);
 			for (Entry<Class<? extends Liquid>, Float> entry : Maps.newHashMap(containedLiquids).entrySet()) {
 				if (fraction >= 1f) {
 					entry.getKey().newInstance().drink(entry.getValue(), affected);

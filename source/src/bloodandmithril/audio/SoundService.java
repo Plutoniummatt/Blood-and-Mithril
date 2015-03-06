@@ -6,13 +6,16 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 
 import java.util.Map;
 
+import bloodandmithril.character.ai.perception.Listener;
+import bloodandmithril.character.ai.perception.SoundStimulus;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
@@ -37,7 +40,7 @@ public class SoundService {
 	public static final int campfireCooking		= 9;
 	public static final int anvil				= 10;
 
-	private static Map<Integer, Sound> sounds = Maps.newHashMap();
+	private static Map<Integer, com.badlogic.gdx.audio.Sound> sounds = Maps.newHashMap();
 
 	private static Music current, next;
 
@@ -81,12 +84,13 @@ public class SoundService {
 	}
 
 
-	public static void play(int sound, Vector2 location, boolean requiresServerAuthority) {
+	public static void play(int sound, Vector2 location, float triggerRadius, boolean requiresServerAuthority) {
 		if (sound == -1) {
 			return;
 		}
 
 		if (isServer()) {
+			triggerListeners(location, triggerRadius);
 			if (isClient()) {
 				sounds.get(sound).play(getVolume(location), 1f, getPan(location));
 			} else if (requiresServerAuthority) {
@@ -95,6 +99,24 @@ public class SoundService {
 		} else if (!requiresServerAuthority) {
 			sounds.get(sound).play(getVolume(location), 1f, getPan(location));
 		}
+	}
+
+
+	private static void triggerListeners(Vector2 location, float triggerRadius) {
+		Domain.getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
+			Individual.class,
+			location.x - triggerRadius,
+			location.x + triggerRadius,
+			location.y + triggerRadius,
+			location.y - triggerRadius
+		).forEach(individualId -> {
+			Individual listener = Domain.getIndividual(individualId);
+			if (listener == null || !(listener instanceof Listener) || listener.getState().position.cpy().dst(location) > triggerRadius) {
+				return;
+			}
+
+
+		});
 	}
 
 
@@ -191,5 +213,28 @@ public class SoundService {
 		fadeOut = true;
 		rate = transitionTime;
 		next = null;
+	}
+
+
+	/**
+	 * Sound class that contains sound ID and methods related to perception of sounds by {@link Listener}s
+	 *
+	 * @author Matt
+	 */
+	public abstract static class Sound {
+		public final int soundId;
+
+		/**
+		 * Constructor
+		 */
+		public Sound(int soundId) {
+			this.soundId = soundId;
+		}
+
+
+		/**
+		 * @return the {@link SoundStimulus}
+		 */
+		public abstract SoundStimulus getStimulus();
 	}
 }

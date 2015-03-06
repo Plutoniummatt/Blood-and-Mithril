@@ -51,7 +51,7 @@ public class Carrot extends Food {
 
 	@Override
 	public boolean consume(Individual consumer) {
-		SoundService.play(6, consumer.getState().position, true);
+		SoundService.play(6, consumer.getState().position, 32f, true);
 		consumer.addFloatingText("+5 Hunger", Color.ORANGE);
 		consumer.increaseHunger(0.05f);
 		return true;

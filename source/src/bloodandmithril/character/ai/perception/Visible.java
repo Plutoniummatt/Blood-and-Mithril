@@ -17,5 +17,5 @@ public interface Visible {
 	/**
 	 * @return a collection of all visibilty test positions, in world coordinates
 	 */
-	public Collection<Vector2> getVisibleLocation();
+	public Collection<Vector2> getVisibleLocations();
 }

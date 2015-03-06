@@ -1,7 +1,5 @@
 package bloodandmithril.networking.requests;
 
-import com.badlogic.gdx.math.Vector2;
-
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
@@ -10,6 +8,8 @@ import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
+
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * A {@link Request} to destroy a {@link Tile} from {@link Topography}
@@ -66,6 +66,7 @@ public class DestroyTile implements Request {
 			SoundService.play(
 				SoundService.pickAxe,
 				new Vector2(worldX, worldY),
+				600f,
 				false
 			);
 			Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground);
