@@ -498,7 +498,7 @@ public class Elf extends Humanoid implements Observer, Visible {
 
 	@Override
 	public Vector2 getObservationPosition() {
-		return getState().position.cpy().add(0f, getHeight() - 10);
+		return getState().position.cpy().add(0f, getHeight() - 15);
 	}
 
 
@@ -529,10 +529,9 @@ public class Elf extends Humanoid implements Observer, Visible {
 	@Override
 	public Collection<Vector2> getVisibleLocation() {
 		LinkedList<Vector2> locations = Lists.newLinkedList();
-		locations.add(getState().position.cpy().add(0f, 10f));
-		locations.add(getState().position.cpy().add(0f, 30f));
-		locations.add(getState().position.cpy().add(0f, 60f));
-		locations.add(getState().position.cpy().add(0f, getHeight() - 10f));
+		for (int i = 10; i < getHeight() - 10 ; i += 10) {
+			locations.add(getState().position.cpy().add(0f, i));
+		}
 		return locations;
 	}
 }
