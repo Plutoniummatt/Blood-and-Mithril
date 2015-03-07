@@ -76,9 +76,8 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 		if (isOccupied()) {
 			if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
-				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, Color.ORANGE, 2f, 8f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(200), Depth.MIDDLEGROUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, Color.ORANGE, 1f, 6f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(200), Depth.MIDDLEGROUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 10f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000) + 3000, Depth.BACKGROUND, false, null);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, Color.ORANGE, 2f, 8f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(100), Depth.MIDDLEGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 7f, 30f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
 
 
 				if (sparkCountdown == 0 && isClient()) {

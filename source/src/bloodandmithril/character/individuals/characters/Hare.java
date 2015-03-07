@@ -263,7 +263,7 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 		if (stimulus instanceof SuspiciousSound) {
 			SuspicionLevel suspicionLevel = ((SuspiciousSound) stimulus).getSuspicionLevel();
 			if (suspicionLevel.severity >= SuspicionLevel.INVESTIGATE.severity) {
-				speak("!", 1000);
+				speak(" !", 1000);
 				if (getState().position.x > stimulus.getEmissionPosition().x) {
 					AIProcessor.sendPathfindingRequest(this, new WayPoint(getState().position.cpy().add(300f, 0f)), false, 300f, false, false);
 				} else {

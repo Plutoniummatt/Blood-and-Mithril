@@ -226,6 +226,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** The timer that controls the {@link Travel} icon */
 	private float travelIconTimer;
+	
+	/** If this is not zero, this individual can not speak */
+	private float speakTimer;
 
 	/** IDs of individuals that are currently attacking this one, along with a timer */
 	private Map<Integer, Long> beingAttackedBy = Maps.newHashMap();
@@ -293,6 +296,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.attackTimer = other.attackTimer;
 		this.currentAction = other.currentAction;
 		this.dead = other.dead;
+		this.speakTimer = other.speakTimer;
 		this.individualsToBeAttacked = other.individualsToBeAttacked;
 		this.combatTimer = other.combatTimer;
 		this.shutup = other.shutup;
@@ -771,6 +775,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public void update(float delta) {
 		float aiTaskDelay = 0.05f;
 		travelIconTimer += 0.15f;
+		speakTimer = speakTimer - delta <= 0f ? 0f : speakTimer - delta;
 
 		// If chunk has not yet been loaded, do not update
 		try {
@@ -1043,8 +1048,27 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		return new ContextMenu(0, 0,
 			true,
 			selectDeselect(this),
+			walkRun(),
 			shutUpSpeak(),
 			build()
+		);
+	}
+
+
+	private MenuItem walkRun() {
+		return new MenuItem(
+			isWalking() ? "Run" : "Walk",
+			() -> {
+				if (ClientServerInterface.isServer()) {
+					setWalking(!isWalking());
+				} else {
+					ClientServerInterface.SendRequest.sendRunWalkRequest(getId().getId(), !isWalking());
+				}
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
 		);
 	}
 
@@ -1913,10 +1937,20 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public void setTravelIconTimer(float travelIconTimer) {
 		this.travelIconTimer = travelIconTimer;
 	}
+	
+	
+	public boolean isShutUp() {
+		return shutup;
+	}
+	
+	
+	public void setShutUp(boolean shutup) {
+		this.shutup = shutup;
+	}
 
 
 	public void speak(String text, long duration) {
-		if (shutup) {
+		if (shutup || speakTimer > 0f) {
 			return;
 		}
 
@@ -1928,6 +1962,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				0,
 				(int) (getHeight() * 1.3f)
 			);
+			speakTimer = duration / 1000f;
 		}
 	}
 }
