@@ -48,7 +48,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 						color.getColor(),
 						2f,
 						getWorldId(),
-						20f,
+						10f,
 						MovementMode.WEIGHTLESS,
 						Depth.FOREGOUND,
 						(long) lightingDuration * 1000
