@@ -164,6 +164,8 @@ public class UserInterface {
 
 	/** FPS should be updated twice per second */
 	private static int fpsTimer, fps, fpsDisplayed;
+	
+	private static float averageBarAlpha = 0f, maxHealth = 0f, totalHealth = 0, maxStamina = 0f, totalStamina = 0f, maxMana = 0f, totalMana = 0;
 
 	/** Texture regions */
 	public static TextureRegion finalWaypointTexture;
@@ -320,6 +322,7 @@ public class UserInterface {
 		renderDragBox();
 		renderLayeredComponents();
 		renderContextMenus();
+		renderAverageBars();
 
 		spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
@@ -341,6 +344,51 @@ public class UserInterface {
 
 		if (RENDER_TOPOGRAPHY) {
 			TopographyDebugRenderer.render();
+		}
+	}
+
+
+	private static void renderAverageBars() {
+		if (averageBarAlpha != 0f || !Domain.getSelectedIndividuals().isEmpty()) {
+			if (Domain.getSelectedIndividuals().isEmpty()) {
+				averageBarAlpha = averageBarAlpha - 0.04f < 0f ? 0f : averageBarAlpha - 0.04f;
+			} else {
+				averageBarAlpha = averageBarAlpha + 0.04f > 0.6f ? 0.6f : averageBarAlpha + 0.04f;
+				
+				maxHealth = 0f;
+				totalHealth = 0f;
+				maxStamina = 0f;
+				totalStamina = 0f;
+				maxMana = 0f;
+				totalMana  = 0f;
+				
+				for (Individual indi : Domain.getSelectedIndividuals()) {
+					maxHealth += indi.getState().maxHealth;
+					totalHealth += indi.getState().health;
+					
+					maxStamina += 1f;
+					totalStamina += indi.getState().stamina;
+					
+					maxMana += indi.getState().maxMana;
+					totalMana += indi.getState().mana;
+				}
+			}
+			
+			Gdx.gl.glEnable(GL_BLEND);
+			Gdx.gl.glLineWidth(1f);
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(1f, 1f, 1f, averageBarAlpha);
+			shapeRenderer.rect(WIDTH / 2 - 200, 65, 400 * totalHealth / maxHealth, 5);
+			shapeRenderer.rect(WIDTH / 2 - 200, 55, 400 * totalStamina / maxStamina, 5);
+			shapeRenderer.rect(WIDTH / 2 - 200, 45, 400 * totalMana / maxMana, 5);
+			shapeRenderer.end();
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.setColor(1f, 1f, 1f, averageBarAlpha);
+			shapeRenderer.rect(WIDTH / 2 - 200, 65, 400, 5);
+			shapeRenderer.rect(WIDTH / 2 - 200, 55, 400, 5);
+			shapeRenderer.rect(WIDTH / 2 - 200, 45, 400, 5);
+			shapeRenderer.end();
+			Gdx.gl.glDisable(GL_BLEND);
 		}
 	}
 

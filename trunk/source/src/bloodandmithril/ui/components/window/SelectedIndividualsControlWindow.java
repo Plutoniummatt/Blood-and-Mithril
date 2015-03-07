@@ -71,6 +71,32 @@ public class SelectedIndividualsControlWindow extends Window {
 			Color.WHITE,
 			UIRef.BL
 		));
+		
+		buttons.put(1, new Button(
+			"Shut up",
+			Fonts.defaultFont,
+			0,
+			0,
+			40,
+			16,
+			() -> {
+				boolean someoneSpeaking = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
+					return individual.isShutUp() ? 0 : 1;
+				}).sum() > 0;
+				
+				for (Individual individual : Domain.getSelectedIndividuals()) {
+					if (ClientServerInterface.isServer()) {
+						individual.setShutUp(someoneSpeaking);
+					} else {
+						// TODO CSI
+					}
+				}
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.WHITE,
+			UIRef.BL
+		));
 	}
 
 
@@ -78,6 +104,10 @@ public class SelectedIndividualsControlWindow extends Window {
 	protected void internalWindowRender() {
 		boolean someoneRunning = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
 			return individual.isWalking() ? 0 : 1;
+		}).sum() > 0;
+		
+		boolean someoneSpeaking = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
+			return individual.isShutUp() ? 0 : 1;
 		}).sum() > 0;
 
 		boolean buttonsActive = UserInterface.layeredComponents.isEmpty() ? false : UserInterface.layeredComponents.getLast() == this;
@@ -89,6 +119,13 @@ public class SelectedIndividualsControlWindow extends Window {
 		buttons.get(0).setOverColor(selected ? buttonsActive ? someoneRunning ? Color.ORANGE : Color.GREEN : someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
 		buttons.get(0).setDownColor(selected ? buttonsActive ? Color.WHITE : someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
 		buttons.get(0).render(x + 27, y - 20, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
+		
+		// Shut up button
+		buttons.get(1).text = someoneSpeaking ? "Shut up" : "Speak";
+		buttons.get(1).setIdleColor(selected ? someoneSpeaking ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
+		buttons.get(1).setOverColor(selected ? buttonsActive ? someoneSpeaking ? Color.ORANGE : Color.GREEN : someoneSpeaking ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
+		buttons.get(1).setDownColor(selected ? buttonsActive ? Color.WHITE : someoneSpeaking ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
+		buttons.get(1).render(x + 27, y - 40, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
 	}
 
 
