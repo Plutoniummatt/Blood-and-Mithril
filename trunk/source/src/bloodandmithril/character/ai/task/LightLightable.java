@@ -117,7 +117,7 @@ public class LightLightable extends CompositeAITask {
 
 			if (host.getInteractionBox().isWithinBox(((Prop) lightable).position)) {
 				if (host.has(new FlintAndFiresteel()) > 0) {
-					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND, Color.WHITE, Color.WHITE, 100);
+					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND, Color.WHITE, Color.WHITE, 100, true);
 					SoundService.play(SoundService.flint, ((Prop) lightable).position, true, getVisible(lightable));
 					lightable.light();
 				} else {

@@ -10,7 +10,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.OneHandedSword;
 import bloodandmithril.item.material.metal.Iron;
-import bloodandmithril.item.material.metal.Steel;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
@@ -70,7 +69,7 @@ public class Machette extends OneHandedSword<Iron> {
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
 		HashMap<Item, Integer> newHashMap = Maps.newHashMap();
-		newHashMap.put(ingot(Steel.class), 7);
+		newHashMap.put(ingot(Iron.class), 7);
 		return newHashMap;
 	}
 

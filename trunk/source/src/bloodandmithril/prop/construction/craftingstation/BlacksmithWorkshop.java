@@ -55,7 +55,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 	 * Constructor
 	 */
 	public BlacksmithWorkshop(float x, float y) {
-		super(x, y, 116, 61, 0);
+		super(x, y, 117, 61, 0);
 		setConstructionProgress(1f);
 	}
 
@@ -76,12 +76,11 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 		if (isOccupied()) {
 			if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
-				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 6f, 30f, Color.ORANGE, Color.ORANGE, 2f, 8f, MovementMode.WEIGHTLESS, Util.getRandom().nextInt(100), Depth.MIDDLEGROUND, false, Color.RED);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 7f, 30f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
-
+				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
 
 				if (sparkCountdown == 0 && isClient()) {
-					ParticleService.parrySpark(position.cpy().add(-37, height - 33), new Vector2(-30f, -50f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 1000);
+					ParticleService.parrySpark(position.cpy().add(-37, height - 33), new Vector2(-30f, -50f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 1000, true);
 					sparkCountdown = 90;
 				}
 			}
