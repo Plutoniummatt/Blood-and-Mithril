@@ -61,5 +61,12 @@ void main()
 		}
 	}
 
-	gl_FragColor = totalColor;
+	vec4 sampled = texture2D(u_texture, vec2(v_texCoords.x, 1.0 - v_texCoords.y));
+
+	gl_FragColor = vec4(
+		max((totalColor.r + sampled.r) / 2.0, sampled.r),
+		max((totalColor.g + sampled.g) / 2.0, sampled.g),
+		max((totalColor.b + sampled.b) / 2.0, sampled.b),
+		totalColor.a + sampled.a
+	);
 }
