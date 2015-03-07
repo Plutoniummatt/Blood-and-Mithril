@@ -27,7 +27,7 @@ public class Main {
 	  //Configurations
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Blood and Mithril";
-		cfg.useGL30 = true;
+		cfg.useGL30 = false;
 		cfg.samples = 4;
 		cfg.width = ConfigPersistenceService.getConfig().getResX();
 		cfg.height = ConfigPersistenceService.getConfig().getResY();
