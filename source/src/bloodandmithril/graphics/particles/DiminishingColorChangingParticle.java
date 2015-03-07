@@ -19,6 +19,7 @@ public class DiminishingColorChangingParticle extends DiminishingTracerParticle 
 	private float gStep = 0f;
 	private float bStep = 0f;
 	private float aStep = 0f;
+	private boolean tracer;
 
 	/**
 	 * Constructor
@@ -34,8 +35,10 @@ public class DiminishingColorChangingParticle extends DiminishingTracerParticle 
 			float glowIntensity,
 			MovementMode movementMode,
 			Depth depth,
-			long diminishingDuration) {
+			long diminishingDuration,
+			boolean tracer) {
 		super(position, velocity, color, glowColor, radius, worldId, glowIntensity, movementMode, depth, diminishingDuration);
+		this.tracer = tracer;
 
 		if (colorToChangeTo != null) {
 			this.rStep = colorToChangeTo.r - color.r;
@@ -63,6 +66,8 @@ public class DiminishingColorChangingParticle extends DiminishingTracerParticle 
 
 	@Override
 	public synchronized void renderLine(float delta) {
-		// Do nothing
+		if (tracer) {
+			super.renderLine(delta);
+		}
 	}
 }

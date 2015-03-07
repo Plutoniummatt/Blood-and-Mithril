@@ -114,8 +114,8 @@ public abstract class Prop implements Serializable, Visible {
 		WoodenChest.woodenChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);
 		SmallWoodenCrate.woodenCrate = new TextureRegion(Domain.gameWorldTexture, 453, 140, 44, 35);
 		CarrotProp.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 173, 12, 20);
-		BlacksmithWorkshop.blackSmithWorkshopWorking = new TextureRegion(Domain.gameWorldTexture, 591, 114, 116, 61);
-		BlacksmithWorkshop.blackSmithWorkshop = new TextureRegion(Domain.gameWorldTexture, 708, 114, 116, 61);
+		BlacksmithWorkshop.blackSmithWorkshopWorking = new TextureRegion(Domain.gameWorldTexture, 591, 114, 117, 61);
+		BlacksmithWorkshop.blackSmithWorkshop = new TextureRegion(Domain.gameWorldTexture, 709, 114, 117, 61);
 		WorkBench.workbench = new TextureRegion(Domain.gameWorldTexture, 499, 132, 90, 43);
 		CarrotSeedProp.carrotSeed = new TextureRegion(Domain.gameWorldTexture, 389, 177, 16, 16);
 		CarrotProp.halfCarrot = new TextureRegion(Domain.gameWorldTexture, 406, 177, 16, 16);
