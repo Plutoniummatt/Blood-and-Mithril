@@ -43,7 +43,7 @@ import com.google.common.collect.Lists;
 public class GaussianLightingRenderer {
 	public static boolean SEE_ALL = false;
 
-	public static FrameBuffer foregroundLightingFBOSmall, middleGroundLightingFBOSmall;
+	public static FrameBuffer foregroundLightingFBOSmall, middleGroundLightingFBOSmall, smallWorking;
 	public static FrameBuffer foregroundLightingFBO, middleGroundLightingFBO;
 	public static FrameBuffer workingDownSampled;
 	public static FrameBuffer workingDownSampledXBlurColorBuffer;
@@ -146,6 +146,13 @@ public class GaussianLightingRenderer {
 			HEIGHT/LIGHTING_FBO_DOWNSIZE_SAMPLER,
 			false
 		);
+		
+		smallWorking = new FrameBuffer(
+			RGBA8888,
+			WIDTH/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			HEIGHT/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			false
+		);
 
 		workingFBO = new FrameBuffer(
 			RGBA8888,
@@ -205,13 +212,11 @@ public class GaussianLightingRenderer {
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		workingFBO.end();
-
+		
 		lightingFboSmall.begin();
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.tracerParticlesFBO);
-		Shaders.tracerParticlesFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		lightingFboSmall.end();
 
 		int positionIndex = 0;
 		int colorIndex = 0;
@@ -239,38 +244,17 @@ public class GaussianLightingRenderer {
 			particleCollections.add(serverSideGlowingTracerParticles.subList(i - 100 < 0 ? 0 : i - 100, i));
 		}
 
-
-
 		for (List<Particle> collection : particleCollections) {
+			smallWorking.begin();
+			spriteBatch.begin();
+			spriteBatch.setShader(Shaders.tracerParticlesFBO);
+			Shaders.tracerParticlesFBO.begin();
+			Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			for (Particle p : collection) {
 				if (index == MAX_PARTICLES) {
 					break;
 				}
-				if (p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f) {
-					currentPositions[positionIndex] = worldToScreenX(p.position.x);
-					currentPositions[positionIndex + 1] = worldToScreenY(p.position.y);
-
-					previousPositions[positionIndex] = worldToScreenX(((TracerParticle) p).prevPosition.x);
-					previousPositions[positionIndex + 1] = worldToScreenY(((TracerParticle) p).prevPosition.y);
-
-					colors[colorIndex] = ((TracerParticle) p).glowColow.r;
-					colors[colorIndex + 1] = ((TracerParticle) p).glowColow.g;
-					colors[colorIndex + 2] = ((TracerParticle) p).glowColow.b;
-					colors[colorIndex + 3] = ((TracerParticle) p).glowColow.a;
-
-					intensities[index] = ((TracerParticle) p).glowIntensity;
-
-					index ++;
-					positionIndex += 2;
-					colorIndex += 4;
-				}
-			}
-
-			for (Particle p : clientSideGlowingTracerParticles) {
-				if (index == MAX_PARTICLES) {
-					break;
-				}
-
 				if (p instanceof TracerParticle && ((TracerParticle) p).glowIntensity != 0f) {
 					currentPositions[positionIndex] = worldToScreenX(p.position.x);
 					currentPositions[positionIndex + 1] = worldToScreenY(p.position.y);
@@ -296,12 +280,26 @@ public class GaussianLightingRenderer {
 			Shaders.tracerParticlesFBO.setUniform2fv("currentPosition[0]", currentPositions, 0, MAX_PARTICLES * 2);
 			Shaders.tracerParticlesFBO.setUniform2fv("previousPosition[0]", previousPositions, 0, MAX_PARTICLES * 2);
 			Shaders.tracerParticlesFBO.setUniform4fv("color[0]", colors, 0, MAX_PARTICLES * 4);
-			spriteBatch.draw(workingFBO.getColorBufferTexture(), 0, 0);
-			spriteBatch.flush();
+			spriteBatch.draw(lightingFboSmall.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
+			spriteBatch.end();
+			smallWorking.end();
+			
+			lightingFboSmall.begin();
+			spriteBatch.begin();
+			spriteBatch.setShader(Shaders.invertY);
+			Gdx.gl20.glEnable(GL20.GL_BLEND);
+			Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			spriteBatch.draw(smallWorking.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
+			spriteBatch.end();
+			lightingFboSmall.end();
+			
+			index = 0;
+			positionIndex = 0;
+			colorIndex = 0;
 		}
-		spriteBatch.end();
-		lightingFboSmall.end();
 
+		
+		
 		lightingFbo.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);

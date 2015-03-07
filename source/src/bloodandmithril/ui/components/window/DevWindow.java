@@ -29,6 +29,7 @@ import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
@@ -69,6 +70,7 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
@@ -156,6 +158,18 @@ public class DevWindow extends Window {
 	public boolean keyPressed(int keyCode) {
 		if (super.keyPressed(keyCode)) {
 			return true;
+		}
+		
+		if (keyCode == Keys.H) {
+			ParticleService.parrySpark(
+				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()), 
+				new Vector2(), 
+				Depth.FOREGOUND, 
+				Color.WHITE, 
+				Color.BLUE, 
+				10000000, 
+				true
+			);
 		}
 
 		if (keyCode == Keys.T) {

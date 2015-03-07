@@ -80,7 +80,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
 
 				if (sparkCountdown == 0 && isClient()) {
-					ParticleService.parrySpark(position.cpy().add(-37, height - 33), new Vector2(-30f, -50f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 1000, true);
+					ParticleService.parrySpark(position.cpy().add(-37, height - 33), new Vector2(-30f, -50f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 1500, true);
 					sparkCountdown = 90;
 				}
 			}
