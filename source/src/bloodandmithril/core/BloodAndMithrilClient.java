@@ -549,14 +549,14 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						if (indi.isControllable()) {
 							if (ClientServerInterface.isServer()) {
 								indi.deselect(false, 0);
-								Domain.getSelectedIndividuals().remove(indi);
+								Domain.removeSelectedIndividual(indi);
 							} else {
 								ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 							}
 						}
 					}
 					if (ClientServerInterface.isServer()) {
-						Domain.getSelectedIndividuals().clear();
+						Domain.clearSelectedIndividuals();
 					}
 				}
 
@@ -565,7 +565,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId() && !input.isKeyPressed(selectIndividual)) {
 						if (ClientServerInterface.isServer()) {
 							indi.deselect(false, 0);
-							Domain.getSelectedIndividuals().remove(indi);
+							Domain.removeSelectedIndividual(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 						}
@@ -574,7 +574,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 				if (individualClicked.isControllable()) {
 					if (ClientServerInterface.isServer()) {
-						Domain.getSelectedIndividuals().add(individualClicked);
+						Domain.addSelectedIndividual(individualClicked);;
 						individualClicked.select(0);
 					} else {
 						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(individualClicked.getId().getId(), true);

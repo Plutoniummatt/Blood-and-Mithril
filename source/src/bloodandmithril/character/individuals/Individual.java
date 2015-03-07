@@ -696,7 +696,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 
 		if (isMouseOver() && Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
-			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.getSelectedIndividuals().contains(this) || Domain.getSelectedIndividuals().size() > 1)) {
+			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.isIndividualSelected(this) || Domain.getSelectedIndividuals().size() > 1)) {
 				spriteBatch.setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
@@ -711,7 +711,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Select this {@link Individual} */
 	public void select(int clientId) {
-		Domain.getSelectedIndividuals().add(this);
+		Domain.addSelectedIndividual(this);
 		getAI().setToManual();
 		selectedByClient.add(clientId);
 
@@ -957,7 +957,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Is this individual the current one? */
 	public boolean isSelected() {
-		return Domain.getSelectedIndividuals().contains(this);
+		return Domain.isIndividualSelected(this);
 	}
 
 
@@ -1017,7 +1017,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		);
 
 		ContextMenu contextMenuToReturn = new ContextMenu(0, 0, true);
-		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.getSelectedIndividuals().contains(this))) {
+		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.isIndividualSelected(this))) {
 			contextMenuToReturn.addMenuItem(interact);
 		}
 
@@ -1372,13 +1372,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * @return The {@link MenuItem} to select/deselect this individual
 	 */
 	private MenuItem selectDeselect(final Individual thisIndividual) {
-		return Domain.getSelectedIndividuals().contains(thisIndividual) ?
+		return Domain.isIndividualSelected(thisIndividual) ?
 		new MenuItem(
 			"Deselect",
 			() -> {
 				if (isServer()) {
 					thisIndividual.deselect(false, 0);
-					Domain.getSelectedIndividuals().remove(thisIndividual);
+					Domain.removeSelectedIndividual(thisIndividual);
 					clearCommands();
 				} else {
 					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.getId(), false);

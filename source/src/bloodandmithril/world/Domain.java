@@ -29,6 +29,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.round;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,6 +59,8 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 /**
  * Class representing the entire domain governing the game.
@@ -74,7 +77,7 @@ public class Domain {
 	private static HashMap<Integer, World> 						worlds 					= newHashMap();
 
 	/** {@link Individual} that are selected for manual control */
-	private static Set<Individual> 								selectedIndividuals 	= newHashSet();
+	private static Set<Integer> 								selectedIndividuals 	= newHashSet();
 
 	/** Every {@link Individual} that exists */
 	private static ConcurrentHashMap<Integer, Individual> 		individuals 			= new ConcurrentHashMap<>();
@@ -134,6 +137,40 @@ public class Domain {
 		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+	}
+	
+	
+	public synchronized static void addSelectedIndividual(Individual individual) {
+		selectedIndividuals.add(individual.getId().getId());
+	}
+	
+	
+	public synchronized static boolean removeSelectedIndividual(Individual individual) {
+		return selectedIndividuals.removeIf(id -> {
+			return individual.getId().getId() == id;
+		});
+	}
+	
+	
+	public synchronized static boolean removeSelectedIndividualIf(java.util.function.Predicate<Integer> predicate) {
+		return selectedIndividuals.removeIf(predicate);
+	}
+	
+	
+	public synchronized static boolean isIndividualSelected(Individual individual) {
+		return selectedIndividuals.contains(individual.getId().getId());
+	}
+	
+	
+	public synchronized static void clearSelectedIndividuals() {
+		selectedIndividuals.clear();
+	}
+	
+	
+	public synchronized static Collection<Individual> getSelectedIndividuals() {
+		return Lists.newLinkedList(Iterables.transform(selectedIndividuals, id -> {
+			return getIndividual(id);
+		}));
 	}
 
 
@@ -375,11 +412,6 @@ public class Domain {
 
 	public static void setWorlds(HashMap<Integer, World> worlds) {
 		Domain.worlds = worlds;
-	}
-
-
-	public static Set<Individual> getSelectedIndividuals() {
-		return selectedIndividuals;
 	}
 
 

@@ -674,14 +674,14 @@ public class UserInterface {
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
 						if (isServer()) {
 							indi.select(0);
-							Domain.getSelectedIndividuals().add(indi);
+							Domain.addSelectedIndividual(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), true);
 						}
-					} else if (Domain.getSelectedIndividuals().contains(indi)) {
+					} else if (Domain.isIndividualSelected(indi)) {
 						if (isServer()) {
 							indi.deselect(false, 0);
-							Domain.getSelectedIndividuals().remove(indi);
+							Domain.removeSelectedIndividual(indi);
 						} else {
 							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 						}

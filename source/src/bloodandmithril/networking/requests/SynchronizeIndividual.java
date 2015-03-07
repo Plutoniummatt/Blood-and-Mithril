@@ -122,8 +122,8 @@ public class SynchronizeIndividual implements Request {
 				got.copyFrom(individual);
 
 				if (!got.getSelectedByClient().contains(ClientServerInterface.client.getID())) {
-					Domain.getSelectedIndividuals().removeIf(individual -> {
-						return individual.getId().getId() == got.getId().getId();
+					Domain.removeSelectedIndividualIf(id -> {
+						return id == got.getId().getId();
 					});
 				}
 			}

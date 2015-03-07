@@ -611,10 +611,10 @@ public class TradeWindow extends Window implements Refreshable {
 				((Individual) proposee).getAI().setCurrentTask(new Idle());
 			}
 		} else {
-			if (Domain.getSelectedIndividuals().contains(proposer)) {
+			if (Domain.isIndividualSelected((Individual) proposer)) {
 				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposer).getId().getId());
 			}
-			if (proposee instanceof Individual && Domain.getSelectedIndividuals().contains(proposee)) {
+			if (proposee instanceof Individual && Domain.isIndividualSelected((Individual) proposee)) {
 				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposee).getId().getId());
 			}
 		}
