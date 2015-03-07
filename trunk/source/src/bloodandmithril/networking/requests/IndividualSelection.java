@@ -36,11 +36,11 @@ public class IndividualSelection implements Request {
 		Individual individual = Domain.getIndividual(individualId);
 		if (select) {
 			individual.select(clientId);
-			Domain.getSelectedIndividuals().remove(individual);
-			Domain.getSelectedIndividuals().add(individual);
+			Domain.removeSelectedIndividual(individual);
+			Domain.addSelectedIndividual(individual);
 		} else {
 			individual.deselect(false, clientId);
-			Domain.getSelectedIndividuals().remove(individual);
+			Domain.removeSelectedIndividual(individual);
 		}
 		Response response = new SelectIndividualResponse(individualId, select);
 		Responses responses = new Response.Responses(false);
@@ -82,11 +82,11 @@ public class IndividualSelection implements Request {
 			Individual individual = Domain.getIndividual(individualId);
 			if (select) {
 				individual.select(0);
-				Domain.getSelectedIndividuals().remove(individual);
-				Domain.getSelectedIndividuals().add(individual);
+				Domain.removeSelectedIndividual(individual);
+				Domain.addSelectedIndividual(individual);
 			} else {
 				individual.deselect(false, 0);
-				Domain.getSelectedIndividuals().remove(individual);
+				Domain.removeSelectedIndividual(individual);
 			}
 		}
 

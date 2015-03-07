@@ -52,7 +52,7 @@ public class MoveIndividual implements Request {
 	@Override
 	public Responses respond() {
 		Individual individual = Domain.getIndividual(individualId);
-		if (individual != null && Domain.getSelectedIndividuals().contains(individual)) {
+		if (individual != null && Domain.isIndividualSelected(individual)) {
 			if (jump) {
 				AIProcessor.sendJumpResolutionRequest(
 					individual, 

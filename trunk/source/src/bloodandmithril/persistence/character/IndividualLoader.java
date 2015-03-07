@@ -34,7 +34,7 @@ public class IndividualLoader {
 			if (ClientServerInterface.isClient()) {
 				for (Individual individual : Domain.getIndividuals().values()) {
 					if (individual.getAI().getAIMode() == AIMode.MANUAL) {
-						Domain.getSelectedIndividuals().add(individual);
+						Domain.addSelectedIndividual(individual);
 					}
 				}
 			}
