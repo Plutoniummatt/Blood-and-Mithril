@@ -571,6 +571,7 @@ public class GaussianLightingRenderer {
 
 
 	private static void middleground() {
+		Gdx.gl20.glEnable(GL20.GL_DITHER);
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);

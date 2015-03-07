@@ -1,6 +1,6 @@
 #ifdef GL_ES
 #define LOWP lowp
-precision mediump float;
+precision highp float;
 #else
 #define LOWP 
 #endif
@@ -12,6 +12,10 @@ uniform vec2 previousPosition[100];
 uniform vec4 color[100];
 uniform float intensity[100];
 uniform vec2 resolution;
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
 
 void main()
 {
@@ -42,7 +46,8 @@ void main()
 				dist = distance(p2, resolution * v_texCoords);
 			}
 			
-			vec4 toAdd = color[index] * intensity[index] / dist;
+			float rnd = rand(v_texCoords.xy) / 35.0;
+			vec4 toAdd = (color[index] * intensity[index] / dist) + vec4(rnd, rnd, rnd, rnd);
 			
 			totalColor = vec4(
 				max((totalColor.r + toAdd.r) / 2.0, totalColor.r),
