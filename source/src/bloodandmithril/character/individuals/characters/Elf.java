@@ -163,7 +163,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> stabSequence = newArrayList(
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1280, 112, 64, 112, 8, 0.07f, PlayMode.NORMAL), server ? null : Shaders.filterIgnoreReplace),	// HEAD
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1280, 0,   64, 112, 8, 0.07f, PlayMode.NORMAL), server ? null : Shaders.filter),				// HAIR
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1280, 0,   64, 112, 8, 0.07f, PlayMode.NORMAL), server ? null : Shaders.colorize),				// HAIR
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1280, 448, 64, 112, 8, 0.07f, PlayMode.NORMAL), server ? null : Shaders.filterIgnoreReplace),	// BACK ARM
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1280, 672, 64, 112, 8, 0.07f, PlayMode.NORMAL), server ? null : Shaders.filterIgnoreReplace),	// BACK LEG
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1280, 224, 64, 112, 8, 0.07f, PlayMode.NORMAL), server ? null : Shaders.filterIgnoreReplace),	// TORSO
