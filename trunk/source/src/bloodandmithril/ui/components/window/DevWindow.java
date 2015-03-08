@@ -2,10 +2,13 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
 import static bloodandmithril.character.individuals.Names.getUnknownNatureIdentifier;
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.Util.Colors.lightColor;
 import static bloodandmithril.util.Util.Colors.lightSkinColor;
 import static bloodandmithril.world.Domain.getActiveWorld;
@@ -71,6 +74,7 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
+import bloodandmithril.world.WorldState;
 import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
@@ -486,7 +490,7 @@ public class DevWindow extends Window {
 			),
 			0
 		);
-
+		
 		newHashMap.put(
 			new ListingMenuItem<String>(
 				"Render component interfaces",
@@ -501,6 +505,50 @@ public class DevWindow extends Window {
 						UserInterface.renderAvailableInterfaces = !UserInterface.renderAvailableInterfaces;
 					},
 					UserInterface.renderAvailableInterfaces ? Color.GREEN : Color.RED,
+					Color.WHITE,
+					Color.GREEN,
+					UIRef.BL
+				),
+				null
+			),
+			0
+		);
+		
+		newHashMap.put(
+			new ListingMenuItem<String>(
+				"Change time of day",
+				new Button(
+					"Change time of day",
+					Fonts.defaultFont,
+					0,
+					0,
+					310,
+					16,
+					() -> {
+						UserInterface.addLayeredComponent(
+							new TextInputWindow(
+								WIDTH / 2 - 125,
+								HEIGHT/2 + 50,
+								250,
+								100,
+								"Change time of day",
+								250,
+								100,
+								args -> {
+									if (isServer()) {
+										try {
+											WorldState.getCurrentEpoch().setTimeOfDay(Float.parseFloat((String) args[0]));
+										} catch (Exception e) {
+										}
+									}
+								},
+								"Confirm",
+								true,
+								""
+							)
+						);
+					},
+					Color.GREEN,
 					Color.WHITE,
 					Color.GREEN,
 					UIRef.BL
