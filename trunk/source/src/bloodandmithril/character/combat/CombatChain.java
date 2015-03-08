@@ -71,7 +71,7 @@ public class CombatChain {
 						getVisible(target)
 					);
 				}
-				ParticleService.parrySpark(target.getEmissionPosition(), knockbackVector, Depth.FOREGOUND, Color.WHITE, Color.WHITE, 100, true);
+				ParticleService.parrySpark(target.getEmissionPosition(), knockbackVector, Depth.FOREGOUND, Color.WHITE, Color.WHITE, 100, true, 30);
 			}
 		} else {
 			knockbackVector.scl(0.1f);

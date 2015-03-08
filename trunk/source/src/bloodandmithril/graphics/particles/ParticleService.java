@@ -50,9 +50,29 @@ public class ParticleService {
 	
 	public static void fireworks(Vector2 position) {
 		if (isClient()) {
+			for (int i = 0; i < 50; i++) {
+				long lifetime = Util.getRandom().nextInt(300);
+				Color randomOneOf = Util.randomOneOf(new Color(1f, 0.6f, 1f, 1f), Color.PURPLE, Color.CYAN);
+				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 1200f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
+				
+				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+					position.cpy(),
+					rotate,
+					Color.WHITE,
+					randomOneOf,
+					randomOneOf,
+					Util.getRandom().nextFloat() * 5f,
+					Domain.getActiveWorld().getWorldId(),
+					Util.getRandom().nextFloat() * 30f + 10,
+					MovementMode.GRAVITY,
+					Depth.MIDDLEGROUND,
+					lifetime,
+					true
+				).bounce());
+			}
 			for (int i = 0; i < 200; i++) {
 				long lifetime = Util.getRandom().nextInt(2000);
-				Color randomOneOf = Util.randomOneOf(new Color(1f, 0.6f, 1f, 1f), Color.BLUE, Color.CYAN);
+				Color randomOneOf = Util.randomOneOf(new Color(1f, 0.6f, 1f, 1f), Color.PURPLE, Color.CYAN);
 				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 1200f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
 				
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
@@ -150,21 +170,22 @@ public class ParticleService {
 
 		}
 	}
+	
 
-
-	public static void parrySpark(Vector2 position, Vector2 knockBack, Depth depth, Color color, Color glowColor, int life, boolean trancer) {
+	public static void parrySpark(Vector2 position, Vector2 knockBack, Depth depth, Color color, Color glowColor, int life, boolean trancer, int numberOfParticles) {
 		if (isClient()) {
-			for (int i = 0; i < 35; i++) {
+			for (int i = 0; i < numberOfParticles; i++) {
 				long lifetime = Util.getRandom().nextInt(life);
+				float size = Util.getRandom().nextFloat();
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).scl(2f),
 					color,
 					glowColor,
 					color,
-					1f,
+					size * 1.2f,
 					Domain.getActiveWorld().getWorldId(),
-					5f,
+					size * 5f,
 					MovementMode.GRAVITY,
 					depth,
 					lifetime,
@@ -191,7 +212,7 @@ public class ParticleService {
 
 		@Override
 		public void run() {
-			ParticleService.parrySpark(position, knockBack, depth, Color.WHITE, Color.WHITE, 100, true);
+			ParticleService.parrySpark(position, knockBack, depth, Color.WHITE, Color.WHITE, 100, true, 30);
 		}
 	}
 
