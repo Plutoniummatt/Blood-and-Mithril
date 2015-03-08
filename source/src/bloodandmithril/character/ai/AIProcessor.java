@@ -104,12 +104,10 @@ public class AIProcessor {
 	 * Processes items in the AI thread
 	 */
 	private static void processItems(final int n) {
-		if (aiThreadTasks.isEmpty()) {
-			Logger.aiDebug("Processed " + n + " AI items", LogLevel.TRACE);
-		} else {
+		while (!aiThreadTasks.isEmpty()) {
 			aiThreadTasks.poll().execute();
-			processItems(n + 1);
 		}
+		Logger.aiDebug("Processed " + n + " AI items", LogLevel.TRACE);
 	}
 
 

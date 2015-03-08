@@ -23,6 +23,7 @@ public class Shaders {
 	public static ShaderProgram replaceColor = replaceColorShader();
 	public static ShaderProgram filterIgnoreReplace = filterReplaceIgnoreColorShader();
 
+	public static ShaderProgram colorize = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/colorize.fp"));
 	public static ShaderProgram invertY = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYAxis.fp"));
 	public static ShaderProgram backgroundShader = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/backgroundShader.fp"));
 	public static ShaderProgram invertYBlendWithOcclusion = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYBlendWithOcclusion.fp"));
@@ -34,16 +35,6 @@ public class Shaders {
 	public static ShaderProgram blendXYandYXSmears = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/blendXYandYXSmears.fp"));
 	public static ShaderProgram tracerParticlesFBO = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/tracerParticleFbo.fp"));
 	public static ShaderProgram lightingFBOBlend = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/lightingFboBlend.fp"));
-
-	public static ShaderProgram shadow = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/shadow.fp"));
-	public static ShaderProgram shadowMap = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/1DShadowMap.fp"));
-	public static ShaderProgram defaultBackGroundTiles = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/backGroundTileShader.fp"));
-	public static ShaderProgram defaultForeGroundTiles = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/foreGroundTileShader.fp"));
-	public static ShaderProgram daylightShader = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/daylightShader.fp"));
-	public static ShaderProgram black = colorFilterShader(Color.BLACK);
-	public static ShaderProgram moon = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/moonShader.fp"));
-	public static ShaderProgram elfHighLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/elf/highLight.fp"));
-	public static ShaderProgram elfDayLight = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/legacy/elf/dayLight.fp"));
 	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/sun.fp"));
 
 	public static void setup() {
@@ -94,14 +85,5 @@ public class Shaders {
 		shaderProgram.setUniformf("color", with);
 		shaderProgram.end();
 		return shaderProgram;
-	}
-
-	/**
-	 * Updates the uniform variables on shaders
-	 */
-	public static void updateShaderUniforms() {
-		defaultBackGroundTiles.begin();
-		defaultBackGroundTiles.setUniformf("resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		defaultBackGroundTiles.end();
 	}
 }
