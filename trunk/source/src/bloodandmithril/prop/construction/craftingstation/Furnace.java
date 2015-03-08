@@ -6,6 +6,7 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -163,5 +164,11 @@ public class Furnace extends CraftingStation implements Container {
 	@Override
 	public boolean canDeconstruct() {
 		return !isOccupied();
+	}
+
+
+	@Override
+	public void affectIndividual(Individual individual, float delta) {
+		individual.decreaseThirst(delta / 600f);
 	}
 }

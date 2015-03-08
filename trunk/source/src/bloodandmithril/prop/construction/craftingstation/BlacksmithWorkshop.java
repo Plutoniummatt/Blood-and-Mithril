@@ -8,6 +8,8 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -164,5 +166,18 @@ public class BlacksmithWorkshop extends CraftingStation {
 	@Override
 	public boolean requiresConstruction() {
 		return false;
+	}
+
+
+	@Override
+	public void affectIndividual(Individual individual, float delta) {
+		individual.decreaseStamina(delta / 30f);
+		individual.decreaseThirst(delta / 300f);
+		individual.decreaseHunger(delta / 600f);
+		
+		if (individual.getState().stamina <= 0.01f) {
+			individual.getAI().setCurrentTask(new Idle());
+			individual.speak("Too tired, need a break...", 1500);
+		}
 	}
 }

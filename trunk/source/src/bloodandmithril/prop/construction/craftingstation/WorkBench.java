@@ -6,6 +6,7 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucket;
@@ -113,5 +114,12 @@ public class WorkBench extends CraftingStation {
 	@Override
 	public boolean requiresConstruction() {
 		return false;
+	}
+
+
+	@Override
+	public void affectIndividual(Individual individual, float delta) {
+		individual.decreaseThirst(delta / 600f);
+		individual.decreaseHunger(delta / 900f);
 	}
 }
