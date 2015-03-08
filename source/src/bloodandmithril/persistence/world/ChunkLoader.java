@@ -183,7 +183,7 @@ public class ChunkLoader {
 	/** Loads a single chunk from disk and stores it in the chunkMap */
 	private void loadSingleChunk(int chunkX, int chunkY, World world, boolean populateChunkMap) {
 		synchronized (chunksInQueue) {
-			Logger.loaderDebug("Loading chunk: x=" + chunkX + ", y=" + chunkY, LogLevel.DEBUG);
+			Logger.loaderDebug("Loading chunk: x=" + chunkX + ", y=" + chunkY, LogLevel.TRACE);
 
 			try {
 				ZipFile zipFile = new ZipFile(getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/chunkData.zip");

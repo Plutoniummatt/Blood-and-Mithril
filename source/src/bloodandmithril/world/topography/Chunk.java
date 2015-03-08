@@ -58,8 +58,8 @@ public class Chunk {
 	 * Constructor
 	 */
 	public Chunk(Tile[][] fTiles, Tile[][] bTiles, int x, int y, int worldId) {
-		this.fData = new ChunkData(Util.clone2DArray(fTiles), x, y, worldId);
-		this.bData = new ChunkData(Util.clone2DArray(bTiles), x, y, worldId);
+		this.fData = new ChunkData(Util.clone2DArray(fTiles), x, y, worldId, true);
+		this.bData = new ChunkData(Util.clone2DArray(bTiles), x, y, worldId, false);
 	}
 
 
@@ -229,11 +229,12 @@ public class Chunk {
 		/**
 		 * Constructor
 		 */
-		public ChunkData(Tile[][] tiles, int xChunkCoord, int yChunkCoord, int worldId) {
+		public ChunkData(Tile[][] tiles, int xChunkCoord, int yChunkCoord, int worldId, boolean foreground) {
 			this.tiles = tiles;
 			this.xChunkCoord = xChunkCoord;
 			this.yChunkCoord = yChunkCoord;
 			this.worldId = worldId;
+			this.foreground = foreground;
 		}
 
 		/**
@@ -253,6 +254,9 @@ public class Chunk {
 
 		/** Unique id of the {@link World} this chunk data relates to */
 		public int worldId;
+		
+		/** Whether this is a foreground chunk data */
+		public boolean foreground;
 	}
 
 

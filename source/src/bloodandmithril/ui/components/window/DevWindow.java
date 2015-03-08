@@ -166,7 +166,7 @@ public class DevWindow extends Window {
 				new Vector2(), 
 				Depth.FOREGOUND, 
 				Color.WHITE, 
-				Color.BLUE, 
+				Color.YELLOW, 
 				10000000, 
 				true
 			);

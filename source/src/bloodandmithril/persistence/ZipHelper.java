@@ -3,6 +3,7 @@ package bloodandmithril.persistence;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -34,13 +35,15 @@ public class ZipHelper {
 	/**
 	 * Adds a file in the specified directory with the specified name filled with the specified content
 	 */
-	public ZipHelper addFile(String path, String name, String content) {
+	public ZipHelper addFile(String path, String name, String content, boolean failureTolerant) {
 		try {
 			out.putNextEntry(new ZipEntry(path + name));
 			out.write(content.getBytes());
 			out.closeEntry();
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			if (!failureTolerant) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		return this;
@@ -57,11 +60,10 @@ public class ZipHelper {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 
 	/** Reads a zip entry as a string */
 	public static String readEntry(ZipFile zip, String zipEntry) {
-
 		try {
 			ZipEntry entry = zip.getEntry(zipEntry);
 			BufferedReader fIn = new BufferedReader(new InputStreamReader(zip.getInputStream(entry), "UTF-8"));
@@ -73,5 +75,26 @@ public class ZipHelper {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	
+	/** Reads a zip entry as a string */
+	public static String readEntry(ZipFile zip, ZipEntry zipEntry) {
+		try {
+			BufferedReader fIn = new BufferedReader(new InputStreamReader(zip.getInputStream(zipEntry), "UTF-8"));
+
+			char[] chars = new char[(int)zipEntry.getSize()];
+			fIn.read(chars);
+
+			return new String(chars);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
+	/** Reads all entries */
+	public static Enumeration<? extends ZipEntry> readAllEntries(ZipFile zip) {
+		return zip.entries();
 	}
 }
