@@ -24,7 +24,7 @@ import bloodandmithril.world.Domain;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * An extension of {@link TradeWindow} for construction
+ * A {@link Window} for construction
  *
  * @author Matt
  */

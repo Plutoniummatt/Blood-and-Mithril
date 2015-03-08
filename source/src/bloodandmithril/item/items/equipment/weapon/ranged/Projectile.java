@@ -27,7 +27,7 @@ import com.google.common.collect.Sets;
 public abstract class Projectile implements Serializable {
 	private static final long serialVersionUID = -6124242148644632575L;
 
-	public Vector2 position, velocity, acceleration;
+	public Vector2 position, pPosition, velocity, acceleration;
 	private int worldId, id;
 	private Set<Integer> ignoredIndividuals = Sets.newHashSet();
 
@@ -42,6 +42,7 @@ public abstract class Projectile implements Serializable {
 	 */
 	protected Projectile(Vector2 position, Vector2 velocity, Vector2 acceleration) {
 		this.position = position;
+		this.pPosition = position;
 		this.velocity = velocity;
 		this.acceleration = acceleration;
 	}
@@ -62,8 +63,16 @@ public abstract class Projectile implements Serializable {
 	 * Updates this {@link Projectile}
 	 */
 	public void update(float delta) {
+		float length = pPosition.dst(position);
+		Vector2 nor = pPosition.cpy().sub(position).nor();
 		Optional<Integer> findAny = Domain.getWorld(getWorldId()).getPositionalIndexMap().getNearbyEntityIds(Individual.class, position).stream().filter(individual -> {
-			return Domain.getIndividual(individual).getHitBox().isWithinBox(position);
+			for (float l = 0f; l < length; l += 4f) {
+				Vector2 test = position.cpy().add(nor.cpy().scl(l));
+				if (Domain.getIndividual(individual).getHitBox().isWithinBox(test)) {
+					return true;
+				}
+			}
+			return false;
 		}).findAny();
 
 		if (findAny.isPresent()) {
@@ -98,6 +107,8 @@ public abstract class Projectile implements Serializable {
 			}
 		} catch (NoTileFoundException e) {
 		}
+		
+		this.pPosition = previousPosition;
 	}
 
 	/**
@@ -157,6 +168,9 @@ public abstract class Projectile implements Serializable {
 
 
 	public void setPosition(Vector2 position) {
+		if (pPosition == null) {
+			pPosition = position.cpy();
+		}
 		this.position = position;
 	}
 
