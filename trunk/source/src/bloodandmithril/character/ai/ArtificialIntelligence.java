@@ -68,7 +68,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 						switch (mode) {
 						case AUTO:
 							selfStimulationTimer += delta;
-							if (selfStimulationTimer > 0.3f) {
+							if (selfStimulationTimer > 0.5f) {
 								selfStimulate();
 								selfStimulationTimer = 0f;
 							}

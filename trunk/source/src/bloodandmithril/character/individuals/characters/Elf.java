@@ -113,7 +113,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		boolean server = !ClientServerInterface.isClient();
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> walkSequence = newArrayList(
 			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.13f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// HEAD
-			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.13f, PlayMode.LOOP), server ? null : Shaders.filter),					// HAIR
+			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 0,   64, 112, 10, 0.13f, PlayMode.LOOP), server ? null : Shaders.colorize),					// HAIR
 			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.13f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK ARM
 			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.13f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK LEG
 			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.13f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// TORSO
@@ -123,7 +123,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> standSequence = newArrayList(
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// HEAD
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filter),					// HAIR
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 0,   64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.colorize),					// HAIR
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK ARM
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK LEG
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// TORSO
@@ -133,7 +133,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> jumpequence = newArrayList(
 			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 112, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// HEAD
-			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 0,   64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filter),					// HAIR
+			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 0,   64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.colorize),					// HAIR
 			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 448, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK ARM
 			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 672, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK LEG
 			wrap(AnimationHelper.animation(Domain.individualTexture, 768, 224, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// TORSO
@@ -143,7 +143,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> standSequenceCombat = newArrayList(
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1216, 112, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// HEAD
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1216, 0,   64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filter),					// HAIR
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1216, 0,   64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.colorize),					// HAIR
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1216, 448, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK ARM
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1216, 672, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// BACK LEG
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1216, 224, 64, 112, 1, 1f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),		// TORSO
@@ -153,7 +153,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> runSequence = newArrayList(
 			wrap(AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.13f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),	// HEAD
-			wrap(AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.13f, PlayMode.LOOP), server ? null : Shaders.filter),					// HAIR
+			wrap(AnimationHelper.animation(Domain.individualTexture, 640, 0,   64, 112, 8, 0.13f, PlayMode.LOOP), server ? null : Shaders.colorize),					// HAIR
 			wrap(AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.13f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),	// BACK ARM
 			wrap(AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.13f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),	// BACK LEG
 			wrap(AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.13f, PlayMode.LOOP), server ? null : Shaders.filterIgnoreReplace),	// TORSO
@@ -173,7 +173,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> slashSequence = newArrayList(
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1792, 112, 64, 112, 10, 0.07f, PlayMode.NORMAL), server ? null : Shaders.filterIgnoreReplace),// HEAD
-			wrap(AnimationHelper.animation(Domain.individualTexture, 1792, 0,   64, 112, 10, 0.07f, PlayMode.NORMAL), server ? null : Shaders.filter),				// HAIR
+			wrap(AnimationHelper.animation(Domain.individualTexture, 1792, 0,   64, 112, 10, 0.07f, PlayMode.NORMAL), server ? null : Shaders.colorize),				// HAIR
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1792, 448, 64, 112, 10, 0.07f, PlayMode.NORMAL), server ? null : Shaders.filterIgnoreReplace),// BACK ARM
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1792, 672, 64, 112, 10, 0.07f, PlayMode.NORMAL), server ? null : Shaders.filterIgnoreReplace),// BACK LEG
 			wrap(AnimationHelper.animation(Domain.individualTexture, 1792, 224, 64, 112, 10, 0.07f, PlayMode.NORMAL), server ? null : Shaders.filterIgnoreReplace),// TORSO
@@ -346,8 +346,9 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		Shaders.filterIgnoreReplace.setUniformf("filter", skinColor.r, skinColor.g, skinColor.b, skinColor.a);
 		Shaders.filterIgnoreReplace.setUniformf("ignore", Color.WHITE);
 
-		Shaders.filter.begin();
-		Shaders.filter.setUniformf("color", hairColor.r, hairColor.g, hairColor.b, hairColor.a);
+		Shaders.colorize.begin();
+		Shaders.colorize.setUniformf("amount", 5f);
+		Shaders.colorize.setUniformf("color", hairColor.r, hairColor.g, hairColor.b, hairColor.a);
 		super.render();
 	}
 

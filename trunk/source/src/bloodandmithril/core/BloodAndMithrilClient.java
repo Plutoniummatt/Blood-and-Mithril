@@ -295,7 +295,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			cameraMovement();
 			if (!GameSaver.isSaving()) {
 				SoundService.update(Gdx.graphics.getDeltaTime());
-				Shaders.updateShaderUniforms();
 			}
 
 			// Topography backlog ---------- /

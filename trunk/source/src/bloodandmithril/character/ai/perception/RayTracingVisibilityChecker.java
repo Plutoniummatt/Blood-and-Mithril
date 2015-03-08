@@ -24,43 +24,49 @@ public class RayTracingVisibilityChecker {
 	 *
 	 * @return True if the entire line distance is visible from the specified position in the specified direction
 	 */
-	public static boolean check(Topography topography, Vector2 position, Vector2 direction, float distance) {
-		if (distance < 1f) {
-			return true;
-		}
-
+	public static boolean check(final Topography topography, final Vector2 position, final Vector2 direction, float distance) {
 		try {
-			Tile tile = topography.getTile(position, true);
-			TwoInts tileCoords = new TwoInts(
-				convertToWorldTileCoord(position.x),
-				convertToWorldTileCoord(position.y)
-			);
+			
+			Vector2 tempPosition = position.cpy();
+			float tempDistance = distance;
+			
+			while (tempDistance > 1f) {
+				Tile tile = topography.getTile(tempPosition, true);
+				TwoInts tileCoords = new TwoInts(
+					convertToWorldTileCoord(tempPosition.x),
+					convertToWorldTileCoord(tempPosition.y)
+				);
 
-			if (!tile.isTransparent()) {
-				return false;
+				if (!tile.isTransparent()) {
+					return false;
+				}
+
+				int x = 0,  y = 0;
+				if (direction.x > 0f) {
+					x = 1;
+				} else {
+					x = -1;
+				}
+				if (direction.y > 0f) {
+					y = 1;
+				} else {
+					y = -1;
+				}
+
+				Tile tile1 = topography.getTile(tileCoords.a + x, tileCoords.b, true);
+				Tile tile2 = topography.getTile(tileCoords.a, tileCoords.b + y, true);
+
+				if (!tile1.isTransparent() && !tile2.isTransparent()) {
+					return false;
+				}
+
+				float incrementingDistance = tempDistance - TILE_SIZE / 2 <= 0 ? tempDistance : TILE_SIZE / 2;
+				
+				tempDistance = tempDistance - incrementingDistance;
+				tempPosition = tempPosition.cpy().add(direction.cpy().nor().scl(incrementingDistance));
 			}
-
-			int x = 0,  y = 0;
-			if (direction.x > 0f) {
-				x = 1;
-			} else {
-				x = -1;
-			}
-			if (direction.y > 0f) {
-				y = 1;
-			} else {
-				y = -1;
-			}
-
-			Tile tile1 = topography.getTile(tileCoords.a + x, tileCoords.b, true);
-			Tile tile2 = topography.getTile(tileCoords.a, tileCoords.b + y, true);
-
-			if (!tile1.isTransparent() && !tile2.isTransparent()) {
-				return false;
-			}
-
-			float incrementingDistance = distance - TILE_SIZE / 2 <= 0 ? distance : TILE_SIZE / 2;
-			return check(topography, position.cpy().add(direction.cpy().nor().scl(incrementingDistance)), direction, distance - incrementingDistance);
+			
+			return true;
 		} catch (NoTileFoundException e) {
 			return false;
 		}
