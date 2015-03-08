@@ -233,9 +233,8 @@ public class GaussianLightingRenderer {
 		List<Particle> serverSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(Domain.getActiveWorld().getServerParticles().values(), p -> {
 			return p.depth == depth && isOnScreen(p.position, 50f);
 		}));
-
+		
 		List<List<Particle>> particleCollections = Lists.newLinkedList();
-
 		for (int i = clientSideGlowingTracerParticles.size(); i > 0; i -= 100) {
 			particleCollections.add(clientSideGlowingTracerParticles.subList(i - 100 < 0 ? 0 : i - 100, i));
 		}
@@ -243,7 +242,7 @@ public class GaussianLightingRenderer {
 		for (int i = serverSideGlowingTracerParticles.size(); i > 0; i -= 100) {
 			particleCollections.add(serverSideGlowingTracerParticles.subList(i - 100 < 0 ? 0 : i - 100, i));
 		}
-
+		
 		for (List<Particle> collection : particleCollections) {
 			smallWorking.begin();
 			spriteBatch.begin();

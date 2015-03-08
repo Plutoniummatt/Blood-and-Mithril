@@ -3,14 +3,19 @@ package bloodandmithril.persistence.world;
 import static bloodandmithril.persistence.GameSaver.getSavePath;
 import static bloodandmithril.persistence.PersistenceUtil.encode;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.GlobalLayers;
 import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.persistence.PersistenceUtil;
 import bloodandmithril.persistence.ZipHelper;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -18,6 +23,7 @@ import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Chunk;
+import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.Gdx;
@@ -94,11 +100,31 @@ public class WorldSaver {
 					saveStructureData(world);
 
 					ZipHelper zip = new ZipHelper(getSavePath() + "/world/world" + Integer.toString(world.getKey()), "/chunkData.zip");
-
+					ZipFile zipTemp = null;
+					
 					for (Entry<Integer, HashMap<Integer, Chunk>> columnToSave : world.getValue().getTopography().getChunkMap().chunkMap.entrySet()) {
 						saveColumn(columnToSave.getKey(), columnToSave.getValue(), zip);
 					}
-
+					
+					try {
+						zipTemp = new ZipFile(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/chunkDataTemp.zip");
+						
+						Enumeration<? extends ZipEntry> allPreviousEntries = ZipHelper.readAllEntries(zipTemp);
+						while(allPreviousEntries.hasMoreElements()) {
+							ZipEntry nextElement = allPreviousEntries.nextElement();
+							String stringContent = ZipHelper.readEntry(zipTemp, nextElement);
+							ChunkData data = PersistenceUtil.decode(stringContent);
+							
+							zip.addFile("column" + data.xChunkCoord + (data.foreground ? "/f" : "/b") + data.yChunkCoord+ "/", (data.foreground ? "fData" : "bData"), stringContent, true);
+						}
+						
+						zipTemp.close();
+						FileHandle toDelete = Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/chunkDataTemp.zip");
+						toDelete.delete();
+					} catch (IOException e) {
+						Logger.loaderDebug("No previous chunks", LogLevel.DEBUG);
+					}
+					
 					zip.makeZip();
 				}
 			});
@@ -115,7 +141,7 @@ public class WorldSaver {
 		if (GameSaver.mostRecentlyLoaded != null) {
 			for (Integer world : Domain.getWorlds().keySet()) {
 				FileHandle existingSavedChunks = Gdx.files.local("save/" + GameSaver.mostRecentlyLoaded.name + "/world/world" + Integer.toString(world) + "/chunkData.zip");
-				existingSavedChunks.copyTo(Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world) + "/chunkData.zip"));
+				existingSavedChunks.copyTo(Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world) + "/chunkDataTemp.zip"));
 			}
 		}
 	}
@@ -149,8 +175,8 @@ public class WorldSaver {
 	 * @param chunk to save
 	 */
 	private static void saveChunk(Chunk chunk, int x, int y, ZipHelper zip) {
-		zip.addFile("column" + x + "/f" + y + "/", "fData", encode(chunk.getChunkData(true)));
-		zip.addFile("column" + x + "/b" + y + "/", "bData", encode(chunk.getChunkData(false)));
+		zip.addFile("column" + x + "/f" + y + "/", "fData", encode(chunk.getChunkData(true)), false);
+		zip.addFile("column" + x + "/b" + y + "/", "bData", encode(chunk.getChunkData(false)), false);
 		chunksInQueue.remove(x, y);
 	}
 
