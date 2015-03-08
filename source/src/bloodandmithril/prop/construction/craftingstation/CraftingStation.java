@@ -1,6 +1,5 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -9,6 +8,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.individuals.Individual;
@@ -201,6 +201,10 @@ public abstract class CraftingStation extends Construction {
 	public void setCurrentlyBeingCrafted(SerializableDoubleWrapper<Item, Integer> currentlyBeingCrafted) {
 		this.currentlyBeingCrafted = currentlyBeingCrafted;
 	}
+	
+	
+	/** Affects the individual using this {@link CraftingStation} */
+	public abstract void affectIndividual(Individual individual, float delta);
 
 
 	/**
@@ -227,7 +231,7 @@ public abstract class CraftingStation extends Construction {
 					}
 				}
 
-				SoundService.play(getCraftingSound(), position, true, getVisible(this));
+				SoundService.play(getCraftingSound(), position, true, Visible.getVisible(this));
 			}
 
 			if (ClientServerInterface.isClient()) {
@@ -242,6 +246,7 @@ public abstract class CraftingStation extends Construction {
 
 		if (occupiedBy == individual.getId().getId()) {
 			craftingProgress += aiTaskDelay / ((Craftable)currentlyBeingCrafted.t).getCraftingDuration();
+			affectIndividual(individual, aiTaskDelay);
 			if (craftingProgress >= 1f) {
 				craftingProgress = 1f;
 				finished = true;

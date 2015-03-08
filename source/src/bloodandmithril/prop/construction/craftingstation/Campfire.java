@@ -230,4 +230,10 @@ public class Campfire extends CraftingStation implements Lightable {
 	public boolean canLight() {
 		return getConstructionProgress() == 1f;
 	}
+
+
+	@Override
+	public void affectIndividual(Individual individual, float delta) {
+		individual.decreaseThirst(delta / 600f);
+	}
 }
