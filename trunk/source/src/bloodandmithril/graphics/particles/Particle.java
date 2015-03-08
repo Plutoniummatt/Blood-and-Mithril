@@ -105,7 +105,7 @@ public abstract class Particle implements Serializable {
 					velocity.y = -previousVelocity.y * 0.5f;
 				}
 			} else {
-				velocity.x = 0f;
+				velocity.x = -velocity.x * 0.6f;
 				position = previousPosition;
 			}
 		}
