@@ -320,9 +320,9 @@ public class UserInterface {
 		renderHint();
 		renderCursorBoundTaskText();
 		renderDragBox();
+		renderAverageBars();
 		renderLayeredComponents();
 		renderContextMenus();
-		renderAverageBars();
 
 		spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
