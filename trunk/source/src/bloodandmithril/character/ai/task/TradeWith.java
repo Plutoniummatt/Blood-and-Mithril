@@ -186,9 +186,9 @@ public class TradeWith extends CompositeAITask {
 				UserInterface.addLayeredComponentUnique(
 				new TradeWindow(
 					BloodAndMithrilClient.WIDTH/2 - 450,
-					BloodAndMithrilClient.HEIGHT/2 + 150,
+					BloodAndMithrilClient.HEIGHT/2 + 300,
 					900,
-					300,
+					600,
 					proposer.getId().getSimpleName() + " interacting with container",
 					true,
 					900,
@@ -209,9 +209,9 @@ public class TradeWith extends CompositeAITask {
 		UserInterface.addLayeredComponentUnique(
 			new TradeWindow(
 				BloodAndMithrilClient.WIDTH / 2 - 450,
-				BloodAndMithrilClient.HEIGHT / 2 + 150,
+				BloodAndMithrilClient.HEIGHT / 2 + 300,
 				900,
-				300,
+				600,
 				"Trade between " + proposer.getId().getFirstName() + " and " + proposeeCasted.getId().getFirstName(),
 				true,
 				900,

@@ -1302,10 +1302,10 @@ public class UserInterface {
 				UserInterface.addLayeredComponentUnique(
 					new InventoryWindow(
 						individual,
-						WIDTH/2 - ((simpleName + " - Inventory").length() * 10 + 50)/2,
-						HEIGHT/2 + 150,
-						(simpleName + " - Inventory").length() * 10 + 50,
-						300,
+						WIDTH/2 - 200,
+						HEIGHT/2 + 250,
+						400,
+						500,
 						simpleName + " - Inventory",
 						true,
 						150, 300

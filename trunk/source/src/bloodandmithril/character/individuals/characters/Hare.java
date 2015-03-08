@@ -65,11 +65,11 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 	static {
 		boolean server = !ClientServerInterface.isClient();
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> walkSequence = newArrayList(
-			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.08f, PlayMode.LOOP), server ? null : Shaders.pass)
+			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.07f, PlayMode.LOOP), server ? null : Shaders.pass)
 		);
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> runSequence = newArrayList(
-			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.06f, PlayMode.LOOP), server ? null : Shaders.pass)
+			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.05f, PlayMode.LOOP), server ? null : Shaders.pass)
 		);
 
 		ArrayList<WrapperForTwo<Animation, ShaderProgram>> standSequence = newArrayList(
@@ -101,10 +101,10 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 			0,
 			0,
 			0,
-			48,
-			48,
+			16,
+			16,
 			60,
-			new Box(new Vector2(state.position.x, state.position.y), 120, 120),
+			new Box(new Vector2(state.position.x, state.position.y), 60, 60),
 			worldId,
 			2
 		);
