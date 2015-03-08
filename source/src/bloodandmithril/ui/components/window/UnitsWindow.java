@@ -43,7 +43,7 @@ public class UnitsWindow extends Window implements Refreshable {
 	 * Constructor
 	 */
 	public UnitsWindow(int factoinId) {
-		super(WIDTH/2 - 150, HEIGHT/2 + 200, 300, 400, Domain.getFactions().get(factoinId).name + " - Members", true, 300, 400, true, true, true);
+		super(WIDTH/2 - 250, HEIGHT/2 + 200, 500, 400, Domain.getFactions().get(factoinId).name + " - Members", true, 500, 400, true, true, true);
 		factionId = factoinId;
 		refresh();
 	}

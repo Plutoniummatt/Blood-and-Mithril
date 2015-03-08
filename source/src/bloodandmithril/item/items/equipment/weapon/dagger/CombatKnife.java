@@ -69,7 +69,7 @@ public class CombatKnife extends Dagger<Steel> {
 
 	@Override
 	public float getCraftingDuration() {
-		return 10;
+		return 20;
 	}
 
 
