@@ -46,6 +46,32 @@ public class ParticleService {
 			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new BloodSplat(position.cpy(), knockBack));
 		}
 	}
+	
+	
+	public static void fireworks(Vector2 position) {
+		if (isClient()) {
+			for (int i = 0; i < 200; i++) {
+				long lifetime = Util.getRandom().nextInt(2000);
+				Color randomOneOf = Util.randomOneOf(new Color(1f, 0.6f, 1f, 1f), Color.BLUE, Color.CYAN);
+				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 1200f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
+				
+				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+					position.cpy(),
+					rotate,
+					Color.WHITE,
+					randomOneOf,
+					randomOneOf,
+					Util.getRandom().nextFloat() * 4f,
+					Domain.getActiveWorld().getWorldId(),
+					5f,
+					MovementMode.GRAVITY,
+					Depth.MIDDLEGROUND,
+					lifetime,
+					true
+				).bounce());
+			}
+		}
+	}
 
 
 	public static void randomVelocityTracer(Vector2 position, float spawnSpread, float maxVel, Color color, Color glowColor, float glow, int maxLifeTime, MovementMode mode, Depth depth) {
