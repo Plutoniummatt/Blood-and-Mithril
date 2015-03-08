@@ -46,8 +46,9 @@ void main()
 				dist = distance(p2, resolution * v_texCoords);
 			}
 			
-			float rnd = rand(v_texCoords.xy) / 35.0;
-			vec4 toAdd = (color[index] * intensity[index] / dist) + vec4(rnd, rnd, rnd, rnd);
+			float rnd = rand(v_texCoords.xy) / 35.0 / max(1.0, min(dist / 500.0, 1.0)) / max(1.0, intensity[index]/5.0);
+			vec4 calculated = (color[index] * intensity[index] / dist);
+			vec4 toAdd = calculated + vec4(rnd, rnd, rnd, rnd);
 			
 			totalColor = vec4(
 				max((totalColor.r + toAdd.r) / 2.0, totalColor.r),
@@ -60,5 +61,12 @@ void main()
 		}
 	}
 
-	gl_FragColor = totalColor;
+	vec4 sampled = texture2D(u_texture, vec2(v_texCoords.x, 1.0 - v_texCoords.y));
+
+	gl_FragColor = vec4(
+		max(totalColor.r, sampled.r),
+		max(totalColor.g, sampled.g),
+		max(totalColor.b, sampled.b),
+		max(totalColor.a, sampled.a)
+	);
 }
