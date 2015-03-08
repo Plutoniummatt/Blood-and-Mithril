@@ -73,7 +73,6 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
@@ -165,14 +164,8 @@ public class DevWindow extends Window {
 		}
 		
 		if (keyCode == Keys.H) {
-			ParticleService.parrySpark(
-				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()), 
-				new Vector2(), 
-				Depth.FOREGOUND, 
-				Color.WHITE, 
-				Color.YELLOW, 
-				10000000, 
-				true
+			ParticleService.fireworks(
+				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()) 
 			);
 		}
 
