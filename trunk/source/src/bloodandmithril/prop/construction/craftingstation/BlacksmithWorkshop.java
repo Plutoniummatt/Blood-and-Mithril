@@ -3,6 +3,7 @@ package bloodandmithril.prop.construction.craftingstation;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.item.items.material.ArrowHead.arrowHead;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
+import static bloodandmithril.networking.ClientServerInterface.isServer;
 
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain.Depth;
@@ -49,7 +51,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 	/** {@link TextureRegion} of the {@link Anvl} */
 	public static TextureRegion blackSmithWorkshop;
 	public static TextureRegion blackSmithWorkshopWorking;
-	private transient int sparkCountdown = 0;
+	private int sparkCountdown = 0;
 
 	/**
 	 * Constructor
@@ -79,8 +81,17 @@ public class BlacksmithWorkshop extends CraftingStation {
 				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
 
-				if (sparkCountdown == 0 && isClient()) {
-					ParticleService.parrySpark(position.cpy().add(-37, height - 33), new Vector2(-30f, -50f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 5000, true);
+				if (sparkCountdown == 0) {
+					if (isClient()) {
+						ParticleService.parrySpark(position.cpy().add(-33, height - 27), new Vector2(-30f, -50f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 5000, true);
+					}
+					if (isServer()) {
+						if (Util.getRandom().nextBoolean()) {
+							SoundService.play(SoundService.anvil1, position.cpy(), true, this);
+						} else {
+							SoundService.play(SoundService.anvil1, position.cpy(), true, this);
+						}
+					}
 					sparkCountdown = 90;
 				}
 			}
@@ -127,7 +138,14 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 	@Override
 	protected int getCraftingSound() {
-		return SoundService.anvil;
+		return SoundService.campfireCooking;
+	}
+	
+	
+	@Override
+	public void synchronizeProp(Prop other) {
+		this.sparkCountdown = ((BlacksmithWorkshop) other).sparkCountdown;
+		super.synchronizeProp(other);
 	}
 
 

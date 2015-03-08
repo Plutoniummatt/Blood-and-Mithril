@@ -445,7 +445,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			craftablesListing.getListing().clear();
 			craftablesListing.getListing().add(constructCraftablesListing());
 			requiredMaterialsListing.getRequiredMaterials().clear();
-			requiredMaterialsListing.getRequiredMaterials().putAll(((Craftable)currentlySelectedToCraft).getRequiredMaterials());
+			requiredMaterialsListing.getRequiredMaterials().putAll(((Craftable)currentlySelectedToCraft.t).getRequiredMaterials());
 		}
 
 		enoughMaterials = CraftingStation.enoughMaterialsToCraft(individual, ((Craftable) currentlySelectedToCraft.t).getRequiredMaterials());

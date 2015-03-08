@@ -43,7 +43,8 @@ public class SoundService {
 	public static final int swallow				= 7;
 	public static final int flint				= 8;
 	public static final int campfireCooking		= 9;
-	public static final int anvil				= 10;
+	public static final int anvil1				= 10;
+	public static final int anvil2				= 11;
 
 	static {
 
@@ -73,7 +74,8 @@ public class SoundService {
 			sounds.put(swallow,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.PAUSE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/swallow.wav")), 20f));
 			sounds.put(flint,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.PAUSE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/flint.wav")), 200f));
 			sounds.put(campfireCooking,		wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/campfireCooking.wav")), 300f));
-			sounds.put(anvil,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/anvil.wav")), 1300f));
+			sounds.put(anvil1,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/anvil1.wav")), 1300f));
+			sounds.put(anvil2,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/anvil2.wav")), 1300f));
 		}
 	}
 
