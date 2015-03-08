@@ -35,7 +35,7 @@ public class Craft extends CompositeAITask {
 			goTo(
 				host,
 				host.getState().position.cpy(),
-				new WayPoint(craftingStation.position, 32),
+				new WayPoint(craftingStation.position, 5),
 				false,
 				32f,
 				true
