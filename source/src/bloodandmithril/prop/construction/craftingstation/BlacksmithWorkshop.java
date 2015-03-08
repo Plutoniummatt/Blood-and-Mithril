@@ -57,7 +57,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 	 * Constructor
 	 */
 	public BlacksmithWorkshop(float x, float y) {
-		super(x, y, 117, 61, 0);
+		super(x, y, 117, 43, 0);
 		setConstructionProgress(1f);
 	}
 
@@ -78,12 +78,12 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 		if (isOccupied()) {
 			if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
-				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(17, height - 23), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
 
-				if (sparkCountdown == 0) {
+				if (sparkCountdown <= 0) {
 					if (isClient()) {
-						ParticleService.parrySpark(position.cpy().add(-33, height - 27), new Vector2(-30f, -50f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 5000, true);
+						ParticleService.parrySpark(position.cpy().add(-40, height - 10), new Vector2(-30f, -50f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 5000, true);
 					}
 					if (isServer()) {
 						if (Util.getRandom().nextBoolean()) {

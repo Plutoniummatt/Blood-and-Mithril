@@ -76,6 +76,6 @@ public class Machette extends OneHandedSword<Iron> {
 
 	@Override
 	public float getCraftingDuration() {
-		return 30f;
+		return 60f;
 	}
 }
