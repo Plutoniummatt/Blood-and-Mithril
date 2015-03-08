@@ -75,6 +75,6 @@ public class Broadsword extends OneHandedSword<Steel> {
 
 	@Override
 	public float getCraftingDuration() {
-		return 15;
+		return 30;
 	}
 }
