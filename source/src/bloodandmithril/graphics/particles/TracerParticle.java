@@ -67,7 +67,7 @@ public class TracerParticle extends Particle {
 		if (topography.hasTile(position.x, position.y, true) && topography.hasTile(prevPosition.x, prevPosition.y, true)) {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
-					Gdx.gl.glLineWidth(radius == 1f ? 1f : radius + 1f);
+					Gdx.gl.glLineWidth(radius == 1f ? 1f : 2 * radius);
 					Domain.shapeRenderer.setColor(color.getColor());
 					Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
 				}
