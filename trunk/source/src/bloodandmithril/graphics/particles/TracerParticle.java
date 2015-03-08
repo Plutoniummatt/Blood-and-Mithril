@@ -70,6 +70,7 @@ public class TracerParticle extends Particle {
 					Gdx.gl.glLineWidth(radius == 1f ? 1f : 2 * radius);
 					Domain.shapeRenderer.setColor(color.getColor());
 					Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
+					Domain.shapeRenderer.flush();
 				}
 			} catch (NoTileFoundException e) {}
 		}
