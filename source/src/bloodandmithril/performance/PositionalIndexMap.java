@@ -10,6 +10,7 @@ import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -83,7 +84,7 @@ public class PositionalIndexMap implements Serializable {
 	 *
 	 * Roughly because the indexing nodes are quantised.
 	 */
-	public Collection<Integer> getEntitiesWithinBounds(Class<?> clazz, float left, float right, float top, float bottom) {
+	public List<Integer> getEntitiesWithinBounds(Class<?> clazz, float left, float right, float top, float bottom) {
 		LinkedList<Integer> entities = Lists.newLinkedList();
 
 		int i = CHUNK_SIZE * TILE_SIZE;

@@ -1,7 +1,12 @@
 package bloodandmithril.character.ai.perception;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
@@ -15,31 +20,51 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck 2015")
 public interface Observer {
 
-	public default void observe(int worldId, int hostId) {
+	public static Comparator<Integer> randomComparator = (i1, i2) -> {
+		return Util.getRandom().nextBoolean() ? -1 : 1;
+	};
+
+	/**
+	 * Observes nearby entities.
+	 *
+	 * @param worldId of the world to observe
+	 * @param hostId of the observer
+	 * @param entityCap to cap the number of observed entities, to cut down on performance drawbacks
+	 */
+	public default void observe(int worldId, int hostId, int entityCap) {
 		Vector2 eyes = getObservationPosition();
 		float viewDistance = getViewDistance();
 
 		World world = Domain.getWorld(worldId);
-		world.getPositionalIndexMap().getEntitiesWithinBounds(
+		List<Integer> entitiesWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
 			Individual.class,
 			eyes.x - viewDistance,
 			eyes.x + viewDistance,
 			eyes.y + viewDistance,
 			eyes.y - viewDistance
-		).forEach(individualId -> {
+		);
+		Collections.shuffle(entitiesWithinBounds);
+		int index = 0;
+
+		for (Integer id : entitiesWithinBounds) {
+			if (index >= entityCap) {
+				break;
+			}
+
 			// Ray trace
-			Individual toBeObserved = Domain.getIndividual(individualId);
+			Individual toBeObserved = Domain.getIndividual(id);
 			Individual host = Domain.getIndividual(hostId);
 			if (toBeObserved == null || toBeObserved.getId().getId() == hostId || !(toBeObserved instanceof Visible)) {
 				return;
 			}
 
-			if (canSee(((Visible)toBeObserved), world)) {
+			if (canSee((Visible)toBeObserved, world)) {
 				host.getAI().addStimulus(new IndividualSighted(toBeObserved.getState().position, toBeObserved.getId().getId()));
 			}
-		});
+			index++;
+		}
 	}
-	
+
 	/**
 	 * @return whether this {@link Observer} can see a {@link Visible}
 	 */
@@ -47,10 +72,10 @@ public interface Observer {
 		if (!visible.isVisible()) {
 			return false;
 		}
-		
+
 		Vector2 eyes = getObservationPosition();
 		float viewDistance = getViewDistance();
-		
+
 		for (Vector2 visibilityCheckLocation : visible.getVisibleLocations()) {
 			float dist = visibilityCheckLocation.dst(eyes);
 			if (dist > viewDistance) {
@@ -68,10 +93,10 @@ public interface Observer {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 
 	/**
 	 * @return the position of the eyes
