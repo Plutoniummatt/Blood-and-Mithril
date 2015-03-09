@@ -19,6 +19,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
@@ -1916,7 +1917,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					firingVector.cpy().nor().scl(
 						Math.min(
 							1f,
-							firingVector.len() / 150f
+							firingVector.len() / rangeControl
 						)
 					)
 				);
