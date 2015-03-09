@@ -13,6 +13,8 @@ import com.badlogic.gdx.math.Vector2;
  */
 @Copyright("Matthew Peck 2015")
 public interface RangedWeapon {
+	
+	public static final float rangeControl = 300f;
 
 	/**
 	 * Fires a {@link Projectile} from the specified origin in the given direction
