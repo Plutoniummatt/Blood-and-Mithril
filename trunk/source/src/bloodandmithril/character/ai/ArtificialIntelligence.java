@@ -36,7 +36,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	private static final long serialVersionUID = 272133135274740547L;
 
 	/** The unique identifier of the host, note we can't put a reference to host here, otherwise we would attempt to save a circular reference */
-	private final IndividualIdentifier hostId;
+	private IndividualIdentifier hostId;
 
 	/** The current {@link AITask} the {@link #host} is currently executing */
 	protected AITask currentTask = new Idle();
@@ -49,6 +49,22 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 	/** Stimuli as perceived by the host */
 	private LinkedBlockingQueue<Stimulus> stimuli = new LinkedBlockingQueue<Stimulus>();
+
+
+	public ArtificialIntelligence copy() {
+		ArtificialIntelligence internalCopy = internalCopy();
+		internalCopy.hostId = hostId;
+		internalCopy.currentTask = currentTask;
+		internalCopy.mode = mode;
+		internalCopy.selfStimulationTimer = selfStimulationTimer;
+		internalCopy.stimuli = new LinkedBlockingQueue<Stimulus>(stimuli);
+
+		return internalCopy;
+	}
+
+
+	protected abstract ArtificialIntelligence internalCopy();
+
 
 	/**
 	 * Constructor, starts the AI processing thread if it has not been started.
@@ -163,6 +179,12 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/** Gets all stimuli */
 	public synchronized void addStimulus(Stimulus stimulus) {
 		stimuli.add(stimulus);
+	}
+
+
+	/** Clears all stimuli */
+	public synchronized void clearStimuli() {
+		stimuli.clear();
 	}
 
 

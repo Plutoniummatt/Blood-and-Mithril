@@ -21,4 +21,10 @@ public class HareAI extends ArtificialIntelligence {
 	protected void determineCurrentTask() {
 		wander(600f, false);
 	}
+
+
+	@Override
+	protected ArtificialIntelligence internalCopy() {
+		return new HareAI(getHost());
+	}
 }
