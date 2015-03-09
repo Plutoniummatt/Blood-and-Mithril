@@ -35,9 +35,9 @@ public abstract class Equipable extends Item implements Affixed {
 	/** Renders this {@link Equipable} */
 	public abstract void render(Vector2 position, float angle, boolean flipX);
 	
-
-	/**
-	 * @return The animation index where this {@link Equipable} will be rendered immediately before
-	 */
+	/** Processes particle effects */
+	public abstract void particleEffects(Vector2 position, float angle, boolean flipX);
+	
+	/** @return The animation index where this {@link Equipable} will be rendered immediately before */
 	public abstract int getRenderingIndex(Individual individual);
 }

@@ -12,6 +12,7 @@ import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.item.material.metal.Iron;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 @Copyright("Matthew Peck 2014")
@@ -76,5 +77,10 @@ public class BushKnife extends Dagger<Iron> {
 	@Override
 	public TextureRegion getIconTextureRegion() {
 		return null;
+	}
+
+
+	@Override
+	public void particleEffects(Vector2 position, float angle, boolean flipX) {
 	}
 }

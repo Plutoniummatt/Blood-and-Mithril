@@ -38,6 +38,7 @@ import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
+import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.ranged.LongBow;
@@ -271,6 +272,7 @@ public class DevWindow extends Window {
 				elf.giveItem(new FlintAndFiresteel());
 				elf.giveItem(Rock.rock(Coal.class));
 			}
+			elf.giveItem(new Torch());
 			for (int i = 5; i > 0; i--) {
 				elf.giveItem(Bricks.bricks(SandStone.class));
 			}

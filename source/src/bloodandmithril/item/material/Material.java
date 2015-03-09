@@ -41,4 +41,10 @@ public abstract class Material implements Serializable {
 	 * @return the Name of this {@link Material}
 	 */
 	public abstract String getName();
+	
+	
+	/**
+	 * @return the combat multiplier value for things made from this {@link Metal}
+	 */
+	public abstract float getCombatMultiplier();
 }

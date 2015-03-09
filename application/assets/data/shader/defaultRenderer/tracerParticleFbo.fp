@@ -48,7 +48,7 @@ void main()
 			
 			float rnd = rand(v_texCoords.xy) / 35.0 / max(1.0, min(dist / 500.0, 1.0)) / max(1.0, intensity[index]/5.0);
 			vec4 calculated = (color[index] * intensity[index] / dist);
-			vec4 toAdd = calculated + vec4(rnd, rnd, rnd, rnd * 20 * calculated.a);
+			vec4 toAdd = calculated + vec4(rnd, rnd, rnd, rnd * 10.0 * calculated.a);
 			
 			totalColor = vec4(
 				max((totalColor.r + toAdd.r) / 2.0, totalColor.r),

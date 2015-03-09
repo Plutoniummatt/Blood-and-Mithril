@@ -307,4 +307,10 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 	public boolean reactIfVisible(SoundStimulus stimulus) {
 		return true;
 	}
+
+
+	@Override
+	public SpacialConfiguration getOffHandSpatialConfigration() {
+		return null;
+	}
 }

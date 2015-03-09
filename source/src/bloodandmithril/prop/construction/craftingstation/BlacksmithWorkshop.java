@@ -79,23 +79,25 @@ public class BlacksmithWorkshop extends CraftingStation {
 		super.update(delta);
 
 		if (isOccupied()) {
-			if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
-				ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
-
-				if (sparkCountdown <= 0) {
-					if (isClient()) {
-						ParticleService.parrySpark(position.cpy().add(-40, height - 10), new Vector2(-30f, -100f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 3500, true, 30, 200f);
-					}
-					if (isServer()) {
-						if (Util.getRandom().nextBoolean()) {
-							SoundService.play(SoundService.anvil1, position.cpy(), true, this);
-						} else {
-							SoundService.play(SoundService.anvil1, position.cpy(), true, this);
-						}
-					}
-					sparkCountdown = 90;
+			if (isClient()) {
+				if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
+					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.BACKGROUND, false, Colors.FIRE_END);
+					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
 				}
+			}
+			
+			if (sparkCountdown <= 0) {
+				if (isClient()) {
+					ParticleService.parrySpark(position.cpy().add(-40, height - 10), new Vector2(-30f, -100f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 3500, true, 30, 200f);
+				}
+				if (isServer()) {
+					if (Util.getRandom().nextBoolean()) {
+						SoundService.play(SoundService.anvil1, position.cpy(), true, this);
+					} else {
+						SoundService.play(SoundService.anvil1, position.cpy(), true, this);
+					}
+				}
+				sparkCountdown = 90;
 			}
 
 			sparkCountdown--;

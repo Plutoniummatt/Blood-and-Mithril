@@ -87,6 +87,6 @@ public interface Equipper extends Container {
 	 * @author Matt
 	 */
 	public enum EquipmentSlot {
-		LEFTHAND, RIGHTHAND, GLOVE, CHEST, LEGS, FEET, HEAD, AMMO, NECKLACE, RING
+		OFFHAND, MAINHAND, GLOVE, CHEST, LEGS, FEET, HEAD, AMMO, NECKLACE, RING
 	}
 }

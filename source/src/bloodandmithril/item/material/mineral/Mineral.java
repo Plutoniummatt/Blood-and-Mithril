@@ -70,4 +70,9 @@ public abstract class Mineral extends Material {
 	 * @return the color of this {@link Mineral}
 	 */
 	public abstract Color getColor();
+	
+	@Override
+	public float getCombatMultiplier() {
+		return 0f;
+	}
 }
