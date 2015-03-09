@@ -36,19 +36,25 @@ public class MedievalWallTorch extends Furniture implements Lightable {
 	private boolean lit = false;
 	private float burnDurationRemaining = BURN_DURATION;
 
+	public static class NotEmptyTile extends SerializableMappingFunction<Tile, Boolean> {
+		private static final long serialVersionUID = -7241384309597437080L;
+		
+		public NotEmptyTile() {
+		}
+
+		@Override
+		public Boolean apply(Tile input) {
+			return !(input instanceof EmptyTile);
+		}
+	}
+	
+	
 	/**
 	 * Constructor
 	 */
 	public MedievalWallTorch(float x, float y) {
 		super(x, y, 13, 30, false);
-		canPlaceInFrontOf(new SerializableMappingFunction<Tile, Boolean>() {
-			private static final long serialVersionUID = -7241384309597437080L;
-
-			@Override
-			public Boolean apply(Tile input) {
-				return !(input instanceof EmptyTile);
-			}
-		});
+		canPlaceInFrontOf(new NotEmptyTile());
 	}
 
 

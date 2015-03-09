@@ -79,6 +79,7 @@ import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -232,6 +233,8 @@ import bloodandmithril.prop.construction.craftingstation.CraftingStation;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.Furniture;
+import bloodandmithril.prop.furniture.Furniture.NonPassableTilesOnly;
+import bloodandmithril.prop.furniture.MedievalWallTorch.NotEmptyTile;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.PlantProp;
 import bloodandmithril.prop.plant.seed.SeedProp;
@@ -448,6 +451,9 @@ public class ClientServerInterface {
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(NonPassableTilesOnly.class);
+		kryo.register(DiminishingColorChangingParticle.class);
+		kryo.register(NotEmptyTile.class);
 		kryo.register(ArrowHead.class);
 		kryo.register(Stick.class);
 		kryo.register(NotifyTextBubble.class);
