@@ -61,22 +61,22 @@ public class SoundService {
 	private static boolean fadeOut;
 
 	static {
-		if (ClientServerInterface.isClient()) {
+		if (isClient()) {
 			mainMenu = Gdx.audio.newMusic(Gdx.files.internal("data/music/mainMenu.mp3"));
 			desertNight = Gdx.audio.newMusic(Gdx.files.internal("data/music/desertNight.mp3"));
-
-			sounds.put(pickAxe, 			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav")), 1300f));
-			sounds.put(swordSlash, 			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE_CAUTION);}, Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav")), 300f));
-			sounds.put(femaleHit, 			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav")), 500f));
-			sounds.put(stab, 				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav")), 100f));
-			sounds.put(broadSwordBlock, 	wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE_CAUTION);}, Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav")), 1000f));
-			sounds.put(crunch, 				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/crunch.wav")), 100f));
-			sounds.put(swallow,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.PAUSE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/swallow.wav")), 20f));
-			sounds.put(flint,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.PAUSE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/flint.wav")), 200f));
-			sounds.put(campfireCooking,		wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/campfireCooking.wav")), 300f));
-			sounds.put(anvil1,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/anvil1.wav")), 1300f));
-			sounds.put(anvil2,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, Gdx.audio.newSound(Gdx.files.internal("data/music/anvil2.wav")), 1300f));
 		}
+
+		sounds.put(pickAxe, 			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav")), 			1300f));
+		sounds.put(swordSlash, 			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE_CAUTION);}, 	!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/swordSlash.wav")), 		300f));
+		sounds.put(femaleHit, 			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/femaleHit.wav")), 		500f));
+		sounds.put(stab, 				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/stab.wav")), 			100f));
+		sounds.put(broadSwordBlock, 	wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE_CAUTION);}, 	!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/broadSwordBlock.wav")), 	1000f));
+		sounds.put(crunch, 				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/crunch.wav")), 			100f));
+		sounds.put(swallow,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.PAUSE);}, 					!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/swallow.wav")), 			20f));
+		sounds.put(flint,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.PAUSE);}, 					!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/flint.wav")), 			200f));
+		sounds.put(campfireCooking,		wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/campfireCooking.wav")), 	300f));
+		sounds.put(anvil1,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/anvil1.wav")), 			1300f));
+		sounds.put(anvil2,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/anvil2.wav")), 			1300f));
 	}
 
 	/** Returns the pan value in relation to camera location */
