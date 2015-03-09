@@ -90,8 +90,8 @@ public class Torch extends OffhandEquipment {
 	public void particleEffects(Vector2 position, float angle, boolean flipX) {
 		Vector2 emission = position.cpy().add(new Vector2(flipX ? - 27 : 27, 0).rotate(angle));
 		
-		ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 12f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGOUND, false, Color.RED);
-		ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 12f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGOUND, false, Color.RED);
+		ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Color.WHITE, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 12f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGOUND, false, Color.RED);
+		ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Color.WHITE, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 12f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGOUND, false, Color.RED);
 		ParticleService.randomVelocityDiminishing(emission, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.FOREGOUND, false, null);
 	}
 }

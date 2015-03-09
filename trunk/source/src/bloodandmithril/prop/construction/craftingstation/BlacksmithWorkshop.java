@@ -81,7 +81,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 		if (isOccupied()) {
 			if (isClient()) {
 				if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
-					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.BACKGROUND, false, Colors.FIRE_END);
+					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
 				}
 			}
