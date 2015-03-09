@@ -6,6 +6,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldCoords;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -32,6 +33,8 @@ import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
+import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
@@ -73,11 +76,13 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -137,6 +142,29 @@ public class DevWindow extends Window {
 		panel.height = height;
 
 		panel.render();
+		
+		if (Gdx.input.isKeyPressed(Keys.W)) {
+			for (int i = 0; i < 2; i++) {
+				long lifetime = Util.getRandom().nextInt(10000);
+				Color randomOneOf = Util.randomOneOf(new Color(0.4f, 0.224f, 0.76f, 1.0f), new Color(0.1f, 0.763f, 0.324f, 1.0f));
+				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(1000f, 0f);
+				
+				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+					getMouseWorldCoords(),
+					rotate,
+					Color.WHITE,
+					randomOneOf,
+					randomOneOf,
+					Util.getRandom().nextFloat() * 3.4f,
+					Domain.getActiveWorld().getWorldId(),
+					Util.getRandom().nextFloat() * 20f + 10,
+					MovementMode.GRAVITY,
+					Depth.FOREGOUND,
+					lifetime,
+					true
+				).bounce());
+			}
+		}
 	}
 
 
