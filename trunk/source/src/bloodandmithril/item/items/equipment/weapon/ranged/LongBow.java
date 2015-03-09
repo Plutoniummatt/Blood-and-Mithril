@@ -223,4 +223,9 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 	public Item getAmmo() {
 		return currentAmmo;
 	}
+
+
+	@Override
+	public void particleEffects(Vector2 position, float angle, boolean flipX) {
+	}
 }

@@ -12,6 +12,7 @@ import bloodandmithril.item.items.equipment.weapon.OneHandedSword;
 import bloodandmithril.item.material.metal.Iron;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 @Copyright("Matthew Peck 2014")
@@ -77,5 +78,10 @@ public class Machette extends OneHandedSword<Iron> {
 	@Override
 	public float getCraftingDuration() {
 		return 60f;
+	}
+
+
+	@Override
+	public void particleEffects(Vector2 position, float angle, boolean flipX) {
 	}
 }

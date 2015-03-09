@@ -12,6 +12,7 @@ import bloodandmithril.item.items.equipment.weapon.OneHandedSword;
 import bloodandmithril.item.material.metal.Steel;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 @Copyright("Matthew Peck 2014")
@@ -76,5 +77,10 @@ public class Broadsword extends OneHandedSword<Steel> {
 	@Override
 	public float getCraftingDuration() {
 		return 60;
+	}
+
+
+	@Override
+	public void particleEffects(Vector2 position, float angle, boolean flipX) {
 	}
 }

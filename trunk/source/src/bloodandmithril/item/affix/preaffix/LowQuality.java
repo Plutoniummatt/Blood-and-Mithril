@@ -1,10 +1,8 @@
 package bloodandmithril.item.affix.preaffix;
 
-import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.affix.Affix;
 import bloodandmithril.item.affix.PreAffix;
-import bloodandmithril.item.items.Item;
 
 @Copyright("Matthew Peck 2014")
 public class LowQuality extends PreAffix {
@@ -28,15 +26,5 @@ public class LowQuality extends PreAffix {
 	@Override
 	public boolean isSameAs(Affix other) {
 		return other instanceof LowQuality && ((LowQuality)other).valueModifier == valueModifier;
-	}
-
-
-	@Override
-	public void itemEffects(Item item) {
-	}
-
-
-	@Override
-	public void itemEffects(Individual individual, Item item) {
 	}
 }

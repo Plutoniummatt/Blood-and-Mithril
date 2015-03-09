@@ -93,4 +93,10 @@ public class StandardWood extends Wood {
 	public float getStickCraftingDuration() {
 		return 10;
 	}
+
+
+	@Override
+	public float getCombatMultiplier() {
+		return 1f;
+	}
 }

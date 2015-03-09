@@ -23,14 +23,17 @@ import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Nearest;
 import static com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Line;
 import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.round;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -418,6 +421,13 @@ public class Domain {
 	public static ConcurrentHashMap<Integer, Individual> getIndividuals() {
 		return individuals;
 	}
+	
+	
+	public static List<Individual> getSortedIndividuals(Comparator<Individual> sorter) {
+		LinkedList<Individual> sorted = Lists.newLinkedList(individuals.values());
+		Collections.sort(sorted, sorter);
+		return sorted;
+	}
 
 
 	/**
@@ -501,14 +511,18 @@ public class Domain {
 			};
 		};
 
+		private static Comparator<Individual> renderPrioritySorter = (i1, i2) -> {
+			return Integer.compare(i1.getRenderPriority(), i2.getRenderPriority());
+		};
+		
 		/** Renders all individuals, ones that are on platforms are rendered first */
 		private static void renderIndividuals() {
 			try {
-				for (Individual indi : filter(newArrayList(getIndividuals().values()), offPlatform)) {
+				for (Individual indi : filter(Domain.getSortedIndividuals(renderPrioritySorter), offPlatform)) {
 					indi.render();
 				}
 
-				for (Individual indi : filter(newArrayList(getIndividuals().values()), onPlatform)) {
+				for (Individual indi : filter(Domain.getSortedIndividuals(renderPrioritySorter), onPlatform)) {
 					indi.render();
 				}
 			} catch (NullPointerException e) {

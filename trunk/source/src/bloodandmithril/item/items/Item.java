@@ -303,6 +303,14 @@ public abstract class Item implements Serializable, Affixed {
 			350
 		);
 	}
+	
+	
+	/**
+	 * Processes particle effects
+	 */
+	protected void particleEffects() {
+		// No-op default
+	};
 
 
 	/** Update method, delta measured in seconds */
@@ -314,8 +322,7 @@ public abstract class Item implements Serializable, Affixed {
 		if (!Domain.getWorld(getWorldId()).getTopography().getChunkMap().doesChunkExist(position)) {
 			return;
 		}
-
-		affixEffects();
+		
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 
@@ -371,20 +378,7 @@ public abstract class Item implements Serializable, Affixed {
 		}
 
 		updatePositionalIndex();
-	}
-
-
-	public void affixEffects() {
-		if (preAffix != null) {
-			preAffix.itemEffects(this);
-		}
-	}
-
-
-	public void affixEffects(Individual individual) {
-		if (preAffix != null) {
-			preAffix.itemEffects(individual, this);
-		}
+		particleEffects();
 	}
 
 
@@ -564,6 +558,7 @@ public abstract class Item implements Serializable, Affixed {
 		FURNITURE("Furniture"),
 		CONTAINER("Container"),
 		ONEHANDEDAXE("One-handed axe"),
+		ONEHANDEDBLUNT("One-handed Blunt"),
 		ONEHANDEDSPEAR("One-handed spear"),
 		MISC("Miscellaneous"),
 		BOW("Bow"),

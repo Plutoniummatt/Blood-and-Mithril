@@ -41,4 +41,5 @@ public class ItemValues {
 	public static final int SILVERINGOT = 10000;
 	public static final int COPPERINGOT = 750;
 	public static final int MEDIEVALWALLTORCH = 100;
+	public static final int TORCH = 200;
 }

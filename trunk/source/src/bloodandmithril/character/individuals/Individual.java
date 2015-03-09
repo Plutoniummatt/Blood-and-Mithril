@@ -59,6 +59,7 @@ import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.armor.Armor;
+import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
@@ -632,9 +633,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 						Vector2 pos = config.position.add(getState().position);
 						toRender.render(pos, config.orientation, config.flipX);
 						if (config.flipX) {
-							equipped.setPosition(pos.add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? config.orientation + 180f : -config.orientation)));
+							equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? config.orientation + 180f : -config.orientation)));
 						} else {
-							equipped.setPosition(pos.add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? -config.orientation : config.orientation)));
+							equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? -config.orientation : config.orientation)));
 						}
 					}
 				}
@@ -657,7 +658,20 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				}
 			} else if (equipped instanceof Armor) {
 
+			} else if (equipped instanceof Torch) {
+				SpacialConfiguration config = getOffHandSpatialConfigration();
+				Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+				Vector2 pos = config.position.add(getState().position);
+				((Torch) equipped).render(pos, config.orientation, config.flipX);
+				
+				if (config.flipX) {
+					equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? config.orientation + 180f : -config.orientation)));
+				} else {
+					equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? -config.orientation : config.orientation)));
+				}
+				toRender.particleEffects(pos, config.orientation, config.flipX);
 			}
+			
 		}
 	}
 
@@ -847,10 +861,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		updateConditions(delta);
 		updatePositionalIndex();
-
-		for (Item equipped : getEquipped().keySet()) {
-			equipped.affixEffects(this);
-		}
 	}
 
 
@@ -1617,6 +1627,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Returns the {@link SpacialConfiguration} where {@link OneHandedMeleeWeapon} will be rendered */
 	public abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();
+	
+	/** Returns the {@link SpacialConfiguration} for off-hand equippables */
+	public abstract SpacialConfiguration getOffHandSpatialConfigration();
 
 
 	/** True if mouse is over */
@@ -1964,5 +1977,16 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			);
 			speakTimer = duration / 1000f;
 		}
+	}
+	
+	
+	public int getRenderPriority() {
+		for (Item equipped : getEquipped().keySet()) {
+			if (equipped instanceof Torch) {
+				return 1;
+			}
+		}
+		
+		return 0;
 	}
 }
