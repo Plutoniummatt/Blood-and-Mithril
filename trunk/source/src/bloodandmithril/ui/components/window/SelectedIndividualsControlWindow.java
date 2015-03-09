@@ -71,7 +71,7 @@ public class SelectedIndividualsControlWindow extends Window {
 			Color.WHITE,
 			UIRef.BL
 		));
-		
+
 		buttons.put(1, new Button(
 			"Shut up",
 			Fonts.defaultFont,
@@ -83,12 +83,12 @@ public class SelectedIndividualsControlWindow extends Window {
 				boolean someoneSpeaking = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
 					return individual.isShutUp() ? 0 : 1;
 				}).sum() > 0;
-				
+
 				for (Individual individual : Domain.getSelectedIndividuals()) {
 					if (ClientServerInterface.isServer()) {
 						individual.setShutUp(someoneSpeaking);
 					} else {
-						// TODO CSI
+						ClientServerInterface.SendRequest.sendIndividualSpeakRequest(individual, !someoneSpeaking);
 					}
 				}
 			},
@@ -105,7 +105,7 @@ public class SelectedIndividualsControlWindow extends Window {
 		boolean someoneRunning = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
 			return individual.isWalking() ? 0 : 1;
 		}).sum() > 0;
-		
+
 		boolean someoneSpeaking = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
 			return individual.isShutUp() ? 0 : 1;
 		}).sum() > 0;
@@ -119,7 +119,7 @@ public class SelectedIndividualsControlWindow extends Window {
 		buttons.get(0).setOverColor(selected ? buttonsActive ? someoneRunning ? Color.ORANGE : Color.GREEN : someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
 		buttons.get(0).setDownColor(selected ? buttonsActive ? Color.WHITE : someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
 		buttons.get(0).render(x + 27, y - 20, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
-		
+
 		// Shut up button
 		buttons.get(1).text = someoneSpeaking ? "Shut up" : "Speak";
 		buttons.get(1).setIdleColor(selected ? someoneSpeaking ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);

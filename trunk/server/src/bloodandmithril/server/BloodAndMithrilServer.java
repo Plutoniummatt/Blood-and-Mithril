@@ -196,8 +196,8 @@ public class BloodAndMithrilServer {
 		// Configurations
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Blood and Mithril Server";
-		cfg.width = 500;
-		cfg.height = 250;
+		cfg.width = 200;
+		cfg.height = 20;
 		cfg.resizable = true;
 
 		new LwjglApplication(server, cfg);

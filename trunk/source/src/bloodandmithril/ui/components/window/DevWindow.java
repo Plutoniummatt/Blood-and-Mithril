@@ -58,6 +58,7 @@ import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
@@ -143,13 +144,13 @@ public class DevWindow extends Window {
 		panel.height = height;
 
 		panel.render();
-		
+
 		if (Gdx.input.isKeyPressed(Keys.W)) {
 			for (int i = 0; i < 2; i++) {
 				long lifetime = Util.getRandom().nextInt(10000);
 				Color randomOneOf = Util.randomOneOf(new Color(0.4f, 0.224f, 0.76f, 1.0f), new Color(0.1f, 0.763f, 0.324f, 1.0f));
 				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(1000f, 0f);
-				
+
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					getMouseWorldCoords(),
 					rotate,
@@ -191,10 +192,10 @@ public class DevWindow extends Window {
 		if (super.keyPressed(keyCode)) {
 			return true;
 		}
-		
+
 		if (keyCode == Keys.H) {
 			ParticleService.fireworks(
-				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY()) 
+				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())
 			);
 		}
 
@@ -301,7 +302,11 @@ public class DevWindow extends Window {
 				elf.giveItem(new CarrotSeed());
 			}
 
-			Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
+			if (isServer()) {
+				Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
+			} else {
+				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(elf);
+			}
 		}
 
 		if (keyCode == Keys.R) {
@@ -314,7 +319,12 @@ public class DevWindow extends Window {
 			id.setNickName("Rabbit");
 
 			Hare hare = new Hare(id, state, Faction.NPC, getActiveWorld().getWorldId());
-			Domain.addIndividual(hare, Domain.getActiveWorld().getWorldId());
+
+			if (isServer()) {
+				Domain.addIndividual(hare, Domain.getActiveWorld().getWorldId());
+			} else {
+				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(hare);
+			}
 		}
 
 		return false;
@@ -513,7 +523,7 @@ public class DevWindow extends Window {
 			),
 			0
 		);
-		
+
 		newHashMap.put(
 			new ListingMenuItem<String>(
 				"Render component interfaces",
@@ -536,7 +546,7 @@ public class DevWindow extends Window {
 			),
 			0
 		);
-		
+
 		newHashMap.put(
 			new ListingMenuItem<String>(
 				"Change time of day",
