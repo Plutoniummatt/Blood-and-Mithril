@@ -39,7 +39,7 @@ public class Arrow<T extends Metal> extends Projectile {
 
 	public static TextureRegion textureRegion;
 	private float angle;
-	private boolean stuck = false;
+	protected boolean stuck = false;
 
 	/**
 	 * Constructor

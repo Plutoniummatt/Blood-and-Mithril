@@ -65,7 +65,7 @@ public class ParticleService {
 					Domain.getActiveWorld().getWorldId(),
 					Util.getRandom().nextFloat() * 30f + 10,
 					MovementMode.GRAVITY,
-					Depth.MIDDLEGROUND,
+					Depth.FOREGOUND,
 					lifetime,
 					true
 				).bounce());

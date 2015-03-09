@@ -817,6 +817,14 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static float getMouseWorldY() {
 		return screenToWorldY(Gdx.graphics.getHeight() - Gdx.input.getY());
 	}
+	
+	
+	/**
+	 * Get mouse world coord y
+	 */
+	public static Vector2 getMouseWorldCoords() {
+		return new Vector2(getMouseWorldX(), getMouseWorldY());
+	}
 
 
 	public static CursorBoundTask getCursorBoundTask() {
