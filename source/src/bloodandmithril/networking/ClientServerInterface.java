@@ -18,6 +18,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
+import bloodandmithril.audio.SoundService.SuspiciousSound;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocationFunction;
@@ -29,6 +30,12 @@ import bloodandmithril.character.ai.implementations.HareAI;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
+import bloodandmithril.character.ai.perception.Observer;
+import bloodandmithril.character.ai.perception.Observer.IndividualSighted;
+import bloodandmithril.character.ai.perception.SightStimulus;
+import bloodandmithril.character.ai.perception.Sniffer;
+import bloodandmithril.character.ai.perception.SoundStimulus;
+import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.Attack.AttackTarget;
 import bloodandmithril.character.ai.task.Attack.ReevaluateAttack;
@@ -109,6 +116,7 @@ import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.RingFunction;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
+import bloodandmithril.item.items.equipment.misc.OffhandEquipment;
 import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.item.items.equipment.weapon.OneHandedAxe;
@@ -245,6 +253,7 @@ import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.Furniture;
 import bloodandmithril.prop.furniture.Furniture.NonPassableTilesOnly;
 import bloodandmithril.prop.furniture.MedievalWallTorch.NotEmptyTile;
+import bloodandmithril.prop.furniture.SmallWoodenCrate;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.PlantProp;
 import bloodandmithril.prop.plant.seed.SeedProp;
@@ -464,6 +473,18 @@ public class ClientServerInterface {
 
 		kryo.register(RequestSpawnIndividual.class);
 
+		kryo.register(SerializableDoubleWrapper.class);
+		kryo.register(Sniffer.class);
+		kryo.register(SoundStimulus.class);
+		kryo.register(SightStimulus.class);
+		kryo.register(SuspiciousSound.class);
+		kryo.register(bloodandmithril.character.ai.perception.Listener.class);
+		kryo.register(Observer.class);
+		kryo.register(IndividualSighted.class);
+		kryo.register(Stimulus.class);
+		kryo.register(OffhandEquipment.class);
+		kryo.register(bloodandmithril.item.items.furniture.SmallWoodenCrate.class);
+		kryo.register(SmallWoodenCrate.class);
 		kryo.register(Proficiency.class);
 		kryo.register(Proficiencies.class);
 		kryo.register(bloodandmithril.character.proficiency.proficiencies.Trading.class);

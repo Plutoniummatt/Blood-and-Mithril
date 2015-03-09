@@ -65,4 +65,10 @@ public class ElfAI extends ArtificialIntelligence {
 			} catch (NoTileFoundException e) {}
 		}
 	}
+
+
+	@Override
+	protected ArtificialIntelligence internalCopy() {
+		return new ElfAI(getHost());
+	}
 }

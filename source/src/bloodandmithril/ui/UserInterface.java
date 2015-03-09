@@ -144,7 +144,7 @@ public class UserInterface {
 	public static ArrayDeque<TextBubble> textBubbles = new ArrayDeque<TextBubble>();
 
 	/** Shape renderer */
-	public static ShapeRenderer shapeRenderer = new ShapeRenderer();
+	public static ShapeRenderer shapeRenderer;
 
 	/** The texture atlas for other UI elements */
 	public static Texture uiTexture;
@@ -165,7 +165,7 @@ public class UserInterface {
 
 	/** FPS should be updated twice per second */
 	private static int fpsTimer, fps, fpsDisplayed;
-	
+
 	private static float averageBarAlpha = 0f, maxHealth = 0f, totalHealth = 0, maxStamina = 0f, totalStamina = 0f, maxMana = 0f, totalMana = 0;
 
 	/** Texture regions */
@@ -174,9 +174,9 @@ public class UserInterface {
 	public static TextureRegion currentArrow;
 	public static TextureRegion followArrow;
 
-	private static final List<FloatingText> floatingTexts = Lists.newLinkedList();
+	private static List<FloatingText> floatingTexts;
 
-	private static final Deque<Task> uiTasks = new ConcurrentLinkedDeque<>();
+	private static Deque<Task> uiTasks;
 
 	static {
 		if (ClientServerInterface.isClient()) {
@@ -186,6 +186,9 @@ public class UserInterface {
 			jumpWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 59, 39, 29);
 			currentArrow = new TextureRegion(UserInterface.uiTexture, 0, 0, 11, 8);
 			followArrow = new TextureRegion(UserInterface.uiTexture, 0, 34, 11, 8);
+			uiTasks = new ConcurrentLinkedDeque<>();
+			floatingTexts = Lists.newLinkedList();
+			shapeRenderer = new ShapeRenderer();
 		}
 	}
 
@@ -355,26 +358,26 @@ public class UserInterface {
 				averageBarAlpha = averageBarAlpha - 0.04f < 0f ? 0f : averageBarAlpha - 0.04f;
 			} else {
 				averageBarAlpha = averageBarAlpha + 0.04f > 0.6f ? 0.6f : averageBarAlpha + 0.04f;
-				
+
 				maxHealth = 0f;
 				totalHealth = 0f;
 				maxStamina = 0f;
 				totalStamina = 0f;
 				maxMana = 0f;
 				totalMana  = 0f;
-				
+
 				for (Individual indi : Domain.getSelectedIndividuals()) {
 					maxHealth += indi.getState().maxHealth;
 					totalHealth += indi.getState().health;
-					
+
 					maxStamina += 1f;
 					totalStamina += indi.getState().stamina;
-					
+
 					maxMana += indi.getState().maxMana;
 					totalMana += indi.getState().mana;
 				}
 			}
-			
+
 			Gdx.gl.glEnable(GL_BLEND);
 			Gdx.gl.glLineWidth(1f);
 			shapeRenderer.begin(ShapeType.Filled);

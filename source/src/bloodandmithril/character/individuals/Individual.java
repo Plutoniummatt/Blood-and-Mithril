@@ -275,7 +275,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * Copies all fields onto this individual from another
 	 */
 	public synchronized void copyFrom(Individual other) {
-		this.setAi(other.getAI());
+		this.setAi(other.getAI().copy());
 		this.setWorldId(other.getWorldId());
 		this.selectedByClient = other.selectedByClient;
 		this.setIndividualsToBeAttacked(other.getIndividualsToBeAttacked());

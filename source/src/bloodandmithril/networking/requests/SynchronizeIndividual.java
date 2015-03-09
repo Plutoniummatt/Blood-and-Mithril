@@ -135,6 +135,9 @@ public class SynchronizeIndividual implements Request {
 			if (this.individualId != null) {
 				this.individual = Domain.getIndividual(individualId).copy();
 
+				// Do not synch stimuli
+				this.individual.getAI().clearStimuli();
+
 				// Handle AITasks with Paths explicitly, these guys cause ConcurrentModificationExceptions and nasty NPE's even with
 				// ConcurrentLinkedDeque's
 				AITask current = this.individual.getAI().getCurrentTask();

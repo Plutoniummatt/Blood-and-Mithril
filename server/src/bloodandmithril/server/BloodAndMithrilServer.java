@@ -43,6 +43,7 @@ import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
+import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -207,8 +208,10 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public void create() {
-			Domain.getFactions().put(0, new Faction("Nature", 0, false, ""));
-			Domain.getFactions().put(1, new Faction("Elves", 1, true, "Elves are cool"));
+			Faction nature = new Faction("Nature", ParameterPersistenceService.getParameters().getNextFactionId(), false, "");
+			Faction player = new Faction("Elves", ParameterPersistenceService.getParameters().getNextFactionId(), true, "Elves are cool");
+			Domain.getFactions().put(nature.factionId, nature);
+			Domain.getFactions().put(player.factionId, player);
 
 			ClientServerInterface.setServer(true);
 			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
