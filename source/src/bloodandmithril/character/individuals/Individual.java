@@ -228,7 +228,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** The timer that controls the {@link Travel} icon */
 	private float travelIconTimer;
-	
+
 	/** If this is not zero, this individual can not speak */
 	private float speakTimer;
 
@@ -664,7 +664,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 				Vector2 pos = config.position.add(getState().position);
 				((Torch) equipped).render(pos, config.orientation, config.flipX);
-				
+
 				if (config.flipX) {
 					equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? config.orientation + 180f : -config.orientation)));
 				} else {
@@ -672,7 +672,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				}
 				toRender.particleEffects(pos, config.orientation, config.flipX);
 			}
-			
+
 		}
 	}
 
@@ -1107,7 +1107,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 						speak("Yay!", 1000);
 					}
 				} else {
-					// TODO Shutting up over CSI
+					ClientServerInterface.SendRequest.sendIndividualSpeakRequest(this, !shutup);
 				}
 			},
 			Color.WHITE,
@@ -1628,7 +1628,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Returns the {@link SpacialConfiguration} where {@link OneHandedMeleeWeapon} will be rendered */
 	public abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();
-	
+
 	/** Returns the {@link SpacialConfiguration} for off-hand equippables */
 	public abstract SpacialConfiguration getOffHandSpatialConfigration();
 
@@ -1951,13 +1951,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public void setTravelIconTimer(float travelIconTimer) {
 		this.travelIconTimer = travelIconTimer;
 	}
-	
-	
+
+
 	public boolean isShutUp() {
 		return shutup;
 	}
-	
-	
+
+
 	public void setShutUp(boolean shutup) {
 		this.shutup = shutup;
 	}
@@ -1979,15 +1979,15 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			speakTimer = duration / 1000f;
 		}
 	}
-	
-	
+
+
 	public int getRenderPriority() {
 		for (Item equipped : getEquipped().keySet()) {
 			if (equipped instanceof Torch) {
 				return 1;
 			}
 		}
-		
+
 		return 0;
 	}
 }

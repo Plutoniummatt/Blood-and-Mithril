@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
@@ -77,6 +78,12 @@ import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.proficiency.Proficiencies;
+import bloodandmithril.character.proficiency.Proficiency;
+import bloodandmithril.character.proficiency.proficiencies.Carpentry;
+import bloodandmithril.character.proficiency.proficiencies.Cooking;
+import bloodandmithril.character.proficiency.proficiencies.Glassworking;
+import bloodandmithril.character.proficiency.proficiencies.Masonry;
+import bloodandmithril.character.proficiency.proficiencies.Smithing;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
@@ -102,6 +109,7 @@ import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.RingFunction;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
+import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.Dagger;
 import bloodandmithril.item.items.equipment.weapon.OneHandedAxe;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
@@ -178,6 +186,7 @@ import bloodandmithril.networking.requests.FollowRequest;
 import bloodandmithril.networking.requests.GenerateChunk;
 import bloodandmithril.networking.requests.GenerateChunk.GenerateChunkResponse;
 import bloodandmithril.networking.requests.IndividualSelection;
+import bloodandmithril.networking.requests.IndividualSpeakRequest;
 import bloodandmithril.networking.requests.LockUnlockContainerRequest;
 import bloodandmithril.networking.requests.MessageWindowNotification;
 import bloodandmithril.networking.requests.MoveIndividual;
@@ -222,6 +231,7 @@ import bloodandmithril.networking.requests.SynchronizeWorldState.SynchronizeWorl
 import bloodandmithril.networking.requests.ToggleWalkRun;
 import bloodandmithril.networking.requests.TransferItems;
 import bloodandmithril.networking.requests.TransferItems.TradeEntity;
+import bloodandmithril.networking.requests.dev.RequestSpawnIndividual;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Harvestable;
@@ -445,12 +455,26 @@ public class ClientServerInterface {
 		ClientServerInterface.isClient = isClient;
 	}
 
+
 	/**
 	 * Registers all request classes
 	 */
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
 
+		kryo.register(RequestSpawnIndividual.class);
+
+		kryo.register(Proficiency.class);
+		kryo.register(Proficiencies.class);
+		kryo.register(bloodandmithril.character.proficiency.proficiencies.Trading.class);
+		kryo.register(Smithing.class);
+		kryo.register(Torch.class);
+		kryo.register(Masonry.class);
+		kryo.register(Glassworking.class);
+		kryo.register(Cooking.class);
+		kryo.register(Carpentry.class);
+		kryo.register(LinkedBlockingQueue.class);
+		kryo.register(IndividualSpeakRequest.class);
 		kryo.register(NonPassableTilesOnly.class);
 		kryo.register(DiminishingColorChangingParticle.class);
 		kryo.register(NotEmptyTile.class);
@@ -730,6 +754,11 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendRequest {
+		public static synchronized void sendSpawnIndividualRequest(Individual individual) {
+			client.sendTCP(new RequestSpawnIndividual(individual));
+			Logger.networkDebug("Sending individual spawn request", LogLevel.DEBUG);
+		}
+
 		public static synchronized void sendLightLightableRequest(Individual host, Lightable lightable) {
 			client.sendTCP(new RequestLightCampfire(host, lightable));
 			Logger.networkDebug("Sending light lightable request", LogLevel.DEBUG);
@@ -852,6 +881,11 @@ public class ClientServerInterface {
 		public static synchronized void sendRequestConnectedPlayerNamesRequest() {
 			client.sendTCP(new RequestClientList());
 			Logger.networkDebug("Sending client name list request", LogLevel.DEBUG);
+		}
+
+		public static synchronized void sendIndividualSpeakRequest(Individual individual, boolean speak) {
+			client.sendTCP(new IndividualSpeakRequest(individual, speak));
+			Logger.networkDebug("Sending individual speak request", LogLevel.DEBUG);
 		}
 
 		public static synchronized void sendRequestTakeItem(Individual individual, Item item) {

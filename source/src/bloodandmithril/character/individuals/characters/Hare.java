@@ -158,7 +158,9 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	public Individual copy() {
-		return new Hare(getId(), getState(), getFactionId(), getWorldId());
+		Hare hare = new Hare(getId(), getState(), getFactionId(), getWorldId());
+		hare.copyFrom(this);
+		return hare;
 	}
 
 
