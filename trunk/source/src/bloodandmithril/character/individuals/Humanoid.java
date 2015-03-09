@@ -288,57 +288,57 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
 			case JUMP_LEFT:
-				return new SpacialConfiguration(new Vector2(-11, 32), -10, true); 
+				return new SpacialConfiguration(new Vector2(-11, 32), -20, true); 
 			case STAND_RIGHT:
 			case JUMP_RIGHT:
-				return new SpacialConfiguration(new Vector2(11, 32), 10, false);
+				return new SpacialConfiguration(new Vector2(11, 32), 20, false);
 			case WALK_LEFT:
 				switch (frameIndex) {
-					case 0: return new SpacialConfiguration(new Vector2(-11, 34f), -10, true);
-					case 1: return new SpacialConfiguration(new Vector2(-11, 34f), -10, true);
-					case 2: return new SpacialConfiguration(new Vector2(-11, 30f), -10, true);
-					case 3: return new SpacialConfiguration(new Vector2(-11, 30f), -10, true);
-					case 4: return new SpacialConfiguration(new Vector2(-11, 32f), -10, true);
-					case 5: return new SpacialConfiguration(new Vector2(-11, 34f), -10, true);
-					case 6: return new SpacialConfiguration(new Vector2(-11, 34f), -10, true);
-					case 7: return new SpacialConfiguration(new Vector2(-11, 30f), -10, true);
-					case 8: return new SpacialConfiguration(new Vector2(-11, 30f), -10, true);
-					case 9: return new SpacialConfiguration(new Vector2(-11, 32f), -10, true);
+					case 0: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
+					case 1: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
+					case 2: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
+					case 3: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
+					case 4: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
+					case 5: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
+					case 6: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
+					case 7: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
+					case 8: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
+					case 9: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
 				}
 			case WALK_RIGHT:
 				switch (frameIndex) {
-					case 0: return new SpacialConfiguration(new Vector2(11, 34f), 10, false);
-					case 1: return new SpacialConfiguration(new Vector2(11, 34f), 10, false);
-					case 2: return new SpacialConfiguration(new Vector2(11, 30f), 10, false);
-					case 3: return new SpacialConfiguration(new Vector2(11, 30f), 10, false);
-					case 4: return new SpacialConfiguration(new Vector2(11, 32f), 10, false);
-					case 5: return new SpacialConfiguration(new Vector2(11, 34f), 10, false);
-					case 6: return new SpacialConfiguration(new Vector2(11, 34f), 10, false);
-					case 7: return new SpacialConfiguration(new Vector2(11, 30f), 10, false);
-					case 8: return new SpacialConfiguration(new Vector2(11, 30f), 10, false);
-					case 9: return new SpacialConfiguration(new Vector2(11, 32f), 10, false);
+					case 0: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
+					case 1: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
+					case 2: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
+					case 3: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
+					case 4: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
+					case 5: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
+					case 6: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
+					case 7: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
+					case 8: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
+					case 9: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
 				}
 			case RUN_LEFT:
 				switch (frameIndex) {
-					case 0: return new SpacialConfiguration(new Vector2(-11, 32f), -10, true);
-					case 1: return new SpacialConfiguration(new Vector2(-11, 34f), -10, true);
-					case 2: return new SpacialConfiguration(new Vector2(-11, 32f), -10, true);
-					case 3: return new SpacialConfiguration(new Vector2(-11, 30f), -10, true);
-					case 4: return new SpacialConfiguration(new Vector2(-11, 32f), -10, true);
-					case 5: return new SpacialConfiguration(new Vector2(-11, 34f), -10, true);
-					case 6: return new SpacialConfiguration(new Vector2(-11, 32f), -10, true);
-					case 7: return new SpacialConfiguration(new Vector2(-11, 30f), -10, true);
+					case 0: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
+					case 1: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
+					case 2: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
+					case 3: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
+					case 4: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
+					case 5: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
+					case 6: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
+					case 7: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
 				}
 			case RUN_RIGHT:
 				switch (frameIndex) {
-					case 0: return new SpacialConfiguration(new Vector2(11, 32f), 10, false);
-					case 1: return new SpacialConfiguration(new Vector2(11, 34f), 10, false);
-					case 2: return new SpacialConfiguration(new Vector2(11, 32f), 10, false);
-					case 3: return new SpacialConfiguration(new Vector2(11, 30f), 10, false);
-					case 4: return new SpacialConfiguration(new Vector2(11, 32f), 10, false);
-					case 5: return new SpacialConfiguration(new Vector2(11, 34f), 10, false);
-					case 6: return new SpacialConfiguration(new Vector2(11, 32f), 10, false);
-					case 7: return new SpacialConfiguration(new Vector2(11, 30f), 10, false);
+					case 0: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
+					case 1: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
+					case 2: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
+					case 3: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
+					case 4: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
+					case 5: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
+					case 6: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
+					case 7: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
 				}
 			case ATTACK_LEFT_ONE_HANDED_WEAPON_MINE:
 			case ATTACK_LEFT_ONE_HANDED_WEAPON:
