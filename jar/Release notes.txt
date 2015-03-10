@@ -1,4 +1,4 @@
-Release 0.1
+Release 0.1.0
 ---------------
 * Equipping two handed items now unequips mainhand and offhand. (Test with bow/broadsword/torch)
 * Equipping mainhand and offhand now unequips two handed items.
