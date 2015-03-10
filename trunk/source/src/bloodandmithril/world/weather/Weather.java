@@ -15,8 +15,6 @@ import bloodandmithril.world.Epoch;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -27,14 +25,13 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck 2014")
 public class Weather {
 
-	private static ShapeRenderer shapeRenderer 			= new ShapeRenderer();
-
 	private static Color dayTopColor 					= new Color(33f/150f, 169f/255f, 255f/255f, 1f);
 	private static Color dayBottomColor 				= new Color(0f, 144f/255f, 1f, 1f);
 	private static Color nightTopColor 					= new Color(33f/255f, 0f, 150f/255f, 1f);
 	private static Color nightBottomColor 				= new Color(60f/255f, 0f, 152f/255f, 1f);
 
 	private static FrameBuffer skyBuffer				= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
+	private static FrameBuffer working					= new FrameBuffer(RGBA8888, 1, 1, false);
 
 	private static Vector2 sunPosition					= new Vector2();
 
@@ -112,14 +109,18 @@ public class Weather {
 	/** Renders the sky */
 	private static void renderSky() {
 		skyBuffer.begin();
-		shapeRenderer.begin(ShapeType.Filled);
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.sky);
 		Color filter = getDaylightColor();
 
 		Color topColor = dayTopColor.cpy().mul(getCurrentEpoch().dayLight()).add(nightTopColor.cpy().mul(1f - getCurrentEpoch().dayLight())).mul(filter);
 		Color bottomColor = dayBottomColor.cpy().mul(getCurrentEpoch().dayLight()).add(nightBottomColor.cpy().mul(1f - getCurrentEpoch().dayLight())).mul(filter);
 
-		shapeRenderer.rect(0, 0, WIDTH, HEIGHT, bottomColor, bottomColor, topColor, topColor);
-		shapeRenderer.end();
+		Shaders.sky.setUniformf("top", topColor);
+		Shaders.sky.setUniformf("bottom", bottomColor);
+		
+		spriteBatch.draw(working.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
+		spriteBatch.end();
 		skyBuffer.end();
 
 		float time = getCurrentEpoch().getTime();

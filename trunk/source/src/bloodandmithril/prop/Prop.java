@@ -42,7 +42,7 @@ public abstract class Prop implements Serializable, Visible {
 	private static final long serialVersionUID = -1659783923740689585L;
 
 	/** Dimensions of this {@link Prop} */
-	public final int width, height;
+	public int width, height;
 
 	/** Whether this prop will be rendered as part of the background, middleground or foreground */
 	public final Depth depth;

@@ -255,6 +255,7 @@ import bloodandmithril.prop.furniture.Furniture.NonPassableTilesOnly;
 import bloodandmithril.prop.furniture.MedievalWallTorch.NotEmptyTile;
 import bloodandmithril.prop.furniture.SmallWoodenCrate;
 import bloodandmithril.prop.furniture.WoodenChest;
+import bloodandmithril.prop.plant.CactusProp;
 import bloodandmithril.prop.plant.PlantProp;
 import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.ui.UserInterface.FloatingText;
@@ -473,6 +474,7 @@ public class ClientServerInterface {
 
 		kryo.register(RequestSpawnIndividual.class);
 
+		kryo.register(CactusProp.class);
 		kryo.register(SerializableDoubleWrapper.class);
 		kryo.register(Sniffer.class);
 		kryo.register(SoundStimulus.class);

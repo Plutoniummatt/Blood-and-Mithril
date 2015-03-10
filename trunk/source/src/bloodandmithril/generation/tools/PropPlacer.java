@@ -47,6 +47,8 @@ public class PropPlacer implements Serializable {
 			}
 
 			if (prop.canPlaceAt(coords)) {
+				prop.position.x = coords.x;
+				prop.position.y = coords.y;
 				Domain.getWorld(worldId).props().addProp(prop);
 				return true;
 			}

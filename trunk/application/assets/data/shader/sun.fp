@@ -12,6 +12,10 @@ uniform vec4 filter;
 uniform float epoch;
 uniform float nightSuppression;
 
+float rand(vec2 co) {
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
 void main()
 {
 	vec2 inverted = vec2(v_texCoords.x, -v_texCoords.y + 1);
@@ -27,8 +31,10 @@ void main()
 	vec4 color = filter * max(func, 0); 
 	vec4 color2 = filter * vec4(1.0, 0.7, 0.7, 1.0) * max(func2, 0);
 	
+	float dither = rand(v_texCoords) / 256.0;
+	
 	gl_FragColor = 
 		tex * color * filter.a + 
 		tex + 
-		color2 * nightSuppression;
+		color2 * nightSuppression + vec4(dither, dither, dither, 0.0);
 }

@@ -161,7 +161,7 @@ public class DevWindow extends Window {
 					Domain.getActiveWorld().getWorldId(),
 					Util.getRandom().nextFloat() * 20f + 10,
 					MovementMode.GRAVITY,
-					Depth.FOREGOUND,
+					Util.getRandom().nextBoolean() ? Depth.FOREGOUND : Depth.MIDDLEGROUND,
 					lifetime,
 					true
 				).bounce());
