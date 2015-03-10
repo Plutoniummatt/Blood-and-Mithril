@@ -20,7 +20,7 @@ import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.generation.tools.SawToothGenerator;
 import bloodandmithril.persistence.ParameterPersistenceService;
-import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
+import bloodandmithril.prop.plant.CactusProp;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -109,13 +109,6 @@ public class Desert extends SuperStructure {
 		int entranceY = max(
 			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(366 + entranceX) + 80,
 			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(24 + entranceX) + 80
-		);
-
-		Structures.get(getStructureKey()).addProp(
-			new BlacksmithWorkshop(
-				Topography.convertToWorldCoord(entranceX, false) + 400,
-				Topography.convertToWorldCoord(entranceY, false)
-			)
 		);
 
 		getComponents().add(new UndergroundDesertTempleEntrance(
@@ -265,17 +258,37 @@ public class Desert extends SuperStructure {
 		//fill surfaceHeight
 		if (generatingToRight) {
 			for (int x = leftMostTile; x <= rightMostTile; x++) {
+				int y = (int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(leftMostTile, 1));
 				structures.getSurfaceHeight().put(
 					x,
-					(int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(leftMostTile, 1))
+					y
 				);
+				
+				if (Util.roll(0.04f)) {
+					Structures.get(getStructureKey()).addProp(
+						new CactusProp(
+							Topography.convertToWorldCoord(x, false),
+							Topography.convertToWorldCoord(y, false) + 16
+						)
+					);
+				}
 			}
 		} else {
 			for (int x = rightMostTile; x >= leftMostTile; x--) {
+				int y = (int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(rightMostTile, 1));
 				structures.getSurfaceHeight().put(
 					x,
-					(int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(rightMostTile, 1))
+					y
 				);
+				
+				if (Util.roll(0.04f)) {
+					Structures.get(getStructureKey()).addProp(
+						new CactusProp(
+							Topography.convertToWorldCoord(x, false),
+							Topography.convertToWorldCoord(y, false)
+						)
+					);
+				}
 			}
 		}
 	}

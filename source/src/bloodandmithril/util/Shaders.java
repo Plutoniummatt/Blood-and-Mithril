@@ -36,6 +36,7 @@ public class Shaders {
 	public static ShaderProgram tracerParticlesFBO = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/tracerParticleFbo.fp"));
 	public static ShaderProgram lightingFBOBlend = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/lightingFboBlend.fp"));
 	public static ShaderProgram sun = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/sun.fp"));
+	public static ShaderProgram sky = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/sky.fp"));
 
 	public static void setup() {
 		ShaderProgram.pedantic = false;

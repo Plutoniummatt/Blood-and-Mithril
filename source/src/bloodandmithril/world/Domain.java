@@ -128,8 +128,8 @@ public class Domain {
 		gameWorldTexture 					= new Texture(files.internal("data/image/gameWorld.png"));
 		individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
 
-		gameWorldTexture.setFilter(Linear, Linear);
-		individualTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		gameWorldTexture.setFilter(Linear, Nearest);
+		individualTexture.setFilter(Nearest, Nearest);
 
 		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
