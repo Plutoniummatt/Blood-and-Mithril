@@ -1,0 +1,7 @@
+Release 0.1
+---------------
+* Equipping two handed items now unequips mainhand and offhand. (Test with bow/broadsword/torch)
+* Equipping mainhand and offhand now unequips two handed items.
+* Add dithering to sky rendering and sun rendering.
+* Add generation of props (plants etc)
+* Add cactus to desert
