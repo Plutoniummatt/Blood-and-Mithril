@@ -20,6 +20,7 @@ import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.generation.tools.SawToothGenerator;
 import bloodandmithril.persistence.ParameterPersistenceService;
+import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -102,11 +103,19 @@ public class Desert extends SuperStructure {
 
 	/** Generates the desert dungeon */
 	private void generateDungeon() {
+
 		// Add the entrance in the middle of this desert
 		int entranceX = (getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE;
 		int entranceY = max(
 			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(366 + entranceX) + 80,
 			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(24 + entranceX) + 80
+		);
+
+		Structures.get(getStructureKey()).addProp(
+			new BlacksmithWorkshop(
+				Topography.convertToWorldCoord(entranceX, false) + 400,
+				Topography.convertToWorldCoord(entranceY, false)
+			)
 		);
 
 		getComponents().add(new UndergroundDesertTempleEntrance(

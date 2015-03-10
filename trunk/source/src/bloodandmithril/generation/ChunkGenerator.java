@@ -47,6 +47,7 @@ public class ChunkGenerator {
 		// Create the chunk and put it in the ChunkMap.
 		Chunk newChunk = new Chunk(fTiles, bTiles, chunkX, chunkY, world.getWorldId());
 		world.getTopography().getChunkMap().addChunk(chunkX, chunkY, newChunk);
+		placeProps(world, chunkX, chunkY, world.getTopography().getStructures());
 
 		// If the structure has finished generating, we can delete it from the StructureMap, otherwise, decrement the number of chunks left to be generated on the structure
 		if (world.getTopography().getStructures().structureExists(chunkX, chunkY, true)) {
@@ -73,6 +74,17 @@ public class ChunkGenerator {
 					handleNPE(fTiles, tileX, tileY, e);
 				}
 			}
+		}
+	}
+
+
+	/** Adds props */
+	private void placeProps(World world, int x, int y, Structures structures) {
+		if (world.getTopography().getStructures().structureExists(x, y, true)) {
+			Structures.get(world.getTopography().getStructures().getSuperStructureKeys().get(x).get(y)).attemptPropPlacement(x, y);
+		}
+		if (world.getTopography().getStructures().structureExists(x, y, false)) {
+			Structures.get(world.getTopography().getStructures().getSubStructureKeys().get(x).get(y)).attemptPropPlacement(x, y);
 		}
 	}
 

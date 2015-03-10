@@ -1,10 +1,15 @@
 package bloodandmithril.generation;
 
+import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
+import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
+
 import java.io.Serializable;
 import java.util.List;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component;
+import bloodandmithril.generation.tools.PropPlacer;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
@@ -32,6 +37,9 @@ public abstract class Structure implements Serializable {
 
 	/** {@link Component}s on this {@link Structure} */
 	private final List<Component> components = Lists.newLinkedList();
+
+	/** {@link Prop}s */
+	private final List<PropPlacer> props = Lists.newLinkedList();
 
 	/**
 	 * @return whether this {@link Structure} has finished generating.
@@ -209,5 +217,51 @@ public abstract class Structure implements Serializable {
 	 */
 	public List<Component> getComponents() {
 		return components;
+	}
+
+
+	/**
+	 * Adds a prop to be placed
+	 */
+	public synchronized void addProp(Prop prop) {
+		props.add(
+			new PropPlacer(
+				prop,
+				prop.position,
+				worldId
+			)
+		);
+	}
+
+
+	/**
+	 * Attempt to place all props
+	 */
+	public synchronized void attemptPropPlacement(int chunkX, int chunkY) {
+		for (PropPlacer prop : Lists.newArrayList(props)) {
+			if (convertToChunkCoord(prop.getLocation().x) == chunkX && convertToChunkCoord(prop.getLocation().y) == chunkY) {
+				boolean componentOverlap = false;
+				for (Component c : components) {
+					if (c.getBoundaries().isWithin(convertToWorldTileCoord(prop.getLocation().x), convertToWorldTileCoord(prop.getLocation().y))) {
+						props.remove(prop);
+						componentOverlap = true;
+						break;
+					}
+				}
+
+				if (!componentOverlap) {
+					prop.place();
+					props.remove(prop);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * @return all props
+	 */
+	public synchronized List<PropPlacer> getProps() {
+		return props;
 	}
 }
