@@ -17,6 +17,8 @@ import bloodandmithril.item.items.equipment.misc.Ring;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.util.SerializableFunction;
 
+import com.google.common.collect.Sets;
+
 /**
  * Default implementation of {@link Equipper}
  *
@@ -100,41 +102,70 @@ public final class EquipperImpl implements Equipper, Serializable {
 
 
 	@Override
-	public void equip(Equipable item) {
-		if (item instanceof RangedWeapon) {
-			((RangedWeapon) item).setAmmo(null);
+	public void equip(Equipable toEquip) {
+		if (toEquip instanceof RangedWeapon) {
+			((RangedWeapon) toEquip).setAmmo(null);
 		}
-		
+
 		for (Item equipped : equippedItems.keySet()) {
-			if (equipped.sameAs(item) && item.slot != EquipmentSlot.RING) {
+			if (equipped.sameAs(toEquip) && toEquip.slot != EquipmentSlot.RING) {
 				return;
 			}
 		}
 
-		if (availableEquipmentSlots.get(item.slot).call()) {
-			takeItem(item);
-			equippedItems.put(item, (equippedItems.get(item) == null ? 0 : equippedItems.get(item)) + 1);
-			if (item.slot == EquipmentSlot.RING) {
-				equippedRings.add((Ring)item);
+
+		if (canEquip(toEquip)) {
+			takeItem(toEquip);
+			equippedItems.put(toEquip, (equippedItems.get(toEquip) == null ? 0 : equippedItems.get(toEquip)) + 1);
+			if (toEquip.slot == EquipmentSlot.RING) {
+				equippedRings.add((Ring)toEquip);
 			}
 			availableEquipmentSlots.put(
-				item.slot,
-				item.slot == EquipmentSlot.RING ? new RingFunction() : new FalseFunction()
+				toEquip.slot,
+				toEquip.slot == EquipmentSlot.RING ? new RingFunction() : new FalseFunction()
 			);
 			refreshCurrentLoad();
 		} else {
-			for (Item eq : equippedItems.keySet()) {
-				if (((Equipable)eq).slot.equals(item.slot)) {
-					unequip((Equipable)eq);
-					break;
+			for (Item equipped : Sets.newHashSet(equippedItems.keySet())) {
+				if (toReplace(toEquip, (Equipable) equipped)) {
+					unequip((Equipable)equipped);
+					if (toEquip.slot == EquipmentSlot.RING) {
+						break;
+					}
 				}
 			}
 			availableEquipmentSlots.put(
-				item.slot,
-				item.slot == EquipmentSlot.RING ? new RingFunction() : new AlwaysTrueFunction()
+				toEquip.slot,
+				toEquip.slot == EquipmentSlot.RING ? new RingFunction() : new AlwaysTrueFunction()
 			);
-			equip(item);
+			equip(toEquip);
 		}
+	}
+
+
+	private boolean toReplace(Equipable toEquip, Equipable equipped) {
+		if (toEquip.twoHand()) {
+			return equipped.slot == EquipmentSlot.MAINHAND || equipped.slot == EquipmentSlot.OFFHAND;
+		}
+
+		return equipped.slot.equals(toEquip.slot);
+	}
+
+
+	private Boolean canEquip(Equipable item) {
+		if (item.twoHand()) {
+			return availableEquipmentSlots.get(EquipmentSlot.MAINHAND).call() && availableEquipmentSlots.get(EquipmentSlot.OFFHAND).call();
+		}
+
+		if (item.slot == EquipmentSlot.MAINHAND || item.slot == EquipmentSlot.OFFHAND) {
+			for (Item equipped : getEquipped().keySet()) {
+				if (((Equipable) equipped).twoHand()) {
+					return false;
+				}
+			}
+		}
+
+		return availableEquipmentSlots.get(item.slot).call();
 	}
 
 
@@ -143,7 +174,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 		if (item instanceof RangedWeapon) {
 			((RangedWeapon) item).setAmmo(null);
 		}
-		
+
 		Equipable toUnequip = null;
 		for (Item equipped : equippedItems.keySet()) {
 			if (equipped.sameAs(item)) {
@@ -276,7 +307,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 		}
 	}
 
-	
+
 	@Override
 	public boolean isEmpty() {
 		return containerImpl.isEmpty();

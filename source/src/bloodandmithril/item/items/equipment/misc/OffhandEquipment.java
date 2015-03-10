@@ -13,20 +13,20 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  * {@link Equipable} that goes in the {@link EquipmentSlot#OFFHAND}
- * 
+ *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
 public abstract class OffhandEquipment extends Equipable {
 	private static final long serialVersionUID = 5112607606681273075L;
-	
+
 	static {
 		if (isClient()) {
 			Torch.torch = new TextureRegion(Domain.individualTexture, 0, 852, 43, 7);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Protected contructor
 	 */
@@ -34,8 +34,8 @@ public abstract class OffhandEquipment extends Equipable {
 		super(mass, volume, true, value, EquipmentSlot.OFFHAND);
 	}
 
-	
-	
+
+
 	@Override
 	public void render(Vector2 position, float angle, boolean flipX) {
 		TextureRegion texture = getTextureRegion();
@@ -60,22 +60,27 @@ public abstract class OffhandEquipment extends Equipable {
 			false
 		);
 	}
-	
-	
+
+
 	/**
 	 * @return the position of the handle, relative to the bottom left corner of the item
 	 */
 	public abstract Vector2 getGripLocation();
 
-	
+
 	@Override
 	public int getRenderingIndex(Individual individual) {
 		return 1;
 	}
-	
+
 
 	@Override
 	public boolean rotates() {
 		return true;
+	}
+
+	@Override
+	public boolean twoHand() {
+		return false;
 	}
 }
