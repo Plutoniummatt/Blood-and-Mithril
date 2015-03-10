@@ -12,7 +12,6 @@ import bloodandmithril.generation.component.interfaces.RectangularInterface;
 import bloodandmithril.generation.component.interfaces.RectangularInterface.RectangularInterfaceCustomization;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
-import bloodandmithril.world.WorldProps;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
@@ -341,10 +340,5 @@ public class Stairs extends Component {
 				this.slopeGradient = stemRight ? -1f/reciprocalGradient : 1f/reciprocalGradient;
 			}
 		}
-	}
-
-
-	@Override
-	protected void addProps(WorldProps props) {
 	}
 }
