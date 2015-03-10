@@ -83,4 +83,10 @@ public class Broadsword extends OneHandedSword<Steel> {
 	@Override
 	public void particleEffects(Vector2 position, float angle, boolean flipX) {
 	}
+
+
+	@Override
+	public boolean twoHand() {
+		return false;
+	}
 }

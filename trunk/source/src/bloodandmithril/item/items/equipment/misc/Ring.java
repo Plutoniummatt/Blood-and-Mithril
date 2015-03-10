@@ -49,4 +49,9 @@ public abstract class Ring extends Equipable implements Craftable {
 	public Category getType() {
 		return Category.RING;
 	}
+
+	@Override
+	public boolean twoHand() {
+		return false;
+	}
 }

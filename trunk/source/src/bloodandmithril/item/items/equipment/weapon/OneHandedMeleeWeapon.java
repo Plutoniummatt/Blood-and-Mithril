@@ -51,4 +51,9 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 
 	/** Whether to stab or slash */
 	public abstract boolean stab();
+
+	@Override
+	public boolean twoHand() {
+		return false;
+	}
 }

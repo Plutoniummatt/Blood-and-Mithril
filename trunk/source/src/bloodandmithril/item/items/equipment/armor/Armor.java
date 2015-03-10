@@ -30,4 +30,9 @@ public abstract class Armor<T extends Material> extends Equipable {
 	public Class<T> getMaterial() {
 		return material;
 	}
+
+	@Override
+	public boolean twoHand() {
+		return false;
+	}
 }
