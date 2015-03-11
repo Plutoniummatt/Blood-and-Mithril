@@ -4,11 +4,19 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import bloodandmithril.character.ai.task.Harvest;
+import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.material.Stick;
+import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.furniture.MedievalWallTorch.NotEmptyTile;
 import bloodandmithril.ui.UserInterface;
@@ -18,60 +26,64 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
- * A cactus
- * 
+ * A dead bush
+ *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class CactusProp extends PlantProp {
+public class DeadDesertBush extends PlantProp implements Harvestable {
 	private static final long serialVersionUID = -7472982320467390007L;
 
 	private final int texture;
+	private int numberOfSticksLeft;
 	
 	private static Map<Integer, TextureRegion> textures;
 	static {
 		if (ClientServerInterface.isClient()) {
 			textures = Maps.newHashMap();
 			
-			textures.put(1, new TextureRegion(Domain.gameWorldTexture, 499, 41, 58, 90));
-			textures.put(2, new TextureRegion(Domain.gameWorldTexture, 559, 5, 64, 126));
-			textures.put(3, new TextureRegion(Domain.gameWorldTexture, 625, 33, 58, 98));
-			textures.put(4, new TextureRegion(Domain.gameWorldTexture, 685, 33, 58, 89));
-			textures.put(5, new TextureRegion(Domain.gameWorldTexture, 745, 5, 64, 126));
-			textures.put(6, new TextureRegion(Domain.gameWorldTexture, 811, 41, 58, 90));
+			textures.put(1, new TextureRegion(Domain.gameWorldTexture, 870, 51, 69, 80));
+			textures.put(2, new TextureRegion(Domain.gameWorldTexture, 940, 78, 54, 53));
+			textures.put(3, new TextureRegion(Domain.gameWorldTexture, 995, 83, 50, 48));
+			textures.put(4, new TextureRegion(Domain.gameWorldTexture, 1046, 68, 42, 63));
 		}
 	}
 	
 	/**
 	 * Constructor
 	 */
-	public CactusProp(float x, float y) {
+	public DeadDesertBush(float x, float y) {
 		super(x, y, 0, 0, Depth.MIDDLEGROUND, new NotEmptyTile());
-		this.texture = Util.getRandom().nextInt(6) + 1;
+		this.texture = Util.getRandom().nextInt(4) + 1;
 
 		switch (texture) {
 		case 1:
-		case 6:
-			this.width = 58;
-			this.height = 90;
+			this.width = 69;
+			this.height = 80;
 			break;
 		case 2:
-		case 5:
-			this.width = 64;
-			this.height = 126;
+			this.width = 54;
+			this.height = 53;
 			break;
 		case 3:
+			this.width = 50;
+			this.height = 48;
+			break;
 		case 4:
-			this.width = 58;
-			this.height = 98;
+			this.width = 42;
+			this.height = 63;
 			break;
 		}
+		
+		numberOfSticksLeft = 10 + Util.getRandom().nextInt(11);
 	}
 
 
@@ -83,6 +95,7 @@ public class CactusProp extends PlantProp {
 
 	@Override
 	public void synchronizeProp(Prop other) {
+		this.numberOfSticksLeft = ((DeadDesertBush) other).numberOfSticksLeft;
 	}
 
 
@@ -95,13 +108,13 @@ public class CactusProp extends PlantProp {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new MessageWindow(
-							"A cactus.",
+							"A rather dead looking bush, a good source of sticks..",
 							Color.ORANGE,
 							BloodAndMithrilClient.WIDTH/2 - 250,
 							BloodAndMithrilClient.HEIGHT/2 + 125,
 							500,
 							250,
-							"Cactus",
+							"Dead bush",
 							true,
 							300,
 							150
@@ -114,6 +127,31 @@ public class CactusProp extends PlantProp {
 				null
 			)
 		);
+		
+		if (Domain.getSelectedIndividuals().size() == 1) {
+			menu.addMenuItem(
+				new MenuItem(
+					"Harvest sticks",
+					() -> {
+						Individual individual = Domain.getSelectedIndividuals().iterator().next();
+						if (ClientServerInterface.isServer()) {
+							try {
+								individual.getAI().setCurrentTask(
+									new Harvest(individual, DeadDesertBush.this)
+								);
+							} catch (NoTileFoundException e) {
+							}
+						} else {
+							ClientServerInterface.SendRequest.sendHarvestRequest(individual.getId().getId(), id);
+						}
+					},
+					Color.WHITE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
+		}
 		
 		return menu;
 	}
@@ -132,11 +170,27 @@ public class CactusProp extends PlantProp {
 
 	@Override
 	public String getContextMenuItemLabel() {
-		return "Cactus";
+		return "Dead bush";
 	}
 
 
 	@Override
 	public void preRender() {
+	}
+
+
+	@Override
+	public Collection<Item> harvest(boolean canReceive) {
+		List<Item> sticks = Lists.newLinkedList();
+		for (int i = numberOfSticksLeft; i > 0; i--) {
+			sticks.add(Stick.stick(StandardWood.class));
+		}
+		return sticks;
+	}
+
+
+	@Override
+	public boolean destroyUponHarvest() {
+		return true;
 	}
 }

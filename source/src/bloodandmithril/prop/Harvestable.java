@@ -14,7 +14,7 @@ import bloodandmithril.item.items.Item;
 public interface Harvestable {
 
 	/** Returns the item that harvesting this {@link Harvestable} provides */
-	public abstract Collection<Item> harvest();
+	public abstract Collection<Item> harvest(boolean canReceive);
 
 	/** True if the prop is destroyed upon being harvested */
 	public abstract boolean destroyUponHarvest();

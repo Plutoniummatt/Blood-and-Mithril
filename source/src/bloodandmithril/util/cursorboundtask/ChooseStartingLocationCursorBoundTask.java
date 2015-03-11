@@ -164,4 +164,10 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	public boolean canCancel() {
 		return false;
 	}
+
+
+	@Override
+	public CursorBoundTask getImmediateTask() {
+		return null;
+	}
 }

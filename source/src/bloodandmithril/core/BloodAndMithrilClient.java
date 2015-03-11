@@ -527,17 +527,16 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			if (getCursorBoundTask() != null) {
 				if (getCursorBoundTask().executionConditionMet()) {
 					if (getCursorBoundTask().isWorldCoordinate()) {
-						getCursorBoundTask().execute(
+						setCursorBoundTask(getCursorBoundTask().execute(
 							(int) getMouseWorldX(),
 							(int) getMouseWorldY()
-						);
+						));
 					} else {
-						getCursorBoundTask().execute(
+						setCursorBoundTask(getCursorBoundTask().execute(
 							getMouseScreenX(),
 							getMouseScreenY()
-						);
+						));
 					}
-					setCursorBoundTask(null);
 				}
 				return;
 			}

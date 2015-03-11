@@ -130,7 +130,7 @@ public class CarrotProp extends PlantProp implements Harvestable {
 
 
 	@Override
-	public Collection<Item> harvest() {
+	public Collection<Item> harvest(boolean canReceive) {
 		List<Item> items = Lists.newArrayList();
 		items.add(new bloodandmithril.item.items.food.plant.Carrot());
 		items.add(new CarrotSeed());

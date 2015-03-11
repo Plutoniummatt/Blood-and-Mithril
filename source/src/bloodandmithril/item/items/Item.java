@@ -20,6 +20,7 @@ import bloodandmithril.item.affix.PostAffix;
 import bloodandmithril.item.affix.PreAffix;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.material.Bricks;
+import bloodandmithril.item.items.material.Stick;
 import bloodandmithril.item.items.mineral.earth.Dirt;
 import bloodandmithril.item.material.metal.Copper;
 import bloodandmithril.item.material.metal.Gold;
@@ -221,7 +222,7 @@ public abstract class Item implements Serializable, Affixed {
 
 	/** Whether to call standard {@link #update(float)} or {@link #updateRigid(float)} */
 	public boolean rotates() {
-		return false;
+		return true;
 	}
 
 	public void setAngularVelocity(float angVel) {
@@ -230,7 +231,7 @@ public abstract class Item implements Serializable, Affixed {
 
 	/** Returns the vector from the bottom left of the texture region to the centre of rotation (location of item) */
 	protected Vector2 getRenderCentreOffset() {
-		return new Vector2(getTextureRegion().getRegionWidth() / 2, 0f);
+		return new Vector2(getTextureRegion().getRegionWidth() / 2, rotates() ? getTextureRegion().getRegionHeight() / 2 : 0f);
 	}
 
 	/** Renders this item in world */
@@ -290,6 +291,8 @@ public abstract class Item implements Serializable, Affixed {
 
 		Bricks.BRICKS = new TextureRegion(Domain.gameWorldTexture, 392, 253, 25, 11);
 		Dirt.DIRT_PILE = new TextureRegion(Domain.gameWorldTexture, 392, 265, 20, 11);
+		
+		Stick.STICK = new TextureRegion(Domain.gameWorldTexture, 827, 132, 11, 23);
 	}
 
 
@@ -329,11 +332,11 @@ public abstract class Item implements Serializable, Affixed {
 		position.add(velocity.cpy().scl(delta));
 
 		float gravity = Domain.getWorld(getWorldId()).getGravity();
-		if (abs((velocity.y - gravity * delta) * delta) < TILE_SIZE/2) {
-			velocity.y = velocity.y - delta * gravity;
-		} else {
-			velocity.y = velocity.y * 0.8f;
+		if (velocity.cpy().scl(delta).len() > TILE_SIZE) {
+			velocity.scl(0.9f);
 		}
+		
+		velocity.y = velocity.y - delta * gravity;
 
 		Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
 		if (rotates() && tileUnder.isPassable()) {

@@ -17,6 +17,8 @@ public class Stick extends bloodandmithril.item.items.material.Material implemen
 	private static final long serialVersionUID = 2206871386989760859L;
 
 	private Class<? extends Wood> wood;
+	
+	public static TextureRegion STICK;
 
 	/**
 	 * Constructor
@@ -65,8 +67,7 @@ public class Stick extends bloodandmithril.item.items.material.Material implemen
 
 	@Override
 	public TextureRegion getTextureRegion() {
-		// TODO
-		return null;
+		return STICK;
 	}
 
 

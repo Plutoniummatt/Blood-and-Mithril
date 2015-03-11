@@ -108,4 +108,10 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 	public boolean canCancel() {
 		return true;
 	}
+
+
+	@Override
+	public CursorBoundTask getImmediateTask() {
+		return null;
+	}
 }

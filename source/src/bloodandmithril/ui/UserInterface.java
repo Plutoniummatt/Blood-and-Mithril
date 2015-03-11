@@ -920,7 +920,7 @@ public class UserInterface {
 	/**
 	 * Renders the jump arrow, coordniates are world coordinates
 	 */
-	private static void renderArrow(Vector2 start, Vector2 finish, Color color, float lineWidth, float arrowSize, float maxLength) {
+	public static void renderArrow(Vector2 start, Vector2 finish, Color color, float lineWidth, float arrowSize, float maxLength) {
 		Vector2 difference = finish.cpy().sub(start);
 		Vector2 arrowHead = start.cpy().add(
 			difference.cpy().nor().scl(Math.min(difference.len(), maxLength))

@@ -21,6 +21,7 @@ import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.generation.tools.SawToothGenerator;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.plant.CactusProp;
+import bloodandmithril.prop.plant.DeadDesertBush;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -272,6 +273,14 @@ public class Desert extends SuperStructure {
 						)
 					);
 				}
+				if (Util.roll(0.04f)) {
+					Structures.get(getStructureKey()).addProp(
+						new DeadDesertBush(
+							Topography.convertToWorldCoord(x, false),
+							Topography.convertToWorldCoord(y, false) + 16
+						)
+					);
+				}
 			}
 		} else {
 			for (int x = rightMostTile; x >= leftMostTile; x--) {
@@ -286,6 +295,14 @@ public class Desert extends SuperStructure {
 						new CactusProp(
 							Topography.convertToWorldCoord(x, false),
 							Topography.convertToWorldCoord(y, false)
+						)
+					);
+				}
+				if (Util.roll(0.04f)) {
+					Structures.get(getStructureKey()).addProp(
+						new DeadDesertBush(
+							Topography.convertToWorldCoord(x, false),
+							Topography.convertToWorldCoord(y, false) + 16
 						)
 					);
 				}

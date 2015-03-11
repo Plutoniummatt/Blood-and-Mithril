@@ -256,6 +256,7 @@ import bloodandmithril.prop.furniture.MedievalWallTorch.NotEmptyTile;
 import bloodandmithril.prop.furniture.SmallWoodenCrate;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.CactusProp;
+import bloodandmithril.prop.plant.DeadDesertBush;
 import bloodandmithril.prop.plant.PlantProp;
 import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.ui.UserInterface.FloatingText;
@@ -267,6 +268,7 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.ConcurrentDualKeySkipListMap;
@@ -474,6 +476,7 @@ public class ClientServerInterface {
 
 		kryo.register(RequestSpawnIndividual.class);
 
+		kryo.register(DeadDesertBush.class);
 		kryo.register(CactusProp.class);
 		kryo.register(SerializableDoubleWrapper.class);
 		kryo.register(Sniffer.class);
@@ -1215,8 +1218,13 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyGiveItem(int individualId, Item item) {
-			Domain.getIndividual(individualId).giveItem(item);
+		public static synchronized void notifyGiveItem(int individualId, Item item, Vector2 positionIfCantReceive) {
+			Individual individual = Domain.getIndividual(individualId);
+			if (individual.canReceive(item)) {
+				individual.giveItem(item);
+			} else {
+				Domain.getWorld(individual.getWorldId()).items().addItem(item, positionIfCantReceive, new Vector2(40f, 0).rotate(Util.getRandom().nextFloat() * 360f));
+			}
 			sendNotification(
 				-1,
 				true,
