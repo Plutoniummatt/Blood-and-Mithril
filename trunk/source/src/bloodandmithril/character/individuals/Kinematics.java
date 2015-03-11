@@ -17,6 +17,7 @@ import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -105,6 +106,9 @@ public interface Kinematics {
 			if (canStepUp(0, topography, state, individual.getHeight(), ai, kinematicsBean)) {
 				if (!kinematicsBean.steppingUp) {
 					kinematicsBean.steppingUp = true;
+					if (ClientServerInterface.isServer()) {
+						individual.decreaseStamina(0.02f);
+					}
 					kinematicsBean.steps = 0;
 				}
 			} else if (!kinematicsBean.steppingUp) {

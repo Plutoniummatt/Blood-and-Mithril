@@ -1,5 +1,8 @@
 package bloodandmithril.character.ai.perception;
 
+import static java.lang.Math.acos;
+import static java.lang.Math.toDegrees;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -72,7 +75,8 @@ public interface Observer {
 		if (!visible.isVisible()) {
 			return false;
 		}
-
+		
+		Vector2 viewingDirection = getObservationDirection().cpy().nor();
 		Vector2 eyes = getObservationPosition();
 		float viewDistance = getViewDistance();
 
@@ -81,11 +85,17 @@ public interface Observer {
 			if (dist > viewDistance) {
 				continue;
 			}
+			
+			Vector2 targetDirection = visibilityCheckLocation.cpy().sub(eyes).nor();
+			float angle = (float) toDegrees(acos(viewingDirection.dot(targetDirection)));
+			if (angle > getFieldOfView() / 2f) {
+				continue;
+			}
 
 			boolean canSee = RayTracingVisibilityChecker.check(
 				world.getTopography(),
 				eyes,
-				visibilityCheckLocation.cpy().sub(eyes).nor(),
+				targetDirection,
 				dist
 			);
 
@@ -111,7 +121,7 @@ public interface Observer {
 	/**
 	 * @return the FOV, in degrees
 	 */
-	public Vector2 getFieldOfView();
+	public float getFieldOfView();
 
 	/**
 	 * Implementation specific reaction method

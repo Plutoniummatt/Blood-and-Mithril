@@ -512,13 +512,13 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 	@Override
 	public Vector2 getObservationDirection() {
-		return null;
+		return getCurrentAction().left() ? new Vector2(-1f, 0f) : new Vector2(1f, 0f);
 	}
 
 
 	@Override
-	public Vector2 getFieldOfView() {
-		return null;
+	public float getFieldOfView() {
+		return 150f;
 	}
 
 

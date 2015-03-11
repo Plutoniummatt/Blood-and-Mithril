@@ -147,6 +147,10 @@ public final class EquipperImpl implements Equipper, Serializable {
 		if (toEquip.twoHand()) {
 			return equipped.slot == EquipmentSlot.MAINHAND || equipped.slot == EquipmentSlot.OFFHAND;
 		}
+		
+		if (equipped.twoHand()) {
+			return toEquip.slot == EquipmentSlot.MAINHAND || toEquip.slot == EquipmentSlot.OFFHAND;
+		}
 
 		return equipped.slot.equals(toEquip.slot);
 	}
