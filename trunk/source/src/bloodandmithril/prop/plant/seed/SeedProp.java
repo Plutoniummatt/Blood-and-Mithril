@@ -48,7 +48,7 @@ public abstract class SeedProp extends Growable implements Harvestable {
 
 
 	@Override
-	public Collection<Item> harvest() {
+	public Collection<Item> harvest(boolean canReceive) {
 		return Lists.newArrayList(seedToRepresent.copy());
 	}
 

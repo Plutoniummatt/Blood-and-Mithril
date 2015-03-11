@@ -54,6 +54,7 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.cursorboundtask.PlaceCursorBoundTask;
 import bloodandmithril.util.cursorboundtask.PlantSeedCursorBoundTask;
+import bloodandmithril.util.cursorboundtask.ThrowItemCursorBoundTask;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
@@ -528,6 +529,19 @@ public class InventoryWindow extends Window implements Refreshable {
 						ContainerImpl.discard((Individual)host, item, 1);
 						UserInterface.refreshRefreshableWindows();
 					}
+				},
+				Colors.UI_GRAY,
+				Color.GREEN,
+				Color.WHITE,
+				null
+			));
+		}
+
+		if (host instanceof Individual) {
+			toReturn.addMenuItem(new MenuItem(
+				"Throw",
+				() -> {
+					BloodAndMithrilClient.setCursorBoundTask(new ThrowItemCursorBoundTask(item, (Individual) host));
 				},
 				Colors.UI_GRAY,
 				Color.GREEN,

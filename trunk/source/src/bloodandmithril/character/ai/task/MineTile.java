@@ -187,7 +187,7 @@ public class MineTile extends CompositeAITask {
 								ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, host.getWorldId());
 
 								if (host.canReceive(mined)) {
-									ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine());
+									ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine(), tileCoordinate.cpy());
 								} else {
 									Domain.getWorld(host.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
 									ClientServerInterface.SendNotification.notifySyncItems(host.getWorldId());

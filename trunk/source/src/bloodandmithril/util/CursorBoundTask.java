@@ -34,9 +34,16 @@ public abstract class CursorBoundTask {
 	 * @param x - the x coordinate of the mouse, could either be world or screen coords.
 	 * @param y - the y coordinate of the mouse, could either be world or screen coords.
 	 */
-	public void execute(int x, int y) {
+	public CursorBoundTask execute(int x, int y) {
 		task.execute(x, y);
+		return getImmediateTask();
 	}
+	
+	
+	/**
+	 * Gets the {@link CursorBoundTask} to be executed after this one
+	 */
+	public abstract CursorBoundTask getImmediateTask();
 
 
 	/**

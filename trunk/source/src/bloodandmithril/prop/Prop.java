@@ -173,6 +173,8 @@ public abstract class Prop implements Serializable, Visible {
 			for (Integer propId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, position.x, position.y)) {
 				Prop prop = Domain.getActiveWorld().props().getProp(propId);
 				if (Domain.getActiveWorld().props().hasProp(propId)) {
+					this.position.x = position.x;
+					this.position.y = position.y;
 					if (this.overlapsWith(prop)) {
 						return false;
 					}
