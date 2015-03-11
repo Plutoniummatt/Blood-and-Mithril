@@ -1,3 +1,11 @@
+Release 0.0.3
+---------------
+* Add art for sticks when discarded
+* Add generation of dead bushes to desert, sticks can be harvested from dead bushes
+* When harvesting something with insufficient inventory space, the harvested item will be discarded
+* Items can now be thrown in a specified direction via the inventory window, hold LEFT SHIFT for continuous throwing
+* Heavier items can not be thrown as far as lighter ones
+
 Release 0.0.2
 ---------------
 * NPCs AI now have field of view in the direction they're facing, 150degrees for elves, 120 degrees for rabbits.
