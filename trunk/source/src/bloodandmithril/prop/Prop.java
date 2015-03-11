@@ -23,6 +23,7 @@ import bloodandmithril.prop.plant.CarrotProp;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
+import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -180,7 +181,7 @@ public abstract class Prop implements Serializable, Visible {
 					}
 				}
 			}
-			
+
 			return true;
 		});
 	}
@@ -246,22 +247,27 @@ public abstract class Prop implements Serializable, Visible {
 	}
 
 	public abstract void preRender();
-	
+
 
 	@Override
 	public Collection<Vector2> getVisibleLocations() {
 		return Lists.newArrayList(
-			position.cpy(), 
+			position.cpy(),
 			position.cpy().add(-width/2, 0),
 			position.cpy().add(width/2, 0),
 			position.cpy().add(-width/2, height),
 			position.cpy().add(width/2, height)
 		);
 	}
-	
-	
+
+
 	@Override
 	public boolean isVisible() {
 		return true;
+	}
+
+
+	public Box getBoundingBox() {
+		return new Box(position.cpy().add(0f, height/2f), width, height);
 	}
 }

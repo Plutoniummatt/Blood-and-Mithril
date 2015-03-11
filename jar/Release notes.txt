@@ -1,3 +1,8 @@
+Release 0.0.4
+---------------
+* Fixed bug where bushes were not able to be harvested under certain circumstances
+* Fixed issue where item throwing power was not easy to control
+
 Release 0.0.3
 ---------------
 * Add art for sticks when discarded

@@ -39,6 +39,7 @@ import bloodandmithril.ui.components.window.ItemInfoWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
@@ -291,7 +292,7 @@ public abstract class Item implements Serializable, Affixed {
 
 		Bricks.BRICKS = new TextureRegion(Domain.gameWorldTexture, 392, 253, 25, 11);
 		Dirt.DIRT_PILE = new TextureRegion(Domain.gameWorldTexture, 392, 265, 20, 11);
-		
+
 		Stick.STICK = new TextureRegion(Domain.gameWorldTexture, 827, 132, 11, 23);
 	}
 
@@ -306,8 +307,8 @@ public abstract class Item implements Serializable, Affixed {
 			350
 		);
 	}
-	
-	
+
+
 	/**
 	 * Processes particle effects
 	 */
@@ -325,7 +326,7 @@ public abstract class Item implements Serializable, Affixed {
 		if (!Domain.getWorld(getWorldId()).getTopography().getChunkMap().doesChunkExist(position)) {
 			return;
 		}
-		
+
 		Vector2 previousPosition = position.cpy();
 		Vector2 previousVelocity = velocity.cpy();
 
@@ -335,7 +336,7 @@ public abstract class Item implements Serializable, Affixed {
 		if (velocity.cpy().scl(delta).len() > TILE_SIZE) {
 			velocity.scl(0.9f);
 		}
-		
+
 		velocity.y = velocity.y - delta * gravity;
 
 		Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
@@ -578,5 +579,10 @@ public abstract class Item implements Serializable, Affixed {
 		public String getValue() {
 			return value;
 		}
+	}
+
+
+	public Box getPickupBox() {
+		return new Box(position.cpy(), 75f, 75f);
 	}
 }

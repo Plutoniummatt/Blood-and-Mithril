@@ -49,7 +49,7 @@ public class Harvest extends CompositeAITask {
 	public Harvest(Individual host, Harvestable harvestable) throws NoTileFoundException {
 		super(
 			host.getId(),
-			"Mining",
+			"Harvesting",
 			goTo(
 				host,
 				host.getState().position.cpy(),
@@ -106,7 +106,7 @@ public class Harvest extends CompositeAITask {
 
 			Individual host = Domain.getIndividual(hostId.getId());
 
-			if (host.getInteractionBox().isWithinBox(harvestable.position)) {
+			if (host.getInteractionBox().overlapsWith(harvestable.getBoundingBox())) {
 				if (Domain.getWorld(host.getWorldId()).props().hasProp(harvestable.id)) {
 					if (((Harvestable)harvestable).destroyUponHarvest()) {
 						Domain.getWorld(host.getWorldId()).props().removeProp(harvestable.id);

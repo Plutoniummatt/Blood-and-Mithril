@@ -33,37 +33,41 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 				if (ClientServerInterface.isServer()) {
 					if (individual.takeItem(item) == 1) {
 						UserInterface.refreshRefreshableWindows();
-						Domain.getWorld(individual.getWorldId()).items().addItem(item.copy(), individual.getEmissionPosition(), getMouseWorldCoords().sub(individual.getEmissionPosition()).clamp(0f, 300f).scl(5f/item.getMass()).clamp(0f, 1000f));
+						Domain.getWorld(individual.getWorldId()).items().addItem(
+							item.copy(),
+							individual.getEmissionPosition(),
+							getMouseWorldCoords().sub(individual.getEmissionPosition()).clamp(0f, 300f).scl(Math.min(3f, 3f / item.getMass()))
+						);
 					}
 				} else {
 					// TODO CSI
 				}
-			}, 
+			},
 			true
 		);
 		this.item = item;
 		this.individual = individual;
 	}
-	
+
 
 	@Override
 	public void renderUIGuide() {
 		UserInterface.renderArrow(individual.getEmissionPosition(), getMouseWorldCoords(), new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 300f);
 	}
-	
+
 
 	@Override
 	public boolean executionConditionMet() {
 		return true;
 	}
 
-	
+
 	@Override
 	public String getShortDescription() {
 		return "Throw";
 	}
 
-	
+
 	@Override
 	public boolean canCancel() {
 		return true;
