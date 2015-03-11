@@ -38,7 +38,6 @@ import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.SightStimulus;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
-import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -554,13 +553,6 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		if (stimulus instanceof SuspiciousSound) {
 			SuspicionLevel suspicionLevel = ((SuspiciousSound) stimulus).getSuspicionLevel();
 			if (suspicionLevel.severity >= SuspicionLevel.INVESTIGATE.severity) {
-				if (getState().position.x > stimulus.getEmissionPosition().x) {
-					setCurrentAction(Action.STAND_LEFT);
-				} else {
-					setCurrentAction(Action.STAND_RIGHT);
-				}
-				getAI().setCurrentTask(new Wait(this, 3f));
-
 				String speech = Util.randomOneOf("What was that sound?", "Hmm?", "You hear that?", "Huh?", "What?", "I hear something...");
 
 				speak(speech, 1500);

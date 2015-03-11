@@ -250,7 +250,13 @@ public abstract class Prop implements Serializable, Visible {
 
 	@Override
 	public Collection<Vector2> getVisibleLocations() {
-		return Lists.newArrayList(position.cpy());
+		return Lists.newArrayList(
+			position.cpy(), 
+			position.cpy().add(-width/2, 0),
+			position.cpy().add(width/2, 0),
+			position.cpy().add(-width/2, height),
+			position.cpy().add(width/2, height)
+		);
 	}
 	
 	
