@@ -9,7 +9,6 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain.Depth;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -90,8 +89,10 @@ public class Torch extends OffhandEquipment {
 	public void particleEffects(Vector2 position, float angle, boolean flipX) {
 		Vector2 emission = position.cpy().add(new Vector2(flipX ? - 27 : 27, 0).rotate(angle));
 		
-		ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Color.WHITE, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 12f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGOUND, false, Color.RED);
-		ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Color.WHITE, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 4f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND, false, Color.RED);
+		float size1 = Util.getRandom().nextFloat();
+		float size2 = Util.getRandom().nextFloat();
+		ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size1 * 3f, size1 * 8f + 10f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGOUND, false, Colors.FIRE_END);
+		ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size2 * 3f, size2 * 2f + 6f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 		ParticleService.randomVelocityDiminishing(emission, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.FOREGOUND, false, null);
 	}
 }

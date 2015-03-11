@@ -284,13 +284,13 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	public Vector2 getObservationDirection() {
-		return null;
+		return getCurrentAction().left() ? new Vector2(-1f, 0f) : new Vector2(1f, 0f);
 	}
 
 
 	@Override
-	public Vector2 getFieldOfView() {
-		return null;
+	public float getFieldOfView() {
+		return 120f;
 	}
 
 
