@@ -1,3 +1,11 @@
+Release 0.0.2
+---------------
+* NPCs AI now have field of view in the direction they're facing, 150degrees for elves, 120 degrees for rabbits.
+* Improve color of fire
+* Individuals now have their stamina drained by 2% when they step up a tile
+* Fixed a bug where the game would crash when attempting to equip a torch with a bow equipped
+* Increased lighting radius of medieval wall torch
+
 Release 0.0.1
 ---------------
 * Equipping two handed items now unequips mainhand and offhand. (Test with bow/broadsword/torch)
