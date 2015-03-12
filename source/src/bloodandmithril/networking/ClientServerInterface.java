@@ -253,6 +253,7 @@ import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.Furniture;
 import bloodandmithril.prop.furniture.Furniture.NonPassableTilesOnly;
 import bloodandmithril.prop.furniture.MedievalWallTorch.NotEmptyTile;
+import bloodandmithril.prop.furniture.RottenWoodenChest;
 import bloodandmithril.prop.furniture.SmallWoodenCrate;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.CactusProp;
@@ -476,6 +477,7 @@ public class ClientServerInterface {
 
 		kryo.register(RequestSpawnIndividual.class);
 
+		kryo.register(RottenWoodenChest.class);
 		kryo.register(DeadDesertBush.class);
 		kryo.register(CactusProp.class);
 		kryo.register(SerializableDoubleWrapper.class);

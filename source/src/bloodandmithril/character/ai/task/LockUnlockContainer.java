@@ -88,7 +88,8 @@ public class LockUnlockContainer extends CompositeAITask {
 
 		@Override
 		public void execute(float delta) {
-			Domain.getIndividual(hostId.getId()).getInventory().keySet().stream().forEach(item -> {
+			Individual individual = Domain.getIndividual(hostId.getId());
+			individual.getInventory().keySet().stream().forEach(item -> {
 				if (lock) {
 					if (container.lock(item)) {
 						return;
@@ -99,6 +100,19 @@ public class LockUnlockContainer extends CompositeAITask {
 					}
 				}
 			});
+			
+			if (individual.getInventory().isEmpty()) {
+				if (lock) {
+					if (container.lock(null)) {
+						return;
+					}
+				} else {
+					if (container.unlock(null)) {
+						return;
+					}
+				}
+			}
+			
 			complete = true;
 		}
 	}
