@@ -65,6 +65,7 @@ import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.MedievalWallTorch;
+import bloodandmithril.prop.furniture.RottenWoodenChest;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.tree.Tree;
 import bloodandmithril.ui.UserInterface;
@@ -377,7 +378,7 @@ public class DevWindow extends Window {
 						null
 					),
 					new ContextMenu.MenuItem(
-						"Pine Chest",
+						"Wooden Chest",
 						() -> {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
@@ -397,6 +398,26 @@ public class DevWindow extends Window {
 								);
 
 								Domain.getWorld(individual.getWorldId()).props().addProp(pineChest);
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					),
+					new ContextMenu.MenuItem(
+						"Rotten Chest",
+						() -> {
+							Individual individual = Domain.getIndividuals().get(1);
+							if (individual != null) {
+								WoodenChest rottenChest = new RottenWoodenChest(
+									individual.getState().position.x,
+									individual.getState().position.y,
+									100f,
+									200
+								);
+
+								Domain.getWorld(individual.getWorldId()).props().addProp(rottenChest);
 							}
 						},
 						Color.GREEN,

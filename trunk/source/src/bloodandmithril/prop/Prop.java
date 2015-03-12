@@ -17,6 +17,7 @@ import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.MedievalWallTorch;
+import bloodandmithril.prop.furniture.RottenWoodenChest;
 import bloodandmithril.prop.furniture.SmallWoodenCrate;
 import bloodandmithril.prop.furniture.WoodenChest;
 import bloodandmithril.prop.plant.CarrotProp;
@@ -112,7 +113,8 @@ public abstract class Prop implements Serializable, Visible {
 		Campfire.CAMPFIRE = new TextureRegion(Domain.gameWorldTexture, 554, 176, 64, 32);
 		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 453, 176, 95, 56);
 		Furnace.FURNACE = new TextureRegion(Domain.gameWorldTexture, 453, 233, 95, 56);
-		WoodenChest.woodenChest = new TextureRegion(Domain.gameWorldTexture, 408, 206, 44, 35);
+		WoodenChest.woodenChest = new TextureRegion(Domain.gameWorldTexture, 396, 144, 56, 31);
+		RottenWoodenChest.rottenWoodenChest = new TextureRegion(Domain.gameWorldTexture, 396, 112, 56, 31);
 		SmallWoodenCrate.woodenCrate = new TextureRegion(Domain.gameWorldTexture, 453, 140, 44, 35);
 		CarrotProp.carrot = new TextureRegion(Domain.gameWorldTexture, 352, 173, 12, 20);
 		BlacksmithWorkshop.blackSmithWorkshopWorking = new TextureRegion(Domain.gameWorldTexture, 591, 132, 117, 43);

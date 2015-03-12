@@ -1,3 +1,8 @@
+Release 0.0.5
+---------------
+* Add wooden chest and rotten chest
+* Fixed bug where locking/unlocking a container was not possible with an empty inventory
+
 Release 0.0.4
 ---------------
 * Fixed bug where bushes were not able to be harvested under certain circumstances
