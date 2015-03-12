@@ -94,7 +94,7 @@ public class BottomBar extends Component {
 
 	/** Called when the factions button is clicked */
 	private void factionsClicked() {
-		for (Component component : newArrayList(UserInterface.layeredComponents)) {
+		for (Component component : newArrayList(UserInterface.getLayeredComponents())) {
 			if (component instanceof FactionsWindow) {
 				((FactionsWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((FactionsWindow) component).width/2;
 				((FactionsWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((FactionsWindow) component).height/2;
@@ -140,7 +140,7 @@ public class BottomBar extends Component {
 			new MenuItem(
 				"Chat",
 				() -> {
-					for (Component component : newArrayList(UserInterface.layeredComponents)) {
+					for (Component component : newArrayList(UserInterface.getLayeredComponents())) {
 						if (component instanceof ChatWindow) {
 							((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
 							((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
@@ -181,7 +181,7 @@ public class BottomBar extends Component {
 		copy.clear();
 		int size = 0;
 		ArrayList<MenuItem> items = new ArrayList<>();
-		for (final Component component : UserInterface.layeredComponents) {
+		for (final Component component : UserInterface.getLayeredComponents()) {
 			if (component instanceof Window) {
 				if (((Window) component).minimized) {
 					size++;

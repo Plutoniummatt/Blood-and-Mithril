@@ -59,7 +59,7 @@ public class ChangeFactionControlPassword implements Request {
 	public static class RefreshFactionWindow implements Response {
 		@Override
 		public void acknowledge() {
-			for (Component component : UserInterface.layeredComponents) {
+			for (Component component : UserInterface.getLayeredComponents()) {
 				if (component instanceof FactionsWindow) {
 					((FactionsWindow) component).refreshWindow();
 				}

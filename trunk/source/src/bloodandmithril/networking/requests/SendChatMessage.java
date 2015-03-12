@@ -66,7 +66,7 @@ public class SendChatMessage implements Request {
 		public void acknowledge() {
 			ChatWindow.addMessage(message);
 
-			if (!tryFind(UserInterface.layeredComponents, component -> {
+			if (!tryFind(UserInterface.getLayeredComponents(), component -> {
 				return component instanceof ChatWindow;
 			}).isPresent()) {
 				FloatingText floatingText = floatingText("New message!", Color.ORANGE, new Vector2(83, 50), true);

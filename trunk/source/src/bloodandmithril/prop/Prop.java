@@ -110,9 +110,10 @@ public abstract class Prop implements Serializable, Visible {
 	public abstract String getContextMenuItemLabel();
 
 	public static void setup() {
+		Furnace.FURNACE = new TextureRegion(Domain.gameWorldTexture, 1, 286, 95, 56);
+		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 1, 343, 95, 56);
+		
 		Campfire.CAMPFIRE = new TextureRegion(Domain.gameWorldTexture, 554, 176, 64, 32);
-		Furnace.FURNACE_BURNING = new TextureRegion(Domain.gameWorldTexture, 453, 176, 95, 56);
-		Furnace.FURNACE = new TextureRegion(Domain.gameWorldTexture, 453, 233, 95, 56);
 		WoodenChest.woodenChest = new TextureRegion(Domain.gameWorldTexture, 396, 144, 56, 31);
 		RottenWoodenChest.rottenWoodenChest = new TextureRegion(Domain.gameWorldTexture, 396, 112, 56, 31);
 		SmallWoodenCrate.woodenCrate = new TextureRegion(Domain.gameWorldTexture, 453, 140, 44, 35);

@@ -481,7 +481,6 @@ public class TradeWindow extends Window implements Refreshable {
 
 	@Override
 	protected void internalWindowRender() {
-
 		if (proposer instanceof Individual) {
 			if (proposee instanceof Individual) {
 				if (((Individual) proposee).getState().position.cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {

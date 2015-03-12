@@ -1,3 +1,8 @@
+Release 0.0.6
+---------------
+* Building a furnace now renders building stages
+* Fix long standing bug when trade windows sometimes doesn't open
+
 Release 0.0.5
 ---------------
 * Add wooden chest and rotten chest

@@ -138,7 +138,7 @@ public class UserInterface {
 	public static List<ContextMenu> contextMenus = new ArrayList<ContextMenu>();
 
 	/** {@link Window}s */
-	public static ArrayDeque<Component> layeredComponents = new ArrayDeque<Component>();
+	private static ArrayDeque<Component> layeredComponents = new ArrayDeque<Component>();
 
 	/** {@link TextBubble}s */
 	public static ArrayDeque<TextBubble> textBubbles = new ArrayDeque<TextBubble>();
@@ -201,6 +201,14 @@ public class UserInterface {
 	public static synchronized void setup() {
 		loadBars();
 		loadButtons();
+	}
+	
+	
+	/**
+	 * @return all components
+	 */
+	public synchronized static Deque<Component> getLayeredComponents() {
+		return new ArrayDeque<Component>(layeredComponents);
 	}
 
 
@@ -1464,7 +1472,7 @@ public class UserInterface {
 
 
 	/** Adds a {@link Component} to {@link #layeredComponents} */
-	public static void addLayeredComponent(Component toAdd) {
+	public synchronized static void addLayeredComponent(Component toAdd) {
 		for (Component component : layeredComponents) {
 			if (component instanceof Window) {
 				((Window)component).setActive(false);
@@ -1475,7 +1483,7 @@ public class UserInterface {
 
 
 	/** Adds a {@link Component} to {@link #layeredComponents}, checking if an existing one with the same title exists */
-	public static void addLayeredComponentUnique(Window toAdd) {
+	public synchronized static void addLayeredComponentUnique(Window toAdd) {
 		Window existing = null;
 
 		for (Component window : layeredComponents) {
