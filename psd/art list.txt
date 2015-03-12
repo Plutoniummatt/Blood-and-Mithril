@@ -9,7 +9,7 @@ Glass bottle
 Mushroom (Death cap)
 Chicken leg
 Bricks (more than one per stack)
-Stages of Furnace
+
 3 more variations on carrots
 
 
@@ -21,4 +21,5 @@ xxxx Iron ore (Hematite)
 xxxx Pile of dirt
 xxxx Piece of coal
 xxxx Piece of Sandstone
-Wooden longbow
+xxxx Wooden longbow
+xxxx Stages of Furnace
