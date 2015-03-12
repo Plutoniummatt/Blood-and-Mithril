@@ -6,9 +6,9 @@ import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT_COMBAT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT_COMBAT_ONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBATONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
 import static bloodandmithril.util.ComparisonUtil.obj;
@@ -97,10 +97,10 @@ public abstract class GroundTravellingIndividual extends Individual {
 
 		// Otherwise we're standing still, set current to standing left/right depending on which direction we were facing before.
 		} else {
-			if (obj(getCurrentAction()).oneOf(WALK_RIGHT, RUN_RIGHT, STAND_RIGHT, STAND_RIGHT_COMBAT)) {
-				setCurrentAction(inCombatStance() ? STAND_RIGHT_COMBAT : STAND_RIGHT);
+			if (obj(getCurrentAction()).oneOf(WALK_RIGHT, RUN_RIGHT, STAND_RIGHT, STAND_RIGHT_COMBATONE_HANDED)) {
+				setCurrentAction(inCombatStance() ? STAND_RIGHT_COMBATONE_HANDED : STAND_RIGHT);
 			} else {
-				setCurrentAction(inCombatStance() ? STAND_LEFT_COMBAT : STAND_LEFT);
+				setCurrentAction(inCombatStance() ? STAND_LEFT_COMBAT_ONE_HANDED : STAND_LEFT);
 			}
 		}
 	}
@@ -164,9 +164,9 @@ public abstract class GroundTravellingIndividual extends Individual {
 				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).a.getAnimationDuration()) {
 					setAnimationTimer(0f);
 					if (getCurrentAction().left()) {
-						setCurrentAction(STAND_LEFT_COMBAT);
+						setCurrentAction(STAND_LEFT_COMBAT_ONE_HANDED);
 					} else {
-						setCurrentAction(STAND_RIGHT_COMBAT);
+						setCurrentAction(STAND_RIGHT_COMBATONE_HANDED);
 					}
 				}
 

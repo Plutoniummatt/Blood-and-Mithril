@@ -13,9 +13,9 @@ import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT_COMBAT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT_COMBAT_ONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBATONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
@@ -211,12 +211,12 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		);
 
 		animationMap.put(
-			STAND_RIGHT_COMBAT,
+			STAND_RIGHT_COMBATONE_HANDED,
 			standSequenceCombat
 		);
 
 		animationMap.put(
-			STAND_LEFT_COMBAT,
+			STAND_LEFT_COMBAT_ONE_HANDED,
 			standSequenceCombat
 		);
 
