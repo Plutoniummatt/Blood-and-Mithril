@@ -1,5 +1,6 @@
 package bloodandmithril.util.cursorboundtask;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
@@ -13,7 +14,6 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.PropItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.world.Domain;
@@ -50,7 +50,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 							coords = new Vector2(getMouseWorldX(), getMouseWorldY());
 						}
 
-						if (Gdx.input.isKeyPressed(KeyMappings.snapToGrid)) {
+						if (Gdx.input.isKeyPressed(getKeyMappings().snapToGrid.keyCode)) {
 							coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 							coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 						}
@@ -97,7 +97,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 				} else {
 					coords = new Vector2(getMouseWorldX(), getMouseWorldY());
 				}
-				if (Gdx.input.isKeyPressed(KeyMappings.snapToGrid)) {
+				if (Gdx.input.isKeyPressed(getKeyMappings().snapToGrid.keyCode)) {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}
@@ -137,7 +137,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 					Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
 				);
 
-				if (Gdx.input.isKeyPressed(KeyMappings.snapToGrid)) {
+				if (Gdx.input.isKeyPressed(getKeyMappings().snapToGrid.keyCode)) {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}

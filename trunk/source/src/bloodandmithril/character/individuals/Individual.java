@@ -16,6 +16,7 @@ import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
@@ -70,7 +71,6 @@ import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.prop.construction.Construction;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -727,7 +727,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 		}
 
-		if (isMouseOver() && Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
+		if (isMouseOver() && Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
 			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.isIndividualSelected(this) || Domain.getSelectedIndividuals().size() > 1)) {
 				spriteBatch.setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
@@ -897,13 +897,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		decreaseThirst(thirstDrain());
 
 		if (isWalking()) {
-			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
+			if (isCommandActive(getKeyMappings().moveLeft.keyCode) || isCommandActive(getKeyMappings().moveRight.keyCode)) {
 				increaseStamina(delta * getState().staminaRegen / 2f);
 			} else {
 				increaseStamina(delta * getState().staminaRegen);
 			}
 		} else {
-			if (isCommandActive(KeyMappings.moveLeft) || isCommandActive(KeyMappings.moveRight)) {
+			if (isCommandActive(getKeyMappings().moveLeft.keyCode) || isCommandActive(getKeyMappings().moveRight.keyCode)) {
 				decreaseStamina(staminaDrain());
 			} else {
 				increaseStamina(delta * getState().staminaRegen);

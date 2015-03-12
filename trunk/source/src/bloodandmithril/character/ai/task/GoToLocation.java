@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -8,7 +9,6 @@ import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Performance;
 import bloodandmithril.util.SerializableFunction;
@@ -205,15 +205,15 @@ public class GoToLocation extends AITask {
 		}
 
 		if (notReached) {
-			host.sendCommand(KeyMappings.walk, host.isWalking() || host.getState().stamina == 0f);
+			host.sendCommand(getKeyMappings().walk.keyCode, host.isWalking() || host.getState().stamina == 0f);
 			host.setWalking(host.isWalking() || host.getState().stamina == 0f);
-			if (!host.isCommandActive(KeyMappings.moveRight) && wayPoint.waypoint.x > host.getState().position.x) {
-				host.sendCommand(KeyMappings.moveRight, true);
-				host.sendCommand(KeyMappings.moveLeft, false);
+			if (!host.isCommandActive(getKeyMappings().moveRight.keyCode) && wayPoint.waypoint.x > host.getState().position.x) {
+				host.sendCommand(getKeyMappings().moveRight.keyCode, true);
+				host.sendCommand(getKeyMappings().moveLeft.keyCode, false);
 				stuckCounter++;
-			} else if (!host.isCommandActive(KeyMappings.moveLeft) && wayPoint.waypoint.x < host.getState().position.x) {
-				host.sendCommand(KeyMappings.moveRight, false);
-				host.sendCommand(KeyMappings.moveLeft, true);
+			} else if (!host.isCommandActive(getKeyMappings().moveLeft.keyCode) && wayPoint.waypoint.x < host.getState().position.x) {
+				host.sendCommand(getKeyMappings().moveRight.keyCode, false);
+				host.sendCommand(getKeyMappings().moveLeft.keyCode, true);
 				stuckCounter++;
 			}
 
@@ -274,9 +274,9 @@ public class GoToLocation extends AITask {
 	public boolean uponCompletion() {
 		Individual host = Domain.getIndividual(hostId.getId());
 
-		host.sendCommand(KeyMappings.moveRight, false);
-		host.sendCommand(KeyMappings.moveLeft, false);
-		host.sendCommand(KeyMappings.walk, host.isWalking());
+		host.sendCommand(getKeyMappings().moveRight.keyCode, false);
+		host.sendCommand(getKeyMappings().moveLeft.keyCode, false);
+		host.sendCommand(getKeyMappings().walk.keyCode, host.isWalking());
 		host.setJumpOffToNull();
 
 		return false;

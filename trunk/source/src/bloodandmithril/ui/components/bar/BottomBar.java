@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.bar;
 
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.ui.components.window.Window;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -307,7 +307,7 @@ public class BottomBar extends Component {
 	private boolean isWithin() {
 		int x = BloodAndMithrilClient.getMouseScreenX();
 		int y = BloodAndMithrilClient.getMouseScreenY();
-		return x >= 0 && x <= Gdx.graphics.getWidth() && y >= 0 && y <= 50;
+		return x >= 0 && x <= WIDTH && y >= 0 && y <= 50;
 	}
 
 
@@ -315,8 +315,8 @@ public class BottomBar extends Component {
 	@Override
 	protected void internalComponentRender() {
 		BloodAndMithrilClient.spriteBatch.begin();
-		renderRectangle(0, 34, Gdx.graphics.getWidth(), 34, true, Color.BLACK);
-		renderBox(-left.getRegionWidth(), 32, Gdx.graphics.getWidth(), 34, true, Color.DARK_GRAY);
+		renderRectangle(0, 34, WIDTH, 34, true, Color.BLACK);
+		renderBox(-left.getRegionWidth(), 32, WIDTH, 34, true, Color.DARK_GRAY);
 		mainMenu.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		windows.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		chat.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);

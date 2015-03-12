@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.Color;
 @Copyright("Matthew Peck 2014")
 public class OptionsWindow extends Window {
 
-	private Button changeRes, fullScreen;
+	private Button changeRes, fullScreen, controls;
 
 	/**
 	 * Constructor
@@ -170,6 +170,24 @@ public class OptionsWindow extends Window {
 			Color.WHITE,
 			UIRef.BL
 		);
+
+		this.controls = new Button(
+			"Controls",
+			Fonts.defaultFont,
+			0,
+			0,
+			80,
+			16,
+			() -> {
+				UserInterface.addLayeredComponentUnique(
+					new KeyMappingsWindow()
+				);
+			},
+			Color.ORANGE,
+			Color.GREEN,
+			Color.WHITE,
+			UIRef.BL
+		);
 	}
 
 
@@ -177,6 +195,7 @@ public class OptionsWindow extends Window {
 	protected void internalWindowRender() {
 		changeRes.render(x + width/2, y - 30, isActive(), getAlpha());
 		fullScreen.render(x + width/2, y - 50, isActive(), getAlpha());
+		controls.render(x + width/2, y - 70, isActive(), getAlpha());
 	}
 
 
@@ -184,6 +203,7 @@ public class OptionsWindow extends Window {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		changeRes.click();
 		fullScreen.click();
+		controls.click();
 	}
 
 

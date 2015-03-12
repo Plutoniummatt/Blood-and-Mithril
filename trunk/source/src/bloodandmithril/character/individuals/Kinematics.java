@@ -4,6 +4,7 @@ import static bloodandmithril.character.individuals.Individual.Action.JUMP_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.util.ComparisonUtil.obj;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
@@ -18,7 +19,6 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
@@ -132,9 +132,9 @@ public interface Kinematics {
 
 
 	static void friction(Individual individual, IndividualState state) {
-		if (individual.isCommandActive(KeyMappings.moveRight) && state.velocity.x < 0f ||
-			individual.isCommandActive(KeyMappings.moveLeft) && state.velocity.x > 0f ||
-			!individual.isCommandActive(KeyMappings.moveLeft) && !individual.isCommandActive(KeyMappings.moveRight)) {
+		if (individual.isCommandActive(getKeyMappings().moveRight.keyCode) && state.velocity.x < 0f ||
+			individual.isCommandActive(getKeyMappings().moveLeft.keyCode) && state.velocity.x > 0f ||
+			!individual.isCommandActive(getKeyMappings().moveLeft.keyCode) && !individual.isCommandActive(getKeyMappings().moveRight.keyCode)) {
 
 			if (obj(individual.getCurrentAction()).oneOf(Action.JUMP_LEFT, Action.JUMP_RIGHT)) {
 				return;

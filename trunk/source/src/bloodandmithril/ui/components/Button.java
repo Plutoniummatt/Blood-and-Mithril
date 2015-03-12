@@ -1,10 +1,12 @@
 package bloodandmithril.ui.components;
 
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Util.fitToTextInputBox;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
@@ -156,7 +158,7 @@ public class Button {
 			Color idleColorToUse = active ? idleColor : idle == null ? idleColor.cpy() : idleColor;
 
 			if (isMouseOver() && active) {
-				if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
+				if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode)) {
 					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
 					font.draw(spriteBatch, maxWidth == 0 ? text : fitToTextInputBox(text, maxWidth, 0, false), vec.x, vec.y);
 				} else {
@@ -171,7 +173,7 @@ public class Button {
 			spriteBatch.setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, alpha);
 			if (isMouseOver() && active) {
-				if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
+				if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode)) {
 					spriteBatch.draw(down, vec.x, vec.y);
 				} else {
 					spriteBatch.draw(over, vec.x, vec.y);
@@ -253,33 +255,33 @@ public class Button {
 			break;
 
 		case BM:
-			vec.x = Gdx.graphics.getWidth()/2 + offsetX - width/2;
+			vec.x = WIDTH/2 + offsetX - width/2;
 			vec.y = offsetY - height/2;
 			break;
 
 		case BR:
-			vec.x = Gdx.graphics.getWidth() + offsetX - width/2;
+			vec.x = WIDTH + offsetX - width/2;
 			vec.y = offsetY - height/2;
 			break;
 
 		case M:
-			vec.x = Gdx.graphics.getWidth()/2 + offsetX - width/2;
-			vec.y = Gdx.graphics.getHeight()/2 + offsetY - height/2;
+			vec.x = WIDTH/2 + offsetX - width/2;
+			vec.y = HEIGHT/2 + offsetY - height/2;
 			break;
 
 		case TL:
 			vec.x = offsetX - width/2;
-			vec.y = Gdx.graphics.getHeight() + offsetY - height/2;
+			vec.y = HEIGHT + offsetY - height/2;
 			break;
 
 		case TM:
-			vec.x = Gdx.graphics.getWidth()/2 + offsetX - width/2;
-			vec.y = Gdx.graphics.getHeight() + offsetY - height/2;
+			vec.x = WIDTH/2 + offsetX - width/2;
+			vec.y = HEIGHT + offsetY - height/2;
 			break;
 
 		case TR:
-			vec.x = Gdx.graphics.getWidth() + offsetX - width/2;
-			vec.y = Gdx.graphics.getHeight() + offsetY - height/2;
+			vec.x = WIDTH + offsetX - width/2;
+			vec.y = HEIGHT + offsetY - height/2;
 			break;
 
 		default:

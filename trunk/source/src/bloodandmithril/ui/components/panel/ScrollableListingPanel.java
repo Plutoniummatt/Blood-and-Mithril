@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.panel;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
@@ -18,7 +19,6 @@ import java.util.Map.Entry;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -309,7 +309,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
 
-		if (Gdx.input.isButtonPressed(KeyMappings.leftClick) && scrollBarButtonLocationOld != null) {
+		if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode) && scrollBarButtonLocationOld != null) {
 			scrollBarButtonLocation = Math.min(1, Math.max(0, scrollBarButtonLocationOld + (mouseLocYFrozen - BloodAndMithrilClient.getMouseScreenY())/(height - 102)));
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * size);
 		}

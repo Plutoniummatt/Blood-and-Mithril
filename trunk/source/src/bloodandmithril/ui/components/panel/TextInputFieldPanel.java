@@ -3,9 +3,9 @@ package bloodandmithril.ui.components.panel;
 import java.util.Deque;
 import java.util.List;
 
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
@@ -85,23 +85,23 @@ public class TextInputFieldPanel extends Panel {
 	@Override
 	public boolean keyPressed(int keyCode) {
 
-	  if (keyCode == Input.Keys.BACKSPACE) {
-	    if (inputText.length() == 0) {
-	      return true;
-	    }
-	    inputText = inputText.substring(0, inputText.length() - 1);
-	  }
+		if (keyCode == Input.Keys.BACKSPACE) {
+			if (inputText.length() == 0) {
+				return true;
+			}
+			inputText = inputText.substring(0, inputText.length() - 1);
+		}
 
-	  String string = KeyMappings.keyMap.get(keyCode);
-	  if (string == null) {
-	    return true;
-	  }
+		String string = Controls.keyMap.get(keyCode);
+		if (string == null) {
+			return true;
+		}
 
-	  if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
-      inputText = inputText + string.toUpperCase();
-	  } else {
-	    inputText = inputText + KeyMappings.keyMap.get(keyCode);
-	  }
+		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+			inputText = inputText + string.toUpperCase();
+		} else {
+			inputText = inputText + Controls.keyMap.get(keyCode);
+		}
 
 		return true;
 	}

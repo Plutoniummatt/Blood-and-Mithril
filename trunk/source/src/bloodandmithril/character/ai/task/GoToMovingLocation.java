@@ -1,13 +1,13 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 
@@ -121,9 +121,9 @@ public class GoToMovingLocation extends AITask {
 	public boolean uponCompletion() {
 		Individual host = Domain.getIndividual(hostId.getId());
 
-		host.sendCommand(KeyMappings.moveRight, false);
-		host.sendCommand(KeyMappings.moveLeft, false);
-		host.sendCommand(KeyMappings.walk, host.isWalking());
+		host.sendCommand(getKeyMappings().moveRight.keyCode, false);
+		host.sendCommand(getKeyMappings().moveLeft.keyCode, false);
+		host.sendCommand(getKeyMappings().walk.keyCode, host.isWalking());
 
 		return false;
 	}
