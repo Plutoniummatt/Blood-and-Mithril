@@ -218,6 +218,7 @@ import bloodandmithril.networking.requests.RequestSetAmmo;
 import bloodandmithril.networking.requests.RequestStartCrafting;
 import bloodandmithril.networking.requests.RequestTakeItem;
 import bloodandmithril.networking.requests.RequestTakeItemFromCraftingStation;
+import bloodandmithril.networking.requests.RequestThrowItem;
 import bloodandmithril.networking.requests.RequestTransferLiquidBetweenContainers;
 import bloodandmithril.networking.requests.RunStaticMethodNotification;
 import bloodandmithril.networking.requests.SendChatMessage;
@@ -474,9 +475,9 @@ public class ClientServerInterface {
 	 */
 	public static void registerClasses(Kryo kryo) {
 		kryo.setReferences(true);
-
 		kryo.register(RequestSpawnIndividual.class);
 
+		kryo.register(RequestThrowItem.class);
 		kryo.register(RottenWoodenChest.class);
 		kryo.register(DeadDesertBush.class);
 		kryo.register(CactusProp.class);
@@ -782,6 +783,11 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendRequest {
+		public static synchronized void sendThrowItemRequest(Individual individual, Item item, Vector2 mouseCoords) {
+			client.sendTCP(new RequestThrowItem(individual, item, mouseCoords));
+			Logger.networkDebug("Sending throw item request", LogLevel.DEBUG);
+		}
+
 		public static synchronized void sendSpawnIndividualRequest(Individual individual) {
 			client.sendTCP(new RequestSpawnIndividual(individual));
 			Logger.networkDebug("Sending individual spawn request", LogLevel.DEBUG);

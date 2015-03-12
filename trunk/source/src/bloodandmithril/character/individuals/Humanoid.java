@@ -279,8 +279,78 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				throw new RuntimeException("Unexpected action: " + getCurrentAction());
 		}
 	}
-	
-	
+
+
+	@Override
+	public SpacialConfiguration getTwoHandedWeaponSpatialConfigration() {
+		int frameIndex = getCurrentAnimation().get(0).a.getKeyFrameIndex(getAnimationTimer());
+
+		switch(getCurrentAction()) {
+			case STAND_LEFT:
+			case JUMP_LEFT:
+				return new SpacialConfiguration(new Vector2(12, 33f), 0f, true);
+			case STAND_RIGHT:
+			case JUMP_RIGHT:
+				return new SpacialConfiguration(new Vector2(-12, 33f), 0f, false);
+			case STAND_LEFT_COMBAT:
+				return new SpacialConfiguration(new Vector2(19, 48f), 90f, false);
+			case STAND_RIGHT_COMBAT:
+				return new SpacialConfiguration(new Vector2(-19, 48f), -90f, true);
+			case WALK_LEFT:
+				switch (frameIndex) {
+					case 0: return new SpacialConfiguration(new Vector2(12, 35f), 0f, true);
+					case 1: return new SpacialConfiguration(new Vector2(12, 35f), 0f, true);
+					case 2: return new SpacialConfiguration(new Vector2(12, 31f), 0f, true);
+					case 3: return new SpacialConfiguration(new Vector2(12, 31f), 0f, true);
+					case 4: return new SpacialConfiguration(new Vector2(12, 33f), 0f, true);
+					case 5: return new SpacialConfiguration(new Vector2(12, 35f), 0f, true);
+					case 6: return new SpacialConfiguration(new Vector2(12, 35f), 0f, true);
+					case 7: return new SpacialConfiguration(new Vector2(12, 31f), 0f, true);
+					case 8: return new SpacialConfiguration(new Vector2(12, 31f), 0f, true);
+					case 9: return new SpacialConfiguration(new Vector2(12, 33f), 0f, true);
+				}
+			case WALK_RIGHT:
+				switch (frameIndex) {
+					case 0: return new SpacialConfiguration(new Vector2(-12, 35f), 0f, false);
+					case 1: return new SpacialConfiguration(new Vector2(-12, 35f), 0f, false);
+					case 2: return new SpacialConfiguration(new Vector2(-12, 31f), 0f, false);
+					case 3: return new SpacialConfiguration(new Vector2(-12, 31f), 0f, false);
+					case 4: return new SpacialConfiguration(new Vector2(-12, 33f), 0f, false);
+					case 5: return new SpacialConfiguration(new Vector2(-12, 35f), 0f, false);
+					case 6: return new SpacialConfiguration(new Vector2(-12, 35f), 0f, false);
+					case 7: return new SpacialConfiguration(new Vector2(-12, 31f), 0f, false);
+					case 8: return new SpacialConfiguration(new Vector2(-12, 31f), 0f, false);
+					case 9: return new SpacialConfiguration(new Vector2(-12, 33f), 0f, false);
+				}
+			case RUN_LEFT:
+				switch (frameIndex) {
+					case 0: return new SpacialConfiguration(new Vector2(12, 33f), 0f, true);
+					case 1: return new SpacialConfiguration(new Vector2(12, 35f), 0f, true);
+					case 2: return new SpacialConfiguration(new Vector2(12, 33f), 0f, true);
+					case 3: return new SpacialConfiguration(new Vector2(12, 31f), 0f, true);
+					case 4: return new SpacialConfiguration(new Vector2(12, 33f), 0f, true);
+					case 5: return new SpacialConfiguration(new Vector2(12, 35f), 0f, true);
+					case 6: return new SpacialConfiguration(new Vector2(12, 33f), 0f, true);
+					case 7: return new SpacialConfiguration(new Vector2(12, 31f), 0f, true);
+				}
+			case RUN_RIGHT:
+				switch (frameIndex) {
+					case 0: return new SpacialConfiguration(new Vector2(-12, 33f), 0f, false);
+					case 1: return new SpacialConfiguration(new Vector2(-12, 35f), 0f, false);
+					case 2: return new SpacialConfiguration(new Vector2(-12, 33f), 0f, false);
+					case 3: return new SpacialConfiguration(new Vector2(-12, 31f), 0f, false);
+					case 4: return new SpacialConfiguration(new Vector2(-12, 33f), 0f, false);
+					case 5: return new SpacialConfiguration(new Vector2(-12, 35f), 0f, false);
+					case 6: return new SpacialConfiguration(new Vector2(-12, 33f), 0f, false);
+					case 7: return new SpacialConfiguration(new Vector2(-12, 31f), 0f, false);
+				}
+
+			default:
+				throw new RuntimeException("Unexpected action: " + getCurrentAction());
+		}
+	}
+
+
 	@Override
 	public SpacialConfiguration getOffHandSpatialConfigration() {
 		int frameIndex = getCurrentAnimation().get(0).a.getKeyFrameIndex(getAnimationTimer());
@@ -288,7 +358,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
 			case JUMP_LEFT:
-				return new SpacialConfiguration(new Vector2(-11, 32), -20, true); 
+				return new SpacialConfiguration(new Vector2(-11, 32), -20, true);
 			case STAND_RIGHT:
 			case JUMP_RIGHT:
 				return new SpacialConfiguration(new Vector2(11, 32), 20, false);

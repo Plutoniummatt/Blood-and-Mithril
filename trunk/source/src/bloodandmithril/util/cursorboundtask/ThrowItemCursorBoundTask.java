@@ -40,7 +40,7 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 						);
 					}
 				} else {
-					// TODO CSI
+					ClientServerInterface.SendRequest.sendThrowItemRequest(individual, item, getMouseWorldCoords());
 				}
 			},
 			true
