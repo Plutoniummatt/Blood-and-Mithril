@@ -641,8 +641,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 						}
 					}
 				} else if (equipped instanceof TwoHandedMeleeWeapon) {
-					// TODO twohandedmeleeweapon
-					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
+					SpacialConfiguration config = getTwoHandedWeaponSpatialConfigration();
 					if (config != null) {
 						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 						Vector2 pos = config.position.add(getState().position);
@@ -1642,6 +1641,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Returns the {@link SpacialConfiguration} where {@link OneHandedMeleeWeapon} will be rendered */
 	public abstract SpacialConfiguration getOneHandedWeaponSpatialConfigration();
+
+	/** Returns the {@link SpacialConfiguration} where {@link TwoHandedMeleeWeapon} will be rendered */
+	public abstract SpacialConfiguration getTwoHandedWeaponSpatialConfigration();
 
 	/** Returns the {@link SpacialConfiguration} for off-hand equippables */
 	public abstract SpacialConfiguration getOffHandSpatialConfigration();

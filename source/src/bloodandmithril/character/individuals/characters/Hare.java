@@ -240,6 +240,12 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 
 
 	@Override
+	public SpacialConfiguration getTwoHandedWeaponSpatialConfigration() {
+		return null;
+	}
+
+
+	@Override
 	public int getConcurrentAttackNumber() {
 		return 1;
 	}

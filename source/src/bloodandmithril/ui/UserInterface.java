@@ -202,8 +202,8 @@ public class UserInterface {
 		loadBars();
 		loadButtons();
 	}
-	
-	
+
+
 	/**
 	 * @return all components
 	 */
@@ -697,7 +697,7 @@ public class UserInterface {
 
 			spriteBatch.setShader(Shaders.text);
 			defaultFont.setColor(Color.YELLOW);
-			defaultFont.draw(spriteBatch, "Loading - " + ChunkLoader.loaderTasks.size(), WIDTH/2 - 30, HEIGHT/2);
+			defaultFont.draw(spriteBatch, "Loading - " + ChunkLoader.loaderTasks.size(), WIDTH/2 - 60, HEIGHT/2);
 
 			gl.glDisable(GL_BLEND);
 			spriteBatch.end();
