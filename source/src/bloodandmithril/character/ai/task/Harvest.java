@@ -129,7 +129,7 @@ public class Harvest extends CompositeAITask {
 							}
 						}
 						taskDone = true;
-						InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.layeredComponents, new Predicate<Component>() {
+						InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.getLayeredComponents(), new Predicate<Component>() {
 							@Override
 							public boolean apply(Component input) {
 								if (input instanceof Window) {

@@ -179,7 +179,7 @@ public class MainMenuWindow extends Window {
 						250,
 						100,
 						args -> {
-							for (Component component : UserInterface.layeredComponents) {
+							for (Component component : UserInterface.getLayeredComponents()) {
 								if (component instanceof Window && ((Window) component).title.equals("Enter IP") ||
 									component instanceof MainMenuWindow) {
 									component.setClosing(true);
@@ -200,7 +200,7 @@ public class MainMenuWindow extends Window {
 									} catch (Exception e) {
 
 										// Deactivate all windows, close the connecting message pop-up.
-										for (Component component : UserInterface.layeredComponents) {
+										for (Component component : UserInterface.getLayeredComponents()) {
 											component.setActive(false);
 											if (component instanceof Window && ((Window) component).title.equals("Connecting")) {
 												component.setClosing(true);
@@ -235,7 +235,7 @@ public class MainMenuWindow extends Window {
 												300,
 												100,
 												() -> {
-													for (Component component : UserInterface.layeredComponents) {
+													for (Component component : UserInterface.getLayeredComponents()) {
 														if (component instanceof Window && ((Window) component).title.equals("Error")) {
 															component.setClosing(true);
 														} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
@@ -299,7 +299,7 @@ public class MainMenuWindow extends Window {
 	 * Single player mode was selected
 	 */
 	private void singlePlayer() {
-		for (Component component : UserInterface.layeredComponents) {
+		for (Component component : UserInterface.getLayeredComponents()) {
 			if (component instanceof MainMenuWindow) {
 				component.setClosing(true);
 			}
@@ -310,7 +310,7 @@ public class MainMenuWindow extends Window {
 
 	public static void removeWindows() {
 		UserInterface.buttons.remove("connect");
-		for (Component component : UserInterface.layeredComponents) {
+		for (Component component : UserInterface.getLayeredComponents()) {
 			if (component instanceof Window && ((Window) component).title.equals("Connecting") ||
 				component instanceof Window && ((Window) component).title.equals("Enter IP") ||
 				component instanceof MainMenuWindow ||

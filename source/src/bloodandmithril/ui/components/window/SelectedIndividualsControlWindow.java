@@ -110,7 +110,7 @@ public class SelectedIndividualsControlWindow extends Window {
 			return individual.isShutUp() ? 0 : 1;
 		}).sum() > 0;
 
-		boolean buttonsActive = UserInterface.layeredComponents.isEmpty() ? false : UserInterface.layeredComponents.getLast() == this;
+		boolean buttonsActive = UserInterface.getLayeredComponents().isEmpty() ? false : UserInterface.getLayeredComponents().getLast() == this;
 		boolean selected = Domain.getSelectedIndividuals().size() > 0;
 
 		// Run button

@@ -443,7 +443,7 @@ public class Domain {
 		individuals.put(indi.getId().getId(), indi);
 		Domain.getWorld(worldId).getIndividuals().add(indi.getId().getId());
 		if (ClientServerInterface.isClient()) {
-			for (Component component : UserInterface.layeredComponents) {
+			for (Component component : UserInterface.getLayeredComponents()) {
 				if (component instanceof UnitsWindow) {
 					((UnitsWindow) component).refresh();
 				}

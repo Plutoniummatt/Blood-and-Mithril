@@ -293,7 +293,7 @@ public abstract class Construction extends Prop implements Container {
 		} else {
 			materialContainer.giveItem(item);
 			if (ClientServerInterface.isClient()) {
-				UserInterface.layeredComponents.stream().filter((component) -> {
+				UserInterface.getLayeredComponents().stream().filter((component) -> {
 					return component instanceof RequiredMaterialsWindow;
 				}).forEach((component) -> {
 					((RequiredMaterialsWindow) component).refresh();

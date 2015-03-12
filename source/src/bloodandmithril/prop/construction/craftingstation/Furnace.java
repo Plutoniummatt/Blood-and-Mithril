@@ -5,6 +5,7 @@ import static bloodandmithril.item.items.material.Ingot.ingot;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -22,9 +23,11 @@ import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Mineral;
 import bloodandmithril.item.material.mineral.SandStone;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
@@ -42,17 +45,33 @@ public class Furnace extends CraftingStation implements Container {
 
 	/** {@link TextureRegion} of the {@link Furnace} */
 	public static TextureRegion FURNACE, FURNACE_BURNING;
+	public static TextureRegion FURNACE1, FURNACE2, FURNACE3, FURNACE4, FURNACE5;
 
 	/** The {@link Mineral} this {@link Furnace} is made from */
 	private Class<? extends Mineral> material;
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
+	private static final TreeMap<Float, TextureRegion> inProgressTextures = Maps.newTreeMap();
 
 	static {
 		craftables.put(new Glass(), 1);
 		craftables.put(new GlassBottle(newHashMap()), 3);
 		craftables.put(ingot(Iron.class), 1);
 		craftables.put(ingot(Steel.class), 1);
+
+		if (ClientServerInterface.isClient()) {
+			Furnace.FURNACE1 = new TextureRegion(Domain.gameWorldTexture, 1, 1, 95, 56);
+			Furnace.FURNACE2 = new TextureRegion(Domain.gameWorldTexture, 1, 58, 95, 56);
+			Furnace.FURNACE3 = new TextureRegion(Domain.gameWorldTexture, 1, 115, 95, 56);
+			Furnace.FURNACE4 = new TextureRegion(Domain.gameWorldTexture, 1, 172, 95, 56);
+			Furnace.FURNACE5 = new TextureRegion(Domain.gameWorldTexture, 1, 229, 95, 56);
+			
+			inProgressTextures.put(0f/5f, FURNACE1);
+			inProgressTextures.put(1f/5f, FURNACE2);
+			inProgressTextures.put(2f/5f, FURNACE3);
+			inProgressTextures.put(3f/5f, FURNACE4);
+			inProgressTextures.put(4f/5f, FURNACE5);
+		}
 	}
 
 	/**
@@ -66,10 +85,16 @@ public class Furnace extends CraftingStation implements Container {
 
 	@Override
 	protected void internalRender(float constructionProgress) {
-		if (isOccupied()) {
-			spriteBatch.draw(FURNACE_BURNING, position.x - width / 2, position.y);
-		} else {
+		if (getConstructionProgress() == 0f) {
 			spriteBatch.draw(FURNACE, position.x - width / 2, position.y);
+		} else if (getConstructionProgress() >= 1f) {
+			if (isOccupied()) {
+				spriteBatch.draw(FURNACE_BURNING, position.x - width / 2, position.y);
+			} else {
+				spriteBatch.draw(FURNACE, position.x - width / 2, position.y);
+			}	
+		} else {
+			spriteBatch.draw(inProgressTextures.floorEntry(getConstructionProgress()).getValue(), position.x - width / 2, position.y);
 		}
 	}
 
