@@ -64,6 +64,7 @@ import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
+import bloodandmithril.item.items.equipment.weapon.TwoHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
@@ -628,6 +629,19 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				WrapperForTwo<Animation, Vector2> attackAnimationEffects = ((Weapon) equipped).getAttackAnimationEffects(this);
 
 				if (equipped instanceof OneHandedMeleeWeapon) {
+					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
+					if (config != null) {
+						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+						Vector2 pos = config.position.add(getState().position);
+						toRender.render(pos, config.orientation, config.flipX);
+						if (config.flipX) {
+							equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? config.orientation + 180f : -config.orientation)));
+						} else {
+							equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? -config.orientation : config.orientation)));
+						}
+					}
+				} else if (equipped instanceof TwoHandedMeleeWeapon) {
+					// TODO twohandedmeleeweapon
 					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
 					if (config != null) {
 						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
