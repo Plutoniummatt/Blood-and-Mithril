@@ -1,5 +1,8 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.util.Fonts.defaultFont;
@@ -10,7 +13,6 @@ import java.util.List;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -88,6 +90,14 @@ public abstract class Window extends Component {
 	 */
 	public Window(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, boolean closeable) {
 		this(x, y, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable, resizeable, closeable);
+	}
+
+
+	/**
+	 * Overloaded contructor, uses default colors, position set to centre of screen, min width/height set to initial values
+	 */
+	public Window(int length, int height, String title, boolean active, boolean minimizable, boolean resizeable, boolean closeable) {
+		this((WIDTH - length) / 2, (HEIGHT + height) / 2, length, height, Color.GRAY, Color.BLACK, title, active, length, height, minimizable, resizeable, closeable);
 	}
 
 
@@ -288,7 +298,7 @@ public abstract class Window extends Component {
 	/** Handles the repositioning of the {@link Window} */
 	private void reposition() {
 		if (positioning) {
-			if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
+			if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode)) {
 				x = oldX + BloodAndMithrilClient.getMouseScreenX() - mx;
 				y = oldY + BloodAndMithrilClient.getMouseScreenY() - my;
 			} else {
@@ -301,7 +311,7 @@ public abstract class Window extends Component {
 	/** Handles the resizing of the {@link Window} */
 	private void resize() {
 		if (resizing) {
-			if (Gdx.input.isButtonPressed(KeyMappings.leftClick)) {
+			if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode)) {
 				int calcualtedNewLength = oldLength + BloodAndMithrilClient.getMouseScreenX() - mx;
 				int calcualtedNewHeight = oldHeight - BloodAndMithrilClient.getMouseScreenY() + my;
 				width = calcualtedNewLength < minLength ? minLength : calcualtedNewLength;

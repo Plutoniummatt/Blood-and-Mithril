@@ -4,6 +4,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.cam;
 import static bloodandmithril.core.BloodAndMithrilClient.getCursorBoundTask;
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
@@ -20,8 +21,6 @@ import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeCont
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.GameSaver.isSaving;
-import static bloodandmithril.ui.KeyMappings.leftClick;
-import static bloodandmithril.ui.KeyMappings.rightClick;
 import static bloodandmithril.ui.UserInterface.FloatingText.floatingText;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
@@ -760,7 +759,7 @@ public class UserInterface {
 
 
 	public static void rightClickRelease(int screenX, int screenY) {
-		if (initialRightMouseDragCoordinates != null && Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox)) {
+		if (initialRightMouseDragCoordinates != null && Gdx.input.isKeyPressed(getKeyMappings().rightClickDragBox.keyCode)) {
 			Vector2 diagCorner1 = initialRightMouseDragCoordinates.cpy();
 			Vector2 diagCorner2 = new Vector2(screenX, screenY);
 
@@ -839,7 +838,7 @@ public class UserInterface {
 	 * Renders the drag-box
 	 */
 	private static void renderDragBox() {
-		if (input.isButtonPressed(leftClick) && initialLeftMouseDragCoordinates != null) {
+		if (input.isButtonPressed(getKeyMappings().leftClick.keyCode) && initialLeftMouseDragCoordinates != null) {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.GREEN);
 			float width = getMouseScreenX() - initialLeftMouseDragCoordinates.x;
@@ -848,7 +847,7 @@ public class UserInterface {
 			shapeRenderer.end();
 		}
 
-		if (input.isButtonPressed(rightClick) && initialRightMouseDragCoordinates != null && Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox)) {
+		if (input.isButtonPressed(getKeyMappings().rightClick.keyCode) && initialRightMouseDragCoordinates != null && Gdx.input.isKeyPressed(getKeyMappings().rightClickDragBox.keyCode)) {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.RED);
 			float width = getMouseScreenX() - initialRightMouseDragCoordinates.x;
@@ -871,11 +870,11 @@ public class UserInterface {
 				} else if (currentTask instanceof Travel) {
 					((Travel) currentTask).renderWaypoints();
 
-					if (Gdx.input.isKeyPressed(KeyMappings.jump)) {
+					if (Gdx.input.isKeyPressed(getKeyMappings().jump.keyCode)) {
 						Vector2 destination = ((Travel) currentTask).getFinalGoToLocationWaypoint();
 						Vector2 start;
 						if (destination != null) {
-							if (Gdx.input.isKeyPressed(KeyMappings.addWayPoint)) {
+							if (Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)) {
 								start = destination;
 							} else {
 								start = indi.getState().position.cpy();
@@ -904,7 +903,7 @@ public class UserInterface {
 				}
 
 				if (!(currentTask instanceof Travel)) {
-					if (Gdx.input.isKeyPressed(KeyMappings.jump)) {
+					if (Gdx.input.isKeyPressed(getKeyMappings().jump.keyCode)) {
 						renderJumpArrow(
 							indi.getState().position.cpy(),
 							new Vector2(getMouseWorldX(), getMouseWorldY())
@@ -919,7 +918,7 @@ public class UserInterface {
 
 
 	public static void renderJumpArrow(Vector2 start, Vector2 finish) {
-		if (!Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
+		if (!Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
 			renderArrow(start, finish, new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 75f);
 		}
 	}
@@ -996,12 +995,12 @@ public class UserInterface {
 			return;
 		}
 
-		boolean jumpPressed = Gdx.input.isKeyPressed(KeyMappings.jump);
-		boolean addWayPointPressed = Gdx.input.isKeyPressed(KeyMappings.addWayPoint);
-		boolean forceMovePressed = Gdx.input.isKeyPressed(KeyMappings.forceMove);
-		boolean attackPressed = Gdx.input.isKeyPressed(KeyMappings.attack);
-		boolean rangedAttackPressed = Gdx.input.isKeyPressed(KeyMappings.rangedAttack);
-		boolean mineTIlePressed = Gdx.input.isKeyPressed(KeyMappings.mineTile);
+		boolean jumpPressed = Gdx.input.isKeyPressed(getKeyMappings().jump.keyCode);
+		boolean addWayPointPressed = Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode);
+		boolean forceMovePressed = Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode);
+		boolean attackPressed = Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode);
+		boolean rangedAttackPressed = Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode);
+		boolean mineTIlePressed = Gdx.input.isKeyPressed(getKeyMappings().mineTile.keyCode);
 
 		if (!Domain.getSelectedIndividuals().isEmpty()) {
 
@@ -1117,11 +1116,11 @@ public class UserInterface {
 		}
 
 		defaultFont.setColor(Color.GREEN);
-		defaultFont.draw(spriteBatch, "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, Gdx.graphics.getHeight() - 105);
-		defaultFont.draw(spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, Gdx.graphics.getHeight() - 125);
-		defaultFont.draw(spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoader.loaderTasks.size()), 5, Gdx.graphics.getHeight() - 145);
-		defaultFont.draw(spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, Gdx.graphics.getHeight() - 165);
-		defaultFont.draw(spriteBatch, "Number of tasks queued in Pathfinding thread: " + Integer.toString(AIProcessor.pathFinderTasks.size()), 5, Gdx.graphics.getHeight() - 185);
+		defaultFont.draw(spriteBatch, "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, HEIGHT - 105);
+		defaultFont.draw(spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, HEIGHT - 125);
+		defaultFont.draw(spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoader.loaderTasks.size()), 5, HEIGHT - 145);
+		defaultFont.draw(spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, HEIGHT - 165);
+		defaultFont.draw(spriteBatch, "Number of tasks queued in Pathfinding thread: " + Integer.toString(AIProcessor.pathFinderTasks.size()), 5, HEIGHT - 185);
 
 		defaultFont.setColor(Color.CYAN);
 	}

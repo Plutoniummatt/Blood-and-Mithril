@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Deque;
@@ -9,7 +10,6 @@ import java.util.List;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -159,7 +159,7 @@ public class SelectedIndividualsControlWindow extends Window {
 			return true;
 		}
 
-		if (keyCode == KeyMappings.toggleWalkRun) {
+		if (keyCode == getKeyMappings().toggleWalkRun.keyCode) {
 			buttons.get(0).getTask().execute();
 		}
 		return false;

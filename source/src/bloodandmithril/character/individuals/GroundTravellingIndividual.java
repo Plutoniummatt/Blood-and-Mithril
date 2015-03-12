@@ -11,6 +11,7 @@ import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGH
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBATONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.util.ComparisonUtil.obj;
 
 import java.util.List;
@@ -19,7 +20,6 @@ import java.util.Map;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
@@ -74,23 +74,23 @@ public abstract class GroundTravellingIndividual extends Individual {
 		}
 
 		// If we're moving to the right
-		if (isCommandActive(KeyMappings.moveRight)) {
+		if (isCommandActive(getKeyMappings().moveRight.keyCode)) {
 			// If walking, and current action is not walking right, then set action to walking right
-			if (isCommandActive(KeyMappings.walk) && !getCurrentAction().equals(WALK_RIGHT)) {
+			if (isCommandActive(getKeyMappings().walk.keyCode) && !getCurrentAction().equals(WALK_RIGHT)) {
 				setCurrentAction(WALK_RIGHT);
 				setAnimationTimer(0f);
-			} else if (!isCommandActive(KeyMappings.walk) && !getCurrentAction().equals(RUN_RIGHT)) {
+			} else if (!isCommandActive(getKeyMappings().walk.keyCode) && !getCurrentAction().equals(RUN_RIGHT)) {
 				// Otherwise if running, and current action is not running right, then set action to running right
 				setCurrentAction(RUN_RIGHT);
 				setAnimationTimer(0f);
 			}
 
 		// Same for if we're moving left
-		} else if (isCommandActive(KeyMappings.moveLeft)) {
-			if (isCommandActive(KeyMappings.walk) && !getCurrentAction().equals(WALK_LEFT)) {
+		} else if (isCommandActive(getKeyMappings().moveLeft.keyCode)) {
+			if (isCommandActive(getKeyMappings().walk.keyCode) && !getCurrentAction().equals(WALK_LEFT)) {
 				setCurrentAction(WALK_LEFT);
 				setAnimationTimer(0f);
-			} else if (!isCommandActive(KeyMappings.walk) && !getCurrentAction().equals(RUN_LEFT)) {
+			} else if (!isCommandActive(getKeyMappings().walk.keyCode) && !getCurrentAction().equals(RUN_LEFT)) {
 				setCurrentAction(RUN_LEFT);
 				setAnimationTimer(0f);
 			}
@@ -115,14 +115,14 @@ public abstract class GroundTravellingIndividual extends Individual {
 		try {
 			if (Math.abs(getState().velocity.y) < 5f) {
 
-				if (!attacking && isCommandActive(KeyMappings.moveLeft) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
-					if (isCommandActive(KeyMappings.walk)) {
+				if (!attacking && isCommandActive(getKeyMappings().moveLeft.keyCode) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+					if (isCommandActive(getKeyMappings().walk.keyCode)) {
 						getState().acceleration.x = getState().velocity.x > -getWalkSpeed() ? -400f : 400f;
 					} else {
 						getState().acceleration.x = getState().velocity.x > -getRunSpeed() ? -400f : 400f;
 					}
-				} else if (!attacking && isCommandActive(KeyMappings.moveRight) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
-					if (isCommandActive(KeyMappings.walk)) {
+				} else if (!attacking && isCommandActive(getKeyMappings().moveRight.keyCode) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+					if (isCommandActive(getKeyMappings().walk.keyCode)) {
 						getState().acceleration.x = getState().velocity.x < getWalkSpeed() ? 400f : -400f;
 					} else {
 						getState().acceleration.x = getState().velocity.x < getRunSpeed() ? 400f : -400f;
@@ -130,14 +130,14 @@ public abstract class GroundTravellingIndividual extends Individual {
 				} else {
 					getState().acceleration.x = 0f;
 
-					int offset = isCommandActive(KeyMappings.moveRight) ? 2 : isCommandActive(KeyMappings.moveLeft) ? -2 : 0;
+					int offset = isCommandActive(getKeyMappings().moveRight.keyCode) ? 2 : isCommandActive(getKeyMappings().moveLeft.keyCode) ? -2 : 0;
 					if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(getAI().getCurrentTask() instanceof Idle)) {
 						getAI().setCurrentTask(new Idle());
 					}
 
-					sendCommand(KeyMappings.moveRight, false);
-					sendCommand(KeyMappings.moveLeft, false);
-					sendCommand(KeyMappings.walk, false);
+					sendCommand(getKeyMappings().moveRight.keyCode, false);
+					sendCommand(getKeyMappings().moveLeft.keyCode, false);
+					sendCommand(getKeyMappings().walk.keyCode, false);
 				}
 			}
 		} catch (NoTileFoundException e) {

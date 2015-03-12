@@ -2,6 +2,7 @@ package bloodandmithril.persistence;
 
 import java.io.Serializable;
 
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 
 /**
@@ -15,6 +16,7 @@ public class Config implements Serializable {
 
 	private int resX = 800, resY = 600;
 	private boolean fullScreen = false;
+	private Controls keyMappings = new Controls();
 
 	/**
 	 * @return Screen width
@@ -52,5 +54,18 @@ public class Config implements Serializable {
 
 	public void setFullScreen(boolean fullScreen) {
 		this.fullScreen = fullScreen;
+	}
+
+
+	/**
+	 * @return the saved {@link Controls}
+	 */
+	public Controls getKeyMappings() {
+		return keyMappings;
+	}
+
+
+	public void setKeyMappings(Controls keyMappings) {
+		this.keyMappings = keyMappings;
 	}
 }

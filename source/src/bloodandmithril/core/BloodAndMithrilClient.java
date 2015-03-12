@@ -1,7 +1,6 @@
 package bloodandmithril.core;
 
 import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
-import static bloodandmithril.ui.KeyMappings.selectIndividual;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 import static com.badlogic.gdx.Gdx.input;
 
@@ -16,6 +15,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.control.Controls;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.particles.Particle;
@@ -26,7 +26,6 @@ import bloodandmithril.performance.PositionalReindexingService;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.MainMenuWindow;
@@ -132,6 +131,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static CursorBoundTask cursorBoundTask = null;
 
 	public static int camMarginX, camMarginY;
+	public static Controls controls;
 
 	static {
 		camMarginX = 640 + 32 - WIDTH % 32;
@@ -261,7 +261,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Shaders.setup();
 		Component.setup();
 		Weather.setup();
-		KeyMappings.setup();
+		Controls.setup();
 		Equipable.setup();
 		Prop.setup();
 		GaussianLightingRenderer.setup();
@@ -286,6 +286,19 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				false
 			)
 		);
+	}
+
+
+	public static Controls getKeyMappings() {
+		if (controls == null) {
+			setKeyMappings(new Controls());
+		}
+		return controls;
+	}
+
+
+	public static Controls setKeyMappings(Controls keys) {
+		return controls = keys;
 	}
 
 
@@ -350,15 +363,15 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				return false;
 			}
 
-			if (button == KeyMappings.leftClick) {
+			if (button == getKeyMappings().leftClick.keyCode) {
 				leftClick(screenX, screenY);
 			}
 
-			if (button == KeyMappings.rightClick) {
+			if (button == getKeyMappings().rightClick.keyCode) {
 				rightClick();
 			}
 
-			if (button == KeyMappings.middleClick) {
+			if (button == getKeyMappings().middleClick.keyCode) {
 				middleClick(screenX, screenY);
 			}
 		} catch (NoTileFoundException e) {
@@ -392,7 +405,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		UserInterface.initialRightMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 
-		if (Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
+		if (Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
 			if (!Domain.getSelectedIndividuals().isEmpty()) {
 				boolean attacked = false;
 				for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
@@ -414,7 +427,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					}
 				}
 			}
-		} else if (Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
+		} else if (Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
 			for (Individual selected : Domain.getSelectedIndividuals()) {
 				if (selected.canAttackRanged()) {
 					if (ClientServerInterface.isServer()) {
@@ -424,32 +437,32 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					}
 				}
 			}
-		} else if (!Gdx.input.isKeyPressed(KeyMappings.contextMenuBypass)) {
+		} else if (!Gdx.input.isKeyPressed(getKeyMappings().contextMenuBypass.keyCode)) {
 			uiClicked = UserInterface.rightClick();
 		}
 
-		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(KeyMappings.rightClickDragBox) && !Gdx.input.isKeyPressed(KeyMappings.attack) && !Gdx.input.isKeyPressed(KeyMappings.rangedAttack)) {
+		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(getKeyMappings().rightClickDragBox.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
-				if (Gdx.input.isKeyPressed(KeyMappings.mineTile)) {
+				if (Gdx.input.isKeyPressed(getKeyMappings().mineTile.keyCode)) {
 					if (ClientServerInterface.isServer()) {
 						indi.getAI().setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
 					} else {
 						ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
 					}
-				} else if (Gdx.input.isKeyPressed(KeyMappings.jump)) {
+				} else if (Gdx.input.isKeyPressed(getKeyMappings().jump.keyCode)) {
 					if (ClientServerInterface.isServer()) {
 						AIProcessor.sendJumpResolutionRequest(
 							indi,
 							indi.getState().position.cpy(),
 							new Vector2(getMouseWorldX(), getMouseWorldY()),
-							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
+							Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)
 						);
 					} else {
 						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
 							indi.getId().getId(),
 							null,
-							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
-							Gdx.input.isKeyPressed(KeyMappings.addWayPoint),
+							!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
+							Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode),
 							true,
 							indi.getState().position.cpy(),
 							new Vector2(getMouseWorldX(), getMouseWorldY())
@@ -464,7 +477,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 								Topography.convertToWorldCoord(
 									getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
 										new Vector2(
-											getMouseWorldX() + (Gdx.input.isKeyPressed(KeyMappings.forceMove) ? 0f : spread),
+											getMouseWorldX() + (Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode) ? 0f : spread),
 											getMouseWorldY()
 										),
 										10,
@@ -475,8 +488,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							),
 							false,
 							150f,
-							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
-							Gdx.input.isKeyPressed(KeyMappings.addWayPoint)
+							!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
+							Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)
 						);
 					} else {
 						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
@@ -484,7 +497,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 							Topography.convertToWorldCoord(
 								getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
 									new Vector2(
-										getMouseWorldX() + (Gdx.input.isKeyPressed(KeyMappings.forceMove) ? 0f : spread),
+										getMouseWorldX() + (Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode) ? 0f : spread),
 										getMouseWorldY()
 									),
 									10,
@@ -492,8 +505,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 								),
 								true
 							),
-							!Gdx.input.isKeyPressed(KeyMappings.forceMove),
-							Gdx.input.isKeyPressed(KeyMappings.addWayPoint),
+							!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
+							Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode),
 							false, null, null
 						);
 					}
@@ -560,7 +573,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			} else {
 				for (Individual indi : Domain.getIndividuals().values()) {
-					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId() && !input.isKeyPressed(selectIndividual)) {
+					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId() && !input.isKeyPressed(getKeyMappings().selectIndividual.keyCode)) {
 						if (ClientServerInterface.isServer()) {
 							indi.deselect(false, 0);
 							Domain.removeSelectedIndividual(indi);
@@ -618,12 +631,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		try {
-			if (button == KeyMappings.leftClick) {
-				UserInterface.leftClickRelease(screenX, Gdx.graphics.getHeight() - screenY);
+			if (button == getKeyMappings().leftClick.keyCode) {
+				UserInterface.leftClickRelease(screenX, HEIGHT - screenY);
 			}
 
-			if (button == KeyMappings.rightClick) {
-				UserInterface.rightClickRelease(screenX, Gdx.graphics.getHeight() - screenY);
+			if (button == getKeyMappings().rightClick.keyCode) {
+				UserInterface.rightClickRelease(screenX, HEIGHT - screenY);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -640,7 +653,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			return false;
 		}
 
-		if (Gdx.input.isButtonPressed(KeyMappings.middleClick)) {
+		if (Gdx.input.isButtonPressed(getKeyMappings().middleClick.keyCode)) {
 			cam.position.x = oldCamX + camDragX - screenX;
 			cam.position.y = oldCamY + screenY - camDragY;
 		}
@@ -686,7 +699,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Converts screen coordinates to world coordinates
 	 */
 	public static float screenToWorldX(float screenX) {
-		return cam.position.x - Gdx.graphics.getWidth()/2 + screenX;
+		return cam.position.x - WIDTH/2 + screenX;
 	}
 
 
@@ -694,7 +707,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Converts screen coordinates to world coordinates
 	 */
 	public static float screenToWorldY(float screenY) {
-		return cam.position.y - Gdx.graphics.getHeight()/2 + screenY;
+		return cam.position.y - HEIGHT/2 + screenY;
 	}
 
 
@@ -702,7 +715,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Converts world coordinates to screen coordinates
 	 */
 	public static float worldToScreenX(float worldX) {
-		return Gdx.graphics.getWidth()/2 + (worldX - cam.position.x);
+		return WIDTH/2 + (worldX - cam.position.x);
 	}
 
 
@@ -729,7 +742,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Converts world coordinates to screen coordinates
 	 */
 	public static float worldToScreenY(float worldY) {
-		return Gdx.graphics.getHeight()/2 + (worldY - cam.position.y);
+		return HEIGHT/2 + (worldY - cam.position.y);
 	}
 
 
@@ -798,7 +811,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Get mouse screen coord y
 	 */
 	public static int getMouseScreenY() {
-		return Gdx.graphics.getHeight() - Gdx.input.getY();
+		return HEIGHT - Gdx.input.getY();
 	}
 
 
@@ -814,10 +827,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Get mouse world coord y
 	 */
 	public static float getMouseWorldY() {
-		return screenToWorldY(Gdx.graphics.getHeight() - Gdx.input.getY());
+		return screenToWorldY(HEIGHT - Gdx.input.getY());
 	}
-	
-	
+
+
 	/**
 	 * Get mouse world coord y
 	 */

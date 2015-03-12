@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.util.Util.transformSet;
 import static bloodandmithril.world.Domain.getIndividual;
 
@@ -9,7 +10,6 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.KeyMappings;
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
@@ -98,8 +98,8 @@ public class Attack extends CompositeAITask {
 	@Override
 	public boolean uponCompletion() {
 		Individual host = Domain.getIndividual(hostId.getId());
-		host.sendCommand(KeyMappings.moveRight, false);
-		host.sendCommand(KeyMappings.moveLeft, false);
+		host.sendCommand(getKeyMappings().moveRight.keyCode, false);
+		host.sendCommand(getKeyMappings().moveLeft.keyCode, false);
 		return false;
 	}
 
