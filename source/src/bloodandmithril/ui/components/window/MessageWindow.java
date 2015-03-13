@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
+import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
@@ -52,6 +54,17 @@ public class MessageWindow extends Window {
 		this.message = message;
 		this.messageColor = messageColor;
 	}
+	
+	
+	/**
+	 * Overloaded constructor - uses default colors and position
+	 */
+	public MessageWindow(String message, Color messageColor, int length, int height, String title, boolean active) {
+		super((WIDTH - length) / 2, (HEIGHT + height) / 2, length, height, title, active, length, height, false, true, true);
+		this.message = message;
+		this.messageColor = messageColor;
+	}
+
 
 
 	/**
