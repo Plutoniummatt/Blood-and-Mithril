@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Comparator;
@@ -8,9 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import bloodandmithril.control.Controls;
 import bloodandmithril.control.Controls.MappedKey;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -48,7 +52,7 @@ public class KeyMappingsWindow extends Window {
 
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<MappedKey>, String> item) {
-				return item.getValue();
+				return Controls.keyName.get(Integer.parseInt(item.getValue()));
 			}
 
 			@Override
@@ -130,7 +134,39 @@ public class KeyMappingsWindow extends Window {
 						Color.WHITE,
 						UIRef.BL
 					),
-					null
+					new ContextMenu(
+						getMouseScreenX(), 
+						getMouseScreenY(), 
+						true,
+						new ContextMenu.MenuItem(
+							"Show info", 
+							() -> {
+								UserInterface.addLayeredComponentUnique(
+									new MessageWindow(
+										entry.showInfo, 
+										Color.ORANGE, 
+										300, 
+										200, 
+										entry.description, 
+										true
+									)
+								);
+							}, 
+							Color.ORANGE, 
+							Color.GREEN, 
+							Color.WHITE,
+							null
+						),
+						new ContextMenu.MenuItem(
+							"Change", 
+							() -> {
+							}, 
+							Color.ORANGE, 
+							Color.GREEN, 
+							Color.WHITE,
+							null
+						)
+					)
 				),
 				Integer.toString(entry.keyCode)
 			);
