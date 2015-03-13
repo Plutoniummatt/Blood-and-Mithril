@@ -1,18 +1,15 @@
 Flint and firesteel
-Money (Coin of some sort)
 Rock slab
-Arrowhead
-Lump of glass
-Wooden log
-Wooden plank
-Glass bottle
-Mushroom (Death cap)
-Chicken leg
-Bricks (more than one per stack)
-
-3 more variations on carrots
 
 
+
+
+
+xxxx Money (Coin of some sort)
+xxxx 3 more variations on carrots
+xxxx Bricks (more than one per stack)
+xxxx Wooden log
+xxxx Wooden plank
 xxxx Wooden chest
 xxxx Pile of ashes
 xxxx Pile of sand
@@ -21,5 +18,10 @@ xxxx Iron ore (Hematite)
 xxxx Pile of dirt
 xxxx Piece of coal
 xxxx Piece of Sandstone
-xxxx Wooden longbow
+xxxx Wooden longbow.
+xxxx Arrowhead
 xxxx Stages of Furnace
+xxxx Chicken leg
+xxxx Mushroom (Death cap)
+xxxx Lump of glass
+xxxx Glass bottle
