@@ -1,0 +1,1 @@
+* Automatic information panel on mouse over on entities when a keyboard key is held down.
