@@ -3,12 +3,14 @@ package bloodandmithril.control;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import bloodandmithril.core.Copyright;
 
 import com.badlogic.gdx.Input;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Maps keys to actions
@@ -22,41 +24,33 @@ public class Controls implements Serializable {
 
 	public static final Map<Integer, String> keyMap = Maps.newHashMap();
 	public static final Map<Integer, String> keyName = Maps.newHashMap();
+	public static final Set<Integer> disallowedKeys = Sets.newHashSet();
 
-	public MappedKey middleClick = new MappedKey("Middle click", 2, "");
-	public MappedKey rightClick = new MappedKey("Right click", 1, "");
-	public MappedKey leftClick = new MappedKey("Left click", 0, "");
-	public MappedKey moveLeft = new MappedKey("Move left", Input.Keys.A, "");
-	public MappedKey moveRight = new MappedKey("Move right", Input.Keys.D, "");
-	public MappedKey walk = new MappedKey("Walk", Input.Keys.SHIFT_RIGHT, "");
-	
-	public MappedKey rightClickDragBox = new MappedKey("Bulk Loot", Input.Keys.X, "Hold this button and use the right mouse button to drag a box around items to loot.");
-	public MappedKey contextMenuBypass = new MappedKey("Suppress Context Menus", Input.Keys.C, "Hold this button to avoid spawning context menus when right clicking on entities.");
-	public MappedKey forceMove = new MappedKey("Force Move", Input.Keys.ALT_LEFT, "Force move will instruct an individual to move to a location despite any fall damage.");
-	public MappedKey jump = new MappedKey("Jump", Input.Keys.SPACE, "Hold and right click with selected individual(s) to jump.");
-	public MappedKey toggleWalkRun = new MappedKey("Toggle Run/Walk", Input.Keys.W, "Toggles walk/run modes.");
-	public MappedKey addWayPoint = new MappedKey("Add Waypoint", Input.Keys.SHIFT_LEFT, "Hold and right click to add a waypoint.");
-	public MappedKey selectIndividual = new MappedKey("Add to Selection", Input.Keys.SHIFT_LEFT, "Hold and left click to add an individual to currently selected individuals.");
-	public MappedKey mineTile = new MappedKey("Mine/Dig", Input.Keys.Q, "Hold and right click to mine a tile.");
-	public MappedKey attack = new MappedKey("Attack Melee", Input.Keys.A, "Hold and right click to attack another individual. (Melee)");
-	public MappedKey rangedAttack = new MappedKey("Attack Ranged", Input.Keys.CONTROL_LEFT, "Hold and right click to perform ranged attack with a ranged weapon.");
-	public MappedKey snapToGrid = new MappedKey("Placement Grid Alignment", Input.Keys.G, "Hold when attempting to place items in the world to snap to tile grid.");
+	public MappedKey middleClick = new MappedKey("Middle click", 2, "", false);
+	public MappedKey rightClick = new MappedKey("Right click", 1, "", false);
+	public MappedKey leftClick = new MappedKey("Left click", 0, "", false);
+	public MappedKey moveLeft = new MappedKey("Move left", Input.Keys.A, "", false);
+	public MappedKey moveRight = new MappedKey("Move right", Input.Keys.D, "", false);
+	public MappedKey walk = new MappedKey("Walk", Input.Keys.SHIFT_RIGHT, "", false);
 
-	public static class MappedKey implements Serializable {
-		private static final long serialVersionUID = -7721011148775681451L;
-		public String description;
-		public String showInfo;
-		public int keyCode;
+	public MappedKey selectIndividual = new MappedKey("Add to Selection", Input.Keys.SHIFT_LEFT, "Hold and left click to add an individual to currently selected individuals.", false);
+	public MappedKey addWayPoint = new MappedKey("Add Waypoint", Input.Keys.SHIFT_LEFT, "Hold and right click to add a waypoint.", false);
 
-		/**
-		 * Constructor
-		 */
-		public MappedKey(String description, int keyCode, String showInfo) {
-			this.description = description;
-			this.keyCode = keyCode;
-			this.showInfo = showInfo;
-		}
-	}
+	public MappedKey moveCamUp = new MappedKey("Move Camera Up", Input.Keys.UP, "Camera movement.", true);
+	public MappedKey moveCamDown = new MappedKey("Move Camera Down", Input.Keys.DOWN, "Camera movement.", true);
+	public MappedKey moveCamLeft = new MappedKey("Move Camera Left", Input.Keys.LEFT, "Camera movement.", true);
+	public MappedKey moveCamRight = new MappedKey("Move Camera Right", Input.Keys.RIGHT, "Camera movement.", true);
+	public MappedKey rightClickDragBox = new MappedKey("Bulk Loot", Input.Keys.X, "Hold this button and use the right mouse button to drag a box around items to loot.", true);
+	public MappedKey contextMenuBypass = new MappedKey("Suppress Context Menus", Input.Keys.C, "Hold this button to avoid spawning context menus when right clicking on entities.", true);
+	public MappedKey forceMove = new MappedKey("Force Move", Input.Keys.ALT_LEFT, "Force move will instruct an individual to move to a location despite any fall damage.", true);
+	public MappedKey jump = new MappedKey("Jump", Input.Keys.SPACE, "Hold and right click with selected individual(s) to jump.", true);
+	public MappedKey toggleWalkRun = new MappedKey("Toggle Run/Walk", Input.Keys.W, "Toggles walk/run modes.", true);
+	public MappedKey mineTile = new MappedKey("Mine/Dig", Input.Keys.Q, "Hold and right click to mine a tile.", true);
+	public MappedKey attack = new MappedKey("Attack Melee", Input.Keys.A, "Hold and right click to attack another individual. (Melee)", true);
+	public MappedKey rangedAttack = new MappedKey("Attack Ranged", Input.Keys.CONTROL_LEFT, "Hold and right click to perform ranged attack with a ranged weapon.", true);
+	public MappedKey snapToGrid = new MappedKey("Placement Grid Alignment", Input.Keys.G, "Hold when attempting to place items in the world to snap to tile grid.", true);
+	public MappedKey openInventory = new MappedKey("Open Inventory", Input.Keys.I, "Press to open inventory of currently selected individual (Only works when one is selected).", true);
+	public MappedKey openBuildWindow = new MappedKey("Open Build Window", Input.Keys.B, "Press to open build window of currently selected individual (Only works when one is selected).", true);
 
 	public List<MappedKey> getFunctionalKeyMappings() {
 		return Lists.newArrayList(
@@ -65,16 +59,50 @@ public class Controls implements Serializable {
 			forceMove,
 			jump,
 			toggleWalkRun,
-			addWayPoint,
-			selectIndividual,
 			mineTile,
 			attack,
 			rangedAttack,
-			snapToGrid
+			snapToGrid,
+			openInventory,
+			openBuildWindow,
+			moveCamUp,
+			moveCamDown,
+			moveCamLeft,
+			moveCamRight
 		);
 	}
 
+	public List<MappedKey> getUnmappableKeys() {
+		return Lists.newArrayList(
+			selectIndividual,
+			addWayPoint
+		);
+	}
+
+	public static class MappedKey implements Serializable {
+		private static final long serialVersionUID = -7721011148775681451L;
+		public final String description;
+		public final String showInfo;
+		public final boolean canChange;
+
+		public int keyCode;
+
+		/**
+		 * Constructor
+		 */
+		public MappedKey(String description, int keyCode, String showInfo, boolean canChange) {
+			this.description = description;
+			this.keyCode = keyCode;
+			this.showInfo = showInfo;
+			this.canChange = canChange;
+		}
+	}
+
 	public static void setup() {
+		disallowedKeys.add(Input.Keys.SHIFT_LEFT);
+		disallowedKeys.add(Input.Keys.ESCAPE);
+		disallowedKeys.add(Input.Keys.ENTER);
+
 		keyName.put(Input.Keys.NUM_0, "0");
 		keyName.put(Input.Keys.NUM_1, "1");
 		keyName.put(Input.Keys.NUM_2, "2");
@@ -153,7 +181,11 @@ public class Controls implements Serializable {
 		keyName.put(Input.Keys.APOSTROPHE, "'");
 		keyName.put(Input.Keys.SLASH, "/");
 		keyName.put(Input.Keys.BACKSLASH, "\"");
-		
+		keyName.put(Input.Keys.UP, "UP");
+		keyName.put(Input.Keys.DOWN, "DOWN");
+		keyName.put(Input.Keys.LEFT, "LEFT");
+		keyName.put(Input.Keys.RIGHT, "RIGHT");
+
 		keyMap.put(Input.Keys.NUM_0, "0");
 		keyMap.put(Input.Keys.NUM_1, "1");
 		keyMap.put(Input.Keys.NUM_2, "2");

@@ -117,6 +117,45 @@ public class KeyMappingsWindow extends Window {
 		HashMap<ListingMenuItem<MappedKey>, String> map = Maps.newHashMap();
 
 		for (MappedKey entry : BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings()) {
+			ContextMenu contextMenu = new ContextMenu(
+				getMouseScreenX(),
+				getMouseScreenY(),
+				true,
+				new ContextMenu.MenuItem(
+					"Show info",
+					() -> {
+						UserInterface.addLayeredComponentUnique(
+							new MessageWindow(
+								entry.showInfo,
+								Color.ORANGE,
+								300,
+								200,
+								entry.description,
+								true
+							)
+						);
+					},
+					Color.ORANGE,
+					Color.GREEN,
+					Color.WHITE,
+					null
+				)
+			);
+
+			if (entry.canChange) {
+				contextMenu.addMenuItem(
+					new ContextMenu.MenuItem(
+						"Change",
+						() -> {
+						},
+						Color.ORANGE,
+						Color.GREEN,
+						Color.WHITE,
+						null
+					)
+				);
+			}
+
 			map.put(
 				new ListingMenuItem<MappedKey>(
 					entry,
@@ -134,44 +173,63 @@ public class KeyMappingsWindow extends Window {
 						Color.WHITE,
 						UIRef.BL
 					),
-					new ContextMenu(
-						getMouseScreenX(), 
-						getMouseScreenY(), 
-						true,
-						new ContextMenu.MenuItem(
-							"Show info", 
-							() -> {
-								UserInterface.addLayeredComponentUnique(
-									new MessageWindow(
-										entry.showInfo, 
-										Color.ORANGE, 
-										300, 
-										200, 
-										entry.description, 
-										true
-									)
-								);
-							}, 
-							Color.ORANGE, 
-							Color.GREEN, 
-							Color.WHITE,
-							null
-						),
-						new ContextMenu.MenuItem(
-							"Change", 
-							() -> {
-							}, 
-							Color.ORANGE, 
-							Color.GREEN, 
-							Color.WHITE,
-							null
-						)
-					)
+					contextMenu
 				),
 				Integer.toString(entry.keyCode)
 			);
 		}
 
 		listings.add(map);
+	}
+
+
+	/**
+	 * Window used for changing key binding.
+	 *
+	 * @author Matt
+	 */
+	@Copyright("Matthew Peck 2015")
+	public static class ChangeKeyWindow extends Window {
+		private MappedKey mappedKey;
+
+		/**
+		 * Constructor
+		 */
+		public ChangeKeyWindow(MappedKey mappedKey) {
+			super(200, 100, "Change key", true, false, false, true);
+			this.mappedKey = mappedKey;
+		}
+
+		@Override
+		public boolean keyPressed(int keyCode) {
+			if (Controls.disallowedKeys.contains(keyCode)) {
+				// Disallowed
+			} else {
+				mappedKey.keyCode = keyCode;
+			}
+
+			return super.keyPressed(keyCode);
+		}
+
+		@Override
+		protected void internalWindowRender() {
+		}
+
+		@Override
+		protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		}
+
+		@Override
+		protected void uponClose() {
+		}
+
+		@Override
+		public Object getUniqueIdentifier() {
+			return "ChangeKey" + mappedKey.keyCode;
+		}
+
+		@Override
+		public void leftClickReleased() {
+		}
 	}
 }

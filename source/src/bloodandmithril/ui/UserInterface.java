@@ -96,7 +96,6 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -1305,7 +1304,7 @@ public class UserInterface {
 			}
 		}
 
-		if (keyCode == Keys.I) {
+		if (keyCode == getKeyMappings().openInventory.keyCode) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				Individual individual = Domain.getSelectedIndividuals().iterator().next();
 				String simpleName = individual.getId().getSimpleName();
@@ -1325,7 +1324,7 @@ public class UserInterface {
 			}
 		}
 
-		if (keyCode == Keys.B) {
+		if (keyCode == getKeyMappings().openBuildWindow.keyCode) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				Individual individual = Domain.getSelectedIndividuals().iterator().next();
 
