@@ -14,6 +14,7 @@ import bloodandmithril.control.Controls;
 import bloodandmithril.control.Controls.MappedKey;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -21,8 +22,11 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
+import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Maps;
 
 /**
@@ -31,14 +35,22 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class KeyMappingsWindow extends Window {
+public class KeyMappingsWindow extends Window implements Refreshable {
 
 	ScrollableListingPanel<MappedKey, String> keyMappings;
+	
+	private static Comparator<MappedKey> mapabilityComparator = new Comparator<MappedKey>() {
+		@Override
+		public int compare(MappedKey o1, MappedKey o2) {
+			return new Boolean(o1.canChange).compareTo(o2.canChange);
+		}
+		
+	};
 
 	private static Comparator<MappedKey> stringComparator = new Comparator<MappedKey>() {
 		@Override
 		public int compare(MappedKey o1, MappedKey o2) {
-			return o1.description.compareTo(o2.description);
+			return ComparisonChain.start().compare(o1, o2, mapabilityComparator).compare(o1.description, o2.description).result();
 		}
 	};
 
@@ -111,12 +123,19 @@ public class KeyMappingsWindow extends Window {
 	public boolean scrolled(int amount) {
 		return keyMappings.scrolled(amount);
 	}
+	
+	
+	@Override
+	public void refresh() {
+		keyMappings.getListing().clear();
+		populateKeyMappingsPairs(keyMappings.getListing());
+	}
 
 
 	private void populateKeyMappingsPairs(List<HashMap<ListingMenuItem<MappedKey>, String>> listings) {
 		HashMap<ListingMenuItem<MappedKey>, String> map = Maps.newHashMap();
 
-		for (MappedKey entry : BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings()) {
+		for (MappedKey mappedKey : BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings().values()) {
 			ContextMenu contextMenu = new ContextMenu(
 				getMouseScreenX(),
 				getMouseScreenY(),
@@ -126,11 +145,11 @@ public class KeyMappingsWindow extends Window {
 					() -> {
 						UserInterface.addLayeredComponentUnique(
 							new MessageWindow(
-								entry.showInfo,
+								mappedKey.showInfo,
 								Color.ORANGE,
 								300,
 								200,
-								entry.description,
+								mappedKey.description,
 								true
 							)
 						);
@@ -142,11 +161,14 @@ public class KeyMappingsWindow extends Window {
 				)
 			);
 
-			if (entry.canChange) {
+			if (mappedKey.canChange) {
 				contextMenu.addMenuItem(
 					new ContextMenu.MenuItem(
 						"Change",
 						() -> {
+							UserInterface.addLayeredComponentUnique(
+								new ChangeKeyWindow(mappedKey)
+							);
 						},
 						Color.ORANGE,
 						Color.GREEN,
@@ -158,13 +180,13 @@ public class KeyMappingsWindow extends Window {
 
 			map.put(
 				new ListingMenuItem<MappedKey>(
-					entry,
+					mappedKey,
 					new Button(
-						entry.description,
+						mappedKey.description,
 						defaultFont,
 						0,
 						0,
-						entry.description.length() * 10,
+						mappedKey.description.length() * 10,
 						16,
 						() -> {
 						},
@@ -175,7 +197,56 @@ public class KeyMappingsWindow extends Window {
 					),
 					contextMenu
 				),
-				Integer.toString(entry.keyCode)
+				Integer.toString(mappedKey.keyCode)
+			);
+		}
+		
+		for (MappedKey mappedKey : BloodAndMithrilClient.getKeyMappings().getUnmappableKeys()) {
+			ContextMenu contextMenu = new ContextMenu(
+				getMouseScreenX(),
+				getMouseScreenY(),
+				true,
+				new ContextMenu.MenuItem(
+					"Show info",
+					() -> {
+						UserInterface.addLayeredComponentUnique(
+							new MessageWindow(
+								mappedKey.showInfo,
+								Color.ORANGE,
+								300,
+								200,
+								mappedKey.description,
+								true
+							)
+						);
+					},
+					Color.ORANGE,
+					Color.GREEN,
+					Color.WHITE,
+					null
+				)
+			);
+
+			map.put(
+				new ListingMenuItem<MappedKey>(
+					mappedKey,
+					new Button(
+						mappedKey.description,
+						defaultFont,
+						0,
+						0,
+						mappedKey.description.length() * 10,
+						16,
+						() -> {
+						},
+						Color.PURPLE,
+						Color.GREEN,
+						Color.WHITE,
+						UIRef.BL
+					),
+					contextMenu
+				),
+				Integer.toString(mappedKey.keyCode)
 			);
 		}
 
@@ -203,9 +274,15 @@ public class KeyMappingsWindow extends Window {
 		@Override
 		public boolean keyPressed(int keyCode) {
 			if (Controls.disallowedKeys.contains(keyCode)) {
-				// Disallowed
+				UserInterface.addMessage("Disallowed", "Can not remap this key.");
+				setClosing(true);
 			} else {
-				mappedKey.keyCode = keyCode;
+				if (BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings().containsKey(keyCode)) {
+					UserInterface.addMessage("Conflict", "Key already mapped to " + BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings().get(keyCode).description);
+				} else {
+					mappedKey.keyCode = keyCode;
+				}
+				setClosing(true);
 			}
 
 			return super.keyPressed(keyCode);
@@ -213,6 +290,11 @@ public class KeyMappingsWindow extends Window {
 
 		@Override
 		protected void internalWindowRender() {
+			defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.ORANGE, getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * getAlpha()));
+			String messageToDisplay = Util.fitToWindow("Press Key", width, (height - 75) / 25);
+			defaultFont.drawMultiLine(BloodAndMithrilClient.spriteBatch, messageToDisplay, x + 6, y - 25);
+			
+			UserInterface.refreshRefreshableWindows();
 		}
 
 		@Override

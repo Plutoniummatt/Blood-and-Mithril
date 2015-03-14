@@ -83,6 +83,7 @@ import com.google.common.collect.Sets;
  */
 @Copyright("Matthew Peck 2014")
 public class BloodAndMithrilClient implements ApplicationListener, InputProcessor {
+	public static boolean devMode = false;
 
 	/** The maximum spread of individuals when going to location */
 	private static final float INDIVIDUAL_SPREAD = 600f;

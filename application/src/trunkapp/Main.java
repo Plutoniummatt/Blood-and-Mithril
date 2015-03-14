@@ -36,6 +36,7 @@ public class Main {
 		cfg.addIcon("data/image/smallIcon.png", FileType.Internal);
 		cfg.addIcon("data/image/icon.png", FileType.Internal);
 
+		BloodAndMithrilClient.devMode = true;
 		client = new BloodAndMithrilClient() {
 			@Override
 			public boolean keyDown(int keycode) {

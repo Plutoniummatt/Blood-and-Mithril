@@ -85,7 +85,7 @@ public class TextInputFieldPanel extends Panel {
 	@Override
 	public boolean keyPressed(int keyCode) {
 
-		if (keyCode == Input.Keys.BACKSPACE) {
+		if (keyCode == BloodAndMithrilClient.getKeyMappings().deleteCharacter.keyCode) {
 			if (inputText.length() == 0) {
 				return true;
 			}

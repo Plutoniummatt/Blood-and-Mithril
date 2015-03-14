@@ -23,7 +23,6 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.collect.Lists;
@@ -188,7 +187,7 @@ public class ChatWindow extends Window {
 
 		textInputPanel.keyPressed(keyCode);
 
-		if (keyCode == Input.Keys.ENTER) {
+		if (keyCode == BloodAndMithrilClient.getKeyMappings().sendChatMessage.keyCode) {
 			if (!StringUtils.isEmpty(textInputPanel.getInputText())) {
 				ClientServerInterface.SendRequest.sendChatMessage(textInputPanel.getInputText());
 				textInputPanel.clear();

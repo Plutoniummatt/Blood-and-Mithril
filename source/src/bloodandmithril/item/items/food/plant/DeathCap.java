@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class DeathCap extends Food {
 	private static final long serialVersionUID = -7125731448429674227L;
 
+	public static TextureRegion DEATH_CAP;
 	private final boolean cooked;
 
 	/**
@@ -76,7 +77,7 @@ public class DeathCap extends Food {
 
 	@Override
 	public TextureRegion getTextureRegion() {
-		return null;
+		return DEATH_CAP;
 	}
 
 

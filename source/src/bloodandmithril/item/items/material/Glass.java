@@ -17,7 +17,8 @@ import com.google.common.collect.Maps;
 public class Glass extends bloodandmithril.item.items.material.Material implements Craftable {
 	private static final long serialVersionUID = -1491126318224334985L;
 
-	public static TextureRegion GLASSICON;
+	public static TextureRegion GLASS_ICON;
+	public static TextureRegion GLASS_ITEM;
 
 	/**
 	 * Constructor
@@ -53,7 +54,7 @@ public class Glass extends bloodandmithril.item.items.material.Material implemen
 
 	@Override
 	public TextureRegion getTextureRegion() {
-		return null;
+		return GLASS_ITEM;
 	}
 
 
@@ -86,6 +87,6 @@ public class Glass extends bloodandmithril.item.items.material.Material implemen
 
 	@Override
 	public TextureRegion getIconTextureRegion() {
-		return GLASSICON;
+		return null;
 	}
 }

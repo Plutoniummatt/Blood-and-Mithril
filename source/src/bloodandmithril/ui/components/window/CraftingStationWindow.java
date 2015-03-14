@@ -2,6 +2,7 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
@@ -40,7 +41,6 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -125,7 +125,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			90,
 			16,
 			() -> {
-				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+				if (Gdx.input.isKeyPressed(getKeyMappings().bulkCraft.keyCode)) {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
 							WIDTH / 2 - 125,

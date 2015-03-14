@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.item.items.Item;
@@ -34,7 +35,6 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -350,7 +350,7 @@ public class TradeWindow extends Window implements Refreshable {
 							return;
 						}
 
-						if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+						if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkTrade.keyCode)) {
 							UserInterface.addLayeredComponent(
 								new TextInputWindow(
 									WIDTH / 2 - 125,
@@ -413,7 +413,7 @@ public class TradeWindow extends Window implements Refreshable {
 				key.getSingular(true).length() * 10,
 				16,
 				() -> {
-					if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+					if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkTrade.keyCode)) {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
 								WIDTH / 2 - 125,
