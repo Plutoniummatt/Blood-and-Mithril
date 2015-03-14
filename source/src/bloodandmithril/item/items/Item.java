@@ -129,6 +129,11 @@ public abstract class Item implements Serializable, Affixed {
 	public String getPlural(boolean firstCap) {
 		return modifyName(internalGetPlural(firstCap));
 	}
+	
+	/** Whether this item can be thrown */
+	public boolean throwable() {
+		return true;
+	}
 
 	/** Get the singular name for this item */
 	protected abstract String internalGetSingular(boolean firstCap);

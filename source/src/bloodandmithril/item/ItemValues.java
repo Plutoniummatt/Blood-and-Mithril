@@ -42,4 +42,6 @@ public class ItemValues {
 	public static final int COPPERINGOT = 750;
 	public static final int MEDIEVALWALLTORCH = 100;
 	public static final int TORCH = 200;
+	public static final int LONGBOW = 2000;
+	public static final int GLOWSTICK = 100;
 }

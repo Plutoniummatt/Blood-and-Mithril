@@ -536,7 +536,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			));
 		}
 
-		if (host instanceof Individual) {
+		if (host instanceof Individual && item.throwable()) {
 			toReturn.addMenuItem(new MenuItem(
 				"Throw",
 				() -> {

@@ -4,6 +4,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedProjectileWeapon;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile.ProjectileItem;
@@ -40,8 +41,8 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 	/**
 	 * Constructor
 	 */
-	public LongBow(float mass, int volume, boolean equippable, long value, Class<T> material) {
-		super(mass, volume, equippable, value, material);
+	public LongBow(Class<T> material) {
+		super(1f, 2, true, ItemValues.LONGBOW, material);
 	}
 
 
@@ -214,7 +215,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 
 	@Override
 	protected Item internalCopy() {
-		return new LongBow<>(getMass(), getVolume(), true, getValue(), getMaterial());
+		return new LongBow<>(getMaterial());
 	}
 
 

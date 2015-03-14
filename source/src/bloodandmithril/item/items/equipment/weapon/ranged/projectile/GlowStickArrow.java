@@ -4,6 +4,7 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.item.material.metal.Metal;
@@ -90,8 +91,9 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 	public static class GlowStickArrowItem<T extends Metal> extends ArrowItem<T> {
 		private static final long serialVersionUID = 9027137493687956507L;
 
-		public GlowStickArrowItem(Class<T> metal, long value) {
+		public GlowStickArrowItem(Class<T> metal) {
 			super(metal);
+			this.setValue(getValue() + ItemValues.GLOWSTICK);
 		}
 
 		@Override
@@ -136,7 +138,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 
 		@Override
 		protected Item internalCopy() {
-			return new GlowStickArrowItem<>(metal, getValue());
+			return new GlowStickArrowItem<>(metal);
 		}
 
 

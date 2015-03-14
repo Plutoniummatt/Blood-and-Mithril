@@ -37,28 +37,9 @@ import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
-import bloodandmithril.item.items.equipment.misc.Torch;
-import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
-import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
-import bloodandmithril.item.items.equipment.weapon.ranged.LongBow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrow;
-import bloodandmithril.item.items.food.animal.ChickenLeg;
-import bloodandmithril.item.items.food.plant.Carrot;
-import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
-import bloodandmithril.item.items.food.plant.DeathCap;
-import bloodandmithril.item.items.material.Brick;
-import bloodandmithril.item.items.material.Ingot;
-import bloodandmithril.item.items.material.Log;
-import bloodandmithril.item.items.material.Plank;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.liquid.Water;
-import bloodandmithril.item.material.metal.Iron;
-import bloodandmithril.item.material.metal.Steel;
 import bloodandmithril.item.material.mineral.Coal;
-import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
@@ -263,54 +244,6 @@ public class DevWindow extends Window {
 				lightColor(),
 				lightSkinColor()
 			);
-
-			elf.giveItem(new bloodandmithril.item.items.furniture.WoodenChest(StandardWood.class));
-			for (int i = 100; i > 0; i--) {
-				elf.giveItem(new bloodandmithril.item.items.furniture.MedievalWallTorch());
-				elf.giveItem(new Carrot());
-				elf.giveItem(Arrow.ArrowItem.arrowItem(Steel.class));
-				elf.giveItem(new FireArrow.FireArrowItem<>(Iron.class, 10));
-				elf.giveItem(new GlowStickArrow.GlowStickArrowItem<>(Iron.class, 10));
-			}
-			for (int i = 10; i > 0; i--) {
-				elf.giveItem(Ingot.ingot(Steel.class));
-				elf.giveItem(new FlintAndFiresteel());
-				elf.giveItem(Rock.rock(Coal.class));
-			}
-			for (int i = 10; i > 0; i--) {
-				elf.giveItem(Log.log(StandardWood.class));
-				elf.giveItem(Plank.plank(StandardWood.class));
-				elf.giveItem(new DeathCap(true));
-			}
-			elf.giveItem(new Torch());
-			for (int i = 5; i > 0; i--) {
-				elf.giveItem(Brick.brick(SandStone.class));
-			}
-			for (int i = 5; i > 0; i--) {
-				elf.giveItem(Rock.rock(SandStone.class));
-			}
-			for (int i = 5; i > 0; i--) {
-				elf.giveItem(new ChickenLeg(true));
-				elf.giveItem(new ChickenLeg(false));
-			}
-			for (int i = 5; i > 0; i--) {
-				elf.giveItem(Rock.rock(Hematite.class));
-			}
-			for (int i = 1; i > 0; i--) {
-				Broadsword item = new Broadsword();
-				elf.giveItem(item);
-			}
-			for (int i = 1; i > 0; i--) {
-				LongBow<StandardWood> bow = new LongBow<>(10f, 5, true, 10, StandardWood.class);
-				elf.giveItem(bow);
-			}
-			for (int i = 1; i > 0; i--) {
-				BushKnife item = new BushKnife();
-				elf.giveItem(item);
-			}
-			for (int i = 100; i > 0; i--) {
-				elf.giveItem(new CarrotSeed());
-			}
 
 			if (isServer()) {
 				Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
