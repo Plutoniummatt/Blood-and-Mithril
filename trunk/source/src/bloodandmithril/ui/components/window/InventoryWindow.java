@@ -59,7 +59,6 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
@@ -500,7 +499,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			toReturn.addMenuItem(new MenuItem(
 				"Discard",
 				() -> {
-					if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+					if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkDiscard.keyCode)) {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
 								WIDTH / 2 - 125,

@@ -32,9 +32,15 @@ public class Controls implements Serializable {
 	public MappedKey moveLeft = new MappedKey("Move left", Input.Keys.A, "", false);
 	public MappedKey moveRight = new MappedKey("Move right", Input.Keys.D, "", false);
 	public MappedKey walk = new MappedKey("Walk", Input.Keys.SHIFT_RIGHT, "", false);
+	public MappedKey sendChatMessage = new MappedKey("Send message", Input.Keys.ENTER, "", false);
+	public MappedKey deleteCharacter = new MappedKey("Delete character", Input.Keys.BACKSPACE, "", false);
 
 	public MappedKey selectIndividual = new MappedKey("Add to Selection", Input.Keys.SHIFT_LEFT, "Hold and left click to add an individual to currently selected individuals.", false);
 	public MappedKey addWayPoint = new MappedKey("Add Waypoint", Input.Keys.SHIFT_LEFT, "Hold and right click to add a waypoint.", false);
+	public MappedKey bulkCraft = new MappedKey("Bulk Craft", Input.Keys.SHIFT_LEFT, "Hold to craft multiple items at a crafting station.", false);
+	public MappedKey bulkDiscard = new MappedKey("Bulk Discard", Input.Keys.SHIFT_LEFT, "Hold to discard multiple items from inventory.", false);
+	public MappedKey bulkTrade = new MappedKey("Bulk Trade/Transfer", Input.Keys.SHIFT_LEFT, "Hold to trade/transfer multiple items.", false);
+	public MappedKey continuousThrowing = new MappedKey("Bulk Throw", Input.Keys.SHIFT_LEFT, "Hold to continuously throw items.", false);
 
 	public MappedKey moveCamUp = new MappedKey("Move Camera Up", Input.Keys.UP, "Camera movement.", true);
 	public MappedKey moveCamDown = new MappedKey("Move Camera Down", Input.Keys.DOWN, "Camera movement.", true);
@@ -52,8 +58,10 @@ public class Controls implements Serializable {
 	public MappedKey openInventory = new MappedKey("Open Inventory", Input.Keys.I, "Press to open inventory of currently selected individual (Only works when one is selected).", true);
 	public MappedKey openBuildWindow = new MappedKey("Open Build Window", Input.Keys.B, "Press to open build window of currently selected individual (Only works when one is selected).", true);
 
-	public List<MappedKey> getFunctionalKeyMappings() {
-		return Lists.newArrayList(
+	public Map<Integer, MappedKey> getFunctionalKeyMappings() {
+		Map<Integer, MappedKey> map = Maps.newHashMap();
+		
+		List<MappedKey> keys = Lists.newArrayList(
 			rightClickDragBox,
 			contextMenuBypass,
 			forceMove,
@@ -70,12 +78,22 @@ public class Controls implements Serializable {
 			moveCamLeft,
 			moveCamRight
 		);
+		
+		for (MappedKey key : keys) {
+			map.put(key.keyCode, key);
+		}
+		
+		return map;
 	}
 
 	public List<MappedKey> getUnmappableKeys() {
 		return Lists.newArrayList(
 			selectIndividual,
-			addWayPoint
+			addWayPoint,
+			bulkCraft,
+			bulkDiscard,
+			bulkTrade,
+			continuousThrowing
 		);
 	}
 

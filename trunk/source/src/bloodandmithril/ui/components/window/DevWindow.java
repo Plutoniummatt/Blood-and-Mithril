@@ -48,8 +48,11 @@ import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickAr
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
 import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
-import bloodandmithril.item.items.material.Bricks;
+import bloodandmithril.item.items.food.plant.DeathCap;
+import bloodandmithril.item.items.material.Brick;
 import bloodandmithril.item.items.material.Ingot;
+import bloodandmithril.item.items.material.Log;
+import bloodandmithril.item.items.material.Plank;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.metal.Iron;
@@ -274,14 +277,20 @@ public class DevWindow extends Window {
 				elf.giveItem(new FlintAndFiresteel());
 				elf.giveItem(Rock.rock(Coal.class));
 			}
+			for (int i = 10; i > 0; i--) {
+				elf.giveItem(Log.log(StandardWood.class));
+				elf.giveItem(Plank.plank(StandardWood.class));
+				elf.giveItem(new DeathCap(true));
+			}
 			elf.giveItem(new Torch());
 			for (int i = 5; i > 0; i--) {
-				elf.giveItem(Bricks.bricks(SandStone.class));
+				elf.giveItem(Brick.brick(SandStone.class));
 			}
 			for (int i = 5; i > 0; i--) {
 				elf.giveItem(Rock.rock(SandStone.class));
 			}
 			for (int i = 5; i > 0; i--) {
+				elf.giveItem(new ChickenLeg(true));
 				elf.giveItem(new ChickenLeg(false));
 			}
 			for (int i = 5; i > 0; i--) {

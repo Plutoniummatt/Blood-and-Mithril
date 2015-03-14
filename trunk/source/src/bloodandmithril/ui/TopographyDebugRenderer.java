@@ -96,7 +96,7 @@ public class TopographyDebugRenderer {
 		}
 		UserInterface.shapeRenderer.end();
 
-		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && BloodAndMithrilClient.devMode) {
 			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 				topoX = topoX - 10;
 			}

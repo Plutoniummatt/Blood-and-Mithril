@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 @Copyright("Matthew Peck 2014")
 public class Currency extends Misc {
 	private static final long serialVersionUID = -7059495735666011863L;
+	
+	public static TextureRegion CURRENCY_POUCH;
 
 	/**
 	 * Constructor
@@ -49,7 +51,7 @@ public class Currency extends Misc {
 
 	@Override
 	public TextureRegion getTextureRegion() {
-		return null;
+		return CURRENCY_POUCH;
 	}
 
 

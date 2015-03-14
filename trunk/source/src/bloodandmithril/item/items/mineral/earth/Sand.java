@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Sand extends Earth {
 	private static final long serialVersionUID = -7756119539773387265L;
 
+	public static TextureRegion SAND;
 
 	/**
 	 * Constructor
@@ -55,7 +56,7 @@ public class Sand extends Earth {
 
 	@Override
 	public TextureRegion getTextureRegion() {
-		return null;
+		return SAND;
 	}
 
 

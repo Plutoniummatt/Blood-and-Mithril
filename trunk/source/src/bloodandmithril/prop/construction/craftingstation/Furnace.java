@@ -15,7 +15,7 @@ import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.GlassBottle;
-import bloodandmithril.item.items.material.Bricks;
+import bloodandmithril.item.items.material.Brick;
 import bloodandmithril.item.items.material.Glass;
 import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.material.Material;
@@ -117,7 +117,7 @@ public class Furnace extends CraftingStation implements Container {
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
 		requiredItems.put(Rock.rock(SandStone.class), 5);
-		requiredItems.put(Bricks.bricks(SandStone.class), 5);
+		requiredItems.put(Brick.brick(SandStone.class), 5);
 		return requiredItems;
 	}
 

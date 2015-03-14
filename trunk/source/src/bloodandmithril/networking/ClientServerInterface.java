@@ -142,7 +142,7 @@ import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
 import bloodandmithril.item.items.food.plant.DeathCap;
 import bloodandmithril.item.items.furniture.MedievalWallTorch;
 import bloodandmithril.item.items.material.ArrowHead;
-import bloodandmithril.item.items.material.Bricks;
+import bloodandmithril.item.items.material.Brick;
 import bloodandmithril.item.items.material.Glass;
 import bloodandmithril.item.items.material.Ingot;
 import bloodandmithril.item.items.material.Rock;
@@ -599,7 +599,7 @@ public class ClientServerInterface {
 		kryo.register(Blood.class);
 		kryo.register(HareAI.class);
 		kryo.register(Box.class);
-		kryo.register(Bricks.class);
+		kryo.register(Brick.class);
 		kryo.register(BrickTile.class);
 		kryo.register(Dagger.class);
 		kryo.register(CSIMineTile.class);

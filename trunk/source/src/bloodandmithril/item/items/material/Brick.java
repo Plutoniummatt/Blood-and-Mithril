@@ -15,24 +15,24 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Bricks extends bloodandmithril.item.items.material.Material {
+public class Brick extends bloodandmithril.item.items.material.Material {
 	private static final long serialVersionUID = -7756119539482746265L;
 	
-	/** {@link TextureRegion} of the {@link Bricks} */
-	public static TextureRegion BRICKS;
+	/** {@link TextureRegion} of the {@link Brick} */
+	public static TextureRegion BRICK;
 	public final Class<? extends Mineral> material;
 
 	/**
 	 * Constructor
 	 */
-	private Bricks(Class<? extends Mineral> material) {
+	private Brick(Class<? extends Mineral> material) {
 		super(1f, 4, false, ItemValues.YELLOWBRICK);
 		this.material = material;
 	}
 	
 	
-	public static Bricks bricks(Class<? extends Mineral> material) {
-		return new Bricks(material);
+	public static Brick brick(Class<? extends Mineral> material) {
+		return new Brick(material);
 	}
 	
 
@@ -59,19 +59,19 @@ public class Bricks extends bloodandmithril.item.items.material.Material {
 
 	@Override
 	protected boolean internalSameAs(Item other) {
-		return other instanceof Bricks;
+		return other instanceof Brick;
 	}
 
 
 	@Override
 	public TextureRegion getTextureRegion() {
-		return BRICKS;
+		return BRICK;
 	}
 
 
 	@Override
 	protected Item internalCopy() {
-		return new Bricks(material);
+		return new Brick(material);
 	}
 
 

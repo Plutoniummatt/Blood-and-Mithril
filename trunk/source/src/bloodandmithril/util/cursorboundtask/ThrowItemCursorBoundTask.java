@@ -2,6 +2,7 @@ package bloodandmithril.util.cursorboundtask;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldCoords;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
@@ -10,7 +11,6 @@ import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 
 
@@ -76,7 +76,7 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 
 	@Override
 	public CursorBoundTask getImmediateTask() {
-		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && individual.has(item) > 0) {
+		if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().continuousThrowing.keyCode) && individual.has(item) > 0) {
 			return new ThrowItemCursorBoundTask(item, individual);
 		}
 		return null;

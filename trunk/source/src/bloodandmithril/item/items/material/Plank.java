@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Plank extends bloodandmithril.item.items.material.Material implements Craftable {
 	private static final long serialVersionUID = 8519886397429197864L;
 
+	public static TextureRegion PLANK;
 	private Class<? extends Wood> wood;
 
 	/**

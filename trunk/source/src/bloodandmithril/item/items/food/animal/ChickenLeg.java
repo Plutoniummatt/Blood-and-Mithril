@@ -22,6 +22,9 @@ public class ChickenLeg extends Food implements Craftable {
 	private static final long serialVersionUID = 327664484386522545L;
 	private boolean cooked;
 
+	public static TextureRegion COOKED_CHICKEN_LEG;
+	public static TextureRegion RAW_CHICKEN_LEG;
+	
 	/**
 	 * Constructor
 	 */
@@ -93,7 +96,7 @@ public class ChickenLeg extends Food implements Craftable {
 
 	@Override
 	public TextureRegion getTextureRegion() {
-		return null;
+		return cooked ? COOKED_CHICKEN_LEG : RAW_CHICKEN_LEG;
 	}
 
 

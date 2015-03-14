@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Ashes extends Earth {
 	private static final long serialVersionUID = 988154990456038686L;
 	public static final String description = "The residue of combustion, mostly consisting of metal oxides.";
+	
+	public static TextureRegion ASHES;
 
 	/**
 	 * Constructor
@@ -43,7 +45,7 @@ public class Ashes extends Earth {
 
 	@Override
 	public TextureRegion getTextureRegion() {
-		return null;
+		return ASHES;
 	}
 
 
