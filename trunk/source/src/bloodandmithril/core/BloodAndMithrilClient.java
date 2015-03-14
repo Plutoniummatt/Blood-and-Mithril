@@ -771,16 +771,16 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	private void cameraMovement() {
 		if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
-			if (Gdx.input.isKeyPressed(Keys.UP)){
+			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamUp.keyCode)){
 				cam.position.y += 10f;
 			}
-			if (Gdx.input.isKeyPressed(Keys.DOWN)){
+			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamDown.keyCode)){
 				cam.position.y -= 10f;
 			}
-			if (Gdx.input.isKeyPressed(Keys.LEFT)){
+			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamLeft.keyCode)){
 				cam.position.x -= 10f;
 			}
-			if (Gdx.input.isKeyPressed(Keys.RIGHT)){
+			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamRight.keyCode)){
 				cam.position.x += 10f;
 			}
 		}
