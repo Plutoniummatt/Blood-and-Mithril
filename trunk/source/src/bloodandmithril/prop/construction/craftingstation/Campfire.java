@@ -82,8 +82,8 @@ public class Campfire extends CraftingStation implements Lightable {
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
-		requiredItems.put(Stick.stick(StandardWood.class), 1);
-		requiredItems.put(Plank.plank(StandardWood.class), 1);
+		requiredItems.put(Stick.stick(StandardWood.class), 10);
+		requiredItems.put(Plank.plank(StandardWood.class), 2);
 		return requiredItems;
 	}
 

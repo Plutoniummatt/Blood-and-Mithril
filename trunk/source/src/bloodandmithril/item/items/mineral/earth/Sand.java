@@ -20,7 +20,7 @@ public class Sand extends Earth {
 	 * Constructor
 	 */
 	public Sand() {
-		super(10f, 10, false, ItemValues.YELLOWSAND);
+		super(1f, 1, false, ItemValues.YELLOWSAND);
 	}
 
 
@@ -41,6 +41,12 @@ public class Sand extends Earth {
 		return "sand";
 	}
 
+	
+	@Override
+	public boolean throwable() {
+		return false;
+	}
+	
 
 	@Override
 	public String getDescription() {
@@ -65,6 +71,12 @@ public class Sand extends Earth {
 		return new Sand();
 	}
 
+
+	@Override
+	public boolean rotates() {
+		return false;
+	}
+	
 
 	@Override
 	public TextureRegion getIconTextureRegion() {

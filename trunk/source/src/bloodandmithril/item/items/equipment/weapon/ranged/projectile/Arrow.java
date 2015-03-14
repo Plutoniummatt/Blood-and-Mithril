@@ -173,7 +173,7 @@ public class Arrow<T extends Metal> extends Projectile {
 
 		@Override
 		public TextureRegion getTextureRegion() {
-			return null;
+			return Arrow.textureRegion;
 		}
 
 

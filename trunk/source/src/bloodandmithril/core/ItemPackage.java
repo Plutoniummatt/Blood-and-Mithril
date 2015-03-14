@@ -14,14 +14,37 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.GlassBottle;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
+import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
+import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
+import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
+import bloodandmithril.item.items.equipment.weapon.ranged.LongBow;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrow;
 import bloodandmithril.item.items.food.animal.ChickenLeg;
 import bloodandmithril.item.items.food.plant.Carrot;
+import bloodandmithril.item.items.food.plant.DeathCap;
+import bloodandmithril.item.items.furniture.MedievalWallTorch;
 import bloodandmithril.item.items.furniture.SmallWoodenCrate;
+import bloodandmithril.item.items.furniture.WoodenChest;
+import bloodandmithril.item.items.material.Brick;
+import bloodandmithril.item.items.material.Glass;
+import bloodandmithril.item.items.material.Ingot;
+import bloodandmithril.item.items.material.Log;
 import bloodandmithril.item.items.material.Plank;
+import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.items.material.Stick;
+import bloodandmithril.item.items.mineral.earth.Ashes;
+import bloodandmithril.item.items.mineral.earth.Dirt;
+import bloodandmithril.item.items.mineral.earth.Sand;
+import bloodandmithril.item.items.misc.Currency;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Water;
+import bloodandmithril.item.material.metal.Iron;
+import bloodandmithril.item.material.metal.Steel;
+import bloodandmithril.item.material.mineral.Coal;
+import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.persistence.PersistenceUtil;
 import bloodandmithril.util.Logger;
@@ -103,6 +126,52 @@ public class ItemPackage implements Serializable {
 				true
 			)
 		);
+		
+		if (BloodAndMithrilClient.devMode) {
+			Container chest = (Container) new WoodenChest(StandardWood.class).getProp();
+			chest.giveItem(new FlintAndFiresteel(), 10);
+			chest.giveItem(Plank.plank(StandardWood.class), 200);
+			chest.giveItem(Stick.stick(StandardWood.class), 200);
+			chest.giveItem(new BushKnife(), 10);
+			chest.giveItem(new CombatKnife(), 10);
+			chest.giveItem(new Broadsword(), 10);
+			chest.giveItem(new Machette(), 10);
+			chest.giveItem(new LongBow<StandardWood>(StandardWood.class), 10);
+			chest.giveItem(new GlowStickArrow.GlowStickArrowItem<Steel>(Steel.class), 500);
+			chest.giveItem(new FireArrow.FireArrowItem<Steel>(Steel.class), 500);
+			chest.giveItem(new Carrot(), 500);
+			chest.giveItem(new DeathCap(false), 500);
+			chest.giveItem(new DeathCap(true), 500);
+			chest.giveItem(new ChickenLeg(false), 500);
+			chest.giveItem(new ChickenLeg(true), 500);
+			chest.giveItem(Rock.rock(Coal.class), 500);
+			chest.giveItem(Rock.rock(SandStone.class), 500);
+			chest.giveItem(new Ashes(), 500);
+			chest.giveItem(new Sand(), 500);
+			chest.giveItem(new Dirt(), 500);
+			chest.giveItem(Log.log(StandardWood.class), 500);
+			chest.giveItem(Plank.plank(StandardWood.class), 500);
+			chest.giveItem(new Torch(), 10);
+			HashMap<Class<? extends Liquid>, Float> map = Maps.newHashMap();
+			map.put(Water.class, 2f);
+			chest.giveItem(new GlassBottle(map), 5);
+			chest.giveItem(Brick.brick(SandStone.class), 100);
+			chest.giveItem(new Glass(), 100);
+			chest.giveItem(Ingot.ingot(Iron.class), 100);
+			chest.giveItem(Ingot.ingot(Steel.class), 100);
+			chest.giveItem(Stick.stick(StandardWood.class), 100);
+			chest.giveItem(new Currency(), 1000);
+			chest.giveItem(new MedievalWallTorch(), 1000);
+			chest.giveItem(new Carrot.CarrotSeed(), 1000);
+			
+			availableItemPackages.add(
+				new ItemPackage(
+					chest,
+					"Dev package",
+					true
+				)
+			);
+		}
 	}
 
 	public static void save() {

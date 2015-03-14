@@ -20,7 +20,7 @@ public class Dirt extends Earth {
 	 * Constructor
 	 */
 	public Dirt() {
-		super(10f, 10, false, ItemValues.DIRT);
+		super(1f, 1, false, ItemValues.DIRT);
 	}
 
 
@@ -37,6 +37,12 @@ public class Dirt extends Earth {
 
 
 	@Override
+	public boolean rotates() {
+		return false;
+	}
+	
+	
+	@Override
 	public String getDescription() {
 		return "Just a pile of dirt";
 	}
@@ -46,11 +52,17 @@ public class Dirt extends Earth {
 	protected boolean internalSameAs(Item other) {
 		return other instanceof Dirt;
 	}
+	
+	
+	@Override
+	public boolean throwable() {
+		return false;
+	}
 
 
 	@Override
 	public TextureRegion getTextureRegion() {
-		return null;
+		return DIRT_PILE;
 	}
 
 

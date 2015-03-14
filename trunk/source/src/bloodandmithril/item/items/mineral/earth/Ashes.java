@@ -15,7 +15,7 @@ public class Ashes extends Earth {
 	 * Constructor
 	 */
 	public Ashes() {
-		super(5f, 10, false, ItemValues.ASHES);
+		super(1f, 1, false, ItemValues.ASHES);
 	}
 
 
@@ -38,8 +38,20 @@ public class Ashes extends Earth {
 
 
 	@Override
+	public boolean throwable() {
+		return false;
+	}
+	
+	
+	@Override
 	protected boolean internalSameAs(Item other) {
 		return other instanceof Ashes;
+	}
+	
+	
+	@Override
+	public boolean rotates() {
+		return false;
 	}
 
 

@@ -1,14 +1,20 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
 import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
+
+import java.util.Map;
+
 import bloodandmithril.character.conditions.Burning;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
+import bloodandmithril.item.items.material.Rock;
 import bloodandmithril.item.material.metal.Metal;
+import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
@@ -91,8 +97,9 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 	public static class FireArrowItem<T extends Metal> extends ArrowItem<T> {
 		private static final long serialVersionUID = 9027137493687956507L;
 
-		public FireArrowItem(Class<T> metal, long value) {
+		public FireArrowItem(Class<T> metal) {
 			super(metal);
+			this.setValue(getValue() + ItemValues.COAL);
 		}
 
 		@Override
@@ -121,6 +128,14 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 			}
 			return false;
 		}
+		
+		
+		@Override
+		public Map<Item, Integer> getRequiredMaterials() {
+			Map<Item, Integer> requiredMaterials = super.getRequiredMaterials();
+			requiredMaterials.put(Rock.rock(Coal.class), 1);
+			return requiredMaterials;
+		}
 
 
 		@Override
@@ -137,7 +152,7 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 
 		@Override
 		protected Item internalCopy() {
-			return new FireArrowItem<>(metal, getValue());
+			return new FireArrowItem<>(metal);
 		}
 
 

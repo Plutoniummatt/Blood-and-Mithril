@@ -34,7 +34,7 @@ public abstract class LiquidContainer extends Item {
 	protected LiquidContainer(float mass, int volume, float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids, long value) {
 		super(mass, volume, false, value);
 		this.maxAmount = maxAmount;
-		this.containedLiquids = containedLiquids;
+		this.containedLiquids = Maps.newHashMap(containedLiquids);
 	}
 
 
