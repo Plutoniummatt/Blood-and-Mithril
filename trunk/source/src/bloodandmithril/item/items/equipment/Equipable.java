@@ -48,8 +48,8 @@ public abstract class Equipable extends Item implements Affixed {
 	public abstract void update(Equipper equipper, float delta);
 	
 	/** Called when unequipped */
-	public abstract void onUnequip();
+	public abstract void onUnequip(Equipper equipper);
 	
 	/** Called when equipped */
-	public abstract void onEquip();
+	public abstract void onEquip(Equipper equipper);
 }

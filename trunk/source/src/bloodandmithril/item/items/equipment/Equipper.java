@@ -66,7 +66,7 @@ public interface Equipper extends Container {
 			item.setWorldId(((Individual) this).getWorldId());
 		}
 		
-		item.onEquip();
+		item.onEquip(this);
 		getEquipperImpl().equip(item);
 	}
 
@@ -75,7 +75,7 @@ public interface Equipper extends Container {
 	 * Equip an {@link Item}
 	 */
 	public default void unequip(Equipable item) {
-		item.onUnequip();
+		item.onUnequip(this);
 		getEquipperImpl().unequip(item);
 	}
 

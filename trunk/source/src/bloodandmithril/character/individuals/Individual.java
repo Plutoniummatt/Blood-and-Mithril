@@ -55,6 +55,7 @@ import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -2063,5 +2064,26 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 		
 		return false;
+	}
+	
+	
+	public FireLighter getFireLighter() {
+		for (Item item : getEquipped().keySet()) {
+			if (item instanceof FireLighter) {
+				if (((FireLighter) item).canLightFire()) {
+					return (FireLighter) item;
+				}
+			}
+		}
+		
+		for (Item item : getInventory().keySet()) {
+			if (item instanceof FireLighter) {
+				if (((FireLighter) item).canLightFire()) {
+					return (FireLighter) item;
+				}
+			}
+		}
+		
+		return null;
 	}
 }

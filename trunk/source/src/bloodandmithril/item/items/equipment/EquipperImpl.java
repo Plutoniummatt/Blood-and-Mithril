@@ -128,7 +128,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 		} else {
 			for (Item equipped : Sets.newHashSet(equippedItems.keySet())) {
 				if (toReplace(toEquip, (Equipable) equipped)) {
-					((Equipable) equipped).onUnequip();
+					((Equipable) equipped).onUnequip(this);
 					unequip((Equipable)equipped);
 					if (toEquip.slot == EquipmentSlot.RING) {
 						break;
@@ -139,7 +139,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 				toEquip.slot,
 				toEquip.slot == EquipmentSlot.RING ? new RingFunction() : new AlwaysTrueFunction()
 			);
-			toEquip.onEquip();
+			toEquip.onEquip(this);
 			equip(toEquip);
 		}
 	}

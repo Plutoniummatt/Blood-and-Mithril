@@ -18,10 +18,10 @@ public abstract class TwoHandedProjectileWeapon<T extends Material> extends TwoH
 	}
 	
 	@Override
-	public void onUnequip() {
+	public void onUnequip(Equipper equipper) {
 	}
 	
 	@Override
-	public void onEquip() {
+	public void onEquip(Equipper equipper) {
 	}
 }
