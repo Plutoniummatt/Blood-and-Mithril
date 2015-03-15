@@ -22,7 +22,8 @@ public abstract class OffhandEquipment extends Equipable {
 
 	static {
 		if (isClient()) {
-			Torch.torch = new TextureRegion(Domain.individualTexture, 0, 852, 43, 7);
+			Torch.torch = new TextureRegion(Domain.individualTexture, 0, 851, 43, 7);
+			Lantern.lantern = new TextureRegion(Domain.individualTexture, 43, 851, 11, 25);
 		}
 	}
 
@@ -82,5 +83,13 @@ public abstract class OffhandEquipment extends Equipable {
 	@Override
 	public boolean twoHand() {
 		return false;
+	}
+	
+	public float renderAngle() {
+		return 0f;
+	}
+	
+	public float combatAngle() {
+		return 0f;
 	}
 }

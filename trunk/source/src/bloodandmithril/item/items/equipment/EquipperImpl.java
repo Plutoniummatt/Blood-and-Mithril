@@ -106,7 +106,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 		if (toEquip instanceof RangedWeapon) {
 			((RangedWeapon) toEquip).setAmmo(null);
 		}
-
+		
 		for (Item equipped : equippedItems.keySet()) {
 			if (equipped.sameAs(toEquip) && toEquip.slot != EquipmentSlot.RING) {
 				return;
@@ -128,6 +128,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 		} else {
 			for (Item equipped : Sets.newHashSet(equippedItems.keySet())) {
 				if (toReplace(toEquip, (Equipable) equipped)) {
+					((Equipable) equipped).onUnequip();
 					unequip((Equipable)equipped);
 					if (toEquip.slot == EquipmentSlot.RING) {
 						break;
@@ -138,6 +139,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 				toEquip.slot,
 				toEquip.slot == EquipmentSlot.RING ? new RingFunction() : new AlwaysTrueFunction()
 			);
+			toEquip.onEquip();
 			equip(toEquip);
 		}
 	}

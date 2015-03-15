@@ -43,4 +43,13 @@ public abstract class Equipable extends Item implements Affixed {
 
 	/** Whether this {@link Equipable} requies both the {@link EquipmentSlot#MAINHAND} and {@link EquipmentSlot#OFFHAND}*/
 	public abstract boolean twoHand();
+	
+	/** Updates this equipable when equipped */
+	public abstract void update(Equipper equipper, float delta);
+	
+	/** Called when unequipped */
+	public abstract void onUnequip();
+	
+	/** Called when equipped */
+	public abstract void onEquip();
 }

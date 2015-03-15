@@ -537,7 +537,7 @@ public class TradeWindow extends Window implements Refreshable {
 	/**
 	 * Renders the listing panels
 	 */
-	protected void renderListingPanels() {
+	protected synchronized void renderListingPanels() {
 		int lineWidth = 23;
 
 		proposerPanel.x = x;

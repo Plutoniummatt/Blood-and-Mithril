@@ -30,6 +30,7 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
+import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
@@ -39,7 +40,6 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
@@ -60,20 +60,30 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 	private static final Color brown = new Color(117f/255f, 76f/255f, 36f/255f, 1f);
 
 	/** Rabbit-specific animation map */
-	private static Map<Action, List<WrapperForTwo<Animation, ShaderProgram>>> animationMap = newHashMap();
+	private static Map<Action, List<WrapperForTwo<AnimationSwitcher, ShaderProgram>>> animationMap = newHashMap();
 
 	static {
 		boolean server = !ClientServerInterface.isClient();
-		ArrayList<WrapperForTwo<Animation, ShaderProgram>> walkSequence = newArrayList(
-			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.07f, PlayMode.LOOP), server ? null : Shaders.pass)
+		
+		AnimationSwitcher walk = new AnimationSwitcher();
+		walk.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.07f, PlayMode.LOOP));         
+		
+		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> walkSequence = newArrayList(
+			wrap(walk, server ? null : Shaders.pass)
 		);
+		
+		AnimationSwitcher run = new AnimationSwitcher();
+		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.05f, PlayMode.LOOP));         
 
-		ArrayList<WrapperForTwo<Animation, ShaderProgram>> runSequence = newArrayList(
-			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.05f, PlayMode.LOOP), server ? null : Shaders.pass)
+		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
+			wrap(run, server ? null : Shaders.pass)
 		);
+		
+		AnimationSwitcher stand = new AnimationSwitcher();
+		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 1, 1f, PlayMode.LOOP));         
 
-		ArrayList<WrapperForTwo<Animation, ShaderProgram>> standSequence = newArrayList(
-			wrap(AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 1, 1f, PlayMode.LOOP), server ? null : Shaders.pass)
+		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
+			wrap(stand, server ? null : Shaders.pass)
 		);
 
 		animationMap.put(Action.RUN_LEFT, runSequence);
@@ -114,7 +124,7 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 
 
 	@Override
-	protected Map<Action, List<WrapperForTwo<Animation, ShaderProgram>>> getAnimationMap() {
+	protected Map<Action, List<WrapperForTwo<AnimationSwitcher, ShaderProgram>>> getAnimationMap() {
 		return animationMap;
 	}
 

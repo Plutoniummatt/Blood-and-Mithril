@@ -5,6 +5,9 @@ import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.Equipper;
+import bloodandmithril.persistence.ParameterPersistenceService;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain.Depth;
@@ -19,15 +22,18 @@ import com.badlogic.gdx.math.Vector2;
  */
 @Copyright("Matthew Peck 2015")
 public class Torch extends OffhandEquipment {
+	private static final long serialVersionUID = 5112607606681273075L;
 
 	public static TextureRegion torch;
-	private static final long serialVersionUID = 5112607606681273075L;
+	private float durationRemaining;
+	private Integer workingId;
 
 	/**
 	 * Constructor
 	 */
-	public Torch() {
+	public Torch(float durationRemaining) {
 		super(1f, 2, ItemValues.TORCH);
+		this.durationRemaining = durationRemaining;
 	}
 
 
@@ -45,13 +51,17 @@ public class Torch extends OffhandEquipment {
 	
 	@Override
 	public String getDescription() {
-		return "A torch, used for lighting";
+		return "A torch, used for lighting.";
 	}
 	
 
 	@Override
 	protected boolean internalSameAs(Item other) {
-		return other instanceof Torch;
+		if (other instanceof Torch) {
+			return ((Torch) other).workingId == workingId && ((Torch) other).durationRemaining == durationRemaining;
+		}
+		
+		return false;
 	}
 
 	
@@ -69,7 +79,19 @@ public class Torch extends OffhandEquipment {
 	
 	@Override
 	protected Item internalCopy() {
-		return new Torch();
+		return new Torch(durationRemaining);
+	}
+	
+	
+	@Override
+	public float renderAngle() {
+		return 55f;
+	}
+	
+	
+	@Override
+	public float combatAngle() {
+		return 90f;
 	}
 
 	
@@ -94,5 +116,30 @@ public class Torch extends OffhandEquipment {
 		ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size1 * 3f, size1 * 8f + 10f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGOUND, false, Colors.FIRE_END);
 		ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size2 * 3f, size2 * 2f + 6f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 		ParticleService.randomVelocityDiminishing(emission, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.FOREGOUND, false, null);
+	}
+	
+	
+	@Override
+	public void update(Equipper equipper, float delta) {
+		if (durationRemaining <= 0f) {
+			equipper.unequip(this);
+			equipper.takeItem(this);
+			UserInterface.refreshRefreshableWindows();
+		} else {
+			durationRemaining -= delta;
+		}
+	}
+	
+	
+	@Override
+	public void onUnequip() {
+	}
+
+
+	@Override
+	public void onEquip() {
+		if (workingId == null) {
+			this.workingId = ParameterPersistenceService.getParameters().getNextItemId();
+		}
 	}
 }

@@ -61,6 +61,7 @@ import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.armor.Armor;
+import bloodandmithril.item.items.equipment.misc.OffhandEquipment;
 import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
@@ -81,6 +82,7 @@ import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.ProficienciesWindow;
 import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
+import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Shaders;
@@ -513,8 +515,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** Returns the map that maps from an {@link Action} to a map that maps action frames to their respective {@link Task}s */
 	protected abstract Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames();
 
-	/** Returns the current {@link Animation} of this {@link Individual} */
-	protected abstract List<WrapperForTwo<Animation, ShaderProgram>> getCurrentAnimation();
+	/** Returns the current {@link AnimationSwitcher} of this {@link Individual} */
+	protected abstract List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> getCurrentAnimation();
 
 	/** Implementation-specific copy method of this {@link Individual} */
 	public abstract Individual copy();
@@ -582,13 +584,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		int animationIndex = 0;
 
 		// Draw the body, position is centre bottom of the frame
-		List<WrapperForTwo<Animation, ShaderProgram>> currentAnimations = getCurrentAnimation();
+		List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> currentAnimations = getCurrentAnimation();
 		if (currentAnimations == null) {
 			return;
 		}
 
 		spriteBatch.begin();
-		for (WrapperForTwo<Animation, ShaderProgram> animation : currentAnimations) {
+		for (WrapperForTwo<AnimationSwitcher, ShaderProgram> animation : currentAnimations) {
 
 			// Render equipped items
 			renderCustomizations(animationIndex);
@@ -598,7 +600,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			spriteBatch.setShader(animation.b);
 			animation.b.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 
-			TextureRegion keyFrame = animation.a.getKeyFrame(getAnimationTimer(), true);
+			TextureRegion keyFrame = animation.a.getAnimation(this).getKeyFrame(getAnimationTimer(), true);
 			spriteBatch.draw(
 				keyFrame.getTexture(),
 				getState().position.x - keyFrame.getRegionWidth()/2,
@@ -682,11 +684,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				}
 			} else if (equipped instanceof Armor) {
 
-			} else if (equipped instanceof Torch) {
+			} else if (equipped instanceof OffhandEquipment) {
 				SpacialConfiguration config = getOffHandSpatialConfigration();
 				Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 				Vector2 pos = config.position.add(getState().position);
-				((Torch) equipped).render(pos, config.orientation, config.flipX);
+				((OffhandEquipment) equipped).render(pos, config.orientation, config.flipX);
 
 				if (config.flipX) {
 					equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? config.orientation + 180f : -config.orientation)));
@@ -885,6 +887,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		updateConditions(delta);
 		updatePositionalIndex();
+		
+		Sets.newHashSet(getEquipped().keySet()).forEach(equipped -> {
+			((Equipable) equipped).update(this, delta);
+		});
 	}
 
 
@@ -950,12 +956,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		try {
 			task = getActionFrames()
 				.get(getCurrentAction())
-				.get(getCurrentAnimation().get(0).a.getKeyFrameIndex(animationTimer));
+				.get(getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(animationTimer));
 		} catch (NullPointerException e) {
 			// Do nothing
 		}
 
-		if (previousActionFrameAction == getCurrentAction() && previousActionFrame == getCurrentAnimation().get(0).a.getKeyFrameIndex(animationTimer)) {
+		if (previousActionFrameAction == getCurrentAction() && previousActionFrame == getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(animationTimer)) {
 			return;
 		}
 
@@ -963,7 +969,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			task.execute(this);
 		}
 
-		previousActionFrame = getCurrentAnimation().get(0).a.getKeyFrameIndex(animationTimer);
+		previousActionFrame = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(animationTimer);
 		previousActionFrameAction = getCurrentAction();
 	}
 

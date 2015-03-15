@@ -14,6 +14,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.GlassBottle;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
+import bloodandmithril.item.items.equipment.misc.Lantern;
 import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
@@ -151,7 +152,7 @@ public class ItemPackage implements Serializable {
 			chest.giveItem(new Dirt(), 500);
 			chest.giveItem(Log.log(StandardWood.class), 500);
 			chest.giveItem(Plank.plank(StandardWood.class), 500);
-			chest.giveItem(new Torch(), 10);
+			chest.giveItem(new Torch(300f), 10);
 			HashMap<Class<? extends Liquid>, Float> map = Maps.newHashMap();
 			map.put(Water.class, 2f);
 			chest.giveItem(new GlassBottle(map), 5);
@@ -161,6 +162,7 @@ public class ItemPackage implements Serializable {
 			chest.giveItem(Ingot.ingot(Steel.class), 100);
 			chest.giveItem(Stick.stick(StandardWood.class), 100);
 			chest.giveItem(new Currency(), 1000);
+			chest.giveItem(new Lantern(100f), 10);
 			chest.giveItem(new MedievalWallTorch(), 1000);
 			chest.giveItem(new Carrot.CarrotSeed(), 1000);
 			
