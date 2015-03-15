@@ -245,6 +245,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private Action previousActionFrameAction;
 	private int previousActionFrame;
 
+	/** Whether or not AI is suppressed */
+	private boolean supressAI;
+
 	/**
 	 * Constructor
 	 */
@@ -276,6 +279,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * Copies all fields onto this individual from another
 	 */
 	public synchronized void copyFrom(Individual other) {
+		this.supressAI = other.supressAI;
 		this.setAi(other.getAI().copy());
 		this.setWorldId(other.getWorldId());
 		this.selectedByClient = other.selectedByClient;
@@ -587,7 +591,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		for (WrapperForTwo<Animation, ShaderProgram> animation : currentAnimations) {
 
 			// Render equipped items
+			renderCustomizations(animationIndex);
 			renderEquipment(animationIndex);
+			spriteBatch.flush();
 
 			spriteBatch.setShader(animation.b);
 			animation.b.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
@@ -614,6 +620,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		spriteBatch.end();
 		spriteBatch.flush();
 	}
+
+
+	/** Renders different hairstyles etc */
+	protected abstract void renderCustomizations(int animationIndex);
 
 
 	private void renderEquipment(int animationIndex) {
@@ -1072,6 +1082,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		return new ContextMenu(0, 0,
 			true,
 			selectDeselect(this),
+			suppressAI(),
 			walkRun(),
 			shutUpSpeak(),
 			build()
@@ -1139,6 +1150,24 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				UserInterface.addLayeredComponentUnique(
 					new ProficienciesWindow(Individual.this)
 				);
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+	}
+	
+	
+	private MenuItem suppressAI() {
+		return new MenuItem(
+			supressAI ? "Enable AI" : "Disable AI",
+			() -> {
+				if (ClientServerInterface.isServer()) {
+					this.supressAI = !supressAI;
+				} else {
+					ClientServerInterface.SendRequest.sendAISuppressionRequest(this, !supressAI);
+				}
 			},
 			Color.WHITE,
 			getToolTipTextColor(),
@@ -1473,6 +1502,16 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private void kill() {
 		// TODO Killing an individual
 		dead = true;
+	}
+	
+	
+	public boolean isAISuppressed() {
+		return supressAI;
+	}
+	
+	
+	public void setAISuppression(boolean suppress) {
+		this.supressAI = suppress;
 	}
 
 
@@ -2005,5 +2044,18 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 
 		return 0;
+	}
+
+
+	public boolean canBeUsedAsFireSource() {
+		Set<Item> equipped = getEquipped().keySet();
+		
+		for (Item item : equipped) {
+			if (item instanceof Torch) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

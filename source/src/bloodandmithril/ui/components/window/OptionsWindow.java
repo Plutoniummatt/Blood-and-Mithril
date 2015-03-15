@@ -182,6 +182,8 @@ public class OptionsWindow extends Window {
 				UserInterface.addLayeredComponentUnique(
 					new KeyMappingsWindow()
 				);
+				
+				OptionsWindow.this.setClosing(true);
 			},
 			Color.ORANGE,
 			Color.GREEN,

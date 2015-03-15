@@ -282,18 +282,7 @@ public class BottomBar extends Component {
 		// If not already open, open it, otherwise make the existing the active window
 		if (existing == null) {
 			windowsCopy.add(
-				new MainMenuWindow(
-					BloodAndMithrilClient.WIDTH/2 - 100,
-					BloodAndMithrilClient.HEIGHT/2 + 55,
-					200,
-					130,
-					"Main menu",
-					true,
-					200,
-					130,
-					false,
-					true
-				)
+				new MainMenuWindow(true)
 			);
 		} else {
 			windowsCopy.remove(existing);

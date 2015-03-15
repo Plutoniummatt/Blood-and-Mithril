@@ -127,7 +127,7 @@ public class SoundService {
 			location.y - triggerRadius
 		).forEach(individualId -> {
 			Individual listener = Domain.getIndividual(individualId);
-			if (listener == null || !(listener instanceof Listener) || listener.getState().position.cpy().dst(location) > triggerRadius || listener.isSelected()) {
+			if (listener == null || listener.isAISuppressed() || !(listener instanceof Listener) || listener.getState().position.cpy().dst(location) > triggerRadius || listener.isSelected()) {
 				return;
 			}
 

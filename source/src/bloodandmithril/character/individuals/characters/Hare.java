@@ -321,4 +321,9 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 	public SpacialConfiguration getOffHandSpatialConfigration() {
 		return null;
 	}
+
+
+	@Override
+	protected void renderCustomizations(int animationIndex) {
+	}
 }

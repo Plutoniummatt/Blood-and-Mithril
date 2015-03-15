@@ -97,6 +97,32 @@ public class SelectedIndividualsControlWindow extends Window {
 			Color.WHITE,
 			UIRef.BL
 		));
+		
+		buttons.put(2, new Button(
+			"Disable AI",
+			Fonts.defaultFont,
+			0,
+			0,
+			40,
+			16,
+			() -> {
+				boolean someoneHasAISuppressed = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
+					return individual.isAISuppressed() ? 1 : 0;
+				}).sum() > 0;
+
+				for (Individual individual : Domain.getSelectedIndividuals()) {
+					if (ClientServerInterface.isServer()) {
+						individual.setAISuppression(!someoneHasAISuppressed);
+					} else {
+						ClientServerInterface.SendRequest.sendAISuppressionRequest(individual, !someoneHasAISuppressed);
+					}
+				}
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.WHITE,
+			UIRef.BL
+		));
 	}
 
 
@@ -108,6 +134,10 @@ public class SelectedIndividualsControlWindow extends Window {
 
 		boolean someoneSpeaking = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
 			return individual.isShutUp() ? 0 : 1;
+		}).sum() > 0;
+		
+		boolean someoneHasAISuppressed = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
+			return individual.isAISuppressed() ? 1 : 0;
 		}).sum() > 0;
 
 		boolean buttonsActive = UserInterface.getLayeredComponents().isEmpty() ? false : UserInterface.getLayeredComponents().getLast() == this;
@@ -122,10 +152,17 @@ public class SelectedIndividualsControlWindow extends Window {
 
 		// Shut up button
 		buttons.get(1).text = someoneSpeaking ? "Shut up" : "Speak";
-		buttons.get(1).setIdleColor(selected ? someoneSpeaking ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
-		buttons.get(1).setOverColor(selected ? buttonsActive ? someoneSpeaking ? Color.ORANGE : Color.GREEN : someoneSpeaking ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
+		buttons.get(1).setIdleColor(selected ? someoneSpeaking ? Color.ORANGE : Color.GREEN : Colors.UI_GRAY);
+		buttons.get(1).setOverColor(selected ? buttonsActive ? someoneSpeaking ? Color.GREEN : Color.ORANGE : someoneSpeaking ? Color.ORANGE : Color.GREEN : Colors.UI_GRAY);
 		buttons.get(1).setDownColor(selected ? buttonsActive ? Color.WHITE : someoneSpeaking ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
 		buttons.get(1).render(x + 27, y - 40, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
+		
+		// AI Suppression
+		buttons.get(2).text = someoneHasAISuppressed ? "Enable AI" : "Disable AI";
+		buttons.get(2).setIdleColor(selected ? someoneHasAISuppressed ? Color.ORANGE : Color.GREEN : Colors.UI_GRAY);
+		buttons.get(2).setOverColor(selected ? buttonsActive ? someoneHasAISuppressed ? Color.GREEN : Color.ORANGE : someoneHasAISuppressed ? Color.ORANGE : Color.GREEN : Colors.UI_GRAY);
+		buttons.get(2).setDownColor(selected ? buttonsActive ? Color.WHITE : someoneHasAISuppressed ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
+		buttons.get(2).render(x + 27, y - 60, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
 	}
 
 
@@ -161,6 +198,10 @@ public class SelectedIndividualsControlWindow extends Window {
 
 		if (keyCode == getKeyMappings().toggleWalkRun.keyCode) {
 			buttons.get(0).getTask().execute();
+		}
+		
+		if (keyCode == getKeyMappings().disableEnableAI.keyCode) {
+			buttons.get(2).getTask().execute();
 		}
 		return false;
 	}

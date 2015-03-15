@@ -212,9 +212,9 @@ public class NewGameWindow extends Window {
 		}
 
 		if (panels.isEmpty()) {
-			startGame.render(x + width / 2, y - height + 30, canNext(), getAlpha());
+			startGame.render(x + width / 2, y - height + 30, canNext() && isActive(), getAlpha());
 		} else {
-			next.render(x + width / 2, y - height + 30, canNext(), getAlpha());
+			next.render(x + width / 2, y - height + 30, canNext() && isActive(), getAlpha());
 		}
 	}
 
@@ -309,7 +309,7 @@ public class NewGameWindow extends Window {
 											listingItem.button.setIdleColor(Color.CYAN);
 										} else {
 											if (listingItem.t.isDefault()) {
-												listingItem.button.setIdleColor(Color.PINK);
+												listingItem.button.setIdleColor(Color.PURPLE);
 											} else {
 												listingItem.button.setIdleColor(Color.ORANGE);
 											}
@@ -348,7 +348,7 @@ public class NewGameWindow extends Window {
 									16,
 									() -> {
 									},
-									pack.isDefault() ? Color.PINK : Color.ORANGE,
+									pack.isDefault() ? Color.PURPLE : Color.ORANGE,
 									Color.WHITE,
 									Color.GREEN,
 									UIRef.BL
@@ -665,7 +665,6 @@ public class NewGameWindow extends Window {
 
 				Elf elf = new Elf(
 					id, state, Faction.NPC, true,
-					20f,
 					null,
 					lightColor(),
 					lightColor(),

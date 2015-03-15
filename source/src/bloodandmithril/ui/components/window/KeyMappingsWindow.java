@@ -14,6 +14,7 @@ import bloodandmithril.control.Controls;
 import bloodandmithril.control.Controls.MappedKey;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -37,7 +38,23 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2015")
 public class KeyMappingsWindow extends Window implements Refreshable {
 
-	ScrollableListingPanel<MappedKey, String> keyMappings;
+	private ScrollableListingPanel<MappedKey, String> keyMappings;
+	private Button saveButton = new Button(
+		"Save and close",
+		defaultFont,
+		0,
+		0,
+		140,
+		16,
+		() -> {
+			ConfigPersistenceService.saveConfig();
+			KeyMappingsWindow.this.setClosing(true);
+		},
+		Color.GREEN,
+		Color.WHITE,
+		Color.GREEN,
+		UIRef.BL
+	);
 	
 	private static Comparator<MappedKey> mapabilityComparator = new Comparator<MappedKey>() {
 		@Override
@@ -90,15 +107,17 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 		keyMappings.x = x;
 		keyMappings.y = y;
 		keyMappings.width = width;
-		keyMappings.height = height;
+		keyMappings.height = height - 50;
 
 		keyMappings.render();
+		saveButton.render(x + width / 2, y - height + 40, isActive(), getAlpha());
 	}
 
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		keyMappings.leftClick(copy, windowsCopy);
+		saveButton.click();
 	}
 
 

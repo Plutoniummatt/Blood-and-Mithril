@@ -157,6 +157,85 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 	protected Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames() {
 		return actionFrames;
 	}
+	
+	
+	public SpacialConfiguration getHelmetSpatialConfigration() {
+		int frameIndex = getCurrentAnimation().get(0).a.getKeyFrameIndex(getAnimationTimer());
+
+		switch(getCurrentAction()) {
+			case STAND_LEFT:
+				return new SpacialConfiguration(new Vector2(0, -2f), 0f, true);
+			case JUMP_LEFT:
+				return new SpacialConfiguration(new Vector2(0, -4f), 0f, true);
+			case STAND_RIGHT:
+				return new SpacialConfiguration(new Vector2(0, -2f), 0f, false);
+			case JUMP_RIGHT:
+				return new SpacialConfiguration(new Vector2(0, -4f), 0f, false);
+			case STAND_LEFT_COMBAT_ONE_HANDED:
+			case ATTACK_LEFT_ONE_HANDED_WEAPON_MINE:
+			case ATTACK_LEFT_ONE_HANDED_WEAPON:
+			case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
+			case ATTACK_LEFT_UNARMED:
+				return new SpacialConfiguration(new Vector2(0, -4f), 0f, true);
+			case STAND_RIGHT_COMBATONE_HANDED:
+			case ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE:
+			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
+			case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
+			case ATTACK_RIGHT_UNARMED:
+				return new SpacialConfiguration(new Vector2(0, -4f), 0f, false);
+			case WALK_LEFT:
+				switch (frameIndex) {
+					case 0: return new SpacialConfiguration(new Vector2(0, 0f), 0f, true);
+					case 1: return new SpacialConfiguration(new Vector2(0, 0f), 0f, true);
+					case 2: return new SpacialConfiguration(new Vector2(0, -6f), 0f, true);
+					case 3: return new SpacialConfiguration(new Vector2(0, -4f), 0f, true);
+					case 4: return new SpacialConfiguration(new Vector2(0, -2f), 0f, true);
+					case 5: return new SpacialConfiguration(new Vector2(0, 0f), 0f, true);
+					case 6: return new SpacialConfiguration(new Vector2(0, 0f), 0f, true);
+					case 7: return new SpacialConfiguration(new Vector2(0, -6f), 0f, true);
+					case 8: return new SpacialConfiguration(new Vector2(0, -4f), 0f, true);
+					case 9: return new SpacialConfiguration(new Vector2(0, -2f), 0f, true);
+				}
+			case WALK_RIGHT:
+				switch (frameIndex) {
+					case 0: return new SpacialConfiguration(new Vector2(0, 0f), 0f, false);
+					case 1: return new SpacialConfiguration(new Vector2(0, 0f), 0f, false);
+					case 2: return new SpacialConfiguration(new Vector2(0, -6f), 0f, false);
+					case 3: return new SpacialConfiguration(new Vector2(0, -4f), 0f, false);
+					case 4: return new SpacialConfiguration(new Vector2(0, -2f), 0f, false);
+					case 5: return new SpacialConfiguration(new Vector2(0, 0f), 0f, false);
+					case 6: return new SpacialConfiguration(new Vector2(0, 0f), 0f, false);
+					case 7: return new SpacialConfiguration(new Vector2(0, -6f), 0f, false);
+					case 8: return new SpacialConfiguration(new Vector2(0, -4f), 0f, false);
+					case 9: return new SpacialConfiguration(new Vector2(0, -2f), 0f, false);
+				}
+			case RUN_LEFT:
+				switch (frameIndex) {
+					case 0: return new SpacialConfiguration(new Vector2(0, -2f), 0f, true);
+					case 1: return new SpacialConfiguration(new Vector2(0, 0f), 0f, true);
+					case 2: return new SpacialConfiguration(new Vector2(0, -4f), 0f, true);
+					case 3: return new SpacialConfiguration(new Vector2(0, -6f), 0f, true);
+					case 4: return new SpacialConfiguration(new Vector2(0, -2f), 0f, true);
+					case 5: return new SpacialConfiguration(new Vector2(0, 0f), 0f, true);
+					case 6: return new SpacialConfiguration(new Vector2(0, -4f), 0f, true);
+					case 7: return new SpacialConfiguration(new Vector2(0, -6f), 0f, true);
+				}
+			case RUN_RIGHT:
+				switch (frameIndex) {
+					case 0: return new SpacialConfiguration(new Vector2(0, -2f), 0f, false);
+					case 1: return new SpacialConfiguration(new Vector2(0, 0f), 0f, false);
+					case 2: return new SpacialConfiguration(new Vector2(0, -4f), 0f, false);
+					case 3: return new SpacialConfiguration(new Vector2(0, -6f), 0f, false);
+					case 4: return new SpacialConfiguration(new Vector2(0, -2f), 0f, false);
+					case 5: return new SpacialConfiguration(new Vector2(0, 0f), 0f, false);
+					case 6: return new SpacialConfiguration(new Vector2(0, -4f), 0f, false);
+					case 7: return new SpacialConfiguration(new Vector2(0, -6f), 0f, false);
+				}
+				
+			default:
+				throw new RuntimeException("Unexpected action: " + getCurrentAction());
+		}
+	}
 
 
 	@Override

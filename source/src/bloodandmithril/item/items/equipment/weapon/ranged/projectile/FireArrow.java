@@ -86,6 +86,14 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 				return;
 			}
 		}
+		
+		for (int individualId : world.getPositionalIndexMap().getNearbyEntityIds(Individual.class, individual.getState().position)) {
+			Individual nearbyIndividual = Domain.getIndividual(individualId);
+			if (nearbyIndividual.canBeUsedAsFireSource()) {
+				lit = true;
+				return;
+			}
+		}
 	}
 
 
