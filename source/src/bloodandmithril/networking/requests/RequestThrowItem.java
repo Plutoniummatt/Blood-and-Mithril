@@ -3,6 +3,7 @@ package bloodandmithril.networking.requests;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.networking.requests.RefreshWindows.RefreshWindowsResponse;
@@ -35,6 +36,11 @@ public class RequestThrowItem implements Request {
 	@Override
 	public Responses respond() {
 		Individual individual = Domain.getIndividual(individualId);
+		
+		if (toThrow.isEquippable()) {
+			individual.unequip((Equipable) toThrow); 
+		}
+		
 		if (individual.takeItem(toThrow) == 1) {
 			UserInterface.refreshRefreshableWindows();
 			Domain.getWorld(individual.getWorldId()).items().addItem(
