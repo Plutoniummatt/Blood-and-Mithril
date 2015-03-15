@@ -20,6 +20,7 @@ import java.util.Map;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
@@ -161,7 +162,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 			case ATTACK_RIGHT_SPEAR:
 			case ATTACK_LEFT_UNARMED:
 			case ATTACK_RIGHT_UNARMED:
-				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).a.getAnimationDuration()) {
+				if (getAnimationTimer() > getAnimationMap().get(getCurrentAction()).get(0).a.getAnimation(this).getAnimationDuration()) {
 					setAnimationTimer(0f);
 					if (getCurrentAction().left()) {
 						setCurrentAction(STAND_LEFT_COMBAT_ONE_HANDED);
@@ -179,14 +180,14 @@ public abstract class GroundTravellingIndividual extends Individual {
 	/**
 	 * @return The Individual-specific animation map
 	 */
-	protected abstract Map<Action, List<WrapperForTwo<Animation, ShaderProgram>>> getAnimationMap();
+	protected abstract Map<Action, List<WrapperForTwo<AnimationSwitcher, ShaderProgram>>> getAnimationMap();
 
 
 	/**
 	 * @return The current {@link Animation} based on the current {@link Action}
 	 */
 	@Override
-	protected List<WrapperForTwo<Animation, ShaderProgram>> getCurrentAnimation() {
+	protected List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> getCurrentAnimation() {
 		return getAnimationMap().get(getCurrentAction());
 	}
 

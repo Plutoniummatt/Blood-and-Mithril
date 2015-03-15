@@ -90,7 +90,7 @@ public final class ContainerImpl implements Container {
 		HashMap<Item, Integer> copy = new HashMap<Item, Integer>(inventory);
 
 		if (inventory.isEmpty()) {
-			copy.put(item, 1);
+			copy.put(item.copy(), 1);
 		} else {
 			boolean stacked = false;
 			for (Entry<Item, Integer> entry : inventory.entrySet()) {
@@ -102,7 +102,7 @@ public final class ContainerImpl implements Container {
 			}
 
 			if (!stacked) {
-				copy.put(item, 1);
+				copy.put(item.copy(), 1);
 			}
 		}
 

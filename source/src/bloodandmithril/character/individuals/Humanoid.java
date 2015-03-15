@@ -19,6 +19,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.misc.OffhandEquipment;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Probablistic;
@@ -27,6 +28,7 @@ import bloodandmithril.util.datastructure.Box;
 
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 
 /**
  * Uses standard humanoid animations
@@ -160,7 +162,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 	
 	
 	public SpacialConfiguration getHelmetSpatialConfigration() {
-		int frameIndex = getCurrentAnimation().get(0).a.getKeyFrameIndex(getAnimationTimer());
+		int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
 
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
@@ -240,7 +242,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 	@Override
 	public SpacialConfiguration getOneHandedWeaponSpatialConfigration() {
-		int frameIndex = getCurrentAnimation().get(0).a.getKeyFrameIndex(getAnimationTimer());
+		int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
 
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
@@ -362,7 +364,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 	@Override
 	public SpacialConfiguration getTwoHandedWeaponSpatialConfigration() {
-		int frameIndex = getCurrentAnimation().get(0).a.getKeyFrameIndex(getAnimationTimer());
+		int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
 
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
@@ -432,79 +434,94 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 
 	@Override
 	public SpacialConfiguration getOffHandSpatialConfigration() {
-		int frameIndex = getCurrentAnimation().get(0).a.getKeyFrameIndex(getAnimationTimer());
+		int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
 
+		float angle = 0f;
+		float combatAngle = 0f;
+		if (!getAvailableEquipmentSlots().get(EquipmentSlot.OFFHAND).call()) {
+			Item offHandItem = Iterables.find(getEquipped().keySet(), offHand -> {
+				return offHand instanceof OffhandEquipment;
+			});
+			angle = ((OffhandEquipment) offHandItem).renderAngle();
+			combatAngle = ((OffhandEquipment) offHandItem).combatAngle();
+		}
+		
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
 			case JUMP_LEFT:
-				return new SpacialConfiguration(new Vector2(-11, 32), -20, true);
+				return new SpacialConfiguration(new Vector2(-18, 37), -angle, true);
 			case STAND_RIGHT:
 			case JUMP_RIGHT:
-				return new SpacialConfiguration(new Vector2(11, 32), 20, false);
+				return new SpacialConfiguration(new Vector2(18, 37), angle, false);
 			case WALK_LEFT:
 				switch (frameIndex) {
-					case 0: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
-					case 1: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
-					case 2: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
-					case 3: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
-					case 4: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
-					case 5: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
-					case 6: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
-					case 7: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
-					case 8: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
-					case 9: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
+					case 0: return new SpacialConfiguration(new Vector2(-18, 39f), -angle, true);
+					case 1: return new SpacialConfiguration(new Vector2(-18, 39f), -angle, true);
+					case 2: return new SpacialConfiguration(new Vector2(-18, 35f), -angle, true);
+					case 3: return new SpacialConfiguration(new Vector2(-18, 35f), -angle, true);
+					case 4: return new SpacialConfiguration(new Vector2(-18, 37f), -angle, true);
+					case 5: return new SpacialConfiguration(new Vector2(-18, 39f), -angle, true);
+					case 6: return new SpacialConfiguration(new Vector2(-18, 39f), -angle, true);
+					case 7: return new SpacialConfiguration(new Vector2(-18, 35f), -angle, true);
+					case 8: return new SpacialConfiguration(new Vector2(-18, 35f), -angle, true);
+					case 9: return new SpacialConfiguration(new Vector2(-18, 37f), -angle, true);
 				}
 			case WALK_RIGHT:
 				switch (frameIndex) {
-					case 0: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
-					case 1: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
-					case 2: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
-					case 3: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
-					case 4: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
-					case 5: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
-					case 6: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
-					case 7: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
-					case 8: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
-					case 9: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
+					case 0: return new SpacialConfiguration(new Vector2(18, 39f), angle, false);
+					case 1: return new SpacialConfiguration(new Vector2(18, 39f), angle, false);
+					case 2: return new SpacialConfiguration(new Vector2(18, 35f), angle, false);
+					case 3: return new SpacialConfiguration(new Vector2(18, 35f), angle, false);
+					case 4: return new SpacialConfiguration(new Vector2(18, 37f), angle, false);
+					case 5: return new SpacialConfiguration(new Vector2(18, 39f), angle, false);
+					case 6: return new SpacialConfiguration(new Vector2(18, 39f), angle, false);
+					case 7: return new SpacialConfiguration(new Vector2(18, 35f), angle, false);
+					case 8: return new SpacialConfiguration(new Vector2(18, 35f), angle, false);
+					case 9: return new SpacialConfiguration(new Vector2(18, 37f), angle, false);
 				}
 			case RUN_LEFT:
 				switch (frameIndex) {
-					case 0: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
-					case 1: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
-					case 2: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
-					case 3: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
-					case 4: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
-					case 5: return new SpacialConfiguration(new Vector2(-11, 34f), -20, true);
-					case 6: return new SpacialConfiguration(new Vector2(-11, 32f), -20, true);
-					case 7: return new SpacialConfiguration(new Vector2(-11, 30f), -20, true);
+					case 0: return new SpacialConfiguration(new Vector2(-18, 37f), -angle, true);
+					case 1: return new SpacialConfiguration(new Vector2(-18, 39f), -angle, true);
+					case 2: return new SpacialConfiguration(new Vector2(-18, 37f), -angle, true);
+					case 3: return new SpacialConfiguration(new Vector2(-18, 35f), -angle, true);
+					case 4: return new SpacialConfiguration(new Vector2(-18, 37f), -angle, true);
+					case 5: return new SpacialConfiguration(new Vector2(-18, 39f), -angle, true);
+					case 6: return new SpacialConfiguration(new Vector2(-18, 37f), -angle, true);
+					case 7: return new SpacialConfiguration(new Vector2(-18, 35f), -angle, true);
 				}
 			case RUN_RIGHT:
 				switch (frameIndex) {
-					case 0: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
-					case 1: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
-					case 2: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
-					case 3: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
-					case 4: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
-					case 5: return new SpacialConfiguration(new Vector2(11, 34f), 20, false);
-					case 6: return new SpacialConfiguration(new Vector2(11, 32f), 20, false);
-					case 7: return new SpacialConfiguration(new Vector2(11, 30f), 20, false);
+					case 0: return new SpacialConfiguration(new Vector2(18, 37f), angle, false);
+					case 1: return new SpacialConfiguration(new Vector2(18, 39f), angle, false);
+					case 2: return new SpacialConfiguration(new Vector2(18, 37f), angle, false);
+					case 3: return new SpacialConfiguration(new Vector2(18, 35f), angle, false);
+					case 4: return new SpacialConfiguration(new Vector2(18, 37f), angle, false);
+					case 5: return new SpacialConfiguration(new Vector2(18, 39f), angle, false);
+					case 6: return new SpacialConfiguration(new Vector2(18, 37f), angle, false);
+					case 7: return new SpacialConfiguration(new Vector2(18, 35f), angle, false);
 				}
 			case ATTACK_LEFT_ONE_HANDED_WEAPON_MINE:
 			case ATTACK_LEFT_ONE_HANDED_WEAPON:
 			case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
 			case ATTACK_LEFT_UNARMED:
 			case STAND_LEFT_COMBAT_ONE_HANDED:
-				return new SpacialConfiguration(new Vector2(-19, 50f), -90f, true);
+				return new SpacialConfiguration(new Vector2(-19, 50f), -combatAngle, true);
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
 			case ATTACK_RIGHT_UNARMED:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
 			case STAND_RIGHT_COMBATONE_HANDED:
-				return new SpacialConfiguration(new Vector2(19, 50f), 90f, false);
+				return new SpacialConfiguration(new Vector2(19, 50f), combatAngle, false);
 
 			default:
 				throw new RuntimeException("Unexpected action: " + getCurrentAction());
 		}
+	}
+	
+	
+	public boolean offHandEquipped() {
+		return !getAvailableEquipmentSlots().get(EquipmentSlot.OFFHAND).call();
 	}
 
 

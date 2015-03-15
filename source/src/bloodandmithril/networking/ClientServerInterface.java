@@ -116,6 +116,7 @@ import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.RingFunction;
 import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
+import bloodandmithril.item.items.equipment.misc.Lantern;
 import bloodandmithril.item.items.equipment.misc.OffhandEquipment;
 import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.Dagger;
@@ -314,6 +315,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+mon.collect.Maps;
+import com.google.common.collect.Sets;
 
 @Copyright("Matthew Peck 2014")
 public class ClientServerInterface {
@@ -478,6 +481,7 @@ public class ClientServerInterface {
 		kryo.setReferences(true);
 		kryo.register(RequestSpawnIndividual.class);
 
+		kryo.register(Lantern.class);
 		kryo.register(RequestSuppressAI.class);
 		kryo.register(RequestThrowItem.class);
 		kryo.register(RottenWoodenChest.class);

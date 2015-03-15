@@ -9,6 +9,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.equipment.Equipable;
+import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
 
@@ -55,5 +56,17 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	@Override
 	public boolean twoHand() {
 		return false;
+	}
+	
+	@Override
+	public void update(Equipper equipper, float delta) {
+	}
+	
+	@Override
+	public void onUnequip() {
+	}
+	
+	@Override
+	public void onEquip() {
 	}
 }
