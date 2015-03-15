@@ -2055,11 +2055,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	public boolean canBeUsedAsFireSource() {
-		Set<Item> equipped = getEquipped().keySet();
-		
-		for (Item item : equipped) {
-			if (item instanceof Torch) {
-				return true;
+		for (Item item : getEquipped().keySet()) {
+			if (item instanceof FireLighter) {
+				if (((FireLighter) item).canLightFire()) {
+					return true;
+				}
 			}
 		}
 		

@@ -180,7 +180,7 @@ public class Lantern extends OffhandEquipment {
 		}
 		
 		if (fuelRemaining > 0f) {
-			fuelRemaining -= delta / 1200f;
+			fuelRemaining -= delta / 4000f;
 		} else {
 			for (long id : particleIds) {
 				if (ClientServerInterface.isServer()) {
