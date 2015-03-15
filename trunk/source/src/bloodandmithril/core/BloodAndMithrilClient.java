@@ -274,18 +274,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		UserInterface.UICameraTrackingCam.setToOrtho(false, WIDTH, HEIGHT);
 
 		UserInterface.addLayeredComponent(
-			new MainMenuWindow(
-				BloodAndMithrilClient.WIDTH/2 - 100,
-				BloodAndMithrilClient.HEIGHT/2 + 55,
-				200,
-				130,
-				"",
-				true,
-				200,
-				130,
-				false,
-				false
-			)
+			new MainMenuWindow(false)
 		);
 	}
 
@@ -607,6 +596,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			if (UserInterface.keyPressed(keycode)) {
 				return false;
+			} else if (Keys.ESCAPE == keycode) {
+				UserInterface.addLayeredComponentUnique(
+					new MainMenuWindow(true)
+				);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

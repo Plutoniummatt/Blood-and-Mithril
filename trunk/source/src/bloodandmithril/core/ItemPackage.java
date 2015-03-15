@@ -167,7 +167,7 @@ public class ItemPackage implements Serializable {
 			availableItemPackages.add(
 				new ItemPackage(
 					chest,
-					"Dev package",
+					"Developer package",
 					true
 				)
 			);

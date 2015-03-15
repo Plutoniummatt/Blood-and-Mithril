@@ -42,7 +42,7 @@ public abstract class TwoHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	@Override
 	public int getRenderingIndex(Individual individual) {
 		if (individual instanceof Humanoid) {
-			return 6;
+			return 5;
 		}
 
 		return -1;

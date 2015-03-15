@@ -80,7 +80,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	public void update(float delta) {
 		AIProcessor.setup();
 		if (AIProcessor.aiThread != null && AIProcessor.aiThread.isAlive()) {
-			if (mode == AIMode.AUTO) {
+			if (mode == AIMode.AUTO && !getHost().isAISuppressed()) {
 				AIProcessor.aiThreadTasks.add(() ->
 					{
 						switch (mode) {

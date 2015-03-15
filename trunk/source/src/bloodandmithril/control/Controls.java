@@ -42,6 +42,7 @@ public class Controls implements Serializable {
 	public MappedKey bulkTrade = new MappedKey("Bulk Trade/Transfer", Input.Keys.SHIFT_LEFT, "Hold to trade/transfer multiple items.", false);
 	public MappedKey continuousThrowing = new MappedKey("Bulk Throw", Input.Keys.SHIFT_LEFT, "Hold to continuously throw items.", false);
 
+	public MappedKey disableEnableAI = new MappedKey("Disable/Enable AI", Input.Keys.S, "Toggle to enable/disable AI of controllable individuals.", true);
 	public MappedKey moveCamUp = new MappedKey("Move Camera Up", Input.Keys.UP, "Camera movement.", true);
 	public MappedKey moveCamDown = new MappedKey("Move Camera Down", Input.Keys.DOWN, "Camera movement.", true);
 	public MappedKey moveCamLeft = new MappedKey("Move Camera Left", Input.Keys.LEFT, "Camera movement.", true);
@@ -76,7 +77,8 @@ public class Controls implements Serializable {
 			moveCamUp,
 			moveCamDown,
 			moveCamLeft,
-			moveCamRight
+			moveCamRight,
+			disableEnableAI
 		);
 		
 		for (MappedKey key : keys) {

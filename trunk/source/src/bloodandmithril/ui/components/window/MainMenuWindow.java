@@ -37,8 +37,8 @@ public class MainMenuWindow extends Window {
 	/**
 	 * Overloaded constructor - uses default colors
 	 */
-	public MainMenuWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean closeable) {
-		super(x, y, length, height, title, active, minLength, minHeight, minimizable, false, closeable);
+	public MainMenuWindow(boolean closeable) {
+		super(200, 130, "Main Menu", true, false, false, closeable);
 		loadButtons();
 	}
 
@@ -208,18 +208,7 @@ public class MainMenuWindow extends Window {
 										}
 
 										UserInterface.addLayeredComponent(
-											new MainMenuWindow(
-												BloodAndMithrilClient.WIDTH/2 - 100,
-												BloodAndMithrilClient.HEIGHT/2 + 55,
-												200,
-												110,
-												"Main menu",
-												false,
-												200,
-												110,
-												false,
-												false
-											)
+											new MainMenuWindow(false)
 										);
 
 										UserInterface.addLayeredComponent(
