@@ -1,3 +1,10 @@
+Release 0.0.8
+---------------
+* Add new hairstyles for elves.
+* Add feature to disable the AI of controllable individuals.  Default is on.
+* Added support to save key mappings.
+* Add Developer starting item package.
+
 Release 0.0.7
 ---------------
 * Custom keys bindings have been implemented, go to main menu -> options.
