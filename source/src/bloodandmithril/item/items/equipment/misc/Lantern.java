@@ -62,7 +62,7 @@ public class Lantern extends OffhandEquipment {
 	
 	@Override
 	public String getDescription() {
-		return "A lantern, used for lighting.";
+		return "A lantern, used for lighting. Uses oil as fuel.";
 	}
 	
 
@@ -139,6 +139,23 @@ public class Lantern extends OffhandEquipment {
 						Domain.getWorld(getWorldId()).getServerParticles().put(particle.particleId, particle);
 						particleIds.add(particle.particleId);
 					}
+					for (int i = 0; i < 10; i++) {
+						Particle particle = new DiminishingTracerParticle(
+							position.cpy().add(0f, -19f),
+							new Vector2(0, 0),
+							Color.WHITE,
+							Colors.FIRE_START,
+							1f,
+							getWorldId(),
+							3f,
+							MovementMode.WEIGHTLESS,
+							Depth.MIDDLEGROUND,
+							Long.MAX_VALUE
+						);
+						particle.doNotUpdate();
+						Domain.getWorld(getWorldId()).getServerParticles().put(particle.particleId, particle);
+						particleIds.add(particle.particleId);
+					}
 				}
 			} else {
 				for (long id : particleIds) {
@@ -163,7 +180,7 @@ public class Lantern extends OffhandEquipment {
 		}
 		
 		if (fuelRemaining > 0f) {
-			fuelRemaining -= delta;
+			fuelRemaining -= delta / 1200f;
 		} else {
 			for (long id : particleIds) {
 				if (ClientServerInterface.isServer()) {
@@ -174,10 +191,15 @@ public class Lantern extends OffhandEquipment {
 			fuelRemaining = 0f;
 		}
 	}
-
-
+	
+	
+	public void addFuel(float amount) {
+		this.fuelRemaining += amount;
+	}
+	
+	
 	@Override
-	public void onUnequip() {
+	public void onUnequip(Equipper equipper) {
 		for (long id : particleIds) {
 			if (ClientServerInterface.isServer()) {
 				Domain.getWorld(getWorldId()).getServerParticles().remove(id);
@@ -188,7 +210,7 @@ public class Lantern extends OffhandEquipment {
 
 
 	@Override
-	public void onEquip() {
+	public void onEquip(Equipper equipper) {
 		if (workingId == null) {
 			this.workingId = ParameterPersistenceService.getParameters().getNextItemId();
 		}

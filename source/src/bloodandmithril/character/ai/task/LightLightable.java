@@ -1,23 +1,16 @@
 package bloodandmithril.character.ai.task;
 
-import static bloodandmithril.character.ai.perception.Visible.getVisible;
-import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.graphics.particles.ParticleService;
-import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
+import bloodandmithril.item.FireLighter;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Task that instructs the host to light a {@link Lightable}
@@ -116,9 +109,9 @@ public class LightLightable extends CompositeAITask {
 			}
 
 			if (host.getInteractionBox().isWithinBox(((Prop) lightable).position)) {
-				if (host.has(new FlintAndFiresteel()) > 0) {
-					ParticleService.parrySpark(((Prop) lightable).position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND, Color.WHITE, Color.WHITE, 100, true, 30, 200f);
-					SoundService.play(SoundService.flint, ((Prop) lightable).position, true, getVisible(lightable));
+				FireLighter fireLighter = host.getFireLighter();
+				if (fireLighter != null) {
+					fireLighter.fireLightingEffect((Prop) lightable);
 					lightable.light();
 				} else {
 					host.speak("I need fire lighting equipment", 2000);

@@ -30,6 +30,7 @@ import bloodandmithril.item.items.container.LiquidContainer;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.armor.Armor;
+import bloodandmithril.item.items.equipment.misc.Lantern;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.item.items.food.plant.Seed;
@@ -37,6 +38,8 @@ import bloodandmithril.item.items.furniture.Furniture;
 import bloodandmithril.item.items.material.Material;
 import bloodandmithril.item.items.mineral.Mineral;
 import bloodandmithril.item.items.misc.Misc;
+import bloodandmithril.item.liquid.Liquid;
+import bloodandmithril.item.liquid.Oil;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.Refreshable;
@@ -102,6 +105,8 @@ public class InventoryWindow extends Window implements Refreshable {
 		Color.YELLOW,
 		UIRef.BR
 	);
+	
+	private boolean refreshSuppressed = false;
 
 	public static Comparator<Item> inventorySortingOrder = new Comparator<Item>() {
 		@Override
@@ -266,7 +271,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected synchronized void internalWindowRender() {
 		int lineWidth = 23;
 
 		// Set the position and dimensions of the panel
@@ -494,7 +499,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		if (toReturn == null) {
 			toReturn = new ContextMenu(x, y, true, InventoryItemContextMenuConstructor.showInfo(item));
 		}
-
+		
 		if (!equipped) {
 			toReturn.addMenuItem(new MenuItem(
 				"Discard",
@@ -662,6 +667,88 @@ public class InventoryWindow extends Window implements Refreshable {
 				)
 			);
 		}
+		
+		if (item instanceof Lantern) {
+			contextMenu.addMenuItem(
+				new MenuItem(
+					"Refuel",
+					() -> {
+						UserInterface.addLayeredComponent(
+							new TextInputWindow(
+								BloodAndMithrilClient.WIDTH / 2 - 125,
+								BloodAndMithrilClient.HEIGHT/2 + 50,
+								250,
+								100,
+								"Amount",
+								250,
+								100,
+								args -> {
+									try {
+										float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
+										if (amount < 0.01f) {
+											UserInterface.addMessage("Too little to refuel", "Its too little to refuel, enter a larger amount");
+											return;
+										}
+										
+										refreshSuppressed = true;
+
+										for (ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
+											listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
+											listItem.button.setDownColor(Colors.UI_DARK_GRAY);
+											listItem.button.setOverColor(Colors.UI_DARK_GRAY);
+											listItem.menu = null;
+										}
+										
+										for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
+											if (listItem.t instanceof LiquidContainer) {
+
+												listItem.button.setIdleColor(Color.ORANGE);
+												setActive(true);
+												listItem.menu = null;
+												listItem.button.setTask(() -> {
+													if (isServer()) {
+														host.takeItem(listItem.t);
+														
+														Item copy = listItem.t.copy();
+														Map<Class<? extends Liquid>, Float> subtracted = ((LiquidContainer) copy).subtract(amount);
+														if (subtracted.containsKey(Oil.class)) {
+															float oil = subtracted.get(Oil.class);
+															((Lantern) item).addFuel(oil);
+														}
+														
+														host.giveItem(copy);
+													} else {
+														// CSI
+													}
+													
+													refreshSuppressed = false;
+													refresh();
+												});
+											} else {
+												listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
+												listItem.button.setDownColor(Colors.UI_DARK_GRAY);
+												listItem.button.setOverColor(Colors.UI_DARK_GRAY);
+												listItem.menu = null;
+											}
+										}
+
+									} catch (NumberFormatException e) {
+										UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+									}
+								},
+								"Refuel",
+								true,
+								""
+							)
+						);
+					},
+					Colors.UI_GRAY,
+					Color.GREEN,
+					Color.WHITE,
+					null
+				)
+			);
+		}
 
 		return contextMenu;
 	}
@@ -821,6 +908,8 @@ public class InventoryWindow extends Window implements Refreshable {
 									UserInterface.addMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
 									return;
 								}
+								
+								refreshSuppressed = true;
 
 								for (ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
 									listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
@@ -858,6 +947,8 @@ public class InventoryWindow extends Window implements Refreshable {
 														amount
 													);
 												}
+												
+												refreshSuppressed = false;
 											});
 										}
 									} else {
@@ -931,6 +1022,10 @@ public class InventoryWindow extends Window implements Refreshable {
 	/** Refreshes this {@link InventoryWindow} */
 	@Override
 	public synchronized void refresh() {
+		if (refreshSuppressed) {
+			return;
+		}
+		
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();
 

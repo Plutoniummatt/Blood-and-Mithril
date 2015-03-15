@@ -63,10 +63,10 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	}
 	
 	@Override
-	public void onUnequip() {
+	public void onUnequip(Equipper equipper) {
 	}
 	
 	@Override
-	public void onEquip() {
+	public void onEquip(Equipper equipper) {
 	}
 }

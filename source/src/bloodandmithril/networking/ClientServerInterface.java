@@ -157,7 +157,7 @@ import bloodandmithril.item.items.misc.key.Key;
 import bloodandmithril.item.items.misc.key.SkeletonKey;
 import bloodandmithril.item.liquid.Acid;
 import bloodandmithril.item.liquid.Blood;
-import bloodandmithril.item.liquid.CrudeOil;
+import bloodandmithril.item.liquid.Oil;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Milk;
 import bloodandmithril.item.liquid.Water;
@@ -636,7 +636,7 @@ public class ClientServerInterface {
 		kryo.register(Craft.class);
 		kryo.register(Crafting.class);
 		kryo.register(CraftingStation.class);
-		kryo.register(CrudeOil.class);
+		kryo.register(Oil.class);
 		kryo.register(Currency.class);
 		kryo.register(DeathCap.class);
 		kryo.register(DebugTile.class);

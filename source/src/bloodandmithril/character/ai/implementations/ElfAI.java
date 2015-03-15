@@ -10,7 +10,6 @@ import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
@@ -59,7 +58,7 @@ public class ElfAI extends ArtificialIntelligence {
 		LinkedList<Prop> lightables = Lists.newLinkedList(Collections2.filter(nearbyEntities, prop -> {
 			return prop instanceof Lightable && !((Lightable) prop).isLit() && ((Lightable) prop).canLight();
 		}));
-		if (!lightables.isEmpty() && host.has(new FlintAndFiresteel()) > 0) {
+		if (!lightables.isEmpty() && (host.getFireLighter() != null)) {
 			try {
 				setCurrentTask(new LightLightable(host, (Lightable) lightables.get(0), true));
 			} catch (NoTileFoundException e) {}

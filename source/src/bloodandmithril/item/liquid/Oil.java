@@ -12,10 +12,10 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class CrudeOil extends Liquid {
+public class Oil extends Liquid {
 	private static final long serialVersionUID = 7506934519654231222L;
 
-	public CrudeOil() {
+	public Oil() {
 		super();
 	}
 
@@ -26,12 +26,12 @@ public class CrudeOil extends Liquid {
 
 	@Override
 	public String getDescription() {
-		return "Black gold.";
+		return "Oil, can be used as a fuel.";
 	}
 
 
 	@Override
 	public Color getColor() {
-		return Colors.CRUDEOIL;
+		return Colors.OIL;
 	}
 }

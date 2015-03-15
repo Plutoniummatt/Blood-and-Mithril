@@ -1,17 +1,25 @@
 package bloodandmithril.item.items.equipment.misc;
 
+import static bloodandmithril.character.ai.perception.Visible.getVisible;
+import bloodandmithril.audio.SoundService;
+import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.misc.Misc;
+import bloodandmithril.prop.Prop;
+import bloodandmithril.world.Domain.Depth;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Basic firestarter, not good for much else
  *
  * @author Matt
  */
-public class FlintAndFiresteel extends Misc {
+public class FlintAndFiresteel extends Misc implements FireLighter {
 	private static final long serialVersionUID = 1209549782426000939L;
 
 	/**
@@ -61,5 +69,18 @@ public class FlintAndFiresteel extends Misc {
 	@Override
 	protected Item internalCopy() {
 		return new FlintAndFiresteel();
+	}
+
+
+	@Override
+	public void fireLightingEffect(Prop lightable) {
+		ParticleService.parrySpark(lightable.position.cpy().add(0, 7), new Vector2(), Depth.MIDDLEGROUND, Color.WHITE, Color.WHITE, 100, true, 30, 200f);
+		SoundService.play(SoundService.flint, lightable.position, true, getVisible(lightable));
+	}
+
+
+	@Override
+	public boolean canLightFire() {
+		return true;
 	}
 }
