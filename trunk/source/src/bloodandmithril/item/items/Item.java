@@ -97,6 +97,9 @@ public abstract class Item implements Serializable, Affixed {
 	/** Rotating when in world */
 	private float angle, angularVelocity = (Util.getRandom().nextFloat() - 0.5f) * 40f;
 
+	/** Whether or not this item bounces when discarded */
+	private boolean bounces = false;
+
 	/**
 	 * Constructor
 	 */
@@ -146,6 +149,12 @@ public abstract class Item implements Serializable, Affixed {
 
 	/** Returns true if two {@link Item}s have identical attributes */
 	protected abstract boolean internalSameAs(Item other);
+
+	/** Set bouncing to true */
+	public Item bounces() {
+		this.bounces = true;
+		return this;
+	}
 
 	@Override
 	public boolean equals(Object other) {
@@ -379,7 +388,7 @@ public abstract class Item implements Serializable, Affixed {
 						i = i + 360;
 					}
 					boolean pointingUp = i > 350 || i > 0 && i < 190;
-					if (pointingUp) {
+					if (pointingUp && bounces) {
 						if (abs(velocity.y) > 400f) {
 							angularVelocity = (Util.getRandom().nextFloat() - 0.5f) * 40f;
 						} else {

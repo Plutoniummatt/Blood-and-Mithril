@@ -25,6 +25,7 @@ public class RockItem extends bloodandmithril.item.items.material.MaterialItem {
 		super(1f, 5, false);
 		this.mineral = mineral;
 		setValue(Material.getMaterial(mineral).getRockValue());
+		bounces();
 	}
 
 
