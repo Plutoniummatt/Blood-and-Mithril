@@ -30,6 +30,7 @@ public class PlankItem extends bloodandmithril.item.items.material.MaterialItem 
 		super(1f, 5, false);
 		this.wood = wood;
 		setValue(Material.getMaterial(wood).getPlankValue());
+		bounces();
 	}
 
 

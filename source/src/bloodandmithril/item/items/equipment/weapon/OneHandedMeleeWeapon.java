@@ -27,6 +27,7 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	 */
 	protected OneHandedMeleeWeapon(float mass, int volume, boolean equippable, long value, Class<T> material) {
 		super(mass, volume, equippable, value, EquipmentSlot.MAINHAND, material);
+		bounces();
 	}
 
 
@@ -57,15 +58,15 @@ public abstract class OneHandedMeleeWeapon<T extends Material> extends MeleeWeap
 	public boolean twoHand() {
 		return false;
 	}
-	
+
 	@Override
 	public void update(Equipper equipper, float delta) {
 	}
-	
+
 	@Override
 	public void onUnequip(Equipper equipper) {
 	}
-	
+
 	@Override
 	public void onEquip(Equipper equipper) {
 	}
