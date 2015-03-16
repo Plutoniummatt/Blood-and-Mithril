@@ -25,4 +25,9 @@ public abstract class Food extends Item implements Consumable {
 	public Category getType() {
 		return Category.FOOD;
 	}
+
+	@Override
+	public float getUprightAngle() {
+		return 90f;
+	}
 }

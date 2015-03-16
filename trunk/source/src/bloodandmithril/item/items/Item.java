@@ -129,7 +129,7 @@ public abstract class Item implements Serializable, Affixed {
 	public String getPlural(boolean firstCap) {
 		return modifyName(internalGetPlural(firstCap));
 	}
-	
+
 	/** Whether this item can be thrown */
 	public boolean throwable() {
 		return true;
@@ -374,7 +374,7 @@ public abstract class Item implements Serializable, Affixed {
 			if (Domain.getWorld(getWorldId()).getTopography().getTile(trial.x, trial.y, true).isPassable()) {
 				if (previousVelocity.y <= 0f) {
 
-					int i = (int)angle % 360;
+					int i = (int)angle % 360 - (int)getUprightAngle();
 					if (i < 0) {
 						i = i + 360;
 					}
@@ -608,4 +608,10 @@ public abstract class Item implements Serializable, Affixed {
 	public Box getPickupBox() {
 		return new Box(position.cpy(), 75f, 75f);
 	}
+
+
+	/**
+	 * @return The angle from positive axis of the upright position of the texture region, in degrees, measured positive counter clockwise
+	 */
+	public abstract float getUprightAngle();
 }

@@ -263,4 +263,9 @@ public abstract class LiquidContainerItem extends Item {
 
 	@Override
 	public abstract LiquidContainerItem clone();
+
+	@Override
+	public float getUprightAngle() {
+		return 90f;
+	}
 }

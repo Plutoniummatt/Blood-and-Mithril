@@ -50,4 +50,9 @@ public abstract class Key extends Item {
 	public Category getType() {
 		return Category.KEY;
 	}
+
+	@Override
+	public float getUprightAngle() {
+		return 90f;
+	}
 }

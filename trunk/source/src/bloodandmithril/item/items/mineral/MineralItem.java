@@ -18,4 +18,9 @@ public abstract class MineralItem extends Item {
 	protected MineralItem(float mass, int volume, boolean equippable, long value) {
 		super(mass, volume, equippable, value);
 	}
+
+	@Override
+	public float getUprightAngle() {
+		return 90f;
+	}
 }

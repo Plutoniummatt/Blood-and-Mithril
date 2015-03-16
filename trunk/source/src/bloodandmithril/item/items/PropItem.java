@@ -17,6 +17,10 @@ public abstract class PropItem extends Item {
 		super(mass, volume, equippable, value);
 	}
 
-
 	public abstract Prop getProp();
+
+	@Override
+	public float getUprightAngle() {
+		return 90f;
+	}
 }

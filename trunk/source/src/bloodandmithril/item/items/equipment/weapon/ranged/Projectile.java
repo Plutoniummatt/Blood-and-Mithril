@@ -107,7 +107,7 @@ public abstract class Projectile implements Serializable {
 			}
 		} catch (NoTileFoundException e) {
 		}
-		
+
 		this.pPosition = previousPosition;
 	}
 
@@ -211,7 +211,11 @@ public abstract class Projectile implements Serializable {
 			return Category.AMMO;
 		}
 
-
 		public abstract Projectile getProjectile();
+
+		@Override
+		public float getUprightAngle() {
+			return 0f;
+		}
 	}
 }
