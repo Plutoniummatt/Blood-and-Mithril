@@ -130,7 +130,7 @@ public class Lantern extends OffhandEquipment {
 							Colors.FIRE_START,
 							1f,
 							getWorldId(),
-							8f,
+							15f,
 							MovementMode.WEIGHTLESS,
 							Depth.FOREGOUND,
 							Long.MAX_VALUE
@@ -139,7 +139,7 @@ public class Lantern extends OffhandEquipment {
 						Domain.getWorld(getWorldId()).getServerParticles().put(particle.particleId, particle);
 						particleIds.add(particle.particleId);
 					}
-					for (int i = 0; i < 10; i++) {
+					for (int i = 0; i < 20; i++) {
 						Particle particle = new DiminishingTracerParticle(
 							position.cpy().add(0f, -19f),
 							new Vector2(0, 0),
@@ -147,7 +147,7 @@ public class Lantern extends OffhandEquipment {
 							Colors.FIRE_START,
 							1f,
 							getWorldId(),
-							3f,
+							10f,
 							MovementMode.WEIGHTLESS,
 							Depth.MIDDLEGROUND,
 							Long.MAX_VALUE
