@@ -18,18 +18,20 @@ public abstract class SeedItem extends Item {
 		super(mass, 0, false, value);
 	}
 
-
 	@Override
 	protected boolean internalSameAs(Item other) {
 		return other.getClass().equals(getClass());
 	}
-
 
 	@Override
 	public Category getType() {
 		return Category.SEED;
 	}
 
+	@Override
+	public float getUprightAngle() {
+		return 90f;
+	}
 
 	/**
 	 * @return a new instance of {@link bloodandmithril.prop.plant.seed.SeedProp} which represents this {@link SeedItem}

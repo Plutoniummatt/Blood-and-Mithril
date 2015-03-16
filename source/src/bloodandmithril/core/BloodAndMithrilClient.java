@@ -33,6 +33,7 @@ import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.cursorboundtask.ThrowItemCursorBoundTask;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
@@ -545,7 +546,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			}
 
 			if (individualClicked == null) {
-				if (doubleClick) {
+				if (doubleClick && cursorBoundTask == null && cursorBoundTask instanceof ThrowItemCursorBoundTask) {
 					for (Individual indi : Domain.getIndividuals().values()) {
 						if (indi.isControllable()) {
 							if (ClientServerInterface.isServer()) {
@@ -560,7 +561,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 						Domain.clearSelectedIndividuals();
 					}
 				}
-
 			} else {
 				for (Individual indi : Domain.getIndividuals().values()) {
 					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId() && !input.isKeyPressed(getKeyMappings().selectIndividual.keyCode)) {

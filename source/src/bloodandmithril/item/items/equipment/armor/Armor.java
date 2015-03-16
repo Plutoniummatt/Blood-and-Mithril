@@ -35,4 +35,10 @@ public abstract class Armor<T extends Material> extends Equipable {
 	public boolean twoHand() {
 		return false;
 	}
+
+
+	@Override
+	public float getUprightAngle() {
+		return 90f;
+	}
 }

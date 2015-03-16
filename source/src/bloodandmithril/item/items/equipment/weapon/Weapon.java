@@ -111,4 +111,9 @@ public abstract class Weapon<T extends Material> extends Equipable {
 	public Class<T> getMaterial() {
 		return material;
 	}
+
+	@Override
+	public float getUprightAngle() {
+		return 0f;
+	}
 }

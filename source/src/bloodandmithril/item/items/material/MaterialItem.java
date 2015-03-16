@@ -27,9 +27,13 @@ public abstract class MaterialItem extends Item {
 		super(mass, volume, equippable);
 	}
 
-
 	@Override
 	public Category getType() {
 		return Category.MATERIAL;
+	}
+
+	@Override
+	public float getUprightAngle() {
+		return 90f;
 	}
 }

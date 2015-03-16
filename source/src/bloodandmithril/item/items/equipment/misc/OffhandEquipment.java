@@ -84,12 +84,17 @@ public abstract class OffhandEquipment extends Equipable {
 	public boolean twoHand() {
 		return false;
 	}
-	
+
 	public float renderAngle() {
 		return 0f;
 	}
-	
+
 	public float combatAngle() {
+		return 0f;
+	}
+
+	@Override
+	public float getUprightAngle() {
 		return 0f;
 	}
 }

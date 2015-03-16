@@ -27,9 +27,13 @@ public abstract class MiscItem extends Item {
 		super(mass, volume, equippable);
 	}
 
-
 	@Override
 	public Category getType() {
 		return Category.MISC;
+	}
+
+	@Override
+	public float getUprightAngle() {
+		return 90f;
 	}
 }
