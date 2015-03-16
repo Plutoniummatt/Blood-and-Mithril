@@ -126,7 +126,7 @@ public class GlowStickArrow<T extends Metal> extends Arrow<T> {
 
 		@Override
 		public TextureRegion getTextureRegion() {
-			return null;
+			return Arrow.textureRegion;
 		}
 
 

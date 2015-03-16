@@ -86,7 +86,7 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 				return;
 			}
 		}
-		
+
 		for (int individualId : world.getPositionalIndexMap().getNearbyEntityIds(Individual.class, individual.getState().position)) {
 			Individual nearbyIndividual = Domain.getIndividual(individualId);
 			if (nearbyIndividual.canBeUsedAsFireSource()) {
@@ -136,8 +136,8 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 			}
 			return false;
 		}
-		
-		
+
+
 		@Override
 		public Map<Item, Integer> getRequiredMaterials() {
 			Map<Item, Integer> requiredMaterials = super.getRequiredMaterials();
@@ -148,7 +148,7 @@ public class FireArrow<T extends Metal> extends Arrow<T> {
 
 		@Override
 		public TextureRegion getTextureRegion() {
-			return null;
+			return Arrow.textureRegion;
 		}
 
 
