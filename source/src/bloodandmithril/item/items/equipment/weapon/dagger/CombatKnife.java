@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon.dagger;
 
-import static bloodandmithril.item.items.material.Ingot.ingot;
+import static bloodandmithril.item.items.material.IngotItem.ingot;
 
 import java.util.HashMap;
 import java.util.Map;

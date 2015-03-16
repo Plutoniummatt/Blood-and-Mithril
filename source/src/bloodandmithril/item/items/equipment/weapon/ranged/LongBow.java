@@ -8,8 +8,8 @@ import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedProjectileWeapon;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile.ProjectileItem;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow.ArrowItem;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile.ArrowItem;
 import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.datastructure.Box;
@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * A long bow, fires {@link Arrow}s
+ * A long bow, fires {@link ArrowProjectile}s
  *
  * @author Matt
  */
@@ -229,7 +229,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 	@SuppressWarnings("rawtypes")
 	public Projectile fire(Vector2 origin, Vector2 direction) {
 		if (currentAmmo != null) {
-			Arrow arrow = (Arrow) ((ProjectileItem) currentAmmo).getProjectile();
+			ArrowProjectile arrow = (ArrowProjectile) ((ProjectileItem) currentAmmo).getProjectile();
 			arrow.setPosition(origin);
 			arrow.setVelocity(direction.cpy().scl(2000f));
 			return arrow;

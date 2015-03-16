@@ -18,17 +18,17 @@ import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.affix.MinorAffix;
 import bloodandmithril.item.affix.PostAffix;
 import bloodandmithril.item.affix.PreAffix;
-import bloodandmithril.item.items.container.GlassBottle;
-import bloodandmithril.item.items.food.animal.ChickenLeg;
-import bloodandmithril.item.items.food.plant.Carrot;
-import bloodandmithril.item.items.food.plant.DeathCap;
-import bloodandmithril.item.items.material.Brick;
-import bloodandmithril.item.items.material.Glass;
-import bloodandmithril.item.items.material.Stick;
-import bloodandmithril.item.items.mineral.earth.Ashes;
-import bloodandmithril.item.items.mineral.earth.Dirt;
-import bloodandmithril.item.items.mineral.earth.Sand;
-import bloodandmithril.item.items.misc.Currency;
+import bloodandmithril.item.items.container.GlassBottleItem;
+import bloodandmithril.item.items.food.animal.ChickenLegItem;
+import bloodandmithril.item.items.food.plant.CarrotItem;
+import bloodandmithril.item.items.food.plant.DeathCapItem;
+import bloodandmithril.item.items.material.BrickItem;
+import bloodandmithril.item.items.material.GlassItem;
+import bloodandmithril.item.items.material.StickItem;
+import bloodandmithril.item.items.mineral.earth.AshesItem;
+import bloodandmithril.item.items.mineral.earth.DirtItem;
+import bloodandmithril.item.items.mineral.earth.SandItem;
+import bloodandmithril.item.items.misc.CurrencyItem;
 import bloodandmithril.item.material.metal.Copper;
 import bloodandmithril.item.material.metal.Gold;
 import bloodandmithril.item.material.metal.Iron;
@@ -294,18 +294,18 @@ public abstract class Item implements Serializable, Affixed {
 		Steel.STEELINGOT = new TextureRegion(Domain.gameWorldTexture, 150, 19, 22, 5);
 		Hematite.HEMATITE = new TextureRegion(Domain.gameWorldTexture, 97, 131, 16, 9);
 		Coal.COAL = new TextureRegion(Domain.gameWorldTexture, 97, 118, 18, 12);
-		Carrot.CARROT = new TextureRegion(Domain.gameWorldTexture, 352, 194, 25, 13);
+		CarrotItem.CARROT = new TextureRegion(Domain.gameWorldTexture, 352, 194, 25, 13);
 		SandStone.SANDSTONE = new TextureRegion(Domain.gameWorldTexture, 97, 141, 15, 10);
-		ChickenLeg.COOKED_CHICKEN_LEG = new TextureRegion(Domain.gameWorldTexture, 118, 1, 20, 22);
-		ChickenLeg.RAW_CHICKEN_LEG = new TextureRegion(Domain.gameWorldTexture, 97, 1, 20, 22);
-		GlassBottle.GLASSBOTTLE_ITEM = new TextureRegion(Domain.gameWorldTexture, 139, 1, 10, 25);
-		Glass.GLASS_ITEM = new TextureRegion(Domain.gameWorldTexture, 150, 1, 16, 11);
-		Ashes.ASHES = new TextureRegion(Domain.gameWorldTexture, 97, 104, 17, 6);
-		Sand.SAND = new TextureRegion(Domain.gameWorldTexture, 97, 111, 15, 6);
+		ChickenLegItem.COOKED_CHICKEN_LEG = new TextureRegion(Domain.gameWorldTexture, 118, 1, 20, 22);
+		ChickenLegItem.RAW_CHICKEN_LEG = new TextureRegion(Domain.gameWorldTexture, 97, 1, 20, 22);
+		GlassBottleItem.GLASSBOTTLE_ITEM = new TextureRegion(Domain.gameWorldTexture, 139, 1, 10, 25);
+		GlassItem.GLASS_ITEM = new TextureRegion(Domain.gameWorldTexture, 150, 1, 16, 11);
+		AshesItem.ASHES = new TextureRegion(Domain.gameWorldTexture, 97, 104, 17, 6);
+		SandItem.SAND = new TextureRegion(Domain.gameWorldTexture, 97, 111, 15, 6);
 		StandardWood.WOODLOG = new TextureRegion(Domain.gameWorldTexture, 97, 67, 82, 27);
 		StandardWood.WOODPLANK = new TextureRegion(Domain.gameWorldTexture, 118, 60, 40, 6);
-		Currency.CURRENCY_POUCH = new TextureRegion(Domain.gameWorldTexture, 97, 24, 18, 16);
-		DeathCap.DEATH_CAP = new TextureRegion(Domain.gameWorldTexture, 97, 41, 20, 25);
+		CurrencyItem.CURRENCY_POUCH = new TextureRegion(Domain.gameWorldTexture, 97, 24, 18, 16);
+		DeathCapItem.DEATH_CAP = new TextureRegion(Domain.gameWorldTexture, 97, 41, 20, 25);
 
 		Silver.SILVERINGOTICON = new TextureRegion(UserInterface.iconTexture, 0, 0, 64, 64);
 		Iron.IRONINGOTICON = new TextureRegion(UserInterface.iconTexture, 65, 0, 64, 64);
@@ -313,10 +313,10 @@ public abstract class Item implements Serializable, Affixed {
 		Copper.COPPERINGOTICON = new TextureRegion(UserInterface.iconTexture, 195, 0, 64, 64);
 		Gold.GOLDINGOTICON = new TextureRegion(UserInterface.iconTexture, 260, 0, 64, 64);
 
-		Brick.BRICK = new TextureRegion(Domain.gameWorldTexture, 118, 53, 18, 6);
-		Dirt.DIRT_PILE = new TextureRegion(Domain.gameWorldTexture, 97, 95, 21, 8);
+		BrickItem.BRICK = new TextureRegion(Domain.gameWorldTexture, 118, 53, 18, 6);
+		DirtItem.DIRT_PILE = new TextureRegion(Domain.gameWorldTexture, 97, 95, 21, 8);
 
-		Stick.STICK = new TextureRegion(Domain.gameWorldTexture, 827, 132, 11, 23);
+		StickItem.STICK = new TextureRegion(Domain.gameWorldTexture, 827, 132, 11, 23);
 	}
 
 

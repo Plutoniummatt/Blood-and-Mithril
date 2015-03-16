@@ -1,7 +1,7 @@
 package bloodandmithril.prop.construction.craftingstation;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import static bloodandmithril.item.items.material.Ingot.ingot;
+import static bloodandmithril.item.items.material.IngotItem.ingot;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
@@ -14,10 +14,10 @@ import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
-import bloodandmithril.item.items.container.GlassBottle;
-import bloodandmithril.item.items.material.Brick;
-import bloodandmithril.item.items.material.Glass;
-import bloodandmithril.item.items.material.Rock;
+import bloodandmithril.item.items.container.GlassBottleItem;
+import bloodandmithril.item.items.material.BrickItem;
+import bloodandmithril.item.items.material.GlassItem;
+import bloodandmithril.item.items.material.RockItem;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Steel;
@@ -54,8 +54,8 @@ public class Furnace extends CraftingStation implements Container {
 	private static final TreeMap<Float, TextureRegion> inProgressTextures = Maps.newTreeMap();
 
 	static {
-		craftables.put(new Glass(), 1);
-		craftables.put(new GlassBottle(newHashMap()), 3);
+		craftables.put(new GlassItem(), 1);
+		craftables.put(new GlassBottleItem(newHashMap()), 3);
 		craftables.put(ingot(Iron.class), 1);
 		craftables.put(ingot(Steel.class), 1);
 
@@ -116,8 +116,8 @@ public class Furnace extends CraftingStation implements Container {
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
-		requiredItems.put(Rock.rock(SandStone.class), 5);
-		requiredItems.put(Brick.brick(SandStone.class), 5);
+		requiredItems.put(RockItem.rock(SandStone.class), 5);
+		requiredItems.put(BrickItem.brick(SandStone.class), 5);
 		return requiredItems;
 	}
 

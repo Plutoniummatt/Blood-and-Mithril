@@ -3,7 +3,7 @@ package bloodandmithril.prop.furniture;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.item.items.container.LiquidContainer;
+import bloodandmithril.item.items.container.LiquidContainerItem;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -23,14 +23,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public abstract class LiquidContainerProp extends Furniture {
 	private static final long serialVersionUID = 5555138707601557563L;
-	private final LiquidContainer container;
+	private final LiquidContainerItem container;
 
 	/**
 	 * Constructor
 	 */
 	protected LiquidContainerProp(float x, float y, int width, int height, boolean grounded, boolean snapToGrid, float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids) {
 		super(x, y, width, height, grounded);
-		this.container = new PropLiquidContainer(maxAmount, containedLiquids);
+		this.container = new PropLiquidContainerItem(maxAmount, containedLiquids);
 	}
 
 
@@ -65,7 +65,7 @@ public abstract class LiquidContainerProp extends Furniture {
 	}
 
 
-	public LiquidContainer getContainer() {
+	public LiquidContainerItem getContainer() {
 		return container;
 	}
 
@@ -75,16 +75,16 @@ public abstract class LiquidContainerProp extends Furniture {
 	 *
 	 * @author Matt
 	 */
-	public static class PropLiquidContainer extends LiquidContainer {
+	public static class PropLiquidContainerItem extends LiquidContainerItem {
 		private static final long serialVersionUID = 5157248940455259595L;
 
-		public PropLiquidContainer(float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids) {
+		public PropLiquidContainerItem(float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids) {
 			super(0f, 0, maxAmount, containedLiquids, 0);
 		}
 
 
 		@Override
-		protected LiquidContainer copyContainer() {
+		protected LiquidContainerItem copyContainer() {
 			throw new RuntimeException("This should not be called");
 		}
 
@@ -95,7 +95,7 @@ public abstract class LiquidContainerProp extends Furniture {
 		}
 
 		@Override
-		public LiquidContainer clone() {
+		public LiquidContainerItem clone() {
 			throw new RuntimeException("This should not be called");
 		}
 

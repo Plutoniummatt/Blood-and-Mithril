@@ -106,16 +106,16 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.PropItem;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
-import bloodandmithril.item.items.container.GlassBottle;
-import bloodandmithril.item.items.container.LiquidContainer;
-import bloodandmithril.item.items.container.WoodenBucket;
+import bloodandmithril.item.items.container.GlassBottleItem;
+import bloodandmithril.item.items.container.LiquidContainerItem;
+import bloodandmithril.item.items.container.WoodenBucketItem;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.item.items.equipment.EquipperImpl.RingFunction;
-import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
+import bloodandmithril.item.items.equipment.misc.FlintAndFiresteelItem;
 import bloodandmithril.item.items.equipment.misc.Lantern;
 import bloodandmithril.item.items.equipment.misc.OffhandEquipment;
 import bloodandmithril.item.items.equipment.misc.Torch;
@@ -130,31 +130,31 @@ import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.items.equipment.weapon.ranged.LongBow;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow.ArrowItem;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow.FireArrowItem;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrow.GlowStickArrowItem;
-import bloodandmithril.item.items.food.animal.ChickenLeg;
-import bloodandmithril.item.items.food.plant.Carrot;
-import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
-import bloodandmithril.item.items.food.plant.Carrot.CarrotSeedProp;
-import bloodandmithril.item.items.food.plant.DeathCap;
-import bloodandmithril.item.items.furniture.MedievalWallTorch;
-import bloodandmithril.item.items.material.ArrowHead;
-import bloodandmithril.item.items.material.Brick;
-import bloodandmithril.item.items.material.Glass;
-import bloodandmithril.item.items.material.Ingot;
-import bloodandmithril.item.items.material.Rock;
-import bloodandmithril.item.items.material.Slab;
-import bloodandmithril.item.items.material.Stick;
-import bloodandmithril.item.items.mineral.earth.Ashes;
-import bloodandmithril.item.items.mineral.earth.Dirt;
-import bloodandmithril.item.items.mineral.earth.Sand;
-import bloodandmithril.item.items.misc.Currency;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile.ArrowItem;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrowProjectile;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrowProjectile.FireArrowItem;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrowProjectile;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrowProjectile.GlowStickArrowItem;
+import bloodandmithril.item.items.food.animal.ChickenLegItem;
+import bloodandmithril.item.items.food.plant.CarrotItem;
+import bloodandmithril.item.items.food.plant.CarrotItem.CarrotSeedItem;
+import bloodandmithril.item.items.food.plant.CarrotItem.CarrotSeedProp;
+import bloodandmithril.item.items.food.plant.DeathCapItem;
+import bloodandmithril.item.items.furniture.MedievalWallTorchItem;
+import bloodandmithril.item.items.material.ArrowHeadItem;
+import bloodandmithril.item.items.material.BrickItem;
+import bloodandmithril.item.items.material.GlassItem;
+import bloodandmithril.item.items.material.IngotItem;
+import bloodandmithril.item.items.material.RockItem;
+import bloodandmithril.item.items.material.SlabItem;
+import bloodandmithril.item.items.material.StickItem;
+import bloodandmithril.item.items.mineral.earth.AshesItem;
+import bloodandmithril.item.items.mineral.earth.DirtItem;
+import bloodandmithril.item.items.mineral.earth.SandItem;
+import bloodandmithril.item.items.misc.CurrencyItem;
 import bloodandmithril.item.items.misc.key.Key;
-import bloodandmithril.item.items.misc.key.SkeletonKey;
+import bloodandmithril.item.items.misc.key.SkeletonKeyItem;
 import bloodandmithril.item.liquid.Acid;
 import bloodandmithril.item.liquid.Blood;
 import bloodandmithril.item.liquid.Oil;
@@ -255,10 +255,10 @@ import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.Furniture;
 import bloodandmithril.prop.furniture.Furniture.NonPassableTilesOnly;
-import bloodandmithril.prop.furniture.MedievalWallTorch.NotEmptyTile;
+import bloodandmithril.prop.furniture.MedievalWallTorchProp.NotEmptyTile;
 import bloodandmithril.prop.furniture.RottenWoodenChest;
-import bloodandmithril.prop.furniture.SmallWoodenCrate;
-import bloodandmithril.prop.furniture.WoodenChest;
+import bloodandmithril.prop.furniture.SmallWoodenCrateProp;
+import bloodandmithril.prop.furniture.WoodenChestProp;
 import bloodandmithril.prop.plant.CactusProp;
 import bloodandmithril.prop.plant.DeadDesertBush;
 import bloodandmithril.prop.plant.PlantProp;
@@ -495,8 +495,8 @@ public class ClientServerInterface {
 		kryo.register(IndividualSighted.class);
 		kryo.register(Stimulus.class);
 		kryo.register(OffhandEquipment.class);
-		kryo.register(bloodandmithril.item.items.furniture.SmallWoodenCrate.class);
-		kryo.register(SmallWoodenCrate.class);
+		kryo.register(bloodandmithril.item.items.furniture.SmallWoodenCrateItem.class);
+		kryo.register(SmallWoodenCrateProp.class);
 		kryo.register(Proficiency.class);
 		kryo.register(Proficiencies.class);
 		kryo.register(bloodandmithril.character.proficiency.proficiencies.Trading.class);
@@ -511,8 +511,8 @@ public class ClientServerInterface {
 		kryo.register(NonPassableTilesOnly.class);
 		kryo.register(DiminishingColorChangingParticle.class);
 		kryo.register(NotEmptyTile.class);
-		kryo.register(ArrowHead.class);
-		kryo.register(Stick.class);
+		kryo.register(ArrowHeadItem.class);
+		kryo.register(StickItem.class);
 		kryo.register(NotifyTextBubble.class);
 		kryo.register(TextBubbleSerializableBean.class);
 		kryo.register(Particle.class);
@@ -527,14 +527,14 @@ public class ClientServerInterface {
 		kryo.register(ReturnIndividualPosition.class);
 		kryo.register(SandStone.class);
 		kryo.register(LongBow.class);
-		kryo.register(bloodandmithril.prop.furniture.MedievalWallTorch.class);
-		kryo.register(MedievalWallTorch.class);
+		kryo.register(bloodandmithril.prop.furniture.MedievalWallTorchProp.class);
+		kryo.register(MedievalWallTorchItem.class);
 		kryo.register(GlowStickArrowItem.class);
-		kryo.register(GlowStickArrow.class);
+		kryo.register(GlowStickArrowProjectile.class);
 		kryo.register(FireArrowItem.class);
-		kryo.register(FireArrow.class);
+		kryo.register(FireArrowProjectile.class);
 		kryo.register(ArrowItem.class);
-		kryo.register(Arrow.class);
+		kryo.register(ArrowProjectile.class);
 		kryo.register(JitGoToLocationFunction.class);
 		kryo.register(JitGoToLocation.class);
 		kryo.register(Jump.class);
@@ -542,7 +542,7 @@ public class ClientServerInterface {
 		kryo.register(MovementMode.class);
 		kryo.register(HareAI.class);
 		kryo.register(Hare.class);
-		kryo.register(FlintAndFiresteel.class);
+		kryo.register(FlintAndFiresteelItem.class);
 		kryo.register(RequestLightCampfire.class);
 		kryo.register(LightFire.class);
 		kryo.register(LightLightable.class);
@@ -553,8 +553,8 @@ public class ClientServerInterface {
 		kryo.register(PlantSeed.class);
 		kryo.register(RequestPlantSeed.class);
 		kryo.register(CarrotSeedProp.class);
-		kryo.register(CarrotSeed.class);
-		kryo.register(bloodandmithril.item.items.food.plant.Seed.class);
+		kryo.register(CarrotSeedItem.class);
+		kryo.register(bloodandmithril.item.items.food.plant.SeedItem.class);
 		kryo.register(SeedProp.class);
 		kryo.register(AttemptMine.class);
 		kryo.register(WithinInteractionBox.class);
@@ -598,23 +598,23 @@ public class ClientServerInterface {
 		kryo.register(ArrayList.class);
 		kryo.register(ArtificialIntelligence.AIMode.class);
 		kryo.register(ArtificialIntelligence.class);
-		kryo.register(Ashes.class);
+		kryo.register(AshesItem.class);
 		kryo.register(Bleeding.class);
 		kryo.register(Blood.class);
 		kryo.register(HareAI.class);
 		kryo.register(Box.class);
-		kryo.register(Brick.class);
+		kryo.register(BrickItem.class);
 		kryo.register(BrickTile.class);
 		kryo.register(Dagger.class);
 		kryo.register(CSIMineTile.class);
 		kryo.register(CSIOpenCraftingStation.class);
 		kryo.register(CSITradeWith.class);
-		kryo.register(Carrot.class);
+		kryo.register(CarrotItem.class);
 		kryo.register(ChangeFactionControlPassword.class);
 		kryo.register(ChangeIndividualBiography.class);
 		kryo.register(ChangeNickName.class);
 		kryo.register(ChangeNickNameResponse.class);
-		kryo.register(ChickenLeg.class);
+		kryo.register(ChickenLegItem.class);
 		kryo.register(ChunkData.class);
 		kryo.register(Class.class);
 		kryo.register(ClearGlassTile.class);
@@ -637,14 +637,14 @@ public class ClientServerInterface {
 		kryo.register(Crafting.class);
 		kryo.register(CraftingStation.class);
 		kryo.register(Oil.class);
-		kryo.register(Currency.class);
-		kryo.register(DeathCap.class);
+		kryo.register(CurrencyItem.class);
+		kryo.register(DeathCapItem.class);
 		kryo.register(DebugTile.class);
 		kryo.register(Depth.class);
 		kryo.register(DestroyPropNotification.class);
 		kryo.register(DestroyTile.class);
 		kryo.register(DestroyTileResponse.class);
-		kryo.register(Dirt.class);
+		kryo.register(DirtItem.class);
 		kryo.register(Domain.getIndividuals().keySet().getClass());
 		kryo.register(DrinkLiquid.class);
 		kryo.register(DryDirtTile.class);
@@ -662,8 +662,8 @@ public class ClientServerInterface {
 		kryo.register(Furnace.class);
 		kryo.register(GenerateChunk.class);
 		kryo.register(GenerateChunkResponse.class);
-		kryo.register(Glass.class);
-		kryo.register(GlassBottle.class);
+		kryo.register(GlassItem.class);
+		kryo.register(GlassBottleItem.class);
 		kryo.register(GlassTile.class);
 		kryo.register(GoToLocation.class);
 		kryo.register(GoToMovingLocation.class);
@@ -682,13 +682,13 @@ public class ClientServerInterface {
 		kryo.register(IndividualSelection.SelectIndividualResponse.class);
 		kryo.register(IndividualSelection.class);
 		kryo.register(IndividualState.class);
-		kryo.register(Ingot.class);
+		kryo.register(IngotItem.class);
 		kryo.register(InterlacedWindowTile.class);
 		kryo.register(Iron.class);
 		kryo.register(Key.class);
 		kryo.register(LinkedList.class);
 		kryo.register(Liquid.class);
-		kryo.register(LiquidContainer.class);
+		kryo.register(LiquidContainerItem.class);
 		kryo.register(List.class);
 		kryo.register(ListingMenuItem.class);
 		kryo.register(LockUnlock.class);
@@ -725,8 +725,8 @@ public class ClientServerInterface {
 		kryo.register(RequestTransferLiquidBetweenContainers.class);
 		kryo.register(Responses.class);
 		kryo.register(RingFunction.class);
-		kryo.register(Rock.class);
-		kryo.register(Sand.class);
+		kryo.register(RockItem.class);
+		kryo.register(SandItem.class);
 		kryo.register(SandStoneTile.class);
 		kryo.register(SandTile.class);
 		kryo.register(SeditmentaryTile.class);
@@ -735,9 +735,9 @@ public class ClientServerInterface {
 		kryo.register(SendHarvestRequest.class);
 		kryo.register(SerializableColor.class);
 		kryo.register(SetAIIdle.class);
-		kryo.register(SkeletonKey.class);
+		kryo.register(SkeletonKeyItem.class);
 		kryo.register(Proficiencies.class);
-		kryo.register(Slab.class);
+		kryo.register(SlabItem.class);
 		kryo.register(SoilTile.class);
 		kryo.register(StandardSoilTile.class);
 		kryo.register(Steel.class);
@@ -771,12 +771,12 @@ public class ClientServerInterface {
 		kryo.register(Water.class);
 		kryo.register(WayPoint.class);
 		kryo.register(Weapon.class);
-		kryo.register(WoodenBucket.class);
-		kryo.register(WoodenChest.class);
+		kryo.register(WoodenBucketItem.class);
+		kryo.register(WoodenChestProp.class);
 		kryo.register(WorkBench.class);
 		kryo.register(YellowBrickPlatform.class);
 		kryo.register(YellowBrickTile.class);
-		kryo.register(bloodandmithril.item.items.furniture.WoodenChest.class);
+		kryo.register(bloodandmithril.item.items.furniture.WoodenChestItem.class);
 		kryo.register(bloodandmithril.prop.plant.CarrotProp.class);
 	}
 
@@ -891,17 +891,17 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending run/walk request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendDrinkLiquidRequest(int individualId, LiquidContainer bottleToDrinkFrom, float amount) {
+		public static synchronized void sendDrinkLiquidRequest(int individualId, LiquidContainerItem bottleToDrinkFrom, float amount) {
 			client.sendTCP(new DrinkLiquid(individualId, bottleToDrinkFrom, amount));
 			Logger.networkDebug("Sending drink liquid request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendDiscardLiquidRequest(int individualId, LiquidContainer bottleToDiscardFrom, float amount) {
+		public static synchronized void sendDiscardLiquidRequest(int individualId, LiquidContainerItem bottleToDiscardFrom, float amount) {
 			client.sendTCP(new DiscardLiquid(individualId, bottleToDiscardFrom, amount));
 			Logger.networkDebug("Sending discard liquid request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendRequestTransferLiquidBetweenContainers(Individual individual, LiquidContainer from, LiquidContainer to, float amount) {
+		public static synchronized void sendRequestTransferLiquidBetweenContainers(Individual individual, LiquidContainerItem from, LiquidContainerItem to, float amount) {
 			client.sendTCP(new RequestTransferLiquidBetweenContainers(individual, from, to, amount));
 			Logger.networkDebug("Sending transfer liquid between containers request", LogLevel.DEBUG);
 		}

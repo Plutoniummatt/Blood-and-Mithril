@@ -4,8 +4,8 @@ import java.util.Map;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Rock;
-import bloodandmithril.item.items.material.Slab;
+import bloodandmithril.item.items.material.RockItem;
+import bloodandmithril.item.items.material.SlabItem;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.Color;
@@ -27,32 +27,32 @@ public abstract class Mineral extends Material {
 	}
 
 	/**
-	 * @return the value of an {@link Rock} made from this {@link Mineral}
+	 * @return the value of an {@link RockItem} made from this {@link Mineral}
 	 */
 	public abstract long getRockValue();
 
 	/**
-	 * @return the value of an {@link Slab} made from this {@link Mineral}
+	 * @return the value of an {@link SlabItem} made from this {@link Mineral}
 	 */
 	public abstract long getSlabValue();
 
 	/**
-	 * @return the masonry level required to craft a {@link Slab}
+	 * @return the masonry level required to craft a {@link SlabItem}
 	 */
 	public abstract int getSlabCraftingLevel();
 
 	/**
-	 * @return the items required to craft an {@link Slab}
+	 * @return the items required to craft an {@link SlabItem}
 	 */
 	public abstract Map<Item, Integer> getRequiredMaterialsToCraftSlab();
 
 	/**
-	 * @return the amount of time it takes to craft a {@link Slab}
+	 * @return the amount of time it takes to craft a {@link SlabItem}
 	 */
 	public abstract float getSlabCraftingDuration();
 
 	/**
-	 * @return the {@link TextureRegion} for a {@link Slab}
+	 * @return the {@link TextureRegion} for a {@link SlabItem}
 	 */
 	public abstract TextureRegion getSlabTextureRegion();
 

@@ -12,8 +12,8 @@ import java.util.List;
 
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
-import bloodandmithril.item.items.container.GlassBottle;
-import bloodandmithril.item.items.equipment.misc.FlintAndFiresteel;
+import bloodandmithril.item.items.container.GlassBottleItem;
+import bloodandmithril.item.items.equipment.misc.FlintAndFiresteelItem;
 import bloodandmithril.item.items.equipment.misc.Lantern;
 import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
@@ -21,25 +21,25 @@ import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
 import bloodandmithril.item.items.equipment.weapon.ranged.LongBow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrow;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrow;
-import bloodandmithril.item.items.food.animal.ChickenLeg;
-import bloodandmithril.item.items.food.plant.Carrot;
-import bloodandmithril.item.items.food.plant.DeathCap;
-import bloodandmithril.item.items.furniture.MedievalWallTorch;
-import bloodandmithril.item.items.furniture.SmallWoodenCrate;
-import bloodandmithril.item.items.furniture.WoodenChest;
-import bloodandmithril.item.items.material.Brick;
-import bloodandmithril.item.items.material.Glass;
-import bloodandmithril.item.items.material.Ingot;
-import bloodandmithril.item.items.material.Log;
-import bloodandmithril.item.items.material.Plank;
-import bloodandmithril.item.items.material.Rock;
-import bloodandmithril.item.items.material.Stick;
-import bloodandmithril.item.items.mineral.earth.Ashes;
-import bloodandmithril.item.items.mineral.earth.Dirt;
-import bloodandmithril.item.items.mineral.earth.Sand;
-import bloodandmithril.item.items.misc.Currency;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.FireArrowProjectile;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.GlowStickArrowProjectile;
+import bloodandmithril.item.items.food.animal.ChickenLegItem;
+import bloodandmithril.item.items.food.plant.CarrotItem;
+import bloodandmithril.item.items.food.plant.DeathCapItem;
+import bloodandmithril.item.items.furniture.MedievalWallTorchItem;
+import bloodandmithril.item.items.furniture.SmallWoodenCrateItem;
+import bloodandmithril.item.items.furniture.WoodenChestItem;
+import bloodandmithril.item.items.material.BrickItem;
+import bloodandmithril.item.items.material.GlassItem;
+import bloodandmithril.item.items.material.IngotItem;
+import bloodandmithril.item.items.material.LogItem;
+import bloodandmithril.item.items.material.PlankItem;
+import bloodandmithril.item.items.material.RockItem;
+import bloodandmithril.item.items.material.StickItem;
+import bloodandmithril.item.items.mineral.earth.AshesItem;
+import bloodandmithril.item.items.mineral.earth.DirtItem;
+import bloodandmithril.item.items.mineral.earth.SandItem;
+import bloodandmithril.item.items.misc.CurrencyItem;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Oil;
 import bloodandmithril.item.liquid.Water;
@@ -109,17 +109,17 @@ public class ItemPackage implements Serializable {
 	}
 
 	private static void addDefaults() {
-		Container prop = (Container) new SmallWoodenCrate(StandardWood.class).getProp();
-		prop.giveItem(new FlintAndFiresteel(), 1);
-		prop.giveItem(Plank.plank(StandardWood.class), 20);
-		prop.giveItem(Stick.stick(StandardWood.class), 20);
-		prop.giveItem(new Carrot(), 25);
-		prop.giveItem(new ChickenLeg(false), 5);
+		Container prop = (Container) new SmallWoodenCrateItem(StandardWood.class).getProp();
+		prop.giveItem(new FlintAndFiresteelItem(), 1);
+		prop.giveItem(PlankItem.plank(StandardWood.class), 20);
+		prop.giveItem(StickItem.stick(StandardWood.class), 20);
+		prop.giveItem(new CarrotItem(), 25);
+		prop.giveItem(new ChickenLegItem(false), 5);
 		prop.giveItem(new BushKnife(), 2);
 
 		HashMap<Class<? extends Liquid>, Float> newHashMap = Maps.newHashMap();
 		newHashMap.put(Water.class, 2f);
-		prop.giveItem(new GlassBottle(newHashMap), 5);
+		prop.giveItem(new GlassBottleItem(newHashMap), 5);
 
 		availableItemPackages.add(
 			new ItemPackage(
@@ -130,45 +130,45 @@ public class ItemPackage implements Serializable {
 		);
 		
 		if (BloodAndMithrilClient.devMode) {
-			Container chest = (Container) new WoodenChest(StandardWood.class).getProp();
-			chest.giveItem(new FlintAndFiresteel(), 10);
-			chest.giveItem(Plank.plank(StandardWood.class), 200);
-			chest.giveItem(Stick.stick(StandardWood.class), 200);
+			Container chest = (Container) new WoodenChestItem(StandardWood.class).getProp();
+			chest.giveItem(new FlintAndFiresteelItem(), 10);
+			chest.giveItem(PlankItem.plank(StandardWood.class), 200);
+			chest.giveItem(StickItem.stick(StandardWood.class), 200);
 			chest.giveItem(new BushKnife(), 10);
 			chest.giveItem(new CombatKnife(), 10);
 			chest.giveItem(new Broadsword(), 10);
 			chest.giveItem(new Machette(), 10);
 			chest.giveItem(new LongBow<StandardWood>(StandardWood.class), 10);
-			chest.giveItem(new GlowStickArrow.GlowStickArrowItem<Steel>(Steel.class), 500);
-			chest.giveItem(new FireArrow.FireArrowItem<Steel>(Steel.class), 500);
-			chest.giveItem(new Carrot(), 500);
-			chest.giveItem(new DeathCap(false), 500);
-			chest.giveItem(new DeathCap(true), 500);
-			chest.giveItem(new ChickenLeg(false), 500);
-			chest.giveItem(new ChickenLeg(true), 500);
-			chest.giveItem(Rock.rock(Coal.class), 500);
-			chest.giveItem(Rock.rock(SandStone.class), 500);
-			chest.giveItem(new Ashes(), 500);
-			chest.giveItem(new Sand(), 500);
-			chest.giveItem(new Dirt(), 500);
-			chest.giveItem(Log.log(StandardWood.class), 500);
-			chest.giveItem(Plank.plank(StandardWood.class), 500);
+			chest.giveItem(new GlowStickArrowProjectile.GlowStickArrowItem<Steel>(Steel.class), 500);
+			chest.giveItem(new FireArrowProjectile.FireArrowItem<Steel>(Steel.class), 500);
+			chest.giveItem(new CarrotItem(), 500);
+			chest.giveItem(new DeathCapItem(false), 500);
+			chest.giveItem(new DeathCapItem(true), 500);
+			chest.giveItem(new ChickenLegItem(false), 500);
+			chest.giveItem(new ChickenLegItem(true), 500);
+			chest.giveItem(RockItem.rock(Coal.class), 500);
+			chest.giveItem(RockItem.rock(SandStone.class), 500);
+			chest.giveItem(new AshesItem(), 500);
+			chest.giveItem(new SandItem(), 500);
+			chest.giveItem(new DirtItem(), 500);
+			chest.giveItem(LogItem.log(StandardWood.class), 500);
+			chest.giveItem(PlankItem.plank(StandardWood.class), 500);
 			chest.giveItem(new Torch(), 10);
 			HashMap<Class<? extends Liquid>, Float> map = Maps.newHashMap();
 			map.put(Water.class, 2f);
 			HashMap<Class<? extends Liquid>, Float> map2 = Maps.newHashMap();
 			map2.put(Oil.class, 2f);
-			chest.giveItem(new GlassBottle(map), 5);
-			chest.giveItem(new GlassBottle(map2), 5);
-			chest.giveItem(Brick.brick(SandStone.class), 100);
-			chest.giveItem(new Glass(), 100);
-			chest.giveItem(Ingot.ingot(Iron.class), 100);
-			chest.giveItem(Ingot.ingot(Steel.class), 100);
-			chest.giveItem(Stick.stick(StandardWood.class), 100);
-			chest.giveItem(new Currency(), 1000);
+			chest.giveItem(new GlassBottleItem(map), 5);
+			chest.giveItem(new GlassBottleItem(map2), 5);
+			chest.giveItem(BrickItem.brick(SandStone.class), 100);
+			chest.giveItem(new GlassItem(), 100);
+			chest.giveItem(IngotItem.ingot(Iron.class), 100);
+			chest.giveItem(IngotItem.ingot(Steel.class), 100);
+			chest.giveItem(StickItem.stick(StandardWood.class), 100);
+			chest.giveItem(new CurrencyItem(), 1000);
 			chest.giveItem(new Lantern(100f), 10);
-			chest.giveItem(new MedievalWallTorch(), 1000);
-			chest.giveItem(new Carrot.CarrotSeed(), 1000);
+			chest.giveItem(new MedievalWallTorchItem(), 1000);
+			chest.giveItem(new CarrotItem.CarrotSeedItem(), 1000);
 			
 			availableItemPackages.add(
 				new ItemPackage(

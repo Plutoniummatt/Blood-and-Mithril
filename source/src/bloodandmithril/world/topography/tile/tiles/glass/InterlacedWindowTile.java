@@ -2,7 +2,7 @@ package bloodandmithril.world.topography.tile.tiles.glass;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Glass;
+import bloodandmithril.item.items.material.GlassItem;
 import bloodandmithril.world.topography.tile.tiles.GlassTile;
 
 @Copyright("Matthew Peck 2014")
@@ -35,7 +35,7 @@ public class InterlacedWindowTile extends GlassTile {
 
 	@Override
 	public Item mine() {
-		return new Glass();
+		return new GlassItem();
 	}
 
 

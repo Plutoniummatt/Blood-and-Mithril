@@ -7,8 +7,8 @@ import java.util.Map;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Ingot;
-import bloodandmithril.item.items.material.Rock;
+import bloodandmithril.item.items.material.IngotItem;
+import bloodandmithril.item.items.material.RockItem;
 import bloodandmithril.item.material.mineral.Coal;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -41,8 +41,8 @@ public class Steel extends Metal {
 	@Override
 	public Map<Item, Integer> getRequiredMaterialsToCraftIngot() {
 		Map<Item, Integer> map = newHashMap();
-		map.put(Ingot.ingot(Iron.class), 1);
-		map.put(Rock.rock(Coal.class), 1);
+		map.put(IngotItem.ingot(Iron.class), 1);
+		map.put(RockItem.rock(Coal.class), 1);
 		return map;
 	}
 

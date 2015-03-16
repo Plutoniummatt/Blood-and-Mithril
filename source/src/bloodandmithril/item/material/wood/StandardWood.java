@@ -6,8 +6,8 @@ import java.util.Map;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Log;
-import bloodandmithril.item.items.material.Plank;
+import bloodandmithril.item.items.material.LogItem;
+import bloodandmithril.item.items.material.PlankItem;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
@@ -46,7 +46,7 @@ public class StandardWood extends Wood {
 	@Override
 	public Map<Item, Integer> getRequiredMaterialsToCraftPlank() {
 		HashMap<Item, Integer> map = Maps.newHashMap();
-		map.put(Log.log(this.getClass()), 1);
+		map.put(LogItem.log(this.getClass()), 1);
 		return map;
 	}
 
@@ -84,7 +84,7 @@ public class StandardWood extends Wood {
 	@Override
 	public Map<Item, Integer> getRequiredMaterialsToCraftStick() {
 		HashMap<Item, Integer> map = Maps.newHashMap();
-		map.put(Plank.plank(this.getClass()), 1);
+		map.put(PlankItem.plank(this.getClass()), 1);
 		return map;
 	}
 

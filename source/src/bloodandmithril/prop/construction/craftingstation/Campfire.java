@@ -12,9 +12,9 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.food.animal.ChickenLeg;
-import bloodandmithril.item.items.material.Plank;
-import bloodandmithril.item.items.material.Stick;
+import bloodandmithril.item.items.food.animal.ChickenLegItem;
+import bloodandmithril.item.items.material.PlankItem;
+import bloodandmithril.item.items.material.StickItem;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Lightable;
@@ -45,7 +45,7 @@ public class Campfire extends CraftingStation implements Lightable {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
 	static {
-		craftables.put(new ChickenLeg(true), 1);
+		craftables.put(new ChickenLegItem(true), 1);
 	}
 
 	/**
@@ -82,8 +82,8 @@ public class Campfire extends CraftingStation implements Lightable {
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
-		requiredItems.put(Stick.stick(StandardWood.class), 10);
-		requiredItems.put(Plank.plank(StandardWood.class), 2);
+		requiredItems.put(StickItem.stick(StandardWood.class), 10);
+		requiredItems.put(PlankItem.plank(StandardWood.class), 2);
 		return requiredItems;
 	}
 

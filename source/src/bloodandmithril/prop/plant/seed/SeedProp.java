@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.food.plant.Seed;
+import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
@@ -17,7 +17,7 @@ import bloodandmithril.world.topography.tile.Tile;
 import com.google.common.collect.Lists;
 
 /**
- * {@link Prop} representation of a {@link Seed}, this will have been planted
+ * {@link Prop} representation of a {@link SeedItem}, this will have been planted
  *
  * @author Matt
  */
@@ -25,7 +25,7 @@ import com.google.common.collect.Lists;
 public abstract class SeedProp extends Growable implements Harvestable {
 	private static final long serialVersionUID = 6958594764600730817L;
 
-	private final Seed seedToRepresent;
+	private final SeedItem seedToRepresent;
 
 	/** When this value reaches 1, germination will occur */
 	private float germinationProgress;
@@ -33,17 +33,17 @@ public abstract class SeedProp extends Growable implements Harvestable {
 	/**
 	 * Constructor
 	 */
-	protected SeedProp(float x, float y, Seed seed, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
+	protected SeedProp(float x, float y, SeedItem seed, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
 		super(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE, true, Depth.MIDDLEGROUND, canPlaceOnTopOf);
 		this.seedToRepresent = seed;
 	}
 
 
 	/**
-	 * @return The {@link Seed} this {@link SeedProp} represents
+	 * @return The {@link SeedItem} this {@link SeedProp} represents
 	 */
-	public Seed getSeed() {
-		return (Seed) seedToRepresent.copy();
+	public SeedItem getSeed() {
+		return (SeedItem) seedToRepresent.copy();
 	}
 
 

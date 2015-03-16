@@ -7,12 +7,12 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.furniture.LiquidContainerProp;
-import bloodandmithril.prop.furniture.LiquidContainerProp.PropLiquidContainer;
+import bloodandmithril.prop.furniture.LiquidContainerProp.PropLiquidContainerItem;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 
 /**
- * Window for transferring liquids with {@link PropLiquidContainer}s
+ * Window for transferring liquids with {@link PropLiquidContainerItem}s
  *
  * @author Matt
  */

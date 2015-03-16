@@ -2,13 +2,13 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.item.items.container.LiquidContainer;
+import bloodandmithril.item.items.container.LiquidContainerItem;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.world.Domain;
 
 /**
- * A request to transfer liquids between {@link LiquidContainer}s
+ * A request to transfer liquids between {@link LiquidContainerItem}s
  *
  * @author Matt
  */
@@ -16,13 +16,13 @@ import bloodandmithril.world.Domain;
 public class RequestTransferLiquidBetweenContainers implements Request {
 
 	private final int individualId;
-	private final LiquidContainer from, to;
+	private final LiquidContainerItem from, to;
 	private final float amount;
 
 	/**
 	 * Constructor
 	 */
-	public RequestTransferLiquidBetweenContainers(Individual individual, LiquidContainer from, LiquidContainer to, float amount) {
+	public RequestTransferLiquidBetweenContainers(Individual individual, LiquidContainerItem from, LiquidContainerItem to, float amount) {
 		this.individualId = individual.getId().getId();
 		this.from = from;
 		this.to = to;
@@ -32,7 +32,7 @@ public class RequestTransferLiquidBetweenContainers implements Request {
 
 	@Override
 	public Responses respond() {
-		LiquidContainer.transfer(
+		LiquidContainerItem.transfer(
 			Domain.getIndividual(individualId),
 			from,
 			to,

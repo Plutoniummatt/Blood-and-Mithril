@@ -1,7 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.item.items.food.plant.Seed;
+import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.world.topography.tile.Tile;
 
 @Copyright("Matthew Peck 2014")
@@ -16,5 +16,5 @@ public abstract class SoilTile extends Tile {
 	}
 
 
-	public abstract boolean canPlant(Seed seed);
+	public abstract boolean canPlant(SeedItem seed);
 }

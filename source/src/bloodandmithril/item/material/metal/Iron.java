@@ -1,6 +1,6 @@
 package bloodandmithril.item.material.metal;
 
-import static bloodandmithril.item.items.material.Rock.rock;
+import static bloodandmithril.item.items.material.RockItem.rock;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;

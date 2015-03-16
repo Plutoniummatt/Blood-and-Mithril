@@ -2,7 +2,7 @@ package bloodandmithril.world.topography.tile.tiles.sedimentary;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.mineral.earth.Sand;
+import bloodandmithril.item.items.mineral.earth.SandItem;
 import bloodandmithril.world.topography.tile.tiles.SeditmentaryTile;
 
 @Copyright("Matthew Peck 2014")
@@ -35,7 +35,7 @@ public class SandTile extends SeditmentaryTile {
 
 	@Override
 	public Item mine() {
-		return new Sand();
+		return new SandItem();
 	}
 
 
