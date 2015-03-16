@@ -12,7 +12,7 @@ import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import bloodandmithril.character.ai.task.PlantSeed;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.container.Container;
-import bloodandmithril.item.items.food.plant.Seed;
+import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
@@ -26,18 +26,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * {@link CursorBoundTask} to plant {@link Seed}s
+ * {@link CursorBoundTask} to plant {@link SeedItem}s
  *
  * @author Matt
  */
 public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
-	private final Seed toPlant;
+	private final SeedItem toPlant;
 
 	/**
 	 * Constructor
 	 */
-	public PlantSeedCursorBoundTask(Seed seed, Container planter) {
+	public PlantSeedCursorBoundTask(SeedItem seed, Container planter) {
 		super(
 			args -> {
 				bloodandmithril.prop.plant.seed.SeedProp propSeed = seed.getPropSeed();

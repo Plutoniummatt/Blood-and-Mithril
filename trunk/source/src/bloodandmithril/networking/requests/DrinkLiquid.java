@@ -2,7 +2,7 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.item.items.container.LiquidContainer;
+import bloodandmithril.item.items.container.LiquidContainerItem;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
@@ -18,13 +18,13 @@ import bloodandmithril.world.Domain;
 public class DrinkLiquid implements Request {
 
 	private final int individualId;
-	private final LiquidContainer bottleToDrinkFrom;
+	private final LiquidContainerItem bottleToDrinkFrom;
 	private final float amount;
 
 	/**
 	 * Constructor
 	 */
-	public DrinkLiquid(int individualId, LiquidContainer bottleToDrinkFrom, float amount) {
+	public DrinkLiquid(int individualId, LiquidContainerItem bottleToDrinkFrom, float amount) {
 		this.individualId = individualId;
 		this.bottleToDrinkFrom = bottleToDrinkFrom;
 		this.amount = amount;
@@ -36,7 +36,7 @@ public class DrinkLiquid implements Request {
 
 		Individual individual = Domain.getIndividual(individualId);
 		if (individual.takeItem(bottleToDrinkFrom) == 1) {
-			LiquidContainer newBottle = bottleToDrinkFrom.clone();
+			LiquidContainerItem newBottle = bottleToDrinkFrom.clone();
 			newBottle.drinkFrom(amount, individual);
 			individual.giveItem(newBottle);
 		}

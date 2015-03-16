@@ -10,7 +10,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.furniture.MedievalWallTorch.NotEmptyTile;
+import bloodandmithril.prop.furniture.MedievalWallTorchProp.NotEmptyTile;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;

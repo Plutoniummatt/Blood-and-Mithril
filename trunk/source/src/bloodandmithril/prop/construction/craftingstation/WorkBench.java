@@ -1,7 +1,7 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.item.items.material.Plank.plank;
-import static bloodandmithril.item.items.material.Stick.stick;
+import static bloodandmithril.item.items.material.PlankItem.plank;
+import static bloodandmithril.item.items.material.StickItem.stick;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
@@ -9,10 +9,10 @@ import java.util.Map;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.container.WoodenBucket;
-import bloodandmithril.item.items.equipment.weapon.ranged.projectile.Arrow.ArrowItem;
-import bloodandmithril.item.items.furniture.WoodenChest;
-import bloodandmithril.item.items.material.Plank;
+import bloodandmithril.item.items.container.WoodenBucketItem;
+import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile.ArrowItem;
+import bloodandmithril.item.items.furniture.WoodenChestItem;
+import bloodandmithril.item.items.material.PlankItem;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.wood.StandardWood;
 
@@ -33,8 +33,8 @@ public class WorkBench extends CraftingStation {
 		craftables.put(ArrowItem.arrowItem(Iron.class), 1);
 		craftables.put(plank(StandardWood.class), 5);
 		craftables.put(stick(StandardWood.class), 5);
-		craftables.put(new WoodenBucket(StandardWood.class), 1);
-		craftables.put(new WoodenChest(StandardWood.class), 1);
+		craftables.put(new WoodenBucketItem(StandardWood.class), 1);
+		craftables.put(new WoodenChestItem(StandardWood.class), 1);
 	}
 
 	private static final long serialVersionUID = 3667802131168466770L;
@@ -106,7 +106,7 @@ public class WorkBench extends CraftingStation {
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
 		Map<Item, Integer> requiredItems = newHashMap();
-		requiredItems.put(Plank.plank(StandardWood.class), 20);
+		requiredItems.put(PlankItem.plank(StandardWood.class), 20);
 		return requiredItems;
 	}
 

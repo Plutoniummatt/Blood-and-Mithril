@@ -1,7 +1,7 @@
 package bloodandmithril.prop.construction.craftingstation;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import static bloodandmithril.item.items.material.ArrowHead.arrowHead;
+import static bloodandmithril.item.items.material.ArrowHeadItem.arrowHead;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 

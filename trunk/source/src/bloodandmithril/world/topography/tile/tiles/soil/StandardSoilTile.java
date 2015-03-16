@@ -2,8 +2,8 @@ package bloodandmithril.world.topography.tile.tiles.soil;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.food.plant.Seed;
-import bloodandmithril.item.items.mineral.earth.Dirt;
+import bloodandmithril.item.items.food.plant.SeedItem;
+import bloodandmithril.item.items.mineral.earth.DirtItem;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
 @Copyright("Matthew Peck 2014")
@@ -36,12 +36,12 @@ public class StandardSoilTile extends SoilTile {
 
 	@Override
 	public Item mine() {
-		return new Dirt();
+		return new DirtItem();
 	}
 
 
 	@Override
-	public boolean canPlant(Seed seed) {
+	public boolean canPlant(SeedItem seed) {
 		return true;
 	}
 

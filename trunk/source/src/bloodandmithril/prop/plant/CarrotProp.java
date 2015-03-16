@@ -11,7 +11,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.food.plant.Carrot.CarrotSeed;
+import bloodandmithril.item.items.food.plant.CarrotItem.CarrotSeedItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
@@ -31,7 +31,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Lists;
 
 /**
- * The {@link Prop} equivalent to {@link bloodandmithril.item.items.food.plant.Carrot}
+ * The {@link Prop} equivalent to {@link bloodandmithril.item.items.food.plant.CarrotItem}
  *
  * @author Matt
  */
@@ -78,7 +78,7 @@ public class CarrotProp extends PlantProp implements Harvestable {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new MessageWindow(
-							bloodandmithril.item.items.food.plant.Carrot.description + (getGrowthProgress() == 1f ? "" : " This carrot is still growing."),
+							bloodandmithril.item.items.food.plant.CarrotItem.description + (getGrowthProgress() == 1f ? "" : " This carrot is still growing."),
 							Color.ORANGE,
 							BloodAndMithrilClient.WIDTH/2 - 250,
 							BloodAndMithrilClient.HEIGHT/2 + 125,
@@ -132,9 +132,9 @@ public class CarrotProp extends PlantProp implements Harvestable {
 	@Override
 	public Collection<Item> harvest(boolean canReceive) {
 		List<Item> items = Lists.newArrayList();
-		items.add(new bloodandmithril.item.items.food.plant.Carrot());
-		items.add(new CarrotSeed());
-		items.add(new CarrotSeed());
+		items.add(new bloodandmithril.item.items.food.plant.CarrotItem());
+		items.add(new CarrotSeedItem());
+		items.add(new CarrotSeedItem());
 		return items;
 	}
 

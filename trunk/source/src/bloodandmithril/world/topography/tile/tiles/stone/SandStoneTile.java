@@ -2,7 +2,7 @@ package bloodandmithril.world.topography.tile.tiles.stone;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Rock;
+import bloodandmithril.item.items.material.RockItem;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.world.topography.tile.tiles.StoneTile;
 
@@ -36,7 +36,7 @@ public class SandStoneTile extends StoneTile {
 
 	@Override
 	public Item mine() {
-		return Rock.rock(SandStone.class);
+		return RockItem.rock(SandStone.class);
 	}
 
 

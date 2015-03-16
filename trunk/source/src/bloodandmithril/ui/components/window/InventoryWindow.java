@@ -26,18 +26,18 @@ import bloodandmithril.item.items.Item.Category;
 import bloodandmithril.item.items.PropItem;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
-import bloodandmithril.item.items.container.LiquidContainer;
+import bloodandmithril.item.items.container.LiquidContainerItem;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.armor.Armor;
 import bloodandmithril.item.items.equipment.misc.Lantern;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
-import bloodandmithril.item.items.food.plant.Seed;
-import bloodandmithril.item.items.furniture.Furniture;
-import bloodandmithril.item.items.material.Material;
-import bloodandmithril.item.items.mineral.Mineral;
-import bloodandmithril.item.items.misc.Misc;
+import bloodandmithril.item.items.food.plant.SeedItem;
+import bloodandmithril.item.items.furniture.FurnitureItem;
+import bloodandmithril.item.items.material.MaterialItem;
+import bloodandmithril.item.items.mineral.MineralItem;
+import bloodandmithril.item.items.misc.MiscItem;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Oil;
 import bloodandmithril.networking.ClientServerInterface;
@@ -152,13 +152,13 @@ public class InventoryWindow extends Window implements Refreshable {
 		filters.put("Weapons", 		WrapperForTwo.wrap(item -> {return item instanceof Weapon;}, true));
 		filters.put("Armor", 		WrapperForTwo.wrap(item -> {return item instanceof Armor;}, true));
 		filters.put("Accesories", 	WrapperForTwo.wrap(item -> {return item instanceof Equipable && !(item instanceof Armor) && !(item instanceof Weapon);}, true));
-		filters.put("Materials", 	WrapperForTwo.wrap(item -> {return item instanceof Material;}, true));
-		filters.put("Minerals", 	WrapperForTwo.wrap(item -> {return item instanceof Mineral;}, true));
+		filters.put("Materials", 	WrapperForTwo.wrap(item -> {return item instanceof MaterialItem;}, true));
+		filters.put("Minerals", 	WrapperForTwo.wrap(item -> {return item instanceof MineralItem;}, true));
 		filters.put("Consumable", 	WrapperForTwo.wrap(item -> {return item instanceof Consumable;}, true));
-		filters.put("Containers", 	WrapperForTwo.wrap(item -> {return item instanceof LiquidContainer;}, true));
-		filters.put("Furniture", 	WrapperForTwo.wrap(item -> {return item instanceof Furniture;}, true));
-		filters.put("Misc", 		WrapperForTwo.wrap(item -> {return item instanceof Misc;}, true));
-		filters.put("Seed", 		WrapperForTwo.wrap(item -> {return item instanceof Seed;}, true));
+		filters.put("Containers", 	WrapperForTwo.wrap(item -> {return item instanceof LiquidContainerItem;}, true));
+		filters.put("Furniture", 	WrapperForTwo.wrap(item -> {return item instanceof FurnitureItem;}, true));
+		filters.put("Misc", 		WrapperForTwo.wrap(item -> {return item instanceof MiscItem;}, true));
+		filters.put("Seed", 		WrapperForTwo.wrap(item -> {return item instanceof SeedItem;}, true));
 		filters.put("Ammo", 		WrapperForTwo.wrap(item -> {return item.getType() == Category.AMMO;}, true));
 	}
 
@@ -480,7 +480,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			toReturn = consumableMenu(item);
 		}
 
-		if (item instanceof LiquidContainer) {
+		if (item instanceof LiquidContainerItem) {
 			toReturn = liquidContainerMenu(item);
 		}
 
@@ -488,7 +488,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			toReturn = equippableMenu(item, equipped);
 		}
 
-		if (item instanceof Seed) {
+		if (item instanceof SeedItem) {
 			toReturn = seedMenu(item);
 		}
 
@@ -587,7 +587,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			"Plant",
 			() -> {
 				BloodAndMithrilClient.setCursorBoundTask(
-					new PlantSeedCursorBoundTask((Seed) item, host)
+					new PlantSeedCursorBoundTask((SeedItem) item, host)
 				);
 			},
 			Colors.UI_GRAY,
@@ -700,7 +700,7 @@ public class InventoryWindow extends Window implements Refreshable {
 										}
 										
 										for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
-											if (listItem.t instanceof LiquidContainer) {
+											if (listItem.t instanceof LiquidContainerItem) {
 
 												listItem.button.setIdleColor(Color.ORANGE);
 												setActive(true);
@@ -710,7 +710,7 @@ public class InventoryWindow extends Window implements Refreshable {
 														host.takeItem(listItem.t);
 														
 														Item copy = listItem.t.copy();
-														Map<Class<? extends Liquid>, Float> subtracted = ((LiquidContainer) copy).subtract(amount);
+														Map<Class<? extends Liquid>, Float> subtracted = ((LiquidContainerItem) copy).subtract(amount);
 														if (subtracted.containsKey(Oil.class)) {
 															float oil = subtracted.get(Oil.class);
 															((Lantern) item).addFuel(oil);
@@ -824,12 +824,12 @@ public class InventoryWindow extends Window implements Refreshable {
 
 								if (ClientServerInterface.isServer()) {
 									host.takeItem(item);
-									LiquidContainer newContainer = ((LiquidContainer) item).clone();
+									LiquidContainerItem newContainer = ((LiquidContainerItem) item).clone();
 									newContainer.drinkFrom(amount, (Individual)host);
 									host.giveItem(newContainer);
 									refresh();
 								} else {
-									ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (LiquidContainer)item, Float.parseFloat((String)args[0]));
+									ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (LiquidContainerItem)item, Float.parseFloat((String)args[0]));
 								}
 							} catch (NumberFormatException e) {
 								UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
@@ -869,9 +869,9 @@ public class InventoryWindow extends Window implements Refreshable {
 								}
 
 								if (ClientServerInterface.isServer()) {
-									((LiquidContainer) item).subtract(amount);
+									((LiquidContainerItem) item).subtract(amount);
 								} else {
-									ClientServerInterface.SendRequest.sendDiscardLiquidRequest(((Individual)host).getId().getId(), (LiquidContainer) item, amount);
+									ClientServerInterface.SendRequest.sendDiscardLiquidRequest(((Individual)host).getId().getId(), (LiquidContainerItem) item, amount);
 								}
 							} catch (NumberFormatException e) {
 								UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
@@ -918,7 +918,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									listItem.menu = null;
 								}
 								for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
-									if (listItem.t instanceof LiquidContainer) {
+									if (listItem.t instanceof LiquidContainerItem) {
 
 										if (listItem.t == item) {
 											listItem.button.setIdleColor(Colors.UI_DARK_GREEN);
@@ -928,13 +928,13 @@ public class InventoryWindow extends Window implements Refreshable {
 										} else {
 											listItem.button.setIdleColor(Color.ORANGE);
 											setActive(true);
-											LiquidContainer toTransferTo = ((LiquidContainer)listItem.t).clone();
+											LiquidContainerItem toTransferTo = ((LiquidContainerItem)listItem.t).clone();
 											listItem.menu = null;
 											listItem.button.setTask(() -> {
 												if (isServer()) {
-													LiquidContainer.transfer(
+													LiquidContainerItem.transfer(
 														(Individual) host,
-														(LiquidContainer) item,
+														(LiquidContainerItem) item,
 														toTransferTo,
 														amount
 													);
@@ -942,7 +942,7 @@ public class InventoryWindow extends Window implements Refreshable {
 												} else {
 													ClientServerInterface.SendRequest.sendRequestTransferLiquidBetweenContainers(
 														(Individual) host,
-														(LiquidContainer) item,
+														(LiquidContainerItem) item,
 														toTransferTo,
 														amount
 													);
@@ -979,7 +979,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			InventoryItemContextMenuConstructor.showInfo(item)
 		);
 
-		if (host instanceof Individual && !((LiquidContainer)item).isEmpty()) {
+		if (host instanceof Individual && !((LiquidContainerItem)item).isEmpty()) {
 			contextMenu.addMenuItem(drink);
 			contextMenu.addMenuItem(transferContainerContents);
 			contextMenu.addMenuItem(emptyContainerContents);

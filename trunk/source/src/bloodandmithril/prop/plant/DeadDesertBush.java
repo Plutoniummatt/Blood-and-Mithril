@@ -13,12 +13,12 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Stick;
+import bloodandmithril.item.items.material.StickItem;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.furniture.MedievalWallTorch.NotEmptyTile;
+import bloodandmithril.prop.furniture.MedievalWallTorchProp.NotEmptyTile;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -183,7 +183,7 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 	public Collection<Item> harvest(boolean canReceive) {
 		List<Item> sticks = Lists.newLinkedList();
 		for (int i = numberOfSticksLeft; i > 0; i--) {
-			sticks.add(Stick.stick(StandardWood.class));
+			sticks.add(StickItem.stick(StandardWood.class));
 		}
 		return sticks;
 	}

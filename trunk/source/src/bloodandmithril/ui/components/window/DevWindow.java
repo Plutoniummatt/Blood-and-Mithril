@@ -37,7 +37,7 @@ import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Rock;
+import bloodandmithril.item.items.material.RockItem;
 import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.SandStone;
@@ -48,9 +48,9 @@ import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
-import bloodandmithril.prop.furniture.MedievalWallTorch;
+import bloodandmithril.prop.furniture.MedievalWallTorchProp;
 import bloodandmithril.prop.furniture.RottenWoodenChest;
-import bloodandmithril.prop.furniture.WoodenChest;
+import bloodandmithril.prop.furniture.WoodenChestProp;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -322,7 +322,7 @@ public class DevWindow extends Window {
 						() -> {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								WoodenChest pineChest = new WoodenChest(
+								WoodenChestProp pineChest = new WoodenChestProp(
 									individual.getState().position.x,
 									individual.getState().position.y,
 									100f,
@@ -350,7 +350,7 @@ public class DevWindow extends Window {
 						() -> {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								WoodenChest rottenChest = new RottenWoodenChest(
+								WoodenChestProp rottenChest = new RottenWoodenChest(
 									individual.getState().position.x,
 									individual.getState().position.y,
 									100f,
@@ -391,7 +391,7 @@ public class DevWindow extends Window {
 								Furnace furnace = new Furnace(SandStone.class, individual.getState().position.x, individual.getState().position.y);
 								furnace.setConstructionProgress(1f);
 								for (int i = 0; i < 0; i++) {
-									furnace.giveItem(Rock.rock(Coal.class));
+									furnace.giveItem(RockItem.rock(Coal.class));
 								}
 								Domain.getWorld(individual.getWorldId()).props().addProp(furnace);
 							}
@@ -434,7 +434,7 @@ public class DevWindow extends Window {
 						() -> {
 							Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								MedievalWallTorch torch = new MedievalWallTorch(individual.getState().position.x, individual.getState().position.y + 100);
+								MedievalWallTorchProp torch = new MedievalWallTorchProp(individual.getState().position.x, individual.getState().position.y + 100);
 								Domain.getWorld(individual.getWorldId()).props().addProp(torch);
 							}
 						},

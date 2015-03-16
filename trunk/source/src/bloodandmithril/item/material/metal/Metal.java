@@ -4,7 +4,7 @@ import java.util.Map;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Ingot;
+import bloodandmithril.item.items.material.IngotItem;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -27,39 +27,39 @@ public abstract class Metal extends Material {
 	}
 
 	/**
-	 * @return the value of an {@link Ingot} made from this {@link Metal}
+	 * @return the value of an {@link IngotItem} made from this {@link Metal}
 	 */
 	public abstract long getIngotValue();
 
 	/**
-	 * @return the smithing level required to craft an {@link Ingot}
+	 * @return the smithing level required to craft an {@link IngotItem}
 	 */
 	public abstract int getIngotCraftingLevel();
 
 	/**
-	 * @return the items required to craft an {@link Ingot}
+	 * @return the items required to craft an {@link IngotItem}
 	 */
 	public abstract Map<Item, Integer> getRequiredMaterialsToCraftIngot();
 
 	/**
-	 * @return the amount of time it takes to craft an {@link Ingot}
+	 * @return the amount of time it takes to craft an {@link IngotItem}
 	 */
 	public abstract float getIngotCraftingDuration();
 
 	/**
-	 * @return the {@link TextureRegion} for an {@link Ingot}
+	 * @return the {@link TextureRegion} for an {@link IngotItem}
 	 */
 	public abstract TextureRegion getIngotTextureRegion();
 
 	/**
-	 * @return the {@link TextureRegion} for an {@link Ingot} icon.
+	 * @return the {@link TextureRegion} for an {@link IngotItem} icon.
 	 */
 	public abstract TextureRegion getIngotIconTextureRegion();
 
 	/**
 	 * @return an ingot made from this metal
 	 */
-	public Ingot getIngot() {
-		return Ingot.ingot(getClass());
+	public IngotItem getIngot() {
+		return IngotItem.ingot(getClass());
 	}
 }

@@ -4,9 +4,9 @@ import java.util.Map;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.material.Log;
-import bloodandmithril.item.items.material.Plank;
-import bloodandmithril.item.items.material.Stick;
+import bloodandmithril.item.items.material.LogItem;
+import bloodandmithril.item.items.material.PlankItem;
+import bloodandmithril.item.items.material.StickItem;
 import bloodandmithril.item.material.Material;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,47 +25,47 @@ public abstract class Wood extends Material {
 	}
 
 	/**
-	 * @return the value of an {@link Log} made from this {@link Wood}
+	 * @return the value of an {@link LogItem} made from this {@link Wood}
 	 */
 	public abstract long getLogValue();
 
 	/**
-	 * @return the value of an {@link Plank} made from this {@link Wood}
+	 * @return the value of an {@link PlankItem} made from this {@link Wood}
 	 */
 	public abstract long getPlankValue();
 
 	/**
-	 * @return the carpentry level required to craft a {@link Plank}
+	 * @return the carpentry level required to craft a {@link PlankItem}
 	 */
 	public abstract int getPlankCraftingLevel();
 
 	/**
-	 * @return the items required to craft a {@link Plank}
+	 * @return the items required to craft a {@link PlankItem}
 	 */
 	public abstract Map<Item, Integer> getRequiredMaterialsToCraftPlank();
 
 	/**
-	 * @return the items required to craft a {@link Stick}
+	 * @return the items required to craft a {@link StickItem}
 	 */
 	public abstract Map<Item, Integer> getRequiredMaterialsToCraftStick();
 
 	/**
-	 * @return the amount of time it takes to craft a {@link Plank}
+	 * @return the amount of time it takes to craft a {@link PlankItem}
 	 */
 	public abstract float getPlankCraftingDuration();
 
 	/**
-	 * @return the amount of time it takes to craft a {@link Stick}
+	 * @return the amount of time it takes to craft a {@link StickItem}
 	 */
 	public abstract float getStickCraftingDuration();
 
 	/**
-	 * @return the {@link TextureRegion} for a {@link Plank}
+	 * @return the {@link TextureRegion} for a {@link PlankItem}
 	 */
 	public abstract TextureRegion getPlankTextureRegion();
 
 	/**
-	 * @return the {@link TextureRegion} for a {@link Log}
+	 * @return the {@link TextureRegion} for a {@link LogItem}
 	 */
 	public abstract TextureRegion getLogTextureRegion();
 
