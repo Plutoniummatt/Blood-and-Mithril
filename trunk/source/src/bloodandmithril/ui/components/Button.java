@@ -8,6 +8,7 @@ import static bloodandmithril.util.Util.fitToTextInputBox;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface.UIRef;
+import bloodandmithril.util.Function;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
@@ -55,6 +56,9 @@ public class Button {
 
 	/** The relative position this button is rendered from */
 	private UIRef ref;
+
+	/** THe popup that will be displayed from this button */
+	private Function<InfoPopup> popup;
 
 	/**
 	 * Constructor for text button
@@ -139,6 +143,12 @@ public class Button {
 	 */
 	public Button(Texture buttonAtlas, int offsetX, int offsetY, int atlasX, int atlasY, int width, int height, Task task, UIRef ref) {
 		this(buttonAtlas, offsetX, offsetY, atlasX, atlasY, width, height, null, task, ref);
+	}
+
+
+	public Button mouseOverPopup(Function<InfoPopup> popup) {
+		this.popup = popup;
+		return this;
 	}
 
 
@@ -380,5 +390,10 @@ public class Button {
 
 	public Task getTask() {
 		return task;
+	}
+
+
+	public InfoPopup getPopup() {
+		return popup.call();
 	}
 }

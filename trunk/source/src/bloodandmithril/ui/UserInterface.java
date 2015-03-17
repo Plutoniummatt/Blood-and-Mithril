@@ -75,6 +75,7 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.InfoPopup;
 import bloodandmithril.ui.components.TextBubble;
 import bloodandmithril.ui.components.TextBubble.TextBubbleSerializableBean;
 import bloodandmithril.ui.components.bar.BottomBar;
@@ -163,6 +164,9 @@ public class UserInterface {
 
 	/** FPS should be updated twice per second */
 	private static int fpsTimer, fps, fpsDisplayed;
+
+	/** The mouse-over info popup */
+	private static InfoPopup infoPopup;
 
 	private static float averageBarAlpha = 0f, maxHealth = 0f, totalHealth = 0, maxStamina = 0f, totalStamina = 0f, maxMana = 0f, totalMana = 0;
 
@@ -329,6 +333,13 @@ public class UserInterface {
 		renderTextBubbles();
 		renderHint();
 		renderCursorBoundTaskText();
+		if (getInfoPopup() != null && Gdx.input.isKeyPressed(getKeyMappings().showInfo.keyCode)) {
+			if (getInfoPopup().expiryFunction.call()) {
+				setInfoPopup(null);
+			} else {
+				getInfoPopup().render();
+			}
+		}
 		renderDragBox();
 		renderAverageBars();
 		renderLayeredComponents();
@@ -1589,5 +1600,15 @@ public class UserInterface {
 		for (Component component : layeredComponents) {
 			component.setClosing(true);
 		}
+	}
+
+
+	public static InfoPopup getInfoPopup() {
+		return infoPopup;
+	}
+
+
+	public static void setInfoPopup(InfoPopup infoPopup) {
+		UserInterface.infoPopup = infoPopup;
 	}
 }
