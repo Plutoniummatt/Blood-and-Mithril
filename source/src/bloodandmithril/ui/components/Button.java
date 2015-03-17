@@ -7,6 +7,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Util.fitToTextInputBox;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.JITTask;
@@ -156,6 +157,12 @@ public class Button {
 	 * Renders this button
 	 */
 	public void render(boolean active, float alpha, int maxWidth) {
+		if (popup != null) {
+			InfoPopup p = popup.call();
+			if (!p.expiryFunction.call() && UserInterface.getInfoPopup() == null) {
+				UserInterface.setInfoPopup(popup.call());
+			}
+		}
 
 		Vector2 vec = new Vector2();
 		morph(vec);

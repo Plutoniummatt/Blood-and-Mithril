@@ -333,17 +333,23 @@ public class UserInterface {
 		renderTextBubbles();
 		renderHint();
 		renderCursorBoundTaskText();
-		if (getInfoPopup() != null && Gdx.input.isKeyPressed(getKeyMappings().showInfo.keyCode)) {
-			if (getInfoPopup().expiryFunction.call()) {
-				setInfoPopup(null);
-			} else {
-				getInfoPopup().render();
-			}
-		}
 		renderDragBox();
 		renderAverageBars();
 		renderLayeredComponents();
 		renderContextMenus();
+		if (getInfoPopup() != null) {
+			if (Gdx.input.isKeyPressed(getKeyMappings().showInfo.keyCode)) {
+				if (getInfoPopup().expiryFunction.call()) {
+					setInfoPopup(null);
+				} else {
+					getInfoPopup().setClosing(false);
+					getInfoPopup().render();
+				}
+			} else {
+				getInfoPopup().setClosing(true);
+				getInfoPopup().render();
+			}
+		}
 
 		spriteBatch.setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
