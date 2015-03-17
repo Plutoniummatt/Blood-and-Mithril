@@ -9,7 +9,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.world.Domain.Depth.BACKGROUND;
-import static bloodandmithril.world.Domain.Depth.FOREGOUND;
+import static bloodandmithril.world.Domain.Depth.FOREGROUND;
 import static bloodandmithril.world.Domain.Depth.MIDDLEGROUND;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
@@ -282,7 +282,7 @@ public class Domain {
 		spriteBatch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
 		for (Prop prop : activeWorld.props().getProps()) {
-			if (prop.depth == FOREGOUND) {
+			if (prop.depth == FOREGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
 				prop.render();
@@ -305,14 +305,27 @@ public class Domain {
 			projectile.render();
 			spriteBatch.flush();
 		}
-		renderParticles(Depth.FOREGOUND);
+		renderParticles(Depth.FOREGROUND);
 		spriteBatch.end();
 		gl20.glEnable(GL20.GL_BLEND);
 		gl20.glBlendFuncSeparate(GL20.GL_ONE, GL20.GL_SRC_COLOR, GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		activeWorld.renderFluids();
 		gl20.glDisable(GL20.GL_BLEND);
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
+		for (Prop prop : activeWorld.props().getProps()) {
+			if (prop.depth == Depth.FRONT) {
+				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
+				prop.preRender();
+				prop.render();
+				spriteBatch.flush();
+			}
+		}
+		spriteBatch.end();
 		fBuffer.end();
+		
 		GaussianLightingRenderer.render(camX, camY);
 	}
 
@@ -533,6 +546,6 @@ public class Domain {
 
 
 	public enum Depth implements Serializable {
-		BACKGROUND, FOREGOUND, MIDDLEGROUND
+		BACKGROUND, FOREGROUND, MIDDLEGROUND, FRONT
 	}
 }

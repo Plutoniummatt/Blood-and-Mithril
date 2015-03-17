@@ -125,9 +125,9 @@ public class Torch extends OffhandEquipment implements FireLighter {
 			
 			float size1 = Util.getRandom().nextFloat();
 			float size2 = Util.getRandom().nextFloat();
-			ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size1 * 3f, size1 * 8f + 10f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGOUND, false, Colors.FIRE_END);
+			ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size1 * 3f, size1 * 8f + 10f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGROUND, false, Colors.FIRE_END);
 			ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size2 * 3f, size2 * 2f + 6f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
-			ParticleService.randomVelocityDiminishing(emission, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.FOREGOUND, false, null);
+			ParticleService.randomVelocityDiminishing(emission, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.FOREGROUND, false, null);
 		}
 	}
 	

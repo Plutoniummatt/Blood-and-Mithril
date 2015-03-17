@@ -132,7 +132,7 @@ public class Lantern extends OffhandEquipment {
 							getWorldId(),
 							15f,
 							MovementMode.WEIGHTLESS,
-							Depth.FOREGOUND,
+							Depth.FOREGROUND,
 							Long.MAX_VALUE
 						);
 						particle.doNotUpdate();

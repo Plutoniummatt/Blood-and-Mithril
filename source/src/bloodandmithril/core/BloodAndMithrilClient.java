@@ -546,7 +546,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			}
 
 			if (individualClicked == null) {
-				if (doubleClick && cursorBoundTask == null && cursorBoundTask instanceof ThrowItemCursorBoundTask) {
+				if (doubleClick && (cursorBoundTask == null || !(cursorBoundTask instanceof ThrowItemCursorBoundTask))) {
 					for (Individual indi : Domain.getIndividuals().values()) {
 						if (indi.isControllable()) {
 							if (ClientServerInterface.isServer()) {

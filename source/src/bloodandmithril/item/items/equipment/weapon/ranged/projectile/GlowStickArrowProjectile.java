@@ -51,7 +51,7 @@ public class GlowStickArrowProjectile<T extends Metal> extends ArrowProjectile<T
 						getWorldId(),
 						10f,
 						MovementMode.WEIGHTLESS,
-						Depth.FOREGOUND,
+						Depth.FOREGROUND,
 						(long) lightingDuration * 1000
 					);
 					particle.doNotUpdate();
