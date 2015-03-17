@@ -259,7 +259,6 @@ import bloodandmithril.prop.furniture.MedievalWallTorchProp.NotEmptyTile;
 import bloodandmithril.prop.furniture.RottenWoodenChest;
 import bloodandmithril.prop.furniture.SmallWoodenCrateProp;
 import bloodandmithril.prop.furniture.WoodenChestProp;
-import bloodandmithril.prop.plant.CactusProp;
 import bloodandmithril.prop.plant.DeadDesertBush;
 import bloodandmithril.prop.plant.DryGrass;
 import bloodandmithril.prop.plant.PlantProp;
@@ -486,7 +485,6 @@ public class ClientServerInterface {
 		kryo.register(RequestThrowItem.class);
 		kryo.register(RottenWoodenChest.class);
 		kryo.register(DeadDesertBush.class);
-		kryo.register(CactusProp.class);
 		kryo.register(SerializableDoubleWrapper.class);
 		kryo.register(Sniffer.class);
 		kryo.register(SoundStimulus.class);

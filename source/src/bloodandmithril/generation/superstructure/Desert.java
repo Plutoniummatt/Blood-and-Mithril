@@ -20,7 +20,6 @@ import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
 import bloodandmithril.generation.tools.SawToothGenerator;
 import bloodandmithril.persistence.ParameterPersistenceService;
-import bloodandmithril.prop.plant.CactusProp;
 import bloodandmithril.prop.plant.DeadDesertBush;
 import bloodandmithril.prop.plant.DryGrass;
 import bloodandmithril.util.Function;
@@ -268,21 +267,13 @@ public class Desert extends SuperStructure {
 				
 				if (Util.roll(0.04f)) {
 					Structures.get(getStructureKey()).addProp(
-						new CactusProp(
-							Topography.convertToWorldCoord(x, false),
-							Topography.convertToWorldCoord(y, false) + 16
-						)
-					);
-				}
-				if (Util.roll(0.04f)) {
-					Structures.get(getStructureKey()).addProp(
 						new DeadDesertBush(
 							Topography.convertToWorldCoord(x, false),
 							Topography.convertToWorldCoord(y, false) + 16
 						)
 					);
 				}
-				if (Util.roll(0.2f)) {
+				if (Util.roll(0.5f)) {
 					Structures.get(getStructureKey()).addProp(
 						new DryGrass(
 							Topography.convertToWorldCoord(x, false),
@@ -301,21 +292,13 @@ public class Desert extends SuperStructure {
 				
 				if (Util.roll(0.04f)) {
 					Structures.get(getStructureKey()).addProp(
-						new CactusProp(
-							Topography.convertToWorldCoord(x, false),
-							Topography.convertToWorldCoord(y, false)
-						)
-					);
-				}
-				if (Util.roll(0.04f)) {
-					Structures.get(getStructureKey()).addProp(
 						new DeadDesertBush(
 							Topography.convertToWorldCoord(x, false),
 							Topography.convertToWorldCoord(y, false) + 16
 						)
 					);
 				}
-				if (Util.roll(0.2f)) {
+				if (Util.roll(0.5f)) {
 					Structures.get(getStructureKey()).addProp(
 						new DryGrass(
 							Topography.convertToWorldCoord(x, false),
