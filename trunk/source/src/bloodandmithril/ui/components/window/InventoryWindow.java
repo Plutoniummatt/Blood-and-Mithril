@@ -419,7 +419,8 @@ public class InventoryWindow extends Window implements Refreshable {
 		for(final Entry<Item, Integer> item : listToPopulate.entrySet()) {
 
 			final ContextMenu menuToAddUnequipped = determineMenu(item.getKey(), false);
-			Button inventoryButton = new Button(
+
+			final Button inventoryButton = new Button(
 				item.getKey().getSingular(true),
 				defaultFont,
 				0,

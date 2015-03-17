@@ -49,7 +49,11 @@ public class TextPanel extends Panel {
 
 	@Override
 	public void render() {
-		defaultFont.setColor(Colors.modulateAlpha(textColor, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
+		if (parent == null) {
+			defaultFont.setColor(Colors.modulateAlpha(textColor, 1.0f));
+		} else {
+			defaultFont.setColor(Colors.modulateAlpha(textColor, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
+		}
 		defaultFont.drawMultiLine(
 			spriteBatch,
 			Util.fitToWindow(text, width, height / 20 - 1),
