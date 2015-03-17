@@ -105,7 +105,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		Color.YELLOW,
 		UIRef.BR
 	);
-	
+
 	private boolean refreshSuppressed = false;
 
 	public static Comparator<Item> inventorySortingOrder = new Comparator<Item>() {
@@ -499,7 +499,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		if (toReturn == null) {
 			toReturn = new ContextMenu(x, y, true, InventoryItemContextMenuConstructor.showInfo(item));
 		}
-		
+
 		if (!equipped) {
 			toReturn.addMenuItem(new MenuItem(
 				"Discard",
@@ -667,7 +667,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				)
 			);
 		}
-		
+
 		if (item instanceof Lantern) {
 			contextMenu.addMenuItem(
 				new MenuItem(
@@ -689,7 +689,7 @@ public class InventoryWindow extends Window implements Refreshable {
 											UserInterface.addMessage("Too little to refuel", "Its too little to refuel, enter a larger amount");
 											return;
 										}
-										
+
 										refreshSuppressed = true;
 
 										for (ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
@@ -698,7 +698,7 @@ public class InventoryWindow extends Window implements Refreshable {
 											listItem.button.setOverColor(Colors.UI_DARK_GRAY);
 											listItem.menu = null;
 										}
-										
+
 										for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
 											if (listItem.t instanceof LiquidContainerItem) {
 
@@ -708,19 +708,19 @@ public class InventoryWindow extends Window implements Refreshable {
 												listItem.button.setTask(() -> {
 													if (isServer()) {
 														host.takeItem(listItem.t);
-														
+
 														Item copy = listItem.t.copy();
 														Map<Class<? extends Liquid>, Float> subtracted = ((LiquidContainerItem) copy).subtract(amount);
 														if (subtracted.containsKey(Oil.class)) {
 															float oil = subtracted.get(Oil.class);
 															((Lantern) item).addFuel(oil);
 														}
-														
+
 														host.giveItem(copy);
 													} else {
 														// CSI
 													}
-													
+
 													refreshSuppressed = false;
 													refresh();
 												});
@@ -908,7 +908,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									UserInterface.addMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
 									return;
 								}
-								
+
 								refreshSuppressed = true;
 
 								for (ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
@@ -947,7 +947,7 @@ public class InventoryWindow extends Window implements Refreshable {
 														amount
 													);
 												}
-												
+
 												refreshSuppressed = false;
 											});
 										}
@@ -1025,7 +1025,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		if (refreshSuppressed) {
 			return;
 		}
-		
+
 		equippedItemsToDisplay.clear();
 		nonEquippedItemsToDisplay.clear();
 
