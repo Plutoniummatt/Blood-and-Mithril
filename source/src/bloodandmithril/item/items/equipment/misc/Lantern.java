@@ -139,7 +139,7 @@ public class Lantern extends OffhandEquipment {
 						Domain.getWorld(getWorldId()).getServerParticles().put(particle.particleId, particle);
 						particleIds.add(particle.particleId);
 					}
-					for (int i = 0; i < 20; i++) {
+					for (int i = 0; i < 10; i++) {
 						Particle particle = new DiminishingTracerParticle(
 							position.cpy().add(0f, -19f),
 							new Vector2(0, 0),
