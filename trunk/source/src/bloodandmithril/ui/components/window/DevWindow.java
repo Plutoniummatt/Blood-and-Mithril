@@ -51,6 +51,7 @@ import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.prop.furniture.MedievalWallTorchProp;
 import bloodandmithril.prop.furniture.RottenWoodenChest;
 import bloodandmithril.prop.furniture.WoodenChestProp;
+import bloodandmithril.prop.plant.DryGrass;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -145,7 +146,7 @@ public class DevWindow extends Window {
 					Domain.getActiveWorld().getWorldId(),
 					Util.getRandom().nextFloat() * 20f + 10,
 					MovementMode.GRAVITY,
-					Util.getRandom().nextBoolean() ? Depth.FOREGOUND : Depth.MIDDLEGROUND,
+					Util.getRandom().nextBoolean() ? Depth.FOREGROUND : Depth.MIDDLEGROUND,
 					lifetime,
 					true
 				).bounce());
@@ -303,6 +304,20 @@ public class DevWindow extends Window {
 					getMouseScreenX(),
 					getMouseScreenY(),
 					true,
+					new ContextMenu.MenuItem(
+						"Dry grass",
+						() -> {
+							Individual individual = Domain.getIndividuals().get(1);
+							if (individual != null) {
+								DryGrass grass = new DryGrass(individual.getState().position.x, individual.getState().position.y);
+								Domain.getWorld(individual.getWorldId()).props().addProp(grass);
+							}
+						},
+						Color.GREEN,
+						Color.WHITE,
+						Color.GREEN,
+						null
+					),
 					new ContextMenu.MenuItem(
 						"Anvil",
 						() -> {

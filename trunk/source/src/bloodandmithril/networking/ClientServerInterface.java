@@ -157,9 +157,9 @@ import bloodandmithril.item.items.misc.key.Key;
 import bloodandmithril.item.items.misc.key.SkeletonKeyItem;
 import bloodandmithril.item.liquid.Acid;
 import bloodandmithril.item.liquid.Blood;
-import bloodandmithril.item.liquid.Oil;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Milk;
+import bloodandmithril.item.liquid.Oil;
 import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.item.material.metal.Metal;
@@ -261,6 +261,7 @@ import bloodandmithril.prop.furniture.SmallWoodenCrateProp;
 import bloodandmithril.prop.furniture.WoodenChestProp;
 import bloodandmithril.prop.plant.CactusProp;
 import bloodandmithril.prop.plant.DeadDesertBush;
+import bloodandmithril.prop.plant.DryGrass;
 import bloodandmithril.prop.plant.PlantProp;
 import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.ui.UserInterface.FloatingText;
@@ -479,6 +480,7 @@ public class ClientServerInterface {
 		kryo.setReferences(true);
 		kryo.register(RequestSpawnIndividual.class);
 
+		kryo.register(DryGrass.class);
 		kryo.register(Lantern.class);
 		kryo.register(RequestSuppressAI.class);
 		kryo.register(RequestThrowItem.class);

@@ -67,7 +67,7 @@ public class GaussianLightingRenderer {
 		backgroundSprites();
 		backgroundLighting();
 		foregroundLighting();
-		lighting(foregroundLightingFBOSmall, foregroundLightingFBO, Depth.FOREGOUND);
+		lighting(foregroundLightingFBOSmall, foregroundLightingFBO, Depth.FOREGROUND);
 		lighting(middleGroundLightingFBOSmall, middleGroundLightingFBO, Depth.MIDDLEGROUND);
 		background();
 		middleground();

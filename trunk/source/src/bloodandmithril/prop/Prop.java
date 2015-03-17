@@ -179,6 +179,9 @@ public abstract class Prop implements Serializable, Visible {
 				if (Domain.getActiveWorld().props().hasProp(propId)) {
 					this.position.x = position.x;
 					this.position.y = position.y;
+					if (prop.depth == Depth.FRONT || this.depth == Depth.FRONT) {
+						continue;
+					}
 					if (this.overlapsWith(prop)) {
 						return false;
 					}

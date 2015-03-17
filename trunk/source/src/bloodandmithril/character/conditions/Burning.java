@@ -48,8 +48,8 @@ public class Burning extends Condition {
 
 	@Override
 	public void clientSideEffects(Individual affected, float delta) {
-		ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 6f, 10f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.FOREGOUND, false, Color.RED);
-		ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 4f, MovementMode.EMBER, Util.getRandom().nextInt(1400), Depth.FOREGOUND, false, Color.RED);
+		ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 6f, 10f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.FOREGROUND, false, Color.RED);
+		ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 3f, 4f, MovementMode.EMBER, Util.getRandom().nextInt(1400), Depth.FOREGROUND, false, Color.RED);
 		ParticleService.randomVelocityDiminishing(affected.getEmissionPosition(), 13f, 30f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 16f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
 	}
 

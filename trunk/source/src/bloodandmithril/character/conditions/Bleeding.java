@@ -45,7 +45,7 @@ public class Bleeding extends Condition {
 					new Countdown(Util.getRandom().nextInt(1000)),
 					0f,
 					MovementMode.GRAVITY,
-					Depth.FOREGOUND
+					Depth.FOREGROUND
 				)
 			);
 		}
