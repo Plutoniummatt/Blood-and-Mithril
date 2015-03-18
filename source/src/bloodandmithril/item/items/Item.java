@@ -43,8 +43,11 @@ import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.Panel;
+import bloodandmithril.ui.components.panel.TextPanel;
 import bloodandmithril.ui.components.window.ItemInfoWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
@@ -53,6 +56,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
@@ -526,6 +530,17 @@ public abstract class Item implements Serializable, Affixed {
 
 	protected void setValue(long value) {
 		this.value = value;
+	}
+	
+	public Panel getInfoPanel() {
+		TextPanel textPanel = new TextPanel(null, getDescription(), Color.ORANGE);
+		
+		TextBounds textBounds = new TextBounds();
+		textBounds = Fonts.defaultFont.getWrappedBounds(getDescription(), 250, textBounds);
+		
+		textPanel.width = (int) textBounds.width;
+		textPanel.height = (int) textBounds.height + 20;
+		return textPanel;
 	}
 
 	public boolean isEquippable() {

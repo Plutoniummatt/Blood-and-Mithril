@@ -10,9 +10,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Function;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 
 /**
  * Displays mouse-over popup info
@@ -34,6 +32,8 @@ public class InfoPopup extends Component {
 		this.expiryFunction = expiryFunction;
 		this.borderColor = Color.GRAY;
 		this.backGroundColor = Color.BLACK;
+		
+		this.panel.parent = this;
 	}
 
 
@@ -56,31 +56,31 @@ public class InfoPopup extends Component {
 
 	@Override
 	protected void internalComponentRender() {
+		setActive(true);
 		BloodAndMithrilClient.spriteBatch.begin();
 		renderRectangle(
-			getMouseScreenX() + bottomLeft.getRegionWidth(),
-			getMouseScreenY() + bottomLeft.getRegionHeight(),
-			panel.width,
-			panel.height,
+			getMouseScreenX() + bottomLeft.getRegionWidth() + 10,
+			getMouseScreenY() + bottomLeft.getRegionHeight() - 10,
+			panel.width + 10,
+			panel.height + 10,
 			true,
 			backGroundColor
 		);
 
 		renderBox(
-			getMouseScreenX(),
-			getMouseScreenY(),
-			panel.width,
-			panel.height,
+			getMouseScreenX() + 10,
+			getMouseScreenY() - 10,
+			panel.width + 10,
+			panel.height + 10,
 			isActive(),
 			borderColor
 		);
 		BloodAndMithrilClient.spriteBatch.end();
 
 		BloodAndMithrilClient.spriteBatch.begin();
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		panel.x = getMouseScreenX() + 20;
+		panel.y = getMouseScreenY() - 20;
 		panel.render();
-		Gdx.gl.glDisable(GL20.GL_BLEND);
 		BloodAndMithrilClient.spriteBatch.end();
 	}
 }

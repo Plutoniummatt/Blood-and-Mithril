@@ -348,6 +348,9 @@ public class UserInterface {
 			} else {
 				getInfoPopup().setClosing(true);
 				getInfoPopup().render();
+				if (getInfoPopup().getAlpha() == 0f) {
+					setInfoPopup(null);
+				}
 			}
 		}
 
