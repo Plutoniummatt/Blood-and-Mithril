@@ -1,2 +1,1 @@
-* Automatic information panel on mouse over on entities when a keyboard key is held down.
 * Destroy plants placed on top of tiles when tile underneath is mined
