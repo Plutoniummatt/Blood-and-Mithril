@@ -23,7 +23,7 @@ public abstract class Panel extends Component {
 	public int width, height;
 
 	/** The {@link Component} that this {@link Panel} lives on */
-	protected final Component parent;
+	protected Component parent;
 
 	/**
 	 * Protected constructor

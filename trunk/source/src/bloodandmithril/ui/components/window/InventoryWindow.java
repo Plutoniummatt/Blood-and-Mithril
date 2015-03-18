@@ -49,6 +49,7 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.InfoPopup;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
@@ -436,6 +437,17 @@ public class InventoryWindow extends Window implements Refreshable {
 				Color.WHITE,
 				UIRef.BL
 			);
+			
+			inventoryButton.mouseOverPopup(
+				() -> {
+					return new InfoPopup(
+						item.getKey().getInfoPanel(), 
+						() -> {
+							return !inventoryButton.isMouseOver();
+						}
+					);
+				}
+			);
 
 			final ContextMenu menuToAddEquipped = determineMenu(item.getKey(), true);
 			Button equippedButton = new Button(
@@ -454,6 +466,18 @@ public class InventoryWindow extends Window implements Refreshable {
 				Color.WHITE,
 				UIRef.BL
 			);
+			
+			equippedButton.mouseOverPopup(
+				() -> {
+					return new InfoPopup(
+						item.getKey().getInfoPanel(), 
+						() -> {
+							return !equippedButton.isMouseOver();
+						}
+					);
+				}
+			);
+
 
 			if (eq) {
 				this.equippedItemsToDisplay.put(

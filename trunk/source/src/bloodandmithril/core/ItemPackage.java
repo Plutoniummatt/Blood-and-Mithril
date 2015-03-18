@@ -29,6 +29,7 @@ import bloodandmithril.item.items.food.plant.DeathCapItem;
 import bloodandmithril.item.items.furniture.MedievalWallTorchItem;
 import bloodandmithril.item.items.furniture.SmallWoodenCrateItem;
 import bloodandmithril.item.items.furniture.WoodenChestItem;
+import bloodandmithril.item.items.material.ArrowHeadItem;
 import bloodandmithril.item.items.material.BrickItem;
 import bloodandmithril.item.items.material.GlassItem;
 import bloodandmithril.item.items.material.IngotItem;
@@ -169,6 +170,7 @@ public class ItemPackage implements Serializable {
 			chest.giveItem(new Lantern(100f), 10);
 			chest.giveItem(new MedievalWallTorchItem(), 1000);
 			chest.giveItem(new CarrotItem.CarrotSeedItem(), 1000);
+			chest.giveItem(ArrowHeadItem.arrowHead(Steel.class), 1000);
 			
 			availableItemPackages.add(
 				new ItemPackage(

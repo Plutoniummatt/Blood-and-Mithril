@@ -10,7 +10,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
-import bloodandmithril.util.Util;
+import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
 
 import com.badlogic.gdx.graphics.Color;
@@ -54,11 +54,13 @@ public class TextPanel extends Panel {
 		} else {
 			defaultFont.setColor(Colors.modulateAlpha(textColor, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
 		}
-		defaultFont.drawMultiLine(
+		spriteBatch.setShader(Shaders.text);
+		defaultFont.drawWrapped(
 			spriteBatch,
-			Util.fitToWindow(text, width, height / 20 - 1),
+			text,
 			x,
-			y
+			y,
+			width
 		);
 		spriteBatch.flush();
 	}

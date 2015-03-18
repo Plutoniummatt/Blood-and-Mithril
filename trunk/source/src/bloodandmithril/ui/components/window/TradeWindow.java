@@ -29,6 +29,7 @@ import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.InfoPopup;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Util.Colors;
@@ -336,55 +337,67 @@ public class TradeWindow extends Window implements Refreshable {
 	private void populate(final HashMap<ListingMenuItem<Item>, Integer> trading, final HashMap<ListingMenuItem<Item>, Integer> notTrading, Map<Item, Integer> toPopulateFrom) {
 		for (final Entry<Item, Integer> entry : toPopulateFrom.entrySet()) {
 
+			Button button = new Button(
+				entry.getKey().getSingular(true),
+				defaultFont,
+				0,
+				0,
+				entry.getKey().getSingular(true).length() * 10,
+				16,
+				() -> {
+					if (!isItemAvailableToTrade(proposer, proposee, entry.getKey())) {
+						return;
+					}
+
+					if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkTrade.keyCode)) {
+						UserInterface.addLayeredComponent(
+							new TextInputWindow(
+								WIDTH / 2 - 125,
+								HEIGHT / 2 + 100,
+								250,
+								100,
+								"Enter quantity",
+								250,
+								100,
+								args -> {
+									try {
+										changeList(entry.getKey(), Integer.parseInt(args[0].toString()), trading, notTrading, false);
+										setActive(true);
+									} catch (NumberFormatException e) {
+										UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
+									}
+								},
+								"Confirm",
+								true,
+								""
+							)
+						);
+					} else {
+						changeList(entry.getKey(), 1, trading, notTrading, false);
+					}
+				},
+				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Colors.UI_GRAY : Colors.UI_DARKER_GRAY,
+				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.GREEN : Colors.UI_DARKER_GRAY,
+				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.WHITE : Colors.UI_DARKER_GRAY,
+				UIRef.BL
+			);
+			
+			button.mouseOverPopup(
+				() -> {
+					return new InfoPopup(
+						entry.getKey().getInfoPanel(), 
+						() -> {
+							return !button.isMouseOver();
+						}
+					);
+				}
+			);
+			
 			final ListingMenuItem<Item> listingMenuItem = new ListingMenuItem<Item>(
 				entry.getKey(),
-				new Button(
-					entry.getKey().getSingular(true),
-					defaultFont,
-					0,
-					0,
-					entry.getKey().getSingular(true).length() * 10,
-					16,
-					() -> {
-						if (!isItemAvailableToTrade(proposer, proposee, entry.getKey())) {
-							return;
-						}
-
-						if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkTrade.keyCode)) {
-							UserInterface.addLayeredComponent(
-								new TextInputWindow(
-									WIDTH / 2 - 125,
-									HEIGHT / 2 + 100,
-									250,
-									100,
-									"Enter quantity",
-									250,
-									100,
-									args -> {
-										try {
-											changeList(entry.getKey(), Integer.parseInt(args[0].toString()), trading, notTrading, false);
-											setActive(true);
-										} catch (NumberFormatException e) {
-											UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
-										}
-									},
-									"Confirm",
-									true,
-									""
-								)
-							);
-						} else {
-							changeList(entry.getKey(), 1, trading, notTrading, false);
-						}
-					},
-					isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Colors.UI_GRAY : Colors.UI_DARKER_GRAY,
-					isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.GREEN : Colors.UI_DARKER_GRAY,
-					isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.WHITE : Colors.UI_DARKER_GRAY,
-					UIRef.BL
-				),
+				button,
 				null
 			);
-
 
 			notTrading.put(
 				listingMenuItem,
