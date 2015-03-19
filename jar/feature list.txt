@@ -2,3 +2,4 @@
 
 *Add icon to mouse-over Info. -Info does not show on items selected for transfer.
 
+*loaded game defaults to old 0,0 camera coord?
