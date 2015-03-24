@@ -443,7 +443,7 @@ public class InventoryWindow extends Window implements Refreshable {
 					return new InfoPopup(
 						item.getKey().getInfoPanel(), 
 						() -> {
-							return !inventoryButton.isMouseOver();
+							return !inventoryButton.isMouseOver() || !isActive();
 						}
 					);
 				}
@@ -472,7 +472,7 @@ public class InventoryWindow extends Window implements Refreshable {
 					return new InfoPopup(
 						item.getKey().getInfoPanel(), 
 						() -> {
-							return !equippedButton.isMouseOver();
+							return !equippedButton.isMouseOver() || !isActive();
 						}
 					);
 				}

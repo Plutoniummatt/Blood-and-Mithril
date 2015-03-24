@@ -5,7 +5,6 @@ import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Util.fitToTextInputBox;
-import static com.badlogic.gdx.Gdx.input;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
@@ -160,7 +159,7 @@ public class Button {
 	public void render(boolean active, float alpha, int maxWidth) {
 		if (popup != null) {
 			InfoPopup p = popup.call();
-			if (!p.expiryFunction.call() && UserInterface.getInfoPopup() == null && input.isKeyPressed(getKeyMappings().showInfo.keyCode)) {
+			if (!p.expiryFunction.call() && UserInterface.getInfoPopup() == null) {
 				UserInterface.setInfoPopup(popup.call());
 			}
 		}

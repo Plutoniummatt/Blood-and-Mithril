@@ -338,19 +338,11 @@ public class UserInterface {
 		renderLayeredComponents();
 		renderContextMenus();
 		if (getInfoPopup() != null) {
-			if (Gdx.input.isKeyPressed(getKeyMappings().showInfo.keyCode)) {
-				if (getInfoPopup().expiryFunction.call()) {
-					setInfoPopup(null);
-				} else {
-					getInfoPopup().setClosing(false);
-					getInfoPopup().render();
-				}
+			if (getInfoPopup().expiryFunction.call() || !contextMenus.isEmpty()) {
+				setInfoPopup(null);
 			} else {
-				getInfoPopup().setClosing(true);
+				getInfoPopup().setClosing(false);
 				getInfoPopup().render();
-				if (getInfoPopup().getAlpha() == 0f) {
-					setInfoPopup(null);
-				}
 			}
 		}
 
