@@ -21,6 +21,7 @@ public class PlankItem extends bloodandmithril.item.items.material.MaterialItem 
 	private static final long serialVersionUID = 8519886397429197864L;
 
 	public static TextureRegion PLANK;
+	public static TextureRegion PLANKICON;
 	private Class<? extends Wood> wood;
 
 	/**
@@ -102,7 +103,6 @@ public class PlankItem extends bloodandmithril.item.items.material.MaterialItem 
 
 	@Override
 	public TextureRegion getIconTextureRegion() {
-		// TODO Auto-generated method stub
-		return null;
+		return PLANKICON;
 	}
 }

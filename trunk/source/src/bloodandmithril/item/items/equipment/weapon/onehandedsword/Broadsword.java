@@ -18,6 +18,8 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2014")
 public class Broadsword extends OneHandedSword<Steel> {
 	private static final long serialVersionUID = 9190548689838579213L;
+	
+	public static TextureRegion ICON;
 
 	public Broadsword() {
 		super(3f, 10, 100, Steel.class);
@@ -44,7 +46,7 @@ public class Broadsword extends OneHandedSword<Steel> {
 
 	@Override
 	public TextureRegion getIconTextureRegion() {
-		return null;
+		return ICON;
 	}
 
 
