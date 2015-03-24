@@ -29,9 +29,9 @@ import com.badlogic.gdx.math.Vector2;
 public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 	private static final long serialVersionUID = -2594506184136140101L;
 	private Item currentAmmo;
-	
+
 	public static TextureRegion texture;
-	
+
 	static {
 		if (ClientServerInterface.isClient()) {
 			texture = new TextureRegion(Domain.individualTexture, 0, 947, 94, 18);
