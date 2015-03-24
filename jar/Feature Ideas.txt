@@ -1,1 +1,2 @@
--Mouse-over or mouse-down Show Info fly-out winow.
+* Destroy plants placed on top of tiles when tile underneath is mined
+* Add icon to mouse-over Info.
