@@ -46,7 +46,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.Panel;
-import bloodandmithril.ui.components.panel.TextPanel;
+import bloodandmithril.ui.components.panel.ItemInfoPopupPanel;
 import bloodandmithril.ui.components.window.ItemInfoWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Fonts;
@@ -535,16 +535,20 @@ public abstract class Item implements Serializable, Affixed {
 	protected void setValue(long value) {
 		this.value = value;
 	}
-	
+
 	public Panel getInfoPanel() {
-		TextPanel textPanel = new TextPanel(null, getDescription(), Color.ORANGE);
-		
-		TextBounds textBounds = new TextBounds();
-		textBounds = Fonts.defaultFont.getWrappedBounds(getDescription(), 250, textBounds);
-		
-		textPanel.width = (int) textBounds.width;
-		textPanel.height = (int) textBounds.height + 20;
-		return textPanel;
+		ItemInfoPopupPanel panel = new ItemInfoPopupPanel(null, this);
+
+		float width1 = Fonts.defaultFont.getBounds(getSingular(true), new TextBounds()).width;
+		float width2 = Fonts.defaultFont.getBounds("Weight :" + String.format("%.2f", getMass()), new TextBounds()).width;
+		float width3 = Fonts.defaultFont.getBounds("Volume :" + getVolume(), new TextBounds()).width;
+		float max = Math.max(width1, Math.max(width2, width3));
+
+		TextBounds textBounds = Fonts.defaultFont.getWrappedBounds(getDescription(), Math.max(250, max + 120), new TextBounds());
+
+		panel.width = (int) textBounds.width;
+		panel.height = (int) textBounds.height + 94;
+		return panel;
 	}
 
 	public boolean isEquippable() {
