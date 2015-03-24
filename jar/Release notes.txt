@@ -1,3 +1,9 @@
+Release 0.0.11
+---------------
+* Remove the show info button, the info popup is now mandatory.
+* Add icon for broadsword and wooden plank.
+* Info popup now shows for items selected to be traded/transferred
+
 Release 0.0.10
 ---------------
 * Mousing over items in inventory and trade windows whilst holding down the show info button (Default L-ALT) will now display popup.

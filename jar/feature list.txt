@@ -1,5 +1,2 @@
 * Destroy plants placed on top of tiles when tile underneath is mined
-
-*Add icon to mouse-over Info. -Info does not show on items selected for transfer.
-
-*loaded game defaults to old 0,0 camera coord?
+* Add icon to mouse-over Info.
