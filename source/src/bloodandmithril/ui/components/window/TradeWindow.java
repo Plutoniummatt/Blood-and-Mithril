@@ -416,48 +416,61 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	private void changeList(final Item key, int numberToChange, final HashMap<ListingMenuItem<Item>, Integer> transferTo, final HashMap<ListingMenuItem<Item>, Integer> transferFrom, final boolean toTrade) {
+		Button button = new Button(
+			key.getSingular(true),
+			defaultFont,
+			0,
+			0,
+			key.getSingular(true).length() * 10,
+			16,
+			() -> {
+				if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkTrade.keyCode)) {
+					UserInterface.addLayeredComponent(
+						new TextInputWindow(
+							WIDTH / 2 - 125,
+							HEIGHT / 2 + 100,
+							250,
+							100,
+							"Enter quantity",
+							250,
+							100,
+							args -> {
+								try {
+									changeList(key, Integer.parseInt(args[0].toString()), transferFrom, transferTo, !toTrade);
+									setActive(true);
+								} catch (NumberFormatException e) {
+									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
+								}
+							},
+							"Confirm",
+							true,
+							""
+						)
+					);
+				} else {
+					changeList(key, 1, transferFrom, transferTo, !toTrade);
+				}
+			},
+			toTrade ? Colors.UI_GRAY : Colors.UI_DARK_ORANGE,
+			toTrade ? Color.GREEN : Color.ORANGE,
+			Color.WHITE,
+			UIRef.BL
+		);
+		
+		button.mouseOverPopup(
+			() -> {
+				return new InfoPopup(
+					key.getInfoPanel(), 
+					() -> {
+						return !button.isMouseOver();
+					}
+				);
+			}
+		);
+		
 		final ListingMenuItem<Item> listingMenuItem = new ListingMenuItem<Item>(
 			key,
-			new Button(
-				key.getSingular(true),
-				defaultFont,
-				0,
-				0,
-				key.getSingular(true).length() * 10,
-				16,
-				() -> {
-					if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkTrade.keyCode)) {
-						UserInterface.addLayeredComponent(
-							new TextInputWindow(
-								WIDTH / 2 - 125,
-								HEIGHT / 2 + 100,
-								250,
-								100,
-								"Enter quantity",
-								250,
-								100,
-								args -> {
-									try {
-										changeList(key, Integer.parseInt(args[0].toString()), transferFrom, transferTo, !toTrade);
-										setActive(true);
-									} catch (NumberFormatException e) {
-										UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
-									}
-								},
-								"Confirm",
-								true,
-								""
-							)
-						);
-					} else {
-						changeList(key, 1, transferFrom, transferTo, !toTrade);
-					}
-				},
-				toTrade ? Colors.UI_GRAY : Colors.UI_DARK_ORANGE,
-				toTrade ? Color.GREEN : Color.ORANGE,
-				Color.WHITE,
-				UIRef.BL
-			),
+			button,
 			null
 		);
 
