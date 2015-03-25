@@ -997,6 +997,7 @@ public class UserInterface {
 		}
 
 		defaultFont.draw(spriteBatch, "Framerate: " + fpsDisplayed, 5, HEIGHT - 65);
+		defaultFont.draw(spriteBatch, "Game speed: " + BloodAndMithrilClient.getUpdateRate() + "x", WIDTH - 165, 20);
 		renderMouseText();
 	}
 
