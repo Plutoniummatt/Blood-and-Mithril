@@ -25,6 +25,7 @@ import bloodandmithril.item.items.food.plant.CarrotItem;
 import bloodandmithril.item.items.food.plant.DeathCapItem;
 import bloodandmithril.item.items.material.BrickItem;
 import bloodandmithril.item.items.material.GlassItem;
+import bloodandmithril.item.items.material.LogItem;
 import bloodandmithril.item.items.material.PlankItem;
 import bloodandmithril.item.items.material.StickItem;
 import bloodandmithril.item.items.mineral.earth.AshesItem;
@@ -331,6 +332,7 @@ public abstract class Item implements Serializable, Affixed {
 		PlankItem.PLANKICON = new TextureRegion(UserInterface.iconTexture, 390, 0, 64, 64);
 		ChickenLegItem.COOKED_CHICKEN_LEG_ICON = new TextureRegion(UserInterface.iconTexture, 455, 0, 64, 64);
 		ChickenLegItem.RAW_CHICKEN_LEG_ICON = new TextureRegion(UserInterface.iconTexture, 520, 0, 64, 64);
+		LogItem.ICON = new TextureRegion(UserInterface.iconTexture, 585, 0, 64, 64);
 
 		BrickItem.BRICK = new TextureRegion(Domain.gameWorldTexture, 118, 53, 18, 6);
 		DirtItem.DIRT_PILE = new TextureRegion(Domain.gameWorldTexture, 97, 95, 21, 8);
