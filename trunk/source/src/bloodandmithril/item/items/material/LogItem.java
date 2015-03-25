@@ -17,6 +17,7 @@ public class LogItem extends bloodandmithril.item.items.material.MaterialItem {
 	private static final long serialVersionUID = 8519886397429197864L;
 
 	private Class<? extends Wood> wood;
+	public static TextureRegion ICON;
 
 	/**
 	 * Constructor
@@ -78,7 +79,6 @@ public class LogItem extends bloodandmithril.item.items.material.MaterialItem {
 
 	@Override
 	public TextureRegion getIconTextureRegion() {
-		// TODO Auto-generated method stub
-		return null;
+		return ICON;
 	}
 }
