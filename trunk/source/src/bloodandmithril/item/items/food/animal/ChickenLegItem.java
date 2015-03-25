@@ -25,6 +25,9 @@ public class ChickenLegItem extends Food implements Craftable {
 	public static TextureRegion COOKED_CHICKEN_LEG;
 	public static TextureRegion RAW_CHICKEN_LEG;
 	
+	public static TextureRegion COOKED_CHICKEN_LEG_ICON;
+	public static TextureRegion RAW_CHICKEN_LEG_ICON;
+	
 	/**
 	 * Constructor
 	 */
@@ -108,8 +111,7 @@ public class ChickenLegItem extends Food implements Craftable {
 
 	@Override
 	public TextureRegion getIconTextureRegion() {
-		// TODO Auto-generated method stub
-		return null;
+		return cooked ? COOKED_CHICKEN_LEG_ICON	 : RAW_CHICKEN_LEG_ICON;
 	}
 
 

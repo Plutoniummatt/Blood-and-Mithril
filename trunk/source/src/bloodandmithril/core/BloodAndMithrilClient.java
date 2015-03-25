@@ -134,6 +134,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static int camMarginX, camMarginY;
 	public static Controls controls;
+	
+	private static float updateRateMultiplier = 1f;
 
 	static {
 		camMarginX = 640 + 32 - WIDTH % 32;
@@ -167,7 +169,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					throw new RuntimeException(e);
 				}
 
-				if (System.currentTimeMillis() - prevFrame > 16) {
+				if (System.currentTimeMillis() - prevFrame > Math.round(16f / updateRateMultiplier)) {
 					prevFrame = System.currentTimeMillis();
 					update(Gdx.graphics.getDeltaTime());
 				}
@@ -278,6 +280,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			new MainMenuWindow(false)
 		);
 	}
+	
+	
+	public static int getUpdateRate() {
+		return Math.round(updateRateMultiplier);
+	}
 
 
 	public static Controls getKeyMappings() {
@@ -296,7 +303,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	@Override
 	public void render() {
 		try {
-			cameraMovement();
+			cameraControl();
 			if (!GameSaver.isSaving()) {
 				SoundService.update(Gdx.graphics.getDeltaTime());
 			}
@@ -328,6 +335,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
+	}
+	
+	
+	public static synchronized void setUpdateRateMultiplier(float updateRateMultiplier) {
+		BloodAndMithrilClient.updateRateMultiplier = updateRateMultiplier;
 	}
 
 
@@ -600,6 +612,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				UserInterface.addLayeredComponentUnique(
 					new MainMenuWindow(true)
 				);
+			} else {
+				if (keycode == getKeyMappings().speedUp.keyCode) {
+					if (updateRateMultiplier < 16f) {
+						updateRateMultiplier = Math.round(updateRateMultiplier) + 1;
+					}
+				}
+				if (keycode == getKeyMappings().slowDown.keyCode) {
+					if (updateRateMultiplier > 1f) {
+						updateRateMultiplier = Math.round(updateRateMultiplier) - 1;
+					}
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -763,7 +786,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	}
 
 
-	private void cameraMovement() {
+	private void cameraControl() {
 		if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamUp.keyCode)){
 				cam.position.y += 10f;

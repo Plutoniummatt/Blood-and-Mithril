@@ -329,6 +329,8 @@ public abstract class Item implements Serializable, Affixed {
 		Gold.GOLDINGOTICON = new TextureRegion(UserInterface.iconTexture, 260, 0, 64, 64);
 		Broadsword.ICON = new TextureRegion(UserInterface.iconTexture, 325, 0, 64, 64);
 		PlankItem.PLANKICON = new TextureRegion(UserInterface.iconTexture, 390, 0, 64, 64);
+		ChickenLegItem.COOKED_CHICKEN_LEG_ICON = new TextureRegion(UserInterface.iconTexture, 455, 0, 64, 64);
+		ChickenLegItem.RAW_CHICKEN_LEG_ICON = new TextureRegion(UserInterface.iconTexture, 520, 0, 64, 64);
 
 		BrickItem.BRICK = new TextureRegion(Domain.gameWorldTexture, 118, 53, 18, 6);
 		DirtItem.DIRT_PILE = new TextureRegion(Domain.gameWorldTexture, 97, 95, 21, 8);
@@ -544,9 +546,9 @@ public abstract class Item implements Serializable, Affixed {
 		float width3 = Fonts.defaultFont.getBounds("Volume :" + getVolume(), new TextBounds()).width;
 		float max = Math.max(width1, Math.max(width2, width3));
 
-		TextBounds textBounds = Fonts.defaultFont.getWrappedBounds(getDescription(), Math.max(250, max + 120), new TextBounds());
+		TextBounds textBounds = Fonts.defaultFont.getWrappedBounds(getDescription(), 250, new TextBounds());
 
-		panel.width = (int) textBounds.width;
+		panel.width = (int) Math.max(textBounds.width, max + 150);
 		panel.height = (int) textBounds.height + 94;
 		return panel;
 	}

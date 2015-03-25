@@ -58,6 +58,8 @@ public class Controls implements Serializable {
 	public MappedKey snapToGrid = new MappedKey("Placement Grid Alignment", Input.Keys.G, "Hold when attempting to place items in the world to snap to tile grid.", true);
 	public MappedKey openInventory = new MappedKey("Open Inventory", Input.Keys.I, "Press to open inventory of currently selected individual (Only works when one is selected).", true);
 	public MappedKey openBuildWindow = new MappedKey("Open Build Window", Input.Keys.B, "Press to open build window of currently selected individual (Only works when one is selected).", true);
+	public MappedKey speedUp = new MappedKey("Increase game speed", Input.Keys.PLUS, "Press to increase game speed.", true);
+	public MappedKey slowDown = new MappedKey("Decrease game speed", Input.Keys.MINUS, "Press to decrease game speed.", true);
 
 	public Map<Integer, MappedKey> getFunctionalKeyMappings() {
 		Map<Integer, MappedKey> map = Maps.newHashMap();
