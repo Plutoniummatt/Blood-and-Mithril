@@ -672,6 +672,12 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 	public boolean isVisible() {
 		return true;
 	}
+	
+	
+	@Override
+	public void sayStuck() {
+		speak("Looks like I'm stuck...", 1000);
+	}
 
 
 	@Override

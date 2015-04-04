@@ -2041,6 +2041,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			speakTimer = duration / 1000f;
 		}
 	}
+	
+	
+	public void sayStuck() {}
 
 
 	public int getRenderPriority() {

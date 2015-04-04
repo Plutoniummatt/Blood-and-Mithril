@@ -64,7 +64,7 @@ public interface Kinematics {
 		state.position.add(state.velocity.cpy().scl(delta));
 
 		//Calculate velocity based on acceleration, including gravity
-		if (abs((state.velocity.y - world.getGravity() * delta) * delta) < TILE_SIZE/2) {
+		if (abs((state.velocity.y - world.getGravity() * delta) * delta) < TILE_SIZE - 1) {
 			state.velocity.y = state.velocity.y - (kinematicsBean.steppingUp ? 0 : delta * world.getGravity());
 		} else {
 			state.velocity.y = state.velocity.y * 0.8f;
@@ -76,8 +76,13 @@ public interface Kinematics {
 		//If the position is on a platform tile and if the tile below current position is not an empty tile, run ground detection routine
 		//If position below is a platform tile and the next waypoint is directly below current position, skip ground detection
 		friction(individual, state);
+		float fallDamageVelocity = 150f;
 		if (groundDetectionCriteriaMet(topography, state, ai, kinematicsBean) && !kinematicsBean.steppingUp) {
+			if (Math.abs(state.velocity.y) > fallDamageVelocity) {
+				individual.speak("Owwww!", 1000);
+			}
 			state.velocity.y = 0f;
+			
 			if (obj(individual.getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT)) {
 				individual.setCurrentAction(state.velocity.x > 0 ? STAND_RIGHT : STAND_LEFT);
 			}
@@ -92,9 +97,13 @@ public interface Kinematics {
 				state.position.y = (int)state.position.y / TILE_SIZE * TILE_SIZE;
 			}
 		} else if (state.position.y == 0f && !(topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
+			if (Math.abs(state.velocity.y) > fallDamageVelocity) {
+				individual.speak("Owwww!", 1000);
+			}
 			state.velocity.y = 0f;
 		} else {
 			state.acceleration.x = 0f;
+			state.velocity.x *= 0.995f;
 		}
 
 		if (abs(individual.getState().velocity.x) > individual.getRunSpeed() * 1.5f) {
@@ -124,7 +133,7 @@ public interface Kinematics {
 				if (check) {
 					state.velocity.x = 0;
 					ai.setCurrentTask(new Idle());
-					individual.speak("Looks like something is in the way...", 1000);
+					individual.sayStuck();
 				}
 			}
 		}
