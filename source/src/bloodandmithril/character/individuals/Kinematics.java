@@ -165,7 +165,7 @@ public interface Kinematics {
 				return;
 			}
 
-			state.velocity.x = state.velocity.x * 0.4f;
+			state.velocity.x = state.velocity.x * 0.2f;
 		}
 	}
 
