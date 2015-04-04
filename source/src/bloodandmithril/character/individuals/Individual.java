@@ -2046,11 +2046,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	public int getRenderPriority() {
 		for (Item equipped : getEquipped().keySet()) {
 			if (equipped instanceof Torch) {
-				return 1;
+				return 2;
 			}
 		}
 
-		return 0;
+		return isControllable() ? 1 : 0;
 	}
 
 

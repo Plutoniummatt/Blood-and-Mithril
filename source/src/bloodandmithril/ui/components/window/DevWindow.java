@@ -30,6 +30,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.individuals.characters.Hare;
+import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
@@ -266,6 +267,24 @@ public class DevWindow extends Window {
 				Domain.addIndividual(hare, Domain.getActiveWorld().getWorldId());
 			} else {
 				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(hare);
+			}
+		}
+		
+		if (keyCode == Keys.W) {
+			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
+			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
+			state.velocity = new Vector2(0, 0);
+			state.acceleration = new Vector2(0, 0);
+			
+			IndividualIdentifier id = getUnknownNatureIdentifier(Util.getRandom().nextBoolean(), Util.getRandom().nextInt(5));
+			id.setNickName("Wolf");
+			
+			Wolf wolf= new Wolf(id, state, Faction.NPC, getActiveWorld().getWorldId());
+			
+			if (isServer()) {
+				Domain.addIndividual(wolf, Domain.getActiveWorld().getWorldId());
+			} else {
+				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(wolf);
 			}
 		}
 
