@@ -26,4 +26,7 @@ public class IndividualKineticsProcessingData implements Serializable {
 
 	/** Part of the step-up processing */
 	public int steps = 0;
+	
+	/** Determines fall damage */
+	public float distanceFallen = 0f;
 }
