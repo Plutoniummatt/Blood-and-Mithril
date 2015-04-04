@@ -26,6 +26,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 
@@ -43,29 +44,33 @@ public interface Kinematics {
 	 */
 	static void kinetics(float delta, World world, Individual individual) throws NoTileFoundException {
 		Topography topography = Domain.getWorld(individual.getWorldId()).getTopography();
-		IndividualKineticsProcessingData kinematicsBean = individual.getKinematicsData();
+		IndividualKineticsProcessingData kinematicsData = individual.getKinematicsData();
 		IndividualState state = individual.getState();
 		ArtificialIntelligence ai = individual.getAI();
 
-		jumpOffLogic(topography, kinematicsBean, state, ai);
+		jumpOffLogic(topography, kinematicsData, state, ai);
 
 		//Stepping up
 		if (individual.getKinematicsData().steppingUp) {
-			if (kinematicsBean.steps >= TILE_SIZE) {
-				kinematicsBean.steppingUp = false;
-				state.position.y += TILE_SIZE - kinematicsBean.steps;
+			if (kinematicsData.steps >= TILE_SIZE) {
+				kinematicsData.steppingUp = false;
+				state.position.y += TILE_SIZE - kinematicsData.steps;
 			} else {
 				state.position.y = state.position.y + 4f;
-				kinematicsBean.steps += 4f;
+				kinematicsData.steps += 4f;
 			}
 		}
 
 		//Calculate position
-		state.position.add(state.velocity.cpy().scl(delta));
+		Vector2 distanceTravelled = state.velocity.cpy().scl(delta);
+		state.position.add(distanceTravelled);
+		if (distanceTravelled.y < 0f) {
+			kinematicsData.distanceFallen -= distanceTravelled.y;
+		}
 
 		//Calculate velocity based on acceleration, including gravity
 		if (abs((state.velocity.y - world.getGravity() * delta) * delta) < TILE_SIZE - 1) {
-			state.velocity.y = state.velocity.y - (kinematicsBean.steppingUp ? 0 : delta * world.getGravity());
+			state.velocity.y = state.velocity.y - (kinematicsData.steppingUp ? 0 : delta * world.getGravity());
 		} else {
 			state.velocity.y = state.velocity.y * 0.8f;
 		}
@@ -76,12 +81,13 @@ public interface Kinematics {
 		//If the position is on a platform tile and if the tile below current position is not an empty tile, run ground detection routine
 		//If position below is a platform tile and the next waypoint is directly below current position, skip ground detection
 		friction(individual, state);
-		float fallDamageVelocity = 150f;
-		if (groundDetectionCriteriaMet(topography, state, ai, kinematicsBean) && !kinematicsBean.steppingUp) {
-			if (Math.abs(state.velocity.y) > fallDamageVelocity) {
-				individual.speak("Owwww!", 1000);
+		boolean fallDamageApplies = kinematicsData.distanceFallen > 400f;
+		if (groundDetectionCriteriaMet(topography, state, ai, kinematicsData) && !kinematicsData.steppingUp) {
+			if (fallDamageApplies) {
+				fallDamage(individual, kinematicsData);
 			}
 			state.velocity.y = 0f;
+			kinematicsData.distanceFallen = 0f;
 			
 			if (obj(individual.getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT)) {
 				individual.setCurrentAction(state.velocity.x > 0 ? STAND_RIGHT : STAND_LEFT);
@@ -97,10 +103,11 @@ public interface Kinematics {
 				state.position.y = (int)state.position.y / TILE_SIZE * TILE_SIZE;
 			}
 		} else if (state.position.y == 0f && !(topography.getTile(state.position.x, state.position.y - 1, true) instanceof Tile.EmptyTile)) {
-			if (Math.abs(state.velocity.y) > fallDamageVelocity) {
-				individual.speak("Owwww!", 1000);
+			if (fallDamageApplies) {
+				fallDamage(individual, kinematicsData);
 			}
 			state.velocity.y = 0f;
+			kinematicsData.distanceFallen = 0f;
 		} else {
 			state.acceleration.x = 0f;
 			state.velocity.x *= 0.995f;
@@ -111,18 +118,18 @@ public interface Kinematics {
 		}
 
 		//Wall check routine, only perform this if we're moving
-		if (state.velocity.x != 0 && obstructed(0, topography, state, individual.getHeight(), ai, kinematicsBean)) {
-			if (canStepUp(0, topography, state, individual.getHeight(), ai, kinematicsBean)) {
-				if (!kinematicsBean.steppingUp) {
-					kinematicsBean.steppingUp = true;
+		if (state.velocity.x != 0 && obstructed(0, topography, state, individual.getHeight(), ai, kinematicsData)) {
+			if (canStepUp(0, topography, state, individual.getHeight(), ai, kinematicsData)) {
+				if (!kinematicsData.steppingUp) {
+					kinematicsData.steppingUp = true;
 					if (ClientServerInterface.isServer()) {
 						individual.decreaseStamina(0.02f);
 					}
-					kinematicsBean.steps = 0;
+					kinematicsData.steps = 0;
 				}
-			} else if (!kinematicsBean.steppingUp) {
+			} else if (!kinematicsData.steppingUp) {
 				boolean check = false;
-				while (obstructed(0, topography, state, individual.getHeight(), ai, kinematicsBean)) {
+				while (obstructed(0, topography, state, individual.getHeight(), ai, kinematicsData)) {
 					if (state.velocity.x > 0) {
  						state.position.x = state.position.x - 1;
 					} else {
@@ -137,6 +144,15 @@ public interface Kinematics {
 				}
 			}
 		}
+	}
+
+
+	static void fallDamage(Individual individual, IndividualKineticsProcessingData data) {
+		individual.speak("Owwww!", 1000);
+		
+		float amount = (data.distanceFallen - 400f) / 20f;
+		individual.damage(amount);
+		individual.addFloatingText(String.format("%.2f", amount), Color.RED);
 	}
 
 
