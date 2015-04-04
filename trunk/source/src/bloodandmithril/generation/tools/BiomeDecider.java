@@ -23,7 +23,7 @@ public class BiomeDecider {
 	 * @return - the Biome which was decided.
 	 */
 	public SuperStructure decideAndGetSurfaceBiome(World world) {
-		return new Desert(world.getWorldId(), 50, cSurfaceStructureHeight, 30, -400, 200);
+		return new Desert(world.getWorldId(), 50, cSurfaceStructureHeight, 30);
 	}
 
 
