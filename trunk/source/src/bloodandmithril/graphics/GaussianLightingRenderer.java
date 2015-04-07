@@ -24,6 +24,7 @@ import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
+import bloodandmithril.world.WorldState;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.Gdx;
@@ -147,7 +148,7 @@ public class GaussianLightingRenderer {
 			HEIGHT/LIGHTING_FBO_DOWNSIZE_SAMPLER,
 			false
 		);
-		
+
 		smallWorking = new FrameBuffer(
 			RGBA8888,
 			WIDTH/LIGHTING_FBO_DOWNSIZE_SAMPLER,
@@ -213,7 +214,7 @@ public class GaussianLightingRenderer {
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		workingFBO.end();
-		
+
 		lightingFboSmall.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -234,7 +235,7 @@ public class GaussianLightingRenderer {
 		List<Particle> serverSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(Domain.getActiveWorld().getServerParticles().values(), p -> {
 			return p.depth == depth && isOnScreen(p.position, 50f);
 		}));
-		
+
 		List<List<Particle>> particleCollections = Lists.newLinkedList();
 		for (int i = clientSideGlowingTracerParticles.size(); i > 0; i -= 100) {
 			particleCollections.add(clientSideGlowingTracerParticles.subList(i - 100 < 0 ? 0 : i - 100, i));
@@ -243,7 +244,7 @@ public class GaussianLightingRenderer {
 		for (int i = serverSideGlowingTracerParticles.size(); i > 0; i -= 100) {
 			particleCollections.add(serverSideGlowingTracerParticles.subList(i - 100 < 0 ? 0 : i - 100, i));
 		}
-		
+
 		for (List<Particle> collection : particleCollections) {
 			smallWorking.begin();
 			spriteBatch.begin();
@@ -283,7 +284,7 @@ public class GaussianLightingRenderer {
 			spriteBatch.draw(lightingFboSmall.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
 			spriteBatch.end();
 			smallWorking.end();
-			
+
 			lightingFboSmall.begin();
 			spriteBatch.begin();
 			spriteBatch.setShader(Shaders.invertY);
@@ -292,14 +293,14 @@ public class GaussianLightingRenderer {
 			spriteBatch.draw(smallWorking.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
 			spriteBatch.end();
 			lightingFboSmall.end();
-			
+
 			index = 0;
 			positionIndex = 0;
 			colorIndex = 0;
 		}
 
-		
-		
+
+
 		lightingFbo.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -660,8 +661,8 @@ public class GaussianLightingRenderer {
 		);
 		spriteBatch.end();
 	}
-	
-	
+
+
 	private static void volumetricLighting() {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -686,11 +687,12 @@ public class GaussianLightingRenderer {
 		);
 		spriteBatch.end();
 		workingFBO.end();
-		
+
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.volumetricLighting);
 		Shaders.volumetricLighting.setUniformf("color", Weather.getDaylightColor());
 		Shaders.volumetricLighting.setUniformf("resolution", WIDTH, HEIGHT);
+		Shaders.volumetricLighting.setUniformf("time", WorldState.getCurrentEpoch().getTime() * 300f);
 		Shaders.volumetricLighting.setUniformf("sourceLocation", Weather.getSunPosition().cpy().x, Weather.getSunPosition().cpy().y);
 		spriteBatch.draw(
 			workingFBO.getColorBufferTexture(),
