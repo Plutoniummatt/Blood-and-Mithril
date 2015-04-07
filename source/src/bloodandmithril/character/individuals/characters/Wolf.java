@@ -64,14 +64,14 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 		boolean server = !ClientServerInterface.isClient();
 		
 		AnimationSwitcher bite = new AnimationSwitcher();
-		bite.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 965, 160, 85, 7, 0.07f, PlayMode.LOOP_REVERSED));         
+		bite.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 965, 160, 85, 7, 0.05f, PlayMode.LOOP_REVERSED));         
 		
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> biteSequence = newArrayList(
 			wrap(bite, server ? null : Shaders.pass)
 		);
 		
 		AnimationSwitcher run = new AnimationSwitcher();
-		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 140, 965, 140, 75, 8, 0.07f, PlayMode.LOOP_REVERSED));         
+		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 140, 965, 140, 75, 8, 0.05f, PlayMode.LOOP_REVERSED));         
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run, server ? null : Shaders.pass)
@@ -135,7 +135,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	public Vector2 getEmissionPosition() {
-		return getState().position.cpy().add(0, 10);
+		return getState().position.cpy().add(0, 40);
 	}
 
 
@@ -208,7 +208,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	public float getRunSpeed() {
-		return 130;
+		return 175;
 	}
 
 

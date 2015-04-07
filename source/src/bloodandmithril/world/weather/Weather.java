@@ -81,6 +81,11 @@ public class Weather {
 
 		return filter;
 	}
+	
+	
+	public static Vector2 getSunPosition() {
+		return sunPosition;
+	}
 
 
 	public static Color getSunColor() {

@@ -11,7 +11,7 @@ import bloodandmithril.core.Copyright;
 public class WorldState {
 
 	/** THE current epoch */
-	private static Epoch currentEpoch = new Epoch(16.2f, 13, 9, 2013);
+	private static Epoch currentEpoch = new Epoch(14.2f, 13, 9, 2013);
 
 
 	public static Epoch getCurrentEpoch() {
