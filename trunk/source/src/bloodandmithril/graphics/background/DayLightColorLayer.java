@@ -45,8 +45,8 @@ public class DayLightColorLayer extends Layer {
 
 	@Override
 	public void preRender() {
-		spriteBatch.setShader(Shaders.filter);
 		Color daylightColor = Weather.getDaylightColor();
+		spriteBatch.setShader(Shaders.filter);
 		Shaders.filter.setUniformf("color", Weather.getSunColor().mul(new Color(daylightColor.r, daylightColor.r, daylightColor.r, 1f)));
 	}
 

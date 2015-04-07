@@ -72,6 +72,7 @@ public class GaussianLightingRenderer {
 		background();
 		middleground();
 		foreground();
+		volumetricLighting();
 	}
 
 
@@ -655,6 +656,44 @@ public class GaussianLightingRenderer {
 		Shaders.lightingFBOBlend.setUniformf("color", 1f, 1f, 1f, 0.35f);
 		spriteBatch.draw(
 			foregroundLightingFBO.getColorBufferTexture(),
+			0, 0
+		);
+		spriteBatch.end();
+	}
+	
+	
+	private static void volumetricLighting() {
+		workingFBO.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		BackgroundImages.renderBackground();
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.invertY);
+		spriteBatch.draw(
+			Domain.fBuffer.getColorBufferTexture(),
+			-camMarginX / 2,
+			-camMarginY / 2
+		);
+		spriteBatch.draw(
+			Domain.mBuffer.getColorBufferTexture(),
+			-camMarginX / 2,
+			-camMarginY / 2
+		);
+		spriteBatch.draw(
+			Domain.bBuffer.getColorBufferTexture(),
+			-camMarginX / 2,
+			-camMarginY / 2
+		);
+		spriteBatch.end();
+		workingFBO.end();
+		
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.volumetricLighting);
+		Shaders.volumetricLighting.setUniformf("color", Weather.getDaylightColor());
+		Shaders.volumetricLighting.setUniformf("resolution", WIDTH, HEIGHT);
+		Shaders.volumetricLighting.setUniformf("sourceLocation", Weather.getSunPosition().cpy().x, Weather.getSunPosition().cpy().y);
+		spriteBatch.draw(
+			workingFBO.getColorBufferTexture(),
 			0, 0
 		);
 		spriteBatch.end();

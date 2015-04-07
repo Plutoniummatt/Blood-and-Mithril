@@ -118,15 +118,15 @@ public abstract class GroundTravellingIndividual extends Individual {
 
 				if (!attacking && isCommandActive(getKeyMappings().moveLeft.keyCode) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 					if (isCommandActive(getKeyMappings().walk.keyCode)) {
-						getState().acceleration.x = getState().velocity.x > -getWalkSpeed() ? -400f : 400f;
+						getState().acceleration.x = getState().velocity.x > -getWalkSpeed() ? -800f : 800f;
 					} else {
-						getState().acceleration.x = getState().velocity.x > -getRunSpeed() ? -400f : 400f;
+						getState().acceleration.x = getState().velocity.x > -getRunSpeed() ? -800f : 800f;
 					}
 				} else if (!attacking && isCommandActive(getKeyMappings().moveRight.keyCode) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 					if (isCommandActive(getKeyMappings().walk.keyCode)) {
-						getState().acceleration.x = getState().velocity.x < getWalkSpeed() ? 400f : -400f;
+						getState().acceleration.x = getState().velocity.x < getWalkSpeed() ? 800f : -800f;
 					} else {
-						getState().acceleration.x = getState().velocity.x < getRunSpeed() ? 400f : -400f;
+						getState().acceleration.x = getState().velocity.x < getRunSpeed() ? 800f : -800f;
 					}
 				} else {
 					getState().acceleration.x = 0f;

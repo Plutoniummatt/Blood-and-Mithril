@@ -20,9 +20,11 @@ public class Shaders {
 	public static ShaderProgram text = SpriteBatch.createDefaultShader();
 	public static ShaderProgram filter = colorFilterShader();
 	public static ShaderProgram filter2 = colorFilterShader();
+	public static ShaderProgram invertYFilter = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/invertYFilter.fp"));
 	public static ShaderProgram replaceColor = replaceColorShader();
 	public static ShaderProgram filterIgnoreReplace = filterReplaceIgnoreColorShader();
 
+	public static ShaderProgram volumetricLighting = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/vLighting.fp"));
 	public static ShaderProgram colorize = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/colorize.fp"));
 	public static ShaderProgram invertY = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/invertYAxis.fp"));
 	public static ShaderProgram backgroundShader = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/defaultRenderer/backgroundShader.fp"));
@@ -42,7 +44,7 @@ public class Shaders {
 		ShaderProgram.pedantic = false;
 		Logger.generalDebug("Shaders loaded", LogLevel.DEBUG);
 		
-		System.out.println(tracerParticlesFBO.getLog());
+		System.out.println(volumetricLighting.getLog());
 	}
 
 	private static ShaderProgram filterReplaceIgnoreColorShader() {
