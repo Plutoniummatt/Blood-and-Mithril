@@ -279,7 +279,7 @@ public class DevWindow extends Window {
 			IndividualIdentifier id = getUnknownNatureIdentifier(Util.getRandom().nextBoolean(), Util.getRandom().nextInt(5));
 			id.setNickName("Wolf");
 			
-			Wolf wolf= new Wolf(id, state, Faction.NPC, getActiveWorld().getWorldId());
+			Wolf wolf= new Wolf(id, state, 2, getActiveWorld().getWorldId());
 			
 			if (isServer()) {
 				Domain.addIndividual(wolf, Domain.getActiveWorld().getWorldId());

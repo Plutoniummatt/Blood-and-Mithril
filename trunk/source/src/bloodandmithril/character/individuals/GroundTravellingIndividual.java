@@ -8,7 +8,7 @@ import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT_COMBAT_ONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBATONE_HANDED;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT_ONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
@@ -98,8 +98,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 
 		// Otherwise we're standing still, set current to standing left/right depending on which direction we were facing before.
 		} else {
-			if (obj(getCurrentAction()).oneOf(WALK_RIGHT, RUN_RIGHT, STAND_RIGHT, STAND_RIGHT_COMBATONE_HANDED)) {
-				setCurrentAction(inCombatStance() ? STAND_RIGHT_COMBATONE_HANDED : STAND_RIGHT);
+			if (obj(getCurrentAction()).oneOf(WALK_RIGHT, RUN_RIGHT, STAND_RIGHT, STAND_RIGHT_COMBAT_ONE_HANDED)) {
+				setCurrentAction(inCombatStance() ? STAND_RIGHT_COMBAT_ONE_HANDED : STAND_RIGHT);
 			} else {
 				setCurrentAction(inCombatStance() ? STAND_LEFT_COMBAT_ONE_HANDED : STAND_LEFT);
 			}
@@ -118,15 +118,31 @@ public abstract class GroundTravellingIndividual extends Individual {
 
 				if (!attacking && isCommandActive(getKeyMappings().moveLeft.keyCode) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 					if (isCommandActive(getKeyMappings().walk.keyCode)) {
-						getState().acceleration.x = getState().velocity.x > -getWalkSpeed() ? -800f : 800f;
+						if (getState().velocity.x > -getWalkSpeed()) {
+							getState().acceleration.x = -800;
+						} else {
+							getState().acceleration.x = 800;
+						}
 					} else {
-						getState().acceleration.x = getState().velocity.x > -getRunSpeed() ? -800f : 800f;
+						if (getState().velocity.x > -getRunSpeed()) {
+							getState().acceleration.x = -800;
+						} else {
+							getState().acceleration.x = 800;
+						}
 					}
 				} else if (!attacking && isCommandActive(getKeyMappings().moveRight.keyCode) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 					if (isCommandActive(getKeyMappings().walk.keyCode)) {
-						getState().acceleration.x = getState().velocity.x < getWalkSpeed() ? 800f : -800f;
+						if (getState().velocity.x < getWalkSpeed()) {
+							getState().acceleration.x = 800;
+						} else {
+							getState().acceleration.x = -800;
+						}
 					} else {
-						getState().acceleration.x = getState().velocity.x < getRunSpeed() ? 800f : -800f;
+						if (getState().velocity.x < getRunSpeed()) {
+							getState().acceleration.x = 800;
+						} else {
+							getState().acceleration.x = -800;
+						}
 					}
 				} else {
 					getState().acceleration.x = 0f;
@@ -167,7 +183,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 					if (getCurrentAction().left()) {
 						setCurrentAction(STAND_LEFT_COMBAT_ONE_HANDED);
 					} else {
-						setCurrentAction(STAND_RIGHT_COMBATONE_HANDED);
+						setCurrentAction(STAND_RIGHT_COMBAT_ONE_HANDED);
 					}
 				}
 

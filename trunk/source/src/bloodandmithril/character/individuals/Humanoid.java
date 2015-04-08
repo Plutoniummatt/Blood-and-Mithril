@@ -179,7 +179,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 			case ATTACK_LEFT_ONE_HANDED_WEAPON_STAB:
 			case ATTACK_LEFT_UNARMED:
 				return new SpacialConfiguration(new Vector2(0, -4f), 0f, true);
-			case STAND_RIGHT_COMBATONE_HANDED:
+			case STAND_RIGHT_COMBAT_ONE_HANDED:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB:
@@ -253,7 +253,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				return new SpacialConfiguration(new Vector2(-12, 33f), 0f, false);
 			case STAND_LEFT_COMBAT_ONE_HANDED:
 				return new SpacialConfiguration(new Vector2(19, 48f), 90f, false);
-			case STAND_RIGHT_COMBATONE_HANDED:
+			case STAND_RIGHT_COMBAT_ONE_HANDED:
 				return new SpacialConfiguration(new Vector2(-19, 48f), -90f, true);
 			case WALK_LEFT:
 				switch (frameIndex) {
@@ -375,7 +375,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				return new SpacialConfiguration(new Vector2(-12, 33f), 0f, false);
 			case STAND_LEFT_COMBAT_ONE_HANDED:
 				return new SpacialConfiguration(new Vector2(19, 48f), 90f, false);
-			case STAND_RIGHT_COMBATONE_HANDED:
+			case STAND_RIGHT_COMBAT_ONE_HANDED:
 				return new SpacialConfiguration(new Vector2(-19, 48f), -90f, true);
 			case WALK_LEFT:
 				switch (frameIndex) {
@@ -511,7 +511,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 			case ATTACK_RIGHT_UNARMED:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE:
 			case ATTACK_RIGHT_ONE_HANDED_WEAPON:
-			case STAND_RIGHT_COMBATONE_HANDED:
+			case STAND_RIGHT_COMBAT_ONE_HANDED:
 				return new SpacialConfiguration(new Vector2(19, 50f), combatAngle, false);
 
 			default:

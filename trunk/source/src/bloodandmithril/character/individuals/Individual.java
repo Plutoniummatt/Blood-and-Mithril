@@ -129,7 +129,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		STAND_LEFT(true),
 		STAND_RIGHT(false),
 		STAND_LEFT_COMBAT_ONE_HANDED(true),
-		STAND_RIGHT_COMBATONE_HANDED(false),
+		STAND_RIGHT_COMBAT_ONE_HANDED(false),
 		WALK_LEFT(true),
 		WALK_RIGHT(false),
 		RUN_LEFT(true),
@@ -333,15 +333,20 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
 			return equipped instanceof Weapon;
 		});
+		
+		boolean left = getCurrentAction().left;
+		if (individuals.size() == 1) {
+			left = Domain.getIndividual(individuals.iterator().next()).getState().position.x < state.position.x;
+		}
 
 		if (weapon.isPresent()) {
-			if (getCurrentAction().left) {
+			if (left) {
 				setCurrentAction(((Weapon) weapon.get()).getAttackAction(false));
 			} else {
 				setCurrentAction(((Weapon) weapon.get()).getAttackAction(true));
 			}
 		} else {
-			if (getCurrentAction().left) {
+			if (left) {
 				setCurrentAction(Action.ATTACK_LEFT_UNARMED);
 			} else {
 				setCurrentAction(Action.ATTACK_RIGHT_UNARMED);
@@ -405,7 +410,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	@SuppressWarnings("rawtypes")
 	public void attack(boolean mine) {
 		if (getIndividualsToBeAttacked().isEmpty()) {
-			// Attack environmental objects... maybe?...Could be inefficient (must iterate through potentially lots of props), unless positional indexing is implemented....worth it?????
+			// Attack environmental objects... maybe?...
 		} else {
 			for (Integer individualId : getIndividualsToBeAttacked()) {
 				Box attackingBox = getInteractionBox();
@@ -814,7 +819,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * Updates the individual
 	 */
 	public void update(float delta) {
-		float aiTaskDelay = 0.05f;
+		float aiTaskDelay = 0.01f;
 		travelIconTimer += 0.15f;
 		speakTimer = speakTimer - delta <= 0f ? 0f : speakTimer - delta;
 
@@ -874,11 +879,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		internalUpdate(delta);
 
-		try {
-			executeActionFrames();
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		}
+		executeActionFrames();
 		respondToCommands();
 		respondToAttackCommand();
 

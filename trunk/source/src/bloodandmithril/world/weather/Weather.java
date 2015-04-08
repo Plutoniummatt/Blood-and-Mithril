@@ -52,7 +52,7 @@ public class Weather {
 	private static void renderSun() {
 		float time = getCurrentEpoch().getTime();
 		Vector2 pivot = new Vector2(WIDTH/2, 0);
-		float radius = WIDTH/2;
+		float radius = WIDTH/2.5f;
 		Vector2 position = pivot.cpy().add(new Vector2(0f, radius).rotate(-((time - 12f) / 12f) * 180f));
 
 		sunPosition.x = position.x;
@@ -155,5 +155,18 @@ public class Weather {
 			return 1f;
 		}
 		return 1f - (float) pow(sin((time + 4f) * (Math.PI / 8f)), 2f);
+	}
+	
+	
+	public static float volumetricAlphaMultiplier(float time) {
+		if (time >= 8f && time <= 16f) {
+			return 1f;
+		} else if (time >= 16f && time <= 18f) {
+			return 1f + 0.25f * (18f - time);
+		} else if (time >= 6f && time <= 8f) {
+			return 1f + 0.25f * (8f - time);
+		}
+		
+		return 1.5f;
 	}
 }

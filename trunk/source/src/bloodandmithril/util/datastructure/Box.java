@@ -50,10 +50,10 @@ public class Box implements Serializable {
 		float top = position.y + height / 2;
 		float bottom = position.y - height / 2;
 
-		float otherLeft = another.position.x - width / 2;
-		float otherRight = another.position.x + width / 2;
-		float otherTop = another.position.y + height / 2;
-		float otherBottom = another.position.y - height / 2;
+		float otherLeft = another.position.x - another.width / 2;
+		float otherRight = another.position.x + another.width / 2;
+		float otherTop = another.position.y + another.height / 2;
+		float otherBottom = another.position.y - another.height / 2;
 
 	    if (right < otherLeft) return false; // a is left of b
 	    if (left > otherRight) return false; // a is right of b

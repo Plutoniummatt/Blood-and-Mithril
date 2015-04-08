@@ -147,9 +147,7 @@ public class Attack extends CompositeAITask {
 				closeEnough = size < 8;
 			}
 
-			return atker.getAttackingHitBox().overlapsWith(
-				victim.getHitBox()
-			) || closeEnough && !victim.canBeAttacked(atker);
+			return atker.getAttackingHitBox().overlapsWith(victim.getHitBox()) || closeEnough && !victim.canBeAttacked(atker);
 		}
 	}
 
