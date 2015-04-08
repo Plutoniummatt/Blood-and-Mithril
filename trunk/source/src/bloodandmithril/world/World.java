@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -13,11 +12,8 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.world.fluids.FluidBody;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -40,9 +36,6 @@ public class World implements Serializable {
 
 	/** Individuals that are currently in this {@link World} */
 	private Set<Integer> 										individuals 			= Sets.newHashSet();
-
-	/** All {@link FluidBody}s on this {@link World} */
-	private Collection<FluidBody> 								fluids					= new ConcurrentLinkedQueue<>();
 
 	/** The positional indexing map of this {@link World} */
 	private PositionalIndexMap 									positionalIndexMap;
@@ -164,49 +157,5 @@ public class World implements Serializable {
 	 */
 	public PositionalIndexMap getPositionalIndexMap() {
 		return positionalIndexMap;
-	}
-
-
-	/**
-	 * Adds a {@link FluidBody} to this {@link World}
-	 */
-	public void addFluid(FluidBody fluid) {
-		fluids.add(fluid);
-	}
-
-
-	/**
-	 * Renders the fluids
-	 */
-	public void renderFluids() {
-		fluids.stream().forEach(
-			fluid -> {
-				fluid.render();
-				// fluid.renderElementBoxes();
-				// fluid.renderBindingBox();
-			}
-		);
-	}
-
-
-	/**
-	 * Updates this world, delta is in seconds
-	 */
-	public void updateFluids() {
-		for (FluidBody fluid : Lists.newLinkedList(fluids)) {
-			try {
-				fluid.update(false);
-			} catch (NoTileFoundException e) {}
-		}
-	}
-
-
-	public boolean removeFluid(FluidBody fluid) {
-		return fluids.remove(fluid);
-	}
-
-
-	public Collection<FluidBody> getFluids() {
-		return fluids;
 	}
 }
