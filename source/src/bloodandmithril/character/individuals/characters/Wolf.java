@@ -50,55 +50,55 @@ import com.google.common.collect.Sets;
 
 /**
  * A Wolf
- * 
+ *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
 @SuppressWarnings("unchecked")
 public class Wolf extends GroundTravellingIndividual implements Visible, Listener, Observer, Sniffer {
 	private static final long serialVersionUID = 6519740787651279948L;
-	
+
 	/** Rabbit-specific animation map */
 	private static Map<Action, List<WrapperForTwo<AnimationSwitcher, ShaderProgram>>> animationMap = newHashMap();
 	private static Map<Action, Map<Integer, ParameterizedTask<Individual>>> actionFrames = newHashMap();
 
 	static {
 		boolean server = !ClientServerInterface.isClient();
-		
+
 		AnimationSwitcher bite = new AnimationSwitcher();
-		bite.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1260, 965, 140, 75, 7, 0.07f, PlayMode.LOOP_REVERSED));         
-		
+		bite.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1260, 965, 140, 75, 7, 0.07f, PlayMode.LOOP_REVERSED));
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> biteSequence = newArrayList(
 			wrap(bite, server ? null : Shaders.pass)
 		);
-		
+
 		AnimationSwitcher run = new AnimationSwitcher();
-		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 140, 965, 140, 75, 8, 0.06f, PlayMode.LOOP_REVERSED));         
+		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 140, 965, 140, 75, 8, 0.06f, PlayMode.LOOP_REVERSED));
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run, server ? null : Shaders.pass)
 		);
-		
+
 		AnimationSwitcher stand = new AnimationSwitcher();
 		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));
-		
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
 			wrap(stand, server ? null : Shaders.pass)
 		);
-		
+
 		AnimationSwitcher jump = new AnimationSwitcher();
 		jump.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 560, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));
-		
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> jumpSequence = newArrayList(
 			wrap(jump, server ? null : Shaders.pass)
 		);
 
 		animationMap.put(Action.RUN_LEFT, runSequence);
 		animationMap.put(Action.RUN_RIGHT, runSequence);
-		
+
 		animationMap.put(Action.WALK_LEFT, runSequence);
 		animationMap.put(Action.WALK_RIGHT, runSequence);
-		
+
 		animationMap.put(Action.JUMP_LEFT, jumpSequence);
 		animationMap.put(Action.JUMP_RIGHT, jumpSequence);
 
@@ -109,7 +109,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 		animationMap.put(Action.STAND_RIGHT, standSequence);
 		animationMap.put(Action.STAND_LEFT_COMBAT_ONE_HANDED, standSequence);
 		animationMap.put(Action.STAND_RIGHT_COMBAT_ONE_HANDED, standSequence);
-		
+
 		Map<Integer, ParameterizedTask<Individual>> biteAction = newHashMap();
 		biteAction.put(
 			2,
@@ -119,7 +119,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 		);
 
 		actionFrames.put(ATTACK_LEFT_UNARMED, biteAction);
-		actionFrames.put(ATTACK_RIGHT_UNARMED, biteAction);		
+		actionFrames.put(ATTACK_RIGHT_UNARMED, biteAction);
 	}
 
 	/**
@@ -147,14 +147,14 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 		this.setAi(new HareAI(this));
 		setWalking(false);
 	}
-	
+
 
 	@Override
 	protected Map<Action, List<WrapperForTwo<AnimationSwitcher, ShaderProgram>>> getAnimationMap() {
 		return animationMap;
 	}
-	
-	
+
+
 	@Override
 	protected float getDefaultAttackPeriod() {
 		return 2f;
@@ -168,8 +168,14 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 
 	@Override
-	public float getUnarmedDamage() {
-		return 10f;
+	public float getUnarmedMinDamage() {
+		return 4f;
+	}
+
+
+	@Override
+	public float getUnarmedMaxDamage() {
+		return 7f;
 	}
 
 

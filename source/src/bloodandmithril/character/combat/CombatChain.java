@@ -6,6 +6,7 @@ import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
@@ -17,6 +18,8 @@ import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 /**
@@ -34,15 +37,17 @@ public class CombatChain {
 
 	public CombatChain(Individual attacker) {
 		this.attacker = attacker;
+
+		Optional<Item> weaponOptional = Iterables.tryFind(attacker.getEquipped().keySet(), equipped -> {
+			return equipped instanceof Weapon;
+		});
+
+		this.weapon = weaponOptional.isPresent() ? (Weapon)weaponOptional.get() : null;
 	}
 
 	public CombatChain target(Individual target) {
 		this.target = target;
-		return this;
-	}
 
-	public CombatChain withWeapon(Weapon weapon) {
-		this.weapon = weapon;
 		return this;
 	}
 
@@ -55,12 +60,60 @@ public class CombatChain {
 
 		Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().scl(knockbackStrength);
 
-		boolean blocked = Util.roll(
+		if (parry(knockbackVector)) {
+			if (disarm(knockbackVector)) {
+				target.addFloatingText(
+					"Disarmed!",
+					Color.YELLOW
+				);
+			} else {
+				target.addFloatingText(
+					"Parried!",
+					Color.GREEN
+				);
+			}
+			return text;
+		}
+
+		text = hit(knockbackVector.scl(0.1f).cpy());
+
+		if (ClientServerInterface.isServer()) {
+			target.getState().velocity.add(knockbackVector);
+			return text;
+		}
+
+		return null;
+	}
+
+
+	private boolean disarm(Vector2 knockbackVector) {
+		// Disarming
+		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance())) {
+			Sets.newHashSet(target.getEquipped().keySet()).stream().forEach(item -> {
+				target.unequip((Equipable) item);
+				ContainerImpl.discard(target, item, 1, ()-> {
+					return knockbackVector.cpy();
+				});
+			});
+
+			target.addFloatingText(
+				"Disarmed!",
+				Color.YELLOW
+			);
+
+			return true;
+		}
+
+		return false;
+	}
+
+
+	private boolean parry(Vector2 knockbackVector) {
+		boolean parried = Util.roll(
 			target.getParryChance() * (1f - attacker.getParryChanceIgnored())
 		);
 
-		if (blocked) {
-			blockDisarmLogic(knockbackVector);
+		if (parried) {
 			if (ClientServerInterface.isServer()) {
 				int blockSound = attacker.getBlockSound();
 				if (blockSound != 0) {
@@ -73,58 +126,11 @@ public class CombatChain {
 				}
 				ParticleService.parrySpark(target.getEmissionPosition(), knockbackVector, Depth.FOREGROUND, Color.WHITE, Color.WHITE, 100, true, 30, 200f);
 			}
-		} else {
-			knockbackVector.scl(0.1f);
-			text = hit(knockbackVector.cpy());
-			if (ClientServerInterface.isServer()) {
-				int hitSound = attacker.getHitSound();
-				if (hitSound != 0) {
-					SoundService.play(
-						hitSound,
-						target.getState().position,
-						true,
-						getVisible(target)
-					);
-				}
-				ParticleService.bloodSplat(target.getEmissionPosition(), knockbackVector);
-			}
+
+			return true;
 		}
 
-		if (ClientServerInterface.isServer()) {
-			target.getState().velocity.add(knockbackVector);
-			return text;
-		}
-
-		return null;
-	}
-
-
-	private void blockDisarmLogic(final Vector2 disarmVector) {
-		if (!ClientServerInterface.isServer()) {
-			return;
-		}
-
-		// Disarming
-		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance())) {
-			Sets.newHashSet(target.getEquipped().keySet()).stream().forEach(item -> {
-				target.unequip((Equipable) item);
-				ContainerImpl.discard(target, item, 1, ()-> {
-					return disarmVector.cpy();
-				});
-			});
-
-			target.addFloatingText(
-				"Disarmed!",
-				Color.YELLOW
-			);
-
-			return;
-		}
-
-		target.addFloatingText(
-			"Parried!",
-			Color.GREEN
-		);
+		return false;
 	}
 
 
@@ -165,7 +171,7 @@ public class CombatChain {
 		float damage = 0f;
 		boolean crit = false;
 		if (weapon == null) {
-			damage = attacker.getUnarmedDamage();
+			damage = attacker.getUnarmedMaxDamage() - Util.getRandom().nextFloat() * (attacker.getUnarmedMaxDamage() - attacker.getUnarmedMinDamage());
 		} else {
 			float weaponDamage = weapon.getBaseMinDamage() + (weapon.getBaseMaxDamage() - weapon.getBaseMinDamage()) * Util.getRandom().nextFloat();
 			if (Util.roll(weapon.getBaseCritChance())) {
@@ -176,6 +182,17 @@ public class CombatChain {
 			}
 			weapon.specialEffect(target);
 		}
+
+		int hitSound = attacker.getHitSound();
+		if (hitSound != 0) {
+			SoundService.play(
+				hitSound,
+				target.getState().position,
+				true,
+				getVisible(target)
+			);
+		}
+		ParticleService.bloodSplat(target.getEmissionPosition(), disarmVector);
 
 		target.damage(damage);
 		return String.format("%.2f", damage) + (crit ? " (Crit!)" : "");

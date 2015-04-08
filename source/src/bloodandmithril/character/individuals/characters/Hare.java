@@ -64,23 +64,23 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 
 	static {
 		boolean server = !ClientServerInterface.isClient();
-		
+
 		AnimationSwitcher walk = new AnimationSwitcher();
-		walk.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.07f, PlayMode.LOOP));         
-		
+		walk.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.07f, PlayMode.LOOP));
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> walkSequence = newArrayList(
 			wrap(walk, server ? null : Shaders.pass)
 		);
-		
+
 		AnimationSwitcher run = new AnimationSwitcher();
-		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.05f, PlayMode.LOOP));         
+		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.05f, PlayMode.LOOP));
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run, server ? null : Shaders.pass)
 		);
-		
+
 		AnimationSwitcher stand = new AnimationSwitcher();
-		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 1, 1f, PlayMode.LOOP));         
+		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 1, 1f, PlayMode.LOOP));
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
 			wrap(stand, server ? null : Shaders.pass)
@@ -142,7 +142,13 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 
 
 	@Override
-	public float getUnarmedDamage() {
+	public float getUnarmedMinDamage() {
+		return 0;
+	}
+
+
+	@Override
+	public float getUnarmedMaxDamage() {
 		return 0;
 	}
 
