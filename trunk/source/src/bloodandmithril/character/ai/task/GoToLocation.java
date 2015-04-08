@@ -219,7 +219,7 @@ public class GoToLocation extends AITask {
 
 			if (stuckCounter > stuckTolerance) {
 				path.clear();
-				if (!getHost().attacking()) {
+				if (!getHost().attacking() && getHost().isControllable()) {
 					getHost().speak("Looks like I'm stuck...", 1500);
 				}
 			}

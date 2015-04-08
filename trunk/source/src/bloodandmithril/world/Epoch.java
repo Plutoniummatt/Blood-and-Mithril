@@ -78,8 +78,8 @@ public class Epoch implements Serializable {
 			monthOfYear++;
 		}
 	}
-	
-	
+
+
 	public void setTimeOfDay(float time) {
 		this.timeOfDay = time;
 	}

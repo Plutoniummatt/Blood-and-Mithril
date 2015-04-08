@@ -1,6 +1,5 @@
 package bloodandmithril.character.individuals;
 
-import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.character.individuals.Individual.Action.JUMP_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
@@ -17,7 +16,6 @@ import static bloodandmithril.util.ComparisonUtil.obj;
 import java.util.List;
 import java.util.Map;
 
-import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
@@ -223,7 +221,6 @@ public abstract class GroundTravellingIndividual extends Individual {
 		getState().velocity.y = jumpVector.y;
 		decreaseStamina(0.1f);
 
-		SoundService.play(SoundService.femaleHit, getState().position.cpy(), true, getVisible(this));
 		setCurrentAction(jumpVector.x < 0f ? Action.JUMP_LEFT : Action.JUMP_RIGHT);
 	}
 }

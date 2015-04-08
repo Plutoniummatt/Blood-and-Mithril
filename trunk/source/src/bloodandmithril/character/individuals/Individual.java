@@ -333,7 +333,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
 			return equipped instanceof Weapon;
 		});
-		
+
 		boolean left = getCurrentAction().left;
 		if (individuals.size() == 1) {
 			left = Domain.getIndividual(individuals.iterator().next()).getState().position.x < state.position.x;
@@ -407,35 +407,21 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/**
 	 * The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed
 	 */
-	@SuppressWarnings("rawtypes")
 	public void attack(boolean mine) {
 		if (getIndividualsToBeAttacked().isEmpty()) {
 			// Attack environmental objects... maybe?...
 		} else {
 			for (Integer individualId : getIndividualsToBeAttacked()) {
 				Box attackingBox = getInteractionBox();
-				Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
-					return equipped instanceof Weapon;
-				});
 
 				Individual toBeAttacked = Domain.getIndividual(individualId);
 				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
-					if (weapon.isPresent()) {
-						String floatingText = combat().target(toBeAttacked).withWeapon((Weapon) weapon.get()).execute();
-						if (!StringUtils.isBlank(floatingText)) {
-							toBeAttacked.addFloatingText(
-								floatingText,
-								Color.RED
-							);
-						}
-					} else {
-						String floatingText = combat().target(toBeAttacked).execute();
-						if (!StringUtils.isBlank(floatingText)) {
-							toBeAttacked.addFloatingText(
-								floatingText,
-								Color.RED
-							);
-						}
+					String floatingText = combat().target(toBeAttacked).execute();
+					if (!StringUtils.isBlank(floatingText)) {
+						toBeAttacked.addFloatingText(
+							floatingText,
+							Color.RED
+						);
 					}
 				}
 			}
@@ -510,7 +496,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/** Returns the damage dealt when attacking whilst not armed */
-	public abstract float getUnarmedDamage();
+	public abstract float getUnarmedMinDamage();
+	public abstract float getUnarmedMaxDamage();
 
 	/** Returns the {@link Box} that will be used to calculate overlaps with other hitboxes, when no weapon-specific hitboxes are found */
 	protected abstract Box getDefaultAttackingHitBox();
@@ -889,7 +876,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		updateConditions(delta);
 		updatePositionalIndex();
-		
+
 		Sets.newHashSet(getEquipped().keySet()).forEach(equipped -> {
 			((Equipable) equipped).update(this, delta);
 		});
@@ -1165,8 +1152,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			null
 		);
 	}
-	
-	
+
+
 	private MenuItem suppressAI() {
 		return new MenuItem(
 			supressAI ? "Enable AI" : "Disable AI",
@@ -1511,13 +1498,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		// TODO Killing an individual
 		dead = true;
 	}
-	
-	
+
+
 	public boolean isAISuppressed() {
 		return supressAI;
 	}
-	
-	
+
+
 	public void setAISuppression(boolean suppress) {
 		this.supressAI = suppress;
 	}
@@ -2042,8 +2029,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			speakTimer = duration / 1000f;
 		}
 	}
-	
-	
+
+
 	public void sayStuck() {}
 
 
@@ -2066,11 +2053,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
-	
+
+
 	public FireLighter getFireLighter() {
 		for (Item item : getEquipped().keySet()) {
 			if (item instanceof FireLighter) {
@@ -2079,7 +2066,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				}
 			}
 		}
-		
+
 		for (Item item : getInventory().keySet()) {
 			if (item instanceof FireLighter) {
 				if (((FireLighter) item).canLightFire()) {
@@ -2087,7 +2074,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 }

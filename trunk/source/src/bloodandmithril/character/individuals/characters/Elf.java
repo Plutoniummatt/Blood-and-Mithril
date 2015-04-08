@@ -109,10 +109,10 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 	/** Biography of this Elf */
 	private String biography = "";
-	
+
 	/** Hair style of this elf */
 	private int hairStyle;
-	
+
 	/** Elf female hairstyles */
 	private static Map<Integer, TextureRegion> hairStyleFemale = Maps.newHashMap();
 
@@ -121,27 +121,27 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 	static {
 		boolean server = !ClientServerInterface.isClient();
-		
+
 		if (ClientServerInterface.isClient()) {
 			hairStyleFemale.put(1, new TextureRegion(Domain.individualTexture, 896, 784, 64, 112));
 			hairStyleFemale.put(2, new TextureRegion(Domain.individualTexture, 960, 784, 64, 112));
 			hairStyleFemale.put(3, new TextureRegion(Domain.individualTexture, 1024, 784, 64, 112));
 		}
-		
+
 		AnimationSwitcher walk1 = new AnimationSwitcher();
 		AnimationSwitcher walk2 = new AnimationSwitcher();
 		AnimationSwitcher walk3 = new AnimationSwitcher();
 		AnimationSwitcher walk4 = new AnimationSwitcher();
 		AnimationSwitcher walk5 = new AnimationSwitcher();
 		AnimationSwitcher walk6 = new AnimationSwitcher();
-		walk1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// HEAD          
-		walk2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Domain.individualTexture, 0, 0, 64, 112, 10, 0.13f, PlayMode.LOOP));        	// BACK ARM      
-		walk2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.13f, PlayMode.LOOP));       										// BACK ARM      
-		walk3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// BACK LEG      
-		walk4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// TORSO         
-		walk5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 560, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// FRONT LEG     
-		walk6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 336, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// FRONT ARM     
-		
+		walk1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 112, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// HEAD
+		walk2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Domain.individualTexture, 0, 0, 64, 112, 10, 0.13f, PlayMode.LOOP));        	// BACK ARM
+		walk2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 448, 64, 112, 10, 0.13f, PlayMode.LOOP));       										// BACK ARM
+		walk3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 672, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// BACK LEG
+		walk4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 224, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// TORSO
+		walk5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 560, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// FRONT LEG
+		walk6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 336, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// FRONT ARM
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> walkSequence = newArrayList(
 			wrap(walk1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(walk2, server ? null : Shaders.filterIgnoreReplace),
@@ -157,14 +157,14 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		AnimationSwitcher stand4 = new AnimationSwitcher();
 		AnimationSwitcher stand5 = new AnimationSwitcher();
 		AnimationSwitcher stand6 = new AnimationSwitcher();
-		stand1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f, PlayMode.LOOP));        									// HEAD          
-		stand2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Domain.individualTexture, 1152, 0, 64, 112, 1, 1f, PlayMode.LOOP));    	// BACK ARM      
-		stand2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f, PlayMode.LOOP));        									// BACK ARM      
-		stand3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f, PlayMode.LOOP));       									// BACK LEG      
-		stand4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f, PlayMode.LOOP));       									// TORSO         
-		stand5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 560, 64, 112, 1, 1f, PlayMode.LOOP));       									// FRONT LEG     
-		stand6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f, PlayMode.LOOP));       									// FRONT ARM     
-		
+		stand1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 112, 64, 112, 1, 1f, PlayMode.LOOP));        									// HEAD
+		stand2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Domain.individualTexture, 1152, 0, 64, 112, 1, 1f, PlayMode.LOOP));    	// BACK ARM
+		stand2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 448, 64, 112, 1, 1f, PlayMode.LOOP));        									// BACK ARM
+		stand3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 672, 64, 112, 1, 1f, PlayMode.LOOP));       									// BACK LEG
+		stand4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 224, 64, 112, 1, 1f, PlayMode.LOOP));       									// TORSO
+		stand5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 560, 64, 112, 1, 1f, PlayMode.LOOP));       									// FRONT LEG
+		stand6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1152, 336, 64, 112, 1, 1f, PlayMode.LOOP));       									// FRONT ARM
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
 			wrap(stand1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(stand2, server ? null : Shaders.filterIgnoreReplace),
@@ -180,14 +180,14 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		AnimationSwitcher jump4 = new AnimationSwitcher();
 		AnimationSwitcher jump5 = new AnimationSwitcher();
 		AnimationSwitcher jump6 = new AnimationSwitcher();
-		jump1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 112, 64, 112, 1, 1f, PlayMode.LOOP));        								// HEAD          
-		jump2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Domain.individualTexture, 768, 0, 64, 112, 1, 1f, PlayMode.LOOP));	// BACK ARM      
-		jump2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 448, 64, 112, 1, 1f, PlayMode.LOOP));        								// BACK ARM      
-		jump3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 672, 64, 112, 1, 1f, PlayMode.LOOP));        								// BACK LEG      
-		jump4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 224, 64, 112, 1, 1f, PlayMode.LOOP));       								// TORSO         
-		jump5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 560, 64, 112, 1, 1f, PlayMode.LOOP));        								// FRONT LEG     
-		jump6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 336, 64, 112, 1, 1f, PlayMode.LOOP));        								// FRONT ARM     
-		
+		jump1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 112, 64, 112, 1, 1f, PlayMode.LOOP));        								// HEAD
+		jump2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Domain.individualTexture, 768, 0, 64, 112, 1, 1f, PlayMode.LOOP));	// BACK ARM
+		jump2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 448, 64, 112, 1, 1f, PlayMode.LOOP));        								// BACK ARM
+		jump3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 672, 64, 112, 1, 1f, PlayMode.LOOP));        								// BACK LEG
+		jump4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 224, 64, 112, 1, 1f, PlayMode.LOOP));       								// TORSO
+		jump5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 560, 64, 112, 1, 1f, PlayMode.LOOP));        								// FRONT LEG
+		jump6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 768, 336, 64, 112, 1, 1f, PlayMode.LOOP));        								// FRONT ARM
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> jumpSequence = newArrayList(
 			wrap(jump1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(jump2, server ? null : Shaders.filterIgnoreReplace),
@@ -203,13 +203,13 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		AnimationSwitcher standCombat4 = new AnimationSwitcher();
 		AnimationSwitcher standCombat5 = new AnimationSwitcher();
 		AnimationSwitcher standCombat6 = new AnimationSwitcher();
-		standCombat1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 112, 64, 112, 1, 1f, PlayMode.LOOP));        // HEAD          
-		standCombat2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 448, 64, 112, 1, 1f, PlayMode.LOOP));        // BACK ARM      
-		standCombat3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 672, 64, 112, 1, 1f, PlayMode.LOOP));        // BACK LEG      
-		standCombat4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 224, 64, 112, 1, 1f, PlayMode.LOOP));        // TORSO         
-		standCombat5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 560, 64, 112, 1, 1f, PlayMode.LOOP));        // FRONT LEG     
-		standCombat6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 336, 64, 112, 1, 1f, PlayMode.LOOP));        // FRONT ARM     
-		
+		standCombat1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 112, 64, 112, 1, 1f, PlayMode.LOOP));        // HEAD
+		standCombat2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 448, 64, 112, 1, 1f, PlayMode.LOOP));        // BACK ARM
+		standCombat3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 672, 64, 112, 1, 1f, PlayMode.LOOP));        // BACK LEG
+		standCombat4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 224, 64, 112, 1, 1f, PlayMode.LOOP));        // TORSO
+		standCombat5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 560, 64, 112, 1, 1f, PlayMode.LOOP));        // FRONT LEG
+		standCombat6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1216, 336, 64, 112, 1, 1f, PlayMode.LOOP));        // FRONT ARM
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequenceCombat = newArrayList(
 			wrap(standCombat1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(standCombat2, server ? null : Shaders.filterIgnoreReplace),
@@ -218,21 +218,21 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 			wrap(standCombat5, server ? null : Shaders.filterIgnoreReplace),
 			wrap(standCombat6, server ? null : Shaders.filterIgnoreReplace)
 		);
-		
+
 		AnimationSwitcher run1 = new AnimationSwitcher();
 		AnimationSwitcher run2 = new AnimationSwitcher();
 		AnimationSwitcher run3 = new AnimationSwitcher();
 		AnimationSwitcher run4 = new AnimationSwitcher();
 		AnimationSwitcher run5 = new AnimationSwitcher();
 		AnimationSwitcher run6 = new AnimationSwitcher();
-		run1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// HEAD          
-		run2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Domain.individualTexture, 640, 0, 64, 112, 8, 0.13f, PlayMode.LOOP));        	// BACK ARM      
-		run2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.13f, PlayMode.LOOP));       										// BACK ARM      
-		run3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// BACK LEG      
-		run4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// TORSO         
-		run5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// FRONT LEG     
-		run6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// FRONT ARM     
-		
+		run1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 112, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// HEAD
+		run2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(Domain.individualTexture, 640, 0, 64, 112, 8, 0.13f, PlayMode.LOOP));        	// BACK ARM
+		run2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 448, 64, 112, 8, 0.13f, PlayMode.LOOP));       										// BACK ARM
+		run3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 672, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// BACK LEG
+		run4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 224, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// TORSO
+		run5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 560, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// FRONT LEG
+		run6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 640, 336, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// FRONT ARM
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(run2, server ? null : Shaders.filterIgnoreReplace),
@@ -248,13 +248,13 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		AnimationSwitcher stab4 = new AnimationSwitcher();
 		AnimationSwitcher stab5 = new AnimationSwitcher();
 		AnimationSwitcher stab6 = new AnimationSwitcher();
-		stab1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 112, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // HEAD          
-		stab2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 448, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // BACK ARM      
-		stab3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 672, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // BACK LEG      
-		stab4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 224, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // TORSO         
-		stab5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 560, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // FRONT LEG     
-		stab6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 336, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // FRONT ARM     
-		
+		stab1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 112, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // HEAD
+		stab2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 448, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // BACK ARM
+		stab3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 672, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // BACK LEG
+		stab4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 224, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // TORSO
+		stab5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 560, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // FRONT LEG
+		stab6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1280, 336, 64, 112, 8, 0.07f, PlayMode.NORMAL));        // FRONT ARM
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> stabSequence = newArrayList(
 			wrap(stab1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(stab2, server ? null : Shaders.filterIgnoreReplace),
@@ -270,13 +270,13 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		AnimationSwitcher slash4 = new AnimationSwitcher();
 		AnimationSwitcher slash5 = new AnimationSwitcher();
 		AnimationSwitcher slash6 = new AnimationSwitcher();
-		slash1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 112, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // HEAD          
-		slash2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 448, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // BACK ARM      
-		slash3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 672, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // BACK LEG      
-		slash4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 224, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // TORSO         
-		slash5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 560, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // FRONT LEG     
-		slash6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 336, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // FRONT ARM     
-		
+		slash1.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 112, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // HEAD
+		slash2.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 448, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // BACK ARM
+		slash3.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 672, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // BACK LEG
+		slash4.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 224, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // TORSO
+		slash5.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 560, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // FRONT LEG
+		slash6.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1792, 336, 64, 112, 10, 0.07f, PlayMode.NORMAL));      // FRONT ARM
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> slashSequence = newArrayList(
 			wrap(slash1, server ? null : Shaders.filterIgnoreReplace),
 			wrap(slash2, server ? null : Shaders.filterIgnoreReplace),
@@ -285,7 +285,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 			wrap(slash5, server ? null : Shaders.filterIgnoreReplace),
 			wrap(slash6, server ? null : Shaders.filterIgnoreReplace)
 		);
-		
+
 		animationMap.put(
 			JUMP_RIGHT,
 			jumpSequence
@@ -451,7 +451,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		Shaders.filterIgnoreReplace.setUniformf("color", eyeColor.r, eyeColor.g, eyeColor.b, eyeColor.a);
 		Shaders.filterIgnoreReplace.setUniformf("filter", skinColor.r, skinColor.g, skinColor.b, skinColor.a);
 		Shaders.filterIgnoreReplace.setUniformf("ignore", Color.WHITE);
-		
+
 		Shaders.colorize.begin();
 		Shaders.colorize.setUniformf("amount", 5f);
 		Shaders.colorize.setUniformf("color", hairColor.r, hairColor.g, hairColor.b, hairColor.a);
@@ -547,8 +547,14 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 
 	@Override
-	public float getUnarmedDamage() {
+	public float getUnarmedMinDamage() {
 		return 0.5f;
+	}
+
+
+	@Override
+	public float getUnarmedMaxDamage() {
+		return 1.0f;
 	}
 
 
@@ -672,8 +678,8 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 	public boolean isVisible() {
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public void sayStuck() {
 		speak("Looks like I'm stuck...", 1000);
@@ -690,7 +696,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 	protected void renderCustomizations(int animationIndex) {
 		TextureRegion hair = hairStyleFemale.get(hairStyle);
 		SpacialConfiguration helmetConfig = getHelmetSpatialConfigration();
-		
+
 		spriteBatch.setShader(Shaders.colorize);
 		Shaders.colorize.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
 		if (animationIndex == 1) {
