@@ -56,8 +56,13 @@ public interface Kinematics {
 				kinematicsData.steppingUp = false;
 				state.position.y += TILE_SIZE - kinematicsData.steps;
 			} else {
-				state.position.y = state.position.y + 4f;
-				kinematicsData.steps += 4f;
+				if (individual.getRunSpeed() > 100) {
+					state.position.y = state.position.y + 8f;
+					kinematicsData.steps += 8f;
+				} else {
+					state.position.y = state.position.y + 4f;
+					kinematicsData.steps += 4f;
+				}
 			}
 		}
 
@@ -148,8 +153,6 @@ public interface Kinematics {
 
 
 	static void fallDamage(Individual individual, IndividualKineticsProcessingData data) {
-		individual.speak("Owwww!", 1000);
-		
 		float amount = (data.distanceFallen - 400f) / 20f;
 		individual.damage(amount);
 		individual.addFloatingText(String.format("%.2f", amount), Color.RED);
@@ -165,7 +168,7 @@ public interface Kinematics {
 				return;
 			}
 
-			state.velocity.x = state.velocity.x * 0.2f;
+			state.velocity.x = state.velocity.x * 0.3f;
 		}
 	}
 

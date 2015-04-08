@@ -15,7 +15,7 @@ import static bloodandmithril.character.individuals.Individual.Action.RUN_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT_COMBAT_ONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT;
-import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBATONE_HANDED;
+import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT_ONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
@@ -317,7 +317,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		);
 
 		animationMap.put(
-			STAND_RIGHT_COMBATONE_HANDED,
+			STAND_RIGHT_COMBAT_ONE_HANDED,
 			standSequenceCombat
 		);
 

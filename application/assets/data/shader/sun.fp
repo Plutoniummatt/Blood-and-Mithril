@@ -26,7 +26,7 @@ void main()
 	vec2 invertedResolution = inverted * resolution;
 	float distanceFromLensFlare = distance(invertedResolution, sunPosition);
 	float func = 2 - distanceFromSun / 1300;
-	float func2 = 100 / distanceFromSun;
+	float func2 = 30 / distanceFromSun;
 	
 	vec4 color = filter * max(func, 0); 
 	vec4 color2 = filter * vec4(1.0, 0.7, 0.7, 1.0) * max(func2, 0);

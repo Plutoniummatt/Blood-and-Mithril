@@ -1,5 +1,7 @@
 package bloodandmithril.character.individuals.characters;
 
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_UNARMED;
+import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -44,7 +46,6 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
@@ -59,39 +60,66 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 	
 	/** Rabbit-specific animation map */
 	private static Map<Action, List<WrapperForTwo<AnimationSwitcher, ShaderProgram>>> animationMap = newHashMap();
+	private static Map<Action, Map<Integer, ParameterizedTask<Individual>>> actionFrames = newHashMap();
 
 	static {
 		boolean server = !ClientServerInterface.isClient();
 		
 		AnimationSwitcher bite = new AnimationSwitcher();
-		bite.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 965, 160, 85, 7, 0.05f, PlayMode.LOOP_REVERSED));         
+		bite.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 1260, 965, 140, 75, 7, 0.07f, PlayMode.LOOP_REVERSED));         
 		
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> biteSequence = newArrayList(
 			wrap(bite, server ? null : Shaders.pass)
 		);
 		
 		AnimationSwitcher run = new AnimationSwitcher();
-		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 140, 965, 140, 75, 8, 0.05f, PlayMode.LOOP_REVERSED));         
+		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 140, 965, 140, 75, 8, 0.06f, PlayMode.LOOP_REVERSED));         
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run, server ? null : Shaders.pass)
 		);
 		
 		AnimationSwitcher stand = new AnimationSwitcher();
-		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));         
-
+		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));
+		
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
 			wrap(stand, server ? null : Shaders.pass)
+		);
+		
+		AnimationSwitcher jump = new AnimationSwitcher();
+		jump.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 560, 965, 140, 75, 1, 1f, PlayMode.LOOP_REVERSED));
+		
+		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> jumpSequence = newArrayList(
+			wrap(jump, server ? null : Shaders.pass)
 		);
 
 		animationMap.put(Action.RUN_LEFT, runSequence);
 		animationMap.put(Action.RUN_RIGHT, runSequence);
+		
+		animationMap.put(Action.WALK_LEFT, runSequence);
+		animationMap.put(Action.WALK_RIGHT, runSequence);
+		
+		animationMap.put(Action.JUMP_LEFT, jumpSequence);
+		animationMap.put(Action.JUMP_RIGHT, jumpSequence);
 
 		animationMap.put(Action.ATTACK_LEFT_UNARMED, biteSequence);
 		animationMap.put(Action.ATTACK_RIGHT_UNARMED, biteSequence);
 
 		animationMap.put(Action.STAND_LEFT, standSequence);
 		animationMap.put(Action.STAND_RIGHT, standSequence);
+		animationMap.put(Action.STAND_LEFT_COMBAT_ONE_HANDED, standSequence);
+		animationMap.put(Action.STAND_RIGHT_COMBAT_ONE_HANDED, standSequence);
+		
+		Map<Integer, ParameterizedTask<Individual>> biteAction = newHashMap();
+		biteAction.put(
+			2,
+			individual -> {
+				individual.attack(false);
+			}
+		);
+
+		actionFrames.put(ATTACK_LEFT_UNARMED, biteAction);
+		actionFrames.put(ATTACK_RIGHT_UNARMED, biteAction);		
 	}
 
 	/**
@@ -119,17 +147,17 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 		this.setAi(new HareAI(this));
 		setWalking(false);
 	}
-
+	
 
 	@Override
 	protected Map<Action, List<WrapperForTwo<AnimationSwitcher, ShaderProgram>>> getAnimationMap() {
 		return animationMap;
 	}
-
-
+	
+	
 	@Override
 	protected float getDefaultAttackPeriod() {
-		return 0;
+		return 2f;
 	}
 
 
@@ -141,7 +169,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	public float getUnarmedDamage() {
-		return 0;
+		return 10f;
 	}
 
 
@@ -160,7 +188,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	protected Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames() {
-		return Maps.newHashMap();
+		return actionFrames;
 	}
 
 
@@ -202,13 +230,13 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	public float getWalkSpeed() {
-		return 65;
+		return 155;
 	}
 
 
 	@Override
 	public float getRunSpeed() {
-		return 175;
+		return 155;
 	}
 
 

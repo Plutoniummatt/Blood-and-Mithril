@@ -23,12 +23,12 @@ void main()
 	vec2 direction = normalize(sourceLocation - inverted * resolution);
 	float d = distance(inverted * resolution, sourceLocation);
 	
-	float step = 1.0 + 15.0 * (d / 2000.0);
+	float step = 1.0 + 25.0 * (d / 2000.0);
 	for (int i = 0; i != 150; i++) {
 		if (i * step > d) {
 			break;
 		}
-		alpha = alpha + (1.0 - texture2D(u_texture, (inverted * resolution + direction * i * step) / resolution).a) / 10.0;
+		alpha = alpha + (1.0 - texture2D(u_texture, (inverted * resolution + direction * i * step) / resolution).a) / 7.0;
 	}
 
 	float r = rand(v_texCoords)/24.0;
