@@ -16,7 +16,8 @@ import java.util.Set;
 import bloodandmithril.audio.SoundService.SuspicionLevel;
 import bloodandmithril.audio.SoundService.SuspiciousSound;
 import bloodandmithril.character.ai.AIProcessor;
-import bloodandmithril.character.ai.implementations.HareAI;
+import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.implementations.WolfAI;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
@@ -24,6 +25,7 @@ import bloodandmithril.character.ai.perception.SightStimulus;
 import bloodandmithril.character.ai.perception.Sniffer;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.individuals.GroundTravellingIndividual;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -144,7 +146,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 			worldId,
 			2
 		);
-		this.setAi(new HareAI(this));
+		this.setAi(new WolfAI(this));
 		setWalking(false);
 	}
 
@@ -157,7 +159,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	protected float getDefaultAttackPeriod() {
-		return 2f;
+		return 1.3f;
 	}
 
 
@@ -169,13 +171,13 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	public float getUnarmedMinDamage() {
-		return 4f;
+		return 3f;
 	}
 
 
 	@Override
 	public float getUnarmedMaxDamage() {
-		return 7f;
+		return 6f;
 	}
 
 
@@ -344,6 +346,17 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	public void reactToSightStimulus(SightStimulus stimulus) {
+		if (stimulus instanceof IndividualSighted) {
+			Individual target = Domain.getIndividual(((IndividualSighted) stimulus).getSightedIndividualId());
+			AITask currentTask = getAI().getCurrentTask();
+			if (currentTask instanceof Attack) {
+				if (!((Attack) currentTask).getTargets().contains(((IndividualSighted) stimulus).getSightedIndividualId())) {
+					getAI().setCurrentTask(new Attack(this, target));
+				}
+			} else {
+				getAI().setCurrentTask(new Attack(this, target));
+			}
+		}
 	}
 
 

@@ -141,35 +141,35 @@ public class Domain {
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
-	
-	
+
+
 	public synchronized static void addSelectedIndividual(Individual individual) {
 		selectedIndividuals.add(individual.getId().getId());
 	}
-	
-	
+
+
 	public synchronized static boolean removeSelectedIndividual(Individual individual) {
 		return selectedIndividuals.removeIf(id -> {
 			return individual.getId().getId() == id;
 		});
 	}
-	
-	
+
+
 	public synchronized static boolean removeSelectedIndividualIf(java.util.function.Predicate<Integer> predicate) {
 		return selectedIndividuals.removeIf(predicate);
 	}
-	
-	
+
+
 	public synchronized static boolean isIndividualSelected(Individual individual) {
 		return selectedIndividuals.contains(individual.getId().getId());
 	}
-	
-	
+
+
 	public synchronized static void clearSelectedIndividuals() {
 		selectedIndividuals.clear();
 	}
-	
-	
+
+
 	public synchronized static Collection<Individual> getSelectedIndividuals() {
 		return Lists.newLinkedList(Iterables.transform(selectedIndividuals, id -> {
 			return getIndividual(id);
@@ -307,10 +307,6 @@ public class Domain {
 		}
 		renderParticles(Depth.FOREGROUND);
 		spriteBatch.end();
-		gl20.glEnable(GL20.GL_BLEND);
-		gl20.glBlendFuncSeparate(GL20.GL_ONE, GL20.GL_SRC_COLOR, GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-		activeWorld.renderFluids();
-		gl20.glDisable(GL20.GL_BLEND);
 		getActiveWorld().getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.filter);
@@ -325,7 +321,7 @@ public class Domain {
 		}
 		spriteBatch.end();
 		fBuffer.end();
-		
+
 		GaussianLightingRenderer.render(camX, camY);
 	}
 
@@ -399,13 +395,6 @@ public class Domain {
 	}
 
 
-	public static void updateFluids() {
-		for (World world : worlds.values()) {
-			world.updateFluids();
-		}
-	}
-
-
 	public static World getActiveWorld() {
 		return activeWorld;
 	}
@@ -434,8 +423,8 @@ public class Domain {
 	public static ConcurrentHashMap<Integer, Individual> getIndividuals() {
 		return individuals;
 	}
-	
-	
+
+
 	public static List<Individual> getSortedIndividuals(Comparator<Individual> sorter) {
 		LinkedList<Individual> sorted = Lists.newLinkedList(individuals.values());
 		Collections.sort(sorted, sorter);
@@ -527,7 +516,7 @@ public class Domain {
 		private static Comparator<Individual> renderPrioritySorter = (i1, i2) -> {
 			return Integer.compare(i1.getRenderPriority(), i2.getRenderPriority());
 		};
-		
+
 		/** Renders all individuals, ones that are on platforms are rendered first */
 		private static void renderIndividuals() {
 			try {

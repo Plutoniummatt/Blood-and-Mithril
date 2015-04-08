@@ -39,7 +39,6 @@ import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.RockItem;
-import bloodandmithril.item.liquid.Water;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
@@ -62,12 +61,9 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
-import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.WorldState;
-import bloodandmithril.world.fluids.FluidBody;
-import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 import com.badlogic.gdx.Gdx;
@@ -75,7 +71,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -202,32 +197,6 @@ public class DevWindow extends Window {
 			);
 		}
 
-		if (keyCode == Keys.F) {
-			int x = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldX());
-			int y = Topography.convertToWorldTileCoord(BloodAndMithrilClient.getMouseWorldY());
-
-			List<TwoInts> coords = Lists.newArrayList();
-			coords.add(new TwoInts(x + 1, y));
-			coords.add(new TwoInts(x + 2, y));
-			coords.add(new TwoInts(x + 3, y));
-			coords.add(new TwoInts(x + 4, y));
-			coords.add(new TwoInts(x + 1, y + 1));
-			coords.add(new TwoInts(x + 2, y + 1));
-			coords.add(new TwoInts(x + 3, y + 1));
-			coords.add(new TwoInts(x + 4, y + 1));
-			coords.add(new TwoInts(x + 1, y + 2));
-			coords.add(new TwoInts(x + 2, y + 2));
-			coords.add(new TwoInts(x + 3, y + 2));
-			coords.add(new TwoInts(x + 4, y + 2));
-			coords.add(new TwoInts(x + 1, y + 3));
-			coords.add(new TwoInts(x + 2, y + 3));
-			coords.add(new TwoInts(x + 3, y + 3));
-			coords.add(new TwoInts(x + 4, y + 3));
-
-			FluidBody fluid = FluidBody.createForTileCoordinates(coords, 16f, Water.class, Domain.getActiveWorld().getWorldId());
-			Domain.getActiveWorld().addFluid(fluid);
-		}
-
 		if (keyCode == Keys.E) {
 			IndividualState state = new IndividualState(30f, 0.01f, 0.02f, 0f, 0f);
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
@@ -269,18 +238,18 @@ public class DevWindow extends Window {
 				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(hare);
 			}
 		}
-		
+
 		if (keyCode == Keys.W) {
 			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
-			
+
 			IndividualIdentifier id = getUnknownNatureIdentifier(Util.getRandom().nextBoolean(), Util.getRandom().nextInt(5));
 			id.setNickName("Wolf");
-			
+
 			Wolf wolf= new Wolf(id, state, 2, getActiveWorld().getWorldId());
-			
+
 			if (isServer()) {
 				Domain.addIndividual(wolf, Domain.getActiveWorld().getWorldId());
 			} else {
