@@ -14,12 +14,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
 /**
- * Class representing a star
+ * Class representing a celestial body
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class Star {
+public class CelestialBody {
 
 	public static Map<Integer, TextureRegion> starTextures = Maps.newHashMap();
 
@@ -38,7 +38,7 @@ public class Star {
 	/**
 	 * Constructor
 	 */
-	public Star(int textureId, float orbitalRadius, float angle) {
+	public CelestialBody(int textureId, float orbitalRadius, float angle) {
 		this.textureId = textureId;
 		this.orbitalRadius = orbitalRadius;
 		this.angle = angle;
