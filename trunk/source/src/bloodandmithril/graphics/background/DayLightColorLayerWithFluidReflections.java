@@ -12,25 +12,25 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Maps;
 
 /**
- * Layer that is filtered according to daylight color
+ * Layer that is filtered according to daylight color, and with reflective fluid surfaces
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class DayLightColorLayer extends Layer {
+public class DayLightColorLayerWithFluidReflections extends Layer {
 	private static final long serialVersionUID = 1539143531802061321L;
 
 	/**
 	 * Constructor
 	 */
-	public DayLightColorLayer() {
+	public DayLightColorLayerWithFluidReflections() {
 		super(getMap());
 	}
-	
-	
+
+
 	private static TreeMap<Integer, Integer> getMap() {
 		TreeMap<Integer, Integer> map = Maps.newTreeMap();
-		
+
 		map.put(0, 2);
 		for (int i = 500; i < 5000; i += 200) {
 			map.put(i, 1);
@@ -38,7 +38,7 @@ public class DayLightColorLayer extends Layer {
 		for (int i = -200; i > -5000; i -= 200) {
 			map.put(i, 1);
 		}
-		
+
 		return map;
 	}
 
