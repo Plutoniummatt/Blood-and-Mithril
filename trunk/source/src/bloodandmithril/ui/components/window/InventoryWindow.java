@@ -112,7 +112,8 @@ public class InventoryWindow extends Window implements Refreshable {
 	public static Comparator<Item> inventorySortingOrder = new Comparator<Item>() {
 		@Override
 		public int compare(Item o1, Item o2) {
-			return o1.getSingular(false).compareTo(o2.getSingular(false));
+			int f = new Integer(o1.getType().getColor().hashCode()).compareTo(o2.getType().getColor().hashCode());
+			return f == 0 ? o1.getSingular(false).compareTo(o2.getSingular(false)) : f;
 		}
 	};
 
@@ -432,7 +433,7 @@ public class InventoryWindow extends Window implements Refreshable {
 					menuToAddUnequipped.x = BloodAndMithrilClient.getMouseScreenX();
 					menuToAddUnequipped.y = BloodAndMithrilClient.getMouseScreenY();
 				},
-				eq ? Color.GREEN : Color.WHITE,
+				eq ? Color.GREEN : item.getKey().getType().getColor(),
 				Color.GREEN,
 				Color.WHITE,
 				UIRef.BL
@@ -461,7 +462,7 @@ public class InventoryWindow extends Window implements Refreshable {
 					menuToAddEquipped.x = BloodAndMithrilClient.getMouseScreenX();
 					menuToAddEquipped.y = BloodAndMithrilClient.getMouseScreenY();
 				},
-				eq ? Color.GREEN : Color.WHITE,
+				eq ? Color.GREEN : item.getKey().getType().getColor(),
 				Color.GREEN,
 				Color.WHITE,
 				UIRef.BL

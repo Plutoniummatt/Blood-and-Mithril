@@ -32,7 +32,7 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2014")
 public class SoundService {
 
-	public static Music mainMenu, desertNight;
+	public static Music mainMenu, desertAmbient;
 
 	public static final int pickAxe 			= 1;
 	public static final int swordSlash 			= 2;
@@ -63,7 +63,7 @@ public class SoundService {
 	static {
 		if (isClient()) {
 			mainMenu = Gdx.audio.newMusic(Gdx.files.internal("data/music/mainMenu.mp3"));
-			desertNight = Gdx.audio.newMusic(Gdx.files.internal("data/music/desertNight.mp3"));
+			desertAmbient = Gdx.audio.newMusic(Gdx.files.internal("data/music/desertNight.mp3"));
 		}
 
 		sounds.put(pickAxe, 			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/pickAxe.wav")), 			1300f));

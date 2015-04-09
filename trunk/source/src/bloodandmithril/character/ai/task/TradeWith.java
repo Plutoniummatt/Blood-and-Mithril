@@ -30,8 +30,12 @@ import com.badlogic.gdx.math.Vector2;
 public class TradeWith extends CompositeAITask {
 	private static final long serialVersionUID = -4098496856332182431L;
 
-	private static Comparator<Item> sortOrder = (o1, o2) -> {
-		return o1.getSingular(false).compareTo(o2.getSingular(false));
+	public static Comparator<Item> sortOrder = new Comparator<Item>() {
+		@Override
+		public int compare(Item o1, Item o2) {
+			int f = new Integer(o1.getType().getColor().hashCode()).compareTo(o2.getType().getColor().hashCode());
+			return f == 0 ? o1.getSingular(false).compareTo(o2.getSingular(false)) : f;
+		}
 	};
 
 	/**

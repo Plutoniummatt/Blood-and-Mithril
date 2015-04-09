@@ -8,14 +8,21 @@ import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
+
+import java.util.LinkedList;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 /**
  * Weather class, renderable, changes with {@link Epoch}
@@ -25,27 +32,26 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck 2014")
 public class Weather {
 
-	private static Color dayTopColor 					= new Color(33f/150f, 169f/255f, 255f/255f, 1f);
-	private static Color dayBottomColor 				= new Color(0f, 144f/255f, 1f, 1f);
-	private static Color nightTopColor 					= new Color(33f/255f, 0f, 150f/255f, 1f);
-	private static Color nightBottomColor 				= new Color(60f/255f, 0f, 152f/255f, 1f);
+	private static Color dayTopColor 							= new Color(33f/150f, 169f/255f, 255f/255f, 1f);
+	private static Color dayBottomColor 						= new Color(0f, 144f/255f, 1f, 1f);
+	private static Color nightTopColor 							= new Color(33f/255f, 0f, 150f/255f, 1f);
+	private static Color nightBottomColor 						= new Color(60f/255f, 0f, 152f/255f, 1f);
 
-	private static FrameBuffer skyBuffer				= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
-	private static FrameBuffer working					= new FrameBuffer(RGBA8888, 1, 1, false);
+	private static FrameBuffer skyBuffer						= new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
+	private static FrameBuffer working							= new FrameBuffer(RGBA8888, 1, 1, false);
 
-	private static Vector2 sunPosition					= new Vector2();
-	public static final Vector2 orbitalPivot 			= new Vector2(WIDTH/2, 0);
+	private static Vector2 sunPosition							= new Vector2();
+	public static final Vector2 orbitalPivot 					= new Vector2(WIDTH/2, 0);
+	
+	private static LinkedList<CelestialBody> celestialBodies	= Lists.newLinkedList();
 
-	/** Load resources */
-	public static void setup() {
-	}
-
-
+	
 	/**
 	 * Renders the {@link Weather}
 	 */
 	public static void render() {
 		renderSky();
+		renderStars();
 		renderSun();
 	}
 
@@ -129,7 +135,7 @@ public class Weather {
 		skyBuffer.end();
 
 		float time = getCurrentEpoch().getTime();
-
+		
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.sun);
 		Shaders.sun.setUniformf("resolution", WIDTH, HEIGHT);
@@ -139,6 +145,18 @@ public class Weather {
 		Shaders.sun.setUniformf("nightSuppression", nightSuppression(time));
 		spriteBatch.draw(skyBuffer.getColorBufferTexture(), 0, 0);
 		spriteBatch.end();
+	}
+
+
+	private static void renderStars() {
+		spriteBatch.begin();
+		Domain.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		spriteBatch.setShader(Shaders.filter);
+		for (CelestialBody celestialBody : celestialBodies) {
+			celestialBody.render();
+		}
+		spriteBatch.end();
+		Domain.gameWorldTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 
@@ -168,5 +186,18 @@ public class Weather {
 		}
 
 		return 1.5f;
+	}
+	
+	
+	/** Load resources */
+	public static void setup() {
+		celestialBodies.add(new CelestialBody(0, WIDTH/2.5f, 0f, Color.WHITE));
+		
+		for (int i = 0; i < 500; i++) {
+			celestialBodies.add(new CelestialBody(Util.randomOneOf(2, 3, 4), Util.getRandom().nextFloat() * 1500f, Util.getRandom().nextFloat() * 360f, Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN)));
+		}
+		for (int i = 0; i < 15; i++) {
+			celestialBodies.add(new CelestialBody(Util.randomOneOf(1), Util.getRandom().nextFloat() * 1500f, Util.getRandom().nextFloat() * 360f, Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN)));
+		}
 	}
 }

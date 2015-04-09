@@ -63,7 +63,7 @@ public class Attack extends CompositeAITask {
 					new WithinAttackRangeOrCantAttack(hostId, alive.getId())
 				));
 
-				appendTask(new AttackTarget(host.getId()));
+				appendTask(new AttackTarget(host.getId(), alive.getId().getId()));
 			} else {
 				host.addFloatingText("Waiting...", Color.ORANGE);
 				appendTask(new Follow(host, alive, 8, new Countdown(3000)));
@@ -201,9 +201,11 @@ public class Attack extends CompositeAITask {
 	public class AttackTarget extends AITask {
 		private static final long serialVersionUID = -6824012439864939617L;
 		private boolean complete;
+		private int target;
 
-		protected AttackTarget(IndividualIdentifier hostId) {
+		protected AttackTarget(IndividualIdentifier hostId, int target) {
 			super(hostId);
+			this.target = target;
 		}
 
 
@@ -242,7 +244,7 @@ public class Attack extends CompositeAITask {
 			}
 
 			if (new WithinAttackRangeOrCantAttack(hostId, alive.getId()).call()) {
-				complete = attacker.attack(toBeAttacked);
+				complete = attacker.attack(Sets.newHashSet(target));
 			} else {
 				complete = true;
 			}

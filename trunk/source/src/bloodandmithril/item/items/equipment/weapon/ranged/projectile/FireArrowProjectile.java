@@ -89,7 +89,7 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 
 		for (int individualId : world.getPositionalIndexMap().getNearbyEntityIds(Individual.class, individual.getState().position)) {
 			Individual nearbyIndividual = Domain.getIndividual(individualId);
-			if (nearbyIndividual.canBeUsedAsFireSource()) {
+			if (nearbyIndividual.canBeUsedAsFireSource() && nearbyIndividual.getInteractionBox().isWithinBox(individual.getState().position)) {
 				lit = true;
 				return;
 			}

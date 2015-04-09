@@ -869,7 +869,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static void setup() {
 		UserInterface.setup();
 
-		SoundService.changeMusic(2f, SoundService.desertNight);
+		SoundService.changeMusic(2f, SoundService.desertAmbient);
 		UserInterface.contextMenus.clear();
 		PositionalReindexingService.reindex();
 	}
