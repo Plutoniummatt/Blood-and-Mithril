@@ -28,7 +28,7 @@ void main()
 		if (i * step > d) {
 			break;
 		}
-		alpha = alpha + (1.0 - texture2D(u_texture, (inverted * resolution + direction * i * step) / resolution).a) / 7.0;
+		alpha = alpha + (1.0 - texture2D(u_texture, (inverted * resolution + direction * i * step) / resolution).a) / 9.0;
 	}
 
 	float r = rand(v_texCoords)/24.0;
@@ -37,6 +37,6 @@ void main()
 		max(color.r, color.r / d * 200.0),
 		max(color.g, color.g / d * 200.0),
 		max(color.b, color.b / d * 200.0), 
-		alpha * 9.0 / d
-	) + vec4(0, 0, 0, min(r, r * alpha / d * 200.0));
+		color.a * alpha * 9.0 / d
+	) + vec4(0, 0, 0, color.a * min(r, r * alpha / d * 200.0));
 }

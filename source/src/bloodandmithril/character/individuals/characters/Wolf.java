@@ -351,7 +351,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 			AITask currentTask = getAI().getCurrentTask();
 			if (currentTask instanceof Attack) {
 				if (!((Attack) currentTask).getTargets().contains(((IndividualSighted) stimulus).getSightedIndividualId())) {
-					getAI().setCurrentTask(new Attack(this, target));
+					((Attack) currentTask).getTargets().add(target.getId().getId());
 				}
 			} else {
 				getAI().setCurrentTask(new Attack(this, target));

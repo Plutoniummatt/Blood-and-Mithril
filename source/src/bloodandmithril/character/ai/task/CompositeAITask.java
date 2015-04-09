@@ -69,6 +69,10 @@ public class CompositeAITask extends AITask {
 	 */
 	@Override
 	public void execute(float delta) {
+		if (getCurrentTask() == null) {
+			return;
+		}
+		
 		if (getCurrentTask().isComplete()) {
 			getCurrentTask().uponCompletion();
 			setCurrentTask(tasks.poll());

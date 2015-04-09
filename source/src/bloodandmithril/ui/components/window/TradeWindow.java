@@ -376,7 +376,7 @@ public class TradeWindow extends Window implements Refreshable {
 						changeList(entry.getKey(), 1, trading, notTrading, false);
 					}
 				},
-				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Colors.UI_GRAY : Colors.UI_DARKER_GRAY,
+				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? entry.getKey().getType().getColor() : Color.DARK_GRAY,
 				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.GREEN : Colors.UI_DARKER_GRAY,
 				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.WHITE : Colors.UI_DARKER_GRAY,
 				UIRef.BL
@@ -451,8 +451,8 @@ public class TradeWindow extends Window implements Refreshable {
 					changeList(key, 1, transferFrom, transferTo, !toTrade);
 				}
 			},
-			toTrade ? Colors.UI_GRAY : Colors.UI_DARK_ORANGE,
-			toTrade ? Color.GREEN : Color.ORANGE,
+			toTrade ? key.getType().getColor() : Color.ORANGE,
+			Color.GREEN,
 			Color.WHITE,
 			UIRef.BL
 		);

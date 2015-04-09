@@ -695,7 +695,7 @@ public class GaussianLightingRenderer {
 		Vector3 rgb = new Vector3(daylightColor.r, daylightColor.g, daylightColor.b);
 		rgb.nor().scl(1.7f);
 		
-		Shaders.volumetricLighting.setUniformf("color", rgb.x, rgb.y, rgb.z, daylightColor.a);
+		Shaders.volumetricLighting.setUniformf("color", rgb.x, rgb.y, rgb.z, daylightColor.r);
 		Shaders.volumetricLighting.setUniformf("resolution", WIDTH, HEIGHT);
 		Shaders.volumetricLighting.setUniformf("time", WorldState.getCurrentEpoch().getTime() * 300f);
 		Shaders.volumetricLighting.setUniformf("sourceLocation", Weather.getSunPosition().cpy().x, Weather.getSunPosition().cpy().y);
