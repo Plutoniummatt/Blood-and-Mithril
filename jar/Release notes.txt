@@ -1,3 +1,8 @@
+Release 0.0.18
+---------------
+* Added coloring of items in inventory and trade windows, and changed sort order
+* Add stars and moon
+
 Release 0.0.17
 ---------------
 * Improve volumetric lighting performance & quality
