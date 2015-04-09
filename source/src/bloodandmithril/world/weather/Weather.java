@@ -42,21 +42,21 @@ public class Weather {
 
 	private static Vector2 sunPosition							= new Vector2();
 	public static final Vector2 orbitalPivot 					= new Vector2(WIDTH/2, 0);
-	
+
 	private static LinkedList<CelestialBody> celestialBodies	= Lists.newLinkedList();
 
-	
+
 	/**
 	 * Renders the {@link Weather}
 	 */
-	public static void render() {
-		renderSky();
-		renderStars();
-		renderSun();
+	public static void render(FrameBuffer toDrawTo) {
+		renderSky(toDrawTo);
+		renderStars(toDrawTo);
+		updateSun();
 	}
 
 
-	private static void renderSun() {
+	private static void updateSun() {
 		float time = getCurrentEpoch().getTime();
 		float radius = WIDTH/2.5f;
 		Vector2 position = orbitalPivot.cpy().add(new Vector2(0f, radius).rotate(-((time - 12f) / 12f) * 180f));
@@ -118,7 +118,7 @@ public class Weather {
 
 
 	/** Renders the sky */
-	private static void renderSky() {
+	private static void renderSky(FrameBuffer toDrawTo) {
 		skyBuffer.begin();
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.sky);
@@ -135,7 +135,8 @@ public class Weather {
 		skyBuffer.end();
 
 		float time = getCurrentEpoch().getTime();
-		
+
+		toDrawTo.begin();
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.sun);
 		Shaders.sun.setUniformf("resolution", WIDTH, HEIGHT);
@@ -145,10 +146,12 @@ public class Weather {
 		Shaders.sun.setUniformf("nightSuppression", nightSuppression(time));
 		spriteBatch.draw(skyBuffer.getColorBufferTexture(), 0, 0);
 		spriteBatch.end();
+		toDrawTo.end();
 	}
 
 
-	private static void renderStars() {
+	private static void renderStars(FrameBuffer toDrawTo) {
+		toDrawTo.begin();
 		spriteBatch.begin();
 		Domain.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		spriteBatch.setShader(Shaders.filter);
@@ -156,6 +159,7 @@ public class Weather {
 			celestialBody.render();
 		}
 		spriteBatch.end();
+		toDrawTo.end();
 		Domain.gameWorldTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
@@ -187,12 +191,12 @@ public class Weather {
 
 		return 1.5f;
 	}
-	
-	
+
+
 	/** Load resources */
 	public static void setup() {
 		celestialBodies.add(new CelestialBody(0, WIDTH/2.5f, 0f, Color.WHITE));
-		
+
 		for (int i = 0; i < 500; i++) {
 			celestialBodies.add(new CelestialBody(Util.randomOneOf(2, 3, 4), Util.getRandom().nextFloat() * 1500f, Util.getRandom().nextFloat() * 360f, Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN)));
 		}

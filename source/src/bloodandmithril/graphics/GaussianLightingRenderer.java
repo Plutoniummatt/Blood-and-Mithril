@@ -79,7 +79,7 @@ public class GaussianLightingRenderer {
 
 
 	private static void backgroundSprites() {
-		BackgroundImages.renderBackground();
+		BackgroundImages.renderBackground(workingFBO);
 	}
 
 
@@ -203,7 +203,16 @@ public class GaussianLightingRenderer {
 
 
 	private static void weather() {
-		Weather.render();
+		workingFBO.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		workingFBO.end();
+		Weather.render(workingFBO);
+
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.invertY);
+		spriteBatch.draw(workingFBO.getColorBufferTexture(), 0, 0);
+		spriteBatch.end();
 	}
 
 
@@ -668,7 +677,7 @@ public class GaussianLightingRenderer {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		BackgroundImages.renderBackground();
+		BackgroundImages.renderBackground(null);
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertY);
 		spriteBatch.draw(
@@ -694,7 +703,7 @@ public class GaussianLightingRenderer {
 		Color daylightColor = Weather.getDaylightColor();
 		Vector3 rgb = new Vector3(daylightColor.r, daylightColor.g, daylightColor.b);
 		rgb.nor().scl(1.7f);
-		
+
 		Shaders.volumetricLighting.setUniformf("color", rgb.x, rgb.y, rgb.z, daylightColor.r);
 		Shaders.volumetricLighting.setUniformf("resolution", WIDTH, HEIGHT);
 		Shaders.volumetricLighting.setUniformf("time", WorldState.getCurrentEpoch().getTime() * 300f);
