@@ -34,6 +34,7 @@ public class Weather {
 	private static FrameBuffer working					= new FrameBuffer(RGBA8888, 1, 1, false);
 
 	private static Vector2 sunPosition					= new Vector2();
+	public static final Vector2 orbitalPivot 			= new Vector2(WIDTH/2, 0);
 
 	/** Load resources */
 	public static void setup() {
@@ -51,9 +52,8 @@ public class Weather {
 
 	private static void renderSun() {
 		float time = getCurrentEpoch().getTime();
-		Vector2 pivot = new Vector2(WIDTH/2, 0);
 		float radius = WIDTH/2.5f;
-		Vector2 position = pivot.cpy().add(new Vector2(0f, radius).rotate(-((time - 12f) / 12f) * 180f));
+		Vector2 position = orbitalPivot.cpy().add(new Vector2(0f, radius).rotate(-((time - 12f) / 12f) * 180f));
 
 		sunPosition.x = position.x;
 		sunPosition.y = position.y;
@@ -81,8 +81,8 @@ public class Weather {
 
 		return filter;
 	}
-	
-	
+
+
 	public static Vector2 getSunPosition() {
 		return sunPosition;
 	}
@@ -123,7 +123,7 @@ public class Weather {
 
 		Shaders.sky.setUniformf("top", topColor);
 		Shaders.sky.setUniformf("bottom", bottomColor);
-		
+
 		spriteBatch.draw(working.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
 		spriteBatch.end();
 		skyBuffer.end();
@@ -156,8 +156,8 @@ public class Weather {
 		}
 		return 1f - (float) pow(sin((time + 4f) * (Math.PI / 8f)), 2f);
 	}
-	
-	
+
+
 	public static float volumetricAlphaMultiplier(float time) {
 		if (time >= 8f && time <= 16f) {
 			return 1f;
@@ -166,7 +166,7 @@ public class Weather {
 		} else if (time >= 6f && time <= 8f) {
 			return 1f + 0.25f * (8f - time);
 		}
-		
+
 		return 1.5f;
 	}
 }
