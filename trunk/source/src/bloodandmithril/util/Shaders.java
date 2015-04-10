@@ -20,6 +20,7 @@ public class Shaders {
 	public static ShaderProgram text = SpriteBatch.createDefaultShader();
 	public static ShaderProgram filter = colorFilterShader();
 	public static ShaderProgram filter2 = colorFilterShader();
+	public static ShaderProgram invertYReflective = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/invertYReflective.fp"));
 	public static ShaderProgram invertYFilter = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/invertYFilter.fp"));
 	public static ShaderProgram replaceColor = replaceColorShader();
 	public static ShaderProgram filterIgnoreReplace = filterReplaceIgnoreColorShader();
@@ -43,7 +44,7 @@ public class Shaders {
 	public static void setup() {
 		ShaderProgram.pedantic = false;
 		Logger.generalDebug("Shaders loaded", LogLevel.DEBUG);
-		
+
 		System.out.println(volumetricLighting.getLog());
 	}
 
