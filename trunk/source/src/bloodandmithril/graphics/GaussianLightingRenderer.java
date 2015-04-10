@@ -56,7 +56,7 @@ public class GaussianLightingRenderer {
 	public static FrameBuffer backgroundOcclusionFBONearest;
 	public static FrameBuffer foregroundOcclusionFBO;
 	public static FrameBuffer foregroundShadowFBO;
-	public static FrameBuffer workingFBO;
+	public static FrameBuffer workingFBO, workingFBO2;
 
 	public static final int MAX_PARTICLES = 100;
 	private static final int LIGHTING_FBO_DOWNSIZE_SAMPLER = 6;
@@ -79,7 +79,16 @@ public class GaussianLightingRenderer {
 
 
 	private static void backgroundSprites() {
-		BackgroundImages.renderBackground(workingFBO);
+		workingFBO2.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		BackgroundImages.renderBackground();
+		workingFBO2.end();
+
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.invertY);
+		spriteBatch.draw(workingFBO2.getColorBufferTexture(), 0, 0);
+		spriteBatch.end();
 	}
 
 
@@ -123,6 +132,13 @@ public class GaussianLightingRenderer {
 		);
 
 		foregroundLightingFBO = new FrameBuffer(
+			RGBA8888,
+			WIDTH,
+			HEIGHT,
+			false
+		);
+
+		workingFBO2 = new FrameBuffer(
 			RGBA8888,
 			WIDTH,
 			HEIGHT,
