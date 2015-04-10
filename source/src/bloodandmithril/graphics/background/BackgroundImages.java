@@ -12,7 +12,6 @@ import bloodandmithril.networking.ClientServerInterface;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -41,7 +40,7 @@ public class BackgroundImages {
 	/**
 	 * Renders the background images
 	 */
-	public static void renderBackground(FrameBuffer skyBuffer) {
+	public static void renderBackground() {
 		for (Layer layer : layers) {
 			spriteBatch.begin();
 			layer.preRender();
