@@ -46,7 +46,7 @@ public class CelestialBody {
 
 	/** Color of this {@link CelestialBody} */
 	public final Color filter;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -66,13 +66,13 @@ public class CelestialBody {
 		float theta = angle + time / 24f * 360f;
 
 		TextureRegion region = starTextures.get(textureId);
-		
+
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), 1.2f - Weather.getDaylightColor().r);
 		spriteBatch.draw(
 			region,
-			Weather.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)),
-			Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta))
+			Weather.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
+			Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2
 		);
 		spriteBatch.flush();
 	}

@@ -19,6 +19,7 @@ import java.util.List;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.background.BackgroundImages;
+import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.util.Shaders;
@@ -90,6 +91,8 @@ public class GaussianLightingRenderer {
 		workingFBO.getColorBufferTexture().bind(14);
 		Shaders.invertYReflective.setUniformi("u_texture2", 14);
 		Shaders.invertYReflective.setUniformf("time", WorldState.getCurrentEpoch().getTime() * 360f);
+		Shaders.invertYReflective.setUniformf("horizon", (HEIGHT - (float) Layer.getScreenHorizonY()) / HEIGHT);
+		Shaders.invertYReflective.setUniformf("resolution", WIDTH, HEIGHT);
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		spriteBatch.draw(workingFBO2.getColorBufferTexture(), 0, 0);
 		spriteBatch.end();
