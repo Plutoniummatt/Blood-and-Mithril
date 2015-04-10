@@ -86,7 +86,11 @@ public class GaussianLightingRenderer {
 		workingFBO2.end();
 
 		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.invertY);
+		spriteBatch.setShader(Shaders.invertYReflective);
+		workingFBO.getColorBufferTexture().bind(14);
+		Shaders.invertYReflective.setUniformi("u_texture2", 14);
+		Shaders.invertYReflective.setUniformf("time", WorldState.getCurrentEpoch().getTime() * 360f);
+		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		spriteBatch.draw(workingFBO2.getColorBufferTexture(), 0, 0);
 		spriteBatch.end();
 	}
@@ -693,7 +697,7 @@ public class GaussianLightingRenderer {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		BackgroundImages.renderBackground(null);
+		BackgroundImages.renderBackground();
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertY);
 		spriteBatch.draw(
