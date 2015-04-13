@@ -86,6 +86,10 @@ public class GaussianLightingRenderer {
 		BackgroundImages.renderBackground();
 		workingFBO2.end();
 
+		// TODO
+		// Render reflective liquids as a color (255, 0, 0, 255)
+		// Selectively render reflective liquids
+
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertYReflective);
 		workingFBO.getColorBufferTexture().bind(14);
