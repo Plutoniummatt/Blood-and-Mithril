@@ -12,15 +12,7 @@ uniform float horizon;
 uniform vec2 resolution;
 
 float ripple(float coord, float t) {
-    return sin(coord * 7000 + t);
-}
-
-float rand(vec2 co) {
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * (43758.5453));
-}
-
-float tRand(vec2 co) {
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * (time + 43758.5453));
+    return sin(coord + t);
 }
 
 void main()
@@ -31,21 +23,37 @@ void main()
 	vec4 reflection = vec4(0, 0, 0, 0);
 	float diff = 0.0;
 	if (v_texCoords.y > horizon) {
-		diff = v_texCoords.y - horizon;
+		diff = (v_texCoords.y - horizon) * resolution.y;
 	}
 	
-	float rippleX = ripple(v_texCoords.x + rand(vec2(0.0, v_texCoords.y)), time * 30 * (0.1 + diff)) * (0.3 + diff * 20.0) + tRand(inverted) * 3.0;
-	float rippleY = 3.0 * tRand(v_texCoords);
+	float rippleX = 0.0;
+	float rippleY = ripple(v_texCoords.y * resolution.y * 3.0 * max(0.0, (1.0 - (20.0 - diff)/20.0)), time * 3.0) * (2.0 * diff / 20.0);
 	
 	if (sample1.a > 0.0) {
-		reflection = texture2D(
-			u_texture2, 
+		float xSample = (rippleX / resolution.x) + v_texCoords.x;
+		float ySample = (rippleY / resolution.y) + v_texCoords.y - 2.0 * (horizon - 0.5);
+		
+		vec4 selfReflection = texture2D(
+			u_texture, 
 			vec2(
-				(rippleX / resolution.x) + v_texCoords.x, 
-				(rippleY / resolution.y) + v_texCoords.y - 2.0 * (horizon - 0.5)
+				xSample, 
+				ySample
 			)
 		);
+		
+		if (v_texCoords.y - 2.0 * (horizon - 0.5) < horizon && selfReflection.a > 0.0) {
+			reflection = selfReflection;
+		} else {
+			reflection = texture2D(
+				u_texture2, 
+				vec2(
+					xSample, 
+					ySample
+				)
+			);
+		}
 	}
 	
-	gl_FragColor = sample1 + reflection;
+	float c = max(0.0, resolution.y/2.0 - diff) / (resolution.y / 2.0);
+	gl_FragColor = sample1 + reflection * vec4(c, c, c, 1.0);
 }
