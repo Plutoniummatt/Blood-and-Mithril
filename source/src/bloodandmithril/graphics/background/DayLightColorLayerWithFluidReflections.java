@@ -6,9 +6,7 @@ import java.util.TreeMap;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.world.weather.Weather;
 
-import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Maps;
 
 /**
@@ -45,9 +43,7 @@ public class DayLightColorLayerWithFluidReflections extends Layer {
 
 	@Override
 	public void preRender() {
-		Color daylightColor = Weather.getDaylightColor();
-		spriteBatch.setShader(Shaders.filter);
-		Shaders.filter.setUniformf("color", Weather.getSunColor().mul(new Color(daylightColor.r, daylightColor.r, daylightColor.r, 1f)));
+		spriteBatch.setShader(Shaders.pass);
 	}
 
 
