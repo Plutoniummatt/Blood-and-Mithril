@@ -46,15 +46,19 @@ public class CelestialBody {
 
 	/** Color of this {@link CelestialBody} */
 	public final Color filter;
+	
+	/** Whether this {@link CelestialBody} rotates */
+	public final boolean rotates;
 
 	/**
 	 * Constructor
 	 */
-	public CelestialBody(int textureId, float orbitalRadius, float angle, Color filter) {
+	public CelestialBody(int textureId, float orbitalRadius, float angle, Color filter, boolean rotates) {
 		this.textureId = textureId;
 		this.orbitalRadius = orbitalRadius;
 		this.angle = angle;
 		this.filter = filter;
+		this.rotates = rotates;
 	}
 
 
@@ -68,12 +72,28 @@ public class CelestialBody {
 		TextureRegion region = starTextures.get(textureId);
 
 		Shaders.filter.begin();
-		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), 1.2f - Weather.getDaylightColor().r);
-		spriteBatch.draw(
-			region,
-			Weather.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
-			Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2
-		);
+		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), 1.0f - Weather.getDaylightColor().r);
+		if (rotates) {
+			spriteBatch.draw(
+				region, 
+				Weather.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
+				Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2,
+				region.getRegionWidth() / 2, 
+				region.getRegionHeight() / 2,
+				region.getRegionWidth(),
+				region.getRegionHeight(),
+				1f, 
+				1f, 
+				- theta + 90f
+			);
+		} else {
+			spriteBatch.draw(
+				region,
+				Weather.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
+				Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2
+			);
+		}
+
 		spriteBatch.flush();
 	}
 }

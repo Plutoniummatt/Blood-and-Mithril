@@ -130,6 +130,7 @@ public class Weather {
 
 		Shaders.sky.setUniformf("top", topColor);
 		Shaders.sky.setUniformf("bottom", bottomColor);
+		Shaders.sky.setUniformf("sun", sunPosition);
 		Shaders.sky.setUniformf("horizon", (float) Layer.getScreenHorizonY() / HEIGHT);
 		Shaders.sky.setUniformf("resolution", WIDTH, HEIGHT);
 
@@ -157,7 +158,6 @@ public class Weather {
 		toDrawTo.begin();
 		spriteBatch.begin();
 		Domain.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		spriteBatch.setShader(Shaders.filter);
 		for (CelestialBody celestialBody : celestialBodies) {
 			celestialBody.render();
 		}
@@ -198,13 +198,13 @@ public class Weather {
 
 	/** Load resources */
 	public static void setup() {
-		celestialBodies.add(new CelestialBody(0, WIDTH/2.5f, 0f, Color.WHITE));
+		celestialBodies.add(new CelestialBody(0, WIDTH/2.5f, 0f, Color.WHITE, true));
 
 		for (int i = 0; i < 500; i++) {
-			celestialBodies.add(new CelestialBody(Util.randomOneOf(2, 3, 4), Util.getRandom().nextFloat() * 1500f, Util.getRandom().nextFloat() * 360f, Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN)));
+			celestialBodies.add(new CelestialBody(Util.randomOneOf(2, 3, 4), Util.getRandom().nextFloat() * 1500f, Util.getRandom().nextFloat() * 360f, Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN), false));
 		}
 		for (int i = 0; i < 15; i++) {
-			celestialBodies.add(new CelestialBody(Util.randomOneOf(1), Util.getRandom().nextFloat() * 1500f, Util.getRandom().nextFloat() * 360f, Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN)));
+			celestialBodies.add(new CelestialBody(Util.randomOneOf(1), Util.getRandom().nextFloat() * 1500f, Util.getRandom().nextFloat() * 360f, Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN), false));
 		}
 	}
 }

@@ -27,11 +27,11 @@ void main()
 		diff = (v_texCoords.y - horizon) * resolution.y;
 	}
 	
-	float timeCoord = time * 3.0;
-	float spaceCoord = diff * (1.0 - diff/400.0);
+	float timeCoord = time;
+	float spaceCoord = diff / (5 * atan(diff / 500) / (3.14159 / 2) + 1);
 	
 	float rippleX = 0.0;
-	float rippleY = ripple(spaceCoord + timeCoord) * (2.0 * min(diff, 60.0) / 30.0);
+	float rippleY = ripple(spaceCoord - timeCoord) * (2.0 * min(diff, 300.0) / 20.0);
 	
 	if (sample1.a > 0.0 && sample1.r == 1.0 && sample1.g == 0.0 && sample1.b == 0.0) {
 		float xSample = (rippleX / resolution.x) + v_texCoords.x;
