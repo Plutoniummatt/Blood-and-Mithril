@@ -1293,13 +1293,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			() -> {
 				InventoryWindow inventoryWindow = new InventoryWindow(
 					thisIndividual,
-					WIDTH/2 - 200,
-					HEIGHT/2 + 250,
-					400,
-					500,
 					thisIndividual.getId().getSimpleName() + " - Inventory",
-					true,
-					150, 300
+					true
 				);
 				UserInterface.addLayeredComponentUnique(inventoryWindow);
 			},

@@ -52,7 +52,6 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.InfoPopup;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
-import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
@@ -91,21 +90,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 	/** Filters used to filter this inventory window */
 	private final Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters = Maps.newHashMap();
-
-	/** Button that controls filtering */
-	private Button filterButton = new Button(
-		"Filters",
-		Fonts.defaultFont,
-		0,
-		0,
-		70,
-		16,
-		() -> {},
-		Color.YELLOW,
-		Color.GREEN,
-		Color.YELLOW,
-		UIRef.BR
-	);
+	private ScrollableListingPanel<Button, String> filterButtons;
 
 	private boolean refreshSuppressed = false;
 
@@ -122,23 +107,17 @@ public class InventoryWindow extends Window implements Refreshable {
 	 */
 	public InventoryWindow(
 			Equipper host,
-			int x,
-			int y,
-			int length,
-			int height,
 			String title,
-			boolean active,
-			int minLength,
-			int minHeight) {
+			boolean active) {
 		super(
-			x,
-			y,
-			length,
-			height,
+			WIDTH/2 - 300,
+			HEIGHT/2 + 250,
+			600,
+			500,
 			title,
 			active,
-			minLength,
-			minHeight,
+			600,
+			300,
 			true,
 			true,
 			true
@@ -162,6 +141,45 @@ public class InventoryWindow extends Window implements Refreshable {
 		filters.put("Misc", 		WrapperForTwo.wrap(item -> {return item instanceof MiscItem;}, true));
 		filters.put("Seed", 		WrapperForTwo.wrap(item -> {return item instanceof SeedItem;}, true));
 		filters.put("Ammo", 		WrapperForTwo.wrap(item -> {return item.getType() == Category.AMMO;}, true));
+
+		filterButtons = new ScrollableListingPanel<Button, String>(this, (b1, b2) -> {
+			return b1.text.compareTo(b2.text);
+		}, false, 0) {
+			@Override
+			protected String getExtraString(Entry<ListingMenuItem<Button>, String> item) {
+				return "";
+			}
+			@Override
+			protected int getExtraStringOffset() {
+				return 0;
+			}
+			@Override
+			protected void populateListings(List<HashMap<ListingMenuItem<Button>, String>> listings) {
+				HashMap<ListingMenuItem<Button>, String> map = Maps.newHashMap();
+				Button[] filterButtonsArray = filterButtons();
+				for (Button button : filterButtonsArray) {
+					map.put(
+						new ListingMenuItem<Button>(button, button, null),
+						""
+					);
+				}
+
+				HashMap<ListingMenuItem<Button>, String> map2 = Maps.newHashMap();
+				for (Button button : filterAllButtons(Lists.newArrayList(filterButtonsArray))) {
+					map2.put(
+						new ListingMenuItem<Button>(button, button, null),
+						""
+					);
+				}
+
+				listings.add(map);
+				listings.add(map2);
+			}
+			@Override
+			public boolean keyPressed(int keyCode) {
+				return false;
+			}
+		};
 	}
 
 
@@ -169,99 +187,113 @@ public class InventoryWindow extends Window implements Refreshable {
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 		inventoryListingPanel.leftClick(copy, windowsCopy);
 		equippedListingPanel.leftClick(copy, windowsCopy);
-
-		if (filterButton.click()) {
-			copy.add(
-				new ContextMenu(getMouseScreenX(), getMouseScreenY(), false, filterListItems())
-			);
-		}
+		filterButtons.leftClick(copy, windowsCopy);
 	}
 
+	private Button[] filterAllButtons(Collection<Button> filterButtons) {
+		final Collection<Button> buttons = Lists.newArrayList();
 
-	private MenuItem[] filterListItems() {
-		final Collection<MenuItem> menuItems = Lists.newArrayList(Collections2.transform(
+		final Button selectAll = new Button(
+				"Select all",
+				defaultFont,
+				0,
+				0,
+				"Select all".length() * 10,
+				16,
+				() -> {},
+				Color.ORANGE,
+				Color.WHITE,
+				Color.ORANGE,
+				UIRef.BL
+			);
+
+			final Button deselectAll = new Button(
+				"Deselect all",
+				defaultFont,
+				0,
+				0,
+				"Deselect all".length() * 10,
+				16,
+				() -> {},
+				Color.ORANGE,
+				Color.WHITE,
+				Color.ORANGE,
+				UIRef.BL
+			);
+
+			selectAll.setTask(() -> {
+				filters.values().stream().forEach(value -> {
+					value.b = true;
+				});
+
+				filterButtons.stream().forEach(item -> {
+					if (item != deselectAll && item != selectAll) {
+						item.setIdleColor(Color.GREEN);
+						item.setOverColor(Color.WHITE);
+						item.setDownColor(Color.GREEN);
+					}
+				});
+				refresh();
+			});
+
+			deselectAll.setTask(() -> {
+				filters.values().stream().forEach(value -> {
+					value.b = false;
+				});
+
+				filterButtons.stream().forEach(item -> {
+					if (item != deselectAll && item != selectAll) {
+						item.setIdleColor(Color.RED);
+						item.setOverColor(Color.WHITE);
+						item.setDownColor(Color.RED);
+					}
+				});
+				refresh();
+			});
+
+			buttons.add(selectAll);
+			buttons.add(deselectAll);
+
+			return Lists.newArrayList(buttons).toArray(new Button[buttons.size()]);
+	}
+
+	private Button[] filterButtons() {
+		final Collection<Button> buttons = Lists.newArrayList(Collections2.transform(
 			this.filters.entrySet(),
 			entry -> {
-				final MenuItem menuItem = new MenuItem(
+				final Button button = new Button(
 					entry.getKey(),
+					defaultFont,
+					0,
+					0,
+					entry.getKey().length() * 10,
+					16,
 					() -> {},
 					entry.getValue().b ? Color.GREEN : Color.RED,
 					entry.getValue().b ? Color.WHITE : Color.WHITE,
 					entry.getValue().b ? Color.GREEN : Color.RED,
-					null
+					UIRef.BL
 				);
 
-				menuItem.button.setTask(() -> {
+				button.setTask(() -> {
 					entry.getValue().b = !entry.getValue().b;
-					menuItem.button.setIdleColor(entry.getValue().b ? Color.GREEN : Color.RED);
-					menuItem.button.setOverColor(entry.getValue().b ? Color.WHITE : Color.WHITE);
-					menuItem.button.setDownColor(entry.getValue().b ? Color.GREEN : Color.RED);
+					button.setIdleColor(entry.getValue().b ? Color.GREEN : Color.RED);
+					button.setOverColor(entry.getValue().b ? Color.WHITE : Color.WHITE);
+					button.setDownColor(entry.getValue().b ? Color.GREEN : Color.RED);
 					refresh();
 				});
 
-				return menuItem;
+				return button;
 			}
 		));
 
-
-		final MenuItem selectAll = new MenuItem(
-			"Select all",
-			() -> {},
-			Color.ORANGE,
-			Color.WHITE,
-			Color.ORANGE,
-			null
-		);
-
-
-		final MenuItem deselectAll = new MenuItem(
-			"Deselect all",
-			() -> {},
-			Color.ORANGE,
-			Color.WHITE,
-			Color.ORANGE,
-			null
-		);
-
-		selectAll.button.setTask(() -> {
-			filters.values().stream().forEach(value -> {
-				value.b = true;
-			});
-
-			menuItems.stream().forEach(item -> {
-				if (item != deselectAll && item != selectAll) {
-					item.button.setIdleColor(Color.GREEN);
-					item.button.setOverColor(Color.WHITE);
-					item.button.setDownColor(Color.GREEN);
-				}
-			});
-			refresh();
-		});
-
-		deselectAll.button.setTask(() -> {
-			filters.values().stream().forEach(value -> {
-				value.b = false;
-			});
-
-			menuItems.stream().forEach(item -> {
-				if (item != deselectAll && item != selectAll) {
-					item.button.setIdleColor(Color.RED);
-					item.button.setOverColor(Color.WHITE);
-					item.button.setDownColor(Color.RED);
-				}
-			});
-			refresh();
-		});
-
-		menuItems.add(selectAll);
-		menuItems.add(deselectAll);
-		return Lists.newArrayList(menuItems).toArray(new MenuItem[menuItems.size()]);
+		return Lists.newArrayList(buttons).toArray(new Button[buttons.size()]);
 	}
 
 
 	@Override
 	public boolean scrolled(int amount) {
-		return equippedListingPanel.scrolled(amount) || inventoryListingPanel.scrolled(amount);
+		return equippedListingPanel.scrolled(amount) || inventoryListingPanel.scrolled(amount) || filterButtons.scrolled(amount);
 	}
 
 
@@ -269,6 +301,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	public void leftClickReleased() {
 		inventoryListingPanel.leftClickReleased();
 		equippedListingPanel.leftClickReleased();
+		filterButtons.leftClickReleased();
 	}
 
 
@@ -278,20 +311,26 @@ public class InventoryWindow extends Window implements Refreshable {
 
 		// Set the position and dimensions of the panel
 		inventoryListingPanel.height = height - (equippedItemsToDisplay.isEmpty() ? 0 : (1 + min(5,equippedItemsToDisplay.size())) * lineWidth) - lineWidth * 3;
-		inventoryListingPanel.width = width;
-		inventoryListingPanel.x = x;
+		inventoryListingPanel.width = width - 180;
+		inventoryListingPanel.x = x + 180;
 		inventoryListingPanel.y = y - (equippedItemsToDisplay.isEmpty() ? 0 : (1 + min(5,equippedItemsToDisplay.size())) * lineWidth);
 
 		equippedListingPanel.height = 50 + (equippedItemsToDisplay.isEmpty() ? 0 : (1 + min(5, equippedItemsToDisplay.size())) * lineWidth);
-		equippedListingPanel.width = width;
-		equippedListingPanel.x = x;
+		equippedListingPanel.width = width - 180;
+		equippedListingPanel.x = x + 180;
 		equippedListingPanel.y = y;
+
+		filterButtons.height = height;
+		filterButtons.width = 180;
+		filterButtons.x = x;
+		filterButtons.y = y;
 
 		// Render the separator
 		renderSeparator();
 
 		// Render the listing panel
 		inventoryListingPanel.render();
+		filterButtons.render();
 
 		if (!equippedItemsToDisplay.isEmpty()) {
 			equippedListingPanel.render();
@@ -299,9 +338,6 @@ public class InventoryWindow extends Window implements Refreshable {
 
 		// Render the weight indication text
 		renderCapacityIndicationText(host, this, 6, -height);
-
-		// Render filter button
-		filterButton.render(x + 41, y - height + 73, isActive() && UserInterface.contextMenus.isEmpty(), getAlpha());
 	}
 
 
@@ -438,11 +474,11 @@ public class InventoryWindow extends Window implements Refreshable {
 				Color.WHITE,
 				UIRef.BL
 			);
-			
+
 			inventoryButton.mouseOverPopup(
 				() -> {
 					return new InfoPopup(
-						item.getKey().getInfoPanel(), 
+						item.getKey().getInfoPanel(),
 						() -> {
 							return !inventoryButton.isMouseOver() || !isActive();
 						}
@@ -467,11 +503,11 @@ public class InventoryWindow extends Window implements Refreshable {
 				Color.WHITE,
 				UIRef.BL
 			);
-			
+
 			equippedButton.mouseOverPopup(
 				() -> {
 					return new InfoPopup(
-						item.getKey().getInfoPanel(), 
+						item.getKey().getInfoPanel(),
 						() -> {
 							return !equippedButton.isMouseOver() || !isActive();
 						}
