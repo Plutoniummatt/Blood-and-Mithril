@@ -33,8 +33,7 @@ public class TradeWith extends CompositeAITask {
 	public static Comparator<Item> sortOrder = new Comparator<Item>() {
 		@Override
 		public int compare(Item o1, Item o2) {
-			int f = new Integer(o1.getType().getColor().hashCode()).compareTo(o2.getType().getColor().hashCode());
-			return f == 0 ? o1.getSingular(false).compareTo(o2.getSingular(false)) : f;
+			return o1.getSingular(false).compareTo(o2.getSingular(false));
 		}
 	};
 

@@ -376,23 +376,23 @@ public class TradeWindow extends Window implements Refreshable {
 						changeList(entry.getKey(), 1, trading, notTrading, false);
 					}
 				},
-				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? entry.getKey().getType().getColor() : Color.DARK_GRAY,
+				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.ORANGE : Color.DARK_GRAY,
 				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.GREEN : Colors.UI_DARKER_GRAY,
 				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.WHITE : Colors.UI_DARKER_GRAY,
 				UIRef.BL
 			);
-			
+
 			button.mouseOverPopup(
 				() -> {
 					return new InfoPopup(
-						entry.getKey().getInfoPanel(), 
+						entry.getKey().getInfoPanel(),
 						() -> {
 							return !button.isMouseOver();
 						}
 					);
 				}
 			);
-			
+
 			final ListingMenuItem<Item> listingMenuItem = new ListingMenuItem<Item>(
 				entry.getKey(),
 				button,
@@ -451,23 +451,23 @@ public class TradeWindow extends Window implements Refreshable {
 					changeList(key, 1, transferFrom, transferTo, !toTrade);
 				}
 			},
-			toTrade ? key.getType().getColor() : Color.ORANGE,
+			Color.ORANGE,
 			Color.GREEN,
 			Color.WHITE,
 			UIRef.BL
 		);
-		
+
 		button.mouseOverPopup(
 			() -> {
 				return new InfoPopup(
-					key.getInfoPanel(), 
+					key.getInfoPanel(),
 					() -> {
 						return !button.isMouseOver();
 					}
 				);
 			}
 		);
-		
+
 		final ListingMenuItem<Item> listingMenuItem = new ListingMenuItem<Item>(
 			key,
 			button,

@@ -6,6 +6,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static java.lang.Math.exp;
+import static java.lang.Math.max;
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
 
@@ -201,10 +202,37 @@ public class Weather {
 		celestialBodies.add(new CelestialBody(0, WIDTH/2.5f, 0f, Color.WHITE, true));
 
 		for (int i = 0; i < 500; i++) {
-			celestialBodies.add(new CelestialBody(Util.randomOneOf(2, 3, 4), Util.getRandom().nextFloat() * 1500f, Util.getRandom().nextFloat() * 360f, Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN), false));
+			Vector2 cartesian = new Vector2(
+				(Util.getRandom().nextFloat() - 0.5f) * max(WIDTH, HEIGHT) * 2.0f,
+				(Util.getRandom().nextFloat() - 0.5f) * max(WIDTH, HEIGHT) * 2.0f
+			);
+
+			celestialBodies.add(
+				new CelestialBody(
+					Util.randomOneOf(2, 3, 4),
+					cartesian.len(),
+					cartesian.angle(),
+					Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN),
+					false
+				)
+			);
 		}
+
 		for (int i = 0; i < 15; i++) {
-			celestialBodies.add(new CelestialBody(Util.randomOneOf(1), Util.getRandom().nextFloat() * 1500f, Util.getRandom().nextFloat() * 360f, Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN), false));
+			Vector2 cartesian = new Vector2(
+				(Util.getRandom().nextFloat() - 0.5f) * max(WIDTH, HEIGHT) * 2.0f,
+				(Util.getRandom().nextFloat() - 0.5f) * max(WIDTH, HEIGHT) * 2.0f
+			);
+
+			celestialBodies.add(
+				new CelestialBody(
+					Util.randomOneOf(1),
+					cartesian.len(),
+					cartesian.angle(),
+					Util.randomOneOf(Color.RED, Color.BLUE, Color.WHITE, Color.CYAN, Color.MAGENTA, Color.ORANGE, Color.GREEN),
+					false
+				)
+			);
 		}
 	}
 }

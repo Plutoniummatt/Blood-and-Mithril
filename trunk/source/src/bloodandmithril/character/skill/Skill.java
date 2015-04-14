@@ -2,6 +2,8 @@ package bloodandmithril.character.skill;
 
 import bloodandmithril.core.Copyright;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 /**
  * Represents an active or passive skill.
  *
@@ -26,4 +28,10 @@ public abstract class Skill {
 	public String getName() {
 		return name;
 	}
+
+
+	/**
+	 * @return the skill icon
+	 */
+	public abstract TextureRegion getIcon();
 }
