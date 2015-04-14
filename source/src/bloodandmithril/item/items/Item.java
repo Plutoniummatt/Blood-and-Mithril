@@ -612,40 +612,34 @@ public abstract class Item implements Serializable, Affixed {
 
 
 	public enum Category {
-		ONEHANDEDSWORD("One-handed sword", Color.MAGENTA),
-		DAGGER("Dagger", Color.MAGENTA),
-		ONEHANDEDAXE("One-handed axe", Color.MAGENTA),
-		ONEHANDEDBLUNT("One-handed Blunt", Color.MAGENTA),
-		ONEHANDEDSPEAR("One-handed spear", Color.MAGENTA),
-		BOW("Bow", Color.MAGENTA),
-		RING("Ring", Color.MAGENTA),
-		PICKAXE("Pickaxe", Color.MAGENTA),
-		
-		EARTH("Earth", Color.ORANGE),
-		MATERIAL("Material", Color.ORANGE),
-		
-		FOOD("Food", Color.GREEN),
-		CONTAINER("Container", Color.GREEN),
-		
-		AMMO("Ammunition", Color.WHITE),
-		KEY("Key", Color.WHITE),
-		MISC("Miscellaneous", Color.WHITE),
-		SEED("Seed", Color.WHITE),
-		FURNITURE("Furniture", Color.WHITE);
-		
+		ONEHANDEDSWORD("One-handed sword"),
+		DAGGER("Dagger"),
+		ONEHANDEDAXE("One-handed axe"),
+		ONEHANDEDBLUNT("One-handed Blunt"),
+		ONEHANDEDSPEAR("One-handed spear"),
+		BOW("Bow"),
+		RING("Ring"),
+		PICKAXE("Pickaxe"),
+
+		EARTH("Earth"),
+		MATERIAL("Material"),
+
+		FOOD("Food"),
+		CONTAINER("Container"),
+
+		AMMO("Ammunition"),
+		KEY("Key"),
+		MISC("Miscellaneous"),
+		SEED("Seed"),
+		FURNITURE("Furniture");
+
 		private String value;
-		private Color color;
-		private Category(String value, Color color) {
+		private Category(String value) {
 			this.value = value;
-			this.color = color;
 		}
 
 		public String getValue() {
 			return value;
-		}
-		
-		public Color getColor() {
-			return color;
 		}
 	}
 
