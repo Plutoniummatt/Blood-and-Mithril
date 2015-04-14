@@ -1,3 +1,7 @@
+Release 0.0.19
+---------------
+* Background bodies of water are now reflective
+
 Release 0.0.18
 ---------------
 * Added coloring of items in inventory and trade windows, and changed sort order
