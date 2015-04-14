@@ -86,13 +86,11 @@ public class GaussianLightingRenderer {
 		BackgroundImages.renderBackground();
 		workingFBO2.end();
 
-		// TODO
-		// Render reflective liquids as a color (255, 0, 0, 255)
-		// Selectively render reflective liquids
-
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertYReflective);
 		workingFBO.getColorBufferTexture().bind(14);
+		Color daylightColor = Weather.getDaylightColor();
+		Shaders.invertYReflective.setUniformf("filter", Weather.getSunColor().mul(new Color(daylightColor.r, daylightColor.r, daylightColor.r, 1f)));
 		Shaders.invertYReflective.setUniformi("u_texture2", 14);
 		Shaders.invertYReflective.setUniformf("time", WorldState.getCurrentEpoch().getTime() * 360f);
 		Shaders.invertYReflective.setUniformf("horizon", (HEIGHT - (float) Layer.getScreenHorizonY()) / HEIGHT);

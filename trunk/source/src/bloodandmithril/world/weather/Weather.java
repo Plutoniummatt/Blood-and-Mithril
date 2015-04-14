@@ -12,6 +12,7 @@ import static java.lang.Math.sin;
 import java.util.LinkedList;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
@@ -129,6 +130,8 @@ public class Weather {
 
 		Shaders.sky.setUniformf("top", topColor);
 		Shaders.sky.setUniformf("bottom", bottomColor);
+		Shaders.sky.setUniformf("horizon", (float) Layer.getScreenHorizonY() / HEIGHT);
+		Shaders.sky.setUniformf("resolution", WIDTH, HEIGHT);
 
 		spriteBatch.draw(working.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
 		spriteBatch.end();
