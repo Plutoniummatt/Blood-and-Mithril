@@ -1325,13 +1325,8 @@ public class UserInterface {
 				UserInterface.addLayeredComponentUnique(
 					new InventoryWindow(
 						individual,
-						WIDTH/2 - 200,
-						HEIGHT/2 + 250,
-						400,
-						500,
 						simpleName + " - Inventory",
-						true,
-						150, 300
+						true
 					)
 				);
 			}
