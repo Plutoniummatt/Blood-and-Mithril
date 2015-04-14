@@ -45,7 +45,7 @@ void main()
 			)
 		);
 		
-		if (v_texCoords.y - 2.0 * (horizon - 0.5) < horizon && selfReflection.a > 0.0) {
+		if (selfReflection.a > 0.0) {
 			reflection = selfReflection * filter;
 		} else {
 			reflection = texture2D(
