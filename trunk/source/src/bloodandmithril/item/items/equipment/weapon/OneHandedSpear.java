@@ -52,7 +52,7 @@ public abstract class OneHandedSpear<T extends Metal> extends OneHandedMeleeWeap
 	public void render(Vector2 position, float angle, boolean flipX) {
 		TextureRegion texture = getTextureRegion();
 
-		spriteBatch.draw( // TODO
+		spriteBatch.draw( // TODO origin & orientation
 			Domain.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,
