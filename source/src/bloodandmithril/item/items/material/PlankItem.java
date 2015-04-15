@@ -3,6 +3,7 @@ package bloodandmithril.item.items.material;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
@@ -85,7 +86,7 @@ public class PlankItem extends bloodandmithril.item.items.material.MaterialItem 
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getCarpentry().getLevel() >= Material.getMaterial(wood).getPlankCraftingLevel();
+		return individual.getProficiencies().getProficiency(Carpentry.class).getLevel() >= Material.getMaterial(wood).getPlankCraftingLevel();
 	}
 
 
@@ -104,5 +105,11 @@ public class PlankItem extends bloodandmithril.item.items.material.MaterialItem 
 	@Override
 	public TextureRegion getIconTextureRegion() {
 		return PLANKICON;
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		crafter.getProficiencies().getProficiency(Carpentry.class).increaseExperience(delta * 5f);
 	}
 }

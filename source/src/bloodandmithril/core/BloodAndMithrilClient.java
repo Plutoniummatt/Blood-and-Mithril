@@ -90,7 +90,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static final float INDIVIDUAL_SPREAD = 600f;
 
 	/** The tolerance for double clicking */
-	private static final float DOUBLE_CLICK_TIME = 0.25f;
+	private static final long DOUBLE_CLICK_TIME = 250L;
 
 	/** Resolution x */
 	public static final int WIDTH = ConfigPersistenceService.getConfig().getResX();
@@ -106,6 +106,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	/** The game world */
 	public static Domain domain;
+	public static Domain startMenuDomain;
 
 	/** For camera dragging */
 	private int camDragX, camDragY, oldCamX, oldCamY;
@@ -114,8 +115,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static boolean paused = false, loading = false;
 
 	/** The current timer for double clicking */
-	private float leftDoubleClickTimer = 0f;
-	private float rightDoubleClickTimer = 0f;
+	private long leftDoubleClickTimer = 0L;
+	private long rightDoubleClickTimer = 0L;
 
 	/** Client-side threadpool */
 	public static ExecutorService clientCSIThread;
@@ -134,7 +135,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static int camMarginX, camMarginY;
 	public static Controls controls;
-	
+
 	private static float updateRateMultiplier = 1f;
 
 	static {
@@ -280,8 +281,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			new MainMenuWindow(false)
 		);
 	}
-	
-	
+
+
 	public static int getUpdateRate() {
 		return Math.round(updateRateMultiplier);
 	}
@@ -336,8 +337,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			Gdx.app.exit();
 		}
 	}
-	
-	
+
+
 	public static synchronized void setUpdateRateMultiplier(float updateRateMultiplier) {
 		BloodAndMithrilClient.updateRateMultiplier = updateRateMultiplier;
 	}
@@ -397,9 +398,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	@SuppressWarnings("unused")
 	private void rightClick() throws NoTileFoundException {
-		boolean doubleClick = rightDoubleClickTimer < DOUBLE_CLICK_TIME;
+		long currentTime = System.currentTimeMillis();
+		boolean doubleClick = rightDoubleClickTimer + DOUBLE_CLICK_TIME > currentTime;
 		boolean uiClicked = false;
-		rightDoubleClickTimer = 0f;
+		rightDoubleClickTimer = currentTime;
 
 		if (cursorBoundTask != null && cursorBoundTask.canCancel()) {
 			cursorBoundTask = null;
@@ -524,8 +526,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	private void leftClick(int screenX, int screenY) {
 
-		boolean doubleClick = leftDoubleClickTimer < DOUBLE_CLICK_TIME;
-		leftDoubleClickTimer = 0f;
+		long currentTimeMillis = System.currentTimeMillis();
+
+		boolean doubleClick = leftDoubleClickTimer + DOUBLE_CLICK_TIME > currentTimeMillis;
+		leftDoubleClickTimer = currentTimeMillis;
 
 		boolean uiClicked = UserInterface.leftClick();
 
@@ -776,9 +780,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			if (!paused && !GameSaver.isSaving() && domain != null) {
 				domain.update((int) cam.position.x, (int) cam.position.y);
 			}
-
-			leftDoubleClickTimer += delta;
-			rightDoubleClickTimer += delta;
 		} catch (Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();

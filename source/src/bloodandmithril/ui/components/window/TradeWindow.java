@@ -93,7 +93,7 @@ public class TradeWindow extends Window implements Refreshable {
 		Color.WHITE,
 		UIRef.BL
 	);
-	
+
 	private final Button proposerButton, proposeeButton;
 
 	/**
@@ -105,12 +105,12 @@ public class TradeWindow extends Window implements Refreshable {
 			BloodAndMithrilClient.HEIGHT/2 + 300,
 			1300,
 			600,
-			title, 
-			active, 
+			title,
+			active,
 			1300,
 			300,
-			false, 
-			true, 
+			false,
+			true,
 			true
 		);
 
@@ -121,14 +121,14 @@ public class TradeWindow extends Window implements Refreshable {
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
 
 		if (proposee instanceof Prop) {
-			tradeButton.text = "Transfer Items";
+			tradeButton.text = () -> {return "Transfer Items";};
 		}
 
 		createPanels(sortingComparator);
-		
+
 		proposerFilterButtons = InventoryWindow.setupFilters(proposerFilters, this).canScroll(false);
 		proposeeFilterButtons = InventoryWindow.setupFilters(proposeeFilters, this).canScroll(false);
-		
+
 		String proposerTitle = "---- " + proposer.getId().getSimpleName() + " ----";
 		proposerButton = new Button(
 			proposerTitle,
@@ -144,8 +144,8 @@ public class TradeWindow extends Window implements Refreshable {
 			Color.WHITE,
 			UIRef.BL
 		);
-		
-		String proposeeTitle = "---- " + (proposee instanceof Individual ? (((Individual)proposee).getId().getSimpleName()) : (((Prop) proposee).getTitle())) + " ----";
+
+		String proposeeTitle = "---- " + (proposee instanceof Individual ? ((Individual)proposee).getId().getSimpleName() : ((Prop) proposee).getTitle()) + " ----";
 		proposeeButton = new Button(
 			proposeeTitle,
 			defaultFont,
@@ -274,7 +274,7 @@ public class TradeWindow extends Window implements Refreshable {
 			);
 		}
 
-		
+
 		proposerPanel.getFilters().clear();
 		proposerPanel.getFilters().addAll(Collections2.transform(
 			Collections2.filter(proposerFilters.entrySet(), toKeep -> {
@@ -284,7 +284,7 @@ public class TradeWindow extends Window implements Refreshable {
 				return value.getValue().a;
 			}
 		));
-		
+
 		proposeePanel.getFilters().clear();
 		proposeePanel.getFilters().addAll(Collections2.transform(
 			Collections2.filter(proposeeFilters.entrySet(), toKeep -> {
@@ -600,13 +600,13 @@ public class TradeWindow extends Window implements Refreshable {
 		if (rejected) {
 			if (tradeRejectionTimer > 0f) {
 				tradeRejectionTimer = tradeRejectionTimer - 0.01f;
-				tradeButton.text = "Trade Rejected";
+				tradeButton.text = () -> {return "Trade Rejected";};
 				tradeButton.setIdleColor(Color.RED);
 			} else {
 				if (proposee instanceof Prop) {
-					tradeButton.text = "Transfer";
+					tradeButton.text = () -> {return "Transfer";};
 				} else {
-					tradeButton.text = "Propose Trade";
+					tradeButton.text = () -> {return "Propose Trade";};
 				}
 				tradeRejectionTimer = 1f;
 				rejected = false;
@@ -617,19 +617,19 @@ public class TradeWindow extends Window implements Refreshable {
 		float proposerMass = (float) proposerItemsToTrade.entrySet().stream().mapToDouble(entry -> {
 			return entry.getValue() * entry.getKey().t.getMass();
 		}).sum();
-		
+
 		float proposeeMass = (float) proposeeItemsToTrade.entrySet().stream().mapToDouble(entry -> {
 			return entry.getValue() * entry.getKey().t.getMass();
 		}).sum();
-		
+
 		int proposerVolume = (int) proposerItemsToTrade.entrySet().stream().mapToLong(entry -> {
 			return entry.getValue() * entry.getKey().t.getVolume();
 		}).sum();
-		
+
 		int proposeeVolume = (int) proposeeItemsToTrade.entrySet().stream().mapToLong(entry -> {
 			return entry.getValue() * entry.getKey().t.getVolume();
 		}).sum();
-		
+
 		InventoryWindow.renderCapacityIndicationText(proposer, this, 6, -height, " (+" + String.format("%.2f", proposeeMass) + ")", " (+" + proposeeVolume + ")");
 		InventoryWindow.renderCapacityIndicationText(proposee, this, width / 2 + 6, -height, " (+" + String.format("%.2f", proposerMass) + ")", " (+" + proposerVolume + ")");
 
@@ -639,14 +639,14 @@ public class TradeWindow extends Window implements Refreshable {
 			tradeButtonClickable(),
 			getAlpha()
 		);
-		
+
 		proposerButton.render(
 			x + width / 4,
 			y - 20,
 			isActive(),
 			getAlpha()
 		);
-		
+
 		proposeeButton.render(
 			x + 3 * width / 4,
 			y - 20,
@@ -691,12 +691,12 @@ public class TradeWindow extends Window implements Refreshable {
 		proposeeTradingPanel.y = y - 30;
 		proposeeTradingPanel.height = 85 + (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposeeItemsToTrade.size())) * lineWidth);
 		proposeeTradingPanel.width = width / 2 - 210;
-		
+
 		proposerFilterButtons.x = x;
 		proposerFilterButtons.y = y - 30;
 		proposerFilterButtons.height = height - 85;
 		proposerFilterButtons.width = 180;
-		
+
 		proposeeFilterButtons.x = x + width / 2 + 10;
 		proposeeFilterButtons.y = y - 30;
 		proposeeFilterButtons.height = height - 85;
@@ -733,10 +733,10 @@ public class TradeWindow extends Window implements Refreshable {
 
 	@Override
 	public boolean scrolled(int amount) {
-		return 
-			proposerTradingPanel.scrolled(amount) || 
-			proposeeTradingPanel.scrolled(amount) || 
-			proposerPanel.scrolled(amount) || 
+		return
+			proposerTradingPanel.scrolled(amount) ||
+			proposeeTradingPanel.scrolled(amount) ||
+			proposerPanel.scrolled(amount) ||
 			proposeePanel.scrolled(amount) ||
 			proposeeFilterButtons.scrolled(amount) ||
 			proposerFilterButtons.scrolled(amount);

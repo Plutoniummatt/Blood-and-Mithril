@@ -5,6 +5,7 @@ import static bloodandmithril.item.items.material.IngotItem.ingot;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
@@ -114,5 +115,11 @@ public class WoodenChestItem extends FurnitureItem implements Craftable {
 			woodenChest.setWorldId(Domain.getActiveWorld().getWorldId());
 		}
 		return woodenChest;
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		crafter.getProficiencies().getProficiency(Carpentry.class).increaseExperience(delta * 8f);
 	}
 }

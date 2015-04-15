@@ -23,6 +23,7 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
+import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -75,60 +76,7 @@ public class ProficienciesWindow extends Window {
 
 			@Override
 			protected void populateListings(List<HashMap<ListingMenuItem<Proficiency>, Integer>> listings) {
-				HashMap<ListingMenuItem<Proficiency>, Integer> newHashMap = newHashMap();
-
-				for (Proficiency skill : individual.getSkills().getAllProficiencies()) {
-					ContextMenu.MenuItem showInfo = new ContextMenu.MenuItem(
-						"Show info",
-						() -> {
-							UserInterface.addLayeredComponentUnique(
-								new MessageWindow(
-									skill.getDescription(),
-									Color.ORANGE,
-									WIDTH / 2 - 250,
-									HEIGHT / 2 + 150,
-									500,
-									300,
-									"Skill description - " + skill.getName(),
-									true,
-									500,
-									300
-								)
-							);
-						},
-						Color.ORANGE,
-						Color.WHITE,
-						Color.ORANGE,
-						null
-					);
-
-					newHashMap.put(
-						new ListingMenuItem<Proficiency>(
-							skill,
-							new Button(
-								skill.getName(),
-								defaultFont,
-								0,
-								0,
-								skill.getName().length() * 10,
-								16,
-								() -> {
-								},
-								Color.WHITE.cpy().sub(new Color(0f, Proficiency.getRatioToMax(skill.getLevel()), 0f, 0f)),
-								Color.GREEN,
-								Color.WHITE,
-								UIRef.BL
-							),
-							new ContextMenu(
-								getMouseScreenX(),
-								getMouseScreenY(),
-								true ,
-								showInfo
-							)
-						),
-						0
-					);
-				}
+				HashMap<ListingMenuItem<Proficiency>, Integer> newHashMap = buildMap(individual);
 
 				listings.add(newHashMap);
 			}
@@ -140,6 +88,65 @@ public class ProficienciesWindow extends Window {
 		};
 
 		this.individualId = individual.getId().getId();
+	}
+
+
+	private HashMap<ListingMenuItem<Proficiency>, Integer> buildMap(Individual individual) {
+		HashMap<ListingMenuItem<Proficiency>, Integer> newHashMap = newHashMap();
+
+		for (Proficiency skill : individual.getProficiencies().getAllProficiencies()) {
+			ContextMenu.MenuItem showInfo = new ContextMenu.MenuItem(
+				"Show info",
+				() -> {
+					UserInterface.addLayeredComponentUnique(
+						new MessageWindow(
+							skill.getDescription(),
+							Color.ORANGE,
+							WIDTH / 2 - 250,
+							HEIGHT / 2 + 150,
+							500,
+							300,
+							"Skill description - " + skill.getName(),
+							true,
+							500,
+							300
+						)
+					);
+				},
+				Color.ORANGE,
+				Color.WHITE,
+				Color.ORANGE,
+				null
+			);
+
+			newHashMap.put(
+				new ListingMenuItem<Proficiency>(
+					skill,
+					new Button(
+						() -> {return skill.getName() + " - " + String.format("%.2f", skill.getExperience());},
+						defaultFont,
+						0,
+						0,
+						skill.getName().length() * 10,
+						16,
+						() -> {
+						},
+						Color.WHITE.cpy().sub(new Color(0f, Proficiency.getRatioToMax(skill.getLevel()), 0f, 0f)),
+						Color.GREEN,
+						Color.WHITE,
+						UIRef.BL
+					),
+					new ContextMenu(
+						getMouseScreenX(),
+						getMouseScreenY(),
+						true ,
+						showInfo
+					)
+				),
+				0
+			);
+		}
+		return newHashMap;
 	}
 
 

@@ -68,6 +68,6 @@ public class Gold extends Metal {
 
 	@Override
 	public float getCombatMultiplier() {
-		return 0.4f;
+		return 0.6f;
 	}
 }

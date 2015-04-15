@@ -37,7 +37,7 @@ public class Button {
 	private Color idleColor, overColor, downColor;
 
 	/** The text this button displays */
-	public String text;
+	public Function<String> text;
 
 	/** The font of this button */
 	private BitmapFont font;
@@ -65,8 +65,8 @@ public class Button {
 	 * Constructor for text button
 	 */
 	public Button(String text, BitmapFont font, int offsetX, int offsetY, int width, int height, Sound mouseClickedSound, Task task, Color idle, Color over, Color down, UIRef ref) {
-		this.text = text;
-    this.font = font;
+		this.text = () -> {return text;};
+		this.font = font;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
 		this.width = width;
@@ -85,6 +85,26 @@ public class Button {
 	 * Constructor for text button no sound
 	 */
 	public Button(String text, BitmapFont font, int offsetX, int offsetY, int width, int height, Task task, Color idle, Color over, Color down, UIRef ref) {
+		this.text = () -> {return text;};
+		this.font = font;
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
+		this.width = width;
+		this.height = height;
+		this.task = task;
+		this.jitTask = null;
+		this.idleColor = idle;
+		this.overColor = over;
+		this.downColor = down;
+		this.ref = ref;
+		this.mouseClickSound = null;
+	}
+
+
+	/**
+	 * Constructor for text button no sound
+	 */
+	public Button(Function<String> text, BitmapFont font, int offsetX, int offsetY, int width, int height, Task task, Color idle, Color over, Color down, UIRef ref) {
 		this.text = text;
 		this.font = font;
 		this.offsetX = offsetX;
@@ -105,7 +125,7 @@ public class Button {
 	 * Constructor for text button no sound - with a {@link JITTask}
 	 */
 	public Button(String text, BitmapFont font, int offsetX, int offsetY, int width, int height, JITTask task, Color idle, Color over, Color down, UIRef ref) {
-	  this.text = text;
+	  this.text = () -> {return text;};
 	  this.font = font;
 	  this.offsetX = offsetX;
 	  this.offsetY = offsetY;
@@ -177,14 +197,14 @@ public class Button {
 			if (isMouseOver() && active) {
 				if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode)) {
 					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(spriteBatch, maxWidth == 0 ? text : fitToTextInputBox(text, maxWidth, 0, false), vec.x, vec.y);
+					font.draw(spriteBatch, maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 				} else {
 					font.setColor(overColorToUse.r, overColorToUse.g, overColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(spriteBatch,  maxWidth == 0 ? text : fitToTextInputBox(text, maxWidth, 0, false), vec.x, vec.y);
+					font.draw(spriteBatch,  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 				}
 			} else {
 				font.setColor(idleColorToUse.r, idleColorToUse.g, idleColorToUse.b, alpha * (active ? 1f : 0.3f));
-				font.draw(spriteBatch,  maxWidth == 0 ? text : fitToTextInputBox(text, maxWidth, 0, false), vec.x, vec.y);
+				font.draw(spriteBatch,  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 			}
 		} else {
 			spriteBatch.setShader(Shaders.filter);
@@ -209,7 +229,7 @@ public class Button {
 
 	/** Gets the text content of this button */
 	public String getText() {
-		return text;
+		return text.call();
 	}
 
 

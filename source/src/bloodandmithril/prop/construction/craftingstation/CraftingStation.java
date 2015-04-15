@@ -201,8 +201,8 @@ public abstract class CraftingStation extends Construction {
 	public void setCurrentlyBeingCrafted(SerializableDoubleWrapper<Item, Integer> currentlyBeingCrafted) {
 		this.currentlyBeingCrafted = currentlyBeingCrafted;
 	}
-	
-	
+
+
 	/** Affects the individual using this {@link CraftingStation} */
 	public abstract void affectIndividual(Individual individual, float delta);
 
@@ -246,6 +246,9 @@ public abstract class CraftingStation extends Construction {
 
 		if (occupiedBy == individual.getId().getId()) {
 			craftingProgress += aiTaskDelay / ((Craftable)currentlyBeingCrafted.t).getCraftingDuration();
+			if (item.t instanceof Craftable) {
+				((Craftable) item.t).crafterEffects(individual, aiTaskDelay);
+			}
 			affectIndividual(individual, aiTaskDelay);
 			if (craftingProgress >= 1f) {
 				craftingProgress = 1f;

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.character.proficiency.proficiencies.Cooking;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
@@ -24,10 +25,10 @@ public class ChickenLegItem extends Food implements Craftable {
 
 	public static TextureRegion COOKED_CHICKEN_LEG;
 	public static TextureRegion RAW_CHICKEN_LEG;
-	
+
 	public static TextureRegion COOKED_CHICKEN_LEG_ICON;
 	public static TextureRegion RAW_CHICKEN_LEG_ICON;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -117,7 +118,7 @@ public class ChickenLegItem extends Food implements Craftable {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getCookking().getLevel() >= 5;
+		return individual.getProficiencies().getProficiency(Cooking.class).getLevel() >= 5;
 	}
 
 
@@ -132,5 +133,11 @@ public class ChickenLegItem extends Food implements Craftable {
 	@Override
 	public float getCraftingDuration() {
 		return 10;
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		crafter.getProficiencies().getProficiency(Cooking.class).increaseExperience(delta * 3f);
 	}
 }

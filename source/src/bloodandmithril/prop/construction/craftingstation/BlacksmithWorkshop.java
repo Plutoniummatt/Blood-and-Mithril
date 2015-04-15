@@ -85,7 +85,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
 				}
 			}
-			
+
 			if (sparkCountdown <= 0) {
 				if (isClient()) {
 					ParticleService.parrySpark(position.cpy().add(-40, height - 10), new Vector2(-30f, -100f), Depth.MIDDLEGROUND, Color.WHITE, new Color(1f, 0.8f, 0.3f, 1f), 3500, true, 30, 200f);
@@ -144,8 +144,8 @@ public class BlacksmithWorkshop extends CraftingStation {
 	protected int getCraftingSound() {
 		return SoundService.campfireCooking;
 	}
-	
-	
+
+
 	@Override
 	public void synchronizeProp(Prop other) {
 		this.sparkCountdown = ((BlacksmithWorkshop) other).sparkCountdown;
@@ -176,7 +176,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 		individual.decreaseStamina(delta / 30f);
 		individual.decreaseThirst(delta / 300f);
 		individual.decreaseHunger(delta / 600f);
-		
+
 		if (individual.getState().stamina <= 0.01f) {
 			individual.getAI().setCurrentTask(new Idle());
 			individual.speak("Too tired, need a break...", 1500);

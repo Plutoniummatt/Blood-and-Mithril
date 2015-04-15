@@ -214,6 +214,11 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 		public float getCraftingDuration() {
 			return 25f;
 		}
+
+
+		@Override
+		public void crafterEffects(Individual crafter, float delta) {
+		}
 	}
 
 

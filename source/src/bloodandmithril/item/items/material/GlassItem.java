@@ -66,7 +66,8 @@ public class GlassItem extends bloodandmithril.item.items.material.MaterialItem 
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getGlassworking().getLevel() >= 0;
+		// TODO
+		return true;
 	}
 
 
@@ -88,5 +89,10 @@ public class GlassItem extends bloodandmithril.item.items.material.MaterialItem 
 	@Override
 	public TextureRegion getIconTextureRegion() {
 		return null;
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
 	}
 }

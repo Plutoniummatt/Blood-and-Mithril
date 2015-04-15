@@ -3,6 +3,7 @@ package bloodandmithril.item.items.material;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.proficiency.proficiencies.Smithing;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
@@ -44,7 +45,7 @@ public class IngotItem extends bloodandmithril.item.items.material.MaterialItem 
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getSmithing().getLevel() >= Material.getMaterial(metal).getIngotCraftingLevel();
+		return individual.getProficiencies().getProficiency(Smithing.class).getLevel() >= Material.getMaterial(metal).getIngotCraftingLevel();
 	}
 
 
@@ -103,5 +104,11 @@ public class IngotItem extends bloodandmithril.item.items.material.MaterialItem 
 	@Override
 	protected Item internalCopy() {
 		return ingot(metal);
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		crafter.getProficiencies().getProficiency(Smithing.class).increaseExperience(delta * 2f * Material.getMaterial(metal).getCombatMultiplier());
 	}
 }

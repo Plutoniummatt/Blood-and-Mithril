@@ -26,6 +26,11 @@ public interface Craftable {
 	public Map<Item, Integer> getRequiredMaterials();
 
 	/**
+	 * Affects the crafter currently crafting this {@link Craftable}
+	 */
+	public void crafterEffects(Individual crafter, float delta);
+
+	/**
 	 * @return the time it will take to craft this item, in seconds.
 	 */
 	public float getCraftingDuration();

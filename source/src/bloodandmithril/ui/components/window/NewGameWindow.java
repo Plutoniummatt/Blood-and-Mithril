@@ -579,7 +579,7 @@ public class NewGameWindow extends Window {
 						startingIndividuals.remove(listingItem);
 						refreshSkillListing();
 						assignablePoints += 10;
-						for (Proficiency skill : listingItem.t.getSkills().getAllProficiencies()) {
+						for (Proficiency skill : listingItem.t.getProficiencies().getAllProficiencies()) {
 							assignablePoints += skill.getLevel();
 						}
 					} else {
@@ -611,7 +611,7 @@ public class NewGameWindow extends Window {
 			ChooseStartingIndividualsPanel.this.skills.getListing().clear();
 			HashMap<ListingMenuItem<Proficiency>, String> newHashMap = Maps.newHashMap();
 			if (selectedIndividual != null) {
-				for (Proficiency skill : selectedIndividual.getSkills().getAllProficiencies()) {
+				for (Proficiency skill : selectedIndividual.getProficiencies().getAllProficiencies()) {
 					final ListingMenuItem<Proficiency> item = new ListingMenuItem<Proficiency>(
 						skill,
 						new Button(
