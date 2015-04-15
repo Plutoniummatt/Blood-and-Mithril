@@ -2,7 +2,6 @@ package bloodandmithril.item.items.equipment.weapon;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
-import static bloodandmithril.world.Domain.individualTexture;
 
 import java.util.Map;
 
@@ -11,6 +10,7 @@ import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
@@ -20,7 +20,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
@@ -38,9 +37,9 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			textureRegionMap.put(BushKnife.class, new TextureRegion(Domain.individualTexture, 0, 784, 43, 13));
-			textureRegionMap.put(CombatKnife.class, new TextureRegion(Domain.individualTexture, 0, 818, 43, 13));
-			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, PlayMode.NORMAL), new Vector2(10f, 34f)));
+			textureRegionMap.put(BushKnife.class, new TextureRegion(WorldRenderer.individualTexture, 0, 784, 43, 13));
+			textureRegionMap.put(CombatKnife.class, new TextureRegion(WorldRenderer.individualTexture, 0, 818, 43, 13));
+			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(WorldRenderer.individualTexture, 64, 858, 102, 25, 8, 0.07f, PlayMode.NORMAL), new Vector2(10f, 34f)));
 		}
 	}
 
@@ -58,7 +57,7 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 		TextureRegion textureRegion = getTextureRegion();
 
 		spriteBatch.draw(
-			Domain.individualTexture,
+			WorldRenderer.individualTexture,
 			position.x - (flipX ? textureRegion.getRegionWidth() - 15 : 15),
 			position.y - 7,
 			flipX ? textureRegion.getRegionWidth() - 15 : 15,

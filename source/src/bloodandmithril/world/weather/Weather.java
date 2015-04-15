@@ -13,11 +13,11 @@ import static java.lang.Math.sin;
 import java.util.LinkedList;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 
 import com.badlogic.gdx.graphics.Color;
@@ -158,13 +158,13 @@ public class Weather {
 	private static void renderStars(FrameBuffer toDrawTo) {
 		toDrawTo.begin();
 		spriteBatch.begin();
-		Domain.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		for (CelestialBody celestialBody : celestialBodies) {
 			celestialBody.render();
 		}
 		spriteBatch.end();
 		toDrawTo.end();
-		Domain.gameWorldTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 

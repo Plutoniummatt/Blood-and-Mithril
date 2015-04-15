@@ -4,9 +4,9 @@ import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -22,8 +22,8 @@ public abstract class OffhandEquipment extends Equipable {
 
 	static {
 		if (isClient()) {
-			Torch.torch = new TextureRegion(Domain.individualTexture, 0, 851, 43, 7);
-			Lantern.lantern = new TextureRegion(Domain.individualTexture, 43, 851, 11, 25);
+			Torch.torch = new TextureRegion(WorldRenderer.individualTexture, 0, 851, 43, 7);
+			Lantern.lantern = new TextureRegion(WorldRenderer.individualTexture, 43, 851, 11, 25);
 		}
 	}
 
@@ -43,7 +43,7 @@ public abstract class OffhandEquipment extends Equipable {
 		Vector2 grip = getGripLocation();
 
 		spriteBatch.draw(
-			Domain.individualTexture,
+			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - grip.x : grip.x),
 			position.y - grip.y,
 			flipX ? texture.getRegionWidth() - grip.x : grip.x,

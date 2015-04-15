@@ -1,6 +1,6 @@
 package bloodandmithril.graphics.particles;
 
-import bloodandmithril.world.Domain.Depth;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;

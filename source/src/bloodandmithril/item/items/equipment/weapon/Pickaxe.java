@@ -8,13 +8,13 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -53,7 +53,7 @@ public abstract class Pickaxe<T extends Metal> extends TwoHandedMeleeWeapon<T> i
 		TextureRegion texture = getTextureRegion();
 
 		spriteBatch.draw(
-			Domain.individualTexture,
+			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,
 			flipX ? texture.getRegionWidth() - 17 : 17,

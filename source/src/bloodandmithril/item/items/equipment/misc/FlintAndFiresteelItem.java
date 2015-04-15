@@ -2,13 +2,13 @@ package bloodandmithril.item.items.equipment.misc;
 
 import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import bloodandmithril.audio.SoundService;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.misc.MiscItem;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

@@ -18,13 +18,12 @@ import static java.lang.Math.round;
 import java.util.List;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.background.BackgroundImages;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
+import bloodandmithril.world.World;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.weather.Weather;
 
@@ -65,25 +64,25 @@ public class GaussianLightingRenderer {
 	/**
 	 * Master render method.
 	 */
-	public static void render(float camX, float camY) {
+	public static void render(float camX, float camY, World world) {
 		weather();
-		backgroundSprites();
+		backgroundSprites(world);
 		backgroundLighting();
 		foregroundLighting();
-		lighting(foregroundLightingFBOSmall, foregroundLightingFBO, Depth.FOREGROUND);
-		lighting(middleGroundLightingFBOSmall, middleGroundLightingFBO, Depth.MIDDLEGROUND);
+		lighting(foregroundLightingFBOSmall, foregroundLightingFBO, Depth.FOREGROUND, world);
+		lighting(middleGroundLightingFBOSmall, middleGroundLightingFBO, Depth.MIDDLEGROUND, world);
 		background();
 		middleground();
 		foreground();
-		volumetricLighting();
+		volumetricLighting(world);
 	}
 
 
-	private static void backgroundSprites() {
+	private static void backgroundSprites(World world) {
 		workingFBO2.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		BackgroundImages.renderBackground();
+		world.getBackgroundImages().renderBackground();
 		workingFBO2.end();
 
 		spriteBatch.begin();
@@ -244,7 +243,7 @@ public class GaussianLightingRenderer {
 	/**
 	 * Handles rendering to the lighting FBO.
 	 */
-	private static void lighting(FrameBuffer lightingFboSmall, FrameBuffer lightingFbo, Depth depth) {
+	private static void lighting(FrameBuffer lightingFboSmall, FrameBuffer lightingFbo, Depth depth, World world) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -263,11 +262,11 @@ public class GaussianLightingRenderer {
 		float[] previousPositions = new float[MAX_PARTICLES * 2];
 		float[] colors = new float[MAX_PARTICLES * 4];
 
-		List<Particle> clientSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(Domain.getActiveWorld().getClientParticles(), p -> {
+		List<Particle> clientSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(world.getClientParticles(), p -> {
 			return p.depth == depth && isOnScreen(p.position, 50f);
 		}));
 
-		List<Particle> serverSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(Domain.getActiveWorld().getServerParticles().values(), p -> {
+		List<Particle> serverSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(world.getServerParticles().values(), p -> {
 			return p.depth == depth && isOnScreen(p.position, 50f);
 		}));
 
@@ -359,7 +358,7 @@ public class GaussianLightingRenderer {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.setShader(Shaders.pass);
 		spriteBatch.draw(
-			Domain.combinedBufferQuantized.getColorBufferTexture(),
+			WorldRenderer.combinedBufferQuantized.getColorBufferTexture(),
 			0,
 			0,
 			WIDTH, HEIGHT
@@ -484,7 +483,7 @@ public class GaussianLightingRenderer {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.setShader(Shaders.pass);
 		spriteBatch.draw(
-			Domain.combinedBufferQuantized.getColorBufferTexture(),
+			WorldRenderer.combinedBufferQuantized.getColorBufferTexture(),
 			0,
 			0,
 			WIDTH, HEIGHT
@@ -570,7 +569,7 @@ public class GaussianLightingRenderer {
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertY);
 		spriteBatch.draw(
-			Domain.bBuffer.getColorBufferTexture(),
+			WorldRenderer.bBuffer.getColorBufferTexture(),
 			-camMarginX / 2,
 			-camMarginY / 2
 		);
@@ -612,7 +611,7 @@ public class GaussianLightingRenderer {
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertY);
 		spriteBatch.draw(
-			Domain.mBuffer.getColorBufferTexture(),
+			WorldRenderer.mBuffer.getColorBufferTexture(),
 			-camMarginX / 2,
 			-camMarginY / 2
 		);
@@ -658,7 +657,7 @@ public class GaussianLightingRenderer {
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertY);
 		spriteBatch.draw(
-			Domain.fBuffer.getColorBufferTexture(),
+			WorldRenderer.fBuffer.getColorBufferTexture(),
 			-camMarginX / 2,
 			-camMarginY / 2
 		);
@@ -698,25 +697,25 @@ public class GaussianLightingRenderer {
 	}
 
 
-	private static void volumetricLighting() {
+	private static void volumetricLighting(World world) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		BackgroundImages.renderBackground();
+		world.getBackgroundImages().renderBackground();
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.invertY);
 		spriteBatch.draw(
-			Domain.fBuffer.getColorBufferTexture(),
+			WorldRenderer.fBuffer.getColorBufferTexture(),
 			-camMarginX / 2,
 			-camMarginY / 2
 		);
 		spriteBatch.draw(
-			Domain.mBuffer.getColorBufferTexture(),
+			WorldRenderer.mBuffer.getColorBufferTexture(),
 			-camMarginX / 2,
 			-camMarginY / 2
 		);
 		spriteBatch.draw(
-			Domain.bBuffer.getColorBufferTexture(),
+			WorldRenderer.bBuffer.getColorBufferTexture(),
 			-camMarginX / 2,
 			-camMarginY / 2
 		);

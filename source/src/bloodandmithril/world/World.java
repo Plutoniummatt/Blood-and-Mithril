@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.background.BackgroundImages;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -27,6 +28,8 @@ public class World implements Serializable {
 
 	/** Unique identifier of this {@link World} */
 	private final int worldId;
+
+	private BackgroundImages 									backgroundImages 		= new BackgroundImages();
 
 	/** Gravity on this world */
 	private float gravity;
@@ -157,5 +160,10 @@ public class World implements Serializable {
 	 */
 	public PositionalIndexMap getPositionalIndexMap() {
 		return positionalIndexMap;
+	}
+
+
+	public BackgroundImages getBackgroundImages() {
+		return backgroundImages;
 	}
 }

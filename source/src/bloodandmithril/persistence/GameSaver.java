@@ -57,7 +57,7 @@ public class GameSaver {
 	}
 	
 	
-	public static synchronized void setSavePath(String savePath) {
+	public static synchronized void setPersistencePath(String savePath) {
 		GameSaver.savePath = savePath;
 	}
 	

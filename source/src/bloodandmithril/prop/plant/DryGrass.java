@@ -4,12 +4,12 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.furniture.MedievalWallTorchProp.NotEmptyTile;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -21,12 +21,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 @Copyright("Matthew Peck 2015")
 public class DryGrass extends PlantProp {
 	private static final long serialVersionUID = 9061021746445536182L;
-	
+
 	public static TextureRegion textureRegion;
-	
+
 	static {
 		if (ClientServerInterface.isClient()) {
-			textureRegion = new TextureRegion(Domain.gameWorldTexture, 1089, 119, 76, 12);
+			textureRegion = new TextureRegion(WorldRenderer.gameWorldTexture, 1089, 119, 76, 12);
 		}
 	}
 
@@ -34,13 +34,13 @@ public class DryGrass extends PlantProp {
 		super(x, y, 76, 12, Depth.FRONT, new NotEmptyTile());
 	}
 
-	
+
 	@Override
 	public void render() {
 		spriteBatch.draw(textureRegion, position.x - width / 2, position.y - 5);
 	}
 
-	
+
 	@Override
 	public void synchronizeProp(Prop other) {
 	}
@@ -52,24 +52,24 @@ public class DryGrass extends PlantProp {
 		return menu;
 	}
 
-	
+
 	@Override
 	public void update(float delta) {
 	}
 
-	
+
 	@Override
 	public boolean canBeUsedAsFireSource() {
 		return false;
 	}
 
-	
+
 	@Override
 	public String getContextMenuItemLabel() {
 		return "Dry grass";
 	}
 
-	
+
 	@Override
 	public void preRender() {
 	}

@@ -7,6 +7,7 @@ import java.util.Map;
 import bloodandmithril.character.conditions.Burning;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.ItemValues;
@@ -20,7 +21,6 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.World;
 
 import com.badlogic.gdx.graphics.Color;

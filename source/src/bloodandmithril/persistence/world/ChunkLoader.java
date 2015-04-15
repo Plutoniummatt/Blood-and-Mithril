@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.zip.ZipFile;
 
 import bloodandmithril.core.Copyright;
@@ -21,7 +20,6 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
-import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Chunk;
@@ -165,7 +163,6 @@ public class ChunkLoader {
 				Structures.setStructures(structures);
 			} catch (Exception e) {
 				Logger.loaderDebug("Failed to load structures", LogLevel.DEBUG);
-				Structures.setStructures(new ConcurrentHashMap<Integer, Structure>());
 			}
 		}
 
@@ -174,7 +171,6 @@ public class ChunkLoader {
 				GlobalLayers.layers = decode(Gdx.files.local(getSavePath() + "/world/layers.txt"));
 			} catch (Exception e) {
 				Logger.loaderDebug("Failed to load layers", LogLevel.DEBUG);
-				GlobalLayers.layers = new ConcurrentSkipListMap<Integer, TwoInts>();
 			}
 		}
 	}

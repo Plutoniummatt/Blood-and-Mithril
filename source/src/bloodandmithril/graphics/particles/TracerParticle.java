@@ -1,11 +1,12 @@
 package bloodandmithril.graphics.particles;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.util.Performance;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
@@ -41,8 +42,8 @@ public class TracerParticle extends Particle {
 		if (topography.hasTile(position.x, position.y, true)) {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
-					Domain.shapeRenderer.setColor(color.getColor());
-					Domain.shapeRenderer.circle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
+					WorldRenderer.shapeRenderer.setColor(color.getColor());
+					WorldRenderer.shapeRenderer.circle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
 				}
 			} catch (NoTileFoundException e) {}
 		}
@@ -68,9 +69,9 @@ public class TracerParticle extends Particle {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
 					Gdx.gl.glLineWidth(radius == 1f ? 1f : 2 * radius);
-					Domain.shapeRenderer.setColor(color.getColor());
-					Domain.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
-					Domain.shapeRenderer.flush();
+					WorldRenderer.shapeRenderer.setColor(color.getColor());
+					WorldRenderer.shapeRenderer.line(position.x, position.y, prevPosition.x, prevPosition.y);
+					WorldRenderer.shapeRenderer.flush();
 				}
 			} catch (NoTileFoundException e) {}
 		}

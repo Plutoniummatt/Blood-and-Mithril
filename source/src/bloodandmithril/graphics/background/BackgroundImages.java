@@ -4,6 +4,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.cam;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.badlogic.gdx.Gdx.files;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -21,11 +22,12 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class BackgroundImages {
+public class BackgroundImages implements Serializable {
+	private static final long serialVersionUID = -649236314540206654L;
 	private static Texture backgrounds;
 
 	public static Map<Integer, TextureRegion> textures = Maps.newHashMap();
-	private static List<Layer> layers = Lists.newArrayList();
+	private List<Layer> layers = Lists.newArrayList();
 
 	static {
 		if (ClientServerInterface.isClient()) {
@@ -33,14 +35,17 @@ public class BackgroundImages {
 			textures.put(1, new TextureRegion(backgrounds, 0, 0, 200, 800));
 			textures.put(2, new TextureRegion(backgrounds, 200, 0, 500, 800));
 
-			layers.add(new DayLightColorLayerWithFluidReflections());
 		}
+	}
+
+	public BackgroundImages() {
+		layers.add(new DayLightColorLayerWithFluidReflections());
 	}
 
 	/**
 	 * Renders the background images
 	 */
-	public static void renderBackground() {
+	public void renderBackground() {
 		for (Layer layer : layers) {
 			spriteBatch.begin();
 			layer.preRender();
