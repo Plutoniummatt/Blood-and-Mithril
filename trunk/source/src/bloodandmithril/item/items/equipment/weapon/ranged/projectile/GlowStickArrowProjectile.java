@@ -1,6 +1,7 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
 import static bloodandmithril.networking.ClientServerInterface.isServer;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -12,7 +13,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

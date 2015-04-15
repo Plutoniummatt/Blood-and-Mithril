@@ -34,6 +34,7 @@ import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -62,7 +63,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 

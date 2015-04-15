@@ -10,6 +10,8 @@ import java.util.TreeMap;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
@@ -27,8 +29,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -60,12 +60,12 @@ public class Furnace extends CraftingStation implements Container {
 		craftables.put(ingot(Steel.class), 1);
 
 		if (ClientServerInterface.isClient()) {
-			Furnace.FURNACE1 = new TextureRegion(Domain.gameWorldTexture, 1, 1, 95, 56);
-			Furnace.FURNACE2 = new TextureRegion(Domain.gameWorldTexture, 1, 58, 95, 56);
-			Furnace.FURNACE3 = new TextureRegion(Domain.gameWorldTexture, 1, 115, 95, 56);
-			Furnace.FURNACE4 = new TextureRegion(Domain.gameWorldTexture, 1, 172, 95, 56);
-			Furnace.FURNACE5 = new TextureRegion(Domain.gameWorldTexture, 1, 229, 95, 56);
-			
+			Furnace.FURNACE1 = new TextureRegion(WorldRenderer.gameWorldTexture, 1, 1, 95, 56);
+			Furnace.FURNACE2 = new TextureRegion(WorldRenderer.gameWorldTexture, 1, 58, 95, 56);
+			Furnace.FURNACE3 = new TextureRegion(WorldRenderer.gameWorldTexture, 1, 115, 95, 56);
+			Furnace.FURNACE4 = new TextureRegion(WorldRenderer.gameWorldTexture, 1, 172, 95, 56);
+			Furnace.FURNACE5 = new TextureRegion(WorldRenderer.gameWorldTexture, 1, 229, 95, 56);
+
 			inProgressTextures.put(0f/5f, FURNACE1);
 			inProgressTextures.put(1f/5f, FURNACE2);
 			inProgressTextures.put(2f/5f, FURNACE3);
@@ -92,7 +92,7 @@ public class Furnace extends CraftingStation implements Container {
 				spriteBatch.draw(FURNACE_BURNING, position.x - width / 2, position.y);
 			} else {
 				spriteBatch.draw(FURNACE, position.x - width / 2, position.y);
-			}	
+			}
 		} else {
 			spriteBatch.draw(inProgressTextures.floorEntry(getConstructionProgress()).getValue(), position.x - width / 2, position.y);
 		}

@@ -18,6 +18,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.Controls;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -44,12 +45,10 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 
@@ -250,6 +249,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		topographyQueryThread.setName("Topography query thread");
 		topographyQueryThread.start();
+
+		ClientServerInterface.setServer(true);
+		Domain.getWorlds().put(1, new World(1200));
+		Domain.getWorld(1).getTopography().loadOrGenerateNullChunksAccordingToPosition(0, 0);
+		ClientServerInterface.setServer(false);
 	}
 
 
@@ -258,7 +262,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	private void loadResources() {
 		Domain.setup();
-		Domain.shapeRenderer = new ShapeRenderer();
+		WorldRenderer.setup();
+		WorldRenderer.shapeRenderer = new ShapeRenderer();
 		Fonts.setup();
 		Individual.setup();
 		PrefabricatedComponent.setup();
@@ -327,9 +332,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			// Rendering --------------------- /
 			if (domain == null) {
-				renderMainMenuBackDrop();
+				WorldRenderer.render(Domain.getWorld(1), (int) cam.position.x, (int) cam.position.y);
 			} else {
-				domain.render((int) cam.position.x, (int) cam.position.y);
+				WorldRenderer.render(Domain.getActiveWorld(), (int) cam.position.x, (int) cam.position.y);
 			}
 			UserInterface.render();
 		} catch (Exception e) {
@@ -341,16 +346,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static synchronized void setUpdateRateMultiplier(float updateRateMultiplier) {
 		BloodAndMithrilClient.updateRateMultiplier = updateRateMultiplier;
-	}
-
-
-	/**
-	 * Renders the main menu
-	 */
-	private void renderMainMenuBackDrop() {
-		UserInterface.shapeRenderer.begin(ShapeType.Filled);
-		UserInterface.shapeRenderer.rect(0, 0, WIDTH, HEIGHT, Color.BLACK, Color.BLACK, Color.BLACK,Color.BLACK);
-		UserInterface.shapeRenderer.end();
 	}
 
 

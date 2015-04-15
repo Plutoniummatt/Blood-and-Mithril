@@ -2,7 +2,6 @@ package bloodandmithril.item.items.equipment.weapon;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
-import static bloodandmithril.world.Domain.individualTexture;
 
 import java.util.Map;
 
@@ -11,6 +10,7 @@ import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.metal.Metal;
@@ -18,7 +18,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
@@ -41,7 +40,7 @@ public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 784, 36, 74, 10, 0.07f, PlayMode.NORMAL), new Vector2(65f, 40f)));
+			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(WorldRenderer.individualTexture, 64, 784, 36, 74, 10, 0.07f, PlayMode.NORMAL), new Vector2(65f, 40f)));
 		}
 	}
 
@@ -58,7 +57,7 @@ public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon
 		TextureRegion texture = getTextureRegion();
 
 		spriteBatch.draw(
-			Domain.individualTexture,
+			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,
 			flipX ? texture.getRegionWidth() - 17 : 17,

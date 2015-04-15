@@ -23,7 +23,7 @@ import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
 public class GlobalLayers {
 
 	/** Maps the vertical position of the Layer (referencing the top) to the Layer, which is stored as two ints, horizontal stretch and height. */
-	public static ConcurrentSkipListMap<Integer, TwoInts> layers;
+	public static ConcurrentSkipListMap<Integer, TwoInts> layers = new ConcurrentSkipListMap<Integer, TwoInts>();
 
 	/** Makes a new Layer. Layers are stored as two ints, horizontal stretch and height. */
 	private static TwoInts getNewLayer() {

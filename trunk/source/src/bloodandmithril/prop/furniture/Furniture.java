@@ -1,9 +1,9 @@
 package bloodandmithril.prop.furniture;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableMappingFunction;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.tile.Tile;
 
 @Copyright("Matthew Peck 2014")

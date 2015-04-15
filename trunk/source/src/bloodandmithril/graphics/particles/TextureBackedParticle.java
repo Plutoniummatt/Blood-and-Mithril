@@ -3,10 +3,11 @@ package bloodandmithril.graphics.particles;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
@@ -28,7 +29,7 @@ public class TextureBackedParticle extends Particle {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			texture =  new TextureRegion(Domain.gameWorldTexture, 453, 276, 64, 64);
+			texture =  new TextureRegion(WorldRenderer.gameWorldTexture, 453, 276, 64, 64);
 		}
 	}
 
@@ -48,8 +49,8 @@ public class TextureBackedParticle extends Particle {
 		if (topography.hasTile(position.x, position.y, true)) {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
-					Domain.shapeRenderer.setColor(color.getColor());
-					Domain.shapeRenderer.circle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
+					WorldRenderer.shapeRenderer.setColor(color.getColor());
+					WorldRenderer.shapeRenderer.circle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
 				}
 			} catch (NoTileFoundException e) {}
 		}

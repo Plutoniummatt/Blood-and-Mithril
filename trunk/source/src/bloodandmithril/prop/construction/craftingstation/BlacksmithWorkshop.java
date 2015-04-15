@@ -12,6 +12,7 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
@@ -23,7 +24,6 @@ import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

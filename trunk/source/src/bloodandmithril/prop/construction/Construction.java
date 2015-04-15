@@ -10,6 +10,7 @@ import bloodandmithril.character.ai.task.ConstructDeconstruct;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
@@ -29,7 +30,6 @@ import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.tile.Tile;
 
 import com.badlogic.gdx.graphics.Color;

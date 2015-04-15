@@ -4,6 +4,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedProjectileWeapon;
@@ -14,7 +15,6 @@ import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -34,7 +34,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			texture = new TextureRegion(Domain.individualTexture, 0, 947, 94, 18);
+			texture = new TextureRegion(WorldRenderer.individualTexture, 0, 947, 94, 18);
 		}
 	}
 
@@ -165,7 +165,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 		TextureRegion texture = getTextureRegion();
 
 		spriteBatch.draw(
-			Domain.individualTexture,
+			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 47 : 47),
 			position.y - 3,
 			flipX ? texture.getRegionWidth() - 47 : 47,

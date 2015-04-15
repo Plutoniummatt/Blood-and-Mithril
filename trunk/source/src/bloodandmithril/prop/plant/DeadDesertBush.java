@@ -12,6 +12,8 @@ import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.StickItem;
 import bloodandmithril.item.material.wood.StandardWood;
@@ -25,7 +27,6 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.graphics.Color;
@@ -44,19 +45,19 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 
 	private final int texture;
 	private int numberOfSticksLeft;
-	
+
 	private static Map<Integer, TextureRegion> textures;
 	static {
 		if (ClientServerInterface.isClient()) {
 			textures = Maps.newHashMap();
-			
-			textures.put(1, new TextureRegion(Domain.gameWorldTexture, 870, 51, 69, 80));
-			textures.put(2, new TextureRegion(Domain.gameWorldTexture, 940, 78, 54, 53));
-			textures.put(3, new TextureRegion(Domain.gameWorldTexture, 995, 83, 50, 48));
-			textures.put(4, new TextureRegion(Domain.gameWorldTexture, 1046, 68, 42, 63));
+
+			textures.put(1, new TextureRegion(WorldRenderer.gameWorldTexture, 870, 51, 69, 80));
+			textures.put(2, new TextureRegion(WorldRenderer.gameWorldTexture, 940, 78, 54, 53));
+			textures.put(3, new TextureRegion(WorldRenderer.gameWorldTexture, 995, 83, 50, 48));
+			textures.put(4, new TextureRegion(WorldRenderer.gameWorldTexture, 1046, 68, 42, 63));
 		}
 	}
-	
+
 	/**
 	 * Constructor
 	 */
@@ -82,7 +83,7 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 			this.height = 63;
 			break;
 		}
-		
+
 		numberOfSticksLeft = 10 + Util.getRandom().nextInt(11);
 	}
 
@@ -127,7 +128,7 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 				null
 			)
 		);
-		
+
 		if (Domain.getSelectedIndividuals().size() == 1) {
 			menu.addMenuItem(
 				new MenuItem(
@@ -152,7 +153,7 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 				)
 			);
 		}
-		
+
 		return menu;
 	}
 

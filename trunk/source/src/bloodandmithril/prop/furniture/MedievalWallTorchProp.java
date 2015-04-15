@@ -5,6 +5,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.networking.ClientServerInterface;
@@ -18,7 +19,6 @@ import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -38,7 +38,7 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 
 	public static class NotEmptyTile extends SerializableMappingFunction<Tile, Boolean> {
 		private static final long serialVersionUID = -7241384309597437080L;
-		
+
 		public NotEmptyTile() {
 		}
 
@@ -47,8 +47,8 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 			return !(input instanceof EmptyTile);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Constructor
 	 */

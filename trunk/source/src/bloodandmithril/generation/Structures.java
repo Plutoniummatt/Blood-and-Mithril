@@ -26,7 +26,7 @@ public class Structures {
 	private ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> subStructureKeys = new ConcurrentHashMap<>();
 
 	/** Stores which structure corresponds to which key. */
-	private static ConcurrentHashMap<Integer, Structure> structures;
+	private static ConcurrentHashMap<Integer, Structure> structures = new ConcurrentHashMap<Integer, Structure>();
 
 	// Used to keep the surface height consistent between structures where needed.
 	private ConcurrentHashMap<Integer, Integer> surfaceHeight = new ConcurrentHashMap<>();

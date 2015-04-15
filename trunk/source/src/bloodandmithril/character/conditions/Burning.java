@@ -4,12 +4,12 @@ import java.util.Collection;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 

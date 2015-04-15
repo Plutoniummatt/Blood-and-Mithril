@@ -5,13 +5,13 @@ import static bloodandmithril.networking.ClientServerInterface.isClient;
 import java.io.Serializable;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -46,15 +46,15 @@ public class ParticleService {
 			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new BloodSplat(position.cpy(), knockBack));
 		}
 	}
-	
-	
+
+
 	public static void fireworks(Vector2 position) {
 		if (isClient()) {
 			for (int i = 0; i < 50; i++) {
 				long lifetime = Util.getRandom().nextInt(300);
 				Color randomOneOf = Util.randomOneOf(new Color(1f, 0.6f, 1f, 1f), Color.PURPLE, Color.CYAN);
 				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 1200f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
-				
+
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
 					rotate,
@@ -74,7 +74,7 @@ public class ParticleService {
 				long lifetime = Util.getRandom().nextInt(2000);
 				Color randomOneOf = Util.randomOneOf(new Color(1f, 0.6f, 1f, 1f), Color.PURPLE, Color.CYAN);
 				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 1200f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
-				
+
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
 					rotate,
@@ -170,7 +170,7 @@ public class ParticleService {
 
 		}
 	}
-	
+
 
 	public static void parrySpark(Vector2 position, Vector2 knockBack, Depth depth, Color color, Color glowColor, int life, boolean trancer, int numberOfParticles, float baseSpeed) {
 		if (isClient()) {

@@ -3,6 +3,7 @@ package bloodandmithril.prop.plant.seed;
 import java.util.Collection;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.prop.Growable;
@@ -10,7 +11,6 @@ import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 

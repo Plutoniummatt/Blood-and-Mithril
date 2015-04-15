@@ -39,7 +39,7 @@ public class GameLoader {
 	 * Loads a saved game
 	 */
 	public static void load(PersistenceMetaData metadata, boolean newGame) {
-		GameSaver.setSavePath("save/" + metadata.name);
+		GameSaver.setPersistencePath("save/" + metadata.name);
 
 		if (newGame) {
 			GameSaver.mostRecentlyLoaded = null;

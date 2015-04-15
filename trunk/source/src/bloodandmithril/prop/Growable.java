@@ -1,8 +1,8 @@
 package bloodandmithril.prop;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.util.SerializableMappingFunction;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**

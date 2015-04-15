@@ -5,6 +5,7 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.ContainerImpl;
@@ -14,7 +15,6 @@ import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Wrapper;
-import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;

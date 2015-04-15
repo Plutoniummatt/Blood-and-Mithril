@@ -9,9 +9,9 @@ import static java.lang.Math.toRadians;
 import java.util.Map;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.WorldState;
 
 import com.badlogic.gdx.graphics.Color;
@@ -30,11 +30,11 @@ public class CelestialBody {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			starTextures.put(0, new TextureRegion(Domain.gameWorldTexture, 1, 422, 100, 100)); // Moon
-			starTextures.put(1, new TextureRegion(Domain.gameWorldTexture, 1, 400, 21, 21));
-			starTextures.put(2, new TextureRegion(Domain.gameWorldTexture, 23, 400, 15, 15));
-			starTextures.put(3, new TextureRegion(Domain.gameWorldTexture, 39, 400, 13, 13));
-			starTextures.put(4, new TextureRegion(Domain.gameWorldTexture, 53, 400, 11, 11));
+			starTextures.put(0, new TextureRegion(WorldRenderer.gameWorldTexture, 1, 422, 100, 100)); // Moon
+			starTextures.put(1, new TextureRegion(WorldRenderer.gameWorldTexture, 1, 400, 21, 21));
+			starTextures.put(2, new TextureRegion(WorldRenderer.gameWorldTexture, 23, 400, 15, 15));
+			starTextures.put(3, new TextureRegion(WorldRenderer.gameWorldTexture, 39, 400, 13, 13));
+			starTextures.put(4, new TextureRegion(WorldRenderer.gameWorldTexture, 53, 400, 11, 11));
 		}
 	}
 

@@ -1,10 +1,10 @@
 package bloodandmithril.prop.plant;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableMappingFunction;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.tile.Tile;
 
 /**

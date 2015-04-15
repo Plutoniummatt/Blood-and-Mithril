@@ -26,6 +26,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -37,7 +38,6 @@ import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
@@ -66,21 +66,21 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 		boolean server = !ClientServerInterface.isClient();
 
 		AnimationSwitcher walk = new AnimationSwitcher();
-		walk.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.07f, PlayMode.LOOP));
+		walk.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 899, 48, 48, 4, 0.07f, PlayMode.LOOP));
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> walkSequence = newArrayList(
 			wrap(walk, server ? null : Shaders.pass)
 		);
 
 		AnimationSwitcher run = new AnimationSwitcher();
-		run.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 4, 0.05f, PlayMode.LOOP));
+		run.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 899, 48, 48, 4, 0.05f, PlayMode.LOOP));
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run, server ? null : Shaders.pass)
 		);
 
 		AnimationSwitcher stand = new AnimationSwitcher();
-		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(Domain.individualTexture, 0, 899, 48, 48, 1, 1f, PlayMode.LOOP));
+		stand.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 899, 48, 48, 1, 1f, PlayMode.LOOP));
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> standSequence = newArrayList(
 			wrap(stand, server ? null : Shaders.pass)

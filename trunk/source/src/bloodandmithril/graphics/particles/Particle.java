@@ -5,11 +5,11 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import java.io.Serializable;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;

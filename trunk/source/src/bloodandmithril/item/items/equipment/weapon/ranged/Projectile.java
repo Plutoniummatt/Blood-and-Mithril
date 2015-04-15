@@ -8,6 +8,7 @@ import java.util.Set;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile;
 import bloodandmithril.networking.ClientServerInterface;
@@ -33,7 +34,7 @@ public abstract class Projectile implements Serializable {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			ArrowProjectile.textureRegion = new TextureRegion(Domain.gameWorldTexture, 619, 176, 50, 3);
+			ArrowProjectile.textureRegion = new TextureRegion(WorldRenderer.gameWorldTexture, 619, 176, 50, 3);
 		}
 	}
 

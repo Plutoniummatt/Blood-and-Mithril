@@ -2,7 +2,6 @@ package bloodandmithril.item.items.equipment.weapon;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
-import static bloodandmithril.world.Domain.individualTexture;
 import static com.badlogic.gdx.graphics.g2d.Animation.PlayMode.NORMAL;
 
 import java.util.Map;
@@ -13,6 +12,7 @@ import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
@@ -23,7 +23,6 @@ import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -41,10 +40,10 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			textureRegionMap.put(Machette.class, new TextureRegion(Domain.individualTexture, 0, 800, 63, 17));
-			textureRegionMap.put(Broadsword.class, new TextureRegion(Domain.individualTexture, 0, 834, 63, 17));
-			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
-			specialEffectsMapStab.put(Elf.class, wrap(AnimationHelper.animation(individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(18f, 32f)));
+			textureRegionMap.put(Machette.class, new TextureRegion(WorldRenderer.individualTexture, 0, 800, 63, 17));
+			textureRegionMap.put(Broadsword.class, new TextureRegion(WorldRenderer.individualTexture, 0, 834, 63, 17));
+			specialEffectsMap.put(Elf.class, wrap(AnimationHelper.animation(WorldRenderer.individualTexture, 64, 784, 36, 74, 10, 0.07f, NORMAL), new Vector2(65f, 40f)));
+			specialEffectsMapStab.put(Elf.class, wrap(AnimationHelper.animation(WorldRenderer.individualTexture, 64, 858, 102, 25, 8, 0.07f, NORMAL), new Vector2(18f, 32f)));
 		}
 	}
 
@@ -61,7 +60,7 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 		TextureRegion texture = getTextureRegion();
 
 		spriteBatch.draw(
-			Domain.individualTexture,
+			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,
 			flipX ? texture.getRegionWidth() - 17 : 17,

@@ -5,6 +5,7 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 import java.util.Set;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -16,7 +17,6 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Domain.Depth;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,20 +25,20 @@ import com.google.common.collect.Sets;
 
 /**
  * Offhand lantern for lighting
- * 
+ *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
 public class Lantern extends OffhandEquipment {
 	private static final long serialVersionUID = -8857992190500608270L;
-	
+
 	public static TextureRegion lantern;
 
 	private Set<Long> particleIds = Sets.newHashSet();
 	private float fuelRemaining;
 	private Integer workingId;
 	private float refreshTimer = 0.5f;
-	
+
 	/**
 	 * Constructor
 	 */
@@ -53,58 +53,58 @@ public class Lantern extends OffhandEquipment {
 		return (firstCap ? "Lantern" : "lantern") + " (" + String.format("%.2f", fuelRemaining) + ")";
 	}
 
-	
+
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
 		return (firstCap ? "Lanterns" : "lanterns") + String.format("%.2f", fuelRemaining) + ")";
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "A lantern, used for lighting. Uses oil as fuel.";
 	}
-	
+
 
 	@Override
 	protected boolean internalSameAs(Item other) {
 		if (other instanceof Lantern) {
-			return (((Lantern) other).fuelRemaining == fuelRemaining && ((Lantern) other).workingId == workingId) || (fuelRemaining == 0f && ((Lantern) other).fuelRemaining == 0f);
+			return ((Lantern) other).fuelRemaining == fuelRemaining && ((Lantern) other).workingId == workingId || fuelRemaining == 0f && ((Lantern) other).fuelRemaining == 0f;
 		}
 		return other instanceof Lantern;
 	}
 
-	
+
 	@Override
 	public TextureRegion getTextureRegion() {
 		return lantern;
 	}
 
-	
+
 	@Override
 	public TextureRegion getIconTextureRegion() {
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected Item internalCopy() {
 		return new Lantern(fuelRemaining);
 	}
-	
-	
+
+
 	@Override
 	public float renderAngle() {
 		return 0f;
 	}
-	
-	
+
+
 	@Override
 	public float combatAngle() {
 		return 0f;
 	}
 
-	
+
 	@Override
 	public Category getType() {
 		return Category.MISC;
@@ -115,8 +115,8 @@ public class Lantern extends OffhandEquipment {
 	public Vector2 getGripLocation() {
 		return new Vector2(6, 25);
 	}
-	
-	
+
+
 	@Override
 	public void particleEffects(Vector2 position, float angle, boolean flipX) {
 		if (fuelRemaining > 0f) {
@@ -168,8 +168,8 @@ public class Lantern extends OffhandEquipment {
 			}
 		}
 	}
-	
-	
+
+
 	@Override
 	public void update(Equipper equipper, float delta) {
 		if (refreshTimer <= 0f) {
@@ -178,7 +178,7 @@ public class Lantern extends OffhandEquipment {
 		} else {
 			refreshTimer -= delta;
 		}
-		
+
 		if (fuelRemaining > 0f) {
 			fuelRemaining -= delta / 4000f;
 		} else {
@@ -186,18 +186,18 @@ public class Lantern extends OffhandEquipment {
 				if (ClientServerInterface.isServer()) {
 					Domain.getWorld(getWorldId()).getServerParticles().remove(id);
 				}
-			}			
+			}
 			particleIds.clear();
 			fuelRemaining = 0f;
 		}
 	}
-	
-	
+
+
 	public void addFuel(float amount) {
 		this.fuelRemaining += amount;
 	}
-	
-	
+
+
 	@Override
 	public void onUnequip(Equipper equipper) {
 		for (long id : particleIds) {
