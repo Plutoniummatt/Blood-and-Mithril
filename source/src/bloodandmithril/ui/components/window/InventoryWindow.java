@@ -124,11 +124,11 @@ public class InventoryWindow extends Window implements Refreshable {
 		this.host = host;
 		buildItems(host.getEquipped(), host.getInventory(), true);
 		inventoryListingPanel.setScrollWheelActive(true);
-		addFilterItems();
+		filterButtons = setupFilters(filters, this).canScroll(false);
 	}
 
 
-	private void addFilterItems() {
+	public static ScrollableListingPanel<Button, String> setupFilters(Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters, Component parent) {
 		filters.put("Weapons", 		WrapperForTwo.wrap(item -> {return item instanceof Weapon;}, true));
 		filters.put("Armor", 		WrapperForTwo.wrap(item -> {return item instanceof Armor;}, true));
 		filters.put("Accesories", 	WrapperForTwo.wrap(item -> {return item instanceof Equipable && !(item instanceof Armor) && !(item instanceof Weapon);}, true));
@@ -141,7 +141,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		filters.put("Seed", 		WrapperForTwo.wrap(item -> {return item instanceof SeedItem;}, true));
 		filters.put("Ammo", 		WrapperForTwo.wrap(item -> {return item.getType() == Category.AMMO;}, true));
 
-		filterButtons = new ScrollableListingPanel<Button, String>(this, (b1, b2) -> {
+		return new ScrollableListingPanel<Button, String>(parent, (b1, b2) -> {
 			return b1.text.compareTo(b2.text);
 		}, false, 0) {
 			@Override
@@ -155,7 +155,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			@Override
 			protected void populateListings(List<HashMap<ListingMenuItem<Button>, String>> listings) {
 				HashMap<ListingMenuItem<Button>, String> map = Maps.newHashMap();
-				Button[] filterButtonsArray = filterButtons();
+				Button[] filterButtonsArray = filterButtons(filters, (Refreshable) parent);
 				for (Button button : filterButtonsArray) {
 					map.put(
 						new ListingMenuItem<Button>(button, button, null),
@@ -164,7 +164,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				}
 
 				HashMap<ListingMenuItem<Button>, String> map2 = Maps.newHashMap();
-				for (Button button : filterAllButtons(Lists.newArrayList(filterButtonsArray))) {
+				for (Button button : filterAllButtons(Lists.newArrayList(filterButtonsArray), filters, (Refreshable) parent)) {
 					map2.put(
 						new ListingMenuItem<Button>(button, button, null),
 						""
@@ -189,7 +189,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		filterButtons.leftClick(copy, windowsCopy);
 	}
 
-	private Button[] filterAllButtons(Collection<Button> filterButtons) {
+	private static Button[] filterAllButtons(Collection<Button> filterButtons, Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters, Refreshable refreshable) {
 		final Collection<Button> buttons = Lists.newArrayList();
 
 		final Button selectAll = new Button(
@@ -232,7 +232,7 @@ public class InventoryWindow extends Window implements Refreshable {
 						item.setDownColor(Color.GREEN);
 					}
 				});
-				refresh();
+				refreshable.refresh();
 			});
 
 			deselectAll.setTask(() -> {
@@ -247,7 +247,7 @@ public class InventoryWindow extends Window implements Refreshable {
 						item.setDownColor(Color.RED);
 					}
 				});
-				refresh();
+				refreshable.refresh();
 			});
 
 			buttons.add(selectAll);
@@ -256,9 +256,9 @@ public class InventoryWindow extends Window implements Refreshable {
 			return Lists.newArrayList(buttons).toArray(new Button[buttons.size()]);
 	}
 
-	private Button[] filterButtons() {
+	private static Button[] filterButtons(Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters, Refreshable refreshable) {
 		final Collection<Button> buttons = Lists.newArrayList(Collections2.transform(
-			this.filters.entrySet(),
+			filters.entrySet(),
 			entry -> {
 				final Button button = new Button(
 					entry.getKey(),
@@ -279,7 +279,7 @@ public class InventoryWindow extends Window implements Refreshable {
 					button.setIdleColor(entry.getValue().b ? Color.GREEN : Color.RED);
 					button.setOverColor(entry.getValue().b ? Color.WHITE : Color.WHITE);
 					button.setDownColor(entry.getValue().b ? Color.GREEN : Color.RED);
-					refresh();
+					refreshable.refresh();
 				});
 
 				return button;
@@ -325,7 +325,8 @@ public class InventoryWindow extends Window implements Refreshable {
 		filterButtons.y = y;
 
 		// Render the separator
-		renderSeparator();
+		renderSeparator(x + width - 88);
+		renderSeparator(x + 170);
 
 		// Render the listing panel
 		inventoryListingPanel.render();
@@ -336,14 +337,14 @@ public class InventoryWindow extends Window implements Refreshable {
 		}
 
 		// Render the weight indication text
-		renderCapacityIndicationText(host, this, 6, -height);
+		renderCapacityIndicationText(host, this, 6, -height, "", "");
 	}
 
 
 	/**
 	 * Renders the weight display
 	 */
-	public static void renderCapacityIndicationText(Container container, Window parentComponent, int xOffset, int yOffset) {
+	public static void renderCapacityIndicationText(Container container, Window parentComponent, int xOffset, int yOffset, String extra1, String extra2) {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
 		Color activeColor;
 
@@ -360,19 +361,19 @@ public class InventoryWindow extends Window implements Refreshable {
 					Colors.modulateAlpha(Color.RED, 0.6f * parentComponent.getAlpha());
 
 		defaultFont.setColor(parentComponent.isActive() ? activeColor : inactiveColor);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate("Weight: " + String.format("%.2f", container.getCurrentLoad()) + (container.getWeightLimited() ? "/" + String.format("%.2f", container.getMaxCapacity()) : "")), parentComponent.x + xOffset, parentComponent.y + yOffset + 40);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate("Volume: " + container.getCurrentVolume() + "/" + container.getMaxVolume()), parentComponent.x + xOffset, parentComponent.y + yOffset + 20);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate(("Weight: " + String.format("%.2f", container.getCurrentLoad()) + (container.getWeightLimited() ? "/" + String.format("%.2f", container.getMaxCapacity()) : "") + extra1)), parentComponent.x + xOffset, parentComponent.y + yOffset + 40);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate(("Volume: " + container.getCurrentVolume() + "/" + container.getMaxVolume()) + extra2), parentComponent.x + xOffset, parentComponent.y + yOffset + 20);
 	}
 
 
 	/**
 	 * Renders the separator that separates the item listing from the quantity listing
 	 */
-	private void renderSeparator() {
+	private void renderSeparator(int xCoord) {
 		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.Filled);
 		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
-		shapeRenderer.rect(x + width - 88, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
+		shapeRenderer.rect(xCoord, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
 		shapeRenderer.end();
 	}
 
@@ -408,7 +409,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				}
 			};
 
-			equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder, true, 35) {
+			equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder, false, 35) {
 				@Override
 				protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 					listings.add(equippedItemsToDisplay);
