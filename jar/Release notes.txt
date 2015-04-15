@@ -1,3 +1,8 @@
+Release 0.0.20
+---------------
+* Improvements to water reflections
+* Inventory window and trade window now have better item category filtering
+
 Release 0.0.19
 ---------------
 * Background bodies of water are now reflective
