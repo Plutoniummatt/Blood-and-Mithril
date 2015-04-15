@@ -46,7 +46,7 @@ public class CelestialBody {
 
 	/** Color of this {@link CelestialBody} */
 	public final Color filter;
-	
+
 	/** Whether this {@link CelestialBody} rotates */
 	public final boolean rotates;
 
@@ -75,15 +75,15 @@ public class CelestialBody {
 		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), 1.0f - Weather.getDaylightColor().r);
 		if (rotates) {
 			spriteBatch.draw(
-				region, 
+				region,
 				Weather.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
 				Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2,
-				region.getRegionWidth() / 2, 
+				region.getRegionWidth() / 2,
 				region.getRegionHeight() / 2,
 				region.getRegionWidth(),
 				region.getRegionHeight(),
-				1f, 
-				1f, 
+				1f,
+				1f,
 				- theta + 90f
 			);
 		} else {
@@ -93,7 +93,5 @@ public class CelestialBody {
 				Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2
 			);
 		}
-
-		spriteBatch.flush();
 	}
 }
