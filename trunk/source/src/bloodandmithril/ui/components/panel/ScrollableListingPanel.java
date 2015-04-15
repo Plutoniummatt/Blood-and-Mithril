@@ -56,7 +56,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	/** Used for scroll processing */
 	private Float scrollBarButtonLocationOld = null;
 	private float mouseLocYFrozen;
-	private boolean scrollWheelActive;
+	private boolean scrollWheelActive, canScroll = true;
 
 	/** Used to sort this listing panel */
 	private Comparator<T> sortingComparator;
@@ -76,6 +76,12 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		this.extraColumnWidth = extraColumnWidth;
 		populateListings(listings);
 	}
+	
+	
+	public ScrollableListingPanel<T, A> canScroll(boolean canScroll) {
+		this.canScroll = canScroll;
+		return this;
+	}
 
 
 	/**
@@ -84,7 +90,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	public void refresh(List<HashMap<ListingMenuItem<T>, A>> listings) {
 		this.listings = listings;
 
-		if (filters.isEmpty() || !filtered) {
+		if (!filtered) {
 			return;
 		}
 
@@ -180,7 +186,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	@Override
 	public boolean scrolled(int amount) {
 		scrollWheelActive = isMouseWithin();
-		if (scrollWheelActive) {
+		if (scrollWheelActive && canScroll) {
 			startingIndex += amount;
 
 			int size = 0;
@@ -216,11 +222,13 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 	@Override
 	public void render() {
-		// Render the scroll bar
-		renderScrollBar();
-
-		// Render the scroll bar button
-		renderScrollBarButton();
+		if (canScroll) {
+			// Render the scroll bar
+			renderScrollBar();
+			
+			// Render the scroll bar button
+			renderScrollBarButton();
+		}
 
 		// Render the listings
 		renderListing();

@@ -33,11 +33,14 @@ import bloodandmithril.ui.components.InfoPopup;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Util.Colors;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -57,11 +60,15 @@ public class TradeWindow extends Window implements Refreshable {
 	protected ScrollableListingPanel<Item, Integer> proposeeTradingPanel;
 
 	/** Listings of items to display */
-	protected final HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade = Maps.newHashMap();
+	private final HashMap<ListingMenuItem<Item>, Integer> proposerItemsToTrade = Maps.newHashMap();
 	private final HashMap<ListingMenuItem<Item>, Integer> proposerItemsNotToTrade = Maps.newHashMap();
+	private final Map<String, WrapperForTwo<Predicate<Item>, Boolean>> proposerFilters = Maps.newHashMap();
+	private final ScrollableListingPanel<Button, String> proposerFilterButtons;
 
 	private final HashMap<ListingMenuItem<Item>, Integer> proposeeItemsToTrade = Maps.newHashMap();
 	private final HashMap<ListingMenuItem<Item>, Integer> proposeeItemsNotToTrade = Maps.newHashMap();
+	private final Map<String, WrapperForTwo<Predicate<Item>, Boolean>> proposeeFilters = Maps.newHashMap();
+	private final ScrollableListingPanel<Button, String> proposeeFilterButtons;
 
 	/** Traders */
 	protected Container proposer;
@@ -81,17 +88,31 @@ public class TradeWindow extends Window implements Refreshable {
 		() -> {
 			proposeTrade();
 		},
-		Color.YELLOW,
+		Color.MAGENTA,
 		Color.GRAY,
 		Color.WHITE,
 		UIRef.BL
 	);
+	
+	private final Button proposerButton, proposeeButton;
 
 	/**
 	 * Constructor
 	 */
-	public TradeWindow(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Individual proposer, Container proposee, Comparator<Item> sortingComparator) {
-		super(x, y, length, height, title, active, minLength, minHeight, false, true, true);
+	public TradeWindow(String title, boolean active, Individual proposer, Container proposee, Comparator<Item> sortingComparator) {
+		super(
+			BloodAndMithrilClient.WIDTH/2 - 650,
+			BloodAndMithrilClient.HEIGHT/2 + 300,
+			1300,
+			600,
+			title, 
+			active, 
+			1300,
+			300,
+			false, 
+			true, 
+			true
+		);
 
 		this.proposer = proposer;
 		this.proposee = proposee;
@@ -104,6 +125,41 @@ public class TradeWindow extends Window implements Refreshable {
 		}
 
 		createPanels(sortingComparator);
+		
+		proposerFilterButtons = InventoryWindow.setupFilters(proposerFilters, this).canScroll(false);
+		proposeeFilterButtons = InventoryWindow.setupFilters(proposeeFilters, this).canScroll(false);
+		
+		String proposerTitle = "---- " + proposer.getId().getSimpleName() + " ----";
+		proposerButton = new Button(
+			proposerTitle,
+			defaultFont,
+			0,
+			0,
+			10 * proposer.getId().getSimpleName().length(),
+			16,
+			() -> {
+			},
+			Color.WHITE,
+			Color.WHITE,
+			Color.WHITE,
+			UIRef.BL
+		);
+		
+		String proposeeTitle = "---- " + (proposee instanceof Individual ? (((Individual)proposee).getId().getSimpleName()) : (((Prop) proposee).getTitle())) + " ----";
+		proposeeButton = new Button(
+			proposeeTitle,
+			defaultFont,
+			0,
+			0,
+			10 * proposeeTitle.length(),
+			16,
+			() -> {
+			},
+			Color.WHITE,
+			Color.WHITE,
+			Color.WHITE,
+			UIRef.BL
+		);
 	}
 
 
@@ -218,9 +274,29 @@ public class TradeWindow extends Window implements Refreshable {
 			);
 		}
 
+		
+		proposerPanel.getFilters().clear();
+		proposerPanel.getFilters().addAll(Collections2.transform(
+			Collections2.filter(proposerFilters.entrySet(), toKeep -> {
+				return toKeep.getValue().b;
+			}),
+			value -> {
+				return value.getValue().a;
+			}
+		));
+		
+		proposeePanel.getFilters().clear();
+		proposeePanel.getFilters().addAll(Collections2.transform(
+			Collections2.filter(proposeeFilters.entrySet(), toKeep -> {
+				return toKeep.getValue().b;
+			}),
+			value -> {
+				return value.getValue().a;
+			}
+		));
+
 		proposerPanel.refresh(Lists.newArrayList(proposerItemsNotToTrade));
 		proposeePanel.refresh(Lists.newArrayList(proposeeItemsNotToTrade));
-
 		proposerTradingPanel.refresh(Lists.newArrayList(proposerItemsToTrade));
 		proposeeTradingPanel.refresh(Lists.newArrayList(proposeeItemsToTrade));
 	}
@@ -235,7 +311,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	private void createPanels(Comparator<Item> sortingComparator) {
-		proposerPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, false, 35) {
+		proposerPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, true, 35) {
 
 			@Override
 			protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -258,7 +334,7 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		};
 
-		proposeePanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, false, 35) {
+		proposeePanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, true, 35) {
 
 			@Override
 			protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -451,7 +527,7 @@ public class TradeWindow extends Window implements Refreshable {
 					changeList(key, 1, transferFrom, transferTo, !toTrade);
 				}
 			},
-			Color.ORANGE,
+			toTrade ? Color.ORANGE : Color.MAGENTA,
 			Color.GREEN,
 			Color.WHITE,
 			UIRef.BL
@@ -538,13 +614,43 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		}
 
-		InventoryWindow.renderCapacityIndicationText(proposer, this, 6, -height);
-		InventoryWindow.renderCapacityIndicationText(proposee, this, width / 2 + 6, -height);
+		float proposerMass = (float) proposerItemsToTrade.entrySet().stream().mapToDouble(entry -> {
+			return entry.getValue() * entry.getKey().t.getMass();
+		}).sum();
+		
+		float proposeeMass = (float) proposeeItemsToTrade.entrySet().stream().mapToDouble(entry -> {
+			return entry.getValue() * entry.getKey().t.getMass();
+		}).sum();
+		
+		int proposerVolume = (int) proposerItemsToTrade.entrySet().stream().mapToLong(entry -> {
+			return entry.getValue() * entry.getKey().t.getVolume();
+		}).sum();
+		
+		int proposeeVolume = (int) proposeeItemsToTrade.entrySet().stream().mapToLong(entry -> {
+			return entry.getValue() * entry.getKey().t.getVolume();
+		}).sum();
+		
+		InventoryWindow.renderCapacityIndicationText(proposer, this, 6, -height, " (+" + String.format("%.2f", proposeeMass) + ")", " (+" + proposeeVolume + ")");
+		InventoryWindow.renderCapacityIndicationText(proposee, this, width / 2 + 6, -height, " (+" + String.format("%.2f", proposerMass) + ")", " (+" + proposerVolume + ")");
 
 		tradeButton.render(
 			x + 71,
 			y - height + 70,
 			tradeButtonClickable(),
+			getAlpha()
+		);
+		
+		proposerButton.render(
+			x + width / 4,
+			y - 20,
+			isActive(),
+			getAlpha()
+		);
+		
+		proposeeButton.render(
+			x + 3 * width / 4,
+			y - 20,
+			isActive(),
 			getAlpha()
 		);
 	}
@@ -566,26 +672,38 @@ public class TradeWindow extends Window implements Refreshable {
 	protected synchronized void renderListingPanels() {
 		int lineWidth = 23;
 
-		proposerPanel.x = x;
-		proposerPanel.y = y - (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5,proposerItemsToTrade.size())) * lineWidth);
-		proposerPanel.height = height - 50 - (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposerItemsToTrade.size())) * lineWidth);
-		proposerPanel.width = width / 2 - 10;
+		proposerPanel.x = x + 200;
+		proposerPanel.y = y - (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5,proposerItemsToTrade.size())) * lineWidth) - 30;
+		proposerPanel.height = height - 85 - (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposerItemsToTrade.size())) * lineWidth);
+		proposerPanel.width = width / 2 - 210;
 
-		proposeePanel.x = x + width / 2 + 10;
-		proposeePanel.y = y - (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5,proposeeItemsToTrade.size())) * lineWidth);
-		proposeePanel.height = height - 50 - (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposeeItemsToTrade.size())) * lineWidth);
-		proposeePanel.width = width / 2 - 10;
+		proposeePanel.x = x + width / 2 + 10 + 200;
+		proposeePanel.y = y - (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5,proposeeItemsToTrade.size())) * lineWidth) - 30;
+		proposeePanel.height = height - 85 - (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposeeItemsToTrade.size())) * lineWidth);
+		proposeePanel.width = width / 2 - 210;
 
-		proposerTradingPanel.x = x;
-		proposerTradingPanel.y = y;
-		proposerTradingPanel.height = 50 + (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposerItemsToTrade.size())) * lineWidth);
-		proposerTradingPanel.width = width / 2 - 10;
+		proposerTradingPanel.x = x + 200;
+		proposerTradingPanel.y = y - 30;
+		proposerTradingPanel.height = 85 + (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposerItemsToTrade.size())) * lineWidth);
+		proposerTradingPanel.width = width / 2 - 210;
 
-		proposeeTradingPanel.x = x + width / 2 + 10;
-		proposeeTradingPanel.y = y;
-		proposeeTradingPanel.height = 50 + (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposeeItemsToTrade.size())) * lineWidth);
-		proposeeTradingPanel.width = width / 2 - 10;
+		proposeeTradingPanel.x = x + width / 2 + 210;
+		proposeeTradingPanel.y = y - 30;
+		proposeeTradingPanel.height = 85 + (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposeeItemsToTrade.size())) * lineWidth);
+		proposeeTradingPanel.width = width / 2 - 210;
+		
+		proposerFilterButtons.x = x;
+		proposerFilterButtons.y = y - 30;
+		proposerFilterButtons.height = height - 85;
+		proposerFilterButtons.width = 180;
+		
+		proposeeFilterButtons.x = x + width / 2 + 10;
+		proposeeFilterButtons.y = y - 30;
+		proposeeFilterButtons.height = height - 85;
+		proposeeFilterButtons.width = 180;
 
+		proposerFilterButtons.render();
+		proposeeFilterButtons.render();
 		proposerPanel.render();
 		proposeePanel.render();
 
@@ -604,6 +722,8 @@ public class TradeWindow extends Window implements Refreshable {
 		proposeePanel.leftClick(copy, windowsCopy);
 		proposerTradingPanel.leftClick(copy, windowsCopy);
 		proposeeTradingPanel.leftClick(copy, windowsCopy);
+		proposeeFilterButtons.leftClick(copy, windowsCopy);
+		proposerFilterButtons.leftClick(copy, windowsCopy);
 
 		if (tradeButtonClickable()) {
 			tradeButton.click();
@@ -613,7 +733,13 @@ public class TradeWindow extends Window implements Refreshable {
 
 	@Override
 	public boolean scrolled(int amount) {
-		return proposerTradingPanel.scrolled(amount) || proposeeTradingPanel.scrolled(amount) || proposerPanel.scrolled(amount) || proposeePanel.scrolled(amount);
+		return 
+			proposerTradingPanel.scrolled(amount) || 
+			proposeeTradingPanel.scrolled(amount) || 
+			proposerPanel.scrolled(amount) || 
+			proposeePanel.scrolled(amount) ||
+			proposeeFilterButtons.scrolled(amount) ||
+			proposerFilterButtons.scrolled(amount);
 	}
 
 
@@ -623,6 +749,8 @@ public class TradeWindow extends Window implements Refreshable {
 		proposeePanel.leftClickReleased();
 		proposerTradingPanel.leftClickReleased();
 		proposeeTradingPanel.leftClickReleased();
+		proposeeFilterButtons.leftClickReleased();
+		proposerFilterButtons.leftClickReleased();
 	}
 
 

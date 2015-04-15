@@ -44,8 +44,6 @@ public class Shaders {
 	public static void setup() {
 		ShaderProgram.pedantic = false;
 		Logger.generalDebug("Shaders loaded", LogLevel.DEBUG);
-
-		System.out.println(volumetricLighting.getLog());
 	}
 
 	private static ShaderProgram filterReplaceIgnoreColorShader() {

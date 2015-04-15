@@ -5,7 +5,6 @@ import java.util.Comparator;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -188,14 +187,8 @@ public class TradeWith extends CompositeAITask {
 			Prop prop = Domain.getWorld(proposer.getWorldId()).props().getProp(((Prop) container).id);
 				UserInterface.addLayeredComponentUnique(
 				new TradeWindow(
-					BloodAndMithrilClient.WIDTH/2 - 450,
-					BloodAndMithrilClient.HEIGHT/2 + 300,
-					900,
-					600,
 					proposer.getId().getSimpleName() + " interacting with container",
 					true,
-					900,
-					300,
 					proposer,
 					(Container) prop,
 					sortOrder
@@ -211,14 +204,8 @@ public class TradeWith extends CompositeAITask {
 	public static void openTradeWindowWithIndividual(Individual proposer, Individual proposeeCasted) {
 		UserInterface.addLayeredComponentUnique(
 			new TradeWindow(
-				BloodAndMithrilClient.WIDTH / 2 - 450,
-				BloodAndMithrilClient.HEIGHT / 2 + 300,
-				900,
-				600,
 				"Trade between " + proposer.getId().getFirstName() + " and " + proposeeCasted.getId().getFirstName(),
 				true,
-				900,
-				300,
 				proposer,
 				proposeeCasted,
 				sortOrder

@@ -28,7 +28,7 @@ void main()
 		if (i * step > d) {
 			break;
 		}
-		alpha = alpha + (1.0 - texture2D(u_texture, (inverted * resolution + direction * i * step) / resolution).a) / 9.0;
+		alpha = alpha + (1.0 - texture2D(u_texture, (inverted * resolution + direction * i * step) / resolution).a) / 8.0;
 	}
 
 	float r = rand(v_texCoords)/24.0;
