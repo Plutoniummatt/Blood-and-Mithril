@@ -528,7 +528,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/** Returns the {@link Proficiencies} of this {@link Individual} */
-	public Proficiencies getSkills() {
+	public Proficiencies getProficiencies() {
 		return skills;
 	}
 

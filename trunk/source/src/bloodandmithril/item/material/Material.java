@@ -36,15 +36,13 @@ public abstract class Material implements Serializable {
 		return (T) materials.get(clazz);
 	}
 
-
 	/**
 	 * @return the Name of this {@link Material}
 	 */
 	public abstract String getName();
-	
-	
+
 	/**
-	 * @return the combat multiplier value for things made from this {@link Metal}
+	 * @return the multiplier value for things made from this {@link Material}
 	 */
 	public abstract float getCombatMultiplier();
 }

@@ -77,7 +77,8 @@ public class GlassBottleItem extends LiquidContainerItem implements Craftable {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getGlassworking().getLevel() >= 0;
+		// TODO
+		return true;
 	}
 
 
@@ -111,5 +112,10 @@ public class GlassBottleItem extends LiquidContainerItem implements Craftable {
 	@Override
 	public TextureRegion getIconTextureRegion() {
 		return null;
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
 	}
 }

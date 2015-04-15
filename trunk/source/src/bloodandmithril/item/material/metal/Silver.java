@@ -68,6 +68,6 @@ public class Silver extends Metal {
 
 	@Override
 	public float getCombatMultiplier() {
-		return 0.5f;
+		return 0.6f;
 	}
 }

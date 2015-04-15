@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.Proficiency;
+import bloodandmithril.character.proficiency.proficiencies.Trading;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -52,7 +53,7 @@ public class TradeService {
 		// ---------
 		// The minimum trade skill required for the trade to work, would be the lowest skill level that makes the effective
 		// value greater or equal to 400g, in this case, 80.
-		float proposerEffectiveValue = (Proficiency.getRatioToMax(proposer.getSkills().getTrading().getLevel()) + 1f)/2f * proposerActualValue;
+		float proposerEffectiveValue = (Proficiency.getRatioToMax(proposer.getProficiencies().getProficiency(Trading.class).getLevel()) + 1f)/2f * proposerActualValue;
 		float proposeeEffectiveValue = proposeeActualValue;
 
 		if (proposerEffectiveValue > proposeeEffectiveValue) {
@@ -80,24 +81,24 @@ public class TradeService {
 		int proposeeItemsToTradeVolume = proposeeItemsToTrade.entrySet().stream().mapToInt(entry -> {
 			return entry.getKey().getVolume() * entry.getValue();
 		}).sum();
-		
+
 		boolean proposerOverWeightLimitPostTrade = proposer.getCurrentLoad() - proposerItemsToTradeMass + proposeeItemsToTradeMass > proposer.getMaxCapacity() && proposer.getWeightLimited();
 		boolean proposeeOverWeightLimitPostTrade = proposee.getCurrentLoad() + proposerItemsToTradeMass - proposeeItemsToTradeMass > proposee.getMaxCapacity() && proposee.getWeightLimited();
-		
+
 		boolean proposerWeightIncreasing = proposeeItemsToTradeMass - proposerItemsToTradeMass > 0;
 		boolean proposeeWeightIncreasing = proposerItemsToTradeMass - proposeeItemsToTradeMass > 0;
-		
+
 		boolean proposerOverVolumeLimitPostTrade = proposer.getCurrentVolume() - proposerItemsToTradeVolume + proposeeItemsToTradeVolume > proposer.getMaxVolume();
 		boolean proposeeOverVolumeLimitPostTrade = proposee.getCurrentVolume() + proposerItemsToTradeVolume - proposeeItemsToTradeVolume > proposee.getMaxVolume();
-		
+
 		boolean proposerVolumeIncreasing = proposeeItemsToTradeVolume - proposerItemsToTradeVolume > 0;
 		boolean proposeeVolumeIncreasing = proposerItemsToTradeVolume - proposeeItemsToTradeVolume > 0;
-		
+
 		if (
-			(proposerOverWeightLimitPostTrade && proposerWeightIncreasing) ||
-			(proposeeOverWeightLimitPostTrade && proposeeWeightIncreasing) ||
-			(proposerOverVolumeLimitPostTrade && proposerVolumeIncreasing) ||
-			(proposeeOverVolumeLimitPostTrade && proposeeVolumeIncreasing)
+			proposerOverWeightLimitPostTrade && proposerWeightIncreasing ||
+			proposeeOverWeightLimitPostTrade && proposeeWeightIncreasing ||
+			proposerOverVolumeLimitPostTrade && proposerVolumeIncreasing ||
+			proposeeOverVolumeLimitPostTrade && proposeeVolumeIncreasing
 		) {
 			UserInterface.addMessage("Can not trade", "One or more parties do not have enough inventory space.", new IndividualSelected(((Individual) proposer).getId().getId()));
 			return;

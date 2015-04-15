@@ -88,8 +88,6 @@ import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.character.proficiency.proficiencies.Cooking;
-import bloodandmithril.character.proficiency.proficiencies.Glassworking;
-import bloodandmithril.character.proficiency.proficiencies.Masonry;
 import bloodandmithril.character.proficiency.proficiencies.Smithing;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -502,8 +500,6 @@ public class ClientServerInterface {
 		kryo.register(bloodandmithril.character.proficiency.proficiencies.Trading.class);
 		kryo.register(Smithing.class);
 		kryo.register(Torch.class);
-		kryo.register(Masonry.class);
-		kryo.register(Glassworking.class);
 		kryo.register(Cooking.class);
 		kryo.register(Carpentry.class);
 		kryo.register(LinkedBlockingQueue.class);
@@ -791,7 +787,7 @@ public class ClientServerInterface {
 			client.sendTCP(new RequestSuppressAI(individual, suppress));
 			Logger.networkDebug("Sending AI suppression request", LogLevel.DEBUG);
 		}
-		
+
 		public static synchronized void sendThrowItemRequest(Individual individual, Item item, Vector2 mouseCoords) {
 			client.sendTCP(new RequestThrowItem(individual, item, mouseCoords));
 			Logger.networkDebug("Sending throw item request", LogLevel.DEBUG);

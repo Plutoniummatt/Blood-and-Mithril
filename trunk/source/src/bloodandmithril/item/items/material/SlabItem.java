@@ -42,7 +42,8 @@ public class SlabItem extends bloodandmithril.item.items.material.MaterialItem i
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getMasonry().getLevel() >= Material.getMaterial(mineral).getSlabCraftingLevel();
+		// TODO
+		return true;
 	}
 
 
@@ -102,5 +103,11 @@ public class SlabItem extends bloodandmithril.item.items.material.MaterialItem i
 	public TextureRegion getIconTextureRegion() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		// TODO Auto-generated method stub
 	}
 }

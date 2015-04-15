@@ -142,7 +142,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		filters.put("Ammo", 		WrapperForTwo.wrap(item -> {return item.getType() == Category.AMMO;}, true));
 
 		return new ScrollableListingPanel<Button, String>(parent, (b1, b2) -> {
-			return b1.text.compareTo(b2.text);
+			return b1.text.call().compareTo(b2.text.call());
 		}, false, 0) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Button>, String> item) {
@@ -361,8 +361,8 @@ public class InventoryWindow extends Window implements Refreshable {
 					Colors.modulateAlpha(Color.RED, 0.6f * parentComponent.getAlpha());
 
 		defaultFont.setColor(parentComponent.isActive() ? activeColor : inactiveColor);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate(("Weight: " + String.format("%.2f", container.getCurrentLoad()) + (container.getWeightLimited() ? "/" + String.format("%.2f", container.getMaxCapacity()) : "") + extra1)), parentComponent.x + xOffset, parentComponent.y + yOffset + 40);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate(("Volume: " + container.getCurrentVolume() + "/" + container.getMaxVolume()) + extra2), parentComponent.x + xOffset, parentComponent.y + yOffset + 20);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate("Weight: " + String.format("%.2f", container.getCurrentLoad()) + (container.getWeightLimited() ? "/" + String.format("%.2f", container.getMaxCapacity()) : "") + extra1), parentComponent.x + xOffset, parentComponent.y + yOffset + 40);
+		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate("Volume: " + container.getCurrentVolume() + "/" + container.getMaxVolume() + extra2), parentComponent.x + xOffset, parentComponent.y + yOffset + 20);
 	}
 
 

@@ -3,6 +3,7 @@ package bloodandmithril.item.items.material;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
@@ -17,7 +18,7 @@ public class StickItem extends bloodandmithril.item.items.material.MaterialItem 
 	private static final long serialVersionUID = 2206871386989760859L;
 
 	private Class<? extends Wood> wood;
-	
+
 	public static TextureRegion STICK;
 
 	/**
@@ -99,5 +100,11 @@ public class StickItem extends bloodandmithril.item.items.material.MaterialItem 
 	@Override
 	public float getCraftingDuration() {
 		return Material.getMaterial(wood).getStickCraftingDuration();
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		crafter.getProficiencies().getProficiency(Carpentry.class).increaseExperience(delta * 3f);
 	}
 }

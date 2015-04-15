@@ -239,6 +239,15 @@ public class UserInterface {
 	}
 
 
+	public static void refreshRefreshableWindows(Class<? extends Window> classToRefresh) {
+		layeredComponents.stream().filter((component) -> {
+			return component instanceof Refreshable && component.getClass().equals(classToRefresh);
+		}).forEach((component) -> {
+			((Refreshable) component).refresh();
+		});
+	}
+
+
 	/**
 	 * Load the buttons
 	 */

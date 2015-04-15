@@ -6,6 +6,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
@@ -87,7 +88,7 @@ public class WoodenBucketItem extends LiquidContainerItem implements Craftable {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getCarpentry().getLevel() >= 0;
+		return individual.getProficiencies().getProficiency(Carpentry.class).getLevel() >= 0;
 	}
 
 
@@ -121,5 +122,11 @@ public class WoodenBucketItem extends LiquidContainerItem implements Craftable {
 	public TextureRegion getIconTextureRegion() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		crafter.getProficiencies().getProficiency(Carpentry.class).increaseExperience(delta * 5f);
 	}
 }

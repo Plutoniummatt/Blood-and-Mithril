@@ -3,6 +3,7 @@ package bloodandmithril.item.items.furniture;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
@@ -26,7 +27,7 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2015")
 public class SmallWoodenCrateItem extends FurnitureItem implements Craftable {
 	private static final long serialVersionUID = -2605696279754562239L;
-	
+
 	private final Class<? extends Wood> wood;
 
 	/**
@@ -110,5 +111,11 @@ public class SmallWoodenCrateItem extends FurnitureItem implements Craftable {
 			woodenCrate.setWorldId(Domain.getActiveWorld().getWorldId());
 		}
 		return woodenCrate;
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		crafter.getProficiencies().getProficiency(Carpentry.class).increaseExperience(delta * 8f);
 	}
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.proficiency.proficiencies.Smithing;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.OneHandedSword;
@@ -63,7 +64,7 @@ public class Machette extends OneHandedSword<Iron> {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getSmithing().getLevel() >= 8;
+		return individual.getProficiencies().getProficiency(Smithing.class).getLevel() >= 8;
 	}
 
 
@@ -83,5 +84,11 @@ public class Machette extends OneHandedSword<Iron> {
 
 	@Override
 	public void particleEffects(Vector2 position, float angle, boolean flipX) {
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		crafter.getProficiencies().getProficiency(Smithing.class).increaseExperience(delta * 7f);
 	}
 }

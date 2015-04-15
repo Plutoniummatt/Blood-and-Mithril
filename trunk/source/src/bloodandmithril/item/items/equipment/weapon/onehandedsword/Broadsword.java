@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.proficiency.proficiencies.Smithing;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.OneHandedSword;
@@ -18,7 +19,7 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2014")
 public class Broadsword extends OneHandedSword<Steel> {
 	private static final long serialVersionUID = 9190548689838579213L;
-	
+
 	public static TextureRegion ICON;
 
 	public Broadsword() {
@@ -64,7 +65,7 @@ public class Broadsword extends OneHandedSword<Steel> {
 
 	@Override
 	public boolean canBeCraftedBy(Individual individual) {
-		return individual.getSkills().getSmithing().getLevel() >= 10;
+		return individual.getProficiencies().getProficiency(Smithing.class).getLevel() >= 10;
 	}
 
 
@@ -90,5 +91,11 @@ public class Broadsword extends OneHandedSword<Steel> {
 	@Override
 	public boolean twoHand() {
 		return false;
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		crafter.getProficiencies().getProficiency(Smithing.class).increaseExperience(delta * 10f);
 	}
 }

@@ -163,7 +163,7 @@ public class OptionsWindow extends Window {
 					)
 				);
 
-				fullScreen.text = ConfigPersistenceService.getConfig().isFullScreen() ? "Change to windowed" : "Change to full screen";
+				fullScreen.text = ConfigPersistenceService.getConfig().isFullScreen() ? () -> {return "Change to windowed";} : () -> {return "Change to full screen";};
 			},
 			Color.ORANGE,
 			Color.GREEN,
@@ -182,7 +182,7 @@ public class OptionsWindow extends Window {
 				UserInterface.addLayeredComponentUnique(
 					new KeyMappingsWindow()
 				);
-				
+
 				OptionsWindow.this.setClosing(true);
 			},
 			Color.ORANGE,
