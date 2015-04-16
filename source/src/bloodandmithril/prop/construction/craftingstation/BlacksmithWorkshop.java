@@ -20,6 +20,7 @@ import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Machette;
+import bloodandmithril.item.items.furniture.MedievalWallTorchItem;
 import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
@@ -45,6 +46,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 		craftables.put(new CombatKnife(), 1);
 		craftables.put(new Machette(), 1);
 		craftables.put(new Broadsword(), 1);
+		craftables.put(new MedievalWallTorchItem(), 1);
 		craftables.put(arrowHead(Iron.class), 25);
 	}
 

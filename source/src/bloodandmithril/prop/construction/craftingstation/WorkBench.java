@@ -10,6 +10,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucketItem;
+import bloodandmithril.item.items.equipment.misc.Torch;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile.ArrowItem;
 import bloodandmithril.item.items.furniture.WoodenChestItem;
 import bloodandmithril.item.items.material.PlankItem;
@@ -35,6 +36,7 @@ public class WorkBench extends CraftingStation {
 		craftables.put(stick(StandardWood.class), 5);
 		craftables.put(new WoodenBucketItem(StandardWood.class), 1);
 		craftables.put(new WoodenChestItem(StandardWood.class), 1);
+		craftables.put(new Torch(), 1);
 	}
 
 	private static final long serialVersionUID = 3667802131168466770L;
