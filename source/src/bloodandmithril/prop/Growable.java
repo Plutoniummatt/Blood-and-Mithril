@@ -18,8 +18,8 @@ public abstract class Growable extends Prop {
 	/**
 	 * Constructor
 	 */
-	protected Growable(float x, float y, int width, int height, boolean grounded, Depth depth, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
-		super(x, y, width, height, grounded, depth, canPlaceOnTopOf);
+	protected Growable(float x, float y, int width, int height, boolean grounded, Depth depth, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf, boolean preventsMining) {
+		super(x, y, width, height, grounded, depth, canPlaceOnTopOf, preventsMining);
 	}
 
 	/**

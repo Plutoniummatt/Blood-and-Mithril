@@ -60,6 +60,9 @@ public abstract class Prop implements Serializable, Visible {
 	/** True if this {@link Prop} must be placed on the ground */
 	public final boolean grounded;
 
+	/** True if this prop prevents tiles underneath from being destroyed */
+	public final boolean preventsMining;
+
 	private int worldId;
 
 	/** Returns whether this {@link Construction} can be placed on a tile type */
@@ -69,10 +72,11 @@ public abstract class Prop implements Serializable, Visible {
 	/**
 	 * Constructor
 	 */
-	protected Prop(float x, float y, int width, int height, boolean grounded, Depth depth, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
+	protected Prop(float x, float y, int width, int height, boolean grounded, Depth depth, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf, boolean preventsMining) {
 		this.width = width;
 		this.height = height;
 		this.canPlaceOnTopOf = canPlaceOnTopOf;
+		this.preventsMining = preventsMining;
 		this.position = new Vector2(x, y);
 		this.depth = depth;
 		this.id = ParameterPersistenceService.getParameters().getNextPropId();
@@ -181,7 +185,7 @@ public abstract class Prop implements Serializable, Visible {
 				if (Domain.getWorld(worldId).props().hasProp(propId)) {
 					this.position.x = position.x;
 					this.position.y = position.y;
-					if (prop.depth == Depth.FRONT || this.depth == Depth.FRONT) {
+					if (this.id == prop.id || prop.depth == Depth.FRONT || this.depth == Depth.FRONT) {
 						continue;
 					}
 					if (this.overlapsWith(prop)) {

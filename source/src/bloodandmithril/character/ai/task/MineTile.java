@@ -163,7 +163,7 @@ public class MineTile extends CompositeAITask {
 						if (!ClientServerInterface.isServer()) {
 							ClientServerInterface.SendRequest.sendDestroyTileRequest(tileCoordinate.x, tileCoordinate.y, true, host.getWorldId());
 						}
-						
+
 						if (tileToBeDeleted != null && !(tileToBeDeleted instanceof EmptyTile)) {
 							SoundService.play(
 								SoundService.pickAxe,
@@ -174,7 +174,7 @@ public class MineTile extends CompositeAITask {
 
 							Item mined = tileToBeDeleted.mine();
 							if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
-								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
+								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false);
 								if (host.canReceive(mined)) {
 									host.giveItem(mined);
 								} else {
@@ -183,7 +183,7 @@ public class MineTile extends CompositeAITask {
 
 								UserInterface.refreshRefreshableWindows();
 							} else if (ClientServerInterface.isServer()) {
-								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true);
+								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false);
 								ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, host.getWorldId());
 
 								if (host.canReceive(mined)) {

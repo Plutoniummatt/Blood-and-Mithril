@@ -14,7 +14,7 @@ public abstract class Furniture extends Prop {
 	 * Protected constructor
 	 */
 	protected Furniture(float x, float y, int width, int height, boolean grounded) {
-		super(x, y, width, height, grounded, Depth.MIDDLEGROUND, new NonPassableTilesOnly());
+		super(x, y, width, height, grounded, Depth.MIDDLEGROUND, new NonPassableTilesOnly(), true);
 	}
 
 

@@ -192,7 +192,8 @@ public class DevWindow extends Window {
 			Domain.getActiveWorld().getTopography().deleteTile(
 				BloodAndMithrilClient.getMouseWorldX(),
 				BloodAndMithrilClient.getMouseWorldY(),
-				true
+				true,
+				false
 			);
 		}
 

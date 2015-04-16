@@ -19,7 +19,7 @@ public abstract class PlantProp extends Growable {
 	/**
 	 * Constructor
 	 */
-	protected PlantProp(float x, float y, int width, int height, Depth depth, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
-		super(x, y, width, height, true, depth, canPlaceOnTopOf);
+	protected PlantProp(float x, float y, int width, int height, Depth depth, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf, boolean preventsMining) {
+		super(x, y, width, height, true, depth, canPlaceOnTopOf, preventsMining);
 	}
 }
