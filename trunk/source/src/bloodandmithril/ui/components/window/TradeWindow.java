@@ -414,7 +414,7 @@ public class TradeWindow extends Window implements Refreshable {
 		for (final Entry<Item, Integer> entry : toPopulateFrom.entrySet()) {
 
 			Button button = new Button(
-				entry.getKey().getSingular(true),
+				() -> {return entry.getKey().getSingular(true);},
 				defaultFont,
 				0,
 				0,
@@ -493,7 +493,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 	private void changeList(final Item key, int numberToChange, final HashMap<ListingMenuItem<Item>, Integer> transferTo, final HashMap<ListingMenuItem<Item>, Integer> transferFrom, final boolean toTrade) {
 		Button button = new Button(
-			key.getSingular(true),
+			() -> {return key.getSingular(true);},
 			defaultFont,
 			0,
 			0,

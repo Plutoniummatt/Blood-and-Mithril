@@ -33,7 +33,6 @@ public class Torch extends OffhandEquipment implements FireLighter {
 	public static TextureRegion torch;
 	private float durationRemaining;
 	private Integer workingId;
-	private float refreshTimer = 0.5f;
 	private boolean burning;
 
 	/**
@@ -135,13 +134,6 @@ public class Torch extends OffhandEquipment implements FireLighter {
 	@Override
 	public void update(Equipper equipper, float delta) {
 		if (burning) {
-			if (refreshTimer <= 0f) {
-				UserInterface.refreshRefreshableWindows();
-				refreshTimer = 0.5f;
-			} else {
-				refreshTimer -= delta;
-			}
-
 			if (durationRemaining <= 0f) {
 				equipper.unequip(this);
 				equipper.takeItem(this);
