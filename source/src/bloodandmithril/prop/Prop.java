@@ -224,6 +224,8 @@ public abstract class Prop implements Serializable, Visible {
 			}
 		} catch (NoTileFoundException e) {
 			return false;
+		} catch (NullPointerException e) {
+			return false;
 		}
 
 		return customFunction.call();

@@ -45,14 +45,15 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	/**
 	 * Constructor
 	 */
-	public ChooseStartingLocationCursorBoundTask(Set<Individual> startingIndividuals, ItemPackage startingItemPackage, int startingFactionId) {
+	public ChooseStartingLocationCursorBoundTask(Set<Individual> startingIndividuals, ItemPackage startingItemPackage, int startingFactionId, int worldId) {
 		super(
 			null,
 			true
 		);
 
+		((Prop) startingItemPackage.getContainer()).setWorldId(worldId);
 		setTask(args -> {
-			Domain.getActiveWorld().props().addProp((Prop) startingItemPackage.getContainer());
+			Domain.getWorld(worldId).props().addProp((Prop) startingItemPackage.getContainer());
 			for (Individual individual : individuals.values()) {
 				individual.setFactionId(startingFactionId);
 				Domain.addIndividual(individual, Domain.getActiveWorld().getWorldId());
@@ -67,6 +68,7 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 				Util.getRandom().nextInt(maxSpread) - maxSpread / 2,
 				individual
 			);
+			individual.setWorldId(worldId);
 		}
 	}
 

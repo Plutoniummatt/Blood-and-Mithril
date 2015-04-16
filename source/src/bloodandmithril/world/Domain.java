@@ -52,8 +52,8 @@ public class Domain {
 	/**
 	 * Constructor
 	 */
-	public Domain() {
-		if (worlds.isEmpty()) {
+	public Domain(boolean createWorld) {
+		if (createWorld) {
 			World world = new World(1200f, new Epoch(15.5f, 15, 4, 2015), new ChunkGenerator(new DefaultBiomeDecider()));
 			getWorlds().put(world.getWorldId(), world);
 			activeWorld = world;

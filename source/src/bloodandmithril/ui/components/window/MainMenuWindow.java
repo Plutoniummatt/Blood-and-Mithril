@@ -195,7 +195,7 @@ public class MainMenuWindow extends Window {
 										removeWindows();
 										Thread.sleep(1000);
 										ClientServerInterface.setupAndConnect(args[0].toString());
-										BloodAndMithrilClient.domain = new Domain();
+										BloodAndMithrilClient.domain = new Domain(true);
 										BloodAndMithrilClient.setup();
 									} catch (Exception e) {
 

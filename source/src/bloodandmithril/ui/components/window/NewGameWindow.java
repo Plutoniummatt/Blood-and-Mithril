@@ -124,7 +124,7 @@ public class NewGameWindow extends Window {
 			BloodAndMithrilClient.setLoading(true);
 			
 			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
-			BloodAndMithrilClient.domain = new Domain();
+			BloodAndMithrilClient.domain = new Domain(true);
 			BloodAndMithrilClient.setup();
 			BloodAndMithrilClient.controlledFactions.add(playerFaction.factionId);
 
@@ -155,7 +155,8 @@ public class NewGameWindow extends Window {
 						return test != null;
 					})),
 					selectedItemPackage,
-					playerFaction.factionId
+					playerFaction.factionId,
+					Domain.getActiveWorld().getWorldId()
 				)
 			);
 			
