@@ -10,10 +10,13 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.background.BackgroundImages;
 import bloodandmithril.graphics.particles.Particle;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.google.common.collect.Sets;
 
@@ -29,6 +32,7 @@ public class World implements Serializable {
 	/** Unique identifier of this {@link World} */
 	private final int worldId;
 
+	/** Background images of this world */
 	private BackgroundImages 									backgroundImages 		= new BackgroundImages();
 
 	/** Gravity on this world */
@@ -58,10 +62,14 @@ public class World implements Serializable {
 	/** The projectiles of this {@link World} */
 	private WorldProjectiles projectiles;
 
+	/** Epoch of this world */
+	private Epoch epoch;
+
 	/**
 	 * Constructor
 	 */
-	public World(float gravity) {
+	public World(float gravity, Epoch epoch) {
+		this.epoch = epoch;
 		this.worldId = ParameterPersistenceService.getParameters().getNextWorldKey();
 		this.gravity = gravity;
 		this.items = new WorldItems(worldId);
@@ -69,6 +77,36 @@ public class World implements Serializable {
 		this.projectiles = new WorldProjectiles(worldId);
 		this.topography = new Topography(worldId);
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
+	}
+
+
+	public void update() {
+		float d = 1f/60f;
+
+		epoch.incrementTime(d);
+
+		for (int individualId : individuals) {
+			Domain.getIndividual(individualId).update(d);
+		}
+
+		for (Prop prop : props().getProps()) {
+			prop.update(d);
+		}
+
+		for (Projectile projectile : projectiles().getProjectiles()) {
+			projectile.update(d);
+		}
+
+		for (Item item : items().getItems()) {
+			try {
+				item.update(d);
+			} catch (NoTileFoundException e) {}
+		}
+	}
+
+
+	public Epoch getEpoch() {
+		return epoch;
 	}
 
 
@@ -165,5 +203,10 @@ public class World implements Serializable {
 
 	public BackgroundImages getBackgroundImages() {
 		return backgroundImages;
+	}
+
+
+	public void setEpoch(Epoch currentEpoch) {
+		this.epoch = currentEpoch;
 	}
 }

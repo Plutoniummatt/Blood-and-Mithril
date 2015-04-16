@@ -12,7 +12,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.world.WorldState;
+import bloodandmithril.world.World;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -65,14 +65,14 @@ public class CelestialBody {
 	/**
 	 * Renders this star
 	 */
-	public void render() {
-		float time = WorldState.getCurrentEpoch().getTime();
+	public void render(World world) {
+		float time = world.getEpoch().getTime();
 		float theta = angle + time / 24f * 360f;
 
 		TextureRegion region = starTextures.get(textureId);
 
 		Shaders.filter.begin();
-		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), 1.0f - Weather.getDaylightColor().r);
+		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), 1.0f - Weather.getDaylightColor(world).r);
 		if (rotates) {
 			spriteBatch.draw(
 				region,

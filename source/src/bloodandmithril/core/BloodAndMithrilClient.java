@@ -36,6 +36,7 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.cursorboundtask.ThrowItemCursorBoundTask;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Epoch;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -251,7 +252,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		topographyQueryThread.start();
 
 		ClientServerInterface.setServer(true);
-		Domain.getWorlds().put(1, new World(1200));
+		Domain.getWorlds().put(1, new World(1200, new Epoch(15.5f, 5, 22, 25)));
 		Domain.getWorld(1).getTopography().loadOrGenerateNullChunksAccordingToPosition(0, 0);
 		ClientServerInterface.setServer(false);
 	}
@@ -773,7 +774,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			// Do not update if game is paused
 			// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
 			if (!paused && !GameSaver.isSaving() && domain != null) {
-				domain.update((int) cam.position.x, (int) cam.position.y);
+				Domain.getActiveWorld().update();
+			} else if (Domain.getWorld(1) != null) {
+				Domain.getWorld(1).update();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

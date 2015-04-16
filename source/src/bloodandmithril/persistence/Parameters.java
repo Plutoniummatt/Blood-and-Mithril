@@ -9,7 +9,6 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.world.Epoch;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -33,7 +32,6 @@ public class Parameters implements Serializable {
 	private long particleCounter = 0;
 
 	private Vector2 camera;
-	private Epoch currentEpoch;
 
 	/**
 	 * Package-protected constructor, only {@link ParameterPersistenceService} has access
@@ -138,21 +136,5 @@ public class Parameters implements Serializable {
 	 */
 	public void setSavedCameraPosition(Vector2 camera) {
 		this.camera = camera;
-	}
-
-
-	/**
-	 * @return the saved global {@link Epoch}
-	 */
-	public Epoch getCurrentEpoch() {
-		return currentEpoch;
-	}
-
-
-	/**
-	 * Sets the current global {@link Epoch}
-	 */
-	public void setCurrentEpoch(Epoch currentEpoch) {
-		this.currentEpoch = currentEpoch;
 	}
 }

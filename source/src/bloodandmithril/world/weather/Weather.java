@@ -3,7 +3,6 @@ package bloodandmithril.world.weather;
 import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
 import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static java.lang.Math.exp;
 import static java.lang.Math.max;
@@ -19,6 +18,7 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Epoch;
+import bloodandmithril.world.World;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -51,15 +51,15 @@ public class Weather {
 	/**
 	 * Renders the {@link Weather}
 	 */
-	public static void render(FrameBuffer toDrawTo) {
-		renderSky(toDrawTo);
-		renderStars(toDrawTo);
-		updateSun();
+	public static void render(FrameBuffer toDrawTo, World world) {
+		renderSky(toDrawTo, world);
+		renderStars(toDrawTo, world);
+		updateSun(world);
 	}
 
 
-	private static void updateSun() {
-		float time = getCurrentEpoch().getTime();
+	private static void updateSun(World world) {
+		float time = world.getEpoch().getTime();
 		float radius = WIDTH/2.5f;
 		Vector2 position = orbitalPivot.cpy().add(new Vector2(0f, radius).rotate(-((time - 12f) / 12f) * 180f));
 
@@ -68,8 +68,8 @@ public class Weather {
 	}
 
 
-	public static Color getDaylightColor() {
-		float time = getCurrentEpoch().getTime();
+	public static Color getDaylightColor(World world) {
+		float time = world.getEpoch().getTime();
 		Color filter = new Color();
 
 		if (time < 10) {
@@ -96,8 +96,8 @@ public class Weather {
 	}
 
 
-	public static Color getSunColor() {
-		float time = getCurrentEpoch().getTime();
+	public static Color getSunColor(World world) {
+		float time = world.getEpoch().getTime();
 		Color filter = new Color();
 
 		if (time < 10) {
@@ -120,14 +120,14 @@ public class Weather {
 
 
 	/** Renders the sky */
-	private static void renderSky(FrameBuffer toDrawTo) {
+	private static void renderSky(FrameBuffer toDrawTo, World world) {
 		skyBuffer.begin();
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.sky);
-		Color filter = getDaylightColor();
+		Color filter = getDaylightColor(world);
 
-		Color topColor = dayTopColor.cpy().mul(getCurrentEpoch().dayLight()).add(nightTopColor.cpy().mul(1f - getCurrentEpoch().dayLight())).mul(filter);
-		Color bottomColor = dayBottomColor.cpy().mul(getCurrentEpoch().dayLight()).add(nightBottomColor.cpy().mul(1f - getCurrentEpoch().dayLight())).mul(filter);
+		Color topColor = dayTopColor.cpy().mul(world.getEpoch().dayLight()).add(nightTopColor.cpy().mul(1f - world.getEpoch().dayLight())).mul(filter);
+		Color bottomColor = dayBottomColor.cpy().mul(world.getEpoch().dayLight()).add(nightBottomColor.cpy().mul(1f - world.getEpoch().dayLight())).mul(filter);
 
 		Shaders.sky.setUniformf("top", topColor);
 		Shaders.sky.setUniformf("bottom", bottomColor);
@@ -139,15 +139,15 @@ public class Weather {
 		spriteBatch.end();
 		skyBuffer.end();
 
-		float time = getCurrentEpoch().getTime();
+		float time = world.getEpoch().getTime();
 
 		toDrawTo.begin();
 		spriteBatch.begin();
 		spriteBatch.setShader(Shaders.sun);
 		Shaders.sun.setUniformf("resolution", WIDTH, HEIGHT);
 		Shaders.sun.setUniformf("sunPosition", sunPosition);
-		Shaders.sun.setUniformf("filter", Colors.modulateAlpha(getSunColor(), glareAlpha(time)));
-		Shaders.sun.setUniformf("epoch", getCurrentEpoch().getTime());
+		Shaders.sun.setUniformf("filter", Colors.modulateAlpha(getSunColor(world), glareAlpha(time)));
+		Shaders.sun.setUniformf("epoch", world.getEpoch().getTime());
 		Shaders.sun.setUniformf("nightSuppression", nightSuppression(time));
 		spriteBatch.draw(skyBuffer.getColorBufferTexture(), 0, 0);
 		spriteBatch.end();
@@ -155,12 +155,12 @@ public class Weather {
 	}
 
 
-	private static void renderStars(FrameBuffer toDrawTo) {
+	private static void renderStars(FrameBuffer toDrawTo, World world) {
 		toDrawTo.begin();
 		spriteBatch.begin();
 		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		for (CelestialBody celestialBody : celestialBodies) {
-			celestialBody.render();
+			celestialBody.render(world);
 		}
 		spriteBatch.end();
 		toDrawTo.end();

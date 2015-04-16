@@ -4,8 +4,8 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
-import bloodandmithril.world.WorldState;
 
 @Copyright("Matthew Peck 2014")
 public class SynchronizeWorldState implements Request {
@@ -13,7 +13,7 @@ public class SynchronizeWorldState implements Request {
 	@Override
 	public Responses respond() {
 		Responses responses = new Responses(false);
-		responses.add(new SynchronizeWorldStateResponse(WorldState.getCurrentEpoch()));
+		responses.add(new SynchronizeWorldStateResponse(Domain.getActiveWorld().getEpoch()));
 		return responses;
 	}
 
@@ -42,7 +42,7 @@ public class SynchronizeWorldState implements Request {
 
 		@Override
 		public void acknowledge() {
-			WorldState.setCurrentEpoch(currentEpoch);
+			Domain.getActiveWorld().setEpoch(currentEpoch);
 		}
 
 

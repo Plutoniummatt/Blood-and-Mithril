@@ -1,11 +1,11 @@
 package bloodandmithril.character.individuals;
 
 import static bloodandmithril.persistence.ParameterPersistenceService.getParameters;
-import static bloodandmithril.world.WorldState.getCurrentEpoch;
 
 import java.io.Serializable;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 
 /**
@@ -69,18 +69,24 @@ public class IndividualIdentifier implements Serializable {
 
 	/** How old this {@link Individual} is */
 	public int getAge() {
-		int age = getCurrentEpoch().year - birthday.year;
+		Epoch epoch = Domain.getWorld(Domain.getIndividual(getId()).getWorldId()).getEpoch();
+		int age = epoch.year - getBirthday().year;
 
 		if (age == 0) {
 			return 0;
 		}
 
-		if (getCurrentEpoch().monthOfYear < birthday.monthOfYear) {
+		if (epoch.monthOfYear < getBirthday().monthOfYear) {
 			age--;
-		} else if (getCurrentEpoch().monthOfYear == birthday.monthOfYear && getCurrentEpoch().dayOfMonth < birthday.dayOfMonth) {
+		} else if (epoch.monthOfYear == getBirthday().monthOfYear && epoch.dayOfMonth < getBirthday().dayOfMonth) {
 			age--;
 		}
 
 		return age;
+	}
+
+
+	public Epoch getBirthday() {
+		return birthday;
 	}
 }

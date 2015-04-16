@@ -63,7 +63,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 import com.badlogic.gdx.Gdx;
@@ -520,7 +519,7 @@ public class DevWindow extends Window {
 								args -> {
 									if (isServer()) {
 										try {
-											WorldState.getCurrentEpoch().setTimeOfDay(Float.parseFloat((String) args[0]));
+											Domain.getActiveWorld().getEpoch().setTimeOfDay(Float.parseFloat((String) args[0]));
 										} catch (Exception e) {
 										}
 									}

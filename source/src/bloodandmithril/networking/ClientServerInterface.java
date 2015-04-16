@@ -280,7 +280,6 @@ import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldProjectiles;
-import bloodandmithril.world.WorldState;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
@@ -1253,7 +1252,7 @@ public class ClientServerInterface {
 				-1,
 				false,
 				false,
-				new SynchronizeWorldStateResponse(WorldState.getCurrentEpoch())
+				new SynchronizeWorldStateResponse(Domain.getActiveWorld().getEpoch())
 			);
 		}
 
