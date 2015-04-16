@@ -8,7 +8,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.world.WorldState;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -49,7 +48,6 @@ public class ParameterPersistenceService {
 	public synchronized static void saveParameters() {
 		FileHandle file = Gdx.files.local(getSavePath() + "/parameters.txt");
 		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y) : new Vector2());
-		parameters.setCurrentEpoch(WorldState.getCurrentEpoch());
 		file.writeString(encode(parameters), false);
 	}
 }

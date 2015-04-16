@@ -41,7 +41,6 @@ import com.esotericsoftware.kryonet.Server;
 public class BloodAndMithrilServer {
 
 	public static final GameServer server = new GameServer();
-	private static Domain gameWorld;
 
 	/**
 	 * Entry point for the server
@@ -185,7 +184,7 @@ public class BloodAndMithrilServer {
 
 			ClientServerInterface.setServer(true);
 			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
-			gameWorld = new Domain();
+			Domain.setup();
 
 			Gdx.input.setInputProcessor(this);
 
@@ -207,7 +206,7 @@ public class BloodAndMithrilServer {
 			// bad things can happen, like teleporting
 			float delta = Gdx.graphics.getDeltaTime();
 			if (delta < 0.1f && !GameSaver.isSaving()) {
-				gameWorld.update(0, 0);
+				Domain.getActiveWorld().update();
 			}
 		}
 

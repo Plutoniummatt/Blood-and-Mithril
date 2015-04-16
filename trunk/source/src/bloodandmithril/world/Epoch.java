@@ -35,14 +35,18 @@ public class Epoch implements Serializable {
 
 
 	/**
-	 * @param delta - To increment
+	 * @param delta - To increment, in seconds
 	 */
 	public void incrementTime(float delta) {
-		if (timeOfDay > 24f) {
-			timeOfDay = 0;
+		float toIncrementBy = 24 * delta / lengthOfDay / 60f;
+		float trialTime = timeOfDay + toIncrementBy;
+
+		if (trialTime > 24f) {
+			timeOfDay = toIncrementBy - (24f - timeOfDay);
 			incrementDay();
+		} else {
+			timeOfDay = trialTime;
 		}
-		timeOfDay += 24 * delta / lengthOfDay / 60f;
 	}
 
 

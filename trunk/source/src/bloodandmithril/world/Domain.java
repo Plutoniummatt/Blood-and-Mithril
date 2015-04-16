@@ -1,6 +1,5 @@
 package bloodandmithril.world;
 
-import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 
@@ -16,14 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.UnitsWindow;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -56,7 +52,7 @@ public class Domain {
 	 */
 	public Domain() {
 		if (worlds.isEmpty()) {
-			World world = new World(1200f);
+			World world = new World(1200f, new Epoch(15.5f, 15, 4, 2015));
 			getWorlds().put(world.getWorldId(), world);
 			activeWorld = world;
 		} else {
@@ -102,37 +98,6 @@ public class Domain {
 		return Lists.newLinkedList(Iterables.transform(selectedIndividuals, id -> {
 			return getIndividual(id);
 		}));
-	}
-
-
-	/**
-	 * Updates the game world
-	 */
-	public void update(int camX, int camY) {
-		World world = getActiveWorld();
-		if (world != null) {
-			float d = 1f/60f;
-
-			getCurrentEpoch().incrementTime(d);
-
-			for (Individual indi : individuals.values()) {
-				indi.update(d);
-			}
-
-			for (Prop prop : world.props().getProps()) {
-				prop.update(d);
-			}
-
-			for (Projectile projectile : world.projectiles().getProjectiles()) {
-				projectile.update(d);
-			}
-
-			for (Item item : world.items().getItems()) {
-				try {
-					item.update(d);
-				} catch (NoTileFoundException e) {}
-			}
-		}
 	}
 
 
@@ -183,6 +148,7 @@ public class Domain {
 
 	public static void addIndividual(Individual indi, int worldId) {
 		indi.setWorldId(worldId);
+		indi.getId().getBirthday().year = Domain.getWorld(worldId).getEpoch().year;
 		individuals.put(indi.getId().getId(), indi);
 		Domain.getWorld(worldId).getIndividuals().add(indi.getId().getId());
 		if (ClientServerInterface.isClient()) {

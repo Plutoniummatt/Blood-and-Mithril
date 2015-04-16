@@ -8,7 +8,6 @@ import java.util.Random;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.world.Epoch;
-import bloodandmithril.world.WorldState;
 
 import com.badlogic.gdx.Gdx;
 
@@ -35,12 +34,12 @@ public class Names {
 	private static Random random = new Random();
 
 	private static boolean setup = false;
-	
+
 	public static IndividualIdentifier getUnknownNatureIdentifier(boolean female, int age) {
 		setup();
-		return new IndividualIdentifier("?", "", new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), WorldState.getCurrentEpoch().year - age));
+		return new IndividualIdentifier("?", "", new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), 0));
 	}
-	
+
 
 	public static IndividualIdentifier getRandomElfIdentifier(boolean female, int age) {
 		setup();
@@ -57,7 +56,7 @@ public class Names {
 		Collections.shuffle(elfLast);
 		last = elfLast.get(0);
 
-		return new IndividualIdentifier(first, last, new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), WorldState.getCurrentEpoch().year - age));
+		return new IndividualIdentifier(first, last, new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), 0));
 	}
 
 
@@ -76,7 +75,7 @@ public class Names {
 		Collections.shuffle(dwarfLast);
 		last = dwarfLast.get(0);
 
-		return new IndividualIdentifier(first, last, new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), WorldState.getCurrentEpoch().year - age));
+		return new IndividualIdentifier(first, last, new Epoch(24f * random.nextFloat(), random.nextInt(31), random.nextInt(13), 0));
 	}
 
 

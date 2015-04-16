@@ -18,8 +18,6 @@ import bloodandmithril.persistence.character.IndividualLoader;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
-import bloodandmithril.world.Epoch;
-import bloodandmithril.world.WorldState;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -54,7 +52,6 @@ public class GameLoader {
 		if (ClientServerInterface.isClient()) {
 			loadCameraPosition();
 		}
-		loadCurrentEpoch();
 	}
 
 
@@ -87,15 +84,6 @@ public class GameLoader {
 		}
 
 		return data;
-	}
-
-
-	/** Sets current {@link Epoch} to a saved one */
-	private static void loadCurrentEpoch() {
-		Epoch epoch = ParameterPersistenceService.getParameters().getCurrentEpoch();
-		if (epoch != null) {
-			WorldState.setCurrentEpoch(epoch);
-		}
 	}
 
 

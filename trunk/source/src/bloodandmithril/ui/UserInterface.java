@@ -23,7 +23,6 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.GameSaver.isSaving;
 import static bloodandmithril.ui.UserInterface.FloatingText.floatingText;
 import static bloodandmithril.util.Fonts.defaultFont;
-import static bloodandmithril.world.WorldState.getCurrentEpoch;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 import static com.badlogic.gdx.Gdx.files;
@@ -994,8 +993,8 @@ public class UserInterface {
 	/** Any text that is rendered on UI */
 	private static void renderUIText() {
 		defaultFont.setColor(Color.WHITE);
-		defaultFont.draw(spriteBatch, "Time: " + getCurrentEpoch().getTimeString(), 5, HEIGHT - 5);
-		defaultFont.draw(spriteBatch, "Date: " + getCurrentEpoch().getDateString(), 5, HEIGHT - 25);
+		defaultFont.draw(spriteBatch, "Time: " + Domain.getActiveWorld().getEpoch().getTimeString(), 5, HEIGHT - 5);
+		defaultFont.draw(spriteBatch, "Date: " + Domain.getActiveWorld().getEpoch().getDateString(), 5, HEIGHT - 25);
 		defaultFont.draw(spriteBatch, "Ping: " + ping, 5, HEIGHT - 45);
 
 		fps = (fps + Math.round(1f/Gdx.graphics.getDeltaTime())) / 2;
