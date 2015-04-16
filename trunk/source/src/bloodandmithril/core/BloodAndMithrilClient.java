@@ -21,6 +21,7 @@ import bloodandmithril.generation.biome.MainMenuBiomeDecider;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -107,7 +108,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static OrthographicCamera cam;
 
 	/** The game world */
-	public static Domain domain;
+	private static boolean inGame;
 	public static Domain startMenuDomain;
 
 	/** For camera dragging */
@@ -185,9 +186,13 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			while (true) {
 				try {
-					Thread.sleep(1);
+					Thread.sleep(2);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
+				}
+
+				if (!isInGame()) {
+					continue;
 				}
 
 				if (System.currentTimeMillis() - prevFrame1 > 16) {
@@ -255,9 +260,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		ClientServerInterface.setServer(true);
 		Domain.getWorlds().put(
-			1, 
+			1,
 			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).updateTick(0.15f)
 		);
+		Domain.setActiveWorld(1);
+		cam.position.y = Layer.getCameraYForHorizonCoord(HEIGHT/3);
 		ClientServerInterface.setServer(false);
 	}
 
@@ -336,9 +343,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 			// Rendering --------------------- /
-			if (domain == null) {
-				WorldRenderer.render(Domain.getWorld(1), (int) cam.position.x, (int) cam.position.y);
-			} else {
+			if (Domain.getActiveWorld() != null) {
 				WorldRenderer.render(Domain.getActiveWorld(), (int) cam.position.x, (int) cam.position.y);
 			}
 			UserInterface.render();
@@ -674,7 +679,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			return false;
 		}
 
-		if (Gdx.input.isButtonPressed(getKeyMappings().middleClick.keyCode) && domain != null) {
+		if (Gdx.input.isButtonPressed(getKeyMappings().middleClick.keyCode) && isInGame()) {
 			cam.position.x = oldCamX + camDragX - screenX;
 			cam.position.y = oldCamY + screenY - camDragY;
 		}
@@ -777,10 +782,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			// Do not update if game is paused
 			// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-			if (!paused && !GameSaver.isSaving() && domain != null) {
+			if (!paused && !GameSaver.isSaving() && Domain.getActiveWorld() != null) {
 				Domain.getActiveWorld().update();
-			} else if (Domain.getWorld(1) != null) {
-				Domain.getWorld(1).update();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -790,7 +793,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	private void cameraControl() {
-		if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && domain != null) {
+		if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && isInGame()) {
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamUp.keyCode)){
 				cam.position.y += 10f;
 			}
@@ -922,5 +925,15 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+
+	public static boolean isInGame() {
+		return inGame;
+	}
+
+
+	public static void setInGame(boolean inGame) {
+		BloodAndMithrilClient.inGame = inGame;
 	}
 }

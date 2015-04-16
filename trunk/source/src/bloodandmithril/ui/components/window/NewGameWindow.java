@@ -122,9 +122,10 @@ public class NewGameWindow extends Window {
 			UserInterface.closeAllWindows();
 			BloodAndMithrilClient.threadWait(1000);
 			BloodAndMithrilClient.setLoading(true);
-			
+
 			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
-			BloodAndMithrilClient.domain = new Domain(true);
+			Domain.setActiveWorld(Domain.createWorld());
+			BloodAndMithrilClient.setInGame(true);
 			BloodAndMithrilClient.setup();
 			BloodAndMithrilClient.controlledFactions.add(playerFaction.factionId);
 
@@ -159,11 +160,11 @@ public class NewGameWindow extends Window {
 					Domain.getActiveWorld().getWorldId()
 				)
 			);
-			
+
 			while(!ChunkLoader.loaderTasks.isEmpty()) {
 				BloodAndMithrilClient.threadWait(100);
 			}
-			
+
 			BloodAndMithrilClient.setLoading(false);
 		});
 	}

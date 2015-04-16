@@ -35,7 +35,7 @@ import com.google.common.collect.Lists;
 public class Domain {
 
 	/** The current active {@link World} */
-	private static World activeWorld;
+	private static int activeWorldId;
 
 	/** {@link World}s */
 	private static HashMap<Integer, World> 						worlds 					= newHashMap();
@@ -49,23 +49,12 @@ public class Domain {
 	/** Every {@link Prop} that exists */
 	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
 
-	/**
-	 * Constructor
-	 */
-	public Domain(boolean createWorld) {
-		if (createWorld) {
-			World world = new World(1200f, new Epoch(15.5f, 15, 4, 2015), new ChunkGenerator(new DefaultBiomeDecider()));
-			getWorlds().put(world.getWorldId(), world);
-			activeWorld = world;
-		} else {
-			activeWorld = worlds.get(1);
-		}
 
-		try {
-			Thread.sleep(50);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+	public static int createWorld() {
+		World world = new World(1200f, new Epoch(15.5f, 15, 4, 2015), new ChunkGenerator(new DefaultBiomeDecider()));
+		getWorlds().put(world.getWorldId(), world);
+
+		return world.getWorldId();
 	}
 
 
@@ -104,12 +93,12 @@ public class Domain {
 
 
 	public static World getActiveWorld() {
-		return activeWorld;
+		return getWorld(activeWorldId);
 	}
 
 
-	public static void setActiveWorld(World activeWorldToSet) {
-		activeWorld = activeWorldToSet;
+	public static void setActiveWorld(int worldId) {
+		activeWorldId = worldId;
 	}
 
 

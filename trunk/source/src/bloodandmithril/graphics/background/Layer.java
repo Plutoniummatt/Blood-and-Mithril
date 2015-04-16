@@ -40,6 +40,11 @@ public abstract class Layer implements Serializable {
 	}
 
 
+	public static int getCameraYForHorizonCoord(int horizon) {
+		return Math.round((400f - horizon)/(1f - 0.95f));
+	}
+
+
 	/**
 	 * Renders this layer
 	 */
