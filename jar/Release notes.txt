@@ -1,3 +1,8 @@
+Release 0.0.21
+---------------
+* Improvements to water reflections
+* Add background to main menu
+
 Release 0.0.20
 ---------------
 * Improvements to water reflections
