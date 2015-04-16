@@ -34,7 +34,7 @@ public abstract class SeedProp extends Growable implements Harvestable {
 	 * Constructor
 	 */
 	protected SeedProp(float x, float y, SeedItem seed, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
-		super(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE, true, Depth.MIDDLEGROUND, canPlaceOnTopOf);
+		super(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE, true, Depth.MIDDLEGROUND, canPlaceOnTopOf, false);
 		this.seedToRepresent = seed;
 	}
 

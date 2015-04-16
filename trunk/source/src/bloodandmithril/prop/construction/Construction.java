@@ -57,7 +57,7 @@ public abstract class Construction extends Prop implements Container {
 	 * Constructor
 	 */
 	protected Construction(float x, float y, int width, int height, boolean grounded, float constructionRate, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
-		super(x, y, width, height, grounded, Depth.MIDDLEGROUND, canPlaceOnTopOf);
+		super(x, y, width, height, grounded, Depth.MIDDLEGROUND, canPlaceOnTopOf, true);
 		this.constructionRate = constructionRate;
 	}
 

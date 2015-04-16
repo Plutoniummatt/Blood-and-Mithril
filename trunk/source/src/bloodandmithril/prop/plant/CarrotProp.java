@@ -47,7 +47,7 @@ public class CarrotProp extends PlantProp implements Harvestable {
 	 * Constructor
 	 */
 	public CarrotProp(float x, float y) {
-		super(x, y, 12, 17, Depth.MIDDLEGROUND, new SoilTilesOnly());
+		super(x, y, 12, 17, Depth.MIDDLEGROUND, new SoilTilesOnly(), false);
 	}
 
 

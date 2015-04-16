@@ -62,7 +62,7 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 	 * Constructor
 	 */
 	public DeadDesertBush(float x, float y) {
-		super(x, y, 0, 0, Depth.MIDDLEGROUND, new NotEmptyTile());
+		super(x, y, 0, 0, Depth.MIDDLEGROUND, new NotEmptyTile(), true);
 		this.texture = Util.getRandom().nextInt(4) + 1;
 
 		switch (texture) {

@@ -34,7 +34,7 @@ public class DestroyTile implements Request {
 
 	@Override
 	public Responses respond() {
-		Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground);
+		Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground, false);
 		Response destroyTileResponse = new DestroyTileResponse(worldX, worldY, foreground, worldId);
 		Responses responses = new Response.Responses(false);
 		responses.add(destroyTileResponse);
@@ -69,7 +69,7 @@ public class DestroyTile implements Request {
 				false,
 				null
 			);
-			Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground);
+			Domain.getWorld(worldId).getTopography().deleteTile(worldX, worldY, foreground, false);
 		}
 
 		@Override

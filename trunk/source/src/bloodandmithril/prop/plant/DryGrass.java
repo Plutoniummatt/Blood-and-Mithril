@@ -31,7 +31,7 @@ public class DryGrass extends PlantProp {
 	}
 
 	public DryGrass(float x, float y) {
-		super(x, y, 76, 12, Depth.FRONT, new NotEmptyTile());
+		super(x, y, 76, 12, Depth.FRONT, new NotEmptyTile(), false);
 	}
 
 

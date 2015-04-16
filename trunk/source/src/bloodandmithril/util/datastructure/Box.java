@@ -35,11 +35,17 @@ public class Box implements Serializable {
 
 	/** True if a location is within this {@link Box} */
 	public boolean isWithinBox(Vector2 location) {
+		return isWithinBox(location.x, location.y);
+	}
+
+
+	/** True if a location is within this {@link Box} */
+	public boolean isWithinBox(float x, float y) {
 		return
-			location.x > position.x - width / 2 &&
-			location.x < position.x + width / 2 &&
-			location.y > position.y - height / 2 &&
-			location.y < position.y + height / 2
+			x > position.x - width / 2 &&
+			x < position.x + width / 2 &&
+			y > position.y - height / 2 &&
+			y < position.y + height / 2
 		;
 	}
 

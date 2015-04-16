@@ -6,6 +6,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.lwjgl.opengl.Display;
 
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -13,6 +14,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.world.ChunkLoader;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Operator;
@@ -214,11 +216,15 @@ public class Topography {
 	 * @param worldX
 	 * @param worldY
 	 */
-	public synchronized Tile deleteTile(float worldX, float worldY, boolean foreGround) {
+	public synchronized Tile deleteTile(float worldX, float worldY, boolean foreGround, boolean forceRemove) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToChunkTileCoord(worldX);
 		int tileY = convertToChunkTileCoord(worldY);
+
+		if (!forceRemove && preventedByProps(worldX, worldY)) {
+			return null;
+		}
 
 		try {
 			if (getTile(worldX, worldY, foreGround) instanceof EmptyTile) {
@@ -227,12 +233,54 @@ public class Topography {
 			Tile tile = getChunkMap().get(chunkX).get(chunkY).getTile(tileX, tileY, foreGround);
 			getChunkMap().get(chunkX).get(chunkY).deleteTile(tileX, tileY, foreGround);
 			Logger.generalDebug("Deleting tile at (" + convertToWorldTileCoord(chunkX, tileX) + ", " + convertToWorldTileCoord(chunkY, tileY) + "), World coord: (" + worldX + ", " + worldY + ")", LogLevel.TRACE);
+			if (!forceRemove) {
+				removeProps(worldX, worldY);
+			}
 			return tile;
 
 		} catch (NoTileFoundException e) {
 			Logger.generalDebug("can't delete a null tile", LogLevel.WARN);
 			return null;
 		}
+	}
+
+
+	private void removeProps(float worldX, float worldY) {
+		Tile deletedTile = deleteTile(worldX, worldY, true, true);
+
+		World world = Domain.getWorld(worldId);
+		world.getPositionalIndexMap().getNearbyEntities(Prop.class, worldX, worldY).forEach(id -> {
+			Prop prop = world.props().getProp(id);
+			if (!prop.canPlaceAtCurrentPosition() && !prop.preventsMining) {
+				world.props().removeProp(prop.id);
+			}
+		});
+
+		if (deletedTile != null) {
+			changeTile(worldX, worldY, true, deletedTile);
+		}
+	}
+
+
+	private boolean preventedByProps(float worldX, float worldY) {
+		Tile deletedTile = deleteTile(worldX, worldY, true, true);
+
+		final MutableBoolean b = new MutableBoolean();
+		b.setValue(false);
+
+		World world = Domain.getWorld(worldId);
+		world.getPositionalIndexMap().getNearbyEntities(Prop.class, worldX, worldY).forEach(id -> {
+			Prop prop = world.props().getProp(id);
+			if (!prop.canPlaceAtCurrentPosition() && prop.preventsMining) {
+				b.setValue(true);
+			}
+		});
+
+		if (deletedTile != null) {
+			changeTile(worldX, worldY, true, deletedTile);
+		}
+
+		return b.booleanValue();
 	}
 
 
