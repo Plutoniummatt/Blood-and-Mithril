@@ -1,5 +1,7 @@
 package bloodandmithril.generation.biome;
 
+import java.io.Serializable;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.world.World;
@@ -10,7 +12,7 @@ import bloodandmithril.world.World;
  * @author Sam
  */
 @Copyright("Matthew Peck 2014")
-public interface BiomeDecider {
+public interface BiomeDecider extends Serializable {
 
 	/**
 	 * Decides which biome to use.

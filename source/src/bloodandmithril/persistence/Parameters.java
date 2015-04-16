@@ -29,6 +29,7 @@ public class Parameters implements Serializable {
 	private int worldIdCounter = 0;
 	private int itemCounter = 0;
 	private int projectileCounter = 0;
+	private int activeWorldId = 0;
 	private long particleCounter = 0;
 
 	private Vector2 camera;
@@ -136,5 +137,21 @@ public class Parameters implements Serializable {
 	 */
 	public void setSavedCameraPosition(Vector2 camera) {
 		this.camera = camera;
+	}
+
+
+	/**
+	 * Sets the saved active world id
+	 */
+	public int getActiveWorldId() {
+		return activeWorldId;
+	}
+
+
+	/**
+	 * Returns the saved active world id
+	 */
+	public void setActiveWorldId(int activeWorldId) {
+		this.activeWorldId = activeWorldId;
 	}
 }

@@ -14,7 +14,8 @@ import bloodandmithril.world.World;
  */
 @Copyright("Matthew Peck 2015")
 public class MainMenuBiomeDecider implements BiomeDecider {
-	
+	private static final long serialVersionUID = 8531890571965701341L;
+
 	private static final int cSurfaceStructureHeight = 60;
 
 	/**

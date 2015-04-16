@@ -19,7 +19,6 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Maps;
@@ -115,7 +114,6 @@ public class LoadGameWindow extends Window {
 									BloodAndMithrilClient.threadWait(1000);
 									BloodAndMithrilClient.setLoading(true);
 									GameLoader.load(metadata, false);
-									Domain.setActiveWorld(Domain.createWorld());
 									BloodAndMithrilClient.setInGame(true);
 									BloodAndMithrilClient.setup();
 

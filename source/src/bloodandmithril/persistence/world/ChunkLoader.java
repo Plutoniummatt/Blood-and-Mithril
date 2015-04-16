@@ -138,37 +138,29 @@ public class ChunkLoader {
 					ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> map = new ConcurrentHashMap<>();
 					world.getValue().getTopography().getStructures().setSubStructureKeys(map);
 				}
-
-				try {
-					ConcurrentHashMap<Integer, Integer> keys = decode(Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/surfaceHeight.txt"));
-					world.getValue().getTopography().getStructures().setSurfaceHeight(keys);
-				} catch (Exception e) {
-					Logger.loaderDebug("Failed to load surface height", LogLevel.DEBUG);
-					ConcurrentHashMap<Integer, Integer> map = new ConcurrentHashMap<>();
-					world.getValue().getTopography().getStructures().setSurfaceHeight(map);
-				}
 			}
 		}
 	}
 
 
-	/** Loads generation data */
-	public static synchronized void loadGenerationData() {
-		if (Structures.getStructures() == null) {
-			try {
-				ConcurrentHashMap<Integer, Structure> structures = decode(Gdx.files.local(getSavePath() + "/world/structures.txt"));
-				Structures.setStructures(structures);
-			} catch (Exception e) {
-				Logger.loaderDebug("Failed to load structures", LogLevel.DEBUG);
-			}
+	/** Loads generation data
+	 * @param newGame */
+	public static synchronized void loadGenerationData(boolean newGame) {
+		if (newGame) {
+			return;
 		}
 
-		if (GlobalLayers.layers == null) {
-			try {
-				GlobalLayers.layers = decode(Gdx.files.local(getSavePath() + "/world/layers.txt"));
-			} catch (Exception e) {
-				Logger.loaderDebug("Failed to load layers", LogLevel.DEBUG);
-			}
+		try {
+			ConcurrentHashMap<Integer, Structure> structures = decode(Gdx.files.local(getSavePath() + "/world/structures.txt"));
+			Structures.setStructures(structures);
+		} catch (Exception e) {
+			Logger.loaderDebug("Failed to load structures", LogLevel.DEBUG);
+		}
+
+		try {
+			GlobalLayers.layers = decode(Gdx.files.local(getSavePath() + "/world/layers.txt"));
+		} catch (Exception e) {
+			Logger.loaderDebug("Failed to load layers", LogLevel.DEBUG);
 		}
 	}
 

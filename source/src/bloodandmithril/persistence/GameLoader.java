@@ -43,9 +43,11 @@ public class GameLoader {
 			GameSaver.mostRecentlyLoaded = null;
 		} else {
 			GameSaver.mostRecentlyLoaded = metadata;
+			ParameterPersistenceService.loadParameters();
+			Domain.setActiveWorld(ParameterPersistenceService.getParameters().getActiveWorldId());
 		}
 
-		ChunkLoader.loadGenerationData();
+		ChunkLoader.loadGenerationData(newGame);
 		ChunkLoader.loadWorlds();
 		loadFactions();
 		IndividualLoader.loadAll();

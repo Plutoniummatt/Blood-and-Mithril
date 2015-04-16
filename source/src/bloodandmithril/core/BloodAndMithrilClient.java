@@ -343,7 +343,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 			// Rendering --------------------- /
-			if (Domain.getActiveWorld() != null) {
+			if (Domain.getActiveWorld() != null && !loading) {
 				WorldRenderer.render(Domain.getActiveWorld(), (int) cam.position.x, (int) cam.position.y);
 			}
 			UserInterface.render();
@@ -782,7 +782,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			// Do not update if game is paused
 			// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-			if (!paused && !GameSaver.isSaving() && Domain.getActiveWorld() != null) {
+			if (!paused && !GameSaver.isSaving() && Domain.getActiveWorld() != null && !loading) {
 				Domain.getActiveWorld().update();
 			}
 		} catch (Exception e) {
@@ -801,7 +801,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				cam.position.y -= 10f;
 			}
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamLeft.keyCode)){
-				cam.position.x -= 10f;
+				cam.position.x -= 100f;
 			}
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamRight.keyCode)){
 				cam.position.x += 10f;
