@@ -101,30 +101,30 @@ public class WorldSaver {
 
 					ZipHelper zip = new ZipHelper(getSavePath() + "/world/world" + Integer.toString(world.getKey()), "/chunkData.zip");
 					ZipFile zipTemp = null;
-					
+
 					for (Entry<Integer, HashMap<Integer, Chunk>> columnToSave : world.getValue().getTopography().getChunkMap().chunkMap.entrySet()) {
 						saveColumn(columnToSave.getKey(), columnToSave.getValue(), zip);
 					}
-					
+
 					try {
 						zipTemp = new ZipFile(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/chunkDataTemp.zip");
-						
+
 						Enumeration<? extends ZipEntry> allPreviousEntries = ZipHelper.readAllEntries(zipTemp);
 						while(allPreviousEntries.hasMoreElements()) {
 							ZipEntry nextElement = allPreviousEntries.nextElement();
 							String stringContent = ZipHelper.readEntry(zipTemp, nextElement);
 							ChunkData data = PersistenceUtil.decode(stringContent);
-							
-							zip.addFile("column" + data.xChunkCoord + (data.foreground ? "/f" : "/b") + data.yChunkCoord+ "/", (data.foreground ? "fData" : "bData"), stringContent, true);
+
+							zip.addFile("column" + data.xChunkCoord + (data.foreground ? "/f" : "/b") + data.yChunkCoord+ "/", data.foreground ? "fData" : "bData", stringContent, true);
 						}
-						
+
 						zipTemp.close();
 						FileHandle toDelete = Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/chunkDataTemp.zip");
 						toDelete.delete();
 					} catch (IOException e) {
 						Logger.loaderDebug("No previous chunks", LogLevel.DEBUG);
 					}
-					
+
 					zip.makeZip();
 				}
 			});
@@ -153,11 +153,9 @@ public class WorldSaver {
 	private static void saveStructureData(Entry<Integer, World> world) {
 		FileHandle superStructureKeys = Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/superStructureKeys.txt");
 		FileHandle subStructureKeys = Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/subStructureKeys.txt");
-		FileHandle surfaceHeight = Gdx.files.local(getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/surfaceHeight.txt");
 
 		superStructureKeys.writeString(encode(world.getValue().getTopography().getStructures().getSuperStructureKeys()), false);
 		subStructureKeys.writeString(encode(world.getValue().getTopography().getStructures().getSubStructureKeys()), false);
-		surfaceHeight.writeString(encode(world.getValue().getTopography().getStructures().getSurfaceHeight()), false);
 	}
 
 

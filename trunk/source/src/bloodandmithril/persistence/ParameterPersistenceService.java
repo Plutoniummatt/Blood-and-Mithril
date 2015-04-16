@@ -8,6 +8,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -31,7 +32,7 @@ public class ParameterPersistenceService {
 	}
 
 	/** Loads and returns persisted parameters from disk */
-	private synchronized static Parameters loadParameters() {
+	public synchronized static Parameters loadParameters() {
 		try {
 			FileHandle file = Gdx.files.local(getSavePath() + "/parameters.txt");
 			parameters = decode(file);
@@ -47,6 +48,7 @@ public class ParameterPersistenceService {
 	/** Saves the {@link Parameters} */
 	public synchronized static void saveParameters() {
 		FileHandle file = Gdx.files.local(getSavePath() + "/parameters.txt");
+		parameters.setActiveWorldId(Domain.getActiveWorldId());
 		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y) : new Vector2());
 		file.writeString(encode(parameters), false);
 	}

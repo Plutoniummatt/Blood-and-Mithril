@@ -288,7 +288,7 @@ public class Topography {
 		if (tileCoord >= 0) {
 			return tileCoord / CHUNK_SIZE;
 		} else {
-			return tileCoord / CHUNK_SIZE - 1;
+			return (tileCoord + 1) / CHUNK_SIZE - 1;
 		}
 	}
 

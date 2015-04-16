@@ -28,9 +28,6 @@ public class Structures {
 	/** Stores which structure corresponds to which key. */
 	private static ConcurrentHashMap<Integer, Structure> structures = new ConcurrentHashMap<Integer, Structure>();
 
-	// Used to keep the surface height consistent between structures where needed.
-	private ConcurrentHashMap<Integer, Integer> surfaceHeight = new ConcurrentHashMap<>();
-
 	/**
 	 * Looks for a substructure and attempts to get a tile, if it's null, get
 	 * one from the super structure.
@@ -70,7 +67,7 @@ public class Structures {
 	/**
 	 * Gets the underlying {@link SuperStructure} or {@link SubStructure} from the key maps, given chunk coordinates.
 	 */
-	private Structure getStructure(int chunkX, int chunkY, boolean superStructure) {
+	public Structure getStructure(int chunkX, int chunkY, boolean superStructure) {
 		ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keyMapToUse = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
 
 		if (keyMapToUse.get(chunkX) == null) {
@@ -208,21 +205,5 @@ public class Structures {
 	 */
 	public void setSubStructureKeys(ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> subStructureKeys) {
 		this.subStructureKeys = subStructureKeys;
-	}
-
-
-	/**
-	 * See {@link #surfaceHeight}
-	 */
-	public ConcurrentHashMap<Integer, Integer> getSurfaceHeight() {
-		return surfaceHeight;
-	}
-
-
-	/**
-	 * See {@link #surfaceHeight}
-	 */
-	public void setSurfaceHeight(ConcurrentHashMap<Integer, Integer> surfaceHeight) {
-		this.surfaceHeight = surfaceHeight;
 	}
 }

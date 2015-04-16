@@ -5,6 +5,7 @@ import java.util.Set;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
+import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
@@ -12,6 +13,7 @@ import bloodandmithril.world.topography.ChunkMap;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 
@@ -28,6 +30,9 @@ public abstract class SuperStructure extends Structure {
 	private Boundaries boundaries;
 
 	protected final Set<TwoInts> startingLocations = Sets.newHashSet();
+
+	// Used to keep the surface height consistent between structures where needed.
+	private SerializableMappingFunction<Integer, Integer> surfaceHeight;
 
 	/**
 	 * Constructor
@@ -106,5 +111,21 @@ public abstract class SuperStructure extends Structure {
 	 */
 	private void setBoundaries(Boundaries boundaries) {
 		this.boundaries = boundaries;
+	}
+
+
+	/**
+	 * See {@link #surfaceHeight}
+	 */
+	public Function<Integer, Integer> getSurfaceHeight() {
+		return surfaceHeight;
+	}
+
+
+	/**
+	 * See {@link #surfaceHeight}
+	 */
+	public void setSurfaceHeight(SerializableMappingFunction<Integer, Integer> surfaceHeight) {
+		this.surfaceHeight = surfaceHeight;
 	}
 }

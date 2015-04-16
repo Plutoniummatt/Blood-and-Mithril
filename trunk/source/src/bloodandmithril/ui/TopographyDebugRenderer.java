@@ -1,5 +1,7 @@
 package bloodandmithril.ui;
 
+import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
+
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -52,6 +54,10 @@ public class TopographyDebugRenderer {
 					boundaries.getWidth() * Topography.CHUNK_SIZE,
 					boundaries.getHeight() * Topography.CHUNK_SIZE
 				);
+
+				for (int x = convertToWorldTileCoord(((SuperStructure) struct).getBoundaries().left, 0); x <= convertToWorldTileCoord(((SuperStructure) struct).getBoundaries().right, Topography.CHUNK_SIZE - 1); x++) {
+					UserInterface.shapeRenderer.circle(x - topoX + 0.5f, ((SuperStructure) struct).getSurfaceHeight().apply(x) - topoY, 1);
+				}
 			}
 
 			UserInterface.shapeRenderer.setColor(Color.RED);
@@ -88,12 +94,6 @@ public class TopographyDebugRenderer {
 			BloodAndMithrilClient.HEIGHT / Topography.TILE_SIZE
 		);
 
-		UserInterface.shapeRenderer.end();
-
-		UserInterface.shapeRenderer.begin(ShapeType.Filled);
-		for (Entry<Integer, Integer> h : Domain.getActiveWorld().getTopography().getStructures().getSurfaceHeight().entrySet()) {
-			UserInterface.shapeRenderer.circle(h.getKey() - topoX, h.getValue() - topoY, 1);
-		}
 		UserInterface.shapeRenderer.end();
 
 		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && BloodAndMithrilClient.devMode) {

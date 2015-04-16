@@ -1,5 +1,6 @@
 package bloodandmithril.generation.superstructure;
 
+import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 import static java.lang.Math.max;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.ChunkGenerator;
@@ -17,6 +18,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.plant.DeadDesertBush;
 import bloodandmithril.prop.plant.DryGrass;
 import bloodandmithril.util.Function;
+import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.util.datastructure.TwoInts;
@@ -74,8 +76,8 @@ public class Desert extends SuperStructure {
 
 	@Override
 	protected void internalGenerate(boolean generatingToRight) {
-		int rightMostTile = (getBoundaries().right + 1) * Topography.CHUNK_SIZE - 1;
-		int leftMostTile = getBoundaries().left * Topography.CHUNK_SIZE;
+		int rightMostTile = Topography.convertToWorldTileCoord(getBoundaries().right, 19);
+		int leftMostTile = Topography.convertToWorldTileCoord(getBoundaries().left, 0);
 
 		generateSurface(generatingToRight, rightMostTile, leftMostTile);
 		generateDungeon();
@@ -88,8 +90,8 @@ public class Desert extends SuperStructure {
 		// Add the entrance in the middle of this desert
 		int entranceX = (getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE;
 		int entranceY = max(
-			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(366 + entranceX) + 80,
-			Domain.getWorld(worldId).getTopography().getStructures().getSurfaceHeight().get(24 + entranceX) + 80
+			getSurfaceHeight().apply(366 + entranceX) + 80,
+			getSurfaceHeight().apply(24 + entranceX) + 80
 		);
 
 		getComponents().add(new UndergroundDesertTempleEntrance(
@@ -223,69 +225,40 @@ public class Desert extends SuperStructure {
 
 		// set starting height
 		if (generatingToRight) {
-			if (structures.getSurfaceHeight().get(leftMostTile - 1) != null) {
-				startingHeight = structures.getSurfaceHeight().get(leftMostTile - 1);
+			SuperStructure superStructure = (SuperStructure) structures.getStructure(convertToChunkCoord(leftMostTile - 1), 0, true);
+			if (superStructure != null && superStructure.getSurfaceHeight().apply(leftMostTile - 1) != null) {
+				startingHeight = superStructure.getSurfaceHeight().apply(leftMostTile - 1);
 			} else {
 				startingHeight = dafaultSurfaceHeight;
 			}
 		} else {
-			if (structures.getSurfaceHeight().get(rightMostTile + 1) != null) {
-				startingHeight = structures.getSurfaceHeight().get(rightMostTile + 1);
+			SuperStructure superStructure = (SuperStructure) structures.getStructure(convertToChunkCoord(rightMostTile + 1), 0, true);
+			if (superStructure != null && superStructure.getSurfaceHeight().apply(rightMostTile + 1) != null) {
+				startingHeight = superStructure.getSurfaceHeight().apply(rightMostTile + 1);
 			} else {
 				startingHeight = dafaultSurfaceHeight;
 			}
 		}
 
+		setSurfaceHeight(new DesertSurfaceFunction(startingHeight, generatingToRight, rightMostTile, leftMostTile));
+
 		//fill surfaceHeight
-		if (generatingToRight) {
-			for (int x = leftMostTile; x <= rightMostTile; x++) {
-				int y = (int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(leftMostTile, 1));
-				structures.getSurfaceHeight().put(
-					x,
-					y
+		for (int x = leftMostTile; x <= rightMostTile; x++) {
+			if (Util.roll(0.04f)) {
+				Structures.get(getStructureKey()).addProp(
+					new DeadDesertBush(
+						Topography.convertToWorldCoord(x, false),
+						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16
+					)
 				);
-				
-				if (Util.roll(0.04f)) {
-					Structures.get(getStructureKey()).addProp(
-						new DeadDesertBush(
-							Topography.convertToWorldCoord(x, false),
-							Topography.convertToWorldCoord(y, false) + 16
-						)
-					);
-				}
-				if (Util.roll(0.5f)) {
-					Structures.get(getStructureKey()).addProp(
-						new DryGrass(
-							Topography.convertToWorldCoord(x, false),
-							Topography.convertToWorldCoord(y, false) + 16
-						)
-					);
-				}
 			}
-		} else {
-			for (int x = rightMostTile; x >= leftMostTile; x--) {
-				int y = (int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(rightMostTile, 1));
-				structures.getSurfaceHeight().put(
-					x,
-					y
+			if (Util.roll(0.5f)) {
+				Structures.get(getStructureKey()).addProp(
+					new DryGrass(
+						Topography.convertToWorldCoord(x, false),
+						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16
+					)
 				);
-				
-				if (Util.roll(0.04f)) {
-					Structures.get(getStructureKey()).addProp(
-						new DeadDesertBush(
-							Topography.convertToWorldCoord(x, false),
-							Topography.convertToWorldCoord(y, false) + 16
-						)
-					);
-				}
-				if (Util.roll(0.5f)) {
-					Structures.get(getStructureKey()).addProp(
-						new DryGrass(
-							Topography.convertToWorldCoord(x, false),
-							Topography.convertToWorldCoord(y, false) + 16
-						)
-					);
-				}
 			}
 		}
 	}
@@ -293,9 +266,7 @@ public class Desert extends SuperStructure {
 
 	@Override
 	protected Tile internalGetForegroundTile(int worldTileX, int worldTileY) {
-		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
-
-		if (worldTileY > structures.getSurfaceHeight().get(worldTileX)) {
+		if (worldTileY > getSurfaceHeight().apply(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
 			return new SandTile();
@@ -305,12 +276,32 @@ public class Desert extends SuperStructure {
 
 	@Override
 	protected Tile internalGetBackgroundTile(int worldTileX, int worldTileY) {
-		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
-
-		if (worldTileY > structures.getSurfaceHeight().get(worldTileX)-1) {
+		if (worldTileY > getSurfaceHeight().apply(worldTileX)-1) {
 			return new Tile.EmptyTile();
 		} else {
 			return new SandTile();
+		}
+	}
+
+
+	public class DesertSurfaceFunction extends SerializableMappingFunction<Integer, Integer> {
+		private static final long serialVersionUID = 2757677577748105968L;
+
+		private int startingHeight;
+		private boolean generatingToRight;
+		private int rightMostTile;
+		private int leftMostTile;
+
+		private DesertSurfaceFunction(int startingHeight, boolean generatingToRight, int rightMostTile, int leftMostTile) {
+			this.startingHeight = startingHeight;
+			this.generatingToRight = generatingToRight;
+			this.rightMostTile = rightMostTile;
+			this.leftMostTile = leftMostTile;
+		}
+
+		@Override
+		public Integer apply(Integer x) {
+			return (int)(startingHeight + tDuneVariationHeight * perlinSurfaceGenerator.generate(x, 1) - tDuneVariationHeight * perlinSurfaceGenerator.generate(generatingToRight ? leftMostTile : rightMostTile, 1));
 		}
 	}
 }

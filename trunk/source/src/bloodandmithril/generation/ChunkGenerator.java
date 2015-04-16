@@ -1,5 +1,7 @@
 package bloodandmithril.generation;
 
+import java.io.Serializable;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.biome.BiomeDecider;
 import bloodandmithril.networking.ClientServerInterface;
@@ -15,21 +17,22 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class ChunkGenerator {
-	
+public class ChunkGenerator implements Serializable {
+	private static final long serialVersionUID = -2526181045653733253L;
+
 	/** Decides which biomes to generate */
 	private BiomeDecider biomeDecider;
 
 	public static final int maxSurfaceHeightInChunks = 50;
-	
-	
+
+
 	/**
 	 * Constructor
 	 */
 	public ChunkGenerator(BiomeDecider biomeDecider) {
 		this.biomeDecider = biomeDecider;
 	}
-	
+
 
 	/**
 	 * Generates a chunk, based on passed in chunk coordinates

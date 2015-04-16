@@ -97,6 +97,11 @@ public class Domain {
 	}
 
 
+	public static int getActiveWorldId() {
+		return activeWorldId;
+	}
+
+
 	public static void setActiveWorld(int worldId) {
 		activeWorldId = worldId;
 	}
