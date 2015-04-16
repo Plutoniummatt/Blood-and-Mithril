@@ -15,6 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.generation.ChunkGenerator;
+import bloodandmithril.generation.biome.DefaultBiomeDecider;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -52,7 +54,7 @@ public class Domain {
 	 */
 	public Domain() {
 		if (worlds.isEmpty()) {
-			World world = new World(1200f, new Epoch(15.5f, 15, 4, 2015));
+			World world = new World(1200f, new Epoch(15.5f, 15, 4, 2015), new ChunkGenerator(new DefaultBiomeDecider()));
 			getWorlds().put(world.getWorldId(), world);
 			activeWorld = world;
 		} else {

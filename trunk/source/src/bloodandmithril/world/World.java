@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.graphics.background.BackgroundImages;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
@@ -61,15 +62,21 @@ public class World implements Serializable {
 
 	/** The projectiles of this {@link World} */
 	private WorldProjectiles projectiles;
+	
+	/** World-specific {@link ChunkGenerator} */
+	private final ChunkGenerator 								generator;
 
 	/** Epoch of this world */
 	private Epoch epoch;
+	
+	private float												updateTick = 1f/60f;
 
 	/**
 	 * Constructor
 	 */
-	public World(float gravity, Epoch epoch) {
+	public World(float gravity, Epoch epoch, ChunkGenerator generator) {
 		this.epoch = epoch;
+		this.generator = generator;
 		this.worldId = ParameterPersistenceService.getParameters().getNextWorldKey();
 		this.gravity = gravity;
 		this.items = new WorldItems(worldId);
@@ -78,28 +85,32 @@ public class World implements Serializable {
 		this.topography = new Topography(worldId);
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
 	}
+	
+	
+	public World updateTick(float updateTick) {
+		this.updateTick = updateTick;
+		return this;
+	}
 
 
 	public void update() {
-		float d = 1f/60f;
-
-		epoch.incrementTime(d);
+		epoch.incrementTime(updateTick);
 
 		for (int individualId : individuals) {
-			Domain.getIndividual(individualId).update(d);
+			Domain.getIndividual(individualId).update(updateTick);
 		}
 
 		for (Prop prop : props().getProps()) {
-			prop.update(d);
+			prop.update(updateTick);
 		}
 
 		for (Projectile projectile : projectiles().getProjectiles()) {
-			projectile.update(d);
+			projectile.update(updateTick);
 		}
 
 		for (Item item : items().getItems()) {
 			try {
-				item.update(d);
+				item.update(updateTick);
 			} catch (NoTileFoundException e) {}
 		}
 	}
@@ -208,5 +219,10 @@ public class World implements Serializable {
 
 	public void setEpoch(Epoch currentEpoch) {
 		this.epoch = currentEpoch;
+	}
+
+
+	public ChunkGenerator getGenerator() {
+		return generator;
 	}
 }

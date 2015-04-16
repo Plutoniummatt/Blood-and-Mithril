@@ -216,7 +216,7 @@ public class Desert extends SuperStructure {
 
 
 	/** Generates the surface layer */
-	private void generateSurface(boolean generatingToRight, int rightMostTile, int leftMostTile) {
+	protected void generateSurface(boolean generatingToRight, int rightMostTile, int leftMostTile) {
 		Structures structures = Domain.getWorld(worldId).getTopography().getStructures();
 		int startingHeight;
 		int dafaultSurfaceHeight = 100;

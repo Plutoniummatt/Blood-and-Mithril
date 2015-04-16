@@ -28,6 +28,7 @@ import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
@@ -175,9 +176,9 @@ public abstract class Prop implements Serializable, Visible {
 	 */
 	public boolean canPlaceAt(Vector2 position) {
 		return canPlaceAt(position.x, position.y, width, height, canPlaceOnTopOf, canPlaceInFrontOf, grounded, () -> {
-			for (Integer propId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, position.x, position.y)) {
-				Prop prop = Domain.getActiveWorld().props().getProp(propId);
-				if (Domain.getActiveWorld().props().hasProp(propId)) {
+			for (Integer propId : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyEntities(Prop.class, position.x, position.y)) {
+				Prop prop = Domain.getWorld(worldId).props().getProp(propId);
+				if (Domain.getWorld(worldId).props().hasProp(propId)) {
 					this.position.x = position.x;
 					this.position.y = position.y;
 					if (prop.depth == Depth.FRONT || this.depth == Depth.FRONT) {
@@ -190,14 +191,14 @@ public abstract class Prop implements Serializable, Visible {
 			}
 
 			return true;
-		});
+		}, Domain.getWorld(worldId));
 	}
 
 
 	/**
 	 * @return whether this prop can be placed at a given location
 	 */
-	public static boolean canPlaceAt(float x, float y, float width, float height, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf, SerializableMappingFunction<Tile, Boolean> canPlaceInFrontOf, boolean grounded, Function<Boolean> customFunction) {
+	public static boolean canPlaceAt(float x, float y, float width, float height, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf, SerializableMappingFunction<Tile, Boolean> canPlaceInFrontOf, boolean grounded, Function<Boolean> customFunction, World world) {
 		float xStep = width / TILE_SIZE;
 		long xSteps = Math.round(Math.ceil(xStep));
 		float xIncrement = width / xSteps;
@@ -206,17 +207,16 @@ public abstract class Prop implements Serializable, Visible {
 		long ySteps = Math.round(Math.ceil(yStep));
 		float yIncrement = height / ySteps;
 
-
 		try {
 			for (int i = 0; i <= xSteps; i++) {
-				Tile tileUnder = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y - TILE_SIZE/2, true);
+				Tile tileUnder = world.getTopography().getTile(x - width / 2 + i * xIncrement, y - TILE_SIZE/2, true);
 				if (grounded && (tileUnder.isPassable() || canPlaceOnTopOf != null && !canPlaceOnTopOf.apply(tileUnder))) {
 					return false;
 				}
 
 				for (int j = 1; j <= ySteps; j++) {
-					Tile tileOverlapping = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true);
-					Tile tileUnderlapping = Domain.getActiveWorld().getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, false);
+					Tile tileOverlapping = world.getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, true);
+					Tile tileUnderlapping = world.getTopography().getTile(x - width / 2 + i * xIncrement, y + j * yIncrement - TILE_SIZE/2, false);
 					if (!tileOverlapping.isPassable() || canPlaceInFrontOf != null && !canPlaceInFrontOf.apply(tileUnderlapping)) {
 						return false;
 					}

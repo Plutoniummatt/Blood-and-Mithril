@@ -224,6 +224,7 @@ public abstract class Structure implements Serializable {
 	 * Adds a prop to be placed
 	 */
 	public synchronized void addProp(Prop prop) {
+		prop.setWorldId(worldId);
 		props.add(
 			new PropPlacer(
 				prop,

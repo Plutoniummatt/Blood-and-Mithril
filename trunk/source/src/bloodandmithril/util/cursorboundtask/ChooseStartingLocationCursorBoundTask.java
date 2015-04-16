@@ -132,7 +132,8 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 			true,
 			() -> {
 				return true;
-			}
+			},
+			Domain.getWorld(individual.getWorldId())
 		);
 	}
 
