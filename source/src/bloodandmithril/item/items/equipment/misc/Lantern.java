@@ -14,7 +14,6 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.ParameterPersistenceService;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
@@ -37,7 +36,6 @@ public class Lantern extends OffhandEquipment {
 	private Set<Long> particleIds = Sets.newHashSet();
 	private float fuelRemaining;
 	private Integer workingId;
-	private float refreshTimer = 0.5f;
 
 	/**
 	 * Constructor
@@ -172,13 +170,6 @@ public class Lantern extends OffhandEquipment {
 
 	@Override
 	public void update(Equipper equipper, float delta) {
-		if (refreshTimer <= 0f) {
-			UserInterface.refreshRefreshableWindows();
-			refreshTimer = 0.5f;
-		} else {
-			refreshTimer -= delta;
-		}
-
 		if (fuelRemaining > 0f) {
 			fuelRemaining -= delta / 4000f;
 		} else {

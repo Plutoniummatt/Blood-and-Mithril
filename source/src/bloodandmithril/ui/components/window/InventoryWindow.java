@@ -459,7 +459,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			final ContextMenu menuToAddUnequipped = determineMenu(item.getKey(), false);
 
 			final Button inventoryButton = new Button(
-				item.getKey().getSingular(true),
+				() -> {return item.getKey().getSingular(true);},
 				defaultFont,
 				0,
 				0,
@@ -488,7 +488,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 			final ContextMenu menuToAddEquipped = determineMenu(item.getKey(), true);
 			Button equippedButton = new Button(
-				item.getKey().getSingular(true),
+				() -> {return item.getKey().getSingular(true);},
 				defaultFont,
 				0,
 				0,
