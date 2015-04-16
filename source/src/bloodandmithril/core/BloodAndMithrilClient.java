@@ -16,6 +16,8 @@ import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.Controls;
+import bloodandmithril.generation.ChunkGenerator;
+import bloodandmithril.generation.biome.MainMenuBiomeDecider;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.WorldRenderer;
@@ -252,8 +254,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		topographyQueryThread.start();
 
 		ClientServerInterface.setServer(true);
-		Domain.getWorlds().put(1, new World(1200, new Epoch(15.5f, 5, 22, 25)));
-		Domain.getWorld(1).getTopography().loadOrGenerateNullChunksAccordingToPosition(0, 0);
+		Domain.getWorlds().put(
+			1, 
+			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).updateTick(0.15f)
+		);
 		ClientServerInterface.setServer(false);
 	}
 
@@ -670,7 +674,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			return false;
 		}
 
-		if (Gdx.input.isButtonPressed(getKeyMappings().middleClick.keyCode)) {
+		if (Gdx.input.isButtonPressed(getKeyMappings().middleClick.keyCode) && domain != null) {
 			cam.position.x = oldCamX + camDragX - screenX;
 			cam.position.y = oldCamY + screenY - camDragY;
 		}
@@ -786,7 +790,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	private void cameraControl() {
-		if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+		if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && domain != null) {
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamUp.keyCode)){
 				cam.position.y += 10f;
 			}

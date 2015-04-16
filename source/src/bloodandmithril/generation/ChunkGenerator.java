@@ -1,7 +1,7 @@
 package bloodandmithril.generation;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.tools.BiomeDecider;
+import bloodandmithril.generation.biome.BiomeDecider;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.World;
@@ -16,11 +16,20 @@ import bloodandmithril.world.topography.tile.Tile;
  */
 @Copyright("Matthew Peck 2014")
 public class ChunkGenerator {
-
+	
 	/** Decides which biomes to generate */
-	private BiomeDecider biomeDecider = new BiomeDecider();
+	private BiomeDecider biomeDecider;
 
 	public static final int maxSurfaceHeightInChunks = 50;
+	
+	
+	/**
+	 * Constructor
+	 */
+	public ChunkGenerator(BiomeDecider biomeDecider) {
+		this.biomeDecider = biomeDecider;
+	}
+	
 
 	/**
 	 * Generates a chunk, based on passed in chunk coordinates

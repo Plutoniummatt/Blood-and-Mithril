@@ -11,7 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipFile;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.GlobalLayers;
@@ -42,8 +41,6 @@ public class ChunkLoader {
 	/** The list of tasks the loader thread must execute */
 	public static final BlockingQueue<Task> loaderTasks = new ArrayBlockingQueue<>(5000);
 
-	/** The terrain generator */
-	private final ChunkGenerator generator = new ChunkGenerator();
 
 	/** The current chunk coordinates that is in the queue to be loaded/generated */
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<>();
@@ -200,7 +197,7 @@ public class ChunkLoader {
 				Logger.loaderDebug("No chunk found on disk, generating new chunk: " + chunkX + ", " + chunkY, LogLevel.DEBUG);
 				// If load was unsuccessful, the chunk in question remains null and we
 				// generate it.
-				generator.generate(chunkX, chunkY, world, populateChunkMap);
+				world.getGenerator().generate(chunkX, chunkY, world, populateChunkMap);
 			}
 
 			// Remove chunk from queue.
