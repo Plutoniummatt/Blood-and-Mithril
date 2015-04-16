@@ -115,7 +115,7 @@ public class LoadGameWindow extends Window {
 									BloodAndMithrilClient.threadWait(1000);
 									BloodAndMithrilClient.setLoading(true);
 									GameLoader.load(metadata, false);
-									BloodAndMithrilClient.domain = new Domain();
+									BloodAndMithrilClient.domain = new Domain(true);
 									BloodAndMithrilClient.setup();
 									
 									while(!ChunkLoader.loaderTasks.isEmpty()) {
