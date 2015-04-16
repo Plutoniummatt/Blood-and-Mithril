@@ -1,14 +1,21 @@
 package bloodandmithril.item.items.equipment.misc;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.item.Craftable;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipper;
+import bloodandmithril.item.items.material.StickItem;
+import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -20,6 +27,7 @@ import bloodandmithril.world.World;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
 
 /**
  * Offhand torch for lighting
@@ -27,7 +35,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class Torch extends OffhandEquipment implements FireLighter {
+public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 	private static final long serialVersionUID = 5112607606681273075L;
 
 	public static TextureRegion torch;
@@ -198,5 +206,31 @@ public class Torch extends OffhandEquipment implements FireLighter {
 	@Override
 	public boolean canLightFire() {
 		return burning;
+	}
+
+
+	@Override
+	public boolean canBeCraftedBy(Individual individual) {
+		return true;
+	}
+
+
+	@Override
+	public Map<Item, Integer> getRequiredMaterials() {
+		HashMap<Item, Integer> materials = Maps.newHashMap();
+		materials.put(StickItem.stick(StandardWood.class), 1);
+		return materials;
+	}
+
+
+	@Override
+	public void crafterEffects(Individual crafter, float delta) {
+		crafter.getProficiencies().getProficiency(Carpentry.class).increaseExperience(delta * 2f);
+	}
+
+
+	@Override
+	public float getCraftingDuration() {
+		return 10f;
 	}
 }

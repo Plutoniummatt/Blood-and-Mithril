@@ -242,7 +242,7 @@ public class Desert extends SuperStructure {
 
 		setSurfaceHeight(new DesertSurfaceFunction(startingHeight, generatingToRight, rightMostTile, leftMostTile));
 
-		//fill surfaceHeight
+		//place props
 		for (int x = leftMostTile; x <= rightMostTile; x++) {
 			if (Util.roll(0.04f)) {
 				Structures.get(getStructureKey()).addProp(
