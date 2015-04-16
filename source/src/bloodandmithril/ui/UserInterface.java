@@ -361,7 +361,7 @@ public class UserInterface {
 			renderDebugText();
 		}
 
-		if (BloodAndMithrilClient.domain != null) {
+		if (BloodAndMithrilClient.isInGame()) {
 			renderUIText();
 		}
 		renderButtons();

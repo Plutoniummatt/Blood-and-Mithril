@@ -46,7 +46,7 @@ public class MainMenuWindow extends Window {
 	@Override
 	protected void internalWindowRender() {
 		singlePlayer.render(width/2 + x, y - 26, isActive() && !isSaving(), getAlpha());
-		multiPlayer.render(width/2 + x, y - 46, isActive() && !isSaving() && BloodAndMithrilClient.domain == null, getAlpha());
+		multiPlayer.render(width/2 + x, y - 46, isActive() && !isSaving() && !BloodAndMithrilClient.isInGame(), getAlpha());
 		options.render(width/2 + x, y - 66, isActive() && !isSaving(), getAlpha());
 		exit.render(width/2 + x, y - 86, isActive() && !isSaving(), getAlpha());
 	}
@@ -82,7 +82,7 @@ public class MainMenuWindow extends Window {
 				new ContextMenu.MenuItem(
 					"Save game",
 					() -> {
-						if (BloodAndMithrilClient.domain == null) {
+						if (!BloodAndMithrilClient.isInGame()) {
 							return;
 						}
 
@@ -111,9 +111,9 @@ public class MainMenuWindow extends Window {
 							)
 						);
 					},
-					BloodAndMithrilClient.domain == null ? Colors.UI_DARK_GRAY : Color.ORANGE,
-					BloodAndMithrilClient.domain == null ? Colors.UI_DARK_GRAY : Color.GREEN,
-					BloodAndMithrilClient.domain == null ? Colors.UI_DARK_GRAY : Color.ORANGE,
+					BloodAndMithrilClient.isInGame() ? Color.ORANGE : Colors.UI_DARK_GRAY,
+					BloodAndMithrilClient.isInGame() ? Color.GREEN  : Colors.UI_DARK_GRAY,
+					BloodAndMithrilClient.isInGame() ? Color.ORANGE : Colors.UI_DARK_GRAY,
 					null
 				),
 				new ContextMenu.MenuItem(
@@ -165,7 +165,7 @@ public class MainMenuWindow extends Window {
 			100,
 			16,
 			() -> {
-				if (BloodAndMithrilClient.domain != null) {
+				if (BloodAndMithrilClient.isInGame()) {
 					return;
 				}
 
@@ -195,7 +195,8 @@ public class MainMenuWindow extends Window {
 										removeWindows();
 										Thread.sleep(1000);
 										ClientServerInterface.setupAndConnect(args[0].toString());
-										BloodAndMithrilClient.domain = new Domain(true);
+										Domain.setActiveWorld(Domain.createWorld());
+										BloodAndMithrilClient.setInGame(true);
 										BloodAndMithrilClient.setup();
 									} catch (Exception e) {
 
