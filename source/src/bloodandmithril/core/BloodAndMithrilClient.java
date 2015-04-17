@@ -15,6 +15,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.control.Controls;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.MainMenuBiomeDecider;
@@ -278,6 +279,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		WorldRenderer.shapeRenderer = new ShapeRenderer();
 		Fonts.setup();
 		Individual.setup();
+		Elf.setup();
 		PrefabricatedComponent.setup();
 		Topography.setup();
 		Shaders.setup();

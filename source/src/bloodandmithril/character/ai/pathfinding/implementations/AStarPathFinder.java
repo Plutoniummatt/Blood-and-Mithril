@@ -129,10 +129,6 @@ public class AStarPathFinder extends PathFinder {
 				Collections.sort(allEntries, fComparator);
 				DualKeyEntry<Integer, Integer, Node> entry = allEntries.get(0);
 
-				if (entry.value.getF() > 9999999f) {
-					return new Path();
-				}
-
 				Node destination = null;
 
 				try {
@@ -330,7 +326,7 @@ public class AStarPathFinder extends PathFinder {
 				}
 				return 1;
 			}
-		} catch (RuntimeException e) {
+		} catch (NoTileFoundException e) {
 			throw new UndiscoveredPathNotification();
 		}
 	}
