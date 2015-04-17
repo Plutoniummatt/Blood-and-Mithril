@@ -63,6 +63,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
 import com.badlogic.gdx.Gdx;
@@ -185,6 +186,15 @@ public class DevWindow extends Window {
 				BloodAndMithrilClient.getMouseWorldY(),
 				true,
 				YellowBrickTile.class
+			);
+		}
+
+		if (keyCode == Keys.P) {
+			Domain.getActiveWorld().getTopography().changeTile(
+				BloodAndMithrilClient.getMouseWorldX(),
+				BloodAndMithrilClient.getMouseWorldY(),
+				true,
+				YellowBrickPlatform.class
 			);
 		}
 

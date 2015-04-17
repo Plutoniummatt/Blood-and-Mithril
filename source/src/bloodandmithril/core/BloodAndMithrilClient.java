@@ -803,7 +803,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				cam.position.y -= 10f;
 			}
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamLeft.keyCode)){
-				cam.position.x -= 100f;
+				cam.position.x -= 10f;
 			}
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamRight.keyCode)){
 				cam.position.x += 10f;

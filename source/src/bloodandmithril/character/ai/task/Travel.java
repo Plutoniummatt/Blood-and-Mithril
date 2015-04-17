@@ -108,6 +108,11 @@ public class Travel extends CompositeAITask {
 				offset = (float) Math.cos(getHost().getTravelIconTimer() + Math.PI) + 1f;
 			}
 
+			// GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)task).getTask();
+			// if (goToLocation != null) {
+			// 	goToLocation.renderPath();;
+			// }
+
 			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
 			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
 			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
