@@ -44,6 +44,7 @@ import bloodandmithril.world.Epoch;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
+import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -449,15 +450,16 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					}
 				}
 			}
-		} else if (!Gdx.input.isKeyPressed(getKeyMappings().contextMenuBypass.keyCode)) {
+		} else if (!Gdx.input.isKeyPressed(Keys.ANY_KEY)) {
 			uiClicked = UserInterface.rightClick();
 		}
 
 		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(getKeyMappings().rightClickDragBox.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
+			Vector2 mouseCoordinate = new Vector2(getMouseWorldX(), getMouseWorldY());
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
-				if (Gdx.input.isKeyPressed(getKeyMappings().mineTile.keyCode)) {
+				if (Gdx.input.isKeyPressed(getKeyMappings().mineTile.keyCode) && !Domain.getWorld(indi.getWorldId()).getTopography().getTile(mouseCoordinate, true).getClass().equals(EmptyTile.class)) {
 					if (ClientServerInterface.isServer()) {
-						indi.getAI().setCurrentTask(new MineTile(indi, new Vector2(getMouseWorldX(), getMouseWorldY())));
+						indi.getAI().setCurrentTask(new MineTile(indi, mouseCoordinate));
 					} else {
 						ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
 					}

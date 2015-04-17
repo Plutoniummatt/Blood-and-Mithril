@@ -110,7 +110,7 @@ public class Travel extends CompositeAITask {
 
 			// GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)task).getTask();
 			// if (goToLocation != null) {
-			// 	goToLocation.renderPath();;
+			// 	goToLocation.renderPath();
 			// }
 
 			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();

@@ -48,7 +48,6 @@ public class Controls implements Serializable {
 	public MappedKey moveCamLeft = new MappedKey("Move Camera Left", Input.Keys.LEFT, "Camera movement.", true);
 	public MappedKey moveCamRight = new MappedKey("Move Camera Right", Input.Keys.RIGHT, "Camera movement.", true);
 	public MappedKey rightClickDragBox = new MappedKey("Bulk Loot", Input.Keys.X, "Hold this button and use the right mouse button to drag a box around items to loot.", true);
-	public MappedKey contextMenuBypass = new MappedKey("Suppress Context Menus", Input.Keys.C, "Hold this button to avoid spawning context menus when right clicking on entities.", true);
 	public MappedKey forceMove = new MappedKey("Force Move", Input.Keys.F, "Force move will instruct an individual to move to a location despite any fall damage.", true);
 	public MappedKey jump = new MappedKey("Jump", Input.Keys.SPACE, "Hold and right click with selected individual(s) to jump.", true);
 	public MappedKey toggleWalkRun = new MappedKey("Toggle Run/Walk", Input.Keys.W, "Toggles walk/run modes.", true);
@@ -66,7 +65,6 @@ public class Controls implements Serializable {
 
 		List<MappedKey> keys = Lists.newArrayList(
 			rightClickDragBox,
-			contextMenuBypass,
 			forceMove,
 			jump,
 			toggleWalkRun,

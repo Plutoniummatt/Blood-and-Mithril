@@ -262,11 +262,19 @@ public class GaussianLightingRenderer {
 		float[] colors = new float[MAX_PARTICLES * 4];
 
 		List<Particle> clientSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(world.getClientParticles(), p -> {
-			return p.depth == depth && isOnScreen(p.position, 50f);
+			if (p instanceof TracerParticle) {
+				return p.depth == depth && isOnScreen(p.position, ((TracerParticle) p).glowIntensity * 10f);
+			} else {
+				return p.depth == depth && isOnScreen(p.position, 50f);
+			}
 		}));
 
 		List<Particle> serverSideGlowingTracerParticles = Lists.newLinkedList(Iterables.filter(world.getServerParticles().values(), p -> {
-			return p.depth == depth && isOnScreen(p.position, 50f);
+			if (p instanceof TracerParticle) {
+				return p.depth == depth && isOnScreen(p.position, ((TracerParticle) p).glowIntensity * 10f);
+			} else {
+				return p.depth == depth && isOnScreen(p.position, 50f);
+			}
 		}));
 
 		List<List<Particle>> particleCollections = Lists.newLinkedList();

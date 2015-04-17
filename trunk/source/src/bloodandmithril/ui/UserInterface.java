@@ -94,6 +94,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -458,7 +459,7 @@ public class UserInterface {
 
 
 	private static void renderHint() {
-		if (getCursorBoundTask() == null && contextMenus.isEmpty() && Domain.getActiveWorld() != null) {
+		if (getCursorBoundTask() == null && contextMenus.isEmpty() && Domain.getActiveWorld() != null && !Gdx.input.isKeyPressed(Keys.ANY_KEY)) {
 			boolean renderHint = false;
 			PositionalIndexMap positionalIndexMap = Domain.getActiveWorld().getPositionalIndexMap();
 			for (int id : positionalIndexMap.getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
