@@ -49,11 +49,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import bloodandmithril.character.ai.AIProcessor;
-import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
-import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.ai.task.Travel;
 import bloodandmithril.character.individuals.Individual;
@@ -906,19 +904,19 @@ public class UserInterface {
 						}
 					}
 				} else if (currentTask instanceof CompositeAITask) {
-					AITask subTask = ((CompositeAITask) currentTask).getCurrentTask();
-					if (subTask instanceof GoToLocation) {
-						// ((GoToLocation)subTask).renderPath();
-						// ((GoToLocation)subTask).renderFinalWayPoint();
-					} else if (subTask instanceof GoToMovingLocation) {
-						// ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderPath();
-						// ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderFinalWayPoint();
-					} else if (subTask instanceof JitGoToLocation) {
-						// GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)subTask).getTask();
-						// if (goToLocation != null) {
-						// 	goToLocation.renderFinalWayPoint();
-						// }
-					}
+					// AITask subTask = ((CompositeAITask) currentTask).getCurrentTask();
+					// if (subTask instanceof GoToLocation) {
+					// 	 ((GoToLocation)subTask).renderPath();
+					// 	 ((GoToLocation)subTask).renderFinalWayPoint();
+					// } else if (subTask instanceof GoToMovingLocation) {
+					// 	 ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderPath();
+					// 	 ((GoToMovingLocation)subTask).getCurrentGoToLocation().renderFinalWayPoint();
+					// } else if (subTask instanceof JitGoToLocation) {
+					// 	 GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)subTask).getTask();
+					// 	 if (goToLocation != null) {
+					// 	 	goToLocation.renderFinalWayPoint();
+					// 	 }
+					// }
 				}
 
 				if (!(currentTask instanceof Travel)) {
