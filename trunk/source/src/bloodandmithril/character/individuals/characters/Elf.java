@@ -378,6 +378,11 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		);
 	}
 
+	
+	public static void setup() {
+	}
+	
+
 	/**
 	 * Constructor
 	 */

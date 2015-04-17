@@ -38,7 +38,7 @@ public class MineTile extends CompositeAITask {
 	private static final long serialVersionUID = -4098496856332182430L;
 
 	/** Coordinate of the tile to mine */
-	public final Vector2 tileCoordinate;
+	public Vector2 tileCoordinate;
 
 	/**
 	 * Constructor
@@ -56,7 +56,7 @@ public class MineTile extends CompositeAITask {
 				goToWithTerminationFunction(
 					host,
 					host.getState().position.cpy(),
-					new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10, Domain.getWorld(host.getWorldId())), 0),
+					new WayPoint(PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace(coordinate, 10, Domain.getWorld(host.getWorldId())), 0f),
 					false,
 					new WithinInteractionBox(),
 					true
@@ -65,7 +65,11 @@ public class MineTile extends CompositeAITask {
 		} catch (NoTileFoundException e) {}
 		appendTask(new AttemptMine(hostId));
 
-		this.tileCoordinate = coordinate;
+		try {
+			this.tileCoordinate = Topography.convertToWorldCoord(coordinate, false);
+		} catch (NoTileFoundException e) {
+			this.tileCoordinate = coordinate;
+		}
 	}
 
 
@@ -123,6 +127,10 @@ public class MineTile extends CompositeAITask {
 			}
 
 			if (host.getAttackTimer() < host.getAttackPeriod()) {
+				return;
+			}
+			
+			if (!new WithinInteractionBox().call()) {
 				return;
 			}
 

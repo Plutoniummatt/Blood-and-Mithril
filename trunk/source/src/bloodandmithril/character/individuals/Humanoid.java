@@ -25,6 +25,8 @@ import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Probablistic;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.world.topography.Topography;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
@@ -121,7 +123,9 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				}
 
 				MineTile mineTileTask = (MineTile) currentTask;
-				MineTile.Mine.mine(individual, mineTileTask.tileCoordinate);
+				try {
+					MineTile.Mine.mine(individual, Topography.convertToWorldCoord(mineTileTask.tileCoordinate, false));
+				} catch (NoTileFoundException e) {}
 			}
 		);
 
