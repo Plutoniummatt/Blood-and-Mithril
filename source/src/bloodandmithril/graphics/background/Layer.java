@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -25,12 +26,12 @@ public abstract class Layer implements Serializable {
 	/**
 	 * Maps the position of the x-coordinate of the image, to the image ID
 	 */
-	private final TreeMap<Integer, Integer> images;
+	private final TreeMap<Integer, WrapperForTwo<Integer, Integer>> images;
 
 	/**
 	 * Constructor
 	 */
-	protected Layer(TreeMap<Integer, Integer> images) {
+	protected Layer(TreeMap<Integer, WrapperForTwo<Integer, Integer>> images) {
 		this.images = images;
 	}
 
@@ -53,7 +54,7 @@ public abstract class Layer implements Serializable {
 		int startPositionY = Math.round(camY * (1f - getDistanceY()));
 		int currentPosition = 0;
 
-		Entry<Integer, Integer> floorEntry = images.floorEntry(startPositionX);
+		Entry<Integer, WrapperForTwo<Integer, Integer>> floorEntry = images.floorEntry(startPositionX);
 		if (floorEntry == null) {
 			return;
 		}
@@ -65,18 +66,19 @@ public abstract class Layer implements Serializable {
 				rendering = false;
 			}
 
-			boolean empty = images.floorEntry(startPositionX + currentPosition).getValue() == 0;
-			TextureRegion toDraw = empty ? null : textures.get(images.floorEntry(startPositionX + currentPosition).getValue());
+			boolean empty = images.floorEntry(startPositionX + currentPosition).getValue().a == 0;
+			TextureRegion toDraw = empty ? null : textures.get(images.floorEntry(startPositionX + currentPosition).getValue().a);
 
 			if (toDraw != null) {
 				spriteBatch.draw(
 					toDraw,
 					currentPosition - startingRenderingPosition,
-					getOffsetY() - startPositionY
+					getOffsetY() - startPositionY + images.floorEntry(startPositionX + currentPosition).getValue().b
 				);
 			}
 
 			currentPosition += empty ? 200 : toDraw.getRegionWidth();
+			startPositionX = images.floorEntry(startPositionX).getKey();
 		}
 	}
 
