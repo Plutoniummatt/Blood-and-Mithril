@@ -81,6 +81,31 @@ public interface Kinematics {
 		}
 		state.velocity.add(state.acceleration.cpy().scl(delta));
 
+		//Wall check routine, only perform this if we're moving
+		if (state.velocity.x != 0 && obstructed(0, topography, state, individual.getHeight(), ai, kinematicsData)) {
+			if (canStepUp(0, topography, state, individual.getHeight(), ai, kinematicsData)) {
+				if (!kinematicsData.steppingUp) {
+					kinematicsData.steppingUp = true;
+					if (ClientServerInterface.isServer()) {
+						individual.decreaseStamina(0.02f);
+					}
+					kinematicsData.steps = 0;
+				}
+			} else if (!kinematicsData.steppingUp) {
+				boolean check = false;
+				while (obstructed(0, topography, state, individual.getHeight(), ai, kinematicsData)) {
+					state.position.add(state.velocity.cpy().scl(-1f * delta));
+					check = true;
+				}
+				if (check) {
+					state.velocity.x = state.velocity.x > 0 ? 0.01f : -0.01f;
+					state.velocity.y = 0;
+					ai.setCurrentTask(new Idle());
+					individual.sayStuck();
+				}
+			}
+		}
+		
 		//Ground detection
 		//If the position is not on an empty tile and is not a platform tile run the ground detection routine
 		//If the position is on a platform tile and if the tile below current position is not an empty tile, run ground detection routine
@@ -120,31 +145,6 @@ public interface Kinematics {
 
 		if (abs(individual.getState().velocity.x) > individual.getRunSpeed() * 1.5f) {
 			state.velocity.x = state.velocity.x * (obj(individual.getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT) ? 0.99f : 0.65f);
-		}
-
-		//Wall check routine, only perform this if we're moving
-		if (state.velocity.x != 0 && obstructed(0, topography, state, individual.getHeight(), ai, kinematicsData)) {
-			if (canStepUp(0, topography, state, individual.getHeight(), ai, kinematicsData)) {
-				if (!kinematicsData.steppingUp) {
-					kinematicsData.steppingUp = true;
-					if (ClientServerInterface.isServer()) {
-						individual.decreaseStamina(0.02f);
-					}
-					kinematicsData.steps = 0;
-				}
-			} else if (!kinematicsData.steppingUp) {
-				boolean check = false;
-				while (obstructed(0, topography, state, individual.getHeight(), ai, kinematicsData)) {
-					state.position.add(state.velocity.cpy().scl(-1f * delta));
-					check = true;
-				}
-				if (check) {
-					state.velocity.x = 0;
-					state.velocity.y = 0;
-					ai.setCurrentTask(new Idle());
-					individual.sayStuck();
-				}
-			}
 		}
 	}
 

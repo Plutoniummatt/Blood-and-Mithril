@@ -3,14 +3,19 @@ package bloodandmithril.prop.plant;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.furniture.MedievalWallTorchProp.NotEmptyTile;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.window.MessageWindow;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -49,6 +54,33 @@ public class DryGrass extends PlantProp {
 	@Override
 	public ContextMenu getContextMenu() {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			new MenuItem(
+				"Show info",
+				() -> {
+					UserInterface.addLayeredComponent(
+						new MessageWindow(
+							"A patch of dry grass.",
+							Color.ORANGE,
+							BloodAndMithrilClient.WIDTH/2 - 250,
+							BloodAndMithrilClient.HEIGHT/2 + 125,
+							500,
+							250,
+							"Dead bush",
+							true,
+							300,
+							150
+						)
+					);
+				},
+				Color.WHITE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			)
+		);
+		
 		return menu;
 	}
 
