@@ -29,12 +29,12 @@ public class DayLightColorLayerWithFluidReflections extends Layer {
 	private static TreeMap<Integer, Integer> getMap() {
 		TreeMap<Integer, Integer> map = Maps.newTreeMap();
 
-		map.put(0, 2);
-		for (int i = 500; i < 5000; i += 200) {
-			map.put(i, 1);
+		map.put(400, 2);
+		for (int i = 873; i < 5473; i += 200) {
+			map.put(i, 0);
 		}
-		for (int i = -200; i > -5000; i -= 200) {
-			map.put(i, 1);
+		for (int i = 200; i > -5000; i -= 200) {
+			map.put(i, 0);
 		}
 
 		return map;
@@ -61,6 +61,6 @@ public class DayLightColorLayerWithFluidReflections extends Layer {
 
 	@Override
 	public float getOffsetY() {
-		return -300;
+		return 390;
 	}
 }

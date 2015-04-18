@@ -65,19 +65,18 @@ public abstract class Layer implements Serializable {
 				rendering = false;
 			}
 
-			TextureRegion toDraw = textures.get(images.floorEntry(startPositionX + currentPosition).getValue());
+			boolean empty = images.floorEntry(startPositionX + currentPosition).getValue() == 0;
+			TextureRegion toDraw = empty ? null : textures.get(images.floorEntry(startPositionX + currentPosition).getValue());
 
-			if (toDraw == null) {
-				return;
+			if (toDraw != null) {
+				spriteBatch.draw(
+					toDraw,
+					currentPosition - startingRenderingPosition,
+					getOffsetY() - startPositionY
+				);
 			}
 
-			spriteBatch.draw(
-				toDraw,
-				currentPosition - startingRenderingPosition,
-				getOffsetY() - startPositionY
-			);
-
-			currentPosition += toDraw.getRegionWidth();
+			currentPosition += empty ? 200 : toDraw.getRegionWidth();
 		}
 	}
 
