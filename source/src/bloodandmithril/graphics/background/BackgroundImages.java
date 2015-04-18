@@ -8,8 +8,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.util.Shaders;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,10 +33,9 @@ public class BackgroundImages implements Serializable {
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			backgrounds = new Texture(files.internal("data/image/oceanWithIsland.png"));
-			textures.put(1, new TextureRegion(backgrounds, 0, 0, 200, 800));
-			textures.put(2, new TextureRegion(backgrounds, 200, 0, 500, 800));
-
+			backgrounds = new Texture(files.internal("data/image/bg.png"));
+			textures.put(1, new TextureRegion(backgrounds, 473, 0, 10, 75));
+			textures.put(2, new TextureRegion(backgrounds, 0, 0, 473, 75));
 		}
 	}
 
@@ -46,6 +47,12 @@ public class BackgroundImages implements Serializable {
 	 * Renders the background images
 	 */
 	public void renderBackground() {
+		// Render the sea
+		spriteBatch.begin();
+		spriteBatch.setShader(Shaders.pass);
+		spriteBatch.draw(textures.get(1), 0, 0, BloodAndMithrilClient.WIDTH, Layer.getScreenHorizonY() - 1);
+		spriteBatch.end();
+		
 		for (Layer layer : layers) {
 			spriteBatch.begin();
 			layer.preRender();
