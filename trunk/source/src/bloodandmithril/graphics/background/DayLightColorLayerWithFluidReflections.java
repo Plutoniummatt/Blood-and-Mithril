@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 
 import com.google.common.collect.Maps;
 
@@ -26,15 +27,19 @@ public class DayLightColorLayerWithFluidReflections extends Layer {
 	}
 
 
-	private static TreeMap<Integer, Integer> getMap() {
-		TreeMap<Integer, Integer> map = Maps.newTreeMap();
+	private static TreeMap<Integer, WrapperForTwo<Integer, Integer>> getMap() {
+		TreeMap<Integer, WrapperForTwo<Integer, Integer>> map = Maps.newTreeMap();
 
-		map.put(400, 2);
-		for (int i = 873; i < 5473; i += 200) {
-			map.put(i, 0);
+		map.put(400, WrapperForTwo.wrap(2, 0));
+		map.put(873, WrapperForTwo.wrap(0, 0));
+		map.put(1073, WrapperForTwo.wrap(3, 8));
+		
+		for (int i = 1102; i < 5102; i += 200) {
+			map.put(i, WrapperForTwo.wrap(0, 0));
 		}
+		
 		for (int i = 200; i > -5000; i -= 200) {
-			map.put(i, 0);
+			map.put(i, WrapperForTwo.wrap(0, 0));
 		}
 
 		return map;
