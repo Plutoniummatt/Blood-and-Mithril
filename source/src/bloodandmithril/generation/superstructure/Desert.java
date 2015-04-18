@@ -11,6 +11,7 @@ import bloodandmithril.generation.component.components.Room;
 import bloodandmithril.generation.component.components.Room.RoomCreationCustomization;
 import bloodandmithril.generation.component.components.Stairs;
 import bloodandmithril.generation.component.components.Stairs.StairsCreationCustomization;
+import bloodandmithril.generation.component.components.prefab.DesertPyramid;
 import bloodandmithril.generation.component.components.prefab.UndergroundDesertTempleEntrance;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
@@ -86,6 +87,21 @@ public class Desert extends SuperStructure {
 
 	/** Generates the desert dungeon */
 	private void generateDungeon() {
+		
+		// Add pyraid somewhere
+		int pyramidX = (getBoundaries().left + 3) * Topography.CHUNK_SIZE;
+		int pyramidY = max(
+			getSurfaceHeight().apply(184 + pyramidX) + 70,
+			getSurfaceHeight().apply(24 + pyramidX) + 70
+		);
+		
+		getComponents().add(new DesertPyramid(
+			pyramidX,
+			pyramidY,
+			getStructureKey(),
+			YellowBrickTile.class,
+			YellowBrickTile.class
+		));
 
 		// Add the entrance in the middle of this desert
 		int entranceX = (getBoundaries().left + getBoundaries().right) / 2 * Topography.CHUNK_SIZE;
