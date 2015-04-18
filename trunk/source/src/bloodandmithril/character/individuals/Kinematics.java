@@ -135,15 +135,12 @@ public interface Kinematics {
 			} else if (!kinematicsData.steppingUp) {
 				boolean check = false;
 				while (obstructed(0, topography, state, individual.getHeight(), ai, kinematicsData)) {
-					if (state.velocity.x > 0) {
- 						state.position.x = state.position.x - 1;
-					} else {
-						state.position.x = state.position.x + 1;
-					}
+					state.position.add(state.velocity.cpy().scl(-1f * delta));
 					check = true;
 				}
 				if (check) {
 					state.velocity.x = 0;
+					state.velocity.y = 0;
 					ai.setCurrentTask(new Idle());
 					individual.sayStuck();
 				}

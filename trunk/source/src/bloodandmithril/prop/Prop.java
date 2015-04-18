@@ -32,6 +32,7 @@ import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
@@ -97,6 +98,9 @@ public abstract class Prop implements Serializable, Visible {
 
 	/** Whether this prop can be used as a source of fire */
 	public abstract boolean canBeUsedAsFireSource();
+	
+	/** Return the color of the context menu button for this {@link Prop} */
+	public abstract Color getContextMenuColor();
 
 	/** Returns the string title of this {@link Prop} */
 	public String getTitle() {

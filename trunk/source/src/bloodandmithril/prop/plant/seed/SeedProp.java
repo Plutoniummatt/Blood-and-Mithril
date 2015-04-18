@@ -14,6 +14,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 
+import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
 
 /**
@@ -36,6 +37,12 @@ public abstract class SeedProp extends Growable implements Harvestable {
 	protected SeedProp(float x, float y, SeedItem seed, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
 		super(x, y, Topography.TILE_SIZE, Topography.TILE_SIZE, true, Depth.MIDDLEGROUND, canPlaceOnTopOf, false);
 		this.seedToRepresent = seed;
+	}
+	
+	
+	@Override
+	public Color getContextMenuColor() {
+		return Color.OLIVE;
 	}
 
 
