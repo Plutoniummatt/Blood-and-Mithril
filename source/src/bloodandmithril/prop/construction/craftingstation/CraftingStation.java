@@ -76,6 +76,12 @@ public abstract class CraftingStation extends Construction {
 	public boolean customCanCraft() {
 		return true;
 	}
+	
+	
+	@Override
+	public Color getContextMenuColor() {
+		return Color.CYAN;
+	}
 
 
 	/**

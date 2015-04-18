@@ -1447,7 +1447,7 @@ public class UserInterface {
 							secondaryMenu.x = getMouseScreenX();
 							secondaryMenu.y = getMouseScreenY();
 						},
-						Color.CYAN,
+						prop.getContextMenuColor(),
 						Color.GREEN,
 						Color.GRAY,
 						secondaryMenu

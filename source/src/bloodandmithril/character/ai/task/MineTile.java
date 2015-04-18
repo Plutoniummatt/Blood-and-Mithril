@@ -182,23 +182,25 @@ public class MineTile extends CompositeAITask {
 
 							Item mined = tileToBeDeleted.mine();
 							if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
-								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false);
-								if (host.canReceive(mined)) {
-									host.giveItem(mined);
-								} else {
-									Domain.getWorld(host.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
+								if (topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false) != null) {
+									if (host.canReceive(mined)) {
+										host.giveItem(mined);
+									} else {
+										Domain.getWorld(host.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
+									}
+									
+									UserInterface.refreshRefreshableWindows();
 								}
-
-								UserInterface.refreshRefreshableWindows();
 							} else if (ClientServerInterface.isServer()) {
-								topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false);
-								ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, host.getWorldId());
-
-								if (host.canReceive(mined)) {
-									ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine(), tileCoordinate.cpy());
-								} else {
-									Domain.getWorld(host.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
-									ClientServerInterface.SendNotification.notifySyncItems(host.getWorldId());
+								if (topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false) != null) {
+									ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, host.getWorldId());
+									
+									if (host.canReceive(mined)) {
+										ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine(), tileCoordinate.cpy());
+									} else {
+										Domain.getWorld(host.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
+										ClientServerInterface.SendNotification.notifySyncItems(host.getWorldId());
+									}
 								}
 							}
 						}

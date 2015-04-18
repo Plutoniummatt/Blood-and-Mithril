@@ -6,6 +6,8 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.topography.tile.Tile;
 
+import com.badlogic.gdx.graphics.Color;
+
 @Copyright("Matthew Peck 2014")
 public abstract class Furniture extends Prop {
 	private static final long serialVersionUID = -1643197661469081725L;
@@ -25,5 +27,11 @@ public abstract class Furniture extends Prop {
 		public Boolean apply(Tile input) {
 			return !input.isPassable();
 		}
+	}
+	
+	
+	@Override
+	public Color getContextMenuColor() {
+		return Color.CYAN;
 	}
 }

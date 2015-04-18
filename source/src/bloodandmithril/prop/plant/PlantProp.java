@@ -7,6 +7,8 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.topography.tile.Tile;
 
+import com.badlogic.gdx.graphics.Color;
+
 /**
  * A Plant {@link Prop}
  *
@@ -21,5 +23,11 @@ public abstract class PlantProp extends Growable {
 	 */
 	protected PlantProp(float x, float y, int width, int height, Depth depth, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf, boolean preventsMining) {
 		super(x, y, width, height, true, depth, canPlaceOnTopOf, preventsMining);
+	}
+	
+	
+	@Override
+	public Color getContextMenuColor() {
+		return Color.GREEN;
 	}
 }
