@@ -31,10 +31,9 @@ public class DayLightColorLayerWithFluidReflections extends Layer {
 		TreeMap<Integer, WrapperForTwo<Integer, Integer>> map = Maps.newTreeMap();
 
 		map.put(400, WrapperForTwo.wrap(2, 0));
-		map.put(873, WrapperForTwo.wrap(0, 0));
-		map.put(1073, WrapperForTwo.wrap(3, 8));
+		map.put(873, WrapperForTwo.wrap(3, 7));
 		
-		for (int i = 1102; i < 5102; i += 200) {
+		for (int i = 931; i < 5931; i += 200) {
 			map.put(i, WrapperForTwo.wrap(0, 0));
 		}
 		

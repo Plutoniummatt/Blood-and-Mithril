@@ -36,7 +36,7 @@ public class BackgroundImages implements Serializable {
 			backgrounds = new Texture(files.internal("data/image/bg.png"));
 			textures.put(1, new TextureRegion(backgrounds, 473, 0, 10, 75));
 			textures.put(2, new TextureRegion(backgrounds, 0, 0, 473, 75));
-			textures.put(3, new TextureRegion(backgrounds, 483, 0, 29, 38));
+			textures.put(3, new TextureRegion(backgrounds, 483, 0, 58, 44));
 		}
 	}
 
