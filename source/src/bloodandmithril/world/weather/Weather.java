@@ -43,7 +43,7 @@ public class Weather {
 	private static FrameBuffer working							= new FrameBuffer(RGBA8888, 1, 1, false);
 
 	private static Vector2 sunPosition							= new Vector2();
-	public static final Vector2 orbitalPivot 					= new Vector2(WIDTH/2, 0);
+	public static Vector2 orbitalPivot 					= new Vector2(WIDTH/2, 0);
 
 	private static LinkedList<CelestialBody> celestialBodies	= Lists.newLinkedList();
 
@@ -199,6 +199,11 @@ public class Weather {
 
 	/** Load resources */
 	public static void setup() {
+		skyBuffer = new FrameBuffer(RGBA8888, WIDTH, HEIGHT, false);
+		working = new FrameBuffer(RGBA8888, 1, 1, false);
+		orbitalPivot = new Vector2(WIDTH/2, 0);
+
+		celestialBodies.clear();
 		celestialBodies.add(new CelestialBody(0, WIDTH/2.5f, 0f, Color.WHITE, true));
 
 		for (int i = 0; i < 500; i++) {
