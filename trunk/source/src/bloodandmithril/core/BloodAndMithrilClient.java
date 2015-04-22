@@ -401,11 +401,24 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		WIDTH = width;
 		HEIGHT = height;
+		
+		camMarginX = 640 + 32 - WIDTH % 32;
+		camMarginY = 640 + 32 - HEIGHT % 32;
 
 		cam.setToOrtho(false, WIDTH + camMarginX, HEIGHT + camMarginY);
 		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
 		UserInterface.UICameraTrackingCam.setToOrtho(false, WIDTH, HEIGHT);
+		
+		UserInterface.shapeRenderer.setProjectionMatrix(UserInterface.UICamera.projection);
+		UserInterface.shapeRenderer.setTransformMatrix(UserInterface.UICamera.view);
 
+		WorldRenderer.shapeRenderer.setProjectionMatrix(cam.projection);
+		WorldRenderer.shapeRenderer.setTransformMatrix(cam.view);
+		
+		WorldRenderer.dispose();
+		GaussianLightingRenderer.dispose();
+		Weather.dispose();
+		
 		WorldRenderer.setup();
 		GaussianLightingRenderer.setup();
 		Weather.setup();

@@ -1,2 +1,0 @@
-* Destroy plants placed on top of tiles when tile underneath is mined
-* Add icon to mouse-over Info.

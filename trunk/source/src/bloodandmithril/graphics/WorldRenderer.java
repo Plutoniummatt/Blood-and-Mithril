@@ -28,7 +28,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
@@ -78,6 +77,16 @@ public class WorldRenderer {
 		individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
 		gameWorldTexture.setFilter(Linear, Nearest);
 		individualTexture.setFilter(Nearest, Nearest);
+	}
+	
+	public static void dispose() {
+		fBuffer.dispose();
+		mBuffer.dispose();
+		bBuffer.dispose();
+		workingQuantized.dispose();
+		bBufferQuantized.dispose();
+		fBufferQuantized.dispose();
+		combinedBufferQuantized.dispose();
 	}
 
 	public static void setup() {
@@ -243,8 +252,8 @@ public class WorldRenderer {
 		gl20.glEnable(GL20.GL_BLEND);
 		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		shapeRenderer.begin(Line);
-		shapeRenderer.setProjectionMatrix(cam.combined);
-		shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
+		shapeRenderer.setProjectionMatrix(cam.projection);
+		shapeRenderer.setTransformMatrix(cam.view);
 		if (world.getClientParticles() != null) {
 			world.getClientParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
 				p.renderLine(Gdx.graphics.getDeltaTime());
@@ -257,7 +266,8 @@ public class WorldRenderer {
 		}
 		shapeRenderer.end();
 		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setProjectionMatrix(BloodAndMithrilClient.cam.combined);
+		shapeRenderer.setProjectionMatrix(cam.projection);
+		shapeRenderer.setTransformMatrix(cam.view);
 		if (world.getClientParticles() != null) {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
 			world.getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {

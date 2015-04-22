@@ -98,6 +98,26 @@ public class GaussianLightingRenderer {
 		spriteBatch.end();
 	}
 
+	
+	public static void dispose() {
+		foregroundLightingFBOSmall.dispose();
+		middleGroundLightingFBOSmall.dispose();
+		smallWorking.dispose();
+		foregroundLightingFBO.dispose();
+		middleGroundLightingFBO.dispose();
+		workingDownSampled.dispose();
+		workingDownSampledXBlurColorBuffer.dispose();
+		workingDownSampledYBlurColorBuffer.dispose();
+		workingDownSampledXBlurColorBuffer2.dispose();
+		workingDownSampledYBlurColorBuffer2.dispose();
+		backgroundOcclusionFBO.dispose();
+		backgroundOcclusionFBONearest.dispose();
+		foregroundOcclusionFBO.dispose();
+		foregroundShadowFBO.dispose();
+		workingFBO.dispose();
+		workingFBO2.dispose();
+	}
+	
 
 	/**
 	 * Loads framebuffers etc.
