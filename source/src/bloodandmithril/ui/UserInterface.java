@@ -208,10 +208,13 @@ public class UserInterface {
 	 * Resets window positions when the screen is resized
 	 */
 	public static synchronized void resetWindowPositions(int oldWidth, int oldHeight) {
+		float oldW = oldWidth;
+		float oldH = oldHeight;
+		
 		for (Component c : layeredComponents) {
 			if (c instanceof Window) {
-				((Window) c).x = Math.round((float)oldWidth * (float)((Window) c).x / BloodAndMithrilClient.WIDTH);
-				((Window) c).y = Math.round((float)oldHeight * (float)((Window) c).x / BloodAndMithrilClient.HEIGHT);
+				((Window) c).x = Math.round(WIDTH * (float)((Window) c).x / oldW);
+				((Window) c).y = Math.round(HEIGHT * (float)((Window) c).y / oldH);
 			}
 		}
 	}
