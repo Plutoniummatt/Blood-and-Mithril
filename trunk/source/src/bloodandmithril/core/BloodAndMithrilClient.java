@@ -98,10 +98,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static final long DOUBLE_CLICK_TIME = 250L;
 
 	/** Resolution x */
-	public static final int WIDTH = ConfigPersistenceService.getConfig().getResX();
+	public static int WIDTH = ConfigPersistenceService.getConfig().getResX();
 
 	/** Resolution y */
-	public static final int HEIGHT = ConfigPersistenceService.getConfig().getResY();
+	public static int HEIGHT = ConfigPersistenceService.getConfig().getResY();
 
 	/** 'THE' SpriteBatch */
 	public static SpriteBatch spriteBatch;
@@ -364,7 +364,22 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public void resize(int width, int height) {
-		// No resize support ATM
+		int oldWidth = WIDTH;
+		int oldHeight = HEIGHT;
+
+		WIDTH = width;
+		HEIGHT = height;
+
+		cam.setToOrtho(false, WIDTH + camMarginX, HEIGHT + camMarginY);
+		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
+		UserInterface.UICameraTrackingCam.setToOrtho(false, WIDTH, HEIGHT);
+
+		WorldRenderer.setup();
+		GaussianLightingRenderer.setup();
+		Weather.setup();
+		UserInterface.resetWindowPositions(oldWidth, oldHeight);
+
+		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
 
 

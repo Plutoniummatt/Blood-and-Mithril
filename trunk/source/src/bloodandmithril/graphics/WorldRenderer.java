@@ -73,14 +73,14 @@ public class WorldRenderer {
 	public static FrameBuffer fBufferQuantized;
 	public static FrameBuffer combinedBufferQuantized;
 
-
-	public static void setup() {
+	static {
 		gameWorldTexture 					= new Texture(files.internal("data/image/gameWorld.png"));
 		individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
-
 		gameWorldTexture.setFilter(Linear, Nearest);
 		individualTexture.setFilter(Nearest, Nearest);
+	}
 
+	public static void setup() {
 		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
 		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);

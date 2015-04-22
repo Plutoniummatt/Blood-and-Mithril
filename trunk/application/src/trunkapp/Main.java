@@ -32,7 +32,7 @@ public class Main {
 		cfg.width = ConfigPersistenceService.getConfig().getResX();
 		cfg.height = ConfigPersistenceService.getConfig().getResY();
 		cfg.fullscreen = ConfigPersistenceService.getConfig().isFullScreen();
-		cfg.resizable = false;
+		cfg.resizable = true;
 		cfg.addIcon("data/image/smallIcon.png", FileType.Internal);
 		cfg.addIcon("data/image/icon.png", FileType.Internal);
 

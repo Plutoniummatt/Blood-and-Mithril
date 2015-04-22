@@ -205,6 +205,19 @@ public class UserInterface {
 
 
 	/**
+	 * Resets window positions when the screen is resized
+	 */
+	public static synchronized void resetWindowPositions(int oldWidth, int oldHeight) {
+		for (Component c : layeredComponents) {
+			if (c instanceof Window) {
+				((Window) c).x = Math.round((float)oldWidth * (float)((Window) c).x / BloodAndMithrilClient.WIDTH);
+				((Window) c).y = Math.round((float)oldHeight * (float)((Window) c).x / BloodAndMithrilClient.HEIGHT);
+			}
+		}
+	}
+
+
+	/**
 	 * @return all components
 	 */
 	public synchronized static Deque<Component> getLayeredComponents() {
