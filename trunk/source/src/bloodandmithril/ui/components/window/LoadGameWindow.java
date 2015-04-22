@@ -110,8 +110,9 @@ public class LoadGameWindow extends Window {
 								() -> {
 									setClosing(true);
 									ClientServerInterface.setServer(true);
+									BloodAndMithrilClient.fadeOut();
 									MainMenuWindow.removeWindows();
-									BloodAndMithrilClient.threadWait(1000);
+									BloodAndMithrilClient.threadWait(2000);
 									BloodAndMithrilClient.setLoading(true);
 									GameLoader.load(metadata, false);
 									BloodAndMithrilClient.setInGame(true);
@@ -121,8 +122,9 @@ public class LoadGameWindow extends Window {
 										BloodAndMithrilClient.threadWait(100);
 									}
 
-									BloodAndMithrilClient.threadWait(1000);
 									BloodAndMithrilClient.setLoading(false);
+									BloodAndMithrilClient.threadWait(2000);
+									BloodAndMithrilClient.fadeIn();
 								}
 							);
 						},

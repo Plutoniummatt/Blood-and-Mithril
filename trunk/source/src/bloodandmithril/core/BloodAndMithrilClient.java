@@ -55,6 +55,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 
@@ -140,6 +141,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static int camMarginX, camMarginY;
 	public static Controls controls;
+	
+	private static float fadeAlpha;
+	private static boolean fading;
 
 	private static float updateRateMultiplier = 1f;
 
@@ -349,11 +353,39 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			if (Domain.getActiveWorld() != null && !loading) {
 				WorldRenderer.render(Domain.getActiveWorld(), (int) cam.position.x, (int) cam.position.y);
 			}
+			
+			// Fading --------------------- /
+			fading();
+			
 			UserInterface.render();
 		} catch (Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
+	}
+
+
+	private void fading() {
+		if (fading) {
+			if (fadeAlpha < 1f) {
+				fadeAlpha += 0.03f;
+			} else {
+				fadeAlpha = 1f;
+			}
+		} else {
+			if (fadeAlpha > 0f) {
+				fadeAlpha -= 0.03f;
+			} else {
+				fadeAlpha = 0f;
+			}
+		}
+		
+		Gdx.gl20.glEnable(GL20.GL_BLEND);
+		UserInterface.shapeRenderer.begin(ShapeType.Filled);
+		UserInterface.shapeRenderer.setColor(0, 0, 0, fadeAlpha);
+		UserInterface.shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
+		UserInterface.shapeRenderer.end();
+		Gdx.gl20.glDisable(GL20.GL_BLEND);
 	}
 
 
@@ -954,5 +986,15 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static void setInGame(boolean inGame) {
 		BloodAndMithrilClient.inGame = inGame;
+	}
+	
+	
+	public static void fadeIn() {
+		fading = false;
+	}
+	
+	
+	public static void fadeOut() {
+		fading = true;
 	}
 }
