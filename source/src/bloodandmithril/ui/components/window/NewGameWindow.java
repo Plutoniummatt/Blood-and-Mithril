@@ -120,7 +120,8 @@ public class NewGameWindow extends Window {
 		ClientServerInterface.setServer(true);
 		BloodAndMithrilClient.clientCSIThread.execute(() -> {
 			UserInterface.closeAllWindows();
-			BloodAndMithrilClient.threadWait(1000);
+			BloodAndMithrilClient.fadeOut();
+			BloodAndMithrilClient.threadWait(1500);
 			BloodAndMithrilClient.setLoading(true);
 
 			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
@@ -166,6 +167,7 @@ public class NewGameWindow extends Window {
 			}
 
 			BloodAndMithrilClient.setLoading(false);
+			BloodAndMithrilClient.fadeIn();
 		});
 	}
 

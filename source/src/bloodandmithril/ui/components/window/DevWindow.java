@@ -188,6 +188,14 @@ public class DevWindow extends Window {
 				YellowBrickTile.class
 			);
 		}
+		
+		if (keyCode == Keys.J) {
+			BloodAndMithrilClient.fadeOut();
+		}
+		
+		if (keyCode == Keys.K) {
+			BloodAndMithrilClient.fadeIn();
+		}
 
 		if (keyCode == Keys.P) {
 			Domain.getActiveWorld().getTopography().changeTile(
