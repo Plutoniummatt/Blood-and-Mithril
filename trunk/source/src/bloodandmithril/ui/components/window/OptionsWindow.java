@@ -13,6 +13,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 /**
@@ -195,7 +196,7 @@ public class OptionsWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		changeRes.render(x + width/2, y - 30, isActive(), getAlpha());
+		changeRes.render(x + width/2, y - 30, isActive() && Gdx.app.getGraphics().isFullscreen(), getAlpha());
 		fullScreen.render(x + width/2, y - 50, isActive(), getAlpha());
 		controls.render(x + width/2, y - 70, isActive(), getAlpha());
 	}
@@ -203,7 +204,9 @@ public class OptionsWindow extends Window {
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		changeRes.click();
+		if (Gdx.app.getGraphics().isFullscreen()) {
+			changeRes.click();
+		}
 		fullScreen.click();
 		controls.click();
 	}

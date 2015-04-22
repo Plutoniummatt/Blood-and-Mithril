@@ -75,6 +75,7 @@ import com.google.common.collect.Sets;
  *
  * DONE
  *
+ * <b><p> Window resizing                                          										 </b></p>
  * <b><p> Stockpiling                                              										 </b></p>
  * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>
  * <b><p> Prop and Construction (Prop construction and de-construction framework)                  		 </b></p>
@@ -141,7 +142,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static int camMarginX, camMarginY;
 	public static Controls controls;
-	
+
 	private static float fadeAlpha;
 	private static boolean fading;
 
@@ -353,10 +354,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			if (Domain.getActiveWorld() != null && !loading) {
 				WorldRenderer.render(Domain.getActiveWorld(), (int) cam.position.x, (int) cam.position.y);
 			}
-			
+
 			// Fading --------------------- /
 			fading();
-			
+
 			UserInterface.render();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -379,7 +380,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				fadeAlpha = 0f;
 			}
 		}
-		
+
 		Gdx.gl20.glEnable(GL20.GL_BLEND);
 		UserInterface.shapeRenderer.begin(ShapeType.Filled);
 		UserInterface.shapeRenderer.setColor(0, 0, 0, fadeAlpha);
@@ -401,30 +402,33 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		WIDTH = width;
 		HEIGHT = height;
-		
+
 		camMarginX = 640 + 32 - WIDTH % 32;
 		camMarginY = 640 + 32 - HEIGHT % 32;
 
 		cam.setToOrtho(false, WIDTH + camMarginX, HEIGHT + camMarginY);
 		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
 		UserInterface.UICameraTrackingCam.setToOrtho(false, WIDTH, HEIGHT);
-		
+
 		UserInterface.shapeRenderer.setProjectionMatrix(UserInterface.UICamera.projection);
 		UserInterface.shapeRenderer.setTransformMatrix(UserInterface.UICamera.view);
 
 		WorldRenderer.shapeRenderer.setProjectionMatrix(cam.projection);
 		WorldRenderer.shapeRenderer.setTransformMatrix(cam.view);
-		
+
 		WorldRenderer.dispose();
 		GaussianLightingRenderer.dispose();
 		Weather.dispose();
-		
+
 		WorldRenderer.setup();
 		GaussianLightingRenderer.setup();
 		Weather.setup();
 		UserInterface.resetWindowPositions(oldWidth, oldHeight);
 
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+
+		ConfigPersistenceService.getConfig().setResX(width);
+		ConfigPersistenceService.getConfig().setResY(height);
 	}
 
 
@@ -772,6 +776,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public void resume() {
+		// Not called on PC
 	}
 
 
@@ -782,6 +787,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public void pause() {
+		// Not called on PC
 	}
 
 
@@ -856,6 +862,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	}
 
 
+	/**
+	 * Camera movement controls
+	 */
 	private void cameraControl() {
 		if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && isInGame()) {
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamUp.keyCode)){
@@ -926,16 +935,25 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	}
 
 
+	/**
+	 * @return the active {@link CursorBoundTask}
+	 */
 	public static CursorBoundTask getCursorBoundTask() {
 		return cursorBoundTask;
 	}
 
 
+	/**
+	 * @param cursorBoundTask to set
+	 */
 	public static void setCursorBoundTask(CursorBoundTask cursorBoundTask) {
 		BloodAndMithrilClient.cursorBoundTask = cursorBoundTask;
 	}
 
 
+	/**
+	 * Initial setup
+	 */
 	public static void setup() {
 		UserInterface.setup();
 
@@ -945,6 +963,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	}
 
 
+	/**
+	 * @return whether the chunks on screen are generated/loaded
+	 */
 	public static boolean areChunksOnScreenGenerated() {
 		int camX = (int) cam.position.x;
 		int camY = (int) cam.position.y;
@@ -978,11 +999,17 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	}
 
 
+	/**
+	 * Sets the boolean value to indicate whether or not the loading screen should be rendered
+	 */
 	public static void setLoading(boolean loading) {
 		BloodAndMithrilClient.loading = loading;
 	}
 
 
+	/**
+	 * Instructs calling thread to sleep for specified number of milliseconds
+	 */
 	public static void threadWait(long millis) {
 		try {
 			Thread.sleep(millis);
@@ -992,21 +1019,33 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	}
 
 
+	/**
+	 * Whether or not the client is currently in a game
+	 */
 	public static boolean isInGame() {
 		return inGame;
 	}
 
 
+	/**
+	 * Sets the inGame flag
+	 */
 	public static void setInGame(boolean inGame) {
 		BloodAndMithrilClient.inGame = inGame;
 	}
-	
-	
+
+
+	/**
+	 * Fades in the screen
+	 */
 	public static void fadeIn() {
 		fading = false;
 	}
-	
-	
+
+
+	/**
+	 * Fades out the screen, to black
+	 */
 	public static void fadeOut() {
 		fading = true;
 	}
