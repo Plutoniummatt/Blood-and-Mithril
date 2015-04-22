@@ -195,6 +195,12 @@ public class Weather {
 
 		return 1.5f;
 	}
+	
+	
+	public static void dispose() {
+		skyBuffer.dispose();
+		working.dispose();
+	}
 
 
 	/** Load resources */
