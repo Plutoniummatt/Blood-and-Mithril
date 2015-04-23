@@ -150,9 +150,11 @@ public interface Kinematics {
 
 
 	static void fallDamage(Individual individual, IndividualKineticsProcessingData data) {
-		float amount = (data.distanceFallen - 400f) / 20f;
-		individual.damage(amount);
-		individual.addFloatingText(String.format("%.2f", amount), Color.RED);
+		if (individual.isAlive()) {
+			float amount = (data.distanceFallen - 400f) / 20f;
+			individual.damage(amount);
+			individual.addFloatingText(String.format("%.2f", amount), Color.RED);
+		}
 	}
 
 

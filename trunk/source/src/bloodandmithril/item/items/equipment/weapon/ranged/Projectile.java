@@ -150,7 +150,7 @@ public abstract class Projectile implements Serializable {
 	}
 
 	private boolean canAffect(Individual individual) {
-		return !ignoredIndividuals.contains(individual.getId().getId());
+		return !ignoredIndividuals.contains(individual.getId().getId()) && individual.isAlive();
 	}
 
 	public void setWorldId(int worldId) {

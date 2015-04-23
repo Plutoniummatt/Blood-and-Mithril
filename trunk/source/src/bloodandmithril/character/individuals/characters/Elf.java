@@ -8,6 +8,7 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIG
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
+import static bloodandmithril.character.individuals.Individual.Action.DEAD;
 import static bloodandmithril.character.individuals.Individual.Action.JUMP_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.JUMP_RIGHT;
 import static bloodandmithril.character.individuals.Individual.Action.RUN_LEFT;
@@ -129,6 +130,13 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 			hairStyleFemale.put(3, new TextureRegion(WorldRenderer.individualTexture, 1024, 784, 64, 112));
 		}
 
+		AnimationSwitcher dead = new AnimationSwitcher();
+		dead.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 1040, 44, 70, 1, 1f, PlayMode.LOOP));
+		
+		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> deadSequence = newArrayList(
+			wrap(dead, server ? null : Shaders.pass)
+		);
+		
 		AnimationSwitcher walk1 = new AnimationSwitcher();
 		AnimationSwitcher walk2 = new AnimationSwitcher();
 		AnimationSwitcher walk3 = new AnimationSwitcher();
@@ -285,6 +293,11 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 			wrap(slash4, server ? null : Shaders.filterIgnoreReplace),
 			wrap(slash5, server ? null : Shaders.filterIgnoreReplace),
 			wrap(slash6, server ? null : Shaders.filterIgnoreReplace)
+		);
+		
+		animationMap.put(
+			DEAD,
+			deadSequence
 		);
 
 		animationMap.put(
