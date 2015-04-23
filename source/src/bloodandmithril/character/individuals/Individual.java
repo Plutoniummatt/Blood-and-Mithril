@@ -124,6 +124,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private static final long serialVersionUID = 2821835360311044658L;
 
 	public enum Action implements Serializable {
+		DEAD(true),
 		JUMP_LEFT(true),
 		JUMP_RIGHT(false),
 		STAND_LEFT(true),
@@ -1506,8 +1507,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		if (ClientServerInterface.isClient()) {
 			Domain.removeSelectedIndividual(this);
 		}
+		getEquipped().keySet().forEach(eq -> {
+			Individual.this.unequip((Equipable ) eq);
+		});
 		deselect(true, 0);
+		clearCommands();
 		selectedByClient.clear();
+		setCurrentAction(Action.DEAD);
 	}
 
 

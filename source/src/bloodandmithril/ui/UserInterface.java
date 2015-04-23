@@ -1166,6 +1166,14 @@ public class UserInterface {
 		ArrayDeque<Component> copy = new ArrayDeque<>(layeredComponents);
 		for (Component component : new ArrayDeque<>(layeredComponents)) {
 			if (component instanceof Window) {
+				if (((Window) component).y < 0) {
+					((Window) component).y = 20;
+				}
+				
+				if (((Window) component).y > HEIGHT) {
+					((Window) component).y = HEIGHT;
+				}
+				
 				if (!((Window)component).minimized || component.getAlpha() > 0f) {
 					component.render();
 				}

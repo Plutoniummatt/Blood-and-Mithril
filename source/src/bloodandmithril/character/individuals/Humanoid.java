@@ -238,6 +238,9 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					case 7: return new SpacialConfiguration(new Vector2(0, -6f), 0f, false);
 				}
 				
+			case DEAD:
+				return new SpacialConfiguration(new Vector2(0, 0f), 0f, false);
+				
 			default:
 				throw new RuntimeException("Unexpected action: " + getCurrentAction());
 		}
@@ -359,6 +362,9 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					case 6: return new SpacialConfiguration(new Vector2(28, 48f), 0f, false);
 					case 7: return new SpacialConfiguration(new Vector2(28, 48f), 0f, false);
 				}
+				
+			case DEAD:
+				return new SpacialConfiguration(new Vector2(0, 0f), 0f, false);
 
 			default:
 				throw new RuntimeException("Unexpected action: " + getCurrentAction());
