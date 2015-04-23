@@ -28,7 +28,7 @@ public class TradeService {
 	 */
 	public static boolean evaluate(Individual proposer, HashMap<Item, Integer> tradeThis, Individual proposee, HashMap<Item, Integer> forThis) {
 
-		if (proposee.isControllable()) {
+		if (proposee.isControllable() || !proposee.isAlive()) {
 			return true;
 		}
 

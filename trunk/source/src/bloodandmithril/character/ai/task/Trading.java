@@ -49,6 +49,10 @@ public class Trading extends AITask {
 	@Override
 	public boolean isComplete() {
 		if (entity == TradeEntity.INDIVIDUAL) {
+			if (!((Individual) proposee).isAlive()) {
+				return true;
+			}
+
 			return proposer.getState().position.cpy().sub(((Individual) proposee).getState().position.cpy()).len() > 64;
 		} else {
 			return proposer.getState().position.cpy().sub(prop.position.cpy()).len() > 64;
