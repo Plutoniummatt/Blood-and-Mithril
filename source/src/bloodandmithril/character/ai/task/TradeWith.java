@@ -129,6 +129,12 @@ public class TradeWith extends CompositeAITask {
 
 		@Override
 		public boolean isComplete() {
+			if (proposee instanceof Individual) {
+				if (!((Individual) proposee).isAlive()) {
+					return true;
+				}
+			}
+
 			return proposer.getAI().getCurrentTask() instanceof Trading;
 		}
 

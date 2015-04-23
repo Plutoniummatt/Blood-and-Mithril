@@ -49,6 +49,10 @@ public class Follow extends CompositeAITask {
 	 */
 	@Override
 	public boolean isComplete() {
+		if (!followee.isAlive()) {
+			return true;
+		}
+
 		if (terminationCondition != null) {
 			return terminationCondition.call();
 		} else {

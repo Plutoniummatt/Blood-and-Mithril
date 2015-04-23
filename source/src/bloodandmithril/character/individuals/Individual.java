@@ -1070,7 +1070,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
 		contextMenuToReturn.addMenuItem(showStatusWindowItem);
 
-		if (isControllable()) {
+		if (isControllable() && isAlive()) {
 			contextMenuToReturn.addMenuItem(inventory());
 			contextMenuToReturn.addMenuItem(skills());
 			contextMenuToReturn.addMenuItem(actions);
@@ -1116,12 +1116,19 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	private ContextMenu interactMenu() {
-		return new ContextMenu(0, 0,
-			true,
-			trade(this),
-			follow(this),
-			attack(this)
-		);
+		if (isAlive()) {
+			return new ContextMenu(0, 0,
+				true,
+				trade(this),
+				follow(this),
+				attack(this)
+			);
+		} else {
+			return new ContextMenu(0, 0,
+				true,
+				trade(this)
+			);
+		}
 	}
 
 
@@ -1258,7 +1265,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	private MenuItem trade(final Individual thisIndividual) {
 		return new MenuItem(
-			"Trade with",
+			isAlive() ? "Trade with" : "Loot",
 			() -> {
 				if (Domain.getSelectedIndividuals().size() > 1) {
 					return;
