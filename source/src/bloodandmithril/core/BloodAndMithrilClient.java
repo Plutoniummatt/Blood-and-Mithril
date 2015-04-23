@@ -429,6 +429,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		ConfigPersistenceService.getConfig().setResX(width);
 		ConfigPersistenceService.getConfig().setResY(height);
+		ConfigPersistenceService.saveConfig();
 	}
 
 
@@ -662,7 +663,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					}
 				}
 
-				if (individualClicked.isControllable()) {
+				if (individualClicked.isControllable() && individualClicked.isAlive()) {
 					if (ClientServerInterface.isServer()) {
 						Domain.addSelectedIndividual(individualClicked);;
 						individualClicked.select(0);

@@ -79,6 +79,11 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/** Adds an item to the AI processing thread to await execution */
 	public void update(float delta) {
 		AIProcessor.setup();
+
+		if (!getHost().isAlive()) {
+			return;
+		}
+
 		if (AIProcessor.aiThread != null && AIProcessor.aiThread.isAlive()) {
 			if (mode == AIMode.AUTO && !getHost().isAISuppressed()) {
 				AIProcessor.aiThreadTasks.add(() ->

@@ -62,6 +62,11 @@ public abstract class GroundTravellingIndividual extends Individual {
 	 * @return the Current animated action this {@link GroundTravellingIndividual} is performing.
 	 */
 	protected void updateCurrentAction() {
+		// If dead, return
+		if (!isAlive()) {
+			return;
+		}
+
 		// If we're attacking, return
 		if (attacking()) {
 			return;
@@ -107,6 +112,10 @@ public abstract class GroundTravellingIndividual extends Individual {
 
 	@Override
 	protected void respondToCommands() {
+		if (!isAlive()) {
+			return;
+		}
+
 		//Horizontal movement
 		Topography topography = Domain.getWorld(getWorldId()).getTopography();
 		boolean attacking = attacking();

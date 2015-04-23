@@ -323,7 +323,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 */
 	@SuppressWarnings("rawtypes")
 	public synchronized boolean attack(Set<Integer> individuals) {
-		if (attackTimer < getAttackPeriod()) {
+		if (attackTimer < getAttackPeriod() || dead) {
 			return false;
 		}
 
@@ -408,6 +408,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	 * The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed
 	 */
 	public void attack(boolean mine) {
+		if (dead) {
+			return;
+		}
+
 		if (getIndividualsToBeAttacked().isEmpty()) {
 			// Attack environmental objects... maybe?...
 		} else {
@@ -748,6 +752,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Select this {@link Individual} */
 	public void select(int clientId) {
+		if (!isAlive()) {
+			return;
+		}
+
 		Domain.addSelectedIndividual(this);
 		getAI().setToManual();
 		selectedByClient.add(clientId);
@@ -834,7 +842,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 
 		aiReactionTimer += delta;
-		if (aiReactionTimer >= aiTaskDelay) {
+		if (aiReactionTimer >= aiTaskDelay && isAlive()) {
 			getAI().update(aiTaskDelay);
 			aiReactionTimer = 0f;
 		}
@@ -867,8 +875,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		internalUpdate(delta);
 
 		executeActionFrames();
-		respondToCommands();
-		respondToAttackCommand();
+
+		if (isAlive()) {
+			respondToCommands();
+			respondToAttackCommand();
+		}
 
 		try {
 			Kinematics.kinetics(delta, Domain.getWorld(getWorldId()), this);
@@ -1492,6 +1503,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private void kill() {
 		// TODO Killing an individual
 		dead = true;
+		if (ClientServerInterface.isClient()) {
+			Domain.removeSelectedIndividual(this);
+		}
+		deselect(true, 0);
+		selectedByClient.clear();
 	}
 
 
@@ -2009,7 +2025,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	public void speak(String text, long duration) {
-		if (shutup || speakTimer > 0f) {
+		if (dead || shutup || speakTimer > 0f) {
 			return;
 		}
 

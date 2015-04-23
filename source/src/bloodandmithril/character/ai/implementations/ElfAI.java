@@ -58,7 +58,7 @@ public class ElfAI extends ArtificialIntelligence {
 		LinkedList<Prop> lightables = Lists.newLinkedList(Collections2.filter(nearbyEntities, prop -> {
 			return prop instanceof Lightable && !((Lightable) prop).isLit() && ((Lightable) prop).canLight();
 		}));
-		if (!lightables.isEmpty() && (host.getFireLighter() != null)) {
+		if (!lightables.isEmpty() && host.getFireLighter() != null) {
 			try {
 				setCurrentTask(new LightLightable(host, (Lightable) lightables.get(0), true));
 			} catch (NoTileFoundException e) {}

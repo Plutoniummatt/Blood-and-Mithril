@@ -210,7 +210,7 @@ public class UserInterface {
 	public static synchronized void resetWindowPositions(int oldWidth, int oldHeight) {
 		float oldW = oldWidth;
 		float oldH = oldHeight;
-		
+
 		for (Component c : layeredComponents) {
 			if (c instanceof Window) {
 				((Window) c).x = Math.round(WIDTH * (float)((Window) c).x / oldW);
@@ -757,7 +757,7 @@ public class UserInterface {
 			}
 
 			for (Individual indi : Domain.getIndividuals().values()) {
-				if (indi.isControllable()) {
+				if (indi.isControllable() && indi.isAlive()) {
 
 					Vector2 centre = new Vector2(indi.getState().position.x, indi.getState().position.y + indi.getHeight() / 2);
 

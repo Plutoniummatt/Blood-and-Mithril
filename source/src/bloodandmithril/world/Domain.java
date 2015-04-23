@@ -138,7 +138,8 @@ public class Domain {
 	 * @return an {@link Individual} with the specified key
 	 */
 	public static Individual getIndividual(int key) {
-		return individuals.get(key);
+		Individual individual = individuals.get(key);
+		return individual;
 	}
 
 
