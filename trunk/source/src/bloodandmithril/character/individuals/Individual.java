@@ -737,7 +737,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 		}
 
-		if (isMouseOver() && Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
+		if (isAlive() && isMouseOver() && Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
 			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.isIndividualSelected(this) || Domain.getSelectedIndividuals().size() > 1)) {
 				spriteBatch.setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
@@ -1509,7 +1509,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Kills this {@link Individual} */
 	private void kill() {
-		// TODO Killing an individual
 		dead = true;
 		if (ClientServerInterface.isClient()) {
 			Domain.removeSelectedIndividual(this);
@@ -1517,12 +1516,14 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		getEquipped().keySet().forEach(eq -> {
 			Individual.this.unequip((Equipable ) eq);
 		});
+		getState().currentConditions.clear();
 		deselect(true, 0);
 		clearCommands();
 		selectedByClient.clear();
-		setCurrentAction(Action.DEAD);
+		internalKill();
 	}
 
+	protected abstract void internalKill();
 
 	public boolean isAISuppressed() {
 		return supressAI;
