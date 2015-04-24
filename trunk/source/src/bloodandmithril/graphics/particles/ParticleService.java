@@ -49,9 +49,9 @@ public class ParticleService {
 	}
 
 
-	public static void smokePuff(Vector2 position, float horizontalSpread, float verticalSpread) {
+	public static void smokePuff(Vector2 position, float horizontalSpread, float verticalSpread, int density) {
 		if (isClient()) {
-			for (int i = 0; i < 105; i++) {
+			for (int i = 0; i < density; i++) {
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy().add(
 						(Util.getRandom().nextFloat() - 0.5f) * horizontalSpread,
@@ -66,7 +66,7 @@ public class ParticleService {
 					0f,
 					MovementMode.EMBER,
 					Depth.FOREGROUND,
-					Util.getRandom().nextInt(5000) + 5000,
+					Util.getRandom().nextInt(5000) + 1000,
 					false
 				));
 			}
@@ -74,43 +74,23 @@ public class ParticleService {
 	}
 
 
-	public static void fireworks(Vector2 position) {
+	public static void fireworks(Vector2 position, Color... color) {
 		if (isClient()) {
-			for (int i = 0; i < 50; i++) {
-				long lifetime = Util.getRandom().nextInt(300);
-				Color randomOneOf = Util.randomOneOf(new Color(1f, 0.6f, 1f, 1f), Color.PURPLE, Color.CYAN);
-				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 1200f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
+			for (int i = 0; i < 100; i++) {
+				long lifetime = Util.getRandom().nextInt(2000) + 1000;
+				Color randomOneOf = Util.randomOneOf(color);
+				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 400f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
 
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
 					rotate,
 					Color.WHITE,
 					randomOneOf,
-					randomOneOf,
+					Color.WHITE,
 					Util.getRandom().nextFloat() * 5f,
 					Domain.getActiveWorld().getWorldId(),
-					Util.getRandom().nextFloat() * 30f + 10,
-					MovementMode.GRAVITY,
-					Util.getRandom().nextBoolean() ? Depth.FOREGROUND : Depth.MIDDLEGROUND,
-					lifetime,
-					true
-				).bounce());
-			}
-			for (int i = 0; i < 200; i++) {
-				long lifetime = Util.getRandom().nextInt(2000);
-				Color randomOneOf = Util.randomOneOf(new Color(1f, 0.6f, 1f, 1f), Color.PURPLE, Color.CYAN);
-				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 1200f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
-
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
-					position.cpy(),
-					rotate,
-					Color.WHITE,
-					randomOneOf,
-					randomOneOf,
-					Util.getRandom().nextFloat() * 4f,
-					Domain.getActiveWorld().getWorldId(),
-					5f,
-					MovementMode.GRAVITY,
+					Util.getRandom().nextFloat() * 10f,
+					Util.randomOneOf(MovementMode.WEIGHTLESS),
 					Util.getRandom().nextBoolean() ? Depth.FOREGROUND : Depth.MIDDLEGROUND,
 					lifetime,
 					true

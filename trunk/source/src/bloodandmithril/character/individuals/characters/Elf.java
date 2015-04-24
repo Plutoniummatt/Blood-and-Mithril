@@ -772,8 +772,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		} else {
 			if (deathAlpha > 2.4f && getCurrentAction() != DEAD) {
 				setCurrentAction(Action.DEAD);
-				ParticleService.fireworks(getState().position.cpy().add(0, getHeight()/2));
-				ParticleService.smokePuff(getState().position.cpy().add(0, getHeight()/2), 15f, 40f);
+				ParticleService.fireworks(getState().position.cpy().add(0, getHeight()/3), eyeColor.getColor(), hairColor.getColor());
 			}
 
 			if (deathAlpha >= 2.4f) {
