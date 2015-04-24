@@ -30,7 +30,7 @@ import bloodandmithril.item.items.container.LiquidContainerItem;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.armor.Armor;
-import bloodandmithril.item.items.equipment.misc.Lantern;
+import bloodandmithril.item.items.equipment.offhand.Lantern;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.item.items.food.plant.SeedItem;
@@ -140,6 +140,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		filters.put("Misc", 		WrapperForTwo.wrap(item -> {return item instanceof MiscItem;}, true));
 		filters.put("Seed", 		WrapperForTwo.wrap(item -> {return item instanceof SeedItem;}, true));
 		filters.put("Ammo", 		WrapperForTwo.wrap(item -> {return item.getType() == Category.AMMO;}, true));
+		filters.put("Off-hand",		WrapperForTwo.wrap(item -> {return item.getType() == Category.OFFHAND;}, true));
 
 		return new ScrollableListingPanel<Button, String>(parent, (b1, b2) -> {
 			return b1.text.call().compareTo(b2.text.call());
@@ -224,7 +225,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				filters.values().stream().forEach(value -> {
 					value.b = true;
 				});
-
+				
 				filterButtons.stream().forEach(item -> {
 					if (item != deselectAll && item != selectAll) {
 						item.setIdleColor(Color.GREEN);

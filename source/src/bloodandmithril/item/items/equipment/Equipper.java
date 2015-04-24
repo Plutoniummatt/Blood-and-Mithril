@@ -1,8 +1,7 @@
 package bloodandmithril.item.items.equipment;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -29,7 +28,7 @@ public interface Equipper extends Container {
 	/**
 	 * @return the available {@link EquipmentSlot}s of this {@link Equipper}
 	 */
-	public default Map<EquipmentSlot, SerializableFunction<Boolean>> getAvailableEquipmentSlots() {
+	public default ConcurrentHashMap<EquipmentSlot, SerializableFunction<Boolean>> getAvailableEquipmentSlots() {
 		return getEquipperImpl().getAvailableEquipmentSlots();
 	}
 
@@ -37,7 +36,7 @@ public interface Equipper extends Container {
 	/**
 	 * @return the equipped items
 	 */
-	public default HashMap<Item, Integer> getEquipped() {
+	public default ConcurrentHashMap<Item, Integer> getEquipped() {
 		return getEquipperImpl().getEquipped();
 	}
 

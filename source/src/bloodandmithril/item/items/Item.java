@@ -631,6 +631,7 @@ public abstract class Item implements Serializable, Affixed {
 		AMMO("Ammunition"),
 		KEY("Key"),
 		MISC("Miscellaneous"),
+		OFFHAND("Off-hand"),
 		SEED("Seed"),
 		FURNITURE("Furniture");
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.proficiencies.Smithing;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.OneHandedSword;
 import bloodandmithril.item.material.metal.Steel;
@@ -23,7 +24,7 @@ public class Broadsword extends OneHandedSword<Steel> {
 	public static TextureRegion ICON;
 
 	public Broadsword() {
-		super(3f, 10, 100, Steel.class);
+		super(3f, 10, ItemValues.BROADSWORD, Steel.class);
 	}
 
 

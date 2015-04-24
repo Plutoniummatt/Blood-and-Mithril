@@ -684,12 +684,12 @@ public class TradeWindow extends Window implements Refreshable {
 
 		proposerTradingPanel.x = x + 200;
 		proposerTradingPanel.y = y - 30;
-		proposerTradingPanel.height = 85 + (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposerItemsToTrade.size())) * lineWidth);
+		proposerTradingPanel.height = 45 + (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposerItemsToTrade.size())) * lineWidth);
 		proposerTradingPanel.width = width / 2 - 210;
 
 		proposeeTradingPanel.x = x + width / 2 + 210;
 		proposeeTradingPanel.y = y - 30;
-		proposeeTradingPanel.height = 85 + (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposeeItemsToTrade.size())) * lineWidth);
+		proposeeTradingPanel.height = 45 + (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposeeItemsToTrade.size())) * lineWidth);
 		proposeeTradingPanel.width = width / 2 - 210;
 
 		proposerFilterButtons.x = x;

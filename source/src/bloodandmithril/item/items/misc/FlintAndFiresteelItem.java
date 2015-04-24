@@ -1,4 +1,4 @@
-package bloodandmithril.item.items.equipment.misc;
+package bloodandmithril.item.items.misc;
 
 import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import bloodandmithril.audio.SoundService;
@@ -7,7 +7,6 @@ import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.misc.MiscItem;
 import bloodandmithril.prop.Prop;
 
 import com.badlogic.gdx.graphics.Color;

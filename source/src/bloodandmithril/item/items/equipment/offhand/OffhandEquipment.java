@@ -1,4 +1,4 @@
-package bloodandmithril.item.items.equipment.misc;
+package bloodandmithril.item.items.equipment.offhand;
 
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
@@ -7,6 +7,8 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
+import bloodandmithril.item.items.equipment.offhand.shield.WoodenBuckler;
+import bloodandmithril.item.items.equipment.offhand.shield.WoodenKiteShield;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -22,6 +24,8 @@ public abstract class OffhandEquipment extends Equipable {
 
 	static {
 		if (isClient()) {
+			WoodenKiteShield.woodenKiteShield = new TextureRegion(WorldRenderer.individualTexture, 44, 1040, 64, 40);
+			WoodenBuckler.woodenBuckler = new TextureRegion(WorldRenderer.individualTexture, 0, 858, 41, 41);
 			Torch.torch = new TextureRegion(WorldRenderer.individualTexture, 0, 851, 43, 7);
 			Lantern.lantern = new TextureRegion(WorldRenderer.individualTexture, 43, 851, 11, 25);
 		}
@@ -71,7 +75,7 @@ public abstract class OffhandEquipment extends Equipable {
 
 	@Override
 	public int getRenderingIndex(Individual individual) {
-		return 1;
+		return 0;
 	}
 
 

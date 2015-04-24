@@ -45,4 +45,7 @@ public class ItemValues {
 	public static final int LANTERN = 2000;
 	public static final int LONGBOW = 2000;
 	public static final int GLOWSTICK = 100;
+	public static final int BROADSWORD = 100;
+	public static final int WOODENBUCKLER = 100;
+	public static final int WOODENKITESHIELD = 500;
 }

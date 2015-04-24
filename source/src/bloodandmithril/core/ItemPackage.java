@@ -13,9 +13,10 @@ import java.util.List;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.GlassBottleItem;
-import bloodandmithril.item.items.equipment.misc.FlintAndFiresteelItem;
-import bloodandmithril.item.items.equipment.misc.Lantern;
-import bloodandmithril.item.items.equipment.misc.Torch;
+import bloodandmithril.item.items.equipment.offhand.Lantern;
+import bloodandmithril.item.items.equipment.offhand.Torch;
+import bloodandmithril.item.items.equipment.offhand.shield.WoodenBuckler;
+import bloodandmithril.item.items.equipment.offhand.shield.WoodenKiteShield;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
 import bloodandmithril.item.items.equipment.weapon.dagger.CombatKnife;
 import bloodandmithril.item.items.equipment.weapon.onehandedsword.Broadsword;
@@ -41,6 +42,7 @@ import bloodandmithril.item.items.mineral.earth.AshesItem;
 import bloodandmithril.item.items.mineral.earth.DirtItem;
 import bloodandmithril.item.items.mineral.earth.SandItem;
 import bloodandmithril.item.items.misc.CurrencyItem;
+import bloodandmithril.item.items.misc.FlintAndFiresteelItem;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.item.liquid.Oil;
 import bloodandmithril.item.liquid.Water;
@@ -132,6 +134,8 @@ public class ItemPackage implements Serializable {
 		
 		if (BloodAndMithrilClient.devMode) {
 			Container chest = (Container) new WoodenChestItem(StandardWood.class).getProp();
+			chest.giveItem(new WoodenKiteShield(), 10);
+			chest.giveItem(new WoodenBuckler(), 10);
 			chest.giveItem(new FlintAndFiresteelItem(), 10);
 			chest.giveItem(PlankItem.plank(StandardWood.class), 200);
 			chest.giveItem(StickItem.stick(StandardWood.class), 200);
