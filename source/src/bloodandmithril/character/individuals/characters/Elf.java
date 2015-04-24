@@ -49,6 +49,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
 import bloodandmithril.core.Name;
 import bloodandmithril.graphics.WorldRenderer;
+import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
@@ -115,6 +116,9 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 	/** Hair style of this elf */
 	private int hairStyle;
 
+	/** Death animation timer */
+	private float deathAlpha = 0f;
+
 	/** Elf female hairstyles */
 	private static Map<Integer, TextureRegion> hairStyleFemale = Maps.newHashMap();
 
@@ -132,11 +136,11 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 		AnimationSwitcher dead = new AnimationSwitcher();
 		dead.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 1040, 44, 70, 1, 1f, PlayMode.LOOP));
-		
+
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> deadSequence = newArrayList(
 			wrap(dead, server ? null : Shaders.pass)
 		);
-		
+
 		AnimationSwitcher walk1 = new AnimationSwitcher();
 		AnimationSwitcher walk2 = new AnimationSwitcher();
 		AnimationSwitcher walk3 = new AnimationSwitcher();
@@ -294,7 +298,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 			wrap(slash5, server ? null : Shaders.filterIgnoreReplace),
 			wrap(slash6, server ? null : Shaders.filterIgnoreReplace)
 		);
-		
+
 		animationMap.put(
 			DEAD,
 			deadSequence
@@ -391,10 +395,10 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		);
 	}
 
-	
+
 	public static void setup() {
 	}
-	
+
 
 	/**
 	 * Constructor
@@ -468,12 +472,26 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		Shaders.filterIgnoreReplace.begin();
 		Shaders.filterIgnoreReplace.setUniformf("toReplace", Color.RED);
 		Shaders.filterIgnoreReplace.setUniformf("color", eyeColor.r, eyeColor.g, eyeColor.b, eyeColor.a);
-		Shaders.filterIgnoreReplace.setUniformf("filter", skinColor.r, skinColor.g, skinColor.b, skinColor.a);
+
+		Shaders.filterIgnoreReplace.setUniformf(
+			"filter",
+			Math.max(skinColor.r, deathAlpha),
+			Math.max(skinColor.g, deathAlpha),
+			Math.max(skinColor.b, deathAlpha),
+			Math.max(skinColor.a, deathAlpha)
+		);
+
 		Shaders.filterIgnoreReplace.setUniformf("ignore", Color.WHITE);
 
 		Shaders.colorize.begin();
 		Shaders.colorize.setUniformf("amount", 5f);
-		Shaders.colorize.setUniformf("color", hairColor.r, hairColor.g, hairColor.b, hairColor.a);
+		Shaders.colorize.setUniformf(
+			"color",
+			Math.max(hairColor.r, deathAlpha),
+			Math.max(hairColor.g, deathAlpha),
+			Math.max(hairColor.b, deathAlpha),
+			Math.max(hairColor.a, deathAlpha)
+		);
 		super.render();
 	}
 
@@ -737,6 +755,32 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 				helmetConfig.flipX,
 				false
 			);
+		}
+	}
+
+
+	@Override
+	protected void internalKill() {
+		deathAlpha = 0f;
+	}
+
+
+	@Override
+	public void setAnimationTimer(float animationTimer) {
+		if (isAlive()) {
+			super.setAnimationTimer(animationTimer);
+		} else {
+			if (deathAlpha > 2.4f && getCurrentAction() != DEAD) {
+				setCurrentAction(Action.DEAD);
+				ParticleService.fireworks(getState().position.cpy().add(0, getHeight()/2));
+				ParticleService.smokePuff(getState().position.cpy().add(0, getHeight()/2), 15f, 40f);
+			}
+
+			if (deathAlpha >= 2.4f) {
+				deathAlpha = 2.4f;
+			} else {
+				deathAlpha += 0.04f;
+			}
 		}
 	}
 }

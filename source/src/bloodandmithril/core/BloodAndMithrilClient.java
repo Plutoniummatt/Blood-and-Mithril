@@ -488,7 +488,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				boolean attacked = false;
 				for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 					Individual indi = Domain.getIndividual(indiKey);
-					if (indi.isMouseOver()) {
+					if (indi.isMouseOver() && indi.isAlive()) {
 						for (Individual selected : Domain.getSelectedIndividuals()) {
 							if (indi == selected) {
 								continue;

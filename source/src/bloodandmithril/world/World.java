@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -18,8 +19,6 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.google.common.collect.Sets;
 
 /**
  * A World, holds info about the {@link Topography}, {@link Prop}s, {@link Individual}s and any related entities.
@@ -43,7 +42,7 @@ public class World implements Serializable {
 	private transient Topography topography;
 
 	/** Individuals that are currently in this {@link World} */
-	private Set<Integer> 										individuals 			= Sets.newHashSet();
+	private ConcurrentSkipListSet<Integer>						individuals 			= new ConcurrentSkipListSet<Integer>();
 
 	/** The positional indexing map of this {@link World} */
 	private PositionalIndexMap 									positionalIndexMap;
@@ -62,13 +61,13 @@ public class World implements Serializable {
 
 	/** The projectiles of this {@link World} */
 	private WorldProjectiles projectiles;
-	
+
 	/** World-specific {@link ChunkGenerator} */
 	private final ChunkGenerator 								generator;
 
 	/** Epoch of this world */
 	private Epoch epoch;
-	
+
 	private float												updateTick = 1f/60f;
 
 	/**
@@ -85,8 +84,8 @@ public class World implements Serializable {
 		this.topography = new Topography(worldId);
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
 	}
-	
-	
+
+
 	public World updateTick(float updateTick) {
 		this.updateTick = updateTick;
 		return this;

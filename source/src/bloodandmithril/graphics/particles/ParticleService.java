@@ -11,6 +11,7 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
@@ -44,6 +45,31 @@ public class ParticleService {
 			}
 		} else {
 			ClientServerInterface.SendNotification.notifyRunStaticMethod(-1, new BloodSplat(position.cpy(), knockBack));
+		}
+	}
+
+
+	public static void smokePuff(Vector2 position, float horizontalSpread, float verticalSpread) {
+		if (isClient()) {
+			for (int i = 0; i < 105; i++) {
+				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+					position.cpy().add(
+						(Util.getRandom().nextFloat() - 0.5f) * horizontalSpread,
+						(Util.getRandom().nextFloat() - 0.5f) * verticalSpread
+					),
+					new Vector2(Util.getRandom().nextFloat() * 30f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
+					Colors.LIGHT_SMOKE,
+					Colors.LIGHT_SMOKE,
+					Colors.LIGHT_SMOKE,
+					Util.getRandom().nextFloat() * 45f + 3f,
+					Domain.getActiveWorld().getWorldId(),
+					0f,
+					MovementMode.EMBER,
+					Depth.FOREGROUND,
+					Util.getRandom().nextInt(5000) + 5000,
+					false
+				));
+			}
 		}
 	}
 
