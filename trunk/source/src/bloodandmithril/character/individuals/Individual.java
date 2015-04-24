@@ -55,6 +55,7 @@ import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -62,8 +63,8 @@ import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.armor.Armor;
-import bloodandmithril.item.items.equipment.misc.OffhandEquipment;
-import bloodandmithril.item.items.equipment.misc.Torch;
+import bloodandmithril.item.items.equipment.offhand.OffhandEquipment;
+import bloodandmithril.item.items.equipment.offhand.Torch;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
@@ -102,6 +103,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -627,6 +629,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	private void renderEquipment(int animationIndex) {
+		spriteBatch.flush();
+		WorldRenderer.individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		for (Item equipped : getEquipped().keySet()) {
 			if (((Equipable)equipped).getRenderingIndex(this) != animationIndex) {
 				continue;
@@ -695,8 +699,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				}
 				toRender.particleEffects(pos, config.orientation, config.flipX);
 			}
-
 		}
+		spriteBatch.flush();
+		WorldRenderer.individualTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 

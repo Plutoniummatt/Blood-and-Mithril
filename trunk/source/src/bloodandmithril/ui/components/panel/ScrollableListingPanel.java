@@ -187,17 +187,25 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	public boolean scrolled(int amount) {
 		scrollWheelActive = isMouseWithin();
 		if (scrollWheelActive && canScroll) {
-			startingIndex += amount;
-
+			float max = Math.round((height - 100f) / 20f);
 			int size = 0;
 			for (Map<ListingMenuItem<T>, A> listing : listings) {
 				size += listing.size();
 			}
 
-			if (size == 0) {
+			if (size == 0 || size < max) {
 				return false;
 			}
-
+			
+			if (startingIndex >= size - max) {
+				startingIndex = Math.round(size - max);
+				if (amount > 0) {
+					return false;
+				}
+			}
+			
+			startingIndex += amount;
+			
 			if (startingIndex < 0) {
 				startingIndex = 0;
 			}
@@ -206,7 +214,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 				startingIndex = size;
 			}
 
-			scrollBarButtonLocation = (float)startingIndex / (float)size;
+			scrollBarButtonLocation = Math.max(0.0f, Math.min(1.0f, startingIndex / (size - max)));
 
 			return true;
 		}
@@ -260,6 +268,19 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		if (listings.isEmpty()) {
 			return;
 		}
+		
+		int size = 0;
+		float max = Math.round((height - 100f) / 20f);
+		for (Map<ListingMenuItem<T>, A> listing : listings) {
+			size += listing.size();
+		}
+
+		if (size < max) {
+			startingIndex = 0;
+		} else if (startingIndex >= size - max + 1) {
+			startingIndex = Math.round(size - max);
+		}
+		
 
 		// Render the equipped items first
 		int i = 0;
@@ -317,9 +338,10 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
 
-		if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode) && scrollBarButtonLocationOld != null) {
+		float max = (height - 100f) / 20f;
+		if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode) && scrollBarButtonLocationOld != null && size > max) {
 			scrollBarButtonLocation = Math.min(1, Math.max(0, scrollBarButtonLocationOld + (mouseLocYFrozen - BloodAndMithrilClient.getMouseScreenY())/(height - 102)));
-			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * size);
+			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * (size - max));
 		}
 
 		if (parent.isActive()) {

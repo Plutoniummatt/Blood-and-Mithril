@@ -1,13 +1,11 @@
 package bloodandmithril.item.items.equipment;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
@@ -29,10 +27,10 @@ public final class EquipperImpl implements Equipper, Serializable {
 	private static final long serialVersionUID = -4489215845226338399L;
 
 	/** The current equipped {@link Item}s of this {@link Container} */
-	protected HashMap<Item, Integer> equippedItems = newHashMap();
+	protected ConcurrentHashMap<Item, Integer> equippedItems = new ConcurrentHashMap<>();
 
 	/** The current available {@link EquipmentSlot}s, maps to true if empty/available */
-	protected Map<EquipmentSlot, SerializableFunction<Boolean>> availableEquipmentSlots = newHashMap();
+	protected ConcurrentHashMap<EquipmentSlot, SerializableFunction<Boolean>> availableEquipmentSlots = new ConcurrentHashMap<>();
 
 	private List<Ring> equippedRings = newArrayList();
 
@@ -75,7 +73,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 
 
 	@Override
-	public Map<EquipmentSlot, SerializableFunction<Boolean>> getAvailableEquipmentSlots() {
+	public ConcurrentHashMap<EquipmentSlot, SerializableFunction<Boolean>> getAvailableEquipmentSlots() {
 		return availableEquipmentSlots;
 	}
 
@@ -96,7 +94,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 
 
 	@Override
-	public HashMap<Item, Integer> getEquipped() {
+	public ConcurrentHashMap<Item, Integer> getEquipped() {
 		return equippedItems;
 	}
 

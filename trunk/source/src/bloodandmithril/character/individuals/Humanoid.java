@@ -19,7 +19,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.equipment.misc.OffhandEquipment;
+import bloodandmithril.item.items.equipment.offhand.OffhandEquipment;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.Probablistic;

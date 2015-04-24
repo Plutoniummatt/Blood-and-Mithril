@@ -1,4 +1,4 @@
-package bloodandmithril.item.items.equipment.misc;
+package bloodandmithril.item.items.equipment.offhand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -115,7 +115,7 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 	@Override
 	public Category getType() {
-		return Category.MISC;
+		return Category.OFFHAND;
 	}
 
 

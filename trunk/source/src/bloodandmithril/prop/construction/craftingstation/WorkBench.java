@@ -10,7 +10,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucketItem;
-import bloodandmithril.item.items.equipment.misc.Torch;
+import bloodandmithril.item.items.equipment.offhand.Torch;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile.ArrowItem;
 import bloodandmithril.item.items.furniture.WoodenChestItem;
 import bloodandmithril.item.items.material.PlankItem;

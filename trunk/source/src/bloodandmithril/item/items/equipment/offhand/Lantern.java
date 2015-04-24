@@ -1,4 +1,4 @@
-package bloodandmithril.item.items.equipment.misc;
+package bloodandmithril.item.items.equipment.offhand;
 
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 
@@ -105,7 +105,7 @@ public class Lantern extends OffhandEquipment {
 
 	@Override
 	public Category getType() {
-		return Category.MISC;
+		return Category.OFFHAND;
 	}
 
 
