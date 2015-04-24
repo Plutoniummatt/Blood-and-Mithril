@@ -69,7 +69,8 @@ public abstract class Projectile implements Serializable {
 		Optional<Integer> findAny = Domain.getWorld(getWorldId()).getPositionalIndexMap().getNearbyEntityIds(Individual.class, position).stream().filter(individual -> {
 			for (float l = 0f; l < length; l += 4f) {
 				Vector2 test = position.cpy().add(nor.cpy().scl(l));
-				if (Domain.getIndividual(individual).getHitBox().isWithinBox(test)) {
+				Individual target = Domain.getIndividual(individual);
+				if (target.getHitBox().isWithinBox(test) && target.isAlive()) {
 					return true;
 				}
 			}
