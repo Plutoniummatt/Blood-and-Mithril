@@ -175,7 +175,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.H) {
-			ParticleService.fireworks(
+			ParticleService.explosion(
 				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())
 			);
 		}
@@ -188,11 +188,11 @@ public class DevWindow extends Window {
 				YellowBrickTile.class
 			);
 		}
-		
+
 		if (keyCode == Keys.J) {
 			BloodAndMithrilClient.fadeOut();
 		}
-		
+
 		if (keyCode == Keys.K) {
 			BloodAndMithrilClient.fadeIn();
 		}

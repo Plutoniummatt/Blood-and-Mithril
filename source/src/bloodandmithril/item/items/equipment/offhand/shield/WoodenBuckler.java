@@ -39,13 +39,13 @@ public class WoodenBuckler extends Shield {
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return (firstCap ? "Wooden buckler" : "wooden buckler");
+		return firstCap ? "Wooden buckler" : "wooden buckler";
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return (firstCap ? "Wooden bucklers" : "wooden bucklers");
+		return firstCap ? "Wooden bucklers" : "wooden bucklers";
 	}
 
 
@@ -126,5 +126,11 @@ public class WoodenBuckler extends Shield {
 	@Override
 	public float getCraftingDuration() {
 		return 50;
+	}
+
+
+	@Override
+	public float getBlockChance() {
+		return 0.25f;
 	}
 }

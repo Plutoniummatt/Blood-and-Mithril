@@ -29,6 +29,12 @@ public abstract class Shield extends OffhandEquipment implements Craftable {
 	}
 
 
+	/**
+	 * @return the probability to block an attack with this shield
+	 */
+	public abstract float getBlockChance();
+
+
 	@Override
 	public void particleEffects(Vector2 position, float angle, boolean flipX) {
 	}

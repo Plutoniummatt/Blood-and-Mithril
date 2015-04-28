@@ -32,13 +32,13 @@ public class WoodenKiteShield extends Shield {
 
 	@Override
 	protected String internalGetSingular(boolean firstCap) {
-		return (firstCap ? "Wooden kite shield" : "wooden kite shield");
+		return firstCap ? "Wooden kite shield" : "wooden kite shield";
 	}
 
 
 	@Override
 	protected String internalGetPlural(boolean firstCap) {
-		return (firstCap ? "Wooden kite shields" : "wooden kite shields");
+		return firstCap ? "Wooden kite shields" : "wooden kite shields";
 	}
 
 
@@ -119,5 +119,11 @@ public class WoodenKiteShield extends Shield {
 	@Override
 	public float getCraftingDuration() {
 		return 100;
+	}
+
+
+	@Override
+	public float getBlockChance() {
+		return 0.4f;
 	}
 }

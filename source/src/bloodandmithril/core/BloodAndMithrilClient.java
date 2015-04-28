@@ -406,7 +406,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		camMarginX = 640 + 32 - WIDTH % 32;
 		camMarginY = 640 + 32 - HEIGHT % 32;
 
+		float oldCamX = cam.position.x;
+		float oldCamY = cam.position.y;
+
 		cam.setToOrtho(false, WIDTH + camMarginX, HEIGHT + camMarginY);
+		cam.position.x = oldCamX;
+		cam.position.y = oldCamY;
 		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
 		UserInterface.UICameraTrackingCam.setToOrtho(false, WIDTH, HEIGHT);
 

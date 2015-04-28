@@ -13,12 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import bloodandmithril.audio.SoundService.SuspicionLevel;
-import bloodandmithril.audio.SoundService.SuspiciousSound;
-import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.implementations.WolfAI;
-import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.SightStimulus;
@@ -313,17 +309,6 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	public void listen(SoundStimulus stimulus) {
-		if (stimulus instanceof SuspiciousSound) {
-			SuspicionLevel suspicionLevel = ((SuspiciousSound) stimulus).getSuspicionLevel();
-			if (suspicionLevel.severity >= SuspicionLevel.INVESTIGATE.severity) {
-				speak(" !", 1000);
-				if (getState().position.x > stimulus.getEmissionPosition().x) {
-					AIProcessor.sendPathfindingRequest(this, new WayPoint(getState().position.cpy().add(300f, 0f)), false, 300f, false, false);
-				} else {
-					AIProcessor.sendPathfindingRequest(this, new WayPoint(getState().position.cpy().add(-300f, 0f)), false, 300f, false, false);
-				}
-			}
-		}
 	}
 
 

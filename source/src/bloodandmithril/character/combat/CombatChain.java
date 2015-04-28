@@ -10,6 +10,7 @@ import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.equipment.Equipable;
+import bloodandmithril.item.items.equipment.offhand.Shield;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.networking.ClientServerInterface;
@@ -73,6 +74,12 @@ public class CombatChain {
 				);
 			}
 			return text;
+		} else if (block(knockbackVector)) {
+			target.addFloatingText(
+				"Blocked!",
+				Color.GREEN
+			);
+			return text;
 		}
 
 		text = hit(knockbackVector.scl(0.1f).cpy());
@@ -83,6 +90,19 @@ public class CombatChain {
 		}
 
 		return null;
+	}
+
+
+	private boolean block(Vector2 knockbackVector) {
+		Optional<Item> shield = Iterables.tryFind(target.getEquipped().keySet(), item -> {
+			return item instanceof Shield;
+		});
+
+		if (shield.isPresent()) {
+			return Util.roll(((Shield) shield.get()).getBlockChance());
+		}
+
+		return false;
 	}
 
 

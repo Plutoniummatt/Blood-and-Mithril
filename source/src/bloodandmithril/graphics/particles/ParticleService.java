@@ -49,13 +49,13 @@ public class ParticleService {
 	}
 
 
-	public static void smokePuff(Vector2 position, float horizontalSpread, float verticalSpread, int density) {
+	public static void explosion(Vector2 position) {
 		if (isClient()) {
-			for (int i = 0; i < density; i++) {
+			for (int i = 0; i < 40; i++) {
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy().add(
-						(Util.getRandom().nextFloat() - 0.5f) * horizontalSpread,
-						(Util.getRandom().nextFloat() - 0.5f) * verticalSpread
+						(Util.getRandom().nextFloat() - 0.5f) * 30,
+						(Util.getRandom().nextFloat() - 0.5f) * 30
 					),
 					new Vector2(Util.getRandom().nextFloat() * 30f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
 					Colors.LIGHT_SMOKE,
@@ -68,6 +68,40 @@ public class ParticleService {
 					Depth.FOREGROUND,
 					Util.getRandom().nextInt(5000) + 1000,
 					false
+				));
+			}
+			for (int i = 0; i < 100; i++) {
+				float radius = Util.getRandom().nextFloat() * 8f;
+				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+					position.cpy(),
+					new Vector2(Util.getRandom().nextFloat() * 300f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
+					Color.WHITE,
+					Color.PINK,
+					Color.WHITE,
+					radius,
+					Domain.getActiveWorld().getWorldId(),
+					radius * 5f,
+					MovementMode.GRAVITY,
+					Depth.FOREGROUND,
+					Util.getRandom().nextInt(50),
+					true
+				));
+			}
+			for (int i = 0; i < 100; i++) {
+				float radius = Util.getRandom().nextFloat() * 2f;
+				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+					position.cpy(),
+					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
+					Color.WHITE,
+					Color.PINK,
+					Color.WHITE,
+					radius,
+					Domain.getActiveWorld().getWorldId(),
+					radius * 5f,
+					MovementMode.GRAVITY,
+					Depth.FOREGROUND,
+					Util.getRandom().nextInt(2000),
+					true
 				));
 			}
 		}
