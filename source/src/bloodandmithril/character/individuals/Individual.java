@@ -673,7 +673,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 					spriteBatch.draw(
 						keyFrame.getTexture(),
 						getState().position.x - keyFrame.getRegionWidth()/2 + (getCurrentAction().left() ? - attackAnimationEffects.b.x : attackAnimationEffects.b.x),
-						getState().position.y  + attackAnimationEffects.b.y,
+						getState().position.y + attackAnimationEffects.b.y,
 						keyFrame.getRegionWidth(),
 						keyFrame.getRegionHeight(),
 						keyFrame.getRegionX(),
