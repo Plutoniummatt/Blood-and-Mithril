@@ -30,8 +30,8 @@ void main()
 	float timeCoord = time;
 	float spaceCoord = diff / (5 * atan(diff / 500) / (3.14159 / 2) + 1);
 	
-	float rippleX = 0.0;
-	float rippleY = ripple(spaceCoord - timeCoord) * (4.0 * max(diff, 0.0) / 20.0);
+	float rippleX = sin(100000 / diff + time) * diff / 10;
+	float rippleY = ripple(spaceCoord - timeCoord) * (4.0 * max(diff, 0.0) / 20.0) + sin((inverted.x - 525.5) * 10 / (0.1 + diff/10) * 400 + time) * diff/10;
 	
 	if (sample1.a > 0.0 && sample1.r == 1.0 && sample1.g == 0.0 && sample1.b == 0.0) {
 		float xSample = (rippleX / resolution.x) + v_texCoords.x;
