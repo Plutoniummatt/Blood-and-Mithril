@@ -268,7 +268,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		ClientServerInterface.setServer(true);
 		Domain.getWorlds().put(
 			1,
-			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).updateTick(0.15f)
+			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).updateTick(1f/60f)
 		);
 		Domain.setActiveWorld(1);
 		cam.position.y = Layer.getCameraYForHorizonCoord(HEIGHT/3);
