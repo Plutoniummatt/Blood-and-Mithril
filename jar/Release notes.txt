@@ -1,3 +1,7 @@
+Release 0.0.24
+---------------
+* Improve water reflections
+
 Release 0.0.23
 ---------------
 * The game window can now be resized when in windowed mode
