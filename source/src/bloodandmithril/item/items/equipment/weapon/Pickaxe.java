@@ -182,12 +182,6 @@ public abstract class Pickaxe<T extends Metal> extends TwoHandedMeleeWeapon<T> i
 
 
 	@Override
-	public float getDisarmChance() {
-		return 0.05f;
-	}
-
-
-	@Override
 	public Category getType() {
 		return Category.PICKAXE;
 	}

@@ -32,8 +32,6 @@ public abstract class MeleeWeapon<T extends Material> extends Weapon<T> {
 
 	public abstract int getBlockSound();
 
-	public abstract float getDisarmChance();
-
 	public abstract float getParryChance();
 
 	public abstract float getParryChanceIgnored();

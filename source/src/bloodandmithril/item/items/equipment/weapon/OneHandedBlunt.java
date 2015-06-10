@@ -185,12 +185,6 @@ public abstract class OneHandedBlunt<T extends Material> extends OneHandedMeleeW
 
 
 	@Override
-	public float getDisarmChance() {
-		return 0.05f;
-	}
-
-
-	@Override
 	public Category getType() {
 		return Category.ONEHANDEDBLUNT;
 	}

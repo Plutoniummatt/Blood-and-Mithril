@@ -182,12 +182,6 @@ public abstract class OneHandedSpear<T extends Metal> extends OneHandedMeleeWeap
 
 
 	@Override
-	public float getDisarmChance() {
-		return 0.01f;
-	}
-
-
-	@Override
 	public Category getType() {
 		return Category.ONEHANDEDSPEAR;
 	}

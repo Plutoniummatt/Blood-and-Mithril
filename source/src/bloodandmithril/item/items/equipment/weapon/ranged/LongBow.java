@@ -78,12 +78,6 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 
 
 	@Override
-	public float getDisarmChance() {
-		return 0;
-	}
-
-
-	@Override
 	public float getParryChance() {
 		return 0.2f;
 	}

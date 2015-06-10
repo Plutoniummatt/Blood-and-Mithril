@@ -186,12 +186,6 @@ public abstract class OneHandedAxe<T extends Metal> extends OneHandedMeleeWeapon
 
 
 	@Override
-	public float getDisarmChance() {
-		return 0.05f;
-	}
-
-
-	@Override
 	public Category getType() {
 		return Category.ONEHANDEDAXE;
 	}
