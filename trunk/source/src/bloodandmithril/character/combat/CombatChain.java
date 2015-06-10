@@ -8,10 +8,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.container.ContainerImpl;
-import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.offhand.Shield;
-import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Util;
@@ -21,7 +18,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 
 /**
  * Class for combat related calculations
@@ -62,17 +58,10 @@ public class CombatChain {
 		Vector2 knockbackVector = target.getState().position.cpy().sub(attacker.getState().position.cpy()).nor().scl(knockbackStrength);
 
 		if (parry(knockbackVector)) {
-			if (disarm(knockbackVector)) {
-				target.addFloatingText(
-					"Disarmed!",
-					Color.YELLOW
-				);
-			} else {
-				target.addFloatingText(
-					"Parried!",
-					Color.GREEN
-				);
-			}
+			target.addFloatingText(
+				"Parried!",
+				Color.GREEN
+			);
 			return text;
 		} else if (block(knockbackVector)) {
 			target.addFloatingText(
@@ -100,28 +89,6 @@ public class CombatChain {
 
 		if (shield.isPresent()) {
 			return Util.roll(((Shield) shield.get()).getBlockChance());
-		}
-
-		return false;
-	}
-
-
-	private boolean disarm(Vector2 knockbackVector) {
-		// Disarming
-		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance())) {
-			Sets.newHashSet(target.getEquipped().keySet()).stream().forEach(item -> {
-				target.unequip((Equipable) item);
-				ContainerImpl.discard(target, item, 1, ()-> {
-					return knockbackVector.cpy();
-				});
-			});
-
-			target.addFloatingText(
-				"Disarmed!",
-				Color.YELLOW
-			);
-
-			return true;
 		}
 
 		return false;
@@ -170,22 +137,6 @@ public class CombatChain {
 				hit.t = p;
 			}
 			t += p.getProbability();
-		}
-
-		// Disarming
-		if (weapon != null && weapon instanceof MeleeWeapon && Util.roll(((MeleeWeapon) weapon).getDisarmChance() * 2f) && !target.getAvailableEquipmentSlots().get(hit.t.getLinkedEquipmentSlot()).call()) {
-			Sets.newHashSet(target.getEquipped().keySet()).stream().filter(
-				item -> {
-					return ((Equipable) item).slot == hit.t.getLinkedEquipmentSlot();
-				}
-			).forEach(item -> {
-				if (item instanceof Weapon) {
-					target.unequip((Equipable) item);
-					ContainerImpl.discard(target, item, 1, () -> {
-						return disarmVector.cpy();
-					});
-				}
-			});
 		}
 
 		float damage = 0f;

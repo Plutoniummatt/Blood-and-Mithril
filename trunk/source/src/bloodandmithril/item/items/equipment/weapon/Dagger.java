@@ -186,12 +186,6 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 
 	@Override
-	public float getDisarmChance() {
-		return 0.01f;
-	}
-
-
-	@Override
 	public Category getType() {
 		return Category.DAGGER;
 	}
