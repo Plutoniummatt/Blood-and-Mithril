@@ -24,6 +24,7 @@ public class MissionsWindow extends Window {
 
 	private ScrollableListingPanel<Mission, String> activeMissions;
 	private ScrollableListingPanel<Mission, String> completedMissions;
+	private boolean renderActive = true;
 
 	private static Comparator<Mission> alphabeticalSortingComparator = new Comparator<Mission>() {
 		@Override
@@ -112,7 +113,21 @@ public class MissionsWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
-		// TODO Auto-generated method stub
+		activeMissions.width = width;
+		activeMissions.height = height;
+		activeMissions.x = x;
+		activeMissions.y = y;
+
+		completedMissions.width = width;
+		completedMissions.height = height;
+		completedMissions.x = x;
+		completedMissions.y = y;
+
+		if (renderActive ) {
+			activeMissions.render();
+		} else {
+			completedMissions.render();
+		}
 	}
 
 
