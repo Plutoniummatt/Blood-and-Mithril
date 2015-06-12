@@ -8,6 +8,7 @@ import bloodandmithril.objectives.objective.GoToLocationObjective;
 import bloodandmithril.objectives.objective.function.AnyControllableIndividual;
 import bloodandmithril.objectives.objective.function.NeverFailFunction;
 
+import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 
 /**
@@ -34,10 +35,13 @@ public class Tutorial extends Mission {
 		objectives.add(
 			new GoToLocationObjective(
 				new AnyControllableIndividual(),
-				null, // TODO
+				() -> {
+					return new Vector2(2000, 1000);
+				},
 				20f,
 				worldId,
-				new NeverFailFunction()
+				new NeverFailFunction(),
+				"Go here"
 			)
 		);
 
@@ -48,5 +52,17 @@ public class Tutorial extends Mission {
 	@Override
 	public int getWorldId() {
 		return -1;
+	}
+
+
+	@Override
+	public String getDescription() {
+		return "";
+	}
+
+
+	@Override
+	public String getTitle() {
+		return "Tutorial";
 	}
 }

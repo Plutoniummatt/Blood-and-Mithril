@@ -53,6 +53,11 @@ public class BottomBar extends Component {
 		UIRef.BL
 	);
 
+	private final Button missions = new Button(UserInterface.uiTexture, 265, 16, 203, 0, 50, 32,
+		() -> {},
+		UIRef.BL
+	);
+
 
 	/** Called upon left click */
 	@Override
@@ -78,6 +83,11 @@ public class BottomBar extends Component {
 			return true;
 		}
 
+		if (missions.click()) {
+			missionsClicked();
+			return true;
+		}
+
 		if (isActive() && isWithin()) {
 			return true;
 		} else if (isWithin()) {
@@ -89,6 +99,21 @@ public class BottomBar extends Component {
 			setActive(false);
 			return false;
 		}
+	}
+
+
+	private void missionsClicked() {
+		UserInterface.addLayeredComponentUnique(
+			new FactionsWindow(
+				BloodAndMithrilClient.WIDTH/2 - 125,
+				BloodAndMithrilClient.HEIGHT/2 + 150,
+				250,
+				300,
+				true,
+				250,
+				300
+			)
+		);
 	}
 
 
@@ -310,6 +335,7 @@ public class BottomBar extends Component {
 		windows.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		chat.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		factions.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
+		missions.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		BloodAndMithrilClient.spriteBatch.end();
 	}
 

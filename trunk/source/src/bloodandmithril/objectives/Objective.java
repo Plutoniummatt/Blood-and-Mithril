@@ -8,14 +8,9 @@ package bloodandmithril.objectives;
 public interface Objective {
 
 	/**
-	 * @return whether this objective is complete
+	 * @return The current mission status
 	 */
-	public boolean isComplete();
-
-	/**
-	 * @return whether this objective has failed and is an incompletable state
-	 */
-	public boolean hasFailed();
+	public ObjectiveStatus getStatus();
 
 	/**
 	 * @return the worldId this Objective applies to, -1 if this field is meaningless
@@ -26,4 +21,14 @@ public interface Objective {
 	 * Renders UI hints
 	 */
 	public void renderHints();
+
+	/**
+	 * The title of this {@link Objective}
+	 */
+	public String getTitle();
+
+
+	public enum ObjectiveStatus {
+		ACTIVE, COMPLETE, FAILED
+	}
 }

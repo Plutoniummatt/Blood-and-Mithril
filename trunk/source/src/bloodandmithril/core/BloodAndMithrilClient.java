@@ -6,6 +6,7 @@ import static com.badlogic.gdx.Gdx.input;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,6 +28,7 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.objectives.Mission;
 import bloodandmithril.performance.PositionalReindexingService;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
@@ -129,6 +131,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static ExecutorService clientCSIThread;
 
 	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
+	public static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
 
 	public static long ping = 0;
 

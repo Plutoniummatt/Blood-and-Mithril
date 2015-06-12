@@ -22,6 +22,7 @@ public class GoToLocationObjective implements Objective {
 	private SerializableFunction<Vector2> location;
 	private float tolerance;
 	private int worldId;
+	private String title;
 
 	/**
 	 * Constructor
@@ -31,12 +32,14 @@ public class GoToLocationObjective implements Objective {
 			SerializableFunction<Vector2> location,
 			float tolerance,
 			int worldId,
-			SerializableFunction<Boolean> failureFunction) {
+			SerializableFunction<Boolean> failureFunction,
+			String title) {
 		this.individualIdentificationFunction = individualIdentificationFunction;
 		this.location = location;
 		this.tolerance = tolerance;
 		this.worldId = worldId;
 		this.failureFunction = failureFunction;
+		this.title = title;
 	}
 
 
@@ -66,5 +69,11 @@ public class GoToLocationObjective implements Objective {
 
 	@Override
 	public void renderHints() {
+	}
+
+
+	@Override
+	public String getTitle() {
+		return title;
 	}
 }
