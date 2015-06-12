@@ -79,6 +79,7 @@ public class NewGameWindow extends Window {
 	private Class<? extends Individual> selectedRace;
 	private final HashMap<ListingMenuItem<Individual>, String> startingIndividuals = Maps.newHashMap();
 	private ItemPackage selectedItemPackage;
+	private boolean enableTutorials = true;
 
 	private Button next;
 	private Button startGame = new Button(
@@ -179,6 +180,7 @@ public class NewGameWindow extends Window {
 		panels.add(new ChooseRacePanel(this));
 		panels.add(new ChooseStartingIndividualsPanel(this));
 		panels.add(new ChooseStartingItemPackagePanel(this));
+		panels.add(new ChooseTutorialsPanel(this));
 
 		currentPanel = panels.poll();
 		next = new Button(
@@ -244,6 +246,8 @@ public class NewGameWindow extends Window {
 			return startingIndividuals.size() > 1;
 		} else if (currentPanel instanceof ChooseStartingItemPackagePanel) {
 			return selectedItemPackage != null;
+		} else if (currentPanel instanceof ChooseTutorialsPanel) {
+			return true;
 		}
 
 		throw new IllegalStateException("Unexpected panel");
@@ -722,6 +726,68 @@ public class NewGameWindow extends Window {
 
 			defaultFont.setColor(Colors.modulateAlpha(Color.ORANGE, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
 			defaultFont.draw(spriteBatch, "Points left: " + assignablePoints, x + 10, y - 100);
+		}
+
+
+		@Override
+		public boolean keyPressed(int keyCode) {
+			return false;
+		}
+	}
+
+
+	public class ChooseTutorialsPanel extends Panel {
+
+		private Button tutorialsButton;
+
+		/**
+		 * Constructor
+		 */
+		public ChooseTutorialsPanel(Component parent) {
+			super(parent);
+
+			tutorialsButton = new Button(
+				() -> {
+					if (NewGameWindow.this.enableTutorials) {
+						return "Tutorials enabled";
+					} else {
+						return "Tutorials disabled";
+					}
+				},
+				Fonts.defaultFont,
+				0,
+				0,
+				180,
+				16,
+				() -> {
+					NewGameWindow.this.enableTutorials = !NewGameWindow.this.enableTutorials;
+				},
+				Color.ORANGE,
+				Color.WHITE,
+				Color.GREEN,
+				UIRef.BL
+			);
+		}
+
+
+		@Override
+		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+			boolean clicked = tutorialsButton.click();
+			return clicked;
+		}
+
+
+		@Override
+		public void leftClickReleased() {
+		}
+
+
+		@Override
+		public void render() {
+			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
+			defaultFont.draw(spriteBatch, "Choose whether or not tutorials are enabled.", x + width / 2 - 220, y - 40);
+
+			tutorialsButton.render(x + width / 2, y - 100, parent.isActive(), parent.getAlpha());
 		}
 
 

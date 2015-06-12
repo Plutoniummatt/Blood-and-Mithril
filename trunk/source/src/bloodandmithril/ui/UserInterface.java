@@ -959,7 +959,7 @@ public class UserInterface {
 
 
 	/**
-	 * Renders the jump arrow, coordniates are world coordinates
+	 * Renders the jump arrow, coordinates are world coordinates
 	 */
 	public static void renderArrow(Vector2 start, Vector2 finish, Color color, float lineWidth, float arrowSize, float maxLength) {
 		Vector2 difference = finish.cpy().sub(start);
@@ -1169,11 +1169,11 @@ public class UserInterface {
 				if (((Window) component).y < 0) {
 					((Window) component).y = 20;
 				}
-				
+
 				if (((Window) component).y > HEIGHT) {
 					((Window) component).y = HEIGHT;
 				}
-				
+
 				if (!((Window)component).minimized || component.getAlpha() > 0f) {
 					component.render();
 				}
