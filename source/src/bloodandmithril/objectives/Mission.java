@@ -37,31 +37,27 @@ public abstract class Mission implements Objective {
 
 
 	public void update() {
-		if (objectives.get(currentObjective).isComplete()) {
+		if (objectives.get(currentObjective).getStatus() == ObjectiveStatus.COMPLETE) {
 			currentObjective = objectives.ceilingKey(currentObjective + 1);
 		}
 	}
 
 
 	@Override
-	public boolean isComplete() {
+	public ObjectiveStatus getStatus() {
 		for (Objective o : objectives.values()) {
-			if (!o.isComplete()) {
-				return false;
+			if (o.getStatus() == ObjectiveStatus.FAILED) {
+				return ObjectiveStatus.FAILED;
 			}
 		}
-		return true;
-	}
 
-
-	@Override
-	public boolean hasFailed() {
 		for (Objective o : objectives.values()) {
-			if (o.hasFailed()) {
-				return true;
+			if (o.getStatus() == ObjectiveStatus.ACTIVE) {
+				return ObjectiveStatus.ACTIVE;
 			}
 		}
-		return false;
+
+		return ObjectiveStatus.COMPLETE;
 	}
 
 
@@ -69,6 +65,12 @@ public abstract class Mission implements Objective {
 	public void renderHints() {
 		objectives.get(currentObjective).renderHints();
 	}
+
+
+	/**
+	 * @return the description of this {@link Mission}
+	 */
+	public abstract String getDescription();
 
 
 	/**
