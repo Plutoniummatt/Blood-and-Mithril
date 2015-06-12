@@ -44,24 +44,6 @@ public class GoToLocationObjective implements Objective {
 
 
 	@Override
-	public boolean isComplete() {
-		for (Individual individual : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyEntities(Individual.class, location.call())) {
-			if (individualIdentificationFunction.apply(individual)) {
-				return individual.getState().position.cpy().sub(location.call().cpy()).len() <= tolerance;
-			}
-		};
-
-		return false;
-	}
-
-
-	@Override
-	public boolean hasFailed() {
-		return failureFunction.call();
-	}
-
-
-	@Override
 	public int getWorldId() {
 		return worldId;
 	}
@@ -75,5 +57,23 @@ public class GoToLocationObjective implements Objective {
 	@Override
 	public String getTitle() {
 		return title;
+	}
+
+
+	@Override
+	public ObjectiveStatus getStatus() {
+		if (failureFunction.call()) {
+			return ObjectiveStatus.FAILED;
+		}
+
+		for (Individual individual : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyEntities(Individual.class, location.call())) {
+			if (individualIdentificationFunction.apply(individual)) {
+				if (individual.getState().position.cpy().sub(location.call().cpy()).len() <= tolerance) {
+					return ObjectiveStatus.COMPLETE;
+				}
+			}
+		};
+
+		return ObjectiveStatus.ACTIVE;
 	}
 }
