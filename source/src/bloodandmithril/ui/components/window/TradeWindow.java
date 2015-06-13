@@ -79,7 +79,7 @@ public class TradeWindow extends Window implements Refreshable {
 	private float tradeRejectionTimer = 1f;
 
 	private final Button tradeButton = new Button(
-		"Propose Trade",
+		"Trade",
 		defaultFont,
 		0,
 		0,
@@ -108,7 +108,7 @@ public class TradeWindow extends Window implements Refreshable {
 			title,
 			active,
 			1300,
-			300,
+			500,
 			false,
 			true,
 			true
@@ -673,13 +673,13 @@ public class TradeWindow extends Window implements Refreshable {
 		int lineWidth = 23;
 
 		proposerPanel.x = x + 200;
-		proposerPanel.y = y - (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5,proposerItemsToTrade.size())) * lineWidth) - 30;
-		proposerPanel.height = height - 85 - (proposerItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposerItemsToTrade.size())) * lineWidth);
+		proposerPanel.y = y - (proposerItemsToTrade.isEmpty() ? 0 : (2 + min(5,proposerItemsToTrade.size())) * lineWidth) - 30;
+		proposerPanel.height = height - 85 - (proposerItemsToTrade.isEmpty() ? 0 : (3 + min(5, proposerItemsToTrade.size())) * lineWidth);
 		proposerPanel.width = width / 2 - 210;
 
 		proposeePanel.x = x + width / 2 + 10 + 200;
-		proposeePanel.y = y - (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5,proposeeItemsToTrade.size())) * lineWidth) - 30;
-		proposeePanel.height = height - 85 - (proposeeItemsToTrade.isEmpty() ? 0 : (1 + min(5, proposeeItemsToTrade.size())) * lineWidth);
+		proposeePanel.y = y - (proposeeItemsToTrade.isEmpty() ? 0 : (2 + min(5,proposeeItemsToTrade.size())) * lineWidth) - 30;
+		proposeePanel.height = height - 85 - (proposeeItemsToTrade.isEmpty() ? 0 : (3 + min(5, proposeeItemsToTrade.size())) * lineWidth);
 		proposeePanel.width = width / 2 - 210;
 
 		proposerTradingPanel.x = x + 200;
