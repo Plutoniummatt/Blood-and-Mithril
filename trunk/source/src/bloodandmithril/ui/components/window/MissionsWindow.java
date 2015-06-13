@@ -37,7 +37,7 @@ public class MissionsWindow extends Window {
 	 * Constructor
 	 */
 	public MissionsWindow() {
-		super(400, 500, "Journal", true, true, true, true);
+		super(400, 800, "Journal", true, true, true, true);
 
 		activeMissions = new ScrollableListingPanel<Mission, String>(this, alphabeticalSortingComparator, false, 100) {
 			@Override
@@ -123,7 +123,7 @@ public class MissionsWindow extends Window {
 		completedMissions.x = x;
 		completedMissions.y = y;
 
-		if (renderActive ) {
+		if (renderActive) {
 			activeMissions.render();
 		} else {
 			completedMissions.render();

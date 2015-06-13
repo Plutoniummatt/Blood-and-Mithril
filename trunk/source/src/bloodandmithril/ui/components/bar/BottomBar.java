@@ -20,6 +20,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.ChatWindow;
 import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
+import bloodandmithril.ui.components.window.MissionsWindow;
 import bloodandmithril.ui.components.window.Window;
 
 import com.badlogic.gdx.graphics.Color;
@@ -53,7 +54,7 @@ public class BottomBar extends Component {
 		UIRef.BL
 	);
 
-	private final Button missions = new Button(UserInterface.uiTexture, 265, 16, 203, 0, 50, 32,
+	private final Button missions = new Button(UserInterface.uiTexture, 265, 16, 53, 96, 50, 32,
 		() -> {},
 		UIRef.BL
 	);
@@ -104,15 +105,7 @@ public class BottomBar extends Component {
 
 	private void missionsClicked() {
 		UserInterface.addLayeredComponentUnique(
-			new FactionsWindow(
-				BloodAndMithrilClient.WIDTH/2 - 125,
-				BloodAndMithrilClient.HEIGHT/2 + 150,
-				250,
-				300,
-				true,
-				250,
-				300
-			)
+			new MissionsWindow()
 		);
 	}
 

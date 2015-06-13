@@ -14,6 +14,7 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -34,9 +35,10 @@ public class BackgroundImages implements Serializable {
 	static {
 		if (ClientServerInterface.isClient()) {
 			backgrounds = new Texture(files.internal("data/image/bg.png"));
-			textures.put(1, new TextureRegion(backgrounds, 473, 0, 10, 75));
+			backgrounds.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
+			textures.put(1, new TextureRegion(backgrounds, 474, 0, 10, 75));
 			textures.put(2, new TextureRegion(backgrounds, 0, 0, 473, 75));
-			textures.put(3, new TextureRegion(backgrounds, 483, 0, 58, 44));
+			textures.put(3, new TextureRegion(backgrounds, 485, 0, 58, 44));
 		}
 	}
 

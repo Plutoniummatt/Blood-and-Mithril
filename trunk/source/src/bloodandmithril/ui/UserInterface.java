@@ -182,10 +182,11 @@ public class UserInterface {
 		if (ClientServerInterface.isClient()) {
 			uiTexture = new Texture(files.internal("data/image/ui.png"));
 			iconTexture = new Texture(files.internal("data/image/icons.png"));
+			
 			finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
 			jumpWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 59, 39, 29);
-			currentArrow = new TextureRegion(UserInterface.uiTexture, 0, 0, 11, 8);
-			followArrow = new TextureRegion(UserInterface.uiTexture, 0, 34, 11, 8);
+			currentArrow = new TextureRegion(UserInterface.uiTexture, 500, 1, 11, 8);
+			followArrow = new TextureRegion(UserInterface.uiTexture, 500, 10, 11, 8);
 			uiTasks = new ConcurrentLinkedDeque<>();
 			floatingTexts = Lists.newLinkedList();
 			shapeRenderer = new ShapeRenderer();
