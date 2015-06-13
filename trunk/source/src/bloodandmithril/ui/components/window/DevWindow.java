@@ -44,6 +44,7 @@ import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.objectives.tutorial.Tutorial;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
@@ -172,6 +173,10 @@ public class DevWindow extends Window {
 	public boolean keyPressed(int keyCode) {
 		if (super.keyPressed(keyCode)) {
 			return true;
+		}
+		
+		if (keyCode == Keys.B) {
+			BloodAndMithrilClient.missions.add(new Tutorial(Domain.getActiveWorldId()));
 		}
 
 		if (keyCode == Keys.H) {

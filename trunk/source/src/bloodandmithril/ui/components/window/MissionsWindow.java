@@ -10,9 +10,19 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.objectives.Mission;
 import bloodandmithril.objectives.Objective.ObjectiveStatus;
+import bloodandmithril.ui.Refreshable;
+import bloodandmithril.ui.UserInterface.UIRef;
+import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
+import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
+import bloodandmithril.util.Fonts;
+
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * The window displaying missions etc.
@@ -20,7 +30,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class MissionsWindow extends Window {
+public class MissionsWindow extends Window implements Refreshable {
 
 	private ScrollableListingPanel<Mission, String> activeMissions;
 	private ScrollableListingPanel<Mission, String> completedMissions;
@@ -61,11 +71,7 @@ public class MissionsWindow extends Window {
 
 			@Override
 			protected void populateListings(List<HashMap<ListingMenuItem<Mission>, String>> listings) {
-				for (Mission mission : BloodAndMithrilClient.missions) {
-					if (mission.getStatus() == ObjectiveStatus.ACTIVE) {
-
-					}
-				}
+				listings.add(buildMap(ObjectiveStatus.ACTIVE));
 			}
 
 			@Override
@@ -96,11 +102,7 @@ public class MissionsWindow extends Window {
 
 			@Override
 			protected void populateListings(List<HashMap<ListingMenuItem<Mission>, String>> listings) {
-				for (Mission mission : BloodAndMithrilClient.missions) {
-					if (mission.getStatus() != ObjectiveStatus.ACTIVE) {
-
-					}
-				}
+				listings.add(buildMap(ObjectiveStatus.COMPLETE, ObjectiveStatus.FAILED));
 			}
 
 			@Override
@@ -133,25 +135,69 @@ public class MissionsWindow extends Window {
 
 	@Override
 	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		// TODO Auto-generated method stub
+		if (renderActive) {
+			activeMissions.leftClick(copy, windowsCopy);
+		} else {
+			completedMissions.leftClick(copy, windowsCopy);
+		}
 	}
 
 
 	@Override
 	protected void uponClose() {
-		// TODO Auto-generated method stub
 	}
 
 
 	@Override
 	public Object getUniqueIdentifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return "MissionsWindow";
 	}
 
 
 	@Override
 	public void leftClickReleased() {
-		// TODO Auto-generated method stub
+	}
+
+
+	@Override
+	public void refresh() {
+		List<HashMap<ListingMenuItem<Mission>, String>> activeListing = Lists.newLinkedList();
+		activeListing.add(buildMap(ObjectiveStatus.ACTIVE));
+		activeMissions.refresh(activeListing);
+		
+		List<HashMap<ListingMenuItem<Mission>, String>> completeListing = Lists.newLinkedList();
+		activeListing.add(buildMap(ObjectiveStatus.COMPLETE, ObjectiveStatus.FAILED));
+		completedMissions.refresh(completeListing);
+	}
+	
+	
+	private HashMap<ListingMenuItem<Mission>, String> buildMap(ObjectiveStatus... statuses) {
+		HashMap<ListingMenuItem<Mission>, String> map = Maps.newHashMap();
+		for (Mission mission : BloodAndMithrilClient.missions) {
+			if (Sets.newHashSet(statuses).contains(mission.getStatus())) {
+				map.put(
+					new ListingMenuItem<Mission>(
+						mission, 
+						new Button(
+							mission.getTitle(), 
+							Fonts.defaultFont, 
+							0, 
+							0, 
+							mission.getTitle().length() * 10, 
+							16, 
+							() -> {}, 
+							Color.ORANGE, 
+							Color.WHITE, 
+							Color.GREEN, 
+							UIRef.BL
+						), 
+						null
+					), 
+					mission.getStatus().getDescription()
+				);
+			}
+		}
+		
+		return map;
 	}
 }

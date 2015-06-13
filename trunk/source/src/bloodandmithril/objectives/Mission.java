@@ -17,11 +17,13 @@ public abstract class Mission implements Objective {
 
 	private TreeMap<Integer, Objective> objectives = Maps.newTreeMap();
 	private int currentObjective;
+	protected int worldId;
 
 	/**
 	 * Constructor
 	 */
-	protected Mission() {
+	protected Mission(int worldId) {
+		this.worldId = worldId;
 		int index = 1;
 		for (Objective o : getNewObjectives()) {
 			objectives.put(index, o);

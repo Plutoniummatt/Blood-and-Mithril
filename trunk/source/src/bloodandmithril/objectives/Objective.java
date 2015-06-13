@@ -29,6 +29,16 @@ public interface Objective {
 
 
 	public enum ObjectiveStatus {
-		ACTIVE, COMPLETE, FAILED
+		ACTIVE("Active"), COMPLETE("Complete"), FAILED("Failed");
+		
+		private ObjectiveStatus(String description) {
+			this.description = description;
+		}
+		
+		public String getDescription() {
+			return description;
+		}
+		
+		private String description;
 	}
 }

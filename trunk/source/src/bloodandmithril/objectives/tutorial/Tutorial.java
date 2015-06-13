@@ -18,13 +18,11 @@ import com.google.common.collect.Lists;
  */
 public class Tutorial extends Mission {
 
-	private int worldId;
-
 	/**
 	 * Constructor
 	 */
 	public Tutorial(int worldId) {
-		this.worldId = worldId;
+		super(worldId);
 	}
 
 
