@@ -5,12 +5,14 @@ import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import static bloodandmithril.util.Util.firstNonNull;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.Sniffer;
 import bloodandmithril.character.ai.perception.Stimulus;
+import bloodandmithril.character.ai.routine.Routine;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Wait;
@@ -47,8 +49,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/** Self stimulation timer */
 	private float selfStimulationTimer;
 
+	/** Delay between process ticks of individual-specific AI */
+	private float specificAIProcessingTimer;
+
 	/** Stimuli as perceived by the host */
 	private LinkedBlockingQueue<Stimulus> stimuli = new LinkedBlockingQueue<Stimulus>();
+
+	private LinkedList<Routine> aiRoutines = new LinkedList<>();
 
 	/** Maximum of entities observed per AI tick */
 	private static final int OBSERVATED_ENTITIES_PER_TICK = 15;
@@ -60,6 +67,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 		internalCopy.mode = mode;
 		internalCopy.selfStimulationTimer = selfStimulationTimer;
 		internalCopy.stimuli = new LinkedBlockingQueue<Stimulus>(stimuli);
+		internalCopy.aiRoutines = new LinkedList<>(aiRoutines);
 
 		return internalCopy;
 	}
@@ -91,9 +99,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 						switch (mode) {
 						case AUTO:
 							selfStimulationTimer += delta;
+							specificAIProcessingTimer += delta;
 							if (selfStimulationTimer > 0.5f) {
 								selfStimulate();
 								selfStimulationTimer = 0f;
+							}
+							if (specificAIProcessingTimer > 0.5f) {
+								processSpecificAIRoutines();
 							}
 							reactToStimuli();
 							determineCurrentTask();
@@ -117,6 +129,25 @@ public abstract class ArtificialIntelligence implements Serializable {
 			}
 		} else if (ClientServerInterface.isServer()) {
 			throw new RuntimeException("Something has caused the AI thread to terminate");
+		}
+	}
+
+
+	/**
+	 * Processes specific AI routines
+	 */
+	private void processSpecificAIRoutines() {
+		for (Routine routine : aiRoutines) {
+
+			AITask internalCurrentTask = getCurrentTask();
+			if (internalCurrentTask instanceof Routine) {
+				if (routine.getPriority() > ((Routine) internalCurrentTask).getPriority() && routine.areExecutionConditionsMet()) {
+					setCurrentTask(routine);
+					break;
+				}
+			} else {
+				setCurrentTask(routine);
+			}
 		}
 	}
 
@@ -276,5 +307,10 @@ public abstract class ArtificialIntelligence implements Serializable {
 				)
 			);
 		}
+	}
+
+
+	public LinkedList<Routine> getAiRoutines() {
+		return aiRoutines;
 	}
 }
