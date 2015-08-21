@@ -99,7 +99,7 @@ public class MainMenuWindow extends Window {
 									String input = (String)args[0];
 
 									if (StringUtils.isBlank(input.replace(" ", ""))) {
-										UserInterface.addMessage("Invalid name", "Please enter a valid name.");
+										UserInterface.addGlobalMessage("Invalid name", "Please enter a valid name.");
 										return;
 									}
 
@@ -189,7 +189,7 @@ public class MainMenuWindow extends Window {
 							if (args[0].toString().equals("local")) {
 								singlePlayer();
 							} else {
-								UserInterface.addMessage("Connecting", "Attemping to connect to " + args[0].toString());
+								UserInterface.addGlobalMessage("Connecting", "Attemping to connect to " + args[0].toString());
 								BloodAndMithrilClient.clientCSIThread.execute(() -> {
 									try {
 										removeWindows();

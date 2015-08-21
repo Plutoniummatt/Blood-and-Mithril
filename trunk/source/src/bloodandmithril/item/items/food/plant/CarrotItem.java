@@ -189,7 +189,7 @@ public class CarrotItem extends Food {
 				new ContextMenu.MenuItem(
 					"Show info",
 					() -> {
-						UserInterface.addMessage("Carrot seed", "The seed of a carrot, plant this to grow carrots.");
+						UserInterface.addGlobalMessage("Carrot seed", "The seed of a carrot, plant this to grow carrots.");
 					},
 					Color.WHITE,
 					Color.GREEN,

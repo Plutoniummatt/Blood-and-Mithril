@@ -62,6 +62,7 @@ import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.interfaces.Interface;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.EquipperImpl.AlwaysTrueFunction;
+import bloodandmithril.item.items.equipment.EquipperImpl.FalseFunction;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.GameSaver;
@@ -182,7 +183,7 @@ public class UserInterface {
 		if (ClientServerInterface.isClient()) {
 			uiTexture = new Texture(files.internal("data/image/ui.png"));
 			iconTexture = new Texture(files.internal("data/image/icons.png"));
-			
+
 			finalWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 42, 16, 16);
 			jumpWaypointTexture = new TextureRegion(UserInterface.uiTexture, 0, 59, 39, 29);
 			currentArrow = new TextureRegion(UserInterface.uiTexture, 500, 1, 11, 8);
@@ -1548,17 +1549,22 @@ public class UserInterface {
 	}
 
 
-	public static void addMessage(String title, String message) {
-		addMessage(title, message, -1, new AlwaysTrueFunction());
+	public static void addClientMessage(String title, String message) {
+		addGlobalMessage(title, message, -1, new FalseFunction());
 	}
 
 
-	public static void addMessage(String title, String message, SerializableFunction<Boolean> function) {
-		addMessage(title, message, -1, function);
+	public static void addGlobalMessage(String title, String message) {
+		addGlobalMessage(title, message, -1, new AlwaysTrueFunction());
 	}
 
 
-	public static void addMessage(String title, String message, int client, SerializableFunction<Boolean> function) {
+	public static void addGlobalMessage(String title, String message, SerializableFunction<Boolean> function) {
+		addGlobalMessage(title, message, -1, function);
+	}
+
+
+	public static void addGlobalMessage(String title, String message, int client, SerializableFunction<Boolean> function) {
 		if (ClientServerInterface.isClient()) {
 			addLayeredComponent(
 				new MessageWindow(

@@ -151,7 +151,7 @@ public class TakeItem extends CompositeAITask {
 			Individual individual = Domain.getIndividual(hostId.getId());
 			if (individual.getInteractionBox().overlapsWith(item.getPickupBox())) {
 				if (!individual.canReceive(item)) {
-					UserInterface.addMessage("Inventory full", "Can not pick up item, inventory is full.", new IndividualSelected(individual.getId().getId()));
+					UserInterface.addGlobalMessage("Inventory full", "Can not pick up item, inventory is full.", new IndividualSelected(individual.getId().getId()));
 					individual.getAI().setCurrentTask(new Idle());
 					return;
 				}

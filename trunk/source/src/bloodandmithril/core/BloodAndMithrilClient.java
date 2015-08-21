@@ -131,7 +131,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public static ExecutorService clientCSIThread;
 
 	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
-	public static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
+	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
 
 	public static long ping = 0;
 
@@ -1057,5 +1057,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 */
 	public static void fadeOut() {
 		fading = true;
+	}
+
+
+	public static Collection<Mission> getMissions() {
+		return missions;
 	}
 }

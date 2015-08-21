@@ -51,7 +51,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	private LinkedBlockingQueue<Stimulus> stimuli = new LinkedBlockingQueue<Stimulus>();
 
 	/** Maximum of entities observed per AI tick */
-	private static final int observedEntityCap = 15;
+	private static final int OBSERVATED_ENTITIES_PER_TICK = 15;
 
 	public ArtificialIntelligence copy() {
 		ArtificialIntelligence internalCopy = internalCopy();
@@ -127,7 +127,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	private void selfStimulate() {
 		Individual host = getHost();
 		if (host instanceof Observer) {
-			((Observer) host).observe(getHost().getWorldId(), hostId.getId(), observedEntityCap);
+			((Observer) host).observe(getHost().getWorldId(), hostId.getId(), OBSERVATED_ENTITIES_PER_TICK);
 		}
 		if (host instanceof Sniffer) {
 			((Sniffer) host).sniff();
