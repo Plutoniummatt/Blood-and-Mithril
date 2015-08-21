@@ -32,7 +32,7 @@ public class MessageWindowNotification implements Response {
 	@Override
 	public void acknowledge() {
 		if (function.call()) {
-			UserInterface.addMessage(title, message);
+			UserInterface.addGlobalMessage(title, message);
 		}
 	}
 

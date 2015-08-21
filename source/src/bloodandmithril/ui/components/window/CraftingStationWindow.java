@@ -140,7 +140,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 									int quantity = Integer.parseInt(args[0].toString());
 									craft(quantity);
 								} catch (Exception e) {
-									UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
+									UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 								}
 							},
 							"Confirm",
@@ -191,7 +191,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 				ClientServerInterface.SendRequest.sendTakeItemFromCraftingStationRequest(craftingStation, individual);
 			}
 		} else {
-			UserInterface.addMessage(craftingStation.getTitle(), "Item already taken");
+			UserInterface.addGlobalMessage(craftingStation.getTitle(), "Item already taken");
 		}
 	}
 

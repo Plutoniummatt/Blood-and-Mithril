@@ -293,11 +293,11 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 		@Override
 		public boolean keyPressed(int keyCode) {
 			if (Controls.disallowedKeys.contains(keyCode)) {
-				UserInterface.addMessage("Disallowed", "Can not remap this key.");
+				UserInterface.addGlobalMessage("Disallowed", "Can not remap this key.");
 				setClosing(true);
 			} else {
 				if (BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings().containsKey(keyCode)) {
-					UserInterface.addMessage("Conflict", "Key already mapped to " + BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings().get(keyCode).description);
+					UserInterface.addGlobalMessage("Conflict", "Key already mapped to " + BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings().get(keyCode).description);
 				} else {
 					mappedKey.keyCode = keyCode;
 				}

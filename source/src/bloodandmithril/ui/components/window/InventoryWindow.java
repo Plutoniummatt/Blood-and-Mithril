@@ -584,7 +584,7 @@ public class InventoryWindow extends Window implements Refreshable {
 										ContainerImpl.discard((Individual)host, item, quantity);
 										UserInterface.refreshRefreshableWindows();
 									} catch (NumberFormatException e) {
-										UserInterface.addMessage("Error", "Can not recognise " + args[0].toString() + " as a quantity");
+										UserInterface.addGlobalMessage("Error", "Can not recognise " + args[0].toString() + " as a quantity");
 									}
 								},
 								"Confirm",
@@ -749,7 +749,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									try {
 										float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
 										if (amount < 0.01f) {
-											UserInterface.addMessage("Too little to refuel", "Its too little to refuel, enter a larger amount");
+											UserInterface.addGlobalMessage("Too little to refuel", "Its too little to refuel, enter a larger amount");
 											return;
 										}
 
@@ -796,7 +796,7 @@ public class InventoryWindow extends Window implements Refreshable {
 										}
 
 									} catch (NumberFormatException e) {
-										UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+										UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 									}
 								},
 								"Refuel",
@@ -881,7 +881,7 @@ public class InventoryWindow extends Window implements Refreshable {
 								float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
 
 								if (amount < 0.01f) {
-									UserInterface.addMessage("Too little to drink", "It would be a waste of time to drink this little, enter a larger amount");
+									UserInterface.addGlobalMessage("Too little to drink", "It would be a waste of time to drink this little, enter a larger amount");
 									return;
 								}
 
@@ -895,7 +895,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (LiquidContainerItem)item, Float.parseFloat((String)args[0]));
 								}
 							} catch (NumberFormatException e) {
-								UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+								UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 							}
 						},
 						"Drink",
@@ -927,7 +927,7 @@ public class InventoryWindow extends Window implements Refreshable {
 								float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
 
 								if (amount < 0.01f) {
-									UserInterface.addMessage("Too little to discard", "Its too little to discard, enter a larger amount");
+									UserInterface.addGlobalMessage("Too little to discard", "Its too little to discard, enter a larger amount");
 									return;
 								}
 
@@ -937,7 +937,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									ClientServerInterface.SendRequest.sendDiscardLiquidRequest(((Individual)host).getId().getId(), (LiquidContainerItem) item, amount);
 								}
 							} catch (NumberFormatException e) {
-								UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+								UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 							}
 						},
 						"Discard content",
@@ -968,7 +968,7 @@ public class InventoryWindow extends Window implements Refreshable {
 							try {
 								float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
 								if (amount < 0.01f) {
-									UserInterface.addMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
+									UserInterface.addGlobalMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
 									return;
 								}
 
@@ -1023,7 +1023,7 @@ public class InventoryWindow extends Window implements Refreshable {
 								}
 
 							} catch (NumberFormatException e) {
-								UserInterface.addMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
+								UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 							}
 						},
 						"Transfer",

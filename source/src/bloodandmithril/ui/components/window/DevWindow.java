@@ -174,9 +174,9 @@ public class DevWindow extends Window {
 		if (super.keyPressed(keyCode)) {
 			return true;
 		}
-		
+
 		if (keyCode == Keys.B) {
-			BloodAndMithrilClient.missions.add(new Tutorial(Domain.getActiveWorldId()));
+			BloodAndMithrilClient.getMissions().add(new Tutorial(Domain.getActiveWorldId()));
 		}
 
 		if (keyCode == Keys.H) {
@@ -658,7 +658,7 @@ public class DevWindow extends Window {
 									input.replace(" ", "");
 
 									if (StringUtils.isBlank(input)) {
-										UserInterface.addMessage("Invalid name", "Please enter a valid name.");
+										UserInterface.addGlobalMessage("Invalid name", "Please enter a valid name.");
 										return;
 									}
 

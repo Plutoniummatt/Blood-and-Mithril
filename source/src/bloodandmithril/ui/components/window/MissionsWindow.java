@@ -9,8 +9,10 @@ import java.util.Map.Entry;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.objectives.Mission;
+import bloodandmithril.objectives.Objective;
 import bloodandmithril.objectives.Objective.ObjectiveStatus;
 import bloodandmithril.ui.Refreshable;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -18,6 +20,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.Function;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
@@ -66,7 +69,7 @@ public class MissionsWindow extends Window implements Refreshable {
 
 			@Override
 			protected int getExtraStringOffset() {
-				return 100;
+				return 115;
 			}
 
 			@Override
@@ -164,40 +167,51 @@ public class MissionsWindow extends Window implements Refreshable {
 		List<HashMap<ListingMenuItem<Mission>, String>> activeListing = Lists.newLinkedList();
 		activeListing.add(buildMap(ObjectiveStatus.ACTIVE));
 		activeMissions.refresh(activeListing);
-		
+
 		List<HashMap<ListingMenuItem<Mission>, String>> completeListing = Lists.newLinkedList();
 		activeListing.add(buildMap(ObjectiveStatus.COMPLETE, ObjectiveStatus.FAILED));
 		completedMissions.refresh(completeListing);
 	}
-	
-	
+
+
 	private HashMap<ListingMenuItem<Mission>, String> buildMap(ObjectiveStatus... statuses) {
 		HashMap<ListingMenuItem<Mission>, String> map = Maps.newHashMap();
-		for (Mission mission : BloodAndMithrilClient.missions) {
+		for (Mission mission : BloodAndMithrilClient.getMissions()) {
 			if (Sets.newHashSet(statuses).contains(mission.getStatus())) {
+				final Function<String> objectivesFunction = () -> {
+					String objectives = "";
+					for (Objective obj : mission.getObjectives()) {
+						objectives = objectives + obj.getTitle() + " (" + obj.getStatus().getDescription() + ") \n";
+					}
+
+					return objectives;
+				};
+
 				map.put(
 					new ListingMenuItem<Mission>(
-						mission, 
+						mission,
 						new Button(
-							mission.getTitle(), 
-							Fonts.defaultFont, 
-							0, 
-							0, 
-							mission.getTitle().length() * 10, 
-							16, 
-							() -> {}, 
-							Color.ORANGE, 
-							Color.WHITE, 
-							Color.GREEN, 
+							mission.getTitle(),
+							Fonts.defaultFont,
+							0,
+							0,
+							mission.getTitle().length() * 10,
+							16,
+							() -> {
+								UserInterface.addClientMessage(mission.getTitle(), mission.getDescription() + "\n\n" + objectivesFunction.call());
+							},
+							Color.ORANGE,
+							Color.WHITE,
+							Color.GREEN,
 							UIRef.BL
-						), 
+						),
 						null
-					), 
+					),
 					mission.getStatus().getDescription()
 				);
 			}
 		}
-		
+
 		return map;
 	}
 }

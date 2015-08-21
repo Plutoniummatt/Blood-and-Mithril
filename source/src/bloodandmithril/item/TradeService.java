@@ -100,7 +100,7 @@ public class TradeService {
 			proposerOverVolumeLimitPostTrade && proposerVolumeIncreasing ||
 			proposeeOverVolumeLimitPostTrade && proposeeVolumeIncreasing
 		) {
-			UserInterface.addMessage("Can not trade", "One or more parties do not have enough inventory space.", new IndividualSelected(((Individual) proposer).getId().getId()));
+			UserInterface.addGlobalMessage("Can not trade", "One or more parties do not have enough inventory space.", new IndividualSelected(((Individual) proposer).getId().getId()));
 			return;
 		}
 

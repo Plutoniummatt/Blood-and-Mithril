@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import bloodandmithril.core.Copyright;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -42,6 +43,11 @@ public abstract class Mission implements Objective {
 		if (objectives.get(currentObjective).getStatus() == ObjectiveStatus.COMPLETE) {
 			currentObjective = objectives.ceilingKey(currentObjective + 1);
 		}
+	}
+
+
+	public List<Objective> getObjectives() {
+		return Lists.newLinkedList(objectives.values());
 	}
 
 

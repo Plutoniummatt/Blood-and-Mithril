@@ -39,7 +39,7 @@ public class Tutorial extends Mission {
 				20f,
 				worldId,
 				new NeverFailFunction(),
-				"Go here"
+				"Move an individual"
 			)
 		);
 
@@ -55,7 +55,7 @@ public class Tutorial extends Mission {
 
 	@Override
 	public String getDescription() {
-		return "";
+		return "Follow these instructions...More to come...";
 	}
 
 

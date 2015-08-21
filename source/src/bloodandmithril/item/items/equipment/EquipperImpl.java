@@ -104,7 +104,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 		if (toEquip instanceof RangedWeapon) {
 			((RangedWeapon) toEquip).setAmmo(null);
 		}
-		
+
 		for (Item equipped : equippedItems.keySet()) {
 			if (equipped.sameAs(toEquip) && toEquip.slot != EquipmentSlot.RING) {
 				return;
@@ -147,7 +147,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 		if (toEquip.twoHand()) {
 			return equipped.slot == EquipmentSlot.MAINHAND || equipped.slot == EquipmentSlot.OFFHAND;
 		}
-		
+
 		if (equipped.twoHand()) {
 			return toEquip.slot == EquipmentSlot.MAINHAND || toEquip.slot == EquipmentSlot.OFFHAND;
 		}
@@ -288,7 +288,7 @@ public final class EquipperImpl implements Equipper, Serializable {
 	 *
 	 * @author Matt
 	 */
-	public class FalseFunction implements SerializableFunction<Boolean> {
+	public static class FalseFunction implements SerializableFunction<Boolean> {
 		private static final long serialVersionUID = -460652673581918065L;
 
 		@Override
