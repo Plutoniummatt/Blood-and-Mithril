@@ -106,7 +106,7 @@ public class LoadGameWindow extends Window {
 						metadata.name.length() * 9,
 						16,
 						() -> {
-							BloodAndMithrilClient.clientCSIThread.execute(
+							BloodAndMithrilClient.clientProcessingThreadPool.execute(
 								() -> {
 									setClosing(true);
 									ClientServerInterface.setServer(true);

@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.event.Event;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.graphics.background.BackgroundImages;
 import bloodandmithril.graphics.particles.Particle;
@@ -68,8 +69,12 @@ public class World implements Serializable {
 	/** Epoch of this world */
 	private Epoch epoch;
 
+	/** Time between each update tick */
 	private float												updateTick = 1f/60f;
-
+	
+	/** Outstanding events to be processed */
+	private ConcurrentLinkedDeque<Event>						events					= new ConcurrentLinkedDeque<>();
+	
 	/**
 	 * Constructor
 	 */
@@ -86,7 +91,23 @@ public class World implements Serializable {
 	}
 
 
-	public World updateTick(float updateTick) {
+	/**
+	 * Adds an event
+	 */
+	public void addEvent(Event e) {
+		events.add(e);
+	}
+	
+	
+	/**
+	 * Returns events
+	 */
+	public ConcurrentLinkedDeque<Event> getEvents() {
+		return events;
+	}
+
+
+	public World setUpdateTick(float updateTick) {
 		this.updateTick = updateTick;
 		return this;
 	}

@@ -14,7 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.event.Event;
+import bloodandmithril.event.EventListener;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.DefaultBiomeDecider;
 import bloodandmithril.networking.ClientServerInterface;
@@ -48,6 +51,41 @@ public class Domain {
 
 	/** Every {@link Prop} that exists */
 	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
+	
+	private static final Thread 								eventsProcessingThread;
+	
+	static {
+		eventsProcessingThread = new Thread(() -> {
+			while (true) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+				
+				for (World world : worlds.values()) {
+					processEvents(world);
+				}
+			}
+		});
+		
+		eventsProcessingThread.setDaemon(false);
+		eventsProcessingThread.setName("Events");
+		eventsProcessingThread.start();
+	}
+	
+	
+	/**
+	 * Processes any outstanding game events
+	 */
+	private static void processEvents(World world) {
+		while (!world.getEvents().isEmpty()) {
+			Event polled = world.getEvents().poll();
+			for (EventListener listener : BloodAndMithrilClient.getMissions()) {
+				listener.listen(polled);
+			}
+		}
+	}
 
 
 	public static int createWorld() {

@@ -2,13 +2,11 @@ package bloodandmithril.objectives.tutorial;
 
 import java.util.List;
 
+import bloodandmithril.event.Event;
 import bloodandmithril.objectives.Mission;
 import bloodandmithril.objectives.Objective;
-import bloodandmithril.objectives.objective.GoToLocationObjective;
-import bloodandmithril.objectives.objective.function.AnyControllableIndividual;
-import bloodandmithril.objectives.objective.function.NeverFailFunction;
+import bloodandmithril.objectives.objective.MoveIndividualObjective;
 
-import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 
 /**
@@ -17,6 +15,7 @@ import com.google.common.collect.Lists;
  * @author Matt
  */
 public class Tutorial extends Mission {
+	private static final long serialVersionUID = -3942281398077815457L;
 
 	/**
 	 * Constructor
@@ -31,16 +30,7 @@ public class Tutorial extends Mission {
 		List<Objective> objectives = Lists.newLinkedList();
 
 		objectives.add(
-			new GoToLocationObjective(
-				new AnyControllableIndividual(),
-				() -> {
-					return new Vector2(2000, 1000);
-				},
-				20f,
-				worldId,
-				new NeverFailFunction(),
-				"Move an individual"
-			)
+			new MoveIndividualObjective()
 		);
 
 		return objectives;
@@ -62,5 +52,15 @@ public class Tutorial extends Mission {
 	@Override
 	public String getTitle() {
 		return "Tutorial";
+	}
+
+
+	@Override
+	public void listen(Event event) {
+		Objective currentObjective = getCurrentObjective();
+		if (currentObjective != null) {
+			currentObjective.listen(event);
+		}
+		update();
 	}
 }

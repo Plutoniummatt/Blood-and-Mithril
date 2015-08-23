@@ -1,11 +1,14 @@
 package bloodandmithril.objectives;
 
+import bloodandmithril.event.EventListener;
+
+
 /**
  * An objective is a goal that can be completed.
  *
  * @author Matt
  */
-public interface Objective {
+public interface Objective extends EventListener {
 
 	/**
 	 * @return The current mission status
