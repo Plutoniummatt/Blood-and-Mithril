@@ -21,6 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Parameters implements Serializable {
 	private static final long serialVersionUID = -4405235813990330113L;
 
+	private long eventIdCounter = 0;
 	private int structureKeyCounter = 0;
 	private int initialSeed = 0;
 	private int individualIdCounter = 0;
@@ -52,6 +53,15 @@ public class Parameters implements Serializable {
 		return structureKeyCounter;
 	}
 
+	
+	/**
+	 * Returns the current event ID
+	 */
+	public synchronized long getNextEventId() {
+		eventIdCounter++;
+		return eventIdCounter;
+	}
+	
 
 	/**
 	 * Returns the faction key counter

@@ -113,6 +113,8 @@ public class MissionsWindow extends Window implements Refreshable {
 				return false;
 			}
 		};
+		
+		refresh();
 	}
 
 

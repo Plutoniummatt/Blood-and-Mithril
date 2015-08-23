@@ -18,6 +18,7 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.control.Controls;
+import bloodandmithril.event.IndividualMoved;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.MainMenuBiomeDecider;
 import bloodandmithril.generation.component.PrefabricatedComponent;
@@ -128,7 +129,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private long rightDoubleClickTimer = 0L;
 
 	/** Client-side threadpool */
-	public static ExecutorService clientCSIThread;
+	public static ExecutorService clientProcessingThreadPool;
 
 	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
 	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
@@ -171,7 +172,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		SoundService.changeMusic(2f, SoundService.mainMenu);
 
-		clientCSIThread = Executors.newCachedThreadPool();
+		clientProcessingThreadPool = Executors.newCachedThreadPool();
 
 		updateThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
@@ -271,7 +272,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		ClientServerInterface.setServer(true);
 		Domain.getWorlds().put(
 			1,
-			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).updateTick(1f/60f)
+			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).setUpdateTick(1f/60f)
 		);
 		Domain.setActiveWorld(1);
 		cam.position.y = Layer.getCameraYForHorizonCoord(HEIGHT/3);
@@ -492,37 +493,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		UserInterface.initialRightMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
 
 		if (Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
-			if (!Domain.getSelectedIndividuals().isEmpty()) {
-				boolean attacked = false;
-				for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-					Individual indi = Domain.getIndividual(indiKey);
-					if (indi.isMouseOver() && indi.isAlive()) {
-						for (Individual selected : Domain.getSelectedIndividuals()) {
-							if (indi == selected) {
-								continue;
-							}
-
-							if (ClientServerInterface.isServer()) {
-								selected.getAI().setCurrentTask(new Attack(selected, indi));
-							} else {
-								ClientServerInterface.SendRequest.sendRequestAttack(selected, indi);
-							}
-						}
-						attacked = true;
-						break;
-					}
-				}
-			}
+			meleeAttack();
 		} else if (Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
-			for (Individual selected : Domain.getSelectedIndividuals()) {
-				if (selected.canAttackRanged()) {
-					if (ClientServerInterface.isServer()) {
-						selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
-					} else {
-						ClientServerInterface.SendRequest.sendAttackRangedRequest(selected, new Vector2(getMouseWorldX(), getMouseWorldY()));
-					}
-				}
-			}
+			rangedAttack();
 		} else if (!Gdx.input.isKeyPressed(Keys.ANY_KEY)) {
 			uiClicked = UserInterface.rightClick();
 		}
@@ -531,72 +504,125 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			Vector2 mouseCoordinate = new Vector2(getMouseWorldX(), getMouseWorldY());
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
 				if (Gdx.input.isKeyPressed(getKeyMappings().mineTile.keyCode) && !Domain.getWorld(indi.getWorldId()).getTopography().getTile(mouseCoordinate, true).getClass().equals(EmptyTile.class)) {
-					if (ClientServerInterface.isServer()) {
-						indi.getAI().setCurrentTask(new MineTile(indi, mouseCoordinate));
-					} else {
-						ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
-					}
+					mineTile(mouseCoordinate, indi);
 				} else if (Gdx.input.isKeyPressed(getKeyMappings().jump.keyCode)) {
-					if (ClientServerInterface.isServer()) {
-						AIProcessor.sendJumpResolutionRequest(
-							indi,
-							indi.getState().position.cpy(),
-							new Vector2(getMouseWorldX(), getMouseWorldY()),
-							Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)
-						);
-					} else {
-						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
-							indi.getId().getId(),
-							null,
-							!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
-							Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode),
-							true,
-							indi.getState().position.cpy(),
-							new Vector2(getMouseWorldX(), getMouseWorldY())
-						);
-					}
+					jump(indi);
 				} else {
-					float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), INDIVIDUAL_SPREAD);
-					if (ClientServerInterface.isServer()) {
-						AIProcessor.sendPathfindingRequest(
-							indi,
-							new WayPoint(
-								Topography.convertToWorldCoord(
-									getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
-										new Vector2(
-											getMouseWorldX() + (Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode) ? 0f : spread),
-											getMouseWorldY()
-										),
-										10,
-										Domain.getWorld(indi.getWorldId())
-									),
-									true
-								)
+					moveIndividual(indi);
+				}
+			}
+		}
+	}
+
+
+	private void moveIndividual(Individual indi) throws NoTileFoundException {
+		float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), INDIVIDUAL_SPREAD);
+		if (ClientServerInterface.isServer()) {
+			AIProcessor.sendPathfindingRequest(
+				indi,
+				new WayPoint(
+					Topography.convertToWorldCoord(
+						getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+							new Vector2(
+								getMouseWorldX() + (Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode) ? 0f : spread),
+								getMouseWorldY()
 							),
-							false,
-							150f,
-							!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
-							Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)
-						);
-					} else {
-						ClientServerInterface.SendRequest.sendMoveIndividualRequest(
-							indi.getId().getId(),
-							Topography.convertToWorldCoord(
-								getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
-									new Vector2(
-										getMouseWorldX() + (Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode) ? 0f : spread),
-										getMouseWorldY()
-									),
-									10,
-									Domain.getWorld(indi.getWorldId())
-								),
-								true
-							),
-							!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
-							Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode),
-							false, null, null
-						);
+							10,
+							Domain.getWorld(indi.getWorldId())
+						),
+						true
+					)
+				),
+				false,
+				150f,
+				!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
+				Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)
+			);
+			
+			Domain.getWorld(indi.getWorldId()).addEvent(new IndividualMoved());
+		} else {
+			ClientServerInterface.SendRequest.sendMoveIndividualRequest(
+				indi.getId().getId(),
+				Topography.convertToWorldCoord(
+					getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
+						new Vector2(
+							getMouseWorldX() + (Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode) ? 0f : spread),
+							getMouseWorldY()
+						),
+						10,
+						Domain.getWorld(indi.getWorldId())
+					),
+					true
+				),
+				!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
+				Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode),
+				false, null, null
+			);
+		}
+	}
+
+
+	private void jump(Individual indi) {
+		if (ClientServerInterface.isServer()) {
+			AIProcessor.sendJumpResolutionRequest(
+				indi,
+				indi.getState().position.cpy(),
+				new Vector2(getMouseWorldX(), getMouseWorldY()),
+				Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)
+			);
+		} else {
+			ClientServerInterface.SendRequest.sendMoveIndividualRequest(
+				indi.getId().getId(),
+				null,
+				!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
+				Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode),
+				true,
+				indi.getState().position.cpy(),
+				new Vector2(getMouseWorldX(), getMouseWorldY())
+			);
+		}
+	}
+
+
+	private void mineTile(Vector2 mouseCoordinate, Individual indi) {
+		if (ClientServerInterface.isServer()) {
+			indi.getAI().setCurrentTask(new MineTile(indi, mouseCoordinate));
+		} else {
+			ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
+		}
+	}
+
+
+	private void rangedAttack() {
+		for (Individual selected : Domain.getSelectedIndividuals()) {
+			if (selected.canAttackRanged()) {
+				if (ClientServerInterface.isServer()) {
+					selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
+				} else {
+					ClientServerInterface.SendRequest.sendAttackRangedRequest(selected, new Vector2(getMouseWorldX(), getMouseWorldY()));
+				}
+			}
+		}
+	}
+
+
+	private void meleeAttack() {
+		if (!Domain.getSelectedIndividuals().isEmpty()) {
+			for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+				Individual indi = Domain.getIndividual(indiKey);
+				if (indi.isMouseOver() && indi.isAlive()) {
+					for (Individual selected : Domain.getSelectedIndividuals()) {
+						if (indi == selected) {
+							continue;
+						}
+
+						if (ClientServerInterface.isServer()) {
+							selected.getAI().setCurrentTask(new Attack(selected, indi));
+						} else {
+							ClientServerInterface.SendRequest.sendRequestAttack(selected, indi);
+						}
 					}
+					break;
 				}
 			}
 		}

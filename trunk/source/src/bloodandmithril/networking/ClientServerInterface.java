@@ -380,7 +380,7 @@ public class ClientServerInterface {
 							}
 						);
 					} else if (response instanceof SynchronizeIndividualResponse) {
-						BloodAndMithrilClient.clientCSIThread.execute(
+						BloodAndMithrilClient.clientProcessingThreadPool.execute(
 							() -> {
 								response.acknowledge();
 							}
@@ -396,7 +396,7 @@ public class ClientServerInterface {
 							}
 						);
 					} else {
-						BloodAndMithrilClient.clientCSIThread.execute(
+						BloodAndMithrilClient.clientProcessingThreadPool.execute(
 							() -> {
 								try {
 									response.acknowledge();

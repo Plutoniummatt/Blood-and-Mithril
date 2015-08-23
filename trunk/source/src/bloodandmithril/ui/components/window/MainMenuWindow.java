@@ -190,7 +190,7 @@ public class MainMenuWindow extends Window {
 								singlePlayer();
 							} else {
 								UserInterface.addGlobalMessage("Connecting", "Attemping to connect to " + args[0].toString());
-								BloodAndMithrilClient.clientCSIThread.execute(() -> {
+								BloodAndMithrilClient.clientProcessingThreadPool.execute(() -> {
 									try {
 										removeWindows();
 										Thread.sleep(1000);

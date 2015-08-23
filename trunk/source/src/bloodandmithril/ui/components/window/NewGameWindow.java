@@ -119,7 +119,7 @@ public class NewGameWindow extends Window {
 		Domain.getFactions().put(playerFaction.factionId, playerFaction);
 
 		ClientServerInterface.setServer(true);
-		BloodAndMithrilClient.clientCSIThread.execute(() -> {
+		BloodAndMithrilClient.clientProcessingThreadPool.execute(() -> {
 			UserInterface.closeAllWindows();
 			BloodAndMithrilClient.fadeOut();
 			BloodAndMithrilClient.threadWait(1500);

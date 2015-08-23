@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.TreeMap;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.window.MissionsWindow;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -15,7 +17,8 @@ import com.google.common.collect.Maps;
  */
 @Copyright("Matthew Peck 2015")
 public abstract class Mission implements Objective {
-
+	private static final long serialVersionUID = -3237913948268389651L;
+	
 	private TreeMap<Integer, Objective> objectives = Maps.newTreeMap();
 	private int currentObjective;
 	protected int worldId;
@@ -37,11 +40,19 @@ public abstract class Mission implements Objective {
 
 		currentObjective = objectives.firstKey();
 	}
+	
+	
+	protected Objective getCurrentObjective() {
+		return objectives.get(currentObjective);
+	}
 
 
 	public void update() {
-		if (objectives.get(currentObjective).getStatus() == ObjectiveStatus.COMPLETE) {
-			currentObjective = objectives.ceilingKey(currentObjective + 1);
+		Objective objective = objectives.get(currentObjective);
+		if (objective != null && objective.getStatus() == ObjectiveStatus.COMPLETE) {
+			Integer ceilingKey = objectives.ceilingKey(currentObjective + 1);
+			currentObjective = ceilingKey == null ? -1 : ceilingKey;
+			UserInterface.refreshRefreshableWindows(MissionsWindow.class);
 		}
 	}
 
@@ -71,7 +82,10 @@ public abstract class Mission implements Objective {
 
 	@Override
 	public void renderHints() {
-		objectives.get(currentObjective).renderHints();
+		Objective objective = objectives.get(currentObjective);
+		if (objective != null) {
+			objective.renderHints();
+		}
 	}
 
 
