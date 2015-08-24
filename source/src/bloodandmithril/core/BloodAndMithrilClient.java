@@ -18,7 +18,7 @@ import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.control.Controls;
-import bloodandmithril.event.IndividualMoved;
+import bloodandmithril.event.events.IndividualMoved;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.MainMenuBiomeDecider;
 import bloodandmithril.generation.component.PrefabricatedComponent;
@@ -538,8 +538,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
 				Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)
 			);
-			
-			Domain.getWorld(indi.getWorldId()).addEvent(new IndividualMoved());
+
+			Domain.getWorld(indi.getWorldId()).addEvent(new IndividualMoved(indi));
 		} else {
 			ClientServerInterface.SendRequest.sendMoveIndividualRequest(
 				indi.getId().getId(),

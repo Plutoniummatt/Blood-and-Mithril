@@ -18,7 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 @Copyright("Matthew Peck")
 public class GoToLocationObjective implements Objective {
 	private static final long serialVersionUID = -8800497202398295512L;
-	
+
 	private SerializableMappingFunction<Individual, Boolean> individualIdentificationFunction;
 	private SerializableFunction<Boolean> failureFunction;
 	private SerializableFunction<Vector2> location;
@@ -82,5 +82,10 @@ public class GoToLocationObjective implements Objective {
 
 	@Override
 	public void listen(Event event) {
+	}
+
+
+	@Override
+	public void uponCompletion() {
 	}
 }

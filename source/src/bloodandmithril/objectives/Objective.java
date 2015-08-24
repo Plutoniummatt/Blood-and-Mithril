@@ -33,15 +33,21 @@ public interface Objective extends EventListener {
 
 	public enum ObjectiveStatus {
 		ACTIVE("Active"), COMPLETE("Complete"), FAILED("Failed");
-		
+
 		private ObjectiveStatus(String description) {
 			this.description = description;
 		}
-		
+
 		public String getDescription() {
 			return description;
 		}
-		
+
 		private String description;
 	}
+
+
+	/**
+	 * Called when this objective is complete
+	 */
+	public void uponCompletion();
 }

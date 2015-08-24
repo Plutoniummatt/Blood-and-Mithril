@@ -8,6 +8,7 @@ import java.util.Map;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.WoodenBucketItem;
 import bloodandmithril.item.items.equipment.offhand.Torch;
@@ -26,6 +27,7 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Work bench")
 public class WorkBench extends CraftingStation {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
@@ -90,12 +92,6 @@ public class WorkBench extends CraftingStation {
 	@Override
 	protected int getCraftingSound() {
 		return -1;
-	}
-
-
-	@Override
-	protected String internalGetTitle() {
-		return "Work bench";
 	}
 
 

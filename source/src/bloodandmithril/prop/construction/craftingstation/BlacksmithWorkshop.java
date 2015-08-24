@@ -12,6 +12,7 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -37,6 +38,7 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Blacksmith Workshop")
 public class BlacksmithWorkshop extends CraftingStation {
 
 	private static final Map<Item, Integer> craftables = Maps.newHashMap();
@@ -152,12 +154,6 @@ public class BlacksmithWorkshop extends CraftingStation {
 	public void synchronizeProp(Prop other) {
 		this.sparkCountdown = ((BlacksmithWorkshop) other).sparkCountdown;
 		super.synchronizeProp(other);
-	}
-
-
-	@Override
-	protected String internalGetTitle() {
-		return "Blacksmith Workshop";
 	}
 
 

@@ -9,6 +9,7 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -37,6 +38,7 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Campfire")
 public class Campfire extends CraftingStation implements Lightable {
 	private static final long serialVersionUID = -8876217926271589078L;
 
@@ -202,12 +204,6 @@ public class Campfire extends CraftingStation implements Lightable {
 	@Override
 	public void extinguish() {
 		this.lit = false;
-	}
-
-
-	@Override
-	protected String internalGetTitle() {
-		return "Campfire";
 	}
 
 

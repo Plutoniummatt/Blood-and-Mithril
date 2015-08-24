@@ -21,6 +21,7 @@ import bloodandmithril.event.EventListener;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.DefaultBiomeDecider;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.objectives.Mission;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -51,30 +52,34 @@ public class Domain {
 
 	/** Every {@link Prop} that exists */
 	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
-	
+
 	private static final Thread 								eventsProcessingThread;
-	
+
 	static {
 		eventsProcessingThread = new Thread(() -> {
 			while (true) {
 				try {
-					Thread.sleep(100);
+					Thread.sleep(250);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
-				
+
 				for (World world : worlds.values()) {
 					processEvents(world);
 				}
+
+				for (Mission m : BloodAndMithrilClient.getMissions()) {
+					m.update();
+				}
 			}
 		});
-		
+
 		eventsProcessingThread.setDaemon(false);
 		eventsProcessingThread.setName("Events");
 		eventsProcessingThread.start();
 	}
-	
-	
+
+
 	/**
 	 * Processes any outstanding game events
 	 */

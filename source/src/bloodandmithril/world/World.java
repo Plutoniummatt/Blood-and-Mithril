@@ -71,10 +71,10 @@ public class World implements Serializable {
 
 	/** Time between each update tick */
 	private float												updateTick = 1f/60f;
-	
+
 	/** Outstanding events to be processed */
 	private ConcurrentLinkedDeque<Event>						events					= new ConcurrentLinkedDeque<>();
-	
+
 	/**
 	 * Constructor
 	 */
@@ -94,15 +94,15 @@ public class World implements Serializable {
 	/**
 	 * Adds an event
 	 */
-	public void addEvent(Event e) {
+	public synchronized void addEvent(Event e) {
 		events.add(e);
 	}
-	
-	
+
+
 	/**
 	 * Returns events
 	 */
-	public ConcurrentLinkedDeque<Event> getEvents() {
+	public synchronized ConcurrentLinkedDeque<Event> getEvents() {
 		return events;
 	}
 
