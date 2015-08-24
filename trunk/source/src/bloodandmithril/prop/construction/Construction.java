@@ -10,6 +10,8 @@ import bloodandmithril.character.ai.task.ConstructDeconstruct;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
+import bloodandmithril.event.events.ConstructionFinished;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -153,6 +155,7 @@ public abstract class Construction extends Prop implements Container {
 	private void finishConstruction() {
 		constructionProgress = 1f;
 		materialContainer.getInventory().clear();
+		Domain.getWorld(getWorldId()).addEvent(new ConstructionFinished(this));
 	}
 
 
@@ -258,10 +261,8 @@ public abstract class Construction extends Prop implements Container {
 
 	@Override
 	public String getTitle() {
-		return internalGetTitle();
+		return getClass().getAnnotation(Name.class).name();
 	}
-
-	protected abstract String internalGetTitle();
 
 	/** Renders this {@link Construction} based on {@link #constructionProgress} */
 	protected abstract void internalRender(float constructionProgress);

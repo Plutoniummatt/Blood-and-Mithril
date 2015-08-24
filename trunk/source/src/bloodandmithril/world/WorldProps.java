@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.event.events.ConstructionFinished;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.construction.Construction;
 
 /**
  * Class to encapsulate {@link Prop} logic on {@link World}s
@@ -45,6 +47,20 @@ public class WorldProps implements Serializable {
 
 
 	/**
+	 * @return a prop with the specified class, use with caution.
+	 */
+	public Prop getAnyProp(Class<? extends Prop> propClass) {
+		for (Prop p : props.values()) {
+			if (p.getClass().equals(propClass)) {
+				return p;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
 	 * @return all props
 	 */
 	public Collection<Prop> getProps() {
@@ -59,6 +75,12 @@ public class WorldProps implements Serializable {
 		prop.setWorldId(worldId);
 		props.put(prop.id, prop);
 		Domain.getWorld(worldId).getPositionalIndexMap().get(prop.position.x, prop.position.y).addProp(prop.id);
+
+		if (prop instanceof Construction) {
+			if (((Construction) prop).getConstructionProgress() == 1f) {
+				Domain.getWorld(prop.getWorldId()).addEvent(new ConstructionFinished((Construction) prop));
+			}
+		}
 	}
 
 

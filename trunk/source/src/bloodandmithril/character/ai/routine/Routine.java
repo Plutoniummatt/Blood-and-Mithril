@@ -20,7 +20,7 @@ public class Routine extends AITask {
 	private static final long serialVersionUID = -8502601311459390398L;
 	private int priority = 1;
 	private List<SerializableFunction<Boolean>> executionConditions = Lists.newLinkedList();
-	private CompositeAITask task;
+	private CompositeAITask tasks;
 	private String description = "";
 
 	/**
@@ -65,18 +65,18 @@ public class Routine extends AITask {
 
 	@Override
 	public boolean isComplete() {
-		return task.isComplete();
+		return tasks.isComplete();
 	}
 
 
 	@Override
 	public boolean uponCompletion() {
-		return task.uponCompletion();
+		return tasks.uponCompletion();
 	}
 
 
 	@Override
 	public void execute(float delta) {
-		task.execute(delta);
+		tasks.execute(delta);
 	}
 }

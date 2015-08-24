@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -40,6 +41,7 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Furnace")
 public class Furnace extends CraftingStation implements Container {
 	private static final long serialVersionUID = 7693386784097531328L;
 
@@ -165,12 +167,6 @@ public class Furnace extends CraftingStation implements Container {
 	@Override
 	protected int getCraftingSound() {
 		return -1;
-	}
-
-
-	@Override
-	protected String internalGetTitle() {
-		return "Furnace";
 	}
 
 

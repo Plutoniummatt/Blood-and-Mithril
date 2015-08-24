@@ -1,14 +1,13 @@
 package bloodandmithril.objectives;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.event.Event;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.MissionsWindow;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * Missions have multiple {@link Objective}s
@@ -18,9 +17,8 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2015")
 public abstract class Mission implements Objective {
 	private static final long serialVersionUID = -3237913948268389651L;
-	
-	private TreeMap<Integer, Objective> objectives = Maps.newTreeMap();
-	private int currentObjective;
+
+	private List<Objective> objectives = Lists.newLinkedList();
 	protected int worldId;
 
 	/**
@@ -28,49 +26,43 @@ public abstract class Mission implements Objective {
 	 */
 	protected Mission(int worldId) {
 		this.worldId = worldId;
-		int index = 1;
-		for (Objective o : getNewObjectives()) {
-			objectives.put(index, o);
-			index++;
-		}
+		objectives.addAll(getNewObjectives());
 
 		if (objectives.isEmpty()) {
 			throw new IllegalStateException("Can not have a mission with no objectives");
 		}
-
-		currentObjective = objectives.firstKey();
-	}
-	
-	
-	protected Objective getCurrentObjective() {
-		return objectives.get(currentObjective);
 	}
 
 
 	public void update() {
-		Objective objective = objectives.get(currentObjective);
-		if (objective != null && objective.getStatus() == ObjectiveStatus.COMPLETE) {
-			Integer ceilingKey = objectives.ceilingKey(currentObjective + 1);
-			currentObjective = ceilingKey == null ? -1 : ceilingKey;
-			UserInterface.refreshRefreshableWindows(MissionsWindow.class);
+		for (Objective objective : Lists.newLinkedList(objectives)) {
+			if (objective != null && objective.getStatus() == ObjectiveStatus.COMPLETE) {
+				objective.uponCompletion();
+				UserInterface.refreshRefreshableWindows(MissionsWindow.class);
+			}
 		}
 	}
 
 
+	public void addObjective(Objective o) {
+		objectives.add(o);
+	}
+
+
 	public List<Objective> getObjectives() {
-		return Lists.newLinkedList(objectives.values());
+		return Lists.newLinkedList(objectives);
 	}
 
 
 	@Override
 	public ObjectiveStatus getStatus() {
-		for (Objective o : objectives.values()) {
+		for (Objective o : objectives) {
 			if (o.getStatus() == ObjectiveStatus.FAILED) {
 				return ObjectiveStatus.FAILED;
 			}
 		}
 
-		for (Objective o : objectives.values()) {
+		for (Objective o : objectives) {
 			if (o.getStatus() == ObjectiveStatus.ACTIVE) {
 				return ObjectiveStatus.ACTIVE;
 			}
@@ -82,10 +74,18 @@ public abstract class Mission implements Objective {
 
 	@Override
 	public void renderHints() {
-		Objective objective = objectives.get(currentObjective);
-		if (objective != null) {
+		for (Objective objective : getObjectives()) {
 			objective.renderHints();
 		}
+	}
+
+
+	@Override
+	public void listen(Event event) {
+		for (Objective objective : getObjectives()) {
+			objective.listen(event);
+		}
+		update();
 	}
 
 
