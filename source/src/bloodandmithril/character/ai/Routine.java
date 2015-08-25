@@ -2,7 +2,7 @@ package bloodandmithril.character.ai;
 
 import java.util.List;
 
-import bloodandmithril.character.ai.task.CompositeAITask;
+import bloodandmithril.character.ai.routine.Condition;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableFunction;
@@ -18,14 +18,15 @@ import com.google.common.collect.Lists;
 public class Routine extends AITask {
 	private static final long serialVersionUID = -8502601311459390398L;
 	private int priority = 1;
-	private List<SerializableFunction<Boolean>> executionConditions = Lists.newLinkedList();
-	private CompositeAITask tasks;
+	private final List<Condition> executionConditions = Lists.newLinkedList();
+	private TaskFunction taskFunction;
+	private AITask task;
 	private String description = "";
 
 	/**
 	 * Protected constructor
 	 */
-	protected Routine(IndividualIdentifier hostId) {
+	public Routine(IndividualIdentifier hostId) {
 		super(hostId);
 	}
 
@@ -34,8 +35,8 @@ public class Routine extends AITask {
 	 * @return whether or not this routine should now be executed
 	 */
 	public boolean areExecutionConditionsMet() {
-		for (SerializableFunction<Boolean> condition : executionConditions) {
-			if (condition.call()) {
+		for (Condition condition : getExecutionConditions()) {
+			if (condition.met()) {
 				continue;
 			} else {
 				return false;
@@ -43,6 +44,11 @@ public class Routine extends AITask {
 		}
 
 		return true;
+	}
+
+
+	public void setTask(TaskFunction taskFunction) {
+		this.taskFunction = taskFunction;
 	}
 
 
@@ -72,18 +78,50 @@ public class Routine extends AITask {
 
 	@Override
 	public boolean isComplete() {
-		return tasks.isComplete();
+		if (task == null) {
+			if (taskFunction == null) {
+				return false;
+			}
+			task = taskFunction.call();
+		}
+
+		return task.isComplete();
 	}
 
 
 	@Override
 	public boolean uponCompletion() {
-		return tasks.uponCompletion();
+		if (task == null) {
+			if (taskFunction == null) {
+				return false;
+			}
+			task = taskFunction.call();
+		}
+
+		AITask toComplete = this.task;
+		this.task = taskFunction.call();
+		return toComplete.uponCompletion();
 	}
 
 
 	@Override
 	public void execute(float delta) {
-		tasks.execute(delta);
+		if (task == null) {
+			if (taskFunction == null) {
+				return;
+			}
+			task = taskFunction.call();
+		}
+		task.execute(delta);
+	}
+
+
+	public List<Condition> getExecutionConditions() {
+		return executionConditions;
+	}
+
+
+	public static abstract class TaskFunction implements SerializableFunction<AITask> {
+		private static final long serialVersionUID = -1020689817804020435L;
 	}
 }
