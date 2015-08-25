@@ -27,8 +27,6 @@ public class RequiredMaterialsWindow extends ScrollableListingWindow<Item, Strin
 	 * Constructor
 	 */
 	public RequiredMaterialsWindow(
-		int x,
-		int y,
 		int length,
 		int height,
 		String title,
@@ -38,7 +36,7 @@ public class RequiredMaterialsWindow extends ScrollableListingWindow<Item, Strin
 		Container materialsContainer,
 		Map<Item, Integer> requiredMaterials
 	) {
-		super(x, y, length, height, title, active, minLength, minHeight, true, true, getConstructionMaterialStatus(materialsContainer, requiredMaterials),
+		super(length, height, title, active, minLength, minHeight, true, true, getConstructionMaterialStatus(materialsContainer, requiredMaterials),
 			item -> {
 				return item.getSingular(true);
 			},

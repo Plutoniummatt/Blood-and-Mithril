@@ -10,7 +10,6 @@ import java.util.Map;
 
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -111,8 +110,6 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 						new MessageWindow(
 							"A rather dead looking bush, a good source of sticks..",
 							Color.ORANGE,
-							BloodAndMithrilClient.WIDTH/2 - 250,
-							BloodAndMithrilClient.HEIGHT/2 + 125,
 							500,
 							250,
 							"Dead bush",

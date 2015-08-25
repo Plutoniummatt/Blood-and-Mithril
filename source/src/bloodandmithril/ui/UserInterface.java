@@ -1371,8 +1371,6 @@ public class UserInterface {
 
 				UserInterface.addLayeredComponentUnique(
 					new BuildWindow(
-						WIDTH / 2 - 150,
-						HEIGHT/2 + 100,
 						individual,
 						new Function<Construction, String>() {
 							@Override
@@ -1570,8 +1568,6 @@ public class UserInterface {
 				new MessageWindow(
 					message,
 					Color.ORANGE,
-					WIDTH / 2 - 150,
-					HEIGHT / 2 + 75,
 					300,
 					150,
 					title,

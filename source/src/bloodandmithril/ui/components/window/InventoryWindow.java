@@ -1,7 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -109,8 +107,6 @@ public class InventoryWindow extends Window implements Refreshable {
 			String title,
 			boolean active) {
 		super(
-			WIDTH/2 - 300,
-			HEIGHT/2 + 250,
 			600,
 			500,
 			title,
@@ -225,7 +221,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				filters.values().stream().forEach(value -> {
 					value.b = true;
 				});
-				
+
 				filterButtons.stream().forEach(item -> {
 					if (item != deselectAll && item != selectAll) {
 						item.setIdleColor(Color.GREEN);
@@ -570,8 +566,6 @@ public class InventoryWindow extends Window implements Refreshable {
 					if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkDiscard.keyCode)) {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
-								WIDTH / 2 - 125,
-								HEIGHT/2 + 50,
 								250,
 								100,
 								"Quantity",
@@ -738,8 +732,6 @@ public class InventoryWindow extends Window implements Refreshable {
 					() -> {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
-								BloodAndMithrilClient.WIDTH / 2 - 125,
-								BloodAndMithrilClient.HEIGHT/2 + 50,
 								250,
 								100,
 								"Amount",
@@ -869,8 +861,6 @@ public class InventoryWindow extends Window implements Refreshable {
 			() -> {
 				UserInterface.addLayeredComponent(
 					new TextInputWindow(
-						BloodAndMithrilClient.WIDTH / 2 - 125,
-						BloodAndMithrilClient.HEIGHT/2 + 50,
 						250,
 						100,
 						"Amount",
@@ -915,8 +905,6 @@ public class InventoryWindow extends Window implements Refreshable {
 			() -> {
 				UserInterface.addLayeredComponent(
 					new TextInputWindow(
-						BloodAndMithrilClient.WIDTH / 2 - 125,
-						BloodAndMithrilClient.HEIGHT/2 + 50,
 						250,
 						100,
 						"Amount",
@@ -957,8 +945,6 @@ public class InventoryWindow extends Window implements Refreshable {
 			() -> {
 				UserInterface.addLayeredComponent(
 					new TextInputWindow(
-						BloodAndMithrilClient.WIDTH / 2 - 125,
-						BloodAndMithrilClient.HEIGHT/2 + 50,
 						250,
 						100,
 						"Amount",

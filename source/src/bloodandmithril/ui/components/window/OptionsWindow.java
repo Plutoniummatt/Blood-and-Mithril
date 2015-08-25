@@ -42,8 +42,6 @@ public class OptionsWindow extends Window {
 			() -> {
 				UserInterface.addLayeredComponent(
 					new TextInputWindow(
-						BloodAndMithrilClient.WIDTH / 2 - 125,
-						BloodAndMithrilClient.HEIGHT/2 + 50,
 						250,
 						100,
 						"Enter width",
@@ -58,8 +56,6 @@ public class OptionsWindow extends Window {
 									new MessageWindow(
 										"Invalid resolution, enter an integer",
 										Color.RED,
-										BloodAndMithrilClient.WIDTH/2 - 150,
-										BloodAndMithrilClient.HEIGHT/2 + 50,
 										300,
 										100,
 										"Error",
@@ -73,8 +69,6 @@ public class OptionsWindow extends Window {
 
 							UserInterface.addLayeredComponent(
 								new TextInputWindow(
-									BloodAndMithrilClient.WIDTH / 2 - 125,
-									BloodAndMithrilClient.HEIGHT/2 + 50,
 									250,
 									100,
 									"Enter height",
@@ -89,8 +83,6 @@ public class OptionsWindow extends Window {
 												new MessageWindow(
 													"Invalid resolution, enter an integer",
 													Color.RED,
-													BloodAndMithrilClient.WIDTH/2 - 150,
-													BloodAndMithrilClient.HEIGHT/2 + 50,
 													300,
 													100,
 													"Error",
@@ -106,8 +98,6 @@ public class OptionsWindow extends Window {
 											new MessageWindow(
 												"Please restart the game for the changes to take effect",
 												Color.GREEN,
-												BloodAndMithrilClient.WIDTH/2 - 250,
-												BloodAndMithrilClient.HEIGHT/2 + 75,
 												500,
 												150,
 												"Information",
@@ -153,8 +143,6 @@ public class OptionsWindow extends Window {
 					new MessageWindow(
 						"Please restart the game for the changes to take effect",
 						Color.GREEN,
-						BloodAndMithrilClient.WIDTH/2 - 250,
-						BloodAndMithrilClient.HEIGHT/2 + 75,
 						500,
 						150,
 						"Information",

@@ -88,8 +88,6 @@ public class MainMenuWindow extends Window {
 
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
-								BloodAndMithrilClient.WIDTH / 2 - 125,
-								BloodAndMithrilClient.HEIGHT/2 + 50,
 								250,
 								100,
 								"Enter name",
@@ -171,8 +169,6 @@ public class MainMenuWindow extends Window {
 
 				UserInterface.addLayeredComponent(
 					new TextInputWindow(
-						BloodAndMithrilClient.WIDTH / 2 - 125,
-						BloodAndMithrilClient.HEIGHT/2 + 50,
 						250,
 						100,
 						"Enter IP",
@@ -216,8 +212,6 @@ public class MainMenuWindow extends Window {
 											new MessageWindow(
 												"Failed to connect",
 												Color.RED,
-												BloodAndMithrilClient.WIDTH/2 - 150,
-												BloodAndMithrilClient.HEIGHT/2 + 50,
 												300,
 												100,
 												"Error",

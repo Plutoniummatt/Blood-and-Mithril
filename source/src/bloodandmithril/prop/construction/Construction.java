@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import bloodandmithril.character.ai.task.ConstructDeconstruct;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.event.events.ConstructionFinished;
@@ -77,8 +76,6 @@ public abstract class Construction extends Prop implements Container {
 		return new MessageWindow(
 			getDescription(),
 			Color.YELLOW,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
 			450,
 			250,
 			getTitle(),

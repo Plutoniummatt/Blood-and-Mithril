@@ -1,7 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.util.Fonts.defaultFont;
@@ -47,8 +45,6 @@ public class ContainerInspectionWindow extends Window implements Refreshable {
 		String title
 	) {
 		super(
-			WIDTH/2 - 300,
-			HEIGHT/2 + 200,
 			600,
 			400,
 			title,

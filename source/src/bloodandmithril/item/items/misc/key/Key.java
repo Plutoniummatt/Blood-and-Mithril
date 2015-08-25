@@ -1,6 +1,5 @@
 package bloodandmithril.item.items.misc.key;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.ui.components.window.MessageWindow;
@@ -31,8 +30,6 @@ public abstract class Key extends Item {
 		return new MessageWindow(
 			getDescription(),
 			Color.ORANGE,
-			BloodAndMithrilClient.WIDTH/2 - 175,
-			BloodAndMithrilClient.HEIGHT/2 + 100,
 			350,
 			200,
 			"Key",

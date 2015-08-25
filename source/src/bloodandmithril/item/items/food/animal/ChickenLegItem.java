@@ -5,7 +5,6 @@ import java.util.Map;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.proficiency.proficiencies.Cooking;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
@@ -65,8 +64,6 @@ public class ChickenLegItem extends Food implements Craftable {
 			MessageWindow messageWindow = new MessageWindow(
 				"Elves are vegans, they do not eat meat.",
 				Color.RED,
-				BloodAndMithrilClient.WIDTH/2 - 175,
-				BloodAndMithrilClient.HEIGHT/2 + 100,
 				470,
 				120,
 				"Info",

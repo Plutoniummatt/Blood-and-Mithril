@@ -346,8 +346,6 @@ public abstract class Item implements Serializable, Affixed {
 	public Window getInfoWindow() {
 		return new ItemInfoWindow(
 			this,
-			BloodAndMithrilClient.WIDTH/2 - 200,
-			BloodAndMithrilClient.HEIGHT/2 + 175,
 			400,
 			350
 		);

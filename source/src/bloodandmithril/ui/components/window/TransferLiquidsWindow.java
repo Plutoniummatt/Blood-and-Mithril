@@ -4,7 +4,6 @@ import java.util.Deque;
 import java.util.List;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.furniture.LiquidContainerProp;
 import bloodandmithril.prop.furniture.LiquidContainerProp.PropLiquidContainerItem;
@@ -27,8 +26,6 @@ public class TransferLiquidsWindow extends Window {
 	 */
 	public TransferLiquidsWindow(Individual individual, LiquidContainerProp container) {
 		super(
-			BloodAndMithrilClient.WIDTH / 2 - 250,
-			BloodAndMithrilClient.HEIGHT / 2 + 175,
 			500,
 			350,
 			individual.getId().getSimpleName() + " interacting with " + container.getClass().getSimpleName() + container.id,

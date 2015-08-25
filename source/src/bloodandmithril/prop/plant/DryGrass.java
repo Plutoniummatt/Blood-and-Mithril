@@ -3,7 +3,6 @@ package bloodandmithril.prop.plant;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -63,8 +62,6 @@ public class DryGrass extends PlantProp {
 						new MessageWindow(
 							"A patch of dry grass.",
 							Color.ORANGE,
-							BloodAndMithrilClient.WIDTH/2 - 250,
-							BloodAndMithrilClient.HEIGHT/2 + 125,
 							500,
 							250,
 							"Dead bush",
@@ -80,7 +77,7 @@ public class DryGrass extends PlantProp {
 				null
 			)
 		);
-		
+
 		return menu;
 	}
 

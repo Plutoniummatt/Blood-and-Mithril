@@ -35,8 +35,8 @@ public class ItemInfoWindow extends Window {
 	/**
 	 * Constructor
 	 */
-	public ItemInfoWindow(Item item, int x, int y, int length, int height) {
-		super(x, y, length, height, item.getSingular(true), true, 400, 350, false, true, true);
+	public ItemInfoWindow(Item item, int length, int height) {
+		super(length, height, item.getSingular(true), true, 400, 350, false, true, true);
 		this.item = item;
 		instantiatePanel(item);
 	}

@@ -1,7 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Maps.newHashMap;
@@ -101,8 +99,6 @@ public class TradeWindow extends Window implements Refreshable {
 	 */
 	public TradeWindow(String title, boolean active, Individual proposer, Container proposee, Comparator<Item> sortingComparator) {
 		super(
-			BloodAndMithrilClient.WIDTH/2 - 650,
-			BloodAndMithrilClient.HEIGHT/2 + 300,
 			1300,
 			600,
 			title,
@@ -428,8 +424,6 @@ public class TradeWindow extends Window implements Refreshable {
 					if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkTrade.keyCode)) {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
-								WIDTH / 2 - 125,
-								HEIGHT / 2 + 100,
 								250,
 								100,
 								"Enter quantity",
@@ -503,8 +497,6 @@ public class TradeWindow extends Window implements Refreshable {
 				if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkTrade.keyCode)) {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
-							WIDTH / 2 - 125,
-							HEIGHT / 2 + 100,
 							250,
 							100,
 							"Enter quantity",

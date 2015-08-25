@@ -35,8 +35,8 @@ public class TextInputWindow extends Window {
 	/**
 	 * Constructor
 	 */
-	public TextInputWindow(int x, int y, int length, int height, String title, int minLength, int minHeight, JITTask task, String buttonText, boolean closeUponButtonClick, String defaultText) {
-		super(x, y, length, height, title, true, minLength, minHeight, false, false, true);
+	public TextInputWindow(int length, int height, String title, int minLength, int minHeight, JITTask task, String buttonText, boolean closeUponButtonClick, String defaultText) {
+		super(length, height, title, true, minLength, minHeight, false, false, true);
 		this.task = task;
 		this.closeUponButtonClick = closeUponButtonClick;
 

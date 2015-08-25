@@ -1,8 +1,7 @@
-package bloodandmithril.character.ai.routine;
+package bloodandmithril.character.ai;
 
 import java.util.List;
 
-import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
@@ -60,6 +59,14 @@ public class Routine extends AITask {
 	@Override
 	public String getDescription() {
 		return description;
+	}
+
+
+	/**
+	 * Sets the description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 

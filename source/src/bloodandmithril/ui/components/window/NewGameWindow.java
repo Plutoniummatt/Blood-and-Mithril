@@ -1,8 +1,6 @@
 package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
@@ -176,7 +174,7 @@ public class NewGameWindow extends Window {
 	 * Constructor
 	 */
 	public NewGameWindow() {
-		super(WIDTH/2 - 350, HEIGHT/2 + 250, 700, 500, "New game", true, 700, 500, false, true, false);
+		super(700, 500, "New game", true, 700, 500, false, true, false);
 		panels.add(new ChooseRacePanel(this));
 		panels.add(new ChooseStartingIndividualsPanel(this));
 		panels.add(new ChooseStartingItemPackagePanel(this));

@@ -88,8 +88,8 @@ public abstract class Window extends Component {
 	/**
 	 * Overloaded contructor, uses default colors
 	 */
-	public Window(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, boolean closeable) {
-		this(x, y, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable, resizeable, closeable);
+	public Window(int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, boolean closeable) {
+		this((WIDTH - length) / 2, (HEIGHT + height) / 2, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable, resizeable, closeable);
 	}
 
 

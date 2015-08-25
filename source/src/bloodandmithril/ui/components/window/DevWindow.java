@@ -2,8 +2,6 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
 import static bloodandmithril.character.individuals.Names.getUnknownNatureIdentifier;
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldCoords;
@@ -88,7 +86,7 @@ public class DevWindow extends Window {
 	 * Constructor
 	 */
 	public DevWindow(int x, int y, int length, int height, boolean active) {
-		super(x, y, length, height, "Developer", active, 500, 300, false, true, true);
+		super(length, height, "Developer", active, 500, 300, false, true, true);
 
 		panel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35) {
 			@Override
@@ -533,8 +531,6 @@ public class DevWindow extends Window {
 					() -> {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
-								WIDTH / 2 - 125,
-								HEIGHT/2 + 50,
 								250,
 								100,
 								"Change time of day",
@@ -646,8 +642,6 @@ public class DevWindow extends Window {
 					() -> {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
-								BloodAndMithrilClient.WIDTH / 2 - 125,
-								BloodAndMithrilClient.HEIGHT/2 + 50,
 								250,
 								100,
 								"Enter name",
