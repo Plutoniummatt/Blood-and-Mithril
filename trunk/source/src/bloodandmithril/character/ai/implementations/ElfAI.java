@@ -7,7 +7,6 @@ import java.util.List;
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.LightLightable;
-import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Lightable;
@@ -37,20 +36,6 @@ public class ElfAI extends ArtificialIntelligence {
 	}
 
 
-	@Override
-	protected void determineCurrentTask() {
-		if (Util.roll(0.5f)) {
-			wander(200f, false);
-		} else if (!(getCurrentTask() instanceof Wait) && !(getCurrentTask() instanceof LightLightable)) {
-			igniteLightables();
-		}
-
-		if (Util.roll(0.0005f)) {
-			getHost().speak(Speech.getRandomIdleSpeech(), 2500);
-		}
-	}
-
-
 	private void igniteLightables() {
 		Individual host = getHost();
 		List<Prop> nearbyEntities = Lists.newLinkedList(Domain.getWorld(host.getWorldId()).getPositionalIndexMap().getNearbyEntities(Prop.class, host.getState().position));
@@ -62,6 +47,18 @@ public class ElfAI extends ArtificialIntelligence {
 			try {
 				setCurrentTask(new LightLightable(host, (Lightable) lightables.get(0), true));
 			} catch (NoTileFoundException e) {}
+		}
+	}
+
+
+	@Override
+	protected void determineCurrentTask() {
+		if (Util.roll(0.5f)) {
+			wander(200f, false);
+		}
+
+		if (Util.roll(0.0005f)) {
+			getHost().speak(Speech.getRandomIdleSpeech(), 2500);
 		}
 	}
 

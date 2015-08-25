@@ -34,12 +34,17 @@ import java.util.Set;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.audio.SoundService.SuspicionLevel;
 import bloodandmithril.audio.SoundService.SuspiciousSound;
+import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.Routine;
+import bloodandmithril.character.ai.Routine.TaskFunction;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.SightStimulus;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.routine.condition.EntityVisible;
+import bloodandmithril.character.ai.task.Speak;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -61,6 +66,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.SerializableColor;
+import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Util;
@@ -440,6 +446,29 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		this.hairColor = new SerializableColor(hairColor);
 		this.eyeColor = new SerializableColor(eyeColor);
 		this.skinColor = new SerializableColor(skinColor);
+
+		Routine lightLightables = new Routine(this.getId());
+		lightLightables.getExecutionConditions().add(
+			new EntityVisible(
+				new SerializableMappingFunction<Visible, Boolean>() {
+					private static final long serialVersionUID = 1L;
+					@Override
+					public Boolean apply(Visible input) {
+						return true;
+					}
+				},
+				this
+			)
+		);
+		lightLightables.setDescription("Actively light lightables");
+		lightLightables.setTask(new TaskFunction() {
+			private static final long serialVersionUID = 8787264983752775043L;
+			@Override
+			public AITask call() {
+				return new Speak(Elf.this, "I see something!", 1000);
+			}
+		});
+		getAI().addRoutine(lightLightables);
 	}
 
 
