@@ -68,14 +68,14 @@ public class ConstructionWindow extends Window implements Refreshable {
 		Color.GREEN,
 		UIRef.BL
 	);
-	
+
 	private RequiredMaterialsPanel requiredMaterialsPanel;
 
 	/**
 	 * Constructor
 	 */
-	public ConstructionWindow(int x, int y, String title, boolean active, Individual individual, Construction construction) {
-		super(x, y, 600, 300, title, active, 600, 300, true, true, true);
+	public ConstructionWindow(String title, boolean active, Individual individual, Construction construction) {
+		super(600, 300, title, active, 600, 300, true, true, true);
 		this.individual = individual;
 		this.construction = construction;
 
@@ -116,7 +116,7 @@ public class ConstructionWindow extends Window implements Refreshable {
 		requiredMaterialsPanel.render();
 
 		constructButton.render(x + 60, y - 55, isActive() && (enoughMaterialsToCraft || construction.getConstructionProgress() != 0f) && construction.getConstructionProgress() != 1f, isActive() ? getAlpha() : getAlpha() * 0.6f);
-		deconstructButton.render(x + 70, y - 74, isActive() && (construction.canDeconstruct()), isActive() ? getAlpha() : getAlpha() * 0.6f);
+		deconstructButton.render(x + 70, y - 74, isActive() && construction.canDeconstruct(), isActive() ? getAlpha() : getAlpha() * 0.6f);
 
 		defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.GREEN, getAlpha()) : Colors.modulateAlpha(Color.GREEN, 0.5f * getAlpha()));
 		String progress = "(" + String.format("%.1f", 100f * construction.getConstructionProgress()) + "%)";

@@ -79,8 +79,6 @@ public class WoodenChestProp extends Furniture implements Container {
 						new MessageWindow(
 							description(),
 							Color.ORANGE,
-							BloodAndMithrilClient.WIDTH/2 - 250,
-							BloodAndMithrilClient.HEIGHT/2 + 125,
 							500,
 							250,
 							"Wooden chest",
@@ -262,8 +260,8 @@ public class WoodenChestProp extends Furniture implements Container {
 	public boolean canBeUsedAsFireSource() {
 		return false;
 	}
-	
-	
+
+
 	@Override
 	public boolean getWeightLimited() {
 		return false;

@@ -1,7 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.util.Fonts.defaultFont;
@@ -50,8 +48,6 @@ public class ProficienciesWindow extends Window {
 	 */
 	public ProficienciesWindow(Individual individual) {
 		super(
-			WIDTH / 2 - 150,
-			HEIGHT / 2 + 200,
 			300,
 			500,
 			individual.getId().getSimpleName() + " - Proficiencies",
@@ -102,8 +98,6 @@ public class ProficienciesWindow extends Window {
 						new MessageWindow(
 							skill.getDescription(),
 							Color.ORANGE,
-							WIDTH / 2 - 250,
-							HEIGHT / 2 + 150,
 							500,
 							300,
 							"Skill description - " + skill.getName(),

@@ -12,7 +12,6 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.Sniffer;
 import bloodandmithril.character.ai.perception.Stimulus;
-import bloodandmithril.character.ai.routine.Routine;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Wait;
@@ -138,10 +137,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 */
 	private void processSpecificAIRoutines() {
 		for (Routine routine : aiRoutines) {
+			if (!routine.areExecutionConditionsMet()) {
+				continue;
+			}
 
 			AITask internalCurrentTask = getCurrentTask();
 			if (internalCurrentTask instanceof Routine) {
-				if (routine.getPriority() > ((Routine) internalCurrentTask).getPriority() && routine.areExecutionConditionsMet()) {
+				if (routine.getPriority() > ((Routine) internalCurrentTask).getPriority()) {
 					setCurrentTask(routine);
 					break;
 				}
@@ -312,5 +314,10 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 	public LinkedList<Routine> getAiRoutines() {
 		return aiRoutines;
+	}
+
+
+	public void addRoutine(Routine routine) {
+		aiRoutines.add(routine);
 	}
 }

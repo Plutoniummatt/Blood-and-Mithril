@@ -42,8 +42,8 @@ public class FactionsWindow extends Window {
 	/**
 	 * Constructor
 	 */
-	public FactionsWindow(int x, int y, int length, int height, boolean active, int minLength, int minHeight) {
-		super(x, y, length, height, "Factions", active, minLength, minHeight, true, false, true);
+	public FactionsWindow(int length, int height, boolean active, int minLength, int minHeight) {
+		super(length, height, "Factions", active, minLength, minHeight, true, false, true);
 
 		factionsPanel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35) {
 
@@ -148,8 +148,6 @@ public class FactionsWindow extends Window {
 					} else {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
-								BloodAndMithrilClient.WIDTH / 2 - 125,
-								BloodAndMithrilClient.HEIGHT/2 + 50,
 								250,
 								100,
 								"Enter password",
@@ -199,8 +197,6 @@ public class FactionsWindow extends Window {
 						new MessageWindow(
 							faction.description,
 							Color.ORANGE,
-							BloodAndMithrilClient.WIDTH/2 - 175,
-							BloodAndMithrilClient.HEIGHT/2 + 100,
 							470,
 							120,
 							faction.name + " - Info",
@@ -221,8 +217,6 @@ public class FactionsWindow extends Window {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
-							BloodAndMithrilClient.WIDTH / 2 - 125,
-							BloodAndMithrilClient.HEIGHT/2 + 50,
 							250,
 							100,
 							"Change password",

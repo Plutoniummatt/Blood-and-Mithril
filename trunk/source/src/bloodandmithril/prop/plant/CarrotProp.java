@@ -80,8 +80,6 @@ public class CarrotProp extends PlantProp implements Harvestable {
 						new MessageWindow(
 							bloodandmithril.item.items.food.plant.CarrotItem.description + (getGrowthProgress() == 1f ? "" : " This carrot is still growing."),
 							Color.ORANGE,
-							BloodAndMithrilClient.WIDTH/2 - 250,
-							BloodAndMithrilClient.HEIGHT/2 + 125,
 							500,
 							250,
 							"Carrot",

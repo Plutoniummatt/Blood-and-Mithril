@@ -76,8 +76,8 @@ public abstract class CraftingStation extends Construction {
 	public boolean customCanCraft() {
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public Color getContextMenuColor() {
 		return Color.CYAN;
@@ -119,8 +119,6 @@ public abstract class CraftingStation extends Construction {
 						new MessageWindow(
 							getDescription(),
 							Color.ORANGE,
-							BloodAndMithrilClient.WIDTH/2 - 250,
-							BloodAndMithrilClient.HEIGHT/2 + 125,
 							500,
 							250,
 							getTitle(),
@@ -338,8 +336,6 @@ public abstract class CraftingStation extends Construction {
 
 	public CraftingStationWindow getCraftingStationWindow(Individual individual) {
 		return new CraftingStationWindow(
-			BloodAndMithrilClient.WIDTH/2 - 400,
-			BloodAndMithrilClient.HEIGHT/2 + 150,
 			individual.getId().getFirstName() + " interacting with " + getTitle(),
 			individual,
 			this

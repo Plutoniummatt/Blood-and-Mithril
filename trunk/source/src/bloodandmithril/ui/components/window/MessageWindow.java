@@ -1,7 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 
@@ -49,18 +47,18 @@ public class MessageWindow extends Window {
 	/**
 	 * Overloaded constructor - uses default colors
 	 */
-	public MessageWindow(String message, Color messageColor, int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight) {
-		super(x, y, length, height, title, active, minLength, minHeight, false, true, true);
+	public MessageWindow(String message, Color messageColor, int length, int height, String title, boolean active, int minLength, int minHeight) {
+		super(length, height, title, active, minLength, minHeight, false, true, true);
 		this.message = message;
 		this.messageColor = messageColor;
 	}
-	
-	
+
+
 	/**
 	 * Overloaded constructor - uses default colors and position
 	 */
 	public MessageWindow(String message, Color messageColor, int length, int height, String title, boolean active) {
-		super((WIDTH - length) / 2, (HEIGHT + height) / 2, length, height, title, active, length, height, false, true, true);
+		super(length, height, title, active, length, height, false, true, true);
 		this.message = message;
 		this.messageColor = messageColor;
 	}
@@ -70,8 +68,8 @@ public class MessageWindow extends Window {
 	/**
 	 * Overloaded constructor - uses default colors, has a button
 	 */
-	public MessageWindow(String message, Color messageColor, int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, Task buttonAction) {
-		super(x, y, length, height, title, active, minLength, minHeight, false, true, true);
+	public MessageWindow(String message, Color messageColor, int length, int height, String title, boolean active, int minLength, int minHeight, Task buttonAction) {
+		super(length, height, title, active, minLength, minHeight, false, true, true);
 		this.message = message;
 		this.messageColor = messageColor;
 
@@ -94,7 +92,7 @@ public class MessageWindow extends Window {
 	@Override
 	protected void internalWindowRender() {
 		defaultFont.setColor(isActive() ? Colors.modulateAlpha(messageColor, getAlpha()) : Colors.modulateAlpha(messageColor, 0.6f * getAlpha()));
-		
+
 		TextBounds bounds = new TextBounds();
 		bounds.width = width;
 		TextBounds wrappedBounds = defaultFont.getWrappedBounds(message, width - 5);
@@ -103,8 +101,10 @@ public class MessageWindow extends Window {
 		if (wrappedBounds.width < 300) {
 			width = (int) wrappedBounds.width + 10;
 		}
-		
-		
+
+		this.height = height + 32;
+		this.minHeight = height + 32;
+
 		defaultFont.drawWrapped(
 			spriteBatch,
 			message,
@@ -112,7 +112,7 @@ public class MessageWindow extends Window {
 			y - 27,
 			width - 5
 		);
-		
+
 		if (button != null) {
 			button.render(x + width/2, y - height + 30, isActive(), getAlpha());
 		}

@@ -9,6 +9,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.util.datastructure.Wrapper;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
@@ -131,7 +132,10 @@ public class Util {
 
 	/**
 	 * Reformats a string to be able to fit inside a window.
+	 *
+	 * @deprecated use {@link TextBounds} instead
 	 */
+	@Deprecated
 	public static String fitToWindow(String toPara, int length, int maxLines) {
 		String answer = "";
 		String toChop = toPara;

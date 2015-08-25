@@ -1,7 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
@@ -71,8 +69,8 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	/**
 	 * Constructor
 	 */
-	public CraftingStationWindow(int x, int y, String title, Individual individual, CraftingStation craftingStation) {
-		super(x, y, 800, 300, title, true, 800, 300, true, true, true);
+	public CraftingStationWindow(String title, Individual individual, CraftingStation craftingStation) {
+		super(800, 300, title, true, 800, 300, true, true, true);
 		this.individual = individual;
 		this.craftingStation = craftingStation;
 
@@ -128,8 +126,6 @@ public class CraftingStationWindow extends Window implements Refreshable {
 				if (Gdx.input.isKeyPressed(getKeyMappings().bulkCraft.keyCode)) {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
-							WIDTH / 2 - 125,
-							HEIGHT/2 + 50,
 							250,
 							100,
 							"Quantity",

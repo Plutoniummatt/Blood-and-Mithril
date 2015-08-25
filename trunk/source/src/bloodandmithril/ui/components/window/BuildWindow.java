@@ -33,14 +33,10 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 	 * Constructor
 	 */
 	public BuildWindow(
-			int x,
-			int y,
 			Individual builder,
 			Function<Construction, String> displayFunction,
 			Comparator<Construction> sortingOrder) {
 		super(
-			x,
-			y,
 			300,
 			200,
 			"Build",

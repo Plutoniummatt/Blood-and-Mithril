@@ -124,8 +124,6 @@ public class BottomBar extends Component {
 
 		UserInterface.addLayeredComponentUnique(
 			new FactionsWindow(
-				BloodAndMithrilClient.WIDTH/2 - 125,
-				BloodAndMithrilClient.HEIGHT/2 + 150,
 				250,
 				300,
 				true,
@@ -169,8 +167,6 @@ public class BottomBar extends Component {
 
 						UserInterface.addLayeredComponent(
 							new ChatWindow(
-								BloodAndMithrilClient.WIDTH/2 - 250,
-								BloodAndMithrilClient.HEIGHT/2 + 150,
 								500,
 								300,
 								true,

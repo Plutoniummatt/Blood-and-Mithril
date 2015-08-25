@@ -1,8 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
-
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +40,7 @@ public class UnitsWindow extends Window implements Refreshable {
 	 * Constructor
 	 */
 	public UnitsWindow(int factoinId) {
-		super(WIDTH/2 - 250, HEIGHT/2 + 200, 500, 400, Domain.getFactions().get(factoinId).name + " - Members", true, 500, 400, true, true, true);
+		super(500, 400, Domain.getFactions().get(factoinId).name + " - Members", true, 500, 400, true, true, true);
 		factionId = factoinId;
 		refresh();
 	}

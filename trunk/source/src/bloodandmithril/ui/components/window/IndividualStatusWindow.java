@@ -54,8 +54,8 @@ public class IndividualStatusWindow extends Window {
 	};
 
 	/** Constructor */
-	public IndividualStatusWindow(final Individual individual, int x, int y, int length, int height, String title, boolean active) {
-		super(x, y, length, height, title, active, 400, 400, true, true, true);
+	public IndividualStatusWindow(final Individual individual, int length, int height, String title, boolean active) {
+		super(length, height, title, active, 400, 400, true, true, true);
 		this.individual = individual;
 		this.conditionsPanel = new ScrollableListingPanel<Condition, Object>(this, sortingOrder, false, 35) {
 			@Override
@@ -288,8 +288,6 @@ public class IndividualStatusWindow extends Window {
 									new MessageWindow(
 										condition.getHelpText(),
 										Color.YELLOW,
-										BloodAndMithrilClient.getMouseScreenX(),
-										BloodAndMithrilClient.getMouseScreenY(),
 										350,
 										200,
 										condition.getName(),

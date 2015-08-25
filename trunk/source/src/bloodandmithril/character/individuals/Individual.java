@@ -13,8 +13,6 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIG
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
 import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
@@ -77,6 +75,7 @@ import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.ui.components.window.AIRoutinesWindow;
 import bloodandmithril.ui.components.window.BuildWindow;
 import bloodandmithril.ui.components.window.IndividualInfoWindow;
 import bloodandmithril.ui.components.window.IndividualStatusWindow;
@@ -769,8 +768,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		if (ClientServerInterface.isClient()) {
 			UserInterface.addLayeredComponentUnique(
 				new SelectedIndividualsControlWindow(
-					BloodAndMithrilClient.WIDTH - 170,
-					150,
 					150,
 					100,
 					"Actions",
@@ -1094,6 +1091,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		return new ContextMenu(0, 0,
 			true,
 			selectDeselect(this),
+			aiRoutines(),
 			suppressAI(),
 			walkRun(),
 			shutUpSpeak(),
@@ -1178,6 +1176,22 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
+	private MenuItem aiRoutines() {
+		return new MenuItem(
+			"AI Routines",
+			() -> {
+				UserInterface.addLayeredComponentUnique(
+					new AIRoutinesWindow(this)
+				);
+			},
+			Color.WHITE,
+			getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+	}
+
+
 	private MenuItem suppressAI() {
 		return new MenuItem(
 			supressAI ? "Enable AI" : "Disable AI",
@@ -1203,8 +1217,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				UserInterface.addLayeredComponentUnique(
 					new IndividualStatusWindow(
 						Individual.this,
-						WIDTH/2 - 200,
-						HEIGHT/2 + 200,
 						400,
 						400,
 						id.getSimpleName() + " - Status",
@@ -1337,8 +1349,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			"Build",
 			() -> {
 				BuildWindow window = new BuildWindow(
-					WIDTH / 2 - 150,
-					HEIGHT/2 + 100,
 					thisIndividual,
 					new Function<Construction, String>() {
 						@Override
@@ -1371,8 +1381,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
-							WIDTH / 2 - 125,
-							HEIGHT/2 + 50,
 							250,
 							100,
 							"Change nickname",
@@ -1401,8 +1409,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
-							WIDTH / 2 - 125,
-							HEIGHT/2 + 50,
 							250,
 							100,
 							"Change biography",
@@ -1441,8 +1447,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			() -> {
 				IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
 					thisIndividual,
-					WIDTH/2 - 150,
-					HEIGHT/2 + 160,
 					300,
 					320,
 					id.getSimpleName() + " - Info",

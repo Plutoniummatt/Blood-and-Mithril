@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.prop.furniture.LiquidContainerProp.PropLiquidContainerItem;
@@ -113,8 +112,6 @@ public abstract class LiquidContainerItem extends Item {
 	public Window getInfoWindow() {
 		return new ItemInfoWindow(
 			this,
-			BloodAndMithrilClient.WIDTH/2 - 200,
-			BloodAndMithrilClient.HEIGHT/2 + 250,
 			400,
 			450
 		);

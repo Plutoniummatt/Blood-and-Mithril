@@ -82,8 +82,6 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 						new MessageWindow(
 							description(),
 							Color.ORANGE,
-							BloodAndMithrilClient.WIDTH/2 - 250,
-							BloodAndMithrilClient.HEIGHT/2 + 125,
 							500,
 							250,
 							"Medieval wall torch",
