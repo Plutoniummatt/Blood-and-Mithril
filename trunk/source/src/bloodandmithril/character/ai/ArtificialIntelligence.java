@@ -12,8 +12,6 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.Sniffer;
 import bloodandmithril.character.ai.perception.Stimulus;
-import bloodandmithril.character.ai.routine.ConditionChainedRoutine;
-import bloodandmithril.character.ai.routine.SimpleRoutine;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Wait;
@@ -75,7 +73,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 
 	protected abstract ArtificialIntelligence internalCopy();
-	
+
 	/**
 	 * Adds routines for this {@link ArtificialIntelligence}
 	 */
@@ -97,11 +95,11 @@ public abstract class ArtificialIntelligence implements Serializable {
 		if (!getHost().isAlive()) {
 			return;
 		}
-		
+
 		if (aiRoutines.isEmpty()) {
 			addRoutines();
 		}
-		
+
 		if (AIProcessor.aiThread != null && AIProcessor.aiThread.isAlive()) {
 			if (mode == AIMode.AUTO && !getHost().isAISuppressed()) {
 				AIProcessor.aiThreadTasks.add(() ->
@@ -155,25 +153,14 @@ public abstract class ArtificialIntelligence implements Serializable {
 			AITask internalCurrentTask = getCurrentTask();
 			if (internalCurrentTask instanceof Routine) {
 				if (routine.getPriority() > ((Routine) internalCurrentTask).getPriority()) {
-					generateTasks(routine);
+					routine.prepare();
 					setCurrentTask(routine);
 					break;
 				}
 			} else {
-				generateTasks(routine);
+				routine.prepare();
 				setCurrentTask(routine);
 			}
-		}
-	}
-
-
-	@SuppressWarnings("rawtypes")
-	private void generateTasks(Routine routine) {
-		if (routine instanceof ConditionChainedRoutine) {
-			((ConditionChainedRoutine) routine).generateEntity();
-			((ConditionChainedRoutine) routine).generateTask();
-		} else if (routine instanceof SimpleRoutine) {
-			((SimpleRoutine) routine).generateTask();
 		}
 	}
 

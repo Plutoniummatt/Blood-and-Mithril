@@ -22,7 +22,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 	private static Function<Routine, String> fn = new Function<Routine, String>() {
 		@Override
 		public String apply(Routine r) {
-			return r.getDescription();
+			return "";
 		}
 	};
 
