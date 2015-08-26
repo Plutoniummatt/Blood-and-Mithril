@@ -1,5 +1,6 @@
 package bloodandmithril.prop;
 
+import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.core.Copyright;
 
 /**
@@ -8,7 +9,7 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public interface Lightable {
+public interface Lightable extends Visible {
 
 	/**
 	 * Lights this thing

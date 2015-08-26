@@ -1,13 +1,7 @@
 package bloodandmithril.character.ai;
 
-import java.util.List;
-
-import bloodandmithril.character.ai.routine.Condition;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.util.SerializableFunction;
-
-import com.google.common.collect.Lists;
 
 /**
  * A player customisable {@link AITask}, designed for automation and eliminating the need of micro-managing laborious tasks..
@@ -15,12 +9,9 @@ import com.google.common.collect.Lists;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class Routine extends AITask {
+public abstract class Routine extends AITask {
 	private static final long serialVersionUID = -8502601311459390398L;
 	private int priority = 1;
-	private final List<Condition> executionConditions = Lists.newLinkedList();
-	private TaskFunction taskFunction;
-	private AITask task;
 	private String description = "";
 
 	/**
@@ -28,27 +19,6 @@ public class Routine extends AITask {
 	 */
 	public Routine(IndividualIdentifier hostId) {
 		super(hostId);
-	}
-
-
-	/**
-	 * @return whether or not this routine should now be executed
-	 */
-	public boolean areExecutionConditionsMet() {
-		for (Condition condition : getExecutionConditions()) {
-			if (condition.met()) {
-				continue;
-			} else {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-
-	public void setTask(TaskFunction taskFunction) {
-		this.taskFunction = taskFunction;
 	}
 
 
@@ -74,54 +44,10 @@ public class Routine extends AITask {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-
-	@Override
-	public boolean isComplete() {
-		if (task == null) {
-			if (taskFunction == null) {
-				return false;
-			}
-			task = taskFunction.call();
-		}
-
-		return task.isComplete();
-	}
-
-
-	@Override
-	public boolean uponCompletion() {
-		if (task == null) {
-			if (taskFunction == null) {
-				return false;
-			}
-			task = taskFunction.call();
-		}
-
-		AITask toComplete = this.task;
-		this.task = taskFunction.call();
-		return toComplete.uponCompletion();
-	}
-
-
-	@Override
-	public void execute(float delta) {
-		if (task == null) {
-			if (taskFunction == null) {
-				return;
-			}
-			task = taskFunction.call();
-		}
-		task.execute(delta);
-	}
-
-
-	public List<Condition> getExecutionConditions() {
-		return executionConditions;
-	}
-
-
-	public static abstract class TaskFunction implements SerializableFunction<AITask> {
-		private static final long serialVersionUID = -1020689817804020435L;
-	}
+	
+	
+	/**
+	 * @return whether or not this {@link Routine} meets execution conditions
+	 */
+	public abstract boolean areExecutionConditionsMet();
 }

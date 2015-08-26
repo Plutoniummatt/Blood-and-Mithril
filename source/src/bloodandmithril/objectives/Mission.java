@@ -1,6 +1,8 @@
 package bloodandmithril.objectives;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.event.Event;
@@ -8,6 +10,7 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.MissionsWindow;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Missions have multiple {@link Objective}s
@@ -18,7 +21,7 @@ import com.google.common.collect.Lists;
 public abstract class Mission implements Objective {
 	private static final long serialVersionUID = -3237913948268389651L;
 
-	private List<Objective> objectives = Lists.newLinkedList();
+	private Map<Objective, Boolean> objectives = Maps.newLinkedHashMap();
 	protected int worldId;
 
 	/**
@@ -26,7 +29,10 @@ public abstract class Mission implements Objective {
 	 */
 	protected Mission(int worldId) {
 		this.worldId = worldId;
-		objectives.addAll(getNewObjectives());
+		
+		for (Objective o : getNewObjectives()) {
+			objectives.put(o, false);
+		}
 
 		if (objectives.isEmpty()) {
 			throw new IllegalStateException("Can not have a mission with no objectives");
@@ -35,9 +41,10 @@ public abstract class Mission implements Objective {
 
 
 	public void update() {
-		for (Objective objective : Lists.newLinkedList(objectives)) {
-			if (objective != null && objective.getStatus() == ObjectiveStatus.COMPLETE) {
-				objective.uponCompletion();
+		for (Entry<Objective, Boolean> objective : Lists.newLinkedList(objectives.entrySet())) {
+			if (objective != null && objective.getKey().getStatus() == ObjectiveStatus.COMPLETE && !objective.getValue()) {
+				objective.getKey().uponCompletion();
+				objective.setValue(true);
 				UserInterface.refreshRefreshableWindows(MissionsWindow.class);
 			}
 		}
@@ -45,24 +52,24 @@ public abstract class Mission implements Objective {
 
 
 	public void addObjective(Objective o) {
-		objectives.add(o);
+		objectives.put(o, false);
 	}
 
 
 	public List<Objective> getObjectives() {
-		return Lists.newLinkedList(objectives);
+		return Lists.newLinkedList(objectives.keySet());
 	}
 
 
 	@Override
 	public ObjectiveStatus getStatus() {
-		for (Objective o : objectives) {
+		for (Objective o : objectives.keySet()) {
 			if (o.getStatus() == ObjectiveStatus.FAILED) {
 				return ObjectiveStatus.FAILED;
 			}
 		}
 
-		for (Objective o : objectives) {
+		for (Objective o : objectives.keySet()) {
 			if (o.getStatus() == ObjectiveStatus.ACTIVE) {
 				return ObjectiveStatus.ACTIVE;
 			}

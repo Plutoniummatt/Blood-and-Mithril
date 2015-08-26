@@ -1,22 +1,19 @@
 package bloodandmithril.character.ai.implementations;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.character.ai.perception.Observer;
+import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.routine.ConditionChainedRoutine;
+import bloodandmithril.character.ai.routine.condition.EntityVisible;
+import bloodandmithril.character.ai.routine.condition.EntityVisible.IsSuperClassFunction;
+import bloodandmithril.character.ai.routine.condition.LightableUnlit;
+import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Lightable;
-import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 
 /**
  * AI for elves
@@ -36,21 +33,6 @@ public class ElfAI extends ArtificialIntelligence {
 	}
 
 
-	private void igniteLightables() {
-		Individual host = getHost();
-		List<Prop> nearbyEntities = Lists.newLinkedList(Domain.getWorld(host.getWorldId()).getPositionalIndexMap().getNearbyEntities(Prop.class, host.getState().position));
-		Collections.shuffle(nearbyEntities);
-		LinkedList<Prop> lightables = Lists.newLinkedList(Collections2.filter(nearbyEntities, prop -> {
-			return prop instanceof Lightable && !((Lightable) prop).isLit() && ((Lightable) prop).canLight();
-		}));
-		if (!lightables.isEmpty() && host.getFireLighter() != null) {
-			try {
-				setCurrentTask(new LightLightable(host, (Lightable) lightables.get(0), true));
-			} catch (NoTileFoundException e) {}
-		}
-	}
-
-
 	@Override
 	protected void determineCurrentTask() {
 		if (Util.roll(0.5f)) {
@@ -66,5 +48,34 @@ public class ElfAI extends ArtificialIntelligence {
 	@Override
 	protected ArtificialIntelligence internalCopy() {
 		return new ElfAI(getHost());
+	}
+
+
+	@Override
+	public void addRoutines() {
+		ConditionChainedRoutine<Visible> routine = new ConditionChainedRoutine<Visible>(getHost().getId());
+		routine.setDescription("Lightable lighting routine");
+		EntityVisible entityVisible = new EntityVisible(
+			new IsSuperClassFunction(Lightable.class),
+			(Observer) getHost()
+		);
+		routine.getConditions().add(entityVisible);
+		routine.getConditions().add(
+			new LightableUnlit(entityVisible)
+		);
+		routine.setEntityGenerator(entityVisible);
+		routine.setTaskGenerator(() -> {
+			if (getHost().getFireLighter() == null) {
+				return new Idle();
+			}
+			
+			try {
+				return new LightLightable(getHost(), (Lightable)entityVisible.call(), true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new Idle();
+			}
+		});
+		addRoutine(routine);
 	}
 }

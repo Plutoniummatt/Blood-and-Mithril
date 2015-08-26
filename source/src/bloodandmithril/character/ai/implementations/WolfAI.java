@@ -26,4 +26,9 @@ public class WolfAI extends ArtificialIntelligence {
 	protected void determineCurrentTask() {
 		wander(500f, false);
 	}
+
+
+	@Override
+	public void addRoutines() {
+	}
 }
