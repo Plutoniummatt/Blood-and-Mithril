@@ -768,6 +768,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		if (ClientServerInterface.isClient()) {
 			UserInterface.addLayeredComponentUnique(
 				new SelectedIndividualsControlWindow(
+					BloodAndMithrilClient.WIDTH - 170,
+					150,
 					150,
 					100,
 					"Actions",
