@@ -27,4 +27,9 @@ public class HareAI extends ArtificialIntelligence {
 	protected ArtificialIntelligence internalCopy() {
 		return new HareAI(getHost());
 	}
+
+
+	@Override
+	public void addRoutines() {
+	}
 }

@@ -10,6 +10,7 @@ import java.util.List;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -41,17 +42,25 @@ public interface Observer extends Serializable {
 		float viewDistance = getViewDistance();
 
 		World world = Domain.getWorld(worldId);
-		List<Integer> entitiesWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
+		List<Integer> individualsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
 			Individual.class,
 			eyes.x - viewDistance,
 			eyes.x + viewDistance,
 			eyes.y + viewDistance,
 			eyes.y - viewDistance
 		);
-		Collections.shuffle(entitiesWithinBounds);
+		List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
+			Prop.class,
+			eyes.x - viewDistance,
+			eyes.x + viewDistance,
+			eyes.y + viewDistance,
+			eyes.y - viewDistance
+		);
+		Collections.shuffle(individualsWithinBounds);
+		Collections.shuffle(propsWithinBounds);
 		int index = 0;
 
-		for (Integer id : entitiesWithinBounds) {
+		for (Integer id : individualsWithinBounds) {
 			if (index >= entityCap) {
 				break;
 			}
@@ -68,6 +77,7 @@ public interface Observer extends Serializable {
 			}
 			index++;
 		}
+		// TODO props
 	}
 
 	/**
@@ -82,18 +92,26 @@ public interface Observer extends Serializable {
 		float viewDistance = getViewDistance();
 
 		World world = Domain.getWorld(worldId);
-		List<Integer> entitiesWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
+		List<Integer> individualsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
 			Individual.class,
 			eyes.x - viewDistance,
 			eyes.x + viewDistance,
 			eyes.y + viewDistance,
 			eyes.y - viewDistance
 		);
-		Collections.shuffle(entitiesWithinBounds);
+		List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
+			Prop.class,
+			eyes.x - viewDistance,
+			eyes.x + viewDistance,
+			eyes.y + viewDistance,
+			eyes.y - viewDistance
+		);
+		Collections.shuffle(individualsWithinBounds);
+		Collections.shuffle(propsWithinBounds);
 
 		List<Visible> visibles = Lists.newLinkedList();
 
-		for (Integer id : entitiesWithinBounds) {
+		for (Integer id : individualsWithinBounds) {
 			// Ray trace
 			Individual toBeObserved = Domain.getIndividual(id);
 			if (toBeObserved == null || toBeObserved.getId().getId() == hostId || !(toBeObserved instanceof Visible)) {
@@ -102,6 +120,18 @@ public interface Observer extends Serializable {
 
 			if (canSee((Visible)toBeObserved, world)) {
 				visibles.add((Visible)toBeObserved);
+			}
+		}
+		
+		for (Integer id : propsWithinBounds) {
+			// Ray trace
+			Prop toBeObserved = Domain.getWorld(worldId).props().getProp(id);
+			if (toBeObserved == null || !(toBeObserved instanceof Visible)) {
+				continue;
+			}
+
+			if (canSee(toBeObserved, world)) {
+				visibles.add(toBeObserved);
 			}
 		}
 

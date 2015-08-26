@@ -90,10 +90,10 @@ public class PlaceProp extends CompositeAITask {
 		public void execute(float delta) {
 			Prop prop = propItem.getProp();
 			Individual host = getHost();
+			prop.setWorldId(host.getWorldId());
 			if (host.has(propItem) > 0 && host.getInteractionBox().isWithinBox(position) && prop.canPlaceAt(position)) {
 				prop.position.x = position.x;
 				prop.position.y = position.y;
-				prop.setWorldId(host.getWorldId());
 				Domain.getWorld(host.getWorldId()).props().addProp(prop);
 				host.takeItem(propItem);
 				UserInterface.refreshRefreshableWindows();
