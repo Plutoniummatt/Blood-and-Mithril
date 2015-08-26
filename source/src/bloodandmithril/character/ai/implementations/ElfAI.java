@@ -1,19 +1,16 @@
 package bloodandmithril.character.ai.implementations;
 
 import bloodandmithril.character.Speech;
+import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
-import bloodandmithril.character.ai.perception.Observer;
-import bloodandmithril.character.ai.perception.Visible;
-import bloodandmithril.character.ai.routine.ConditionChainedRoutine;
-import bloodandmithril.character.ai.routine.condition.EntityVisible;
-import bloodandmithril.character.ai.routine.condition.EntityVisible.IsSuperClassFunction;
-import bloodandmithril.character.ai.routine.condition.LightableUnlit;
-import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Lightable;
+import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * AI for elves
@@ -53,29 +50,24 @@ public class ElfAI extends ArtificialIntelligence {
 
 	@Override
 	public void addRoutines() {
-		ConditionChainedRoutine<Visible> routine = new ConditionChainedRoutine<Visible>(getHost().getId());
-		routine.setDescription("Lightable lighting routine");
-		EntityVisible entityVisible = new EntityVisible(
-			new IsSuperClassFunction(Lightable.class),
-			(Observer) getHost()
-		);
-		routine.getConditions().add(entityVisible);
-		routine.getConditions().add(
-			new LightableUnlit(entityVisible)
-		);
-		routine.setEntityGenerator(entityVisible);
-		routine.setTaskGenerator(() -> {
-			if (getHost().getFireLighter() == null) {
-				return new Idle();
-			}
-			
-			try {
-				return new LightLightable(getHost(), (Lightable)entityVisible.call(), true);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return new Idle();
+		EntityVisibleRoutine<Lightable> routine = new EntityVisibleRoutine<Lightable>(getHost().getId(), Lightable.class, new SerializableMappingFunction<Lightable, Boolean>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Boolean apply(Lightable input) {
+				return !input.isLit();
 			}
 		});
-		addRoutine(routine);
+
+		routine.setAiTaskGenerator(new SerializableMappingFunction<Lightable, AITask>() {
+			private static final long serialVersionUID = 4879197288910331133L;
+			@Override
+			public AITask apply(Lightable input) {
+				try {
+					return new LightLightable(getHost(), input, true);
+				} catch (NoTileFoundException e) {
+					return null;
+				}
+			}
+		});
 	}
 }

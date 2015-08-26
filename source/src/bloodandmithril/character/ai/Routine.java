@@ -44,10 +44,16 @@ public abstract class Routine extends AITask {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
+
+
 	/**
 	 * @return whether or not this {@link Routine} meets execution conditions
 	 */
 	public abstract boolean areExecutionConditionsMet();
+
+
+	/**
+	 * Prepares the routine for execution
+	 */
+	public abstract void prepare();
 }
