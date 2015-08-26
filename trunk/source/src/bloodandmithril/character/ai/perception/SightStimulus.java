@@ -20,8 +20,5 @@ public interface SightStimulus extends Stimulus {
 
 	@Override
 	public default void stimulate(Individual individual) {
-		if (individual instanceof Observer) {
-			((Observer) individual).reactToSightStimulus(this);
-		}
 	}
 }

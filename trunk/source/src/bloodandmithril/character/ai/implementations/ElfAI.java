@@ -89,5 +89,7 @@ public class ElfAI extends ArtificialIntelligence {
 				return new Speak(getHost(), "Fuck, I'm gonna die!", 2000);
 			}
 		});
+
+		addRoutine(anotherRoutine);
 	}
 }

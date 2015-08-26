@@ -13,15 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.implementations.WolfAI;
 import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
-import bloodandmithril.character.ai.perception.SightStimulus;
 import bloodandmithril.character.ai.perception.Sniffer;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
-import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.individuals.GroundTravellingIndividual;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -38,7 +35,6 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
@@ -327,22 +323,6 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 	@Override
 	public float getFieldOfView() {
 		return 120f;
-	}
-
-
-	@Override
-	public void reactToSightStimulus(SightStimulus stimulus) {
-		if (stimulus instanceof IndividualSighted) {
-			Individual target = Domain.getIndividual(((IndividualSighted) stimulus).getSightedIndividualId());
-			AITask currentTask = getAI().getCurrentTask();
-			if (currentTask instanceof Attack) {
-				if (!((Attack) currentTask).getTargets().contains(((IndividualSighted) stimulus).getSightedIndividualId())) {
-					((Attack) currentTask).getTargets().add(target.getId().getId());
-				}
-			} else {
-				getAI().setCurrentTask(new Attack(this, target));
-			}
-		}
 	}
 
 
