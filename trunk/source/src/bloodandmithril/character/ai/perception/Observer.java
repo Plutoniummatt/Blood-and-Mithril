@@ -37,6 +37,7 @@ public interface Observer extends Serializable {
 	 * @param hostId of the observer
 	 * @param entityCap to cap the number of observed entities, to cut down on performance drawbacks
 	 */
+	@Deprecated
 	public default void observe(int worldId, int hostId, int entityCap) {
 		Vector2 eyes = getObservationPosition();
 		float viewDistance = getViewDistance();
@@ -122,7 +123,7 @@ public interface Observer extends Serializable {
 				visibles.add((Visible)toBeObserved);
 			}
 		}
-		
+
 		for (Integer id : propsWithinBounds) {
 			// Ray trace
 			Prop toBeObserved = Domain.getWorld(worldId).props().getProp(id);

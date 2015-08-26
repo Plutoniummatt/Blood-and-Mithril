@@ -9,8 +9,6 @@ import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.ai.perception.Observer;
-import bloodandmithril.character.ai.perception.Sniffer;
 import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
@@ -45,26 +43,19 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/** {@link AIMode} */
 	private AIMode mode = AIMode.AUTO;
 
-	/** Self stimulation timer */
-	private float selfStimulationTimer;
-
 	/** Delay between process ticks of individual-specific AI */
-	private float specificAIProcessingTimer;
+	private float aiRoutineProcessingTimer;
 
 	/** Stimuli as perceived by the host */
 	private LinkedBlockingQueue<Stimulus> stimuli = new LinkedBlockingQueue<Stimulus>();
 
 	private LinkedList<Routine> aiRoutines = new LinkedList<>();
 
-	/** Maximum of entities observed per AI tick */
-	private static final int OBSERVATED_ENTITIES_PER_TICK = 15;
-
 	public ArtificialIntelligence copy() {
 		ArtificialIntelligence internalCopy = internalCopy();
 		internalCopy.hostId = hostId;
 		internalCopy.currentTask = currentTask;
 		internalCopy.mode = mode;
-		internalCopy.selfStimulationTimer = selfStimulationTimer;
 		internalCopy.stimuli = new LinkedBlockingQueue<Stimulus>(stimuli);
 		internalCopy.aiRoutines = new LinkedList<>(aiRoutines);
 
@@ -106,14 +97,9 @@ public abstract class ArtificialIntelligence implements Serializable {
 					{
 						switch (mode) {
 						case AUTO:
-							selfStimulationTimer += delta;
-							specificAIProcessingTimer += delta;
-							if (selfStimulationTimer > 0.5f) {
-								selfStimulate();
-								selfStimulationTimer = 0f;
-							}
-							if (specificAIProcessingTimer > 0.5f) {
-								processSpecificAIRoutines();
+							aiRoutineProcessingTimer += delta;
+							if (aiRoutineProcessingTimer > 0.5f) {
+								processAIRoutines();
 							}
 							reactToStimuli();
 							determineCurrentTask();
@@ -144,7 +130,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/**
 	 * Processes specific AI routines
 	 */
-	private void processSpecificAIRoutines() {
+	private void processAIRoutines() {
 		for (Routine routine : aiRoutines) {
 			if (!routine.areExecutionConditionsMet()) {
 				continue;
@@ -161,20 +147,6 @@ public abstract class ArtificialIntelligence implements Serializable {
 				routine.prepare();
 				setCurrentTask(routine);
 			}
-		}
-	}
-
-
-	/**
-	 * Actively self stimulate
-	 */
-	private void selfStimulate() {
-		Individual host = getHost();
-		if (host instanceof Observer) {
-			((Observer) host).observe(getHost().getWorldId(), hostId.getId(), OBSERVATED_ENTITIES_PER_TICK);
-		}
-		if (host instanceof Sniffer) {
-			((Sniffer) host).sniff();
 		}
 	}
 
