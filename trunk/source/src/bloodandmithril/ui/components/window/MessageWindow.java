@@ -63,7 +63,7 @@ public class MessageWindow extends Window {
 	 * Overloaded constructor - uses default colors
 	 */
 	public MessageWindow(SerializableFunction<String> message, Color messageColor, int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight) {
-		super(x, y, length, height, title, active, minLength, minHeight, false, true, true);
+		super(length, height, title, active, minLength, minHeight, false, true, true);
 		this.message = message;
 		this.messageColor = messageColor;
 	}
