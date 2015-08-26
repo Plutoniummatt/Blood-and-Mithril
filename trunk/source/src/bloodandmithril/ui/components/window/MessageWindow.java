@@ -12,6 +12,7 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
 
@@ -27,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 public class MessageWindow extends Window {
 
 	/** Message displayed by this window */
-	private final String message;
+	private final SerializableFunction<String> message;
 	private final Color messageColor;
 
 	/** A clickable button for this window */
@@ -39,7 +40,9 @@ public class MessageWindow extends Window {
 	@Deprecated
 	public MessageWindow(String message, Color messageColor, int x, int y, int length, int height, Color borderColor, Color backGroundColor, String title, boolean active, int minLength, int minHeight) {
 		super(x, y, length, height, borderColor, backGroundColor, title, active, minLength, minHeight, false, true, true);
-		this.message = message;
+		this.message = () -> {
+			return message;
+		};
 		this.messageColor = messageColor;
 	}
 
@@ -49,6 +52,18 @@ public class MessageWindow extends Window {
 	 */
 	public MessageWindow(String message, Color messageColor, int length, int height, String title, boolean active, int minLength, int minHeight) {
 		super(length, height, title, active, minLength, minHeight, false, true, true);
+		this.message = () -> {
+			return message;
+		};
+		this.messageColor = messageColor;
+	}
+	
+	
+	/**
+	 * Overloaded constructor - uses default colors
+	 */
+	public MessageWindow(SerializableFunction<String> message, Color messageColor, int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight) {
+		super(x, y, length, height, title, active, minLength, minHeight, false, true, true);
 		this.message = message;
 		this.messageColor = messageColor;
 	}
@@ -59,7 +74,9 @@ public class MessageWindow extends Window {
 	 */
 	public MessageWindow(String message, Color messageColor, int length, int height, String title, boolean active) {
 		super(length, height, title, active, length, height, false, true, true);
-		this.message = message;
+		this.message = () -> {
+			return message;
+		};
 		this.messageColor = messageColor;
 	}
 
@@ -70,7 +87,9 @@ public class MessageWindow extends Window {
 	 */
 	public MessageWindow(String message, Color messageColor, int length, int height, String title, boolean active, int minLength, int minHeight, Task buttonAction) {
 		super(length, height, title, active, minLength, minHeight, false, true, true);
-		this.message = message;
+		this.message = () -> {
+			return message;
+		};
 		this.messageColor = messageColor;
 
 		this.button = new Button(
@@ -95,7 +114,7 @@ public class MessageWindow extends Window {
 
 		TextBounds bounds = new TextBounds();
 		bounds.width = width;
-		TextBounds wrappedBounds = defaultFont.getWrappedBounds(message, width - 5);
+		TextBounds wrappedBounds = defaultFont.getWrappedBounds(message.call(), width - 5);
 		int height = (int) wrappedBounds.height + 10;
 
 		if (wrappedBounds.width < 300) {
@@ -107,7 +126,7 @@ public class MessageWindow extends Window {
 
 		defaultFont.drawWrapped(
 			spriteBatch,
-			message,
+			message.call(),
 			x + 10,
 			y - 27,
 			width - 5

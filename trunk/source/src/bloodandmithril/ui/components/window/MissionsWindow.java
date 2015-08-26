@@ -20,7 +20,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.Function;
+import bloodandmithril.util.SerializableFunction;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
@@ -178,15 +178,15 @@ public class MissionsWindow extends Window implements Refreshable {
 
 	private HashMap<ListingMenuItem<Mission>, String> buildMap(ObjectiveStatus... statuses) {
 		HashMap<ListingMenuItem<Mission>, String> map = Maps.newHashMap();
-		for (Mission mission : BloodAndMithrilClient.getMissions()) {
+		for (final Mission mission : BloodAndMithrilClient.getMissions()) {
 			if (Sets.newHashSet(statuses).contains(mission.getStatus())) {
-				final Function<String> objectivesFunction = () -> {
+				final SerializableFunction<String> objectivesFunction = () -> {
 					String objectives = "";
 					for (Objective obj : mission.getObjectives()) {
 						objectives = objectives + obj.getTitle() + " (" + obj.getStatus().getDescription() + ") \n";
 					}
 
-					return objectives;
+					return mission.getDescription() + "\n\n" + objectives;
 				};
 
 				map.put(
@@ -200,7 +200,7 @@ public class MissionsWindow extends Window implements Refreshable {
 							mission.getTitle().length() * 10,
 							16,
 							() -> {
-								UserInterface.addClientMessage(mission.getTitle(), mission.getDescription() + "\n\n" + objectivesFunction.call());
+								UserInterface.addClientMessage(mission.getTitle(), objectivesFunction);
 							},
 							Color.ORANGE,
 							Color.WHITE,

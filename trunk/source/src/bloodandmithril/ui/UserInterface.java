@@ -1550,6 +1550,11 @@ public class UserInterface {
 	public static void addClientMessage(String title, String message) {
 		addGlobalMessage(title, message, -1, new FalseFunction());
 	}
+	
+	
+	public static void addClientMessage(String title, SerializableFunction<String> message) {
+		addGlobalMessage(title, message, -1, new FalseFunction());
+	}
 
 
 	public static void addGlobalMessage(String title, String message) {
@@ -1559,6 +1564,28 @@ public class UserInterface {
 
 	public static void addGlobalMessage(String title, String message, SerializableFunction<Boolean> function) {
 		addGlobalMessage(title, message, -1, function);
+	}
+	
+	
+	public static void addGlobalMessage(String title, SerializableFunction<String> message, int client, SerializableFunction<Boolean> function) {
+		if (ClientServerInterface.isClient()) {
+			addLayeredComponent(
+				new MessageWindow(
+					message,
+					Color.ORANGE,
+					WIDTH / 2 - 150,
+					HEIGHT / 2 + 75,
+					300,
+					150,
+					title,
+					true,
+					300,
+					150
+				)
+			);
+		} else {
+			//TODO
+		}
 	}
 
 
