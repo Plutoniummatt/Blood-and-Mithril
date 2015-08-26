@@ -18,7 +18,6 @@ import bloodandmithril.character.ai.implementations.HareAI;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
-import bloodandmithril.character.ai.perception.SightStimulus;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.individuals.GroundTravellingIndividual;
@@ -313,11 +312,6 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 	@Override
 	public float getFieldOfView() {
 		return 120f;
-	}
-
-
-	@Override
-	public void reactToSightStimulus(SightStimulus stimulus) {
 	}
 
 

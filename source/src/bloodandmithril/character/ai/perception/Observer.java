@@ -195,11 +195,6 @@ public interface Observer extends Serializable {
 	public float getFieldOfView();
 
 	/**
-	 * Implementation specific reaction method
-	 */
-	public void reactToSightStimulus(SightStimulus stimulus);
-
-	/**
 	 * @return the maximum view distance
 	 */
 	public float getViewDistance();

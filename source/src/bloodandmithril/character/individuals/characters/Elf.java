@@ -37,7 +37,6 @@ import bloodandmithril.audio.SoundService.SuspiciousSound;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
-import bloodandmithril.character.ai.perception.SightStimulus;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.individuals.Humanoid;
@@ -66,7 +65,6 @@ import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 
 import com.badlogic.gdx.graphics.Color;
@@ -674,17 +672,6 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 	@Override
 	public float getViewDistance() {
 		return 2000f;
-	}
-
-
-	@Override
-	public void reactToSightStimulus(SightStimulus stimulus) {
-		if (stimulus instanceof IndividualSighted) {
-			Individual sighted = Domain.getIndividual(((IndividualSighted) stimulus).getSightedIndividualId());
-			if (sighted != null && Util.roll(0.02f)) {
-				speak(Util.randomOneOf("Nice hair, ", "Hey ", "Look it's ", "I see you, ") + sighted.getId().getFirstName(), 1500);
-			}
-		}
 	}
 
 
