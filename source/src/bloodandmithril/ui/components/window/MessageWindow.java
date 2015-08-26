@@ -57,8 +57,8 @@ public class MessageWindow extends Window {
 		};
 		this.messageColor = messageColor;
 	}
-	
-	
+
+
 	/**
 	 * Overloaded constructor - uses default colors
 	 */
@@ -121,8 +121,8 @@ public class MessageWindow extends Window {
 			width = (int) wrappedBounds.width + 10;
 		}
 
-		this.height = height + 32;
 		this.minHeight = height + 32;
+		this.height = Math.max(this.height, this.minHeight);
 
 		defaultFont.drawWrapped(
 			spriteBatch,

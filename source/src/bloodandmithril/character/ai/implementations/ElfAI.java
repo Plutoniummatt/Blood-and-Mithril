@@ -4,7 +4,9 @@ import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.task.LightLightable;
+import bloodandmithril.character.ai.task.Speak;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Lightable;
@@ -67,6 +69,24 @@ public class ElfAI extends ArtificialIntelligence {
 				} catch (NoTileFoundException e) {
 					return null;
 				}
+			}
+		});
+
+		addRoutine(routine);
+
+		IndividualConditionRoutine anotherRoutine = new IndividualConditionRoutine(getHost().getId(), new SerializableMappingFunction<Individual, Boolean>() {
+			private static final long serialVersionUID = -8900729069395449472L;
+			@Override
+			public Boolean apply(Individual input) {
+				return input.getState().health/input.getState().maxHealth < 0.25f;
+			}
+		});
+
+		anotherRoutine.setAiTaskGenerator(new SerializableMappingFunction<Individual, AITask>() {
+			private static final long serialVersionUID = 372181266426810689L;
+			@Override
+			public AITask apply(Individual input) {
+				return new Speak(getHost(), "Fuck, I'm gonna die!", 2000);
 			}
 		});
 	}
