@@ -1,10 +1,14 @@
 package bloodandmithril.character.ai.implementations;
 
+import bloodandmithril.audio.SoundService.SuspicionLevel;
+import bloodandmithril.audio.SoundService.SuspiciousSound;
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.ai.task.Speak;
 import bloodandmithril.character.individuals.Individual;
@@ -91,5 +95,36 @@ public class ElfAI extends ArtificialIntelligence {
 		});
 
 		addRoutine(anotherRoutine);
+
+		StimulusDrivenRoutine stimRoutine = new StimulusDrivenRoutine(getHost().getId(), new SerializableMappingFunction<Stimulus, Boolean>() {
+			private static final long serialVersionUID = 1314379365402151840L;
+			@Override
+			public Boolean apply(Stimulus input) {
+				if (input instanceof SuspiciousSound) {
+					return true;
+				}
+
+				return false;
+			}
+		});
+
+		stimRoutine.setAiTaskGenerator(new SerializableMappingFunction<Stimulus, AITask>() {
+			private static final long serialVersionUID = -300681122490177105L;
+			@Override
+			public AITask apply(Stimulus input) {
+				if (input instanceof SuspiciousSound) {
+					SuspicionLevel suspicionLevel = ((SuspiciousSound) input).getSuspicionLevel();
+					if (suspicionLevel.severity >= SuspicionLevel.INVESTIGATE.severity) {
+						String speech = Util.randomOneOf("What was that sound?", "Hmm?", "You hear that?", "Huh?", "What?", "I hear something...");
+
+						return new Speak(getHost(), speech, 1500);
+					}
+				}
+
+				return null;
+			}
+		});
+
+		addRoutine(stimRoutine);
 	}
 }
