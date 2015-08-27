@@ -10,6 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.perception.Stimulus;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Wait;
@@ -189,7 +190,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/** Reacts to any stimuli */
 	private synchronized void reactToStimuli() {
 		while(!stimuli.isEmpty()) {
-			stimuli.poll().stimulate(getHost());
+			Stimulus polled = stimuli.poll();
+			for (Routine r : aiRoutines) {
+				if (r instanceof StimulusDrivenRoutine) {
+					((StimulusDrivenRoutine) r).attemptTrigger(polled);
+				}
+			}
+			polled.stimulate(getHost());
 		}
 	}
 

@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.Set;
 
 import bloodandmithril.audio.SoundService;
-import bloodandmithril.audio.SoundService.SuspicionLevel;
-import bloodandmithril.audio.SoundService.SuspiciousSound;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
@@ -687,14 +685,6 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 	@Override
 	public void listen(SoundStimulus stimulus) {
-		if (stimulus instanceof SuspiciousSound) {
-			SuspicionLevel suspicionLevel = ((SuspiciousSound) stimulus).getSuspicionLevel();
-			if (suspicionLevel.severity >= SuspicionLevel.INVESTIGATE.severity) {
-				String speech = Util.randomOneOf("What was that sound?", "Hmm?", "You hear that?", "Huh?", "What?", "I hear something...");
-
-				speak(speech, 1500);
-			}
-		}
 	}
 
 
