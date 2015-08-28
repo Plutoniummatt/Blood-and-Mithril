@@ -132,10 +132,19 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 		@Override
 		public boolean executionConditionMet() {
 			try {
-				Vector2 coords = new Vector2(
-					getMouseWorldX(),
-					Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
-				);
+				Vector2 coords;
+				if (toPlace.grounded) {
+					coords = new Vector2(
+						getMouseWorldX(),
+						Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
+					);
+				} else {
+					coords = new Vector2(getMouseWorldX(), getMouseWorldY());
+				}
+				if (Gdx.input.isKeyPressed(getKeyMappings().snapToGrid.keyCode)) {
+					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
+					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
+				}
 
 				if (Gdx.input.isKeyPressed(getKeyMappings().snapToGrid.keyCode)) {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;

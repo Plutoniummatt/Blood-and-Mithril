@@ -69,6 +69,9 @@ public class ElfAI extends ArtificialIntelligence {
 			@Override
 			public AITask apply(Lightable input) {
 				try {
+					if (getHost().getFireLighter() == null) {
+						return null;
+					}
 					return new LightLightable(getHost(), input, true);
 				} catch (NoTileFoundException e) {
 					return null;
