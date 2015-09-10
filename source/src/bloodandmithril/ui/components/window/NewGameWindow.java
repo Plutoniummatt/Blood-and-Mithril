@@ -31,6 +31,8 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
 import bloodandmithril.core.ItemPackage;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Threading;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.networking.ClientServerInterface;
@@ -62,6 +64,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 /**
  * Window for selecting starting units/items
@@ -78,6 +81,9 @@ public class NewGameWindow extends Window {
 	private final HashMap<ListingMenuItem<Individual>, String> startingIndividuals = Maps.newHashMap();
 	private ItemPackage selectedItemPackage;
 	private boolean enableTutorials = true;
+
+	@Inject
+	private Threading threading;
 
 	private Button next;
 	private Button startGame = new Button(
@@ -117,7 +123,7 @@ public class NewGameWindow extends Window {
 		Domain.getFactions().put(playerFaction.factionId, playerFaction);
 
 		ClientServerInterface.setServer(true);
-		BloodAndMithrilClient.clientProcessingThreadPool.execute(() -> {
+		threading.clientProcessingThreadPool.execute(() -> {
 			UserInterface.closeAllWindows();
 			BloodAndMithrilClient.fadeOut();
 			BloodAndMithrilClient.threadWait(1500);
@@ -196,6 +202,8 @@ public class NewGameWindow extends Window {
 			Color.WHITE,
 			UIRef.BL
 		);
+
+		Wiring.injector.injectMembers(this);
 	}
 
 

@@ -7,8 +7,6 @@ import static com.badlogic.gdx.Gdx.input;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AIProcessor;
@@ -26,7 +24,6 @@ import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.background.Layer;
-import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
@@ -61,6 +58,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
+import com.google.inject.Binder;
+import com.google.inject.Module;
 
 /**
  * Main game class, containing the loops
@@ -96,33 +95,16 @@ import com.google.common.collect.Sets;
 public class BloodAndMithrilClient implements ApplicationListener, InputProcessor {
 	public static boolean devMode = false;
 
-	private static Graphics graphics;
-
 	/** The game world */
 	private static boolean inGame;
-	public static Domain startMenuDomain;
-
-	/** For camera dragging */
-	private int camDragX, camDragY, oldCamX, oldCamY;
 
 	/** True if game is paused */
 	public static boolean paused = false, loading = false;
-
-	/** The current timer for double clicking */
-	private long leftDoubleClickTimer = 0L;
-	private long rightDoubleClickTimer = 0L;
-
-	/** Client-side threadpool */
-	public static ExecutorService clientProcessingThreadPool;
 
 	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
 	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
 
 	public static long ping = 0;
-
-	public static Thread updateThread;
-	public static Thread topographyQueryThread;
-	public static Thread particleUpdateThread;
 
 	private long topographyBacklogExecutionTimer;
 
@@ -136,115 +118,21 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	private static float updateRateMultiplier = 1f;
 
-
-
 	@Override
 	public void create() {
 		// Load client-side resources
-		graphics = new Graphics(ConfigPersistenceService.getConfig().getResX(), ConfigPersistenceService.getConfig().getResY());
+		Wiring.setup(new Module() {
+			@Override
+			public void configure(Binder binder) {
+			}
+		});
+
 		ClientServerInterface.setClient(true);
 		loadResources();
 
 		Gdx.input.setInputProcessor(this);
 
 		SoundService.changeMusic(2f, SoundService.mainMenu);
-
-		clientProcessingThreadPool = Executors.newCachedThreadPool();
-
-		updateThread = new Thread(() -> {
-			long prevFrame = System.currentTimeMillis();
-
-			while (true) {
-				try {
-					Thread.sleep(1);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-
-				if (System.currentTimeMillis() - prevFrame > Math.round(16f / updateRateMultiplier)) {
-					prevFrame = System.currentTimeMillis();
-					update(Gdx.graphics.getDeltaTime());
-				}
-			}
-		});
-
-		topographyQueryThread = new Thread(() -> {
-			long prevFrame1 = System.currentTimeMillis();
-			long prevFrame2 = System.currentTimeMillis();
-
-			while (true) {
-				try {
-					Thread.sleep(2);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-
-				if (!isInGame()) {
-					continue;
-				}
-
-				if (System.currentTimeMillis() - prevFrame1 > 16) {
-					if (Domain.getActiveWorld() != null) {
-						Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
-							(int) getGraphics().getCam().position.x,
-							(int) getGraphics().getCam().position.y
-						);
-					}
-					prevFrame1 = System.currentTimeMillis();
-				}
-
-				if (System.currentTimeMillis() - prevFrame2 > 200) {
-					if (Domain.getActiveWorld() != null) {
-						Domain.getIndividuals().values().stream().forEach(individual -> {
-							Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
-								(int) individual.getState().position.x,
-								(int) individual.getState().position.y
-							);
-						});
-					}
-					prevFrame2 = System.currentTimeMillis();
-				}
-			}
-		});
-
-		particleUpdateThread = new Thread(() -> {
-			long prevFrame = System.currentTimeMillis();
-
-			while (true) {
-				try {
-					Thread.sleep(1);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-
-				if (System.currentTimeMillis() - prevFrame > 16) {
-					prevFrame = System.currentTimeMillis();
-					World world = Domain.getActiveWorld();
-					if (world != null) {
-						Collection<Particle> particles = world.getClientParticles();
-						for (Particle p : particles) {
-							if (p.getRemovalCondition().call()) {
-								Domain.getActiveWorld().getClientParticles().remove(p);
-							}
-							try {
-								p.update(0.012f);
-							} catch (NoTileFoundException e) {}
-						}
-					}
-				}
-			}
-		});
-
-
-		updateThread.setPriority(Thread.MAX_PRIORITY);
-		updateThread.setName("Update thread");
-		updateThread.start();
-
-		particleUpdateThread.setName("Particle thread");
-		particleUpdateThread.start();
-
-		topographyQueryThread.setName("Topography query thread");
-		topographyQueryThread.start();
 
 		ClientServerInterface.setServer(true);
 		Domain.getWorlds().put(
@@ -425,9 +313,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	@SuppressWarnings("unused")
 	private void rightClick() throws NoTileFoundException {
 		long currentTime = System.currentTimeMillis();
-		boolean doubleClick = rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
+		boolean doubleClick = Controls.rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
 		boolean uiClicked = false;
-		rightDoubleClickTimer = currentTime;
+		Controls.rightDoubleClickTimer = currentTime;
 
 		if (cursorBoundTask != null && cursorBoundTask.canCancel()) {
 			cursorBoundTask = null;
@@ -580,8 +468,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		long currentTimeMillis = System.currentTimeMillis();
 
-		boolean doubleClick = leftDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTimeMillis;
-		leftDoubleClickTimer = currentTimeMillis;
+		boolean doubleClick = Controls.leftDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTimeMillis;
+		Controls.leftDoubleClickTimer = currentTimeMillis;
 
 		boolean uiClicked = UserInterface.leftClick();
 
@@ -727,8 +615,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (Gdx.input.isButtonPressed(getKeyMappings().middleClick.keyCode) && isInGame()) {
-			getGraphics().getCam().position.x = oldCamX + camDragX - screenX;
-			getGraphics().getCam().position.y = oldCamY + screenY - camDragY;
+			getGraphics().getCam().position.x = Controls.oldCamX + Controls.camDragX - screenX;
+			getGraphics().getCam().position.y = Controls.oldCamY + screenY - Controls.camDragY;
 		}
 		return false;
 	}
@@ -822,26 +710,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	/**
-	 * The game update logic, use delta to control the update speed to keep it
-	 * constant.
-	 */
-	private void update(float delta) {
-		try {
-			GameSaver.update();
-
-			// Do not update if game is paused
-			// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-			if (!paused && !GameSaver.isSaving() && Domain.getActiveWorld() != null && !loading) {
-				Domain.getActiveWorld().update();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			Gdx.app.exit();
-		}
-	}
-
-
-	/**
 	 * Camera movement controls
 	 */
 	private void cameraControl() {
@@ -866,11 +734,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Camera dragging processing
 	 */
 	private void saveCamDragCoordinates(int screenX, int screenY) {
-		oldCamX = (int)getGraphics().getCam().position.x;
-		oldCamY = (int)getGraphics().getCam().position.y;
+		Controls.oldCamX = (int)getGraphics().getCam().position.x;
+		Controls.oldCamY = (int)getGraphics().getCam().position.y;
 
-		camDragX = screenX;
-		camDragY = screenY;
+		Controls.camDragX = screenX;
+		Controls.camDragY = screenY;
 	}
 
 
@@ -1036,6 +904,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	public static Graphics getGraphics() {
-		return graphics;
+		return Wiring.injector.getInstance(Graphics.class);
 	}
 }

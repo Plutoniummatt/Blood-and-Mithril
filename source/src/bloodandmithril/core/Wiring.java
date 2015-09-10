@@ -1,6 +1,5 @@
 package bloodandmithril.core;
 
-import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -13,9 +12,15 @@ import com.google.inject.Module;
 @Copyright("Matthew Peck 2015")
 public class Wiring {
 
-	public static Injector injector = Guice.createInjector(new Module() {
-		@Override
-		public void configure(Binder binder) {
-		}
-	});
+	public static Injector injector;
+
+	private Wiring() {
+	}
+
+	/**
+	 * Sets up the injector
+	 */
+	public static void setup(Module... modules) {
+		injector = Guice.createInjector(modules);
+	}
 }

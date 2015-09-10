@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Threading;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.ui.UserInterface;
@@ -25,6 +27,7 @@ import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
 
 /**
  * @author Matt
@@ -34,12 +37,16 @@ public class MainMenuWindow extends Window {
 
 	private Button singlePlayer, multiPlayer, options, exit;
 
+	@Inject
+	private Threading threading;
+
 	/**
-	 * Overloaded constructor - uses default colors
+	 * Constructor
 	 */
 	public MainMenuWindow(boolean closeable) {
 		super(200, 130, "Main Menu", true, false, false, closeable);
 		loadButtons();
+		Wiring.injector.injectMembers(this);
 	}
 
 
@@ -186,7 +193,7 @@ public class MainMenuWindow extends Window {
 								singlePlayer();
 							} else {
 								UserInterface.addGlobalMessage("Connecting", "Attemping to connect to " + args[0].toString());
-								BloodAndMithrilClient.clientProcessingThreadPool.execute(() -> {
+								threading.clientProcessingThreadPool.execute(() -> {
 									try {
 										removeWindows();
 										Thread.sleep(1000);

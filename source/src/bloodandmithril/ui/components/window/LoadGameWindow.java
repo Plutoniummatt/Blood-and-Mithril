@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Threading;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
@@ -22,6 +24,7 @@ import bloodandmithril.util.Fonts;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 /**
  * UI responsible for loading games.
@@ -33,6 +36,9 @@ public class LoadGameWindow extends Window {
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private ScrollableListingPanel<PersistenceMetaData, Date> savedGames;
+
+	@Inject
+	private Threading threading;
 
 	/**
 	 * Constructor
@@ -49,6 +55,8 @@ public class LoadGameWindow extends Window {
 			true,
 			true
 		);
+
+		Wiring.injector.injectMembers(this);
 
 		setupListing();
 	}
@@ -104,7 +112,7 @@ public class LoadGameWindow extends Window {
 						metadata.name.length() * 9,
 						16,
 						() -> {
-							BloodAndMithrilClient.clientProcessingThreadPool.execute(
+							threading.clientProcessingThreadPool.execute(
 								() -> {
 									setClosing(true);
 									ClientServerInterface.setServer(true);

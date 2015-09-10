@@ -89,8 +89,9 @@ import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.character.proficiency.proficiencies.Cooking;
 import bloodandmithril.character.proficiency.proficiencies.Smithing;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Threading;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
@@ -330,11 +331,15 @@ public class ClientServerInterface {
 
 	public static HashMap<Integer, String> connectedPlayers = Maps.newHashMap();
 
+	private static Threading threading;
+
 	/**
 	 * Sets up the client and attempt to connect to the server
 	 * @throws IOException
 	 */
 	public static void setupAndConnect(String ip) throws IOException {
+		threading = Wiring.injector.getInstance(Threading.class);
+
 		clientName = InetAddress.getLocalHost().getHostName();
 
 		client = new Client(65536, 65536);
@@ -380,7 +385,7 @@ public class ClientServerInterface {
 							}
 						);
 					} else if (response instanceof SynchronizeIndividualResponse) {
-						BloodAndMithrilClient.clientProcessingThreadPool.execute(
+						threading.clientProcessingThreadPool.execute(
 							() -> {
 								response.acknowledge();
 							}
@@ -396,7 +401,7 @@ public class ClientServerInterface {
 							}
 						);
 					} else {
-						BloodAndMithrilClient.clientProcessingThreadPool.execute(
+						threading.clientProcessingThreadPool.execute(
 							() -> {
 								try {
 									response.acknowledge();

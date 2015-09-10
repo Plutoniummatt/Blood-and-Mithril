@@ -20,13 +20,20 @@ import com.google.common.collect.Sets;
  */
 @Copyright("Matthew Peck 2014")
 public class Controls implements Serializable {
+	private static final long serialVersionUID = -1052808676922281824L;
+
 	/** The maximum spread of individuals when going to location */
 	public static final float INDIVIDUAL_SPREAD = 600f;
 
 	/** The tolerance for double clicking */
 	public static final long DOUBLE_CLICK_TIME = 250L;
 
-	private static final long serialVersionUID = -1052808676922281824L;
+	/** For camera dragging */
+	public static int camDragX, camDragY, oldCamX, oldCamY;
+
+	/** The current timer for double clicking */
+	public static long leftDoubleClickTimer = 0L;
+	public static long rightDoubleClickTimer = 0L;
 
 	public static final Map<Integer, String> keyMap = Maps.newHashMap();
 	public static final Map<Integer, String> keyName = Maps.newHashMap();
