@@ -31,6 +31,12 @@ public class Graphics {
 	/** The cam margin is the extra 'space' required for frame buffers so that dynamic tile lighting works */
 	private int camMarginX, camMarginY;
 
+	/** Current 'amount' of fade */
+	private float fadeAlpha;
+
+	/** Whether the screen is currently fading */
+	private boolean fading;
+
 	@Inject
 	public Graphics() {
 		this.width = ConfigPersistenceService.getConfig().getResX();
@@ -83,6 +89,26 @@ public class Graphics {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+
+	public float getFadeAlpha() {
+		return fadeAlpha;
+	}
+
+
+	public void setFadeAlpha(float fadeAlpha) {
+		this.fadeAlpha = fadeAlpha;
+	}
+
+
+	public boolean isFading() {
+		return fading;
+	}
+
+
+	public void setFading(boolean fading) {
+		this.fading = fading;
 	}
 
 

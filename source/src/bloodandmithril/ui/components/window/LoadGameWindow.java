@@ -11,6 +11,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
@@ -39,6 +40,9 @@ public class LoadGameWindow extends Window {
 
 	@Inject
 	private Threading threading;
+
+	@Inject
+	private Graphics graphics;
 
 	/**
 	 * Constructor
@@ -116,7 +120,7 @@ public class LoadGameWindow extends Window {
 								() -> {
 									setClosing(true);
 									ClientServerInterface.setServer(true);
-									BloodAndMithrilClient.fadeOut();
+									graphics.setFading(true);
 									MainMenuWindow.removeWindows();
 									BloodAndMithrilClient.threadWait(2000);
 									BloodAndMithrilClient.setLoading(true);
@@ -130,7 +134,7 @@ public class LoadGameWindow extends Window {
 
 									BloodAndMithrilClient.setLoading(false);
 									BloodAndMithrilClient.threadWait(2000);
-									BloodAndMithrilClient.fadeIn();
+									graphics.setFading(false);
 								}
 							);
 						},

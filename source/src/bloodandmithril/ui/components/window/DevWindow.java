@@ -31,7 +31,9 @@ import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -71,6 +73,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 /**
  * Window containing dev features
@@ -82,11 +85,15 @@ public class DevWindow extends Window {
 
 	private final ScrollableListingPanel<String, Object> panel;
 
+	@Inject
+	private Graphics graphics;
+
 	/**
 	 * Constructor
 	 */
 	public DevWindow(int x, int y, int length, int height, boolean active) {
 		super(length, height, "Developer", active, 500, 300, false, true, true);
+		Wiring.injector.injectMembers(this);
 
 		panel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35) {
 			@Override
@@ -193,11 +200,11 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.J) {
-			BloodAndMithrilClient.fadeOut();
+			graphics.setFading(true);
 		}
 
 		if (keyCode == Keys.K) {
-			BloodAndMithrilClient.fadeIn();
+			graphics.setFading(false);;
 		}
 
 		if (keyCode == Keys.P) {

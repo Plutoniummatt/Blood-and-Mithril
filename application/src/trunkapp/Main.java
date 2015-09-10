@@ -56,7 +56,6 @@ public class Main {
 			}
 		};
 
-		BloodAndMithrilClient.setKeyMappings(ConfigPersistenceService.getConfig().getKeyMappings());
 		new LwjglApplication(client, cfg);
 	}
 }
