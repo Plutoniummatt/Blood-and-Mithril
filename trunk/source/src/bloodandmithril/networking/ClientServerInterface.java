@@ -390,7 +390,7 @@ public class ClientServerInterface {
 							response.acknowledge();
 						});
 					} else if (response instanceof MoveIndividual || response instanceof IndividualSelection) {
-						AIProcessor.aiThreadTasks.add(
+						AIProcessor.addTaskToAIThread(
 							() -> {
 								response.acknowledge();
 							}

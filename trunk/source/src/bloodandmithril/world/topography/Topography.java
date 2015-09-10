@@ -1,7 +1,6 @@
 package bloodandmithril.world.topography;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -9,7 +8,6 @@ import java.util.concurrent.BlockingQueue;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.lwjgl.opengl.Display;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.networking.ClientServerInterface;
@@ -110,7 +108,7 @@ public class Topography {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
 					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(false, BloodAndMithrilClient.cam, shader, uniformSettings);
+					getChunkMap().get(x).get(y).render(false, getGraphics().getCam(), shader, uniformSettings);
 				}
 			}
 		}
@@ -131,7 +129,7 @@ public class Topography {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
 					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(true, BloodAndMithrilClient.cam, shader, uniformSettings);
+					getChunkMap().get(x).get(y).render(true, getGraphics().getCam(), shader, uniformSettings);
 				}
 			}
 		}
@@ -426,10 +424,10 @@ public class Topography {
 	 */
 	public void loadOrGenerateNullChunksAccordingToPosition(int x, int y) {
 
-		int bottomLeftX = convertToChunkCoord((float)(x - WIDTH / 2));
-		int bottomLeftY = convertToChunkCoord((float)(y - HEIGHT / 2));
-		int topRightX = bottomLeftX + convertToChunkCoord((float)WIDTH);
-		int topRightY = bottomLeftY + convertToChunkCoord((float)HEIGHT);
+		int bottomLeftX = convertToChunkCoord((float)(x - getGraphics().getWidth() / 2));
+		int bottomLeftY = convertToChunkCoord((float)(y - getGraphics().getHeight() / 2));
+		int topRightX = bottomLeftX + convertToChunkCoord((float)getGraphics().getWidth());
+		int topRightY = bottomLeftY + convertToChunkCoord((float)getGraphics().getHeight());
 
 		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
 			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {

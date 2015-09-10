@@ -1,6 +1,6 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
 
@@ -115,12 +115,12 @@ public class IndividualStatusWindow extends Window {
 			return;
 		}
 
-		spriteBatch.setShader(Shaders.filter);
+		getGraphics().getSpriteBatch().setShader(Shaders.filter);
 		Shaders.filter.setUniformf("color", 1f, 1f, 1f, getAlpha() * (isActive() ? 1.0f : 0.7f));
-		spriteBatch.draw(icons, x + 20, y - 162);
+		getGraphics().getSpriteBatch().draw(icons, x + 20, y - 162);
 
 		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
-		BloodAndMithrilClient.spriteBatch.flush();
+		getGraphics().getSpriteBatch().flush();
 		renderConditionsPanel();
 
 		renderBars();
@@ -248,10 +248,10 @@ public class IndividualStatusWindow extends Window {
 
 	private boolean drawLine(String string, int yOff) {
 		if (y - yOff < y - height + 60) {
-			defaultFont.draw(BloodAndMithrilClient.spriteBatch, "...", x + 6, y - yOff);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "...", x + 6, y - yOff);
 			return false;
 		} else {
-			defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate(string), x + 6, y - yOff);
+			defaultFont.draw(getGraphics().getSpriteBatch(), truncate(string), x + 6, y - yOff);
 			return true;
 		}
 	}

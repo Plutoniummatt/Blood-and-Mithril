@@ -1,5 +1,6 @@
 package bloodandmithril.persistence;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.persistence.GameSaver.getSavePath;
 import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.util.Logger.loaderDebug;
@@ -93,8 +94,8 @@ public class GameLoader {
 	private static void loadCameraPosition() {
 		Vector2 savedCameraPosition = ParameterPersistenceService.getParameters().getSavedCameraPosition();
 		if (savedCameraPosition != null) {
-			BloodAndMithrilClient.cam.position.x = savedCameraPosition.x;
-			BloodAndMithrilClient.cam.position.y = savedCameraPosition.y;
+			getGraphics().getCam().position.x = savedCameraPosition.x;
+			getGraphics().getCam().position.y = savedCameraPosition.y;
 		}
 	}
 }

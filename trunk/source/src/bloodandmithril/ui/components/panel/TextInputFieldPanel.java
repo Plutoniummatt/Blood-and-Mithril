@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.panel;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+
 import java.util.Deque;
 import java.util.List;
 
@@ -70,10 +72,10 @@ public class TextInputFieldPanel extends Panel {
 		Component.shapeRenderer.rect(x, y - height, width, 22);
 		Component.shapeRenderer.end();
 
-		BloodAndMithrilClient.spriteBatch.end();
-		BloodAndMithrilClient.spriteBatch.begin();
+		getGraphics().getSpriteBatch().end();
+		getGraphics().getSpriteBatch().begin();
 		Fonts.defaultFont.setColor(Color.ORANGE.r, Color.ORANGE.g, Color.ORANGE.b, parent.isActive() ? parent.getAlpha() : 0.4f * parent.getAlpha());
-		Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, inputText == null ? "" : Util.fitToTextInputBox(inputText, width, currentBeginningIndex, true), x + 4, y - height + 16);
+		Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), inputText == null ? "" : Util.fitToTextInputBox(inputText, width, currentBeginningIndex, true), x + 4, y - height + 16);
 	}
 
 

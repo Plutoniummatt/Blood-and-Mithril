@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon.ranged;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -158,7 +158,7 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 	public void render(Vector2 position, float angle, boolean flipX) {
 		TextureRegion texture = getTextureRegion();
 
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 47 : 47),
 			position.y - 3,

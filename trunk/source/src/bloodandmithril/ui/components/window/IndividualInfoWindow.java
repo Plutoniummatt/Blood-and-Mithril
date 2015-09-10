@@ -1,12 +1,12 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
 import java.util.List;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
@@ -80,16 +80,16 @@ public class IndividualInfoWindow extends Window {
 		String messageToDisplay = Util.fitToWindow(individual.getDescription(), width, (height - 250) / 25);
 
 		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
-		defaultFont.drawMultiLine(BloodAndMithrilClient.spriteBatch, messageToDisplay, x + 6, y - 195);
+		defaultFont.drawMultiLine(getGraphics().getSpriteBatch(), messageToDisplay, x + 6, y - 195);
 	}
 
 
 	private boolean drawLine(String string, int yOff) {
 		if (y - yOff < y - height + 60) {
-			defaultFont.draw(BloodAndMithrilClient.spriteBatch, "...", x + 6, y - yOff);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "...", x + 6, y - yOff);
 			return false;
 		} else {
-			defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate(string), x + 6, y - yOff);
+			defaultFont.draw(getGraphics().getSpriteBatch(), truncate(string), x + 6, y - yOff);
 			return true;
 		}
 	}

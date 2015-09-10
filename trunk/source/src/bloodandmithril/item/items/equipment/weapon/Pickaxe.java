@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public abstract class Pickaxe<T extends Metal> extends TwoHandedMeleeWeapon<T> i
 	public void render(Vector2 position, float angle, boolean flipX) {
 		TextureRegion texture = getTextureRegion();
 
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,

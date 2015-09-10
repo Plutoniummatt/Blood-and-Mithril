@@ -1,6 +1,7 @@
 package bloodandmithril.audio;
 
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.datastructure.WrapperForThree.wrap;
@@ -12,7 +13,6 @@ import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Function;
@@ -85,7 +85,7 @@ public class SoundService {
 			return 0f;
 		}
 
-		float panValue = (location.x - BloodAndMithrilClient.cam.position.x) / (BloodAndMithrilClient.WIDTH / 2);
+		float panValue = (location.x - getGraphics().getCam().position.x) / (getGraphics().getWidth() / 2);
 
 		if (panValue > 0f) {
 			return Math.min(panValue, 0.99f);
@@ -191,10 +191,10 @@ public class SoundService {
 			return 0f;
 		}
 
-		Vector2 camPos = new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y);
+		Vector2 camPos = new Vector2(getGraphics().getCam().position.x, getGraphics().getCam().position.y);
 
 		float distance = Math.abs(location.cpy().sub(camPos).len());
-		float volume = Math.max(1f - distance / BloodAndMithrilClient.WIDTH, 0f);
+		float volume = Math.max(1f - distance / getGraphics().getWidth(), 0f);
 
 		return volume;
 	}

@@ -1,7 +1,6 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
@@ -89,10 +88,10 @@ public abstract class Window extends Component {
 	 * Overloaded contructor, uses default colors
 	 */
 	public Window(int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, boolean closeable) {
-		this((WIDTH - length) / 2, (HEIGHT + height) / 2, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable, resizeable, closeable);
+		this((getGraphics().getWidth() - length) / 2, (getGraphics().getHeight() + height) / 2, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable, resizeable, closeable);
 	}
-	
-	
+
+
 	/**
 	 * Overloaded contructor, uses default colors
 	 */
@@ -105,7 +104,7 @@ public abstract class Window extends Component {
 	 * Overloaded contructor, uses default colors, position set to centre of screen, min width/height set to initial values
 	 */
 	public Window(int length, int height, String title, boolean active, boolean minimizable, boolean resizeable, boolean closeable) {
-		this((WIDTH - length) / 2, (HEIGHT + height) / 2, length, height, Color.GRAY, Color.BLACK, title, active, length, height, minimizable, resizeable, closeable);
+		this((getGraphics().getWidth() - length) / 2, (getGraphics().getHeight() + height) / 2, length, height, Color.GRAY, Color.BLACK, title, active, length, height, minimizable, resizeable, closeable);
 	}
 
 
@@ -286,20 +285,20 @@ public abstract class Window extends Component {
 		resize();
 		reposition();
 
-		BloodAndMithrilClient.spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), width, height, isActive(), backGroundColor);
 		renderBox(x, y, width, height, isActive(), borderColor);
 		renderSeparator();
 		renderWindowButtons();
 		renderTitle();
-		BloodAndMithrilClient.spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 
-		BloodAndMithrilClient.spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		internalWindowRender();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
-		BloodAndMithrilClient.spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 	}
 
 
@@ -335,9 +334,9 @@ public abstract class Window extends Component {
 	 * Renders the separator that separates the body of the window from the head
 	 */
 	private void renderSeparator() {
-		BloodAndMithrilClient.spriteBatch.draw(separatorEnd, x + left.getRegionWidth() + 4, y - 20);
-		BloodAndMithrilClient.spriteBatch.draw(separatorBody, x + left.getRegionWidth() + 5, y - 21, width - 10, separatorBody.getRegionHeight());
-		BloodAndMithrilClient.spriteBatch.draw(separatorEnd, x + width - 3, y - 20);
+		getGraphics().getSpriteBatch().draw(separatorEnd, x + left.getRegionWidth() + 4, y - 20);
+		getGraphics().getSpriteBatch().draw(separatorBody, x + left.getRegionWidth() + 5, y - 21, width - 10, separatorBody.getRegionHeight());
+		getGraphics().getSpriteBatch().draw(separatorEnd, x + width - 3, y - 20);
 	}
 
 
@@ -391,9 +390,9 @@ public abstract class Window extends Component {
 	 * Render the title of this window
 	 */
 	private void renderTitle() {
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
+		getGraphics().getSpriteBatch().setShader(Shaders.text);
 		defaultFont.setColor(1f, 1f, 1f, 1f * getAlpha() * (isActive() ? 1f : 0.7f));
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, truncate(title), x + 6, y - 3);
+		defaultFont.draw(getGraphics().getSpriteBatch(), truncate(title), x + 6, y - 3);
 		defaultFont.setColor(1f, 1f, 1f, 1f);
 	}
 

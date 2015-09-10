@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public abstract class OneHandedSpear<T extends Metal> extends OneHandedMeleeWeap
 	public void render(Vector2 position, float angle, boolean flipX) {
 		TextureRegion texture = getTextureRegion();
 
-		spriteBatch.draw( // TODO origin & orientation
+		getGraphics().getSpriteBatch().draw( // TODO origin & orientation
 			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,

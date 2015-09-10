@@ -1,8 +1,8 @@
 package bloodandmithril.prop.plant;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -41,7 +41,7 @@ public class DryGrass extends PlantProp {
 
 	@Override
 	public void render() {
-		spriteBatch.draw(textureRegion, position.x - width / 2, position.y - 5);
+		getGraphics().getSpriteBatch().draw(textureRegion, position.x - width / 2, position.y - 5);
 	}
 
 

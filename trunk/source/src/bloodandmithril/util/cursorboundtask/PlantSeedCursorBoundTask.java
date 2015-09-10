@@ -1,8 +1,8 @@
 package bloodandmithril.util.cursorboundtask;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static com.badlogic.gdx.Gdx.gl;
@@ -76,10 +76,10 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			spriteBatch.begin();
-			spriteBatch.setColor(executionConditionMet() ? Color.GREEN : Color.RED);
-			spriteBatch.draw(UserInterface.currentArrow, x - 5, y);
-			spriteBatch.end();
+			getGraphics().getSpriteBatch().begin();
+			getGraphics().getSpriteBatch().setColor(executionConditionMet() ? Color.GREEN : Color.RED);
+			getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, x - 5, y);
+			getGraphics().getSpriteBatch().end();
 			gl.glDisable(GL_BLEND);
 		} catch (NoTileFoundException e) {}
 	}

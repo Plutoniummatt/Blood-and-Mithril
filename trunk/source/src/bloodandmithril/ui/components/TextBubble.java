@@ -1,6 +1,6 @@
 package bloodandmithril.ui.components;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.io.Serializable;
@@ -74,16 +74,16 @@ public class TextBubble extends Component {
 		renderRectangle((int) screen.x + 2 + xOffset - width / 2, (int) screen.y + 2 + yOffset+ height / 2, width, height, isActive(), Color.BLACK);
 		renderBox((int) screen.x + xOffset - width / 2, (int) screen.y + yOffset + height / 2, width, height, isActive(), Color.GRAY);
 
-		spriteBatch.setShader(Shaders.text);
+		getGraphics().getSpriteBatch().setShader(Shaders.text);
 		defaultFont.setColor(Colors.modulateAlpha(Color.WHITE, getAlpha()));
 		defaultFont.drawWrapped(
-			spriteBatch,
+			getGraphics().getSpriteBatch(),
 			bean.text,
 			(int) screen.x + 5 + xOffset - width / 2,
 			(int) screen.y - 5 + yOffset + height / 2,
 			width - 5
 		);
-		spriteBatch.flush();
+		getGraphics().getSpriteBatch().flush();
 	}
 
 

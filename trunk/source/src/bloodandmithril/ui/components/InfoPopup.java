@@ -1,12 +1,12 @@
 package bloodandmithril.ui.components;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Function;
 
@@ -32,7 +32,7 @@ public class InfoPopup extends Component {
 		this.expiryFunction = expiryFunction;
 		this.borderColor = Color.GRAY;
 		this.backGroundColor = Color.BLACK;
-		
+
 		this.panel.parent = this;
 	}
 
@@ -57,7 +57,7 @@ public class InfoPopup extends Component {
 	@Override
 	protected void internalComponentRender() {
 		setActive(true);
-		BloodAndMithrilClient.spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		renderRectangle(
 			getMouseScreenX() + bottomLeft.getRegionWidth() + 10,
 			getMouseScreenY() + bottomLeft.getRegionHeight() - 10,
@@ -75,12 +75,12 @@ public class InfoPopup extends Component {
 			isActive(),
 			borderColor
 		);
-		BloodAndMithrilClient.spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 
-		BloodAndMithrilClient.spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		panel.x = getMouseScreenX() + 20;
 		panel.y = getMouseScreenY() - 20;
 		panel.render();
-		BloodAndMithrilClient.spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 	}
 }

@@ -19,7 +19,7 @@ import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGH
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT_ONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -41,7 +41,6 @@ import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
 import bloodandmithril.core.Name;
@@ -711,10 +710,10 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 		TextureRegion hair = hairStyleFemale.get(hairStyle);
 		SpacialConfiguration helmetConfig = getHelmetSpatialConfigration();
 
-		spriteBatch.setShader(Shaders.colorize);
-		Shaders.colorize.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+		getGraphics().getSpriteBatch().setShader(Shaders.colorize);
+		Shaders.colorize.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
 		if (animationIndex == 1) {
-			spriteBatch.draw(
+			getGraphics().getSpriteBatch().draw(
 				WorldRenderer.individualTexture,
 				getState().position.x - hair.getRegionWidth() / 2 + helmetConfig.position.x,
 				getState().position.y + helmetConfig.position.y,

@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.equipment.offhand;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -46,7 +46,7 @@ public abstract class OffhandEquipment extends Equipable {
 		TextureRegion texture = getTextureRegion();
 		Vector2 grip = getGripLocation();
 
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - grip.x : grip.x),
 			position.y - grip.y,

@@ -94,7 +94,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 		if (AIProcessor.aiThread != null && AIProcessor.aiThread.isAlive()) {
 			if (mode == AIMode.AUTO && !getHost().isAISuppressed()) {
-				AIProcessor.aiThreadTasks.add(() ->
+				AIProcessor.addTaskToAIThread(() ->
 					{
 						switch (mode) {
 						case AUTO:

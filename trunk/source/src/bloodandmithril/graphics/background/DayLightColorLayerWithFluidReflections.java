@@ -1,9 +1,8 @@
 package bloodandmithril.graphics.background;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-
 import java.util.TreeMap;
 
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.WrapperForTwo;
@@ -32,11 +31,11 @@ public class DayLightColorLayerWithFluidReflections extends Layer {
 
 		map.put(400, WrapperForTwo.wrap(2, 0));
 		map.put(873, WrapperForTwo.wrap(3, 7));
-		
+
 		for (int i = 931; i < 5931; i += 200) {
 			map.put(i, WrapperForTwo.wrap(0, 0));
 		}
-		
+
 		for (int i = 200; i > -5000; i -= 200) {
 			map.put(i, WrapperForTwo.wrap(0, 0));
 		}
@@ -47,7 +46,7 @@ public class DayLightColorLayerWithFluidReflections extends Layer {
 
 	@Override
 	public void preRender() {
-		spriteBatch.setShader(Shaders.pass);
+		BloodAndMithrilClient.getGraphics().getSpriteBatch().setShader(Shaders.pass);
 	}
 
 

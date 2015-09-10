@@ -1,14 +1,12 @@
 package bloodandmithril.graphics.background;
 
-import static bloodandmithril.core.BloodAndMithrilClient.cam;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static com.badlogic.gdx.Gdx.files;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
@@ -51,19 +49,19 @@ public class BackgroundImages implements Serializable {
 	 */
 	public void renderBackground() {
 		// Render the sea
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.pass);
-		spriteBatch.draw(textures.get(1), 0, 0, BloodAndMithrilClient.WIDTH, Layer.getScreenHorizonY() - 1);
-		spriteBatch.end();
-		
+		getGraphics().getSpriteBatch().begin();
+		getGraphics().getSpriteBatch().setShader(Shaders.pass);
+		getGraphics().getSpriteBatch().draw(textures.get(1), 0, 0, getGraphics().getWidth(), Layer.getScreenHorizonY() - 1);
+		getGraphics().getSpriteBatch().end();
+
 		for (Layer layer : layers) {
-			spriteBatch.begin();
+			getGraphics().getSpriteBatch().begin();
 			layer.preRender();
 			layer.render(
-				(int) cam.position.x,
-				(int) cam.position.y
+				(int) getGraphics().getCam().position.x,
+				(int) getGraphics().getCam().position.y
 			);
-			spriteBatch.end();
+			getGraphics().getSpriteBatch().end();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.item.items.material.IngotItem.ingot;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -88,15 +88,15 @@ public class Furnace extends CraftingStation implements Container {
 	@Override
 	protected void internalRender(float constructionProgress) {
 		if (getConstructionProgress() == 0f) {
-			spriteBatch.draw(FURNACE, position.x - width / 2, position.y);
+			getGraphics().getSpriteBatch().draw(FURNACE, position.x - width / 2, position.y);
 		} else if (getConstructionProgress() >= 1f) {
 			if (isOccupied()) {
-				spriteBatch.draw(FURNACE_BURNING, position.x - width / 2, position.y);
+				getGraphics().getSpriteBatch().draw(FURNACE_BURNING, position.x - width / 2, position.y);
 			} else {
-				spriteBatch.draw(FURNACE, position.x - width / 2, position.y);
+				getGraphics().getSpriteBatch().draw(FURNACE, position.x - width / 2, position.y);
 			}
 		} else {
-			spriteBatch.draw(inProgressTextures.floorEntry(getConstructionProgress()).getValue(), position.x - width / 2, position.y);
+			getGraphics().getSpriteBatch().draw(inProgressTextures.floorEntry(getConstructionProgress()).getValue(), position.x - width / 2, position.y);
 		}
 	}
 

@@ -1,8 +1,6 @@
 package bloodandmithril.performance;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
-import static bloodandmithril.core.BloodAndMithrilClient.cam;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
@@ -71,10 +69,10 @@ public class PositionalIndexMap implements Serializable {
 	public Collection<Integer> getOnScreenEntities(Class<?> clazz) {
 		return getEntitiesWithinBounds(
 			clazz,
-			cam.position.x - WIDTH,
-			cam.position.x + WIDTH,
-			cam.position.y + HEIGHT,
-			cam.position.y - HEIGHT
+			getGraphics().getCam().position.x - getGraphics().getWidth(),
+			getGraphics().getCam().position.x + getGraphics().getWidth(),
+			getGraphics().getCam().position.y + getGraphics().getHeight(),
+			getGraphics().getCam().position.y - getGraphics().getHeight()
 		);
 	}
 

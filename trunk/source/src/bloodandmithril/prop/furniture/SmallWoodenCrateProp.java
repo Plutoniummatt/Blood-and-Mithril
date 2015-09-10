@@ -1,6 +1,6 @@
 package bloodandmithril.prop.furniture;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.function.Function;
 
@@ -194,7 +194,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 
 	@Override
 	public void render() {
-		spriteBatch.draw(woodenCrate, position.x - width / 2, position.y);
+		getGraphics().getSpriteBatch().draw(woodenCrate, position.x - width / 2, position.y);
 	}
 
 

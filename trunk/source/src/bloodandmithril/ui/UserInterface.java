@@ -1,9 +1,7 @@
 package bloodandmithril.ui;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
-import static bloodandmithril.core.BloodAndMithrilClient.cam;
 import static bloodandmithril.core.BloodAndMithrilClient.getCursorBoundTask;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
@@ -14,7 +12,6 @@ import static bloodandmithril.core.BloodAndMithrilClient.paused;
 import static bloodandmithril.core.BloodAndMithrilClient.ping;
 import static bloodandmithril.core.BloodAndMithrilClient.screenToWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.screenToWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
@@ -197,8 +194,8 @@ public class UserInterface {
 	/**
 	 * Setup for UI, makes everything it needs.
 	 *
-	 * @param WIDTH - initial window width
-	 * @param HEIGHT - initial window height
+	 * @param getGraphics().getWidth() - initial window width
+	 * @param getGraphics().getHeight() - initial window height
 	 */
 	public static synchronized void setup() {
 		loadBars();
@@ -215,8 +212,8 @@ public class UserInterface {
 
 		for (Component c : layeredComponents) {
 			if (c instanceof Window) {
-				((Window) c).x = Math.round(WIDTH * (float)((Window) c).x / oldW);
-				((Window) c).y = Math.round(HEIGHT * (float)((Window) c).y / oldH);
+				((Window) c).x = Math.round(getGraphics().getWidth() * (float)((Window) c).x / oldW);
+				((Window) c).y = Math.round(getGraphics().getHeight() * (float)((Window) c).y / oldH);
 			}
 		}
 	}
@@ -341,7 +338,7 @@ public class UserInterface {
 		//Individual sprites (Selected arrow, movement arrow etc)
 		renderIndividualUISprites();
 
-		spriteBatch.setShader(Shaders.text);
+		getGraphics().getSpriteBatch().setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
 
 		if (DEBUG && isServer()) {
@@ -371,9 +368,9 @@ public class UserInterface {
 			}
 		}
 
-		spriteBatch.setShader(Shaders.text);
+		getGraphics().getSpriteBatch().setShader(Shaders.text);
 		Shaders.text.setUniformMatrix("u_projTrans", UICamera.combined);
-		spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		if (DEBUG) {
 			renderDebugText();
 		}
@@ -383,7 +380,7 @@ public class UserInterface {
 		}
 		renderButtons();
 
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 
 		renderPauseScreen();
 		renderSavingScreen();
@@ -425,15 +422,15 @@ public class UserInterface {
 			Gdx.gl.glLineWidth(1f);
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(1f, 1f, 1f, averageBarAlpha);
-			shapeRenderer.rect(WIDTH / 2 - 200, 65, 400 * totalHealth / maxHealth, 5);
-			shapeRenderer.rect(WIDTH / 2 - 200, 55, 400 * totalStamina / maxStamina, 5);
-			shapeRenderer.rect(WIDTH / 2 - 200, 45, 400 * totalMana / maxMana, 5);
+			shapeRenderer.rect(getGraphics().getWidth() / 2 - 200, 65, 400 * totalHealth / maxHealth, 5);
+			shapeRenderer.rect(getGraphics().getWidth() / 2 - 200, 55, 400 * totalStamina / maxStamina, 5);
+			shapeRenderer.rect(getGraphics().getWidth() / 2 - 200, 45, 400 * totalMana / maxMana, 5);
 			shapeRenderer.end();
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(1f, 1f, 1f, averageBarAlpha);
-			shapeRenderer.rect(WIDTH / 2 - 200, 65, 400, 5);
-			shapeRenderer.rect(WIDTH / 2 - 200, 55, 400, 5);
-			shapeRenderer.rect(WIDTH / 2 - 200, 45, 400, 5);
+			shapeRenderer.rect(getGraphics().getWidth() / 2 - 200, 65, 400, 5);
+			shapeRenderer.rect(getGraphics().getWidth() / 2 - 200, 55, 400, 5);
+			shapeRenderer.rect(getGraphics().getWidth() / 2 - 200, 45, 400, 5);
 			shapeRenderer.end();
 			Gdx.gl.glDisable(GL_BLEND);
 		}
@@ -441,7 +438,7 @@ public class UserInterface {
 
 
 	private static synchronized void renderTextBubbles() {
-		spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 
 		ArrayDeque<TextBubble> newBubbles = new ArrayDeque<>();
 		for (TextBubble bubble : textBubbles) {
@@ -456,7 +453,7 @@ public class UserInterface {
 		}
 
 		textBubbles = newBubbles;
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 	}
 
 
@@ -510,15 +507,15 @@ public class UserInterface {
 			}
 
 			if (renderHint) {
-				spriteBatch.begin();
-				spriteBatch.setShader(Shaders.filter);
+				getGraphics().getSpriteBatch().begin();
+				getGraphics().getSpriteBatch().setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
-				Fonts.defaultFont.draw(spriteBatch, "?", getMouseScreenX() + 14, getMouseScreenY() - 5);
-				spriteBatch.flush();
+				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "?", getMouseScreenX() + 14, getMouseScreenY() - 5);
+				getGraphics().getSpriteBatch().flush();
 				Shaders.filter.setUniformf("color", Color.ORANGE);
-				Fonts.defaultFont.draw(spriteBatch, "?", getMouseScreenX() + 15, getMouseScreenY() - 5);
-				spriteBatch.end();
+				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "?", getMouseScreenX() + 15, getMouseScreenY() - 5);
+				getGraphics().getSpriteBatch().end();
 			}
 		}
 	}
@@ -550,45 +547,45 @@ public class UserInterface {
 			)
 		);
 
-		int position = BloodAndMithrilClient.HEIGHT - 270;
-		spriteBatch.begin();
-		Fonts.defaultFont.draw(spriteBatch, "Entities near cursor:", 5, position + 40);
+		int position = BloodAndMithrilClient.getGraphics().getHeight() - 270;
+		getGraphics().getSpriteBatch().begin();
+		Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "Entities near cursor:", 5, position + 40);
 		for (Object nearbyEntity : nearbyEntities) {
 			if (nearbyEntity instanceof Individual) {
-				Fonts.defaultFont.draw(spriteBatch, ((Individual) nearbyEntity).getId().getSimpleName() + " (" + nearbyEntity.getClass().getSimpleName() + ")", 5, position);
+				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), ((Individual) nearbyEntity).getId().getSimpleName() + " (" + nearbyEntity.getClass().getSimpleName() + ")", 5, position);
 			}
 
 			if (nearbyEntity instanceof Prop) {
-				Fonts.defaultFont.draw(spriteBatch, ((Prop) nearbyEntity).getClass().getSimpleName() + " " + ((Prop) nearbyEntity).id, 5, position);
+				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), ((Prop) nearbyEntity).getClass().getSimpleName() + " " + ((Prop) nearbyEntity).id, 5, position);
 			}
 			position = position - 20;
 		}
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 	}
 
 
 	private static void renderCursorBoundTaskText() {
 		if (getCursorBoundTask() != null) {
 			getCursorBoundTask().renderUIGuide();
-			spriteBatch.begin();
-			spriteBatch.setShader(Shaders.filter);
+			getGraphics().getSpriteBatch().begin();
+			getGraphics().getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 			Shaders.filter.setUniformf("color", Color.BLACK);
 			Fonts.defaultFont.draw(
-				spriteBatch,
+				getGraphics().getSpriteBatch(),
 				getCursorBoundTask().getShortDescription(),
 				BloodAndMithrilClient.getMouseScreenX() + 20,
 				BloodAndMithrilClient.getMouseScreenY() - 20
 			);
-			spriteBatch.flush();
+			getGraphics().getSpriteBatch().flush();
 			Shaders.filter.setUniformf("color", Color.WHITE);
 			Fonts.defaultFont.draw(
-				spriteBatch,
+				getGraphics().getSpriteBatch(),
 				getCursorBoundTask().getShortDescription(),
 				BloodAndMithrilClient.getMouseScreenX() + 21,
 				BloodAndMithrilClient.getMouseScreenY() - 21
 			);
-			spriteBatch.end();
+			getGraphics().getSpriteBatch().end();
 		}
 	}
 
@@ -684,16 +681,16 @@ public class UserInterface {
 	/** Darkens the screen by 80% and draws "Saving..." on the screen if the game is being saved */
 	private static void renderSavingScreen() {
 		if (isSaving()) {
-			spriteBatch.begin();
+			getGraphics().getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(DARK_SCREEN_COLOR);
-			shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
+			shapeRenderer.rect(0, 0, getGraphics().getWidth(), getGraphics().getHeight());
 			shapeRenderer.end();
 			savingButton.render(true, 1f);
 			gl.glDisable(GL_BLEND);
-			spriteBatch.end();
+			getGraphics().getSpriteBatch().end();
 		}
 	}
 
@@ -701,12 +698,12 @@ public class UserInterface {
 	/** Darkens the screen by 50% and draws an "unpause" button on the screen if the game is paused */
 	private static void renderPauseScreen() {
 		if (paused) {
-			spriteBatch.begin();
+			getGraphics().getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(DARK_SCREEN_COLOR);
-			shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
+			shapeRenderer.rect(0, 0, getGraphics().getWidth(), getGraphics().getHeight());
 			shapeRenderer.end();
 
 			if (unpauseButton != null) {
@@ -714,7 +711,7 @@ public class UserInterface {
 			}
 
 			gl.glDisable(GL_BLEND);
-			spriteBatch.end();
+			getGraphics().getSpriteBatch().end();
 		}
 	}
 
@@ -722,20 +719,20 @@ public class UserInterface {
 	/** Draws the loading screen */
 	private static void renderLoadingScreen() {
 		if (loading) {
-			spriteBatch.begin();
+			getGraphics().getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(Color.BLACK);
-			shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
+			shapeRenderer.rect(0, 0, getGraphics().getWidth(), getGraphics().getHeight());
 			shapeRenderer.end();
 
-			spriteBatch.setShader(Shaders.text);
+			getGraphics().getSpriteBatch().setShader(Shaders.text);
 			defaultFont.setColor(Color.YELLOW);
-			defaultFont.draw(spriteBatch, "Loading - " + ChunkLoader.loaderTasks.size(), WIDTH/2 - 60, HEIGHT/2);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Loading - " + ChunkLoader.loaderTasks.size(), getGraphics().getWidth()/2 - 60, getGraphics().getHeight()/2);
 
 			gl.glDisable(GL_BLEND);
-			spriteBatch.end();
+			getGraphics().getSpriteBatch().end();
 		}
 	}
 
@@ -895,7 +892,7 @@ public class UserInterface {
 
 
 	private static void renderIndividualUISprites() {
-		spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		for (Individual indi : Domain.getIndividuals().values()) {
 			if (indi.isSelected()) {
 				AITask currentTask = indi.getAI().getCurrentTask();
@@ -949,7 +946,7 @@ public class UserInterface {
 			}
 			indi.renderUIDecorations();
 		}
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 	}
 
 
@@ -973,7 +970,7 @@ public class UserInterface {
 			difference.cpy().nor().scl(14f)
 		);
 
-		spriteBatch.flush();
+		getGraphics().getSpriteBatch().flush();
 		shapeRenderer.begin(ShapeType.Line);
 		Gdx.gl20.glLineWidth(lineWidth);
 		Gdx.gl20.glEnable(GL20.GL_BLEND);
@@ -1010,9 +1007,9 @@ public class UserInterface {
 	/** Any text that is rendered on UI */
 	private static void renderUIText() {
 		defaultFont.setColor(Color.WHITE);
-		defaultFont.draw(spriteBatch, "Time: " + Domain.getActiveWorld().getEpoch().getTimeString(), 5, HEIGHT - 5);
-		defaultFont.draw(spriteBatch, "Date: " + Domain.getActiveWorld().getEpoch().getDateString(), 5, HEIGHT - 25);
-		defaultFont.draw(spriteBatch, "Ping: " + ping, 5, HEIGHT - 45);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Time: " + Domain.getActiveWorld().getEpoch().getTimeString(), 5, getGraphics().getHeight() - 5);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Date: " + Domain.getActiveWorld().getEpoch().getDateString(), 5, getGraphics().getHeight() - 25);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Ping: " + ping, 5, getGraphics().getHeight() - 45);
 
 		fps = (fps + Math.round(1f/Gdx.graphics.getDeltaTime())) / 2;
 		fpsTimer++;
@@ -1021,8 +1018,8 @@ public class UserInterface {
 			fpsTimer = 0;
 		}
 
-		defaultFont.draw(spriteBatch, "Framerate: " + fpsDisplayed, 5, HEIGHT - 65);
-		defaultFont.draw(spriteBatch, "Game speed: " + BloodAndMithrilClient.getUpdateRate() + "x", WIDTH - 165, 20);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Framerate: " + fpsDisplayed, 5, getGraphics().getHeight() - 65);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Game speed: " + BloodAndMithrilClient.getUpdateRate() + "x", getGraphics().getWidth() - 165, 20);
 		renderMouseText();
 	}
 
@@ -1059,13 +1056,13 @@ public class UserInterface {
 					text = "Force move";
 				}
 
-				spriteBatch.setShader(Shaders.filter);
+				getGraphics().getSpriteBatch().setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
-				Fonts.defaultFont.draw(spriteBatch, text, getMouseScreenX() + 14, getMouseScreenY() - 26);
-				spriteBatch.flush();
+				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), text, getMouseScreenX() + 14, getMouseScreenY() - 26);
+				getGraphics().getSpriteBatch().flush();
 				Shaders.filter.setUniformf("color", Color.ORANGE);
-				Fonts.defaultFont.draw(spriteBatch, text, getMouseScreenX() + 15, getMouseScreenY() - 25);
+				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), text, getMouseScreenX() + 15, getMouseScreenY() - 25);
 			} else if (rangedAttackPressed) {
 				boolean canAttackRanged = false;
 				for (Individual indi : Domain.getSelectedIndividuals()) {
@@ -1076,24 +1073,24 @@ public class UserInterface {
 				}
 
 				if (canAttackRanged) {
-					spriteBatch.setShader(Shaders.filter);
+					getGraphics().getSpriteBatch().setShader(Shaders.filter);
 					Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 					Shaders.filter.setUniformf("color", Color.BLACK);
-					Fonts.defaultFont.draw(spriteBatch, "Attack Ranged", getMouseScreenX() + 14, getMouseScreenY() - 26);
-					spriteBatch.flush();
+					Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "Attack Ranged", getMouseScreenX() + 14, getMouseScreenY() - 26);
+					getGraphics().getSpriteBatch().flush();
 					Shaders.filter.setUniformf("color", Color.ORANGE);
-					Fonts.defaultFont.draw(spriteBatch, "Attack Ranged", getMouseScreenX() + 15, getMouseScreenY() - 25);
+					Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "Attack Ranged", getMouseScreenX() + 15, getMouseScreenY() - 25);
 				}
 			} else if (mineTIlePressed) {
-				spriteBatch.flush();
+				getGraphics().getSpriteBatch().flush();
 				if (renderMouseOverTileHighlightBox(true)) {
-					spriteBatch.setShader(Shaders.filter);
+					getGraphics().getSpriteBatch().setShader(Shaders.filter);
 					Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 					Shaders.filter.setUniformf("color", Color.BLACK);
-					Fonts.defaultFont.draw(spriteBatch, "Mine", getMouseScreenX() + 14, getMouseScreenY() - 26);
-					spriteBatch.flush();
+					Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "Mine", getMouseScreenX() + 14, getMouseScreenY() - 26);
+					getGraphics().getSpriteBatch().flush();
 					Shaders.filter.setUniformf("color", Color.ORANGE);
-					Fonts.defaultFont.draw(spriteBatch, "Mine", getMouseScreenX() + 15, getMouseScreenY() - 25);
+					Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "Mine", getMouseScreenX() + 15, getMouseScreenY() - 25);
 				}
 			}
 		}
@@ -1101,7 +1098,7 @@ public class UserInterface {
 
 
 	private static void renderFloatingText() {
-		spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		Lists.newArrayList(floatingTexts).stream().forEach(text -> {
 			defaultFont.setColor(Colors.modulateAlpha(Color.BLACK, text.life / text.maxLife));
 
@@ -1109,19 +1106,19 @@ public class UserInterface {
 			if (text.ui) {
 				renderPos = text.worldPosition;
 			} else {
-				renderPos.x = text.worldPosition.x - cam.position.x + WIDTH/2 - text.text.length() * 5;
-				renderPos.y = text.worldPosition.y - cam.position.y + HEIGHT/2;
+				renderPos.x = text.worldPosition.x - getGraphics().getCam().position.x + getGraphics().getWidth()/2 - text.text.length() * 5;
+				renderPos.y = text.worldPosition.y - getGraphics().getCam().position.y + getGraphics().getHeight()/2;
 			}
 
 			defaultFont.draw(
-				spriteBatch,
+				getGraphics().getSpriteBatch(),
 				text.text,
 				renderPos.x - 1,
 				renderPos.y - 1
 			);
 			defaultFont.setColor(Colors.modulateAlpha(text.color, text.life / text.maxLife));
 			defaultFont.draw(
-				spriteBatch,
+				getGraphics().getSpriteBatch(),
 				text.text,
 				renderPos.x,
 				renderPos.y
@@ -1135,15 +1132,15 @@ public class UserInterface {
 				}
 			}
 		});
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 	}
 
 	/** Debug text */
 	private static void renderDebugText() {
 		defaultFont.setColor(Color.YELLOW);
-		defaultFont.draw(spriteBatch, Integer.toString(convertToWorldTileCoord(getMouseWorldX())) + ", " + Float.toString(convertToWorldTileCoord(getMouseWorldY())), getMouseScreenX() - 35, getMouseScreenY() - 35);
-		defaultFont.draw(spriteBatch, "Mouse World Coords: " + getMouseWorldX() + ", " + getMouseWorldY(), 5, 72);
-		defaultFont.draw(spriteBatch, "Centre of screen Coords: " + Float.toString(cam.position.x) + ", " + Float.toString(cam.position.y) + ", " + Float.toString(cam.zoom), 5, 52);
+		defaultFont.draw(getGraphics().getSpriteBatch(), Integer.toString(convertToWorldTileCoord(getMouseWorldX())) + ", " + Float.toString(convertToWorldTileCoord(getMouseWorldY())), getMouseScreenX() - 35, getMouseScreenY() - 35);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Mouse World Coords: " + getMouseWorldX() + ", " + getMouseWorldY(), 5, 72);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Centre of screen Coords: " + Float.toString(getGraphics().getCam().position.x) + ", " + Float.toString(getGraphics().getCam().position.y) + ", " + Float.toString(getGraphics().getCam().zoom), 5, 52);
 
 		int chunksInMemory = 0;
 		if (ClientServerInterface.isServer()) {
@@ -1153,11 +1150,10 @@ public class UserInterface {
 		}
 
 		defaultFont.setColor(Color.GREEN);
-		defaultFont.draw(spriteBatch, "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, HEIGHT - 105);
-		defaultFont.draw(spriteBatch, "Number of tasks queued in AI thread: " + Integer.toString(AIProcessor.aiThreadTasks.size()), 5, HEIGHT - 125);
-		defaultFont.draw(spriteBatch, "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoader.loaderTasks.size()), 5, HEIGHT - 145);
-		defaultFont.draw(spriteBatch, "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, HEIGHT - 165);
-		defaultFont.draw(spriteBatch, "Number of tasks queued in Pathfinding thread: " + Integer.toString(AIProcessor.pathFinderTasks.size()), 5, HEIGHT - 185);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, getGraphics().getHeight() - 105);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Number of tasks queued in AI/Pathfinding thread: " + Integer.toString(AIProcessor.getNumberOfOutstandingTasks()), 5, getGraphics().getHeight() - 125);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoader.loaderTasks.size()), 5, getGraphics().getHeight() - 145);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, getGraphics().getHeight() - 165);
 
 		defaultFont.setColor(Color.CYAN);
 	}
@@ -1172,8 +1168,8 @@ public class UserInterface {
 					((Window) component).y = 20;
 				}
 
-				if (((Window) component).y > HEIGHT) {
-					((Window) component).y = HEIGHT;
+				if (((Window) component).y > getGraphics().getHeight()) {
+					((Window) component).y = getGraphics().getHeight();
 				}
 
 				if (!((Window)component).minimized || component.getAlpha() > 0f) {
@@ -1220,8 +1216,8 @@ public class UserInterface {
 	 */
 	public static void update() {
 		UICamera.update();
-		UICameraTrackingCam.position.x = cam.position.x;
-		UICameraTrackingCam.position.y = cam.position.y;
+		UICameraTrackingCam.position.x = getGraphics().getCam().position.x;
+		UICameraTrackingCam.position.y = getGraphics().getCam().position.y;
 		UICameraTrackingCam.update();
 	}
 
@@ -1550,8 +1546,8 @@ public class UserInterface {
 	public static void addClientMessage(String title, String message) {
 		addGlobalMessage(title, message, -1, new FalseFunction());
 	}
-	
-	
+
+
 	public static void addClientMessage(String title, SerializableFunction<String> message) {
 		addGlobalMessage(title, message, -1, new FalseFunction());
 	}
@@ -1565,16 +1561,16 @@ public class UserInterface {
 	public static void addGlobalMessage(String title, String message, SerializableFunction<Boolean> function) {
 		addGlobalMessage(title, message, -1, function);
 	}
-	
-	
+
+
 	public static void addGlobalMessage(String title, SerializableFunction<String> message, int client, SerializableFunction<Boolean> function) {
 		if (ClientServerInterface.isClient()) {
 			addLayeredComponent(
 				new MessageWindow(
 					message,
 					Color.ORANGE,
-					WIDTH / 2 - 150,
-					HEIGHT / 2 + 75,
+					getGraphics().getWidth() / 2 - 150,
+					getGraphics().getHeight() / 2 + 75,
 					300,
 					150,
 					title,

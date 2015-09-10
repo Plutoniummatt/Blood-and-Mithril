@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Deque;
@@ -121,9 +123,9 @@ public class ChatWindow extends Window {
 			lines--;
 		}
 
-		Fonts.defaultFont.drawWrapped(BloodAndMithrilClient.spriteBatch, string, x + 10, y - 30, width - 170);
+		Fonts.defaultFont.drawWrapped(getGraphics().getSpriteBatch(), string, x + 10, y - 30, width - 170);
 
-		BloodAndMithrilClient.spriteBatch.flush();
+		getGraphics().getSpriteBatch().flush();
 	}
 
 

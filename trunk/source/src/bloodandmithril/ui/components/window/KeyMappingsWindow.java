@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.util.Fonts.defaultFont;
@@ -55,13 +56,13 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 		Color.GREEN,
 		UIRef.BL
 	);
-	
+
 	private static Comparator<MappedKey> mapabilityComparator = new Comparator<MappedKey>() {
 		@Override
 		public int compare(MappedKey o1, MappedKey o2) {
 			return new Boolean(o1.canChange).compareTo(o2.canChange);
 		}
-		
+
 	};
 
 	private static Comparator<MappedKey> stringComparator = new Comparator<MappedKey>() {
@@ -142,8 +143,8 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 	public boolean scrolled(int amount) {
 		return keyMappings.scrolled(amount);
 	}
-	
-	
+
+
 	@Override
 	public void refresh() {
 		keyMappings.getListing().clear();
@@ -219,7 +220,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 				Integer.toString(mappedKey.keyCode)
 			);
 		}
-		
+
 		for (MappedKey mappedKey : BloodAndMithrilClient.getKeyMappings().getUnmappableKeys()) {
 			ContextMenu contextMenu = new ContextMenu(
 				getMouseScreenX(),
@@ -311,8 +312,8 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 		protected void internalWindowRender() {
 			defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.ORANGE, getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * getAlpha()));
 			String messageToDisplay = Util.fitToWindow("Press Key", width, (height - 75) / 25);
-			defaultFont.drawMultiLine(BloodAndMithrilClient.spriteBatch, messageToDisplay, x + 6, y - 25);
-			
+			defaultFont.drawMultiLine(getGraphics().getSpriteBatch(), messageToDisplay, x + 6, y - 25);
+
 			UserInterface.refreshRefreshableWindows();
 		}
 

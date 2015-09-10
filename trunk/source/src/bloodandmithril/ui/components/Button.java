@@ -1,9 +1,7 @@
 package bloodandmithril.ui.components;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Util.fitToTextInputBox;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -189,7 +187,7 @@ public class Button {
 
 		if (idle == null) {
 
-			BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
+			getGraphics().getSpriteBatch().setShader(Shaders.text);
 			Color downColorToUse = active ? downColor : idle == null ? downColor.cpy() : downColor;
 			Color overColorToUse = active ? overColor : idle == null ? overColor.cpy() : overColor;
 			Color idleColorToUse = active ? idleColor : idle == null ? idleColor.cpy() : idleColor;
@@ -197,26 +195,26 @@ public class Button {
 			if (isMouseOver() && active) {
 				if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode)) {
 					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(spriteBatch, maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
+					font.draw(getGraphics().getSpriteBatch(), maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 				} else {
 					font.setColor(overColorToUse.r, overColorToUse.g, overColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(spriteBatch,  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
+					font.draw(getGraphics().getSpriteBatch(),  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 				}
 			} else {
 				font.setColor(idleColorToUse.r, idleColorToUse.g, idleColorToUse.b, alpha * (active ? 1f : 0.3f));
-				font.draw(spriteBatch,  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
+				font.draw(getGraphics().getSpriteBatch(),  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 			}
 		} else {
-			spriteBatch.setShader(Shaders.filter);
+			getGraphics().getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, alpha);
 			if (isMouseOver() && active) {
 				if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode)) {
-					spriteBatch.draw(down, vec.x, vec.y);
+					getGraphics().getSpriteBatch().draw(down, vec.x, vec.y);
 				} else {
-					spriteBatch.draw(over, vec.x, vec.y);
+					getGraphics().getSpriteBatch().draw(over, vec.x, vec.y);
 				}
 			} else {
-				spriteBatch.draw(idle, vec.x, vec.y);
+				getGraphics().getSpriteBatch().draw(idle, vec.x, vec.y);
 			}
 		}
 	}
@@ -292,33 +290,33 @@ public class Button {
 			break;
 
 		case BM:
-			vec.x = WIDTH/2 + offsetX - width/2;
+			vec.x = getGraphics().getWidth()/2 + offsetX - width/2;
 			vec.y = offsetY - height/2;
 			break;
 
 		case BR:
-			vec.x = WIDTH + offsetX - width/2;
+			vec.x = getGraphics().getWidth() + offsetX - width/2;
 			vec.y = offsetY - height/2;
 			break;
 
 		case M:
-			vec.x = WIDTH/2 + offsetX - width/2;
-			vec.y = HEIGHT/2 + offsetY - height/2;
+			vec.x = getGraphics().getWidth()/2 + offsetX - width/2;
+			vec.y = getGraphics().getHeight()/2 + offsetY - height/2;
 			break;
 
 		case TL:
 			vec.x = offsetX - width/2;
-			vec.y = HEIGHT + offsetY - height/2;
+			vec.y = getGraphics().getHeight() + offsetY - height/2;
 			break;
 
 		case TM:
-			vec.x = WIDTH/2 + offsetX - width/2;
-			vec.y = HEIGHT + offsetY - height/2;
+			vec.x = getGraphics().getWidth()/2 + offsetX - width/2;
+			vec.y = getGraphics().getHeight() + offsetY - height/2;
 			break;
 
 		case TR:
-			vec.x = WIDTH + offsetX - width/2;
-			vec.y = HEIGHT + offsetY - height/2;
+			vec.x = getGraphics().getWidth() + offsetX - width/2;
+			vec.y = getGraphics().getHeight() + offsetY - height/2;
 			break;
 
 		default:

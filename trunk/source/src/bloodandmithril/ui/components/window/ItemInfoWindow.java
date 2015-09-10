@@ -1,6 +1,6 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
 
@@ -87,15 +87,15 @@ public class ItemInfoWindow extends Window {
 	@SuppressWarnings("rawtypes")
 	private void renderBasicStats() {
 		defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, getAlpha() * (isActive() ? 1f : 0.6f)));
-		defaultFont.draw(spriteBatch, "Type: " + item.getType().getValue(), x + 10, y - 33);
-		defaultFont.draw(spriteBatch, "Mass: " + item.getMass() + "kg", x + 10, y - 53);
-		defaultFont.draw(spriteBatch, "Value: " + item.getValue(), x + 10, y - 73);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Type: " + item.getType().getValue(), x + 10, y - 33);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Mass: " + item.getMass() + "kg", x + 10, y - 53);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Value: " + item.getValue(), x + 10, y - 73);
 
 		if (item instanceof Weapon) {
 			weapon((Weapon) item);
 		}
 
-		spriteBatch.flush();
+		getGraphics().getSpriteBatch().flush();
 	}
 
 
@@ -103,11 +103,11 @@ public class ItemInfoWindow extends Window {
 	private void weapon(Weapon weapon) {
 		if (weapon instanceof MeleeWeapon) {
 			MeleeWeapon meleeWeapon = (MeleeWeapon) weapon;
-			defaultFont.draw(spriteBatch, "Parry chance: " + String.format("%.0f", meleeWeapon.getParryChance() * 100f) + "%", x + 10, y - 103);
-			defaultFont.draw(spriteBatch, "Parry ignore: " + String.format("%.0f", meleeWeapon.getParryChanceIgnored() * 100f) + "%", x + 10, y - 123);
-			defaultFont.draw(spriteBatch, "Base damage: " + String.format("%.1f", meleeWeapon.getBaseMinDamage()) + " - " + String.format("%.1f", meleeWeapon.getBaseMaxDamage()), x + 10, y - 143);
-			defaultFont.draw(spriteBatch, "Base attack duration: " + String.format("%.1f", meleeWeapon.getBaseAttackPeriod()) + "s", x + 10, y - 163);
-			defaultFont.draw(spriteBatch, "DPS: " + String.format("%.1f", (meleeWeapon.getBaseMinDamage() + meleeWeapon.getBaseMaxDamage()) / 2f /meleeWeapon.getBaseAttackPeriod()), x + 10, y - 183);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Parry chance: " + String.format("%.0f", meleeWeapon.getParryChance() * 100f) + "%", x + 10, y - 103);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Parry ignore: " + String.format("%.0f", meleeWeapon.getParryChanceIgnored() * 100f) + "%", x + 10, y - 123);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Base damage: " + String.format("%.1f", meleeWeapon.getBaseMinDamage()) + " - " + String.format("%.1f", meleeWeapon.getBaseMaxDamage()), x + 10, y - 143);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Base attack duration: " + String.format("%.1f", meleeWeapon.getBaseAttackPeriod()) + "s", x + 10, y - 163);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "DPS: " + String.format("%.1f", (meleeWeapon.getBaseMinDamage() + meleeWeapon.getBaseMaxDamage()) / 2f /meleeWeapon.getBaseAttackPeriod()), x + 10, y - 183);
 		}
 	}
 
@@ -121,9 +121,9 @@ public class ItemInfoWindow extends Window {
 
 		TextureRegion icon = item.getIconTextureRegion();
 		if (icon != null) {
-			spriteBatch.setShader(Shaders.filter);
+			getGraphics().getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, getAlpha() * (isActive() ? 1f : 0.6f));
-			spriteBatch.draw(icon, x + width - 74, y - 96);
+			getGraphics().getSpriteBatch().draw(icon, x + width - 74, y - 96);
 		}
 	}
 

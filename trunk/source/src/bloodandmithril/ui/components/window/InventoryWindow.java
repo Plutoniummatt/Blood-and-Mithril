@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -342,7 +343,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	 * Renders the weight display
 	 */
 	public static void renderCapacityIndicationText(Container container, Window parentComponent, int xOffset, int yOffset, String extra1, String extra2) {
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.text);
+		getGraphics().getSpriteBatch().setShader(Shaders.text);
 		Color activeColor;
 
 		if (container.getWeightLimited()) {
@@ -358,8 +359,8 @@ public class InventoryWindow extends Window implements Refreshable {
 					Colors.modulateAlpha(Color.RED, 0.6f * parentComponent.getAlpha());
 
 		defaultFont.setColor(parentComponent.isActive() ? activeColor : inactiveColor);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate("Weight: " + String.format("%.2f", container.getCurrentLoad()) + (container.getWeightLimited() ? "/" + String.format("%.2f", container.getMaxCapacity()) : "") + extra1), parentComponent.x + xOffset, parentComponent.y + yOffset + 40);
-		defaultFont.draw(BloodAndMithrilClient.spriteBatch, parentComponent.truncate("Volume: " + container.getCurrentVolume() + "/" + container.getMaxVolume() + extra2), parentComponent.x + xOffset, parentComponent.y + yOffset + 20);
+		defaultFont.draw(getGraphics().getSpriteBatch(), parentComponent.truncate("Weight: " + String.format("%.2f", container.getCurrentLoad()) + (container.getWeightLimited() ? "/" + String.format("%.2f", container.getMaxCapacity()) : "") + extra1), parentComponent.x + xOffset, parentComponent.y + yOffset + 40);
+		defaultFont.draw(getGraphics().getSpriteBatch(), parentComponent.truncate("Volume: " + container.getCurrentVolume() + "/" + container.getMaxVolume() + extra2), parentComponent.x + xOffset, parentComponent.y + yOffset + 20);
 	}
 
 
@@ -367,7 +368,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	 * Renders the separator that separates the item listing from the quantity listing
 	 */
 	private void renderSeparator(int xCoord) {
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
+		getGraphics().getSpriteBatch().setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.Filled);
 		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
 		shapeRenderer.rect(xCoord, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);

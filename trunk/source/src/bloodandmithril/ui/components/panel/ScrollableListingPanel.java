@@ -1,9 +1,9 @@
 package bloodandmithril.ui.components.panel;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -76,8 +76,8 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		this.extraColumnWidth = extraColumnWidth;
 		populateListings(listings);
 	}
-	
-	
+
+
 	public ScrollableListingPanel<T, A> canScroll(boolean canScroll) {
 		this.canScroll = canScroll;
 		return this;
@@ -196,16 +196,16 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 			if (size == 0 || size < max) {
 				return false;
 			}
-			
+
 			if (startingIndex >= size - max) {
 				startingIndex = Math.round(size - max);
 				if (amount > 0) {
 					return false;
 				}
 			}
-			
+
 			startingIndex += amount;
-			
+
 			if (startingIndex < 0) {
 				startingIndex = 0;
 			}
@@ -233,7 +233,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		if (canScroll) {
 			// Render the scroll bar
 			renderScrollBar();
-			
+
 			// Render the scroll bar button
 			renderScrollBarButton();
 		}
@@ -268,7 +268,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		if (listings.isEmpty()) {
 			return;
 		}
-		
+
 		int size = 0;
 		float max = Math.round((height - 100f) / 20f);
 		for (Map<ListingMenuItem<T>, A> listing : listings) {
@@ -280,7 +280,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		} else if (startingIndex >= size - max + 1) {
 			startingIndex = Math.round(size - max);
 		}
-		
+
 
 		// Render the equipped items first
 		int i = 0;
@@ -303,7 +303,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 					continue;
 				}
 				if (y - (i - (startingIndex == 0 ? 1 : startingIndex)) * 20 - 110 < y - height) {
-					defaultFont.draw(spriteBatch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
+					defaultFont.draw(getGraphics().getSpriteBatch(), "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
 					break;
 				}
 
@@ -314,12 +314,12 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 					width - extraColumnWidth
 				);
 
-				defaultFont.draw(spriteBatch, getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
+				defaultFont.draw(getGraphics().getSpriteBatch(), getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
 				i++;
 			}
 		}
 
-		spriteBatch.flush();
+		getGraphics().getSpriteBatch().flush();
 	}
 
 

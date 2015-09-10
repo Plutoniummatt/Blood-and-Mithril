@@ -1,8 +1,6 @@
 package bloodandmithril.graphics.background;
 
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
-import static bloodandmithril.core.BloodAndMithrilClient.cam;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.graphics.background.BackgroundImages.textures;
 
 import java.io.Serializable;
@@ -37,7 +35,7 @@ public abstract class Layer implements Serializable {
 
 
 	public static int getScreenHorizonY() {
-		return 400 - Math.round((int) cam.position.y * (1f - 0.95f));
+		return 400 - Math.round((int) getGraphics().getCam().position.y * (1f - 0.95f));
 	}
 
 
@@ -50,7 +48,7 @@ public abstract class Layer implements Serializable {
 	 * Renders this layer
 	 */
 	public void render(int camX, int camY) {
-		int startPositionX = Math.round((camX - WIDTH / 2) * (1f - getDistanceX()));
+		int startPositionX = Math.round((camX - getGraphics().getWidth() / 2) * (1f - getDistanceX()));
 		int startPositionY = Math.round(camY * (1f - getDistanceY()));
 		int currentPosition = 0;
 
@@ -58,11 +56,11 @@ public abstract class Layer implements Serializable {
 		if (floorEntry == null) {
 			return;
 		}
-		float startingRenderingPosition = (camX - WIDTH/2) * (1f - getDistanceX()) - floorEntry.getKey();
+		float startingRenderingPosition = (camX - getGraphics().getWidth()/2) * (1f - getDistanceX()) - floorEntry.getKey();
 
 		boolean rendering = true;
 		while(rendering) {
-			if (currentPosition - startingRenderingPosition > WIDTH) {
+			if (currentPosition - startingRenderingPosition > getGraphics().getWidth()) {
 				rendering = false;
 			}
 
@@ -70,7 +68,7 @@ public abstract class Layer implements Serializable {
 			TextureRegion toDraw = empty ? null : textures.get(images.floorEntry(startPositionX + currentPosition).getValue().a);
 
 			if (toDraw != null) {
-				spriteBatch.draw(
+				getGraphics().getSpriteBatch().draw(
 					toDraw,
 					currentPosition - startingRenderingPosition,
 					getOffsetY() - startPositionY + images.floorEntry(startPositionX + currentPosition).getValue().b

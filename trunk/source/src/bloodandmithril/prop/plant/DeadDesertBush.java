@@ -1,8 +1,8 @@
 package bloodandmithril.prop.plant;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 
 import java.util.Collection;
 import java.util.List;
@@ -89,7 +89,7 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 
 	@Override
 	public void render() {
-		spriteBatch.draw(textures.get(texture), position.x - width / 2, position.y);
+		getGraphics().getSpriteBatch().draw(textures.get(texture), position.x - width / 2, position.y);
 	}
 
 

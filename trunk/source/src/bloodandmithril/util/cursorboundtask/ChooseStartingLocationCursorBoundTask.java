@@ -1,8 +1,8 @@
 package bloodandmithril.util.cursorboundtask;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
@@ -80,8 +80,8 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.filter);
+		getGraphics().getSpriteBatch().begin();
+		getGraphics().getSpriteBatch().setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
 		for (Entry<Integer, Individual> entry : individuals.entrySet()) {
 			Vector2 pos;
@@ -93,13 +93,13 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 				boolean canPlace = canPlaceIndividual(entry.getValue());
 
 				Shaders.filter.setUniformf("color", canPlace ? Color.GREEN : Color.RED);
-				spriteBatch.draw(UserInterface.currentArrow, pos.x - 5, pos.y);
-				spriteBatch.flush();
+				getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, pos.x - 5, pos.y);
+				getGraphics().getSpriteBatch().flush();
 			} catch (NoTileFoundException e) {
 				pos = new Vector2();
 			}
 		}
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 		gl.glDisable(GL_BLEND);
 
 		Container container = startingItemPackage.getContainer();

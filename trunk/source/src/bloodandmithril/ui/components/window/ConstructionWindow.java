@@ -1,6 +1,6 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
@@ -121,8 +121,8 @@ public class ConstructionWindow extends Window implements Refreshable {
 		defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.GREEN, getAlpha()) : Colors.modulateAlpha(Color.GREEN, 0.5f * getAlpha()));
 		String progress = "(" + String.format("%.1f", 100f * construction.getConstructionProgress()) + "%)";
 
-		defaultFont.draw(spriteBatch, "Constructing: " + construction.getTitle() + " " + progress, x + 15, y - 35);
-		defaultFont.draw(spriteBatch, "Required materials:", x + 15, y - 115);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Constructing: " + construction.getTitle() + " " + progress, x + 15, y - 35);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Required materials:", x + 15, y - 115);
 	}
 
 

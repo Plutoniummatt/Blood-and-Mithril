@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 
@@ -72,7 +73,7 @@ public class ContextMenu extends Component {
 	@Override
 	protected void internalComponentRender() {
 
-		BloodAndMithrilClient.spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		int maxHeight = 20 * (menuItems.size() + 1);
 		int maxLength = 0;
 		for (MenuItem item : menuItems) {
@@ -80,7 +81,7 @@ public class ContextMenu extends Component {
 		}
 		maxLength = maxLength * 10;
 
-		x = x + maxLength >= BloodAndMithrilClient.WIDTH ? BloodAndMithrilClient.WIDTH - maxLength : x;
+		x = x + maxLength >= getGraphics().getWidth() ? getGraphics().getWidth() - maxLength : x;
 		y = y - maxHeight <= 0 ? maxHeight : y;
 
 		renderRectangle(
@@ -109,7 +110,7 @@ public class ContextMenu extends Component {
 			i++;
 		}
 
-		BloodAndMithrilClient.spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 	}
 
 
