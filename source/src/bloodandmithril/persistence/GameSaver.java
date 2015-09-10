@@ -55,13 +55,13 @@ public class GameSaver {
 		pending = true;
 		andExit = exitAfter;
 	}
-	
-	
+
+
 	public static synchronized void setPersistencePath(String savePath) {
 		GameSaver.savePath = savePath;
 	}
-	
-	
+
+
 	public static String getSavePath() {
 		return savePath;
 	}
@@ -104,7 +104,7 @@ public class GameSaver {
 	private static void saveFactions() {
 		FileHandle factiondata = Gdx.files.local(GameSaver.savePath + "/world/factions.txt");
 		factiondata.writeString(encode(Domain.getFactions()), false);
-		
+
 		if (ClientServerInterface.isClient()) {
 			FileHandle controlled = Gdx.files.local(GameSaver.savePath + "/world/controlledfactions.txt");
 			controlled.writeString(encode(BloodAndMithrilClient.controlledFactions), false);
@@ -150,7 +150,7 @@ public class GameSaver {
 	 * @return true if there are outstanding tasks in AI thread, loader thread or pathfinding thread
 	 */
 	private static boolean outstandingTasks() {
-		return AIProcessor.aiThreadTasks.size() + AIProcessor.pathFinderTasks.size() + ChunkLoader.loaderTasks.size() != 0;
+		return AIProcessor.getNumberOfOutstandingTasks() + ChunkLoader.loaderTasks.size() != 0;
 	}
 
 

@@ -1,7 +1,7 @@
 package bloodandmithril.item.items.food.plant;
 
 import static bloodandmithril.character.ai.perception.Visible.getVisible;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -172,7 +172,7 @@ public class CarrotItem extends Food {
 
 		@Override
 		public void render() {
-			spriteBatch.draw(carrotSeed, position.x - width / 2, position.y);
+			getGraphics().getSpriteBatch().draw(carrotSeed, position.x - width / 2, position.y);
 		}
 
 

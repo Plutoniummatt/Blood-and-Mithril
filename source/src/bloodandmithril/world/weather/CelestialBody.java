@@ -1,6 +1,6 @@
 package bloodandmithril.world.weather;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static java.lang.Math.cos;
 import static java.lang.Math.max;
 import static java.lang.Math.sin;
@@ -74,7 +74,7 @@ public class CelestialBody {
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), 1.0f - Weather.getDaylightColor(world).r);
 		if (rotates) {
-			spriteBatch.draw(
+			getGraphics().getSpriteBatch().draw(
 				region,
 				Weather.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
 				Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2,
@@ -87,7 +87,7 @@ public class CelestialBody {
 				- theta + 90f
 			);
 		} else {
-			spriteBatch.draw(
+			getGraphics().getSpriteBatch().draw(
 				region,
 				Weather.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
 				Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2

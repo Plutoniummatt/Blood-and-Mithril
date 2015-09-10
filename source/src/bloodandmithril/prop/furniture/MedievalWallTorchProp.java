@@ -1,7 +1,7 @@
 package bloodandmithril.prop.furniture;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -60,7 +60,7 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 
 	@Override
 	public void render() {
-		spriteBatch.draw(medievalWallTorch, position.x - width / 2, position.y);
+		getGraphics().getSpriteBatch().draw(medievalWallTorch, position.x - width / 2, position.y);
 	}
 
 

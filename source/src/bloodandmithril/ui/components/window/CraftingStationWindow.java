@@ -1,9 +1,9 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
 import static com.google.common.collect.Lists.newArrayList;
@@ -287,8 +287,8 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		}
 
 		String progress = craftingStation.getCurrentlyBeingCrafted() == null ? "" : " (" + String.format("%.1f", 100f * craftingStation.getCraftingProgress()) + "%) " + bulkMessage;
-		defaultFont.draw(spriteBatch, selected + currentlySelectedToCraft.t.getSingular(true) + progress, x + width / 2 - 33, y - 33);
-		defaultFont.draw(spriteBatch, "Required materials:", x + width / 2 - 33, y - 133);
+		defaultFont.draw(getGraphics().getSpriteBatch(), selected + currentlySelectedToCraft.t.getSingular(true) + progress, x + width / 2 - 33, y - 33);
+		defaultFont.draw(getGraphics().getSpriteBatch(), "Required materials:", x + width / 2 - 33, y - 133);
 
 		renderButtons();
 		renderItemIcon();
@@ -301,9 +301,9 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 		TextureRegion icon = currentlySelectedToCraft.t.getIconTextureRegion();
 		if (icon != null) {
-			spriteBatch.setShader(Shaders.filter);
+			getGraphics().getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, getAlpha() * (isActive() ? 1f : 0.6f));
-			spriteBatch.draw(icon, x + width - 74, y - 96);
+			getGraphics().getSpriteBatch().draw(icon, x + width - 74, y - 96);
 		}
 	}
 
@@ -333,7 +333,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			getAlpha()
 		);
 
-		spriteBatch.flush();
+		getGraphics().getSpriteBatch().flush();
 	}
 
 

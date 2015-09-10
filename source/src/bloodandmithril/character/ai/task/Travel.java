@@ -1,10 +1,10 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Shaders;
@@ -114,9 +114,9 @@ public class Travel extends CompositeAITask {
 			// }
 
 			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
-			BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
+			getGraphics().getSpriteBatch().setShader(Shaders.pass);
 			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-			BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y + offset * 10f);
+			getGraphics().getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y + offset * 10f);
 		} else if (task instanceof Jump) {
 			Vector2 start = null;
 

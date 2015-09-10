@@ -1,9 +1,9 @@
 package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.lightColor;
 import static bloodandmithril.util.Util.Colors.lightSkinColor;
@@ -145,8 +145,8 @@ public class NewGameWindow extends Window {
 			Collections.shuffle(startingLocations);
 			Vector2 startingPosition = startingLocations.get(0);
 
-			BloodAndMithrilClient.cam.position.x = startingPosition.x;
-			BloodAndMithrilClient.cam.position.y = startingPosition.y;
+			getGraphics().getCam().position.x = startingPosition.x;
+			getGraphics().getCam().position.y = startingPosition.y;
 
 			BloodAndMithrilClient.setCursorBoundTask(
 				new ChooseStartingLocationCursorBoundTask(
@@ -410,10 +410,10 @@ public class NewGameWindow extends Window {
 
 			itemPackages.render();
 
-			spriteBatch.setShader(Shaders.text);
+			getGraphics().getSpriteBatch().setShader(Shaders.text);
 			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
-			defaultFont.draw(spriteBatch, "Choose starting item packages", x + width / 2 - 150, y - 40);
-			defaultFont.drawWrapped(spriteBatch, "Item packages can be created in-game by placing desired items into a container, then shipping the container.", x + 10, y - 70, width - 20);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Choose starting item packages", x + width / 2 - 150, y - 40);
+			defaultFont.drawWrapped(getGraphics().getSpriteBatch(), "Item packages can be created in-game by placing desired items into a container, then shipping the container.", x + 10, y - 70, width - 20);
 		}
 
 
@@ -717,13 +717,13 @@ public class NewGameWindow extends Window {
 			individuals.render();
 			skills.render();
 
-			spriteBatch.setShader(Shaders.text);
+			getGraphics().getSpriteBatch().setShader(Shaders.text);
 			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
-			defaultFont.draw(spriteBatch, "Choose starting individuals and skills", x + width / 2 - 170, y - 40);
-			defaultFont.draw(spriteBatch, "Hold LEFT CTRL and click to remove", x + width / 2 - 165, y - 60);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Choose starting individuals and skills", x + width / 2 - 170, y - 40);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Hold LEFT CTRL and click to remove", x + width / 2 - 165, y - 60);
 
 			defaultFont.setColor(Colors.modulateAlpha(Color.ORANGE, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
-			defaultFont.draw(spriteBatch, "Points left: " + assignablePoints, x + 10, y - 100);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Points left: " + assignablePoints, x + 10, y - 100);
 		}
 
 
@@ -783,7 +783,7 @@ public class NewGameWindow extends Window {
 		@Override
 		public void render() {
 			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
-			defaultFont.draw(spriteBatch, "Choose whether or not tutorials are enabled.", x + width / 2 - 220, y - 40);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Choose whether or not tutorials are enabled.", x + width / 2 - 220, y - 40);
 
 			tutorialsButton.render(x + width / 2, y - 100, parent.isActive(), parent.getAlpha());
 		}
@@ -853,7 +853,7 @@ public class NewGameWindow extends Window {
 		@Override
 		public void render() {
 			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
-			defaultFont.draw(spriteBatch, "Choose starting race", x + width / 2 - 100, y - 40);
+			defaultFont.draw(getGraphics().getSpriteBatch(), "Choose starting race", x + width / 2 - 100, y - 40);
 
 			int i = 0;
 			for (Button button : availableRaces) {
@@ -862,7 +862,7 @@ public class NewGameWindow extends Window {
 			}
 
 			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
-			defaultFont.drawWrapped(spriteBatch, deriveDescription(selectedRace), x + 10 , y - 120, width - 20);
+			defaultFont.drawWrapped(getGraphics().getSpriteBatch(), deriveDescription(selectedRace), x + 10 , y - 120, width - 20);
 		}
 
 

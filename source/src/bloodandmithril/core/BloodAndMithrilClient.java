@@ -23,6 +23,7 @@ import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.MainMenuBiomeDecider;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.graphics.particles.Particle;
@@ -56,7 +57,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -96,23 +96,7 @@ import com.google.common.collect.Sets;
 public class BloodAndMithrilClient implements ApplicationListener, InputProcessor {
 	public static boolean devMode = false;
 
-	/** The maximum spread of individuals when going to location */
-	private static final float INDIVIDUAL_SPREAD = 600f;
-
-	/** The tolerance for double clicking */
-	private static final long DOUBLE_CLICK_TIME = 250L;
-
-	/** Resolution x */
-	public static int WIDTH = ConfigPersistenceService.getConfig().getResX();
-
-	/** Resolution y */
-	public static int HEIGHT = ConfigPersistenceService.getConfig().getResY();
-
-	/** 'THE' SpriteBatch */
-	public static SpriteBatch spriteBatch;
-
-	/** Camera used for the main game world */
-	public static OrthographicCamera cam;
+	private static Graphics graphics;
 
 	/** The game world */
 	private static boolean inGame;
@@ -144,29 +128,22 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	private static CursorBoundTask cursorBoundTask = null;
 
-	public static int camMarginX, camMarginY;
-	public static Controls controls;
+
+	private static Controls controls;
 
 	private static float fadeAlpha;
 	private static boolean fading;
 
 	private static float updateRateMultiplier = 1f;
 
-	static {
-		camMarginX = 640 + 32 - WIDTH % 32;
-		camMarginY = 640 + 32 - HEIGHT % 32;
-	}
+
 
 	@Override
 	public void create() {
 		// Load client-side resources
+		graphics = new Graphics(ConfigPersistenceService.getConfig().getResX(), ConfigPersistenceService.getConfig().getResY());
 		ClientServerInterface.setClient(true);
 		loadResources();
-
-		spriteBatch = new SpriteBatch();
-
-		cam = new OrthographicCamera(WIDTH + camMarginX, HEIGHT + camMarginY);
-		cam.setToOrtho(false, WIDTH + camMarginX, HEIGHT + camMarginY);
 
 		Gdx.input.setInputProcessor(this);
 
@@ -209,8 +186,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				if (System.currentTimeMillis() - prevFrame1 > 16) {
 					if (Domain.getActiveWorld() != null) {
 						Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
-							(int) cam.position.x,
-							(int) cam.position.y
+							(int) getGraphics().getCam().position.x,
+							(int) getGraphics().getCam().position.y
 						);
 					}
 					prevFrame1 = System.currentTimeMillis();
@@ -275,7 +252,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).setUpdateTick(1f/60f)
 		);
 		Domain.setActiveWorld(1);
-		cam.position.y = Layer.getCameraYForHorizonCoord(HEIGHT/3);
+		getGraphics().getCam().position.y = Layer.getCameraYForHorizonCoord(getGraphics().getHeight()/3);
 		ClientServerInterface.setServer(false);
 	}
 
@@ -301,10 +278,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		GaussianLightingRenderer.setup();
 		Item.setup();
 
-		UserInterface.UICamera = new OrthographicCamera(WIDTH, HEIGHT);
-		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
-		UserInterface.UICameraTrackingCam = new OrthographicCamera(WIDTH, HEIGHT);
-		UserInterface.UICameraTrackingCam.setToOrtho(false, WIDTH, HEIGHT);
+		UserInterface.UICamera = new OrthographicCamera(getGraphics().getWidth(), getGraphics().getHeight());
+		UserInterface.UICamera.setToOrtho(false, getGraphics().getWidth(), getGraphics().getHeight());
+		UserInterface.UICameraTrackingCam = new OrthographicCamera(getGraphics().getWidth(), getGraphics().getHeight());
+		UserInterface.UICameraTrackingCam.setToOrtho(false, getGraphics().getWidth(), getGraphics().getHeight());
 
 		UserInterface.addLayeredComponent(
 			new MainMenuWindow(false)
@@ -345,7 +322,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			}
 
 			// Camera --------------------- /
-			cam.update();
+			getGraphics().getCam().update();
 			UserInterface.update();
 
 			// Blending --------------------- /
@@ -356,7 +333,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 			// Rendering --------------------- /
 			if (Domain.getActiveWorld() != null && !loading) {
-				WorldRenderer.render(Domain.getActiveWorld(), (int) cam.position.x, (int) cam.position.y);
+				WorldRenderer.render(Domain.getActiveWorld(), (int) getGraphics().getCam().position.x, (int) getGraphics().getCam().position.y);
 			}
 
 			// Fading --------------------- /
@@ -388,7 +365,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Gdx.gl20.glEnable(GL20.GL_BLEND);
 		UserInterface.shapeRenderer.begin(ShapeType.Filled);
 		UserInterface.shapeRenderer.setColor(0, 0, 0, fadeAlpha);
-		UserInterface.shapeRenderer.rect(0, 0, WIDTH, HEIGHT);
+		UserInterface.shapeRenderer.rect(0, 0, getGraphics().getWidth(), getGraphics().getHeight());
 		UserInterface.shapeRenderer.end();
 		Gdx.gl20.glDisable(GL20.GL_BLEND);
 	}
@@ -401,40 +378,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Override
 	public void resize(int width, int height) {
-		int oldWidth = WIDTH;
-		int oldHeight = HEIGHT;
-
-		WIDTH = width;
-		HEIGHT = height;
-
-		camMarginX = 640 + 32 - WIDTH % 32;
-		camMarginY = 640 + 32 - HEIGHT % 32;
-
-		float oldCamX = cam.position.x;
-		float oldCamY = cam.position.y;
-
-		cam.setToOrtho(false, WIDTH + camMarginX, HEIGHT + camMarginY);
-		cam.position.x = oldCamX;
-		cam.position.y = oldCamY;
-		UserInterface.UICamera.setToOrtho(false, WIDTH, HEIGHT);
-		UserInterface.UICameraTrackingCam.setToOrtho(false, WIDTH, HEIGHT);
-
-		UserInterface.shapeRenderer.setProjectionMatrix(UserInterface.UICamera.projection);
-		UserInterface.shapeRenderer.setTransformMatrix(UserInterface.UICamera.view);
-
-		WorldRenderer.shapeRenderer.setProjectionMatrix(cam.projection);
-		WorldRenderer.shapeRenderer.setTransformMatrix(cam.view);
-
-		WorldRenderer.dispose();
-		GaussianLightingRenderer.dispose();
-		Weather.dispose();
-
-		WorldRenderer.setup();
-		GaussianLightingRenderer.setup();
-		Weather.setup();
-		UserInterface.resetWindowPositions(oldWidth, oldHeight);
-
-		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+		getGraphics().resize(width, height);
 
 		ConfigPersistenceService.getConfig().setResX(width);
 		ConfigPersistenceService.getConfig().setResY(height);
@@ -481,7 +425,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	@SuppressWarnings("unused")
 	private void rightClick() throws NoTileFoundException {
 		long currentTime = System.currentTimeMillis();
-		boolean doubleClick = rightDoubleClickTimer + DOUBLE_CLICK_TIME > currentTime;
+		boolean doubleClick = rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
 		boolean uiClicked = false;
 		rightDoubleClickTimer = currentTime;
 
@@ -516,7 +460,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	private void moveIndividual(Individual indi) throws NoTileFoundException {
-		float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), INDIVIDUAL_SPREAD);
+		float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), Controls.INDIVIDUAL_SPREAD);
 		if (ClientServerInterface.isServer()) {
 			AIProcessor.sendPathfindingRequest(
 				indi,
@@ -636,7 +580,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		long currentTimeMillis = System.currentTimeMillis();
 
-		boolean doubleClick = leftDoubleClickTimer + DOUBLE_CLICK_TIME > currentTimeMillis;
+		boolean doubleClick = leftDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTimeMillis;
 		leftDoubleClickTimer = currentTimeMillis;
 
 		boolean uiClicked = UserInterface.leftClick();
@@ -761,11 +705,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		try {
 			if (button == getKeyMappings().leftClick.keyCode) {
-				UserInterface.leftClickRelease(screenX, HEIGHT - screenY);
+				UserInterface.leftClickRelease(screenX, getGraphics().getHeight() - screenY);
 			}
 
 			if (button == getKeyMappings().rightClick.keyCode) {
-				UserInterface.rightClickRelease(screenX, HEIGHT - screenY);
+				UserInterface.rightClickRelease(screenX, getGraphics().getHeight() - screenY);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -783,8 +727,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		}
 
 		if (Gdx.input.isButtonPressed(getKeyMappings().middleClick.keyCode) && isInGame()) {
-			cam.position.x = oldCamX + camDragX - screenX;
-			cam.position.y = oldCamY + screenY - camDragY;
+			getGraphics().getCam().position.x = oldCamX + camDragX - screenX;
+			getGraphics().getCam().position.y = oldCamY + screenY - camDragY;
 		}
 		return false;
 	}
@@ -830,7 +774,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Converts screen coordinates to world coordinates
 	 */
 	public static float screenToWorldX(float screenX) {
-		return cam.position.x - WIDTH/2 + screenX;
+		return getGraphics().getCam().position.x - getGraphics().getWidth()/2 + screenX;
 	}
 
 
@@ -838,7 +782,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Converts screen coordinates to world coordinates
 	 */
 	public static float screenToWorldY(float screenY) {
-		return cam.position.y - HEIGHT/2 + screenY;
+		return getGraphics().getCam().position.y - getGraphics().getHeight()/2 + screenY;
 	}
 
 
@@ -846,7 +790,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Converts world coordinates to screen coordinates
 	 */
 	public static float worldToScreenX(float worldX) {
-		return WIDTH/2 + (worldX - cam.position.x);
+		return getGraphics().getWidth()/2 + (worldX - getGraphics().getCam().position.x);
 	}
 
 
@@ -865,7 +809,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		float screenX = worldToScreenX(position.x);
 		float screenY = worldToScreenY(position.y);
 
-		return screenX > -tolerance && screenX < WIDTH + tolerance && screenY > -tolerance && screenY < HEIGHT + tolerance;
+		return screenX > -tolerance && screenX < getGraphics().getWidth() + tolerance && screenY > -tolerance && screenY < getGraphics().getHeight() + tolerance;
 	}
 
 
@@ -873,7 +817,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Converts world coordinates to screen coordinates
 	 */
 	public static float worldToScreenY(float worldY) {
-		return HEIGHT/2 + (worldY - cam.position.y);
+		return getGraphics().getHeight()/2 + (worldY - getGraphics().getCam().position.y);
 	}
 
 
@@ -903,16 +847,16 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private void cameraControl() {
 		if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && isInGame()) {
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamUp.keyCode)){
-				cam.position.y += 10f;
+				getGraphics().getCam().position.y += 10f;
 			}
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamDown.keyCode)){
-				cam.position.y -= 10f;
+				getGraphics().getCam().position.y -= 10f;
 			}
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamLeft.keyCode)){
-				cam.position.x -= 10f;
+				getGraphics().getCam().position.x -= 10f;
 			}
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamRight.keyCode)){
-				cam.position.x += 10f;
+				getGraphics().getCam().position.x += 10f;
 			}
 		}
 	}
@@ -922,8 +866,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Camera dragging processing
 	 */
 	private void saveCamDragCoordinates(int screenX, int screenY) {
-		oldCamX = (int)cam.position.x;
-		oldCamY = (int)cam.position.y;
+		oldCamX = (int)getGraphics().getCam().position.x;
+		oldCamY = (int)getGraphics().getCam().position.y;
 
 		camDragX = screenX;
 		camDragY = screenY;
@@ -942,7 +886,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Get mouse screen coord y
 	 */
 	public static int getMouseScreenY() {
-		return HEIGHT - Gdx.input.getY();
+		return getGraphics().getHeight() - Gdx.input.getY();
 	}
 
 
@@ -958,7 +902,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Get mouse world coord y
 	 */
 	public static float getMouseWorldY() {
-		return screenToWorldY(HEIGHT - Gdx.input.getY());
+		return screenToWorldY(getGraphics().getHeight() - Gdx.input.getY());
 	}
 
 
@@ -1002,13 +946,13 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * @return whether the chunks on screen are generated/loaded
 	 */
 	public static boolean areChunksOnScreenGenerated() {
-		int camX = (int) cam.position.x;
-		int camY = (int) cam.position.y;
+		int camX = (int) getGraphics().getCam().position.x;
+		int camY = (int) getGraphics().getCam().position.y;
 
-		int bottomLeftX = convertToChunkCoord((float)(camX - WIDTH / 2));
-		int bottomLeftY = convertToChunkCoord((float)(camY - HEIGHT / 2));
-		int topRightX = bottomLeftX + convertToChunkCoord((float)WIDTH);
-		int topRightY = bottomLeftY + convertToChunkCoord((float)HEIGHT);
+		int bottomLeftX = convertToChunkCoord((float)(camX - getGraphics().getWidth() / 2));
+		int bottomLeftY = convertToChunkCoord((float)(camY - getGraphics().getHeight() / 2));
+		int topRightX = bottomLeftX + convertToChunkCoord((float)getGraphics().getWidth());
+		int topRightY = bottomLeftY + convertToChunkCoord((float)getGraphics().getHeight());
 
 		World activeWorld = Domain.getActiveWorld();
 
@@ -1088,5 +1032,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static Collection<Mission> getMissions() {
 		return missions;
+	}
+
+
+	public static Graphics getGraphics() {
+		return graphics;
 	}
 }

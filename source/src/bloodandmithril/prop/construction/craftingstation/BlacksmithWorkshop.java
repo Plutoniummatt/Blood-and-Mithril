@@ -1,6 +1,6 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.item.items.material.ArrowHeadItem.arrowHead;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -71,9 +71,9 @@ public class BlacksmithWorkshop extends CraftingStation {
 	@Override
 	protected void internalRender(float constructionProgress) {
 		if (isOccupied()) {
-			spriteBatch.draw(blackSmithWorkshopWorking, position.x - width / 2, position.y);
+			getGraphics().getSpriteBatch().draw(blackSmithWorkshopWorking, position.x - width / 2, position.y);
 		} else {
-			spriteBatch.draw(blackSmithWorkshop, position.x - width / 2, position.y);
+			getGraphics().getSpriteBatch().draw(blackSmithWorkshop, position.x - width / 2, position.y);
 		}
 	}
 

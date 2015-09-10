@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.Map;
 
@@ -61,7 +61,7 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 
 	@Override
 	public void render() {
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			textureRegion,
 			position.x - 25,
 			position.y - 1.5f,

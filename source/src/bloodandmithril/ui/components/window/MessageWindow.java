@@ -1,6 +1,6 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
@@ -125,7 +125,7 @@ public class MessageWindow extends Window {
 		this.height = Math.max(this.height, this.minHeight);
 
 		defaultFont.drawWrapped(
-			spriteBatch,
+			getGraphics().getSpriteBatch(),
 			message.call(),
 			x + 10,
 			y - 27,

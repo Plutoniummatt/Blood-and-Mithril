@@ -1,7 +1,6 @@
 package bloodandmithril.graphics.particles;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
-import bloodandmithril.core.BloodAndMithrilClient;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -60,10 +59,10 @@ public class TextureBackedParticle extends Particle {
 
 
 	public void renderLighting() {
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			texture,
-			position.x - BloodAndMithrilClient.cam.position.x + BloodAndMithrilClient.WIDTH / 2 - texture.getRegionWidth() / 2,
-			- position.y + BloodAndMithrilClient.cam.position.y + BloodAndMithrilClient.HEIGHT / 2 - texture.getRegionHeight() / 2,
+			position.x - getGraphics().getCam().position.x + getGraphics().getWidth() / 2 - texture.getRegionWidth() / 2,
+			- position.y + getGraphics().getCam().position.y + getGraphics().getHeight() / 2 - texture.getRegionHeight() / 2,
 			texture.getRegionWidth() / 2,
 			texture.getRegionHeight() / 2,
 			texture.getRegionWidth(),

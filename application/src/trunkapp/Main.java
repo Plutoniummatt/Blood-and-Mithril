@@ -43,8 +43,8 @@ public class Main {
 				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && keycode == Input.Keys.D) {
 					UserInterface.addLayeredComponentUnique(
 						new DevWindow(
-							WIDTH/2 - 250,
-							HEIGHT/2 + 150,
+							BloodAndMithrilClient.getGraphics().getWidth(),
+							BloodAndMithrilClient.getGraphics().getHeight()/2 + 150,
 							500,
 							300,
 							true

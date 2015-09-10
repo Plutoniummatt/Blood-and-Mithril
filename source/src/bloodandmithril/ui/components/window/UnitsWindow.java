@@ -1,12 +1,13 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -50,7 +51,7 @@ public class UnitsWindow extends Window implements Refreshable {
 	 * Renders the separator
 	 */
 	private void renderSeparator() {
-		BloodAndMithrilClient.spriteBatch.setShader(Shaders.filter);
+		getGraphics().getSpriteBatch().setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.Filled);
 		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
 		shapeRenderer.rect(x + width - 130, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
@@ -81,8 +82,8 @@ public class UnitsWindow extends Window implements Refreshable {
 							new ContextMenu.MenuItem(
 								"Go to",
 								() -> {
-									BloodAndMithrilClient.cam.position.x = individual.getState().position.x;
-									BloodAndMithrilClient.cam.position.y = individual.getState().position.y;
+									getGraphics().getCam().position.x = individual.getState().position.x;
+									getGraphics().getCam().position.y = individual.getState().position.y;
 								},
 								Color.ORANGE,
 								Color.WHITE,

@@ -1,6 +1,6 @@
 package bloodandmithril.ui.components.panel;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
@@ -54,15 +54,15 @@ public class TextPanel extends Panel {
 		} else {
 			defaultFont.setColor(Colors.modulateAlpha(textColor, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
 		}
-		spriteBatch.setShader(Shaders.text);
+		getGraphics().getSpriteBatch().setShader(Shaders.text);
 		defaultFont.drawWrapped(
-			spriteBatch,
+			getGraphics().getSpriteBatch(),
 			text,
 			x,
 			y,
 			width
 		);
-		spriteBatch.flush();
+		getGraphics().getSpriteBatch().flush();
 	}
 
 

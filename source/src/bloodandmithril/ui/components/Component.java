@@ -1,6 +1,6 @@
 package bloodandmithril.ui.components;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.ui.UserInterface.uiTexture;
 import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.util.Logger.LogLevel.DEBUG;
@@ -113,15 +113,15 @@ public abstract class Component {
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? borderColor.a * getAlpha() : borderColor.a * 0.4f * getAlpha());
 		Shaders.filter.end();
-		spriteBatch.setShader(Shaders.filter);
+		getGraphics().getSpriteBatch().setShader(Shaders.filter);
 
-		spriteBatch.draw(topLeft, x, y);
-		spriteBatch.draw(topRight, x + topLeft.getRegionWidth() + length, y);
-		spriteBatch.draw(bottomLeft, x, y - height - bottom.getRegionHeight());
-		spriteBatch.draw(bottomRight, x + topLeft.getRegionWidth() + length, y - height - bottom.getRegionHeight());
+		getGraphics().getSpriteBatch().draw(topLeft, x, y);
+		getGraphics().getSpriteBatch().draw(topRight, x + topLeft.getRegionWidth() + length, y);
+		getGraphics().getSpriteBatch().draw(bottomLeft, x, y - height - bottom.getRegionHeight());
+		getGraphics().getSpriteBatch().draw(bottomRight, x + topLeft.getRegionWidth() + length, y - height - bottom.getRegionHeight());
 
 
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			top,
 			x  + topLeft.getRegionWidth(),
 			y,
@@ -129,7 +129,7 @@ public abstract class Component {
 			top.getRegionHeight()
 		);
 
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			bottom,
 			x + topLeft.getRegionWidth(),
 			y - height - bottomLeft.getRegionHeight(),
@@ -137,7 +137,7 @@ public abstract class Component {
 			bottom.getRegionHeight()
 		);
 
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			left,
 			x,
 			y - height,
@@ -145,7 +145,7 @@ public abstract class Component {
 			height
 		);
 
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			right,
 			x + topLeft.getRegionWidth() + length,
 			y - height,

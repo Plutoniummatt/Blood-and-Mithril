@@ -1,12 +1,7 @@
 package bloodandmithril.graphics;
 
-import static bloodandmithril.core.BloodAndMithrilClient.HEIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
-import static bloodandmithril.core.BloodAndMithrilClient.cam;
-import static bloodandmithril.core.BloodAndMithrilClient.camMarginX;
-import static bloodandmithril.core.BloodAndMithrilClient.camMarginY;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.graphics.WorldRenderer.Depth.BACKGROUND;
 import static bloodandmithril.graphics.WorldRenderer.Depth.FOREGROUND;
 import static bloodandmithril.graphics.WorldRenderer.Depth.MIDDLEGROUND;
@@ -78,7 +73,7 @@ public class WorldRenderer {
 		gameWorldTexture.setFilter(Linear, Nearest);
 		individualTexture.setFilter(Nearest, Nearest);
 	}
-	
+
 	public static void dispose() {
 		fBuffer.dispose();
 		mBuffer.dispose();
@@ -90,13 +85,13 @@ public class WorldRenderer {
 	}
 
 	public static void setup() {
-		fBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
-		mBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
-		bBuffer 							= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
-		workingQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
-		bBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
-		fBufferQuantized 					= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
-		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, WIDTH + camMarginX, HEIGHT + camMarginY, false);
+		fBuffer 							= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
+		mBuffer 							= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
+		bBuffer 							= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
+		workingQuantized 					= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
+		bBufferQuantized 					= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
+		fBufferQuantized 					= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
+		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
@@ -106,142 +101,142 @@ public class WorldRenderer {
 		bBuffer.begin();
 		Shaders.invertAlphaSolidColor.begin();
 		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {});
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.filter);
-		Shaders.pass.setUniformMatrix("u_projTrans", cam.combined);
+		getGraphics().getSpriteBatch().begin();
+		getGraphics().getSpriteBatch().setShader(Shaders.filter);
+		Shaders.pass.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
 		for (Prop prop : world.props().getProps()) {
 			if (prop.depth == BACKGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.render();
-				spriteBatch.flush();
+				getGraphics().getSpriteBatch().flush();
 			}
 		}
 		renderParticles(Depth.BACKGROUND, world);
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 		bBuffer.end();
 
-		int xOffset = round(cam.position.x) % TILE_SIZE;
-		int yOffset = round(cam.position.y) % TILE_SIZE;
+		int xOffset = round(getGraphics().getCam().position.x) % TILE_SIZE;
+		int yOffset = round(getGraphics().getCam().position.y) % TILE_SIZE;
 
 		workingQuantized.begin();
-		cam.position.x = cam.position.x - xOffset;
-		cam.position.y = cam.position.y - yOffset;
-		cam.update();
+		getGraphics().getCam().position.x = getGraphics().getCam().position.x - xOffset;
+		getGraphics().getCam().position.y = getGraphics().getCam().position.y - yOffset;
+		getGraphics().getCam().update();
 		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {});
-		cam.position.x = cam.position.x + xOffset;
-		cam.position.y = cam.position.y + yOffset;
-		cam.update();
+		getGraphics().getCam().position.x = getGraphics().getCam().position.x + xOffset;
+		getGraphics().getCam().position.y = getGraphics().getCam().position.y + yOffset;
+		getGraphics().getCam().update();
 		workingQuantized.end();
 
 		bBufferQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.invertAlphaSolidColor);
+		getGraphics().getSpriteBatch().begin();
+		getGraphics().getSpriteBatch().setShader(Shaders.invertAlphaSolidColor);
 		Shaders.invertAlphaSolidColor.setUniformf("c", 1.0f, 0.0f, 0.0f, 1.0f);
-		spriteBatch.draw(workingQuantized.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().draw(workingQuantized.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
+		getGraphics().getSpriteBatch().end();
 		bBufferQuantized.end();
 
 		workingQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		cam.position.x = cam.position.x - xOffset;
-		cam.position.y = cam.position.y - yOffset;
-		cam.update();
+		getGraphics().getCam().position.x = getGraphics().getCam().position.x - xOffset;
+		getGraphics().getCam().position.y = getGraphics().getCam().position.y - yOffset;
+		getGraphics().getCam().update();
 		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
-		cam.position.x = cam.position.x + xOffset;
-		cam.position.y = cam.position.y + yOffset;
-		cam.update();
+		getGraphics().getCam().position.x = getGraphics().getCam().position.x + xOffset;
+		getGraphics().getCam().position.y = getGraphics().getCam().position.y + yOffset;
+		getGraphics().getCam().update();
 		workingQuantized.end();
 
 		fBufferQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.invertAlphaSolidColor);
+		getGraphics().getSpriteBatch().begin();
+		getGraphics().getSpriteBatch().setShader(Shaders.invertAlphaSolidColor);
 		Shaders.invertAlphaSolidColor.setUniformf("c", 0.0f, 1.0f, 0.0f, 1.0f);
-		spriteBatch.draw(workingQuantized.getColorBufferTexture(), 0, 0, WIDTH, HEIGHT);
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().draw(workingQuantized.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
+		getGraphics().getSpriteBatch().end();
 		fBufferQuantized.end();
 
 		combinedBufferQuantized.begin();
-		spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		spriteBatch.setShader(Shaders.invertAlphaSolidColorBlend);
+		getGraphics().getSpriteBatch().setShader(Shaders.invertAlphaSolidColorBlend);
 		bBufferQuantized.getColorBufferTexture().bind(1);
 		Shaders.invertAlphaSolidColorBlend.setUniformi("u_texture_2", 1);
 		gl.glActiveTexture(GL_TEXTURE0);
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			fBufferQuantized.getColorBufferTexture(),
-			0, 0, WIDTH, HEIGHT
+			0, 0, getGraphics().getWidth(), getGraphics().getHeight()
 		);
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 		combinedBufferQuantized.end();
 
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
+		getGraphics().getSpriteBatch().begin();
+		getGraphics().getSpriteBatch().setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
 		for (Prop prop : world.props().getProps()) {
 			if (prop.depth == MIDDLEGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
 				prop.render();
-				spriteBatch.flush();
+				getGraphics().getSpriteBatch().flush();
 			}
 		}
 		renderParticles(MIDDLEGROUND, world);
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 		mBuffer.end();
 
 		fBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
 		individualTexture.setFilter(Linear, Linear);
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
+		getGraphics().getSpriteBatch().begin();
+		getGraphics().getSpriteBatch().setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
 		for (Prop prop : world.props().getProps()) {
 			if (prop.depth == FOREGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
 				prop.render();
-				spriteBatch.flush();
+				getGraphics().getSpriteBatch().flush();
 			}
 		}
 		for (Item item : world.items().getItems()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			item.render();
-			spriteBatch.flush();
+			getGraphics().getSpriteBatch().flush();
 		}
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 		individualTexture.setFilter(Nearest, Nearest);
 		IndividualPlatformFilteringRenderer.renderIndividuals();
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
+		getGraphics().getSpriteBatch().begin();
+		getGraphics().getSpriteBatch().setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
 		for (Projectile projectile : world.projectiles().getProjectiles()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			projectile.render();
-			spriteBatch.flush();
+			getGraphics().getSpriteBatch().flush();
 		}
 		renderParticles(Depth.FOREGROUND, world);
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
-		spriteBatch.begin();
-		spriteBatch.setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", cam.combined);
+		getGraphics().getSpriteBatch().begin();
+		getGraphics().getSpriteBatch().setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
 		for (Prop prop : world.props().getProps()) {
 			if (prop.depth == Depth.FRONT) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
 				prop.render();
-				spriteBatch.flush();
+				getGraphics().getSpriteBatch().flush();
 			}
 		}
-		spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 		fBuffer.end();
 
 		GaussianLightingRenderer.render(camX, camY, world);
@@ -252,8 +247,8 @@ public class WorldRenderer {
 		gl20.glEnable(GL20.GL_BLEND);
 		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		shapeRenderer.begin(Line);
-		shapeRenderer.setProjectionMatrix(cam.projection);
-		shapeRenderer.setTransformMatrix(cam.view);
+		shapeRenderer.setProjectionMatrix(getGraphics().getCam().projection);
+		shapeRenderer.setTransformMatrix(getGraphics().getCam().view);
 		if (world.getClientParticles() != null) {
 			world.getClientParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
 				p.renderLine(Gdx.graphics.getDeltaTime());
@@ -266,8 +261,8 @@ public class WorldRenderer {
 		}
 		shapeRenderer.end();
 		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setProjectionMatrix(cam.projection);
-		shapeRenderer.setTransformMatrix(cam.view);
+		shapeRenderer.setProjectionMatrix(getGraphics().getCam().projection);
+		shapeRenderer.setTransformMatrix(getGraphics().getCam().view);
 		if (world.getClientParticles() != null) {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
 			world.getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {

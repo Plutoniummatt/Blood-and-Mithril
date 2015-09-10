@@ -35,8 +35,8 @@ public class AIProcessor {
 	static Thread aiThread, pathFinderThread;
 
 	/** {@link #aiThread} and {@link #pathFinderThread} processing {@link Task}s */
-	public static ArrayBlockingQueue<Task> aiThreadTasks = new ArrayBlockingQueue<Task>(5000);
-	public static ArrayBlockingQueue<Task> pathFinderTasks = new ArrayBlockingQueue<Task>(5000);
+	private static ArrayBlockingQueue<Task> aiThreadTasks = new ArrayBlockingQueue<Task>(5000);
+	private static ArrayBlockingQueue<Task> pathFinderTasks = new ArrayBlockingQueue<Task>(5000);
 
 	/**
 	 * Sets up this class
@@ -100,6 +100,11 @@ public class AIProcessor {
 	}
 
 
+	public static int getNumberOfOutstandingTasks() {
+		return AIProcessor.aiThreadTasks.size() + AIProcessor.pathFinderTasks.size();
+	}
+
+
 	/**
 	 * Processes items in the AI thread
 	 */
@@ -151,15 +156,23 @@ public class AIProcessor {
 			}
 		);
 	}
-	
-	
+
+
+	/**
+	 * @param t task to add
+	 */
+	public static void addTaskToAIThread(Task t) {
+		aiThreadTasks.add(t);
+	}
+
+
 	public static class ReturnIndividualPosition implements SerializableFunction<Vector2> {
 		private static final long serialVersionUID = 1752990224855404895L;
 		private int individualId;
-		
+
 		public ReturnIndividualPosition(Individual individual) {
 			this.individualId = individual.getId().getId();
-			
+
 		}
 
 		@Override
@@ -167,8 +180,8 @@ public class AIProcessor {
 			return getIndividual(individualId).getState().position;
 		}
 	}
-	
-	
+
+
 	public static class JitGoToLocation extends JitAITask {
 		private static final long serialVersionUID = 7866039883039620197L;
 		private WayPoint destination;
@@ -182,8 +195,8 @@ public class AIProcessor {
 			return destination;
 		}
 	}
-	
-	
+
+
 	public static class JitGoToLocationFunction implements SerializableFunction<GoToLocation> {
 		private static final long serialVersionUID = -1856893010442317666L;
 		private int hostId;
@@ -191,7 +204,7 @@ public class AIProcessor {
 		private boolean fly;
 		private float forceTolerance;
 		private boolean safe;
-		
+
 		/**
 		 * Constructor
 		 */

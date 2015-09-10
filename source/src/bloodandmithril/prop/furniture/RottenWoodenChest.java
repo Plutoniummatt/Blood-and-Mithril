@@ -1,6 +1,6 @@
 package bloodandmithril.prop.furniture;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.material.wood.StandardWood;
 
@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Extention of {@link WoodenChestProp}, cant be locked and rotten
- * 
+ *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
@@ -17,17 +17,17 @@ public class RottenWoodenChest extends WoodenChestProp {
 
 	/** {@link TextureRegion} of the {@link WoodenChestProp} */
 	public static TextureRegion rottenWoodenChest;
-	
+
 	/**
 	 * Constructor
 	 */
 	public RottenWoodenChest(float x, float y, float capacity, int volume) {
 		super(x, y, capacity, volume, StandardWood.class);
 	}
-	
-	
+
+
 	@Override
 	public void render() {
-		spriteBatch.draw(rottenWoodenChest, position.x - width / 2, position.y);
+		getGraphics().getSpriteBatch().draw(rottenWoodenChest, position.x - width / 2, position.y);
 	}
 }

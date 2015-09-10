@@ -1,6 +1,6 @@
 package bloodandmithril.ui.components.bar;
 
-import static bloodandmithril.core.BloodAndMithrilClient.WIDTH;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.ArrayList;
@@ -114,8 +114,8 @@ public class BottomBar extends Component {
 	private void factionsClicked() {
 		for (Component component : newArrayList(UserInterface.getLayeredComponents())) {
 			if (component instanceof FactionsWindow) {
-				((FactionsWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((FactionsWindow) component).width/2;
-				((FactionsWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((FactionsWindow) component).height/2;
+				((FactionsWindow) component).x = BloodAndMithrilClient.getGraphics().getWidth()/2 - ((FactionsWindow) component).width/2;
+				((FactionsWindow) component).y = BloodAndMithrilClient.getGraphics().getHeight()/2 + ((FactionsWindow) component).height/2;
 				((FactionsWindow) component).minimized = false;
 				((FactionsWindow) component).setActive(true);
 				return;
@@ -158,8 +158,8 @@ public class BottomBar extends Component {
 				() -> {
 					for (Component component : newArrayList(UserInterface.getLayeredComponents())) {
 						if (component instanceof ChatWindow) {
-							((ChatWindow) component).x = BloodAndMithrilClient.WIDTH/2 - ((ChatWindow) component).width/2;
-							((ChatWindow) component).y = BloodAndMithrilClient.HEIGHT/2 + ((ChatWindow) component).height/2;
+							((ChatWindow) component).x = BloodAndMithrilClient.getGraphics().getWidth()/2 - ((ChatWindow) component).width/2;
+							((ChatWindow) component).y = BloodAndMithrilClient.getGraphics().getHeight()/2 + ((ChatWindow) component).height/2;
 							((ChatWindow) component).minimized = false;
 							((ChatWindow) component).setActive(true);
 							break;
@@ -310,22 +310,22 @@ public class BottomBar extends Component {
 	private boolean isWithin() {
 		int x = BloodAndMithrilClient.getMouseScreenX();
 		int y = BloodAndMithrilClient.getMouseScreenY();
-		return x >= 0 && x <= WIDTH && y >= 0 && y <= 50;
+		return x >= 0 && x <= getGraphics().getWidth() && y >= 0 && y <= 50;
 	}
 
 
 	/** Renders this {@link BottomBar} */
 	@Override
 	protected void internalComponentRender() {
-		BloodAndMithrilClient.spriteBatch.begin();
-		renderRectangle(0, 34, WIDTH, 34, true, Color.BLACK);
-		renderBox(-left.getRegionWidth(), 32, WIDTH, 34, true, Color.DARK_GRAY);
+		getGraphics().getSpriteBatch().begin();
+		renderRectangle(0, 34, getGraphics().getWidth(), 34, true, Color.BLACK);
+		renderBox(-left.getRegionWidth(), 32, getGraphics().getWidth(), 34, true, Color.DARK_GRAY);
 		mainMenu.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		windows.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		chat.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		factions.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
 		missions.render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
-		BloodAndMithrilClient.spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 	}
 
 

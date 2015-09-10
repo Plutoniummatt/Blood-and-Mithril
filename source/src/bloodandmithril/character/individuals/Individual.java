@@ -14,10 +14,10 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIG
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
 import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -588,19 +588,19 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			return;
 		}
 
-		spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		for (WrapperForTwo<AnimationSwitcher, ShaderProgram> animation : currentAnimations) {
 
 			// Render equipped items
 			renderCustomizations(animationIndex);
 			renderEquipment(animationIndex);
-			spriteBatch.flush();
+			getGraphics().getSpriteBatch().flush();
 
-			spriteBatch.setShader(animation.b);
-			animation.b.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+			getGraphics().getSpriteBatch().setShader(animation.b);
+			animation.b.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
 
 			TextureRegion keyFrame = animation.a.getAnimation(this).getKeyFrame(getAnimationTimer(), true);
-			spriteBatch.draw(
+			getGraphics().getSpriteBatch().draw(
 				keyFrame.getTexture(),
 				getState().position.x - keyFrame.getRegionWidth()/2,
 				getState().position.y,
@@ -618,8 +618,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
-		spriteBatch.end();
-		spriteBatch.flush();
+		getGraphics().getSpriteBatch().end();
+		getGraphics().getSpriteBatch().flush();
 	}
 
 
@@ -628,7 +628,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	private void renderEquipment(int animationIndex) {
-		spriteBatch.flush();
+		getGraphics().getSpriteBatch().flush();
 		WorldRenderer.individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		for (Item equipped : getEquipped().keySet()) {
 			if (((Equipable)equipped).getRenderingIndex(this) != animationIndex) {
@@ -636,7 +636,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			}
 
 			Equipable toRender = (Equipable) equipped;
-			spriteBatch.setShader(Shaders.pass);
+			getGraphics().getSpriteBatch().setShader(Shaders.pass);
 			if (equipped instanceof Weapon) {
 				@SuppressWarnings({ "rawtypes", "unchecked" })
 				WrapperForTwo<Animation, Vector2> attackAnimationEffects = ((Weapon) equipped).getAttackAnimationEffects(this);
@@ -644,7 +644,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				if (equipped instanceof OneHandedMeleeWeapon) {
 					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
 					if (config != null) {
-						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+						Shaders.pass.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
 						Vector2 pos = config.position.add(getState().position);
 						toRender.render(pos, config.orientation, config.flipX);
 						if (config.flipX) {
@@ -656,7 +656,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				} else if (equipped instanceof TwoHandedMeleeWeapon) {
 					SpacialConfiguration config = getTwoHandedWeaponSpatialConfigration();
 					if (config != null) {
-						Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+						Shaders.pass.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
 						Vector2 pos = config.position.add(getState().position);
 						toRender.render(pos, config.orientation, config.flipX);
 						if (config.flipX) {
@@ -669,7 +669,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 				if (attackAnimationEffects != null) {
 					TextureRegion keyFrame = attackAnimationEffects.a.getKeyFrame(getAnimationTimer());
-					spriteBatch.draw(
+					getGraphics().getSpriteBatch().draw(
 						keyFrame.getTexture(),
 						getState().position.x - keyFrame.getRegionWidth()/2 + (getCurrentAction().left() ? - attackAnimationEffects.b.x : attackAnimationEffects.b.x),
 						getState().position.y + attackAnimationEffects.b.y,
@@ -687,7 +687,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 			} else if (equipped instanceof OffhandEquipment) {
 				SpacialConfiguration config = getOffHandSpatialConfigration();
-				Shaders.pass.setUniformMatrix("u_projTrans", BloodAndMithrilClient.cam.combined);
+				Shaders.pass.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
 				Vector2 pos = config.position.add(getState().position);
 				((OffhandEquipment) equipped).render(pos, config.orientation, config.flipX);
 
@@ -699,7 +699,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				toRender.particleEffects(pos, config.orientation, config.flipX);
 			}
 		}
-		spriteBatch.flush();
+		getGraphics().getSpriteBatch().flush();
 		WorldRenderer.individualTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
@@ -707,7 +707,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** Renders any decorations for UI */
 	public void renderUIDecorations() {
 		if (isSelected()) {
-			spriteBatch.setShader(Shaders.filter);
+			getGraphics().getSpriteBatch().setShader(Shaders.filter);
 
 			Shaders.filter.setUniformf("color",
 				(float)sin(PI * (1f - state.health/state.maxHealth) / 2),
@@ -717,7 +717,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			);
 
 			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-			spriteBatch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight() + 10);
+			getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight() + 10);
 		}
 
 		if (UserInterface.DEBUG) {
@@ -743,13 +743,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		if (isAlive() && isMouseOver() && Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
 			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.isIndividualSelected(this) || Domain.getSelectedIndividuals().size() > 1)) {
-				spriteBatch.setShader(Shaders.filter);
+				getGraphics().getSpriteBatch().setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
-				Fonts.defaultFont.draw(spriteBatch, "Attack Melee", getMouseScreenX() + 14, getMouseScreenY() - 26);
-				spriteBatch.flush();
+				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "Attack Melee", getMouseScreenX() + 14, getMouseScreenY() - 26);
+				getGraphics().getSpriteBatch().flush();
 				Shaders.filter.setUniformf("color", Color.ORANGE);
-				Fonts.defaultFont.draw(spriteBatch, "Attack Melee", getMouseScreenX() + 15, getMouseScreenY() - 25);
+				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "Attack Melee", getMouseScreenX() + 15, getMouseScreenY() - 25);
 			}
 		}
 	}
@@ -768,7 +768,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		if (ClientServerInterface.isClient()) {
 			UserInterface.addLayeredComponentUnique(
 				new SelectedIndividualsControlWindow(
-					BloodAndMithrilClient.WIDTH - 170,
+					getGraphics().getWidth() - 170,
 					150,
 					150,
 					100,

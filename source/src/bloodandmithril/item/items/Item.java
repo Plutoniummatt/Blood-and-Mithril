@@ -1,6 +1,6 @@
 package bloodandmithril.item.items;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.Math.abs;
@@ -270,7 +270,7 @@ public abstract class Item implements Serializable, Affixed {
 		TextureRegion textureRegion = getTextureRegion();
 		Vector2 offset = getRenderCentreOffset();
 
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			textureRegion,
 			position.x - offset.x,
 			position.y - offset.y,

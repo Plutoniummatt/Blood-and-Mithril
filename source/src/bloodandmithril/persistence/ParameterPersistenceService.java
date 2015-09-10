@@ -1,9 +1,9 @@
 package bloodandmithril.persistence;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.persistence.GameSaver.getSavePath;
 import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.persistence.PersistenceUtil.encode;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
@@ -49,7 +49,7 @@ public class ParameterPersistenceService {
 	public synchronized static void saveParameters() {
 		FileHandle file = Gdx.files.local(getSavePath() + "/parameters.txt");
 		parameters.setActiveWorldId(Domain.getActiveWorldId());
-		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? new Vector2(BloodAndMithrilClient.cam.position.x, BloodAndMithrilClient.cam.position.y) : new Vector2());
+		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? new Vector2(getGraphics().getCam().position.x, getGraphics().getCam().position.y) : new Vector2());
 		file.writeString(encode(parameters), false);
 	}
 }

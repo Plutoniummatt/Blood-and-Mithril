@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
 import static com.badlogic.gdx.graphics.g2d.Animation.PlayMode.NORMAL;
 
@@ -59,7 +59,7 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 	public void render(Vector2 position, float angle, boolean flipX) {
 		TextureRegion texture = getTextureRegion();
 
-		spriteBatch.draw(
+		getGraphics().getSpriteBatch().draw(
 			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,

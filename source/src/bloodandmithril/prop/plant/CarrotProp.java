@@ -1,6 +1,6 @@
 package bloodandmithril.prop.plant;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.Collection;
 import java.util.List;
@@ -54,9 +54,9 @@ public class CarrotProp extends PlantProp implements Harvestable {
 	@Override
 	public void render() {
 		if (getGrowthProgress() < 1.0f) {
-			spriteBatch.draw(halfCarrot, position.x - width / 2, position.y);
+			getGraphics().getSpriteBatch().draw(halfCarrot, position.x - width / 2, position.y);
 		} else {
-			spriteBatch.draw(carrot, position.x - width / 2, position.y);
+			getGraphics().getSpriteBatch().draw(carrot, position.x - width / 2, position.y);
 		}
 	}
 

@@ -20,6 +20,12 @@ import com.google.common.collect.Sets;
  */
 @Copyright("Matthew Peck 2014")
 public class Controls implements Serializable {
+	/** The maximum spread of individuals when going to location */
+	public static final float INDIVIDUAL_SPREAD = 600f;
+
+	/** The tolerance for double clicking */
+	public static final long DOUBLE_CLICK_TIME = 250L;
+
 	private static final long serialVersionUID = -1052808676922281824L;
 
 	public static final Map<Integer, String> keyMap = Maps.newHashMap();

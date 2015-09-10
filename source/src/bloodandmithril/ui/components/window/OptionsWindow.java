@@ -1,9 +1,10 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.UserInterface;
@@ -112,13 +113,13 @@ public class OptionsWindow extends Window {
 									},
 									"Confirm",
 									true,
-									Integer.toString(BloodAndMithrilClient.HEIGHT)
+									Integer.toString(getGraphics().getHeight())
 								)
 							);
 						},
 						"Confirm",
 						true,
-						Integer.toString(BloodAndMithrilClient.WIDTH)
+						Integer.toString(getGraphics().getWidth())
 					)
 				);
 			},

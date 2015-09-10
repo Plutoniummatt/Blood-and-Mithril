@@ -1,5 +1,6 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path;
@@ -172,9 +173,9 @@ public class GoToLocation extends AITask {
 				if (waypoint == null) {
 					return;
 				}
-				BloodAndMithrilClient.spriteBatch.setShader(Shaders.pass);
+				getGraphics().getSpriteBatch().setShader(Shaders.pass);
 				Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-				BloodAndMithrilClient.spriteBatch.draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
+				getGraphics().getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
 			} catch (NullPointerException e) {
 				// ???
 			}

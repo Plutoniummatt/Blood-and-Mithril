@@ -1,6 +1,6 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.core.BloodAndMithrilClient.spriteBatch;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
@@ -97,7 +97,7 @@ public abstract class CraftingStation extends Construction {
 		if (constructionProgress == 0f) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 0.90f);
 		}
-		spriteBatch.draw(getTextureRegion(), position.x - width / 2, position.y);
+		getGraphics().getSpriteBatch().draw(getTextureRegion(), position.x - width / 2, position.y);
 	}
 
 

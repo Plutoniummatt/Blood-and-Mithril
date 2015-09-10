@@ -1,5 +1,6 @@
 package bloodandmithril.ui;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 
 import java.util.HashMap;
@@ -40,14 +41,14 @@ public class TopographyDebugRenderer {
 	 */
 	public static void render() {
 		UserInterface.shapeRenderer.begin(ShapeType.Line);
-		BloodAndMithrilClient.spriteBatch.begin();
+		getGraphics().getSpriteBatch().begin();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		for (Structure struct : Structures.getStructures().values()) {
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			if (struct instanceof SuperStructure) {
 				Boundaries boundaries = ((SuperStructure) struct).getBoundaries();
-				Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, Integer.toString(struct.getStructureKey()), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY + 10);
-				Fonts.defaultFont.draw(BloodAndMithrilClient.spriteBatch, struct.getClass().getSimpleName(), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY - 15);
+				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), Integer.toString(struct.getStructureKey()), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY + 10);
+				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), struct.getClass().getSimpleName(), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY - 15);
 				UserInterface.shapeRenderer.rect(
 					boundaries.left * Topography.CHUNK_SIZE - topoX,
 					boundaries.bottom * Topography.CHUNK_SIZE - topoY,
@@ -71,7 +72,7 @@ public class TopographyDebugRenderer {
 				);
 			}
 		}
-		BloodAndMithrilClient.spriteBatch.end();
+		getGraphics().getSpriteBatch().end();
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		UserInterface.shapeRenderer.setColor(Colors.modulateAlpha(Color.CYAN, 0.2f));
@@ -88,10 +89,10 @@ public class TopographyDebugRenderer {
 
 		UserInterface.shapeRenderer.setColor(Color.ORANGE);
 		UserInterface.shapeRenderer.rect(
-			(BloodAndMithrilClient.cam.position.x - BloodAndMithrilClient.WIDTH / 2) / Topography.TILE_SIZE - topoX,
-			(BloodAndMithrilClient.cam.position.y - BloodAndMithrilClient.HEIGHT / 2) / Topography.TILE_SIZE - topoY,
-			BloodAndMithrilClient.WIDTH / Topography.TILE_SIZE,
-			BloodAndMithrilClient.HEIGHT / Topography.TILE_SIZE
+			(getGraphics().getCam().position.x - getGraphics().getWidth() / 2) / Topography.TILE_SIZE - topoX,
+			(getGraphics().getCam().position.y - getGraphics().getHeight() / 2) / Topography.TILE_SIZE - topoY,
+			getGraphics().getWidth() / Topography.TILE_SIZE,
+			getGraphics().getHeight() / Topography.TILE_SIZE
 		);
 
 		UserInterface.shapeRenderer.end();
