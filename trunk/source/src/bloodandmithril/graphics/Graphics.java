@@ -1,17 +1,21 @@
 package bloodandmithril.graphics;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.world.weather.Weather;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Singleton graphics instance
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2015")
 public class Graphics {
 
@@ -22,14 +26,15 @@ public class Graphics {
 	private OrthographicCamera cam;
 
 	/** Resolution */
-	private int width;
-	private int height;
+	private int width, height;
 
-	private static int camMarginX, camMarginY;
+	/** The cam margin is the extra 'space' required for frame buffers so that dynamic tile lighting works */
+	private int camMarginX, camMarginY;
 
-	public Graphics(int width, int height) {
-		this.width = width;
-		this.height = height;
+	@Inject
+	public Graphics() {
+		this.width = ConfigPersistenceService.getConfig().getResX();
+		this.height = ConfigPersistenceService.getConfig().getResY();
 
 		camMarginX = 640 + 32 - width % 32;
 		camMarginY = 640 + 32 - height % 32;
@@ -81,6 +86,9 @@ public class Graphics {
 	}
 
 
+	/**
+	 * Processes graphics side of resizing the window
+	 */
 	public void resize(int newWidth, int newHeight) {
 		int oldWidth = width;
 		int oldHeight = height;
