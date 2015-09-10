@@ -1,6 +1,7 @@
 package bloodandmithril.core;
 
 import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
+import static bloodandmithril.persistence.ConfigPersistenceService.getConfig;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 import static com.badlogic.gdx.Gdx.input;
 
@@ -59,6 +60,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 import com.google.inject.Binder;
+import com.google.inject.Inject;
 import com.google.inject.Module;
 
 /**
@@ -99,38 +101,38 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static boolean inGame;
 
 	/** True if game is paused */
-	public static boolean paused = false, loading = false;
+	public static boolean paused;
+
+	/** True if game is loading */
+	public static boolean loading;
+
+	@Inject
+	private Timers timers;
+
+	@Inject
+	private Graphics graphics;
+
+	private static Controls controls = getConfig().getKeyMappings();
 
 	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
 	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
 
-	public static long ping = 0;
-
-	private long topographyBacklogExecutionTimer;
-
 	private static CursorBoundTask cursorBoundTask = null;
-
-
-	private static Controls controls;
-
-	private static float fadeAlpha;
-	private static boolean fading;
 
 	private static float updateRateMultiplier = 1f;
 
 	@Override
 	public void create() {
 		// Load client-side resources
+		Gdx.input.setInputProcessor(this);
+		ClientServerInterface.setClient(true);
 		Wiring.setup(new Module() {
 			@Override
 			public void configure(Binder binder) {
 			}
 		});
 
-		ClientServerInterface.setClient(true);
 		loadResources();
-
-		Gdx.input.setInputProcessor(this);
 
 		SoundService.changeMusic(2f, SoundService.mainMenu);
 
@@ -142,6 +144,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Domain.setActiveWorld(1);
 		getGraphics().getCam().position.y = Layer.getCameraYForHorizonCoord(getGraphics().getHeight()/3);
 		ClientServerInterface.setServer(false);
+
+		Wiring.injector.injectMembers(this);
 	}
 
 
@@ -183,15 +187,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	public static Controls getKeyMappings() {
-		if (controls == null) {
-			setKeyMappings(new Controls());
-		}
 		return controls;
-	}
-
-
-	public static Controls setKeyMappings(Controls keys) {
-		return controls = keys;
 	}
 
 
@@ -203,10 +199,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				SoundService.update(Gdx.graphics.getDeltaTime());
 			}
 
-			// Topography backlog ---------- /
-			if (System.currentTimeMillis() - topographyBacklogExecutionTimer > 100) {
+			// Topography backlog, must be done in main threadh because chunks rely on graphics ---------- /
+			if (System.currentTimeMillis() - timers.topographyBacklogExecutionTimer > 100) {
 				Topography.executeBackLog();
-				topographyBacklogExecutionTimer = System.currentTimeMillis();
+				timers.topographyBacklogExecutionTimer = System.currentTimeMillis();
 			}
 
 			// Camera --------------------- /
@@ -236,31 +232,26 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	private void fading() {
-		if (fading) {
-			if (fadeAlpha < 1f) {
-				fadeAlpha += 0.03f;
+		if (graphics.isFading()) {
+			if (graphics.getFadeAlpha() < 1f) {
+				graphics.setFadeAlpha(graphics.getFadeAlpha() + 0.03f);
 			} else {
-				fadeAlpha = 1f;
+				graphics.setFadeAlpha(1f);
 			}
 		} else {
-			if (fadeAlpha > 0f) {
-				fadeAlpha -= 0.03f;
+			if (graphics.getFadeAlpha() > 0f) {
+				graphics.setFadeAlpha(graphics.getFadeAlpha() - 0.03f);
 			} else {
-				fadeAlpha = 0f;
+				graphics.setFadeAlpha(0f);
 			}
 		}
 
 		Gdx.gl20.glEnable(GL20.GL_BLEND);
 		UserInterface.shapeRenderer.begin(ShapeType.Filled);
-		UserInterface.shapeRenderer.setColor(0, 0, 0, fadeAlpha);
+		UserInterface.shapeRenderer.setColor(0, 0, 0, graphics.getFadeAlpha());
 		UserInterface.shapeRenderer.rect(0, 0, getGraphics().getWidth(), getGraphics().getHeight());
 		UserInterface.shapeRenderer.end();
 		Gdx.gl20.glDisable(GL20.GL_BLEND);
-	}
-
-
-	public static synchronized void setUpdateRateMultiplier(float updateRateMultiplier) {
-		BloodAndMithrilClient.updateRateMultiplier = updateRateMultiplier;
 	}
 
 
@@ -882,20 +873,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	}
 
 
-	/**
-	 * Fades in the screen
-	 */
-	public static void fadeIn() {
-		fading = false;
-	}
 
-
-	/**
-	 * Fades out the screen, to black
-	 */
-	public static void fadeOut() {
-		fading = true;
-	}
 
 
 	public static Collection<Mission> getMissions() {

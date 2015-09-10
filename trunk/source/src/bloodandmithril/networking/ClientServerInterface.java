@@ -333,6 +333,8 @@ public class ClientServerInterface {
 
 	private static Threading threading;
 
+	public static long ping;
+
 	/**
 	 * Sets up the client and attempt to connect to the server
 	 * @throws IOException
