@@ -334,11 +334,6 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 
 
 	@Override
-	protected void renderCustomizations(int animationIndex) {
-	}
-
-
-	@Override
 	protected void internalKill() {
 	}
 }

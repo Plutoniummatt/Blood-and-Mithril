@@ -210,7 +210,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 	 * @return The current {@link Animation} based on the current {@link Action}
 	 */
 	@Override
-	protected List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> getCurrentAnimation() {
+	public List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> getCurrentAnimation() {
 		return getAnimationMap().get(getCurrentAction());
 	}
 

@@ -53,15 +53,12 @@ import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
-import bloodandmithril.item.items.equipment.armor.Armor;
-import bloodandmithril.item.items.equipment.offhand.OffhandEquipment;
 import bloodandmithril.item.items.equipment.offhand.Torch;
 import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
@@ -101,10 +98,6 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -515,7 +508,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	protected abstract Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames();
 
 	/** Returns the current {@link AnimationSwitcher} of this {@link Individual} */
-	protected abstract List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> getCurrentAnimation();
+	public abstract List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> getCurrentAnimation();
 
 	/** Implementation-specific copy method of this {@link Individual} */
 	public abstract Individual copy();
@@ -575,132 +568,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** Setups up all individual resources */
 	public static void setup() {
-	}
-
-
-	/** Renders the character and any other sprites */
-	public void render() {
-		int animationIndex = 0;
-
-		// Draw the body, position is centre bottom of the frame
-		List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> currentAnimations = getCurrentAnimation();
-		if (currentAnimations == null) {
-			return;
-		}
-
-		getGraphics().getSpriteBatch().begin();
-		for (WrapperForTwo<AnimationSwitcher, ShaderProgram> animation : currentAnimations) {
-
-			// Render equipped items
-			renderCustomizations(animationIndex);
-			renderEquipment(animationIndex);
-			getGraphics().getSpriteBatch().flush();
-
-			getGraphics().getSpriteBatch().setShader(animation.b);
-			animation.b.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
-
-			TextureRegion keyFrame = animation.a.getAnimation(this).getKeyFrame(getAnimationTimer(), true);
-			getGraphics().getSpriteBatch().draw(
-				keyFrame.getTexture(),
-				getState().position.x - keyFrame.getRegionWidth()/2,
-				getState().position.y,
-				keyFrame.getRegionWidth(),
-				keyFrame.getRegionHeight(),
-				keyFrame.getRegionX(),
-				keyFrame.getRegionY(),
-				keyFrame.getRegionWidth(),
-				keyFrame.getRegionHeight(),
-				getCurrentAction().left(),
-				false
-			);
-
-			animationIndex++;
-		}
-		Gdx.gl.glDisable(GL20.GL_BLEND);
-
-		getGraphics().getSpriteBatch().end();
-		getGraphics().getSpriteBatch().flush();
-	}
-
-
-	/** Renders different hairstyles etc */
-	protected abstract void renderCustomizations(int animationIndex);
-
-
-	private void renderEquipment(int animationIndex) {
-		getGraphics().getSpriteBatch().flush();
-		WorldRenderer.individualTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		for (Item equipped : getEquipped().keySet()) {
-			if (((Equipable)equipped).getRenderingIndex(this) != animationIndex) {
-				continue;
-			}
-
-			Equipable toRender = (Equipable) equipped;
-			getGraphics().getSpriteBatch().setShader(Shaders.pass);
-			if (equipped instanceof Weapon) {
-				@SuppressWarnings({ "rawtypes", "unchecked" })
-				WrapperForTwo<Animation, Vector2> attackAnimationEffects = ((Weapon) equipped).getAttackAnimationEffects(this);
-
-				if (equipped instanceof OneHandedMeleeWeapon) {
-					SpacialConfiguration config = getOneHandedWeaponSpatialConfigration();
-					if (config != null) {
-						Shaders.pass.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
-						Vector2 pos = config.position.add(getState().position);
-						toRender.render(pos, config.orientation, config.flipX);
-						if (config.flipX) {
-							equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? config.orientation + 180f : -config.orientation)));
-						} else {
-							equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? -config.orientation : config.orientation)));
-						}
-					}
-				} else if (equipped instanceof TwoHandedMeleeWeapon) {
-					SpacialConfiguration config = getTwoHandedWeaponSpatialConfigration();
-					if (config != null) {
-						Shaders.pass.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
-						Vector2 pos = config.position.add(getState().position);
-						toRender.render(pos, config.orientation, config.flipX);
-						if (config.flipX) {
-							equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? config.orientation + 180f : -config.orientation)));
-						} else {
-							equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? -config.orientation : config.orientation)));
-						}
-					}
-				}
-
-				if (attackAnimationEffects != null) {
-					TextureRegion keyFrame = attackAnimationEffects.a.getKeyFrame(getAnimationTimer());
-					getGraphics().getSpriteBatch().draw(
-						keyFrame.getTexture(),
-						getState().position.x - keyFrame.getRegionWidth()/2 + (getCurrentAction().left() ? - attackAnimationEffects.b.x : attackAnimationEffects.b.x),
-						getState().position.y + attackAnimationEffects.b.y,
-						keyFrame.getRegionWidth(),
-						keyFrame.getRegionHeight(),
-						keyFrame.getRegionX(),
-						keyFrame.getRegionY(),
-						keyFrame.getRegionWidth(),
-						keyFrame.getRegionHeight(),
-						getCurrentAction().left(),
-						false
-					);
-				}
-			} else if (equipped instanceof Armor) {
-
-			} else if (equipped instanceof OffhandEquipment) {
-				SpacialConfiguration config = getOffHandSpatialConfigration();
-				Shaders.pass.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
-				Vector2 pos = config.position.add(getState().position);
-				((OffhandEquipment) equipped).render(pos, config.orientation, config.flipX);
-
-				if (config.flipX) {
-					equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? config.orientation + 180f : -config.orientation)));
-				} else {
-					equipped.setPosition(pos.cpy().add(new Vector2(toRender.getTextureRegion().getRegionWidth()/2, 0).rotate(config.flipX ? -config.orientation : config.orientation)));
-				}
-				toRender.particleEffects(pos, config.orientation, config.flipX);
-			}
-		}
-		getGraphics().getSpriteBatch().flush();
-		WorldRenderer.individualTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 
