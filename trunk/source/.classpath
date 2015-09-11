@@ -22,5 +22,6 @@
 	<classpathentry kind="lib" path="libs/gdx.jar"/>
 	<classpathentry kind="lib" path="libs/guice-4.0.jar"/>
 	<classpathentry kind="lib" path="libs/javax.inject-1.jar"/>
+	<classpathentry kind="lib" path="libs/guice-multibindings-4.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
