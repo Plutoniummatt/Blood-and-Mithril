@@ -333,11 +333,11 @@ public class WorldRenderer {
 		private static void renderIndividuals() {
 			try {
 				for (Individual indi : filter(Domain.getSortedIndividuals(renderPrioritySorter), offPlatform)) {
-					Renderer.getRenderer(indi).render(indi);
+					Renderer.render(indi);
 				}
 
 				for (Individual indi : filter(Domain.getSortedIndividuals(renderPrioritySorter), onPlatform)) {
-					Renderer.getRenderer(indi).render(indi);
+					Renderer.render(indi);
 				}
 			} catch (NullPointerException e) {
 				generalDebug("Nullpointer whilst rendering individual", LogLevel.INFO, e);

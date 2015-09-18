@@ -207,7 +207,7 @@ public class NewGameWindow extends Window {
 			UIRef.BL
 		);
 
-		Wiring.injector.injectMembers(this);
+		Wiring.injector().injectMembers(this);
 	}
 
 

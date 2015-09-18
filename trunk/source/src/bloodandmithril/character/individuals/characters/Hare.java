@@ -129,7 +129,7 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 
 
 	@Override
-	protected float getDefaultAttackPeriod() {
+	public float getDefaultAttackPeriod() {
 		return 0;
 	}
 
@@ -153,7 +153,7 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 
 
 	@Override
-	protected Box getDefaultAttackingHitBox() {
+	public Box getDefaultAttackingHitBox() {
 		return new Box(
 			new Vector2(
 				getHitBox().position.x,

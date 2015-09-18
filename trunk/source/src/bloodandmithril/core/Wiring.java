@@ -12,7 +12,7 @@ import com.google.inject.Module;
 @Copyright("Matthew Peck 2015")
 public class Wiring {
 
-	public static Injector injector;
+	private static Injector injector;
 
 	private Wiring() {
 	}
@@ -22,5 +22,9 @@ public class Wiring {
 	 */
 	public static void setup(Module... modules) {
 		injector = Guice.createInjector(modules);
+	}
+
+	public static Injector injector() {
+		return injector;
 	}
 }

@@ -7,6 +7,7 @@ import static bloodandmithril.world.Domain.getIndividual;
 import java.util.Set;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
@@ -147,7 +148,7 @@ public class Attack extends CompositeAITask {
 				closeEnough = size < 8;
 			}
 
-			return atker.getAttackingHitBox().overlapsWith(victim.getHitBox()) || closeEnough && !victim.canBeAttacked(atker);
+			return CombatService.getAttackingHitBox(atker).overlapsWith(victim.getHitBox()) || closeEnough && !victim.canBeAttacked(atker);
 		}
 	}
 
@@ -244,7 +245,7 @@ public class Attack extends CompositeAITask {
 			}
 
 			if (new WithinAttackRangeOrCantAttack(hostId, alive.getId()).call()) {
-				complete = attacker.attack(Sets.newHashSet(target));
+				complete = CombatService.attack(attacker, Sets.newHashSet(target));
 			} else {
 				complete = true;
 			}

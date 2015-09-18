@@ -22,8 +22,8 @@ public interface Renderer<T> {
 	 * Renders an instance of T
 	 */
 	@SuppressWarnings("unchecked")
-	public default void render(T t) {
-		((Renderer<T>) Wiring.injector.getInstance(Renderers.class).map.get(t.getClass())).internalRender(t);
+	public static <T> void render(T t) {
+		((Renderer<T>) Wiring.injector().getInstance(Renderers.class).map.get(t.getClass())).internalRender(t);
 	}
 
 	public void internalRender(T t);

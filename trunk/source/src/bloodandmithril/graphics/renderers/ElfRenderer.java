@@ -55,7 +55,6 @@ import com.google.common.collect.Maps;
 @Copyright("Matthew Peck 2015")
 public class ElfRenderer extends IndividualRenderer<Elf> {
 
-
 	/** Elf female hairstyles */
 	public static Map<Integer, TextureRegion> hairStyleFemale = Maps.newHashMap();
 
@@ -359,7 +358,7 @@ public class ElfRenderer extends IndividualRenderer<Elf> {
 			Math.max(elf.getHairColor().a, elf.getDeathAlpha())
 		);
 
-		super.render(elf);
+		super.internalRender(elf);
 	}
 
 

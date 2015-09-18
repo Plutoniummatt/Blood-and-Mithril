@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.IndividualUpdateService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.event.Event;
 import bloodandmithril.generation.ChunkGenerator;
@@ -117,7 +118,7 @@ public class World implements Serializable {
 		epoch.incrementTime(updateTick);
 
 		for (int individualId : individuals) {
-			Domain.getIndividual(individualId).update(updateTick);
+			IndividualUpdateService.update(Domain.getIndividual(individualId), updateTick);
 		}
 
 		for (Prop prop : props().getProps()) {

@@ -93,7 +93,7 @@ public class DevWindow extends Window {
 	 */
 	public DevWindow(int x, int y, int length, int height, boolean active) {
 		super(length, height, "Developer", active, 500, 300, false, true, true);
-		Wiring.injector.injectMembers(this);
+		Wiring.injector().injectMembers(this);
 
 		panel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35) {
 			@Override

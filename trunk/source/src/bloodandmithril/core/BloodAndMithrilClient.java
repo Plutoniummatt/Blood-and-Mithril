@@ -29,7 +29,7 @@ import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.objectives.Mission;
-import bloodandmithril.performance.PositionalReindexingService;
+import bloodandmithril.performance.PositionalIndexingService;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
@@ -145,7 +145,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		getGraphics().getCam().position.y = Layer.getCameraYForHorizonCoord(getGraphics().getHeight()/3);
 		ClientServerInterface.setServer(false);
 
-		Wiring.injector.injectMembers(this);
+		Wiring.injector().injectMembers(this);
 	}
 
 
@@ -797,7 +797,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		SoundService.changeMusic(2f, SoundService.desertAmbient);
 		UserInterface.contextMenus.clear();
-		PositionalReindexingService.reindex();
+		PositionalIndexingService.reindex();
 	}
 
 
@@ -882,6 +882,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	public static Graphics getGraphics() {
-		return Wiring.injector.getInstance(Graphics.class);
+		return Wiring.injector().getInstance(Graphics.class);
 	}
 }

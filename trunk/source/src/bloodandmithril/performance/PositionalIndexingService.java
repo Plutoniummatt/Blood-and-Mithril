@@ -13,7 +13,7 @@ import bloodandmithril.world.World;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class PositionalReindexingService {
+public class PositionalIndexingService {
 
 	/**
 	 * Clears down all positional indexes and reindexes all indexed entities
@@ -25,8 +25,7 @@ public class PositionalReindexingService {
 			}
 
 			for (int individualId : world.getIndividuals()) {
-				Individual individual = Domain.getIndividual(individualId);
-				individual.updatePositionalIndex();
+				indexInvidivual(Domain.getIndividual(individualId));
 			}
 
 			for (Item item : world.items().getItems()) {
@@ -37,5 +36,14 @@ public class PositionalReindexingService {
 				prop.updatePositionIndex();
 			}
 		}
+	}
+
+
+	public static void indexInvidivual(Individual indi) {
+		for (PositionalIndexNode node : Domain.getWorld(indi.getWorldId()).getPositionalIndexMap().getNearbyNodes(indi.getState().position.x, indi.getState().position.y)) {
+			node.removeIndividual(indi.getId().getId());
+		}
+
+		Domain.getWorld(indi.getWorldId()).getPositionalIndexMap().get(indi.getState().position.x, indi.getState().position.y).addIndividual(indi.getId().getId());
 	}
 }

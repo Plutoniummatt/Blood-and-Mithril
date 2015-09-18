@@ -226,7 +226,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 
 	@Override
-	protected Box getDefaultAttackingHitBox() {
+	public Box getDefaultAttackingHitBox() {
 		return new Box(
 			new Vector2(
 				getHitBox().position.x + (getCurrentAction().left() ? - getHitBox().width * (1f/3f) : getHitBox().width * (1f/3f)),
@@ -251,7 +251,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 
 	@Override
-	protected float getDefaultAttackPeriod() {
+	public float getDefaultAttackPeriod() {
 		return 0.8f;
 	}
 
