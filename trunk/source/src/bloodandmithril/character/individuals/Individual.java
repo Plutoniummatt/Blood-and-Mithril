@@ -18,6 +18,8 @@ import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
@@ -447,23 +449,21 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 		if (UserInterface.DEBUG) {
 			shapeRenderer.begin(ShapeType.Line);
-			shapeRenderer.setProjectionMatrix(UserInterface.UICameraTrackingCam.combined);
 			shapeRenderer.setColor(Color.ORANGE);
 			shapeRenderer.rect(
-				interactionBox.position.x - interactionBox.width / 2,
-				interactionBox.position.y - interactionBox.height / 2,
+				worldToScreenX(interactionBox.position.x - interactionBox.width / 2),
+				worldToScreenY(interactionBox.position.y - interactionBox.height / 2),
 				interactionBox.width,
 				interactionBox.height
 			);
 			shapeRenderer.setColor(Color.RED);
 			shapeRenderer.rect(
-				getHitBox().position.x - getHitBox().width / 2,
-				getHitBox().position.y - getHitBox().height / 2,
+				worldToScreenX(getHitBox().position.x - getHitBox().width / 2),
+				worldToScreenY(getHitBox().position.y - getHitBox().height / 2),
 				getHitBox().width,
 				getHitBox().height
 			);
 			shapeRenderer.end();
-			shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
 		}
 
 		if (isAlive() && isMouseOver() && Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
