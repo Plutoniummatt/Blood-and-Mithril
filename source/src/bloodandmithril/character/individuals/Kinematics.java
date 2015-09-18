@@ -42,7 +42,7 @@ public interface Kinematics {
 	/**
 	 * Handles standard kinematics
 	 */
-	static void kinetics(float delta, World world, Individual individual) throws NoTileFoundException {
+	public static void kinetics(float delta, World world, Individual individual) throws NoTileFoundException {
 		Topography topography = Domain.getWorld(individual.getWorldId()).getTopography();
 		IndividualKineticsProcessingData kinematicsData = individual.getKinematicsData();
 		IndividualState state = individual.getState();
@@ -105,7 +105,7 @@ public interface Kinematics {
 				}
 			}
 		}
-		
+
 		//Ground detection
 		//If the position is not on an empty tile and is not a platform tile run the ground detection routine
 		//If the position is on a platform tile and if the tile below current position is not an empty tile, run ground detection routine
@@ -118,7 +118,7 @@ public interface Kinematics {
 			}
 			state.velocity.y = 0f;
 			kinematicsData.distanceFallen = 0f;
-			
+
 			if (obj(individual.getCurrentAction()).oneOf(JUMP_LEFT, JUMP_RIGHT)) {
 				individual.setCurrentAction(state.velocity.x > 0 ? STAND_RIGHT : STAND_LEFT);
 			}

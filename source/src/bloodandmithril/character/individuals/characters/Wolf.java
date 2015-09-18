@@ -19,6 +19,7 @@ import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.Sniffer;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.character.individuals.GroundTravellingIndividual;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -109,7 +110,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 		biteAction.put(
 			2,
 			individual -> {
-				individual.attack(false);
+				CombatService.attack(individual);
 			}
 		);
 
@@ -151,7 +152,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 
 	@Override
-	protected float getDefaultAttackPeriod() {
+	public float getDefaultAttackPeriod() {
 		return 1.3f;
 	}
 
@@ -175,7 +176,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 
 	@Override
-	protected Box getDefaultAttackingHitBox() {
+	public Box getDefaultAttackingHitBox() {
 		return new Box(
 			new Vector2(
 				getHitBox().position.x,

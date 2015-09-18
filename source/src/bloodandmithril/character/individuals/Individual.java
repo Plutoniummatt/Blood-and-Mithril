@@ -19,11 +19,9 @@ import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
-import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.util.ComparisonUtil.obj;
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.Math.PI;
 import static java.lang.Math.cos;
@@ -36,20 +34,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-
 import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
-import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.Follow;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.Travel;
-import bloodandmithril.character.combat.CombatChain;
 import bloodandmithril.character.conditions.Condition;
-import bloodandmithril.character.conditions.Exhaustion;
-import bloodandmithril.character.conditions.Hunger;
-import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -67,7 +58,6 @@ import bloodandmithril.item.items.equipment.weapon.TwoHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -94,7 +84,6 @@ import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -116,42 +105,6 @@ import com.google.common.collect.Sets;
 @Copyright("Matthew Peck 2014")
 public abstract class Individual implements Equipper, Serializable, Kinematics {
 	private static final long serialVersionUID = 2821835360311044658L;
-
-	public enum Action implements Serializable {
-		DEAD(true),
-		JUMP_LEFT(true),
-		JUMP_RIGHT(false),
-		STAND_LEFT(true),
-		STAND_RIGHT(false),
-		STAND_LEFT_COMBAT_ONE_HANDED(true),
-		STAND_RIGHT_COMBAT_ONE_HANDED(false),
-		WALK_LEFT(true),
-		WALK_RIGHT(false),
-		RUN_LEFT(true),
-		RUN_RIGHT(false),
-		ATTACK_LEFT_UNARMED(true),
-		ATTACK_RIGHT_UNARMED(false),
-		ATTACK_LEFT_ONE_HANDED_WEAPON(true),
-		ATTACK_RIGHT_ONE_HANDED_WEAPON(false),
-		ATTACK_LEFT_ONE_HANDED_WEAPON_STAB(true),
-		ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB(false),
-		ATTACK_LEFT_TWO_HANDED_WEAPON(true),
-		ATTACK_RIGHT_TWO_HANDED_WEAPON(false),
-		ATTACK_LEFT_ONE_HANDED_WEAPON_MINE(true),
-		ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE(false),
-		ATTACK_LEFT_SPEAR(true),
-		ATTACK_RIGHT_SPEAR(false);
-
-		private boolean left;
-
-		private Action(boolean left) {
-			this.left = left;
-		}
-
-		public boolean left() {
-			return left;
-		}
-	}
 
 	/** The current action of this individual */
 	private Action currentAction = STAND_LEFT;
@@ -274,84 +227,44 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	/**
-	 * Copies all fields onto this individual from another
+	 * Copies all fields onto this individual from another, this is used in multi-player when synchronising server/client individual data
 	 */
 	public synchronized void copyFrom(Individual other) {
-		this.supressAI = other.supressAI;
-		this.setAi(other.getAI().copy());
-		this.setWorldId(other.getWorldId());
-		this.selectedByClient = other.selectedByClient;
-		this.setIndividualsToBeAttacked(other.getIndividualsToBeAttacked());
-		this.aiReactionTimer = other.aiReactionTimer;
-		this.setAnimationTimer(other.getAnimationTimer());
-		this.activeCommands = other.activeCommands;
-		this.setFactionId(other.getFactionId());
-		this.id = other.id;
-		this.interactionBox = other.getInteractionBox();
-		this.kinematicsData = other.getKinematicsData();
-		this.safetyHeight = other.safetyHeight;
-		this.state = other.state;
-		this.walking = other.walking;
-		this.timeStamp = other.timeStamp;
-		this.selectedByClient = other.selectedByClient;
-		this.hitBox = other.getHitBox();
-		this.skills = other.skills;
-		this.setCurrentAction(other.getCurrentAction());
-		this.combatStance = other.combatStance;
-		this.attackTimer = other.attackTimer;
 		this.currentAction = other.currentAction;
-		this.dead = other.dead;
-		this.speakTimer = other.speakTimer;
-		this.individualsToBeAttacked = other.individualsToBeAttacked;
-		this.combatTimer = other.combatTimer;
-		this.shutup = other.shutup;
-		this.travelIconTimer = other.travelIconTimer;
-		synchronizeContainer(other.equipperImpl);
+		this.selectedByClient = other.selectedByClient;
+		this.skills = other.skills;
+		this.id = other.id;
+		this.state = other.state;
+		this.activeCommands = other.activeCommands;
+		this.setAi(other.getAI().copy());
 		synchronizeEquipper(other.equipperImpl);
+		synchronizeContainer(other.equipperImpl);
+		this.kinematicsData = other.kinematicsData;
+		this.interactionBox = other.interactionBox;
+		this.hitBox = other.hitBox;
+		this.individualsToBeAttacked = other.individualsToBeAttacked;
+		this.tileToBeMined = other.tileToBeMined;
+		this.attackTimer = other.attackTimer;
+		this.animationTimer = other.animationTimer;
+		this.setAiReactionTimer(other.getAiReactionTimer());
+		this.combatStance = other.combatStance;
+		this.walking = other.walking;
+		this.safetyHeight = other.safetyHeight;
+		this.timeStamp = other.timeStamp;
+		this.worldId = other.worldId;
+		this.factionId = other.factionId;
+		this.dead = other.dead;
+		this.setCombatTimer(other.getCombatTimer());
+		this.travelIconTimer = other.travelIconTimer;
+		this.setSpeakTimer(other.getSpeakTimer());
+		this.setBeingAttackedBy(other.getBeingAttackedBy());
+		this.maxConcurrentAttackers = other.maxConcurrentAttackers;
+		this.shutup = other.shutup;
+		this.setPreviousActionFrameAction(other.getPreviousActionFrameAction());
+		this.setPreviousActionFrame(other.getPreviousActionFrame());
+		this.supressAI = other.supressAI;
 
 		internalCopyFrom(other);
-	}
-
-
-	/**
-	 * Attacks a set of other {@link Individual}s
-	 */
-	@SuppressWarnings("rawtypes")
-	public synchronized boolean attack(Set<Integer> individuals) {
-		if (attackTimer < getAttackPeriod() || dead) {
-			return false;
-		}
-
-		attackTimer = 0f;
-		setAnimationTimer(0f);
-
-		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
-			return equipped instanceof Weapon;
-		});
-
-		boolean left = getCurrentAction().left;
-		if (individuals.size() == 1) {
-			left = Domain.getIndividual(individuals.iterator().next()).getState().position.x < state.position.x;
-		}
-
-		if (weapon.isPresent()) {
-			if (left) {
-				setCurrentAction(((Weapon) weapon.get()).getAttackAction(false));
-			} else {
-				setCurrentAction(((Weapon) weapon.get()).getAttackAction(true));
-			}
-		} else {
-			if (left) {
-				setCurrentAction(Action.ATTACK_LEFT_UNARMED);
-			} else {
-				setCurrentAction(Action.ATTACK_RIGHT_UNARMED);
-			}
-		}
-
-		this.getIndividualsToBeAttacked().clear();
-		this.getIndividualsToBeAttacked().addAll(individuals);
-
-		return true;
 	}
 
 
@@ -397,36 +310,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		return attackingPeriod;
 	}
 
-	protected abstract float getDefaultAttackPeriod();
-
-	/**
-	 * The actual attack, executed when the correct action frame's ParameterizedTask<Individual> is executed
-	 */
-	public void attack(boolean mine) {
-		if (dead) {
-			return;
-		}
-
-		if (getIndividualsToBeAttacked().isEmpty()) {
-			// Attack environmental objects... maybe?...
-		} else {
-			for (Integer individualId : getIndividualsToBeAttacked()) {
-				Box attackingBox = getInteractionBox();
-
-				Individual toBeAttacked = Domain.getIndividual(individualId);
-				if (attackingBox.overlapsWith(toBeAttacked.getHitBox())) {
-					String floatingText = combat().target(toBeAttacked).execute();
-					if (!StringUtils.isBlank(floatingText)) {
-						toBeAttacked.addFloatingText(
-							floatingText,
-							Color.RED
-						);
-					}
-				}
-			}
-		}
-	}
-
+	public abstract float getDefaultAttackPeriod();
 
 	public void addFloatingText(String text, Color color) {
 		UserInterface.addFloatingText(
@@ -435,11 +319,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			getState().position.cpy().add(0f, getHeight()).add(new Vector2(0, 15f).rotate(Util.getRandom().nextFloat() * 360f)),
 			false
 		);
-	}
-
-
-	private CombatChain combat() {
-		return new CombatChain(this);
 	}
 
 
@@ -473,33 +352,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	@SuppressWarnings("rawtypes")
-	public Box getAttackingHitBox() {
-		Box attackingBox = null;
-		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
-			return equipped instanceof Weapon;
-		});
-
-		if (weapon.isPresent()) {
-			if (weapon.get() instanceof MeleeWeapon) {
-				attackingBox = ((MeleeWeapon) weapon.get()).getActionFrameHitBox(this);
-			}
-		}
-
-		if (attackingBox == null) {
-			attackingBox = getDefaultAttackingHitBox();
-		};
-
-		return attackingBox;
-	}
-
-
 	/** Returns the damage dealt when attacking whilst not armed */
 	public abstract float getUnarmedMinDamage();
 	public abstract float getUnarmedMaxDamage();
 
 	/** Returns the {@link Box} that will be used to calculate overlaps with other hitboxes, when no weapon-specific hitboxes are found */
-	protected abstract Box getDefaultAttackingHitBox();
+	public abstract Box getDefaultAttackingHitBox();
 
 	/** Called during the update routine when the currentAction is attacking */
 	protected abstract void respondToAttackCommand();
@@ -682,135 +540,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	/**
-	 * Updates the individual
-	 */
-	public void update(float delta) {
-		float aiTaskDelay = 0.01f;
-		travelIconTimer += 0.15f;
-		speakTimer = speakTimer - delta <= 0f ? 0f : speakTimer - delta;
-
-		// If chunk has not yet been loaded, do not update
-		try {
-			Domain.getWorld(worldId).getTopography().getTile(state.position, true);
-		} catch (NoTileFoundException e) {
-			return;
-		}
-
-		// Update interaction box location
-		interactionBox.position.x = state.position.x;
-		interactionBox.position.y = state.position.y + getHeight() / 2;
-
-		// Update hitbox location
-		getHitBox().position.x = state.position.x;
-		getHitBox().position.y = state.position.y + getHeight() / 2;
-
-		if (combatTimer <= 0f) {
-			setCombatStance(false);
-		}
-
-		if (inCombatStance() && !(getAI().getCurrentTask() instanceof Attack)) {
-			combatTimer -= delta;
-		}
-
-		aiReactionTimer += delta;
-		if (aiReactionTimer >= aiTaskDelay && isAlive()) {
-			getAI().update(aiTaskDelay);
-			aiReactionTimer = 0f;
-		}
-
-		setAnimationTimer(getAnimationTimer() + delta);
-		attackTimer += delta;
-
-		if (isAlive()) {
-			updateVitals(delta);
-		}
-
-		synchronized (beingAttackedBy) {
-			Sets.newHashSet(beingAttackedBy.keySet()).stream().forEach(i -> {
-				Individual individual = Domain.getIndividual(i);
-				if (beingAttackedBy.get(i) <= System.currentTimeMillis() - round(individual.getAttackPeriod() * 1000D) - 1000L) {
-					beingAttackedBy.remove(i);
-				} else {
-					AITask currentTask = individual.getAI().getCurrentTask();
-					if (currentTask instanceof Attack) {
-						if (!((Attack) currentTask).getTargets().contains(getId().getId())) {
-							beingAttackedBy.remove(i);
-						}
-					} else {
-						beingAttackedBy.remove(i);
-					}
-				}
-			});
-		}
-
-		internalUpdate(delta);
-
-		executeActionFrames();
-
-		if (isAlive()) {
-			respondToCommands();
-			respondToAttackCommand();
-		}
-
-		try {
-			Kinematics.kinetics(delta, Domain.getWorld(getWorldId()), this);
-		} catch (NoTileFoundException e) {}
-
-		updateConditions(delta);
-		updatePositionalIndex();
-
-		Sets.newHashSet(getEquipped().keySet()).forEach(equipped -> {
-			((Equipable) equipped).update(this, delta);
-		});
-	}
-
-
-	public void updatePositionalIndex() {
-		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(state.position.x, state.position.y)) {
-			node.removeIndividual(id.getId());
-		}
-
-		Domain.getWorld(worldId).getPositionalIndexMap().get(state.position.x, state.position.y).addIndividual(id.getId());
-	}
-
-
-	/**
-	 * Updates the vitals of this {@link Individual}
-	 */
-	private void updateVitals(float delta) {
-		heal(delta * getState().healthRegen);
-
-		decreaseHunger(hungerDrain());
-		decreaseThirst(thirstDrain());
-
-		if (isWalking()) {
-			if (isCommandActive(getKeyMappings().moveLeft.keyCode) || isCommandActive(getKeyMappings().moveRight.keyCode)) {
-				increaseStamina(delta * getState().staminaRegen / 2f);
-			} else {
-				increaseStamina(delta * getState().staminaRegen);
-			}
-		} else {
-			if (isCommandActive(getKeyMappings().moveLeft.keyCode) || isCommandActive(getKeyMappings().moveRight.keyCode)) {
-				decreaseStamina(staminaDrain());
-			} else {
-				increaseStamina(delta * getState().staminaRegen);
-			}
-		}
-
-		if (getState().hunger < 0.75f) {
-			addCondition(new Hunger(getId().getId()));
-		}
-
-		if (getState().thirst < 0.75f) {
-			addCondition(new Thirst(getId().getId()));
-		}
-
-		if (getState().stamina < 0.75f) {
-			addCondition(new Exhaustion(getId().getId()));
-		}
-	}
-
 	/** The amount of hunger drained, per update tick (1/60) of a second, max hunger is 1 */
 	protected abstract float hungerDrain();
 
@@ -819,57 +548,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	/** The amount of stamina drained, per update tick (1/60) of a second, max stamina is 1 */
 	protected abstract float staminaDrain();
-
-	/**
-	 * Performs the {@link Task} associated with the current frame of the animation of the current {@link Action}
-	 */
-	private void executeActionFrames() {
-		ParameterizedTask<Individual> task = null;
-		try {
-			task = getActionFrames()
-				.get(getCurrentAction())
-				.get(getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(animationTimer));
-		} catch (NullPointerException e) {
-			// Do nothing
-		}
-
-		if (previousActionFrameAction == getCurrentAction() && previousActionFrame == getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(animationTimer)) {
-			return;
-		}
-
-		if (task != null) {
-			task.execute(this);
-		}
-
-		previousActionFrame = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(animationTimer);
-		previousActionFrameAction = getCurrentAction();
-	}
-
-
-	/**
-	 * Update how this {@link Individual} is affected by its {@link Condition}s
-	 */
-	private void updateConditions(float delta) {
-		// Reset regeneration values
-		if (isServer()) {
-			state.reset();
-
-			for (Condition condition : newArrayList(state.currentConditions)) {
-				if (condition.isExpired()) {
-					condition.uponExpiry();
-					state.currentConditions.remove(condition);
-				} else {
-					condition.affect(this, delta);
-				}
-			}
-		}
-
-		if (isClient()) {
-			for (Condition condition : newArrayList(state.currentConditions)) {
-				condition.clientSideEffects(this, delta);
-			}
-		}
-	}
 
 
 	/** Is this individual the current one? */
@@ -993,7 +671,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				true,
 				trade(this),
 				follow(this),
-				attack(this)
+				attackMenuItem(this)
 			);
 		} else {
 			return new ContextMenu(0, 0,
@@ -1125,7 +803,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	private MenuItem attack(final Individual thisIndividual) {
+	private MenuItem attackMenuItem(final Individual thisIndividual) {
 		return new MenuItem(
 			"Attack",
 				() -> {
@@ -1723,7 +1401,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	public void setCombatStance(boolean combatStance) {
 		if (combatStance) {
-			combatTimer = 5f;
+			setCombatTimer(5f);
 		}
 		this.combatStance = combatStance;
 	}
@@ -1780,11 +1458,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	public boolean canBeAttacked(Individual by) {
-		synchronized (beingAttackedBy) {
-			if (beingAttackedBy.containsKey(by.getId().getId())) {
+		synchronized (getBeingAttackedBy()) {
+			if (getBeingAttackedBy().containsKey(by.getId().getId())) {
 				return true;
 			} else {
-				int totalConcurrentAttackNumber = beingAttackedBy.keySet().stream().mapToInt(i -> {
+				int totalConcurrentAttackNumber = getBeingAttackedBy().keySet().stream().mapToInt(i -> {
 					return Domain.getIndividual(i).getConcurrentAttackNumber();
 				}).sum();
 
@@ -1796,7 +1474,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	public void addAttacker(Individual attacker) {
 		if (canBeAttacked(attacker)) {
-			this.beingAttackedBy.put(attacker.getId().getId(), System.currentTimeMillis());
+			this.getBeingAttackedBy().put(attacker.getId().getId(), System.currentTimeMillis());
 		}
 	}
 
@@ -1917,7 +1595,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 
 	public void speak(String text, long duration) {
-		if (dead || shutup || speakTimer > 0f) {
+		if (dead || shutup || getSpeakTimer() > 0f) {
 			return;
 		}
 
@@ -1929,7 +1607,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 				0,
 				(int) (getHeight() * 1.3f)
 			);
-			speakTimer = duration / 1000f;
+			setSpeakTimer(duration / 1000f);
 		}
 	}
 
@@ -1979,5 +1657,102 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 
 		return null;
+	}
+
+
+	public float getSpeakTimer() {
+		return speakTimer;
+	}
+
+
+	public void setSpeakTimer(float speakTimer) {
+		this.speakTimer = speakTimer;
+	}
+
+
+	public float getCombatTimer() {
+		return combatTimer;
+	}
+
+
+	public void setCombatTimer(float combatTimer) {
+		this.combatTimer = combatTimer;
+	}
+
+
+	public float getAiReactionTimer() {
+		return aiReactionTimer;
+	}
+
+
+	public void setAiReactionTimer(float aiReactionTimer) {
+		this.aiReactionTimer = aiReactionTimer;
+	}
+
+
+	public Map<Integer, Long> getBeingAttackedBy() {
+		return beingAttackedBy;
+	}
+
+
+	public void setBeingAttackedBy(Map<Integer, Long> beingAttackedBy) {
+		this.beingAttackedBy = beingAttackedBy;
+	}
+
+
+	public Action getPreviousActionFrameAction() {
+		return previousActionFrameAction;
+	}
+
+
+	public void setPreviousActionFrameAction(Action previousActionFrameAction) {
+		this.previousActionFrameAction = previousActionFrameAction;
+	}
+
+
+	public int getPreviousActionFrame() {
+		return previousActionFrame;
+	}
+
+
+	public void setPreviousActionFrame(int previousActionFrame) {
+		this.previousActionFrame = previousActionFrame;
+	}
+
+
+	public enum Action implements Serializable {
+		DEAD(true),
+		JUMP_LEFT(true),
+		JUMP_RIGHT(false),
+		STAND_LEFT(true),
+		STAND_RIGHT(false),
+		STAND_LEFT_COMBAT_ONE_HANDED(true),
+		STAND_RIGHT_COMBAT_ONE_HANDED(false),
+		WALK_LEFT(true),
+		WALK_RIGHT(false),
+		RUN_LEFT(true),
+		RUN_RIGHT(false),
+		ATTACK_LEFT_UNARMED(true),
+		ATTACK_RIGHT_UNARMED(false),
+		ATTACK_LEFT_ONE_HANDED_WEAPON(true),
+		ATTACK_RIGHT_ONE_HANDED_WEAPON(false),
+		ATTACK_LEFT_ONE_HANDED_WEAPON_STAB(true),
+		ATTACK_RIGHT_ONE_HANDED_WEAPON_STAB(false),
+		ATTACK_LEFT_TWO_HANDED_WEAPON(true),
+		ATTACK_RIGHT_TWO_HANDED_WEAPON(false),
+		ATTACK_LEFT_ONE_HANDED_WEAPON_MINE(true),
+		ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE(false),
+		ATTACK_LEFT_SPEAR(true),
+		ATTACK_RIGHT_SPEAR(false);
+
+		private boolean left;
+
+		private Action(boolean left) {
+			this.left = left;
+		}
+
+		public boolean left() {
+			return left;
+		}
 	}
 }

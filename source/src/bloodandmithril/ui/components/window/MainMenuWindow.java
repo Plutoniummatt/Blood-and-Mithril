@@ -46,7 +46,7 @@ public class MainMenuWindow extends Window {
 	public MainMenuWindow(boolean closeable) {
 		super(200, 130, "Main Menu", true, false, false, closeable);
 		loadButtons();
-		Wiring.injector.injectMembers(this);
+		Wiring.injector().injectMembers(this);
 	}
 
 

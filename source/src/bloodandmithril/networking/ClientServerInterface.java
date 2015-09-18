@@ -340,7 +340,7 @@ public class ClientServerInterface {
 	 * @throws IOException
 	 */
 	public static void setupAndConnect(String ip) throws IOException {
-		threading = Wiring.injector.getInstance(Threading.class);
+		threading = Wiring.injector().getInstance(Threading.class);
 
 		clientName = InetAddress.getLocalHost().getHostName();
 

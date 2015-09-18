@@ -17,6 +17,7 @@ import java.util.Map;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.offhand.OffhandEquipment;
@@ -78,7 +79,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		attackUnarmed.put(
 			3,
 			individual -> {
-				individual.attack(false);
+				CombatService.attack(individual);
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
@@ -91,7 +92,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		attackOneHanded.put(
 			6,
 			individual -> {
-				individual.attack(false);
+				CombatService.attack(individual);
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
@@ -104,7 +105,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		attackOneHandedStab.put(
 			3,
 			individual -> {
-				individual.attack(false);
+				CombatService.attack(individual);
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
@@ -163,8 +164,8 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 	protected Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames() {
 		return actionFrames;
 	}
-	
-	
+
+
 	public SpacialConfiguration getHelmetSpatialConfigration() {
 		int frameIndex = getCurrentAnimation().get(0).a.getAnimation(this).getKeyFrameIndex(getAnimationTimer());
 
@@ -237,10 +238,10 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					case 6: return new SpacialConfiguration(new Vector2(0, -4f), 0f, false);
 					case 7: return new SpacialConfiguration(new Vector2(0, -6f), 0f, false);
 				}
-				
+
 			case DEAD:
 				return new SpacialConfiguration(new Vector2(0, 0f), 0f, false);
-				
+
 			default:
 				throw new RuntimeException("Unexpected action: " + getCurrentAction());
 		}
@@ -362,7 +363,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					case 6: return new SpacialConfiguration(new Vector2(28, 48f), 0f, false);
 					case 7: return new SpacialConfiguration(new Vector2(28, 48f), 0f, false);
 				}
-				
+
 			case DEAD:
 				return new SpacialConfiguration(new Vector2(0, 0f), 0f, false);
 
@@ -455,7 +456,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 			angle = ((OffhandEquipment) offHandItem).renderAngle();
 			combatAngle = ((OffhandEquipment) offHandItem).combatAngle();
 		}
-		
+
 		switch(getCurrentAction()) {
 			case STAND_LEFT:
 			case JUMP_LEFT:
@@ -528,8 +529,8 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 				throw new RuntimeException("Unexpected action: " + getCurrentAction());
 		}
 	}
-	
-	
+
+
 	public boolean offHandEquipped() {
 		return !getAvailableEquipmentSlots().get(EquipmentSlot.OFFHAND).call();
 	}
