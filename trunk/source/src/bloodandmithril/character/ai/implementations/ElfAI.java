@@ -56,49 +56,13 @@ public class ElfAI extends ArtificialIntelligence {
 
 	@Override
 	public void addRoutines() {
-		EntityVisibleRoutine<Lightable> routine = new EntityVisibleRoutine<Lightable>(getHost().getId(), Lightable.class, new SerializableMappingFunction<Lightable, Boolean>() {
-			private static final long serialVersionUID = 1L;
-			@Override
-			public Boolean apply(Lightable input) {
-				return !input.isLit();
-			}
-		});
+		healthBelowQuater();
+		lightLightables();
+		noiseHeard();
+	}
 
-		routine.setAiTaskGenerator(new SerializableMappingFunction<Lightable, AITask>() {
-			private static final long serialVersionUID = 4879197288910331133L;
-			@Override
-			public AITask apply(Lightable input) {
-				try {
-					if (getHost().getFireLighter() == null) {
-						return null;
-					}
-					return new LightLightable(getHost(), input, true);
-				} catch (NoTileFoundException e) {
-					return null;
-				}
-			}
-		});
 
-		addRoutine(routine);
-
-		IndividualConditionRoutine anotherRoutine = new IndividualConditionRoutine(getHost().getId(), new SerializableMappingFunction<Individual, Boolean>() {
-			private static final long serialVersionUID = -8900729069395449472L;
-			@Override
-			public Boolean apply(Individual input) {
-				return input.getState().health/input.getState().maxHealth < 0.25f;
-			}
-		});
-
-		anotherRoutine.setAiTaskGenerator(new SerializableMappingFunction<Individual, AITask>() {
-			private static final long serialVersionUID = 372181266426810689L;
-			@Override
-			public AITask apply(Individual input) {
-				return new Speak(getHost(), "Fuck, I'm gonna die!", 2000);
-			}
-		});
-
-		addRoutine(anotherRoutine);
-
+	private void noiseHeard() {
 		StimulusDrivenRoutine stimRoutine = new StimulusDrivenRoutine(getHost().getId(), new SerializableMappingFunction<Stimulus, Boolean>() {
 			private static final long serialVersionUID = 1314379365402151840L;
 			@Override
@@ -129,5 +93,54 @@ public class ElfAI extends ArtificialIntelligence {
 		});
 
 		addRoutine(stimRoutine);
+	}
+
+
+	private void healthBelowQuater() {
+		IndividualConditionRoutine anotherRoutine = new IndividualConditionRoutine(getHost().getId(), new SerializableMappingFunction<Individual, Boolean>() {
+			private static final long serialVersionUID = -8900729069395449472L;
+			@Override
+			public Boolean apply(Individual input) {
+				return input.getState().health/input.getState().maxHealth < 0.25f;
+			}
+		});
+
+		anotherRoutine.setAiTaskGenerator(new SerializableMappingFunction<Individual, AITask>() {
+			private static final long serialVersionUID = 372181266426810689L;
+			@Override
+			public AITask apply(Individual input) {
+				return new Speak(getHost(), "Fuck, I'm gonna die!", 2000);
+			}
+		});
+
+		addRoutine(anotherRoutine);
+	}
+
+
+	private void lightLightables() {
+		EntityVisibleRoutine<Lightable> routine = new EntityVisibleRoutine<Lightable>(getHost().getId(), Lightable.class, new SerializableMappingFunction<Lightable, Boolean>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Boolean apply(Lightable input) {
+				return !input.isLit();
+			}
+		});
+
+		routine.setAiTaskGenerator(new SerializableMappingFunction<Lightable, AITask>() {
+			private static final long serialVersionUID = 4879197288910331133L;
+			@Override
+			public AITask apply(Lightable input) {
+				try {
+					if (getHost().getFireLighter() == null) {
+						return null;
+					}
+					return new LightLightable(getHost(), input, true);
+				} catch (NoTileFoundException e) {
+					return null;
+				}
+			}
+		});
+
+		addRoutine(routine);
 	}
 }
