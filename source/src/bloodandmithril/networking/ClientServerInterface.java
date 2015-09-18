@@ -19,7 +19,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import bloodandmithril.audio.SoundService.SuspiciousSound;
-import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocationFunction;
 import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
@@ -396,12 +395,6 @@ public class ClientServerInterface {
 						Topography.addTask(() -> {
 							response.acknowledge();
 						});
-					} else if (response instanceof MoveIndividual || response instanceof IndividualSelection) {
-						AIProcessor.addTaskToAIThread(
-							() -> {
-								response.acknowledge();
-							}
-						);
 					} else {
 						threading.clientProcessingThreadPool.execute(
 							() -> {

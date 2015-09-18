@@ -110,7 +110,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 						default:
 							throw new IllegalStateException("AI Mode not recognised");
 					}
-				});
+				}, getHost().getId().getId());
 			}
 
 			if (getCurrentTask() != null) {

@@ -3,6 +3,7 @@ package bloodandmithril.character.ai;
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import static bloodandmithril.world.Domain.getIndividual;
 
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -14,6 +15,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.util.Function;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.SerializableFunction;
@@ -21,6 +23,7 @@ import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Sets;
 
 
 /**
@@ -35,8 +38,11 @@ public class AIProcessor {
 	static Thread aiThread, pathFinderThread;
 
 	/** {@link #aiThread} and {@link #pathFinderThread} processing {@link Task}s */
-	private static ArrayBlockingQueue<Task> aiThreadTasks = new ArrayBlockingQueue<Task>(5000);
-	private static ArrayBlockingQueue<Task> pathFinderTasks = new ArrayBlockingQueue<Task>(5000);
+	private static ArrayBlockingQueue<Function<Integer>> aiThreadTasks = new ArrayBlockingQueue<Function<Integer>>(5000);
+	private static ArrayBlockingQueue<Function<Integer>> pathFinderTasks = new ArrayBlockingQueue<Function<Integer>>(5000);
+
+	/** If an individual's ID is contained within the set, then an AI task has already been queued for the individual and therefore can not be queued */
+	private static Set<Integer> individualsIds = Sets.newHashSet();
 
 	/**
 	 * Sets up this class
@@ -87,7 +93,10 @@ public class AIProcessor {
 					if (pathFinderTasks.isEmpty()) {
 						Logger.aiDebug("Processed " + n + " pathfinder items", LogLevel.TRACE);
 					} else {
-						pathFinderTasks.poll().execute();
+						Integer toRemove = pathFinderTasks.poll().call();
+						synchronized (individualsIds) {
+							individualsIds.remove(toRemove);
+						}
 						processItems(n + 1);
 					}
 				}
@@ -110,7 +119,10 @@ public class AIProcessor {
 	 */
 	private static void processItems(final int n) {
 		while (!aiThreadTasks.isEmpty()) {
-			aiThreadTasks.poll().execute();
+			Integer idToRemove = aiThreadTasks.poll().call();
+			synchronized (individualsIds) {
+				individualsIds.remove(idToRemove);
+			}
 		}
 		Logger.aiDebug("Processed " + n + " AI items", LogLevel.TRACE);
 	}
@@ -132,6 +144,8 @@ public class AIProcessor {
 						host.getAI().setCurrentTask(travel);
 					}
 				}
+
+				return host.getId().getId();
 			}
 		);
 	}
@@ -152,6 +166,8 @@ public class AIProcessor {
 						travel.addJump(new Jump(host.getId(), new ReturnIndividualPosition(host), destination));
 						host.getAI().setCurrentTask(travel);
 					}
+
+					return host.getId().getId();
 				}
 			}
 		);
@@ -161,8 +177,19 @@ public class AIProcessor {
 	/**
 	 * @param t task to add
 	 */
-	public static void addTaskToAIThread(Task t) {
-		aiThreadTasks.add(t);
+	public static void addTaskToAIThread(Task t, int individualId) {
+		synchronized (individualsIds) {
+			if (individualsIds.contains(individualId)) {
+				return;
+			}
+
+			aiThreadTasks.add(() -> {
+				t.execute();
+				return individualId;
+			});
+
+			individualsIds.add(individualId);
+		}
 	}
 
 
