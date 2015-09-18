@@ -1,5 +1,7 @@
 package bloodandmithril.world.topography;
 
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.textureCoordinateQuantization;
@@ -206,12 +208,10 @@ public class Chunk {
 
 		if (UserInterface.DEBUG) {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
-			UserInterface.shapeRenderer.setProjectionMatrix(camera.combined);
 			UserInterface.shapeRenderer.setColor(new Color(1f, 0.5f, 1f, 0.15f));
 			float x = fData.xChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE;
 			float y = fData.yChunkCoord * Topography.CHUNK_SIZE * Topography.TILE_SIZE;
-			UserInterface.shapeRenderer.rect(x, y, Topography.CHUNK_SIZE * Topography.TILE_SIZE, Topography.CHUNK_SIZE * Topography.TILE_SIZE);
-			UserInterface.shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
+			UserInterface.shapeRenderer.rect(worldToScreenX(x), worldToScreenY(y), Topography.CHUNK_SIZE * Topography.TILE_SIZE, Topography.CHUNK_SIZE * Topography.TILE_SIZE);
 			UserInterface.shapeRenderer.end();
 		}
 		Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -254,7 +254,7 @@ public class Chunk {
 
 		/** Unique id of the {@link World} this chunk data relates to */
 		public int worldId;
-		
+
 		/** Whether this is a foreground chunk data */
 		public boolean foreground;
 	}
