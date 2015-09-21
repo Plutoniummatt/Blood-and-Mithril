@@ -53,7 +53,7 @@ public class TransferLiquidFromContainer extends CompositeAITask {
 
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "Tranfering liquid";
 		}
 

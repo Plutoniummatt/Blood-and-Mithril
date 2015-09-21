@@ -94,7 +94,7 @@ public class GoToMovingLocation extends AITask {
 
 
 	@Override
-	public String getDescription() {
+	public String getShortDescription() {
 		return "Moving";
 	}
 

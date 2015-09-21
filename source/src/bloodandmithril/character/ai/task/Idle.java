@@ -28,7 +28,7 @@ public class Idle extends AITask {
 
 
 	@Override
-	public String getDescription() {
+	public String getShortDescription() {
 		return "Idle";
 	}
 

@@ -92,10 +92,18 @@ public class Epoch implements Serializable {
 	/**
 	 * @return the current time of day as a string
 	 */
-	public String getTimeString() {
-		String hour = floor(timeOfDay) < 10 ? "0" + Integer.toString((int)floor(timeOfDay)) : Integer.toString((int)floor(timeOfDay));
-		String minute = (int)((timeOfDay - (float)floor(timeOfDay)) * 60f) < 10 ? "0" + Integer.toString((int)((timeOfDay - (float)floor(timeOfDay)) * 60f)) : Integer.toString((int)((timeOfDay - (float)floor(timeOfDay)) * 60f));
+	public static String getTimeString(float time) {
+		String hour = floor(time) < 10 ? "0" + Integer.toString((int)floor(time)) : Integer.toString((int)floor(time));
+		String minute = (int)((time - (float)floor(time)) * 60f) < 10 ? "0" + Integer.toString((int)((time - (float)floor(time)) * 60f)) : Integer.toString((int)((time - (float)floor(time)) * 60f));
 		return hour + ":" + minute;
+	}
+
+
+	/**
+	 * See {@link #getTimeString(Epoch)}
+	 */
+	public String getTimeString() {
+		return getTimeString(getTime());
 	}
 
 

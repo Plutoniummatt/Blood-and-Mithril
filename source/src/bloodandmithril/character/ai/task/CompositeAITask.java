@@ -85,7 +85,7 @@ public class CompositeAITask extends AITask {
 
 
 	@Override
-	public String getDescription() {
+	public String getShortDescription() {
 		return description;
 	}
 

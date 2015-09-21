@@ -96,7 +96,7 @@ public class MineTile extends CompositeAITask {
 
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "Mining";
 		}
 

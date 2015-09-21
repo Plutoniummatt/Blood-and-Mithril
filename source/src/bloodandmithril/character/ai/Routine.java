@@ -1,7 +1,11 @@
 package bloodandmithril.character.ai;
 
+import java.util.Deque;
+
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.components.Panel;
+import bloodandmithril.ui.components.window.EditAIRoutineWindow;
 import bloodandmithril.util.SerializableMappingFunction;
 
 /**
@@ -34,7 +38,7 @@ public abstract class Routine<C> extends AITask {
 
 
 	@Override
-	public String getDescription() {
+	public String getShortDescription() {
 		return description;
 	}
 
@@ -63,4 +67,10 @@ public abstract class Routine<C> extends AITask {
 	 * @param aiTaskGenerator the task generator to set
 	 */
 	public abstract void setAiTaskGenerator(SerializableMappingFunction<C, AITask> aiTaskGenerator);
+
+
+	/**
+	 * @return the UI wizard for editing this {@link Routine}
+	 */
+	public abstract Deque<Panel> constructEditWizard(EditAIRoutineWindow parent);
 }

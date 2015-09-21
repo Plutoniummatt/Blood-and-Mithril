@@ -72,7 +72,7 @@ public class LockUnlockContainer extends CompositeAITask {
 		}
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "Locking/Unlocking";
 		}
 

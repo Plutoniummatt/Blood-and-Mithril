@@ -100,7 +100,7 @@ public class TakeItem extends CompositeAITask {
 
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "Taking item";
 		}
 

@@ -41,7 +41,7 @@ public class Trading extends AITask {
 
 
 	@Override
-	public String getDescription() {
+	public String getShortDescription() {
 		return "Trading";
 	}
 

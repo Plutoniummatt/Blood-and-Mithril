@@ -64,7 +64,7 @@ public class PlantSeed extends CompositeAITask {
 
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "Planting seed";
 		}
 

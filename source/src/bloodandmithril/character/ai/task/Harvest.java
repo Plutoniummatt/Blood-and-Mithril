@@ -84,7 +84,7 @@ public class Harvest extends CompositeAITask {
 
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "Harveseting";
 		}
 
