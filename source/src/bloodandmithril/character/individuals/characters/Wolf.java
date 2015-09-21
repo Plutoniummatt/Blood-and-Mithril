@@ -110,7 +110,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 		biteAction.put(
 			2,
 			individual -> {
-				CombatService.attack(individual);
+				CombatService.strike(individual);
 			}
 		);
 

@@ -21,7 +21,6 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
-import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.util.ComparisonUtil.obj;
 import static com.google.common.collect.Sets.newHashSet;
@@ -38,10 +37,8 @@ import java.util.Set;
 
 import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
 import bloodandmithril.character.ai.ArtificialIntelligence;
-import bloodandmithril.character.ai.task.Attack;
-import bloodandmithril.character.ai.task.Follow;
-import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.Travel;
+import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -53,25 +50,16 @@ import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
 import bloodandmithril.item.items.equipment.offhand.Torch;
-import bloodandmithril.item.items.equipment.weapon.MeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedMeleeWeapon;
-import bloodandmithril.item.items.equipment.weapon.Weapon;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
-import bloodandmithril.ui.components.window.AIRoutinesWindow;
-import bloodandmithril.ui.components.window.BuildWindow;
-import bloodandmithril.ui.components.window.IndividualInfoWindow;
-import bloodandmithril.ui.components.window.IndividualStatusWindow;
-import bloodandmithril.ui.components.window.InventoryWindow;
-import bloodandmithril.ui.components.window.ProficienciesWindow;
 import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
-import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.ParameterizedTask;
@@ -79,7 +67,6 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util;
-import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.TwoInts;
@@ -92,9 +79,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -269,51 +253,54 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		internalCopyFrom(other);
 	}
 
-
-	@SuppressWarnings("rawtypes")
-	public float getParryChance() {
-		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
-			return equipped instanceof MeleeWeapon;
-		});
-
-		if (weapon.isPresent()) {
-			return ((MeleeWeapon) weapon.get()).getParryChance();
-		}
-
-		return 0f;
-	}
-
-
-	@SuppressWarnings("rawtypes")
-	public float getParryChanceIgnored() {
-		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
-			return equipped instanceof MeleeWeapon;
-		});
-
-		if (weapon.isPresent()) {
-			return ((MeleeWeapon) weapon.get()).getParryChanceIgnored();
-		}
-
-		return 0f;
-	}
-
-
-	@SuppressWarnings("rawtypes")
-	public float getAttackPeriod() {
-		float attackingPeriod = getDefaultAttackPeriod();
-		Optional<Item> weapon = Iterables.tryFind(getEquipped().keySet(), equipped -> {
-			return equipped instanceof Weapon;
-		});
-
-		if (weapon.isPresent()) {
-			attackingPeriod = ((Weapon)weapon.get()).getBaseAttackPeriod();
-		}
-
-		return attackingPeriod;
-	}
-
+	/**
+	 * @return the default (unarmed) attack period of this individual
+	 */
 	public abstract float getDefaultAttackPeriod();
 
+	/**
+	 * @return the position at which items are discarded from inventory, as well as bleeding
+	 */
+	public abstract Vector2 getEmissionPosition();
+
+	/**
+	 * @return the minimum damage dealt when unarmed
+	 */
+	public abstract float getUnarmedMinDamage();
+
+	/**
+	 * @return the maximum damage dealt when unarmed
+	 */
+	public abstract float getUnarmedMaxDamage();
+
+	/**
+	 * @return the {@link Box} that will be used to calculate overlaps with other hitboxes, when no weapon-specific hitboxes are found
+	 */
+	public abstract Box getDefaultAttackingHitBox();
+
+	/**
+	 * Called during the update routine when the currentAction is attacking
+	 */
+	protected abstract void respondToAttackCommand();
+
+	/**
+	 * @return the map that maps from an {@link Action} to a map that maps action frames to their respective {@link Task}s
+	 */
+	protected abstract Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames();
+
+	/**
+	 * @return the current {@link AnimationSwitcher} of this {@link Individual}
+	 */
+	public abstract List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> getCurrentAnimation();
+
+	/**
+	 * @return Implementation-specific copy method of this {@link Individual}
+	 */
+	public abstract Individual copy();
+
+	/**
+	 * Adds a floating text at close proximity to this individual
+	 */
 	public void addFloatingText(String text, Color color) {
 		UserInterface.addFloatingText(
 			text,
@@ -322,56 +309,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			false
 		);
 	}
-
-
-	/**
-	 * @return the position at which items are discarded from inventory, as well as bleeding
-	 */
-	public abstract Vector2 getEmissionPosition();
-
-
-	@SuppressWarnings("rawtypes")
-	public int getHitSound() {
-		java.util.Optional<Item> meleeWeapon = getEquipped().keySet().stream().filter(item -> {return item instanceof MeleeWeapon;}).findFirst();
-
-		if (meleeWeapon.isPresent()) {
-			return ((MeleeWeapon) meleeWeapon.get()).getHitSound();
-		}
-
-		return 0;
-	}
-
-
-	@SuppressWarnings("rawtypes")
-	public int getBlockSound() {
-		java.util.Optional<Item> meleeWeapon = getEquipped().keySet().stream().filter(item -> {return item instanceof MeleeWeapon;}).findFirst();
-
-		if (meleeWeapon.isPresent()) {
-			return ((MeleeWeapon) meleeWeapon.get()).getBlockSound();
-		}
-
-		return 0;
-	}
-
-
-	/** Returns the damage dealt when attacking whilst not armed */
-	public abstract float getUnarmedMinDamage();
-	public abstract float getUnarmedMaxDamage();
-
-	/** Returns the {@link Box} that will be used to calculate overlaps with other hitboxes, when no weapon-specific hitboxes are found */
-	public abstract Box getDefaultAttackingHitBox();
-
-	/** Called during the update routine when the currentAction is attacking */
-	protected abstract void respondToAttackCommand();
-
-	/** Returns the map that maps from an {@link Action} to a map that maps action frames to their respective {@link Task}s */
-	protected abstract Map<Action, Map<Integer, ParameterizedTask<Individual>>> getActionFrames();
-
-	/** Returns the current {@link AnimationSwitcher} of this {@link Individual} */
-	public abstract List<WrapperForTwo<AnimationSwitcher, ShaderProgram>> getCurrentAnimation();
-
-	/** Implementation-specific copy method of this {@link Individual} */
-	public abstract Individual copy();
 
 
 	/** Returns the {@link ArtificialIntelligence} implementation of this {@link Individual} */
@@ -392,7 +329,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	}
 
 
-	/** The {@link #timeStamp} is used for client-server synchronization, if the received timeStamp is older than the current, it will be rejected */
+	/** The {@link #timeStamp} is used for client-server synchronisation, if the received timeStamp is older than the current, it will be rejected */
 	public synchronized long getTimeStamp() {
 		return timeStamp;
 	}
@@ -566,489 +503,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		}
 	}
 
-
-	/** Constructs a {@link ContextMenu} */
-	public ContextMenu getContextMenu() {
-		MenuItem showInfoMenuItem = showInfo();
-		MenuItem showStatusWindowItem = showStatus();
-
-		final ContextMenu actionMenu = actions();
-		MenuItem actions = new MenuItem(
-			"Actions",
-			() -> {
-				actionMenu.x = getMouseScreenX();
-				actionMenu.y = getMouseScreenY();
-			},
-			Color.ORANGE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			actionMenu
-		);
-
-		final ContextMenu interactMenu = interactMenu();
-		MenuItem interact = new MenuItem(
-			"Interact",
-			() -> {
-				interactMenu.x = getMouseScreenX();
-				interactMenu.y = getMouseScreenY();
-			},
-			Color.GREEN,
-			Colors.UI_DARK_GREEN,
-			Color.GRAY,
-			interactMenu
-		);
-
-		final ContextMenu editMenu = editSubMenu();
-		MenuItem edit = new MenuItem(
-			"Edit",
-			() -> {
-				editMenu.x = getMouseScreenX();
-				editMenu.y = getMouseScreenY();
-			},
-			Color.ORANGE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			editMenu
-		);
-
-		ContextMenu contextMenuToReturn = new ContextMenu(0, 0, true);
-		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.isIndividualSelected(this))) {
-			contextMenuToReturn.addMenuItem(interact);
-		}
-
-		contextMenuToReturn.addMenuItem(showInfoMenuItem);
-		contextMenuToReturn.addMenuItem(showStatusWindowItem);
-
-		if (isControllable() && isAlive()) {
-			contextMenuToReturn.addMenuItem(inventory());
-			contextMenuToReturn.addMenuItem(skills());
-			contextMenuToReturn.addMenuItem(actions);
-			contextMenuToReturn.addMenuItem(edit);
-		}
-
-		for (MenuItem item : internalGetContextMenuItems()) {
-			contextMenuToReturn.addMenuItem(item);
-		}
-
-		return contextMenuToReturn;
-	}
-
-
-	private ContextMenu actions() {
-		return new ContextMenu(0, 0,
-			true,
-			selectDeselect(this),
-			aiRoutines(),
-			suppressAI(),
-			walkRun(),
-			shutUpSpeak(),
-			build()
-		);
-	}
-
-
-	private MenuItem walkRun() {
-		return new MenuItem(
-			isWalking() ? "Run" : "Walk",
-			() -> {
-				if (ClientServerInterface.isServer()) {
-					setWalking(!isWalking());
-				} else {
-					ClientServerInterface.SendRequest.sendRunWalkRequest(getId().getId(), !isWalking());
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
-	private ContextMenu interactMenu() {
-		if (isAlive()) {
-			return new ContextMenu(0, 0,
-				true,
-				trade(this),
-				follow(this),
-				attackMenuItem(this)
-			);
-		} else {
-			return new ContextMenu(0, 0,
-				true,
-				trade(this)
-			);
-		}
-	}
-
-
-	private MenuItem shutUpSpeak() {
-		return new MenuItem(
-			shutup ? "Speak" : "Shut up",
-			() -> {
-				if (isServer()) {
-					if (!shutup) {
-						speak("Fine...", 1000);
-						this.shutup = true;
-					} else {
-						this.shutup = false;
-						speak("Yay!", 1000);
-					}
-				} else {
-					ClientServerInterface.SendRequest.sendIndividualSpeakRequest(this, !shutup);
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
-
-	private MenuItem skills() {
-		return new MenuItem(
-			"Proficiencies",
-			() -> {
-				UserInterface.addLayeredComponentUnique(
-					new ProficienciesWindow(Individual.this)
-				);
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
-	private MenuItem aiRoutines() {
-		return new MenuItem(
-			"AI Routines",
-			() -> {
-				UserInterface.addLayeredComponentUnique(
-					new AIRoutinesWindow(this)
-				);
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
-	private MenuItem suppressAI() {
-		return new MenuItem(
-			supressAI ? "Enable AI" : "Disable AI",
-			() -> {
-				if (ClientServerInterface.isServer()) {
-					this.supressAI = !supressAI;
-				} else {
-					ClientServerInterface.SendRequest.sendAISuppressionRequest(this, !supressAI);
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
-	private MenuItem showStatus() {
-		return new MenuItem(
-			"Show status",
-			() -> {
-				UserInterface.addLayeredComponentUnique(
-					new IndividualStatusWindow(
-						Individual.this,
-						400,
-						400,
-						id.getSimpleName() + " - Status",
-						true
-					)
-				);
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
-	private MenuItem follow(final Individual thisIndividual) {
-		return new MenuItem(
-			"Follow",
-			() -> {
-				for (Individual indi : Domain.getSelectedIndividuals()) {
-					if (indi != thisIndividual) {
-						if (isServer()) {
-							indi.getAI().setCurrentTask(
-								new Follow(indi, thisIndividual, 10, null)
-							);
-						} else {
-							ClientServerInterface.SendRequest.sendFollowRequest(indi, thisIndividual);
-						}
-					}
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
-	private MenuItem attackMenuItem(final Individual thisIndividual) {
-		return new MenuItem(
-			"Attack",
-				() -> {
-					for (Individual indi : Domain.getSelectedIndividuals()) {
-						if (indi != thisIndividual) {
-							if (isServer()) {
-								indi.getAI().setCurrentTask(
-									new Attack(indi, thisIndividual)
-								);
-							} else {
-								ClientServerInterface.SendRequest.sendRequestAttack(indi, thisIndividual);
-							}
-						}
-					}
-				},
-			Color.RED,
-			getToolTipTextColor(),
-			Colors.UI_DARK_ORANGE,
-			null
-		);
-	}
-
-
-	private MenuItem trade(final Individual thisIndividual) {
-		return new MenuItem(
-			isAlive() ? "Trade with" : "Loot",
-			() -> {
-				if (Domain.getSelectedIndividuals().size() > 1) {
-					return;
-				}
-
-				for (Individual indi : Domain.getSelectedIndividuals()) {
-					if (isServer()) {
-						if (indi != thisIndividual) {
-							indi.getAI().setCurrentTask(
-								new TradeWith(indi, thisIndividual)
-							);
-						}
-					} else {
-						ClientServerInterface.SendRequest.sendTradeWithIndividualRequest(indi, thisIndividual);
-					}
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			new ContextMenu(0, 0,
-				true,
-				new MenuItem(
-					"You have multiple individuals selected",
-					() -> {},
-					Colors.UI_GRAY,
-					Colors.UI_GRAY,
-					Colors.UI_GRAY,
-					null
-				)
-			),
-			() -> {
-				return Domain.getSelectedIndividuals().size() > 1;
-			}
-		);
-	}
-
-
-	private MenuItem inventory() {
-		final Individual thisIndividual = this;
-
-		return new MenuItem(
-			"Inventory",
-			() -> {
-				InventoryWindow inventoryWindow = new InventoryWindow(
-					thisIndividual,
-					thisIndividual.getId().getSimpleName() + " - Inventory",
-					true
-				);
-				UserInterface.addLayeredComponentUnique(inventoryWindow);
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
-	private MenuItem build() {
-		final Individual thisIndividual = this;
-
-		return new MenuItem(
-			"Build",
-			() -> {
-				BuildWindow window = new BuildWindow(
-					thisIndividual,
-					new Function<Construction, String>() {
-						@Override
-						public String apply(Construction input) {
-							return input.getTitle();
-						}
-					},
-					(c1, c2) -> {
-						return c1.getTitle().compareTo(c2.getTitle());
-					}
-				);
-
-				UserInterface.addLayeredComponentUnique(window);
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
-	private ContextMenu editSubMenu() {
-		final Individual thisIndividual = this;
-
-		return new ContextMenu(0, 0,
-			true,
-			new MenuItem(
-				"Change nickname",
-				() -> {
-					UserInterface.addLayeredComponent(
-						new TextInputWindow(
-							250,
-							100,
-							"Change nickname",
-							250,
-							100,
-							args -> {
-								if (isServer()) {
-									thisIndividual.id.setNickName(args[0].toString());
-								} else {
-									ClientServerInterface.SendRequest.sendChangeNickNameRequest(thisIndividual.id.getId(), args[0].toString());
-								}
-							},
-							"Confirm",
-							true,
-							thisIndividual.id.getNickName()
-						)
-					);
-				},
-				Color.WHITE,
-				getToolTipTextColor(),
-				Color.GRAY,
-				null
-			),
-			new MenuItem(
-				"Update biography",
-				() -> {
-					UserInterface.addLayeredComponent(
-						new TextInputWindow(
-							250,
-							100,
-							"Change biography",
-							250,
-							100,
-							args -> {
-								if (isServer()) {
-									thisIndividual.updateDescription(args[0].toString());
-								} else {
-									ClientServerInterface.SendRequest.sendUpdateBiographyRequest(thisIndividual, args[0].toString());
-								}
-							},
-							"Confirm",
-							true,
-							thisIndividual.getDescription()
-						)
-					);
-				},
-				Color.WHITE,
-				getToolTipTextColor(),
-				Color.GRAY,
-				null
-			)
-		);
-	}
-
-
 	/**
-	 * @return The show info {@link MenuItem} for this individual
+	 * @param Revive from the dead with specified health
 	 */
-	private MenuItem showInfo() {
-		final Individual thisIndividual = this;
-
-		return new MenuItem(
-			"Show info",
-			() -> {
-				IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
-					thisIndividual,
-					300,
-					320,
-					id.getSimpleName() + " - Info",
-					true,
-					250, 200
-				);
-				UserInterface.addLayeredComponentUnique(individualInfoWindow);
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
-	/**
-	 * @return The {@link MenuItem} to select/deselect this individual
-	 */
-	private MenuItem selectDeselect(final Individual thisIndividual) {
-		return Domain.isIndividualSelected(thisIndividual) ?
-		new MenuItem(
-			"Deselect",
-			() -> {
-				if (isServer()) {
-					thisIndividual.deselect(false, 0);
-					Domain.removeSelectedIndividual(thisIndividual);
-					clearCommands();
-				} else {
-					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.getId(), false);
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		) :
-
-		new MenuItem(
-			"Select",
-			() -> {
-				if (isServer()) {
-					thisIndividual.select(0);
-				} else {
-					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(thisIndividual.id.getId(), true);
-				}
-			},
-			Color.WHITE,
-			getToolTipTextColor(),
-			Color.GRAY,
-			null
-		);
-	}
-
-
 	public void revive(float health) {
 		if (dead) {
 			dead = false;
@@ -1717,6 +1174,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	public void setPreviousActionFrame(int previousActionFrame) {
 		this.previousActionFrame = previousActionFrame;
+	}
+
+
+	public CombatService combat() {
+		return new CombatService();
 	}
 
 

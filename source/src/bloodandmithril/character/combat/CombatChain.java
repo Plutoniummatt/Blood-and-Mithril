@@ -1,6 +1,7 @@
 package bloodandmithril.character.combat;
 
 import static bloodandmithril.character.ai.perception.Visible.getVisible;
+import static bloodandmithril.character.combat.CombatService.getParryChanceIgnored;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid.HumanoidCombatBodyParts;
 import bloodandmithril.character.individuals.Individual;
@@ -97,12 +98,12 @@ public class CombatChain {
 
 	private boolean parry(Vector2 knockbackVector) {
 		boolean parried = Util.roll(
-			target.getParryChance() * (1f - attacker.getParryChanceIgnored())
+			CombatService.getParryChance(target) * (1f - getParryChanceIgnored(attacker))
 		);
 
 		if (parried) {
 			if (ClientServerInterface.isServer()) {
-				int blockSound = attacker.getBlockSound();
+				int blockSound = CombatService.getBlockSound(target);
 				if (blockSound != 0) {
 					SoundService.play(
 						blockSound,
@@ -154,7 +155,7 @@ public class CombatChain {
 			weapon.specialEffect(target);
 		}
 
-		int hitSound = attacker.getHitSound();
+		int hitSound = CombatService.getHitSound(attacker);
 		if (hitSound != 0) {
 			SoundService.play(
 				hitSound,

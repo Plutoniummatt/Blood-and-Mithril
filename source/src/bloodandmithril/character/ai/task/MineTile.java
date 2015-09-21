@@ -2,6 +2,7 @@ package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.character.ai.task.GoToLocation.goToWithTerminationFunction;
+import static bloodandmithril.character.combat.CombatService.getAttackPeriod;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.util.ComparisonUtil.obj;
@@ -126,10 +127,10 @@ public class MineTile extends CompositeAITask {
 				return;
 			}
 
-			if (host.getAttackTimer() < host.getAttackPeriod()) {
+			if (host.getAttackTimer() < getAttackPeriod(host)) {
 				return;
 			}
-			
+
 			if (!new WithinInteractionBox().call()) {
 				return;
 			}
@@ -188,13 +189,13 @@ public class MineTile extends CompositeAITask {
 									} else {
 										Domain.getWorld(host.getWorldId()).items().addItem(mined, tileCoordinate.cpy(), new Vector2());
 									}
-									
+
 									UserInterface.refreshRefreshableWindows();
 								}
 							} else if (ClientServerInterface.isServer()) {
 								if (topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false) != null) {
 									ClientServerInterface.SendNotification.notifyTileMined(-1, tileCoordinate, true, host.getWorldId());
-									
+
 									if (host.canReceive(mined)) {
 										ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), tileToBeDeleted.mine(), tileCoordinate.cpy());
 									} else {

@@ -29,6 +29,7 @@ public class StimulusDrivenRoutine extends Routine {
 	public StimulusDrivenRoutine(IndividualIdentifier hostId, SerializableMappingFunction<Stimulus, Boolean> triggerFunction) {
 		super(hostId);
 		this.triggerFunction = triggerFunction;
+		setDescription("Stimulus driven routine");
 	}
 
 
@@ -43,6 +44,9 @@ public class StimulusDrivenRoutine extends Routine {
 	}
 
 
+	/**
+	 * Sets the generator for the task which this routine will use to generate the {@link AITask} upon meeting the trigger function
+	 */
 	public void setAiTaskGenerator(SerializableMappingFunction<Stimulus, AITask> aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 	}

@@ -79,7 +79,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		attackUnarmed.put(
 			3,
 			individual -> {
-				CombatService.attack(individual);
+				CombatService.strike(individual);
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
@@ -92,7 +92,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		attackOneHanded.put(
 			6,
 			individual -> {
-				CombatService.attack(individual);
+				CombatService.strike(individual);
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
@@ -105,7 +105,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 		attackOneHandedStab.put(
 			3,
 			individual -> {
-				CombatService.attack(individual);
+				CombatService.strike(individual);
 				SoundService.play(
 					SoundService.swordSlash,
 					individual.getState().position,
