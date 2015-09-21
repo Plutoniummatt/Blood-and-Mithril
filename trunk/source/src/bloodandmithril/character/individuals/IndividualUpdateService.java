@@ -1,5 +1,6 @@
 package bloodandmithril.character.individuals;
 
+import static bloodandmithril.character.combat.CombatService.getAttackPeriod;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -77,7 +78,7 @@ public class IndividualUpdateService {
 		synchronized (indi.getBeingAttackedBy()) {
 			Sets.newHashSet(indi.getBeingAttackedBy().keySet()).stream().forEach(i -> {
 				Individual individual = Domain.getIndividual(i);
-				if (indi.getBeingAttackedBy().get(i) <= System.currentTimeMillis() - round(individual.getAttackPeriod() * 1000D) - 1000L) {
+				if (indi.getBeingAttackedBy().get(i) <= System.currentTimeMillis() - round(getAttackPeriod(individual) * 1000D) - 1000L) {
 					indi.getBeingAttackedBy().remove(i);
 				} else {
 					AITask currentTask = individual.getAI().getCurrentTask();

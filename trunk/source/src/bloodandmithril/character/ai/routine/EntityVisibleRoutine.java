@@ -33,6 +33,7 @@ public class EntityVisibleRoutine<T extends Visible> extends Routine {
 		super(hostId);
 		this.tClass = tClass;
 		this.identificationFunction = identificationFunction;
+		setDescription("Entity visible routine");
 	}
 
 

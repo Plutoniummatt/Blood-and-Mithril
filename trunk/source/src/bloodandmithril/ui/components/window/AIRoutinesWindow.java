@@ -1,14 +1,23 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 
 /**
@@ -22,14 +31,14 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 	private static Function<Routine, String> fn = new Function<Routine, String>() {
 		@Override
 		public String apply(Routine r) {
-			return "";
+			return r.getDescription();
 		}
 	};
 
 	private static Comparator<Routine> routineComparator = new Comparator<Routine>() {
 		@Override
 		public int compare(Routine o1, Routine o2) {
-			return new Integer(o1.getPriority()).compareTo(o2.getPriority());
+			return new Integer(o2.getPriority()).compareTo(o1.getPriority());
 		}
 	};
 
@@ -53,7 +62,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 	private static Map<Routine, String> buildMap(Individual individual) {
 		Map<Routine, String> map = Maps.newHashMap();
 		for (Routine r : individual.getAI().getAiRoutines()) {
-			map.put(r, r.getDescription());
+			map.put(r, Integer.toString(r.getPriority()));
 		}
 		return map;
 	}
@@ -71,5 +80,76 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 	@Override
 	public Object getUniqueIdentifier() {
 		return getClass().getSimpleName() + individualId;
+	}
+
+
+	@Override
+	protected ContextMenu buttonContextMenu(Entry<Routine, String> tEntry) {
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		bloodandmithril.util.Function<LinkedList<Routine>> routinesFunction = () -> {
+			return Domain.getIndividual(individualId).getAI().getAiRoutines();
+		};
+
+		MenuItem moveUp = new MenuItem(
+			"Move up",
+			() -> {
+				LinkedList<Routine> routines = routinesFunction.call();
+
+				if (tEntry.getKey().getPriority() + 1 == routines.size()) {
+					return;
+				}
+
+				Iterables.tryFind(routines, r -> {
+					return r.getPriority() == tEntry.getKey().getPriority() + 1;
+				}).get().setPriority(tEntry.getKey().getPriority());
+
+				tEntry.getKey().setPriority(tEntry.getKey().getPriority() + 1);
+
+				refresh();
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.GRAY,
+			null
+		);
+
+		MenuItem moveDown = new MenuItem(
+			"Move down",
+			() -> {
+				LinkedList<Routine> routines = routinesFunction.call();
+
+				if (tEntry.getKey().getPriority() == 0) {
+					return;
+				}
+
+				Iterables.tryFind(routines, r -> {
+					return r.getPriority() == tEntry.getKey().getPriority() - 1;
+				}).get().setPriority(tEntry.getKey().getPriority());
+
+				tEntry.getKey().setPriority(tEntry.getKey().getPriority() - 1);
+
+				refresh();
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.GRAY,
+			null
+		);
+
+		MenuItem edit = new MenuItem(
+			"Edit",
+			() -> {},
+			Color.WHITE,
+			Color.GREEN,
+			Color.GRAY,
+			null
+		);
+
+		menu.addMenuItem(moveUp);
+		menu.addMenuItem(moveDown);
+		menu.addMenuItem(edit);
+
+		return menu;
 	}
 }

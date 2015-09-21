@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.IndividualContextMenuService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -78,7 +79,7 @@ public class UnitsWindow extends Window implements Refreshable {
 							Color.GREEN,
 							UIRef.BR
 						),
-						individual.getContextMenu().addFirst(
+						IndividualContextMenuService.getContextMenu(individual).addFirst(
 							new ContextMenu.MenuItem(
 								"Go to",
 								() -> {

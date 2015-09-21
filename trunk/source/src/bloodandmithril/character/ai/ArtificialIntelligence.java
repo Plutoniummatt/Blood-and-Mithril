@@ -5,6 +5,7 @@ import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import static bloodandmithril.util.Util.firstNonNull;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -25,6 +26,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
 /**
  * Artificial intelligence super-class
@@ -132,7 +134,12 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 * Processes specific AI routines
 	 */
 	private void processAIRoutines() {
-		for (Routine routine : aiRoutines) {
+		LinkedList<Routine> sortedRoutines = Lists.newLinkedList(aiRoutines);
+		Collections.sort(sortedRoutines, (r1, r2) -> {
+			return new Integer(r2.getPriority()).compareTo(new Integer(r1.getPriority()));
+		});
+
+		for (Routine routine : sortedRoutines) {
 			if (!routine.areExecutionConditionsMet()) {
 				continue;
 			}
@@ -308,6 +315,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 
 	public void addRoutine(Routine routine) {
+		routine.setPriority(aiRoutines.size());
 		aiRoutines.add(routine);
 	}
 }

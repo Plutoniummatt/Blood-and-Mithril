@@ -25,6 +25,7 @@ public class IndividualConditionRoutine extends Routine {
 	public IndividualConditionRoutine(IndividualIdentifier hostId, SerializableMappingFunction<Individual, Boolean> executionCondition) {
 		super(hostId);
 		this.executionCondition = executionCondition;
+		setDescription("Condition routine");
 	}
 
 

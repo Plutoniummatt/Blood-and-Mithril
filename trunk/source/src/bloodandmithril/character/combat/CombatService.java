@@ -25,12 +25,13 @@ import com.google.common.collect.Iterables;
 @Copyright("Matthew Peck 2015")
 public class CombatService {
 
+
 	/**
-	 * Attacks a set of other {@link Individual}s
+	 * Attacks a set of other {@link Individual}s, this triggers an animation sequence and eventually leads to a {@link CombatService#strike(Individual)}
 	 */
 	@SuppressWarnings("rawtypes")
 	public static boolean attack(Individual attacker, Set<Integer> individuals) {
-		if (attacker.getAttackTimer() < attacker.getAttackPeriod() || !attacker.isAlive()) {
+		if (attacker.getAttackTimer() < getAttackPeriod(attacker) || !attacker.isAlive()) {
 			return false;
 		}
 
@@ -67,7 +68,10 @@ public class CombatService {
 	}
 
 
-	public static void attack(Individual attacker) {
+	/**
+	 * Makes an individual strike
+	 */
+	public static void strike(Individual attacker) {
 		if (!attacker.isAlive()) {
 			return;
 		}
@@ -93,6 +97,9 @@ public class CombatService {
 	}
 
 
+	/**
+	 * The attacking hit box is the hit box that should be used to calculate whether an attack has made contact with the victim
+	 */
 	@SuppressWarnings("rawtypes")
 	public static Box getAttackingHitBox(Individual attacker) {
 		Box attackingBox = null;
@@ -111,5 +118,72 @@ public class CombatService {
 		};
 
 		return attackingBox;
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	public static float getParryChance(Individual indi) {
+		Optional<Item> weapon = Iterables.tryFind(indi.getEquipped().keySet(), equipped -> {
+			return equipped instanceof MeleeWeapon;
+		});
+
+		if (weapon.isPresent()) {
+			return ((MeleeWeapon) weapon.get()).getParryChance();
+		}
+
+		return 0f;
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	public static float getParryChanceIgnored(Individual indi) {
+		Optional<Item> weapon = Iterables.tryFind(indi.getEquipped().keySet(), equipped -> {
+			return equipped instanceof MeleeWeapon;
+		});
+
+		if (weapon.isPresent()) {
+			return ((MeleeWeapon) weapon.get()).getParryChanceIgnored();
+		}
+
+		return 0f;
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	public static float getAttackPeriod(Individual indi) {
+		float attackingPeriod = indi.getDefaultAttackPeriod();
+		Optional<Item> weapon = Iterables.tryFind(indi.getEquipped().keySet(), equipped -> {
+			return equipped instanceof Weapon;
+		});
+
+		if (weapon.isPresent()) {
+			attackingPeriod = ((Weapon)weapon.get()).getBaseAttackPeriod();
+		}
+
+		return attackingPeriod;
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	public static int getHitSound(Individual indi) {
+		java.util.Optional<Item> meleeWeapon = indi.getEquipped().keySet().stream().filter(item -> {return item instanceof MeleeWeapon;}).findFirst();
+
+		if (meleeWeapon.isPresent()) {
+			return ((MeleeWeapon) meleeWeapon.get()).getHitSound();
+		}
+
+		return 0;
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	public static int getBlockSound(Individual indi) {
+		java.util.Optional<Item> meleeWeapon = indi.getEquipped().keySet().stream().filter(item -> {return item instanceof MeleeWeapon;}).findFirst();
+
+		if (meleeWeapon.isPresent()) {
+			return ((MeleeWeapon) meleeWeapon.get()).getBlockSound();
+		}
+
+		return 0;
 	}
 }

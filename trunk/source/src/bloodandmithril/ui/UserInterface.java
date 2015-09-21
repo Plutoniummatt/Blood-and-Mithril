@@ -52,6 +52,7 @@ import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.ai.task.Travel;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.character.individuals.IndividualContextMenuService;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
@@ -1439,7 +1440,7 @@ public class UserInterface {
 		for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 			Individual indi = Domain.getIndividual(indiKey);
 			if (indi.isMouseOver()) {
-				final ContextMenu secondaryMenu = indi.getContextMenu();
+				final ContextMenu secondaryMenu = IndividualContextMenuService.getContextMenu(indi);
 				newMenu.getMenuItems().add(
 					new MenuItem(
 						indi.getId().getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",
