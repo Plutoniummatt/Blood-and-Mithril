@@ -14,7 +14,7 @@ import bloodandmithril.util.SerializableMappingFunction;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class StimulusDrivenRoutine extends Routine {
+public class StimulusDrivenRoutine extends Routine<Stimulus> {
 	private static final long serialVersionUID = 2347934053852793343L;
 
 	private SerializableMappingFunction<Stimulus, Boolean> triggerFunction;
@@ -47,6 +47,7 @@ public class StimulusDrivenRoutine extends Routine {
 	/**
 	 * Sets the generator for the task which this routine will use to generate the {@link AITask} upon meeting the trigger function
 	 */
+	@Override
 	public void setAiTaskGenerator(SerializableMappingFunction<Stimulus, AITask> aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 	}

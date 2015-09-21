@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.world.Domain;
@@ -139,7 +140,11 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 
 		MenuItem edit = new MenuItem(
 			"Edit",
-			() -> {},
+			() -> {
+				UserInterface.addLayeredComponentUnique(
+					new EditAIRoutineWindow(Domain.getIndividual(individualId).getId(), tEntry.getKey())
+				);
+			},
 			Color.WHITE,
 			Color.GREEN,
 			Color.GRAY,

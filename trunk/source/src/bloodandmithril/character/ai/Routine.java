@@ -2,6 +2,7 @@ package bloodandmithril.character.ai;
 
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.util.SerializableMappingFunction;
 
 /**
  * A player customisable {@link AITask}, designed for automation and eliminating the need of micro-managing laborious tasks..
@@ -9,7 +10,7 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public abstract class Routine extends AITask {
+public abstract class Routine<C> extends AITask {
 	private static final long serialVersionUID = -8502601311459390398L;
 	private int priority = 1;
 	private String description = "";
@@ -56,4 +57,10 @@ public abstract class Routine extends AITask {
 	 * Prepares the routine for execution
 	 */
 	public abstract void prepare();
+
+
+	/**
+	 * @param aiTaskGenerator the task generator to set
+	 */
+	public abstract void setAiTaskGenerator(SerializableMappingFunction<C, AITask> aiTaskGenerator);
 }

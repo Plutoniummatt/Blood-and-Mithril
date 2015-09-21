@@ -18,7 +18,7 @@ import bloodandmithril.world.Domain;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class EntityVisibleRoutine<T extends Visible> extends Routine {
+public class EntityVisibleRoutine<T extends Visible> extends Routine<T> {
 	private static final long serialVersionUID = -5762591639048417273L;
 
 	private SerializableMappingFunction<T, Boolean> identificationFunction;
@@ -69,6 +69,7 @@ public class EntityVisibleRoutine<T extends Visible> extends Routine {
 	}
 
 
+	@Override
 	public void setAiTaskGenerator(SerializableMappingFunction<T, AITask> aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 	}

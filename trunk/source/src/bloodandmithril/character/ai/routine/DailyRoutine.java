@@ -6,26 +6,30 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableMappingFunction;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.Epoch;
 
 /**
- * A Routine based on the condition of the host
+ * {@link Routine} that executes at, or later than a specified time every day
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class IndividualConditionRoutine extends Routine<Individual> {
-	private static final long serialVersionUID = 6831994593107089893L;
-	private SerializableMappingFunction<Individual, Boolean> executionCondition;
+public class DailyRoutine extends Routine<Individual> {
+	private static final long serialVersionUID = -255141692263126217L;
+
 	private SerializableMappingFunction<Individual, AITask> aiTaskGenerator;
+	private int lastExecutedDayOfMonth = 99;
+	private float routineTime;
 	private AITask task;
 
 	/**
 	 * Constructor
 	 */
-	public IndividualConditionRoutine(IndividualIdentifier hostId, SerializableMappingFunction<Individual, Boolean> executionCondition) {
+	public DailyRoutine(IndividualIdentifier hostId, float routineTime) {
 		super(hostId);
-		this.executionCondition = executionCondition;
-		setDescription("Condition routine");
+		this.routineTime = routineTime;
+		setDescription("Daily routine");
 	}
 
 
@@ -37,7 +41,8 @@ public class IndividualConditionRoutine extends Routine<Individual> {
 
 	@Override
 	public boolean areExecutionConditionsMet() {
-		return executionCondition.apply(getHost());
+		Epoch currentEpoch = Domain.getWorld(getHost().getWorldId()).getEpoch();
+		return currentEpoch.getTime() >= routineTime && currentEpoch.dayOfMonth != lastExecutedDayOfMonth;
 	}
 
 
@@ -62,6 +67,7 @@ public class IndividualConditionRoutine extends Routine<Individual> {
 		if (task != null) {
 			AITask toNullify = task;
 			this.task = null;
+			this.lastExecutedDayOfMonth = Domain.getWorld(getHost().getWorldId()).getEpoch().dayOfMonth;
 			return toNullify.uponCompletion();
 		}
 
