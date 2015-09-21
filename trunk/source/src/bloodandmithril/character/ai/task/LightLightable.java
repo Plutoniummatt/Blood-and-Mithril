@@ -75,7 +75,7 @@ public class LightLightable extends CompositeAITask {
 
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return null;
 		}
 

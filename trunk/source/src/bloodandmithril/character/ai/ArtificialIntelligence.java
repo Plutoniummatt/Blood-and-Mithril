@@ -118,7 +118,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 			if (getCurrentTask() != null) {
 				AITask taskToExecute = getCurrentTask();
 				taskToExecute.execute(delta);
-				Logger.aiDebug(hostId.getSimpleName() + " is: " + taskToExecute.getDescription(), LogLevel.INFO);
+				Logger.aiDebug(hostId.getSimpleName() + " is: " + taskToExecute.getShortDescription(), LogLevel.INFO);
 
 				if (taskToExecute.isComplete() && !taskToExecute.uponCompletion() && !(taskToExecute instanceof Idle)) {
 					setCurrentTask(new Idle());

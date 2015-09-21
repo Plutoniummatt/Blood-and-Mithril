@@ -139,7 +139,7 @@ public class TradeWith extends CompositeAITask {
 		}
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "Trading";
 		}
 

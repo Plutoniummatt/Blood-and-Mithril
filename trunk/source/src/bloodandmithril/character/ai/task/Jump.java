@@ -43,7 +43,7 @@ public class Jump extends AITask {
 
 
 	@Override
-	public String getDescription() {
+	public String getShortDescription() {
 		return "Jumping";
 	}
 

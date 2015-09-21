@@ -76,6 +76,7 @@ import com.google.inject.Module;
  * <b><p> Terraforming - Mining & Placing blocks                                                         </b></p>
  * <b><p> Generation                                                                                     </b></p>
  * <b><p> Fluids	                                                                                     </b></p>
+ * <b><p> Customizable AI                                                                                </b></p>
  *
  * DONE
  *

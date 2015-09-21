@@ -38,9 +38,9 @@ public class JitAITask extends AITask {
 	
 
 	@Override
-	public String getDescription() {
+	public String getShortDescription() {
 		initialise();
-		return task.getDescription();
+		return task.getShortDescription();
 	}
 
 	

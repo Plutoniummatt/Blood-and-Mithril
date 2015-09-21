@@ -106,7 +106,7 @@ public class OpenCraftingStation extends CompositeAITask {
 		}
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "Smithing";
 		}
 

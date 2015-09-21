@@ -85,7 +85,7 @@ public class Attack extends CompositeAITask {
 
 
 	@Override
-	public String getDescription() {
+	public String getShortDescription() {
 		return "Attacking";
 	}
 
@@ -170,7 +170,7 @@ public class Attack extends CompositeAITask {
 
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "";
 		}
 
@@ -211,7 +211,7 @@ public class Attack extends CompositeAITask {
 
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "Attacking";
 		}
 

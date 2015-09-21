@@ -45,7 +45,7 @@ public class Wait extends AITask {
 
 
 	@Override
-	public String getDescription() {
+	public String getShortDescription() {
 		return "Waiting";
 	}
 

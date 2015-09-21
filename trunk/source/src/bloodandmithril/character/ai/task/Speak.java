@@ -27,7 +27,7 @@ public class Speak extends AITask {
 
 
 	@Override
-	public String getDescription() {
+	public String getShortDescription() {
 		return "Speaking";
 	}
 

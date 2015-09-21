@@ -154,7 +154,7 @@ public class UnitsWindow extends Window implements Refreshable {
 		) {
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Individual>, String> item) {
-				return Util.truncate(item.getKey().t.getAI().getCurrentTask().getDescription(), 8);
+				return Util.truncate(item.getKey().t.getAI().getCurrentTask().getShortDescription(), 8);
 			}
 
 			@Override

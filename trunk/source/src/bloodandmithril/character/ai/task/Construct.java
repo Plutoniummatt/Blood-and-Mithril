@@ -55,7 +55,7 @@ public class Construct extends CompositeAITask {
 
 
 		@Override
-		public String getDescription() {
+		public String getShortDescription() {
 			return "Constructing";
 		}
 
