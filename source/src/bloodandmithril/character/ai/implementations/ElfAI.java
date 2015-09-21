@@ -6,6 +6,7 @@ import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.ai.perception.Stimulus;
+import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
@@ -16,6 +17,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
@@ -59,6 +61,21 @@ public class ElfAI extends ArtificialIntelligence {
 		healthBelowQuater();
 		lightLightables();
 		noiseHeard();
+		morningRoutine();
+	}
+
+
+	private void morningRoutine() {
+		DailyRoutine dailyRoutine = new DailyRoutine(getHost().getId(), 8);
+		dailyRoutine.setAiTaskGenerator(new SerializableMappingFunction<Individual, AITask>() {
+			private static final long serialVersionUID = 3112907077471897465L;
+			@Override
+			public AITask apply(Individual input) {
+				return new Speak(getHost(), "GOOOOOOOD MORNING THE TIME IS " + Domain.getWorld(input.getWorldId()).getEpoch().getTime(), 2000);
+			}
+		});
+
+		addRoutine(dailyRoutine);
 	}
 
 
