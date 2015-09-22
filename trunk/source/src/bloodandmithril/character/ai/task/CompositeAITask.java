@@ -72,7 +72,7 @@ public class CompositeAITask extends AITask {
 		if (getCurrentTask() == null) {
 			return;
 		}
-		
+
 		if (getCurrentTask().isComplete()) {
 			getCurrentTask().uponCompletion();
 			setCurrentTask(tasks.poll());

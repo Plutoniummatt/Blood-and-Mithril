@@ -13,6 +13,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -86,6 +87,9 @@ public class TextInputFieldPanel extends Panel {
 
 	@Override
 	public boolean keyPressed(int keyCode) {
+		if (keyCode == Input.Keys.SHIFT_LEFT || keyCode == Input.Keys.SHIFT_RIGHT) {
+			return false;
+		}
 
 		if (keyCode == BloodAndMithrilClient.getKeyMappings().deleteCharacter.keyCode) {
 			if (inputText.length() == 0) {
@@ -94,15 +98,15 @@ public class TextInputFieldPanel extends Panel {
 			inputText = inputText.substring(0, inputText.length() - 1);
 		}
 
-		String string = Controls.keyMap.get(keyCode);
+		WrapperForTwo<String, String> string = Controls.keyMap.get(keyCode);
 		if (string == null) {
 			return true;
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
-			inputText = inputText + string.toUpperCase();
+			inputText = inputText + string.b;
 		} else {
-			inputText = inputText + Controls.keyMap.get(keyCode);
+			inputText = inputText + Controls.keyMap.get(keyCode).a;
 		}
 
 		return true;

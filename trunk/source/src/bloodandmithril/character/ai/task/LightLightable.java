@@ -1,27 +1,45 @@
 package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
+import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.routine.DailyRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
+
+import com.google.inject.Inject;
 
 /**
  * Task that instructs the host to light a {@link Lightable}
  *
  * @author Matt
  */
-public class LightLightable extends CompositeAITask {
+@Copyright("Matthew Peck 2015")
+@Name(name = "Light")
+public class LightLightable extends CompositeAITask implements RoutineTask {
 	private static final long serialVersionUID = -2379179198784328909L;
 
 	private boolean auto;
 	private int lightableId;
+
+	@Inject
+	LightLightable() {
+		super(null, "");
+	}
 
 	/**
 	 * Constructor
@@ -119,5 +137,35 @@ public class LightLightable extends CompositeAITask {
 				lit = true;
 			}
 		}
+	}
+
+
+	@Override
+	public String getDetailedDescription() {
+		return getHost().getId().getSimpleName() + " lights " + Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId).getTitle();
+	}
+
+
+	@Override
+	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine<? extends Visible> routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+		return null;
 	}
 }

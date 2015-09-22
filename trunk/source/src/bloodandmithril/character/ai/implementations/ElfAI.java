@@ -17,7 +17,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
@@ -66,12 +65,12 @@ public class ElfAI extends ArtificialIntelligence {
 
 
 	private void morningRoutine() {
-		DailyRoutine dailyRoutine = new DailyRoutine(getHost().getId(), 8);
+		DailyRoutine dailyRoutine = new DailyRoutine(getHost().getId(), 8, 1);
 		dailyRoutine.setAiTaskGenerator(new SerializableMappingFunction<Individual, AITask>() {
 			private static final long serialVersionUID = 3112907077471897465L;
 			@Override
 			public AITask apply(Individual input) {
-				return new Speak(getHost(), "GOOOOOOOD MORNING THE TIME IS " + Domain.getWorld(input.getWorldId()).getEpoch().getTime(), 2000);
+				return new Speak(getHost(), "GOOOOOOOD MORNING", 2000);
 			}
 		});
 

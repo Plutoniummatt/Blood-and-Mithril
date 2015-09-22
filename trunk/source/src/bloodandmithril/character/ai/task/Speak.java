@@ -1,8 +1,18 @@
 package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.routine.DailyRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
+import bloodandmithril.ui.components.ContextMenu;
+
+import com.google.inject.Inject;
 
 /**
  * Instructs {@link Individual} to speak
@@ -10,11 +20,17 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class Speak extends AITask {
+@Name(name = "Speak")
+public class Speak extends AITask implements RoutineTask {
 	private static final long serialVersionUID = -5210580892146755047L;
 	private String text;
 	private long duration;
 	private boolean spoken = false;
+
+	@Inject
+	Speak() {
+		super(null);
+	}
 
 	/**
 	 * @param Constructor
@@ -56,5 +72,29 @@ public class Speak extends AITask {
 	@Override
 	public String getDetailedDescription() {
 		return getHost().getId().getSimpleName() + " says \"" + text + "\"";
+	}
+
+
+	@Override
+	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine<? extends Visible> routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+		return null;
 	}
 }

@@ -1,24 +1,43 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.util.Util.transformSet;
 import static bloodandmithril.world.Domain.getIndividual;
 
 import java.util.Set;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.routine.DailyRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
+import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Countdown;
+import bloodandmithril.util.CursorBoundTask;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.SerializableFunction;
+import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 /**
  * {@link AITask} that:
@@ -29,10 +48,16 @@ import com.google.common.collect.Sets;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Attack extends CompositeAITask {
+@Name(name = "Attack")
+public class Attack extends CompositeAITask implements RoutineTask {
 	private static final long serialVersionUID = 1106295624210596573L;
 
 	private Set<Integer> toBeAttacked = Sets.newHashSet();
+
+	@Inject
+	Attack() {
+		super(null, "");
+	}
 
 	/**
 	 * Constructor
@@ -41,13 +66,11 @@ public class Attack extends CompositeAITask {
 		this(host, Sets.newHashSet(toBeAttacked));
 	}
 
-
 	/**
 	 * Constructor
 	 */
 	public Attack(Individual host, Set<Individual> toBeAttacked) {
 		super(host.getId(), "Attacking");
-		host.setCombatStance(true);
 
 		for (Individual individual : toBeAttacked) {
 			this.toBeAttacked.add(individual.getId().getId());
@@ -192,12 +215,6 @@ public class Attack extends CompositeAITask {
 		@Override
 		public void execute(float delta) {
 		}
-
-
-		@Override
-		public String getDetailedDescription() {
-			return "";
-		}
 	}
 
 
@@ -238,6 +255,7 @@ public class Attack extends CompositeAITask {
 
 		@Override
 		public void execute(float delta) {
+			getHost().setCombatStance(true);
 			Individual alive = getAlive();
 			if (alive == null) {
 				return;
@@ -257,14 +275,123 @@ public class Attack extends CompositeAITask {
 				complete = true;
 			}
 		}
+	}
 
 
-		@Override
-		public String getDetailedDescription() {
-			Object[] array = toBeAttacked.stream().map(i -> {
-				return Domain.getIndividual(i).getId().getSimpleName();
-			}).toArray();
-			return getHost() + " attacks " + Joiner.on(", ").join(array);
-		}
+	@Override
+	public String getDetailedDescription() {
+		Object[] array = toBeAttacked.stream().map(i -> {
+			return Domain.getIndividual(i).getId().getSimpleName();
+		}).toArray();
+		return getHost().getId().getSimpleName() + " attacks " + Joiner.on(", ").join(array);
+	}
+
+
+	@Override
+	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			new MenuItem(
+				"Choose target",
+				() -> {
+					JITTask task = new JITTask() {
+						@Override
+						public void execute(Object... args) {
+							if (Domain.getActiveWorld() != null) {
+								for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+									Individual indi = Domain.getIndividual(indiKey);
+									if (indi.isMouseOver()) {
+										toChooseFrom.addMenuItem(
+											new MenuItem(
+												"Attack " + indi.getId().getSimpleName(),
+												() -> {
+													routine.setAiTaskGenerator(new SerializableMappingFunction<Individual, AITask>() {
+														private static final long serialVersionUID = 2667366003849630113L;
+														@Override
+														public AITask apply(Individual input) {
+															return new Attack(input, indi);
+														}
+													});
+												},
+												Color.ORANGE,
+												Color.GREEN,
+												Color.GRAY,
+												null
+											)
+										);
+									}
+								}
+							}
+
+							UserInterface.contextMenus.clear();
+							toChooseFrom.x = getMouseScreenX();
+							toChooseFrom.y = getMouseScreenY();
+							UserInterface.contextMenus.add(toChooseFrom);
+						}
+					};
+
+					BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(task, true) {
+						@Override
+						public void renderUIGuide() {
+						}
+
+						@Override
+						public String getShortDescription() {
+							return "Choose target";
+						}
+
+						@Override
+						public CursorBoundTask getImmediateTask() {
+							return null;
+						}
+
+						@Override
+						public boolean executionConditionMet() {
+							if (Domain.getActiveWorld() != null) {
+								for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+									Individual indi = Domain.getIndividual(indiKey);
+									if (indi.isMouseOver()) {
+										return true;
+									}
+								}
+							}
+
+							return false;
+						}
+
+						@Override
+						public boolean canCancel() {
+							return true;
+						}
+					});
+				},
+				Color.ORANGE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			)
+		);
+
+		return menu;
+	}
+
+
+	@Override
+	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine<? extends Visible> routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+		return null;
 	}
 }

@@ -7,11 +7,18 @@ import java.util.Collection;
 import java.util.Deque;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
+import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.routine.DailyRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
@@ -19,9 +26,12 @@ import bloodandmithril.networking.functions.IndividualSelected;
 import bloodandmithril.networking.requests.RefreshWindows;
 import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
+
+import com.google.inject.Inject;
 
 /**
  * A {@link CompositeAITask} consisting of:
@@ -32,10 +42,16 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class TakeItem extends CompositeAITask {
+@Name(name = "Take item")
+public class TakeItem extends CompositeAITask implements RoutineTask {
 	private static final long serialVersionUID = 1L;
 	private Item item;
 	private Deque<Integer> itemIds = new ArrayDeque<>();
+
+	@Inject
+	TakeItem() {
+		super(null, "");
+	}
 
 	/**
 	 * Constructor
@@ -165,5 +181,35 @@ public class TakeItem extends CompositeAITask {
 				Domain.getWorld(individual.getWorldId()).items().removeItem(item.getId());
 			}
 		}
+	}
+
+
+	@Override
+	public String getDetailedDescription() {
+		return getHost().getId().getSimpleName() + " takes " + item.getSingular(false);
+	}
+
+
+	@Override
+	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine<? extends Visible> routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getIndividualConditionRoutineContextMenu( Individual host, IndividualConditionRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+		return null;
 	}
 }

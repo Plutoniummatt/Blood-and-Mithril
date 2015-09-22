@@ -8,15 +8,23 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIG
 import static bloodandmithril.util.ComparisonUtil.obj;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
+import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.routine.DailyRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
@@ -25,6 +33,7 @@ import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 
 /**
  * Mine a {@link Tile}, a {@link CompositeAITask} comprising of:
@@ -35,11 +44,17 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class MineTile extends CompositeAITask {
+@Name(name = "Mine")
+public class MineTile extends CompositeAITask implements RoutineTask {
 	private static final long serialVersionUID = -4098496856332182430L;
 
 	/** Coordinate of the tile to mine */
 	public Vector2 tileCoordinate;
+
+	@Inject
+	MineTile() {
+		super(null, "");
+	}
 
 	/**
 	 * Constructor
@@ -209,5 +224,35 @@ public class MineTile extends CompositeAITask {
 				);
 			}
 		}
+	}
+
+
+	@Override
+	public String getDetailedDescription() {
+		return getHost().getId().getSimpleName() + " mines tile at " + tileCoordinate.toString();
+	}
+
+
+	@Override
+	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine<? extends Visible> routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+		return null;
 	}
 }
