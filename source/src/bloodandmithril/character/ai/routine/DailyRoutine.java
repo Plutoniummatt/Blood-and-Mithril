@@ -187,7 +187,8 @@ public class DailyRoutine extends Routine<Individual> {
 									toleranceTime = Float.parseFloat(split[0]) + Float.parseFloat(split[1])/60f;
 								} catch (Exception e) {
 									UserInterface.addClientMessage("Error", "Enter time in HH:mm format");
-								}							},
+								}
+							},
 							"Confirm",
 							true,
 							Epoch.getTimeString(toleranceTime)
