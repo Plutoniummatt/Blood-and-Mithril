@@ -153,7 +153,7 @@ public class DailyRoutine extends Routine<Individual> {
 			if (aiTaskGenerator != null) {
 				defaultFont.drawWrapped(
 					getGraphics().getSpriteBatch(),
-					aiTaskGenerator.apply(getHost()).getShortDescription(),
+					aiTaskGenerator.apply(getHost()).getDetailedDescription(),
 					x + 10,
 					y - 127,
 					width - 5

@@ -51,4 +51,10 @@ public class Speak extends AITask {
 			spoken = true;
 		}
 	}
+
+
+	@Override
+	public String getDetailedDescription() {
+		return getHost().getId().getSimpleName() + " says \"" + text + "\"";
+	}
 }

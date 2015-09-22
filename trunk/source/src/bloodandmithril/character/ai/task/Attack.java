@@ -17,6 +17,7 @@ import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 
 /**
@@ -191,6 +192,12 @@ public class Attack extends CompositeAITask {
 		@Override
 		public void execute(float delta) {
 		}
+
+
+		@Override
+		public String getDetailedDescription() {
+			return "";
+		}
 	}
 
 
@@ -249,6 +256,15 @@ public class Attack extends CompositeAITask {
 			} else {
 				complete = true;
 			}
+		}
+
+
+		@Override
+		public String getDetailedDescription() {
+			Object[] array = toBeAttacked.stream().map(i -> {
+				return Domain.getIndividual(i).getId().getSimpleName();
+			}).toArray();
+			return getHost() + " attacks " + Joiner.on(", ").join(array);
 		}
 	}
 }
