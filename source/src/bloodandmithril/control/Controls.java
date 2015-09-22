@@ -1,11 +1,14 @@
 package bloodandmithril.control;
 
+import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 
 import com.badlogic.gdx.Input;
 import com.google.common.collect.Lists;
@@ -35,7 +38,7 @@ public class Controls implements Serializable {
 	public static long leftDoubleClickTimer = 0L;
 	public static long rightDoubleClickTimer = 0L;
 
-	public static final Map<Integer, String> keyMap = Maps.newHashMap();
+	public static final Map<Integer, WrapperForTwo<String, String>> keyMap = Maps.newHashMap();
 	public static final Map<Integer, String> keyName = Maps.newHashMap();
 	public static final Set<Integer> disallowedKeys = Sets.newHashSet();
 
@@ -219,54 +222,55 @@ public class Controls implements Serializable {
 		keyName.put(Input.Keys.LEFT, "LEFT");
 		keyName.put(Input.Keys.RIGHT, "RIGHT");
 
-		keyMap.put(Input.Keys.NUM_0, "0");
-		keyMap.put(Input.Keys.NUM_1, "1");
-		keyMap.put(Input.Keys.NUM_2, "2");
-		keyMap.put(Input.Keys.NUM_3, "3");
-		keyMap.put(Input.Keys.NUM_4, "4");
-		keyMap.put(Input.Keys.NUM_5, "5");
-		keyMap.put(Input.Keys.NUM_6, "6");
-		keyMap.put(Input.Keys.NUM_7, "7");
-		keyMap.put(Input.Keys.NUM_8, "8");
-		keyMap.put(Input.Keys.NUM_9, "9");
-		keyMap.put(Input.Keys.NUMPAD_0, "0");
-		keyMap.put(Input.Keys.NUMPAD_1, "1");
-		keyMap.put(Input.Keys.NUMPAD_2, "2");
-		keyMap.put(Input.Keys.NUMPAD_3, "3");
-		keyMap.put(Input.Keys.NUMPAD_4, "4");
-		keyMap.put(Input.Keys.NUMPAD_5, "5");
-		keyMap.put(Input.Keys.NUMPAD_6, "6");
-		keyMap.put(Input.Keys.NUMPAD_7, "7");
-		keyMap.put(Input.Keys.NUMPAD_8, "8");
-		keyMap.put(Input.Keys.NUMPAD_9, "9");
-		keyMap.put(Input.Keys.A, "a");
-		keyMap.put(Input.Keys.B, "b");
-		keyMap.put(Input.Keys.C, "c");
-		keyMap.put(Input.Keys.D, "d");
-		keyMap.put(Input.Keys.E, "e");
-		keyMap.put(Input.Keys.F, "f");
-		keyMap.put(Input.Keys.G, "g");
-		keyMap.put(Input.Keys.H, "h");
-		keyMap.put(Input.Keys.I, "i");
-		keyMap.put(Input.Keys.J, "j");
-		keyMap.put(Input.Keys.K, "k");
-		keyMap.put(Input.Keys.L, "l");
-		keyMap.put(Input.Keys.M, "m");
-		keyMap.put(Input.Keys.N, "n");
-		keyMap.put(Input.Keys.O, "o");
-		keyMap.put(Input.Keys.P, "p");
-		keyMap.put(Input.Keys.Q, "q");
-		keyMap.put(Input.Keys.R, "r");
-		keyMap.put(Input.Keys.S, "s");
-		keyMap.put(Input.Keys.T, "t");
-		keyMap.put(Input.Keys.U, "u");
-		keyMap.put(Input.Keys.V, "v");
-		keyMap.put(Input.Keys.W, "w");
-		keyMap.put(Input.Keys.X, "x");
-		keyMap.put(Input.Keys.Y, "y");
-		keyMap.put(Input.Keys.Z, "z");
-		keyMap.put(Input.Keys.COMMA, ",");
-		keyMap.put(Input.Keys.PERIOD, ".");
-		keyMap.put(Input.Keys.SPACE, " ");
+		keyMap.put(Input.Keys.NUM_0, wrap("0", "0"));
+		keyMap.put(Input.Keys.NUM_1, wrap("1", "1"));
+		keyMap.put(Input.Keys.NUM_2, wrap("2", "2"));
+		keyMap.put(Input.Keys.NUM_3, wrap("3", "3"));
+		keyMap.put(Input.Keys.NUM_4, wrap("4", "4"));
+		keyMap.put(Input.Keys.NUM_5, wrap("5", "5"));
+		keyMap.put(Input.Keys.NUM_6, wrap("6", "6"));
+		keyMap.put(Input.Keys.NUM_7, wrap("7", "7"));
+		keyMap.put(Input.Keys.NUM_8, wrap("8", "8"));
+		keyMap.put(Input.Keys.NUM_9, wrap("9", "9"));
+		keyMap.put(Input.Keys.NUMPAD_0, wrap("0", "0"));
+		keyMap.put(Input.Keys.NUMPAD_1, wrap("1", "1"));
+		keyMap.put(Input.Keys.NUMPAD_2, wrap("2", "2"));
+		keyMap.put(Input.Keys.NUMPAD_3, wrap("3", "3"));
+		keyMap.put(Input.Keys.NUMPAD_4, wrap("4", "4"));
+		keyMap.put(Input.Keys.NUMPAD_5, wrap("5", "5"));
+		keyMap.put(Input.Keys.NUMPAD_6, wrap("6", "6"));
+		keyMap.put(Input.Keys.NUMPAD_7, wrap("7", "7"));
+		keyMap.put(Input.Keys.NUMPAD_8, wrap("8", "8"));
+		keyMap.put(Input.Keys.NUMPAD_9, wrap("9", "9"));
+		keyMap.put(Input.Keys.A, wrap("a", "A"));
+		keyMap.put(Input.Keys.B, wrap("b", "B"));
+		keyMap.put(Input.Keys.C, wrap("c", "C"));
+		keyMap.put(Input.Keys.D, wrap("d", "D"));
+		keyMap.put(Input.Keys.E, wrap("e", "E"));
+		keyMap.put(Input.Keys.F, wrap("f", "F"));
+		keyMap.put(Input.Keys.G, wrap("g", "G"));
+		keyMap.put(Input.Keys.H, wrap("h", "H"));
+		keyMap.put(Input.Keys.I, wrap("i", "I"));
+		keyMap.put(Input.Keys.J, wrap("j", "J"));
+		keyMap.put(Input.Keys.K, wrap("k", "K"));
+		keyMap.put(Input.Keys.L, wrap("l", "L"));
+		keyMap.put(Input.Keys.M, wrap("m", "M"));
+		keyMap.put(Input.Keys.N, wrap("n", "N"));
+		keyMap.put(Input.Keys.O, wrap("o", "O"));
+		keyMap.put(Input.Keys.P, wrap("p", "P"));
+		keyMap.put(Input.Keys.Q, wrap("q", "Q"));
+		keyMap.put(Input.Keys.R, wrap("r", "R"));
+		keyMap.put(Input.Keys.S, wrap("s", "S"));
+		keyMap.put(Input.Keys.T, wrap("t", "Y"));
+		keyMap.put(Input.Keys.U, wrap("u", "U"));
+		keyMap.put(Input.Keys.V, wrap("v", "V"));
+		keyMap.put(Input.Keys.W, wrap("w", "W"));
+		keyMap.put(Input.Keys.X, wrap("x", "X"));
+		keyMap.put(Input.Keys.Y, wrap("y", "Y"));
+		keyMap.put(Input.Keys.Z, wrap("z", "Z"));
+		keyMap.put(Input.Keys.COMMA, wrap(",", ","));
+		keyMap.put(Input.Keys.PERIOD, wrap(".", "."));
+		keyMap.put(Input.Keys.SPACE, wrap(" ", " "));
+		keyMap.put(Input.Keys.SEMICOLON, wrap(";", ":"));
 	}
 }

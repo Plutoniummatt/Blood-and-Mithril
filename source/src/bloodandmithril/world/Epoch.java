@@ -34,6 +34,11 @@ public class Epoch implements Serializable {
 	}
 
 
+	public Epoch copy() {
+		return new Epoch(timeOfDay, dayOfMonth, monthOfYear, year);
+	}
+
+
 	/**
 	 * @param delta - To increment, in seconds
 	 */
@@ -53,7 +58,7 @@ public class Epoch implements Serializable {
 	/**
 	 * Increments the day
 	 */
-	private void incrementDay() {
+	public void incrementDay() {
 		if (dayOfMonth == 30) {
 			dayOfMonth = 1;
 			incrementMonth();
@@ -93,6 +98,10 @@ public class Epoch implements Serializable {
 	 * @return the current time of day as a string
 	 */
 	public static String getTimeString(float time) {
+		if (time > 24f) {
+			time -= 24f;
+		}
+
 		String hour = floor(time) < 10 ? "0" + Integer.toString((int)floor(time)) : Integer.toString((int)floor(time));
 		String minute = (int)((time - (float)floor(time)) * 60f) < 10 ? "0" + Integer.toString((int)((time - (float)floor(time)) * 60f)) : Integer.toString((int)((time - (float)floor(time)) * 60f));
 		return hour + ":" + minute;

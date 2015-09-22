@@ -38,9 +38,6 @@ public abstract class AITask implements Serializable {
 	/** @return the description of the task */
 	public abstract String getShortDescription();
 
-	/** @return the detailed description of the task */
-	public abstract String getDetailedDescription();
-
 	/** @return whether or not this task has been completed */
 	public abstract boolean isComplete();
 

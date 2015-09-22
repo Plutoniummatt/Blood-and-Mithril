@@ -5,17 +5,25 @@ import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import java.util.Collection;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
+import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.routine.DailyRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
+import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Util;
@@ -26,6 +34,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.inject.Inject;
 
 /**
  * Harvest a {@link Harvestable}
@@ -35,11 +44,18 @@ import com.google.common.collect.Iterables;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Harvest extends CompositeAITask {
+@Name(name = "Harvest")
+public class Harvest extends CompositeAITask implements RoutineTask {
 	private static final long serialVersionUID = -4098455998844182430L;
 
 	/** Coordinate of the {@link Harvestable} to harvest */
 	private final Prop harvestable;
+
+	@Inject
+	Harvest() {
+		super(null, "");
+		this.harvestable = null;
+	}
 
 	/**
 	 * Constructor
@@ -153,5 +169,35 @@ public class Harvest extends CompositeAITask {
 				}
 			}
 		}
+	}
+
+
+	@Override
+	public String getDetailedDescription() {
+		return getHost().getId().getSimpleName() + " harvests " + harvestable.getTitle();
+	}
+
+
+	@Override
+	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine<? extends Visible> routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+		return null;
+	}
+
+
+	@Override
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+		return null;
 	}
 }

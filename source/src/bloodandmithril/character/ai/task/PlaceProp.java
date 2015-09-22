@@ -31,7 +31,7 @@ public class PlaceProp extends CompositeAITask {
 		super(host.getId(), "Placing");
 		this.position = position;
 		this.propItem = propItem;
-		
+
 		try {
 			appendTask(
 				goToWithTerminationFunction(
@@ -44,11 +44,11 @@ public class PlaceProp extends CompositeAITask {
 				)
 			);
 		} catch (NoTileFoundException e) {}
-		
+
 		appendTask(new Place(position, hostId));
 	}
 
-	
+
 	public class WithinInteractionBox implements SerializableFunction<Boolean> {
 		private static final long serialVersionUID = -6658375092168650175L;
 
@@ -58,7 +58,7 @@ public class PlaceProp extends CompositeAITask {
 		}
 	}
 
-	
+
 	public class Place extends AITask {
 		private static final long serialVersionUID = 7788789888406267718L;
 		private boolean placed;
@@ -67,25 +67,25 @@ public class PlaceProp extends CompositeAITask {
 			super(hostId);
 		}
 
-		
+
 		@Override
 		public String getShortDescription() {
 			return "Placing";
 		}
 
-		
+
 		@Override
 		public boolean isComplete() {
 			return placed;
 		}
 
-		
+
 		@Override
 		public boolean uponCompletion() {
 			return false;
 		}
 
-		
+
 		@Override
 		public void execute(float delta) {
 			Prop prop = propItem.getProp();
@@ -98,7 +98,7 @@ public class PlaceProp extends CompositeAITask {
 				host.takeItem(propItem);
 				UserInterface.refreshRefreshableWindows();
 			}
-			
+
 			placed = true;
 		}
 	}
