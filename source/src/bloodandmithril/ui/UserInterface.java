@@ -1267,8 +1267,14 @@ public class UserInterface {
 			if (!iterator.hasNext()) {
 				clicked = menu.leftClick(contextMenuCopy, null) || clicked;
 			}
-			if (!menu.isInside(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY())) {
-				contextMenuCopy.remove(menu);
+			if (!menu.isInside(getMouseScreenX(), getMouseScreenY())) {
+				if (menu.getTop() == null) {
+					contextMenuCopy.remove(menu);
+				} else {
+					if (!menu.getTop().isInside(getMouseScreenX(), getMouseScreenY())) {
+						contextMenuCopy.remove(menu);
+					}
+				}
 			}
 		}
 
@@ -1276,7 +1282,7 @@ public class UserInterface {
 		contextMenus.addAll(contextMenuCopy);
 
 		if (!clicked) {
-			initialLeftMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
+			initialLeftMouseDragCoordinates = new Vector2(getMouseScreenX(), getMouseScreenY());
 		} else {
 			initialLeftMouseDragCoordinates = null;
 		}

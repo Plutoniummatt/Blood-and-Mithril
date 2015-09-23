@@ -98,7 +98,7 @@ public abstract class Prop implements Serializable, Visible {
 
 	/** Whether this prop can be used as a source of fire */
 	public abstract boolean canBeUsedAsFireSource();
-	
+
 	/** Return the color of the context menu button for this {@link Prop} */
 	public abstract Color getContextMenuColor();
 
@@ -286,5 +286,15 @@ public abstract class Prop implements Serializable, Visible {
 
 	public Box getBoundingBox() {
 		return new Box(position.cpy().add(0f, height/2f), width, height);
+	}
+
+
+	@Override
+	public boolean sameAs(Visible other) {
+		if (other instanceof Prop) {
+			return ((Prop) other).id == id;
+		}
+
+		return false;
 	}
 }

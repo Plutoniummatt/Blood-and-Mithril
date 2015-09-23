@@ -27,18 +27,18 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
+public class AIRoutinesWindow extends ScrollableListingWindow<Routine<?>, String> {
 
-	private static Function<Routine, String> fn = new Function<Routine, String>() {
+	private static Function<Routine<?>, String> fn = new Function<Routine<?>, String>() {
 		@Override
-		public String apply(Routine r) {
+		public String apply(Routine<?> r) {
 			return r.getShortDescription();
 		}
 	};
 
-	private static Comparator<Routine> routineComparator = new Comparator<Routine>() {
+	private static Comparator<Routine<?>> routineComparator = new Comparator<Routine<?>>() {
 		@Override
-		public int compare(Routine o1, Routine o2) {
+		public int compare(Routine<?> o1, Routine<?> o2) {
 			return new Integer(o2.getPriority()).compareTo(o1.getPriority());
 		}
 	};
@@ -60,9 +60,9 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 	}
 
 
-	private static Map<Routine, String> buildMap(Individual individual) {
-		Map<Routine, String> map = Maps.newHashMap();
-		for (Routine r : individual.getAI().getAiRoutines()) {
+	private static Map<Routine<?>, String> buildMap(Individual individual) {
+		Map<Routine<?>, String> map = Maps.newHashMap();
+		for (Routine<?> r : individual.getAI().getAiRoutines()) {
 			map.put(r, Integer.toString(r.getPriority()));
 		}
 		return map;
@@ -85,17 +85,17 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 
 
 	@Override
-	protected ContextMenu buttonContextMenu(Entry<Routine, String> tEntry) {
+	protected ContextMenu buttonContextMenu(Entry<Routine<?>, String> tEntry) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
-		bloodandmithril.util.Function<LinkedList<Routine>> routinesFunction = () -> {
+		bloodandmithril.util.Function<LinkedList<Routine<?>>> routinesFunction = () -> {
 			return Domain.getIndividual(individualId).getAI().getAiRoutines();
 		};
 
 		MenuItem moveUp = new MenuItem(
 			"Move up",
 			() -> {
-				LinkedList<Routine> routines = routinesFunction.call();
+				LinkedList<Routine<?>> routines = routinesFunction.call();
 
 				if (tEntry.getKey().getPriority() + 1 == routines.size()) {
 					return;
@@ -118,7 +118,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 		MenuItem moveDown = new MenuItem(
 			"Move down",
 			() -> {
-				LinkedList<Routine> routines = routinesFunction.call();
+				LinkedList<Routine<?>> routines = routinesFunction.call();
 
 				if (tEntry.getKey().getPriority() == 0) {
 					return;

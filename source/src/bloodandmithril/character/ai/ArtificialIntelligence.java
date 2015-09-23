@@ -52,7 +52,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/** Stimuli as perceived by the host */
 	private LinkedBlockingQueue<Stimulus> stimuli = new LinkedBlockingQueue<Stimulus>();
 
-	private LinkedList<Routine> aiRoutines = new LinkedList<>();
+	private LinkedList<Routine<?>> aiRoutines = new LinkedList<>();
 
 	public ArtificialIntelligence copy() {
 		ArtificialIntelligence internalCopy = internalCopy();
@@ -134,19 +134,19 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 * Processes specific AI routines
 	 */
 	private void processAIRoutines() {
-		LinkedList<Routine> sortedRoutines = Lists.newLinkedList(aiRoutines);
+		LinkedList<Routine<?>> sortedRoutines = Lists.newLinkedList(aiRoutines);
 		Collections.sort(sortedRoutines, (r1, r2) -> {
 			return new Integer(r2.getPriority()).compareTo(new Integer(r1.getPriority()));
 		});
 
-		for (Routine routine : sortedRoutines) {
+		for (Routine<?> routine : sortedRoutines) {
 			if (!routine.areExecutionConditionsMet()) {
 				continue;
 			}
 
 			AITask internalCurrentTask = getCurrentTask();
 			if (internalCurrentTask instanceof Routine) {
-				if (routine.getPriority() > ((Routine) internalCurrentTask).getPriority()) {
+				if (routine.getPriority() > ((Routine<?>) internalCurrentTask).getPriority()) {
 					routine.prepare();
 					setCurrentTask(routine);
 					break;
@@ -198,9 +198,9 @@ public abstract class ArtificialIntelligence implements Serializable {
 	private synchronized void reactToStimuli() {
 		while(!stimuli.isEmpty()) {
 			Stimulus polled = stimuli.poll();
-			for (Routine r : aiRoutines) {
+			for (Routine<?> r : aiRoutines) {
 				if (r instanceof StimulusDrivenRoutine) {
-					((StimulusDrivenRoutine) r).attemptTrigger(polled);
+					((StimulusDrivenRoutine<?>) r).attemptTrigger(polled);
 				}
 			}
 			polled.stimulate(getHost());
@@ -309,12 +309,12 @@ public abstract class ArtificialIntelligence implements Serializable {
 	}
 
 
-	public LinkedList<Routine> getAiRoutines() {
+	public LinkedList<Routine<?>> getAiRoutines() {
 		return aiRoutines;
 	}
 
 
-	public void addRoutine(Routine routine) {
+	public void addRoutine(Routine<?> routine) {
 		routine.setPriority(aiRoutines.size());
 		aiRoutines.add(routine);
 	}

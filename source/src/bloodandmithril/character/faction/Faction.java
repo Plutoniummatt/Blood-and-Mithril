@@ -3,6 +3,8 @@ package bloodandmithril.character.faction;
 import java.io.Serializable;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.util.datastructure.Wrapper;
+import bloodandmithril.world.Domain;
 
 
 /**
@@ -34,5 +36,17 @@ public class Faction implements Serializable {
 
 	public synchronized void changeControlPassword(String controlPassword) {
 		this.controlPassword = controlPassword;
+	}
+
+
+	public static Faction getNature() {
+		Wrapper<Faction> nature = new Wrapper<Faction>(null);
+		Domain.getFactions().values().forEach(f -> {
+			if (f.name.equals("Nature")) {
+				nature.t = f;
+			}
+		});
+
+		return nature.t;
 	}
 }

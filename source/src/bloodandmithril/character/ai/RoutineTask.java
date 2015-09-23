@@ -1,6 +1,6 @@
 package bloodandmithril.character.ai;
 
-import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
@@ -18,15 +18,10 @@ import bloodandmithril.ui.components.ContextMenu;
 public interface RoutineTask {
 
 	/**
-	 * @return the detailed description of this {@link RoutineTask}
-	 */
-	public String getDetailedDescription();
-
-	/**
 	 * @return Implementation specific context menu construction methods
 	 */
 	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine);
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine<? extends Visible> routine);
+	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine);
 	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine);
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine);
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine<? extends Stimulus> routine);
 }

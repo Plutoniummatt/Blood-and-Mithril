@@ -25,6 +25,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
@@ -51,9 +52,10 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
+@Name(name = "Hare")
 @Copyright("Matthew Peck 2014")
 @SuppressWarnings("unchecked")
-public class Hare extends GroundTravellingIndividual implements Visible, Listener, Observer {
+public class Hare extends GroundTravellingIndividual implements Listener, Observer {
 	private static final long serialVersionUID = -1907997976760409204L;
 
 	private static final Color brown = new Color(117f/255f, 76f/255f, 36f/255f, 1f);
@@ -107,6 +109,7 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 			id,
 			state,
 			factionId,
+			Behaviour.NEUTRAL,
 			0,
 			0,
 			0,
@@ -335,5 +338,14 @@ public class Hare extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	protected void internalKill() {
+	}
+
+
+	@Override
+	public boolean sameAs(Visible other) {
+		if (other instanceof Hare) {
+			return ((Hare) other).getId().getId() == getId().getId();
+		}
+		return false;
 	}
 }

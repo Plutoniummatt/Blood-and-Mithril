@@ -1,6 +1,5 @@
 package bloodandmithril.character.individuals;
 
-import static bloodandmithril.character.ai.perception.Visible.getVisible;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_STAB;
@@ -16,6 +15,7 @@ import java.util.Map;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.core.Copyright;
@@ -84,7 +84,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					SoundService.swordSlash,
 					individual.getState().position,
 					false,
-					getVisible(individual)
+					Visible.getVisible(individual)
 				);
 			}
 		);
@@ -97,7 +97,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					SoundService.swordSlash,
 					individual.getState().position,
 					false,
-					getVisible(individual)
+					Visible.getVisible(individual)
 				);
 			}
 		);
@@ -110,7 +110,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 					SoundService.swordSlash,
 					individual.getState().position,
 					false,
-					getVisible(individual)
+					Visible.getVisible(individual)
 				);
 			}
 		);
@@ -147,6 +147,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 			IndividualIdentifier id,
 			IndividualState state,
 			int factionId,
+			Behaviour naturalBehaviour,
 			float inventoryMassCapacity,
 			int inventoryVolumeCapacity,
 			int maxRings,
@@ -156,7 +157,7 @@ public abstract class Humanoid extends GroundTravellingIndividual {
 			Box interactionBox,
 			int worldId,
 			int maximumConcurrentMeleeAttackers) {
-		super(id, state, factionId, inventoryMassCapacity, inventoryVolumeCapacity, maxRings, width, height, safetyHeight, interactionBox, worldId, maximumConcurrentMeleeAttackers);
+		super(id, state, factionId, naturalBehaviour, inventoryMassCapacity, inventoryVolumeCapacity, maxRings, width, height, safetyHeight, interactionBox, worldId, maximumConcurrentMeleeAttackers);
 	}
 
 
