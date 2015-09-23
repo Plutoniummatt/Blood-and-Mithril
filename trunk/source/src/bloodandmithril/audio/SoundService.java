@@ -16,6 +16,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Function;
+import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.datastructure.WrapperForThree;
 import bloodandmithril.world.Domain;
 
@@ -271,6 +272,21 @@ public class SoundService {
 		@Override
 		public void setEmissionPosition(Vector2 position) {
 			this.position = position;
+		}
+	}
+
+
+	public static class SuspiciousSoundAITriggerFunction extends SerializableMappingFunction<SuspiciousSound, Boolean> {
+		private static final long serialVersionUID = 5189638348993362947L;
+		private SuspicionLevel level;
+
+		public SuspiciousSoundAITriggerFunction(SuspicionLevel level) {
+			this.level = level;
+		}
+
+		@Override
+		public Boolean apply(SuspiciousSound input) {
+			return input.getSuspicionLevel().severity >= level.severity;
 		}
 	}
 

@@ -22,7 +22,7 @@ public interface SoundStimulus extends Stimulus {
 	 * Sets the emission position.
 	 */
 	public void setEmissionPosition(Vector2 position);
-	
+
 	@Override
 	public default void stimulate(Individual individual) {
 		if (individual instanceof Listener) {

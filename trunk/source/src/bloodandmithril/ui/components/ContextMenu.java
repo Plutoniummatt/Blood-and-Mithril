@@ -14,6 +14,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Function;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
 
 import com.badlogic.gdx.graphics.Color;
@@ -33,6 +34,8 @@ public class ContextMenu extends Component {
 	public int x, y;
 
 	private final boolean closeUponButtonClick;
+
+	private ContextMenu secondary;
 
 	/** Constructor */
 	@Deprecated
@@ -128,11 +131,13 @@ public class ContextMenu extends Component {
 					item.menu.x = getMouseScreenX();
 					item.menu.y = getMouseScreenY();
 					copy.add(item.menu);
+					secondary = item.menu;
 				} else {
 					if (item.secondaryContextMenuCondition.call()) {
 						item.menu.x = getMouseScreenX();
 						item.menu.y = getMouseScreenY();
 						copy.add(item.menu);
+						secondary = item.menu;
 					} else {
 						copy.clear();
 					}
@@ -204,6 +209,25 @@ public class ContextMenu extends Component {
 
 
 		/** Overloaded Constructor */
+		public MenuItem(String text, JITTask task, Color idle, Color over, Color down, ContextMenu menu) {
+			this.menu = menu;
+			this.button = new Button(
+				text,
+				Fonts.defaultFont,
+				0,
+				0,
+				text.length() * 10,
+				16,
+				task,
+				idle,
+				over,
+				down,
+				UIRef.BL
+			);
+		}
+
+
+		/** Overloaded Constructor */
 		public MenuItem(String text, Task task, Color idle, Color over, Color down, ContextMenu menu, Function<Boolean> secondaryContextMenuCondition) {
 			this.menu = menu;
 			this.secondaryContextMenuCondition = secondaryContextMenuCondition;
@@ -226,6 +250,15 @@ public class ContextMenu extends Component {
 
 	@Override
 	public void leftClickReleased() {
+	}
+
+
+	public ContextMenu getTop() {
+		if (secondary == null) {
+			return this;
+		} else {
+			return secondary.getTop();
+		}
 	}
 
 

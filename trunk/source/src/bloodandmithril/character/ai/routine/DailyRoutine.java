@@ -14,6 +14,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.RoutineTasks;
+import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
@@ -29,7 +30,6 @@ import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.window.EditAIRoutineWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
@@ -45,7 +45,7 @@ import com.badlogic.gdx.graphics.Color;
 public class DailyRoutine extends Routine<Individual> {
 	private static final long serialVersionUID = -255141692263126217L;
 
-	private SerializableMappingFunction<Individual, AITask> aiTaskGenerator;
+	private TaskGenerator<Individual> aiTaskGenerator;
 	private Epoch lastExecutedEpoch = null;
 	private float routineTime;
 	private float toleranceTime;
@@ -63,7 +63,7 @@ public class DailyRoutine extends Routine<Individual> {
 
 
 	@Override
-	public void setAiTaskGenerator(SerializableMappingFunction<Individual, AITask> aiTaskGenerator) {
+	public void setAiTaskGenerator(TaskGenerator<Individual> aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 	}
 
@@ -287,7 +287,7 @@ public class DailyRoutine extends Routine<Individual> {
 					getGraphics().getSpriteBatch(),
 					"Task:",
 					x + 10,
-					y - 127,
+					y - 97,
 					width - 5
 				);
 			}
@@ -298,17 +298,17 @@ public class DailyRoutine extends Routine<Individual> {
 				if (apply instanceof RoutineTask) {
 					defaultFont.drawWrapped(
 						getGraphics().getSpriteBatch(),
-						((RoutineTask) apply).getDetailedDescription(),
+						aiTaskGenerator.getDailyRoutineDetailedDescription(),
 						x + 10,
-						y - 177,
+						y - 117,
 						width - 5
 					);
 				}
 			}
 
-			changeTaskButton.render(x + 64, y - 140, parent.isActive(), parent.getAlpha());
-			changeToleranceButton.render(x + 84, y - 80, parent.isActive(), parent.getAlpha());
-			changeTimeButton.render(x + 64, y - 60, parent.isActive(), parent.getAlpha());
+			changeTaskButton.render(x + 64, y - height + 30, parent.isActive(), parent.getAlpha());
+			changeToleranceButton.render(x + 84, y - height + 50, parent.isActive(), parent.getAlpha());
+			changeTimeButton.render(x + 64, y - height + 70, parent.isActive(), parent.getAlpha());
 		}
 
 		@Override

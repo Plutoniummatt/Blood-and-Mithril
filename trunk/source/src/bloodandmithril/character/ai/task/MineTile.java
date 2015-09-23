@@ -11,7 +11,7 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
-import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
@@ -228,19 +228,13 @@ public class MineTile extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public String getDetailedDescription() {
-		return getHost().getId().getSimpleName() + " mines tile at " + tileCoordinate.toString();
-	}
-
-
-	@Override
 	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
 		return null;
 	}
 
 
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine<? extends Visible> routine) {
+	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
 		return null;
 	}
 
@@ -252,7 +246,7 @@ public class MineTile extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine<? extends Stimulus> routine) {
 		return null;
 	}
 }

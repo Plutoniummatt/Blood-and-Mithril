@@ -11,10 +11,14 @@ import static bloodandmithril.world.Domain.getIndividual;
 import java.util.Set;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.TaskGenerator;
+import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.combat.CombatService;
@@ -30,12 +34,10 @@ import bloodandmithril.util.Countdown;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.SerializableFunction;
-import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.world.Domain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -278,109 +280,204 @@ public class Attack extends CompositeAITask implements RoutineTask {
 	}
 
 
-	@Override
-	public String getDetailedDescription() {
-		Object[] array = toBeAttacked.stream().map(i -> {
-			return Domain.getIndividual(i).getId().getSimpleName();
-		}).toArray();
-		return getHost().getId().getSimpleName() + " attacks " + Joiner.on(", ").join(array);
+	public static class AttackTaskGenerator extends TaskGenerator<Visible> {
+		private static final long serialVersionUID = 6935537151752635203L;
+		private SerializableFunction<Integer> victimId;
+		private String attackerName, victimName;
+
+		public AttackTaskGenerator(int attackerId, SerializableFunction<Integer> victimId, String overriddenVictimName) {
+			this.victimId = victimId;
+
+			this.attackerName = Domain.getIndividual(attackerId).getId().getSimpleName();
+
+			if (overriddenVictimName != null) {
+				this.victimName = overriddenVictimName;
+			}
+		}
+
+		@Override
+		public AITask apply(Visible input) {
+			if (input instanceof Individual) {
+				return new Attack((Individual) input, Domain.getIndividual(victimId.call()));
+			}
+
+			return null;
+		}
+
+		@Override
+		public String getDailyRoutineDetailedDescription() {
+			return attackerName + " attacks " + victimName;
+		}
+
+		@Override
+		public String getEntityVisibleRoutineDetailedDescription() {
+			return attackerName + " attacks " + victimName;
+		}
+
+		@Override
+		public String getIndividualConditionRoutineDetailedDescription() {
+			return attackerName + " attacks " + victimName;
+		}
+
+		@Override
+		public String getStimulusDrivenRoutineDetailedDescription() {
+			return attackerName + " attacks " + victimName;
+		}
+	}
+
+
+	public static class ReturnVictimId implements SerializableFunction<Integer> {
+		private static final long serialVersionUID = 5647294340775051321L;
+		private int id;
+
+		public ReturnVictimId(int id) {
+			this.id = id;
+		}
+
+		@Override
+		public Integer call() {
+			return id;
+		}
+	}
+
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private MenuItem chooseTargetMenuItem(Individual host, Routine routine, ContextMenu toChooseFrom) {
+		return new MenuItem(
+			"Choose target",
+			() -> {
+				JITTask task = new JITTask() {
+					@Override
+					public void execute(Object... args) {
+						if (Domain.getActiveWorld() != null) {
+							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+								Individual indi = Domain.getIndividual(indiKey);
+								if (indi.isMouseOver()) {
+									toChooseFrom.addMenuItem(
+										new MenuItem(
+											"Attack " + indi.getId().getSimpleName(),
+											() -> {
+												routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), new ReturnVictimId(indi.getId().getId()), indi.getId().getSimpleName()));
+											},
+											Color.ORANGE,
+											Color.GREEN,
+											Color.GRAY,
+											null
+										)
+									);
+								}
+							}
+						}
+
+						UserInterface.contextMenus.clear();
+						toChooseFrom.x = getMouseScreenX();
+						toChooseFrom.y = getMouseScreenY();
+						UserInterface.contextMenus.add(toChooseFrom);
+					}
+				};
+
+				BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(task, true) {
+					@Override
+					public void renderUIGuide() {
+					}
+
+					@Override
+					public String getShortDescription() {
+						return "Choose target";
+					}
+
+					@Override
+					public CursorBoundTask getImmediateTask() {
+						return null;
+					}
+
+					@Override
+					public boolean executionConditionMet() {
+						if (Domain.getActiveWorld() != null) {
+							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+								Individual indi = Domain.getIndividual(indiKey);
+								if (indi.isMouseOver()) {
+									return true;
+								}
+							}
+						}
+
+						return false;
+					}
+
+					@Override
+					public boolean canCancel() {
+						return true;
+					}
+				});
+			},
+			Color.ORANGE,
+			Color.GREEN,
+			Color.GRAY,
+			null
+		);
 	}
 
 
 	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+	public ContextMenu getDailyRoutineContextMenu(Individual host, final DailyRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
-			new MenuItem(
-				"Choose target",
-				() -> {
-					JITTask task = new JITTask() {
-						@Override
-						public void execute(Object... args) {
-							if (Domain.getActiveWorld() != null) {
-								for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-									Individual indi = Domain.getIndividual(indiKey);
-									if (indi.isMouseOver()) {
-										toChooseFrom.addMenuItem(
-											new MenuItem(
-												"Attack " + indi.getId().getSimpleName(),
-												() -> {
-													routine.setAiTaskGenerator(new SerializableMappingFunction<Individual, AITask>() {
-														private static final long serialVersionUID = 2667366003849630113L;
-														@Override
-														public AITask apply(Individual input) {
-															return new Attack(input, indi);
-														}
-													});
-												},
-												Color.ORANGE,
-												Color.GREEN,
-												Color.GRAY,
-												null
-											)
-										);
-									}
-								}
-							}
-
-							UserInterface.contextMenus.clear();
-							toChooseFrom.x = getMouseScreenX();
-							toChooseFrom.y = getMouseScreenY();
-							UserInterface.contextMenus.add(toChooseFrom);
-						}
-					};
-
-					BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(task, true) {
-						@Override
-						public void renderUIGuide() {
-						}
-
-						@Override
-						public String getShortDescription() {
-							return "Choose target";
-						}
-
-						@Override
-						public CursorBoundTask getImmediateTask() {
-							return null;
-						}
-
-						@Override
-						public boolean executionConditionMet() {
-							if (Domain.getActiveWorld() != null) {
-								for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-									Individual indi = Domain.getIndividual(indiKey);
-									if (indi.isMouseOver()) {
-										return true;
-									}
-								}
-							}
-
-							return false;
-						}
-
-						@Override
-						public boolean canCancel() {
-							return true;
-						}
-					});
-				},
-				Color.ORANGE,
-				Color.GREEN,
-				Color.GRAY,
-				null
-			)
+			chooseTargetMenuItem(host, routine, toChooseFrom)
 		);
 
 		return menu;
 	}
 
 
+	public static class VisibleIndividualFuture implements SerializableFunction<Integer> {
+		private static final long serialVersionUID = 3527567985423803956L;
+		private EntityVisibleRoutine routine;
+
+		public VisibleIndividualFuture(EntityVisibleRoutine routine) {
+			this.routine = routine;
+		}
+
+		@Override
+		public Integer call() {
+			Visible visibleEntity = routine.getVisibleEntity();
+			if (visibleEntity instanceof Individual) {
+				return ((Individual) visibleEntity).getId().getId();
+			}
+
+			throw new RuntimeException();
+		}
+	}
+
+
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine<? extends Visible> routine) {
-		return null;
+	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseTargetMenuItem(host, routine, toChooseFrom)
+		);
+
+		final EntityVisible identificationFunction = routine.getIdentificationFunction();
+		if (Individual.class.isAssignableFrom(identificationFunction.getEntity().a)) {
+			menu.addFirst(
+				new MenuItem(
+					"Visible individual",
+					() -> {
+						routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), new VisibleIndividualFuture(routine), "visible individual"));
+					},
+					Color.MAGENTA,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
+		}
+
+		return menu;
 	}
 
 
@@ -391,7 +488,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine<? extends Stimulus> routine) {
 		return null;
 	}
 }

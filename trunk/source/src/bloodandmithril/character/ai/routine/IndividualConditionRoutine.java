@@ -2,6 +2,7 @@ package bloodandmithril.character.ai.routine;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
+import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
@@ -16,7 +17,7 @@ import bloodandmithril.util.SerializableMappingFunction;
 public class IndividualConditionRoutine extends Routine<Individual> {
 	private static final long serialVersionUID = 6831994593107089893L;
 	private SerializableMappingFunction<Individual, Boolean> executionCondition;
-	private SerializableMappingFunction<Individual, AITask> aiTaskGenerator;
+	private TaskGenerator<Individual> aiTaskGenerator;
 	private AITask task;
 
 	/**
@@ -30,7 +31,7 @@ public class IndividualConditionRoutine extends Routine<Individual> {
 
 
 	@Override
-	public void setAiTaskGenerator(SerializableMappingFunction<Individual, AITask> aiTaskGenerator) {
+	public void setAiTaskGenerator(TaskGenerator<Individual> aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 	}
 

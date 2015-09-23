@@ -2,6 +2,7 @@ package bloodandmithril.character.ai.routine;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
+import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -14,21 +15,23 @@ import bloodandmithril.util.SerializableMappingFunction;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class StimulusDrivenRoutine extends Routine<Stimulus> {
+public class StimulusDrivenRoutine<S extends Stimulus> extends Routine<S> {
 	private static final long serialVersionUID = 2347934053852793343L;
 
-	private SerializableMappingFunction<Stimulus, Boolean> triggerFunction;
-	private SerializableMappingFunction<Stimulus, AITask> aiTaskGenerator;
-	private Stimulus triggeringStimulus;
+	private SerializableMappingFunction<S, Boolean> triggerFunction;
+	private TaskGenerator<S> aiTaskGenerator;
+	private S triggeringStimulus;
 	private boolean triggered;
 	private AITask task;
+	private Class<S> c;
 
 	/**
 	 * Constructor
 	 */
-	public StimulusDrivenRoutine(IndividualIdentifier hostId, SerializableMappingFunction<Stimulus, Boolean> triggerFunction) {
+	public StimulusDrivenRoutine(IndividualIdentifier hostId, SerializableMappingFunction<S, Boolean> triggerFunction, Class<S> c) {
 		super(hostId);
 		this.triggerFunction = triggerFunction;
+		this.c = c;
 		setDescription("Stimulus driven routine");
 	}
 
@@ -37,9 +40,11 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 	 * Attempt to trigger the execution of this {@link Routine}
 	 */
 	public void attemptTrigger(Stimulus stimulus) {
-		if (triggerFunction.apply(stimulus)) {
-			this.triggeringStimulus = stimulus;
-			this.triggered = true;
+		if (stimulus.getClass().equals(c)) {
+			if (triggerFunction.apply(c.cast(stimulus))) {
+				this.triggeringStimulus = c.cast(stimulus);
+				this.triggered = true;
+			}
 		}
 	}
 
@@ -48,7 +53,7 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 	 * Sets the generator for the task which this routine will use to generate the {@link AITask} upon meeting the trigger function
 	 */
 	@Override
-	public void setAiTaskGenerator(SerializableMappingFunction<Stimulus, AITask> aiTaskGenerator) {
+	public void setAiTaskGenerator(TaskGenerator<S> aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 	}
 

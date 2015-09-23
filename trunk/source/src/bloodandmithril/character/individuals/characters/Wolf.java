@@ -25,6 +25,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
@@ -49,9 +50,10 @@ import com.google.common.collect.Sets;
  *
  * @author Matt
  */
+@Name(name = "Wolf")
 @Copyright("Matthew Peck 2015")
 @SuppressWarnings("unchecked")
-public class Wolf extends GroundTravellingIndividual implements Visible, Listener, Observer, Sniffer {
+public class Wolf extends GroundTravellingIndividual implements Listener, Observer, Sniffer {
 	private static final long serialVersionUID = 6519740787651279948L;
 
 	/** Rabbit-specific animation map */
@@ -130,6 +132,7 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 			id,
 			state,
 			factionId,
+			Behaviour.HOSTILE,
 			0,
 			0,
 			0,
@@ -347,5 +350,14 @@ public class Wolf extends GroundTravellingIndividual implements Visible, Listene
 
 	@Override
 	protected void internalKill() {
+	}
+
+
+	@Override
+	public boolean sameAs(Visible other) {
+		if (other instanceof Hare) {
+			return ((Wolf) other).getId().getId() == getId().getId();
+		}
+		return false;
 	}
 }

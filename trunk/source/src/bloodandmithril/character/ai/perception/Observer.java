@@ -37,57 +37,6 @@ public interface Observer extends Serializable {
 	 * @param hostId of the observer
 	 * @param entityCap to cap the number of observed entities, to cut down on performance drawbacks
 	 */
-	@Deprecated
-	public default void observe(int worldId, int hostId, int entityCap) {
-		Vector2 eyes = getObservationPosition();
-		float viewDistance = getViewDistance();
-
-		World world = Domain.getWorld(worldId);
-		List<Integer> individualsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
-			Individual.class,
-			eyes.x - viewDistance,
-			eyes.x + viewDistance,
-			eyes.y + viewDistance,
-			eyes.y - viewDistance
-		);
-		List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
-			Prop.class,
-			eyes.x - viewDistance,
-			eyes.x + viewDistance,
-			eyes.y + viewDistance,
-			eyes.y - viewDistance
-		);
-		Collections.shuffle(individualsWithinBounds);
-		Collections.shuffle(propsWithinBounds);
-		int index = 0;
-
-		for (Integer id : individualsWithinBounds) {
-			if (index >= entityCap) {
-				break;
-			}
-
-			// Ray trace
-			Individual toBeObserved = Domain.getIndividual(id);
-			Individual host = Domain.getIndividual(hostId);
-			if (toBeObserved == null || toBeObserved.getId().getId() == hostId || !(toBeObserved instanceof Visible)) {
-				continue;
-			}
-
-			if (canSee((Visible)toBeObserved, world)) {
-				host.getAI().addStimulus(new IndividualSighted(toBeObserved.getState().position, toBeObserved.getId().getId()));
-			}
-			index++;
-		}
-		// TODO props
-	}
-
-	/**
-	 * Observes nearby entities.
-	 *
-	 * @param worldId of the world to observe
-	 * @param hostId of the observer
-	 * @param entityCap to cap the number of observed entities, to cut down on performance drawbacks
-	 */
 	public default List<Visible> observe(int worldId, int hostId) {
 		Vector2 eyes = getObservationPosition();
 		float viewDistance = getViewDistance();
@@ -198,28 +147,4 @@ public interface Observer extends Serializable {
 	 * @return the maximum view distance
 	 */
 	public float getViewDistance();
-
-
-	public static class IndividualSighted implements SightStimulus {
-		private static final long serialVersionUID = -8367150474646829719L;
-		private int sightedIndividualId;
-		private Vector2 location;
-
-		/**
-		 * Constructor
-		 */
-		public IndividualSighted(Vector2 location, int sightedIndividualId) {
-			this.location = location;
-			this.sightedIndividualId = sightedIndividualId;
-		}
-
-		@Override
-		public Vector2 getSightLocation() {
-			return location;
-		}
-
-		public int getSightedIndividualId() {
-			return sightedIndividualId;
-		}
-	}
 }

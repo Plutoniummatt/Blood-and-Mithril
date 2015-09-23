@@ -66,7 +66,7 @@ import com.google.common.collect.Sets;
 @Name(name = "Elves")
 @Description(description = "Elves are children of nature, they are nimble creatures with a good grip on magic and excel at archery.")
 @Copyright("Matthew Peck 2014")
-public class Elf extends Humanoid implements Observer, Visible, Listener {
+public class Elf extends Humanoid implements Observer, Listener {
 	private static final long serialVersionUID = -5566954059579973505L;
 
 	/** True if female */
@@ -100,6 +100,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 			id,
 			state,
 			factionId,
+			Behaviour.NEUTRAL,
 			50f,
 			250,
 			10,
@@ -140,7 +141,7 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 			Color hairColor,
 			Color eyeColor,
 			Color skinColor) {
-		super(id, state, factionId, capacity, 100, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId, 2);
+		super(id, state, factionId, Behaviour.NEUTRAL, capacity, 100, 10, 40, 95, 30, new Box(new Vector2(state.position.x, state.position.y), 120, 120), worldId, 2);
 
 		this.setHairStyle(Util.getRandom().nextInt(3) + 1);
 		this.female = female;
@@ -437,5 +438,14 @@ public class Elf extends Humanoid implements Observer, Visible, Listener {
 
 	public void setHairStyle(int hairStyle) {
 		this.hairStyle = hairStyle;
+	}
+
+
+	@Override
+	public boolean sameAs(Visible other) {
+		if (other instanceof Hare) {
+			return ((Elf) other).getId().getId() == getId().getId();
+		}
+		return false;
 	}
 }

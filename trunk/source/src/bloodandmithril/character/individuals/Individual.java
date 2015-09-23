@@ -37,9 +37,14 @@ import java.util.Set;
 
 import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
 import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.task.Travel;
 import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.character.conditions.Condition;
+import bloodandmithril.character.faction.Faction;
+import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.character.individuals.characters.Hare;
+import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -89,7 +94,7 @@ import com.google.common.collect.Sets;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public abstract class Individual implements Equipper, Serializable, Kinematics {
+public abstract class Individual implements Equipper, Serializable, Kinematics, Visible {
 	private static final long serialVersionUID = 2821835360311044658L;
 
 	/** The current action of this individual */
@@ -185,6 +190,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 	/** Whether or not AI is suppressed */
 	private boolean supressAI;
 
+	/** The {@link Behaviour} of this {@link Individual} */
+	private Behaviour naturalBehaviour;
+
 	/**
 	 * Constructor
 	 */
@@ -192,6 +200,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			IndividualIdentifier id,
 			IndividualState state,
 			int factionId,
+			Behaviour naturalBehaviour,
 			float inventoryMassCapacity,
 			int inventoryVolumeCapacity,
 			int maxRings,
@@ -201,6 +210,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 			Box interactionBox,
 			int worldId,
 			int maximumConcurrentMeleeAttackers) {
+		this.naturalBehaviour = naturalBehaviour;
 		this.equipperImpl = new EquipperImpl(inventoryMassCapacity, inventoryVolumeCapacity, maxRings);
 		this.id = id;
 		this.state = state;
@@ -249,6 +259,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 		this.setPreviousActionFrameAction(other.getPreviousActionFrameAction());
 		this.setPreviousActionFrame(other.getPreviousActionFrame());
 		this.supressAI = other.supressAI;
+		this.naturalBehaviour = other.naturalBehaviour;
 
 		internalCopyFrom(other);
 	}
@@ -1179,6 +1190,45 @@ public abstract class Individual implements Equipper, Serializable, Kinematics {
 
 	public CombatService combat() {
 		return new CombatService();
+	}
+
+
+	public Behaviour getNaturalBehaviour() {
+		return naturalBehaviour;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	public static Map<String, List<Class<? extends Individual>>> getAllIndividualClasses() {
+		Map<String, List<Class<? extends Individual>>> map = Maps.newHashMap();
+
+		map.put("Humanoid", Lists.newArrayList(Elf.class));
+		map.put("Animal", Lists.newArrayList(Wolf.class, Hare.class));
+
+		return map;
+	}
+
+
+	public Behaviour deriveBehaviourTowards(Individual indi) {
+		if (indi.factionId == Faction.getNature().factionId) {
+			return indi.naturalBehaviour;
+		} else {
+			if (factionId == indi.factionId) {
+				return Behaviour.FRIENDLY;
+			} else {
+				// TODO diplomacy
+				return naturalBehaviour;
+			}
+		}
+	}
+
+
+	public enum Behaviour {
+		FRIENDLY("Friendly"), NEUTRAL("Neutral"), HOSTILE("Hostile");
+		public String description;
+		private Behaviour(String s) {
+			this.description = s;
+		}
 	}
 
 

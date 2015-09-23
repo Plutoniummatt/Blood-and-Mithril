@@ -6,7 +6,6 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.window.EditAIRoutineWindow;
-import bloodandmithril.util.SerializableMappingFunction;
 
 /**
  * A player customisable {@link AITask}, designed for automation and eliminating the need of micro-managing laborious tasks..
@@ -66,7 +65,7 @@ public abstract class Routine<C> extends AITask {
 	/**
 	 * @param aiTaskGenerator the task generator to set
 	 */
-	public abstract void setAiTaskGenerator(SerializableMappingFunction<C, AITask> aiTaskGenerator);
+	public abstract void setAiTaskGenerator(TaskGenerator<C> aiTaskGenerator);
 
 
 	/**

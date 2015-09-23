@@ -2,8 +2,10 @@ package bloodandmithril.character.ai.task;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
+import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
@@ -141,19 +143,13 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public String getDetailedDescription() {
-		return getHost().getId().getSimpleName() + " lights " + Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId).getTitle();
-	}
-
-
-	@Override
 	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
 		return null;
 	}
 
 
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine<? extends Visible> routine) {
+	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
 		return null;
 	}
 
@@ -165,7 +161,54 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine<? extends Stimulus> routine) {
 		return null;
+	}
+
+
+	public static class GenerateLightAnyVisibleLightables extends TaskGenerator<Visible> {
+		private static final long serialVersionUID = 1898797069712115415L;
+		private int individualId;
+
+		public GenerateLightAnyVisibleLightables(int individualId) {
+			this.individualId = individualId;
+		}
+
+		@Override
+		public AITask apply(Visible input) {
+			if (!(input instanceof Lightable)) {
+				return null;
+			}
+
+			try {
+				Individual individual = Domain.getIndividual(individualId);
+				if (individual.getFireLighter() == null) {
+					return null;
+				}
+				return new LightLightable(individual, (Lightable) input, true);
+			} catch (NoTileFoundException e) {
+				return null;
+			}
+		}
+
+		@Override
+		public String getDailyRoutineDetailedDescription() {
+			throw new UnsupportedOperationException("It does not make sense to generate generic light lightables task in a daily routine");
+		}
+
+		@Override
+		public String getEntityVisibleRoutineDetailedDescription() {
+			return Domain.getIndividual(individualId).getId().getSimpleName() + " lights visible lightable prop";
+		}
+
+		@Override
+		public String getIndividualConditionRoutineDetailedDescription() {
+			throw new UnsupportedOperationException("It does not make sense to generate generic light lightables task in a individual condition routine");
+		}
+
+		@Override
+		public String getStimulusDrivenRoutineDetailedDescription() {
+			throw new UnsupportedOperationException("It does not make sense to generate generic light lightables task in a stimulus driven routine");
+		}
 	}
 }
