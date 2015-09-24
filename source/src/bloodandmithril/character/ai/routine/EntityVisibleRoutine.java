@@ -51,14 +51,12 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 	private EntityVisible identificationFunction;
 	private TaskGenerator<Visible> aiTaskGenerator;
 	private AITask task;
-	private Class<? extends Visible> tClass;
 
 	/**
 	 * Constructor
 	 */
-	public EntityVisibleRoutine(IndividualIdentifier hostId, Class<? extends Visible> tClass, EntityVisible identificationFunction) {
+	public EntityVisibleRoutine(IndividualIdentifier hostId, EntityVisible identificationFunction) {
 		super(hostId);
-		this.tClass = tClass;
 		this.identificationFunction = identificationFunction;
 		setDescription("Entity visible routine");
 	}
@@ -69,7 +67,7 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 		Individual individual = Domain.getIndividual(hostId.getId());
 		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
 		for (Visible v : observed) {
-			if (tClass.isAssignableFrom(v.getClass()) && identificationFunction.apply(v)) {
+			if (identificationFunction.apply(v)) {
 				return true;
 			}
 		}
@@ -85,7 +83,7 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 		Individual individual = Domain.getIndividual(hostId.getId());
 		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
 		for (Visible v : observed) {
-			if (tClass.isAssignableFrom(v.getClass()) && identificationFunction.apply(v)) {
+			if (identificationFunction.apply(v)) {
 				return v;
 			}
 		}
@@ -218,7 +216,7 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 
 		@Override
 		public Boolean apply(Visible input) {
-			return t.equals(input);
+			return t.equals(input.getClass());
 		}
 	}
 
@@ -228,11 +226,13 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 		private Behaviour behaviour;
 		private int hostId;
 		private WrapperForTwo<Class<? extends Individual>, Individual> wrapper;
+		private boolean alive;
 
-		public IndividualEntityVisible(int hostId, Class<? extends Individual> t, Behaviour b) {
+		public IndividualEntityVisible(int hostId, Class<? extends Individual> t, Behaviour b, boolean alive) {
 			super(t);
 			this.hostId = hostId;
 			this.behaviour = b;
+			this.alive = alive;
 			this.wrapper = WrapperForTwo.wrap(t, null);
 		}
 
@@ -243,7 +243,7 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 		@Override
 		public Boolean apply(Visible input) {
 			if (input instanceof Individual) {
-				return super.apply(input) && ((Individual) input).deriveBehaviourTowards(Domain.getIndividual(hostId)) == behaviour;
+				return super.apply(input) && ((Individual) input).deriveBehaviourTowards(Domain.getIndividual(hostId)) == behaviour && ((Individual) input).isAlive() == alive;
 			}
 
 			return false;
@@ -392,7 +392,8 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 								EntityVisibleRoutine.this.identificationFunction = new IndividualEntityVisible(
 									EntityVisibleRoutine.this.getHost().getId().getId(),
 									clazz,
-									args.t
+									args.t,
+									true
 								);
 
 								EntityVisibleRoutine.this.aiTaskGenerator = null;

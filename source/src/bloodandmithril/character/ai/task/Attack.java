@@ -284,8 +284,10 @@ public class Attack extends CompositeAITask implements RoutineTask {
 		private static final long serialVersionUID = 6935537151752635203L;
 		private SerializableFunction<Integer> victimId;
 		private String attackerName, victimName;
+		private int attackerId;
 
 		public AttackTaskGenerator(int attackerId, SerializableFunction<Integer> victimId, String overriddenVictimName) {
+			this.attackerId = attackerId;
 			this.victimId = victimId;
 
 			this.attackerName = Domain.getIndividual(attackerId).getId().getSimpleName();
@@ -297,8 +299,12 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public AITask apply(Visible input) {
+			if (!Domain.getIndividual(victimId.call()).isAlive()) {
+				return null;
+			}
+
 			if (input instanceof Individual) {
-				return new Attack((Individual) input, Domain.getIndividual(victimId.call()));
+				return new Attack(Domain.getIndividual(attackerId), Domain.getIndividual(victimId.call()));
 			}
 
 			return null;
