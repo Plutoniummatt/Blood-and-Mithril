@@ -117,7 +117,7 @@ public class ElfAI extends ArtificialIntelligence {
 
 
 	private void lightLightables() {
-		EntityVisibleRoutine routine = new EntityVisibleRoutine(getHost().getId(), Lightable.class, new Lightable.LightableUnlit());
+		EntityVisibleRoutine routine = new EntityVisibleRoutine(getHost().getId(), new Lightable.LightableUnlit());
 		routine.setAiTaskGenerator(new LightLightable.GenerateLightAnyVisibleLightables(getHost().getId().getId()));
 
 		addRoutine(routine);
