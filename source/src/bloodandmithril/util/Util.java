@@ -134,9 +134,8 @@ public class Util {
 	/**
 	 * Reformats a string to be able to fit inside a window.
 	 *
-	 * @deprecated use {@link TextBounds} instead
+	 * Use {@link TextBounds} instead
 	 */
-	@Deprecated
 	public static String fitToWindow(String toPara, int length, int maxLines) {
 		String answer = "";
 		String toChop = toPara;
