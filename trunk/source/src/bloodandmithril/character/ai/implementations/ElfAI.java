@@ -1,10 +1,9 @@
 package bloodandmithril.character.ai.implementations;
 
-import bloodandmithril.audio.SoundService;
 import bloodandmithril.audio.SoundService.SuspicionLevel;
-import bloodandmithril.audio.SoundService.SuspiciousSound;
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
@@ -71,26 +70,20 @@ public class ElfAI extends ArtificialIntelligence {
 				"Good morning!"
 			)
 		);
-
 		addRoutine(dailyRoutine);
 	}
 
 
 	private void noiseHeard() {
-		StimulusDrivenRoutine<SuspiciousSound> stimRoutine = new StimulusDrivenRoutine<SuspiciousSound>(
-			getHost().getId(),
-			new SoundService.SuspiciousSoundAITriggerFunction(SuspicionLevel.INVESTIGATE),
-			SuspiciousSound.class
-		);
-
+		StimulusDrivenRoutine stimRoutine = new StimulusDrivenRoutine(getHost().getId());
+		stimRoutine.setTriggerFunction(new StimulusDrivenRoutine.SuspiciousSoundAITriggerFunction(SuspicionLevel.INVESTIGATE));
 		stimRoutine.setAiTaskGenerator(
-			new Speak.SpeakTaskGenerator<SuspiciousSound>(
+			new Speak.SpeakTaskGenerator<Stimulus>(
 				getHost(),
 				2000,
 				"What was that sound?", "Hmm?", "You hear that?", "Huh?", "What?", "I hear something..."
 			)
 		);
-
 		addRoutine(stimRoutine);
 	}
 
@@ -119,7 +112,6 @@ public class ElfAI extends ArtificialIntelligence {
 	private void lightLightables() {
 		EntityVisibleRoutine routine = new EntityVisibleRoutine(getHost().getId(), new Lightable.LightableUnlit());
 		routine.setAiTaskGenerator(new LightLightable.GenerateLightAnyVisibleLightables(getHost().getId().getId()));
-
 		addRoutine(routine);
 	}
 }
