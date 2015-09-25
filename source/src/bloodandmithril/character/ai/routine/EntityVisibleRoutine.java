@@ -437,7 +437,7 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 				width - 5
 			);
 
-			changeVisibleEntityButton.render(x + 114, y - height + 50, parent.isActive(), parent.getAlpha());
+			changeVisibleEntityButton.render(x + 114, y - height + 70, parent.isActive(), parent.getAlpha());
 		}
 	}
 }
