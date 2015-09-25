@@ -226,7 +226,7 @@ public class DailyRoutine extends Routine<Individual> {
 				copy.add(menu);
 			}
 
-			return super.leftClick(copy, windowsCopy) || changeTaskButton.click() || changeToleranceButton.click();
+			return super.leftClick(copy, windowsCopy) || changeTimeButton.click() || changeToleranceButton.click();
 		}
 
 		@Override
