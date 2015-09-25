@@ -23,6 +23,7 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.Epoch;
 import bloodandmithril.world.topography.Topography;
 
 import com.badlogic.gdx.math.Vector2;
@@ -140,20 +141,33 @@ public abstract class ArtificialIntelligence implements Serializable {
 		});
 
 		for (Routine<?> routine : sortedRoutines) {
+			Epoch current = Domain.getWorld(routine.getHost().getWorldId()).getEpoch().copy();
 			if (!routine.areExecutionConditionsMet()) {
 				continue;
 			}
+
+			if (routine.getLastOcurrence() != null) {
+				Epoch lastOcurrence = routine.getLastOcurrence().copy();
+				lastOcurrence.incrementGameTime(routine.getTimeBetweenOcurrences());
+
+				if (lastOcurrence.isLaterThan(current)) {
+					continue;
+				}
+			}
+
 
 			AITask internalCurrentTask = getCurrentTask();
 			if (internalCurrentTask instanceof Routine) {
 				if (routine.getPriority() > ((Routine<?>) internalCurrentTask).getPriority()) {
 					routine.prepare();
 					setCurrentTask(routine);
+					routine.setLastOcurrence(current.copy());
 					break;
 				}
 			} else {
 				routine.prepare();
 				setCurrentTask(routine);
+				routine.setLastOcurrence(current.copy());
 			}
 		}
 	}

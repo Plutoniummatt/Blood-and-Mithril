@@ -97,7 +97,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 			if (follower == null) {
 				return false;
 			}
-			follower.getAI().setCurrentTask(new Follow(follower, followee, distance, terminationCondition));
+			appendTask(new Follow(follower, followee, distance, terminationCondition));
 			return true;
 		}
 	}

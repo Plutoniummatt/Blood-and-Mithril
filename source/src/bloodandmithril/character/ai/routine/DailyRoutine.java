@@ -128,8 +128,8 @@ public class DailyRoutine extends Routine<Individual> {
 	 * @author Matt
 	 */
 	@Copyright("Matthew Peck 2015")
-	public class DailyRoutineInfoPanel extends Panel {
-		private Button changeTimeButton, changeTaskButton, changeToleranceButton;
+	public class DailyRoutineInfoPanel extends RoutinePanel {
+		private Button changeTimeButton, changeToleranceButton;
 		protected DailyRoutineInfoPanel(Component parent) {
 			super(parent);
 			this.changeTimeButton = new Button(
@@ -200,20 +200,6 @@ public class DailyRoutine extends Routine<Individual> {
 				Color.GRAY,
 				UIRef.M
 			);
-			this.changeTaskButton = new Button(
-				"Change task",
-				Fonts.defaultFont,
-				0,
-				0,
-				110,
-				16,
-				() -> {
-				},
-				Color.GREEN,
-				Color.WHITE,
-				Color.GRAY,
-				UIRef.M
-			);
 		}
 
 		@Override
@@ -238,15 +224,12 @@ public class DailyRoutine extends Routine<Individual> {
 				copy.add(menu);
 			}
 
-			return changeTimeButton.click() || changeTaskButton.click() || changeToleranceButton.click();
-		}
-
-		@Override
-		public void leftClickReleased() {
+			return super.leftClick(copy, windowsCopy) || changeTaskButton.click() || changeToleranceButton.click();
 		}
 
 		@Override
 		public void render() {
+			super.render();
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
@@ -306,14 +289,8 @@ public class DailyRoutine extends Routine<Individual> {
 				}
 			}
 
-			changeTaskButton.render(x + 64, y - height + 30, parent.isActive(), parent.getAlpha());
-			changeToleranceButton.render(x + 84, y - height + 50, parent.isActive(), parent.getAlpha());
-			changeTimeButton.render(x + 64, y - height + 70, parent.isActive(), parent.getAlpha());
-		}
-
-		@Override
-		public boolean keyPressed(int keyCode) {
-			return false;
+			changeToleranceButton.render(x + 84, y - height + 70, parent.isActive(), parent.getAlpha());
+			changeTimeButton.render(x + 64, y - height + 90, parent.isActive(), parent.getAlpha());
 		}
 	}
 }

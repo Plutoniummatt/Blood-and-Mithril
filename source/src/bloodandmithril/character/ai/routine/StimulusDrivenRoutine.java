@@ -162,8 +162,8 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 	}
 
 
-	public class StimulusDrivenRoutinePanel extends Panel {
-		private Button changeTaskButton, changeStimulusButton;
+	public class StimulusDrivenRoutinePanel extends RoutinePanel {
+		private Button changeStimulusButton;
 		protected StimulusDrivenRoutinePanel(Component parent) {
 			super(parent);
 			this.changeStimulusButton = new Button(
@@ -172,20 +172,6 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 				0,
 				0,
 				150,
-				16,
-				() -> {
-				},
-				Color.GREEN,
-				Color.WHITE,
-				Color.GRAY,
-				UIRef.M
-			);
-			this.changeTaskButton = new Button(
-				"Change task",
-				Fonts.defaultFont,
-				0,
-				0,
-				110,
 				16,
 				() -> {
 				},
@@ -238,7 +224,7 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 				copy.add(menu);
 			}
 
-			return changeTaskButton.click() || changeStimulusButton.click();
+			return super.leftClick(copy, windowsCopy) || changeStimulusButton.click();
 		}
 
 		@Override
@@ -247,6 +233,7 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 
 		@Override
 		public void render() {
+			super.render();
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
@@ -278,13 +265,7 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 				);
 			}
 
-			changeTaskButton.render(x + 64, y - height + 30, parent.isActive(), parent.getAlpha());
 			changeStimulusButton.render(x + 84, y - height + 50, parent.isActive(), parent.getAlpha());
-		}
-
-		@Override
-		public boolean keyPressed(int keyCode) {
-			return false;
 		}
 	}
 
