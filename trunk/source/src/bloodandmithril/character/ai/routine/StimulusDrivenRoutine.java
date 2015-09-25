@@ -265,7 +265,7 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 				);
 			}
 
-			changeStimulusButton.render(x + 84, y - height + 50, parent.isActive(), parent.getAlpha());
+			changeStimulusButton.render(x + 84, y - height + 70, parent.isActive(), parent.getAlpha());
 		}
 	}
 
