@@ -302,6 +302,10 @@ public class Attack extends CompositeAITask implements RoutineTask {
 				return null;
 			}
 
+			if (Domain.getIndividual(victimId.call()) == null) {
+				return null;
+			}
+
 			if (input instanceof Individual) {
 				return new Attack(Domain.getIndividual(attackerId), Domain.getIndividual(victimId.call()));
 			}
