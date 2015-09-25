@@ -13,7 +13,6 @@ import bloodandmithril.character.ai.task.Speak;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.prop.Lightable;
-import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
 
 /**
@@ -89,14 +88,8 @@ public class ElfAI extends ArtificialIntelligence {
 
 
 	private void healthBelowQuater() {
-		IndividualConditionRoutine anotherRoutine = new IndividualConditionRoutine(getHost().getId(), new SerializableMappingFunction<Individual, Boolean>() {
-			private static final long serialVersionUID = -8900729069395449472L;
-			@Override
-			public Boolean apply(Individual input) {
-				return input.getState().health/input.getState().maxHealth < 0.25f;
-			}
-		});
-
+		IndividualConditionRoutine anotherRoutine = new IndividualConditionRoutine(getHost().getId());
+		anotherRoutine.setTriggerFunction(new IndividualConditionRoutine.IndividualHealthTriggerFunction(false, 25f));
 		anotherRoutine.setAiTaskGenerator(
 			new Speak.SpeakTaskGenerator<Individual>(
 				getHost(),
@@ -104,7 +97,6 @@ public class ElfAI extends ArtificialIntelligence {
 				"I don't want to die!!", "Help me!!!", "Ahhhhh!!!"
 			)
 		);
-
 		addRoutine(anotherRoutine);
 	}
 

@@ -56,6 +56,48 @@ public class Epoch implements Serializable {
 
 
 	/**
+	 * @param delta - To increment, in seconds
+	 */
+	public void incrementGameTime(float time) {
+		float trialTime = timeOfDay + time;
+
+		if (trialTime > 24f) {
+			timeOfDay = time - (24f - timeOfDay);
+			incrementDay();
+		} else {
+			timeOfDay = trialTime;
+		}
+	}
+
+
+	public boolean isLaterThan(Epoch other) {
+		if (year > other.year) {
+			return true;
+		} else if (year == other.year) {
+			if (monthOfYear > other.monthOfYear) {
+				return true;
+			} else if (monthOfYear == other.monthOfYear) {
+				if (dayOfMonth > other.dayOfMonth) {
+					return true;
+				} else if (dayOfMonth == other.dayOfMonth) {
+					if (timeOfDay > other.timeOfDay) {
+						return true;
+					} else {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+
+	/**
 	 * Increments the day
 	 */
 	public void incrementDay() {

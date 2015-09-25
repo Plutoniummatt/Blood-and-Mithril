@@ -268,25 +268,11 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 	 * @author Matt
 	 */
 	@Copyright("Matthew Peck 2015")
-	public class EntityVisibleInfoPanel extends Panel {
-		private Button changeTaskButton, changeVisibleEntityButton;
+	public class EntityVisibleInfoPanel extends RoutinePanel {
+		private Button changeVisibleEntityButton;
 
 		protected EntityVisibleInfoPanel(Component parent) {
 			super(parent);
-			this.changeTaskButton = new Button(
-				"Change task",
-				Fonts.defaultFont,
-				0,
-				0,
-				110,
-				16,
-				() -> {
-				},
-				Color.GREEN,
-				Color.WHITE,
-				Color.GRAY,
-				UIRef.M
-			);
 			this.changeVisibleEntityButton = new Button(
 				"Change visible entity",
 				Fonts.defaultFont,
@@ -376,7 +362,7 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 				copy.add(menu);
 			}
 
-			return changeTaskButton.click() || changeVisibleEntityButton.click();
+			return super.leftClick(copy, windowsCopy) || changeVisibleEntityButton.click();
 		}
 
 		private ContextMenu deriveIndividualTypeContextMenu(Wrapper<Behaviour> args) {
@@ -422,11 +408,8 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 		}
 
 		@Override
-		public void leftClickReleased() {
-		}
-
-		@Override
 		public void render() {
+			super.render();
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
@@ -455,12 +438,6 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 			);
 
 			changeVisibleEntityButton.render(x + 114, y - height + 50, parent.isActive(), parent.getAlpha());
-			changeTaskButton.render(x + 64, y - height + 30, parent.isActive(), parent.getAlpha());
-		}
-
-		@Override
-		public boolean keyPressed(int keyCode) {
-			return false;
 		}
 	}
 }

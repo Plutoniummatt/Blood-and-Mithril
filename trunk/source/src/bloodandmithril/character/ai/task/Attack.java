@@ -208,7 +208,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public boolean uponCompletion() {
-			Domain.getIndividual(hostId.getId()).getAI().setCurrentTask(new Attack(hostId, toBeAttacked));
+			appendTask(new Attack(hostId, toBeAttacked));
 			return false;
 		}
 
@@ -249,7 +249,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public boolean uponCompletion() {
-			Domain.getIndividual(hostId.getId()).getAI().setCurrentTask(new Attack(hostId, toBeAttacked));
+			appendTask(new Attack(hostId, toBeAttacked));
 			return false;
 		}
 

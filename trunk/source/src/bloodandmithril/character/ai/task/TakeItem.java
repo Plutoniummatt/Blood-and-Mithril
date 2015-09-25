@@ -46,6 +46,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 	private static final long serialVersionUID = 1L;
 	private Item item;
 	private Deque<Integer> itemIds = new ArrayDeque<>();
+	private boolean inventoryFull;
 
 	@Inject
 	TakeItem() {
@@ -71,6 +72,15 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 		this.item = item;
 
 		appendTask(new Take(hostId));
+	}
+
+
+	/**
+	 * @see bloodandmithril.character.ai.AITask#isComplete()
+	 */
+	@Override
+	public boolean isComplete() {
+		return super.isComplete() || inventoryFull;
 	}
 
 
@@ -138,7 +148,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 			}
 
 			takeNextItem();
-			return false;
+			return false || inventoryFull;
 		}
 
 
@@ -167,7 +177,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 			if (individual.getInteractionBox().overlapsWith(item.getPickupBox())) {
 				if (!individual.canReceive(item)) {
 					UserInterface.addGlobalMessage("Inventory full", "Can not pick up item, inventory is full.", new IndividualSelected(individual.getId().getId()));
-					individual.getAI().setCurrentTask(new Idle());
+					inventoryFull = true;
 					return;
 				}
 
