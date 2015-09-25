@@ -181,7 +181,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 			try {
 				Individual individual = Domain.getIndividual(individualId);
-				if (individual.getFireLighter() == null) {
+				if (individual.getFireLighter() == null || !individual.isAlive()) {
 					return null;
 				}
 				return new LightLightable(individual, (Lightable) input, true);

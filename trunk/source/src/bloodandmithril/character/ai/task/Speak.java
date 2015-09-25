@@ -93,6 +93,10 @@ public class Speak extends AITask implements RoutineTask {
 
 		@Override
 		public AITask apply(T input) {
+			if (Domain.getIndividual(hostId) == null || !Domain.getIndividual(hostId).isAlive()) {
+				return null;
+			}
+
 			return new Speak(Domain.getIndividual(hostId), Util.randomOneOf(text), duration);
 		}
 
