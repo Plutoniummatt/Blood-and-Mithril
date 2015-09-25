@@ -6,7 +6,6 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
@@ -187,7 +186,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine<? extends Stimulus> routine) {
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
 		return null;
 	}
 }

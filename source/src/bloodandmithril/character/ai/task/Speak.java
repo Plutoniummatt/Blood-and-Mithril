@@ -1,9 +1,11 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.TaskGenerator;
-import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
@@ -11,10 +13,13 @@ import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.graphics.Color;
 import com.google.inject.Inject;
 
 /**
@@ -122,26 +127,46 @@ public class Speak extends AITask implements RoutineTask {
 	}
 
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private ContextMenu getContextMenu(Individual host, Routine<?> routine) {
+		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true, new ContextMenu.MenuItem(
+			"Set text",
+			() -> {
+				UserInterface.addLayeredComponent(
+					new TextInputWindow(500, 100, "Input text", 300, 250, args -> {
+						String text = (String) args[0];
+						routine.setAiTaskGenerator(new SpeakTaskGenerator(host, Math.max(7500, text.length() * 10), text));
+					}, "Set", true, "")
+				);
+			},
+			Color.ORANGE,
+			Color.GREEN,
+			Color.GRAY,
+			null
+		));
+	}
+
+
 	@Override
 	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
-		return null;
+		return getContextMenu(host, routine);
 	}
 
 
 	@Override
 	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		return null;
+		return getContextMenu(host, routine);
 	}
 
 
 	@Override
 	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
-		return null;
+		return getContextMenu(host, routine);
 	}
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine<? extends Stimulus> routine) {
-		return null;
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+		return getContextMenu(host, routine);
 	}
 }

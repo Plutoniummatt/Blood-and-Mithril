@@ -151,9 +151,26 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine<?>, String
 			null
 		);
 
+		MenuItem rename = new MenuItem(
+			"Rename",
+			() -> {
+				UserInterface.addLayeredComponentUnique(
+					new TextInputWindow(500, 100, "Input name", 250, 100, args -> {
+						tEntry.getKey().setDescription((String) args[0]);
+					}, "Confirm", true, tEntry.getKey().getShortDescription())
+				);
+				AIRoutinesWindow.this.refresh();
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.GRAY,
+			null
+		);
+
 		menu.addMenuItem(moveUp);
 		menu.addMenuItem(moveDown);
 		menu.addMenuItem(edit);
+		menu.addMenuItem(rename);
 
 		return menu;
 	}

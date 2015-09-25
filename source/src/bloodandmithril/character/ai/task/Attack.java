@@ -14,7 +14,6 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.TaskGenerator;
-import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
@@ -425,19 +424,6 @@ public class Attack extends CompositeAITask implements RoutineTask {
 	}
 
 
-	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, final DailyRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-
-		menu.addMenuItem(
-			chooseTargetMenuItem(host, routine, toChooseFrom)
-		);
-
-		return menu;
-	}
-
-
 	public static class VisibleIndividualFuture implements SerializableFunction<Integer> {
 		private static final long serialVersionUID = 3527567985423803956L;
 		private EntityVisibleRoutine routine;
@@ -455,6 +441,19 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 			throw new RuntimeException();
 		}
+	}
+
+
+	@Override
+	public ContextMenu getDailyRoutineContextMenu(Individual host, final DailyRoutine routine) {
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseTargetMenuItem(host, routine, toChooseFrom)
+		);
+
+		return menu;
 	}
 
 
@@ -489,12 +488,26 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 	@Override
 	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
-		return null;
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseTargetMenuItem(host, routine, toChooseFrom)
+		);
+
+		return menu;
 	}
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine<? extends Stimulus> routine) {
-		return null;
+	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseTargetMenuItem(host, routine, toChooseFrom)
+		);
+
+		return menu;
 	}
 }

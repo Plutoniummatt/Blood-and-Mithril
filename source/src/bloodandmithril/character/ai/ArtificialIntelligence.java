@@ -200,7 +200,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 			Stimulus polled = stimuli.poll();
 			for (Routine<?> r : aiRoutines) {
 				if (r instanceof StimulusDrivenRoutine) {
-					((StimulusDrivenRoutine<?>) r).attemptTrigger(polled);
+					((StimulusDrivenRoutine) r).attemptTrigger(polled);
 				}
 			}
 			polled.stimulate(getHost());
