@@ -99,6 +99,14 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 
 
 	@Override
+	public void prepare() {
+		if (aiTaskGenerator != null) {
+			this.task = aiTaskGenerator.apply(getVisibleEntity());
+		}
+	}
+
+
+	@Override
 	public boolean isComplete() {
 		if (task != null) {
 			return task.isComplete();
@@ -124,14 +132,6 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 	public void execute(float delta) {
 		if (task != null) {
 			task.execute(delta);
-		}
-	}
-
-
-	@Override
-	public void prepare() {
-		if (aiTaskGenerator != null) {
-			this.task = aiTaskGenerator.apply(getVisibleEntity());
 		}
 	}
 
@@ -429,13 +429,17 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 			);
 
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.WHITE, parent.getAlpha()) : Colors.modulateAlpha(Color.WHITE, 0.6f * parent.getAlpha()));
-			defaultFont.drawWrapped(
-				getGraphics().getSpriteBatch(),
-				aiTaskGenerator == null ? "Not set" : aiTaskGenerator.getEntityVisibleRoutineDetailedDescription(),
-				x + 10,
-				y - 117,
-				width - 5
-			);
+
+			if (aiTaskGenerator != null) {
+				defaultFont.drawWrapped(
+					getGraphics().getSpriteBatch(),
+					aiTaskGenerator.getEntityVisibleRoutineDetailedDescription(),
+					x + 10,
+					y - 117,
+					width - 5
+				);
+			}
+
 
 			changeVisibleEntityButton.render(x + 114, y - height + 70, parent.isActive(), parent.getAlpha());
 		}

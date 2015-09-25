@@ -110,14 +110,16 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 
 
 	@Override
-	public boolean areExecutionConditionsMet() {
-		return triggered;
+	public void prepare() {
+		if (aiTaskGenerator != null) {
+			this.task = aiTaskGenerator.apply(triggeringStimulus);
+		}
 	}
 
 
 	@Override
-	public void prepare() {
-		this.task = aiTaskGenerator.apply(triggeringStimulus);
+	public boolean areExecutionConditionsMet() {
+		return triggered;
 	}
 
 
@@ -244,17 +246,16 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 				width - 5
 			);
 
-			if (aiTaskGenerator != null) {
-				defaultFont.drawWrapped(
-					getGraphics().getSpriteBatch(),
-					"Task:",
-					x + 10,
-					y - 97,
-					width - 5
-				);
-			}
+			defaultFont.drawWrapped(
+				getGraphics().getSpriteBatch(),
+				"Task:",
+				x + 10,
+				y - 97,
+				width - 5
+			);
 
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.WHITE, parent.getAlpha()) : Colors.modulateAlpha(Color.WHITE, 0.6f * parent.getAlpha()));
+
 			if (aiTaskGenerator != null) {
 				defaultFont.drawWrapped(
 					getGraphics().getSpriteBatch(),

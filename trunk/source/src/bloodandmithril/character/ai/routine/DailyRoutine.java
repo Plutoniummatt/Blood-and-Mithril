@@ -77,7 +77,9 @@ public class DailyRoutine extends Routine<Individual> {
 
 	@Override
 	public void prepare() {
-		this.task = aiTaskGenerator.apply(getHost());
+		if (aiTaskGenerator != null) {
+			this.task = aiTaskGenerator.apply(getHost());
+		}
 	}
 
 
@@ -265,28 +267,24 @@ public class DailyRoutine extends Routine<Individual> {
 				);
 			}
 
+			defaultFont.drawWrapped(
+				getGraphics().getSpriteBatch(),
+				"Task:",
+				x + 10,
+				y - 97,
+				width - 5
+			);
+
+			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.WHITE, parent.getAlpha()) : Colors.modulateAlpha(Color.WHITE, 0.6f * parent.getAlpha()));
+
 			if (aiTaskGenerator != null) {
 				defaultFont.drawWrapped(
 					getGraphics().getSpriteBatch(),
-					"Task:",
+					aiTaskGenerator.getDailyRoutineDetailedDescription(),
 					x + 10,
-					y - 97,
+					y - 117,
 					width - 5
 				);
-			}
-
-			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.WHITE, parent.getAlpha()) : Colors.modulateAlpha(Color.WHITE, 0.6f * parent.getAlpha()));
-			if (aiTaskGenerator != null) {
-				AITask apply = aiTaskGenerator.apply(getHost());
-				if (apply instanceof RoutineTask) {
-					defaultFont.drawWrapped(
-						getGraphics().getSpriteBatch(),
-						aiTaskGenerator.getDailyRoutineDetailedDescription(),
-						x + 10,
-						y - 117,
-						width - 5
-					);
-				}
 			}
 
 			changeToleranceButton.render(x + 84, y - height + 70, parent.isActive(), parent.getAlpha());

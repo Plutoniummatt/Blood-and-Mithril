@@ -67,14 +67,16 @@ public class IndividualConditionRoutine extends Routine<Individual> {
 
 
 	@Override
-	public boolean areExecutionConditionsMet() {
-		return executionCondition.apply(getHost());
+	public void prepare() {
+		if (aiTaskGenerator != null) {
+			this.task = aiTaskGenerator.apply(getHost());
+		}
 	}
 
 
 	@Override
-	public void prepare() {
-		this.task = aiTaskGenerator.apply(getHost());
+	public boolean areExecutionConditionsMet() {
+		return executionCondition.apply(getHost());
 	}
 
 
@@ -278,11 +280,11 @@ public class IndividualConditionRoutine extends Routine<Individual> {
 			);
 
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.WHITE, parent.getAlpha()) : Colors.modulateAlpha(Color.WHITE, 0.6f * parent.getAlpha()));
-			AITask apply = aiTaskGenerator.apply(getHost());
-			if (apply instanceof RoutineTask) {
+
+			if (aiTaskGenerator != null) {
 				defaultFont.drawWrapped(
 					getGraphics().getSpriteBatch(),
-					aiTaskGenerator == null ? "Not set" : aiTaskGenerator.getIndividualConditionRoutineDetailedDescription(),
+					aiTaskGenerator.getIndividualConditionRoutineDetailedDescription(),
 					x + 10,
 					y - 117,
 					width - 5
