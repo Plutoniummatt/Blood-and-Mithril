@@ -279,7 +279,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 	}
 
 
-	public static class AttackTaskGenerator extends TaskGenerator<Visible> {
+	public static class AttackTaskGenerator extends TaskGenerator {
 		private static final long serialVersionUID = 6935537151752635203L;
 		private SerializableFunction<Integer> victimId;
 		private String attackerName, victimName;
@@ -297,7 +297,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public AITask apply(Visible input) {
+		public AITask apply(Object input) {
 			if (!Domain.getIndividual(victimId.call()).isAlive()) {
 				return null;
 			}
@@ -306,11 +306,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 				return null;
 			}
 
-			if (input instanceof Individual) {
-				return new Attack(Domain.getIndividual(attackerId), Domain.getIndividual(victimId.call()));
-			}
-
-			return null;
+			return new Attack(Domain.getIndividual(attackerId), Domain.getIndividual(victimId.call()));
 		}
 
 		@Override
@@ -350,7 +346,6 @@ public class Attack extends CompositeAITask implements RoutineTask {
 	}
 
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private MenuItem chooseTargetMenuItem(Individual host, Routine routine, ContextMenu toChooseFrom) {
 		return new MenuItem(
 			"Choose target",

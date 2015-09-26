@@ -28,7 +28,7 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public abstract class Routine<C> extends AITask {
+public abstract class Routine extends AITask {
 	private static final long serialVersionUID = -8502601311459390398L;
 	private int priority = 1;
 	private String description = "";
@@ -82,7 +82,7 @@ public abstract class Routine<C> extends AITask {
 	/**
 	 * @param aiTaskGenerator the task generator to set
 	 */
-	public abstract void setAiTaskGenerator(TaskGenerator<C> aiTaskGenerator);
+	public abstract void setAiTaskGenerator(TaskGenerator aiTaskGenerator);
 
 
 	/**

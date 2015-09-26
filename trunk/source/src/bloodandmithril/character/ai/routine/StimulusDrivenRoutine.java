@@ -42,11 +42,11 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class StimulusDrivenRoutine extends Routine<Stimulus> {
+public class StimulusDrivenRoutine extends Routine {
 	private static final long serialVersionUID = 2347934053852793343L;
 
 	private StimulusTriggerFunction triggerFunction;
-	private TaskGenerator<Stimulus> aiTaskGenerator;
+	private TaskGenerator aiTaskGenerator;
 	private Stimulus triggeringStimulus;
 	private boolean triggered;
 	private AITask task;
@@ -104,7 +104,7 @@ public class StimulusDrivenRoutine extends Routine<Stimulus> {
 	 * Sets the generator for the task which this routine will use to generate the {@link AITask} upon meeting the trigger function
 	 */
 	@Override
-	public void setAiTaskGenerator(TaskGenerator<Stimulus> aiTaskGenerator) {
+	public void setAiTaskGenerator(TaskGenerator aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 	}
 
