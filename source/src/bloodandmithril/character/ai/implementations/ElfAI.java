@@ -3,7 +3,6 @@ package bloodandmithril.character.ai.implementations;
 import bloodandmithril.audio.SoundService.SuspicionLevel;
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.ArtificialIntelligence;
-import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
@@ -63,7 +62,7 @@ public class ElfAI extends ArtificialIntelligence {
 	private void morningRoutine() {
 		DailyRoutine dailyRoutine = new DailyRoutine(getHost().getId(), 8, 1);
 		dailyRoutine.setAiTaskGenerator(
-			new Speak.SpeakTaskGenerator<Individual>(
+			new Speak.SpeakTaskGenerator(
 				getHost(),
 				2000,
 				"Good morning!"
@@ -77,7 +76,7 @@ public class ElfAI extends ArtificialIntelligence {
 		StimulusDrivenRoutine stimRoutine = new StimulusDrivenRoutine(getHost().getId());
 		stimRoutine.setTriggerFunction(new StimulusDrivenRoutine.SuspiciousSoundAITriggerFunction(SuspicionLevel.INVESTIGATE));
 		stimRoutine.setAiTaskGenerator(
-			new Speak.SpeakTaskGenerator<Stimulus>(
+			new Speak.SpeakTaskGenerator(
 				getHost(),
 				2000,
 				"What was that sound?", "Hmm?", "You hear that?", "Huh?", "What?", "I hear something..."
@@ -91,7 +90,7 @@ public class ElfAI extends ArtificialIntelligence {
 		IndividualConditionRoutine anotherRoutine = new IndividualConditionRoutine(getHost().getId());
 		anotherRoutine.setTriggerFunction(new IndividualConditionRoutine.IndividualHealthTriggerFunction(false, 25f));
 		anotherRoutine.setAiTaskGenerator(
-			new Speak.SpeakTaskGenerator<Individual>(
+			new Speak.SpeakTaskGenerator(
 				getHost(),
 				2000,
 				"I don't want to die!!", "Help me!!!", "Ahhhhh!!!"

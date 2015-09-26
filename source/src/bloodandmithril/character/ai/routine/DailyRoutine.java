@@ -15,7 +15,6 @@ import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.RoutineTasks;
 import bloodandmithril.character.ai.TaskGenerator;
-import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
@@ -42,10 +41,10 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class DailyRoutine extends Routine<Individual> {
+public class DailyRoutine extends Routine {
 	private static final long serialVersionUID = -255141692263126217L;
 
-	private TaskGenerator<Individual> aiTaskGenerator;
+	private TaskGenerator aiTaskGenerator;
 	private Epoch lastExecutedEpoch = null;
 	private float routineTime;
 	private float toleranceTime;
@@ -63,7 +62,7 @@ public class DailyRoutine extends Routine<Individual> {
 
 
 	@Override
-	public void setAiTaskGenerator(TaskGenerator<Individual> aiTaskGenerator) {
+	public void setAiTaskGenerator(TaskGenerator aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 	}
 

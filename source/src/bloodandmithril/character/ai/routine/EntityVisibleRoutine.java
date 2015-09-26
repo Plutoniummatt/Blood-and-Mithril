@@ -45,11 +45,11 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class EntityVisibleRoutine extends Routine<Visible> {
+public class EntityVisibleRoutine extends Routine {
 	private static final long serialVersionUID = -5762591639048417273L;
 
 	private EntityVisible identificationFunction;
-	private TaskGenerator<Visible> aiTaskGenerator;
+	private TaskGenerator aiTaskGenerator;
 	private AITask task;
 
 	/**
@@ -93,7 +93,7 @@ public class EntityVisibleRoutine extends Routine<Visible> {
 
 
 	@Override
-	public void setAiTaskGenerator(TaskGenerator<Visible> aiTaskGenerator) {
+	public void setAiTaskGenerator(TaskGenerator aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 	}
 

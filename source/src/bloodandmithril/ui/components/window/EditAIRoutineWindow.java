@@ -19,13 +19,13 @@ import bloodandmithril.ui.components.Panel;
 public class EditAIRoutineWindow extends Window {
 
 	private IndividualIdentifier id;
-	private final Routine<?> routine;
+	private final Routine routine;
 	private final Deque<Panel> wizard;
 
 	/**
 	 * Constructor
 	 */
-	public EditAIRoutineWindow(IndividualIdentifier id, Routine<?> routine) {
+	public EditAIRoutineWindow(IndividualIdentifier id, Routine routine) {
 		super(600, 400, "Editing routine for " + id.getSimpleName(), true, 600, 400, false, true, true);
 		this.id = id;
 		this.routine = routine;

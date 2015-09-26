@@ -77,7 +77,7 @@ public class Speak extends AITask implements RoutineTask {
 	}
 
 
-	public static class SpeakTaskGenerator<T> extends TaskGenerator<T> {
+	public static class SpeakTaskGenerator extends TaskGenerator {
 		private static final long serialVersionUID = -8074299444146477391L;
 		private String hostName;
 		private String[] text;
@@ -92,7 +92,7 @@ public class Speak extends AITask implements RoutineTask {
 		}
 
 		@Override
-		public AITask apply(T input) {
+		public AITask apply(Object input) {
 			if (Domain.getIndividual(hostId) == null || !Domain.getIndividual(hostId).isAlive()) {
 				return null;
 			}
@@ -131,8 +131,7 @@ public class Speak extends AITask implements RoutineTask {
 	}
 
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private ContextMenu getContextMenu(Individual host, Routine<?> routine) {
+	private ContextMenu getContextMenu(Individual host, Routine routine) {
 		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true, new ContextMenu.MenuItem(
 			"Set text",
 			() -> {

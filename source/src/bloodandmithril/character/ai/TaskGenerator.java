@@ -2,7 +2,7 @@ package bloodandmithril.character.ai;
 
 import bloodandmithril.util.SerializableMappingFunction;
 
-public abstract class TaskGenerator<T> extends SerializableMappingFunction<T, AITask> {
+public abstract class TaskGenerator extends SerializableMappingFunction<Object, AITask> {
 	private static final long serialVersionUID = 229150218799462799L;
 
 	/**

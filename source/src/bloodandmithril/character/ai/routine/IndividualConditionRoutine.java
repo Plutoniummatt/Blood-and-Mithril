@@ -40,10 +40,10 @@ import com.badlogic.gdx.graphics.Color;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class IndividualConditionRoutine extends Routine<Individual> {
+public class IndividualConditionRoutine extends Routine {
 	private static final long serialVersionUID = 6831994593107089893L;
 	private IndividualConditionTriggerFunction executionCondition;
-	private TaskGenerator<Individual> aiTaskGenerator;
+	private TaskGenerator aiTaskGenerator;
 	private AITask task;
 
 	/**
@@ -61,7 +61,7 @@ public class IndividualConditionRoutine extends Routine<Individual> {
 
 
 	@Override
-	public void setAiTaskGenerator(TaskGenerator<Individual> aiTaskGenerator) {
+	public void setAiTaskGenerator(TaskGenerator aiTaskGenerator) {
 		this.aiTaskGenerator = aiTaskGenerator;
 	}
 

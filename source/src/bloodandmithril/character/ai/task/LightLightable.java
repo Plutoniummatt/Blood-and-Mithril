@@ -5,7 +5,6 @@ import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
-import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
@@ -165,7 +164,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 	}
 
 
-	public static class GenerateLightAnyVisibleLightables extends TaskGenerator<Visible> {
+	public static class GenerateLightAnyVisibleLightables extends TaskGenerator {
 		private static final long serialVersionUID = 1898797069712115415L;
 		private int individualId;
 
@@ -174,7 +173,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public AITask apply(Visible input) {
+		public AITask apply(Object input) {
 			if (!(input instanceof Lightable)) {
 				return null;
 			}
