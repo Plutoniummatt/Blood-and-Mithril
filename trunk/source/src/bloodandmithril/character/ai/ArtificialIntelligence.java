@@ -141,11 +141,15 @@ public abstract class ArtificialIntelligence implements Serializable {
 		});
 
 		for (Routine routine : sortedRoutines) {
-			Epoch current = Domain.getWorld(routine.getHost().getWorldId()).getEpoch().copy();
-			if (!routine.areExecutionConditionsMet()) {
+			if (!routine.isEnabled() || !routine.areExecutionConditionsMet()) {
 				continue;
 			}
 
+			if (!routine.isValid() && routine.isEnabled()) {
+				routine.setEnabled(false);
+			}
+
+			Epoch current = Domain.getWorld(routine.getHost().getWorldId()).getEpoch().copy();
 			if (routine.getLastOcurrence() != null) {
 				Epoch lastOcurrence = routine.getLastOcurrence().copy();
 				lastOcurrence.incrementGameTime(routine.getTimeBetweenOcurrences());
@@ -159,13 +163,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 			AITask internalCurrentTask = getCurrentTask();
 			if (internalCurrentTask instanceof Routine) {
 				if (routine.getPriority() > ((Routine) internalCurrentTask).getPriority()) {
-					routine.prepare();
+					routine.generatedTask();
 					setCurrentTask(routine);
 					routine.setLastOcurrence(current.copy());
 					break;
 				}
 			} else {
-				routine.prepare();
+				routine.getTaskGenerationParameter();
 				setCurrentTask(routine);
 				routine.setLastOcurrence(current.copy());
 			}

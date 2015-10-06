@@ -49,8 +49,6 @@ public class EntityVisibleRoutine extends Routine {
 	private static final long serialVersionUID = -5762591639048417273L;
 
 	private EntityVisible identificationFunction;
-	private TaskGenerator aiTaskGenerator;
-	private AITask task;
 
 	/**
 	 * Constructor
@@ -99,10 +97,8 @@ public class EntityVisibleRoutine extends Routine {
 
 
 	@Override
-	public void prepare() {
-		if (aiTaskGenerator != null) {
-			this.task = aiTaskGenerator.apply(getVisibleEntity());
-		}
+	public Object getTaskGenerationParameter() {
+		return getVisibleEntity();
 	}
 
 

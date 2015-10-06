@@ -57,6 +57,8 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 			routineComparator
 		);
 		this.individualId = individual.getId().getId();
+
+		refresh();
 	}
 
 
@@ -75,6 +77,16 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 			buildMap(Domain.getIndividual(individualId)),
 			routineComparator
 		);
+
+		getListing().getListing().stream().forEach(item -> {
+			item.entrySet().forEach(entry -> {
+				if (!entry.getKey().t.isEnabled()) {
+					entry.getKey().button.setIdleColor(Color.GRAY);
+					entry.getKey().button.setOverColor(Color.GRAY);
+					entry.getKey().button.setDownColor(Color.GRAY);
+				}
+			});
+		});
 	}
 
 

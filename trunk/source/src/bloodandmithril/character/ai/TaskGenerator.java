@@ -24,4 +24,9 @@ public abstract class TaskGenerator extends SerializableMappingFunction<Object, 
 	 * @return the detailed description of the task this generator generates
 	 */
 	public abstract String getStimulusDrivenRoutineDetailedDescription();
+
+	/**
+	 * @return true if this {@link TaskGenerator} can generate a valid {@link RoutineTask} for a {@link Routine}
+	 */
+	public abstract boolean valid();
 }

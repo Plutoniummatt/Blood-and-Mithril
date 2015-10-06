@@ -8,12 +8,14 @@ import java.util.List;
 
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
+import bloodandmithril.ui.components.window.AIRoutinesWindow;
 import bloodandmithril.ui.components.window.EditAIRoutineWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Fonts;
@@ -34,12 +36,17 @@ public abstract class Routine extends AITask {
 	private String description = "";
 	private float timeBetweenOcurrences;
 	private Epoch lastOcurrence;
+	private boolean enabled;
+
+	protected TaskGenerator aiTaskGenerator;
+	protected AITask task;
 
 	/**
 	 * Protected constructor
 	 */
 	public Routine(IndividualIdentifier hostId) {
 		super(hostId);
+		this.enabled = true;
 	}
 
 
@@ -74,9 +81,27 @@ public abstract class Routine extends AITask {
 
 
 	/**
-	 * Prepares the routine for execution
+	 * Gets the parameter for the {@link TaskGenerator} to generate the task
 	 */
-	public abstract void prepare();
+	public abstract Object getTaskGenerationParameter();
+
+
+	/**
+	 * Generates a task for this routine
+	 */
+	protected void generatedTask() {
+		if (aiTaskGenerator != null) {
+			this.task = aiTaskGenerator.apply(getTaskGenerationParameter());
+		}
+	}
+
+
+	/**
+	 * @return whether or not this {@link Routine} is still valid
+	 */
+	protected boolean isValid() {
+		return aiTaskGenerator.valid();
+	}
 
 
 	/**
@@ -114,6 +139,22 @@ public abstract class Routine extends AITask {
 
 	public void setLastOcurrence(Epoch lastOcurrence) {
 		this.lastOcurrence = lastOcurrence;
+	}
+
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+
+		if (ClientServerInterface.isClient()) {
+			UserInterface.refreshRefreshableWindows(AIRoutinesWindow.class);
+		} else {
+			ClientServerInterface.SendNotification.notifyRefreshWindows();
+		}
 	}
 
 
