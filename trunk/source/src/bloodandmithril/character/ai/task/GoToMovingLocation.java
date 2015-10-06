@@ -251,7 +251,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 							float y = coords.y;
 
 							routine.setAiTaskGenerator(
-								new GoToMovingLocationTaskGenerator(x, y, getHostId().getId())
+								new GoToMovingLocationTaskGenerator(x, y, host.getId().getId())
 							);
 
 							UserInterface.contextMenus.clear();

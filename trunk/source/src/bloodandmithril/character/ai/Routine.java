@@ -89,7 +89,7 @@ public abstract class Routine extends AITask {
 	/**
 	 * Generates a task for this routine
 	 */
-	protected void generatedTask() {
+	protected void generateTask() {
 		if (aiTaskGenerator != null) {
 			this.task = aiTaskGenerator.apply(getTaskGenerationParameter());
 		}
