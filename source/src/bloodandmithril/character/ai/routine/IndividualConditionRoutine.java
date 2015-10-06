@@ -13,7 +13,6 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.RoutineTasks;
-import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
@@ -56,12 +55,6 @@ public class IndividualConditionRoutine extends Routine {
 
 	public void setTriggerFunction(IndividualConditionTriggerFunction executionCondition) {
 		this.executionCondition = executionCondition;
-	}
-
-
-	@Override
-	public void setAiTaskGenerator(TaskGenerator aiTaskGenerator) {
-		this.aiTaskGenerator = aiTaskGenerator;
 	}
 
 

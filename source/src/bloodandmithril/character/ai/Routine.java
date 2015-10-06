@@ -107,7 +107,10 @@ public abstract class Routine extends AITask {
 	/**
 	 * @param aiTaskGenerator the task generator to set
 	 */
-	public abstract void setAiTaskGenerator(TaskGenerator aiTaskGenerator);
+	public void setAiTaskGenerator(TaskGenerator aiTaskGenerator) {
+		this.aiTaskGenerator = aiTaskGenerator;
+		setEnabled(true);
+	}
 
 
 	/**

@@ -14,7 +14,6 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.RoutineTasks;
-import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.individuals.Individual;
@@ -87,12 +86,6 @@ public class EntityVisibleRoutine extends Routine {
 		}
 
 		return null;
-	}
-
-
-	@Override
-	public void setAiTaskGenerator(TaskGenerator aiTaskGenerator) {
-		this.aiTaskGenerator = aiTaskGenerator;
 	}
 
 
