@@ -14,7 +14,6 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.TaskGenerator;
-import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
@@ -428,26 +427,6 @@ public class Attack extends CompositeAITask implements RoutineTask {
 	}
 
 
-	public static class VisibleIndividualFuture implements SerializableFunction<Integer> {
-		private static final long serialVersionUID = 3527567985423803956L;
-		private EntityVisibleRoutine routine;
-
-		public VisibleIndividualFuture(EntityVisibleRoutine routine) {
-			this.routine = routine;
-		}
-
-		@Override
-		public Integer call() {
-			Visible visibleEntity = routine.getVisibleEntity();
-			if (visibleEntity instanceof Individual) {
-				return ((Individual) visibleEntity).getId().getId();
-			}
-
-			throw new RuntimeException();
-		}
-	}
-
-
 	@Override
 	public ContextMenu getDailyRoutineContextMenu(Individual host, final DailyRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
@@ -476,7 +455,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 				new MenuItem(
 					"Visible individual",
 					() -> {
-						routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), new VisibleIndividualFuture(routine), "visible individual"));
+						routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), new EntityVisibleRoutine.VisibleIndividualFuture(routine), "visible individual"));
 					},
 					Color.MAGENTA,
 					Color.GREEN,

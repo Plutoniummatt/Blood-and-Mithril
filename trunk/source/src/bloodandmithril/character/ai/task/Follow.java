@@ -1,19 +1,33 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
+import bloodandmithril.character.ai.task.Attack.ReturnVictimId;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.util.CursorBoundTask;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
+import com.badlogic.gdx.graphics.Color;
 import com.google.inject.Inject;
 
 @Copyright("Matthew Peck 2014")
@@ -121,26 +135,198 @@ public class Follow extends CompositeAITask implements RoutineTask {
 	}
 
 
+	public static class FollowTaskGenerator extends TaskGenerator {
+		private static final long serialVersionUID = 4507750993455699310L;
+		private SerializableFunction<Integer> followeeId;
+		private String followerName, followeeName;
+		private int followerId;
+
+		public FollowTaskGenerator(int followerId, SerializableFunction<Integer> followeeId, String overriddenFolloweeName) {
+			this.followerId = followerId;
+			this.followeeId = followeeId;
+
+			this.followerName = Domain.getIndividual(followerId).getId().getSimpleName();
+
+			if (overriddenFolloweeName != null) {
+				this.followeeName = overriddenFolloweeName;
+			}
+		}
+		@Override
+		public AITask apply(Object input) {
+			if (!Domain.getIndividual(followeeId.call()).isAlive()) {
+				return null;
+			}
+
+			if (Domain.getIndividual(followeeId.call()) == null) {
+				return null;
+			}
+
+			return new Attack(Domain.getIndividual(followerId), Domain.getIndividual(followeeId.call()));
+		}
+		@Override
+		public String getDailyRoutineDetailedDescription() {
+			return followerName + " follows " + followeeName;
+		}
+		@Override
+		public String getEntityVisibleRoutineDetailedDescription() {
+			return followerName + " follows " + followeeName;
+		}
+		@Override
+		public String getIndividualConditionRoutineDetailedDescription() {
+			return followerName + " follows " + followeeName;
+		}
+		@Override
+		public String getStimulusDrivenRoutineDetailedDescription() {
+			return followerName + " follows " + followeeName;
+		}
+		@Override
+		public boolean valid() {
+			return Domain.getIndividual(followeeId.call()).isAlive() && Domain.getIndividual(followerId).isAlive();
+		}
+	}
+
+
+	private MenuItem chooseFolloweeMenuItem(Individual host, Routine routine, ContextMenu toChooseFrom) {
+		return new MenuItem(
+			"Choose individual to follow",
+			() -> {
+				JITTask task = new JITTask() {
+					@Override
+					public void execute(Object... args) {
+						if (Domain.getActiveWorld() != null) {
+							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+								Individual indi = Domain.getIndividual(indiKey);
+								if (indi.isMouseOver()) {
+									toChooseFrom.addMenuItem(
+										new MenuItem(
+											"Follow " + indi.getId().getSimpleName(),
+											() -> {
+												routine.setAiTaskGenerator(new FollowTaskGenerator(host.getId().getId(), new ReturnVictimId(indi.getId().getId()), indi.getId().getSimpleName()));
+											},
+											Color.ORANGE,
+											Color.GREEN,
+											Color.GRAY,
+											null
+										)
+									);
+								}
+							}
+						}
+
+						UserInterface.contextMenus.clear();
+						toChooseFrom.x = getMouseScreenX();
+						toChooseFrom.y = getMouseScreenY();
+						UserInterface.contextMenus.add(toChooseFrom);
+					}
+				};
+
+				BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(task, true) {
+					@Override
+					public void renderUIGuide() {
+					}
+
+					@Override
+					public String getShortDescription() {
+						return "Choose individual to follow";
+					}
+
+					@Override
+					public CursorBoundTask getImmediateTask() {
+						return null;
+					}
+
+					@Override
+					public boolean executionConditionMet() {
+						if (Domain.getActiveWorld() != null) {
+							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+								Individual indi = Domain.getIndividual(indiKey);
+								if (indi.isMouseOver()) {
+									return true;
+								}
+							}
+						}
+
+						return false;
+					}
+
+					@Override
+					public boolean canCancel() {
+						return true;
+					}
+				});
+			},
+			Color.ORANGE,
+			Color.GREEN,
+			Color.GRAY,
+			null
+		);
+	}
+
+
 	@Override
 	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
-		return null;
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseFolloweeMenuItem(host, routine, toChooseFrom)
+		);
+
+		return menu;
 	}
 
 
 	@Override
 	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		return null;
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseFolloweeMenuItem(host, routine, toChooseFrom)
+		);
+
+		final EntityVisible identificationFunction = routine.getIdentificationFunction();
+		if (Individual.class.isAssignableFrom(identificationFunction.getEntity().a)) {
+			menu.addFirst(
+				new MenuItem(
+					"Visible individual",
+					() -> {
+						routine.setAiTaskGenerator(new FollowTaskGenerator(host.getId().getId(), new EntityVisibleRoutine.VisibleIndividualFuture(routine), "visible individual"));
+					},
+					Color.MAGENTA,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
+		}
+
+		return menu;
 	}
 
 
 	@Override
 	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
-		return null;
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseFolloweeMenuItem(host, routine, toChooseFrom)
+		);
+
+		return menu;
 	}
 
 
 	@Override
 	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
-		return null;
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseFolloweeMenuItem(host, routine, toChooseFrom)
+		);
+
+		return menu;
 	}
 }
