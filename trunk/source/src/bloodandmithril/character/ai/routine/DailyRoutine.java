@@ -14,7 +14,6 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.RoutineTasks;
-import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
@@ -56,12 +55,6 @@ public class DailyRoutine extends Routine {
 		this.routineTime = routineTime;
 		this.toleranceTime = toleranceTime;
 		setDescription("Daily routine");
-	}
-
-
-	@Override
-	public void setAiTaskGenerator(TaskGenerator aiTaskGenerator) {
-		this.aiTaskGenerator = aiTaskGenerator;
 	}
 
 

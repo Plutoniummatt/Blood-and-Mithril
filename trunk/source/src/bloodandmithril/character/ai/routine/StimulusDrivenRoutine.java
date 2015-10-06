@@ -15,7 +15,6 @@ import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.RoutineTasks;
-import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -95,15 +94,6 @@ public class StimulusDrivenRoutine extends Routine {
 		public Stimulus call() {
 			return triggeringStimulus;
 		}
-	}
-
-
-	/**
-	 * Sets the generator for the task which this routine will use to generate the {@link AITask} upon meeting the trigger function
-	 */
-	@Override
-	public void setAiTaskGenerator(TaskGenerator aiTaskGenerator) {
-		this.aiTaskGenerator = aiTaskGenerator;
 	}
 
 
