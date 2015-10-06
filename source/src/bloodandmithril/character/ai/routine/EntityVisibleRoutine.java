@@ -22,6 +22,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -432,6 +433,26 @@ public class EntityVisibleRoutine extends Routine {
 
 
 			changeVisibleEntityButton.render(x + 114, y - height + 70, parent.isActive(), parent.getAlpha());
+		}
+	}
+
+
+	public static class VisiblePropFuture implements SerializableFunction<Integer> {
+		private static final long serialVersionUID = -3026958963883212173L;
+		private EntityVisibleRoutine routine;
+
+		public VisiblePropFuture(EntityVisibleRoutine routine) {
+			this.routine = routine;
+		}
+
+		@Override
+		public Integer call() {
+			Visible visibleEntity = routine.getVisibleEntity();
+			if (visibleEntity instanceof Prop) {
+				return ((Prop) visibleEntity).id;
+			}
+
+			throw new RuntimeException();
 		}
 	}
 

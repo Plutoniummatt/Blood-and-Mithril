@@ -163,13 +163,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 			AITask internalCurrentTask = getCurrentTask();
 			if (internalCurrentTask instanceof Routine) {
 				if (routine.getPriority() > ((Routine) internalCurrentTask).getPriority()) {
-					routine.generatedTask();
+					routine.generateTask();
 					setCurrentTask(routine);
 					routine.setLastOcurrence(current.copy());
 					break;
 				}
 			} else {
-				routine.getTaskGenerationParameter();
+				routine.generateTask();
 				setCurrentTask(routine);
 				routine.setLastOcurrence(current.copy());
 			}
