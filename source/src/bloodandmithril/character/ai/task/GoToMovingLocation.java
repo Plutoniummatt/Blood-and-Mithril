@@ -1,9 +1,22 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static com.badlogic.gdx.Gdx.gl;
+import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
+import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
+import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.routine.DailyRoutine;
@@ -12,12 +25,19 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.util.CursorBoundTask;
+import bloodandmithril.util.JITTask;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
 
@@ -167,26 +187,175 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 	}
 
 
+	public static class GoToMovingLocationTaskGenerator extends TaskGenerator {
+		private static final long serialVersionUID = -2000677075433369539L;
+		private float x, y;
+		private int hostId;
+
+		public GoToMovingLocationTaskGenerator(float x, float y, int hostId) {
+			this.x = x;
+			this.y = y;
+			this.hostId = hostId;
+		}
+
+		@Override
+		public AITask apply(Object input) {
+			Individual individual = Domain.getIndividual(hostId);
+			return goTo(
+				individual,
+				individual.getState().position.cpy(),
+				new WayPoint(new Vector2(x, y)),
+				false,
+				150f,
+				true
+			);
+		}
+		@Override
+		public String getDailyRoutineDetailedDescription() {
+			return "Go to location at: " + String.format("%.1f", x) + ", " + String.format("%.1f", y);
+		}
+		@Override
+		public String getEntityVisibleRoutineDetailedDescription() {
+			return "Go to location at: " + String.format("%.1f", x) + ", " + String.format("%.1f", y);
+		}
+		@Override
+		public String getIndividualConditionRoutineDetailedDescription() {
+			return "Go to location at: " + String.format("%.1f", x) + ", " + String.format("%.1f", y);
+		}
+		@Override
+		public String getStimulusDrivenRoutineDetailedDescription() {
+			return "Go to location at: " + String.format("%.1f", x) + ", " + String.format("%.1f", y);
+		}
+		@Override
+		public boolean valid() {
+			return true;
+		}
+	}
+
+
+	private MenuItem chooseLocationMenuItem(Individual host, Routine routine, ContextMenu toChooseFrom) {
+		return new MenuItem(
+				"Choose location",
+				() -> {
+					JITTask task = new JITTask() {
+						@Override
+						public void execute(Object... args) {
+							Vector2 coords;
+							try {
+								coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+							} catch (NoTileFoundException e) {
+								return;
+							}
+
+							float x = getMouseWorldX();
+							float y = coords.y;
+
+							routine.setAiTaskGenerator(
+								new GoToMovingLocationTaskGenerator(x, y, getHostId().getId())
+							);
+
+							UserInterface.contextMenus.clear();
+							toChooseFrom.x = getMouseScreenX();
+							toChooseFrom.y = getMouseScreenY();
+						}
+					};
+
+					BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(task, true) {
+						@Override
+						public void renderUIGuide() {
+							try {
+								Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+
+								float x = worldToScreenX(getMouseWorldX());
+								float y = worldToScreenY(coords.y);
+
+								gl.glEnable(GL_BLEND);
+								gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+								getGraphics().getSpriteBatch().begin();
+								getGraphics().getSpriteBatch().setColor(executionConditionMet() ? Color.GREEN : Color.RED);
+								getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, x - 5, y);
+								getGraphics().getSpriteBatch().end();
+								gl.glDisable(GL_BLEND);
+							} catch (NoTileFoundException e) {}
+						}
+
+						@Override
+						public String getShortDescription() {
+							return "Choose location";
+						}
+
+						@Override
+						public CursorBoundTask getImmediateTask() {
+							return null;
+						}
+
+						@Override
+						public boolean executionConditionMet() {
+							return true;
+						}
+
+						@Override
+						public boolean canCancel() {
+							return true;
+						}
+					});
+				},
+				Color.ORANGE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			);
+	}
+
+
 	@Override
 	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
-		return null;
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseLocationMenuItem(host, routine, toChooseFrom)
+		);
+
+		return menu;
 	}
 
 
 	@Override
 	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		return null;
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseLocationMenuItem(host, routine, toChooseFrom)
+		);
+
+		return menu;
 	}
 
 
 	@Override
 	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
-		return null;
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseLocationMenuItem(host, routine, toChooseFrom)
+		);
+
+		return menu;
 	}
 
 
 	@Override
 	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
-		return null;
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+
+		menu.addMenuItem(
+			chooseLocationMenuItem(host, routine, toChooseFrom)
+		);
+
+		return menu;
 	}
 }

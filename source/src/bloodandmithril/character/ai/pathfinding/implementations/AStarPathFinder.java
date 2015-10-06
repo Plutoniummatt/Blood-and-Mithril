@@ -79,7 +79,7 @@ public class AStarPathFinder extends PathFinder {
 	 */
 	@Override
 	public Path findShortestPathAir(WayPoint start, WayPoint finish, World world) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 
@@ -100,6 +100,7 @@ public class AStarPathFinder extends PathFinder {
 			}
 
 			if (finishCoords == null) {
+				// Destination is invalid, return an empty path
 				return new Path();
 			}
 
@@ -439,7 +440,7 @@ public class AStarPathFinder extends PathFinder {
 
 			if (parentX != null && parentY != null) {
 				float distance = abs(new Vector2(x, y).sub(parentX, parentY).len());
-				this.cost = distance > safeHeight ? 10000000f : distance + closedNodes.get(parentX, parentY).cost;
+				this.cost = distance > safeHeight ? Float.MAX_VALUE : distance + closedNodes.get(parentX, parentY).cost;
 			}
 		}
 

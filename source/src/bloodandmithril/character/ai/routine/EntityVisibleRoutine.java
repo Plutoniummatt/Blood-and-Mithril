@@ -30,6 +30,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.window.EditAIRoutineWindow;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Wrapper;
@@ -431,6 +432,26 @@ public class EntityVisibleRoutine extends Routine {
 
 
 			changeVisibleEntityButton.render(x + 114, y - height + 70, parent.isActive(), parent.getAlpha());
+		}
+	}
+
+
+	public static class VisibleIndividualFuture implements SerializableFunction<Integer> {
+		private static final long serialVersionUID = 3527567985423803956L;
+		private EntityVisibleRoutine routine;
+
+		public VisibleIndividualFuture(EntityVisibleRoutine routine) {
+			this.routine = routine;
+		}
+
+		@Override
+		public Integer call() {
+			Visible visibleEntity = routine.getVisibleEntity();
+			if (visibleEntity instanceof Individual) {
+				return ((Individual) visibleEntity).getId().getId();
+			}
+
+			throw new RuntimeException();
 		}
 	}
 }
