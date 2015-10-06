@@ -128,6 +128,11 @@ public class Speak extends AITask implements RoutineTask {
 			return desc();
 		}
 
+		@Override
+		public boolean valid() {
+			return true;
+		}
+
 	}
 
 

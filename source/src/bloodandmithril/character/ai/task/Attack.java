@@ -328,6 +328,11 @@ public class Attack extends CompositeAITask implements RoutineTask {
 		public String getStimulusDrivenRoutineDetailedDescription() {
 			return attackerName + " attacks " + victimName;
 		}
+
+		@Override
+		public boolean valid() {
+			return Domain.getIndividual(victimId.call()).isAlive() && Domain.getIndividual(attackerId).isAlive();
+		}
 	}
 
 

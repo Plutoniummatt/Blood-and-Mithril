@@ -44,11 +44,9 @@ import com.badlogic.gdx.graphics.Color;
 public class DailyRoutine extends Routine {
 	private static final long serialVersionUID = -255141692263126217L;
 
-	private TaskGenerator aiTaskGenerator;
 	private Epoch lastExecutedEpoch = null;
 	private float routineTime;
 	private float toleranceTime;
-	private AITask task;
 
 	/**
 	 * Constructor
@@ -75,10 +73,8 @@ public class DailyRoutine extends Routine {
 
 
 	@Override
-	public void prepare() {
-		if (aiTaskGenerator != null) {
-			this.task = aiTaskGenerator.apply(getHost());
-		}
+	public Object getTaskGenerationParameter() {
+		return getHost();
 	}
 
 

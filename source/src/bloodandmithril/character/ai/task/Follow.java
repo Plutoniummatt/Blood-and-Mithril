@@ -76,18 +76,6 @@ public class Follow extends CompositeAITask implements RoutineTask {
 	}
 
 
-
-	/**
-	 * @see bloodandmithril.character.ai.AITask#execute()
-	 */
-	@Override
-	public void execute(float delta) {
-		if (getCurrentTask() != null) {
-			super.execute(delta);
-		}
-	}
-
-
 	@Override
 	public boolean uponCompletion() {
 		if (terminationCondition != null && terminationCondition.call()) {

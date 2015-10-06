@@ -208,5 +208,10 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		public String getStimulusDrivenRoutineDetailedDescription() {
 			throw new UnsupportedOperationException("It does not make sense to generate generic light lightables task in a stimulus driven routine");
 		}
+
+		@Override
+		public boolean valid() {
+			return true;
+		}
 	}
 }

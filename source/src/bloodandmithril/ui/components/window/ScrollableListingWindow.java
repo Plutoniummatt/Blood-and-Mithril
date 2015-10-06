@@ -153,4 +153,9 @@ public abstract class ScrollableListingWindow<T, A> extends Window implements Re
 	protected Task buttonTask(Entry<T, A> listingItem) {
 		return () -> {};
 	}
+
+
+	protected ScrollableListingPanel<T, A> getListing() {
+		return listing;
+	}
 }

@@ -46,10 +46,8 @@ public class StimulusDrivenRoutine extends Routine {
 	private static final long serialVersionUID = 2347934053852793343L;
 
 	private StimulusTriggerFunction triggerFunction;
-	private TaskGenerator aiTaskGenerator;
 	private Stimulus triggeringStimulus;
 	private boolean triggered;
-	private AITask task;
 
 	/**
 	 * Constructor
@@ -110,10 +108,8 @@ public class StimulusDrivenRoutine extends Routine {
 
 
 	@Override
-	public void prepare() {
-		if (aiTaskGenerator != null) {
-			this.task = aiTaskGenerator.apply(triggeringStimulus);
-		}
+	public Object getTaskGenerationParameter() {
+		return triggeringStimulus;
 	}
 
 
