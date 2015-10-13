@@ -20,6 +20,7 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
+import bloodandmithril.world.topography.tile.tiles.SoilTile;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -90,8 +91,7 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
 			Tile tile = Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), coords.y - Topography.TILE_SIZE / 2, true);
-//			return tile instanceof SoilTile && ((SoilTile) tile).canPlant(toPlant);
-			return true;
+			return tile instanceof SoilTile && ((SoilTile) tile).canPlant(toPlant);
 		} catch (NoTileFoundException e) {
 			return false;
 		}
