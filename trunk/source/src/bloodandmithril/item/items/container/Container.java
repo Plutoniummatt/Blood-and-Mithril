@@ -3,8 +3,12 @@ package bloodandmithril.item.items.container;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import bloodandmithril.item.items.Item;
+import bloodandmithril.util.SerializableMappingFunction;
+
+import com.google.common.collect.Maps;
 
 /**
  * A container that contains {@link Item}s
@@ -79,14 +83,27 @@ public interface Container extends Serializable {
 	}
 
 
+	public default Map<Item, Integer> getItemsSatisfyingPredicate(SerializableMappingFunction<Entry<Item, Integer>, Boolean> predicate) {
+		Map<Item, Integer> toReturn = Maps.newHashMap();
+
+		for (Entry<Item, Integer> entry : getInventory().entrySet()) {
+			if (predicate.apply(entry)) {
+				toReturn.put(entry.getKey(), entry.getValue());
+			}
+		}
+
+		return toReturn;
+	}
+
+
 	/**
 	 * @return the maximum weight that can be stored in this {@link ContainerImpl}
 	 */
 	public default float getMaxCapacity() {
 		return getContainerImpl().getMaxCapacity();
 	}
-	
-	
+
+
 	/**
 	 * @return true if this container has a max weight limit.
 	 */
