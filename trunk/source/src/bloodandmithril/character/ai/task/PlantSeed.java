@@ -166,6 +166,10 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 		}
 		@Override
 		public boolean valid() {
+			if (Domain.getIndividual(hostId).has(item) == 0) {
+				return false;
+			}
+
 			try {
 				SeedProp propSeed = item.getPropSeed();
 				propSeed.position = location.cpy();
@@ -199,6 +203,19 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 					Color.GREEN,
 					Color.GRAY,
 					chooseLocationMenu((SeedItem) item, host, routine)
+				)
+			);
+		}
+
+		if (seeds.isEmpty()) {
+			menu.addMenuItem(
+				new MenuItem(
+					"No seeds in inventory",
+					() -> {},
+					Color.GRAY,
+					Color.GRAY,
+					Color.GRAY,
+					null
 				)
 			);
 		}
