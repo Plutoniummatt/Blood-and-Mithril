@@ -23,7 +23,7 @@ public abstract class CursorBoundTask {
 	}
 
 
-	protected void setTask(JITTask task) {
+	public void setTask(JITTask task) {
 		this.task = task;
 	}
 
@@ -38,8 +38,8 @@ public abstract class CursorBoundTask {
 		task.execute(x, y);
 		return getImmediateTask();
 	}
-	
-	
+
+
 	/**
 	 * Gets the {@link CursorBoundTask} to be executed after this one
 	 */
