@@ -11,7 +11,7 @@ import bloodandmithril.core.Copyright;
 @Copyright("Matthew Peck 2014")
 public abstract class CursorBoundTask {
 
-	private JITTask task;
+	protected JITTask task;
 	private boolean isWorldCoordinate;
 
 	/**
