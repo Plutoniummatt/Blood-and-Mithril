@@ -1,10 +1,20 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.setCursorBoundTask;
 
 import java.util.Collection;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.inject.Inject;
+
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
@@ -14,6 +24,7 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
@@ -25,15 +36,12 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.Util;
+import bloodandmithril.util.cursorboundtask.ChooseAreaCursorBoundTask;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.inject.Inject;
 
 /**
  * Harvest a {@link Harvestable}
@@ -106,7 +114,7 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public boolean isComplete() {
-			return taskDone ;
+			return taskDone;
 		}
 
 
@@ -171,9 +179,84 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 	}
 
 
+	private ContextMenu getChoices(final Routine routine) {
+		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
+			new ContextMenu.MenuItem(
+				"Harvest area",
+				() -> {
+					setCursorBoundTask(
+						new ChooseAreaCursorBoundTask(
+							args -> {
+								routine.setAiTaskGenerator(null);
+							},
+							true
+						) {
+							@Override
+							public String getShortDescription() {
+								return "Choose area";
+							}
+							@Override
+							public boolean executionConditionMet() {
+								return true;
+							}
+							@Override
+							public boolean canCancel() {
+								return true;
+							}
+							@Override
+							public CursorBoundTask getImmediateTask() {
+								return null;
+							}
+						}
+					);
+				},
+				Color.ORANGE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			),
+			new ContextMenu.MenuItem(
+				"Harvest selected",
+				() -> {
+					BloodAndMithrilClient.setCursorBoundTask(
+						new CursorBoundTask(
+								args -> {},
+								true
+							) {
+							@Override
+							public void renderUIGuide() {
+							}
+							@Override
+							public String getShortDescription() {
+								return null;
+							}
+							@Override
+							public CursorBoundTask getImmediateTask() {
+								return null;
+							}
+							@Override
+							public boolean executionConditionMet() {
+								return false;
+							}
+							@Override
+							public boolean canCancel() {
+								return false;
+							}
+						}
+					);
+				},
+				Color.ORANGE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			)
+		);
+	}
+
+
 	@Override
 	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
-		return null;
+		return getChoices(routine);
 	}
 
 
