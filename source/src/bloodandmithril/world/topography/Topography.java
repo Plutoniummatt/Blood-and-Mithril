@@ -8,6 +8,12 @@ import java.util.concurrent.BlockingQueue;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.lwjgl.opengl.Display;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.networking.ClientServerInterface;
@@ -23,12 +29,6 @@ import bloodandmithril.world.World;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * Represents the topography of the gameworld - Chunks, Tiles, and objects that
  * exist within it etc.
@@ -36,7 +36,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Topography {
+public final class Topography {
 
 	/** Unique ID of the {@link World} that this {@link Topography} lives on */
 	private final int worldId;
@@ -79,13 +79,13 @@ public class Topography {
 
 
 	/** Adds a task to be processed */
-	public static synchronized void addTask(Task task) {
+	public static synchronized final void addTask(Task task) {
 		topographyTasks.add(task);
 	}
 
 
 	/** Executes any tasks queued in {@link #topographyTasks} by other threads */
-	public static synchronized void executeBackLog() {
+	public static synchronized final void executeBackLog() {
 		while (!topographyTasks.isEmpty()) {
 			topographyTasks.poll().execute();
 		}
@@ -95,7 +95,7 @@ public class Topography {
 	/**
 	 * Renders the background
 	 */
-	public void renderBackGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
+	public final void renderBackGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
 		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
@@ -118,7 +118,7 @@ public class Topography {
 	/**
 	 * Renders the foreground
 	 */
-	public void renderForeGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
+	public final void renderForeGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
 		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
@@ -137,13 +137,13 @@ public class Topography {
 
 
 	/** Get the lowest empty tile world coordinates */
-	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) throws NoTileFoundException {
+	public synchronized final Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(Vector2 worldCoords, boolean floor) throws NoTileFoundException {
 		return getLowestEmptyTileOrPlatformTileWorldCoords(worldCoords.x, worldCoords.y, floor);
 	}
 
 
 	/** Get the lowest empty tile world coordinates */
-	public synchronized Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) throws NoTileFoundException {
+	public synchronized final Vector2 getLowestEmptyTileOrPlatformTileWorldCoords(float worldX, float worldY, boolean floor) throws NoTileFoundException {
 		if (getTile(worldX, worldY, true) instanceof EmptyTile) {
 			while (getTile(worldX, worldY, true) instanceof EmptyTile) {
 				worldY = worldY - TILE_SIZE;
@@ -165,7 +165,7 @@ public class Topography {
 	/**
 	 * Converts chunk coord + chunk tile coord to world tile coord
 	 */
-	public static int convertToWorldTileCoord(int chunk, int tile) {
+	public static final int convertToWorldTileCoord(int chunk, int tile) {
 		return chunk * CHUNK_SIZE + tile;
 	}
 
@@ -173,12 +173,12 @@ public class Topography {
 	/**
 	 * Converts chunk coord + chunk tile coord to world tile coord
 	 */
-	public static int convertToWorldTileCoord(float coord) {
+	public static final int convertToWorldTileCoord(float coord) {
 		return convertToWorldTileCoord(convertToChunkCoord(coord), convertToChunkTileCoord(coord));
 	}
 
 
-	public static Vector2 convertToWorldCoord(Vector2 coords, boolean floor) throws NoTileFoundException {
+	public static final Vector2 convertToWorldCoord(Vector2 coords, boolean floor) throws NoTileFoundException {
 		if (coords == null) {
 			throw new NoTileFoundException();
 		}
@@ -186,7 +186,7 @@ public class Topography {
 	}
 
 
-	public static Vector2 convertToWorldCoord(float x, float y, boolean floor) {
+	public static final Vector2 convertToWorldCoord(float x, float y, boolean floor) {
 		return new Vector2(
 			convertToWorldCoord(convertToWorldTileCoord(convertToChunkCoord(x), convertToChunkTileCoord(x)), false),
 			convertToWorldCoord(convertToWorldTileCoord(convertToChunkCoord(y), convertToChunkTileCoord(y)), floor)
@@ -197,7 +197,7 @@ public class Topography {
 	/**
 	 * Converts a world coordinate into a (chunk)tile coordinate
 	 */
-	public static int convertToChunkTileCoord(float worldCoord) {
+	public static final int convertToChunkTileCoord(float worldCoord) {
 		int worldCoordinateIntegerized = (int) worldCoord;
 
 		if (worldCoordinateIntegerized >= 0) {
@@ -214,7 +214,7 @@ public class Topography {
 	 * @param worldX
 	 * @param worldY
 	 */
-	public synchronized Tile deleteTile(float worldX, float worldY, boolean foreGround, boolean forceRemove) {
+	public synchronized final Tile deleteTile(float worldX, float worldY, boolean foreGround, boolean forceRemove) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
 		int tileX = convertToChunkTileCoord(worldX);
@@ -243,7 +243,7 @@ public class Topography {
 	}
 
 
-	private void removeProps(float worldX, float worldY) {
+	private final void removeProps(float worldX, float worldY) {
 		Tile deletedTile = deleteTile(worldX, worldY, true, true);
 
 		World world = Domain.getWorld(worldId);
@@ -260,7 +260,7 @@ public class Topography {
 	}
 
 
-	private boolean preventedByProps(float worldX, float worldY) {
+	private final boolean preventedByProps(float worldX, float worldY) {
 		Tile deletedTile = deleteTile(worldX, worldY, true, true);
 
 		final MutableBoolean b = new MutableBoolean();
@@ -288,7 +288,7 @@ public class Topography {
 	 * @param worldX
 	 * @param worldY
 	 */
-	public synchronized void changeTile(float worldX, float worldY, boolean foreGround, Class<? extends Tile> toChangeTo) {
+	public synchronized final void changeTile(float worldX, float worldY, boolean foreGround, Class<? extends Tile> toChangeTo) {
 		try {
 			changeTile(worldX, worldY, foreGround, toChangeTo.newInstance());
 		} catch (Exception e) {
@@ -303,7 +303,7 @@ public class Topography {
 	 * @param worldX
 	 * @param worldY
 	 */
-	public synchronized void changeTile(float worldX, float worldY, boolean foreGround, Tile toChangeTo) {
+	public synchronized final void changeTile(float worldX, float worldY, boolean foreGround, Tile toChangeTo) {
 		if (toChangeTo instanceof EmptyTile) {
 			throw new IllegalStateException("Can't change tile to empty tile");
 		}
@@ -322,7 +322,7 @@ public class Topography {
 
 
 	/** Converts a world tile coord to a world coord, in the centre of the tile */
-	public static float convertToWorldCoord(int worldTileCoord, boolean floor) {
+	public static final float convertToWorldCoord(int worldTileCoord, boolean floor) {
 		return worldTileCoord * Topography.TILE_SIZE + (floor ? 0 : Topography.TILE_SIZE/2);
 	}
 
@@ -330,7 +330,7 @@ public class Topography {
 	/**
 	 * Converts a tile coordinate into a chunk coordinate
 	 */
-	public static int convertToChunkCoord(int tileCoord) {
+	public static final int convertToChunkCoord(int tileCoord) {
 		if (tileCoord >= 0) {
 			return tileCoord / CHUNK_SIZE;
 		} else {
@@ -342,7 +342,7 @@ public class Topography {
 	/**
 	 * Converts a world coordinate into a chunk coordinate
 	 */
-	public static int convertToChunkCoord(float worldCoord) {
+	public static final int convertToChunkCoord(float worldCoord) {
 		int worldCoordinateIntegerized = (int) worldCoord;
 
 		if (worldCoordinateIntegerized >= 0) {
@@ -353,12 +353,12 @@ public class Topography {
 	}
 
 
-	public static void setup() {
+	public static final void setup() {
 		atlas = new Texture(Gdx.files.internal("data/image/textureAtlas.png"));
 	}
 
 
-	public boolean hasTile(float worldX, float worldY, boolean foreGround) {
+	public final boolean hasTile(float worldX, float worldY, boolean foreGround) {
 		int chunkX = convertToChunkCoord(worldX);
 		int chunkY = convertToChunkCoord(worldY);
 
@@ -380,7 +380,7 @@ public class Topography {
 	/**
 	 * Gets a tile given the world coordinates
 	 */
-	public synchronized Tile getTile(float worldX, float worldY, boolean foreGround) throws NoTileFoundException {
+	public synchronized final Tile getTile(float worldX, float worldY, boolean foreGround) throws NoTileFoundException {
 		try {
 			int chunkX = convertToChunkCoord(worldX);
 			int chunkY = convertToChunkCoord(worldY);
@@ -398,7 +398,7 @@ public class Topography {
 	/**
 	 * Gets a tile given the world tile coordinates
 	 */
-	public synchronized Tile getTile(int tileX, int tileY, boolean foreGround) throws NoTileFoundException {
+	public synchronized final Tile getTile(int tileX, int tileY, boolean foreGround) throws NoTileFoundException {
 		int chunkX = convertToChunkCoord(convertToWorldCoord(tileX, false));
 		int chunkY = convertToChunkCoord(convertToWorldCoord(tileY, false));
 
@@ -414,7 +414,7 @@ public class Topography {
 
 
 	/** Overloaded method, see {@link #getTile(float, float)} */
-	public synchronized Tile getTile(Vector2 location, boolean foreGround) throws NoTileFoundException {
+	public synchronized final Tile getTile(Vector2 location, boolean foreGround) throws NoTileFoundException {
 		return getTile(location.x, location.y, foreGround);
 	}
 
@@ -422,7 +422,7 @@ public class Topography {
 	/**
 	 * Generates/Loads any missing chunks
 	 */
-	public void loadOrGenerateNullChunksAccordingToPosition(int x, int y) {
+	public final void loadOrGenerateNullChunksAccordingToPosition(int x, int y) {
 
 		int bottomLeftX = convertToChunkCoord((float)(x - getGraphics().getWidth() / 2));
 		int bottomLeftY = convertToChunkCoord((float)(y - getGraphics().getHeight() / 2));
@@ -446,23 +446,23 @@ public class Topography {
 	}
 
 
-	public boolean loadOrGenerateChunk(int chunkX, int chunkY, boolean populateChunkMap) {
+	public final boolean loadOrGenerateChunk(int chunkX, int chunkY, boolean populateChunkMap) {
 		//Attempt to load the chunk from disk - If chunk does not exist, it will be generated
 		return chunkLoader.load(Domain.getWorld(worldId), chunkX, chunkY, populateChunkMap);
 	}
 
 
-	public ChunkMap getChunkMap() {
+	public final ChunkMap getChunkMap() {
 		return chunkMap;
 	}
 
 
-	public Structures getStructures() {
+	public final Structures getStructures() {
 		return structures;
 	}
 
 
-	public static class NoTileFoundException extends Exception {
+	public static final class NoTileFoundException extends Exception {
 		private static final long serialVersionUID = 5955361949995345496L;
 	}
 }

@@ -67,7 +67,7 @@ public abstract class Tile implements Serializable {
 	/**
 	 * Returns the x component of the texture coordinate of the top left vertex
 	 */
-	public float getTexCoordX(boolean foreGround) {
+	public final float getTexCoordX(boolean foreGround) {
 
 		int texX = 0;
 		if (orientation != null) {
@@ -127,7 +127,7 @@ public abstract class Tile implements Serializable {
 	 *  <p> 9		{@link ClearGlassTile}          </p>
 	 *  <p> 10		{@link YellowBrickPlatform}		</p>
 	 */
-	public float getTexCoordY() {
+	public final float getTexCoordY() {
 		return getTexCoordYSpecific() * Topography.textureCoordinateQuantization;
 	}
 
@@ -139,7 +139,7 @@ public abstract class Tile implements Serializable {
 	/**
 	 * @return {@link #orientation}.
 	 */
-	public Orientation getOrientation() {
+	public final Orientation getOrientation() {
 		return orientation;
 	}
 
@@ -147,7 +147,7 @@ public abstract class Tile implements Serializable {
 	/**
 	 * Whether or not this can be a passable tile
 	 */
-	public boolean isPassable() {
+	public final boolean isPassable() {
 		return this instanceof EmptyTile || isPlatformTile;
 	}
 
@@ -179,13 +179,13 @@ public abstract class Tile implements Serializable {
 	/**
 	 * @return true if {@link #isStair}
 	 */
-	public boolean isStair() {
+	public final boolean isStair() {
 		return isStair;
 	}
 
 
 	@Override
-	public String toString() {
+	public final String toString() {
 		return "Tile: " + Integer.toHexString(hashCode()) + "\n" + this.getClass().getSimpleName() + ", " + orientation;
 	}
 
@@ -198,7 +198,7 @@ public abstract class Tile implements Serializable {
 	 * @param chunkX - the chunk x-coordinate
 	 * @param chunkY - the chunk y-coordinate
 	 */
-	public void calculateOrientation(int chunkX, int chunkY, int x, int y, boolean foreGround, ChunkMap map) {
+	public final void calculateOrientation(int chunkX, int chunkY, int x, int y, boolean foreGround, ChunkMap map) {
 
 		Tile left;
 		Tile right;
@@ -263,7 +263,7 @@ public abstract class Tile implements Serializable {
 	 *
 	 * @author Matt
 	 */
-	public static class DebugTile extends Tile {
+	public static final class DebugTile extends Tile {
 		private static final long serialVersionUID = 4735245982678945958L;
 
 		/**
@@ -278,29 +278,29 @@ public abstract class Tile implements Serializable {
 
 
 		@Override
-		protected float getTexCoordYSpecific() {
+		protected final float getTexCoordYSpecific() {
 			return 2;
 		}
 
 
 		@Override
-		public void changeToStair() {
+		public final void changeToStair() {
 		}
 
 
 		@Override
-		public void changeToSmoothCeiling() {
+		public final void changeToSmoothCeiling() {
 		}
 
 
 		@Override
-		public Item mine() {
+		public final Item mine() {
 			throw new RuntimeException("Can not mine a debug tile");
 		}
 
 
 		@Override
-		public boolean isTransparent() {
+		public final boolean isTransparent() {
 			return true;
 		}
 	}
@@ -311,7 +311,7 @@ public abstract class Tile implements Serializable {
 	 *
 	 * @author Matt
 	 */
-	public static class EmptyTile extends Tile {
+	public static final class EmptyTile extends Tile {
 		private static final long serialVersionUID = -1388867188698896998L;
 
 		/**
@@ -323,35 +323,35 @@ public abstract class Tile implements Serializable {
 
 
 		@Override
-		protected float getTexCoordYSpecific() {
+		protected final float getTexCoordYSpecific() {
 			return 1;
 		}
 
 
 		@Override
-		public void changeToStair() {
+		public final void changeToStair() {
 		}
 
 
 		@Override
-		public void changeToSmoothCeiling() {
+		public final void changeToSmoothCeiling() {
 		}
 
 
 		@Override
-		public Item mine() {
+		public final Item mine() {
 			throw new RuntimeException("Can not mine an empty tile");
 		}
 
 
 		@Override
-		public boolean isTransparent() {
+		public final boolean isTransparent() {
 			return true;
 		}
 	}
 
 
-	public boolean isSmoothCeiling() {
+	public final boolean isSmoothCeiling() {
 		return smoothCeiling;
 	}
 }

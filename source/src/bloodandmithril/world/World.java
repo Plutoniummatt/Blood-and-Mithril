@@ -28,23 +28,23 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class World implements Serializable {
+public final class World implements Serializable {
 	private static final long serialVersionUID = -739119449225954631L;
 
 	/** Unique identifier of this {@link World} */
 	private final int worldId;
 
 	/** Background images of this world */
-	private BackgroundImages 									backgroundImages 		= new BackgroundImages();
+	private final BackgroundImages 								backgroundImages 		= new BackgroundImages();
 
 	/** Gravity on this world */
-	private float gravity;
+	private final float gravity;
 
 	/** {@link Topography} of this {@link World} */
 	private transient Topography topography;
 
 	/** Individuals that are currently in this {@link World} */
-	private ConcurrentSkipListSet<Integer>						individuals 			= new ConcurrentSkipListSet<Integer>();
+	private final ConcurrentSkipListSet<Integer>				individuals 			= new ConcurrentSkipListSet<Integer>();
 
 	/** The positional indexing map of this {@link World} */
 	private PositionalIndexMap 									positionalIndexMap;
@@ -56,13 +56,13 @@ public class World implements Serializable {
 	private ConcurrentHashMap<Long, Particle> 					serverParticles			= new ConcurrentHashMap<>();
 
 	/** The items of this {@link World} */
-	private WorldItems items;
+	private final WorldItems items;
 
 	/** The props of this {@link World} */
-	private WorldProps props;
+	private final WorldProps props;
 
 	/** The projectiles of this {@link World} */
-	private WorldProjectiles projectiles;
+	private final WorldProjectiles projectiles;
 
 	/** World-specific {@link ChunkGenerator} */
 	private final ChunkGenerator 								generator;
@@ -74,7 +74,7 @@ public class World implements Serializable {
 	private float												updateTick = 1f/60f;
 
 	/** Outstanding events to be processed */
-	private ConcurrentLinkedDeque<Event>						events					= new ConcurrentLinkedDeque<>();
+	private final ConcurrentLinkedDeque<Event>					events					= new ConcurrentLinkedDeque<>();
 
 	/**
 	 * Constructor
@@ -95,7 +95,7 @@ public class World implements Serializable {
 	/**
 	 * Adds an event
 	 */
-	public synchronized void addEvent(Event e) {
+	public synchronized final void addEvent(Event e) {
 		events.add(e);
 	}
 
@@ -103,18 +103,18 @@ public class World implements Serializable {
 	/**
 	 * Returns events
 	 */
-	public synchronized ConcurrentLinkedDeque<Event> getEvents() {
+	public synchronized final ConcurrentLinkedDeque<Event> getEvents() {
 		return events;
 	}
 
 
-	public World setUpdateTick(float updateTick) {
+	public final World setUpdateTick(float updateTick) {
 		this.updateTick = updateTick;
 		return this;
 	}
 
 
-	public void update() {
+	public final void update() {
 		epoch.incrementTime(updateTick);
 
 		for (int individualId : individuals) {
@@ -137,7 +137,7 @@ public class World implements Serializable {
 	}
 
 
-	public Epoch getEpoch() {
+	public final Epoch getEpoch() {
 		return epoch;
 	}
 
@@ -145,7 +145,7 @@ public class World implements Serializable {
 	/**
 	 * @return the {@link #topography}
 	 */
-	public Topography getTopography() {
+	public final Topography getTopography() {
 		return topography;
 	}
 
@@ -153,7 +153,7 @@ public class World implements Serializable {
 	/**
 	 * @return the {@link #topography}
 	 */
-	public void setTopography(Topography topography) {
+	public final void setTopography(Topography topography) {
 		this.topography = topography;
 	}
 
@@ -161,7 +161,7 @@ public class World implements Serializable {
 	/**
 	 * @return The {@link WorldItems}
 	 */
-	public WorldItems items() {
+	public final WorldItems items() {
 		return items;
 	}
 
@@ -169,7 +169,7 @@ public class World implements Serializable {
 	/**
 	 * @return the {@link WorldProps}
 	 */
-	public WorldProps props() {
+	public final WorldProps props() {
 		return props;
 	}
 
@@ -177,7 +177,7 @@ public class World implements Serializable {
 	/**
 	 * @return the {@link WorldProjectiles}
 	 */
-	public WorldProjectiles projectiles() {
+	public final WorldProjectiles projectiles() {
 		return projectiles;
 	}
 
@@ -185,7 +185,7 @@ public class World implements Serializable {
 	/**
 	 * @return the gravity of this world
 	 */
-	public float getGravity() {
+	public final float getGravity() {
 		return gravity;
 	}
 
@@ -193,12 +193,12 @@ public class World implements Serializable {
 	/**
 	 * @return the world id
 	 */
-	public int getWorldId() {
+	public final int getWorldId() {
 		return worldId;
 	}
 
 
-	public Set<Integer> getIndividuals() {
+	public final Set<Integer> getIndividuals() {
 		return individuals;
 	}
 
@@ -206,7 +206,7 @@ public class World implements Serializable {
 	/**
 	 * @return The transient collection of particles
 	 */
-	public Collection<Particle> getClientParticles() {
+	public final Collection<Particle> getClientParticles() {
 		if (clientParticles == null) {
 			clientParticles = new ConcurrentLinkedDeque<>();
 		}
@@ -217,7 +217,7 @@ public class World implements Serializable {
 	/**
 	 * @return The transient collection of particles
 	 */
-	public ConcurrentHashMap<Long, Particle> getServerParticles() {
+	public final ConcurrentHashMap<Long, Particle> getServerParticles() {
 		if (serverParticles == null) {
 			serverParticles = new ConcurrentHashMap<>();
 		}
@@ -228,22 +228,22 @@ public class World implements Serializable {
 	/**
 	 * @return the positional index map of this {@link World}
 	 */
-	public PositionalIndexMap getPositionalIndexMap() {
+	public final PositionalIndexMap getPositionalIndexMap() {
 		return positionalIndexMap;
 	}
 
 
-	public BackgroundImages getBackgroundImages() {
+	public final BackgroundImages getBackgroundImages() {
 		return backgroundImages;
 	}
 
 
-	public void setEpoch(Epoch currentEpoch) {
+	public final void setEpoch(Epoch currentEpoch) {
 		this.epoch = currentEpoch;
 	}
 
 
-	public ChunkGenerator getGenerator() {
+	public final ChunkGenerator getGenerator() {
 		return generator;
 	}
 }

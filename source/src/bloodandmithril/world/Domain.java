@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -27,9 +30,6 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.UnitsWindow;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
 /**
  * Class representing the entire domain governing the game.
  *
@@ -42,18 +42,18 @@ public class Domain {
 	private static int activeWorldId;
 
 	/** {@link World}s */
-	private static HashMap<Integer, World> 						worlds 					= newHashMap();
+	private static HashMap<Integer, World> 								worlds 					= newHashMap();
 
 	/** {@link Individual} that are selected for manual control */
-	private static Set<Integer> 								selectedIndividuals 	= newHashSet();
+	private static Set<Integer> 										selectedIndividuals 	= newHashSet();
 
 	/** Every {@link Individual} that exists */
-	private static ConcurrentHashMap<Integer, Individual> 		individuals 			= new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Integer, Individual> 				individuals 			= new ConcurrentHashMap<>();
 
 	/** Every {@link Prop} that exists */
-	private static ConcurrentHashMap<Integer, Faction> 			factions 				= new ConcurrentHashMap<>();
+	private static ConcurrentHashMap<Integer, Faction> 					factions 				= new ConcurrentHashMap<>();
 
-	private static final Thread 								eventsProcessingThread;
+	private static final Thread 										eventsProcessingThread;
 
 	static {
 		eventsProcessingThread = new Thread(() -> {
