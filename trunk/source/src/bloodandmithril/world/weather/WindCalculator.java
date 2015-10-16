@@ -1,8 +1,8 @@
 package bloodandmithril.world.weather;
 
-import bloodandmithril.core.Copyright;
-
 import com.badlogic.gdx.math.Vector2;
+
+import bloodandmithril.core.Copyright;
 
 /**
  * Represents a vector field function to describe the wind
@@ -10,13 +10,13 @@ import com.badlogic.gdx.math.Vector2;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class WindCalculator {
+public final class WindCalculator {
 
 
 	/**
 	 * @return the velocity of wind at a given location
 	 */
-	public Vector2 getWindVelocity(Vector2 position) {
+	public final Vector2 getWindVelocity(Vector2 position) {
 		return null;
 	}
 }

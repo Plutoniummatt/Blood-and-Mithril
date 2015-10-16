@@ -9,6 +9,12 @@ import static java.lang.Math.sin;
 
 import java.util.LinkedList;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.background.Layer;
@@ -18,45 +24,39 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.World;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
-
 /**
  * Weather class, renderable, changes with {@link Epoch}
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Weather {
+public final class Weather {
 
-	private static Color dayTopColor 							= new Color(33f/150f, 169f/255f, 255f/255f, 1f);
-	private static Color dayBottomColor 						= new Color(0f, 144f/255f, 1f, 1f);
-	private static Color nightTopColor 							= new Color(33f/255f, 0f, 150f/255f, 1f);
-	private static Color nightBottomColor 						= new Color(60f/255f, 0f, 152f/255f, 1f);
+	private static final Color dayTopColor 								= new Color(33f/150f, 169f/255f, 255f/255f, 1f);
+	private static final Color dayBottomColor 							= new Color(0f, 144f/255f, 1f, 1f);
+	private static final Color nightTopColor 							= new Color(33f/255f, 0f, 150f/255f, 1f);
+	private static final Color nightBottomColor 						= new Color(60f/255f, 0f, 152f/255f, 1f);
 
-	private static FrameBuffer skyBuffer						= new FrameBuffer(RGBA8888, getGraphics().getWidth(), getGraphics().getHeight(), false);
-	private static FrameBuffer working							= new FrameBuffer(RGBA8888, 1, 1, false);
+	private static FrameBuffer skyBuffer								= new FrameBuffer(RGBA8888, getGraphics().getWidth(), getGraphics().getHeight(), false);
+	private static FrameBuffer working									= new FrameBuffer(RGBA8888, 1, 1, false);
 
-	private static Vector2 sunPosition							= new Vector2();
-	public static Vector2 orbitalPivot 					= new Vector2(getGraphics().getWidth()/2, 0);
+	private static Vector2 sunPosition									= new Vector2();
+	public static Vector2 orbitalPivot 									= new Vector2(getGraphics().getWidth()/2, 0);
 
-	private static LinkedList<CelestialBody> celestialBodies	= Lists.newLinkedList();
+	private static final LinkedList<CelestialBody> celestialBodies		= Lists.newLinkedList();
 
 
 	/**
 	 * Renders the {@link Weather}
 	 */
-	public static void render(FrameBuffer toDrawTo, World world) {
+	public static final void render(FrameBuffer toDrawTo, World world) {
 		renderSky(toDrawTo, world);
 		renderStars(toDrawTo, world);
 		updateSun(world);
 	}
 
 
-	private static void updateSun(World world) {
+	private static final void updateSun(World world) {
 		float time = world.getEpoch().getTime();
 		float radius = getGraphics().getWidth()/2.5f;
 		Vector2 position = orbitalPivot.cpy().add(new Vector2(0f, radius).rotate(-((time - 12f) / 12f) * 180f));
@@ -66,7 +66,7 @@ public class Weather {
 	}
 
 
-	public static Color getDaylightColor(World world) {
+	public static final Color getDaylightColor(World world) {
 		float time = world.getEpoch().getTime();
 		Color filter = new Color();
 
@@ -89,12 +89,12 @@ public class Weather {
 	}
 
 
-	public static Vector2 getSunPosition() {
+	public static final Vector2 getSunPosition() {
 		return sunPosition;
 	}
 
 
-	public static Color getSunColor(World world) {
+	public static final Color getSunColor(World world) {
 		float time = world.getEpoch().getTime();
 		Color filter = new Color();
 
@@ -118,7 +118,7 @@ public class Weather {
 
 
 	/** Renders the sky */
-	private static void renderSky(FrameBuffer toDrawTo, World world) {
+	private static final void renderSky(FrameBuffer toDrawTo, World world) {
 		skyBuffer.begin();
 		getGraphics().getSpriteBatch().begin();
 		getGraphics().getSpriteBatch().setShader(Shaders.sky);
@@ -153,7 +153,7 @@ public class Weather {
 	}
 
 
-	private static void renderStars(FrameBuffer toDrawTo, World world) {
+	private static final void renderStars(FrameBuffer toDrawTo, World world) {
 		toDrawTo.begin();
 		getGraphics().getSpriteBatch().begin();
 		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -166,7 +166,7 @@ public class Weather {
 	}
 
 
-	private static float glareAlpha(float time) {
+	private static final float glareAlpha(float time) {
 		if (time <= 4f || time >= 20f) {
 			return 1f;
 		}
@@ -174,7 +174,7 @@ public class Weather {
 	}
 
 
-	private static float nightSuppression(float time) {
+	private static final float nightSuppression(float time) {
 		if (time >= 4f || time <= 20f) {
 			return 1f;
 		}
@@ -182,7 +182,7 @@ public class Weather {
 	}
 
 
-	public static float volumetricAlphaMultiplier(float time) {
+	public static final float volumetricAlphaMultiplier(float time) {
 		if (time >= 8f && time <= 16f) {
 			return 1f;
 		} else if (time >= 16f && time <= 18f) {
@@ -195,14 +195,14 @@ public class Weather {
 	}
 
 
-	public static void dispose() {
+	public static final void dispose() {
 		skyBuffer.dispose();
 		working.dispose();
 	}
 
 
 	/** Load resources */
-	public static void setup() {
+	public static final void setup() {
 		skyBuffer = new FrameBuffer(RGBA8888, getGraphics().getWidth(), getGraphics().getHeight(), false);
 		working = new FrameBuffer(RGBA8888, 1, 1, false);
 		orbitalPivot = new Vector2(getGraphics().getWidth()/2, 0);

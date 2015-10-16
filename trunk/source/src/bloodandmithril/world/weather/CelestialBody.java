@@ -8,15 +8,15 @@ import static java.lang.Math.toRadians;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.world.World;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Maps;
 
 /**
  * Class representing a celestial body
@@ -24,9 +24,9 @@ import com.google.common.collect.Maps;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class CelestialBody {
+public final class CelestialBody {
 
-	public static Map<Integer, TextureRegion> starTextures = Maps.newHashMap();
+	public static final Map<Integer, TextureRegion> starTextures = Maps.newHashMap();
 
 	static {
 		if (ClientServerInterface.isClient()) {
@@ -65,7 +65,7 @@ public class CelestialBody {
 	/**
 	 * Renders this star
 	 */
-	public void render(World world) {
+	public final void render(World world) {
 		float time = world.getEpoch().getTime();
 		float theta = angle + time / 24f * 360f;
 

@@ -14,7 +14,7 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Epoch implements Serializable {
+public final class Epoch implements Serializable {
 	private static final long serialVersionUID = -5123582798866732144L;
 
 	/** Length of one day, in real minutes */
@@ -34,7 +34,7 @@ public class Epoch implements Serializable {
 	}
 
 
-	public Epoch copy() {
+	public final Epoch copy() {
 		return new Epoch(timeOfDay, dayOfMonth, monthOfYear, year);
 	}
 
@@ -42,7 +42,7 @@ public class Epoch implements Serializable {
 	/**
 	 * @param delta - To increment, in seconds
 	 */
-	public void incrementTime(float delta) {
+	public final void incrementTime(float delta) {
 		float toIncrementBy = 24 * delta / lengthOfDay / 60f;
 		float trialTime = timeOfDay + toIncrementBy;
 
@@ -58,7 +58,7 @@ public class Epoch implements Serializable {
 	/**
 	 * @param delta - To increment, in seconds
 	 */
-	public void incrementGameTime(float time) {
+	public final void incrementGameTime(float time) {
 		float trialTime = timeOfDay + time;
 
 		if (trialTime > 24f) {
@@ -70,7 +70,7 @@ public class Epoch implements Serializable {
 	}
 
 
-	public boolean isLaterThan(Epoch other) {
+	public final boolean isLaterThan(Epoch other) {
 		if (year > other.year) {
 			return true;
 		} else if (year == other.year) {
@@ -100,7 +100,7 @@ public class Epoch implements Serializable {
 	/**
 	 * Increments the day
 	 */
-	public void incrementDay() {
+	public final void incrementDay() {
 		if (dayOfMonth == 30) {
 			dayOfMonth = 1;
 			incrementMonth();
@@ -113,7 +113,7 @@ public class Epoch implements Serializable {
 	/**
 	 * @return the time of day
 	 */
-	public float getTime() {
+	public final float getTime() {
 		return timeOfDay;
 	}
 
@@ -121,7 +121,7 @@ public class Epoch implements Serializable {
 	/**
 	 * Increments the month.
 	 */
-	private void incrementMonth() {
+	private final void incrementMonth() {
 		if (monthOfYear == 12) {
 			monthOfYear = 1;
 			year++;
@@ -131,7 +131,7 @@ public class Epoch implements Serializable {
 	}
 
 
-	public void setTimeOfDay(float time) {
+	public final void setTimeOfDay(float time) {
 		this.timeOfDay = time;
 	}
 
@@ -139,7 +139,7 @@ public class Epoch implements Serializable {
 	/**
 	 * @return the current time of day as a string
 	 */
-	public static String getTimeString(float time) {
+	public static final String getTimeString(float time) {
 		if (time > 24f) {
 			time -= 24f;
 		}
@@ -153,7 +153,7 @@ public class Epoch implements Serializable {
 	/**
 	 * See {@link #getTimeString(Epoch)}
 	 */
-	public String getTimeString() {
+	public final String getTimeString() {
 		return getTimeString(getTime());
 	}
 
@@ -161,7 +161,7 @@ public class Epoch implements Serializable {
 	/**
 	 * @return the current date as a string
 	 */
-	public String getDateString() {
+	public final String getDateString() {
 		return Integer.toString(dayOfMonth) + "/" + Integer.toString(monthOfYear) + "/" + Integer.toString(year);
 	}
 
@@ -169,7 +169,7 @@ public class Epoch implements Serializable {
 	/**
 	 * @return the daylight alpha
 	 */
-	public float dayLight() {
+	public final float dayLight() {
 		if (timeOfDay > 0f && timeOfDay < 9f) {
 			return (float) exp(-pow(timeOfDay - 9f, 2));
 		} else if (timeOfDay > 9f && timeOfDay < 16f) {

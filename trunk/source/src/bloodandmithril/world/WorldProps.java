@@ -15,11 +15,11 @@ import bloodandmithril.prop.construction.Construction;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class WorldProps implements Serializable {
+public final class WorldProps implements Serializable {
 	private static final long serialVersionUID = -4455079330719120993L;
 
 	/** Every {@link Prop} that exists */
-	private ConcurrentHashMap<Integer, Prop> props = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<Integer, Prop> props = new ConcurrentHashMap<>();
 	private final int worldId;
 
 	/**
@@ -33,7 +33,7 @@ public class WorldProps implements Serializable {
 	/**
 	 * @return whether a prop exists by id
 	 */
-	public boolean hasProp(int id) {
+	public final boolean hasProp(int id) {
 		return props.containsKey(id);
 	}
 
@@ -41,7 +41,7 @@ public class WorldProps implements Serializable {
 	/**
 	 * @return a prop by id.
 	 */
-	public Prop getProp(int id) {
+	public final Prop getProp(int id) {
 		return props.get(id);
 	}
 
@@ -49,7 +49,7 @@ public class WorldProps implements Serializable {
 	/**
 	 * @return a prop with the specified class, use with caution.
 	 */
-	public Prop getAnyProp(Class<? extends Prop> propClass) {
+	public final Prop getAnyProp(Class<? extends Prop> propClass) {
 		for (Prop p : props.values()) {
 			if (p.getClass().equals(propClass)) {
 				return p;
@@ -63,7 +63,7 @@ public class WorldProps implements Serializable {
 	/**
 	 * @return all props
 	 */
-	public Collection<Prop> getProps() {
+	public final Collection<Prop> getProps() {
 		return props.values();
 	}
 
@@ -71,7 +71,7 @@ public class WorldProps implements Serializable {
 	/**
 	 * Adds a prop
 	 */
-	public void addProp(Prop prop) {
+	public final void addProp(Prop prop) {
 		prop.setWorldId(worldId);
 		props.put(prop.id, prop);
 		Domain.getWorld(worldId).getPositionalIndexMap().get(prop.position.x, prop.position.y).addProp(prop.id);
@@ -87,7 +87,7 @@ public class WorldProps implements Serializable {
 	/**
 	 * Removes a prop
 	 */
-	public Prop removeProp(int key) {
+	public final Prop removeProp(int key) {
 		Prop prop = props.get(key);
 		Domain.getWorld(worldId).getPositionalIndexMap().get(prop.position.x, prop.position.y).removeProp(prop.id);
 		return props.remove(key);

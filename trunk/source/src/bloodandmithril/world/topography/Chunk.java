@@ -10,14 +10,6 @@ import java.io.Serializable;
 
 import org.lwjgl.opengl.GL11;
 
-import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.UserInterface;
-import bloodandmithril.util.Operator;
-import bloodandmithril.util.Util;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.World;
-import bloodandmithril.world.topography.tile.Tile;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -29,13 +21,21 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
+import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.UserInterface;
+import bloodandmithril.util.Operator;
+import bloodandmithril.util.Util;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
+import bloodandmithril.world.topography.tile.Tile;
+
 /**
  * The legendary and mythical Chunk
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Chunk {
+public final class Chunk {
 
 	/**
 	 * <p> The mesh this chunk is responsible for. </p>
@@ -79,7 +79,7 @@ public class Chunk {
 	/**
 	 * Constructs the mesh.
 	 */
-	private void constructMesh(ChunkData data, float[] vertexAttributes, boolean foreGround) {
+	private final void constructMesh(ChunkData data, float[] vertexAttributes, boolean foreGround) {
 
 
 		Mesh mesh = new Mesh(false, Topography.CHUNK_SIZE * Topography.CHUNK_SIZE * 4, 0, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_position"),
@@ -109,7 +109,7 @@ public class Chunk {
 	/**
 	 * Checks if the mesh has been constructed, if not, construct it and calculate orientations of tiles
 	 */
-	public void checkMesh() {
+	public final void checkMesh() {
 		if (fMesh == null) {
 			constructMesh(fData, fVertexAttributes, true);
 			calculateChunkOrientations(true);
@@ -124,7 +124,7 @@ public class Chunk {
 	/**
 	 * Populates the vertex attributes of a quad.
 	 */
-	private void populateQuadVertexAttributes(int x, int y, float texX, float texY, ChunkData data, float[] vertexAttributes) {
+	private final void populateQuadVertexAttributes(int x, int y, float texX, float texY, ChunkData data, float[] vertexAttributes) {
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 0] = data.xChunkCoord * CHUNK_SIZE * TILE_SIZE + x * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 1] = data.yChunkCoord * CHUNK_SIZE * TILE_SIZE + y * TILE_SIZE + TILE_SIZE/2 - tileRenderSize/2;
 		vertexAttributes[16 * x * CHUNK_SIZE + y * 16 + 2] = texX;
@@ -148,7 +148,7 @@ public class Chunk {
 
 
 	@Override
-	public String toString() {
+	public final String toString() {
 		return "Chunk: " + Integer.toHexString(hashCode()) + "\n" + "x - " + Integer.toString(fData.xChunkCoord) + "\n" + "y - " + Integer.toString(fData.yChunkCoord);
 	}
 
@@ -158,7 +158,7 @@ public class Chunk {
 	 * @param y - the y-coordinate of the tile you want to get.
 	 * @return the tile you wanted to get
 	 */
-	public Tile getTile(int x, int y, boolean foreGround) {
+	public final Tile getTile(int x, int y, boolean foreGround) {
 		return foreGround ? fData.tiles[x][y] : bData.tiles[x][y];
 	}
 
@@ -166,7 +166,7 @@ public class Chunk {
 	/**
 	 * @return a column of tiles
 	 */
-	public Tile[] getColumn(int x, boolean foreGround) {
+	public final Tile[] getColumn(int x, boolean foreGround) {
 		return foreGround ? fData.tiles[x] : bData.tiles[x];
 	}
 
@@ -174,7 +174,7 @@ public class Chunk {
 	/**
 	 * @return a row of tiles
 	 */
-	public Tile[] getRow(int y, boolean foreGround) {
+	public final Tile[] getRow(int y, boolean foreGround) {
 		Tile[] row = new Tile[Topography.CHUNK_SIZE];
 		for (int x = 0; x < Topography.CHUNK_SIZE; x++) {
 			row[x] = foreGround ? fData.tiles[x][y] : bData.tiles[x][y];
@@ -187,7 +187,7 @@ public class Chunk {
 	/**
 	 * Renders this chunk
 	 */
-	public void render(boolean foreGround, Camera camera, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
+	public final void render(boolean foreGround, Camera camera, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		if (foreGround) {
@@ -223,7 +223,7 @@ public class Chunk {
 	 *
 	 * @author Matt
 	 */
-	public static class ChunkData implements Serializable {
+	public static final class ChunkData implements Serializable {
 		private static final long serialVersionUID = 4819937128429782914L;
 
 		/**
@@ -263,7 +263,7 @@ public class Chunk {
 	/**
 	 * Repopupates the texture coordinates of this tile in the mesh
 	 */
-	public void repopulateTextureCoordinates(int x, int y, boolean foreGround) {
+	public final void repopulateTextureCoordinates(int x, int y, boolean foreGround) {
 		Tile tile = foreGround ? fData.tiles[x][y] : bData.tiles[x][y];
 		if (foreGround) {
 			populateQuadVertexAttributes(x, y, tile.getTexCoordX(foreGround), tile.getTexCoordY(), fData, fVertexAttributes);
@@ -276,7 +276,7 @@ public class Chunk {
 	/**
 	 * Refreshes the mesh.
 	 */
-	public void refreshMesh() {
+	public final void refreshMesh() {
 		if (fMesh != null) {
 			fMesh.setVertices(fVertexAttributes);
 		}
@@ -289,7 +289,7 @@ public class Chunk {
 	/**
 	 * @return {@link #fData}
 	 */
-	public ChunkData getChunkData(boolean foreGround) {
+	public final ChunkData getChunkData(boolean foreGround) {
 		return foreGround ? fData : bData;
 	}
 
@@ -301,7 +301,7 @@ public class Chunk {
 	 * @param chunkX - the x coordinate of the chunk to calculate for
 	 * @param chunkY - the y coordinate of the chunk to calculate for
 	 */
-	private void calculateChunkOrientations(boolean foreGround) {
+	private final void calculateChunkOrientations(boolean foreGround) {
 		int chunkX = fData.xChunkCoord;
 		int chunkY = fData.yChunkCoord;
 
@@ -360,7 +360,7 @@ public class Chunk {
 	/**
 	 * Deletes a tile on the chunk
 	 */
-	public void deleteTile(int tileX, int tileY, boolean foreGround) {
+	public final void deleteTile(int tileX, int tileY, boolean foreGround) {
 		if (foreGround) {
 			fData.tiles[tileX][tileY] = new Tile.EmptyTile();
 		} else {
@@ -374,7 +374,7 @@ public class Chunk {
 	/**
 	 * Changes a tile on the chunk
 	 */
-	public void changeTile(int tileX, int tileY, boolean foreGround, Class<? extends Tile> toChangeTo) {
+	public final void changeTile(int tileX, int tileY, boolean foreGround, Class<? extends Tile> toChangeTo) {
 		Tile newTile;
 		try {
 			newTile = toChangeTo.newInstance();
@@ -389,7 +389,7 @@ public class Chunk {
 	/**
 	 * Changes a tile on the chunk
 	 */
-	public void changeTile(int tileX, int tileY, boolean foreGround, Tile toChangeTo) {
+	public final void changeTile(int tileX, int tileY, boolean foreGround, Tile toChangeTo) {
 		if (foreGround) {
 			fData.tiles[tileX][tileY] = toChangeTo;
 		} else {
@@ -403,7 +403,7 @@ public class Chunk {
 	/**
 	 * This method is a lie, it doesn't do anything....Just kidding this thing calculates the orientation of ONE tile within *this* chunk
 	 */
-	private void recalculateOrientationsForTile(int x, int y, boolean foreGround) {
+	private final void recalculateOrientationsForTile(int x, int y, boolean foreGround) {
 
 		ChunkMap map = Domain.getWorld(fData.worldId).getTopography().getChunkMap();
 
