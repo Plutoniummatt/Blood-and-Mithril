@@ -5,7 +5,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 
 @Copyright("Matthew Peck 2014")
-public class WolfAI extends ArtificialIntelligence {
+public final class WolfAI extends ArtificialIntelligence {
 	private static final long serialVersionUID = 755427038153448789L;
 
 	/**
@@ -17,18 +17,18 @@ public class WolfAI extends ArtificialIntelligence {
 
 
 	@Override
-	protected ArtificialIntelligence internalCopy() {
+	protected final ArtificialIntelligence internalCopy() {
 		return new WolfAI(getHost());
 	}
 
 
 	@Override
-	protected void determineCurrentTask() {
+	protected final void determineCurrentTask() {
 		wander(500f, false);
 	}
 
 
 	@Override
-	public void addRoutines() {
+	public final void addRoutines() {
 	}
 }

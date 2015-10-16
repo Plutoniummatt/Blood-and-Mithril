@@ -10,6 +10,11 @@ import static bloodandmithril.world.Domain.getIndividual;
 
 import java.util.Set;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
@@ -34,11 +39,6 @@ import bloodandmithril.util.JITTask;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
-
 /**
  * {@link AITask} that:
  *
@@ -49,10 +49,10 @@ import com.google.inject.Inject;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Attack")
-public class Attack extends CompositeAITask implements RoutineTask {
+public final class Attack extends CompositeAITask implements RoutineTask {
 	private static final long serialVersionUID = 1106295624210596573L;
 
-	private Set<Integer> toBeAttacked = Sets.newHashSet();
+	private final Set<Integer> toBeAttacked = Sets.newHashSet();
 
 	@Inject
 	Attack() {
@@ -109,19 +109,19 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public String getShortDescription() {
+	public final String getShortDescription() {
 		return "Attacking";
 	}
 
 
 	@Override
-	public boolean isComplete() {
+	public final boolean isComplete() {
 		return getAlive() == null;
 	}
 
 
 	@Override
-	public boolean uponCompletion() {
+	public final boolean uponCompletion() {
 		Individual host = Domain.getIndividual(hostId.getId());
 		host.sendCommand(getKeyMappings().moveRight.keyCode, false);
 		host.sendCommand(getKeyMappings().moveLeft.keyCode, false);
@@ -129,7 +129,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 	}
 
 
-	private Individual getAlive() {
+	private final Individual getAlive() {
 		for (Integer id : toBeAttacked) {
 			Individual individual = Domain.getIndividual(id);
 			if (individual != null && individual.getState().health > 0f) {
@@ -141,12 +141,12 @@ public class Attack extends CompositeAITask implements RoutineTask {
 	}
 
 
-	public Set<Integer> getTargets() {
+	public final Set<Integer> getTargets() {
 		return toBeAttacked;
 	}
 
 
-	public class WithinAttackRangeOrCantAttack implements SerializableFunction<Boolean> {
+	public final class WithinAttackRangeOrCantAttack implements SerializableFunction<Boolean> {
 		private static final long serialVersionUID = -927709499203093624L;
 		private IndividualIdentifier attacker;
 		private IndividualIdentifier attackee;
@@ -161,7 +161,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public Boolean call() {
+		public final Boolean call() {
 			Individual atker = getIndividual(attacker.getId());
 			Individual victim = getIndividual(attackee.getId());
 
@@ -182,7 +182,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 	 *
 	 * @author Matt
 	 */
-	public class ReevaluateAttack extends AITask {
+	public final class ReevaluateAttack extends AITask {
 		private static final long serialVersionUID = 7740671063229381512L;
 
 		/**
@@ -194,26 +194,26 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public String getShortDescription() {
+		public final String getShortDescription() {
 			return "";
 		}
 
 
 		@Override
-		public boolean isComplete() {
+		public final boolean isComplete() {
 			return true;
 		}
 
 
 		@Override
-		public boolean uponCompletion() {
+		public final boolean uponCompletion() {
 			appendTask(new Attack(hostId, toBeAttacked));
 			return false;
 		}
 
 
 		@Override
-		public void execute(float delta) {
+		public final void execute(float delta) {
 		}
 	}
 
@@ -223,7 +223,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 	 *
 	 * @author Matt
 	 */
-	public class AttackTarget extends AITask {
+	public final class AttackTarget extends AITask {
 		private static final long serialVersionUID = -6824012439864939617L;
 		private boolean complete;
 		private int target;
@@ -235,26 +235,26 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public String getShortDescription() {
+		public final String getShortDescription() {
 			return "Attacking";
 		}
 
 
 		@Override
-		public boolean isComplete() {
+		public final boolean isComplete() {
 			return complete;
 		}
 
 
 		@Override
-		public boolean uponCompletion() {
+		public final boolean uponCompletion() {
 			appendTask(new Attack(hostId, toBeAttacked));
 			return false;
 		}
 
 
 		@Override
-		public void execute(float delta) {
+		public final void execute(float delta) {
 			getHost().setCombatStance(true);
 			Individual alive = getAlive();
 			if (alive == null) {
@@ -278,11 +278,11 @@ public class Attack extends CompositeAITask implements RoutineTask {
 	}
 
 
-	public static class AttackTaskGenerator extends TaskGenerator {
+	public static final class AttackTaskGenerator extends TaskGenerator {
 		private static final long serialVersionUID = 6935537151752635203L;
-		private SerializableFunction<Integer> victimId;
+		private final SerializableFunction<Integer> victimId;
+		private final int attackerId;
 		private String attackerName, victimName;
-		private int attackerId;
 
 		public AttackTaskGenerator(int attackerId, SerializableFunction<Integer> victimId, String overriddenVictimName) {
 			this.attackerId = attackerId;
@@ -296,7 +296,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public AITask apply(Object input) {
+		public final AITask apply(Object input) {
 			if (!Domain.getIndividual(victimId.call()).isAlive()) {
 				return null;
 			}
@@ -309,33 +309,33 @@ public class Attack extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public String getDailyRoutineDetailedDescription() {
+		public final String getDailyRoutineDetailedDescription() {
 			return attackerName + " attacks " + victimName;
 		}
 
 		@Override
-		public String getEntityVisibleRoutineDetailedDescription() {
+		public final String getEntityVisibleRoutineDetailedDescription() {
 			return attackerName + " attacks " + victimName;
 		}
 
 		@Override
-		public String getIndividualConditionRoutineDetailedDescription() {
+		public final String getIndividualConditionRoutineDetailedDescription() {
 			return attackerName + " attacks " + victimName;
 		}
 
 		@Override
-		public String getStimulusDrivenRoutineDetailedDescription() {
+		public final String getStimulusDrivenRoutineDetailedDescription() {
 			return attackerName + " attacks " + victimName;
 		}
 
 		@Override
-		public boolean valid() {
+		public final boolean valid() {
 			return Domain.getIndividual(victimId.call()).isAlive() && Domain.getIndividual(attackerId).isAlive();
 		}
 	}
 
 
-	public static class ReturnVictimId implements SerializableFunction<Integer> {
+	public static final class ReturnVictimId implements SerializableFunction<Integer> {
 		private static final long serialVersionUID = 5647294340775051321L;
 		private int id;
 
@@ -344,13 +344,13 @@ public class Attack extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public Integer call() {
+		public final Integer call() {
 			return id;
 		}
 	}
 
 
-	private MenuItem chooseTargetMenuItem(Individual host, Routine routine, ContextMenu toChooseFrom) {
+	private final MenuItem chooseTargetMenuItem(Individual host, Routine routine, ContextMenu toChooseFrom) {
 		return new MenuItem(
 			"Choose target",
 			() -> {
@@ -428,7 +428,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, final DailyRoutine routine) {
+	public final ContextMenu getDailyRoutineContextMenu(Individual host, final DailyRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
@@ -441,7 +441,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
+	public final ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
@@ -470,7 +470,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+	public final ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
@@ -483,7 +483,7 @@ public class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+	public final ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 

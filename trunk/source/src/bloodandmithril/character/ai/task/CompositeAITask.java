@@ -40,7 +40,7 @@ public class CompositeAITask extends AITask {
 
 
 	/** Adds a task to the end of the queue */
-	protected void appendTask(AITask taskToAdd) {
+	protected final void appendTask(AITask taskToAdd) {
 		tasks.addLast(taskToAdd);
 
 		if (getCurrentTask() == null) {
@@ -50,7 +50,7 @@ public class CompositeAITask extends AITask {
 
 
 	/** Adds a task to the front of the queue */
-	protected void setNextTask(AITask taskToAdd) {
+	protected final void setNextTask(AITask taskToAdd) {
 		tasks.addFirst(taskToAdd);
 	}
 
@@ -68,7 +68,7 @@ public class CompositeAITask extends AITask {
 	 * @see bloodandmithril.character.ai.AITask#execute()
 	 */
 	@Override
-	public void execute(float delta) {
+	public final void execute(float delta) {
 		if (getCurrentTask() == null) {
 			return;
 		}

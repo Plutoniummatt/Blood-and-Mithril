@@ -8,6 +8,11 @@ import static bloodandmithril.util.datastructure.WrapperForThree.wrap;
 
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.ai.perception.Listener;
 import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.SoundStimulus;
@@ -18,11 +23,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.datastructure.WrapperForThree;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
 
 /**
  * Master class for audio-related things
@@ -50,7 +50,7 @@ public class SoundService {
 
 	}
 
-	private static Map<Integer, WrapperForThree<Function<SoundStimulus>, com.badlogic.gdx.audio.Sound, Float>> sounds = Maps.newHashMap();
+	private static final Map<Integer, WrapperForThree<Function<SoundStimulus>, com.badlogic.gdx.audio.Sound, Float>> sounds = Maps.newHashMap();
 
 	private static Music current, next;
 
@@ -80,7 +80,7 @@ public class SoundService {
 	}
 
 	/** Returns the pan value in relation to camera location */
-	public static float getPan(Vector2 location) {
+	public static final float getPan(Vector2 location) {
 		if (!ClientServerInterface.isClient()) {
 			return 0f;
 		}
@@ -95,7 +95,7 @@ public class SoundService {
 	}
 
 
-	public static void play(int sound, Vector2 location, boolean requiresServerAuthority, Visible source) {
+	public static final void play(int sound, Vector2 location, boolean requiresServerAuthority, Visible source) {
 		if (sound == -1) {
 			return;
 		}
@@ -113,12 +113,12 @@ public class SoundService {
 	}
 
 
-	public static Function<SoundStimulus> getSoundStimulusFunction(int id) {
+	public static final Function<SoundStimulus> getSoundStimulusFunction(int id) {
 		return sounds.get(id).a;
 	}
 
 
-	private static void triggerListeners(Vector2 location, float triggerRadius, int sound, Visible source) {
+	private static final void triggerListeners(Vector2 location, float triggerRadius, int sound, Visible source) {
 		Domain.getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
 			Individual.class,
 			location.x - triggerRadius,
@@ -146,7 +146,7 @@ public class SoundService {
 
 
 	/** Update the music transition timer */
-	public static void update(float delta) {
+	public static final void update(float delta) {
 		decreasing = decreasing - delta / rate < 0f ? 0f : decreasing - delta / rate;
 		increasing = increasing + delta / rate > volume ? volume : increasing + delta / rate;
 
@@ -186,7 +186,7 @@ public class SoundService {
 
 
 	/** Returns the volume in relation to camera location */
-	private static float getVolume(Vector2 location) {
+	private static final float getVolume(Vector2 location) {
 		if (!ClientServerInterface.isClient()) {
 			return 0f;
 		}
@@ -200,12 +200,12 @@ public class SoundService {
 	}
 
 
-	public static void setVolumne(float volume) {
+	public static final void setVolumne(float volume) {
 		SoundService.volume = volume;
 	}
 
 
-	public static void changeMusic(float transitionTime, Music toChangeTo) {
+	public static final void changeMusic(float transitionTime, Music toChangeTo) {
 		fadeOut = false;
 
 		if (toChangeTo == current) {
@@ -227,7 +227,7 @@ public class SoundService {
 	}
 
 
-	public static void fadeOut(float transitionTime) {
+	public static final void fadeOut(float transitionTime) {
 		if (next != null) {
 			current = next;
 		}
@@ -246,7 +246,7 @@ public class SoundService {
 	 *
 	 * @author Matt
 	 */
-	public static class SuspiciousSound implements SoundStimulus {
+	public static final class SuspiciousSound implements SoundStimulus {
 		private static final long serialVersionUID = 6466600820010007897L;
 		private final SuspicionLevel suspicionLevel;
 		private Vector2 position;
@@ -260,21 +260,21 @@ public class SoundService {
 		}
 
 		@Override
-		public Vector2 getEmissionPosition() {
+		public final Vector2 getEmissionPosition() {
 			return position;
 		}
 
-		public SuspicionLevel getSuspicionLevel() {
+		public final SuspicionLevel getSuspicionLevel() {
 			return suspicionLevel;
 		}
 
 		@Override
-		public void setEmissionPosition(Vector2 position) {
+		public final void setEmissionPosition(Vector2 position) {
 			this.position = position;
 		}
 
 		@Override
-		public void stimulate(Individual individual) {
+		public final void stimulate(Individual individual) {
 			// TODO Auto-generated method stub
 		}
 	}

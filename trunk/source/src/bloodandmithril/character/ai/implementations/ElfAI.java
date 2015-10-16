@@ -20,7 +20,7 @@ import bloodandmithril.util.Util;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class ElfAI extends ArtificialIntelligence {
+public final class ElfAI extends ArtificialIntelligence {
 	private static final long serialVersionUID = -6956695432238102289L;
 
 
@@ -33,7 +33,7 @@ public class ElfAI extends ArtificialIntelligence {
 
 
 	@Override
-	protected void determineCurrentTask() {
+	protected final void determineCurrentTask() {
 		if (Util.roll(0.5f)) {
 			wander(200f, false);
 		}
@@ -45,13 +45,13 @@ public class ElfAI extends ArtificialIntelligence {
 
 
 	@Override
-	protected ArtificialIntelligence internalCopy() {
+	protected final ArtificialIntelligence internalCopy() {
 		return new ElfAI(getHost());
 	}
 
 
 	@Override
-	public void addRoutines() {
+	public final void addRoutines() {
 		healthBelowQuater();
 		lightLightables();
 		noiseHeard();
@@ -59,7 +59,7 @@ public class ElfAI extends ArtificialIntelligence {
 	}
 
 
-	private void morningRoutine() {
+	private final void morningRoutine() {
 		DailyRoutine dailyRoutine = new DailyRoutine(getHost().getId(), 8, 1);
 		dailyRoutine.setAiTaskGenerator(
 			new Speak.SpeakTaskGenerator(
@@ -72,7 +72,7 @@ public class ElfAI extends ArtificialIntelligence {
 	}
 
 
-	private void noiseHeard() {
+	private final void noiseHeard() {
 		StimulusDrivenRoutine stimRoutine = new StimulusDrivenRoutine(getHost().getId());
 		stimRoutine.setTriggerFunction(new StimulusDrivenRoutine.SuspiciousSoundAITriggerFunction(SuspicionLevel.INVESTIGATE));
 		stimRoutine.setAiTaskGenerator(
@@ -86,7 +86,7 @@ public class ElfAI extends ArtificialIntelligence {
 	}
 
 
-	private void healthBelowQuater() {
+	private final void healthBelowQuater() {
 		IndividualConditionRoutine anotherRoutine = new IndividualConditionRoutine(getHost().getId());
 		anotherRoutine.setTriggerFunction(new IndividualConditionRoutine.IndividualHealthTriggerFunction(false, 25f));
 		anotherRoutine.setAiTaskGenerator(
@@ -100,7 +100,7 @@ public class ElfAI extends ArtificialIntelligence {
 	}
 
 
-	private void lightLightables() {
+	private final void lightLightables() {
 		EntityVisibleRoutine routine = new EntityVisibleRoutine(getHost().getId(), new Lightable.LightableUnlit());
 		routine.setAiTaskGenerator(new LightLightable.GenerateLightAnyVisibleLightables(getHost().getId().getId()));
 		addRoutine(routine);

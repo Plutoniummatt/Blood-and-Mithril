@@ -10,6 +10,8 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
@@ -38,15 +40,13 @@ import bloodandmithril.util.datastructure.Wrapper;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.graphics.Color;
-
 /**
  * A {@link Routine} that depends on the outcome of a {@link Condition} to trigger the following tasks
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class EntityVisibleRoutine extends Routine {
+public final class EntityVisibleRoutine extends Routine {
 	private static final long serialVersionUID = -5762591639048417273L;
 
 	private EntityVisible identificationFunction;
@@ -62,7 +62,7 @@ public class EntityVisibleRoutine extends Routine {
 
 
 	@Override
-	public boolean areExecutionConditionsMet() {
+	public final boolean areExecutionConditionsMet() {
 		Individual individual = Domain.getIndividual(hostId.getId());
 		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
 		for (Visible v : observed) {
@@ -78,7 +78,7 @@ public class EntityVisibleRoutine extends Routine {
 	/**
 	 * @return the visible entity, or null if nothing is visible
 	 */
-	public Visible getVisibleEntity() {
+	public final Visible getVisibleEntity() {
 		Individual individual = Domain.getIndividual(hostId.getId());
 		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
 		for (Visible v : observed) {
@@ -92,13 +92,13 @@ public class EntityVisibleRoutine extends Routine {
 
 
 	@Override
-	public Object getTaskGenerationParameter() {
+	public final Object getTaskGenerationParameter() {
 		return getVisibleEntity();
 	}
 
 
 	@Override
-	public boolean isComplete() {
+	public final boolean isComplete() {
 		if (task != null) {
 			return task.isComplete();
 		}
@@ -108,7 +108,7 @@ public class EntityVisibleRoutine extends Routine {
 
 
 	@Override
-	public boolean uponCompletion() {
+	public final boolean uponCompletion() {
 		if (task != null) {
 			AITask toNullify = task;
 			this.task = null;
@@ -120,7 +120,7 @@ public class EntityVisibleRoutine extends Routine {
 
 
 	@Override
-	public void execute(float delta) {
+	public final void execute(float delta) {
 		if (task != null) {
 			task.execute(delta);
 		}
@@ -128,7 +128,7 @@ public class EntityVisibleRoutine extends Routine {
 
 
 	@Override
-	public Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
+	public final Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
 		Deque<Panel> wizard = new ArrayDeque<>();
 
 		wizard.add(new EntityVisibleInfoPanel(parent));
@@ -137,7 +137,7 @@ public class EntityVisibleRoutine extends Routine {
 	}
 
 
-	public EntityVisible getIdentificationFunction() {
+	public final EntityVisible getIdentificationFunction() {
 		return identificationFunction;
 	}
 
@@ -148,7 +148,7 @@ public class EntityVisibleRoutine extends Routine {
 	 * @author Matt
 	 */
 	@Copyright("Matthew Peck 2015")
-	public static class SpecificEntityVisible<T extends Visible> extends EntityVisible {
+	public static final class SpecificEntityVisible<T extends Visible> extends EntityVisible {
 		private static final long serialVersionUID = -5442698966769008090L;
 		private T t;
 		private WrapperForTwo<Class<? extends Visible>, T> wrapper;
@@ -159,18 +159,18 @@ public class EntityVisibleRoutine extends Routine {
 		}
 
 		@Override
-		public Boolean apply(Visible input) {
+		public final Boolean apply(Visible input) {
 			return t.sameAs(input);
 		}
 
 		@Override
-		public String getDetailedDescription(Individual host) {
+		public final String getDetailedDescription(Individual host) {
 			return null;
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public WrapperForTwo<Class<? extends Visible>, T> getEntity() {
+		public final WrapperForTwo<Class<? extends Visible>, T> getEntity() {
 			return wrapper;
 		}
 	}
@@ -212,7 +212,7 @@ public class EntityVisibleRoutine extends Routine {
 	}
 
 
-	public static class IndividualEntityVisible extends TypeEntityVisible {
+	public static final class IndividualEntityVisible extends TypeEntityVisible {
 		private static final long serialVersionUID = 1633442019980027732L;
 		private Behaviour behaviour;
 		private int hostId;
@@ -227,12 +227,12 @@ public class EntityVisibleRoutine extends Routine {
 			this.wrapper = WrapperForTwo.wrap(t, null);
 		}
 
-		public Class<? extends Visible> getVisibleClass() {
+		public final Class<? extends Visible> getVisibleClass() {
 			return t;
 		}
 
 		@Override
-		public Boolean apply(Visible input) {
+		public final Boolean apply(Visible input) {
 			if (input instanceof Individual) {
 				return super.apply(input) && ((Individual) input).deriveBehaviourTowards(Domain.getIndividual(hostId)) == behaviour && ((Individual) input).isAlive() == alive;
 			}
@@ -241,13 +241,13 @@ public class EntityVisibleRoutine extends Routine {
 		}
 
 		@Override
-		public String getDetailedDescription(Individual host) {
+		public final String getDetailedDescription(Individual host) {
 			return "This routine occurs when " + behaviour.description.toLowerCase() + " " + t.getAnnotation(Name.class).name() + " are visible to " + Domain.getIndividual(hostId).getId().getSimpleName();
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public WrapperForTwo<Class<? extends Individual>, Individual> getEntity() {
+		public final WrapperForTwo<Class<? extends Individual>, Individual> getEntity() {
 			return wrapper;
 		}
 	}
@@ -259,7 +259,7 @@ public class EntityVisibleRoutine extends Routine {
 	 * @author Matt
 	 */
 	@Copyright("Matthew Peck 2015")
-	public class EntityVisibleInfoPanel extends RoutinePanel {
+	public final class EntityVisibleInfoPanel extends RoutinePanel {
 		private Button changeVisibleEntityButton;
 
 		protected EntityVisibleInfoPanel(Component parent) {
@@ -281,7 +281,7 @@ public class EntityVisibleRoutine extends Routine {
 		}
 
 		@Override
-		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public final boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 			if (changeTaskButton.click()) {
 				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
@@ -356,7 +356,7 @@ public class EntityVisibleRoutine extends Routine {
 			return super.leftClick(copy, windowsCopy) || changeVisibleEntityButton.click();
 		}
 
-		private ContextMenu deriveIndividualTypeContextMenu(Wrapper<Behaviour> args) {
+		private final ContextMenu deriveIndividualTypeContextMenu(Wrapper<Behaviour> args) {
 			ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 			for (Entry<String, List<Class<? extends Individual>>> category : Individual.getAllIndividualClasses().entrySet()) {
 				ContextMenu secondaryMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
@@ -399,7 +399,7 @@ public class EntityVisibleRoutine extends Routine {
 		}
 
 		@Override
-		public void render() {
+		public final void render() {
 			super.render();
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
@@ -437,16 +437,16 @@ public class EntityVisibleRoutine extends Routine {
 	}
 
 
-	public static class VisiblePropFuture implements SerializableFunction<Integer> {
+	public static final class VisiblePropFuture implements SerializableFunction<Integer> {
 		private static final long serialVersionUID = -3026958963883212173L;
-		private EntityVisibleRoutine routine;
+		private final EntityVisibleRoutine routine;
 
 		public VisiblePropFuture(EntityVisibleRoutine routine) {
 			this.routine = routine;
 		}
 
 		@Override
-		public Integer call() {
+		public final Integer call() {
 			Visible visibleEntity = routine.getVisibleEntity();
 			if (visibleEntity instanceof Prop) {
 				return ((Prop) visibleEntity).id;

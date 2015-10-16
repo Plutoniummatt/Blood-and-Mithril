@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
@@ -29,15 +31,13 @@ import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.DebugTile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * An implementation of {@link PathFinder}, uses A* algorithm
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class AStarPathFinder extends PathFinder {
+public final class AStarPathFinder extends PathFinder {
 	private static final long serialVersionUID = 3045865381118362210L;
 
 	/** Open {@link Node}s */
@@ -47,7 +47,7 @@ public class AStarPathFinder extends PathFinder {
 	private final DualKeyHashMap<Integer, Integer, Node> closedNodes = new DualKeyHashMap<Integer, Integer, AStarPathFinder.Node>();
 
 	/** Used for sorting {@link Node}s in ascending order by F = G + H */
-	private static Comparator<DualKeyEntry<Integer, Integer, Node>> fComparator = new Comparator<DualKeyEntry<Integer, Integer, Node>>() {
+	private static final Comparator<DualKeyEntry<Integer, Integer, Node>> fComparator = new Comparator<DualKeyEntry<Integer, Integer, Node>>() {
 		@Override
 		public int compare(DualKeyEntry<Integer, Integer, Node> entry1, DualKeyEntry<Integer, Integer, Node> entry2) {
 			if (entry1.value.getF() > entry2.value.getF()) {
@@ -61,7 +61,7 @@ public class AStarPathFinder extends PathFinder {
 	};
 
 	/** Used for sorting {@link Node}s in ascending order by H */
-	private static Comparator<DualKeyEntry<Integer, Integer, Node>> heuristicComparator = new Comparator<DualKeyEntry<Integer, Integer, Node>>() {
+	private static final Comparator<DualKeyEntry<Integer, Integer, Node>> heuristicComparator = new Comparator<DualKeyEntry<Integer, Integer, Node>>() {
 		@Override
 		public int compare(DualKeyEntry<Integer, Integer, Node> entry1, DualKeyEntry<Integer, Integer, Node> entry2) {
 			if (entry1.value.heuristic > entry2.value.heuristic) {
@@ -78,7 +78,7 @@ public class AStarPathFinder extends PathFinder {
 	 * See {@link PathFinder#findShortestPathAir(WayPoint, WayPoint)}
 	 */
 	@Override
-	public Path findShortestPathAir(WayPoint start, WayPoint finish, World world) {
+	public final Path findShortestPathAir(WayPoint start, WayPoint finish, World world) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -87,7 +87,7 @@ public class AStarPathFinder extends PathFinder {
 	 * See {@link PathFinder#findShortestPathGround(WayPoint, WayPoint, int)}
 	 */
 	@Override
-	public Path findShortestPathGround(WayPoint start, WayPoint finish, int height, int safeHeight, float forceTolerance, World world) {
+	public final Path findShortestPathGround(WayPoint start, WayPoint finish, int height, int safeHeight, float forceTolerance, World world) {
 		try {
 			Vector2 startCoords = determineWayPointCoords(start.waypoint, false, false, world);
 			Vector2 finishCoords = determineWayPointCoords(finish.waypoint, false, true, world);
@@ -153,7 +153,7 @@ public class AStarPathFinder extends PathFinder {
 	}
 
 
-	private Vector2 determineWayPointCoords(Vector2 location, boolean floor, boolean finish, World world) throws NoTileFoundException {
+	private final Vector2 determineWayPointCoords(Vector2 location, boolean floor, boolean finish, World world) throws NoTileFoundException {
 		Tile tile = world.getTopography().getTile(location, true);
 		if (location.y < 0) {
 			tile = world.getTopography().getTile(location.x, location.y + 1, true);
@@ -177,7 +177,7 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Extracts the {@link Path} from the {@link #closedNodes} */
-	private Path extractPath(Node finalNode, float finalTolerance, float forceTolerance, World world) throws NoTileFoundException {
+	private final Path extractPath(Node finalNode, float finalTolerance, float forceTolerance, World world) throws NoTileFoundException {
 		Path answer = new Path();
 
 		if (finalNode.getF() > 9999999f) {
@@ -217,7 +217,7 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Processes an open {@link Node} */
-	private Node processOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
+	private final Node processOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
 		aiDebug("Processing open node: " + toProcess.toString(), DEBUG);
 		openNodes.remove(toProcess.x, toProcess.y);
 		closedNodes.put(toProcess.x, toProcess.y, toProcess);
@@ -226,7 +226,7 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Processes the two adjascent locations to the argument */
-	private Node processAdjascentNodesToOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
+	private final Node processAdjascentNodesToOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
 
 		// Left and right nodes, the tiles immediately to the left/right of the open node to process
 		Node leftNode = new Node(toProcess.x - TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
@@ -266,7 +266,7 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Checks if a {@link Node} contains the same coordinates and another */
-	private boolean isDestination(final Node isThisDestination, final Node destinationNode) {
+	private final boolean isDestination(final Node isThisDestination, final Node destinationNode) {
 		aiDebug("Checking if " + isThisDestination.toString() + " is the destination node: " + destinationNode.toString(), DEBUG);
 		return isThisDestination.x.equals(destinationNode.x) && isThisDestination.y.equals(destinationNode.y);
 	}
@@ -274,7 +274,7 @@ public class AStarPathFinder extends PathFinder {
 
 	/** Determines if we can move to an adjascent {@link Node} */
 	@SuppressWarnings("cast")
-	private int processAdjascent(final Node to, int height, boolean right, Node parent, Node destination, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
+	private final int processAdjascent(final Node to, int height, boolean right, Node parent, Node destination, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
 		Tile tile;
 
 		try {
@@ -334,7 +334,7 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Cascades downwards and adds all platform tiles to {@link #openNodes} until a non-platform, non-empty {@link Tile} is found */
-	private void cascadeDownAndProcessPlatforms(float x, float y, Node parent, Node destination, int height, int safeHeight, World world) throws NoTileFoundException {
+	private final void cascadeDownAndProcessPlatforms(float x, float y, Node parent, Node destination, int height, int safeHeight, World world) throws NoTileFoundException {
 		Tile tile;
 		try {
 			tile = world.getTopography().getTile(x, y, true);
@@ -376,7 +376,7 @@ public class AStarPathFinder extends PathFinder {
 	}
 
 
-	private void changeToDebugTile(final float x, final float y, final World world) {
+	private final void changeToDebugTile(final float x, final float y, final World world) {
 		if (isServer() || isClient()) {
 			return;
 		}
@@ -388,13 +388,13 @@ public class AStarPathFinder extends PathFinder {
 
 
 	/** Heuristic calculation */
-	private float calculateHeuristic(int x, int y, Vector2 destination) {
+	private final float calculateHeuristic(int x, int y, Vector2 destination) {
 		return abs(destination.cpy().sub(new Vector2(x, y)).len());
 	}
 
 
 	/** Adds a {@link Node} to {@link #openNodes} */
-	private void addToOpenNodes(Node nodeToPut) {
+	private final void addToOpenNodes(Node nodeToPut) {
 		if (closedNodes.get(nodeToPut.x, nodeToPut.y) == null) {
 			if (openNodes.get(nodeToPut.x, nodeToPut.y) == null) {
 				openNodes.put(nodeToPut.x, nodeToPut.y, nodeToPut);
@@ -416,7 +416,7 @@ public class AStarPathFinder extends PathFinder {
 	 *
 	 * @author Matt
 	 */
-	public class Node implements Serializable {
+	public final class Node implements Serializable {
 		private static final long serialVersionUID = 3817098095133274007L;
 
 		/** {@link Node} coordinates */
@@ -444,7 +444,7 @@ public class AStarPathFinder extends PathFinder {
 			}
 		}
 
-		private float getF() {
+		private final float getF() {
 			return heuristic + cost;
 		}
 
@@ -461,7 +461,7 @@ public class AStarPathFinder extends PathFinder {
 	 *
 	 * @author Matt
 	 */
-	private class UndiscoveredPathNotification extends Throwable {
+	private final class UndiscoveredPathNotification extends Throwable {
 		private static final long serialVersionUID = -7186752075109145987L;
 	}
 }
