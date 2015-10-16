@@ -5,6 +5,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -13,10 +17,6 @@ import bloodandmithril.util.Performance;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
-
 
 /**
  * A Path for {@link ArtificialIntelligence} to follow
@@ -24,16 +24,16 @@ import com.google.common.collect.Lists;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Path implements Serializable {
+public final class Path implements Serializable {
 	private static final long serialVersionUID = -2569430046328226956L;
 
 	/** {@link WayPoint}s associated with this {@link Path} */
-	private ConcurrentLinkedDeque<WayPoint> waypoints;
+	private final ConcurrentLinkedDeque<WayPoint> waypoints;
 
 	/**
 	 * True if location is part of this {@link Path}
 	 */
-	public synchronized boolean isPartOfPathGroundAndIsNext(Vector2 location) {
+	public synchronized final boolean isPartOfPathGroundAndIsNext(Vector2 location) {
 		try {
 			Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
 			if (!waypoints.isEmpty() && waypoints.getFirst().waypoint.equals(flooredCoords)) {
@@ -49,7 +49,7 @@ public class Path implements Serializable {
 	/**
 	 * True if location is directly above the next waypoint in the {@link Path}
 	 */
-	public synchronized boolean isDirectlyAboveNext(Vector2 location) {
+	public synchronized final boolean isDirectlyAboveNext(Vector2 location) {
 		try {
 			Vector2 flooredCoords = Topography.convertToWorldCoord(location, true);
 			if (location.y < 0) {
@@ -80,19 +80,19 @@ public class Path implements Serializable {
 
 
 	/** Copies this path, must be synchronized */
-	public synchronized Path copy() {
+	public synchronized final Path copy() {
 		return new Path(new ConcurrentLinkedDeque<>(this.waypoints));
 	}
 
 
 	/** Adds a {@link WayPoint} to this {@link Path} at the beginning */
-	public synchronized void addWayPointReversed(WayPoint wayPoint) {
+	public synchronized final void addWayPointReversed(WayPoint wayPoint) {
 		waypoints.addFirst(wayPoint);
 	}
 
 
 	/** Clears all {@link WayPoint}s of this {@link Path} */
-	public synchronized void clear() {
+	public synchronized final void clear() {
 		waypoints.clear();
 	}
 
@@ -101,7 +101,7 @@ public class Path implements Serializable {
 	 * Renders all the waypoint of this {@link Path}
 	 */
 	@Performance(explanation = "Renders a dot for each waypoint, inefficient if path contains many waypoints")
-	public void render() {
+	public final void render() {
 		LinkedList<WayPoint> waypointsCopy = Lists.newLinkedList(waypoints);
 		Iterator<WayPoint> waypointsIterator = waypointsCopy.iterator();
 
@@ -144,7 +144,7 @@ public class Path implements Serializable {
 	/**
 	 * @return true if this {@link Path} contains no {@link WayPoint}s
 	 */
-	public boolean isEmpty() {
+	public final boolean isEmpty() {
 		return waypoints.isEmpty();
 	}
 
@@ -152,7 +152,7 @@ public class Path implements Serializable {
 	/**
 	 * @return the next {@link WayPoint} in this {@link Path}
 	 */
-	public synchronized WayPoint getNextPoint() {
+	public synchronized final WayPoint getNextPoint() {
 		if (waypoints.isEmpty()) {
 			return null;
 		}
@@ -164,13 +164,13 @@ public class Path implements Serializable {
 	/**
 	 * @return the WayPoint that was removed
 	 */
-	public synchronized WayPoint getAndRemoveNextWayPoint() {
+	public synchronized final WayPoint getAndRemoveNextWayPoint() {
 		return waypoints.remove();
 	}
 
 
 	/** Returns the destination waypoint */
-	public synchronized WayPoint getDestinationWayPoint() {
+	public synchronized final WayPoint getDestinationWayPoint() {
 		if (waypoints.isEmpty()) {
 			return null;
 		}
@@ -188,11 +188,11 @@ public class Path implements Serializable {
 	 *
 	 * @author Matt
 	 */
-	public static class WayPoint implements Serializable {
+	public static final class WayPoint implements Serializable {
 		private static final long serialVersionUID = -8432865748395952201L;
 
 		/** The coordinate of the waypoint */
-		public Vector2 waypoint;
+		public final Vector2 waypoint;
 
 		/** The tolerance distance of the waypoint */
 		public float tolerance;

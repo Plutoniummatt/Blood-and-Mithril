@@ -9,6 +9,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
@@ -31,15 +33,13 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util.Colors;
 
-import com.badlogic.gdx.graphics.Color;
-
 /**
  * A Routine based on the condition of the host
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class IndividualConditionRoutine extends Routine {
+public final class IndividualConditionRoutine extends Routine {
 	private static final long serialVersionUID = 6831994593107089893L;
 
 	private IndividualConditionTriggerFunction executionCondition;
@@ -53,25 +53,25 @@ public class IndividualConditionRoutine extends Routine {
 	}
 
 
-	public void setTriggerFunction(IndividualConditionTriggerFunction executionCondition) {
+	public final void setTriggerFunction(IndividualConditionTriggerFunction executionCondition) {
 		this.executionCondition = executionCondition;
 	}
 
 
 	@Override
-	public Object getTaskGenerationParameter() {
+	public final Object getTaskGenerationParameter() {
 		return getHost();
 	}
 
 
 	@Override
-	public boolean areExecutionConditionsMet() {
+	public final boolean areExecutionConditionsMet() {
 		return executionCondition.apply(getHost());
 	}
 
 
 	@Override
-	public boolean isComplete() {
+	public final boolean isComplete() {
 		if (task != null) {
 			return task.isComplete();
 		}
@@ -81,7 +81,7 @@ public class IndividualConditionRoutine extends Routine {
 
 
 	@Override
-	public boolean uponCompletion() {
+	public final boolean uponCompletion() {
 		if (task != null) {
 			AITask toNullify = task;
 			this.task = null;
@@ -93,7 +93,7 @@ public class IndividualConditionRoutine extends Routine {
 
 
 	@Override
-	public void execute(float delta) {
+	public final void execute(float delta) {
 		if (task != null) {
 			task.execute(delta);
 		}
@@ -101,7 +101,7 @@ public class IndividualConditionRoutine extends Routine {
 
 
 	@Override
-	public Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
+	public final Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
 		Deque<Panel> wizard = new ArrayDeque<>();
 
 		wizard.add(new IndividualConditionRoutinePanel(parent));
@@ -116,7 +116,7 @@ public class IndividualConditionRoutine extends Routine {
 	}
 
 
-	public static class IndividualHealthTriggerFunction extends IndividualConditionTriggerFunction {
+	public static final class IndividualHealthTriggerFunction extends IndividualConditionTriggerFunction {
 		private static final long serialVersionUID = -676643881949925314L;
 		private boolean greaterThan;
 		private float percentage;
@@ -130,7 +130,7 @@ public class IndividualConditionRoutine extends Routine {
 		}
 
 		@Override
-		public Boolean apply(Individual input) {
+		public final Boolean apply(Individual input) {
 			if (greaterThan) {
 				return input.getState().health/input.getState().maxHealth > percentage;
 			} else {
@@ -138,7 +138,7 @@ public class IndividualConditionRoutine extends Routine {
 			}
 		}
 		@Override
-		public String getDetailedDescription(Individual host) {
+		public final String getDetailedDescription(Individual host) {
 			if (greaterThan) {
 				return "This routine occurs when health is above " + String.format("%.2f", percentage*100) + "%";
 			} else {
@@ -154,7 +154,7 @@ public class IndividualConditionRoutine extends Routine {
 	 * @author Matt
 	 */
 	@Copyright("Matthew Peck 2015")
-	public class IndividualConditionRoutinePanel extends RoutinePanel {
+	public final class IndividualConditionRoutinePanel extends RoutinePanel {
 		private Button changeConditionButton;
 		protected IndividualConditionRoutinePanel(Component parent) {
 			super(parent);
@@ -175,7 +175,7 @@ public class IndividualConditionRoutine extends Routine {
 		}
 
 		@Override
-		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public final boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 			if (changeTaskButton.click()) {
 				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
@@ -249,7 +249,7 @@ public class IndividualConditionRoutine extends Routine {
 		}
 
 		@Override
-		public void render() {
+		public final void render() {
 			super.render();
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 

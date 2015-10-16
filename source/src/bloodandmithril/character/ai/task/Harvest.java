@@ -4,8 +4,13 @@ import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.setCursorBoundTask;
+import static bloodandmithril.world.Domain.getIndividual;
+import static bloodandmithril.world.Domain.getWorld;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -16,6 +21,7 @@ import com.google.inject.Inject;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.routine.DailyRoutine;
@@ -39,7 +45,9 @@ import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.cursorboundtask.ChooseAreaCursorBoundTask;
+import bloodandmithril.util.datastructure.Wrapper;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
@@ -175,6 +183,79 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 					}
 				}
 			}
+		}
+	}
+
+
+	public static class HarvestAreaTaskGenerator extends TaskGenerator {
+		private static final long serialVersionUID = 7331795787474572204L;
+
+		private float left, right, top, bottom;
+		private int hostId;
+
+		/**
+		 * Constructor
+		 */
+		public HarvestAreaTaskGenerator(Vector2 start, Vector2 finish, int hostId) {
+			this.hostId = hostId;
+			this.left 	= min(start.x, finish.x);
+			this.right 	= max(start.x, finish.x);
+			this.top 	= max(start.y, finish.y);
+			this.bottom	= min(start.y, finish.y);
+		}
+
+		@Override
+		public AITask apply(Object input) {
+			final Individual individual = getIndividual(hostId);
+			World world = getWorld(individual.getWorldId());
+			List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Prop.class, left, right, top, bottom);
+
+			final Wrapper<Harvest> task = new Wrapper<Harvest>(null);
+
+			propsWithinBounds
+			.stream()
+			.filter(id -> {
+				return Harvestable.class.isAssignableFrom(world.props().getProp(id).getClass());
+			})
+			.map(id -> {
+				return (Harvestable) world.props().getProp(id);
+			})
+			.forEach(harvestable -> {
+				try {
+					if (task.t == null) {
+						task.t = new Harvest(individual, harvestable);
+					} else {
+						task.t.appendTask(new Harvest(individual, harvestable));
+					}
+				} catch (Exception e) {}
+			});
+
+			return task.t;
+		}
+
+		@Override
+		public String getDailyRoutineDetailedDescription() {
+			return "Harvest from a defined area";
+		}
+
+		@Override
+		public String getEntityVisibleRoutineDetailedDescription() {
+			return "Harvest from a defined area";
+		}
+
+		@Override
+		public String getIndividualConditionRoutineDetailedDescription() {
+			return "Harvest from a defined area";
+		}
+
+		@Override
+		public String getStimulusDrivenRoutineDetailedDescription() {
+			return "Harvest from a defined area";
+		}
+
+		@Override
+		public boolean valid() {
+			return true;
 		}
 	}
 

@@ -2,6 +2,8 @@ package bloodandmithril.character.ai.pathfinding;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -10,8 +12,6 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
-
-import com.badlogic.gdx.math.Vector2;
 
 
 /**
@@ -40,7 +40,7 @@ public abstract class PathFinder implements Serializable {
 
 
 	/** Get the location of the ground above or below the closest empty or platform space */
-	public static Vector2 getGroundAboveOrBelowClosestEmptyOrPlatformSpace(Vector2 location, int radius, World world) throws NoTileFoundException {
+	public static final Vector2 getGroundAboveOrBelowClosestEmptyOrPlatformSpace(Vector2 location, int radius, World world) throws NoTileFoundException {
 		Vector2 closestEmptyOrPlatformSpace = getClosestEmptyOrPlatformSpace(location, radius, world);
 
 		if (closestEmptyOrPlatformSpace == null) {
@@ -56,7 +56,7 @@ public abstract class PathFinder implements Serializable {
 	 *  Get the location of the ground either above the location if on non-empty {@link Tile}
 	 *  or the location of the ground below if the location {@link Tile#isPassable()}
 	 */
-	private static Vector2 getGroundLocation(Vector2 location, int height, World world) throws NoTileFoundException {
+	private static final Vector2 getGroundLocation(Vector2 location, int height, World world) throws NoTileFoundException {
 		int currentHeight = 0;
 		if (world.getTopography().getTile(location, true) instanceof EmptyTile) {
 			while(world.getTopography().getTile(location.x, location.y + Topography.TILE_SIZE * currentHeight, true) instanceof EmptyTile && currentHeight >= -height - 1) {
@@ -73,7 +73,7 @@ public abstract class PathFinder implements Serializable {
 
 
 	/** Returns the position of the closest empty or platform tile */
-	private static Vector2 getClosestEmptyOrPlatformSpace(Vector2 location, int radius, World world) throws NoTileFoundException {
+	private static final Vector2 getClosestEmptyOrPlatformSpace(Vector2 location, int radius, World world) throws NoTileFoundException {
 		if (world.getTopography().getTile(location, true).isPassable()) {
 			return location;
 		}
@@ -90,7 +90,7 @@ public abstract class PathFinder implements Serializable {
 
 
 	/** Cycles through 8 directions of tiles, starting from the top */
-	private static Vector2 cyclicTileCheck(Vector2 location, int distance, World world) throws NoTileFoundException {
+	private static final Vector2 cyclicTileCheck(Vector2 location, int distance, World world) throws NoTileFoundException {
 		int additionalDistance = Topography.TILE_SIZE * distance;
 		float additionalDistanceDiagonal = Topography.TILE_SIZE * distance / 1.414f;
 

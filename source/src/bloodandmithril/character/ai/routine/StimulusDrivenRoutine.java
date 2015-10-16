@@ -9,6 +9,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.audio.SoundService.SuspicionLevel;
 import bloodandmithril.audio.SoundService.SuspiciousSound;
 import bloodandmithril.character.ai.AITask;
@@ -33,15 +35,13 @@ import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util.Colors;
 
-import com.badlogic.gdx.graphics.Color;
-
 /**
  * A {@link Routine} that is triggered by a {@link Stimulus} such as {@link SoundStimulus}
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class StimulusDrivenRoutine extends Routine {
+public final class StimulusDrivenRoutine extends Routine {
 	private static final long serialVersionUID = 2347934053852793343L;
 
 	private StimulusTriggerFunction triggerFunction;
@@ -57,7 +57,7 @@ public class StimulusDrivenRoutine extends Routine {
 	}
 
 
-	public void setTriggerFunction(StimulusTriggerFunction triggerFunction) {
+	public final void setTriggerFunction(StimulusTriggerFunction triggerFunction) {
 		this.triggerFunction = triggerFunction;
 	}
 
@@ -65,7 +65,7 @@ public class StimulusDrivenRoutine extends Routine {
 	/**
 	 * Attempt to trigger the execution of this {@link Routine}
 	 */
-	public void attemptTrigger(Stimulus stimulus) {
+	public final void attemptTrigger(Stimulus stimulus) {
 		if (triggerFunction.s.isAssignableFrom(stimulus.getClass())) {
 			if (triggerFunction.apply(stimulus)) {
 				this.triggeringStimulus = stimulus;
@@ -75,7 +75,7 @@ public class StimulusDrivenRoutine extends Routine {
 	}
 
 
-	public StimulusTriggerFunction getTriggerFunction() {
+	public final StimulusTriggerFunction getTriggerFunction() {
 		return triggerFunction;
 	}
 
@@ -98,19 +98,19 @@ public class StimulusDrivenRoutine extends Routine {
 
 
 	@Override
-	public Object getTaskGenerationParameter() {
+	public final Object getTaskGenerationParameter() {
 		return triggeringStimulus;
 	}
 
 
 	@Override
-	public boolean areExecutionConditionsMet() {
+	public final boolean areExecutionConditionsMet() {
 		return triggered;
 	}
 
 
 	@Override
-	public boolean isComplete() {
+	public final boolean isComplete() {
 		if (task != null) {
 			return task.isComplete();
 		}
@@ -120,7 +120,7 @@ public class StimulusDrivenRoutine extends Routine {
 
 
 	@Override
-	public boolean uponCompletion() {
+	public final boolean uponCompletion() {
 		if (task != null) {
 			AITask toNullify = task;
 			this.task = null;
@@ -133,7 +133,7 @@ public class StimulusDrivenRoutine extends Routine {
 
 
 	@Override
-	public void execute(float delta) {
+	public final void execute(float delta) {
 		if (task != null) {
 			task.execute(delta);
 		}
@@ -141,7 +141,7 @@ public class StimulusDrivenRoutine extends Routine {
 
 
 	@Override
-	public Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
+	public final Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
 		Deque<Panel> wizard = new ArrayDeque<>();
 
 		wizard.add(new StimulusDrivenRoutinePanel(parent));
@@ -150,7 +150,7 @@ public class StimulusDrivenRoutine extends Routine {
 	}
 
 
-	public class StimulusDrivenRoutinePanel extends RoutinePanel {
+	public final class StimulusDrivenRoutinePanel extends RoutinePanel {
 		private Button changeStimulusButton;
 		protected StimulusDrivenRoutinePanel(Component parent) {
 			super(parent);
@@ -171,7 +171,7 @@ public class StimulusDrivenRoutine extends Routine {
 		}
 
 		@Override
-		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public final boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 			if (changeTaskButton.click()) {
 				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
@@ -216,11 +216,11 @@ public class StimulusDrivenRoutine extends Routine {
 		}
 
 		@Override
-		public void leftClickReleased() {
+		public final void leftClickReleased() {
 		}
 
 		@Override
-		public void render() {
+		public final void render() {
 			super.render();
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
@@ -273,7 +273,7 @@ public class StimulusDrivenRoutine extends Routine {
 	}
 
 
-	public static class SuspiciousSoundAITriggerFunction extends StimulusTriggerFunction {
+	public static final class SuspiciousSoundAITriggerFunction extends StimulusTriggerFunction {
 		private static final long serialVersionUID = 5189638348993362947L;
 		private SuspicionLevel level;
 
@@ -283,12 +283,12 @@ public class StimulusDrivenRoutine extends Routine {
 		}
 
 		@Override
-		public String getDetailedDescription() {
+		public final String getDetailedDescription() {
 			return "This event occurs when a suspicious sound is heard";
 		}
 
 		@Override
-		public Boolean apply(Stimulus input) {
+		public final Boolean apply(Stimulus input) {
 			if (input instanceof SuspiciousSound) {
 				return ((SuspiciousSound) input).getSuspicionLevel().severity >= level.severity;
 			}

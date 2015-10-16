@@ -10,6 +10,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
@@ -32,15 +34,13 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 
-import com.badlogic.gdx.graphics.Color;
-
 /**
  * {@link Routine} that executes at, or later than a specified time every day
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class DailyRoutine extends Routine {
+public final class DailyRoutine extends Routine {
 	private static final long serialVersionUID = -255141692263126217L;
 
 	private Epoch lastExecutedEpoch = null;
@@ -59,20 +59,20 @@ public class DailyRoutine extends Routine {
 
 
 	@Override
-	public boolean areExecutionConditionsMet() {
+	public final boolean areExecutionConditionsMet() {
 		Epoch currentEpoch = Domain.getWorld(getHost().getWorldId()).getEpoch();
 		return currentEpoch.getTime() >= routineTime && currentEpoch.getTime() <= routineTime + toleranceTime && (lastExecutedEpoch == null || currentEpoch.dayOfMonth != lastExecutedEpoch.dayOfMonth);
 	}
 
 
 	@Override
-	public Object getTaskGenerationParameter() {
+	public final Object getTaskGenerationParameter() {
 		return getHost();
 	}
 
 
 	@Override
-	public boolean isComplete() {
+	public final boolean isComplete() {
 		if (task != null) {
 			return task.isComplete() || !areExecutionConditionsMet();
 		}
@@ -82,7 +82,7 @@ public class DailyRoutine extends Routine {
 
 
 	@Override
-	public boolean uponCompletion() {
+	public final boolean uponCompletion() {
 		if (task != null) {
 			AITask toNullify = task;
 			this.task = null;
@@ -103,7 +103,7 @@ public class DailyRoutine extends Routine {
 
 
 	@Override
-	public Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
+	public final Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
 		Deque<Panel> wizard = new ArrayDeque<>();
 
 		wizard.add(new DailyRoutineInfoPanel(parent));
@@ -118,7 +118,7 @@ public class DailyRoutine extends Routine {
 	 * @author Matt
 	 */
 	@Copyright("Matthew Peck 2015")
-	public class DailyRoutineInfoPanel extends RoutinePanel {
+	public final class DailyRoutineInfoPanel extends RoutinePanel {
 		private Button changeTimeButton, changeToleranceButton;
 		protected DailyRoutineInfoPanel(Component parent) {
 			super(parent);
@@ -193,7 +193,7 @@ public class DailyRoutine extends Routine {
 		}
 
 		@Override
-		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public final boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
 			if (changeTaskButton.click()) {
 				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
@@ -218,7 +218,7 @@ public class DailyRoutine extends Routine {
 		}
 
 		@Override
-		public void render() {
+		public final void render() {
 			super.render();
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
