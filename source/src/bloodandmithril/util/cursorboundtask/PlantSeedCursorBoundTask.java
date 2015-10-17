@@ -9,6 +9,10 @@ import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.task.PlantSeed;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.container.Container;
@@ -21,9 +25,6 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * {@link CursorBoundTask} to plant {@link SeedItem}s

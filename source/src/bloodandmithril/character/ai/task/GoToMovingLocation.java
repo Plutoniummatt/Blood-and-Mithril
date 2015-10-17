@@ -13,6 +13,11 @@ import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
@@ -36,10 +41,6 @@ import bloodandmithril.util.JITTask;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.google.inject.Inject;
 
 /**
  * Moves a host to a moving location
@@ -233,7 +234,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 	}
 
 
-	private MenuItem chooseLocationMenuItem(Individual host, Routine routine, ContextMenu toChooseFrom) {
+	private MenuItem chooseLocationMenuItem(Individual host, Routine routine) {
 		return new MenuItem(
 				"Choose location",
 				() -> {
@@ -253,10 +254,6 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 							routine.setAiTaskGenerator(
 								new GoToMovingLocationTaskGenerator(x, y, host.getId().getId())
 							);
-
-							UserInterface.contextMenus.clear();
-							toChooseFrom.x = getMouseScreenX();
-							toChooseFrom.y = getMouseScreenY();
 						}
 					};
 
@@ -311,10 +308,9 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 	@Override
 	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
-			chooseLocationMenuItem(host, routine, toChooseFrom)
+			chooseLocationMenuItem(host, routine)
 		);
 
 		return menu;
@@ -324,10 +320,9 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 	@Override
 	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
-			chooseLocationMenuItem(host, routine, toChooseFrom)
+			chooseLocationMenuItem(host, routine)
 		);
 
 		return menu;
@@ -337,10 +332,9 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 	@Override
 	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
-			chooseLocationMenuItem(host, routine, toChooseFrom)
+			chooseLocationMenuItem(host, routine)
 		);
 
 		return menu;
@@ -350,10 +344,9 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 	@Override
 	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
-			chooseLocationMenuItem(host, routine, toChooseFrom)
+			chooseLocationMenuItem(host, routine)
 		);
 
 		return menu;

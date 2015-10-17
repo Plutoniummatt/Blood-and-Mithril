@@ -3,6 +3,8 @@ package bloodandmithril.character.ai.task;
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.core.BloodAndMithrilClient.setCursorBoundTask;
 import static bloodandmithril.world.Domain.getIndividual;
 import static bloodandmithril.world.Domain.getWorld;
@@ -40,6 +42,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.CursorBoundTask;
@@ -60,7 +63,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Harvest")
-public class Harvest extends CompositeAITask implements RoutineTask {
+public final class Harvest extends CompositeAITask implements RoutineTask {
 	private static final long serialVersionUID = -4098455998844182430L;
 
 	/** Coordinate of the {@link Harvestable} to harvest */
@@ -102,7 +105,7 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 	 *
 	 * @author Matt
 	 */
-	public class HarvestItem extends AITask {
+	public final class HarvestItem extends AITask {
 		private static final long serialVersionUID = 7585777004625914828L;
 		private boolean taskDone = false;
 
@@ -115,25 +118,25 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public String getShortDescription() {
+		public final String getShortDescription() {
 			return "Harveseting";
 		}
 
 
 		@Override
-		public boolean isComplete() {
+		public final boolean isComplete() {
 			return taskDone;
 		}
 
 
 		@Override
-		public boolean uponCompletion() {
+		public final boolean uponCompletion() {
 			return false;
 		}
 
 
 		@Override
-		public void execute(float delta) {
+		public final void execute(float delta) {
 
 			Individual host = Domain.getIndividual(hostId.getId());
 
@@ -187,7 +190,69 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 	}
 
 
-	public static class HarvestAreaTaskGenerator extends TaskGenerator {
+	public static final class HarvestSingleHarvestableTaskGenerator extends TaskGenerator {
+		private static final long serialVersionUID = -501687183987861906L;
+		private final int hostId;
+		private final int harvestableId;
+		private final int worldId;
+
+		public HarvestSingleHarvestableTaskGenerator(int hostId, int harvestableId, int worldId) {
+			this.hostId = hostId;
+			this.harvestableId = harvestableId;
+			this.worldId = worldId;
+		}
+
+		@Override
+		public AITask apply(Object input) {
+			if (valid()) {
+				try {
+					return new Harvest(getIndividual(hostId), (Harvestable) getWorld(worldId).props().getProp(harvestableId));
+				} catch (NoTileFoundException e) {
+					return null;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public String getDailyRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public String getEntityVisibleRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public String getIndividualConditionRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public String getStimulusDrivenRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public boolean valid() {
+			if (getWorld(worldId).props().hasProp(harvestableId)) {
+				return Harvestable.class.isAssignableFrom(getWorld(worldId).props().getProp(harvestableId).getClass());
+			}
+
+			return false;
+		}
+
+		private String getDescription() {
+			if (valid()) {
+				return "Harvest " + getWorld(worldId).props().getProp(harvestableId).getTitle();
+			}
+			return "";
+		}
+	}
+
+
+	public static final class HarvestAreaTaskGenerator extends TaskGenerator {
 		private static final long serialVersionUID = 7331795787474572204L;
 
 		private float left, right, top, bottom;
@@ -205,7 +270,7 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public AITask apply(Object input) {
+		public final AITask apply(Object input) {
 			final Individual individual = getIndividual(hostId);
 			World world = getWorld(individual.getWorldId());
 			List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Prop.class, left, right, top, bottom);
@@ -234,22 +299,22 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public String getDailyRoutineDetailedDescription() {
+		public final String getDailyRoutineDetailedDescription() {
 			return "Harvest from a defined area";
 		}
 
 		@Override
-		public String getEntityVisibleRoutineDetailedDescription() {
+		public final String getEntityVisibleRoutineDetailedDescription() {
 			return "Harvest from a defined area";
 		}
 
 		@Override
-		public String getIndividualConditionRoutineDetailedDescription() {
+		public final String getIndividualConditionRoutineDetailedDescription() {
 			return "Harvest from a defined area";
 		}
 
 		@Override
-		public String getStimulusDrivenRoutineDetailedDescription() {
+		public final String getStimulusDrivenRoutineDetailedDescription() {
 			return "Harvest from a defined area";
 		}
 
@@ -260,7 +325,7 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 	}
 
 
-	private ContextMenu getChoices(final Routine routine) {
+	private final ContextMenu getChoices(final Routine routine, final Individual host) {
 		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
 			new ContextMenu.MenuItem(
 				"Harvest area",
@@ -268,7 +333,7 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 					setCursorBoundTask(
 						new ChooseAreaCursorBoundTask(
 							args -> {
-								routine.setAiTaskGenerator(null);
+								routine.setAiTaskGenerator(new HarvestAreaTaskGenerator((Vector2) args[0], (Vector2) args[1], host.getId().getId()));
 							},
 							true
 						) {
@@ -301,7 +366,33 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 				() -> {
 					BloodAndMithrilClient.setCursorBoundTask(
 						new CursorBoundTask(
-								args -> {},
+								args -> {
+									ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+									if (Domain.getActiveWorld() != null) {
+										for (int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY())) {
+											Prop prop = Domain.getActiveWorld().props().getProp(propKey);
+											if (Harvestable.class.isAssignableFrom(prop.getClass()) && prop.isMouseOver()) {
+												toChooseFrom.addMenuItem(
+													new MenuItem(
+														"Harvest " + prop.getTitle(),
+														() -> {
+															routine.setAiTaskGenerator(new HarvestSingleHarvestableTaskGenerator(host.getId().getId(), prop.id, prop.getWorldId()));
+														},
+														Color.ORANGE,
+														Color.GREEN,
+														Color.GRAY,
+														null
+													)
+												);
+											}
+										}
+									}
+
+									UserInterface.contextMenus.clear();
+									toChooseFrom.x = getMouseScreenX();
+									toChooseFrom.y = getMouseScreenY();
+									UserInterface.contextMenus.add(toChooseFrom);
+								},
 								true
 							) {
 							@Override
@@ -309,7 +400,7 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 							}
 							@Override
 							public String getShortDescription() {
-								return null;
+								return "Harvest";
 							}
 							@Override
 							public CursorBoundTask getImmediateTask() {
@@ -317,6 +408,15 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 							}
 							@Override
 							public boolean executionConditionMet() {
+								if (Domain.getActiveWorld() != null) {
+									for (int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY())) {
+										Prop prop = Domain.getActiveWorld().props().getProp(propKey);
+										if (Harvestable.class.isAssignableFrom(prop.getClass()) && prop.isMouseOver()) {
+											return true;
+										}
+									}
+								}
+
 								return false;
 							}
 							@Override
@@ -336,25 +436,25 @@ public class Harvest extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
-		return getChoices(routine);
+	public final ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+		return getChoices(routine, host);
 	}
 
 
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		return null;
+	public final ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
+		return getChoices(routine, host);
 	}
 
 
 	@Override
-	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
-		return null;
+	public final ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+		return getChoices(routine, host);
 	}
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
-		return null;
+	public final ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+		return getChoices(routine, host);
 	}
 }

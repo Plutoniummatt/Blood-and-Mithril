@@ -6,9 +6,16 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.ui.UserInterface.refreshRefreshableWindows;
+import static bloodandmithril.world.Domain.getIndividual;
+import static bloodandmithril.world.Domain.getWorld;
 
 import java.util.Map.Entry;
 import java.util.Set;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
@@ -27,7 +34,6 @@ import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.prop.plant.seed.SeedProp;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.JITTask;
@@ -36,10 +42,6 @@ import bloodandmithril.util.cursorboundtask.PlantSeedCursorBoundTask;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.google.inject.Inject;
 
 /**
  * A {@link CompositeAITask} that instructs the host to go to a location and plant a {@link SeedProp}
@@ -119,11 +121,13 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 		@Override
 		public void execute(float delta) {
 			planted = true;
-			int takeItem = Domain.getIndividual(hostId.getId()).takeItem(toPlant.getSeed());
+			int takeItem = getIndividual(hostId.getId()).takeItem(toPlant.getSeed());
 			if (takeItem == 1) {
-				Domain.getWorld(Domain.getIndividual(hostId.getId()).getWorldId()).props().addProp(toPlant);
+				if (toPlant.canPlaceAtCurrentPosition()) {
+					getWorld(getIndividual(hostId.getId()).getWorldId()).props().addProp(toPlant);
+				}
 			}
-			UserInterface.refreshRefreshableWindows();
+			refreshRefreshableWindows();
 		}
 	}
 
@@ -150,18 +154,21 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 		}
 		@Override
 		public String getDailyRoutineDetailedDescription() {
-			return "Plant " + item.getSingular(false) + " at " + String.format("%.1f", location.x) + ", " + String.format("%.1f", location.y);
+			return getDescription();
 		}
 		@Override
 		public String getEntityVisibleRoutineDetailedDescription() {
-			return "Plant " + item.getSingular(false) + " at " + String.format("%.1f", location.x) + ", " + String.format("%.1f", location.y);
+			return getDescription();
 		}
 		@Override
 		public String getIndividualConditionRoutineDetailedDescription() {
-			return "Plant " + item.getSingular(false) + " at " + String.format("%.1f", location.x) + ", " + String.format("%.1f", location.y);
+			return getDescription();
 		}
 		@Override
 		public String getStimulusDrivenRoutineDetailedDescription() {
+			return getDescription();
+		}
+		private String getDescription() {
 			return "Plant " + item.getSingular(false) + " at " + String.format("%.1f", location.x) + ", " + String.format("%.1f", location.y);
 		}
 		@Override
