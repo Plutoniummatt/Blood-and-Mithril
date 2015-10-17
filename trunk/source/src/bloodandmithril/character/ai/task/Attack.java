@@ -350,38 +350,36 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	}
 
 
-	private final MenuItem chooseTargetMenuItem(Individual host, Routine routine, ContextMenu toChooseFrom) {
+	private final MenuItem chooseTargetMenuItem(Individual host, Routine routine) {
 		return new MenuItem(
 			"Choose target",
 			() -> {
-				JITTask task = new JITTask() {
-					@Override
-					public void execute(Object... args) {
-						if (Domain.getActiveWorld() != null) {
-							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-								Individual indi = Domain.getIndividual(indiKey);
-								if (indi.isMouseOver()) {
-									toChooseFrom.addMenuItem(
-										new MenuItem(
-											"Attack " + indi.getId().getSimpleName(),
-											() -> {
-												routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), new ReturnVictimId(indi.getId().getId()), indi.getId().getSimpleName()));
-											},
-											Color.ORANGE,
-											Color.GREEN,
-											Color.GRAY,
-											null
-										)
-									);
-								}
+				JITTask task = args -> {
+					ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+					if (Domain.getActiveWorld() != null) {
+						for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+							Individual indi = Domain.getIndividual(indiKey);
+							if (indi.isMouseOver()) {
+								toChooseFrom.addMenuItem(
+									new MenuItem(
+										"Attack " + indi.getId().getSimpleName(),
+										() -> {
+											routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), new ReturnVictimId(indi.getId().getId()), indi.getId().getSimpleName()));
+										},
+										Color.ORANGE,
+										Color.GREEN,
+										Color.GRAY,
+										null
+									)
+								);
 							}
 						}
-
-						UserInterface.contextMenus.clear();
-						toChooseFrom.x = getMouseScreenX();
-						toChooseFrom.y = getMouseScreenY();
-						UserInterface.contextMenus.add(toChooseFrom);
 					}
+
+					UserInterface.contextMenus.clear();
+					toChooseFrom.x = getMouseScreenX();
+					toChooseFrom.y = getMouseScreenY();
+					UserInterface.contextMenus.add(toChooseFrom);
 				};
 
 				BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(task, true) {
@@ -430,10 +428,9 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	@Override
 	public final ContextMenu getDailyRoutineContextMenu(Individual host, final DailyRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
-			chooseTargetMenuItem(host, routine, toChooseFrom)
+			chooseTargetMenuItem(host, routine)
 		);
 
 		return menu;
@@ -443,10 +440,9 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	@Override
 	public final ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
-			chooseTargetMenuItem(host, routine, toChooseFrom)
+			chooseTargetMenuItem(host, routine)
 		);
 
 		final EntityVisible identificationFunction = routine.getIdentificationFunction();
@@ -472,10 +468,9 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	@Override
 	public final ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
-			chooseTargetMenuItem(host, routine, toChooseFrom)
+			chooseTargetMenuItem(host, routine)
 		);
 
 		return menu;
@@ -485,10 +480,9 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	@Override
 	public final ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
 		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
-			chooseTargetMenuItem(host, routine, toChooseFrom)
+			chooseTargetMenuItem(host, routine)
 		);
 
 		return menu;
