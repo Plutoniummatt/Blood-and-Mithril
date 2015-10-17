@@ -295,6 +295,10 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 						public boolean canCancel() {
 							return true;
 						}
+
+						@Override
+						public void keyPressed(int keyCode) {
+						}
 					});
 				},
 				Color.ORANGE,

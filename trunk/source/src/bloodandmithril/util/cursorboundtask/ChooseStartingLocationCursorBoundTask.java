@@ -12,6 +12,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.ItemPackage;
@@ -26,10 +30,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
 
 /**
  * {@link CursorBoundTask} to choose the starting location for a new game
@@ -172,5 +172,10 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	@Override
 	public CursorBoundTask getImmediateTask() {
 		return null;
+	}
+
+
+	@Override
+	public void keyPressed(int keyCode) {
 	}
 }

@@ -4,6 +4,10 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+
+import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
@@ -26,9 +30,6 @@ import bloodandmithril.util.JITTask;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.inject.Inject;
 
 @Copyright("Matthew Peck 2014")
 @Name(name = "Follow")
@@ -252,6 +253,10 @@ public class Follow extends CompositeAITask implements RoutineTask {
 					@Override
 					public boolean canCancel() {
 						return true;
+					}
+
+					@Override
+					public void keyPressed(int keyCode) {
 					}
 				});
 			},

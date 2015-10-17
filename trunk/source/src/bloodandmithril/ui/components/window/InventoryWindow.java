@@ -15,6 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -59,14 +67,6 @@ import bloodandmithril.util.cursorboundtask.PlantSeedCursorBoundTask;
 import bloodandmithril.util.cursorboundtask.ThrowItemCursorBoundTask;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * {@link Window} to display the inventory of an {@link Individual} or Container
@@ -645,7 +645,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			"Plant",
 			() -> {
 				BloodAndMithrilClient.setCursorBoundTask(
-					new PlantSeedCursorBoundTask((SeedItem) item, host)
+					new PlantSeedCursorBoundTask((SeedItem) item, (Individual) host, null)
 				);
 			},
 			Colors.UI_GRAY,

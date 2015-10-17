@@ -3,6 +3,7 @@ package bloodandmithril.util.cursorboundtask;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.core.BloodAndMithrilClient.setCursorBoundTask;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static com.badlogic.gdx.Gdx.gl;
@@ -10,12 +11,16 @@ import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 
+import java.util.List;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 
+import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.task.PlantSeed;
+import bloodandmithril.character.ai.task.PlantSeed.PlantSeedTaskGenerator;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
@@ -34,11 +39,14 @@ import bloodandmithril.world.topography.tile.tiles.SoilTile;
 public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 	private final SeedItem toPlant;
+	private final List<Vector2> plantingLocations = Lists.newArrayList();
+	private final Routine routine;
+	private final Individual planter;
 
 	/**
 	 * Constructor
 	 */
-	public PlantSeedCursorBoundTask(SeedItem seed, Container planter) {
+	public PlantSeedCursorBoundTask(SeedItem seed, Individual planter, Routine routine) {
 		super(
 			args -> {
 				bloodandmithril.prop.plant.seed.SeedProp propSeed = seed.getPropSeed();
@@ -54,21 +62,23 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 				if (planter instanceof Individual) {
 					if (ClientServerInterface.isServer()) {
 						try {
-							((Individual) planter).getAI().setCurrentTask(new PlantSeed((Individual) planter, propSeed));
+							planter.getAI().setCurrentTask(new PlantSeed(planter, propSeed));
 						} catch (NoTileFoundException e) {}
 					} else {
-						ClientServerInterface.SendRequest.sendPlantSeedRequest((Individual) planter, propSeed);
+						ClientServerInterface.SendRequest.sendPlantSeedRequest(planter, propSeed);
 					}
 				}
 			},
 			true
 		);
 		this.toPlant = seed;
+		this.routine = routine;
+		this.planter = planter;
 	}
 
 
 	@Override
-	public void renderUIGuide() {
+	public final void renderUIGuide() {
 		try {
 			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
@@ -80,14 +90,18 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 			getGraphics().getSpriteBatch().begin();
 			getGraphics().getSpriteBatch().setColor(executionConditionMet() ? Color.GREEN : Color.RED);
 			getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, x - 5, y);
+			for (Vector2 location : plantingLocations) {
+				getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, worldToScreenX(location.x), worldToScreenY(location.y));
+			}
 			getGraphics().getSpriteBatch().end();
 			gl.glDisable(GL_BLEND);
+
 		} catch (NoTileFoundException e) {}
 	}
 
 
 	@Override
-	public boolean executionConditionMet() {
+	public final boolean executionConditionMet() {
 		try {
 			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
@@ -100,13 +114,13 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public String getShortDescription() {
+	public final String getShortDescription() {
 		return "Plant " + toPlant.getSingular(false);
 	}
 
 
 	@Override
-	public boolean canCancel() {
+	public final boolean canCancel() {
 		return true;
 	}
 
@@ -114,5 +128,17 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 	@Override
 	public CursorBoundTask getImmediateTask() {
 		return null;
+	}
+
+
+	public final List<Vector2> getPlantingLocations() {
+		return plantingLocations;
+	}
+
+
+	@Override
+	public final void keyPressed(int keyCode) {
+		routine.setAiTaskGenerator(new PlantSeedTaskGenerator(getPlantingLocations(), planter.getId().getId(), toPlant));
+		setCursorBoundTask(null);
 	}
 }

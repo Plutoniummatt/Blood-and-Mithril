@@ -76,4 +76,10 @@ public abstract class CursorBoundTask {
 	 * @return true if this task can be cancelled
 	 */
 	public abstract boolean canCancel();
+
+
+	/**
+	 * Called when key is pressed
+	 */
+	public abstract void keyPressed(int keyCode);
 }

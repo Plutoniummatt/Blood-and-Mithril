@@ -10,6 +10,7 @@ import static bloodandmithril.ui.UserInterface.refreshRefreshableWindows;
 import static bloodandmithril.world.Domain.getIndividual;
 import static bloodandmithril.world.Domain.getWorld;
 
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
+import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.cursorboundtask.PlantSeedCursorBoundTask;
@@ -84,6 +86,15 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 	}
 
 
+	@Override
+	public boolean isComplete() {
+		if (getHost().has(toPlant.getSeed()) == 0) {
+			return true;
+		}
+		return super.isComplete();
+	}
+
+
 	/**
 	 * The task representing the actual planting of the seed
 	 *
@@ -121,10 +132,14 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 		@Override
 		public void execute(float delta) {
 			planted = true;
-			int takeItem = getIndividual(hostId.getId()).takeItem(toPlant.getSeed());
+			Individual individual = getIndividual(hostId.getId());
+			int takeItem = individual.takeItem(toPlant.getSeed());
+			toPlant.setWorldId(individual.getWorldId());
 			if (takeItem == 1) {
 				if (toPlant.canPlaceAtCurrentPosition()) {
 					getWorld(getIndividual(hostId.getId()).getWorldId()).props().addProp(toPlant);
+				} else {
+					individual.giveItem(toPlant.getSeed());
 				}
 			}
 			refreshRefreshableWindows();
@@ -134,20 +149,30 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 
 	public static class PlantSeedTaskGenerator extends TaskGenerator {
 		private static final long serialVersionUID = 8576792777955769423L;
-		private Vector2 location;
+		private List<Vector2> locations;
 		private int hostId;
 		private SeedItem item;
-		public PlantSeedTaskGenerator(Vector2 location, int hostId, SeedItem item) {
-			this.location = location;
+		public PlantSeedTaskGenerator(List<Vector2> locations, int hostId, SeedItem item) {
+			this.locations = locations;
 			this.hostId = hostId;
 			this.item = item;
 		}
 		@Override
 		public AITask apply(Object input) {
 			try {
-				SeedProp propSeed = item.getPropSeed();
-				propSeed.position = location.cpy();
-				return new PlantSeed(Domain.getIndividual(hostId), propSeed);
+				PlantSeed plantSeed = null;
+				for (Vector2 location : locations) {
+					SeedProp propSeed = item.getPropSeed();
+					propSeed.position = location.cpy();
+
+					if (plantSeed == null) {
+						plantSeed = new PlantSeed(Domain.getIndividual(hostId), propSeed);
+					} else {
+						plantSeed.appendTask(new PlantSeed(Domain.getIndividual(hostId), propSeed));
+					}
+				}
+
+				return plantSeed;
 			} catch (Exception e) {
 				return null;
 			}
@@ -169,7 +194,12 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 			return getDescription();
 		}
 		private String getDescription() {
-			return "Plant " + item.getSingular(false) + " at " + String.format("%.1f", location.x) + ", " + String.format("%.1f", location.y);
+			if (locations.size() == 1) {
+				Vector2 location = locations.get(0);
+				return "Plant " + item.getSingular(false) + " at " + String.format("%.1f", location.x) + ", " + String.format("%.1f", location.y);
+			} else {
+				return "Plant " + item.getSingular(false) + " at multiple locations";
+			}
 		}
 		@Override
 		public boolean valid() {
@@ -178,9 +208,11 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 			}
 
 			try {
-				SeedProp propSeed = item.getPropSeed();
-				propSeed.position = location.cpy();
-				new PlantSeed(Domain.getIndividual(hostId), propSeed);
+				for (Vector2 location : locations) {
+					SeedProp propSeed = item.getPropSeed();
+					propSeed.position = location.cpy();
+					new PlantSeed(Domain.getIndividual(hostId), propSeed);
+				}
 				return true;
 			} catch (Exception e) {
 				return false;
@@ -234,20 +266,23 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 	private ContextMenu chooseLocationMenu(SeedItem seed, Individual planter, Routine routine) {
 		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
 			new MenuItem(
-				"Choose location",
+				"Choose locations (Press enter to finalise)",
 				() -> {
-					PlantSeedCursorBoundTask cursorBoundTask = new PlantSeedCursorBoundTask(seed, planter);
+					PlantSeedCursorBoundTask cursorBoundTask = new PlantSeedCursorBoundTask(seed, planter, routine) {
+						@Override
+						public CursorBoundTask getImmediateTask() {
+							return this;
+						}
+					};
 					cursorBoundTask.setTask(new JITTask() {
 						@Override
 						public void execute(Object... args) {
-							Vector2 coords;
 							try {
-								coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+								Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+								cursorBoundTask.getPlantingLocations().add(new Vector2(getMouseWorldX(), coords.y));
 							} catch (NoTileFoundException e) {
 								return;
 							}
-
-							routine.setAiTaskGenerator(new PlantSeedTaskGenerator(new Vector2(getMouseWorldX(), coords.y), planter.getId().getId(), seed));
 						}
 					});
 					BloodAndMithrilClient.setCursorBoundTask(cursorBoundTask);

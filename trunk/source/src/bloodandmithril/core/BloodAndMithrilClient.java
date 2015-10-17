@@ -9,6 +9,20 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Sets;
+import com.google.inject.Binder;
+import com.google.inject.Inject;
+import com.google.inject.Module;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
@@ -48,20 +62,6 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 import bloodandmithril.world.weather.Weather;
-
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Sets;
-import com.google.inject.Binder;
-import com.google.inject.Inject;
-import com.google.inject.Module;
 
 /**
  * Main game class, containing the loops
@@ -558,6 +558,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 					if (updateRateMultiplier > 1f) {
 						updateRateMultiplier = Math.round(updateRateMultiplier) - 1;
 					}
+				}
+				if (cursorBoundTask != null) {
+					cursorBoundTask.keyPressed(keycode);
 				}
 			}
 		} catch (Exception e) {
