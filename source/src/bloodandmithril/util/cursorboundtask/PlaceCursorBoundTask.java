@@ -9,6 +9,12 @@ import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.task.PlaceProp;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.PropItem;
@@ -20,11 +26,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * @author Matt
@@ -166,5 +167,10 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 		@Override
 		public CursorBoundTask getImmediateTask() {
 			return null;
+		}
+
+
+		@Override
+		public void keyPressed(int keyCode) {
 		}
 	}

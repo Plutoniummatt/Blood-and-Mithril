@@ -353,6 +353,9 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 							public CursorBoundTask getImmediateTask() {
 								return null;
 							}
+							@Override
+							public void keyPressed(int keyCode) {
+							}
 						}
 					);
 				},
@@ -422,6 +425,9 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 							@Override
 							public boolean canCancel() {
 								return false;
+							}
+							@Override
+							public void keyPressed(int keyCode) {
 							}
 						}
 					);

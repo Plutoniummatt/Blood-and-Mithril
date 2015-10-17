@@ -5,6 +5,10 @@ import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import java.util.Collection;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.individuals.Individual;
@@ -25,10 +29,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Lists;
 
 /**
  * The {@link Prop} equivalent to {@link bloodandmithril.item.items.food.plant.CarrotItem}

@@ -1,6 +1,10 @@
 package bloodandmithril.util.cursorboundtask;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldCoords;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -10,9 +14,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 
 
 /**
@@ -35,7 +36,7 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 					if (item.isEquippable()) {
 						individual.unequip((Equipable)item);
 					}
-					
+
 					if (individual.takeItem(item) == 1) {
 						UserInterface.refreshRefreshableWindows();
 						Domain.getWorld(individual.getWorldId()).items().addItem(
@@ -85,5 +86,10 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 			return new ThrowItemCursorBoundTask(item, individual);
 		}
 		return null;
+	}
+
+
+	@Override
+	public void keyPressed(int keyCode) {
 	}
 }
