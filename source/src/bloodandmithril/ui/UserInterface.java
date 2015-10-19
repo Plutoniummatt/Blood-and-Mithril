@@ -478,13 +478,13 @@ public class UserInterface {
 		if (getCursorBoundTask() == null && contextMenus.isEmpty() && Domain.getActiveWorld() != null && !Gdx.input.isKeyPressed(Keys.ANY_KEY)) {
 			boolean renderHint = false;
 			PositionalIndexMap positionalIndexMap = Domain.getActiveWorld().getPositionalIndexMap();
-			for (int id : positionalIndexMap.getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+			for (int id : positionalIndexMap.getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				if (Domain.getIndividual(id).isMouseOver()) {
 					renderHint = true;
 					break;
 				}
 			}
-			for (int id : positionalIndexMap.getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY())) {
+			for (int id : positionalIndexMap.getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
 				if (renderHint) {
 					break;
 				}
@@ -495,7 +495,7 @@ public class UserInterface {
 					break;
 				}
 			}
-			for (int id : positionalIndexMap.getNearbyEntities(Item.class, getMouseWorldX(), getMouseWorldY())) {
+			for (int id : positionalIndexMap.getNearbyEntityIds(Item.class, getMouseWorldX(), getMouseWorldY())) {
 				if (renderHint) {
 					break;
 				}
@@ -529,7 +529,7 @@ public class UserInterface {
 		nearbyEntities.addAll(
 			Lists.newArrayList(
 				Iterables.transform(
-					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY()),
+					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
 						return Domain.getIndividual(id);
 					}
@@ -540,7 +540,7 @@ public class UserInterface {
 		nearbyEntities.addAll(
 			Lists.newArrayList(
 				Iterables.transform(
-					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY()),
+					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
 						return Domain.getActiveWorld().props().getProp(id);
 					}
@@ -1443,7 +1443,7 @@ public class UserInterface {
 			}
 		}
 
-		for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+		for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 			Individual indi = Domain.getIndividual(indiKey);
 			if (indi.isMouseOver()) {
 				final ContextMenu secondaryMenu = IndividualContextMenuService.getContextMenu(indi);
@@ -1463,7 +1463,7 @@ public class UserInterface {
 			}
 		}
 
-		for (final int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())) {
+		for (final int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())) {
 			Prop prop = Domain.getActiveWorld().props().getProp(propKey);
 			if (prop.isMouseOver()) {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
@@ -1483,7 +1483,7 @@ public class UserInterface {
 			}
 		}
 
-		for (final Integer itemId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Item.class, BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())) {
+		for (final Integer itemId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Item.class, BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())) {
 			final Item item = Domain.getActiveWorld().items().getItem(itemId);
 			if (item.isMouseOver()) {
 				final ContextMenu secondaryMenu = item.getContextMenu();

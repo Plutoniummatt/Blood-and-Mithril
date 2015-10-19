@@ -432,7 +432,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	private void meleeAttack() {
 		if (!Domain.getSelectedIndividuals().isEmpty()) {
-			for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+			for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				Individual indi = Domain.getIndividual(indiKey);
 				if (indi.isMouseOver() && indi.isAlive()) {
 					for (Individual selected : Domain.getSelectedIndividuals()) {
@@ -467,7 +467,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 		Individual individualClicked = null;
 		if (Domain.getActiveWorld() != null) {
-			for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+			for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				Individual indi = Domain.getIndividual(indiKey);
 				if (indi.isMouseOver()) {
 					individualClicked = indi;

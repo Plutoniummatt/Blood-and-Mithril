@@ -9,10 +9,18 @@ import static java.lang.Math.max;
 import java.io.Serializable;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
+
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.MouseOverable;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.affix.Affix;
 import bloodandmithril.item.affix.Affixed;
@@ -59,20 +67,13 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
-
 /**
  * An {@link Item}
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public abstract class Item implements Serializable, Affixed {
+public abstract class Item implements Serializable, Affixed, MouseOverable {
 	private static final long serialVersionUID = -7733840667288631158L;
 
 	/** Affixes of this {@link Item} */
@@ -285,6 +286,19 @@ public abstract class Item implements Serializable, Affixed {
 	};
 
 
+	@Override
+	public String getMenuTitle() {
+		return getSingular(true);
+	}
+
+
+	@Override
+	public void highlight() {
+
+	}
+
+
+	@Override
 	public boolean isMouseOver() {
 		Vector2 mouseCoords = new Vector2(
 			BloodAndMithrilClient.getMouseWorldX(),
