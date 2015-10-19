@@ -442,7 +442,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 					new ChooseMultipleEntityCursorBoundTask<Individual, Integer>(true, Individual.class) {
 						@Override
 						public boolean canAdd(Individual f) {
-							return f.isAlive();
+							return f.isAlive() && f.getId().getId() != host.getId().getId();
 						}
 						@Override
 						public Integer transform(Individual f) {
@@ -469,6 +469,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 						public void keyPressed(int keyCode) {
 							if (keyCode == Keys.ENTER) {
 								routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), entities));
+								BloodAndMithrilClient.setCursorBoundTask(null);
 							}
 						}
 					}
