@@ -8,10 +8,15 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.util.Util.transformSet;
 import static bloodandmithril.world.Domain.getIndividual;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -22,6 +27,7 @@ import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.VisibleIndividualFuture;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.combat.CombatService;
@@ -30,13 +36,11 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
-import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Countdown;
-import bloodandmithril.util.CursorBoundTask;
-import bloodandmithril.util.JITTask;
 import bloodandmithril.util.SerializableFunction;
+import bloodandmithril.util.cursorboundtask.ChooseMultipleEntityCursorBoundTask;
 import bloodandmithril.world.Domain;
 
 /**
@@ -280,19 +284,95 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 	public static final class AttackTaskGenerator extends TaskGenerator {
 		private static final long serialVersionUID = 6935537151752635203L;
-		private final SerializableFunction<Integer> victimId;
+		private final List<Integer> victimIds;
+		private final int attackerId;
+		private String attackerName;
+
+		public AttackTaskGenerator(int attackerId, List<Integer> victimIds) {
+			this.attackerId = attackerId;
+			this.victimIds = victimIds;
+
+			this.attackerName = Domain.getIndividual(attackerId).getId().getSimpleName();
+		}
+
+		@Override
+		public final AITask apply(Object input) {
+			List<Integer> validVictims = Lists.newLinkedList();
+			for (int id : victimIds) {
+				Individual victim = Domain.getIndividual(id);
+				if (victim.isAlive()) {
+					validVictims.add(id);
+				}
+			}
+
+			if (validVictims.isEmpty()) {
+				return null;
+			} else if (validVictims.size() > 1) {
+				Attack attackTask = new Attack(Domain.getIndividual(attackerId), Domain.getIndividual(validVictims.get(0)));
+				ArrayList<Integer> validVictimsCopy = Lists.newArrayList(validVictims);
+				validVictimsCopy.remove(0);
+
+				for (int i : validVictimsCopy) {
+					attackTask.appendTask(new Attack(Domain.getIndividual(attackerId), Domain.getIndividual(i)));
+				}
+
+				return attackTask;
+			} else {
+				return new Attack(Domain.getIndividual(attackerId), Domain.getIndividual(validVictims.get(0)));
+			}
+		}
+
+		@Override
+		public final String getDailyRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public final String getEntityVisibleRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public final String getIndividualConditionRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public final String getStimulusDrivenRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		private String getDescription() {
+			return attackerName + " attacks selected individuals";
+		}
+
+		@Override
+		public final boolean valid() {
+			List<Integer> validVictims = Lists.newLinkedList();
+			for (int id : victimIds) {
+				Individual victim = Domain.getIndividual(id);
+				if (victim.isAlive()) {
+					validVictims.add(id);
+				}
+			}
+
+			return !validVictims.isEmpty();
+		}
+	}
+
+
+	public static final class AttackVisibleIndividualTaskGenerator extends TaskGenerator {
+		private static final long serialVersionUID = 6935537151752635203L;
+		private final VisibleIndividualFuture victimId;
 		private final int attackerId;
 		private String attackerName, victimName;
 
-		public AttackTaskGenerator(int attackerId, SerializableFunction<Integer> victimId, String overriddenVictimName) {
+		public AttackVisibleIndividualTaskGenerator(int attackerId, VisibleIndividualFuture victimId, String overriddenVictimName) {
 			this.attackerId = attackerId;
 			this.victimId = victimId;
 
 			this.attackerName = Domain.getIndividual(attackerId).getId().getSimpleName();
-
-			if (overriddenVictimName != null) {
-				this.victimName = overriddenVictimName;
-			}
+			this.victimName = overriddenVictimName;
 		}
 
 		@Override
@@ -310,27 +390,31 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public final String getDailyRoutineDetailedDescription() {
-			return attackerName + " attacks " + victimName;
+			return getDescription();
 		}
 
 		@Override
 		public final String getEntityVisibleRoutineDetailedDescription() {
-			return attackerName + " attacks " + victimName;
+			return getDescription();
 		}
 
 		@Override
 		public final String getIndividualConditionRoutineDetailedDescription() {
-			return attackerName + " attacks " + victimName;
+			return getDescription();
 		}
 
 		@Override
 		public final String getStimulusDrivenRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		private String getDescription() {
 			return attackerName + " attacks " + victimName;
 		}
 
 		@Override
 		public final boolean valid() {
-			return Domain.getIndividual(victimId.call()).isAlive() && Domain.getIndividual(attackerId).isAlive();
+			return Domain.getIndividual(victimId.call()).isAlive();
 		}
 	}
 
@@ -352,74 +436,43 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 	private final MenuItem chooseTargetMenuItem(Individual host, Routine routine) {
 		return new MenuItem(
-			"Choose target",
+			"Choose targets",
 			() -> {
-				JITTask task = args -> {
-					ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-					if (Domain.getActiveWorld() != null) {
-						for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-							Individual indi = Domain.getIndividual(indiKey);
-							if (indi.isMouseOver()) {
-								toChooseFrom.addMenuItem(
-									new MenuItem(
-										"Attack " + indi.getId().getSimpleName(),
-										() -> {
-											routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), new ReturnVictimId(indi.getId().getId()), indi.getId().getSimpleName()));
-										},
-										Color.ORANGE,
-										Color.GREEN,
-										Color.GRAY,
-										null
-									)
-								);
-							}
+				BloodAndMithrilClient.setCursorBoundTask(
+					new ChooseMultipleEntityCursorBoundTask<Individual, Integer>(true, Individual.class) {
+						@Override
+						public boolean canAdd(Individual f) {
+							return f.isAlive();
 						}
-					}
-
-					UserInterface.contextMenus.clear();
-					toChooseFrom.x = getMouseScreenX();
-					toChooseFrom.y = getMouseScreenY();
-					UserInterface.contextMenus.add(toChooseFrom);
-				};
-
-				BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(task, true) {
-					@Override
-					public void renderUIGuide() {
-					}
-
-					@Override
-					public String getShortDescription() {
-						return "Choose target";
-					}
-
-					@Override
-					public CursorBoundTask getImmediateTask() {
-						return null;
-					}
-
-					@Override
-					public boolean executionConditionMet() {
-						if (Domain.getActiveWorld() != null) {
-							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-								Individual indi = Domain.getIndividual(indiKey);
+						@Override
+						public Integer transform(Individual f) {
+							return f.getId().getId();
+						}
+						@Override
+						public void renderUIGuide() {
+						}
+						@Override
+						public boolean executionConditionMet() {
+							Collection<Individual> nearbyEntities = Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY());
+							for (Individual indi : nearbyEntities) {
 								if (indi.isMouseOver()) {
 									return true;
 								}
 							}
+							return false;
 						}
-
-						return false;
+						@Override
+						public String getShortDescription() {
+							return "Choose targets (Press enter to finalise)";
+						}
+						@Override
+						public void keyPressed(int keyCode) {
+							if (keyCode == Keys.ENTER) {
+								routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), entities));
+							}
+						}
 					}
-
-					@Override
-					public boolean canCancel() {
-						return true;
-					}
-
-					@Override
-					public void keyPressed(int keyCode) {
-					}
-				});
+				);
 			},
 			Color.ORANGE,
 			Color.GREEN,
@@ -455,7 +508,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 				new MenuItem(
 					"Visible individual",
 					() -> {
-						routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), new EntityVisibleRoutine.VisibleIndividualFuture(routine), "visible individual"));
+						routine.setAiTaskGenerator(new AttackVisibleIndividualTaskGenerator(host.getId().getId(), new EntityVisibleRoutine.VisibleIndividualFuture(routine), "visible individual"));
 					},
 					Color.MAGENTA,
 					Color.GREEN,

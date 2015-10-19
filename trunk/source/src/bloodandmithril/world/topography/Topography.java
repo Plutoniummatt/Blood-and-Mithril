@@ -247,7 +247,7 @@ public final class Topography {
 		Tile deletedTile = deleteTile(worldX, worldY, true, true);
 
 		World world = Domain.getWorld(worldId);
-		world.getPositionalIndexMap().getNearbyEntities(Prop.class, worldX, worldY).forEach(id -> {
+		world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, worldX, worldY).forEach(id -> {
 			Prop prop = world.props().getProp(id);
 			if (!prop.canPlaceAtCurrentPosition() && !prop.preventsMining) {
 				world.props().removeProp(prop.id);
@@ -267,7 +267,7 @@ public final class Topography {
 		b.setValue(false);
 
 		World world = Domain.getWorld(worldId);
-		world.getPositionalIndexMap().getNearbyEntities(Prop.class, worldX, worldY).forEach(id -> {
+		world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, worldX, worldY).forEach(id -> {
 			Prop prop = world.props().getProp(id);
 			if (!prop.canPlaceAtCurrentPosition() && prop.preventsMining) {
 				b.setValue(true);

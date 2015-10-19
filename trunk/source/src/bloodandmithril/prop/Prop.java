@@ -5,9 +5,15 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import java.io.Serializable;
 import java.util.Collection;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.MouseOverable;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.food.plant.CarrotItem.CarrotSeedProp;
@@ -32,18 +38,13 @@ import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
-
 /**
  * A renderable {@link Prop}
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public abstract class Prop implements Serializable, Visible {
+public abstract class Prop implements Serializable, Visible, MouseOverable {
 	private static final long serialVersionUID = -1659783923740689585L;
 
 	/** Dimensions of this {@link Prop} */
@@ -137,12 +138,25 @@ public abstract class Prop implements Serializable, Visible {
 	}
 
 
+	@Override
+	public String getMenuTitle() {
+		return getTitle();
+	}
+
+
 	/** True if mouse is over this {@link Prop} */
+	@Override
 	public boolean isMouseOver() {
 		float mx = BloodAndMithrilClient.getMouseWorldX();
 		float my = BloodAndMithrilClient.getMouseWorldY();
 
 		return mx > position.x - width/2 && mx < position.x + width/2 && my > position.y && my < position.y + height;
+	}
+
+
+	@Override
+	public void highlight() {
+
 	}
 
 
@@ -184,7 +198,7 @@ public abstract class Prop implements Serializable, Visible {
 	 */
 	public boolean canPlaceAt(Vector2 position) {
 		return canPlaceAt(position.x, position.y, width, height, canPlaceOnTopOf, canPlaceInFrontOf, grounded, () -> {
-			for (Integer propId : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyEntities(Prop.class, position.x, position.y)) {
+			for (Integer propId : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyEntityIds(Prop.class, position.x, position.y)) {
 				Prop prop = Domain.getWorld(worldId).props().getProp(propId);
 				if (Domain.getWorld(worldId).props().hasProp(propId)) {
 					this.position.x = position.x;

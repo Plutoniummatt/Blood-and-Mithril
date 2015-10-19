@@ -195,7 +195,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 					@Override
 					public void execute(Object... args) {
 						if (Domain.getActiveWorld() != null) {
-							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 								Individual indi = Domain.getIndividual(indiKey);
 								if (indi.isMouseOver()) {
 									toChooseFrom.addMenuItem(
@@ -239,7 +239,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 					@Override
 					public boolean executionConditionMet() {
 						if (Domain.getActiveWorld() != null) {
-							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 								Individual indi = Domain.getIndividual(indiKey);
 								if (indi.isMouseOver()) {
 									return true;

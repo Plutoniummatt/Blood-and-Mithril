@@ -10,16 +10,17 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.MouseOverable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 /**
  * A map that holds {@link PositionalIndexNode}s, maps chunks to indexes
@@ -45,7 +46,7 @@ public class PositionalIndexMap implements Serializable {
 	/**
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
-	public Collection<Integer> getNearbyEntities(Class<?> clazz, float x, float y) {
+	public Collection<Integer> getNearbyEntityIds(Class<?> clazz, float x, float y) {
 		LinkedList<Integer> entities = Lists.newLinkedList();
 
 		int i = CHUNK_SIZE * TILE_SIZE;
@@ -122,6 +123,14 @@ public class PositionalIndexMap implements Serializable {
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
 	public Collection<Integer> getNearbyEntityIds(Class<?> clazz, Vector2 position) {
+		return getNearbyEntityIds(clazz, position.x, position.y);
+	}
+
+
+	/**
+	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
+	 */
+	public <T extends MouseOverable> Collection<T> getNearbyEntities(Class<T> clazz, Vector2 position) {
 		return getNearbyEntities(clazz, position.x, position.y);
 	}
 
@@ -130,7 +139,7 @@ public class PositionalIndexMap implements Serializable {
 	 * @return a {@link Collection} of nearby entities of the same type, nearby meaning in the same or adjacent/diagonal chunk
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Collection<T> getNearbyEntities(Class<T> clazz, Vector2 position) {
+	public <T extends MouseOverable> Collection<T> getNearbyEntities(Class<T> clazz, float x, float y) {
 		Collection<T> ts = Lists.newLinkedList();
 
 		Function<Integer, T> function;
@@ -150,7 +159,7 @@ public class PositionalIndexMap implements Serializable {
 			throw new RuntimeException("Unrecongized class : " + clazz.getSimpleName());
 		}
 
-		for (int id : getNearbyEntities(clazz, position.x, position.y)) {
+		for (int id : getNearbyEntityIds(clazz, x, y)) {
 			ts.add(function.apply(id));
 		}
 

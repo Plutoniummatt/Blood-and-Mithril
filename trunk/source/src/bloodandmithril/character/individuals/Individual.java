@@ -57,6 +57,7 @@ import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.MouseOverable;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -94,7 +95,7 @@ import bloodandmithril.world.World;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public abstract class Individual implements Equipper, Serializable, Kinematics, Visible {
+public abstract class Individual implements Equipper, Serializable, Kinematics, Visible, MouseOverable {
 	private static final long serialVersionUID = 2821835360311044658L;
 
 	/** The current action of this individual */
@@ -733,12 +734,25 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** True if mouse is over */
+	@Override
 	public final boolean isMouseOver() {
 		float x = BloodAndMithrilClient.getMouseWorldX();
 		float y = BloodAndMithrilClient.getMouseWorldY();
 
 		boolean ans = x >= getState().position.x - getWidth()/2 && x <= getState().position.x + getWidth()/2 && y >= getState().position.y && y <= getState().position.y + getHeight();
 		return ans;
+	}
+
+
+	@Override
+	public String getMenuTitle() {
+		return getId().getSimpleName();
+	}
+
+
+	@Override
+	public void highlight() {
+
 	}
 
 
