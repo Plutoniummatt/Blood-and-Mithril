@@ -31,6 +31,7 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.item.FireLighter;
@@ -377,6 +378,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 							public void keyPressed(int keyCode) {
 								if (keyCode == Keys.ENTER) {
 									routine.setAiTaskGenerator(new LightSelectedLightablesTaskGenerator(host.getId().getId(), entities, host.getWorldId()));
+									BloodAndMithrilClient.setCursorBoundTask(null);
 								}
 							}
 						}
