@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import bloodandmithril.core.Copyright;
-import bloodandmithril.util.datastructure.WrapperForTwo;
-
 import com.badlogic.gdx.Input;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import bloodandmithril.core.Copyright;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 
 /**
  * Maps keys to actions
@@ -72,6 +72,7 @@ public class Controls implements Serializable {
 	public MappedKey rangedAttack = new MappedKey("Attack Ranged", Input.Keys.CONTROL_LEFT, "Hold and right click to perform ranged attack with a ranged weapon.", true);
 	public MappedKey snapToGrid = new MappedKey("Placement Grid Alignment", Input.Keys.G, "Hold when attempting to place items in the world to snap to tile grid.", true);
 	public MappedKey openInventory = new MappedKey("Open Inventory", Input.Keys.I, "Press to open inventory of currently selected individual (Only works when one is selected).", true);
+	public MappedKey openAIRoutines = new MappedKey("Open Ai Routines", Input.Keys.R, "Press to open AI routines of currently selected individual (Only works when one is selected).", true);
 	public MappedKey openBuildWindow = new MappedKey("Open Build Window", Input.Keys.B, "Press to open build window of currently selected individual (Only works when one is selected).", true);
 	public MappedKey speedUp = new MappedKey("Increase game speed", Input.Keys.PLUS, "Press to increase game speed.", true);
 	public MappedKey slowDown = new MappedKey("Decrease game speed", Input.Keys.MINUS, "Press to decrease game speed.", true);
@@ -89,6 +90,7 @@ public class Controls implements Serializable {
 			rangedAttack,
 			snapToGrid,
 			openInventory,
+			openAIRoutines,
 			openBuildWindow,
 			moveCamUp,
 			moveCamDown,
