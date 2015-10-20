@@ -1372,8 +1372,6 @@ public class UserInterface {
 		if (keyCode == getKeyMappings().openInventory.keyCode) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				Individual individual = Domain.getSelectedIndividuals().iterator().next();
-				String simpleName = individual.getId().getSimpleName();
-
 				UserInterface.addLayeredComponentUnique(
 					new AIRoutinesWindow(
 						individual
