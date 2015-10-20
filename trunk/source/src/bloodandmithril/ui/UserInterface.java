@@ -45,6 +45,20 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.CompositeAITask;
@@ -75,6 +89,7 @@ import bloodandmithril.ui.components.InfoPopup;
 import bloodandmithril.ui.components.TextBubble;
 import bloodandmithril.ui.components.TextBubble.TextBubbleSerializableBean;
 import bloodandmithril.ui.components.bar.BottomBar;
+import bloodandmithril.ui.components.window.AIRoutinesWindow;
 import bloodandmithril.ui.components.window.BuildWindow;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
@@ -91,20 +106,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 /**
  * Class representing UI
@@ -1363,6 +1364,19 @@ public class UserInterface {
 						individual,
 						simpleName + " - Inventory",
 						true
+					)
+				);
+			}
+		}
+
+		if (keyCode == getKeyMappings().openInventory.keyCode) {
+			if (Domain.getSelectedIndividuals().size() == 1) {
+				Individual individual = Domain.getSelectedIndividuals().iterator().next();
+				String simpleName = individual.getId().getSimpleName();
+
+				UserInterface.addLayeredComponentUnique(
+					new AIRoutinesWindow(
+						individual
 					)
 				);
 			}
