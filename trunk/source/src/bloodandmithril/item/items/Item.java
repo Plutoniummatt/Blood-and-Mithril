@@ -293,12 +293,6 @@ public abstract class Item implements Serializable, Affixed, MouseOverable {
 
 
 	@Override
-	public void highlight() {
-
-	}
-
-
-	@Override
 	public boolean isMouseOver() {
 		Vector2 mouseCoords = new Vector2(
 			BloodAndMithrilClient.getMouseWorldX(),

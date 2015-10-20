@@ -751,12 +751,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	@Override
-	public void highlight() {
-
-	}
-
-
-	@Override
 	public final boolean unlock(Item with) {
 		// Do nothing
 		return false;

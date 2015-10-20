@@ -5,6 +5,8 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.core.BloodAndMithrilClient.setCursorBoundTask;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.world.Domain.getIndividual;
 import static bloodandmithril.world.Domain.getWorld;
 import static java.lang.Math.max;
@@ -13,8 +15,10 @@ import static java.lang.Math.min;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -37,6 +41,7 @@ import bloodandmithril.core.Name;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.CursorBoundTask;
@@ -46,6 +51,7 @@ import bloodandmithril.util.cursorboundtask.ChooseMultipleEntityCursorBoundTask;
 import bloodandmithril.util.datastructure.Wrapper;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.WorldProps;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
@@ -181,8 +187,16 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		public AITask apply(Object input) {
 			if (valid()) {
 				try {
-					LightLightable lightLightable = new LightLightable(getIndividual(hostId), (Lightable) getWorld(worldId).props().getProp(lightableIds.get(0)), true);
-					ArrayList<Integer> lightableIdsCopy = Lists.newArrayList(lightableIds);
+					List<Integer> validEntities = Lists.newLinkedList();
+					for (int i : lightableIds) {
+						WorldProps props = Domain.getWorld(worldId).props();
+						if (props.hasProp(i) && Lightable.class.isAssignableFrom(props.getProp(i).getClass())) {
+							validEntities.add(i);
+						}
+					}
+
+					LightLightable lightLightable = new LightLightable(getIndividual(hostId), (Lightable) getWorld(worldId).props().getProp(validEntities.get(0)), true);
+					ArrayList<Integer> lightableIdsCopy = Lists.newArrayList(validEntities);
 					lightableIdsCopy.remove(0);
 					for (int id : lightableIdsCopy) {
 						lightLightable.appendTask(new LightLightable(getIndividual(hostId), (Lightable) getWorld(worldId).props().getProp(id), true));
@@ -222,7 +236,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 				if (getWorld(worldId).props().hasProp(id)) {
 					Prop prop = getWorld(worldId).props().getProp(id);
 					if (Lightable.class.isAssignableFrom(prop.getClass()) && ((Lightable) prop).canLight() && !((Lightable) prop).isLit()) {
-						continue;
+						return true;
 					}
 				}
 			}
@@ -235,6 +249,42 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 				return "Light selected lightables";
 			}
 			return "";
+		}
+
+		@Override
+		public void render() {
+			List<Prop> validEntities = Lists.newLinkedList();
+			for (int i : lightableIds) {
+				if (Domain.getWorld(worldId).props().hasProp(i)) {
+					Prop prop = Domain.getWorld(worldId).props().getProp(i);
+					if (Lightable.class.isAssignableFrom(prop.getClass())) {
+						validEntities.add(prop);
+					}
+				}
+			}
+
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Gdx.gl20.glLineWidth(2f);
+			Individual harvestable = Domain.getIndividual(hostId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(harvestable.getState().position.x) - harvestable.getWidth()/2,
+				worldToScreenY(harvestable.getState().position.y),
+				harvestable.getWidth(),
+				harvestable.getHeight()
+			);
+			UserInterface.shapeRenderer.setColor(Color.RED);
+			Gdx.gl20.glLineWidth(2f);
+			for (Prop p : validEntities) {
+				UserInterface.shapeRenderer.rect(
+					worldToScreenX(p.position.x) - p.width/2,
+					worldToScreenY(p.position.y),
+					p.width,
+					p.height
+				);
+
+			}
+			UserInterface.shapeRenderer.end();
 		}
 	}
 
@@ -303,6 +353,30 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		public final boolean valid() {
 			return false;
 		}
+
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Gdx.gl20.glLineWidth(2f);
+			Individual attacker = Domain.getIndividual(hostId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+
+			UserInterface.shapeRenderer.setColor(Color.RED);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(left),
+				worldToScreenY(bottom),
+				worldToScreenX(right - left),
+				worldToScreenY(top - bottom)
+			);
+
+			UserInterface.shapeRenderer.end();
+		}
 	}
 
 
@@ -360,6 +434,22 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 							}
 							@Override
 							public void renderUIGuide() {
+								UserInterface.shapeRenderer.begin(ShapeType.Line);
+								UserInterface.shapeRenderer.setColor(Color.RED);
+								Gdx.gl20.glLineWidth(2f);
+								for (int i : entities) {
+									Prop p = Domain.getActiveWorld().props().getProp(i);
+									Vector2 position = p.position;
+
+									UserInterface.shapeRenderer.rect(
+										worldToScreenX(position.x) - p.width/2,
+										worldToScreenY(position.y),
+										p.width,
+										p.height
+									);
+
+								}
+								UserInterface.shapeRenderer.end();
 							}
 							@Override
 							public boolean executionConditionMet() {
@@ -478,6 +568,20 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		@Override
 		public boolean valid() {
 			return true;
+		}
+
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Individual attacker = Domain.getIndividual(individualId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+			UserInterface.shapeRenderer.end();
 		}
 	}
 }

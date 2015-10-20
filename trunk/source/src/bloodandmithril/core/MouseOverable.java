@@ -17,9 +17,4 @@ public interface MouseOverable {
 	 * @return the context menu item title
 	 */
 	public String getMenuTitle();
-
-	/**
-	 * Highlights this {@link MouseOverable}
-	 */
-	public void highlight();
 }

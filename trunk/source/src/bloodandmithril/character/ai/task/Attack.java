@@ -5,6 +5,8 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.util.Util.transformSet;
 import static bloodandmithril.world.Domain.getIndividual;
 
@@ -13,8 +15,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -36,6 +40,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Countdown;
@@ -358,6 +363,44 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 			return !validVictims.isEmpty();
 		}
+
+		@Override
+		public void render() {
+			List<Integer> validVictims = Lists.newLinkedList();
+			for (int id : victimIds) {
+				Individual victim = Domain.getIndividual(id);
+				if (victim.isAlive()) {
+					validVictims.add(id);
+				}
+			}
+
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.RED);
+			Gdx.gl20.glLineWidth(2f);
+			for (int i : validVictims) {
+				Individual individual = Domain.getIndividual(i);
+				Vector2 position = individual.getState().position;
+
+				UserInterface.shapeRenderer.rect(
+					worldToScreenX(position.x) - individual.getWidth()/2,
+					worldToScreenY(position.y),
+					individual.getWidth(),
+					individual.getHeight()
+				);
+
+			}
+
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Individual attacker = Domain.getIndividual(attackerId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+
+			UserInterface.shapeRenderer.end();
+		}
 	}
 
 
@@ -416,6 +459,22 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		public final boolean valid() {
 			return Domain.getIndividual(victimId.call()).isAlive();
 		}
+
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Gdx.gl20.glLineWidth(2f);
+			Individual attacker = Domain.getIndividual(attackerId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+
+			UserInterface.shapeRenderer.end();
+		}
 	}
 
 
@@ -450,6 +509,22 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 						}
 						@Override
 						public void renderUIGuide() {
+							UserInterface.shapeRenderer.begin(ShapeType.Line);
+							UserInterface.shapeRenderer.setColor(Color.RED);
+							Gdx.gl20.glLineWidth(2f);
+							for (int i : entities) {
+								Individual individual = Domain.getIndividual(i);
+								Vector2 position = individual.getState().position;
+
+								UserInterface.shapeRenderer.rect(
+									worldToScreenX(position.x) - individual.getWidth()/2,
+									worldToScreenY(position.y),
+									individual.getWidth(),
+									individual.getHeight()
+								);
+
+							}
+							UserInterface.shapeRenderer.end();
 						}
 						@Override
 						public boolean executionConditionMet() {

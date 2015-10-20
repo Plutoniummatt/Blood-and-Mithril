@@ -2,6 +2,13 @@ package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.inject.Inject;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
@@ -18,9 +25,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.inject.Inject;
 
 /**
  * Instructs {@link Individual} to speak
@@ -131,6 +135,20 @@ public class Speak extends AITask implements RoutineTask {
 		@Override
 		public boolean valid() {
 			return true;
+		}
+
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Individual attacker = Domain.getIndividual(hostId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+			UserInterface.shapeRenderer.end();
 		}
 
 	}

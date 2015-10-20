@@ -1,12 +1,12 @@
 package bloodandmithril.util;
 
-import bloodandmithril.core.Copyright;
-import bloodandmithril.util.Logger.LogLevel;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+
+import bloodandmithril.core.Copyright;
+import bloodandmithril.util.Logger.LogLevel;
 
 /**
  * Helper class to create shaders

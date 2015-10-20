@@ -6,6 +6,8 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.ui.UserInterface.refreshRefreshableWindows;
 import static bloodandmithril.world.Domain.getIndividual;
 import static bloodandmithril.world.Domain.getWorld;
@@ -14,7 +16,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
 
@@ -35,6 +39,7 @@ import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.prop.plant.seed.SeedProp;
+import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.CursorBoundTask;
@@ -217,6 +222,25 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 			} catch (Exception e) {
 				return false;
 			}
+		}
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Gdx.gl20.glLineWidth(2f);
+			Individual attacker = Domain.getIndividual(hostId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+
+			UserInterface.shapeRenderer.setColor(Color.RED);
+			for (Vector2 location : locations) {
+				UserInterface.shapeRenderer.circle(worldToScreenX(location.x), worldToScreenY(location.y), 3f);
+			}
+			UserInterface.shapeRenderer.end();
 		}
 	}
 

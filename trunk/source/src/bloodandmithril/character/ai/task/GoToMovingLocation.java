@@ -14,7 +14,9 @@ import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
 
@@ -230,6 +232,23 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 		@Override
 		public boolean valid() {
 			return true;
+		}
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			Gdx.gl20.glLineWidth(2f);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Individual attacker = Domain.getIndividual(hostId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+
+			UserInterface.shapeRenderer.setColor(Color.RED);
+			UserInterface.shapeRenderer.circle(worldToScreenX(x), worldToScreenY(y), 6f);
+			UserInterface.shapeRenderer.end();
 		}
 	}
 

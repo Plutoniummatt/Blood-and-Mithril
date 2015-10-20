@@ -6,6 +6,8 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.core.BloodAndMithrilClient.setCursorBoundTask;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.world.Domain.getIndividual;
 import static bloodandmithril.world.Domain.getWorld;
 import static java.lang.Math.max;
@@ -14,10 +16,14 @@ import static java.lang.Math.min;
 import java.util.Collection;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
@@ -32,6 +38,7 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
@@ -41,12 +48,12 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.cursorboundtask.ChooseAreaCursorBoundTask;
+import bloodandmithril.util.cursorboundtask.ChooseMultipleEntityCursorBoundTask;
 import bloodandmithril.util.datastructure.Wrapper;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -192,12 +199,12 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 	public static final class HarvestSelectedHarvestablesTaskGenerator extends TaskGenerator {
 		private static final long serialVersionUID = -501687183987861906L;
 		private final int hostId;
-		private final int harvestableId;
+		private final List<Integer> harvestableIds;
 		private final int worldId;
 
-		public HarvestSelectedHarvestablesTaskGenerator(int hostId, int harvestableId, int worldId) {
+		public HarvestSelectedHarvestablesTaskGenerator(int hostId, List<Integer> harvestableIds, int worldId) {
 			this.hostId = hostId;
-			this.harvestableId = harvestableId;
+			this.harvestableIds = harvestableIds;
 			this.worldId = worldId;
 		}
 
@@ -205,7 +212,29 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 		public AITask apply(Object input) {
 			if (valid()) {
 				try {
-					return new Harvest(getIndividual(hostId), (Harvestable) getWorld(worldId).props().getProp(harvestableId));
+					List<Harvestable> validEntities = Lists.newLinkedList();
+					for (int i : harvestableIds) {
+						if (Domain.getWorld(worldId).props().hasProp(i)) {
+							Prop prop = Domain.getWorld(worldId).props().getProp(i);
+							if (Harvestable.class.isAssignableFrom(prop.getClass())) {
+								validEntities.add((Harvestable) prop);
+							}
+						}
+					}
+
+					if (validEntities.isEmpty()) {
+						return null;
+					} else if (validEntities.size() == 1) {
+						return new Harvest(getIndividual(hostId), validEntities.get(0));
+					} else {
+						Harvest harvest = new Harvest(getIndividual(hostId), validEntities.get(0));
+						validEntities.remove(0);
+						for (Harvestable h : validEntities) {
+							harvest.appendTask(new Harvest(getIndividual(hostId), h));
+						}
+
+						return harvest;
+					}
 				} catch (NoTileFoundException e) {
 					return null;
 				}
@@ -235,8 +264,12 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public boolean valid() {
-			if (getWorld(worldId).props().hasProp(harvestableId)) {
-				return Harvestable.class.isAssignableFrom(getWorld(worldId).props().getProp(harvestableId).getClass());
+			for (int i : harvestableIds) {
+				if (getWorld(worldId).props().hasProp(i)) {
+					if (Harvestable.class.isAssignableFrom(getWorld(worldId).props().getProp(i).getClass())) {
+						return true;
+					}
+				}
 			}
 
 			return false;
@@ -244,9 +277,44 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 		private String getDescription() {
 			if (valid()) {
-				return "Harvest " + getWorld(worldId).props().getProp(harvestableId).getTitle();
+				return "Harvest selected entities";
 			}
 			return "";
+		}
+
+		@Override
+		public void render() {
+			List<Prop> validEntities = Lists.newLinkedList();
+			for (int i : harvestableIds) {
+				if (Domain.getWorld(worldId).props().hasProp(i)) {
+					Prop prop = Domain.getWorld(worldId).props().getProp(i);
+					if (Harvestable.class.isAssignableFrom(prop.getClass())) {
+						validEntities.add(prop);
+					}
+				}
+			}
+
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Individual harvestable = Domain.getIndividual(hostId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(harvestable.getState().position.x) - harvestable.getWidth()/2,
+				worldToScreenY(harvestable.getState().position.y),
+				harvestable.getWidth(),
+				harvestable.getHeight()
+			);
+			UserInterface.shapeRenderer.setColor(Color.RED);
+			Gdx.gl20.glLineWidth(2f);
+			for (Prop p : validEntities) {
+				UserInterface.shapeRenderer.rect(
+					worldToScreenX(p.position.x) - p.width/2,
+					worldToScreenY(p.position.y),
+					p.width,
+					p.height
+				);
+
+			}
+			UserInterface.shapeRenderer.end();
 		}
 	}
 
@@ -319,6 +387,28 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 		public boolean valid() {
 			return true;
 		}
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Individual attacker = Domain.getIndividual(hostId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+
+			UserInterface.shapeRenderer.setColor(Color.RED);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(left),
+				worldToScreenY(bottom),
+				right - left,
+				top - bottom
+			);
+
+			UserInterface.shapeRenderer.end();
+		}
 	}
 
 
@@ -365,66 +455,54 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 				"Harvest selected",
 				() -> {
 					setCursorBoundTask(
-						new CursorBoundTask(
-								args -> {
-									ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-									if (Domain.getActiveWorld() != null) {
-										for (int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
-											Prop prop = Domain.getActiveWorld().props().getProp(propKey);
-											if (Harvestable.class.isAssignableFrom(prop.getClass()) && prop.isMouseOver()) {
-												toChooseFrom.addMenuItem(
-													new MenuItem(
-														"Harvest " + prop.getTitle(),
-														() -> {
-															routine.setAiTaskGenerator(new HarvestSelectedHarvestablesTaskGenerator(host.getId().getId(), prop.id, prop.getWorldId()));
-														},
-														Color.ORANGE,
-														Color.GREEN,
-														Color.GRAY,
-														null
-													)
-												);
-											}
-										}
-									}
-
-									UserInterface.contextMenus.clear();
-									toChooseFrom.x = getMouseScreenX();
-									toChooseFrom.y = getMouseScreenY();
-									UserInterface.contextMenus.add(toChooseFrom);
-								},
-								true
-							) {
+						new ChooseMultipleEntityCursorBoundTask<Prop, Integer>(true, Prop.class) {
+							@Override
+							public boolean canAdd(Prop f) {
+								return Harvestable.class.isAssignableFrom(f.getClass());
+							}
+							@Override
+							public Integer transform(Prop f) {
+								return f.id;
+							}
 							@Override
 							public void renderUIGuide() {
-							}
-							@Override
-							public String getShortDescription() {
-								return "Harvest (Press enter to finalise)";
-							}
-							@Override
-							public CursorBoundTask getImmediateTask() {
-								return this;
+								UserInterface.shapeRenderer.begin(ShapeType.Line);
+								UserInterface.shapeRenderer.setColor(Color.RED);
+								Gdx.gl20.glLineWidth(2f);
+								for (int i : entities) {
+									Prop p = Domain.getActiveWorld().props().getProp(i);
+									Vector2 position = p.position;
+
+									UserInterface.shapeRenderer.rect(
+										worldToScreenX(position.x) - p.width/2,
+										worldToScreenY(position.y),
+										p.width,
+										p.height
+									);
+
+								}
+								UserInterface.shapeRenderer.end();
 							}
 							@Override
 							public boolean executionConditionMet() {
-								if (Domain.getActiveWorld() != null) {
-									for (int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
-										Prop prop = Domain.getActiveWorld().props().getProp(propKey);
-										if (Harvestable.class.isAssignableFrom(prop.getClass()) && prop.isMouseOver()) {
-											return true;
-										}
+								Collection<Prop> nearbyEntities = Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY());
+								for (Prop p : nearbyEntities) {
+									if (p.isMouseOver() && Harvestable.class.isAssignableFrom(p.getClass())) {
+										return true;
 									}
 								}
-
 								return false;
 							}
 							@Override
-							public boolean canCancel() {
-								return true;
+							public String getShortDescription() {
+								return "Choose entities to harvest (Press enter to finalise)";
 							}
 							@Override
 							public void keyPressed(int keyCode) {
+								if (keyCode == Keys.ENTER) {
+									routine.setAiTaskGenerator(new HarvestSelectedHarvestablesTaskGenerator(host.getId().getId(), entities, Domain.getActiveWorld().getWorldId()));
+									BloodAndMithrilClient.setCursorBoundTask(null);
+								}
 							}
 						}
 					);

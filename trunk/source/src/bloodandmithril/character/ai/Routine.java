@@ -6,6 +6,8 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
@@ -21,8 +23,6 @@ import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Epoch;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * A player customisable {@link AITask}, designed for automation and eliminating the need of micro-managing laborious tasks..
@@ -84,6 +84,16 @@ public abstract class Routine extends AITask {
 	 * Gets the parameter for the {@link TaskGenerator} to generate the task
 	 */
 	public abstract Object getTaskGenerationParameter();
+
+
+	/**
+	 * Renders the UI aide for this {@link Routine}
+	 */
+	public void render() {
+		if (aiTaskGenerator != null) {
+			aiTaskGenerator.render();
+		}
+	}
 
 
 	/**
