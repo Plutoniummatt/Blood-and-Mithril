@@ -4,8 +4,12 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
@@ -183,6 +187,29 @@ public class Follow extends CompositeAITask implements RoutineTask {
 		@Override
 		public boolean valid() {
 			return Domain.getIndividual(followeeId.call()).isAlive() && Domain.getIndividual(followerId).isAlive();
+		}
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			Gdx.gl20.glLineWidth(2f);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Individual attacker = Domain.getIndividual(followerId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+
+			UserInterface.shapeRenderer.setColor(Color.RED);
+			Individual followee = Domain.getIndividual(followeeId.call());
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(followee.getState().position.x) - followee.getWidth()/2,
+				worldToScreenY(followee.getState().position.y),
+				followee.getWidth(),
+				followee.getHeight()
+			);
+			UserInterface.shapeRenderer.end();
 		}
 	}
 

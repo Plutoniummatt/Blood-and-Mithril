@@ -154,12 +154,6 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 	}
 
 
-	@Override
-	public void highlight() {
-
-	}
-
-
 	/** Called when this {@link Prop} has been left clicked */
 	public boolean leftClick() {
 		if (!isMouseOver()) {

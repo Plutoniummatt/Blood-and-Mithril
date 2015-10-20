@@ -29,4 +29,9 @@ public abstract class TaskGenerator extends SerializableMappingFunction<Object, 
 	 * @return true if this {@link TaskGenerator} can generate a valid {@link RoutineTask} for a {@link Routine}
 	 */
 	public abstract boolean valid();
+
+	/**
+	 * Renders the visual aide to indicate entities involved in the {@link RoutineTask}
+	 */
+	public abstract void render();
 }

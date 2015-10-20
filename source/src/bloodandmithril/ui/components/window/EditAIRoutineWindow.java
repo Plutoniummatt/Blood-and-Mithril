@@ -45,6 +45,10 @@ public class EditAIRoutineWindow extends Window {
 
 			panel.render();
 		}
+
+		if (routine != null) {
+			routine.render();
+		}
 	}
 
 
