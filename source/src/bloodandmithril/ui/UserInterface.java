@@ -1369,7 +1369,7 @@ public class UserInterface {
 			}
 		}
 
-		if (keyCode == getKeyMappings().openInventory.keyCode) {
+		if (keyCode == getKeyMappings().openAIRoutines.keyCode) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				Individual individual = Domain.getSelectedIndividuals().iterator().next();
 				UserInterface.addLayeredComponentUnique(
