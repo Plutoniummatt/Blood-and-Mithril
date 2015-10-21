@@ -62,6 +62,7 @@ import bloodandmithril.core.Name;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
+import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
@@ -543,11 +544,15 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 		getEquipped().keySet().forEach(eq -> {
 			Individual.this.unequip((Equipable ) eq);
 		});
+		getInventory().entrySet().forEach(entry -> {
+			ContainerImpl.discard(Individual.this, entry.getKey(), entry.getValue());
+		});
 		getState().currentConditions.clear();
 		deselect(true, 0);
 		clearCommands();
 		selectedByClient.clear();
 		internalKill();
+		UserInterface.refreshRefreshableWindows();
 	}
 
 	protected abstract void internalKill();

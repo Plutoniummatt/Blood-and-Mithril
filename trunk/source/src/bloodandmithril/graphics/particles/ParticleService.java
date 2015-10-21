@@ -4,6 +4,9 @@ import static bloodandmithril.networking.ClientServerInterface.isClient;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -13,9 +16,6 @@ import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Service responsible for adding particles to the world
@@ -76,7 +76,7 @@ public class ParticleService {
 					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 300f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
 					Color.WHITE,
-					Color.PINK,
+					Color.YELLOW,
 					Color.WHITE,
 					radius,
 					Domain.getActiveWorld().getWorldId(),
@@ -93,7 +93,7 @@ public class ParticleService {
 					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
 					Color.WHITE,
-					Color.PINK,
+					Color.CYAN,
 					Color.WHITE,
 					radius,
 					Domain.getActiveWorld().getWorldId(),

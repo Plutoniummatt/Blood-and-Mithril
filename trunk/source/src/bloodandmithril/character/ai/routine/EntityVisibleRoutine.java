@@ -238,7 +238,7 @@ public final class EntityVisibleRoutine extends Routine {
 		@Override
 		public final Boolean apply(Visible input) {
 			if (input instanceof Individual) {
-				return super.apply(input) && ((Individual) input).deriveBehaviourTowards(Domain.getIndividual(hostId)) == behaviour && ((Individual) input).isAlive() == alive;
+				return super.apply(input) && (behaviour == null || ((Individual) input).deriveBehaviourTowards(Domain.getIndividual(hostId)) == behaviour) && ((Individual) input).isAlive() == alive;
 			}
 
 			return false;
@@ -577,7 +577,7 @@ public final class EntityVisibleRoutine extends Routine {
 				return ((Individual) visibleEntity).getId().getId();
 			}
 
-			throw new RuntimeException();
+			return null;
 		}
 	}
 }
