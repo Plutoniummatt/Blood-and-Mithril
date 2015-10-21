@@ -7,6 +7,10 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -14,10 +18,6 @@ import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.cursorboundtask.PlaceCursorBoundTask;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Function;
-import com.google.common.collect.Maps;
 
 /**
  * Listing window to display a lsit of {@link Construction}s to be built by some {@link Individual}
@@ -111,6 +111,15 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 			)
 		);
 	}
+
+
+	@Override
+	protected void internalWindowRender() {
+		if (!builder.isAlive()) {
+			setClosing(true);
+		}
+		super.internalWindowRender();
+	};
 
 
 	@Override

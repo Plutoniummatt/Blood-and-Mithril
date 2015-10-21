@@ -43,6 +43,9 @@ public class TransferLiquidsWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
+		if (!individual.isAlive()) {
+			setClosing(true);
+		}
 	}
 
 

@@ -9,6 +9,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Window} used to edit {@link Routine}s
@@ -35,6 +36,10 @@ public class EditAIRoutineWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
+		if (!Domain.getIndividual(id.getId()).isAlive()) {
+			setClosing(true);
+		}
+
 		if (!wizard.isEmpty()) {
 			Panel panel = wizard.peek();
 

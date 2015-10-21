@@ -6,6 +6,8 @@ import static bloodandmithril.util.Fonts.defaultFont;
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -20,8 +22,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.RequiredMaterialsPanel;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * A {@link Window} for construction
@@ -102,6 +102,10 @@ public class ConstructionWindow extends Window implements Refreshable {
 	@Override
 	protected void internalWindowRender() {
 		if (individual.getState().position.cpy().sub(construction.position.cpy()).len() > 64) {
+			setClosing(true);
+		}
+
+		if (!individual.isAlive()) {
 			setClosing(true);
 		}
 

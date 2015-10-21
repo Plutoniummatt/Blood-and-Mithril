@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.character.proficiency.Proficiency;
@@ -22,8 +24,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
-
-import com.badlogic.gdx.graphics.Color;
+import bloodandmithril.world.Domain;
 
 /**
  * {@link Window} for displaying {@link Proficiencies} of an {@link Individual}
@@ -146,6 +147,10 @@ public class ProficienciesWindow extends Window {
 
 	@Override
 	protected void internalWindowRender() {
+		if (!Domain.getIndividual(individualId).isAlive()) {
+			setClosing(true);
+		}
+
 		skills.x = x;
 		skills.y = y;
 		skills.width = width;

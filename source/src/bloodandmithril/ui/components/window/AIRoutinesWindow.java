@@ -72,6 +72,15 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 
 
 	@Override
+	protected void internalWindowRender() {
+		if (!Domain.getIndividual(individualId).isAlive()) {
+			setClosing(true);
+		}
+		super.internalWindowRender();
+	};
+
+
+	@Override
 	public void refresh() {
 		buildListing(
 			buildMap(Domain.getIndividual(individualId)),
