@@ -22,6 +22,13 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -33,12 +40,12 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.GaussianLightingRenderer;
-import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.food.plant.CarrotItem;
 import bloodandmithril.item.items.material.RockItem;
 import bloodandmithril.item.material.mineral.Coal;
 import bloodandmithril.item.material.mineral.SandStone;
@@ -67,14 +74,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
-import com.google.inject.Inject;
-
 /**
  * Window containing dev features
  *
@@ -84,9 +83,6 @@ import com.google.inject.Inject;
 public class DevWindow extends Window {
 
 	private final ScrollableListingPanel<String, Object> panel;
-
-	@Inject
-	private Graphics graphics;
 
 	/**
 	 * Constructor
@@ -180,6 +176,10 @@ public class DevWindow extends Window {
 			return true;
 		}
 
+		if (keyCode == Keys.I) {
+			Domain.getActiveWorld().items().addItem(new CarrotItem(), new Vector2(getMouseWorldX(), getMouseWorldY()), new Vector2());
+		}
+
 		if (keyCode == Keys.B) {
 			BloodAndMithrilClient.getMissions().add(new Tutorial(Domain.getActiveWorldId()));
 		}
@@ -197,14 +197,6 @@ public class DevWindow extends Window {
 				true,
 				YellowBrickTile.class
 			);
-		}
-
-		if (keyCode == Keys.J) {
-			graphics.setFading(true);
-		}
-
-		if (keyCode == Keys.K) {
-			graphics.setFading(false);;
 		}
 
 		if (keyCode == Keys.P) {

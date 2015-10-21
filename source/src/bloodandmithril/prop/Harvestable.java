@@ -6,6 +6,7 @@ import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 
@@ -15,6 +16,7 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Harvestable")
 public interface Harvestable {
 
 	/** Returns the item that harvesting this {@link Harvestable} provides */

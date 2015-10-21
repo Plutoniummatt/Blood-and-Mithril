@@ -58,6 +58,7 @@ import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
+import bloodandmithril.core.Name;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -95,6 +96,7 @@ import bloodandmithril.world.World;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Individuals")
 public abstract class Individual implements Equipper, Serializable, Kinematics, Visible, MouseOverable {
 	private static final long serialVersionUID = 2821835360311044658L;
 
@@ -1207,11 +1209,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	@SuppressWarnings("unchecked")
-	public static final Map<String, List<Class<? extends Individual>>> getAllIndividualClasses() {
-		Map<String, List<Class<? extends Individual>>> map = Maps.newHashMap();
+	public static final Map<Class<? extends Visible>, List<Class<? extends Individual>>> getAllIndividualClasses() {
+		Map<Class<? extends Visible>, List<Class<? extends Individual>>> map = Maps.newHashMap();
 
-		map.put("Humanoid", Lists.newArrayList(Elf.class));
-		map.put("Animal", Lists.newArrayList(Wolf.class, Hare.class));
+		map.put(Humanoid.class, Lists.newArrayList(Elf.class));
+		map.put(Animal.class, Lists.newArrayList(Wolf.class, Hare.class));
 
 		return map;
 	}
