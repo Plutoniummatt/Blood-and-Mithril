@@ -10,6 +10,11 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
@@ -18,11 +23,6 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Shaders;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 
 /**
  * A window, able to be dragged, minimized, stays open until closed (unless game decides it should close).
@@ -269,6 +269,8 @@ public abstract class Window extends Component {
 		);
 	}
 
+	/** Render world-level UI guides */
+	public void renderWorldUIGuide() {}
 
 	/** Render implementation specific rendering of this {@link Window} */
 	protected abstract void internalWindowRender();

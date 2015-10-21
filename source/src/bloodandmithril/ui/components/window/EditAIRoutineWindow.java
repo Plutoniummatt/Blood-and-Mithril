@@ -45,7 +45,12 @@ public class EditAIRoutineWindow extends Window {
 
 			panel.render();
 		}
+	}
 
+
+	/** Render world-level UI guides */
+	@Override
+	public void renderWorldUIGuide() {
 		if (routine != null) {
 			routine.render();
 		}

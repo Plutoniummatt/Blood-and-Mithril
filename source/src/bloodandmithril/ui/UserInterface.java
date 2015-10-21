@@ -1166,6 +1166,12 @@ public class UserInterface {
 		ArrayDeque<Component> copy = new ArrayDeque<>(layeredComponents);
 		for (Component component : new ArrayDeque<>(layeredComponents)) {
 			if (component instanceof Window) {
+				((Window) component).renderWorldUIGuide();
+			}
+		}
+
+		for (Component component : new ArrayDeque<>(layeredComponents)) {
+			if (component instanceof Window) {
 				if (((Window) component).y < 0) {
 					((Window) component).y = 20;
 				}

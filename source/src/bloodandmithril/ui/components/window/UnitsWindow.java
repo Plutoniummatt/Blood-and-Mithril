@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualContextMenuService;
 import bloodandmithril.core.Copyright;
@@ -21,10 +25,6 @@ import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.google.common.collect.Maps;
 
 /**
  * Window to display all {@link Individual}s that belong to factions under control
@@ -74,9 +74,9 @@ public class UnitsWindow extends Window implements Refreshable {
 							individual.getId().getSimpleName().length() * 9,
 							16,
 							() -> {},
-							Color.YELLOW,
-							Color.WHITE,
-							Color.GREEN,
+							individual.isAlive() ? Color.YELLOW : Color.MAROON,
+							individual.isAlive() ? Color.WHITE : Color.MAROON,
+							individual.isAlive() ? Color.GREEN : Color.MAROON,
 							UIRef.BR
 						),
 						IndividualContextMenuService.getContextMenu(individual).addFirst(
@@ -154,7 +154,11 @@ public class UnitsWindow extends Window implements Refreshable {
 		) {
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Individual>, String> item) {
-				return Util.truncate(item.getKey().t.getAI().getCurrentTask().getShortDescription(), 8);
+				if (item.getKey().t.isAlive()) {
+					return Util.truncate(item.getKey().t.getAI().getCurrentTask().getShortDescription(), 8);
+				} else {
+					return "Deceased";
+				}
 			}
 
 			@Override

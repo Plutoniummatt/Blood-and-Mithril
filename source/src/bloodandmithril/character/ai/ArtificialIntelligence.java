@@ -9,6 +9,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.perception.Stimulus;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
@@ -25,9 +28,6 @@ import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.topography.Topography;
-
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
 
 /**
  * Artificial intelligence super-class
@@ -335,5 +335,16 @@ public abstract class ArtificialIntelligence implements Serializable {
 	public void addRoutine(Routine routine) {
 		routine.setPriority(aiRoutines.size());
 		aiRoutines.add(routine);
+	}
+
+
+	public void removeRoutine(Routine routine) {
+		for (Routine r : aiRoutines) {
+			if (r.getPriority() > routine.getPriority()) {
+				r.setPriority(routine.getPriority() - 1);
+			}
+		}
+
+		aiRoutines.remove(routine);
 	}
 }

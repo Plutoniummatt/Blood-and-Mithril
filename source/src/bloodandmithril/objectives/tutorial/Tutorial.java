@@ -2,6 +2,8 @@ package bloodandmithril.objectives.tutorial;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import bloodandmithril.core.Name;
 import bloodandmithril.objectives.Mission;
 import bloodandmithril.objectives.Objective;
@@ -15,8 +17,6 @@ import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
 import bloodandmithril.world.Domain;
-
-import com.google.common.collect.Lists;
 
 /**
  * Tutorial {@link Objective}s, designed to teach players about game mechanics

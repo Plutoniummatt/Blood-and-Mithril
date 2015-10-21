@@ -8,6 +8,11 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -15,11 +20,6 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
 
 /**
  * {@link Window} for displaying and editting AI {@link Routine}s
@@ -169,9 +169,9 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 				UserInterface.addLayeredComponentUnique(
 					new TextInputWindow(500, 100, "Input name", 250, 100, args -> {
 						tEntry.getKey().setDescription((String) args[0]);
+						AIRoutinesWindow.this.refresh();
 					}, "Confirm", true, tEntry.getKey().getShortDescription())
 				);
-				AIRoutinesWindow.this.refresh();
 			},
 			Color.WHITE,
 			Color.GREEN,

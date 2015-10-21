@@ -5,6 +5,7 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.inject.Inject;
@@ -141,6 +142,7 @@ public class Speak extends AITask implements RoutineTask {
 		public void render() {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Gdx.gl20.glLineWidth(2f);
 			Individual attacker = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,

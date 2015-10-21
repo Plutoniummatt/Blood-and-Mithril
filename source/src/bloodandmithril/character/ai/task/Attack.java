@@ -457,7 +457,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public final boolean valid() {
-			return Domain.getIndividual(victimId.call()).isAlive();
+			return true;
 		}
 
 		@Override
