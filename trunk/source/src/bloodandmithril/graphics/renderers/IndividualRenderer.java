@@ -4,6 +4,14 @@ import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Renderer;
@@ -19,14 +27,6 @@ import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Handles the rendering of {@link Individual}s

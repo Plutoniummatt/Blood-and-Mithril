@@ -2,13 +2,17 @@ package bloodandmithril.graphics;
 
 import java.util.Map;
 
+import com.google.common.collect.Maps;
+import com.google.inject.Singleton;
+
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.character.individuals.characters.Hare;
+import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.renderers.ElfRenderer;
-
-import com.google.common.collect.Maps;
-import com.google.inject.Singleton;
+import bloodandmithril.graphics.renderers.IndividualRenderer;
+import bloodandmithril.graphics.renderers.WolfRenderer;
 
 /**
  * Renders entities
@@ -35,6 +39,8 @@ public interface Renderer<T> {
 
 		Renderers() {
 			map.put(Elf.class, new ElfRenderer());
+			map.put(Wolf.class, new WolfRenderer());
+			map.put(Hare.class, new IndividualRenderer<Hare>());
 		}
 	}
 }
