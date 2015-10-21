@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.Lists;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
@@ -24,6 +25,8 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.prop.Harvestable.VisibleHarvestable;
+import bloodandmithril.prop.Lightable.LightableUnlit;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -343,6 +346,11 @@ public final class EntityVisibleRoutine extends Routine {
 								)
 							),
 							new MenuItem("Prop", () -> {}, Color.ORANGE, Color.GREEN, Color.GRAY,
+								new ContextMenu(getMouseScreenX(), getMouseScreenY(), false,
+									derivePropTypeContextMenu()
+								)
+							),
+							new MenuItem("Item", () -> {}, Color.ORANGE, Color.GREEN, Color.GRAY,
 								new ContextMenu(getMouseScreenX(), getMouseScreenY(), false
 									// TODO
 								)
@@ -354,6 +362,44 @@ public final class EntityVisibleRoutine extends Routine {
 			}
 
 			return super.leftClick(copy, windowsCopy) || changeVisibleEntityButton.click();
+		}
+
+		private MenuItem[] derivePropTypeContextMenu() {
+			List<MenuItem> items = Lists.newArrayList();
+
+			items.add(
+				new MenuItem(
+					"Lightable prop",
+					() -> {
+						EntityVisibleRoutine.this.identificationFunction = new LightableUnlit();
+						EntityVisibleRoutine.this.aiTaskGenerator = null;
+					},
+					Color.ORANGE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
+
+			items.add(
+				new MenuItem(
+					"Harvestable prop",
+					() -> {
+						EntityVisibleRoutine.this.identificationFunction = new VisibleHarvestable();
+						EntityVisibleRoutine.this.aiTaskGenerator = null;
+					},
+					Color.ORANGE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
+
+			MenuItem[] array = new MenuItem[items.size()];
+			for (int i = 0; i < items.size(); i++) {
+				array[i] = items.get(i);
+			}
+			return array;
 		}
 
 		private final ContextMenu deriveIndividualTypeContextMenu(Wrapper<Behaviour> args) {
@@ -430,7 +476,6 @@ public final class EntityVisibleRoutine extends Routine {
 					width - 5
 				);
 			}
-
 
 			changeVisibleEntityButton.render(x + 114, y - height + 70, parent.isActive(), parent.getAlpha());
 		}

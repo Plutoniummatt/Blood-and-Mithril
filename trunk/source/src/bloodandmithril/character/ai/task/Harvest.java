@@ -34,6 +34,8 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.VisiblePropFuture;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
@@ -48,6 +50,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.CursorBoundTask;
@@ -391,12 +394,12 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 		public void render() {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
-			Individual attacker = Domain.getIndividual(hostId);
+			Individual harvester = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
-				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
-				worldToScreenY(attacker.getState().position.y),
-				attacker.getWidth(),
-				attacker.getHeight()
+				worldToScreenX(harvester.getState().position.x) - harvester.getWidth()/2,
+				worldToScreenY(harvester.getState().position.y),
+				harvester.getWidth(),
+				harvester.getHeight()
 			);
 
 			UserInterface.shapeRenderer.setColor(Color.RED);
@@ -516,6 +519,78 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 	}
 
 
+	public static final class HarvestVisibleEntityTaskGenerator extends TaskGenerator {
+		private static final long serialVersionUID = -2298234351386598398L;
+		private final VisiblePropFuture propId;
+		private final int hostId, worldId;
+
+		public HarvestVisibleEntityTaskGenerator(int hostId, int worldId, VisiblePropFuture propId) {
+			this.hostId = hostId;
+			this.worldId = worldId;
+			this.propId = propId;
+		}
+
+		@Override
+		public final AITask apply(Object input) {
+			Prop prop = Domain.getWorld(worldId).props().getProp(propId.call());
+			if (Harvestable.class.isAssignableFrom(prop.getClass())) {
+				try {
+					return new Harvest(Domain.getIndividual(hostId), (Harvestable) prop);
+				} catch (NoTileFoundException e) {
+					return null;
+				}
+			}
+
+			return null;
+		}
+
+		@Override
+		public final String getDailyRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public final String getEntityVisibleRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public final String getIndividualConditionRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public final String getStimulusDrivenRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		private String getDescription() {
+			return Domain.getIndividual(hostId).getId().getSimpleName() + " harvests any visible harvestable entity";
+		}
+
+		@Override
+		public final boolean valid() {
+			return true;
+		}
+
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Gdx.gl20.glLineWidth(2f);
+			Individual attacker = Domain.getIndividual(hostId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+
+			UserInterface.shapeRenderer.end();
+		}
+	}
+
+
 	@Override
 	public final ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
 		return getChoices(routine, host);
@@ -524,7 +599,25 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 	@Override
 	public final ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		return getChoices(routine, host);
+		ContextMenu choices = getChoices(routine, host);
+
+		final EntityVisible identificationFunction = routine.getIdentificationFunction();
+		if (Harvestable.class.isAssignableFrom(identificationFunction.getEntity().a)) {
+			choices.addFirst(
+				new MenuItem(
+					"Visible harvestable entity",
+					() -> {
+						routine.setAiTaskGenerator(new HarvestVisibleEntityTaskGenerator(host.getId().getId(), host.getWorldId(), new EntityVisibleRoutine.VisiblePropFuture(routine)));
+					},
+					Color.MAGENTA,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
+		}
+
+		return choices;
 	}
 
 

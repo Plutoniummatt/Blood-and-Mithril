@@ -6,15 +6,14 @@ import static bloodandmithril.character.combat.CombatService.getAttackPeriod;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_LEFT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE;
 import static bloodandmithril.util.ComparisonUtil.obj;
+
+import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
-import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
-import bloodandmithril.character.ai.routine.DailyRoutine;
-import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
-import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
-import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -23,16 +22,12 @@ import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
-
-import com.badlogic.gdx.math.Vector2;
-import com.google.inject.Inject;
 
 /**
  * Mine a {@link Tile}, a {@link CompositeAITask} comprising of:
@@ -44,7 +39,7 @@ import com.google.inject.Inject;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Mine")
-public class MineTile extends CompositeAITask implements RoutineTask {
+public class MineTile extends CompositeAITask {
 	private static final long serialVersionUID = -4098496856332182430L;
 
 	/** Coordinate of the tile to mine */
@@ -223,29 +218,5 @@ public class MineTile extends CompositeAITask implements RoutineTask {
 				);
 			}
 		}
-	}
-
-
-	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
-		return null;
-	}
-
-
-	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		return null;
-	}
-
-
-	@Override
-	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
-		return null;
-	}
-
-
-	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
-		return null;
 	}
 }
