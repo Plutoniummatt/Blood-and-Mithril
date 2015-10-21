@@ -130,10 +130,22 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
+	public final void execute(float delta) {
+		if (getHost().isWalking()) {
+			getHost().setWalking(false);
+		}
+		super.execute(delta);
+	}
+
+
+	@Override
 	public final boolean uponCompletion() {
 		Individual host = Domain.getIndividual(hostId.getId());
 		host.sendCommand(getKeyMappings().moveRight.keyCode, false);
 		host.sendCommand(getKeyMappings().moveLeft.keyCode, false);
+		if (!getHost().isWalking()) {
+			getHost().setWalking(true);
+		}
 		return false;
 	}
 
