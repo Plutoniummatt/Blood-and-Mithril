@@ -62,6 +62,6 @@ void main()
 		sample1.b = 0.3;
 	}
 	
-	float c = 0.95 * max(0.0, resolution.y/2.0 - diff) / (resolution.y / 2.0) / clamp(((diff + 160) / 200), 0.8, 1.0);
+	float c = 0.95 * max(0.0, resolution.y/2.0 - diff) / (resolution.y / 2.0) / clamp(((diff + 160) / 600), 0.8, 1.0);
 	gl_FragColor = sample1 * filter + reflection * vec4(c, c, c, 1.0);
 }

@@ -1,3 +1,10 @@
+Release 0.0.25
+---------------
+* Added mission framework, to add a demo mission, open DevWindow (Ctrl+D) and press B
+* Disarming has been removed
+* Add AI routines, to access, rigt click on individual and go to Actions -> AI Routines
+  Alternatively, select an individual and press R
+
 Release 0.0.24
 ---------------
 * Improve water reflections
