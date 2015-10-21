@@ -13,7 +13,6 @@ import bloodandmithril.character.ai.task.Follow;
 import bloodandmithril.character.ai.task.GoToMovingLocation;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.LightLightable;
-import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.ai.task.PlantSeed;
 import bloodandmithril.character.ai.task.Speak;
 import bloodandmithril.character.ai.task.TakeItem;
@@ -36,7 +35,6 @@ public class RoutineTasks {
 		routineTasks.add(GoToMovingLocation.class);
 		routineTasks.add(Harvest.class);
 		routineTasks.add(LightLightable.class);
-		routineTasks.add(MineTile.class); // TODO
 		routineTasks.add(PlantSeed.class);
 		routineTasks.add(Speak.class);
 		routineTasks.add(TakeItem.class); // TODO

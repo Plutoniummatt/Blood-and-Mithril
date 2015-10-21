@@ -3,14 +3,6 @@ package bloodandmithril.ui.components;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.util.Util.fitToTextInputBox;
-import bloodandmithril.core.BloodAndMithrilClient;
-import bloodandmithril.core.Copyright;
-import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.UserInterface.UIRef;
-import bloodandmithril.util.Function;
-import bloodandmithril.util.JITTask;
-import bloodandmithril.util.Shaders;
-import bloodandmithril.util.Task;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -19,6 +11,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+
+import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.core.Copyright;
+import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.UserInterface.UIRef;
+import bloodandmithril.util.Function;
+import bloodandmithril.util.JITTask;
+import bloodandmithril.util.Shaders;
+import bloodandmithril.util.Task;
 
 /**
  * Class representing a clickable button
@@ -217,6 +218,8 @@ public class Button {
 				getGraphics().getSpriteBatch().draw(idle, vec.x, vec.y);
 			}
 		}
+
+		getGraphics().getSpriteBatch().flush();
 	}
 
 

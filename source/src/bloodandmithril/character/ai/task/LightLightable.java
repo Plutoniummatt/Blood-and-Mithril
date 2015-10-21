@@ -31,6 +31,7 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
@@ -351,7 +352,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		}
 		@Override
 		public final boolean valid() {
-			return false;
+			return true;
 		}
 
 		@Override
@@ -492,18 +493,22 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 	@Override
 	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
 		ContextMenu contextMenu = getContextMenu(routine, host);
-		contextMenu.addMenuItem(
-			new MenuItem(
-				"Any visible lightable",
-				() -> {
-					routine.setAiTaskGenerator(new GenerateLightAnyVisibleLightables(host.getId().getId()));
-				},
-				Color.ORANGE,
-				Color.GREEN,
-				Color.GRAY,
-				null
-			)
-		);
+
+		final EntityVisible identificationFunction = routine.getIdentificationFunction();
+		if (Lightable.class.isAssignableFrom(identificationFunction.getEntity().a)) {
+			contextMenu.addMenuItem(
+				new MenuItem(
+					"Visible lightable",
+					() -> {
+						routine.setAiTaskGenerator(new GenerateLightAnyVisibleLightables(host.getId().getId()));
+					},
+					Color.ORANGE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
+		}
 		return contextMenu;
 	}
 

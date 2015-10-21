@@ -8,15 +8,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
-
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
 
 /**
  * The ability to see
@@ -56,6 +57,13 @@ public interface Observer extends Serializable {
 			eyes.y + viewDistance,
 			eyes.y - viewDistance
 		);
+		List<Integer> itemsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(
+			Item.class,
+			eyes.x - viewDistance,
+			eyes.x + viewDistance,
+			eyes.y + viewDistance,
+			eyes.y - viewDistance
+		);
 		Collections.shuffle(individualsWithinBounds);
 		Collections.shuffle(propsWithinBounds);
 
@@ -68,14 +76,26 @@ public interface Observer extends Serializable {
 				continue;
 			}
 
-			if (canSee((Visible)toBeObserved, world)) {
-				visibles.add((Visible)toBeObserved);
+			if (canSee(toBeObserved, world)) {
+				visibles.add(toBeObserved);
 			}
 		}
 
 		for (Integer id : propsWithinBounds) {
 			// Ray trace
 			Prop toBeObserved = Domain.getWorld(worldId).props().getProp(id);
+			if (toBeObserved == null || !(toBeObserved instanceof Visible)) {
+				continue;
+			}
+
+			if (canSee(toBeObserved, world)) {
+				visibles.add(toBeObserved);
+			}
+		}
+
+		for (Integer id : itemsWithinBounds) {
+			// Ray trace
+			Item toBeObserved = Domain.getWorld(worldId).items().getItem(id);
 			if (toBeObserved == null || !(toBeObserved instanceof Visible)) {
 				continue;
 			}

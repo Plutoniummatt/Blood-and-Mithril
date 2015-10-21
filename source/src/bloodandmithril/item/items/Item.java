@@ -7,6 +7,8 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -15,7 +17,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
+import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -73,7 +77,7 @@ import bloodandmithril.world.topography.tile.Tile;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public abstract class Item implements Serializable, Affixed, MouseOverable {
+public abstract class Item implements Serializable, Affixed, MouseOverable, Visible {
 	private static final long serialVersionUID = -7733840667288631158L;
 
 	/** Affixes of this {@link Item} */
@@ -661,4 +665,35 @@ public abstract class Item implements Serializable, Affixed, MouseOverable {
 	 * @return The angle from positive axis of the upright position of the texture region, in degrees, measured positive counter clockwise
 	 */
 	public abstract float getUprightAngle();
+
+
+	@Override
+	public boolean isVisible() {
+		return true;
+	}
+
+
+	public Box getBoundingBox() {
+		return new Box(position.cpy().add(0f, getTextureRegion().getRegionHeight()/2f), getTextureRegion().getRegionWidth(), getTextureRegion().getRegionHeight());
+	}
+
+
+	@Override
+	public boolean sameAs(Visible other) {
+		if (other instanceof Item) {
+			return ((Item) other).id == id;
+		}
+
+		return false;
+	}
+
+
+	@Override
+	public Collection<Vector2> getVisibleLocations() {
+		LinkedList<Vector2> locations = Lists.newLinkedList();
+		for (int i = 10; i < getTextureRegion().getRegionHeight() - 10 ; i += 10) {
+			locations.add(position.cpy().add(0f, i));
+		}
+		return locations;
+	}
 }

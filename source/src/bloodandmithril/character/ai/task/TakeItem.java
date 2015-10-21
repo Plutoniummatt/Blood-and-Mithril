@@ -1,13 +1,30 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
+import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.world.Domain.getIndividual;
+import static bloodandmithril.world.Domain.getWorld;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.List;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
+import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.routine.DailyRoutine;
@@ -16,6 +33,7 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
@@ -26,11 +44,12 @@ import bloodandmithril.networking.requests.RefreshWindows;
 import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.util.CursorBoundTask;
+import bloodandmithril.util.cursorboundtask.ChooseAreaCursorBoundTask;
 import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.google.inject.Inject;
 
 /**
  * A {@link CompositeAITask} consisting of:
@@ -193,26 +212,159 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 	}
 
 
+	public static class LootAreaTaskGenerator extends TaskGenerator {
+		private static final long serialVersionUID = 115770354252263826L;
+
+		private float left, right, top, bottom;
+		private int hostId;
+
+		/**
+		 * Constructor
+		 */
+		public LootAreaTaskGenerator(Vector2 start, Vector2 finish, int hostId) {
+			this.hostId = hostId;
+			this.left 	= min(start.x, finish.x);
+			this.right 	= max(start.x, finish.x);
+			this.top 	= max(start.y, finish.y);
+			this.bottom	= min(start.y, finish.y);
+		}
+
+		@Override
+		public AITask apply(Object input) {
+			final Individual individual = getIndividual(hostId);
+			World world = getWorld(individual.getWorldId());
+			List<Integer> itemsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Item.class, left, right, top, bottom);
+
+			final List<Item> itemsToLoot = Lists.newLinkedList();
+
+			itemsWithinBounds
+			.stream()
+			.map(id -> {
+				return world.items().getItem(id);
+			}).forEach(item -> {
+				itemsToLoot.add(item);
+			});
+
+			try {
+				return new TakeItem(individual, itemsToLoot);
+			} catch (NoTileFoundException e) {
+				return null;
+			}
+		}
+
+		@Override
+		public String getDailyRoutineDetailedDescription() {
+			return null;
+		}
+
+		@Override
+		public String getEntityVisibleRoutineDetailedDescription() {
+			return null;
+		}
+
+		@Override
+		public String getIndividualConditionRoutineDetailedDescription() {
+			return null;
+		}
+
+		@Override
+		public String getStimulusDrivenRoutineDetailedDescription() {
+			return null;
+		}
+
+		@Override
+		public boolean valid() {
+			return true;
+		}
+
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Individual looter = Domain.getIndividual(hostId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(looter.getState().position.x) - looter.getWidth()/2,
+				worldToScreenY(looter.getState().position.y),
+				looter.getWidth(),
+				looter.getHeight()
+			);
+
+			UserInterface.shapeRenderer.setColor(Color.RED);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(left),
+				worldToScreenY(bottom),
+				right - left,
+				top - bottom
+			);
+
+			UserInterface.shapeRenderer.end();
+		}
+	}
+
+
+	private ContextMenu getContextMenu(Routine routine, Individual host) {
+		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
+			new ContextMenu.MenuItem(
+				"Choose area to loot",
+				() -> {
+					BloodAndMithrilClient.setCursorBoundTask(
+						new ChooseAreaCursorBoundTask(
+							args -> {
+								routine.setAiTaskGenerator(new LootAreaTaskGenerator((Vector2) args[0], (Vector2) args[1], host.getId().getId()));
+							},
+							true
+						) {
+							@Override
+							public void keyPressed(int keyCode) {
+							}
+							@Override
+							public String getShortDescription() {
+								return "Choose area to loot";
+							}
+							@Override
+							public CursorBoundTask getImmediateTask() {
+								return null;
+							}
+							@Override
+							public boolean executionConditionMet() {
+								return true;
+							}
+							@Override
+							public boolean canCancel() {
+								return true;
+							}
+						}
+					);
+				},
+				Color.ORANGE,
+				Color.GREEN,
+				Color.GRAY,
+				null
+			)
+		);
+	}
+
+
 	@Override
 	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
-		return null;
+		return getContextMenu(routine, host);
 	}
 
 
 	@Override
 	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		return null;
+		return getContextMenu(routine, host);
 	}
 
 
 	@Override
-	public ContextMenu getIndividualConditionRoutineContextMenu( Individual host, IndividualConditionRoutine routine) {
-		return null;
+	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+		return getContextMenu(routine, host);
 	}
 
 
 	@Override
 	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
-		return null;
+		return getContextMenu(routine, host);
 	}
 }
