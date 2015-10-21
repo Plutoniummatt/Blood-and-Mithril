@@ -153,7 +153,9 @@ public abstract class Window extends Component {
 				}
 
 				if (isActive()) {
-					internalLeftClick(copy, windowsCopy);
+					if (!isClosing()) {
+						internalLeftClick(copy, windowsCopy);
+					}
 					determinePositioning();
 
 					if (alwaysActive) {

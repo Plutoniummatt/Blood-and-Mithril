@@ -304,6 +304,10 @@ public class InventoryWindow extends Window implements Refreshable {
 
 	@Override
 	protected synchronized void internalWindowRender() {
+		if (host instanceof Individual && !((Individual) host).isAlive()) {
+			setClosing(true);
+		}
+
 		int lineWidth = 23;
 
 		// Set the position and dimensions of the panel

@@ -15,6 +15,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.individuals.Individual;
@@ -37,10 +41,6 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * {@link CraftingStation} related UI
@@ -260,6 +260,10 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	@Override
 	protected void internalWindowRender() {
 		if (individual.getState().position.cpy().sub(craftingStation.position).len() > 96f) {
+			setClosing(true);
+		}
+
+		if (!individual.isAlive()) {
 			setClosing(true);
 		}
 

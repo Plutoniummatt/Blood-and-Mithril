@@ -12,6 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -33,14 +41,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * Trade window, used when transferring items between {@link Container}s
@@ -576,8 +576,16 @@ public class TradeWindow extends Window implements Refreshable {
 	@Override
 	protected void internalWindowRender() {
 		if (proposer instanceof Individual) {
+			if (!((Individual) proposer).isAlive()) {
+				setClosing(true);
+			}
+
 			if (proposee instanceof Individual) {
 				if (((Individual) proposee).getState().position.cpy().sub(((Individual) proposer).getState().position.cpy()).len() > 64) {
+					setClosing(true);
+				}
+
+				if (!((Individual) proposee).isAlive()) {
 					setClosing(true);
 				}
 			} else if (proposee instanceof Prop) {
