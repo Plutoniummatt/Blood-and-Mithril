@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -29,6 +30,8 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.routine.DailyRoutine;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.VisibleItemFuture;
 import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
@@ -44,6 +47,7 @@ import bloodandmithril.networking.requests.RefreshWindows;
 import bloodandmithril.networking.requests.SynchronizeIndividual;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
+import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.cursorboundtask.ChooseAreaCursorBoundTask;
 import bloodandmithril.world.Domain;
@@ -212,6 +216,74 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 	}
 
 
+	public static final class TakeVisibleItemTaskGenerator extends TaskGenerator {
+		private static final long serialVersionUID = 2988235138275518617L;
+		private final VisibleItemFuture itemId;
+		private final int hostId, worldId;
+
+		public TakeVisibleItemTaskGenerator(int hostId, int worldId, VisibleItemFuture itemId) {
+			this.hostId = hostId;
+			this.worldId = worldId;
+			this.itemId = itemId;
+		}
+
+		@Override
+		public final AITask apply(Object input) {
+			Item item = Domain.getWorld(worldId).items().getItem(itemId.call());
+			try {
+				return new TakeItem(Domain.getIndividual(hostId), item);
+			} catch (NoTileFoundException e) {
+				return null;
+			}
+		}
+
+		@Override
+		public final String getDailyRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public final String getEntityVisibleRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public final String getIndividualConditionRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		@Override
+		public final String getStimulusDrivenRoutineDetailedDescription() {
+			return getDescription();
+		}
+
+		private String getDescription() {
+			return Domain.getIndividual(hostId).getId().getSimpleName() + " takes any visible item";
+		}
+
+		@Override
+		public final boolean valid() {
+			return true;
+		}
+
+		@Override
+		public void render() {
+			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.GREEN);
+			Gdx.gl20.glLineWidth(2f);
+			Individual attacker = Domain.getIndividual(hostId);
+			UserInterface.shapeRenderer.rect(
+				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
+				worldToScreenY(attacker.getState().position.y),
+				attacker.getWidth(),
+				attacker.getHeight()
+			);
+
+			UserInterface.shapeRenderer.end();
+		}
+	}
+
+
 	public static class LootAreaTaskGenerator extends TaskGenerator {
 		private static final long serialVersionUID = 115770354252263826L;
 
@@ -353,7 +425,25 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 
 	@Override
 	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		return getContextMenu(routine, host);
+		ContextMenu contextMenu = getContextMenu(routine, host);
+
+		final EntityVisible identificationFunction = routine.getIdentificationFunction();
+		if (Item.class.isAssignableFrom(identificationFunction.getEntity().a)) {
+			contextMenu.addFirst(
+				new MenuItem(
+					"Visible item",
+					() -> {
+						routine.setAiTaskGenerator(new TakeVisibleItemTaskGenerator(host.getId().getId(), host.getWorldId(), new VisibleItemFuture(routine)));
+					},
+					Color.MAGENTA,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
+		}
+
+		return contextMenu;
 	}
 
 

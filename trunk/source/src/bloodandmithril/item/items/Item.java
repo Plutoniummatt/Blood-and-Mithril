@@ -20,6 +20,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.character.ai.perception.Visible;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -67,6 +68,7 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
@@ -691,9 +693,35 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	@Override
 	public Collection<Vector2> getVisibleLocations() {
 		LinkedList<Vector2> locations = Lists.newLinkedList();
-		for (int i = 10; i < getTextureRegion().getRegionHeight() - 10 ; i += 10) {
+		for (int i = 2; i < getTextureRegion().getRegionHeight() - 2 ; i += 2) {
 			locations.add(position.cpy().add(0f, i));
 		}
 		return locations;
+	}
+
+
+	public static class VisibleItem extends EntityVisible {
+		private static final long serialVersionUID = -211448711527852658L;
+		private WrapperForTwo<Class<? extends Item>, Item> wrapper = WrapperForTwo.wrap(Item.class, null);
+
+		@Override
+		public Boolean apply(Visible input) {
+			if (input instanceof Item) {
+				return true;
+			}
+
+			return false;
+		}
+
+		@Override
+		public String getDetailedDescription(Individual host) {
+			return "This routine occurs when an item is visible to " + host.getId().getSimpleName();
+		}
+
+		@Override
+		@SuppressWarnings("unchecked")
+		public WrapperForTwo<Class<? extends Item>, Item> getEntity() {
+			return wrapper;
+		}
 	}
 }

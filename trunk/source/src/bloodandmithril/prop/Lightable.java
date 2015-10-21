@@ -4,6 +4,7 @@ import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 
 /**
@@ -12,6 +13,7 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
+@Name(name = "Lightable")
 public interface Lightable extends Visible {
 
 	/**

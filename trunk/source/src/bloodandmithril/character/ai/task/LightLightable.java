@@ -372,8 +372,8 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(left),
 				worldToScreenY(bottom),
-				worldToScreenX(right - left),
-				worldToScreenY(top - bottom)
+				right - left,
+				top - bottom
 			);
 
 			UserInterface.shapeRenderer.end();
@@ -496,13 +496,13 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 		final EntityVisible identificationFunction = routine.getIdentificationFunction();
 		if (Lightable.class.isAssignableFrom(identificationFunction.getEntity().a)) {
-			contextMenu.addMenuItem(
+			contextMenu.addFirst(
 				new MenuItem(
-					"Visible lightable",
+					"Visible lightable entity",
 					() -> {
 						routine.setAiTaskGenerator(new GenerateLightAnyVisibleLightables(host.getId().getId()));
 					},
-					Color.ORANGE,
+					Color.MAGENTA,
 					Color.GREEN,
 					Color.GRAY,
 					null

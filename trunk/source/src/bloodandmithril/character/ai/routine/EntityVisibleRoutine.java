@@ -25,6 +25,8 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.Item.VisibleItem;
 import bloodandmithril.prop.Harvestable.VisibleHarvestable;
 import bloodandmithril.prop.Lightable.LightableUnlit;
 import bloodandmithril.prop.Prop;
@@ -70,7 +72,7 @@ public final class EntityVisibleRoutine extends Routine {
 		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
 		for (Visible v : observed) {
 			if (identificationFunction.apply(v)) {
-				return true;
+				return true && aiTaskGenerator != null;
 			}
 		}
 
@@ -210,19 +212,18 @@ public final class EntityVisibleRoutine extends Routine {
 
 		@Override
 		public Boolean apply(Visible input) {
-			return t.equals(input.getClass());
+			return t.isAssignableFrom(input.getClass());
 		}
 	}
 
-
 	public static final class IndividualEntityVisible extends TypeEntityVisible {
 		private static final long serialVersionUID = 1633442019980027732L;
-		private Behaviour behaviour;
-		private int hostId;
-		private WrapperForTwo<Class<? extends Individual>, Individual> wrapper;
-		private boolean alive;
+		private final Behaviour behaviour;
+		private final int hostId;
+		private final WrapperForTwo<Class<? extends Visible>, Individual> wrapper;
+		private final boolean alive;
 
-		public IndividualEntityVisible(int hostId, Class<? extends Individual> t, Behaviour b, boolean alive) {
+		public IndividualEntityVisible(int hostId, Class<? extends Visible> t, Behaviour b, boolean alive) {
 			super(t);
 			this.hostId = hostId;
 			this.behaviour = b;
@@ -245,12 +246,12 @@ public final class EntityVisibleRoutine extends Routine {
 
 		@Override
 		public final String getDetailedDescription(Individual host) {
-			return "This routine occurs when " + behaviour.description.toLowerCase() + " " + t.getAnnotation(Name.class).name() + " are visible to " + Domain.getIndividual(hostId).getId().getSimpleName();
+			return "This routine occurs when " + (behaviour == null ? "" : behaviour.description.toLowerCase() + " ") + t.getAnnotation(Name.class).name() + " are visible to " + Domain.getIndividual(hostId).getId().getSimpleName();
 		}
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public final WrapperForTwo<Class<? extends Individual>, Individual> getEntity() {
+		public final WrapperForTwo<Class<? extends Visible>, Individual> getEntity() {
 			return wrapper;
 		}
 	}
@@ -332,7 +333,8 @@ public final class EntityVisibleRoutine extends Routine {
 						Color.GRAY,
 						new ContextMenu(getMouseScreenX(), getMouseScreenY(), false,
 							new MenuItem("Individual", () -> {}, Color.ORANGE, Color.GREEN, Color.GRAY,
-								new ContextMenu(getMouseScreenX(), getMouseScreenY(), false,
+								new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
+									new MenuItem("Any", () -> {}, Color.MAGENTA, Color.GREEN, Color.GRAY, deriveIndividualTypeContextMenu),
 									new MenuItem("Friendly", () -> {
 										args.t = Behaviour.FRIENDLY;
 									}, Color.ORANGE, Color.GREEN, Color.GRAY, deriveIndividualTypeContextMenu),
@@ -341,18 +343,27 @@ public final class EntityVisibleRoutine extends Routine {
 									}, Color.ORANGE, Color.GREEN, Color.GRAY, deriveIndividualTypeContextMenu),
 									new MenuItem("Neutral", () -> {
 										args.t = Behaviour.NEUTRAL;
-									}, Color.ORANGE, Color.GREEN, Color.GRAY, deriveIndividualTypeContextMenu),
-									new MenuItem("Any", () -> {}, Color.ORANGE, Color.GREEN, Color.GRAY, deriveIndividualTypeContextMenu)
+									}, Color.ORANGE, Color.GREEN, Color.GRAY, deriveIndividualTypeContextMenu)
 								)
 							),
 							new MenuItem("Prop", () -> {}, Color.ORANGE, Color.GREEN, Color.GRAY,
-								new ContextMenu(getMouseScreenX(), getMouseScreenY(), false,
+								new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
 									derivePropTypeContextMenu()
 								)
 							),
 							new MenuItem("Item", () -> {}, Color.ORANGE, Color.GREEN, Color.GRAY,
-								new ContextMenu(getMouseScreenX(), getMouseScreenY(), false
-									// TODO
+								new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
+									new MenuItem(
+										"Any Item",
+										() -> {
+											EntityVisibleRoutine.this.identificationFunction = new VisibleItem();
+											EntityVisibleRoutine.this.aiTaskGenerator = null;
+										},
+										Color.MAGENTA,
+										Color.GREEN,
+										Color.GRAY,
+										null
+									)
 								)
 							)
 						)
@@ -403,8 +414,8 @@ public final class EntityVisibleRoutine extends Routine {
 		}
 
 		private final ContextMenu deriveIndividualTypeContextMenu(Wrapper<Behaviour> args) {
-			ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
-			for (Entry<String, List<Class<? extends Individual>>> category : Individual.getAllIndividualClasses().entrySet()) {
+			ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+			for (Entry<Class<? extends Visible>, List<Class<? extends Individual>>> category : Individual.getAllIndividualClasses().entrySet()) {
 				ContextMenu secondaryMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 				for (Class<? extends Individual> clazz : category.getValue()) {
@@ -429,9 +440,29 @@ public final class EntityVisibleRoutine extends Routine {
 					);
 				}
 
+				secondaryMenu.addFirst(
+					new MenuItem(
+						"Any " + category.getKey().getAnnotation(Name.class).name(),
+						() -> {
+							EntityVisibleRoutine.this.identificationFunction = new IndividualEntityVisible(
+								EntityVisibleRoutine.this.getHost().getId().getId(),
+								category.getKey(),
+								args.t,
+								true
+							);
+
+							EntityVisibleRoutine.this.aiTaskGenerator = null;
+						},
+						Color.MAGENTA,
+						Color.GREEN,
+						Color.GRAY,
+						null
+					)
+				);
+
 				menu.addMenuItem(
 					new MenuItem(
-						category.getKey(),
+						category.getKey().getAnnotation(Name.class).name(),
 						() -> {},
 						Color.ORANGE,
 						Color.GREEN,
@@ -440,6 +471,26 @@ public final class EntityVisibleRoutine extends Routine {
 					)
 				);
 			}
+
+			menu.addFirst(
+				new MenuItem(
+					"Any Individual",
+					() -> {
+						EntityVisibleRoutine.this.identificationFunction = new IndividualEntityVisible(
+							EntityVisibleRoutine.this.getHost().getId().getId(),
+							Individual.class,
+							args.t,
+							true
+						);
+
+						EntityVisibleRoutine.this.aiTaskGenerator = null;
+					},
+					Color.MAGENTA,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
 
 			return menu;
 		}
@@ -478,6 +529,26 @@ public final class EntityVisibleRoutine extends Routine {
 			}
 
 			changeVisibleEntityButton.render(x + 114, y - height + 70, parent.isActive(), parent.getAlpha());
+		}
+	}
+
+
+	public static final class VisibleItemFuture implements SerializableFunction<Integer> {
+		private static final long serialVersionUID = -3026958963883212173L;
+		private final EntityVisibleRoutine routine;
+
+		public VisibleItemFuture(EntityVisibleRoutine routine) {
+			this.routine = routine;
+		}
+
+		@Override
+		public final Integer call() {
+			Visible visibleEntity = routine.getVisibleEntity();
+			if (visibleEntity instanceof Item) {
+				return ((Item) visibleEntity).getId();
+			}
+
+			throw new RuntimeException();
 		}
 	}
 

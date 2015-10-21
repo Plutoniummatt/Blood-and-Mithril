@@ -13,12 +13,17 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.offhand.OffhandEquipment;
 import bloodandmithril.item.items.equipment.weapon.Weapon;
@@ -29,16 +34,13 @@ import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
-
 /**
  * Uses standard humanoid animations
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Humanoid")
 public abstract class Humanoid extends GroundTravellingIndividual {
 	private static final long serialVersionUID = 7634760818045237827L;
 
