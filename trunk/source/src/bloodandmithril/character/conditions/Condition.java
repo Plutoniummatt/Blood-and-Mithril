@@ -1,6 +1,9 @@
 package bloodandmithril.character.conditions;
 
 import java.io.Serializable;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -13,6 +16,18 @@ import bloodandmithril.core.Copyright;
 @Copyright("Matthew Peck 2014")
 public abstract class Condition implements Serializable {
 	private static final long serialVersionUID = -1125485475556985426L;
+
+	@SuppressWarnings("unchecked")
+	public static Set<Class<? extends Condition>> getAllConditions() {
+		return Sets.newHashSet(
+			Bleeding.class,
+			Burning.class,
+			Exhaustion.class,
+			Hunger.class,
+			Poison.class,
+			Thirst.class
+		);
+	}
 
 	/** Affect the character suffering from this condition */
 	public abstract void affect(Individual affected, float delta);

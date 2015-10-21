@@ -71,15 +71,15 @@ import bloodandmithril.world.weather.Weather;
  *
  * <b><p> At least 5 types of NPC                                                                        </b></p>
  * <b><p> Ranged Combat 																                 </b></p>
- * <b><p> Resource gathering (At least the following: farming, hunting, foraging)			 	 		 </b></p>
  * <b><p> Combat (New animations, equipment framework + equipment animation framework)                   </b></p>
  * <b><p> Terraforming - Mining & Placing blocks                                                         </b></p>
  * <b><p> Generation                                                                                     </b></p>
  * <b><p> Fluids	                                                                                     </b></p>
- * <b><p> Customizable AI                                                                                </b></p>
  *
  * DONE
  *
+ * <b><p> Resource gathering (At least the following: farming, hunting, foraging)			 	 		 </b></p>
+ * <b><p> Customizable AI                                                                                </b></p>
  * <b><p> Window resizing                                          										 </b></p>
  * <b><p> Stockpiling                                              										 </b></p>
  * <b><p> Props (Trees, rocks, etc, and wiring these into generation)                                    </b></p>

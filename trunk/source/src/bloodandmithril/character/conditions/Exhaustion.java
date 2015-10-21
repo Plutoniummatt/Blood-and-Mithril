@@ -2,9 +2,11 @@ package bloodandmithril.character.conditions;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.world.Domain;
 
 @Copyright("Matthew Peck 2014")
+@Name(name = "Exhaustion")
 public class Exhaustion extends Condition {
 	private static final long serialVersionUID = 1486454742433474423L;
 

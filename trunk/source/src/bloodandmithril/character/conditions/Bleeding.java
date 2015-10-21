@@ -1,8 +1,13 @@
 package bloodandmithril.character.conditions;
 
 import static bloodandmithril.util.Util.getRandom;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.TracerParticle;
@@ -10,15 +15,13 @@ import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * Drains health
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Bleeding")
 public class Bleeding extends Condition {
 	private static final long serialVersionUID = 2191121600917403074L;
 
