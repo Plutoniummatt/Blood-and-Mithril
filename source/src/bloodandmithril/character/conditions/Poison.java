@@ -2,6 +2,7 @@ package bloodandmithril.character.conditions;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 
 /**
  * Drains health
@@ -9,6 +10,7 @@ import bloodandmithril.core.Copyright;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Poison")
 public class Poison extends Condition {
 	private static final long serialVersionUID = 1741945471582031402L;
 

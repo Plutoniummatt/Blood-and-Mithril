@@ -2,8 +2,11 @@ package bloodandmithril.character.conditions;
 
 import java.util.Collection;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -11,14 +14,13 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.graphics.Color;
-
 /**
  * Drains health, sets others on fire too
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Burning")
 public class Burning extends Condition {
 	private static final long serialVersionUID = 8852771123010753122L;
 	private float duration;

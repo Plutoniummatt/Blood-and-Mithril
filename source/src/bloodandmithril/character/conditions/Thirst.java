@@ -2,6 +2,7 @@ package bloodandmithril.character.conditions;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Name;
 import bloodandmithril.world.Domain;
 
 /**
@@ -10,6 +11,7 @@ import bloodandmithril.world.Domain;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
+@Name(name = "Thirst")
 public class Thirst extends Condition {
 	private static final long serialVersionUID = -3232484824763914755L;
 

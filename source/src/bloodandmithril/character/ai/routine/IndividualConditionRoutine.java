@@ -10,11 +10,13 @@ import java.util.Deque;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.Iterables;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.RoutineTasks;
+import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
@@ -113,6 +115,27 @@ public final class IndividualConditionRoutine extends Routine {
 	public static abstract class IndividualConditionTriggerFunction extends SerializableMappingFunction<Individual, Boolean> {
 		private static final long serialVersionUID = -7651195239417056155L;
 		public abstract String getDetailedDescription(Individual host);
+	}
+
+
+	public static final class IndividualAffectedByConditionTriggerFunction extends IndividualConditionTriggerFunction {
+		private static final long serialVersionUID = -4307447978296098496L;
+		private Class<? extends Condition> condition;
+
+		public IndividualAffectedByConditionTriggerFunction(Class<? extends Condition> condition) {
+			this.condition = condition;
+		}
+
+		@Override
+		public final Boolean apply(Individual input) {
+			return Iterables.tryFind(input.getState().currentConditions, c -> {
+				return condition.isAssignableFrom(c.getClass());
+			}).isPresent();
+		}
+		@Override
+		public final String getDetailedDescription(Individual host) {
+			return "This routine occurs when affected by " + condition.getAnnotation(Name.class).name();
+		}
 	}
 
 
@@ -241,11 +264,43 @@ public final class IndividualConditionRoutine extends Routine {
 					)
 				);
 
+				menu.addMenuItem(new MenuItem(
+					"Affected by",
+					() -> {
+					},
+					Color.ORANGE,
+					Color.GREEN,
+					Color.GRAY,
+					getConditionsSubMenu()
+				));
+
 				parent.setActive(false);
 				copy.add(menu);
 			}
 
 			return super.leftClick(copy, windowsCopy) || changeConditionButton.click();
+		}
+
+		private ContextMenu getConditionsSubMenu() {
+			ContextMenu contextMenu = new ContextMenu(
+				0,
+				0,
+				true
+			);
+
+			for (Class<? extends Condition> c : Condition.getAllConditions()) {
+				contextMenu.addMenuItem(new MenuItem(
+					c.getAnnotation(Name.class).name(),
+					() -> {
+						IndividualConditionRoutine.this.setTriggerFunction(new IndividualAffectedByConditionTriggerFunction(c));
+					},
+					Color.ORANGE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				));
+			}
+			return contextMenu;
 		}
 
 		@Override
