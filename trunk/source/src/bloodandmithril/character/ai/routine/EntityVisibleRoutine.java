@@ -310,17 +310,6 @@ public final class EntityVisibleRoutine extends Routine {
 				parent.setActive(false);
 				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
-				menu.addMenuItem(
-					new MenuItem(
-						"Choose specific entity",
-						() -> {},
-						Color.ORANGE,
-						Color.GREEN,
-						Color.GRAY,
-						null
-					)
-				);
-
 				Wrapper<Behaviour> args = new Wrapper<>(null);
 				ContextMenu deriveIndividualTypeContextMenu = deriveIndividualTypeContextMenu(args);
 

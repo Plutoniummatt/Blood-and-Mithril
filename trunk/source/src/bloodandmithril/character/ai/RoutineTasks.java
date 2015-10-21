@@ -37,7 +37,7 @@ public class RoutineTasks {
 		routineTasks.add(LightLightable.class);
 		routineTasks.add(PlantSeed.class);
 		routineTasks.add(Speak.class);
-		routineTasks.add(TakeItem.class); // TODO
+		routineTasks.add(TakeItem.class);
 	}
 
 	public static boolean isRoutineTask(AITask task) {
