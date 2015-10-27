@@ -58,6 +58,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
@@ -69,6 +70,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualContextMenuService;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.interfaces.Interface;
@@ -178,6 +180,9 @@ public class UserInterface {
 
 	private static Deque<Task> uiTasks;
 
+	@Inject
+	private static IndividualContextMenuService individualContextMenuService;
+
 	static {
 		if (ClientServerInterface.isClient()) {
 			uiTexture = new Texture(files.internal("data/image/ui.png"));
@@ -202,6 +207,8 @@ public class UserInterface {
 	public static synchronized void setup() {
 		loadBars();
 		loadButtons();
+
+		individualContextMenuService = Wiring.injector().getInstance(IndividualContextMenuService.class);
 	}
 
 
@@ -1464,7 +1471,7 @@ public class UserInterface {
 		for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 			Individual indi = Domain.getIndividual(indiKey);
 			if (indi.isMouseOver()) {
-				final ContextMenu secondaryMenu = IndividualContextMenuService.getContextMenu(indi);
+				final ContextMenu secondaryMenu = individualContextMenuService.getContextMenu(indi);
 				newMenu.getMenuItems().add(
 					new MenuItem(
 						indi.getId().getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",

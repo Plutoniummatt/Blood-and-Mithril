@@ -22,18 +22,6 @@ import static java.lang.Math.round;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.Copyright;
-import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
-import bloodandmithril.prop.Prop;
-import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.util.Shaders;
-import bloodandmithril.util.datastructure.Wrapper;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.World;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -42,6 +30,19 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
+
+import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.Copyright;
+import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
+import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.Prop;
+import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.Shaders;
+import bloodandmithril.util.datastructure.Wrapper;
+import bloodandmithril.world.Domain;
+import bloodandmithril.world.World;
+import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * Class for rendering {@link World}s
@@ -68,10 +69,12 @@ public class WorldRenderer {
 	public static FrameBuffer combinedBufferQuantized;
 
 	static {
-		gameWorldTexture 					= new Texture(files.internal("data/image/gameWorld.png"));
-		individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
-		gameWorldTexture.setFilter(Linear, Nearest);
-		individualTexture.setFilter(Nearest, Nearest);
+		if (ClientServerInterface.isClient()) {
+			gameWorldTexture 					= new Texture(files.internal("data/image/gameWorld.png"));
+			individualTexture 					= new Texture(files.internal("data/image/character/individual.png"));
+			gameWorldTexture.setFilter(Linear, Nearest);
+			individualTexture.setFilter(Nearest, Nearest);
+		}
 	}
 
 	public static void dispose() {

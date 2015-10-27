@@ -10,6 +10,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Threading;
@@ -24,10 +28,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.google.inject.Inject;
 
 /**
  * @author Matt
@@ -198,7 +198,16 @@ public class MainMenuWindow extends Window {
 										removeWindows();
 										Thread.sleep(1000);
 										ClientServerInterface.setupAndConnect(args[0].toString());
-										Domain.setActiveWorld(Domain.createWorld());
+
+										while (Domain.getWorlds().isEmpty()) {
+											try {
+												Thread.sleep(100);
+											} catch (Exception e) {
+												throw new RuntimeException(e);
+											}
+										}
+
+										Domain.setActiveWorld(Domain.getWorlds().keySet().iterator().next().intValue());
 										BloodAndMithrilClient.setInGame(true);
 										BloodAndMithrilClient.setup();
 									} catch (Exception e) {

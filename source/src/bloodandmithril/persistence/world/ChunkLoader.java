@@ -10,6 +10,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipFile;
 
+import com.badlogic.gdx.Gdx;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
@@ -24,8 +26,6 @@ import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Chunk.ChunkData;
 import bloodandmithril.world.topography.Topography;
-
-import com.badlogic.gdx.Gdx;
 
 /**
  * Responsible for loading chunks from disk
@@ -145,11 +145,7 @@ public class ChunkLoader {
 
 	/** Loads generation data
 	 * @param newGame */
-	public static synchronized void loadGenerationData(boolean newGame) {
-		if (newGame) {
-			return;
-		}
-
+	public static synchronized void loadGenerationData() {
 		try {
 			ConcurrentHashMap<Integer, Structure> structures = decode(Gdx.files.local(getSavePath() + "/world/structures.txt"));
 			Structures.setStructures(structures);
