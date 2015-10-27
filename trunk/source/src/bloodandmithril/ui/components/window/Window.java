@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.GL20;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -81,6 +82,7 @@ public abstract class Window extends Component {
 		this.minimizable = minimizable;
 
 		loadButtons();
+		Wiring.injector().injectMembers(this);
 	}
 
 

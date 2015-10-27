@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualContextMenuService;
@@ -37,6 +38,9 @@ public class UnitsWindow extends Window implements Refreshable {
 	private ScrollableListingPanel<Individual, String> listing;
 	private final HashMap<ScrollableListingPanel.ListingMenuItem<Individual>, String> individuals = Maps.newHashMap();
 	private final int factionId;
+
+	@Inject
+	private IndividualContextMenuService individualContextMenuService;
 
 	/**
 	 * Constructor
@@ -79,7 +83,7 @@ public class UnitsWindow extends Window implements Refreshable {
 							individual.isAlive() ? Color.GREEN : Color.MAROON,
 							UIRef.BR
 						),
-						IndividualContextMenuService.getContextMenu(individual).addFirst(
+						individualContextMenuService.getContextMenu(individual).addFirst(
 							new ContextMenu.MenuItem(
 								"Go to",
 								() -> {

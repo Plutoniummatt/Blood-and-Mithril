@@ -18,12 +18,27 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
+import bloodandmithril.audio.SoundService.SuspicionLevel;
 import bloodandmithril.audio.SoundService.SuspiciousSound;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocationFunction;
 import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
+import bloodandmithril.character.ai.Routine;
+import bloodandmithril.character.ai.TaskGenerator;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.implementations.HareAI;
 import bloodandmithril.character.ai.pathfinding.Path;
@@ -33,8 +48,22 @@ import bloodandmithril.character.ai.perception.Observer;
 import bloodandmithril.character.ai.perception.Sniffer;
 import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Stimulus;
+import bloodandmithril.character.ai.routine.DailyRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.SpecificEntityVisible;
+import bloodandmithril.character.ai.routine.EntityVisibleRoutine.TypeEntityVisible;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine.IndividualAffectedByConditionTriggerFunction;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine.IndividualConditionTriggerFunction;
+import bloodandmithril.character.ai.routine.IndividualConditionRoutine.IndividualHealthTriggerFunction;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine.StimulusTriggerFunction;
+import bloodandmithril.character.ai.routine.StimulusDrivenRoutine.SuspiciousSoundAITriggerFunction;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.Attack.AttackTarget;
+import bloodandmithril.character.ai.task.Attack.AttackTaskGenerator;
+import bloodandmithril.character.ai.task.Attack.AttackVisibleIndividualTaskGenerator;
 import bloodandmithril.character.ai.task.Attack.ReevaluateAttack;
 import bloodandmithril.character.ai.task.Attack.WithinAttackRangeOrCantAttack;
 import bloodandmithril.character.ai.task.CompositeAITask;
@@ -43,16 +72,24 @@ import bloodandmithril.character.ai.task.Construct.Constructing;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.Craft.Crafting;
 import bloodandmithril.character.ai.task.Follow;
+import bloodandmithril.character.ai.task.Follow.FollowTaskGenerator;
 import bloodandmithril.character.ai.task.Follow.RepathCondition;
 import bloodandmithril.character.ai.task.Follow.WithinNumberOfWaypointsFunction;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.GoToMovingLocation;
+import bloodandmithril.character.ai.task.GoToMovingLocation.GoToMovingLocationTaskGenerator;
 import bloodandmithril.character.ai.task.Harvest;
+import bloodandmithril.character.ai.task.Harvest.HarvestAreaTaskGenerator;
 import bloodandmithril.character.ai.task.Harvest.HarvestItem;
+import bloodandmithril.character.ai.task.Harvest.HarvestSelectedHarvestablesTaskGenerator;
+import bloodandmithril.character.ai.task.Harvest.HarvestVisibleEntityTaskGenerator;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.ai.task.Jump;
 import bloodandmithril.character.ai.task.LightLightable;
+import bloodandmithril.character.ai.task.LightLightable.GenerateLightAnyVisibleLightables;
 import bloodandmithril.character.ai.task.LightLightable.LightFire;
+import bloodandmithril.character.ai.task.LightLightable.LightLightablesInAreaTaskGenerator;
+import bloodandmithril.character.ai.task.LightLightable.LightSelectedLightablesTaskGenerator;
 import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.LockUnlockContainer.LockUnlock;
 import bloodandmithril.character.ai.task.MineTile;
@@ -61,8 +98,12 @@ import bloodandmithril.character.ai.task.MineTile.WithinInteractionBox;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.ai.task.OpenCraftingStation.OpenCraftingStationWindow;
 import bloodandmithril.character.ai.task.PlantSeed;
+import bloodandmithril.character.ai.task.PlantSeed.PlantSeedTaskGenerator;
+import bloodandmithril.character.ai.task.Speak.SpeakTaskGenerator;
 import bloodandmithril.character.ai.task.TakeItem;
+import bloodandmithril.character.ai.task.TakeItem.LootAreaTaskGenerator;
 import bloodandmithril.character.ai.task.TakeItem.Take;
+import bloodandmithril.character.ai.task.TakeItem.TakeVisibleItemTaskGenerator;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.ai.task.TradeWith.Trade;
 import bloodandmithril.character.ai.task.Trading;
@@ -76,6 +117,7 @@ import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
+import bloodandmithril.character.individuals.Individual.Behaviour;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualKineticsProcessingData;
 import bloodandmithril.character.individuals.IndividualState;
@@ -89,6 +131,9 @@ import bloodandmithril.character.proficiency.proficiencies.Smithing;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.generation.ChunkGenerator;
+import bloodandmithril.generation.biome.BiomeDecider;
+import bloodandmithril.generation.biome.DefaultBiomeDecider;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
@@ -100,6 +145,7 @@ import bloodandmithril.graphics.particles.ParticleService.ParrySpark;
 import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.Item.VisibleItem;
 import bloodandmithril.item.items.PropItem;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
@@ -243,7 +289,9 @@ import bloodandmithril.networking.requests.dev.RequestSpawnIndividual;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Harvestable;
+import bloodandmithril.prop.Harvestable.VisibleHarvestable;
 import bloodandmithril.prop.Lightable;
+import bloodandmithril.prop.Lightable.LightableUnlit;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
@@ -275,6 +323,7 @@ import bloodandmithril.util.datastructure.Commands;
 import bloodandmithril.util.datastructure.ConcurrentDualKeySkipListMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
+import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldProjectiles;
@@ -298,18 +347,6 @@ import bloodandmithril.world.topography.tile.tiles.soil.DryDirtTile;
 import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 import bloodandmithril.world.topography.tile.tiles.stone.GraniteTile;
 import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryonet.Server;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 @Copyright("Matthew Peck 2014")
 public class ClientServerInterface {
@@ -474,6 +511,45 @@ public class ClientServerInterface {
 		kryo.setReferences(true);
 		kryo.register(RequestSpawnIndividual.class);
 
+		kryo.register(SuspicionLevel.class);
+		kryo.register(Lightable.class);
+		kryo.register(WrapperForTwo.class);
+		kryo.register(VisibleItem.class);
+		kryo.register(VisibleHarvestable.class);
+		kryo.register(TypeEntityVisible.class);
+		kryo.register(SpecificEntityVisible.class);
+		kryo.register(LightableUnlit.class);
+		kryo.register(EntityVisible.class);
+		kryo.register(SuspiciousSoundAITriggerFunction.class);
+		kryo.register(StimulusTriggerFunction.class);
+		kryo.register(IndividualConditionTriggerFunction.class);
+		kryo.register(IndividualHealthTriggerFunction.class);
+		kryo.register(IndividualAffectedByConditionTriggerFunction.class);
+		kryo.register(String[].class);
+		kryo.register(TakeVisibleItemTaskGenerator.class);
+		kryo.register(SpeakTaskGenerator.class);
+		kryo.register(PlantSeedTaskGenerator.class);
+		kryo.register(LootAreaTaskGenerator.class);
+		kryo.register(LightSelectedLightablesTaskGenerator.class);
+		kryo.register(LightLightablesInAreaTaskGenerator.class);
+		kryo.register(HarvestVisibleEntityTaskGenerator.class);
+		kryo.register(HarvestSelectedHarvestablesTaskGenerator.class);
+		kryo.register(HarvestAreaTaskGenerator.class);
+		kryo.register(GoToMovingLocationTaskGenerator.class);
+		kryo.register(GenerateLightAnyVisibleLightables.class);
+		kryo.register(FollowTaskGenerator.class);
+		kryo.register(AttackVisibleIndividualTaskGenerator.class);
+		kryo.register(AttackTaskGenerator.class);
+		kryo.register(TaskGenerator.class);
+		kryo.register(StimulusDrivenRoutine.class);
+		kryo.register(DailyRoutine.class);
+		kryo.register(EntityVisibleRoutine.class);
+		kryo.register(IndividualConditionRoutine.class);
+		kryo.register(Routine.class);
+		kryo.register(Behaviour.class);
+		kryo.register(DefaultBiomeDecider.class);
+		kryo.register(BiomeDecider.class);
+		kryo.register(ChunkGenerator.class);
 		kryo.register(DryGrass.class);
 		kryo.register(Lantern.class);
 		kryo.register(RequestSuppressAI.class);
@@ -1243,12 +1319,12 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifySyncWorldState() {
+		public static synchronized void notifySyncWorldState(int worldId) {
 			sendNotification(
 				-1,
 				false,
 				false,
-				new SynchronizeWorldStateResponse(Domain.getActiveWorld().getEpoch())
+				new SynchronizeWorldStateResponse(Domain.getWorld(worldId))
 			);
 		}
 

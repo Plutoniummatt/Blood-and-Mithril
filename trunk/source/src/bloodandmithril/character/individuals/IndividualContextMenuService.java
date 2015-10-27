@@ -3,10 +3,18 @@ package bloodandmithril.character.individuals;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
+
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Function;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.Follow;
 import bloodandmithril.character.ai.task.TradeWith;
+import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -21,12 +29,19 @@ import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Function;
-
+/**
+ * Service for providing context menus for individuals
+ *
+ * @author Matt
+ */
+@Singleton
+@Copyright("Matthew Peck 2015")
 public class IndividualContextMenuService {
 
-	public static ContextMenu getContextMenu(Individual indi) {
+	@Inject
+	private IndividualSelectionService individualSelectionService;
+
+	public ContextMenu getContextMenu(Individual indi) {
 		MenuItem showInfoMenuItem = showInfo(indi);
 		MenuItem showStatusWindowItem = showStatus(indi);
 
@@ -92,7 +107,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static ContextMenu actions(Individual indi) {
+	private ContextMenu actions(Individual indi) {
 		return new ContextMenu(0, 0,
 			true,
 			selectDeselect(indi),
@@ -105,7 +120,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static MenuItem walkRun(Individual indi) {
+	private MenuItem walkRun(Individual indi) {
 		return new MenuItem(
 			indi.isWalking() ? "Run" : "Walk",
 			() -> {
@@ -123,7 +138,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static ContextMenu interactMenu(Individual indi) {
+	private ContextMenu interactMenu(Individual indi) {
 		if (indi.isAlive()) {
 			return new ContextMenu(0, 0,
 				true,
@@ -140,7 +155,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static MenuItem shutUpSpeak(Individual indi) {
+	private MenuItem shutUpSpeak(Individual indi) {
 		return new MenuItem(
 			indi.isShutUp() ? "Speak" : "Shut up",
 			() -> {
@@ -165,7 +180,7 @@ public class IndividualContextMenuService {
 
 
 
-	private static MenuItem skills(Individual indi) {
+	private MenuItem skills(Individual indi) {
 		return new MenuItem(
 			"Proficiencies",
 			() -> {
@@ -181,7 +196,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static MenuItem aiRoutines(Individual indi) {
+	private MenuItem aiRoutines(Individual indi) {
 		return new MenuItem(
 			"AI Routines",
 			() -> {
@@ -197,7 +212,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static MenuItem suppressAI(Individual indi) {
+	private MenuItem suppressAI(Individual indi) {
 		return new MenuItem(
 				indi.isAISuppressed() ? "Enable AI" : "Disable AI",
 			() -> {
@@ -215,7 +230,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static MenuItem showStatus(Individual indi) {
+	private MenuItem showStatus(Individual indi) {
 		return new MenuItem(
 			"Show status",
 			() -> {
@@ -237,7 +252,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static MenuItem follow(final Individual individual) {
+	private MenuItem follow(final Individual individual) {
 		return new MenuItem(
 			"Follow",
 			() -> {
@@ -261,7 +276,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static MenuItem attackMenuItem(final Individual individual) {
+	private MenuItem attackMenuItem(final Individual individual) {
 		return new MenuItem(
 			"Attack",
 				() -> {
@@ -285,7 +300,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static MenuItem trade(final Individual individual) {
+	private MenuItem trade(final Individual individual) {
 		return new MenuItem(
 			individual.isAlive() ? "Trade with" : "Loot",
 			() -> {
@@ -326,7 +341,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static MenuItem inventory(Individual indi) {
+	private MenuItem inventory(Individual indi) {
 		return new MenuItem(
 			"Inventory",
 			() -> {
@@ -345,7 +360,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static MenuItem build(Individual indi) {
+	private MenuItem build(Individual indi) {
 		return new MenuItem(
 			"Build",
 			() -> {
@@ -372,7 +387,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private static ContextMenu editSubMenu(Individual indi) {
+	private ContextMenu editSubMenu(Individual indi) {
 		return new ContextMenu(0, 0,
 			true,
 			new MenuItem(
@@ -438,7 +453,7 @@ public class IndividualContextMenuService {
 	/**
 	 * @return The show info {@link MenuItem} for this individual
 	 */
-	private static MenuItem showInfo(Individual indi) {
+	private MenuItem showInfo(Individual indi) {
 		return new MenuItem(
 			"Show info",
 			() -> {
@@ -463,18 +478,12 @@ public class IndividualContextMenuService {
 	/**
 	 * @return The {@link MenuItem} to select/deselect this individual
 	 */
-	private static MenuItem selectDeselect(final Individual indi) {
+	private MenuItem selectDeselect(final Individual indi) {
 		return Domain.isIndividualSelected(indi) ?
 		new MenuItem(
 			"Deselect",
 			() -> {
-				if (isServer()) {
-					indi.deselect(false, 0);
-					Domain.removeSelectedIndividual(indi);
-					indi.clearCommands();
-				} else {
-					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
-				}
+				individualSelectionService.deselect(indi);
 			},
 			Color.WHITE,
 			indi.getToolTipTextColor(),
@@ -485,11 +494,7 @@ public class IndividualContextMenuService {
 		new MenuItem(
 			"Select",
 			() -> {
-				if (isServer()) {
-					indi.select(0);
-				} else {
-					ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), true);
-				}
+				individualSelectionService.select(indi);
 			},
 			Color.WHITE,
 			indi.getToolTipTextColor(),

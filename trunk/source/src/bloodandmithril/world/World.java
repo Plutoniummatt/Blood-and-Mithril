@@ -80,9 +80,17 @@ public final class World implements Serializable {
 	 * Constructor
 	 */
 	public World(float gravity, Epoch epoch, ChunkGenerator generator) {
+		this(gravity, epoch, generator, ParameterPersistenceService.getParameters().getNextWorldKey());
+	}
+
+
+	/**
+	 * Constructor
+	 */
+	public World(float gravity, Epoch epoch, ChunkGenerator generator, int worldId) {
 		this.epoch = epoch;
 		this.generator = generator;
-		this.worldId = ParameterPersistenceService.getParameters().getNextWorldKey();
+		this.worldId = worldId;
 		this.gravity = gravity;
 		this.items = new WorldItems(worldId);
 		this.props = new WorldProps(worldId);

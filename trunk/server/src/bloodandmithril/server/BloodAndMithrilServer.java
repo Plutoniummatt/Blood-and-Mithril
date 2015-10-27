@@ -6,6 +6,15 @@ import java.util.concurrent.Executors;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
+
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -22,15 +31,7 @@ import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
-import com.esotericsoftware.kryonet.Server;
+import bloodandmithril.world.World;
 
 /**
  * Entry point class for the remote game server
@@ -116,12 +117,9 @@ public class BloodAndMithrilServer {
 
 		ClientServerInterface.syncThread = new Thread(
 			new Runnable() {
-				int counter = 0;
-
 				@Override
 				public void run() {
 					while (ClientServerInterface.server.getUpdateThread().isAlive()) {
-						counter++;
 						try {
 							Thread.sleep(100);
 							for (Individual individual : Domain.getIndividuals().values()) {
@@ -131,25 +129,19 @@ public class BloodAndMithrilServer {
 						} catch (InterruptedException e) {
 							Logger.generalDebug(e.getMessage(), LogLevel.WARN, e);
 						}
-						if (counter % 2 == 0) {
-							for (Faction faction : Domain.getFactions().values()) {
-								ClientServerInterface.SendNotification.notifySyncFaction(faction);
-							}
-
-							for (int worldId : Domain.getWorlds().keySet()) {
-								ClientServerInterface.SendNotification.notifySyncItems(worldId);
-								ClientServerInterface.SendNotification.notifySyncProjectiles(worldId);
-								ClientServerInterface.SendNotification.notifySyncParticles(worldId);
-								for (Prop prop : Domain.getWorld(worldId).props().getProps()) {
-									ClientServerInterface.SendNotification.notifySyncProp(prop);
-								}
-
-							}
+						for (Faction faction : Domain.getFactions().values()) {
+							ClientServerInterface.SendNotification.notifySyncFaction(faction);
 						}
 
-						if (counter >= 100) {
-							ClientServerInterface.SendNotification.notifySyncWorldState();
-							counter = 0;
+						for (int worldId : Domain.getWorlds().keySet()) {
+							ClientServerInterface.SendNotification.notifySyncItems(worldId);
+							ClientServerInterface.SendNotification.notifySyncProjectiles(worldId);
+							ClientServerInterface.SendNotification.notifySyncParticles(worldId);
+							ClientServerInterface.SendNotification.notifySyncWorldState(worldId);
+
+							for (Prop prop : Domain.getWorld(worldId).props().getProps()) {
+								ClientServerInterface.SendNotification.notifySyncProp(prop);
+							}
 						}
 					}
 				}
@@ -184,6 +176,7 @@ public class BloodAndMithrilServer {
 
 			ClientServerInterface.setServer(true);
 			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
+			Domain.setActiveWorld(Domain.createWorld());
 			Domain.setup();
 
 			Gdx.input.setInputProcessor(this);
@@ -206,7 +199,10 @@ public class BloodAndMithrilServer {
 			// bad things can happen, like teleporting
 			float delta = Gdx.graphics.getDeltaTime();
 			if (delta < 0.1f && !GameSaver.isSaving()) {
-				Domain.getActiveWorld().update();
+				World activeWorld = Domain.getActiveWorld();
+				if (activeWorld != null) {
+					activeWorld.update();
+				}
 			}
 		}
 

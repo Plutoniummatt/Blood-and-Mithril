@@ -10,6 +10,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Sets;
+
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -19,11 +24,6 @@ import bloodandmithril.persistence.character.IndividualLoader;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Sets;
 
 
 /**
@@ -46,14 +46,13 @@ public class GameLoader {
 			GameSaver.mostRecentlyLoaded = metadata;
 			ParameterPersistenceService.loadParameters();
 			Domain.setActiveWorld(ParameterPersistenceService.getParameters().getActiveWorldId());
-		}
-
-		ChunkLoader.loadGenerationData(newGame);
-		ChunkLoader.loadWorlds();
-		loadFactions();
-		IndividualLoader.loadAll();
-		if (ClientServerInterface.isClient()) {
-			loadCameraPosition();
+			ChunkLoader.loadGenerationData();
+			ChunkLoader.loadWorlds();
+			loadFactions();
+			IndividualLoader.loadAll();
+			if (ClientServerInterface.isClient()) {
+				loadCameraPosition();
+			}
 		}
 	}
 
