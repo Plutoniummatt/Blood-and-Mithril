@@ -14,6 +14,7 @@ import bloodandmithril.character.ai.task.Follow;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.playerinteraction.individual.api.IndividualAISupressionService;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
@@ -38,8 +39,8 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2015")
 public class IndividualContextMenuService {
 
-	@Inject
-	private IndividualSelectionService individualSelectionService;
+	@Inject	private IndividualSelectionService individualSelectionService;
+	@Inject private IndividualAISupressionService individualAISupressionService;
 
 	public ContextMenu getContextMenu(Individual indi) {
 		MenuItem showInfoMenuItem = showInfo(indi);
@@ -216,11 +217,7 @@ public class IndividualContextMenuService {
 		return new MenuItem(
 				indi.isAISuppressed() ? "Enable AI" : "Disable AI",
 			() -> {
-				if (ClientServerInterface.isServer()) {
-					indi.setAISuppression(!indi.isAISuppressed());
-				} else {
-					ClientServerInterface.SendRequest.sendAISuppressionRequest(indi, !indi.isAISuppressed());
-				}
+				individualAISupressionService.setAIsupression(indi, !indi.isAISuppressed());
 			},
 			Color.WHITE,
 			indi.getToolTipTextColor(),

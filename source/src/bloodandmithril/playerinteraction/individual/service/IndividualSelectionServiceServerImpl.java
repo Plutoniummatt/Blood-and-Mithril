@@ -1,5 +1,7 @@
 package bloodandmithril.playerinteraction.individual.service;
 
+import com.google.inject.Singleton;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
@@ -11,6 +13,7 @@ import bloodandmithril.world.Domain;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
+@Singleton
 public class IndividualSelectionServiceServerImpl implements IndividualSelectionService {
 
 

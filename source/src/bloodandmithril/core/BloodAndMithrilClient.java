@@ -1,7 +1,6 @@
 package bloodandmithril.core;
 
 import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
-import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.persistence.ConfigPersistenceService.getConfig;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 import static com.badlogic.gdx.Gdx.input;
@@ -20,11 +19,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
-import com.google.inject.Binder;
 import com.google.inject.Inject;
-import com.google.inject.Module;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.AIProcessor;
@@ -49,9 +44,6 @@ import bloodandmithril.objectives.Mission;
 import bloodandmithril.performance.PositionalIndexingService;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
-import bloodandmithril.playerinteraction.individual.service.IndividualSelectionServiceClientImpl;
-import bloodandmithril.playerinteraction.individual.service.IndividualSelectionServiceServerImpl;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -133,7 +125,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		// Load client-side resources
 		Gdx.input.setInputProcessor(this);
 		ClientServerInterface.setClient(true);
-		createInjector();
+		Wiring.setupInjector();
 
 		loadResources();
 
@@ -149,28 +141,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		ClientServerInterface.setServer(false);
 
 		Wiring.injector().injectMembers(this);
-	}
-
-
-	/**
-	 * Creates and configures the injector
-	 */
-	private void createInjector() {
-		Wiring.setup(new Module() {
-			@Override
-			public void configure(Binder binder) {
-			}
-
-			@Provides
-			@Singleton
-			public IndividualSelectionService provideIndividualSelectionService() {
-				if (isServer()) {
-					return new IndividualSelectionServiceServerImpl();
-				} else {
-					return new IndividualSelectionServiceClientImpl();
-				}
-			}
-		});
 	}
 
 
