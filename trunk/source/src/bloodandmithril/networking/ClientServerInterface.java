@@ -887,8 +887,8 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void sendFollowRequest(Individual follower, Individual followee) {
-			client.sendTCP(new FollowRequest(follower, followee));
+		public static synchronized void sendFollowRequest(final Individual follower, Individual followee, final int distance, SerializableFunction<Boolean> terminationCondition) {
+			client.sendTCP(new FollowRequest(follower, followee, distance, terminationCondition));
 			Logger.networkDebug("Sending chunk follow request", LogLevel.DEBUG);
 		}
 

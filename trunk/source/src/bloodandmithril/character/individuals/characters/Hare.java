@@ -38,7 +38,6 @@ import bloodandmithril.core.Name;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
-import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.ParameterizedTask;
@@ -226,12 +225,6 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 	@Override
 	public Color getToolTipTextColor() {
 		return brown;
-	}
-
-
-	@Override
-	protected List<MenuItem> internalGetContextMenuItems() {
-		return Lists.newArrayList();
 	}
 
 

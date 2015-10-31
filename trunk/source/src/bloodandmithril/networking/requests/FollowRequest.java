@@ -5,6 +5,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 
 /**
@@ -17,11 +18,15 @@ public class FollowRequest implements Request {
 
 	private final int followerId;
 	private final int followeeId;
+	private final int distance;
+	private final SerializableFunction<Boolean> terminationCondition;
 
 	/**
 	 * Constructor
 	 */
-	public FollowRequest(Individual follower, Individual followee) {
+	public FollowRequest(final Individual follower, Individual followee, final int distance, SerializableFunction<Boolean> terminationCondition) {
+		this.distance = distance;
+		this.terminationCondition = terminationCondition;
 		this.followerId = follower.getId().getId();
 		this.followeeId = followee.getId().getId();
 	}
@@ -31,7 +36,7 @@ public class FollowRequest implements Request {
 	public Responses respond() {
 		Individual follower = Domain.getIndividual(followerId);
 		Individual followee = Domain.getIndividual(followeeId);
-		follower.getAI().setCurrentTask(new Follow(follower, followee, 10, null));
+		follower.getAI().setCurrentTask(new Follow(follower, followee, distance, terminationCondition));
 
 		return new Responses(false);
 	}
