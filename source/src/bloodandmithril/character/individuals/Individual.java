@@ -74,8 +74,6 @@ import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.ContextMenu;
-import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.Fonts;
@@ -711,18 +709,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	/** Responds to commands */
 	protected abstract void respondToCommands();
 
-
 	/** Returns the tooltip text color */
 	public abstract Color getToolTipTextColor();
 
-
-	/** Constructs a implementation-specific {@link ContextMenu} */
-	protected abstract List<MenuItem> internalGetContextMenuItems();
-
-
 	/** Gets the description for this {@link Individual} */
 	public abstract String getDescription();
-
 
 	/** Updates the description for this {@link Individual} */
 	public abstract void updateDescription(String updated);

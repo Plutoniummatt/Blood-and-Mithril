@@ -27,7 +27,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.graphics.renderers.WolfRenderer;
 import bloodandmithril.prop.construction.Construction;
-import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.ParameterizedTask;
 import bloodandmithril.util.SpacialConfiguration;
@@ -172,12 +171,6 @@ public class Wolf extends GroundTravellingIndividual implements Listener, Observ
 	@Override
 	public Color getToolTipTextColor() {
 		return Color.GRAY;
-	}
-
-
-	@Override
-	protected List<MenuItem> internalGetContextMenuItems() {
-		return Lists.newArrayList();
 	}
 
 

@@ -58,7 +58,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
@@ -180,7 +179,6 @@ public class UserInterface {
 
 	private static Deque<Task> uiTasks;
 
-	@Inject
 	private static IndividualContextMenuService individualContextMenuService;
 
 	static {

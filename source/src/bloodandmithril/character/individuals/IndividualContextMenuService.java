@@ -2,20 +2,22 @@ package bloodandmithril.character.individuals;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.networking.ClientServerInterface.isServer;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Function;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import bloodandmithril.character.ai.task.Attack;
-import bloodandmithril.character.ai.task.Follow;
-import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.playerinteraction.individual.api.IndividualAISupressionService;
+import bloodandmithril.playerinteraction.individual.api.IndividualAttackOtherService;
+import bloodandmithril.playerinteraction.individual.api.IndividualChangeNicknameService;
+import bloodandmithril.playerinteraction.individual.api.IndividualFollowOtherService;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
+import bloodandmithril.playerinteraction.individual.api.IndividualToggleSpeakingService;
+import bloodandmithril.playerinteraction.individual.api.IndividualTradeWithOtherService;
+import bloodandmithril.playerinteraction.individual.api.IndividualUpdateDescriptionService;
+import bloodandmithril.playerinteraction.individual.api.IndividualWalkRunToggleService;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -41,6 +43,13 @@ public class IndividualContextMenuService {
 
 	@Inject	private IndividualSelectionService individualSelectionService;
 	@Inject private IndividualAISupressionService individualAISupressionService;
+	@Inject private IndividualWalkRunToggleService individualWalkRunToggleService;
+	@Inject private IndividualToggleSpeakingService individualToggleSpeakingService;
+	@Inject private IndividualTradeWithOtherService individualTradeWithOtherService;
+	@Inject private IndividualFollowOtherService individualFollowOtherService;
+	@Inject private IndividualAttackOtherService individualAttackOtherService;
+	@Inject private IndividualChangeNicknameService individualChangeNicknameService;
+	@Inject private IndividualUpdateDescriptionService individualUpdateDescriptionService;
 
 	public ContextMenu getContextMenu(Individual indi) {
 		MenuItem showInfoMenuItem = showInfo(indi);
@@ -100,10 +109,6 @@ public class IndividualContextMenuService {
 			contextMenuToReturn.addMenuItem(edit);
 		}
 
-		for (MenuItem item : indi.internalGetContextMenuItems()) {
-			contextMenuToReturn.addMenuItem(item);
-		}
-
 		return contextMenuToReturn;
 	}
 
@@ -125,11 +130,7 @@ public class IndividualContextMenuService {
 		return new MenuItem(
 			indi.isWalking() ? "Run" : "Walk",
 			() -> {
-				if (ClientServerInterface.isServer()) {
-					indi.setWalking(!indi.isWalking());
-				} else {
-					ClientServerInterface.SendRequest.sendRunWalkRequest(indi.getId().getId(), !indi.isWalking());
-				}
+				individualWalkRunToggleService.setWalking(indi, !indi.isWalking());
 			},
 			Color.WHITE,
 			indi.getToolTipTextColor(),
@@ -160,17 +161,7 @@ public class IndividualContextMenuService {
 		return new MenuItem(
 			indi.isShutUp() ? "Speak" : "Shut up",
 			() -> {
-				if (isServer()) {
-					if (!indi.isShutUp()) {
-						indi.speak("Fine...", 1000);
-						indi.setShutUp(true);
-					} else {
-						indi.setShutUp(false);
-						indi.speak("Yay!", 1000);
-					}
-				} else {
-					ClientServerInterface.SendRequest.sendIndividualSpeakRequest(indi, !indi.isShutUp());
-				}
+				individualToggleSpeakingService.setSpeaking(indi, !indi.isShutUp());
 			},
 			Color.WHITE,
 			indi.getToolTipTextColor(),
@@ -255,13 +246,7 @@ public class IndividualContextMenuService {
 			() -> {
 				for (Individual indi : Domain.getSelectedIndividuals()) {
 					if (indi != individual) {
-						if (isServer()) {
-							indi.getAI().setCurrentTask(
-								new Follow(indi, individual, 10, null)
-							);
-						} else {
-							ClientServerInterface.SendRequest.sendFollowRequest(indi, individual);
-						}
+						individualFollowOtherService.follow(indi, individual, 10, null);
 					}
 				}
 			},
@@ -279,13 +264,7 @@ public class IndividualContextMenuService {
 				() -> {
 					for (Individual indi : Domain.getSelectedIndividuals()) {
 						if (indi != individual) {
-							if (isServer()) {
-								indi.getAI().setCurrentTask(
-									new Attack(indi, individual)
-								);
-							} else {
-								ClientServerInterface.SendRequest.sendRequestAttack(indi, individual);
-							}
+							individualAttackOtherService.attack(indi, individual);
 						}
 					}
 				},
@@ -305,15 +284,9 @@ public class IndividualContextMenuService {
 					return;
 				}
 
-				for (Individual indi : Domain.getSelectedIndividuals()) {
-					if (isServer()) {
-						if (indi != individual) {
-							indi.getAI().setCurrentTask(
-								new TradeWith(indi, individual)
-							);
-						}
-					} else {
-						ClientServerInterface.SendRequest.sendTradeWithIndividualRequest(indi, individual);
+				for (Individual selected : Domain.getSelectedIndividuals()) {
+					if (selected != individual) {
+						individualTradeWithOtherService.tradeWith(selected, individual);
 					}
 				}
 			},
@@ -398,11 +371,7 @@ public class IndividualContextMenuService {
 							250,
 							100,
 							args -> {
-								if (isServer()) {
-									indi.getId().setNickName(args[0].toString());
-								} else {
-									ClientServerInterface.SendRequest.sendChangeNickNameRequest(indi.getId().getId(), args[0].toString());
-								}
+								individualChangeNicknameService.changeNickname(indi, args[0].toString());
 							},
 							"Confirm",
 							true,
@@ -426,11 +395,7 @@ public class IndividualContextMenuService {
 							250,
 							100,
 							args -> {
-								if (isServer()) {
-									indi.updateDescription(args[0].toString());
-								} else {
-									ClientServerInterface.SendRequest.sendUpdateBiographyRequest(indi, args[0].toString());
-								}
+								individualUpdateDescriptionService.updateDescription(indi, args[0].toString());
 							},
 							"Confirm",
 							true,

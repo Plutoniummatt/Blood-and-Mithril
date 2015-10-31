@@ -2,14 +2,15 @@ package bloodandmithril.networking.requests;
 
 import java.util.Set;
 
-import bloodandmithril.character.ai.task.Attack;
+import com.google.common.collect.Sets;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
+import bloodandmithril.playerinteraction.individual.api.IndividualAttackOtherService;
 import bloodandmithril.world.Domain;
-
-import com.google.common.collect.Sets;
 
 /**
  * {@link Request} for an {@link Individual} to attack another {@link Individual}
@@ -36,17 +37,19 @@ public class AttackRequest implements Request {
 	@Override
 	public Responses respond() {
 		Individual attackingIndividual = Domain.getIndividual(attacker);
-		Set<Individual> toBeAttacked = Sets.newHashSet();
+		Individual[] toBeAttacked = new Individual[victims.size()];
 
+		int index = 0;
 		for (Integer i : victims) {
-			toBeAttacked.add(Domain.getIndividual(i));
+			toBeAttacked[index] = Domain.getIndividual(i);
+			index++;
 		}
 
-		if (attackingIndividual == null || toBeAttacked.isEmpty()) {
+		if (attackingIndividual == null || toBeAttacked.length == 0) {
 			return new Responses(false);
 		}
 
-		attackingIndividual.getAI().setCurrentTask(new Attack(attackingIndividual, toBeAttacked));
+		Wiring.injector().getInstance(IndividualAttackOtherService.class).attack(attackingIndividual, toBeAttacked);
 
 		return new Responses(false);
 	}

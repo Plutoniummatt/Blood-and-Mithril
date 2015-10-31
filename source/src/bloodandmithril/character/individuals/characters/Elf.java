@@ -8,6 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.implementations.ElfAI;
 import bloodandmithril.character.ai.perception.Listener;
@@ -30,19 +36,12 @@ import bloodandmithril.prop.construction.craftingstation.BlacksmithWorkshop;
 import bloodandmithril.prop.construction.craftingstation.Campfire;
 import bloodandmithril.prop.construction.craftingstation.Furnace;
 import bloodandmithril.prop.construction.craftingstation.WorkBench;
-import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.World;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * Exceptional at:
@@ -155,12 +154,6 @@ public class Elf extends Humanoid implements Observer, Listener {
 	@Override
 	public Color getToolTipTextColor() {
 		return Color.GREEN;
-	}
-
-
-	@Override
-	public List<MenuItem> internalGetContextMenuItems() {
-		return Lists.newArrayList();
 	}
 
 

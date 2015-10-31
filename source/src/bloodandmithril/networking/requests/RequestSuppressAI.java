@@ -3,8 +3,10 @@ package bloodandmithril.networking.requests;
 import bloodandmithril.character.ai.ArtificialIntelligence;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
+import bloodandmithril.playerinteraction.individual.api.IndividualAISupressionService;
 import bloodandmithril.world.Domain;
 
 /**
@@ -28,7 +30,7 @@ public class RequestSuppressAI implements Request {
 
 	@Override
 	public Responses respond() {
-		Domain.getIndividual(individualId).setAISuppression(suppressAI);
+		Wiring.injector().getInstance(IndividualAISupressionService.class).setAIsupression(Domain.getIndividual(individualId), suppressAI);;
 		return new Responses(false);
 	}
 
