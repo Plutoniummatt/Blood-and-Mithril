@@ -6,6 +6,13 @@ import static bloodandmithril.world.topography.Topography.convertToWorldTileCoor
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
@@ -17,13 +24,6 @@ import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Chunk;
 import bloodandmithril.world.topography.Topography;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * Displays graphical and text information about the {@link Topography}
@@ -44,6 +44,10 @@ public class TopographyDebugRenderer {
 		getGraphics().getSpriteBatch().begin();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		for (Structure struct : Structures.getStructures().values()) {
+			if (struct.worldId != Domain.getActiveWorldId()) {
+				continue;
+			}
+
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			if (struct instanceof SuperStructure) {
 				Boundaries boundaries = ((SuperStructure) struct).getBoundaries();

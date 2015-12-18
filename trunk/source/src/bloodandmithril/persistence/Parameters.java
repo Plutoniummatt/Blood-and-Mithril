@@ -1,7 +1,10 @@
 package bloodandmithril.persistence;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Random;
+
+import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
@@ -9,8 +12,6 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.prop.Prop;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Parameters that require saving
@@ -33,7 +34,7 @@ public class Parameters implements Serializable {
 	private int activeWorldId = 0;
 	private long particleCounter = 0;
 
-	private Vector2 camera;
+	private Map<Integer, Vector2> cameraPositions;
 
 	/**
 	 * Package-protected constructor, only {@link ParameterPersistenceService} has access
@@ -53,7 +54,7 @@ public class Parameters implements Serializable {
 		return structureKeyCounter;
 	}
 
-	
+
 	/**
 	 * Returns the current event ID
 	 */
@@ -61,7 +62,7 @@ public class Parameters implements Serializable {
 		eventIdCounter++;
 		return eventIdCounter;
 	}
-	
+
 
 	/**
 	 * Returns the faction key counter
@@ -137,16 +138,16 @@ public class Parameters implements Serializable {
 	/**
 	 * Returns the saved camera position
 	 */
-	public Vector2 getSavedCameraPosition() {
-		return camera;
+	public Map<Integer, Vector2> getSavedCameraPosition() {
+		return cameraPositions;
 	}
 
 
 	/**
 	 * Sets the saved camera position
 	 */
-	public void setSavedCameraPosition(Vector2 camera) {
-		this.camera = camera;
+	public void setSavedCameraPosition(Map<Integer, Vector2> cameraPositions) {
+		this.cameraPositions = cameraPositions;
 	}
 
 

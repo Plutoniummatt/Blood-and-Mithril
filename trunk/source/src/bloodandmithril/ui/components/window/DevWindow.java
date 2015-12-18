@@ -18,6 +18,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
@@ -178,6 +180,12 @@ public class DevWindow extends Window {
 
 		if (keyCode == Keys.I) {
 			Domain.getActiveWorld().items().addItem(new CarrotItem(), new Vector2(getMouseWorldX(), getMouseWorldY()), new Vector2());
+		}
+
+		if (keyCode == Keys.J) {
+			Set<Integer> keySet = Sets.newHashSet(Domain.getWorlds().keySet());
+			keySet.remove(Domain.getActiveWorldId());
+			Domain.setActiveWorld(keySet.iterator().next());
 		}
 
 		if (keyCode == Keys.B) {
