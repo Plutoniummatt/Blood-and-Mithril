@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="libs/lwjgl.jar">
+	<classpathentry kind="src" output="target/classes" path="src">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Block/libs/natives-win"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/gdx-freetype.jar">
@@ -12,16 +17,14 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/gdx-freetype-natives.jar"/>
-	<classpathentry kind="lib" path="libs/guava-15.0.jar" sourcepath="libs/guava-15.0-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/kryonet"/>
 	<classpathentry kind="lib" path="libs/kryo-debug-2.20.jar" sourcepath="C:/Users/Matt/Desktop/kryo-2.20-sources.jar"/>
-	<classpathentry kind="lib" path="libs/commons-lang3-3.2.1.jar"/>
 	<classpathentry kind="lib" path="/kryonet/lib/kryo-2.23.1-SNAPSHOT-all-debug.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs/base64coder.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="libs/gdx.jar"/>
-	<classpathentry kind="lib" path="libs/guice-4.0.jar"/>
-	<classpathentry kind="lib" path="libs/javax.inject-1.jar"/>
-	<classpathentry kind="lib" path="libs/guice-multibindings-4.0.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
