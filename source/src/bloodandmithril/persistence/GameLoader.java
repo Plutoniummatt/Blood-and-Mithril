@@ -1,12 +1,12 @@
 package bloodandmithril.persistence;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.persistence.GameSaver.getSavePath;
 import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.util.Logger.loaderDebug;
 import static com.badlogic.gdx.Gdx.files;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -44,15 +44,15 @@ public class GameLoader {
 			GameSaver.mostRecentlyLoaded = null;
 		} else {
 			GameSaver.mostRecentlyLoaded = metadata;
+			if (ClientServerInterface.isClient()) {
+				loadCameraPosition();
+			}
 			ParameterPersistenceService.loadParameters();
 			Domain.setActiveWorld(ParameterPersistenceService.getParameters().getActiveWorldId());
 			ChunkLoader.loadGenerationData();
 			ChunkLoader.loadWorlds();
 			loadFactions();
 			IndividualLoader.loadAll();
-			if (ClientServerInterface.isClient()) {
-				loadCameraPosition();
-			}
 		}
 	}
 
@@ -91,10 +91,10 @@ public class GameLoader {
 
 	/** Sets current camera position to a saved position found in {@link Parameters} */
 	private static void loadCameraPosition() {
-		Vector2 savedCameraPosition = ParameterPersistenceService.getParameters().getSavedCameraPosition();
-		if (savedCameraPosition != null) {
-			getGraphics().getCam().position.x = savedCameraPosition.x;
-			getGraphics().getCam().position.y = savedCameraPosition.y;
+		Map<Integer, Vector2> savedCameraPositions = ParameterPersistenceService.getParameters().getSavedCameraPosition();
+		if (savedCameraPositions != null) {
+			BloodAndMithrilClient.getWorldcamcoordinates().clear();
+			BloodAndMithrilClient.getWorldcamcoordinates().putAll(savedCameraPositions);
 		}
 	}
 }

@@ -216,7 +216,7 @@ public class WorldRenderer {
 		}
 		getGraphics().getSpriteBatch().end();
 		individualTexture.setFilter(Nearest, Nearest);
-		IndividualPlatformFilteringRenderer.renderIndividuals();
+		IndividualPlatformFilteringRenderer.renderIndividuals(world.getWorldId());
 		getGraphics().getSpriteBatch().begin();
 		getGraphics().getSpriteBatch().setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
@@ -333,13 +333,13 @@ public class WorldRenderer {
 		};
 
 		/** Renders all individuals, ones that are on platforms are rendered first */
-		private static void renderIndividuals() {
+		private static void renderIndividuals(int worldId) {
 			try {
-				for (Individual indi : filter(Domain.getSortedIndividuals(renderPrioritySorter), offPlatform)) {
+				for (Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), offPlatform)) {
 					Renderer.render(indi);
 				}
 
-				for (Individual indi : filter(Domain.getSortedIndividuals(renderPrioritySorter), onPlatform)) {
+				for (Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), onPlatform)) {
 					Renderer.render(indi);
 				}
 			} catch (NullPointerException e) {

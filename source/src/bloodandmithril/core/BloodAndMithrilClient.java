@@ -7,6 +7,7 @@ import static com.badlogic.gdx.Gdx.input;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -115,6 +117,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
 	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
+	private static final Map<Integer, Vector2> worldCamCoordinates = Maps.newHashMap();
 
 	private static CursorBoundTask cursorBoundTask = null;
 
@@ -881,5 +884,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static Graphics getGraphics() {
 		return Wiring.injector().getInstance(Graphics.class);
+	}
+
+
+	public static Map<Integer, Vector2> getWorldcamcoordinates() {
+		return worldCamCoordinates;
 	}
 }

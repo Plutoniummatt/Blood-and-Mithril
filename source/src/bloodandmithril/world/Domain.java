@@ -1,5 +1,7 @@
 package bloodandmithril.world;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+import static bloodandmithril.core.BloodAndMithrilClient.getWorldcamcoordinates;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 
@@ -12,6 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -97,6 +101,9 @@ public class Domain {
 		World world = new World(1200f, new Epoch(15.5f, 15, 4, 2015), new ChunkGenerator(new DefaultBiomeDecider()));
 		getWorlds().put(world.getWorldId(), world);
 
+		World world2 = new World(1200f, new Epoch(15.5f, 15, 4, 2015), new ChunkGenerator(new DefaultBiomeDecider()));
+		getWorlds().put(world2.getWorldId(), world2);
+
 		return world.getWorldId();
 	}
 
@@ -146,6 +153,23 @@ public class Domain {
 
 
 	public static void setActiveWorld(int worldId) {
+		if (ClientServerInterface.isClient()) {
+			if (Domain.getActiveWorld() != null) {
+				getWorldcamcoordinates().put(Domain.getActiveWorldId(), new Vector2(getGraphics().getCam().position.x, getGraphics().getCam().position.y));
+			}
+
+			if (getWorldcamcoordinates().containsKey(worldId)) {
+				Vector2 camPosition = getWorldcamcoordinates().get(worldId);
+
+				getGraphics().getCam().position.x = camPosition.x;
+				getGraphics().getCam().position.y = camPosition.y;
+			} else {
+				getWorldcamcoordinates().put(worldId, new Vector2());
+
+				getGraphics().getCam().position.x = 0;
+				getGraphics().getCam().position.y = 0;
+			}
+		}
 		activeWorldId = worldId;
 	}
 
@@ -170,8 +194,8 @@ public class Domain {
 	}
 
 
-	public static List<Individual> getSortedIndividuals(Comparator<Individual> sorter) {
-		LinkedList<Individual> sorted = Lists.newLinkedList(individuals.values());
+	public static List<Individual> getSortedIndividualsForWorld(Comparator<Individual> sorter, int worldId) {
+		LinkedList<Individual> sorted = Lists.newLinkedList(Collections2.filter(individuals.values(), indi -> {return indi.getWorldId() == worldId;}));
 		Collections.sort(sorted, sorter);
 		return sorted;
 	}
