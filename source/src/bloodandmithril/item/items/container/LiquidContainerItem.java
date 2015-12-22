@@ -6,6 +6,8 @@ import static bloodandmithril.util.Util.round2dp;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Maps;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.item.items.Item;
@@ -13,8 +15,6 @@ import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.prop.furniture.LiquidContainerProp.PropLiquidContainerItem;
 import bloodandmithril.ui.components.window.ItemInfoWindow;
 import bloodandmithril.ui.components.window.Window;
-
-import com.google.common.collect.Maps;
 
 /**
  * Contains {@link Liquid}s

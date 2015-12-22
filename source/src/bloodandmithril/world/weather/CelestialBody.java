@@ -72,12 +72,12 @@ public final class CelestialBody {
 		TextureRegion region = starTextures.get(textureId);
 
 		Shaders.filter.begin();
-		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), 1.0f - Weather.getDaylightColor(world).r);
+		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), 1.0f - WeatherRenderer.getDaylightColor(world).r);
 		if (rotates) {
 			getGraphics().getSpriteBatch().draw(
 				region,
-				Weather.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
-				Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2,
+				WeatherRenderer.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
+				WeatherRenderer.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2,
 				region.getRegionWidth() / 2,
 				region.getRegionHeight() / 2,
 				region.getRegionWidth(),
@@ -89,8 +89,8 @@ public final class CelestialBody {
 		} else {
 			getGraphics().getSpriteBatch().draw(
 				region,
-				Weather.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
-				Weather.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2
+				WeatherRenderer.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
+				WeatherRenderer.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2
 			);
 		}
 	}

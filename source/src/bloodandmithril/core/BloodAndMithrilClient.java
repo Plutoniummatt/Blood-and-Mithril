@@ -61,7 +61,7 @@ import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
-import bloodandmithril.world.weather.Weather;
+import bloodandmithril.world.weather.WeatherRenderer;
 
 /**
  * Main game class, containing the loops
@@ -161,7 +161,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Topography.setup();
 		Shaders.setup();
 		Component.setup();
-		Weather.setup();
+		WeatherRenderer.setup();
 		Controls.setup();
 		Equipable.setup();
 		Prop.setup();

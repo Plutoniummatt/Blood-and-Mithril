@@ -3,7 +3,7 @@ package bloodandmithril.graphics;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.world.weather.Weather;
+import bloodandmithril.world.weather.WeatherRenderer;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -145,11 +145,11 @@ public class Graphics {
 
 		WorldRenderer.dispose();
 		GaussianLightingRenderer.dispose();
-		Weather.dispose();
+		WeatherRenderer.dispose();
 
 		WorldRenderer.setup();
 		GaussianLightingRenderer.setup();
-		Weather.setup();
+		WeatherRenderer.setup();
 
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
