@@ -1,6 +1,9 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AITask;
@@ -9,8 +12,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A {@link Travel} task is an ordered series of {@link GoToLocation}s and {@link Jump}s that get executed sequentially
@@ -36,6 +37,7 @@ public class Travel extends CompositeAITask {
 		appendTask(goToLocation);
 		if (getHost().isSelected() && Util.roll(0.3f)) {
 			getHost().speak(Speech.getRandomAffirmativeSpeech(), 1000);
+			getHost().playAffirmativeSound();
 		}
 	}
 

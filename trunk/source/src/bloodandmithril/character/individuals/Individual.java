@@ -1066,6 +1066,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	public final void setShutUp(boolean shutup) {
 		this.shutup = shutup;
 	}
+	
+	
+	/**
+	 * Plays the audio that signals an "affirmative"
+	 */
+	public abstract void playAffirmativeSound();
 
 
 	public final void speak(String text, long duration) {
