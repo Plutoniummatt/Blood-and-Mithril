@@ -9,6 +9,8 @@ import static java.lang.Math.sin;
 
 import java.util.LinkedList;
 
+import org.lwjgl.opengl.GL11;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -134,6 +136,7 @@ public final class Weather {
 		Shaders.sky.setUniformf("resolution", getGraphics().getWidth(), getGraphics().getHeight());
 
 		getGraphics().getSpriteBatch().draw(working.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
+		getGraphics().getSpriteBatch().flush();
 		getGraphics().getSpriteBatch().end();
 		skyBuffer.end();
 
@@ -156,11 +159,15 @@ public final class Weather {
 	private static final void renderStars(FrameBuffer toDrawTo, World world) {
 		toDrawTo.begin();
 		getGraphics().getSpriteBatch().begin();
+		int source = getGraphics().getSpriteBatch().getBlendSrcFunc();
+		int destination = getGraphics().getSpriteBatch().getBlendDstFunc();
+		getGraphics().getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		for (CelestialBody celestialBody : celestialBodies) {
 			celestialBody.render(world);
 		}
 		getGraphics().getSpriteBatch().end();
+		getGraphics().getSpriteBatch().setBlendFunction(source, destination);
 		toDrawTo.end();
 		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
