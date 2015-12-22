@@ -342,4 +342,9 @@ public class Hare extends GroundTravellingIndividual implements Listener, Observ
 		}
 		return false;
 	}
+
+
+	@Override
+	public void playAffirmativeSound() {
+	}
 }

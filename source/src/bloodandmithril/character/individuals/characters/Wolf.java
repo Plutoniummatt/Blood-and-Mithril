@@ -277,4 +277,11 @@ public class Wolf extends GroundTravellingIndividual implements Listener, Observ
 		}
 		return false;
 	}
+
+
+	@Override
+	public void playAffirmativeSound() {
+		// TODO Auto-generated method stub
+		
+	}
 }

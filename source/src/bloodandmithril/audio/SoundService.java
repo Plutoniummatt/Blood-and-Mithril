@@ -45,6 +45,8 @@ public class SoundService {
 	public static final int campfireCooking		= 9;
 	public static final int anvil1				= 10;
 	public static final int anvil2				= 11;
+	public static final int femaleGoing			= 12;
+	public static final int femaleOk			= 13;
 
 	static {
 
@@ -77,6 +79,8 @@ public class SoundService {
 		sounds.put(campfireCooking,		wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/campfireCooking.wav")), 	300f));
 		sounds.put(anvil1,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/anvil1.wav")), 			1300f));
 		sounds.put(anvil2,				wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/anvil2.wav")), 			1300f));
+		sounds.put(femaleGoing,			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/going.wav")), 			50f));
+		sounds.put(femaleOk,			wrap(() -> {return new SuspiciousSound(null, SuspicionLevel.INVESTIGATE);}, 			!isClient() ? null : Gdx.audio.newSound(Gdx.files.internal("data/music/ok.wav")), 				50f));
 	}
 
 	/** Returns the pan value in relation to camera location */

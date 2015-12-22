@@ -441,4 +441,12 @@ public class Elf extends Humanoid implements Observer, Listener {
 		}
 		return false;
 	}
+
+
+	@Override
+	public void playAffirmativeSound() {
+		if (ClientServerInterface.isClient()) {
+			SoundService.play(Util.randomOneOf(SoundService.femaleOk, SoundService.femaleGoing), getState().position, false, this);
+		}
+	}
 }

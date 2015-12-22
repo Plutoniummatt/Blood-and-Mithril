@@ -72,7 +72,7 @@ public final class CelestialBody {
 		TextureRegion region = starTextures.get(textureId);
 
 		Shaders.filter.begin();
-		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), 1.0f - WeatherRenderer.getDaylightColor(world).r);
+		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), (float) Math.pow(1.0f - WeatherRenderer.getDaylightColor(world).r, 2));
 		if (rotates) {
 			getGraphics().getSpriteBatch().draw(
 				region,
