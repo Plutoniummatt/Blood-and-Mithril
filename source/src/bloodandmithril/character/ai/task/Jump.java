@@ -2,6 +2,10 @@ package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.util.ComparisonUtil.obj;
 import static bloodandmithril.world.Domain.getIndividual;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.GroundTravellingIndividual;
 import bloodandmithril.character.individuals.Individual;
@@ -10,9 +14,6 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.SerializableFunction;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * {@link AITask} for jumping
@@ -73,7 +74,7 @@ public class Jump extends AITask {
 
 		if (host instanceof GroundTravellingIndividual) {
 			if (host.getState().stamina < 0.1f) {
-				UserInterface.addFloatingText("Not enough stamina", Color.ORANGE, host.getEmissionPosition().cpy(), false);
+				UserInterface.addFloatingText("Not enough stamina", Color.ORANGE, host.getEmissionPosition().cpy(), false, host.getWorldId());
 				jumped = true;
 				return;
 			}
