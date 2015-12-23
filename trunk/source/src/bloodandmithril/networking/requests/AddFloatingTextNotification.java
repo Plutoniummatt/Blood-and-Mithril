@@ -9,18 +9,20 @@ import bloodandmithril.ui.UserInterface.FloatingText;
 public class AddFloatingTextNotification implements Response {
 
 	private final FloatingText floatingText;
+	private final int worldId;
 
 	/**
 	 * Constructor
 	 */
-	public AddFloatingTextNotification(FloatingText floatingText) {
+	public AddFloatingTextNotification(FloatingText floatingText, int worldId) {
 		this.floatingText = floatingText;
+		this.worldId = worldId;
 	}
 
 
 	@Override
 	public void acknowledge() {
-		UserInterface.addFloatingText(floatingText, true);
+		UserInterface.addFloatingText(floatingText, worldId, true);
 	}
 
 

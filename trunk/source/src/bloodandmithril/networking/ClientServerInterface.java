@@ -1201,12 +1201,12 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyAddFloatingText(FloatingText floatingText) {
+		public static synchronized void notifyAddFloatingText(FloatingText floatingText, int worldId) {
 			sendNotification(
 				-1,
 				true,
 				true,
-				new AddFloatingTextNotification(floatingText)
+				new AddFloatingTextNotification(floatingText, worldId)
 			);
 		}
 

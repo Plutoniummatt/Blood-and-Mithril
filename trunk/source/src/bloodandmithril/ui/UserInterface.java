@@ -20,6 +20,7 @@ import static bloodandmithril.networking.ClientServerInterface.ping;
 import static bloodandmithril.persistence.GameSaver.isSaving;
 import static bloodandmithril.ui.UserInterface.FloatingText.floatingText;
 import static bloodandmithril.util.Fonts.defaultFont;
+import static bloodandmithril.world.Domain.getActiveWorldId;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 import static com.badlogic.gdx.Gdx.files;
@@ -42,6 +43,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -58,6 +60,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
@@ -175,7 +178,7 @@ public class UserInterface {
 	public static TextureRegion currentArrow;
 	public static TextureRegion followArrow;
 
-	private static List<FloatingText> floatingTexts;
+	private static Map<Integer, List<FloatingText>> worldFloatingTexts;
 
 	private static Deque<Task> uiTasks;
 
@@ -191,7 +194,7 @@ public class UserInterface {
 			currentArrow = new TextureRegion(UserInterface.uiTexture, 500, 1, 11, 8);
 			followArrow = new TextureRegion(UserInterface.uiTexture, 500, 10, 11, 8);
 			uiTasks = new ConcurrentLinkedDeque<>();
-			floatingTexts = Lists.newLinkedList();
+			worldFloatingTexts = Maps.newHashMap();
 			shapeRenderer = new ShapeRenderer();
 		}
 	}
@@ -358,7 +361,7 @@ public class UserInterface {
 		}
 
 
-		renderFloatingText();
+		renderFloatingText(getActiveWorldId());
 		renderTextBubbles();
 		renderHint();
 		renderCursorBoundTaskText();
@@ -1104,41 +1107,46 @@ public class UserInterface {
 	}
 
 
-	private static void renderFloatingText() {
+	private static void renderFloatingText(int worldId) {
 		getGraphics().getSpriteBatch().begin();
-		Lists.newArrayList(floatingTexts).stream().forEach(text -> {
-			defaultFont.setColor(Colors.modulateAlpha(Color.BLACK, text.life / text.maxLife));
 
-			Vector2 renderPos = new Vector2();
-			if (text.ui) {
-				renderPos = text.worldPosition;
-			} else {
-				renderPos.x = text.worldPosition.x - getGraphics().getCam().position.x + getGraphics().getWidth()/2 - text.text.length() * 5;
-				renderPos.y = text.worldPosition.y - getGraphics().getCam().position.y + getGraphics().getHeight()/2;
-			}
+		List<FloatingText> elements = worldFloatingTexts.get(worldId);
+		if (elements != null) {
+			Lists.newArrayList(elements).stream().forEach(text -> {
+				defaultFont.setColor(Colors.modulateAlpha(Color.BLACK, text.life / text.maxLife));
 
-			defaultFont.draw(
-				getGraphics().getSpriteBatch(),
-				text.text,
-				renderPos.x - 1,
-				renderPos.y - 1
-			);
-			defaultFont.setColor(Colors.modulateAlpha(text.color, text.life / text.maxLife));
-			defaultFont.draw(
-				getGraphics().getSpriteBatch(),
-				text.text,
-				renderPos.x,
-				renderPos.y
-			);
-			text.worldPosition.y += 0.5f;
-			text.life -= Gdx.graphics.getDeltaTime();
-
-			if (text.life <= 0f) {
-				synchronized(floatingTexts) {
-					floatingTexts.remove(text);
+				Vector2 renderPos = new Vector2();
+				if (text.ui) {
+					renderPos = text.worldPosition;
+				} else {
+					renderPos.x = text.worldPosition.x - getGraphics().getCam().position.x + getGraphics().getWidth()/2 - text.text.length() * 5;
+					renderPos.y = text.worldPosition.y - getGraphics().getCam().position.y + getGraphics().getHeight()/2;
 				}
-			}
-		});
+
+				defaultFont.draw(
+					getGraphics().getSpriteBatch(),
+					text.text,
+					renderPos.x - 1,
+					renderPos.y - 1
+				);
+				defaultFont.setColor(Colors.modulateAlpha(text.color, text.life / text.maxLife));
+				defaultFont.draw(
+					getGraphics().getSpriteBatch(),
+					text.text,
+					renderPos.x,
+					renderPos.y
+				);
+				text.worldPosition.y += 0.5f;
+				text.life -= Gdx.graphics.getDeltaTime();
+
+				if (text.life <= 0f) {
+					synchronized(worldFloatingTexts) {
+						worldFloatingTexts.remove(text);
+					}
+				}
+			});
+		}
+
 		getGraphics().getSpriteBatch().end();
 	}
 
@@ -1303,34 +1311,40 @@ public class UserInterface {
 	}
 
 
-	public static void addFloatingText(String text, Color color, Vector2 position, boolean ui) {
-		addFloatingText(floatingText(text, color, position, ui), false);
+	public static void addFloatingText(String text, Color color, Vector2 position, boolean ui, int worldId) {
+		addFloatingText(floatingText(text, color, position, ui), worldId, false);
 	}
 
 
-	public static void addFloatingText(FloatingText floatingText, boolean csi) {
+	public static void addFloatingText(FloatingText floatingText, int worldId, boolean csi) {
 		if (isServer()) {
 			if (isClient()) {
-				synchronized(floatingTexts) {
-					floatingTexts.add(floatingText);
+				synchronized(worldFloatingTexts) {
+					if (!worldFloatingTexts.containsKey(worldId)) {
+						worldFloatingTexts.put(worldId, Lists.newLinkedList());
+					}
+					worldFloatingTexts.get(worldId).add(floatingText);
 				}
 			} else {
-				ClientServerInterface.SendNotification.notifyAddFloatingText(floatingText);
+				ClientServerInterface.SendNotification.notifyAddFloatingText(floatingText, worldId);
 			}
 
 			return;
 		}
 
 		if (csi) {
-			synchronized(floatingTexts) {
-				floatingTexts.add(floatingText);
+			synchronized(worldFloatingTexts) {
+				if (!worldFloatingTexts.containsKey(worldId)) {
+					worldFloatingTexts.put(worldId, Lists.newLinkedList());
+				}
+				worldFloatingTexts.get(worldId).add(floatingText);
 			}
 		}
 	}
 
 
 	public static void addUIFloatingText(String text, Color color, Vector2 position) {
-		addFloatingText(floatingText(text, color, position, true), false);
+		addFloatingText(floatingText(text, color, position, true), getActiveWorldId(), false);
 	}
 
 

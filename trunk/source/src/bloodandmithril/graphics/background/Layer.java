@@ -7,10 +7,10 @@ import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * A background layer
@@ -64,7 +64,7 @@ public abstract class Layer implements Serializable {
 				rendering = false;
 			}
 
-			boolean empty = images.floorEntry(startPositionX + currentPosition).getValue().a == 0;
+			boolean empty = images.floorEntry(startPositionX + currentPosition).getValue().a == BackgroundImages.EMPTY;
 			TextureRegion toDraw = empty ? null : textures.get(images.floorEntry(startPositionX + currentPosition).getValue().a);
 
 			if (toDraw != null) {

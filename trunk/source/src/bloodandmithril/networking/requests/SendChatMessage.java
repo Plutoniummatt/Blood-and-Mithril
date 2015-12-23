@@ -1,17 +1,16 @@
 package bloodandmithril.networking.requests;
 
-import static bloodandmithril.ui.UserInterface.FloatingText.floatingText;
 import static com.google.common.collect.Iterables.tryFind;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.UserInterface.FloatingText;
 import bloodandmithril.ui.components.window.ChatWindow;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * {@link Request} sent when a client sends a chat message
@@ -69,10 +68,7 @@ public class SendChatMessage implements Request {
 			if (!tryFind(UserInterface.getLayeredComponents(), component -> {
 				return component instanceof ChatWindow;
 			}).isPresent()) {
-				FloatingText floatingText = floatingText("New message!", Color.ORANGE, new Vector2(83, 50), true);
-				floatingText.life = 2f;
-				floatingText.maxLife = 2f;
-				UserInterface.addFloatingText(floatingText, true);
+				UserInterface.addUIFloatingText("New Message!", Color.ORANGE, new Vector2(83, 50));
 			}
 		}
 

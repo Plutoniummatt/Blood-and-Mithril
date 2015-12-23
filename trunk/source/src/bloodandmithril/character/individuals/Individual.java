@@ -319,7 +319,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 			text,
 			color,
 			getState().position.cpy().add(0f, getHeight()).add(new Vector2(0, 15f).rotate(Util.getRandom().nextFloat() * 360f)),
-			false
+			false,
+			getWorldId()
 		);
 	}
 
@@ -1066,8 +1067,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	public final void setShutUp(boolean shutup) {
 		this.shutup = shutup;
 	}
-	
-	
+
+
 	/**
 	 * Plays the audio that signals an "affirmative"
 	 */
