@@ -1623,8 +1623,6 @@ public class UserInterface {
 					150
 				)
 			);
-		} else {
-			//TODO
 		}
 	}
 

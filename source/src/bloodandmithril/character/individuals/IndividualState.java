@@ -5,10 +5,10 @@ import static com.google.common.collect.Sets.newHashSet;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.core.Copyright;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Encapsulates the (constantly changing) state of an {@link Individual}.
@@ -29,7 +29,7 @@ public class IndividualState implements Serializable {
 	/**
 	 * Constructor
 	 */
-	public IndividualState(float maxHealth, float healthRegen, float staminaRegen, float maxMana, float manaRegen) {
+	private IndividualState(float maxHealth, float healthRegen, float staminaRegen, float maxMana, float manaRegen) {
 		this.health = maxHealth;
 		this.maxHealth = maxHealth;
 		this.healthRegen = healthRegen;
@@ -56,5 +56,37 @@ public class IndividualState implements Serializable {
 		this.healthRegen = defaultHealthRegen;
 		this.staminaRegen = defaultStaminaRegen;
 		this.manaRegen = defaultManaRegen;
+	}
+
+
+	public static class IndividualStateBuilder {
+		private float maxHealth;
+		private float healthRegen;
+		private float staminaRegen;
+		private float maxMana;
+		private float manaRegen;
+		public IndividualStateBuilder withMaxHealth(float maxHealth) {
+			this.maxHealth = maxHealth;
+			return this;
+		}
+		public IndividualStateBuilder withHealthRegen(float healthRegen) {
+			this.healthRegen = healthRegen;
+			return this;
+		}
+		public IndividualStateBuilder withStaminaRegen(float staminaRegen) {
+			this.staminaRegen = staminaRegen;
+			return this;
+		}
+		public IndividualStateBuilder withMaxMana(float maxMana) {
+			this.maxMana = maxMana;
+			return this;
+		}
+		public IndividualStateBuilder withManaRegen(float manaRegen) {
+			this.manaRegen = manaRegen;
+			return this;
+		}
+		public IndividualState build() {
+			return new IndividualState(maxHealth, healthRegen, staminaRegen, maxMana, manaRegen);
+		}
 	}
 }
