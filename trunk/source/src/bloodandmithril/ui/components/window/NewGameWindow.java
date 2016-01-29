@@ -20,6 +20,16 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -56,16 +66,6 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.cursorboundtask.ChooseStartingLocationCursorBoundTask;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 
 /**
  * Window for selecting starting units/items
@@ -673,7 +673,13 @@ public class NewGameWindow extends Window {
 
 		private Individual newIndividual(Class<? extends Individual> selectedRace) {
 			if (selectedRace.equals(Elf.class)) {
-				IndividualState state = new IndividualState(30f, 0.01f, 0.02f, 0f, 0f);
+				IndividualState state = new IndividualState.IndividualStateBuilder()
+				.withMaxHealth(30f)
+				.withHealthRegen(0.01f)
+				.withMaxMana(0.02f)
+				.withMaxMana(0f)
+				.withManaRegen(0f).build();
+
 				state.position = new Vector2();
 				state.velocity = new Vector2();
 				state.acceleration = new Vector2();

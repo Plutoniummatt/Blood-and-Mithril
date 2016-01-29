@@ -2,6 +2,7 @@ package bloodandmithril.generation.superstructure;
 
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 import static java.lang.Math.max;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structures;
@@ -15,7 +16,9 @@ import bloodandmithril.generation.component.components.prefab.DesertPyramid;
 import bloodandmithril.generation.component.components.prefab.UndergroundDesertTempleEntrance;
 import bloodandmithril.generation.tools.PerlinNoiseGenerator1D;
 import bloodandmithril.generation.tools.RectangularSpaceCalculator;
+import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.persistence.ParameterPersistenceService;
+import bloodandmithril.prop.furniture.SmallWoodenCrateProp;
 import bloodandmithril.prop.plant.DeadDesertBush;
 import bloodandmithril.prop.plant.DryGrass;
 import bloodandmithril.util.Function;
@@ -87,14 +90,14 @@ public class Desert extends SuperStructure {
 
 	/** Generates the desert dungeon */
 	private void generateDungeon() {
-		
+
 		// Add pyraid somewhere
 		int pyramidX = (getBoundaries().left + 3) * Topography.CHUNK_SIZE;
 		int pyramidY = max(
 			getSurfaceHeight().apply(184 + pyramidX) + 70,
 			getSurfaceHeight().apply(24 + pyramidX) + 70
 		);
-		
+
 		getComponents().add(new DesertPyramid(
 			pyramidX,
 			pyramidY,
@@ -265,6 +268,15 @@ public class Desert extends SuperStructure {
 					new DeadDesertBush(
 						Topography.convertToWorldCoord(x, false),
 						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16
+					)
+				);
+			}
+			if (Util.roll(0.04f)) {
+				Structures.get(getStructureKey()).addProp(
+					new SmallWoodenCrateProp(
+						Topography.convertToWorldCoord(x, false),
+						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16,
+						StandardWood.class
 					)
 				);
 			}

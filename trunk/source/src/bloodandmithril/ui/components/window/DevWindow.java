@@ -226,7 +226,14 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.E) {
-			IndividualState state = new IndividualState(30f, 0.01f, 0.02f, 0f, 0f);
+			IndividualState state = new IndividualState.IndividualStateBuilder()
+			.withMaxHealth(30f)
+			.withHealthRegen(0.01f)
+			.withMaxMana(0.02f)
+			.withMaxMana(0f)
+			.withManaRegen(0f).build();
+
+
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
@@ -250,7 +257,13 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.R) {
-			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
+			IndividualState state = new IndividualState.IndividualStateBuilder()
+			.withMaxHealth(1000f)
+			.withHealthRegen(0.01f)
+			.withMaxMana(0.02f)
+			.withMaxMana(0f)
+			.withManaRegen(0f).build();
+
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
@@ -268,7 +281,13 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.W) {
-			IndividualState state = new IndividualState(1000f, 0.01f, 0.02f, 0f, 0f);
+			IndividualState state = new IndividualState.IndividualStateBuilder()
+			.withMaxHealth(1000f)
+			.withHealthRegen(0.01f)
+			.withMaxMana(0.02f)
+			.withMaxMana(0f)
+			.withManaRegen(0f).build();
+
 			state.position = new Vector2(getMouseWorldX(), getMouseWorldY());
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
