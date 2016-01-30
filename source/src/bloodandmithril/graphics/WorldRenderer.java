@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
@@ -101,6 +102,7 @@ public class WorldRenderer {
 
 
 	public static void render(World world, int camX, int camY) {
+		BloodAndMithrilClient.rendering.set(true);
 		bBuffer.begin();
 		Shaders.invertAlphaSolidColor.begin();
 		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {});
@@ -117,10 +119,10 @@ public class WorldRenderer {
 		renderParticles(Depth.BACKGROUND, world);
 		getGraphics().getSpriteBatch().end();
 		bBuffer.end();
-
+	
 		int xOffset = round(getGraphics().getCam().position.x) % TILE_SIZE;
 		int yOffset = round(getGraphics().getCam().position.y) % TILE_SIZE;
-
+	
 		workingQuantized.begin();
 		getGraphics().getCam().position.x = getGraphics().getCam().position.x - xOffset;
 		getGraphics().getCam().position.y = getGraphics().getCam().position.y - yOffset;
@@ -130,7 +132,7 @@ public class WorldRenderer {
 		getGraphics().getCam().position.y = getGraphics().getCam().position.y + yOffset;
 		getGraphics().getCam().update();
 		workingQuantized.end();
-
+	
 		bBufferQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -140,7 +142,7 @@ public class WorldRenderer {
 		getGraphics().getSpriteBatch().draw(workingQuantized.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
 		getGraphics().getSpriteBatch().end();
 		bBufferQuantized.end();
-
+	
 		workingQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -152,7 +154,7 @@ public class WorldRenderer {
 		getGraphics().getCam().position.y = getGraphics().getCam().position.y + yOffset;
 		getGraphics().getCam().update();
 		workingQuantized.end();
-
+	
 		fBufferQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -162,7 +164,7 @@ public class WorldRenderer {
 		getGraphics().getSpriteBatch().draw(workingQuantized.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
 		getGraphics().getSpriteBatch().end();
 		fBufferQuantized.end();
-
+	
 		combinedBufferQuantized.begin();
 		getGraphics().getSpriteBatch().begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -177,7 +179,7 @@ public class WorldRenderer {
 		);
 		getGraphics().getSpriteBatch().end();
 		combinedBufferQuantized.end();
-
+	
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
 		getGraphics().getSpriteBatch().begin();
@@ -194,7 +196,7 @@ public class WorldRenderer {
 		renderParticles(MIDDLEGROUND, world);
 		getGraphics().getSpriteBatch().end();
 		mBuffer.end();
-
+	
 		fBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
 		individualTexture.setFilter(Linear, Linear);
@@ -241,8 +243,9 @@ public class WorldRenderer {
 		}
 		getGraphics().getSpriteBatch().end();
 		fBuffer.end();
-
+	
 		GaussianLightingRenderer.render(camX, camY, world);
+		BloodAndMithrilClient.rendering.set(false);
 	}
 
 
