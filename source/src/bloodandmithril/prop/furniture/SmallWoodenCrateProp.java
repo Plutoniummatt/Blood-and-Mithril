@@ -4,11 +4,18 @@ import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.function.Function;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
+import bloodandmithril.graphics.particles.Particle.MovementMode;
+import bloodandmithril.graphics.particles.RandomParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
@@ -19,12 +26,11 @@ import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
+import bloodandmithril.util.RepeatingCountdown;
+import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * A crate made from wood
@@ -200,6 +206,28 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 
 	@Override
 	public void update(float delta) {
+		if (Util.roll(0.95f)) {
+			return;
+		}
+		
+		Domain.getWorld(getWorldId()).getClientParticles().add(
+			new RandomParticle(
+				position.cpy().add(0, 10), 
+				new Vector2(), 
+				Color.WHITE, 
+				Color.RED, 
+				2f, 
+				Domain.getActiveWorldId(), 
+				4f, 
+				MovementMode.EMBER, 
+				Depth.FOREGROUND, 
+				1000 + Util.getRandom().nextInt(2000), 
+				() -> {
+					return new Vector2(150, 0).rotate(Util.getRandom().nextFloat() * 360f);
+				}, 
+				new RepeatingCountdown(10)
+			)
+		);
 	}
 
 

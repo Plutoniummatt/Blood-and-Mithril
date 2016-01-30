@@ -226,7 +226,7 @@ public final class StimulusDrivenRoutine extends Routine {
 
 			defaultFont.drawWrapped(
 				getGraphics().getSpriteBatch(),
-				triggerFunction.getDetailedDescription(),
+				triggerFunction == null ? "Not configured" : triggerFunction.getDetailedDescription(),
 				x + 10,
 				y - 27,
 				width - 5
