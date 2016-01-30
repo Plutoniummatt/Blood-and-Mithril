@@ -1141,7 +1141,7 @@ public class UserInterface {
 
 				if (text.life <= 0f) {
 					synchronized(worldFloatingTexts) {
-						worldFloatingTexts.remove(text);
+						elements.remove(text);
 					}
 				}
 			});

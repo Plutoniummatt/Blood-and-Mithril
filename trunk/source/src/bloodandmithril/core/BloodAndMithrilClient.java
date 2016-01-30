@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -103,6 +104,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	/** True if game is paused */
 	public static boolean paused;
+	
+	/** True if the world is currently being rendered */
+	public static AtomicBoolean rendering = new AtomicBoolean(false);
 
 	/** True if game is loading */
 	public static boolean loading;
