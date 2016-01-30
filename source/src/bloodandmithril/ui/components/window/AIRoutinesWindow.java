@@ -260,11 +260,24 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 			Color.GRAY,
 			null
 		);
+		
+		MenuItem remove = new MenuItem(
+			"Remove",
+			() -> {
+				Domain.getIndividual(individualId).getAI().removeRoutine(tEntry.getKey());
+				refresh();
+			},
+			Color.WHITE,
+			Color.GREEN,
+			Color.GRAY,
+			null
+		);
 
 		menu.addMenuItem(moveUp);
 		menu.addMenuItem(moveDown);
 		menu.addMenuItem(edit);
 		menu.addMenuItem(rename);
+		menu.addMenuItem(remove);
 
 		return menu;
 	}

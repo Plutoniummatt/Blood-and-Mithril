@@ -91,10 +91,6 @@ public abstract class ArtificialIntelligence implements Serializable {
 			return;
 		}
 
-		if (aiRoutines.isEmpty()) {
-			addRoutines();
-		}
-
 		if (AIProcessor.aiThread != null && AIProcessor.aiThread.isAlive()) {
 			if (mode == AIMode.AUTO && !getHost().isAISuppressed()) {
 				AIProcessor.addTaskToAIThread(() ->
@@ -343,7 +339,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	public void removeRoutine(Routine routine) {
 		for (Routine r : aiRoutines) {
 			if (r.getPriority() > routine.getPriority()) {
-				r.setPriority(routine.getPriority() - 1);
+				r.setPriority(r.getPriority() - 1);
 			}
 		}
 
