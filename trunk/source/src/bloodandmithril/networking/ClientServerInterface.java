@@ -142,6 +142,7 @@ import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService.BloodSplat;
 import bloodandmithril.graphics.particles.ParticleService.FlameEmber;
 import bloodandmithril.graphics.particles.ParticleService.ParrySpark;
+import bloodandmithril.graphics.particles.RandomParticle;
 import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
@@ -314,6 +315,7 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
+import bloodandmithril.util.RepeatingCountdown;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
@@ -511,6 +513,8 @@ public class ClientServerInterface {
 		kryo.setReferences(true);
 		kryo.register(RequestSpawnIndividual.class);
 
+		kryo.register(RepeatingCountdown.class);
+		kryo.register(RandomParticle.class);
 		kryo.register(SuspicionLevel.class);
 		kryo.register(Lightable.class);
 		kryo.register(WrapperForTwo.class);

@@ -9,7 +9,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.graphics.particles.Lightning;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
@@ -136,11 +135,6 @@ public class Threading {
 							try {
 								p.update(0.012f);
 							} catch (NoTileFoundException e) {}
-						}
-						
-						Collection<Lightning> clientLightning = world.getClientLightning();
-						for (Lightning l : clientLightning) {
-							l.update();
 						}
 					}
 				}

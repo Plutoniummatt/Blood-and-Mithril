@@ -310,7 +310,7 @@ public final class IndividualConditionRoutine extends Routine {
 
 			defaultFont.drawWrapped(
 				getGraphics().getSpriteBatch(),
-				executionCondition.getDetailedDescription(getHost()),
+				executionCondition == null ? "Not configured" : executionCondition.getDetailedDescription(getHost()),
 				x + 10,
 				y - 27,
 				width - 5

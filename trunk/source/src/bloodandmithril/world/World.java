@@ -13,7 +13,6 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.event.Event;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.graphics.background.BackgroundImages;
-import bloodandmithril.graphics.particles.Lightning;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
@@ -53,9 +52,6 @@ public final class World implements Serializable {
 	/** Particles on this {@link World} */
 	private transient Collection<Particle> 						clientParticles			= new ConcurrentLinkedDeque<>();
 	
-	/** Lightning on this {@link World} */
-	private transient Collection<Lightning> 					clientLightning			= new ConcurrentLinkedDeque<>();
-
 	/** Particles on this {@link World}, this one is saved, and synchronized with server */
 	private ConcurrentHashMap<Long, Particle> 					serverParticles			= new ConcurrentHashMap<>();
 
@@ -223,17 +219,6 @@ public final class World implements Serializable {
 			clientParticles = new ConcurrentLinkedDeque<>();
 		}
 		return clientParticles;
-	}
-	
-	
-	/**
-	 * @return The transient collection of lightning
-	 */
-	public final Collection<Lightning> getClientLightning() {
-		if (clientLightning == null) {
-			clientLightning = new ConcurrentLinkedDeque<>();
-		}
-		return clientLightning;
 	}
 
 

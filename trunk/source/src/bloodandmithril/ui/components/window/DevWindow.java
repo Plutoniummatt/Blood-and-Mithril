@@ -45,7 +45,7 @@ import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
-import bloodandmithril.graphics.particles.ParticleService;
+import bloodandmithril.graphics.particles.RandomParticle;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.plant.CarrotItem;
 import bloodandmithril.item.items.material.RockItem;
@@ -71,6 +71,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.RepeatingCountdown;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
@@ -193,9 +194,26 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.H) {
-			ParticleService.explosion(
-				new Vector2(BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())
-			);
+			for (int i = 0; i < 20; i++) {
+				Domain.getActiveWorld().getClientParticles().add(
+					new RandomParticle(
+						BloodAndMithrilClient.getMouseWorldCoords(), 
+						new Vector2(), 
+						Color.WHITE, 
+						Color.CYAN, 
+						2f, 
+						Domain.getActiveWorldId(), 
+						4f, 
+						MovementMode.EMBER, 
+						Depth.FOREGROUND, 
+						1000 + Util.getRandom().nextInt(2000), 
+						() -> {
+							return new Vector2(150, 0).rotate(Util.getRandom().nextFloat() * 360f);
+						}, 
+						new RepeatingCountdown(10)
+					)
+				);
+			}
 		}
 
 		if (keyCode == Keys.T) {
@@ -229,7 +247,7 @@ public class DevWindow extends Window {
 			IndividualState state = new IndividualState.IndividualStateBuilder()
 			.withMaxHealth(30f)
 			.withHealthRegen(0.01f)
-			.withMaxMana(0.02f)
+			.withStaminaRegen(0.02f)
 			.withMaxMana(0f)
 			.withManaRegen(0f).build();
 

@@ -676,7 +676,7 @@ public class NewGameWindow extends Window {
 				IndividualState state = new IndividualState.IndividualStateBuilder()
 				.withMaxHealth(30f)
 				.withHealthRegen(0.01f)
-				.withMaxMana(0.02f)
+				.withStaminaRegen(0.02f)
 				.withMaxMana(0f)
 				.withManaRegen(0f).build();
 

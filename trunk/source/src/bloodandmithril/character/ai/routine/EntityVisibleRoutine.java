@@ -68,6 +68,10 @@ public final class EntityVisibleRoutine extends Routine {
 
 	@Override
 	public final boolean areExecutionConditionsMet() {
+		if (identificationFunction == null) {
+			return false;
+		}
+		
 		Individual individual = Domain.getIndividual(hostId.getId());
 		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
 		for (Visible v : observed) {
@@ -84,6 +88,10 @@ public final class EntityVisibleRoutine extends Routine {
 	 * @return the visible entity, or null if nothing is visible
 	 */
 	public final Visible getVisibleEntity() {
+		if (identificationFunction == null) {
+			return null;
+		}
+		
 		Individual individual = Domain.getIndividual(hostId.getId());
 		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
 		for (Visible v : observed) {
@@ -491,7 +499,7 @@ public final class EntityVisibleRoutine extends Routine {
 
 			defaultFont.drawWrapped(
 				getGraphics().getSpriteBatch(),
-				identificationFunction.getDetailedDescription(getHost()),
+				identificationFunction == null ? "Not configured" : identificationFunction.getDetailedDescription(getHost()),
 				x + 10,
 				y - 27,
 				width - 5

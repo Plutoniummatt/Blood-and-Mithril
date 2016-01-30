@@ -332,7 +332,10 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 
 	public void addRoutine(Routine routine) {
-		routine.setPriority(aiRoutines.size());
+		for (Routine r : aiRoutines) {
+			r.setPriority(r.getPriority() + 1);
+		}
+		routine.setPriority(0);
 		aiRoutines.add(routine);
 	}
 
