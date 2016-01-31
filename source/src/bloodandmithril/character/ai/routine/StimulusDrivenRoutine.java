@@ -123,9 +123,13 @@ public final class StimulusDrivenRoutine extends Routine {
 	public final boolean uponCompletion() {
 		if (task != null) {
 			AITask toNullify = task;
-			this.task = null;
-			this.triggered = false;
-			return toNullify.uponCompletion();
+			if (toNullify.uponCompletion()) {
+				return true;
+			} else {
+				this.task = null;
+				this.triggered = false;
+				return false;
+			}
 		}
 
 		return false;
@@ -136,6 +140,9 @@ public final class StimulusDrivenRoutine extends Routine {
 	public final void execute(float delta) {
 		if (task != null) {
 			task.execute(delta);
+			if (triggered) {
+				triggered = false;
+			}
 		}
 	}
 

@@ -30,6 +30,7 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 
 /**
@@ -110,7 +111,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 					BloodAndMithrilClient.getMouseScreenY(), 
 					true,
 					new MenuItem("Daily Routine", () -> {
-						DailyRoutine routine = new DailyRoutine(individual.getId(), 0f, 0f);
+						DailyRoutine routine = new DailyRoutine(individual.getId(), null, 0f);
 						routine.setEnabled(false);
 						individual.getAI().addRoutine(routine);
 						refresh();
@@ -164,7 +165,7 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 			item.entrySet().forEach(entry -> {
 				if (!entry.getKey().t.isEnabled()) {
 					entry.getKey().button.setIdleColor(Color.GRAY);
-					entry.getKey().button.setOverColor(Color.GRAY);
+					entry.getKey().button.setOverColor(Colors.UI_DARK_GREEN);
 					entry.getKey().button.setDownColor(Color.GRAY);
 				}
 			});

@@ -60,7 +60,7 @@ public final class ElfAI extends ArtificialIntelligence {
 
 
 	private final void morningRoutine() {
-		DailyRoutine dailyRoutine = new DailyRoutine(getHost().getId(), 8, 1);
+		DailyRoutine dailyRoutine = new DailyRoutine(getHost().getId(), 8f, 1f);
 		dailyRoutine.setAiTaskGenerator(
 			new Speak.SpeakTaskGenerator(
 				getHost(),

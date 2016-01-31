@@ -55,7 +55,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 	private static final long serialVersionUID = 3940840091194740269L;
 
 	/** The changing destination */
-	private final Vector2 destination;
+	private final SerializableFunction<Vector2> destination;
 	private final float tolerance;
 	private GoToLocation currentGoToLocation;
 	private SerializableFunction<Boolean> terminationCondition;
@@ -72,7 +72,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, float tolerance) {
+	protected GoToMovingLocation(IndividualIdentifier hostId, SerializableFunction<Vector2> destination, float tolerance) {
 		super(hostId);
 		this.destination = destination;
 		this.tolerance = tolerance;
@@ -81,7 +81,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 		this.currentGoToLocation = goTo(
 			host,
 			host.getState().position.cpy(),
-			new WayPoint(destination),
+			new WayPoint(destination.call()),
 			false,
 			150f,
 			true
@@ -92,7 +92,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> terminationCondition) {
+	protected GoToMovingLocation(IndividualIdentifier hostId, SerializableFunction<Vector2> destination, SerializableFunction<Boolean> terminationCondition) {
 		super(hostId);
 		this.destination = destination;
 		this.terminationCondition = terminationCondition;
@@ -102,7 +102,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 		this.currentGoToLocation = goTo(
 			host,
 			host.getState().position.cpy(),
-			new WayPoint(destination),
+			new WayPoint(destination.call()),
 			false,
 			150f,
 			true
@@ -113,7 +113,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, Vector2 destination, SerializableFunction<Boolean> terminationCondition, SerializableFunction<Boolean> repathCondition) {
+	protected GoToMovingLocation(IndividualIdentifier hostId, SerializableFunction<Vector2> destination, SerializableFunction<Boolean> terminationCondition, SerializableFunction<Boolean> repathCondition) {
 		super(hostId);
 		this.destination = destination;
 		this.terminationCondition = terminationCondition;
@@ -124,7 +124,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 		this.currentGoToLocation = goTo(
 			host,
 			host.getState().position.cpy(),
-			new WayPoint(destination),
+			new WayPoint(destination.call()),
 			false,
 			150f,
 			true
@@ -144,7 +144,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 			return terminationCondition.call();
 		}
 
-		return Domain.getIndividual(hostId.getId()).getDistanceFrom(destination) < tolerance;
+		return Domain.getIndividual(hostId.getId()).getDistanceFrom(destination.call()) < tolerance;
 	}
 
 
@@ -177,7 +177,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 			this.currentGoToLocation = goTo(
 				host,
 				host.getState().position.cpy(),
-				new WayPoint(destination),
+				new WayPoint(destination.call()),
 				false,
 				150f,
 				true
