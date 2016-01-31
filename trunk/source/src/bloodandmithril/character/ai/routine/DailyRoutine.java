@@ -44,13 +44,13 @@ public final class DailyRoutine extends Routine {
 	private static final long serialVersionUID = -255141692263126217L;
 
 	private Epoch lastExecutedEpoch = null;
-	private float routineTime;
+	private Float routineTime;
 	private float toleranceTime;
 
 	/**
 	 * Constructor
 	 */
-	public DailyRoutine(IndividualIdentifier hostId, float routineTime, float toleranceTime) {
+	public DailyRoutine(IndividualIdentifier hostId, Float routineTime, float toleranceTime) {
 		super(hostId);
 		this.routineTime = routineTime;
 		this.toleranceTime = toleranceTime;
@@ -85,9 +85,14 @@ public final class DailyRoutine extends Routine {
 	public final boolean uponCompletion() {
 		if (task != null) {
 			AITask toNullify = task;
-			this.task = null;
-			this.lastExecutedEpoch = Domain.getWorld(getHost().getWorldId()).getEpoch().copy();
-			return toNullify.uponCompletion();
+			
+			if (toNullify.uponCompletion()) {
+				return true;
+			} else {
+				this.task = null;
+				this.lastExecutedEpoch = Domain.getWorld(getHost().getWorldId()).getEpoch().copy();
+				return false;
+			}
 		}
 
 		return false;
@@ -147,7 +152,7 @@ public final class DailyRoutine extends Routine {
 							},
 							"Confirm",
 							true,
-							Epoch.getTimeString(routineTime)
+							routineTime == null ? "00:00" : Epoch.getTimeString(routineTime)
 						)
 					);
 				},
@@ -224,7 +229,7 @@ public final class DailyRoutine extends Routine {
 
 			defaultFont.drawWrapped(
 				getGraphics().getSpriteBatch(),
-				"Routine occurs daily between " + getTimeString(routineTime) + " and " + getTimeString(routineTime + toleranceTime),
+				routineTime == null ? "Not configured" : ("Routine occurs daily between " + getTimeString(routineTime) + " and " + getTimeString(routineTime + toleranceTime)),
 				x + 10,
 				y - 27,
 				width - 5
@@ -232,13 +237,13 @@ public final class DailyRoutine extends Routine {
 
 			if (lastExecutedEpoch == null) {
 				Epoch epoch = Domain.getWorld(getHost().getWorldId()).getEpoch();
-				if (epoch.getTime() >= routineTime) {
+				if (routineTime != null && epoch.getTime() >= routineTime) {
 					epoch = epoch.copy();
 					epoch.incrementDay();
 				}
 				defaultFont.drawWrapped(
 					getGraphics().getSpriteBatch(),
-					"Next scheduled occurrence: " + getTimeString(routineTime) + " on " + epoch.getDateString(),
+					"Next scheduled occurrence: " + (routineTime == null ? "N/A" : (getTimeString(routineTime) + " on " + epoch.getDateString())),
 					x + 10,
 					y - 47,
 					width - 5
@@ -248,7 +253,7 @@ public final class DailyRoutine extends Routine {
 				copy.incrementDay();
 				defaultFont.drawWrapped(
 					getGraphics().getSpriteBatch(),
-					"Next scheduled occurrence: " + getTimeString(routineTime) + " on " + copy.getDateString(),
+					"Next scheduled occurrence: " + (routineTime == null ? "N/A" : (getTimeString(routineTime) + " on " + copy.getDateString())),
 					x + 10,
 					y - 47,
 					width - 5

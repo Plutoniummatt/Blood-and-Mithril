@@ -4,13 +4,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import bloodandmithril.audio.SoundService;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Threading;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.event.Event;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.MissionsWindow;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * Missions have multiple {@link Objective}s
@@ -45,6 +50,19 @@ public abstract class Mission implements Objective {
 			if (objective != null && objective.getKey().getStatus() == ObjectiveStatus.COMPLETE && !objective.getValue()) {
 				objective.getKey().uponCompletion();
 				objective.setValue(true);
+				SoundService.play(SoundService.achievement);
+				Wiring.injector().getInstance(Threading.class).clientProcessingThreadPool.submit(() -> {
+					for (int i = 0; i < 5; i++) {
+						UserInterface.addUIFloatingText(
+							"Objective compelete", 
+							Color.ORANGE, 
+							new Vector2(220, 60)
+						);
+						try {
+							Thread.sleep(1000);
+						} catch (Exception e) {}
+					}
+				});
 				UserInterface.refreshRefreshableWindows(MissionsWindow.class);
 			}
 		}

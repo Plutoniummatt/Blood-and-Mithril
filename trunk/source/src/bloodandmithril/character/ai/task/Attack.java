@@ -24,6 +24,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
+import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
@@ -88,12 +89,10 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		Individual alive = getAlive();
 
 		if (alive != null) {
-			Vector2 location = alive.getState().position;
-
 			if (alive.canBeAttacked(host)) {
 				appendTask(new GoToMovingLocation(
 					hostId,
-					location,
+					new ReturnIndividualPosition(alive),
 					new WithinAttackRangeOrCantAttack(hostId, alive.getId())
 				));
 

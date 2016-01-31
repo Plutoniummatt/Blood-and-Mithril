@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.inject.Inject;
 
+import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
@@ -64,7 +65,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 		appendTask(
 			new GoToMovingLocation(
 				follower.getId(),
-				followee.getState().position,
+				new ReturnIndividualPosition(followee),
 				termCondition,
 				repathCondition
 			)
@@ -166,7 +167,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 				return null;
 			}
 
-			return new Attack(Domain.getIndividual(followerId), Domain.getIndividual(followeeId.call()));
+			return new Follow(Domain.getIndividual(followerId), Domain.getIndividual(followeeId.call()), 8, null);
 		}
 		@Override
 		public String getDailyRoutineDetailedDescription() {

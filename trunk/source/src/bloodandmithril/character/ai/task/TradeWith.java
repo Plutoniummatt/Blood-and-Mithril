@@ -2,6 +2,9 @@ package bloodandmithril.character.ai.task;
 
 import java.util.Comparator;
 
+import com.badlogic.gdx.math.Vector2;
+
+import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -11,11 +14,11 @@ import bloodandmithril.item.items.container.Container;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.requests.TransferItems.TradeEntity;
 import bloodandmithril.prop.Prop;
+import bloodandmithril.prop.Prop.ReturnPropPosition;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.TradeWindow;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A {@link CompositeAITask} comprising of:
@@ -42,17 +45,17 @@ public class TradeWith extends CompositeAITask {
 	public TradeWith(final Individual proposer, final Container proposee, int connectionId) {
 		super(proposer.getId(), "Trading");
 
-		Vector2 location = null;
+		SerializableFunction<Vector2> function = null;
 
 		if (proposee instanceof Individual) {
-			location = ((Individual) proposee).getState().position;
+			function = new ReturnIndividualPosition((Individual) proposee);
 		} else {
-			location = ((Prop) proposee).position;
+			function = new ReturnPropPosition((Prop) proposee);;
 		}
 
 		appendTask(new GoToMovingLocation(
 			proposer.getId(),
-			location,
+			function,
 			50f
 		));
 
@@ -73,14 +76,14 @@ public class TradeWith extends CompositeAITask {
 	public TradeWith(final Individual proposer, final Container proposee) {
 		super(proposer.getId(), "Trading");
 
-		Vector2 location = null;
+		SerializableFunction<Vector2> location = null;
 
 		if (proposee instanceof Prop) {
-			location = ((Prop) proposee).position;
+			location = new ReturnPropPosition((Prop) proposee);;
 		} else if (proposee instanceof Individual) {
-			location = ((Individual) proposee).getState().position;
+			location = new ReturnIndividualPosition((Individual) proposee);
 		}
-
+		
 		setCurrentTask(new GoToMovingLocation(
 			proposer.getId(),
 			location,

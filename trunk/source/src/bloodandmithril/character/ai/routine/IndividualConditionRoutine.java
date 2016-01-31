@@ -86,10 +86,13 @@ public final class IndividualConditionRoutine extends Routine {
 	public final boolean uponCompletion() {
 		if (task != null) {
 			AITask toNullify = task;
-			this.task = null;
-			return toNullify.uponCompletion();
+			if (toNullify.uponCompletion()) {
+				return true;
+			} else {
+				this.task = null;
+				return false;
+			}
 		}
-
 		return false;
 	}
 

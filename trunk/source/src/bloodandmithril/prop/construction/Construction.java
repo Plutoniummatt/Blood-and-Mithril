@@ -6,6 +6,9 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.task.ConstructDeconstruct;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -33,9 +36,6 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.tile.Tile;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * A Construction
  *
@@ -53,6 +53,9 @@ public abstract class Construction extends Prop implements Container {
 
 	/** The container used to store construction materials during the construction stage */
 	private ContainerImpl materialContainer = new ContainerImpl(10000000, 10000000);
+
+	/** True if this construction has been completed before */
+	private boolean finishedConstruction = false;
 
 	/**
 	 * Constructor
@@ -113,10 +116,10 @@ public abstract class Construction extends Prop implements Container {
 			}
 		}
 
-		if (constructionProgress == 1f) {
+		if (constructionProgress >= 0.99f) {
 			finishConstruction();
 		} else {
-			constructionProgress = constructionProgress + time * constructionRate >= 1f ? 1f : constructionProgress + time * constructionRate;
+			constructionProgress = constructionProgress + time * constructionRate >= 0.99f ? 0.99f : constructionProgress + time * constructionRate;
 		}
 	}
 
@@ -128,15 +131,30 @@ public abstract class Construction extends Prop implements Container {
 		if (canDeconstruct()) {
 			if (constructionProgress <= 0f) {
 				Domain.getWorld(getWorldId()).props().removeProp(id);
-				for (Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
-					for (int i = entry.getValue(); i > 0; i--) {
-						Item item = entry.getKey();
-						item.setWorldId(getWorldId());
-						Domain.getWorld(getWorldId()).items().addItem(
-							item.copy(),
-							position.cpy().add(0, 10),
-							new Vector2(0, 200).rotate(Util.getRandom().nextFloat() * 360f)
-						);
+				
+				if (finishedConstruction) {
+					for (Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
+						for (int i = entry.getValue(); i > 0; i--) {
+							Item item = entry.getKey();
+							item.setWorldId(getWorldId());
+							Domain.getWorld(getWorldId()).items().addItem(
+								item.copy(),
+								position.cpy().add(0, 10),
+								new Vector2(0, 200).rotate(Util.getRandom().nextFloat() * 360f)
+							);
+						}
+					}
+				} else {
+					for (Entry<Item, Integer> entry : materialContainer.getInventory().entrySet()) {
+						for (int i = entry.getValue(); i > 0; i--) {
+							Item item = entry.getKey();
+							item.setWorldId(getWorldId());
+							Domain.getWorld(getWorldId()).items().addItem(
+								item.copy(),
+								position.cpy().add(0, 10),
+								new Vector2(0, 200).rotate(Util.getRandom().nextFloat() * 360f)
+							);
+						}
 					}
 				}
 			} else {
@@ -152,6 +170,7 @@ public abstract class Construction extends Prop implements Container {
 	private void finishConstruction() {
 		constructionProgress = 1f;
 		materialContainer.getInventory().clear();
+		finishedConstruction  = true;
 		Domain.getWorld(getWorldId()).addEvent(new ConstructionFinished(this));
 	}
 
@@ -281,6 +300,7 @@ public abstract class Construction extends Prop implements Container {
 
 	public void synchronizeConstruction(Construction other) {
 		constructionProgress = other.getConstructionProgress();
+		finishedConstruction = other.finishedConstruction;
 	}
 
 

@@ -190,7 +190,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.B) {
-			BloodAndMithrilClient.getMissions().add(new Tutorial(Domain.getActiveWorldId()));
+			BloodAndMithrilClient.addMission(new Tutorial(Domain.getActiveWorldId()));
 		}
 
 		if (keyCode == Keys.H) {

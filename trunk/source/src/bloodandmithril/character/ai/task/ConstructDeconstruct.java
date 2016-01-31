@@ -1,11 +1,13 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.networking.ClientServerInterface.isClient;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.prop.Prop.ReturnPropPosition;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.ConstructionWindow;
@@ -31,7 +33,7 @@ public class ConstructDeconstruct extends CompositeAITask {
 
 		appendTask(new GoToMovingLocation(
 			host.getId(),
-			construction.position,
+			new ReturnPropPosition(construction),
 			40f
 		));
 

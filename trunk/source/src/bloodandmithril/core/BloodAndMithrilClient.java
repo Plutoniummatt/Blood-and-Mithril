@@ -15,6 +15,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -116,7 +117,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Inject
 	private Graphics graphics;
-
+	
 	private static Controls controls = getConfig().getKeyMappings();
 
 	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
@@ -878,7 +879,23 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	}
 
 
-
+	public static void addMission(Mission m) {
+		missions.add(m);
+		
+		SoundService.play(SoundService.newMission);
+		Wiring.injector().getInstance(Threading.class).clientProcessingThreadPool.submit(() -> {
+			for (int i = 0; i < 5; i++) {
+				UserInterface.addUIFloatingText(
+					"New mission!", 
+					Color.ORANGE, 
+					new Vector2(220, 60)
+				);
+				try {
+					Thread.sleep(1000);
+				} catch (Exception e) {}
+			}
+		});
+	}
 
 
 	public static Collection<Mission> getMissions() {

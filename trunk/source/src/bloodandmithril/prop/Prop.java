@@ -31,6 +31,7 @@ import bloodandmithril.prop.furniture.WoodenChestProp;
 import bloodandmithril.prop.plant.CarrotProp;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Function;
+import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
@@ -304,5 +305,19 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 		}
 
 		return false;
+	}
+	
+	
+	public static class ReturnPropPosition implements SerializableFunction<Vector2> {
+		private static final long serialVersionUID = 6231253952557168072L;
+		private Prop prop;
+		public ReturnPropPosition(Prop prop) {
+			this.prop = prop;
+		}
+		
+		@Override
+		public Vector2 call() {
+			return prop.position;
+		}
 	}
 }
