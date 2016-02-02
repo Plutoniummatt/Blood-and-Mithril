@@ -17,6 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
@@ -28,13 +35,6 @@ import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * A panel that displays a listing of clickable menu items
@@ -63,17 +63,19 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 	/** Filters used to filter this listing panel */
 	private final Collection<Predicate<T>> filters = Lists.newLinkedList();
+	private final Predicate<T> textSearch;
 	private final boolean filtered;
 	private final int extraColumnWidth;
 
 	/**
 	 * Constructor
 	 */
-	public ScrollableListingPanel(Component parent, Comparator<T> sortingComparator, boolean filtered, int extraColumnWidth) {
+	public ScrollableListingPanel(Component parent, Comparator<T> sortingComparator, boolean filtered, int extraColumnWidth, Predicate<T> textSearch) {
 		super(parent);
 		this.sortingComparator = sortingComparator;
 		this.filtered = filtered;
 		this.extraColumnWidth = extraColumnWidth;
+		this.textSearch = textSearch;
 		populateListings(listings);
 	}
 
@@ -99,10 +101,15 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 				boolean keep = false;
 				for (Predicate<T> predicate : filters) {
 					if (predicate.apply(t.t)) {
-						keep = true;
+						if (textSearch != null) {
+							keep = textSearch.apply(t.t);
+						} else {
+							keep = true;
+						}
 						break;
 					}
 				}
+
 
 				if (!keep) {
 					item.remove(t);

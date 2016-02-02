@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Threading;
@@ -22,10 +26,6 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.util.Fonts;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.collect.Maps;
-import com.google.inject.Inject;
 
 /**
  * UI responsible for loading games.
@@ -73,7 +73,8 @@ public class LoadGameWindow extends Window {
 				return s1.date.compareTo(s2.date);
 			},
 			false,
-			200
+			200,
+			null
 		) {
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date> item) {

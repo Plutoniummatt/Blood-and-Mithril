@@ -60,7 +60,7 @@ public class ProficienciesWindow extends Window {
 			true
 		);
 
-		skills = new ScrollableListingPanel<Proficiency, Integer>(this, sortingComparator, false, 80) {
+		skills = new ScrollableListingPanel<Proficiency, Integer>(this, sortingComparator, false, 80, null) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Proficiency>, Integer> item) {
 				return Integer.toString(item.getKey().t.getLevel());

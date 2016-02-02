@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.objectives.Mission;
@@ -21,11 +26,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.SerializableFunction;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * The window displaying missions etc.
@@ -52,7 +52,7 @@ public class MissionsWindow extends Window implements Refreshable {
 	public MissionsWindow() {
 		super(800, 500, "Journal", true, true, true, true);
 
-		activeMissions = new ScrollableListingPanel<Mission, String>(this, alphabeticalSortingComparator, false, 100) {
+		activeMissions = new ScrollableListingPanel<Mission, String>(this, alphabeticalSortingComparator, false, 100, null) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Mission>, String> item) {
 				switch (item.getKey().t.getStatus()) {
@@ -83,7 +83,7 @@ public class MissionsWindow extends Window implements Refreshable {
 			}
 		};
 
-		completedMissions = new ScrollableListingPanel<Mission, String>(this, alphabeticalSortingComparator, false, 0) {
+		completedMissions = new ScrollableListingPanel<Mission, String>(this, alphabeticalSortingComparator, false, 0, null) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Mission>, String> item) {
 				switch (item.getKey().t.getStatus()) {
@@ -113,7 +113,7 @@ public class MissionsWindow extends Window implements Refreshable {
 				return false;
 			}
 		};
-		
+
 		refresh();
 	}
 

@@ -1,5 +1,13 @@
 package bloodandmithril.util;
 
+import bloodandmithril.core.Copyright;
+
+/**
+ * A repeating countdown timer
+ *
+ * @author Matt
+ */
+@Copyright("Matthew Peck 2016")
 public class RepeatingCountdown implements SerializableFunction<Boolean> {
 	private static final long serialVersionUID = -5370347149225786054L;
 	private long startTime;

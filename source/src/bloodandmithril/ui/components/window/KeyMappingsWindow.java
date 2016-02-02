@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.control.Controls;
 import bloodandmithril.control.Controls.MappedKey;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -26,10 +30,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.Maps;
 
 /**
  * Window to remap controls
@@ -78,7 +78,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 	public KeyMappingsWindow() {
 		super(500, 400, "Controls", true, false, true, true);
 
-		keyMappings = new ScrollableListingPanel<MappedKey, String>(this, stringComparator, false, 100) {
+		keyMappings = new ScrollableListingPanel<MappedKey, String>(this, stringComparator, false, 100, null) {
 
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<MappedKey>, String> item) {

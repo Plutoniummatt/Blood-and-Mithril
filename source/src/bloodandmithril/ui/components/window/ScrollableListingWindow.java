@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Function;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -19,9 +22,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Task;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Function;
 
 /**
  * A window that simply displays a {@link ScrollableListingPanel}
@@ -53,7 +53,7 @@ public abstract class ScrollableListingWindow<T, A> extends Window implements Re
 	 * Builds the {@link ScrollableListingPanel} object
 	 */
 	protected void buildListing(final Map<T, A> mapToBuildFrom, final Comparator<T> sortingOrder) {
-		this.listing = new ScrollableListingPanel<T, A>(this, sortingOrder, false, 35) {
+		this.listing = new ScrollableListingPanel<T, A>(this, sortingOrder, false, 35, null) {
 
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<T>, A> item) {

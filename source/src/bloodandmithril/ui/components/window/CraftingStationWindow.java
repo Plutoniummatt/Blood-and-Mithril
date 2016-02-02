@@ -77,7 +77,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		Entry<Item, Integer> next = craftingStation.getCraftables().entrySet().iterator().next();
 		this.currentlySelectedToCraft = craftingStation.getCurrentlyBeingCrafted() == null ? new SerializableDoubleWrapper<Item, Integer>(next.getKey(), next.getValue()) : craftingStation.getCurrentlyBeingCrafted();
 
-		this.craftablesListing = new ScrollableListingPanel<Item, String>(this, sortingComparator, false, 35) {
+		this.craftablesListing = new ScrollableListingPanel<Item, String>(this, sortingComparator, false, 35, null) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Item>, String> item) {
 				return "";
