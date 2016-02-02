@@ -10,6 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -24,13 +31,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuIte
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * Shows the status of an {@link Individual}
@@ -57,7 +57,7 @@ public class IndividualStatusWindow extends Window {
 	public IndividualStatusWindow(final Individual individual, int length, int height, String title, boolean active) {
 		super(length, height, title, active, 400, 400, true, true, true);
 		this.individual = individual;
-		this.conditionsPanel = new ScrollableListingPanel<Condition, Object>(this, sortingOrder, false, 35) {
+		this.conditionsPanel = new ScrollableListingPanel<Condition, Object>(this, sortingOrder, false, 35, null) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Condition>, Object> item) {
 				return "";

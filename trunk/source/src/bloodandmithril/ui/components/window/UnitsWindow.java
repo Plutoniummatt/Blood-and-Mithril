@@ -154,7 +154,8 @@ public class UnitsWindow extends Window implements Refreshable {
 				return i1.getId().getSimpleName().compareTo(i2.getId().getSimpleName());
 			},
 			false,
-			35
+			35,
+			null
 		) {
 			@Override
 			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Individual>, String> item) {

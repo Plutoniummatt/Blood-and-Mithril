@@ -12,6 +12,10 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.common.collect.Lists;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
@@ -24,10 +28,6 @@ import bloodandmithril.ui.components.panel.TextInputFieldPanel;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.google.common.collect.Lists;
 
 /**
  * {@link Window} used for chatting with other connected players
@@ -49,7 +49,7 @@ public class ChatWindow extends Window {
 	public ChatWindow(int length, int height, boolean active, int minLength, int minHeight) {
 		super(length, height, "Chat", active, minLength, minHeight, true, true, true);
 
-		participants = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35) {
+		participants = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35, null) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
 				return "";

@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -23,8 +25,6 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * Window for examining the contents of a container, zero interactions
@@ -57,7 +57,7 @@ public class ContainerInspectionWindow extends Window implements Refreshable {
 		);
 		this.container = container;
 
-		items = new ScrollableListingPanel<Item, Integer>(this, InventoryWindow.inventorySortingOrder, true, 35) {
+		items = new ScrollableListingPanel<Item, Integer>(this, InventoryWindow.inventorySortingOrder, true, 35, null) {
 			@Override
 			protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				HashMap<ListingMenuItem<Item>, Integer> newHashMap = buildMap(container);

@@ -59,6 +59,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.InfoPopup;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
+import bloodandmithril.ui.components.panel.TextInputFieldPanel;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
@@ -99,6 +100,26 @@ public class InventoryWindow extends Window implements Refreshable {
 			return o1.getSingular(false).compareTo(o2.getSingular(false));
 		}
 	};
+
+	/** The text search predicate */
+	private String searchString = "";
+	private final Predicate<Item> textSearch = new Predicate<Item>() {
+		@Override
+		public boolean apply(Item input) {
+			String[] split = input.getSingular(true).toUpperCase().split(" ");
+			String upperCase = searchString.toUpperCase();
+			for (String s : split) {
+				if (s.startsWith(upperCase)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+	};
+
+	/** Input for text searching */
+	private final TextInputFieldPanel textInput = new TextInputFieldPanel(this, "");
 
 	/**
 	 * Overloaded constructor - with default colors
@@ -141,7 +162,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 		return new ScrollableListingPanel<Button, String>(parent, (b1, b2) -> {
 			return b1.text.call().compareTo(b2.text.call());
-		}, false, 0) {
+		}, false, 0, null) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<Button>, String> item) {
 				return "";
@@ -340,6 +361,23 @@ public class InventoryWindow extends Window implements Refreshable {
 
 		// Render the weight indication text
 		renderCapacityIndicationText(host, this, 6, -height, "", "");
+
+		// Render the text search
+		textInput.x = x + 6;
+		textInput.y = y - height + 24;
+		textInput.width = 160;
+		textInput.height = 20;
+		textInput.render();
+	}
+
+
+	@Override
+	public boolean keyPressed(int keyCode) {
+		boolean keyPressed = textInput.keyPressed(keyCode);
+		this.searchString = textInput.getInputText();
+		refresh();
+
+		return super.keyPressed(keyCode) || keyPressed;
 	}
 
 
@@ -389,7 +427,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		populateList(nonEquippedItems, false);
 
 		if (newPanels) {
-			inventoryListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder, true, 35) {
+			inventoryListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder, true, 35, textSearch) {
 				@Override
 				protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 					listings.add(nonEquippedItemsToDisplay);
@@ -411,7 +449,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				}
 			};
 
-			equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder, false, 35) {
+			equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder, false, 35, null) {
 				@Override
 				protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 					listings.add(equippedItemsToDisplay);

@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -18,11 +23,6 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Fonts;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
 
 /**
  * Panel to display required materials
@@ -48,7 +48,8 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 				}
 			},
 			false,
-			35
+			35,
+			null
 		);
 		this.materialsContainer = materialsContainer;
 		this.requiredMaterials = requiredMaterials;

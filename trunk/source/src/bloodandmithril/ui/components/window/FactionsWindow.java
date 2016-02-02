@@ -9,6 +9,12 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.badlogic.gdx.graphics.Color;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -22,12 +28,6 @@ import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.graphics.Color;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * Window that displays factions
@@ -45,7 +45,7 @@ public class FactionsWindow extends Window {
 	public FactionsWindow(int length, int height, boolean active, int minLength, int minHeight) {
 		super(length, height, "Factions", active, minLength, minHeight, true, false, true);
 
-		factionsPanel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35) {
+		factionsPanel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35, null) {
 
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {

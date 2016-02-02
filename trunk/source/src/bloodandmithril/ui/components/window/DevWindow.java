@@ -94,7 +94,7 @@ public class DevWindow extends Window {
 		super(length, height, "Developer", active, 500, 300, false, true, true);
 		Wiring.injector().injectMembers(this);
 
-		panel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35) {
+		panel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35, null) {
 			@Override
 			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
 				return "";
@@ -197,19 +197,19 @@ public class DevWindow extends Window {
 			for (int i = 0; i < 20; i++) {
 				Domain.getActiveWorld().getClientParticles().add(
 					new RandomParticle(
-						BloodAndMithrilClient.getMouseWorldCoords(), 
-						new Vector2(), 
-						Color.WHITE, 
-						Color.CYAN, 
-						2f, 
-						Domain.getActiveWorldId(), 
-						4f, 
-						MovementMode.EMBER, 
-						Depth.FOREGROUND, 
-						1000 + Util.getRandom().nextInt(2000), 
+						BloodAndMithrilClient.getMouseWorldCoords(),
+						new Vector2(),
+						Color.WHITE,
+						Color.CYAN,
+						2f,
+						Domain.getActiveWorldId(),
+						4f,
+						MovementMode.EMBER,
+						Depth.FOREGROUND,
+						1000 + Util.getRandom().nextInt(2000),
 						() -> {
 							return new Vector2(150, 0).rotate(Util.getRandom().nextFloat() * 360f);
-						}, 
+						},
 						new RepeatingCountdown(10)
 					)
 				);

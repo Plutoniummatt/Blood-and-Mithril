@@ -297,7 +297,8 @@ public class NewGameWindow extends Window {
 					}
 				},
 				false,
-				0
+				0,
+				null
 			) {
 
 				@Override
@@ -495,7 +496,8 @@ public class NewGameWindow extends Window {
 					}
 				},
 				false,
-				0
+				0,
+				null
 			) {
 				@Override
 				protected String getExtraString(Entry<ListingMenuItem<Individual>, String> item) {
@@ -531,7 +533,8 @@ public class NewGameWindow extends Window {
 					}
 				},
 				false,
-				0
+				0,
+				null
 			) {
 				@Override
 				protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Proficiency>, String> item) {
