@@ -53,10 +53,11 @@ public class TradeService {
 		// ---------
 		// The minimum trade skill required for the trade to work, would be the lowest skill level that makes the effective
 		// value greater or equal to 400g, in this case, 80.
-		float proposerEffectiveValue = (Proficiency.getRatioToMax(proposer.getProficiencies().getProficiency(Trading.class).getLevel()) + 1f)/2f * proposerActualValue;
+		float radioToMax = Proficiency.getRatioToMax(proposer.getProficiencies().getProficiency(Trading.class).getLevel());
+		float proposerEffectiveValue = (radioToMax  + 1f) /2f * proposerActualValue;
 		float proposeeEffectiveValue = proposeeActualValue;
 
-		if (proposerEffectiveValue > proposeeEffectiveValue) {
+		if (proposerEffectiveValue >= proposeeEffectiveValue) {
 			return true;
 		} else {
 			return false;

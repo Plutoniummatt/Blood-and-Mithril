@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.character.proficiency.proficiencies.Cooking;
 import bloodandmithril.character.proficiency.proficiencies.Smithing;
 import bloodandmithril.character.proficiency.proficiencies.Trading;
 import bloodandmithril.core.Copyright;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * Class representing the proficiencies of an individual
