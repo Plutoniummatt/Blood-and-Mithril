@@ -34,6 +34,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.Window;
+import bloodandmithril.util.Function;
 import bloodandmithril.util.Util.Colors;
 
 /**
@@ -168,9 +169,10 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 					clicked = true;
 				}
 				if (item.getKey().menu != null && item.getKey().button.isMouseOver()) {
-					item.getKey().menu.x = getMouseScreenX();
-					item.getKey().menu.y = getMouseScreenY();
-					copy.add(item.getKey().menu);
+					ContextMenu newMenu = item.getKey().menu.call();
+					newMenu.x = getMouseScreenX();
+					newMenu.y = getMouseScreenY();
+					copy.add(newMenu);
 				}
 				if (clicked) {
 					break;
@@ -390,7 +392,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		/**
 		 * Constructor
 		 */
-		public ListingMenuItem(T t, Button button, ContextMenu menu) {
+		public ListingMenuItem(T t, Button button, Function<ContextMenu> menu) {
 			super(button, menu);
 			this.t = t;
 		}

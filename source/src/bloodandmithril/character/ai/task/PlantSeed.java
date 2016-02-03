@@ -265,7 +265,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 					Color.ORANGE,
 					Color.GREEN,
 					Color.GRAY,
-					chooseLocationMenu((SeedItem) item, host, routine)
+					() -> { return chooseLocationMenu((SeedItem) item, host, routine);}
 				)
 			);
 		}

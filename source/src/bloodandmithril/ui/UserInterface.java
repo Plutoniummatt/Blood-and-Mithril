@@ -865,7 +865,9 @@ public class UserInterface {
 							singleIndividualSelected ? Color.WHITE : Colors.UI_DARK_GRAY,
 							singleIndividualSelected ? Color.GREEN : Colors.UI_DARK_GRAY,
 							singleIndividualSelected ? Color.WHITE : Colors.UI_DARK_GRAY,
-							new ContextMenu(screenX, screenY, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+							() -> {
+								return new ContextMenu(screenX, screenY, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
+							},
 							() -> {
 								return !singleIndividualSelected;
 							}
@@ -1494,7 +1496,7 @@ public class UserInterface {
 						Color.WHITE,
 						indi.getToolTipTextColor(),
 						indi.getToolTipTextColor(),
-						secondaryMenu
+						() -> { return secondaryMenu; }
 					)
 				);
 			}
@@ -1514,7 +1516,7 @@ public class UserInterface {
 						prop.getContextMenuColor(),
 						Color.GREEN,
 						Color.GRAY,
-						secondaryMenu
+						() -> { return secondaryMenu; }
 					)
 				);
 			}
@@ -1534,7 +1536,7 @@ public class UserInterface {
 						Color.ORANGE,
 						Color.GREEN,
 						Color.GRAY,
-						secondaryMenu
+						() -> { return secondaryMenu; }
 					)
 				);
 			}

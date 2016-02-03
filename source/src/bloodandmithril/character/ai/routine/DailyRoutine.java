@@ -85,7 +85,7 @@ public final class DailyRoutine extends Routine {
 	public final boolean uponCompletion() {
 		if (task != null) {
 			AITask toNullify = task;
-			
+
 			if (toNullify.uponCompletion()) {
 				return true;
 			} else {
@@ -210,7 +210,7 @@ public final class DailyRoutine extends Routine {
 							Color.ORANGE,
 							Color.GREEN,
 							Color.GRAY,
-							Wiring.injector().getInstance(routineClass).getDailyRoutineContextMenu(getHost(), DailyRoutine.this)
+							() -> { return Wiring.injector().getInstance(routineClass).getDailyRoutineContextMenu(getHost(), DailyRoutine.this);}
 						)
 					);
 				}
@@ -229,7 +229,7 @@ public final class DailyRoutine extends Routine {
 
 			defaultFont.drawWrapped(
 				getGraphics().getSpriteBatch(),
-				routineTime == null ? "Not configured" : ("Routine occurs daily between " + getTimeString(routineTime) + " and " + getTimeString(routineTime + toleranceTime)),
+				routineTime == null ? "Not configured" : "Routine occurs daily between " + getTimeString(routineTime) + " and " + getTimeString(routineTime + toleranceTime),
 				x + 10,
 				y - 27,
 				width - 5
@@ -243,7 +243,7 @@ public final class DailyRoutine extends Routine {
 				}
 				defaultFont.drawWrapped(
 					getGraphics().getSpriteBatch(),
-					"Next scheduled occurrence: " + (routineTime == null ? "N/A" : (getTimeString(routineTime) + " on " + epoch.getDateString())),
+					"Next scheduled occurrence: " + (routineTime == null ? "N/A" : getTimeString(routineTime) + " on " + epoch.getDateString()),
 					x + 10,
 					y - 47,
 					width - 5
@@ -253,7 +253,7 @@ public final class DailyRoutine extends Routine {
 				copy.incrementDay();
 				defaultFont.drawWrapped(
 					getGraphics().getSpriteBatch(),
-					"Next scheduled occurrence: " + (routineTime == null ? "N/A" : (getTimeString(routineTime) + " on " + copy.getDateString())),
+					"Next scheduled occurrence: " + (routineTime == null ? "N/A" : getTimeString(routineTime) + " on " + copy.getDateString()),
 					x + 10,
 					y - 47,
 					width - 5

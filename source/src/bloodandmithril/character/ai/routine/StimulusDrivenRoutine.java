@@ -190,7 +190,7 @@ public final class StimulusDrivenRoutine extends Routine {
 							Color.ORANGE,
 							Color.GREEN,
 							Color.GRAY,
-							Wiring.injector().getInstance(routineTaskClass).getStimulusDrivenRoutineContextMenu(getHost(), StimulusDrivenRoutine.this)
+							() -> { return Wiring.injector().getInstance(routineTaskClass).getStimulusDrivenRoutineContextMenu(getHost(), StimulusDrivenRoutine.this);}
 						)
 					);
 				}

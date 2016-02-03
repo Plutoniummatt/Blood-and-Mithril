@@ -2,6 +2,11 @@ package bloodandmithril.prop.furniture;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -22,10 +27,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 public class MedievalWallTorchProp extends Furniture implements Lightable {
 	private static final long serialVersionUID = -7830128026417134792L;
@@ -117,7 +118,7 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.WHITE,
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GREEN,
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GRAY,
-			new ContextMenu(0, 0,
+			() -> { return new ContextMenu(0, 0,
 				true,
 				new MenuItem(
 					"You have multiple individuals selected",
@@ -127,7 +128,7 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 					Colors.UI_GRAY,
 					null
 				)
-			),
+			);},
 			() -> {
 				return Domain.getSelectedIndividuals().size() > 1;
 			}

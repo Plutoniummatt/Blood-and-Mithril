@@ -550,12 +550,12 @@ public class InventoryWindow extends Window implements Refreshable {
 
 			if (eq) {
 				this.equippedItemsToDisplay.put(
-					new ListingMenuItem<Item>(item.getKey(), equippedButton, menuToAddEquipped),
+					new ListingMenuItem<Item>(item.getKey(), equippedButton, () -> { return menuToAddEquipped;}),
 					item.getValue()
 				);
 			} else {
 				this.nonEquippedItemsToDisplay.put(
-					new ListingMenuItem<Item>(item.getKey(), inventoryButton, menuToAddUnequipped),
+					new ListingMenuItem<Item>(item.getKey(), inventoryButton, () -> { return menuToAddUnequipped;}),
 					item.getValue()
 				);
 			}
@@ -750,12 +750,12 @@ public class InventoryWindow extends Window implements Refreshable {
 					Colors.UI_GRAY,
 					Color.GREEN,
 					Color.WHITE,
-					new ContextMenu(
+					() -> { return new ContextMenu(
 						getMouseScreenX(),
 						getMouseScreenY(),
 						true,
 						getAmmo((RangedWeapon) item)
-					)
+					);}
 				)
 			);
 		}

@@ -131,7 +131,7 @@ public abstract class Construction extends Prop implements Container {
 		if (canDeconstruct()) {
 			if (constructionProgress <= 0f) {
 				Domain.getWorld(getWorldId()).props().removeProp(id);
-				
+
 				if (finishedConstruction) {
 					for (Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
 						for (int i = entry.getValue(); i > 0; i--) {
@@ -195,7 +195,9 @@ public abstract class Construction extends Prop implements Container {
 				Domain.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
 				Domain.getSelectedIndividuals().size() == 1 ? Color.GREEN : Colors.UI_DARK_GRAY,
 				Domain.getSelectedIndividuals().size() == 1 ? Color.GRAY : Colors.UI_DARK_GRAY,
-				new ContextMenu(0, 0, true, new MenuItem("You must select a single individual", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+				() -> {
+					return new ContextMenu(0, 0, true, new MenuItem("You must select a single individual", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
+				},
 				() -> {
 					return Domain.getSelectedIndividuals().size() != 1;
 				}
@@ -224,7 +226,9 @@ public abstract class Construction extends Prop implements Container {
 				Domain.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
 				Domain.getSelectedIndividuals().size() == 1 ? Color.GREEN : Colors.UI_DARK_GRAY,
 				Domain.getSelectedIndividuals().size() == 1 ? Color.GRAY : Colors.UI_DARK_GRAY,
-				new ContextMenu(0, 0, true, new MenuItem("You must select a single individual", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+				() -> {
+					return new ContextMenu(0, 0, true, new MenuItem("You must select a single individual", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
+				},
 				() -> {
 					return Domain.getSelectedIndividuals().size() != 1;
 				}
@@ -240,7 +244,9 @@ public abstract class Construction extends Prop implements Container {
 				getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.WHITE,
 				getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.GREEN,
 				getConstructionProgress() != 0f ? Colors.UI_DARK_GRAY : Color.GRAY,
-				new ContextMenu(0, 0, true, new MenuItem("Construction has already been started", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+				() -> {
+					return new ContextMenu(0, 0, true, new MenuItem("Construction has already been started", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
+				},
 				() -> {
 					return getConstructionProgress() != 0f;
 				}

@@ -38,6 +38,7 @@ import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.ui.components.window.EditAIRoutineWindow;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util.Colors;
@@ -71,7 +72,7 @@ public final class EntityVisibleRoutine extends Routine {
 		if (identificationFunction == null) {
 			return false;
 		}
-		
+
 		Individual individual = Domain.getIndividual(hostId.getId());
 		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
 		for (Visible v : observed) {
@@ -91,7 +92,7 @@ public final class EntityVisibleRoutine extends Routine {
 		if (identificationFunction == null) {
 			return null;
 		}
-		
+
 		Individual individual = Domain.getIndividual(hostId.getId());
 		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
 		for (Visible v : observed) {
@@ -309,7 +310,7 @@ public final class EntityVisibleRoutine extends Routine {
 							Color.ORANGE,
 							Color.GREEN,
 							Color.GRAY,
-							Wiring.injector().getInstance(routineClass).getEntityVisibleRoutineContextMenu(getHost(), EntityVisibleRoutine.this)
+							() -> { return Wiring.injector().getInstance(routineClass).getEntityVisibleRoutineContextMenu(getHost(), EntityVisibleRoutine.this);}
 						)
 					);
 				}
@@ -323,7 +324,7 @@ public final class EntityVisibleRoutine extends Routine {
 				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
 				Wrapper<Behaviour> args = new Wrapper<>(null);
-				ContextMenu deriveIndividualTypeContextMenu = deriveIndividualTypeContextMenu(args);
+				Function<ContextMenu> deriveIndividualTypeContextMenu = () -> { return deriveIndividualTypeContextMenu(args);};
 
 				menu.addMenuItem(
 					new MenuItem(
@@ -332,9 +333,9 @@ public final class EntityVisibleRoutine extends Routine {
 						Color.ORANGE,
 						Color.GREEN,
 						Color.GRAY,
-						new ContextMenu(getMouseScreenX(), getMouseScreenY(), false,
+						() -> { return new ContextMenu(getMouseScreenX(), getMouseScreenY(), false,
 							new MenuItem("Individual", () -> {}, Color.ORANGE, Color.GREEN, Color.GRAY,
-								new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
+								() -> { return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
 									new MenuItem("Any", () -> {}, Color.MAGENTA, Color.GREEN, Color.GRAY, deriveIndividualTypeContextMenu),
 									new MenuItem("Friendly", () -> {
 										args.t = Behaviour.FRIENDLY;
@@ -345,15 +346,15 @@ public final class EntityVisibleRoutine extends Routine {
 									new MenuItem("Neutral", () -> {
 										args.t = Behaviour.NEUTRAL;
 									}, Color.ORANGE, Color.GREEN, Color.GRAY, deriveIndividualTypeContextMenu)
-								)
+								);}
 							),
 							new MenuItem("Prop", () -> {}, Color.ORANGE, Color.GREEN, Color.GRAY,
-								new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
+								() -> { return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
 									derivePropTypeContextMenu()
-								)
+								);}
 							),
 							new MenuItem("Item", () -> {}, Color.ORANGE, Color.GREEN, Color.GRAY,
-								new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
+								() -> { return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
 									new MenuItem(
 										"Any Item",
 										() -> {
@@ -365,9 +366,9 @@ public final class EntityVisibleRoutine extends Routine {
 										Color.GRAY,
 										null
 									)
-								)
+								);}
 							)
-						)
+						);}
 					)
 				);
 				copy.add(menu);
@@ -468,7 +469,7 @@ public final class EntityVisibleRoutine extends Routine {
 						Color.ORANGE,
 						Color.GREEN,
 						Color.GRAY,
-						secondaryMenu
+						() -> { return secondaryMenu;}
 					)
 				);
 			}

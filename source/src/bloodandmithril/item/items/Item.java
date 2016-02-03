@@ -470,14 +470,14 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
-			new ContextMenu(0, 0, true, new MenuItem(
+			() -> { return new ContextMenu(0, 0, true, new MenuItem(
 				"You have multiple individuals selected",
 				() -> {},
 				Colors.UI_DARK_GRAY,
 				Colors.UI_DARK_GRAY,
 				Colors.UI_DARK_GRAY,
 				null
-			)),
+			));},
 			() -> {return Domain.getSelectedIndividuals().size() > 1;}
 		);
 

@@ -353,7 +353,7 @@ public class DevWindow extends Window {
 					Color.GREEN,
 					UIRef.BL
 				),
-				new ContextMenu(
+				() -> { return new ContextMenu(
 					getMouseScreenX(),
 					getMouseScreenY(),
 					true,
@@ -511,7 +511,7 @@ public class DevWindow extends Window {
 						Color.GREEN,
 						null
 					)
-				)
+				);}
 			),
 			0
 		);

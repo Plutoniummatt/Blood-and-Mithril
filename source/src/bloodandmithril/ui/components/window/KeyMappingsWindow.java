@@ -215,7 +215,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 						Color.WHITE,
 						UIRef.BL
 					),
-					contextMenu
+					() -> { return contextMenu;}
 				),
 				Integer.toString(mappedKey.keyCode)
 			);
@@ -264,7 +264,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 						Color.WHITE,
 						UIRef.BL
 					),
-					contextMenu
+					() -> { return contextMenu;}
 				),
 				Integer.toString(mappedKey.keyCode)
 			);

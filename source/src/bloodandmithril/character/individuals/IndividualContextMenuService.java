@@ -65,7 +65,7 @@ public class IndividualContextMenuService {
 			Color.ORANGE,
 			indi.getToolTipTextColor(),
 			Color.GRAY,
-			actionMenu
+			() -> { return actionMenu; }
 		);
 
 		final ContextMenu interactMenu = interactMenu(indi);
@@ -78,7 +78,7 @@ public class IndividualContextMenuService {
 			Color.GREEN,
 			Colors.UI_DARK_GREEN,
 			Color.GRAY,
-			interactMenu
+			() -> { return interactMenu; }
 		);
 
 		final ContextMenu editMenu = editSubMenu(indi);
@@ -91,7 +91,7 @@ public class IndividualContextMenuService {
 			Color.ORANGE,
 			indi.getToolTipTextColor(),
 			Color.GRAY,
-			editMenu
+			() -> { return editMenu; }
 		);
 
 		ContextMenu contextMenuToReturn = new ContextMenu(0, 0, true);
@@ -293,7 +293,7 @@ public class IndividualContextMenuService {
 			Color.WHITE,
 			individual.getToolTipTextColor(),
 			Color.GRAY,
-			new ContextMenu(0, 0,
+			() -> { return new ContextMenu(0, 0,
 				true,
 				new MenuItem(
 					"You have multiple individuals selected",
@@ -303,7 +303,7 @@ public class IndividualContextMenuService {
 					Colors.UI_GRAY,
 					null
 				)
-			),
+			);},
 			() -> {
 				return Domain.getSelectedIndividuals().size() > 1;
 			}
