@@ -126,7 +126,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			title,
 			active,
 			600,
-			300,
+			450,
 			true,
 			true,
 			true
@@ -351,15 +351,15 @@ public class InventoryWindow extends Window implements Refreshable {
 			equippedListingPanel.render();
 		}
 
-		// Render the weight indication text
-		renderCapacityIndicationText(host, this, 6, -height, "", "");
-
 		// Render the text search
 		textInput.x = x + 6;
-		textInput.y = y - height + 24;
+		textInput.y = y - 320;
 		textInput.width = 160;
 		textInput.height = 20;
 		textInput.render();
+
+		// Render the weight indication text
+		renderCapacityIndicationText(host, this, 6, -height, "", "");
 	}
 
 
