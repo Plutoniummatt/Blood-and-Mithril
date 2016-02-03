@@ -5,6 +5,10 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
@@ -27,10 +31,6 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Maps;
 
 /**
  * A campfire, provides light, warm, and something to cook with.
@@ -159,7 +159,7 @@ public class Campfire extends CraftingStation implements Lightable {
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.WHITE,
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GREEN,
 			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GRAY,
-			new ContextMenu(0, 0,
+			() -> { return new ContextMenu(0, 0,
 				true,
 				new MenuItem(
 					"You have multiple individuals selected",
@@ -169,7 +169,7 @@ public class Campfire extends CraftingStation implements Lightable {
 					Colors.UI_GRAY,
 					null
 				)
-			),
+			);},
 			() -> {
 				return Domain.getSelectedIndividuals().size() > 1;
 			}

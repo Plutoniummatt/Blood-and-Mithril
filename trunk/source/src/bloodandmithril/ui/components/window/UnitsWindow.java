@@ -83,7 +83,7 @@ public class UnitsWindow extends Window implements Refreshable {
 							individual.isAlive() ? Color.GREEN : Color.MAROON,
 							UIRef.BR
 						),
-						individualContextMenuService.getContextMenu(individual).addFirst(
+						() -> { return individualContextMenuService.getContextMenu(individual).addFirst(
 							new ContextMenu.MenuItem(
 								"Go to",
 								() -> {
@@ -95,7 +95,7 @@ public class UnitsWindow extends Window implements Refreshable {
 								Color.ORANGE,
 								null
 							)
-						)
+						);}
 					),
 					""
 				);

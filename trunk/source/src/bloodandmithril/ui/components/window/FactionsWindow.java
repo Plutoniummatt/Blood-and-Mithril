@@ -276,7 +276,9 @@ public class FactionsWindow extends Window {
 					Color.WHITE,
 					UIRef.BL
 				),
-				faction.controllable ? menu : null
+				() -> {
+					return faction.controllable ? menu : null;
+				}
 		    );
 			map.put(menuItem, faction.factionId);
 		}

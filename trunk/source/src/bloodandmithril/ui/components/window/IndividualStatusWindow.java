@@ -277,7 +277,7 @@ public class IndividualStatusWindow extends Window {
 						Color.GRAY,
 						UIRef.BM
 					),
-					new ContextMenu(
+					() -> { return new ContextMenu(
 						BloodAndMithrilClient.getMouseScreenX(),
 						BloodAndMithrilClient.getMouseScreenY(),
 						true,
@@ -302,7 +302,7 @@ public class IndividualStatusWindow extends Window {
 							Color.WHITE,
 							null
 						)
-					)
+					);}
 				),
 				0
 			);

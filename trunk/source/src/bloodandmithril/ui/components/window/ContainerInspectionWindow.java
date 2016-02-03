@@ -115,12 +115,12 @@ public class ContainerInspectionWindow extends Window implements Refreshable {
 						Color.GREEN,
 						UIRef.BL
 					),
-					new ContextMenu(
+					() -> { return new ContextMenu(
 						getMouseScreenX(),
 						getMouseScreenY(),
 						true,
 						showInfo
-					)
+					);}
 				),
 				entry.getValue()
 			);

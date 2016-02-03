@@ -138,7 +138,7 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 						Color.WHITE,
 						UIRef.BL
 					),
-					new ContextMenu(
+					() -> { return new ContextMenu(
 						0, 0,
 						true,
 						new MenuItem(
@@ -151,7 +151,7 @@ public class RequiredMaterialsPanel extends ScrollableListingPanel<Item, String>
 							Color.WHITE,
 							null
 						)
-					)
+					);}
 				),
 				entry.getValue()
 			);

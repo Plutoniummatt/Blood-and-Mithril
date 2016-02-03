@@ -9,6 +9,8 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -16,8 +18,6 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.JITTask;
 import bloodandmithril.util.Task;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * A context menu.
@@ -128,16 +128,18 @@ public class ContextMenu extends Component {
 			}
 			if (item.menu != null && item.button.isMouseOver()) {
 				if (item.secondaryContextMenuCondition == null) {
-					item.menu.x = getMouseScreenX();
-					item.menu.y = getMouseScreenY();
-					copy.add(item.menu);
-					secondary = item.menu;
+					ContextMenu newMenu = item.menu.call();
+					newMenu.x = getMouseScreenX();
+					newMenu.y = getMouseScreenY();
+					copy.add(newMenu);
+					secondary = newMenu;
 				} else {
 					if (item.secondaryContextMenuCondition.call()) {
-						item.menu.x = getMouseScreenX();
-						item.menu.y = getMouseScreenY();
-						copy.add(item.menu);
-						secondary = item.menu;
+						ContextMenu newMenu = item.menu.call();
+						newMenu.x = getMouseScreenX();
+						newMenu.y = getMouseScreenY();
+						copy.add(newMenu);
+						secondary = newMenu;
 					} else {
 						copy.clear();
 					}
@@ -177,20 +179,20 @@ public class ContextMenu extends Component {
 	 */
 	public static class MenuItem {
 
-		public ContextMenu menu;
+		public Function<ContextMenu> menu;
 		public Button button;
 		public Function<Boolean> secondaryContextMenuCondition;
 
 
 		/** Constructor */
-		public MenuItem(Button button, ContextMenu menu) {
+		public MenuItem(Button button, Function<ContextMenu> menu) {
 			this.button = button;
 			this.menu = menu;
 		}
 
 
 		/** Overloaded Constructor */
-		public MenuItem(String text, Task task, Color idle, Color over, Color down, ContextMenu menu) {
+		public MenuItem(String text, Task task, Color idle, Color over, Color down, Function<ContextMenu> menu) {
 			this.menu = menu;
 			this.button = new Button(
 				text,
@@ -209,7 +211,7 @@ public class ContextMenu extends Component {
 
 
 		/** Overloaded Constructor */
-		public MenuItem(String text, JITTask task, Color idle, Color over, Color down, ContextMenu menu) {
+		public MenuItem(String text, JITTask task, Color idle, Color over, Color down, Function<ContextMenu> menu) {
 			this.menu = menu;
 			this.button = new Button(
 				text,
@@ -228,7 +230,7 @@ public class ContextMenu extends Component {
 
 
 		/** Overloaded Constructor */
-		public MenuItem(String text, Task task, Color idle, Color over, Color down, ContextMenu menu, Function<Boolean> secondaryContextMenuCondition) {
+		public MenuItem(String text, Task task, Color idle, Color over, Color down, Function<ContextMenu> menu, Function<Boolean> secondaryContextMenuCondition) {
 			this.menu = menu;
 			this.secondaryContextMenuCondition = secondaryContextMenuCondition;
 			this.button = new Button(

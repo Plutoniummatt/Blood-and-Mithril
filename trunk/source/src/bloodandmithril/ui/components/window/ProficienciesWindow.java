@@ -131,12 +131,12 @@ public class ProficienciesWindow extends Window {
 						Color.WHITE,
 						UIRef.BL
 					),
-					new ContextMenu(
+					() -> { return new ContextMenu(
 						getMouseScreenX(),
 						getMouseScreenY(),
 						true ,
 						showInfo
-					)
+					);}
 				),
 				0
 			);

@@ -1,12 +1,12 @@
 package bloodandmithril.item.items.equipment;
 
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * This interface allows {@link Item}s that implement it to be rendered
@@ -35,7 +35,7 @@ public abstract class Equipable extends Item implements Affixed {
 	/** Renders this {@link Equipable} */
 	public abstract void render(Vector2 position, float angle, boolean flipX);
 
-	/** Processes particle effects */
+	/** Processes particle effects, these effects are rendered together with an individual */
 	public abstract void particleEffects(Vector2 position, float angle, boolean flipX);
 
 	/** @return The animation index where this {@link Equipable} will be rendered immediately before */
@@ -43,13 +43,13 @@ public abstract class Equipable extends Item implements Affixed {
 
 	/** Whether this {@link Equipable} requies both the {@link EquipmentSlot#MAINHAND} and {@link EquipmentSlot#OFFHAND}*/
 	public abstract boolean twoHand();
-	
+
 	/** Updates this equipable when equipped */
 	public abstract void update(Equipper equipper, float delta);
-	
+
 	/** Called when unequipped */
 	public abstract void onUnequip(Equipper equipper);
-	
+
 	/** Called when equipped */
 	public abstract void onEquip(Equipper equipper);
 }

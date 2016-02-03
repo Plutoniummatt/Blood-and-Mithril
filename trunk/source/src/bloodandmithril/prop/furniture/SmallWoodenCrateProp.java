@@ -120,7 +120,9 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
 					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
 					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
-					new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+					() -> {
+						return new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
+					},
 					() -> {
 						return Domain.getSelectedIndividuals().size() > 1;
 					}
@@ -146,7 +148,9 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
 						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
 						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
-						new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+						() -> {
+							return new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
+						},
 						() -> {
 							return Domain.getSelectedIndividuals().size() > 1;
 						}
@@ -175,7 +179,9 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
 					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
 					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
-					new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null)),
+					() -> { return
+						new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
+					},
 					() -> {
 						return Domain.getSelectedIndividuals().size() > 1;
 					}
@@ -209,22 +215,22 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 		if (Util.roll(0.95f)) {
 			return;
 		}
-		
+
 		Domain.getWorld(getWorldId()).getClientParticles().add(
 			new RandomParticle(
-				position.cpy().add(0, 10), 
-				new Vector2(), 
-				Color.WHITE, 
-				Color.RED, 
-				2f, 
-				Domain.getActiveWorldId(), 
-				4f, 
-				MovementMode.EMBER, 
-				Depth.FOREGROUND, 
-				1000 + Util.getRandom().nextInt(2000), 
+				position.cpy().add(0, 10),
+				new Vector2(),
+				Color.WHITE,
+				Color.RED,
+				2f,
+				Domain.getActiveWorldId(),
+				4f,
+				MovementMode.EMBER,
+				Depth.FOREGROUND,
+				1000 + Util.getRandom().nextInt(2000),
 				() -> {
 					return new Vector2(150, 0).rotate(Util.getRandom().nextFloat() * 360f);
-				}, 
+				},
 				new RepeatingCountdown(10)
 			)
 		);

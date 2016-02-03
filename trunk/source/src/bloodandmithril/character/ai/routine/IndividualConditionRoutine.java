@@ -213,7 +213,7 @@ public final class IndividualConditionRoutine extends Routine {
 							Color.ORANGE,
 							Color.GREEN,
 							Color.GRAY,
-							Wiring.injector().getInstance(routineClass).getIndividualConditionRoutineContextMenu(getHost(), IndividualConditionRoutine.this)
+							() -> { return Wiring.injector().getInstance(routineClass).getIndividualConditionRoutineContextMenu(getHost(), IndividualConditionRoutine.this);}
 						)
 					);
 				}
@@ -232,7 +232,7 @@ public final class IndividualConditionRoutine extends Routine {
 						Color.ORANGE,
 						Color.GREEN,
 						Color.GRAY,
-						new ContextMenu(0, 0, true,
+						() -> { return new ContextMenu(0, 0, true,
 							new MenuItem("Less than %", () -> {
 								UserInterface.addLayeredComponent(
 									new TextInputWindow(300, 100, "Input %", 200, 100, args -> {
@@ -263,7 +263,7 @@ public final class IndividualConditionRoutine extends Routine {
 									}, "Confirm", true, "")
 								);
 							}, Color.ORANGE, Color.GREEN, Color.GRAY, null)
-						)
+						);}
 					)
 				);
 
@@ -274,7 +274,7 @@ public final class IndividualConditionRoutine extends Routine {
 					Color.ORANGE,
 					Color.GREEN,
 					Color.GRAY,
-					getConditionsSubMenu()
+					() -> { return getConditionsSubMenu();}
 				));
 
 				parent.setActive(false);

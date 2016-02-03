@@ -372,13 +372,13 @@ public class NewGameWindow extends Window {
 									Color.GREEN,
 									UIRef.BL
 								),
-								new ContextMenu(
+								() -> { return new ContextMenu(
 									getMouseScreenX(),
 									getMouseScreenY(),
 									true,
 									select,
 									inspect
-								)
+								);}
 							),
 							""
 						);
