@@ -106,15 +106,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	private final Predicate<Item> textSearch = new Predicate<Item>() {
 		@Override
 		public boolean apply(Item input) {
-			String[] split = input.getSingular(true).toUpperCase().split(" ");
-			String upperCase = searchString.toUpperCase();
-			for (String s : split) {
-				if (s.startsWith(upperCase)) {
-					return true;
-				}
-			}
-
-			return false;
+			return input.getSingular(true).toUpperCase().contains(searchString.toUpperCase());
 		}
 	};
 
