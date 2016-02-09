@@ -28,6 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.characters.Elf;
@@ -39,12 +45,6 @@ import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.SpacialConfiguration;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.google.common.collect.Maps;
 
 /**
  * Responsible for the rendering of {@link Elf}
@@ -83,13 +83,13 @@ public class ElfRenderer extends IndividualRenderer<Elf> {
 		AnimationSwitcher walk4 = new AnimationSwitcher();
 		AnimationSwitcher walk5 = new AnimationSwitcher();
 		AnimationSwitcher walk6 = new AnimationSwitcher();
-		walk1.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 112, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// HEAD
-		walk2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 0, 64, 112, 10, 0.13f, PlayMode.LOOP));        	// BACK ARM
-		walk2.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 448, 64, 112, 10, 0.13f, PlayMode.LOOP));       										// BACK ARM
-		walk3.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 672, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// BACK LEG
-		walk4.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 224, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// TORSO
-		walk5.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 560, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// FRONT LEG
-		walk6.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 336, 64, 112, 10, 0.13f, PlayMode.LOOP));        										// FRONT ARM
+		walk1.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 112, 64, 112, 10, 0.052f, PlayMode.LOOP));        										// HEAD
+		walk2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 0, 64, 112, 10, 0.052f, PlayMode.LOOP));        	// BACK ARM
+		walk2.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 448, 64, 112, 10, 0.052f, PlayMode.LOOP));       										// BACK ARM
+		walk3.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 672, 64, 112, 10, 0.052f, PlayMode.LOOP));        										// BACK LEG
+		walk4.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 224, 64, 112, 10, 0.052f, PlayMode.LOOP));        										// TORSO
+		walk5.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 560, 64, 112, 10, 0.052f, PlayMode.LOOP));        										// FRONT LEG
+		walk6.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 0, 336, 64, 112, 10, 0.052f, PlayMode.LOOP));        										// FRONT ARM
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> walkSequence = newArrayList(
 			wrap(walk1, server ? null : Shaders.filterIgnoreReplace),
@@ -174,13 +174,13 @@ public class ElfRenderer extends IndividualRenderer<Elf> {
 		AnimationSwitcher run4 = new AnimationSwitcher();
 		AnimationSwitcher run5 = new AnimationSwitcher();
 		AnimationSwitcher run6 = new AnimationSwitcher();
-		run1.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 112, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// HEAD
-		run2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 0, 64, 112, 8, 0.13f, PlayMode.LOOP));        	// BACK ARM
-		run2.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 448, 64, 112, 8, 0.13f, PlayMode.LOOP));       										// BACK ARM
-		run3.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 672, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// BACK LEG
-		run4.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 224, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// TORSO
-		run5.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 560, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// FRONT LEG
-		run6.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 336, 64, 112, 8, 0.13f, PlayMode.LOOP));        										// FRONT ARM
+		run1.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 112, 64, 112, 8, 0.052f, PlayMode.LOOP));        										// HEAD
+		run2.animations.put(individual -> {return ((Humanoid) individual).offHandEquipped();}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 0, 64, 112, 8, 0.052f, PlayMode.LOOP));        	// BACK ARM
+		run2.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 448, 64, 112, 8, 0.052f, PlayMode.LOOP));       										// BACK ARM
+		run3.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 672, 64, 112, 8, 0.052f, PlayMode.LOOP));        										// BACK LEG
+		run4.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 224, 64, 112, 8, 0.052f, PlayMode.LOOP));        										// TORSO
+		run5.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 560, 64, 112, 8, 0.052f, PlayMode.LOOP));        										// FRONT LEG
+		run6.animations.put(individual -> {return true;}, AnimationHelper.animation(WorldRenderer.individualTexture, 640, 336, 64, 112, 8, 0.052f, PlayMode.LOOP));        										// FRONT ARM
 
 		ArrayList<WrapperForTwo<AnimationSwitcher, ShaderProgram>> runSequence = newArrayList(
 			wrap(run1, server ? null : Shaders.filterIgnoreReplace),

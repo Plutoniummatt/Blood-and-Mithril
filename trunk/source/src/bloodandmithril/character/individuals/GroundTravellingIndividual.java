@@ -16,6 +16,10 @@ import static bloodandmithril.util.ComparisonUtil.obj;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
@@ -24,10 +28,6 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * An {@link Individual} that is grounded, moves on ground.
@@ -124,32 +124,35 @@ public abstract class GroundTravellingIndividual extends Individual {
 		try {
 			if (Math.abs(getState().velocity.y) < 5f) {
 
+				float walkSpeed = getWalkSpeed();
+				float runSpeed = getRunSpeed();
+				int accel = 2000;
 				if (!attacking && isCommandActive(getKeyMappings().moveLeft.keyCode) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 					if (isCommandActive(getKeyMappings().walk.keyCode)) {
-						if (getState().velocity.x > -getWalkSpeed()) {
-							getState().acceleration.x = -800;
+						if (getState().velocity.x > -walkSpeed) {
+							getState().acceleration.x = -accel;
 						} else {
-							getState().acceleration.x = 800;
+							getState().acceleration.x = accel;
 						}
 					} else {
-						if (getState().velocity.x > -getRunSpeed()) {
-							getState().acceleration.x = -800;
+						if (getState().velocity.x > -runSpeed) {
+							getState().acceleration.x = -accel;
 						} else {
-							getState().acceleration.x = 800;
+							getState().acceleration.x = accel;
 						}
 					}
 				} else if (!attacking && isCommandActive(getKeyMappings().moveRight.keyCode) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 					if (isCommandActive(getKeyMappings().walk.keyCode)) {
-						if (getState().velocity.x < getWalkSpeed()) {
-							getState().acceleration.x = 800;
+						if (getState().velocity.x < walkSpeed) {
+							getState().acceleration.x = accel;
 						} else {
-							getState().acceleration.x = -800;
+							getState().acceleration.x = -accel;
 						}
 					} else {
-						if (getState().velocity.x < getRunSpeed()) {
-							getState().acceleration.x = 800;
+						if (getState().velocity.x < runSpeed) {
+							getState().acceleration.x = accel;
 						} else {
-							getState().acceleration.x = -800;
+							getState().acceleration.x = -accel;
 						}
 					}
 				} else {

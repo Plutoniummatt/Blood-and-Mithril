@@ -51,7 +51,7 @@ public final class World implements Serializable {
 
 	/** Particles on this {@link World} */
 	private transient Collection<Particle> 						clientParticles			= new ConcurrentLinkedDeque<>();
-	
+
 	/** Particles on this {@link World}, this one is saved, and synchronized with server */
 	private ConcurrentHashMap<Long, Particle> 					serverParticles			= new ConcurrentHashMap<>();
 
@@ -125,8 +125,10 @@ public final class World implements Serializable {
 	public final void update() {
 		epoch.incrementTime(updateTick);
 
-		for (int individualId : individuals) {
-			IndividualUpdateService.update(Domain.getIndividual(individualId), updateTick);
+		for (int i = 5; i > 0; i--) {
+			for (int individualId : individuals) {
+				IndividualUpdateService.update(Domain.getIndividual(individualId), updateTick / 5f);
+			}
 		}
 
 		for (Prop prop : props().getProps()) {

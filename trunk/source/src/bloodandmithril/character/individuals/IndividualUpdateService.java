@@ -6,6 +6,9 @@ import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.Math.round;
+
+import com.google.common.collect.Sets;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.conditions.Condition;
@@ -21,8 +24,6 @@ import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
-import com.google.common.collect.Sets;
-
 /**
  * Service for updating individuals
  *
@@ -36,7 +37,7 @@ public class IndividualUpdateService {
 	 */
 	public static void update(Individual indi, float delta) {
 		float aiTaskDelay = 0.01f;
-		indi.setTravelIconTimer(indi.getTravelIconTimer() + 0.15f);
+		indi.setTravelIconTimer(indi.getTravelIconTimer() + delta * 10f);
 		indi.setSpeakTimer(indi.getSpeakTimer() - delta <= 0f ? 0f : indi.getSpeakTimer() - delta);
 
 		// If chunk has not yet been loaded, do not update
@@ -122,8 +123,8 @@ public class IndividualUpdateService {
 	private static void updateVitals(Individual indi, float delta) {
 		indi.heal(delta * indi.getState().healthRegen);
 
-		indi.decreaseHunger(indi.hungerDrain());
-		indi.decreaseThirst(indi.thirstDrain());
+		indi.decreaseHunger(indi.hungerDrain() * (delta* 60f));
+		indi.decreaseThirst(indi.thirstDrain() * (delta* 60f));
 
 		if (indi.isWalking()) {
 			if (indi.isCommandActive(getKeyMappings().moveLeft.keyCode) || indi.isCommandActive(getKeyMappings().moveRight.keyCode)) {
@@ -133,7 +134,7 @@ public class IndividualUpdateService {
 			}
 		} else {
 			if (indi.isCommandActive(getKeyMappings().moveLeft.keyCode) || indi.isCommandActive(getKeyMappings().moveRight.keyCode)) {
-				indi.decreaseStamina(indi.staminaDrain());
+				indi.decreaseStamina(indi.staminaDrain() * (delta* 60f));
 			} else {
 				indi.increaseStamina(delta * indi.getState().staminaRegen);
 			}
