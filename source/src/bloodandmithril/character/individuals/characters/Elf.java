@@ -209,13 +209,13 @@ public class Elf extends Humanoid implements Observer, Listener {
 
 	@Override
 	public float getWalkSpeed() {
-		return 45f;
+		return 112.5f;
 	}
 
 
 	@Override
 	public float getRunSpeed() {
-		return 90f;
+		return 225f;
 	}
 
 
