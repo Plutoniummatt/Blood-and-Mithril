@@ -5,6 +5,11 @@ import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -14,11 +19,6 @@ import bloodandmithril.ui.components.Panel;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * {@link Panel} for text input
@@ -33,6 +33,9 @@ public class TextInputFieldPanel extends Panel {
 
 	/** Current beginning index of the input string */
 	private int currentBeginningIndex;
+	
+	/** The amount of time backspace must be held before bulk backspace is triggered */
+	private float timer;
 
 	/**
 	 * Constructor
@@ -62,6 +65,17 @@ public class TextInputFieldPanel extends Panel {
 
 	@Override
 	public void render() {
+		if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().deleteCharacter.keyCode)) {
+			if (timer < 0) {
+				keyPressed(BloodAndMithrilClient.getKeyMappings().deleteCharacter.keyCode);
+				timer = 0.02f;
+			} else {
+				timer -= Gdx.graphics.getDeltaTime();
+			}
+		} else {
+			timer = 0.5f;
+		}
+		
 		Gdx.gl20.glLineWidth(2f);
 		Component.shapeRenderer.begin(ShapeType.Filled);
 		Component.shapeRenderer.setColor(0f, 0f, 0f, parent.isActive() ? 0.9f * parent.getAlpha(): 0.4f * parent.getAlpha());

@@ -1282,4 +1282,14 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 			return left;
 		}
 	}
+	
+	
+	public void followCam() {
+		BloodAndMithrilClient.setCamFollowFunction(() -> {
+			return getState().position.cpy().add(
+				0, 
+				Gdx.graphics.getHeight() / 5
+			);
+		});
+	}
 }

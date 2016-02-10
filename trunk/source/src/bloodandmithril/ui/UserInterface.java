@@ -83,6 +83,7 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
+import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.components.Button;
@@ -773,22 +774,17 @@ public class UserInterface {
 					centre.x = worldToScreenX(centre.x);
 					centre.y = worldToScreenY(centre.y);
 
+					IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
-						if (isServer()) {
-							indi.select(0);
-							Domain.addSelectedIndividual(indi);
-						} else {
-							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), true);
-						}
+						individualSelectionService.select(indi);
 					} else if (Domain.isIndividualSelected(indi)) {
-						if (isServer()) {
-							indi.deselect(false, 0);
-							Domain.removeSelectedIndividual(indi);
-						} else {
-							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
-						}
+						individualSelectionService.deselect(indi);
 					}
 				}
+			}
+			
+			if (Domain.getSelectedIndividuals().size() > 1) {
+				BloodAndMithrilClient.setCamFollowFunction(null);
 			}
 		}
 

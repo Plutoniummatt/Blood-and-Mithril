@@ -52,6 +52,7 @@ public class IndividualContextMenuService {
 	@Inject private IndividualUpdateDescriptionService individualUpdateDescriptionService;
 
 	public ContextMenu getContextMenu(Individual indi) {
+		MenuItem camFollow = camFollow(indi);
 		MenuItem showInfoMenuItem = showInfo(indi);
 		MenuItem showStatusWindowItem = showStatus(indi);
 
@@ -99,6 +100,7 @@ public class IndividualContextMenuService {
 			contextMenuToReturn.addMenuItem(interact);
 		}
 
+		contextMenuToReturn.addMenuItem(camFollow);
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
 		contextMenuToReturn.addMenuItem(showStatusWindowItem);
 
@@ -410,7 +412,24 @@ public class IndividualContextMenuService {
 			)
 		);
 	}
-
+	
+	
+	/**
+	 * @return The show info {@link MenuItem} for this individual
+	 */
+	private MenuItem camFollow(Individual indi) {
+		return new MenuItem(
+			"Follow cam",
+			() -> {
+				indi.followCam();
+			},
+			Color.WHITE,
+			indi.getToolTipTextColor(),
+			Color.GRAY,
+			null
+		);
+	}
+	
 
 	/**
 	 * @return The show info {@link MenuItem} for this individual
