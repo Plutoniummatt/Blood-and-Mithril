@@ -16,7 +16,7 @@ import bloodandmithril.world.World;
 public class DefaultBiomeDecider implements BiomeDecider {
 	private static final long serialVersionUID = -6561942704227357202L;
 
-	private static final int cSurfaceStructureHeight = 60;
+	private static final int cSurfaceStructureHeight = 50;
 
 	/**
 	 * Decides which biome to use.

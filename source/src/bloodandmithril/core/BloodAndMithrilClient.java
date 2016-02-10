@@ -48,12 +48,14 @@ import bloodandmithril.objectives.Mission;
 import bloodandmithril.performance.PositionalIndexingService;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
+import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.Fonts;
+import bloodandmithril.util.Function;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.cursorboundtask.ThrowItemCursorBoundTask;
@@ -127,6 +129,8 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	private static CursorBoundTask cursorBoundTask = null;
 
 	private static float updateRateMultiplier = 1f;
+	
+	private static Function<Vector2> camFollowFunction;
 
 	@Override
 	public void create() {
@@ -201,6 +205,11 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			if (!GameSaver.isSaving()) {
 				SoundService.update(Gdx.graphics.getDeltaTime());
 			}
+			
+			float x = getGraphics().getCam().position.x;
+			float y = getGraphics().getCam().position.y;
+			getGraphics().getCam().position.x = Math.round(getGraphics().getCam().position.x);
+			getGraphics().getCam().position.y = Math.round(getGraphics().getCam().position.y);
 
 			// Topography backlog, must be done in main threadh because chunks rely on graphics ---------- /
 			if (System.currentTimeMillis() - timers.topographyBacklogExecutionTimer > 100) {
@@ -227,6 +236,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			fading();
 
 			UserInterface.render();
+			
+			getGraphics().getCam().position.x = x;
+			getGraphics().getCam().position.y = y;
 		} catch (Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
@@ -297,6 +309,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	private void middleClick(int screenX, int screenY) {
+		camFollowFunction = null;
 		saveCamDragCoordinates(screenX, screenY);
 	}
 
@@ -495,16 +508,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 				return;
 			}
 
+			IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
 			if (individualClicked == null) {
 				if (doubleClick && (cursorBoundTask == null || !(cursorBoundTask instanceof ThrowItemCursorBoundTask))) {
 					for (Individual indi : Domain.getIndividuals().values()) {
 						if (indi.isControllable()) {
-							if (ClientServerInterface.isServer()) {
-								indi.deselect(false, 0);
-								Domain.removeSelectedIndividual(indi);
-							} else {
-								ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
-							}
+							individualSelectionService.deselect(indi);
 						}
 					}
 					if (ClientServerInterface.isServer()) {
@@ -514,22 +523,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			} else {
 				for (Individual indi : Domain.getIndividuals().values()) {
 					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId() && !input.isKeyPressed(getKeyMappings().selectIndividual.keyCode)) {
-						if (ClientServerInterface.isServer()) {
-							indi.deselect(false, 0);
-							Domain.removeSelectedIndividual(indi);
-						} else {
-							ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
-						}
+						individualSelectionService.deselect(indi);
 					}
 				}
 
 				if (individualClicked.isControllable() && individualClicked.isAlive()) {
-					if (ClientServerInterface.isServer()) {
-						Domain.addSelectedIndividual(individualClicked);;
-						individualClicked.select(0);
-					} else {
-						ClientServerInterface.SendRequest.sendIndividualSelectionRequest(individualClicked.getId().getId(), true);
-					}
+					individualSelectionService.select(individualClicked);
 				}
 
 			}
@@ -710,18 +709,29 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	 * Camera movement controls
 	 */
 	private void cameraControl() {
+		if (camFollowFunction != null) {
+			Vector2 followCam = camFollowFunction.call();
+			getGraphics().getCam().position.x += (followCam.x - getGraphics().getCam().position.x) * 0.01f;
+			getGraphics().getCam().position.y += (followCam.y - getGraphics().getCam().position.y) * 0.03f;
+		}
+		
 		if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && isInGame()) {
+			
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamUp.keyCode)){
 				getGraphics().getCam().position.y += 10f;
+				setCamFollowFunction(null);
 			}
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamDown.keyCode)){
 				getGraphics().getCam().position.y -= 10f;
+				setCamFollowFunction(null);
 			}
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamLeft.keyCode)){
 				getGraphics().getCam().position.x -= 10f;
+				setCamFollowFunction(null);
 			}
 			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamRight.keyCode)){
 				getGraphics().getCam().position.x += 10f;
+				setCamFollowFunction(null);
 			}
 		}
 	}
@@ -910,5 +920,10 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static Map<Integer, Vector2> getWorldcamcoordinates() {
 		return worldCamCoordinates;
+	}
+
+
+	public static void setCamFollowFunction(Function<Vector2> camFollowFunction) {
+		BloodAndMithrilClient.camFollowFunction = camFollowFunction;
 	}
 }

@@ -35,12 +35,12 @@ public abstract class Layer implements Serializable {
 
 
 	public static int getScreenHorizonY() {
-		return 400 - Math.round((int) getGraphics().getCam().position.y * (1f - 0.95f));
+		return 550 - Math.round((int) getGraphics().getCam().position.y * (1f - 0.95f));
 	}
 
 
 	public static int getCameraYForHorizonCoord(int horizon) {
-		return Math.round((400f - horizon)/(1f - 0.95f));
+		return Math.round((550f - horizon)/(1f - 0.95f));
 	}
 
 

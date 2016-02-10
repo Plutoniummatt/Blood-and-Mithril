@@ -353,8 +353,8 @@ public class InventoryWindow extends Window implements Refreshable {
 
 		// Render the text search
 		textInput.x = x + 6;
-		textInput.y = y - 320;
-		textInput.width = 160;
+		textInput.y = y - height + 70;
+		textInput.width = 150;
 		textInput.height = 20;
 		textInput.render();
 

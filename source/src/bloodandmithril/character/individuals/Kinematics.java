@@ -9,6 +9,10 @@ import static bloodandmithril.util.ComparisonUtil.obj;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldCoord;
 import static java.lang.Math.abs;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.ArtificialIntelligence;
@@ -25,9 +29,6 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 
 
 
@@ -140,7 +141,7 @@ public interface Kinematics {
 			kinematicsData.distanceFallen = 0f;
 		} else {
 			state.acceleration.x = 0f;
-			state.velocity.x *= 0.995f;
+			state.velocity.x *= 0.999f;
 		}
 
 		if (abs(individual.getState().velocity.x) > individual.getRunSpeed() * 1.5f) {

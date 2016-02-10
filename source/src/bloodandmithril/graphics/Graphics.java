@@ -1,14 +1,14 @@
 package bloodandmithril.graphics;
 
-import bloodandmithril.core.Copyright;
-import bloodandmithril.persistence.ConfigPersistenceService;
-import bloodandmithril.ui.UserInterface;
-import bloodandmithril.world.weather.WeatherRenderer;
-
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import bloodandmithril.core.Copyright;
+import bloodandmithril.persistence.ConfigPersistenceService;
+import bloodandmithril.ui.UserInterface;
+import bloodandmithril.world.weather.WeatherRenderer;
 
 /**
  * Singleton graphics instance

@@ -38,6 +38,7 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.InfoPopup;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
+import bloodandmithril.ui.components.panel.TextInputFieldPanel;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 import bloodandmithril.world.Domain;
@@ -86,13 +87,25 @@ public class TradeWindow extends Window implements Refreshable {
 		() -> {
 			proposeTrade();
 		},
-		Color.MAGENTA,
+		Color.GREEN,
 		Color.GRAY,
 		Color.WHITE,
 		UIRef.BL
 	);
 
 	private final Button proposerButton, proposeeButton;
+	
+	/** The text search predicate */
+	private String searchString = "";
+	private final Predicate<Item> textSearch = new Predicate<Item>() {
+		@Override
+		public boolean apply(Item input) {
+			return input.getSingular(true).toUpperCase().contains(searchString.toUpperCase());
+		}
+	};
+	
+	/** Input for text searching */
+	private final TextInputFieldPanel textInput = new TextInputFieldPanel(this, "");
 
 	/**
 	 * Constructor
@@ -307,7 +320,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	private void createPanels(Comparator<Item> sortingComparator) {
-		proposerPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, true, 35, null) {
+		proposerPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, true, 35, textSearch) {
 
 			@Override
 			protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -330,7 +343,7 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		};
 
-		proposeePanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, true, 35, null) {
+		proposeePanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, true, 35, textSearch) {
 
 			@Override
 			protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
@@ -632,6 +645,13 @@ public class TradeWindow extends Window implements Refreshable {
 
 		InventoryWindow.renderCapacityIndicationText(proposer, this, 6, -height, " (+" + String.format("%.2f", proposeeMass) + ")", " (+" + proposeeVolume + ")");
 		InventoryWindow.renderCapacityIndicationText(proposee, this, width / 2 + 6, -height, " (+" + String.format("%.2f", proposerMass) + ")", " (+" + proposerVolume + ")");
+		
+		// Render the text search
+		textInput.x = x + 6;
+		textInput.y = y - height + 90;
+		textInput.width = 180;
+		textInput.height = 20;
+		textInput.render();
 
 		tradeButton.render(
 			x + 71,
@@ -728,6 +748,16 @@ public class TradeWindow extends Window implements Refreshable {
 		if (tradeButtonClickable()) {
 			tradeButton.click();
 		}
+	}
+	
+	
+	@Override
+	public boolean keyPressed(int keyCode) {
+		boolean keyPressed = textInput.keyPressed(keyCode);
+		this.searchString = textInput.getInputText();
+		refresh();
+
+		return super.keyPressed(keyCode) || keyPressed;
 	}
 
 
