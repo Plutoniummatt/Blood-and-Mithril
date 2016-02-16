@@ -2,7 +2,6 @@ package bloodandmithril.playerinteraction.individual.service;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.world.Domain;
 
@@ -18,10 +17,6 @@ public class IndividualSelectionServiceServerImpl implements IndividualSelection
 	@Override
 	public void select(Individual indi) {
 		indi.select(0);
-		
-		if (ClientServerInterface.isClient()) {
-			indi.followCam();
-		}
 	}
 
 

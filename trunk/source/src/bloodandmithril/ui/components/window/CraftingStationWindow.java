@@ -242,9 +242,9 @@ public class CraftingStationWindow extends Window implements Refreshable {
 							requiredMaterialsListing.getRequiredMaterials().putAll(((Craftable)item.getKey()).getRequiredMaterials());
 							refresh();
 						},
-						currentlySelectedToCraft.t.sameAs(item.getKey()) ? Color.GREEN : Color.WHITE,
+						CraftingStation.enoughMaterialsToCraft(individual, ((Craftable) item.getKey()).getRequiredMaterials()) ? (currentlySelectedToCraft.t.sameAs(item.getKey()) ? Color.GREEN : Color.WHITE) : Color.GRAY,
 						currentlySelectedToCraft.t.sameAs(item.getKey()) ? Color.ORANGE : Color.ORANGE,
-						Color.WHITE,
+						CraftingStation.enoughMaterialsToCraft(individual, ((Craftable) item.getKey()).getRequiredMaterials()) ? Color.WHITE : Color.GRAY,
 						UIRef.BL
 					),
 					null

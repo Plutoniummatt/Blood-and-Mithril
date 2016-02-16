@@ -4,6 +4,9 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -13,9 +16,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 
 @Copyright("Matthew Peck 2014")
 public abstract class Particle implements Serializable {
@@ -32,6 +32,7 @@ public abstract class Particle implements Serializable {
 	private SerializableFunction<Boolean> removalCondition;
 	private MovementMode movementMode = MovementMode.GRAVITY;
 	private boolean bounces = false;
+	private boolean blend;
 
 	/**
 	 * Constructor
@@ -46,6 +47,15 @@ public abstract class Particle implements Serializable {
 		this.movementMode = movementMode;
 		this.depth = depth;
 		this.particleId = ParameterPersistenceService.getParameters().getNextParticleId();
+	}
+	
+	public Particle blend(boolean blend) {
+		this.blend = blend;
+		return this;
+	}
+	
+	public boolean isBlend() {
+		return blend;
 	}
 
 	/**
