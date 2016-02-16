@@ -20,7 +20,7 @@ import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.furniture.SmallWoodenCrateProp;
 import bloodandmithril.prop.plant.DeadDesertBush;
-import bloodandmithril.prop.plant.DryGrass;
+import bloodandmithril.prop.plant.GreenGrass;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
@@ -29,8 +29,9 @@ import bloodandmithril.util.datastructure.TwoInts;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
+import bloodandmithril.world.topography.tile.tiles.brick.GreyBrickTile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
-import bloodandmithril.world.topography.tile.tiles.sedimentary.SandTile;
+import bloodandmithril.world.topography.tile.tiles.soil.StandardSoilTile;
 
 /**
  * The structure of a desert surface to be stored and used to generate when needed
@@ -118,8 +119,8 @@ public class Desert extends SuperStructure {
 			entranceY,
 			getStructureKey(),
 			false,
-			YellowBrickTile.class,
-			YellowBrickTile.class
+			GreyBrickTile.class,
+			GreyBrickTile.class
 		));
 
 		startingLocations.add(new TwoInts(entranceX + 40, entranceY - 40));
@@ -280,11 +281,12 @@ public class Desert extends SuperStructure {
 					)
 				);
 			}
-			if (Util.roll(0.5f)) {
+			if (Util.roll(0.8f)) {
 				Structures.get(getStructureKey()).addProp(
-					new DryGrass(
+					new GreenGrass(
 						Topography.convertToWorldCoord(x, false),
-						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16
+						Topography.convertToWorldCoord(getSurfaceHeight().apply(x), false) + 16,
+						Util.getRandom().nextBoolean()
 					)
 				);
 			}
@@ -297,7 +299,7 @@ public class Desert extends SuperStructure {
 		if (worldTileY > getSurfaceHeight().apply(worldTileX)) {
 			return new Tile.EmptyTile();
 		} else {
-			return new SandTile();
+			return new StandardSoilTile();
 		}
 	}
 
@@ -307,7 +309,7 @@ public class Desert extends SuperStructure {
 		if (worldTileY > getSurfaceHeight().apply(worldTileX)-1) {
 			return new Tile.EmptyTile();
 		} else {
-			return new SandTile();
+			return new StandardSoilTile();
 		}
 	}
 

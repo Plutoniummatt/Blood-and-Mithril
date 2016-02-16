@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import bloodandmithril.character.Speech;
 import bloodandmithril.character.ai.AIProcessor.JitGoToLocation;
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.NextWaypointProvider;
+import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
@@ -19,7 +21,7 @@ import bloodandmithril.util.Util;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class Travel extends CompositeAITask {
+public class Travel extends CompositeAITask implements NextWaypointProvider {
 	private static final long serialVersionUID = -1118542666642761349L;
 
 	/**
@@ -110,10 +112,12 @@ public class Travel extends CompositeAITask {
 				offset = (float) Math.cos(getHost().getTravelIconTimer() + Math.PI) + 1f;
 			}
 
-			// GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)task).getTask();
-			// if (goToLocation != null) {
-			// 	goToLocation.renderPath();
-			// }
+			if (UserInterface.DEBUG) {
+				GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)task).getTask();
+				if (goToLocation != null) {
+					goToLocation.renderPath();
+				}
+			}
 
 			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
 			getGraphics().getSpriteBatch().setShader(Shaders.pass);
@@ -139,5 +143,15 @@ public class Travel extends CompositeAITask {
 				);
 			}
 		}
+	}
+
+
+	@Override
+	public WayPoint provideNextWaypoint() {
+		AITask current = getCurrentTask();
+		if (current instanceof NextWaypointProvider) {
+			return ((NextWaypointProvider) current).provideNextWaypoint();
+		}
+		return null;
 	}
 }

@@ -127,6 +127,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 				float walkSpeed = getWalkSpeed();
 				float runSpeed = getRunSpeed();
 				int accel = 2000;
+				
 				if (!attacking && isCommandActive(getKeyMappings().moveLeft.keyCode) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
 					if (isCommandActive(getKeyMappings().walk.keyCode)) {
 						if (getState().velocity.x > -walkSpeed) {

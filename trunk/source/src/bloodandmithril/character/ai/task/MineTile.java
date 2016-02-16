@@ -19,6 +19,7 @@ import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.graphics.particles.ParticleService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
@@ -191,6 +192,7 @@ public class MineTile extends CompositeAITask {
 							);
 
 							Item mined = tileToBeDeleted.mine();
+							ParticleService.mineExplosion(tileCoordinate, tileToBeDeleted.getMineExplosionColor());
 							if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
 								if (topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false) != null) {
 									if (host.canReceive(mined)) {

@@ -2,7 +2,14 @@ package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.NextWaypointProvider;
 import bloodandmithril.character.ai.pathfinding.Path;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
@@ -19,16 +26,13 @@ import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * An {@link AITask} that moves an {@link Individual} to a location through the use of a {@link PathFinder}.
  *
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class GoToLocation extends AITask {
+public class GoToLocation extends AITask implements NextWaypointProvider {
 	private static final long serialVersionUID = -4121947217713585991L;
 
 	/** The {@link Path} this {@link GoToLocation} {@link AITask} will follow */
@@ -119,7 +123,25 @@ public class GoToLocation extends AITask {
 						getHost().speak("Looks like I'm stuck...", 1500);
 						path.clear();
 					} else {
-						goToWayPoint(path.getNextPoint(), 4);
+						WayPoint closest = path.getNextPoint();
+						int counter = 0;
+						int toRemove = 0;
+						for(WayPoint w : path.getWayPoints()) {
+							if (counter > 5) {
+								break;
+							}
+							counter++;
+							if (getHost().getState().position.dst(w.waypoint) < Topography.TILE_SIZE * 2 && w.waypoint.y < getHost().getState().position.y) {
+								path.getAndRemoveNextWayPoint();
+								for (int i = 0; i < toRemove; i++) {
+									path.getAndRemoveNextWayPoint();
+								}
+							} else {
+								toRemove++;
+							}
+						}
+						
+						goToWayPoint(closest, 4);
 					}
 				} catch (NoTileFoundException e) {}
 			}
@@ -144,6 +166,8 @@ public class GoToLocation extends AITask {
 
 		if (nextPoint != null && nextPoint.waypoint != null) {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
+			UserInterface.shapeRenderer.setColor(Color.WHITE);
+			Gdx.gl.glLineWidth(3f);
 			float startX = Domain.getIndividual(hostId.getId()).getState().position.x;
 			float startY = Domain.getIndividual(hostId.getId()).getState().position.y;
 			float endX = nextPoint.waypoint.x;
@@ -281,5 +305,11 @@ public class GoToLocation extends AITask {
 		host.setJumpOffToNull();
 
 		return false;
+	}
+
+
+	@Override
+	public WayPoint provideNextWaypoint() {
+		return path.getNextPoint();
 	}
 }

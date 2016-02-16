@@ -1,5 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.brick;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.BrickItem;
@@ -45,5 +47,11 @@ public class GreyBrickTile extends BrickTile {
 	@Override
 	public boolean isTransparent() {
 		return false;
+	}
+
+
+	@Override
+	public Color getMineExplosionColor() {
+		return Color.DARK_GRAY;
 	}
 }

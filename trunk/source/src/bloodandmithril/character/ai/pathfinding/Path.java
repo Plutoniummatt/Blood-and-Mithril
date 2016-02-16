@@ -181,6 +181,11 @@ public final class Path implements Serializable {
 	public int getSize() {
 		return waypoints.size();
 	}
+	
+	
+	public synchronized ConcurrentLinkedDeque<WayPoint> getWayPoints() {
+		return waypoints;
+	}
 
 
 	/**

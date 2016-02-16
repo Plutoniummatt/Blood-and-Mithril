@@ -6,6 +6,9 @@ import static bloodandmithril.world.Domain.getIndividual;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Sets;
+
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.JitAITask;
@@ -21,9 +24,6 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Sets;
 
 
 /**
@@ -209,7 +209,7 @@ public class AIProcessor {
 	}
 
 
-	public static class JitGoToLocation extends JitAITask {
+	public static class JitGoToLocation extends JitAITask implements NextWaypointProvider {
 		private static final long serialVersionUID = 7866039883039620197L;
 		private WayPoint destination;
 
@@ -220,6 +220,11 @@ public class AIProcessor {
 
 		public WayPoint getDestination() {
 			return destination;
+		}
+
+		@Override
+		public WayPoint provideNextWaypoint() {
+			return null;
 		}
 	}
 

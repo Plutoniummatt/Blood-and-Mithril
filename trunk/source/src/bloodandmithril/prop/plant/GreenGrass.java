@@ -24,25 +24,33 @@ import bloodandmithril.ui.components.window.MessageWindow;
  * @author Matt
  */
 @Copyright("Matthew Peck 2015")
-public class DryGrass extends PlantProp {
+public class GreenGrass extends PlantProp {
 	private static final long serialVersionUID = 9061021746445536182L;
 
-	public static TextureRegion textureRegion;
+	public static TextureRegion textureRegionBig, textureRegionSmall;
 
 	static {
 		if (ClientServerInterface.isClient()) {
-			textureRegion = new TextureRegion(WorldRenderer.gameWorldTexture, 1089, 119, 76, 12);
+			textureRegionBig = new TextureRegion(WorldRenderer.gameWorldTexture, 1166, 119, 76, 12);
+			textureRegionSmall = new TextureRegion(WorldRenderer.gameWorldTexture, 1243, 119, 34, 12);
 		}
 	}
 
-	public DryGrass(float x, float y) {
-		super(x, y, 76, 12, Depth.FRONT, new NotEmptyTile(), false);
+	private boolean small;
+
+	public GreenGrass(float x, float y, boolean small) {
+		super(x, y, small ? 34 : 76, 12, Depth.FRONT, new NotEmptyTile(), false);
+		this.small = small;
 	}
 
 
 	@Override
 	public void render() {
-		getGraphics().getSpriteBatch().draw(textureRegion, position.x - width / 2, position.y - 5);
+		if (small) {
+			getGraphics().getSpriteBatch().draw(textureRegionSmall, position.x - width / 2, position.y - 5);
+		} else {
+			getGraphics().getSpriteBatch().draw(textureRegionBig, position.x - width / 2, position.y - 5);
+		}
 	}
 
 
@@ -61,11 +69,11 @@ public class DryGrass extends PlantProp {
 				() -> {
 					UserInterface.addLayeredComponent(
 						new MessageWindow(
-							"A patch of dry grass.",
+							"Some grass.",
 							Color.ORANGE,
 							500,
 							250,
-							"Dry grass",
+							"Grass",
 							true,
 							300,
 							150
@@ -96,7 +104,7 @@ public class DryGrass extends PlantProp {
 
 	@Override
 	public String getContextMenuItemLabel() {
-		return "Dry grass";
+		return "Grass";
 	}
 
 

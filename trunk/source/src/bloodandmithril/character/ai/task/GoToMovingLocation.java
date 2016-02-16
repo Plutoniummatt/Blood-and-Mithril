@@ -21,6 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
+import bloodandmithril.character.ai.NextWaypointProvider;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.RoutineTask;
 import bloodandmithril.character.ai.TaskGenerator;
@@ -51,7 +52,7 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  */
 @Copyright("Matthew Peck 2014")
 @Name(name = "Go to location")
-public class GoToMovingLocation extends AITask implements RoutineTask {
+public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypointProvider {
 	private static final long serialVersionUID = 3940840091194740269L;
 
 	/** The changing destination */
@@ -373,5 +374,11 @@ public class GoToMovingLocation extends AITask implements RoutineTask {
 		);
 
 		return menu;
+	}
+	
+
+	@Override
+	public WayPoint provideNextWaypoint() {
+		return getCurrentGoToLocation().getPath().getNextPoint();
 	}
 }
