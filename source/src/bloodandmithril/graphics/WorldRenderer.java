@@ -40,7 +40,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.util.datastructure.Wrapper;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -251,36 +250,66 @@ public class WorldRenderer {
 
 	private static void renderParticles(Depth depth, World world) {
 		gl20.glEnable(GL20.GL_BLEND);
-		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		shapeRenderer.begin(Line);
 		shapeRenderer.setProjectionMatrix(getGraphics().getCam().projection);
 		shapeRenderer.setTransformMatrix(getGraphics().getCam().view);
+		
+		// Render all blended particles first
+		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		if (world.getClientParticles() != null) {
-			world.getClientParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
+			world.getClientParticles().stream().filter(p -> p.depth == depth && p.isBlend() && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.renderLine(Gdx.graphics.getDeltaTime());
 			});
 		}
 		if (world.getServerParticles() != null) {
-			world.getServerParticles().values().stream().filter(p -> p.depth == depth).forEach(p -> {
+			world.getServerParticles().values().stream().filter(p -> p.depth == depth && p.isBlend() && isOnScreen(p.position, 50f)).forEach(p -> {
+				p.renderLine(Gdx.graphics.getDeltaTime());
+			});
+		}
+		shapeRenderer.flush();
+		
+		// Render all non-blended particles
+		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		if (world.getClientParticles() != null) {
+			world.getClientParticles().stream().filter(p -> p.depth == depth && !p.isBlend() && isOnScreen(p.position, 50f)).forEach(p -> {
+				p.renderLine(Gdx.graphics.getDeltaTime());
+			});
+		}
+		if (world.getServerParticles() != null) {
+			world.getServerParticles().values().stream().filter(p -> p.depth == depth && !p.isBlend() && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.renderLine(Gdx.graphics.getDeltaTime());
 			});
 		}
 		shapeRenderer.end();
+		
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setProjectionMatrix(getGraphics().getCam().projection);
 		shapeRenderer.setTransformMatrix(getGraphics().getCam().view);
+		
+		// Render all blended particles first
+		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		if (world.getClientParticles() != null) {
-			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
-			world.getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
+			world.getClientParticles().stream().filter(p -> p.depth == depth && p.isBlend() && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime());
-				counter.t++;
 			});
 		}
 		if (world.getServerParticles() != null) {
-			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
-			world.getServerParticles().values().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
+			world.getServerParticles().values().stream().filter(p -> p.depth == depth && p.isBlend() && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime());
-				counter.t++;
+			});
+		}
+		shapeRenderer.flush();
+		
+		// Render all non-blended particles
+		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		if (world.getClientParticles() != null) {
+			world.getClientParticles().stream().filter(p -> p.depth == depth && !p.isBlend() && isOnScreen(p.position, 50f)).forEach(p -> {
+				p.render(Gdx.graphics.getDeltaTime());
+			});
+		}
+		if (world.getServerParticles() != null) {
+			world.getServerParticles().values().stream().filter(p -> p.depth == depth && !p.isBlend() && isOnScreen(p.position, 50f)).forEach(p -> {
+				p.render(Gdx.graphics.getDeltaTime());
 			});
 		}
 		shapeRenderer.end();
