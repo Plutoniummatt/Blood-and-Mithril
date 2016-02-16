@@ -1,5 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.stone;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.world.topography.tile.tiles.StoneTile;
@@ -42,5 +44,11 @@ public class GraniteTile extends StoneTile {
 	@Override
 	public boolean isTransparent() {
 		return false;
+	}
+
+
+	@Override
+	public Color getMineExplosionColor() {
+		return Color.DARK_GRAY;
 	}
 }

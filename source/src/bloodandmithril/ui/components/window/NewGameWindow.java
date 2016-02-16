@@ -132,6 +132,7 @@ public class NewGameWindow extends Window {
 			graphics.setFading(true);
 			BloodAndMithrilClient.threadWait(1500);
 			BloodAndMithrilClient.setLoading(true);
+			ClientServerInterface.setServer(true);
 
 			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 			Domain.setActiveWorld(Domain.createWorld());

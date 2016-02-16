@@ -1,5 +1,7 @@
 package bloodandmithril.world.topography.tile.tiles.glass;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.material.GlassItem;
@@ -42,5 +44,11 @@ public class ClearGlassTile extends GlassTile {
 	@Override
 	public boolean isTransparent() {
 		return true;
+	}
+
+
+	@Override
+	public Color getMineExplosionColor() {
+		return Color.WHITE;
 	}
 }

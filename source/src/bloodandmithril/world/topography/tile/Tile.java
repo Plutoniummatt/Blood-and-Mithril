@@ -2,6 +2,8 @@ package bloodandmithril.world.topography.tile;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
@@ -62,7 +64,11 @@ public abstract class Tile implements Serializable {
 	protected Tile(boolean isPlatformTile) {
 		this.isPlatformTile = isPlatformTile;
 	}
-
+	
+	/**
+	 * The color of the particles emitted when this is mined
+	 */
+	public abstract Color getMineExplosionColor();
 
 	/**
 	 * Returns the x component of the texture coordinate of the top left vertex
@@ -303,6 +309,12 @@ public abstract class Tile implements Serializable {
 		public final boolean isTransparent() {
 			return true;
 		}
+
+
+		@Override
+		public Color getMineExplosionColor() {
+			return Color.RED;
+		}
 	}
 
 
@@ -347,6 +359,12 @@ public abstract class Tile implements Serializable {
 		@Override
 		public final boolean isTransparent() {
 			return true;
+		}
+
+
+		@Override
+		public Color getMineExplosionColor() {
+			return Color.BLACK.mul(0);
 		}
 	}
 

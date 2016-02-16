@@ -88,7 +88,7 @@ public interface Kinematics {
 				if (!kinematicsData.steppingUp) {
 					kinematicsData.steppingUp = true;
 					if (ClientServerInterface.isServer()) {
-						individual.decreaseStamina(0.02f);
+						individual.decreaseStamina(0.005f);
 					}
 					kinematicsData.steps = 0;
 				}

@@ -49,7 +49,7 @@ public class ParticleService {
 	}
 
 
-	public static void explosion(Vector2 position) {
+	public static void mineExplosion(Vector2 position, Color c) {
 		if (isClient()) {
 			for (int i = 0; i < 40; i++) {
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
@@ -61,46 +61,29 @@ public class ParticleService {
 					Colors.LIGHT_SMOKE,
 					Colors.LIGHT_SMOKE,
 					Colors.LIGHT_SMOKE,
-					Util.getRandom().nextFloat() * 45f + 3f,
+					Util.getRandom().nextFloat() * 25f + 3f,
 					Domain.getActiveWorld().getWorldId(),
 					0f,
-					MovementMode.EMBER,
+					MovementMode.WEIGHTLESS,
 					Depth.FOREGROUND,
 					Util.getRandom().nextInt(5000) + 1000,
 					false
 				));
 			}
 			for (int i = 0; i < 100; i++) {
-				float radius = Util.getRandom().nextFloat() * 8f;
+				float radius = Util.getRandom().nextFloat() * 3f;
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
-					new Vector2(Util.getRandom().nextFloat() * 300f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
-					Color.WHITE,
-					Color.YELLOW,
-					Color.WHITE,
+					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
+					c,
+					c,
+					c,
 					radius,
 					Domain.getActiveWorld().getWorldId(),
-					radius * 5f,
+					0,
 					MovementMode.GRAVITY,
 					Depth.FOREGROUND,
-					Util.getRandom().nextInt(50),
-					true
-				));
-			}
-			for (int i = 0; i < 100; i++) {
-				float radius = Util.getRandom().nextFloat() * 2f;
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
-					position.cpy(),
-					new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
-					Color.WHITE,
-					Color.CYAN,
-					Color.WHITE,
-					radius,
-					Domain.getActiveWorld().getWorldId(),
-					radius * 5f,
-					MovementMode.GRAVITY,
-					Depth.FOREGROUND,
-					Util.getRandom().nextInt(2000),
+					Util.getRandom().nextInt(500),
 					true
 				));
 			}
