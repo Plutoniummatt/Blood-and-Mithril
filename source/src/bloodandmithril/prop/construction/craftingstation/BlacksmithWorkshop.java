@@ -7,6 +7,11 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
@@ -26,11 +31,6 @@ import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
 
 /**
  * An blacksmith workshop, used to smith metallic items
@@ -85,8 +85,8 @@ public class BlacksmithWorkshop extends CraftingStation {
 		if (isOccupied()) {
 			if (isClient()) {
 				if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
-					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
-					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
+					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END, false);
+					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null, true);
 				}
 			}
 

@@ -6,14 +6,14 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import bloodandmithril.core.Copyright;
-import bloodandmithril.util.datastructure.Wrapper;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
+
+import bloodandmithril.core.Copyright;
+import bloodandmithril.util.datastructure.Wrapper;
 
 @Copyright("Matthew Peck 2014")
 public class Util {

@@ -155,7 +155,7 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, Color glowColor, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth, boolean tracer, Color toChangeTo) {
+	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, Color glowColor, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth, boolean tracer, Color toChangeTo, boolean blend) {
 		if (diminishingDuration < 100) {
 			diminishingDuration = 100;
 		}
@@ -173,7 +173,7 @@ public class ParticleService {
 					mode,
 					depth,
 					diminishingDuration
-				));
+				).blend(blend));
 			} else {
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
@@ -188,7 +188,7 @@ public class ParticleService {
 					depth,
 					diminishingDuration,
 					tracer
-				));
+				).blend(blend));
 			}
 
 		}
