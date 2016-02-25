@@ -76,7 +76,7 @@ public class ParticleService {
 					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
 					c,
-					c,
+					Color.BLACK,
 					c,
 					radius,
 					Domain.getActiveWorld().getWorldId(),
