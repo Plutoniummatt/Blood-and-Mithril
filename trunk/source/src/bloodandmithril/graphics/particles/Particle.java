@@ -32,7 +32,6 @@ public abstract class Particle implements Serializable {
 	private SerializableFunction<Boolean> removalCondition;
 	private MovementMode movementMode = MovementMode.GRAVITY;
 	private boolean bounces = false;
-	private boolean blend;
 
 	/**
 	 * Constructor
@@ -49,15 +48,7 @@ public abstract class Particle implements Serializable {
 		this.particleId = ParameterPersistenceService.getParameters().getNextParticleId();
 	}
 	
-	public Particle blend(boolean blend) {
-		this.blend = blend;
-		return this;
-	}
 	
-	public boolean isBlend() {
-		return blend;
-	}
-
 	/**
 	 * Renders the point of this particle
 	 */
