@@ -3,10 +3,6 @@ package bloodandmithril.item.items.equipment.offhand;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
-
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.core.Copyright;
@@ -28,6 +24,10 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
 
 /**
  * Offhand torch for lighting
@@ -132,9 +132,9 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 			float size1 = Util.getRandom().nextFloat();
 			float size2 = Util.getRandom().nextFloat();
-			ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size1 * 3f, size1 * 8f + 10f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGROUND, false, Colors.FIRE_END, true);
-			ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size2 * 3f, size2 * 2f + 6f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGROUND, false, Colors.FIRE_END, true);
-			ParticleService.randomVelocityDiminishing(emission, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 6f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.FOREGROUND, false, null, true);
+			ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size1 * 3f, size1 * 8f + 10f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.FOREGROUND, false, Colors.FIRE_END);
+			ParticleService.randomVelocityDiminishing(emission, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, size2 * 3f, size2 * 2f + 6f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
+			ParticleService.randomVelocityDiminishing(emission, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.FOREGROUND, false, null);
 		}
 	}
 
