@@ -6,14 +6,14 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import bloodandmithril.core.Copyright;
+import bloodandmithril.util.datastructure.Wrapper;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
-
-import bloodandmithril.core.Copyright;
-import bloodandmithril.util.datastructure.Wrapper;
 
 @Copyright("Matthew Peck 2014")
 public class Util {
@@ -239,7 +239,7 @@ public class Util {
 		public static final Color MILK = new Color(1f, 0.98f, 0.96f, 1f);
 		public static final Color OIL = new Color(0.08f, 0.035f, 0f, 1f);
 
-		public static final Color LIGHT_SMOKE = new Color(0.1f, 0.1f, 0.1f, 0.45f);
+		public static final Color LIGHT_SMOKE = new Color(0.1f, 0.1f, 0.1f, 0.25f);
 		public static final Color DARK_SMOKE = new Color(0f, 0f, 0f, 0.9f);
 		public static final Color FIRE_START = new Color(0.7f, 0.4f, 0f, 1.0f);
 		public static final Color FIRE_END = new Color(0.85f, 0.2f, 0f, 1.0f);

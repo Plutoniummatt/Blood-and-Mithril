@@ -7,10 +7,6 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Maps;
-
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -34,6 +30,10 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Maps;
 
 /**
  * A Furnace
@@ -107,9 +107,9 @@ public class Furnace extends CraftingStation implements Container {
 
 		if (isOccupied()) {
 			if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 6f, 30f, Color.ORANGE, Color.ORANGE, 2f, 8f, MovementMode.EMBER, Util.getRandom().nextInt(600), Depth.MIDDLEGROUND, false, Color.RED, true);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 6f, 30f, Color.ORANGE, Color.ORANGE, 1f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Color.RED, true);
-				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 30f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.MIDDLEGROUND, false, null, true);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 6f, 30f, Color.ORANGE, Color.ORANGE, 2f, 8f, MovementMode.EMBER, Util.getRandom().nextInt(600), Depth.MIDDLEGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 6f, 30f, Color.ORANGE, Color.ORANGE, 1f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 30f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
 			}
 		}
 	}

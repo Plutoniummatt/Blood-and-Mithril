@@ -4,10 +4,6 @@ import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 
 import java.util.Map;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-
 import bloodandmithril.character.conditions.Burning;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -26,6 +22,10 @@ import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * A flaming arrow, must be near a fire source in order to be lit
@@ -56,8 +56,8 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 				lit = false;
 			}
 			if (isOnScreen(position, 50f)) {
-				ParticleService.randomVelocityDiminishing(position, 0f, 20f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 4f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(600), Depth.FOREGROUND, false, Color.RED, true);
-				ParticleService.randomVelocityDiminishing(position, 0f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 4f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.FOREGROUND, false, null, true);
+				ParticleService.randomVelocityDiminishing(position, 0f, 20f, Color.ORANGE, Color.ORANGE, Util.getRandom().nextFloat() * 4f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(600), Depth.FOREGROUND, false, Color.RED);
+				ParticleService.randomVelocityDiminishing(position, 0f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 4f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
 			}
 		}
 
