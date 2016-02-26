@@ -68,7 +68,7 @@ public class ParticleService {
 					Depth.FOREGROUND,
 					Util.getRandom().nextInt(5000) + 1000,
 					false
-				).blend(true));
+				));
 			}
 			for (int i = 0; i < 100; i++) {
 				float radius = Util.getRandom().nextFloat() * 3f;
