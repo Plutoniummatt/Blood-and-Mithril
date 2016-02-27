@@ -1,11 +1,15 @@
 package bloodandmithril.world;
 
+import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListSet;
+
+import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualUpdateService;
@@ -21,6 +25,7 @@ import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
+import bloodandmithril.world.weather.Cloud;
 
 /**
  * A World, holds info about the {@link Topography}, {@link Prop}s, {@link Individual}s and any related entities.
@@ -72,10 +77,15 @@ public final class World implements Serializable {
 
 	/** Time between each update tick */
 	private float												updateTick = 1f/60f;
+	
+	/** Last time a cloud was added */
+	private long												lastCloudAdd 			= System.currentTimeMillis();
 
 	/** Outstanding events to be processed */
 	private final ConcurrentLinkedDeque<Event>					events					= new ConcurrentLinkedDeque<>();
-
+	
+	private final ConcurrentLinkedDeque<Cloud>					clouds					= new ConcurrentLinkedDeque<>();
+	
 	/**
 	 * Constructor
 	 */
@@ -97,6 +107,10 @@ public final class World implements Serializable {
 		this.projectiles = new WorldProjectiles(worldId);
 		this.topography = new Topography(worldId);
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
+		
+		clouds.add(new Cloud(new Vector2(-2000, 200), 130, 20, 30, 300, 1000, 0.2f));
+		clouds.add(new Cloud(new Vector2(-200, 200), 130, 20, 30, 300, 1000, 0.2f));
+		clouds.add(new Cloud(new Vector2(1600, 200), 130, 20, 30, 300, 1000, 0.2f));
 	}
 
 
@@ -143,6 +157,22 @@ public final class World implements Serializable {
 			try {
 				item.update(updateTick);
 			} catch (NoTileFoundException e) {}
+		}
+		
+		for (Cloud c : clouds) {
+			c.update(updateTick);
+			
+			if (c.getPosition().x > getGraphics().getCam().position.x * 0.01f + 4000) {
+				clouds.remove(c);
+				System.out.println("Cloud Removed");
+			}
+		}
+		
+		if (System.currentTimeMillis() > lastCloudAdd + 180 * 1000) {
+			clouds.add(new Cloud(new Vector2(-2000, 200), 130, 20, 30, 300, 1000, 0.2f));
+			System.out.println("Cloud added");
+			
+			lastCloudAdd = System.currentTimeMillis();
 		}
 	}
 
@@ -255,5 +285,10 @@ public final class World implements Serializable {
 
 	public final ChunkGenerator getGenerator() {
 		return generator;
+	}
+
+
+	public Collection<Cloud> getClouds() {
+		return clouds;
 	}
 }

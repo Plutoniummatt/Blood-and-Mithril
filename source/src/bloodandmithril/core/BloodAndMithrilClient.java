@@ -490,7 +490,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			}
 		}
 
-		if (!uiClicked) {
+		if (!uiClicked && isInGame()) {
 			if (getCursorBoundTask() != null) {
 				if (getCursorBoundTask().executionConditionMet()) {
 					if (getCursorBoundTask().isWorldCoordinate()) {

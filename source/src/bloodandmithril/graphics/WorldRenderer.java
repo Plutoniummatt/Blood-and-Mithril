@@ -73,7 +73,7 @@ public class WorldRenderer {
 		if (ClientServerInterface.isClient()) {
 			gameWorldTexture = new Texture(files.internal("data/image/gameWorld.png"));
 			individualTexture = new Texture(files.internal("data/image/character/individual.png"));
-			gameWorldTexture.setFilter(Linear, Nearest);
+			gameWorldTexture.setFilter(Linear, Linear);
 			individualTexture.setFilter(Nearest, Nearest);
 		}
 	}

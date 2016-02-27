@@ -12,15 +12,6 @@ import static java.lang.Math.round;
 
 import java.util.List;
 
-import bloodandmithril.core.Copyright;
-import bloodandmithril.graphics.WorldRenderer.Depth;
-import bloodandmithril.graphics.background.Layer;
-import bloodandmithril.graphics.particles.Particle;
-import bloodandmithril.graphics.particles.TracerParticle;
-import bloodandmithril.util.Shaders;
-import bloodandmithril.world.World;
-import bloodandmithril.world.weather.WeatherRenderer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,6 +20,15 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
+import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.WorldRenderer.Depth;
+import bloodandmithril.graphics.background.Layer;
+import bloodandmithril.graphics.particles.Particle;
+import bloodandmithril.graphics.particles.TracerParticle;
+import bloodandmithril.util.Shaders;
+import bloodandmithril.world.World;
+import bloodandmithril.world.weather.WeatherRenderer;
 
 /**
  * Class that encapsulates rendering things to the screen, lighting model is based on efficient large radius Gaussian blurred occlusion mapping

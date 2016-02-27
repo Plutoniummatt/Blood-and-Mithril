@@ -14,7 +14,6 @@ import org.lwjgl.opengl.GL11;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 
@@ -26,7 +25,6 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.World;
-import bloodandmithril.world.weather.Cloud.CloudSegment;
 
 /**
  * Weather class, renderable, changes with {@link Epoch}
@@ -48,8 +46,6 @@ public final class WeatherRenderer {
 	public static Vector2 orbitalPivot 									= new Vector2(getGraphics().getWidth()/2, getGraphics().getHeight()/4);
 
 	private static final LinkedList<CelestialBody> celestialBodies		= Lists.newLinkedList();
-	private static final LinkedList<Cloud> clouds						= Lists.newLinkedList();
-
 
 	/**
 	 * Renders the {@link WeatherRenderer}
@@ -58,30 +54,24 @@ public final class WeatherRenderer {
 		renderSky(toDrawTo, world);
 		renderStars(toDrawTo, world);
 		updateSun(world);
-		renderClouds(toDrawTo, world);
+		
+		toDrawTo.begin();
+		renderClouds(world);
+		toDrawTo.end();
 	}
 
 
-	private static void renderClouds(FrameBuffer toDrawTo, World world) {
-		
-		if (clouds.isEmpty()) {
-			clouds.add(
-				new Cloud(new Vector2(0, 3000))
-				.segment(new CloudSegment(10f, new Vector2(), 0f, Color.WHITE, 99999f, 60f))
-				.segment(new CloudSegment(20f, new Vector2(10, 0), 0f, Color.WHITE, 99999f, 60f))
-				.segment(new CloudSegment(5f, new Vector2(-20, 0), 0f, Color.WHITE, 99999f, 60f))
-				.segment(new CloudSegment(10f, new Vector2(0, 20), 0f, Color.WHITE, 99999f, 60f))
-			);
+	public static void renderClouds(World world) {
+		getGraphics().getSpriteBatch().begin();
+		getGraphics().getSpriteBatch().setShader(Shaders.transparentPass);
+		int source = getGraphics().getSpriteBatch().getBlendSrcFunc();
+		int destination = getGraphics().getSpriteBatch().getBlendDstFunc();
+		getGraphics().getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		for (Cloud c : world.getClouds()) {
+			c.render(getGraphics().getSpriteBatch(), getGraphics().getCam().position);
 		}
-		
-		WorldRenderer.shapeRenderer.setProjectionMatrix(getGraphics().getCam().projection);
-		WorldRenderer.shapeRenderer.setTransformMatrix(getGraphics().getCam().view);
-		WorldRenderer.shapeRenderer.begin(ShapeType.Filled);
-		WorldRenderer.shapeRenderer.circle(0, 3000, 1000f);
-//		for (Cloud c : clouds) {
-//			c.render(WorldRenderer.shapeRenderer, BloodAndMithrilClient.getWorldcamcoordinates().get(Domain.getActiveWorldId()));
-//		}
-		WorldRenderer.shapeRenderer.end();
+		getGraphics().getSpriteBatch().setBlendFunction(source, destination);
+		getGraphics().getSpriteBatch().end();
 	}
 
 
