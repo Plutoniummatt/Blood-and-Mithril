@@ -753,7 +753,7 @@ public class UserInterface {
 	 */
 	public static void leftClickRelease(int screenX, int screenY) {
 
-		if (initialLeftMouseDragCoordinates != null) {
+		if (initialLeftMouseDragCoordinates != null && BloodAndMithrilClient.isInGame()) {
 			Vector2 diagCorner1 = initialLeftMouseDragCoordinates.cpy();
 			Vector2 diagCorner2 = new Vector2(screenX, screenY);
 
