@@ -5,6 +5,7 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import java.io.Serializable;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
@@ -47,12 +48,12 @@ public abstract class Particle implements Serializable {
 		this.depth = depth;
 		this.particleId = ParameterPersistenceService.getParameters().getNextParticleId();
 	}
-	
-	
+
+
 	/**
 	 * Renders the point of this particle
 	 */
-	public abstract void render(float delta);
+	public abstract void render(float delta, TextureRegion texture);
 
 	/**
 	 * Renders the movement line, if required

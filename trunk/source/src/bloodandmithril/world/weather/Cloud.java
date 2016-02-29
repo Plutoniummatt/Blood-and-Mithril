@@ -107,12 +107,12 @@ public final class Cloud implements Serializable {
 	 */
 	public void render(SpriteBatch spriteBatch, Vector3 camLocation) {
 		for (CloudSegment segment : segments) {
-			Shaders.transparentPass.setUniformf("feather", segment.feather);
-			Shaders.transparentPass.setUniformf("topLeft", circle.getU(), circle.getV());
-			Shaders.transparentPass.setUniformf("bottomRight", circle.getU2(), circle.getV2());
+			Shaders.particleTexture.setUniformf("feather", segment.feather);
+			Shaders.particleTexture.setUniformf("topLeft", circle.getU(), circle.getV());
+			Shaders.particleTexture.setUniformf("bottomRight", circle.getU2(), circle.getV2());
 			
 			Color daylightColor = WeatherRenderer.getDaylightColor(Domain.getActiveWorld());
-			Shaders.transparentPass.setUniformf("override", daylightColor.r, daylightColor.g, daylightColor.b, 0.04f);
+			Shaders.particleTexture.setUniformf("override", daylightColor.r, daylightColor.g, daylightColor.b, 0.04f);
 			
 			spriteBatch.draw(
 				circle, 
