@@ -128,9 +128,9 @@ public class Campfire extends CraftingStation implements Lightable {
 			float size1 = Util.getRandom().nextFloat();
 			float size2 = Util.getRandom().nextFloat();
 
-			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 8f, 15f, Colors.FIRE_START, Colors.FIRE_START, size1 * 3.5f, size1 * 16f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
-			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 8f, 15f, Colors.FIRE_START, Colors.FIRE_START, size2 * 3.5f, size2 * 16f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1200), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 7f, 30f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(5000), Depth.MIDDLEGROUND, false, null);
+			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 8f, 15f, Color.WHITE, Colors.FIRE_START, size1 * 3.5f, size1 * 16f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
+			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 8f, 15f, Color.WHITE, Colors.FIRE_START, size2 * 3.5f, size2 * 16f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1200), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 		}
 	}
 
