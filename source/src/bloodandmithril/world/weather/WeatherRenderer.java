@@ -63,7 +63,7 @@ public final class WeatherRenderer {
 
 	public static void renderClouds(World world) {
 		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.transparentPass);
+		getGraphics().getSpriteBatch().setShader(Shaders.particleTexture);
 		int source = getGraphics().getSpriteBatch().getBlendSrcFunc();
 		int destination = getGraphics().getSpriteBatch().getBlendDstFunc();
 		getGraphics().getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);

@@ -1,6 +1,11 @@
 package bloodandmithril.graphics.particles;
 
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -9,10 +14,6 @@ import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Texture backed particle, should be efficient at rendering.
@@ -43,7 +44,7 @@ public class TextureBackedParticle extends Particle {
 
 
 	@Override
-	public void render(float delta) {
+	public void render(float delta, TextureRegion texture) {
 		Topography topography = Domain.getWorld(worldId).getTopography();
 		if (topography.hasTile(position.x, position.y, true)) {
 			try {

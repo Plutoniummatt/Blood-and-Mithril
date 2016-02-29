@@ -22,13 +22,15 @@ import static java.lang.Math.round;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import org.lwjgl.opengl.GL11;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
 
 import bloodandmithril.character.individuals.Individual;
@@ -69,12 +71,15 @@ public class WorldRenderer {
 	public static FrameBuffer fBufferQuantized;
 	public static FrameBuffer combinedBufferQuantized;
 
+	private static TextureRegion circle;
+
 	static {
 		if (ClientServerInterface.isClient()) {
 			gameWorldTexture = new Texture(files.internal("data/image/gameWorld.png"));
 			individualTexture = new Texture(files.internal("data/image/character/individual.png"));
 			gameWorldTexture.setFilter(Linear, Linear);
 			individualTexture.setFilter(Nearest, Nearest);
+			circle = new TextureRegion(WorldRenderer.gameWorldTexture, 102, 422, 100, 100);
 		}
 	}
 
@@ -119,10 +124,10 @@ public class WorldRenderer {
 		renderParticles(Depth.BACKGROUND, world);
 		getGraphics().getSpriteBatch().end();
 		bBuffer.end();
-	
+
 		int xOffset = round(getGraphics().getCam().position.x) % TILE_SIZE;
 		int yOffset = round(getGraphics().getCam().position.y) % TILE_SIZE;
-	
+
 		workingQuantized.begin();
 		getGraphics().getCam().position.x = getGraphics().getCam().position.x - xOffset;
 		getGraphics().getCam().position.y = getGraphics().getCam().position.y - yOffset;
@@ -132,7 +137,7 @@ public class WorldRenderer {
 		getGraphics().getCam().position.y = getGraphics().getCam().position.y + yOffset;
 		getGraphics().getCam().update();
 		workingQuantized.end();
-	
+
 		bBufferQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -142,7 +147,7 @@ public class WorldRenderer {
 		getGraphics().getSpriteBatch().draw(workingQuantized.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
 		getGraphics().getSpriteBatch().end();
 		bBufferQuantized.end();
-	
+
 		workingQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -154,7 +159,7 @@ public class WorldRenderer {
 		getGraphics().getCam().position.y = getGraphics().getCam().position.y + yOffset;
 		getGraphics().getCam().update();
 		workingQuantized.end();
-	
+
 		fBufferQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -164,7 +169,7 @@ public class WorldRenderer {
 		getGraphics().getSpriteBatch().draw(workingQuantized.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
 		getGraphics().getSpriteBatch().end();
 		fBufferQuantized.end();
-	
+
 		combinedBufferQuantized.begin();
 		getGraphics().getSpriteBatch().begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -179,7 +184,7 @@ public class WorldRenderer {
 		);
 		getGraphics().getSpriteBatch().end();
 		combinedBufferQuantized.end();
-	
+
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
 		getGraphics().getSpriteBatch().begin();
@@ -196,7 +201,7 @@ public class WorldRenderer {
 		renderParticles(MIDDLEGROUND, world);
 		getGraphics().getSpriteBatch().end();
 		mBuffer.end();
-	
+
 		fBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
 		individualTexture.setFilter(Linear, Linear);
@@ -243,7 +248,7 @@ public class WorldRenderer {
 		}
 		getGraphics().getSpriteBatch().end();
 		fBuffer.end();
-	
+
 		GaussianLightingRenderer.render(camX, camY, world);
 		BloodAndMithrilClient.rendering.set(false);
 	}
@@ -266,24 +271,32 @@ public class WorldRenderer {
 			});
 		}
 		shapeRenderer.end();
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setProjectionMatrix(getGraphics().getCam().projection);
-		shapeRenderer.setTransformMatrix(getGraphics().getCam().view);
+
+		getGraphics().getSpriteBatch().setShader(Shaders.particleTexture);
+		int source = getGraphics().getSpriteBatch().getBlendSrcFunc();
+		int destination = getGraphics().getSpriteBatch().getBlendDstFunc();
+		getGraphics().getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		Shaders.particleTexture.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
+		Shaders.particleTexture.setUniformf("feather", 0.1f);
+		Shaders.particleTexture.setUniformf("topLeft", circle.getU(), circle.getV());
+		Shaders.particleTexture.setUniformf("bottomRight", circle.getU2(), circle.getV2());
 		if (world.getClientParticles() != null) {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
 			world.getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
-				p.render(Gdx.graphics.getDeltaTime());
+				p.render(Gdx.graphics.getDeltaTime(), circle);
 				counter.t++;
 			});
 		}
 		if (world.getServerParticles() != null) {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
 			world.getServerParticles().values().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
-				p.render(Gdx.graphics.getDeltaTime());
+				p.render(Gdx.graphics.getDeltaTime(), circle);
 				counter.t++;
 			});
 		}
-		shapeRenderer.end();
+		getGraphics().getSpriteBatch().flush();
+		getGraphics().getSpriteBatch().setBlendFunction(source, destination);
+
 		gl20.glDisable(GL20.GL_BLEND);
 	}
 

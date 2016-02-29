@@ -17,7 +17,7 @@ import bloodandmithril.util.Logger.LogLevel;
 public class Shaders {
 
 	public static ShaderProgram pass = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/pass.fp"));
-	public static ShaderProgram transparentPass = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/transparentPass.fp"));
+	public static ShaderProgram particleTexture = new ShaderProgram(Gdx.files.internal("data/shader/pass.vp"), Gdx.files.internal("data/shader/particleTexture.fp"));
 	public static ShaderProgram text = SpriteBatch.createDefaultShader();
 	public static ShaderProgram filter = colorFilterShader();
 	public static ShaderProgram filter2 = colorFilterShader();

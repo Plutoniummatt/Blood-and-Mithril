@@ -1,18 +1,21 @@
 package bloodandmithril.graphics.particles;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+
+import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.util.Performance;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
+import bloodandmithril.util.Shaders;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A particle that renders like a tracer, the length scales linearly with the velocity of the particle.
@@ -37,13 +40,20 @@ public class TracerParticle extends Particle {
 
 
 	@Override
-	public synchronized void render(float delta) {
+	public synchronized void render(float delta, TextureRegion texture) {
 		Topography topography = Domain.getWorld(worldId).getTopography();
 		if (topography.hasTile(position.x, position.y, true)) {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
-					WorldRenderer.shapeRenderer.setColor(color.getColor());
-					WorldRenderer.shapeRenderer.circle(position.x, position.y, radius <= 0.05f ? 0.05f : radius);
+					Color c = color.getColor();
+					Shaders.particleTexture.setUniformf("override", c.r, c.g, c.b, c.a);
+					BloodAndMithrilClient.getGraphics().getSpriteBatch().draw(
+						texture,
+						position.x - radius,
+						position.y - radius,
+						radius * 2,
+						radius * 2
+					);
 				}
 			} catch (NoTileFoundException e) {}
 		}
