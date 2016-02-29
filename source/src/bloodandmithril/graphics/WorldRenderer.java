@@ -277,13 +277,14 @@ public class WorldRenderer {
 		int destination = getGraphics().getSpriteBatch().getBlendDstFunc();
 		getGraphics().getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		Shaders.particleTexture.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
-		Shaders.particleTexture.setUniformf("feather", 0.1f);
+		Shaders.particleTexture.setUniformf("feather", 0.3f);
 		Shaders.particleTexture.setUniformf("topLeft", circle.getU(), circle.getV());
 		Shaders.particleTexture.setUniformf("bottomRight", circle.getU2(), circle.getV2());
 		if (world.getClientParticles() != null) {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
 			world.getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime(), circle);
+				getGraphics().getSpriteBatch().flush();
 				counter.t++;
 			});
 		}
@@ -291,6 +292,7 @@ public class WorldRenderer {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
 			world.getServerParticles().values().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime(), circle);
+				getGraphics().getSpriteBatch().flush();
 				counter.t++;
 			});
 		}
