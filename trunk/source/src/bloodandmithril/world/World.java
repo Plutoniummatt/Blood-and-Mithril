@@ -108,9 +108,9 @@ public final class World implements Serializable {
 		this.topography = new Topography(worldId);
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
 		
-		clouds.add(new Cloud(new Vector2(-2000, 200), 130, 20, 30, 300, 1000, 0.2f));
-		clouds.add(new Cloud(new Vector2(-200, 200), 130, 20, 30, 300, 1000, 0.2f));
-		clouds.add(new Cloud(new Vector2(1600, 200), 130, 20, 30, 300, 1000, 0.2f));
+		clouds.add(new Cloud(new Vector2(-2000, 200), 200, 20, 30, 300, 1000, 0.2f));
+		clouds.add(new Cloud(new Vector2(-200, 200), 200, 20, 30, 300, 1000, 0.2f));
+		clouds.add(new Cloud(new Vector2(1600, 200), 200, 20, 30, 300, 1000, 0.2f));
 	}
 
 
@@ -169,7 +169,7 @@ public final class World implements Serializable {
 		}
 		
 		if (System.currentTimeMillis() > lastCloudAdd + 180 * 1000) {
-			clouds.add(new Cloud(new Vector2(-2000, 200), 130, 20, 30, 300, 1000, 0.2f));
+			clouds.add(new Cloud(new Vector2(-2000, 200), 200, 20, 30, 300, 1000, 0.2f));
 			System.out.println("Cloud added");
 			
 			lastCloudAdd = System.currentTimeMillis();

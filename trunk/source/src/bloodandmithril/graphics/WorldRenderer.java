@@ -46,6 +46,7 @@ import bloodandmithril.util.datastructure.Wrapper;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
+import bloodandmithril.world.weather.WeatherRenderer;
 
 /**
  * Class for rendering {@link World}s
@@ -66,6 +67,7 @@ public class WorldRenderer {
 	public static FrameBuffer fBuffer;
 	public static FrameBuffer mBuffer;
 	public static FrameBuffer bBuffer;
+	public static FrameBuffer cloudBuffer;
 	public static FrameBuffer workingQuantized;
 	public static FrameBuffer bBufferQuantized;
 	public static FrameBuffer fBufferQuantized;
@@ -87,6 +89,7 @@ public class WorldRenderer {
 		fBuffer.dispose();
 		mBuffer.dispose();
 		bBuffer.dispose();
+		cloudBuffer.dispose();
 		workingQuantized.dispose();
 		bBufferQuantized.dispose();
 		fBufferQuantized.dispose();
@@ -101,6 +104,7 @@ public class WorldRenderer {
 		bBufferQuantized 					= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
 		fBufferQuantized 					= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
 		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
+		cloudBuffer 						= new FrameBuffer(RGBA8888, getGraphics().getWidth(), getGraphics().getHeight(), false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
@@ -124,6 +128,12 @@ public class WorldRenderer {
 		renderParticles(Depth.BACKGROUND, world);
 		getGraphics().getSpriteBatch().end();
 		bBuffer.end();
+		
+		cloudBuffer.begin();
+		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		WeatherRenderer.renderClouds(world);
+		cloudBuffer.end();
 
 		int xOffset = round(getGraphics().getCam().position.x) % TILE_SIZE;
 		int yOffset = round(getGraphics().getCam().position.y) % TILE_SIZE;

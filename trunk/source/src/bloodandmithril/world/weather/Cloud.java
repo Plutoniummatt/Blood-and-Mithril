@@ -18,7 +18,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
-import bloodandmithril.world.Domain;
 
 public final class Cloud implements Serializable {
 	private static final long serialVersionUID = 7809733656698481649L;
@@ -62,7 +61,7 @@ public final class Cloud implements Serializable {
 					Color.WHITE, 
 					99999f, 
 					60f, 
-					0.2f
+					0.5f
 				)
 			);
 		}
@@ -83,7 +82,7 @@ public final class Cloud implements Serializable {
 					Color.WHITE, 
 					99999f, 
 					60f, 
-					0.2f
+					0.5f
 				)
 			);
 		}
@@ -107,13 +106,10 @@ public final class Cloud implements Serializable {
 	 */
 	public void render(SpriteBatch spriteBatch, Vector3 camLocation) {
 		for (CloudSegment segment : segments) {
+			Shaders.particleTexture.setUniformf("override", 1f, 1f, 1f, 0.3f);
 			Shaders.particleTexture.setUniformf("feather", segment.feather);
 			Shaders.particleTexture.setUniformf("topLeft", circle.getU(), circle.getV());
 			Shaders.particleTexture.setUniformf("bottomRight", circle.getU2(), circle.getV2());
-			
-			Color daylightColor = WeatherRenderer.getDaylightColor(Domain.getActiveWorld());
-			Shaders.particleTexture.setUniformf("override", daylightColor.r, daylightColor.g, daylightColor.b, 0.04f);
-			
 			spriteBatch.draw(
 				circle, 
 				-camLocation.x * 0.01f + position.x - segment.radius + segment.relativePosition.x + (camLocation.x * 0.01f - position.x) * segment.distance * 2f, 
@@ -121,6 +117,7 @@ public final class Cloud implements Serializable {
 				segment.radius * 2,
 				segment.radius * 2
 			);
+			spriteBatch.flush();
 		}
 	}
 	

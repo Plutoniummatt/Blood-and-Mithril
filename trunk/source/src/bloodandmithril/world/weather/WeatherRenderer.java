@@ -54,10 +54,6 @@ public final class WeatherRenderer {
 		renderSky(toDrawTo, world);
 		renderStars(toDrawTo, world);
 		updateSun(world);
-		
-		toDrawTo.begin();
-		renderClouds(world);
-		toDrawTo.end();
 	}
 
 
@@ -66,7 +62,7 @@ public final class WeatherRenderer {
 		getGraphics().getSpriteBatch().setShader(Shaders.particleTexture);
 		int source = getGraphics().getSpriteBatch().getBlendSrcFunc();
 		int destination = getGraphics().getSpriteBatch().getBlendDstFunc();
-		getGraphics().getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		getGraphics().getSpriteBatch().setBlendFunction(GL11.GL_ONE, GL11.GL_ONE);
 		for (Cloud c : world.getClouds()) {
 			c.render(getGraphics().getSpriteBatch(), getGraphics().getCam().position);
 		}
