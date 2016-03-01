@@ -270,6 +270,7 @@ public class WorldRenderer {
 		shapeRenderer.begin(Line);
 		shapeRenderer.setProjectionMatrix(getGraphics().getCam().projection);
 		shapeRenderer.setTransformMatrix(getGraphics().getCam().view);
+		gl20.glEnable(GL11.GL_LINE_SMOOTH);
 		if (world.getClientParticles() != null) {
 			world.getClientParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
 				p.renderLine(Gdx.graphics.getDeltaTime());
@@ -280,6 +281,7 @@ public class WorldRenderer {
 				p.renderLine(Gdx.graphics.getDeltaTime());
 			});
 		}
+		gl20.glDisable(GL11.GL_LINE_SMOOTH);
 		shapeRenderer.end();
 
 		getGraphics().getSpriteBatch().setShader(Shaders.particleTexture);
