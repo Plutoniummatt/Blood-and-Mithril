@@ -246,10 +246,15 @@ public class GaussianLightingRenderer {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		workingFBO.end();
 		WeatherRenderer.render(workingFBO, world);
+		
 
 		getGraphics().getSpriteBatch().begin();
 		getGraphics().getSpriteBatch().setShader(Shaders.invertY);
 		getGraphics().getSpriteBatch().draw(workingFBO.getColorBufferTexture(), 0, 0);
+		getGraphics().getSpriteBatch().flush();
+		getGraphics().getSpriteBatch().setShader(Shaders.invertYFilter);
+		Shaders.invertYFilter.setUniformf("color", WeatherRenderer.getSunColor(world));
+		getGraphics().getSpriteBatch().draw(WorldRenderer.cloudBuffer.getColorBufferTexture(), 0, 0);
 		getGraphics().getSpriteBatch().end();
 	}
 
