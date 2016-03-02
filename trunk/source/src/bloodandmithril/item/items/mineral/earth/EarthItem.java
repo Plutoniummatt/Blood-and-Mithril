@@ -21,7 +21,7 @@ public abstract class EarthItem extends MineralItem {
 
 
 	@Override
-	public Category getType() {
-		return Category.EARTH;
+	public ItemCategory getType() {
+		return ItemCategory.EARTH;
 	}
 }

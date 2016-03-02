@@ -600,7 +600,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	/**
 	 * @return the description of the item type
 	 */
-	public abstract Category getType();
+	public abstract ItemCategory getType();
 
 	@Override
 	public String modifyName(String original) {
@@ -624,36 +624,42 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	}
 
 
-	public enum Category {
-		ONEHANDEDSWORD("One-handed sword"),
-		DAGGER("Dagger"),
-		ONEHANDEDAXE("One-handed axe"),
-		ONEHANDEDBLUNT("One-handed Blunt"),
-		ONEHANDEDSPEAR("One-handed spear"),
-		BOW("Bow"),
-		RING("Ring"),
-		PICKAXE("Pickaxe"),
+	public enum ItemCategory {
+		ONEHANDEDSWORD("One-handed sword", Color.ORANGE),
+		DAGGER("Dagger", Color.ORANGE),
+		ONEHANDEDAXE("One-handed axe", Color.ORANGE),
+		ONEHANDEDBLUNT("One-handed Blunt", Color.ORANGE),
+		ONEHANDEDSPEAR("One-handed spear", Color.ORANGE),
+		BOW("Bow", Color.ORANGE),
+		RING("Ring", Color.ORANGE),
+		PICKAXE("Pickaxe", Color.ORANGE),
 
-		EARTH("Earth"),
-		MATERIAL("Material"),
+		EARTH("Earth", Color.WHITE),
+		MATERIAL("Material", Color.WHITE),
 
-		FOOD("Food"),
-		CONTAINER("Container"),
+		FOOD("Food", Color.GREEN),
+		CONTAINER("Container", Color.MAGENTA),
 
-		AMMO("Ammunition"),
-		KEY("Key"),
-		MISC("Miscellaneous"),
-		OFFHAND("Off-hand"),
-		SEED("Seed"),
-		FURNITURE("Furniture");
+		AMMO("Ammunition", Color.ORANGE),
+		KEY("Key", Color.WHITE),
+		MISC("Miscellaneous", Color.WHITE),
+		OFFHAND("Off-hand", Color.ORANGE),
+		SEED("Seed", Color.WHITE),
+		FURNITURE("Furniture", Color.MAROON);
 
 		private String value;
-		private Category(String value) {
+		private Color color;
+		private ItemCategory(String value, Color color) {
 			this.value = value;
+			this.color = color;
 		}
 
 		public String getValue() {
 			return value;
+		}
+
+		public Color getColor() {
+			return color;
 		}
 	}
 

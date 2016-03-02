@@ -94,7 +94,7 @@ public class TradeWindow extends Window implements Refreshable {
 	);
 
 	private final Button proposerButton, proposeeButton;
-	
+
 	/** The text search predicate */
 	private String searchString = "";
 	private final Predicate<Item> textSearch = new Predicate<Item>() {
@@ -103,7 +103,7 @@ public class TradeWindow extends Window implements Refreshable {
 			return input.getSingular(true).toUpperCase().contains(searchString.toUpperCase());
 		}
 	};
-	
+
 	/** Input for text searching */
 	private final TextInputFieldPanel textInput = new TextInputFieldPanel(this, "");
 
@@ -459,7 +459,7 @@ public class TradeWindow extends Window implements Refreshable {
 						changeList(entry.getKey(), 1, trading, notTrading, false);
 					}
 				},
-				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.ORANGE : Color.DARK_GRAY,
+				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? entry.getKey().getType().getColor() : Color.DARK_GRAY,
 				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.GREEN : Colors.UI_DARKER_GRAY,
 				isItemAvailableToTrade(proposer, proposee, entry.getKey()) ? Color.WHITE : Colors.UI_DARKER_GRAY,
 				UIRef.BL
@@ -645,7 +645,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 		InventoryWindow.renderCapacityIndicationText(proposer, this, 6, -height, " (+" + String.format("%.2f", proposeeMass) + ")", " (+" + proposeeVolume + ")");
 		InventoryWindow.renderCapacityIndicationText(proposee, this, width / 2 + 6, -height, " (+" + String.format("%.2f", proposerMass) + ")", " (+" + proposerVolume + ")");
-		
+
 		// Render the text search
 		textInput.x = x + 6;
 		textInput.y = y - height + 90;
@@ -749,8 +749,8 @@ public class TradeWindow extends Window implements Refreshable {
 			tradeButton.click();
 		}
 	}
-	
-	
+
+
 	@Override
 	public boolean keyPressed(int keyCode) {
 		boolean keyPressed = textInput.keyPressed(keyCode);

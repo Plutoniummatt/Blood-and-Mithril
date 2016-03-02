@@ -28,8 +28,8 @@ public abstract class MiscItem extends Item {
 	}
 
 	@Override
-	public Category getType() {
-		return Category.MISC;
+	public ItemCategory getType() {
+		return ItemCategory.MISC;
 	}
 
 	@Override

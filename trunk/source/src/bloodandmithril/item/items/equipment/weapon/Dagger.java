@@ -186,8 +186,8 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 
 	@Override
-	public Category getType() {
-		return Category.DAGGER;
+	public ItemCategory getType() {
+		return ItemCategory.DAGGER;
 	}
 
 

@@ -22,7 +22,7 @@ public abstract class FurnitureItem extends PropItem {
 
 
 	@Override
-	public Category getType() {
-		return Category.FURNITURE;
+	public ItemCategory getType() {
+		return ItemCategory.FURNITURE;
 	}
 }

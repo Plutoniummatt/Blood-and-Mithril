@@ -22,8 +22,8 @@ public abstract class Food extends Item implements Consumable {
 
 
 	@Override
-	public Category getType() {
-		return Category.FOOD;
+	public ItemCategory getType() {
+		return ItemCategory.FOOD;
 	}
 
 	@Override

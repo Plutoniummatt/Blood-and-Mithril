@@ -24,8 +24,8 @@ public abstract class SeedItem extends Item {
 	}
 
 	@Override
-	public Category getType() {
-		return Category.SEED;
+	public ItemCategory getType() {
+		return ItemCategory.SEED;
 	}
 
 	@Override

@@ -122,8 +122,8 @@ public abstract class LiquidContainerItem extends Item {
 	 * @return the description of the item type
 	 */
 	@Override
-	public Category getType() {
-		return Category.CONTAINER;
+	public ItemCategory getType() {
+		return ItemCategory.CONTAINER;
 	}
 
 

@@ -209,8 +209,8 @@ public abstract class Projectile implements Serializable {
 
 
 		@Override
-		public Category getType() {
-			return Category.AMMO;
+		public ItemCategory getType() {
+			return ItemCategory.AMMO;
 		}
 
 		public abstract Projectile getProjectile();

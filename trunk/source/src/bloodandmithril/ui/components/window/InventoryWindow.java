@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -29,7 +30,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.Item.Category;
+import bloodandmithril.item.items.Item.ItemCategory;
 import bloodandmithril.item.items.PropItem;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.item.items.container.ContainerImpl;
@@ -97,7 +98,10 @@ public class InventoryWindow extends Window implements Refreshable {
 	public static Comparator<Item> inventorySortingOrder = new Comparator<Item>() {
 		@Override
 		public int compare(Item o1, Item o2) {
-			return o1.getSingular(false).compareTo(o2.getSingular(false));
+			return ComparisonChain.start()
+					.compare(o1.getType().getColor().toIntBits(), o2.getType().getColor().toIntBits())
+					.compare(o1.getSingular(false).toUpperCase(), o2.getSingular(false).toUpperCase())
+					.result();
 		}
 	};
 
@@ -149,8 +153,8 @@ public class InventoryWindow extends Window implements Refreshable {
 		filters.put("Furniture", 	WrapperForTwo.wrap(item -> {return item instanceof FurnitureItem;}, true));
 		filters.put("Misc", 		WrapperForTwo.wrap(item -> {return item instanceof MiscItem;}, true));
 		filters.put("Seed", 		WrapperForTwo.wrap(item -> {return item instanceof SeedItem;}, true));
-		filters.put("Ammo", 		WrapperForTwo.wrap(item -> {return item.getType() == Category.AMMO;}, true));
-		filters.put("Off-hand",		WrapperForTwo.wrap(item -> {return item.getType() == Category.OFFHAND;}, true));
+		filters.put("Ammo", 		WrapperForTwo.wrap(item -> {return item.getType() == ItemCategory.AMMO;}, true));
+		filters.put("Off-hand",		WrapperForTwo.wrap(item -> {return item.getType() == ItemCategory.OFFHAND;}, true));
 
 		return new ScrollableListingPanel<Button, String>(parent, (b1, b2) -> {
 			return b1.text.call().compareTo(b2.text.call());
@@ -501,7 +505,7 @@ public class InventoryWindow extends Window implements Refreshable {
 					menuToAddUnequipped.x = BloodAndMithrilClient.getMouseScreenX();
 					menuToAddUnequipped.y = BloodAndMithrilClient.getMouseScreenY();
 				},
-				eq ? Color.GREEN : Color.ORANGE,
+				eq ? Color.GREEN : item.getKey().getType().getColor(),
 				Color.GREEN,
 				Color.WHITE,
 				UIRef.BL
