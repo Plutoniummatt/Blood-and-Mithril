@@ -24,8 +24,8 @@ public abstract class Shield extends OffhandEquipment implements Craftable {
 
 
 	@Override
-	public Category getType() {
-		return Category.OFFHAND;
+	public ItemCategory getType() {
+		return ItemCategory.OFFHAND;
 	}
 
 

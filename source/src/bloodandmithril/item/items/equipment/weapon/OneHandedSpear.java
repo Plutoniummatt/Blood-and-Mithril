@@ -182,7 +182,7 @@ public abstract class OneHandedSpear<T extends Metal> extends OneHandedMeleeWeap
 
 
 	@Override
-	public Category getType() {
-		return Category.ONEHANDEDSPEAR;
+	public ItemCategory getType() {
+		return ItemCategory.ONEHANDEDSPEAR;
 	}
 }

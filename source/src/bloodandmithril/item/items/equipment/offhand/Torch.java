@@ -114,8 +114,8 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 
 
 	@Override
-	public Category getType() {
-		return Category.OFFHAND;
+	public ItemCategory getType() {
+		return ItemCategory.OFFHAND;
 	}
 
 

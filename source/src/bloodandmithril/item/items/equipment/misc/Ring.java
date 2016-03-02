@@ -46,8 +46,8 @@ public abstract class Ring extends Equipable implements Craftable {
 	 * @return the description of the item type
 	 */
 	@Override
-	public Category getType() {
-		return Category.RING;
+	public ItemCategory getType() {
+		return ItemCategory.RING;
 	}
 
 	@Override

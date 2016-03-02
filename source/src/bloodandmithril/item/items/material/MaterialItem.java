@@ -28,8 +28,8 @@ public abstract class MaterialItem extends Item {
 	}
 
 	@Override
-	public Category getType() {
-		return Category.MATERIAL;
+	public ItemCategory getType() {
+		return ItemCategory.MATERIAL;
 	}
 
 	@Override

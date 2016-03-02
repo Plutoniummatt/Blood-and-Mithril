@@ -185,7 +185,7 @@ public abstract class OneHandedBlunt<T extends Material> extends OneHandedMeleeW
 
 
 	@Override
-	public Category getType() {
-		return Category.ONEHANDEDBLUNT;
+	public ItemCategory getType() {
+		return ItemCategory.ONEHANDEDBLUNT;
 	}
 }

@@ -214,8 +214,8 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 
 
 	@Override
-	public Category getType() {
-		return Category.BOW;
+	public ItemCategory getType() {
+		return ItemCategory.BOW;
 	}
 
 

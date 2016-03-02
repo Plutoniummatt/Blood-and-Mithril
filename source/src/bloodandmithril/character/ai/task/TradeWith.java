@@ -3,6 +3,7 @@ package bloodandmithril.character.ai.task;
 import java.util.Comparator;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.ComparisonChain;
 
 import bloodandmithril.character.ai.AIProcessor.ReturnIndividualPosition;
 import bloodandmithril.character.ai.AITask;
@@ -35,7 +36,10 @@ public class TradeWith extends CompositeAITask {
 	public static Comparator<Item> sortOrder = new Comparator<Item>() {
 		@Override
 		public int compare(Item o1, Item o2) {
-			return o1.getSingular(false).compareTo(o2.getSingular(false));
+			return ComparisonChain.start()
+					.compare(o1.getType().getColor().toIntBits(), o2.getType().getColor().toIntBits())
+					.compare(o1.getSingular(false).toUpperCase(), o2.getSingular(false).toUpperCase())
+					.result();
 		}
 	};
 
@@ -83,7 +87,7 @@ public class TradeWith extends CompositeAITask {
 		} else if (proposee instanceof Individual) {
 			location = new ReturnIndividualPosition((Individual) proposee);
 		}
-		
+
 		setCurrentTask(new GoToMovingLocation(
 			proposer.getId(),
 			location,

@@ -104,8 +104,8 @@ public class Lantern extends OffhandEquipment {
 
 
 	@Override
-	public Category getType() {
-		return Category.OFFHAND;
+	public ItemCategory getType() {
+		return ItemCategory.OFFHAND;
 	}
 
 
