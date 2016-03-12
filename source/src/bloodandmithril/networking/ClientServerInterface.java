@@ -307,6 +307,7 @@ import bloodandmithril.prop.furniture.SmallWoodenCrateProp;
 import bloodandmithril.prop.furniture.WoodenChestProp;
 import bloodandmithril.prop.plant.DeadDesertBush;
 import bloodandmithril.prop.plant.DryGrass;
+import bloodandmithril.prop.plant.GreenGrass;
 import bloodandmithril.prop.plant.PlantProp;
 import bloodandmithril.prop.plant.seed.SeedProp;
 import bloodandmithril.ui.UserInterface.FloatingText;
@@ -339,6 +340,7 @@ import bloodandmithril.world.topography.tile.tiles.GlassTile;
 import bloodandmithril.world.topography.tile.tiles.SeditmentaryTile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
 import bloodandmithril.world.topography.tile.tiles.StoneTile;
+import bloodandmithril.world.topography.tile.tiles.brick.GreyBrickTile;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickFloor;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickPlatform;
 import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
@@ -384,7 +386,8 @@ public class ClientServerInterface {
 		registerClasses(client.getKryo());
 		client.start();
 		client.connect(5000, ip, 42685, 42686);
-		client.getKryo().setInstantiatorStrategy(new StdInstantiatorStrategy());
+		
+		((Kryo.DefaultInstantiatorStrategy) client.getKryo().getInstantiatorStrategy()).setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
 		client.getUpdateThread().setUncaughtExceptionHandler(
 			(thread, throwable) -> {
 				Logger.networkDebug(throwable.getMessage(), LogLevel.WARN);
@@ -513,6 +516,8 @@ public class ClientServerInterface {
 		kryo.setReferences(true);
 		kryo.register(RequestSpawnIndividual.class);
 
+		kryo.register(GreenGrass.class);
+		kryo.register(GreyBrickTile.class);
 		kryo.register(RepeatingCountdown.class);
 		kryo.register(RandomParticle.class);
 		kryo.register(SuspicionLevel.class);
@@ -1226,7 +1231,7 @@ public class ClientServerInterface {
 
 
 		public static synchronized void notifySyncPlayerList() {
-			List<String> names = Lists.newArrayList();
+			List<String> names = Lists.newLinkedList();
 			for (Connection connection : ClientServerInterface.server.getConnections()) {
 				names.add(ClientServerInterface.connectedPlayers.get(connection.getID()));
 			}
