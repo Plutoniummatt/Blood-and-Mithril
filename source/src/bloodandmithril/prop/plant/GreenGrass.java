@@ -1,8 +1,8 @@
 package bloodandmithril.prop.plant;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

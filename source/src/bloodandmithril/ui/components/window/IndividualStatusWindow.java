@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
@@ -19,7 +21,6 @@ import com.google.common.collect.Maps;
 
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -278,8 +279,8 @@ public class IndividualStatusWindow extends Window {
 						UIRef.BM
 					),
 					() -> { return new ContextMenu(
-						BloodAndMithrilClient.getMouseScreenX(),
-						BloodAndMithrilClient.getMouseScreenY(),
+						getMouseScreenX(),
+						getMouseScreenY(),
 						true,
 						new ContextMenu.MenuItem(
 							"Info",

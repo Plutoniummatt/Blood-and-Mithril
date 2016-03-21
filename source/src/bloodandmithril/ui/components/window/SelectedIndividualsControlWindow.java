@@ -1,14 +1,18 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -18,9 +22,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * {@link Window} with controls relevant to the selected entity
@@ -196,11 +197,11 @@ public class SelectedIndividualsControlWindow extends Window {
 			return true;
 		}
 
-		if (keyCode == getKeyMappings().toggleWalkRun.keyCode) {
+		if (keyCode == Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().toggleWalkRun.keyCode) {
 			buttons.get(0).getTask().execute();
 		}
 
-		if (keyCode == getKeyMappings().disableEnableAI.keyCode) {
+		if (keyCode == Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().disableEnableAI.keyCode) {
 			buttons.get(2).getTask().execute();
 		}
 		return false;

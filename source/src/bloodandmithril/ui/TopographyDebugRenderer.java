@@ -1,5 +1,6 @@
 package bloodandmithril.ui;
 
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 
@@ -101,17 +102,17 @@ public class TopographyDebugRenderer {
 
 		UserInterface.shapeRenderer.end();
 
-		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && BloodAndMithrilClient.devMode) {
-			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+		if (isKeyPressed(Keys.CONTROL_LEFT) && BloodAndMithrilClient.devMode) {
+			if (isKeyPressed(Input.Keys.LEFT)) {
 				topoX = topoX - 10;
 			}
-			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+			if (isKeyPressed(Input.Keys.RIGHT)) {
 				topoX = topoX + 10;
 			}
-			if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+			if (isKeyPressed(Input.Keys.DOWN)) {
 				topoY = topoY - 10;
 			}
-			if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			if (isKeyPressed(Input.Keys.UP)) {
 				topoY = topoY + 10;
 			}
 		}

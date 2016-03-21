@@ -1,7 +1,8 @@
 package bloodandmithril.character.ai.task;
 
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -15,8 +16,9 @@ import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
 import bloodandmithril.character.ai.pathfinding.implementations.AStarPathFinder;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Performance;
 import bloodandmithril.util.SerializableFunction;
@@ -140,7 +142,7 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 								toRemove++;
 							}
 						}
-						
+
 						goToWayPoint(closest, 4);
 					}
 				} catch (NoTileFoundException e) {}
@@ -174,10 +176,10 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 			float endY = nextPoint.waypoint.y;
 
 			UserInterface.shapeRenderer.line(
-				BloodAndMithrilClient.worldToScreenX(startX),
-				BloodAndMithrilClient.worldToScreenY(startY),
-				BloodAndMithrilClient.worldToScreenX(endX),
-				BloodAndMithrilClient.worldToScreenY(endY)
+				worldToScreenX(startX),
+				worldToScreenY(startY),
+				worldToScreenX(endX),
+				worldToScreenY(endY)
 			);
 
 			UserInterface.shapeRenderer.end();
@@ -229,16 +231,18 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 			notReached = Math.abs(wayPoint.waypoint.cpy().sub(host.getState().position).len()) > wayPoint.tolerance;
 		}
 
+		BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+
 		if (notReached) {
-			host.sendCommand(getKeyMappings().walk.keyCode, host.isWalking() || host.getState().stamina == 0f);
+			host.sendCommand(input.getKeyMappings().walk.keyCode, host.isWalking() || host.getState().stamina == 0f);
 			host.setWalking(host.isWalking() || host.getState().stamina == 0f);
-			if (!host.isCommandActive(getKeyMappings().moveRight.keyCode) && wayPoint.waypoint.x > host.getState().position.x) {
-				host.sendCommand(getKeyMappings().moveRight.keyCode, true);
-				host.sendCommand(getKeyMappings().moveLeft.keyCode, false);
+			if (!host.isCommandActive(input.getKeyMappings().moveRight.keyCode) && wayPoint.waypoint.x > host.getState().position.x) {
+				host.sendCommand(input.getKeyMappings().moveRight.keyCode, true);
+				host.sendCommand(input.getKeyMappings().moveLeft.keyCode, false);
 				stuckCounter++;
-			} else if (!host.isCommandActive(getKeyMappings().moveLeft.keyCode) && wayPoint.waypoint.x < host.getState().position.x) {
-				host.sendCommand(getKeyMappings().moveRight.keyCode, false);
-				host.sendCommand(getKeyMappings().moveLeft.keyCode, true);
+			} else if (!host.isCommandActive(input.getKeyMappings().moveLeft.keyCode) && wayPoint.waypoint.x < host.getState().position.x) {
+				host.sendCommand(input.getKeyMappings().moveRight.keyCode, false);
+				host.sendCommand(input.getKeyMappings().moveLeft.keyCode, true);
 				stuckCounter++;
 			}
 
@@ -299,9 +303,11 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 	public boolean uponCompletion() {
 		Individual host = Domain.getIndividual(hostId.getId());
 
-		host.sendCommand(getKeyMappings().moveRight.keyCode, false);
-		host.sendCommand(getKeyMappings().moveLeft.keyCode, false);
-		host.sendCommand(getKeyMappings().walk.keyCode, host.isWalking());
+		BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+
+		host.sendCommand(input.getKeyMappings().moveRight.keyCode, false);
+		host.sendCommand(input.getKeyMappings().moveLeft.keyCode, false);
+		host.sendCommand(input.getKeyMappings().walk.keyCode, host.isWalking());
 		host.setJumpOffToNull();
 
 		return false;

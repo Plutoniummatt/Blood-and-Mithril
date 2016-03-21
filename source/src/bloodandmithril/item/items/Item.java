@@ -1,5 +1,7 @@
 package bloodandmithril.item.items;
 
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.google.common.collect.Lists.newArrayList;
@@ -23,7 +25,6 @@ import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
 import bloodandmithril.graphics.WorldRenderer;
@@ -301,8 +302,8 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	@Override
 	public boolean isMouseOver() {
 		Vector2 mouseCoords = new Vector2(
-			BloodAndMithrilClient.getMouseWorldX(),
-			BloodAndMithrilClient.getMouseWorldY()
+			getMouseWorldX(),
+			getMouseWorldY()
 		);
 
 		TextureRegion textureRegion = getTextureRegion();

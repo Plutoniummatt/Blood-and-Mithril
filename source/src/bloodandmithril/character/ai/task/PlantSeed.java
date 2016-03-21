@@ -2,12 +2,12 @@ package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.ui.UserInterface.refreshRefreshableWindows;
 import static bloodandmithril.world.Domain.getIndividual;
 import static bloodandmithril.world.Domain.getWorld;
@@ -33,9 +33,10 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.prop.plant.seed.SeedProp;
@@ -309,7 +310,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 							}
 						}
 					});
-					BloodAndMithrilClient.setCursorBoundTask(cursorBoundTask);
+					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(cursorBoundTask);
 				},
 				Color.ORANGE,
 				Color.GREEN,

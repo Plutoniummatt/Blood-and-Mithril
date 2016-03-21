@@ -1,7 +1,7 @@
 package bloodandmithril.world.topography;
 
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.textureCoordinateQuantization;

@@ -1,9 +1,9 @@
 package bloodandmithril.character.ai.task;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

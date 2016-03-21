@@ -1,7 +1,6 @@
 package bloodandmithril.character.individuals;
 
 import static bloodandmithril.character.combat.CombatService.getAttackPeriod;
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static com.google.common.collect.Lists.newArrayList;
@@ -16,7 +15,9 @@ import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.individuals.Individual.Action;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.performance.PositionalIndexingService;
 import bloodandmithril.util.ParameterizedTask;
@@ -126,14 +127,16 @@ public class IndividualUpdateService {
 		indi.decreaseHunger(indi.hungerDrain() * (delta* 60f));
 		indi.decreaseThirst(indi.thirstDrain() * (delta* 60f));
 
+		BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+
 		if (indi.isWalking()) {
-			if (indi.isCommandActive(getKeyMappings().moveLeft.keyCode) || indi.isCommandActive(getKeyMappings().moveRight.keyCode)) {
+			if (indi.isCommandActive(input.getKeyMappings().moveLeft.keyCode) || indi.isCommandActive(input.getKeyMappings().moveRight.keyCode)) {
 				indi.increaseStamina(delta * indi.getState().staminaRegen / 2f);
 			} else {
 				indi.increaseStamina(delta * indi.getState().staminaRegen);
 			}
 		} else {
-			if (indi.isCommandActive(getKeyMappings().moveLeft.keyCode) || indi.isCommandActive(getKeyMappings().moveRight.keyCode)) {
+			if (indi.isCommandActive(input.getKeyMappings().moveLeft.keyCode) || indi.isCommandActive(input.getKeyMappings().moveRight.keyCode)) {
 				indi.decreaseStamina(indi.staminaDrain() * (delta* 60f));
 			} else {
 				indi.increaseStamina(delta * indi.getState().staminaRegen);

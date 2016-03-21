@@ -1,11 +1,11 @@
 package bloodandmithril.character.ai.task;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -24,9 +24,10 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.ai.task.Attack.ReturnVictimId;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -249,7 +250,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 					}
 				};
 
-				BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(task, true) {
+				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(new CursorBoundTask(task, true) {
 					@Override
 					public void renderUIGuide() {
 					}

@@ -1,9 +1,9 @@
 package bloodandmithril.util.cursorboundtask;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;

@@ -13,13 +13,15 @@ import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIG
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_TWO_HANDED_WEAPON;
 import static bloodandmithril.character.individuals.Individual.Action.ATTACK_RIGHT_UNARMED;
 import static bloodandmithril.character.individuals.Individual.Action.STAND_LEFT;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.util.ComparisonUtil.obj;
@@ -55,10 +57,11 @@ import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.character.proficiency.Proficiencies;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -417,7 +420,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 			shapeRenderer.end();
 		}
 
-		if (isAlive() && isMouseOver() && Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
+		BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+
+		if (isAlive() && isMouseOver() && isKeyPressed(input.getKeyMappings().attack.keyCode) && !isKeyPressed(input.getKeyMappings().rangedAttack.keyCode)) {
 			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.isIndividualSelected(this) || Domain.getSelectedIndividuals().size() > 1)) {
 				getGraphics().getSpriteBatch().setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
@@ -735,8 +740,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	/** True if mouse is over */
 	@Override
 	public final boolean isMouseOver() {
-		float x = BloodAndMithrilClient.getMouseWorldX();
-		float y = BloodAndMithrilClient.getMouseWorldY();
+		float x = getMouseWorldX();
+		float y = getMouseWorldY();
 
 		boolean ans = x >= getState().position.x - getWidth()/2 && x <= getState().position.x + getWidth()/2 && y >= getState().position.y && y <= getState().position.y + getHeight();
 		return ans;
@@ -1282,12 +1287,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 			return left;
 		}
 	}
-	
-	
+
+
 	public void followCam() {
-		BloodAndMithrilClient.setCamFollowFunction(() -> {
+		Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCamFollowFunction(() -> {
 			return getState().position.cpy().add(
-				0, 
+				0,
 				Gdx.graphics.getHeight() / 5
 			);
 		});

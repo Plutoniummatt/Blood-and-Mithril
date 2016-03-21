@@ -1,5 +1,8 @@
 package bloodandmithril.character.ai.pathfinding;
 
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,7 +13,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.character.ai.ArtificialIntelligence;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Performance;
@@ -112,22 +114,22 @@ public final class Path implements Serializable {
 			return;
 		}
 
-		float x = BloodAndMithrilClient.worldToScreenX(current.waypoint.x);
-		float y = BloodAndMithrilClient.worldToScreenY(current.waypoint.y);
+		float x = worldToScreenX(current.waypoint.x);
+		float y = worldToScreenY(current.waypoint.y);
 
 		UserInterface.shapeRenderer.begin(ShapeType.Filled);
 		UserInterface.shapeRenderer.circle(x, y, 3);
 		UserInterface.shapeRenderer.end();
 
 		do {
-			x = BloodAndMithrilClient.worldToScreenX(current.waypoint.x);
-			y = BloodAndMithrilClient.worldToScreenY(current.waypoint.y);
+			x = worldToScreenX(current.waypoint.x);
+			y = worldToScreenY(current.waypoint.y);
 
 			if (waypointsIterator.hasNext()) {
 				current = waypointsIterator.next();
 
-				float x2 = BloodAndMithrilClient.worldToScreenX(current.waypoint.x);
-				float y2 = BloodAndMithrilClient.worldToScreenY(current.waypoint.y);
+				float x2 = worldToScreenX(current.waypoint.x);
+				float y2 = worldToScreenY(current.waypoint.y);
 
 				UserInterface.shapeRenderer.begin(ShapeType.Line);
 				UserInterface.shapeRenderer.line(x, y, x2, y2);
@@ -181,8 +183,8 @@ public final class Path implements Serializable {
 	public int getSize() {
 		return waypoints.size();
 	}
-	
-	
+
+
 	public synchronized ConcurrentLinkedDeque<WayPoint> getWayPoints() {
 		return waypoints;
 	}

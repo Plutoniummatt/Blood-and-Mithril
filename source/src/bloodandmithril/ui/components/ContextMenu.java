@@ -1,8 +1,8 @@
 package bloodandmithril.ui.components;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Fonts;
@@ -147,7 +146,7 @@ public class ContextMenu extends Component {
 			}
 		}
 
-		return isInside(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
+		return isInside(getMouseScreenX(), getMouseScreenY());
 	}
 
 

@@ -1,5 +1,7 @@
 package bloodandmithril.prop;
 
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 
 import java.io.Serializable;
@@ -11,7 +13,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.character.ai.perception.Visible;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
 import bloodandmithril.graphics.WorldRenderer;
@@ -148,8 +149,8 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 	/** True if mouse is over this {@link Prop} */
 	@Override
 	public boolean isMouseOver() {
-		float mx = BloodAndMithrilClient.getMouseWorldX();
-		float my = BloodAndMithrilClient.getMouseWorldY();
+		float mx = getMouseWorldX();
+		float my = getMouseWorldY();
 
 		return mx > position.x - width/2 && mx < position.x + width/2 && my > position.y && my < position.y + height;
 	}
@@ -306,15 +307,15 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 
 		return false;
 	}
-	
-	
+
+
 	public static class ReturnPropPosition implements SerializableFunction<Vector2> {
 		private static final long serialVersionUID = 6231253952557168072L;
 		private Prop prop;
 		public ReturnPropPosition(Prop prop) {
 			this.prop = prop;
 		}
-		
+
 		@Override
 		public Vector2 call() {
 			return prop.position;

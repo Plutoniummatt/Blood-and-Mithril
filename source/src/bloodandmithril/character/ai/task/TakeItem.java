@@ -1,10 +1,10 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.world.Domain.getIndividual;
 import static bloodandmithril.world.Domain.getWorld;
 import static java.lang.Math.max;
@@ -36,9 +36,10 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
@@ -379,7 +380,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 			new ContextMenu.MenuItem(
 				"Choose area to loot",
 				() -> {
-					BloodAndMithrilClient.setCursorBoundTask(
+					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 						new ChooseAreaCursorBoundTask(
 							args -> {
 								routine.setAiTaskGenerator(new LootAreaTaskGenerator((Vector2) args[0], (Vector2) args[1], host.getId().getId()));

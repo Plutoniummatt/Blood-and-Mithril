@@ -1,12 +1,11 @@
 package bloodandmithril.character.ai.task;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.setCursorBoundTask;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.world.Domain.getIndividual;
 import static bloodandmithril.world.Domain.getWorld;
 import static java.lang.Math.max;
@@ -36,9 +35,10 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
@@ -386,7 +386,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 			new MenuItem(
 				"Light lightables in area",
 				() -> {
-					setCursorBoundTask(
+					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 						new ChooseAreaCursorBoundTask(
 							args -> {
 								routine.setAiTaskGenerator(new LightLightablesInAreaTaskGenerator((Vector2) args[0], (Vector2) args[1], host.getId().getId()));
@@ -423,7 +423,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 			new MenuItem(
 				"Light selected",
 				() -> {
-					setCursorBoundTask(
+					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 						new ChooseMultipleEntityCursorBoundTask<Prop, Integer>(true, Prop.class) {
 							@Override
 							public boolean canAdd(Prop f) {
@@ -469,7 +469,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 							public void keyPressed(int keyCode) {
 								if (keyCode == Keys.ENTER) {
 									routine.setAiTaskGenerator(new LightSelectedLightablesTaskGenerator(host.getId().getId(), entities, host.getWorldId()));
-									BloodAndMithrilClient.setCursorBoundTask(null);
+									Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(null);
 								}
 							}
 						}

@@ -2,16 +2,16 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
 import static bloodandmithril.character.individuals.Names.getUnknownNatureIdentifier;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldCoords;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.Util.Colors.lightColor;
 import static bloodandmithril.util.Util.Colors.lightSkinColor;
 import static bloodandmithril.world.Domain.getActiveWorld;
-import static com.badlogic.gdx.Gdx.input;
 
 import java.util.Comparator;
 import java.util.Deque;
@@ -23,7 +23,6 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -131,7 +130,7 @@ public class DevWindow extends Window {
 
 		panel.render();
 
-		if (Gdx.input.isKeyPressed(Keys.W)) {
+		if (isKeyPressed(Keys.W)) {
 			for (int i = 0; i < 2; i++) {
 				long lifetime = Util.getRandom().nextInt(10000);
 				Color randomOneOf = Util.randomOneOf(new Color(0.4f, 0.224f, 0.76f, 1.0f), new Color(0.1f, 0.763f, 0.324f, 1.0f));
@@ -218,8 +217,8 @@ public class DevWindow extends Window {
 
 		if (keyCode == Keys.T) {
 			Domain.getActiveWorld().getTopography().changeTile(
-				BloodAndMithrilClient.getMouseWorldX(),
-				BloodAndMithrilClient.getMouseWorldY(),
+				getMouseWorldX(),
+				getMouseWorldY(),
 				true,
 				YellowBrickTile.class
 			);
@@ -227,8 +226,8 @@ public class DevWindow extends Window {
 
 		if (keyCode == Keys.P) {
 			Domain.getActiveWorld().getTopography().changeTile(
-				BloodAndMithrilClient.getMouseWorldX(),
-				BloodAndMithrilClient.getMouseWorldY(),
+				getMouseWorldX(),
+				getMouseWorldY(),
 				true,
 				YellowBrickPlatform.class
 			);
@@ -236,8 +235,8 @@ public class DevWindow extends Window {
 
 		if (keyCode == Keys.D) {
 			Domain.getActiveWorld().getTopography().deleteTile(
-				BloodAndMithrilClient.getMouseWorldX(),
-				BloodAndMithrilClient.getMouseWorldY(),
+				getMouseWorldX(),
+				getMouseWorldY(),
 				true,
 				false
 			);
@@ -260,7 +259,7 @@ public class DevWindow extends Window {
 			id.setNickName("Elfie");
 
 			Elf elf = new Elf(
-				id, state, input.isKeyPressed(Input.Keys.Q) ? Faction.NPC : 2, true,
+				id, state, isKeyPressed(Input.Keys.Q) ? Faction.NPC : 2, true,
 				getActiveWorld(),
 				lightColor(),
 				lightColor(),

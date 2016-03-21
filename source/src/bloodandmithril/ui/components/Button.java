@@ -1,10 +1,11 @@
 package bloodandmithril.ui.components;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.isButtonPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.util.Util.fitToTextInputBox;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,8 +13,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Function;
@@ -194,7 +196,7 @@ public class Button {
 			Color idleColorToUse = active ? idleColor : idle == null ? idleColor.cpy() : idleColor;
 
 			if (isMouseOver() && active) {
-				if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode)) {
+				if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode)) {
 					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
 					font.draw(getGraphics().getSpriteBatch(), maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 				} else {
@@ -209,7 +211,7 @@ public class Button {
 			getGraphics().getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, alpha);
 			if (isMouseOver() && active) {
-				if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode)) {
+				if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode)) {
 					getGraphics().getSpriteBatch().draw(down, vec.x, vec.y);
 				} else {
 					getGraphics().getSpriteBatch().draw(over, vec.x, vec.y);
@@ -370,8 +372,8 @@ public class Button {
 		Vector2 vec = new Vector2();
 		morph(vec);
 
-		int mouseX = BloodAndMithrilClient.getMouseScreenX();
-		int mouseY = BloodAndMithrilClient.getMouseScreenY();
+		int mouseX = getMouseScreenX();
+		int mouseY = getMouseScreenY();
 
 		if (idle == null) {
 			return mouseX >= vec.x && mouseX <= vec.x + width && mouseY <= vec.y && mouseY >= vec.y - height;

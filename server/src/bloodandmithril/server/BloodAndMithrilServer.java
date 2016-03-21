@@ -1,5 +1,7 @@
 package bloodandmithril.server;
 
+import static bloodandmithril.control.InputUtilities.setInputProcessor;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.Executors;
@@ -181,7 +183,7 @@ public class BloodAndMithrilServer {
 			Domain.setActiveWorld(Domain.createWorld());
 			Domain.setup();
 
-			Gdx.input.setInputProcessor(this);
+			setInputProcessor(this);
 
 			PrefabricatedComponent.setup();
 		}

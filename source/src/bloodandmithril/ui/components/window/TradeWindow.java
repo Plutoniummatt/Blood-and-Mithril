@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static com.google.common.collect.Iterables.tryFind;
 import static com.google.common.collect.Maps.newHashMap;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -22,8 +22,9 @@ import com.google.common.collect.Maps;
 
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -434,7 +435,7 @@ public class TradeWindow extends Window implements Refreshable {
 						return;
 					}
 
-					if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkTrade.keyCode)) {
+					if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().bulkTrade.keyCode)) {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,
@@ -507,7 +508,7 @@ public class TradeWindow extends Window implements Refreshable {
 			key.getSingular(true).length() * 10,
 			16,
 			() -> {
-				if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkTrade.keyCode)) {
+				if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().bulkTrade.keyCode)) {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,

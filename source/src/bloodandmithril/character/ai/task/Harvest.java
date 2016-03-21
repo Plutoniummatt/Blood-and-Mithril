@@ -1,13 +1,12 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.setCursorBoundTask;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.world.Domain.getIndividual;
 import static bloodandmithril.world.Domain.getWorld;
 import static java.lang.Math.max;
@@ -40,9 +39,10 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
@@ -420,7 +420,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 			new ContextMenu.MenuItem(
 				"Harvest area",
 				() -> {
-					setCursorBoundTask(
+					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 						new ChooseAreaCursorBoundTask(
 							args -> {
 								routine.setAiTaskGenerator(new HarvestAreaTaskGenerator((Vector2) args[0], (Vector2) args[1], host.getId().getId()));
@@ -457,7 +457,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 			new ContextMenu.MenuItem(
 				"Harvest selected",
 				() -> {
-					setCursorBoundTask(
+					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 						new ChooseMultipleEntityCursorBoundTask<Prop, Integer>(true, Prop.class) {
 							@Override
 							public boolean canAdd(Prop f) {
@@ -504,7 +504,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 							public void keyPressed(int keyCode) {
 								if (keyCode == Keys.ENTER) {
 									routine.setAiTaskGenerator(new HarvestSelectedHarvestablesTaskGenerator(host.getId().getId(), entities, Domain.getActiveWorld().getWorldId()));
-									BloodAndMithrilClient.setCursorBoundTask(null);
+									Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(null);
 								}
 							}
 						}

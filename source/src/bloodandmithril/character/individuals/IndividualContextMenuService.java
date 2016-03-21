@@ -1,7 +1,7 @@
 package bloodandmithril.character.individuals;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Function;
@@ -412,8 +412,8 @@ public class IndividualContextMenuService {
 			)
 		);
 	}
-	
-	
+
+
 	/**
 	 * @return The show info {@link MenuItem} for this individual
 	 */
@@ -429,7 +429,7 @@ public class IndividualContextMenuService {
 			null
 		);
 	}
-	
+
 
 	/**
 	 * @return The show info {@link MenuItem} for this individual

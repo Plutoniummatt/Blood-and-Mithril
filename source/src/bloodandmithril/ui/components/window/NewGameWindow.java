@@ -1,9 +1,10 @@
 package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.character.individuals.Names.getRandomElfIdentifier;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.lightColor;
 import static bloodandmithril.util.Util.Colors.lightSkinColor;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -36,6 +36,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.proficiency.Proficiency;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
@@ -159,7 +160,7 @@ public class NewGameWindow extends Window {
 			getGraphics().getCam().position.x = startingPosition.x;
 			getGraphics().getCam().position.y = startingPosition.y;
 
-			BloodAndMithrilClient.setCursorBoundTask(
+			Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 				new ChooseStartingLocationCursorBoundTask(
 					Sets.newHashSet(filter(Lists.newArrayList(transform(startingIndividuals.keySet(), listingMenuItem -> {
 						return listingMenuItem.t;
@@ -594,7 +595,7 @@ public class NewGameWindow extends Window {
 
 			listingItem.button.setTask(
 				() -> {
-					if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+					if (isKeyPressed(Keys.CONTROL_LEFT)) {
 						if (selectedIndividual == listingItem.t) {
 							selectedIndividual = null;
 						}
@@ -644,7 +645,7 @@ public class NewGameWindow extends Window {
 							skill.getName().length() * 10,
 							16,
 							() -> {
-								if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+								if (isKeyPressed(Keys.CONTROL_LEFT)) {
 									if (skill.getLevel() > 0) {
 										skill.levelDown();
 										assignablePoints++;

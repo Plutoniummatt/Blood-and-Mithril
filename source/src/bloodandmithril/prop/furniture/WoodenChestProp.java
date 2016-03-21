@@ -1,5 +1,7 @@
 package bloodandmithril.prop.furniture;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.function.Function;
@@ -10,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -69,7 +70,7 @@ public class WoodenChestProp extends Furniture implements Container {
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(), true);
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			new MenuItem(

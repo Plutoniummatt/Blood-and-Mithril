@@ -1,5 +1,7 @@
 package bloodandmithril.prop.furniture;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 
@@ -9,7 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -72,7 +73,7 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(), true);
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 		final MedievalWallTorchProp thisCampfire = this;
 
 		menu.addMenuItem(

@@ -1,5 +1,7 @@
 package bloodandmithril.prop.construction.craftingstation;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -18,7 +20,6 @@ import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
@@ -109,7 +110,7 @@ public abstract class CraftingStation extends Construction {
 
 	@Override
 	protected ContextMenu getCompletedContextMenu() {
-		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(), true);
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			new MenuItem(

@@ -1,9 +1,11 @@
 package bloodandmithril.core;
 
-import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
-import static bloodandmithril.persistence.ConfigPersistenceService.getConfig;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.setInputProcessor;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
-import static com.badlogic.gdx.Gdx.input;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,8 +15,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,14 +26,10 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 import bloodandmithril.audio.SoundService;
-import bloodandmithril.character.ai.AIProcessor;
-import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.ai.task.Attack;
-import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
-import bloodandmithril.event.events.IndividualMoved;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.MainMenuBiomeDecider;
 import bloodandmithril.generation.component.PrefabricatedComponent;
@@ -48,23 +44,16 @@ import bloodandmithril.objectives.Mission;
 import bloodandmithril.performance.PositionalIndexingService;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.window.MainMenuWindow;
-import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.Function;
 import bloodandmithril.util.Shaders;
-import bloodandmithril.util.Util;
-import bloodandmithril.util.cursorboundtask.ThrowItemCursorBoundTask;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
-import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 import bloodandmithril.world.weather.WeatherRenderer;
 
 /**
@@ -99,7 +88,7 @@ import bloodandmithril.world.weather.WeatherRenderer;
  * @author Matt
  */
 @Copyright("Matthew Peck 2014")
-public class BloodAndMithrilClient implements ApplicationListener, InputProcessor {
+public class BloodAndMithrilClient implements ApplicationListener {
 	public static boolean devMode = false;
 
 	/** The game world */
@@ -107,7 +96,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	/** True if game is paused */
 	public static boolean paused;
-	
+
 	/** True if the world is currently being rendered */
 	public static AtomicBoolean rendering = new AtomicBoolean(false);
 
@@ -119,27 +108,24 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	@Inject
 	private Graphics graphics;
-	
-	private static Controls controls = getConfig().getKeyMappings();
+
+	@Inject
+	private BloodAndMithrilClientInputProcessor processor;
 
 	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
 	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
 	private static final Map<Integer, Vector2> worldCamCoordinates = Maps.newHashMap();
 
-	private static CursorBoundTask cursorBoundTask = null;
-
-	private static float updateRateMultiplier = 1f;
-	
-	private static Function<Vector2> camFollowFunction;
+	public static float updateRateMultiplier = 1f;
 
 	@Override
 	public void create() {
 		// Load client-side resources
-		Gdx.input.setInputProcessor(this);
 		ClientServerInterface.setClient(true);
 		Wiring.setupInjector();
 
 		loadResources();
+
 
 		SoundService.changeMusic(2f, SoundService.mainMenu);
 
@@ -153,6 +139,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		ClientServerInterface.setServer(false);
 
 		Wiring.injector().injectMembers(this);
+		setInputProcessor(processor);
 	}
 
 
@@ -176,6 +163,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		Prop.setup();
 		GaussianLightingRenderer.setup();
 		Item.setup();
+		UserInterface.setup();
 
 		UserInterface.UICamera = new OrthographicCamera(getGraphics().getWidth(), getGraphics().getHeight());
 		UserInterface.UICamera.setToOrtho(false, getGraphics().getWidth(), getGraphics().getHeight());
@@ -193,19 +181,14 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	}
 
 
-	public static Controls getKeyMappings() {
-		return controls;
-	}
-
-
 	@Override
 	public void render() {
 		try {
-			cameraControl();
+			processor.cameraControl();
 			if (!GameSaver.isSaving()) {
 				SoundService.update(Gdx.graphics.getDeltaTime());
 			}
-			
+
 			float x = getGraphics().getCam().position.x;
 			float y = getGraphics().getCam().position.y;
 			getGraphics().getCam().position.x = Math.round(getGraphics().getCam().position.x);
@@ -236,7 +219,7 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 			fading();
 
 			UserInterface.render();
-			
+
 			getGraphics().getCam().position.x = x;
 			getGraphics().getCam().position.y = y;
 		} catch (Exception e) {
@@ -281,363 +264,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		try {
-			if (GameSaver.isSaving() || loading) {
-				return false;
-			}
-
-			if (button == getKeyMappings().leftClick.keyCode) {
-				leftClick(screenX, screenY);
-			}
-
-			if (button == getKeyMappings().rightClick.keyCode) {
-				rightClick();
-			}
-
-			if (button == getKeyMappings().middleClick.keyCode) {
-				middleClick(screenX, screenY);
-			}
-		} catch (NoTileFoundException e) {
-		} catch (Exception e) {
-			e.printStackTrace();
-			Gdx.app.exit();
-		}
-
-		return false;
-	}
-
-
-	private void middleClick(int screenX, int screenY) {
-		camFollowFunction = null;
-		saveCamDragCoordinates(screenX, screenY);
-	}
-
-
-	/**
-	 * Called upon right clicking
-	 */
-	@SuppressWarnings("unused")
-	private void rightClick() throws NoTileFoundException {
-		long currentTime = System.currentTimeMillis();
-		boolean doubleClick = Controls.rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
-		boolean uiClicked = false;
-		Controls.rightDoubleClickTimer = currentTime;
-
-		if (cursorBoundTask != null && cursorBoundTask.canCancel()) {
-			cursorBoundTask = null;
-			return;
-		}
-
-		UserInterface.initialRightMouseDragCoordinates = new Vector2(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY());
-
-		if (Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
-			meleeAttack();
-		} else if (Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
-			rangedAttack();
-		} else if (!Gdx.input.isKeyPressed(Keys.ANY_KEY)) {
-			uiClicked = UserInterface.rightClick();
-		}
-
-		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !Gdx.input.isKeyPressed(getKeyMappings().rightClickDragBox.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
-			Vector2 mouseCoordinate = new Vector2(getMouseWorldX(), getMouseWorldY());
-			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
-				if (Gdx.input.isKeyPressed(getKeyMappings().mineTile.keyCode) && !Domain.getWorld(indi.getWorldId()).getTopography().getTile(mouseCoordinate, true).getClass().equals(EmptyTile.class)) {
-					mineTile(mouseCoordinate, indi);
-				} else if (Gdx.input.isKeyPressed(getKeyMappings().jump.keyCode)) {
-					jump(indi);
-				} else {
-					moveIndividual(indi);
-				}
-			}
-		}
-	}
-
-
-	private void moveIndividual(Individual indi) throws NoTileFoundException {
-		float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), Controls.INDIVIDUAL_SPREAD);
-		if (ClientServerInterface.isServer()) {
-			AIProcessor.sendPathfindingRequest(
-				indi,
-				new WayPoint(
-					Topography.convertToWorldCoord(
-						getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
-							new Vector2(
-								getMouseWorldX() + (Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode) ? 0f : spread),
-								getMouseWorldY()
-							),
-							10,
-							Domain.getWorld(indi.getWorldId())
-						),
-						true
-					)
-				),
-				false,
-				150f,
-				!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
-				Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)
-			);
-
-			Domain.getWorld(indi.getWorldId()).addEvent(new IndividualMoved(indi));
-		} else {
-			ClientServerInterface.SendRequest.sendMoveIndividualRequest(
-				indi.getId().getId(),
-				Topography.convertToWorldCoord(
-					getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
-						new Vector2(
-							getMouseWorldX() + (Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode) ? 0f : spread),
-							getMouseWorldY()
-						),
-						10,
-						Domain.getWorld(indi.getWorldId())
-					),
-					true
-				),
-				!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
-				Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode),
-				false, null, null
-			);
-		}
-	}
-
-
-	private void jump(Individual indi) {
-		if (ClientServerInterface.isServer()) {
-			AIProcessor.sendJumpResolutionRequest(
-				indi,
-				indi.getState().position.cpy(),
-				new Vector2(getMouseWorldX(), getMouseWorldY()),
-				Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)
-			);
-		} else {
-			ClientServerInterface.SendRequest.sendMoveIndividualRequest(
-				indi.getId().getId(),
-				null,
-				!Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode),
-				Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode),
-				true,
-				indi.getState().position.cpy(),
-				new Vector2(getMouseWorldX(), getMouseWorldY())
-			);
-		}
-	}
-
-
-	private void mineTile(Vector2 mouseCoordinate, Individual indi) {
-		if (ClientServerInterface.isServer()) {
-			indi.getAI().setCurrentTask(new MineTile(indi, mouseCoordinate));
-		} else {
-			ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
-		}
-	}
-
-
-	private void rangedAttack() {
-		for (Individual selected : Domain.getSelectedIndividuals()) {
-			if (selected.canAttackRanged()) {
-				if (ClientServerInterface.isServer()) {
-					selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
-				} else {
-					ClientServerInterface.SendRequest.sendAttackRangedRequest(selected, new Vector2(getMouseWorldX(), getMouseWorldY()));
-				}
-			}
-		}
-	}
-
-
-	private void meleeAttack() {
-		if (!Domain.getSelectedIndividuals().isEmpty()) {
-			for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-				Individual indi = Domain.getIndividual(indiKey);
-				if (indi.isMouseOver() && indi.isAlive()) {
-					for (Individual selected : Domain.getSelectedIndividuals()) {
-						if (indi == selected) {
-							continue;
-						}
-
-						if (ClientServerInterface.isServer()) {
-							selected.getAI().setCurrentTask(new Attack(selected, indi));
-						} else {
-							ClientServerInterface.SendRequest.sendRequestAttack(selected, indi);
-						}
-					}
-					break;
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * Called upon left clicking
-	 */
-	private void leftClick(int screenX, int screenY) {
-
-		long currentTimeMillis = System.currentTimeMillis();
-
-		boolean doubleClick = Controls.leftDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTimeMillis;
-		Controls.leftDoubleClickTimer = currentTimeMillis;
-
-		boolean uiClicked = UserInterface.leftClick();
-
-		Individual individualClicked = null;
-		if (Domain.getActiveWorld() != null) {
-			for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-				Individual indi = Domain.getIndividual(indiKey);
-				if (indi.isMouseOver()) {
-					individualClicked = indi;
-				}
-			}
-		}
-
-		if (!uiClicked && isInGame()) {
-			if (getCursorBoundTask() != null) {
-				if (getCursorBoundTask().executionConditionMet()) {
-					if (getCursorBoundTask().isWorldCoordinate()) {
-						setCursorBoundTask(getCursorBoundTask().execute(
-							(int) getMouseWorldX(),
-							(int) getMouseWorldY()
-						));
-					} else {
-						setCursorBoundTask(getCursorBoundTask().execute(
-							getMouseScreenX(),
-							getMouseScreenY()
-						));
-					}
-				}
-				return;
-			}
-
-			IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
-			if (individualClicked == null) {
-				if (doubleClick && (cursorBoundTask == null || !(cursorBoundTask instanceof ThrowItemCursorBoundTask))) {
-					for (Individual indi : Domain.getIndividuals().values()) {
-						if (indi.isControllable()) {
-							individualSelectionService.deselect(indi);
-						}
-					}
-					if (ClientServerInterface.isServer()) {
-						Domain.clearSelectedIndividuals();
-					}
-				}
-			} else {
-				for (Individual indi : Domain.getIndividuals().values()) {
-					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId() && !input.isKeyPressed(getKeyMappings().selectIndividual.keyCode)) {
-						individualSelectionService.deselect(indi);
-					}
-				}
-
-				if (individualClicked.isControllable() && individualClicked.isAlive()) {
-					individualSelectionService.select(individualClicked);
-				}
-
-			}
-		}
-	}
-
-
-	@Override
-	public boolean keyDown(int keycode) {
-		try {
-			if (GameSaver.isSaving() || loading) {
-				return false;
-			}
-
-			if (UserInterface.keyPressed(keycode)) {
-				return false;
-			} else if (Keys.ESCAPE == keycode) {
-				UserInterface.addLayeredComponentUnique(
-					new MainMenuWindow(true)
-				);
-			} else {
-				if (keycode == getKeyMappings().speedUp.keyCode) {
-					if (updateRateMultiplier < 16f) {
-						updateRateMultiplier = Math.round(updateRateMultiplier) + 1;
-					}
-				}
-				if (keycode == getKeyMappings().slowDown.keyCode) {
-					if (updateRateMultiplier > 1f) {
-						updateRateMultiplier = Math.round(updateRateMultiplier) - 1;
-					}
-				}
-				if (cursorBoundTask != null) {
-					cursorBoundTask.keyPressed(keycode);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			Gdx.app.exit();
-		}
-
-		return false;
-	}
-
-
-	@Override
-	public boolean keyUp(int keycode) {
-		return false;
-	}
-
-
-	@Override
-	public boolean keyTyped(char character) {
-		return false;
-	}
-
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		try {
-			if (button == getKeyMappings().leftClick.keyCode) {
-				UserInterface.leftClickRelease(screenX, getGraphics().getHeight() - screenY);
-			}
-
-			if (button == getKeyMappings().rightClick.keyCode) {
-				UserInterface.rightClickRelease(screenX, getGraphics().getHeight() - screenY);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			Gdx.app.exit();
-		}
-
-		return false;
-	}
-
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if (GameSaver.isSaving()) {
-			return false;
-		}
-
-		if (Gdx.input.isButtonPressed(getKeyMappings().middleClick.keyCode) && isInGame()) {
-			getGraphics().getCam().position.x = Controls.oldCamX + Controls.camDragX - screenX;
-			getGraphics().getCam().position.y = Controls.oldCamY + screenY - Controls.camDragY;
-		}
-		return false;
-	}
-
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
-
-
-	@Override
-	public boolean scrolled(int amount) {
-		try {
-			UserInterface.scrolled(amount);
-		} catch (Exception e) {
-			e.printStackTrace();
-			Gdx.app.exit();
-		}
-
-		return false;
-	}
-
-
-	@Override
 	public void resume() {
 		// Not called on PC
 	}
@@ -655,38 +281,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	/**
-	 * Converts screen coordinates to world coordinates
-	 */
-	public static float screenToWorldX(float screenX) {
-		return getGraphics().getCam().position.x - getGraphics().getWidth()/2 + screenX;
-	}
-
-
-	/**
-	 * Converts screen coordinates to world coordinates
-	 */
-	public static float screenToWorldY(float screenY) {
-		return getGraphics().getCam().position.y - getGraphics().getHeight()/2 + screenY;
-	}
-
-
-	/**
-	 * Converts world coordinates to screen coordinates
-	 */
-	public static float worldToScreenX(float worldX) {
-		return getGraphics().getWidth()/2 + (worldX - getGraphics().getCam().position.x);
-	}
-
-
-	/**
-	 * Converts world coordinates to screen coordinates
-	 */
-	public static Vector2 worldToScreen(Vector2 world) {
-		return new Vector2(worldToScreenX(world.x), worldToScreenY(world.y));
-	}
-
-
-	/**
 	 * True is specified world coordinates are on screen within specified tolerance
 	 */
 	public static boolean isOnScreen(Vector2 position, float tolerance) {
@@ -694,90 +288,6 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 		float screenY = worldToScreenY(position.y);
 
 		return screenX > -tolerance && screenX < getGraphics().getWidth() + tolerance && screenY > -tolerance && screenY < getGraphics().getHeight() + tolerance;
-	}
-
-
-	/**
-	 * Converts world coordinates to screen coordinates
-	 */
-	public static float worldToScreenY(float worldY) {
-		return getGraphics().getHeight()/2 + (worldY - getGraphics().getCam().position.y);
-	}
-
-
-	/**
-	 * Camera movement controls
-	 */
-	private void cameraControl() {
-		if (camFollowFunction != null) {
-			Vector2 followCam = camFollowFunction.call();
-			getGraphics().getCam().position.x += (followCam.x - getGraphics().getCam().position.x) * 0.01f;
-			getGraphics().getCam().position.y += (followCam.y - getGraphics().getCam().position.y) * 0.03f;
-		}
-		
-		if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && isInGame()) {
-			
-			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamUp.keyCode)){
-				getGraphics().getCam().position.y += 10f;
-				setCamFollowFunction(null);
-			}
-			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamDown.keyCode)){
-				getGraphics().getCam().position.y -= 10f;
-				setCamFollowFunction(null);
-			}
-			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamLeft.keyCode)){
-				getGraphics().getCam().position.x -= 10f;
-				setCamFollowFunction(null);
-			}
-			if (Gdx.input.isKeyPressed(getKeyMappings().moveCamRight.keyCode)){
-				getGraphics().getCam().position.x += 10f;
-				setCamFollowFunction(null);
-			}
-		}
-	}
-
-
-	/**
-	 * Camera dragging processing
-	 */
-	private void saveCamDragCoordinates(int screenX, int screenY) {
-		Controls.oldCamX = (int)getGraphics().getCam().position.x;
-		Controls.oldCamY = (int)getGraphics().getCam().position.y;
-
-		Controls.camDragX = screenX;
-		Controls.camDragY = screenY;
-	}
-
-
-	/**
-	 * Get mouse screen coord X
-	 */
-	public static int getMouseScreenX() {
-		return Gdx.input.getX();
-	}
-
-
-	/**
-	 * Get mouse screen coord y
-	 */
-	public static int getMouseScreenY() {
-		return getGraphics().getHeight() - Gdx.input.getY();
-	}
-
-
-	/**
-	 * Get mouse world coord X
-	 */
-	public static float getMouseWorldX() {
-		return screenToWorldX(Gdx.input.getX());
-	}
-
-
-	/**
-	 * Get mouse world coord y
-	 */
-	public static float getMouseWorldY() {
-		return screenToWorldY(getGraphics().getHeight() - Gdx.input.getY());
 	}
 
 
@@ -790,27 +300,9 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 
 	/**
-	 * @return the active {@link CursorBoundTask}
-	 */
-	public static CursorBoundTask getCursorBoundTask() {
-		return cursorBoundTask;
-	}
-
-
-	/**
-	 * @param cursorBoundTask to set
-	 */
-	public static void setCursorBoundTask(CursorBoundTask cursorBoundTask) {
-		BloodAndMithrilClient.cursorBoundTask = cursorBoundTask;
-	}
-
-
-	/**
 	 * Initial setup
 	 */
 	public static void setup() {
-		UserInterface.setup();
-
 		SoundService.changeMusic(2f, SoundService.desertAmbient);
 		UserInterface.contextMenus.clear();
 		PositionalIndexingService.reindex();
@@ -891,13 +383,13 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 
 	public static void addMission(Mission m) {
 		missions.add(m);
-		
+
 		SoundService.play(SoundService.newMission);
 		Wiring.injector().getInstance(Threading.class).clientProcessingThreadPool.submit(() -> {
 			for (int i = 0; i < 5; i++) {
 				UserInterface.addUIFloatingText(
-					"New mission!", 
-					Color.ORANGE, 
+					"New mission!",
+					Color.ORANGE,
 					new Vector2(220, 60)
 				);
 				try {
@@ -913,17 +405,12 @@ public class BloodAndMithrilClient implements ApplicationListener, InputProcesso
 	}
 
 
-	public static Graphics getGraphics() {
-		return Wiring.injector().getInstance(Graphics.class);
-	}
-
-
 	public static Map<Integer, Vector2> getWorldcamcoordinates() {
 		return worldCamCoordinates;
 	}
 
 
-	public static void setCamFollowFunction(Function<Vector2> camFollowFunction) {
-		BloodAndMithrilClient.camFollowFunction = camFollowFunction;
+	public static Graphics getGraphics() {
+		return Wiring.injector().getInstance(Graphics.class);
 	}
 }

@@ -1,11 +1,15 @@
 package bloodandmithril.ui.components.bar;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+
+import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -22,8 +26,6 @@ import bloodandmithril.ui.components.window.FactionsWindow;
 import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.ui.components.window.MissionsWindow;
 import bloodandmithril.ui.components.window.Window;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * The bottom bar, or task bar
@@ -138,8 +140,8 @@ public class BottomBar extends Component {
 	private void chatClicked(List<ContextMenu> copy) {
 
 		ContextMenu contextMenu = new ContextMenu(
-			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY() + 44,
+			getMouseScreenX(),
+			getMouseScreenY() + 44,
 			true,
 			new MenuItem(
 				"Show logs",
@@ -214,8 +216,8 @@ public class BottomBar extends Component {
 		}
 
 		ContextMenu newMenu = new ContextMenu(
-			BloodAndMithrilClient.getMouseScreenX(),
-			BloodAndMithrilClient.getMouseScreenY() + (size + 3) * 22,
+			getMouseScreenX(),
+			getMouseScreenY() + (size + 3) * 22,
 			true
 		);
 
@@ -308,8 +310,8 @@ public class BottomBar extends Component {
 
 	/** True if mouse coords are inside the {@link BottomBar} */
 	private boolean isWithin() {
-		int x = BloodAndMithrilClient.getMouseScreenX();
-		int y = BloodAndMithrilClient.getMouseScreenY();
+		int x = getMouseScreenX();
+		int y = getMouseScreenY();
 		return x >= 0 && x <= getGraphics().getWidth() && y >= 0 && y <= 50;
 	}
 

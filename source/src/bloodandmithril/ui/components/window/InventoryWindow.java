@@ -1,8 +1,9 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static java.lang.Math.min;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
@@ -26,8 +26,9 @@ import com.google.common.collect.Maps;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.Item.ItemCategory;
@@ -502,8 +503,8 @@ public class InventoryWindow extends Window implements Refreshable {
 				item.getKey().getSingular(true).length() * 10,
 				16,
 				() -> {
-					menuToAddUnequipped.x = BloodAndMithrilClient.getMouseScreenX();
-					menuToAddUnequipped.y = BloodAndMithrilClient.getMouseScreenY();
+					menuToAddUnequipped.x = getMouseScreenX();
+					menuToAddUnequipped.y = getMouseScreenY();
 				},
 				eq ? Color.GREEN : item.getKey().getType().getColor(),
 				Color.GREEN,
@@ -531,8 +532,8 @@ public class InventoryWindow extends Window implements Refreshable {
 				item.getKey().getSingular(true).length() * 10,
 				16,
 				() -> {
-					menuToAddEquipped.x = BloodAndMithrilClient.getMouseScreenX();
-					menuToAddEquipped.y = BloodAndMithrilClient.getMouseScreenY();
+					menuToAddEquipped.x = getMouseScreenX();
+					menuToAddEquipped.y = getMouseScreenY();
 				},
 				eq ? Color.GREEN : Color.ORANGE,
 				Color.GREEN,
@@ -602,7 +603,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			toReturn.addMenuItem(new MenuItem(
 				"Discard",
 				() -> {
-					if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().bulkDiscard.keyCode)) {
+					if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().bulkDiscard.keyCode)) {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,
@@ -641,7 +642,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			toReturn.addMenuItem(new MenuItem(
 				"Throw",
 				() -> {
-					BloodAndMithrilClient.setCursorBoundTask(new ThrowItemCursorBoundTask(item, (Individual) host));
+					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(new ThrowItemCursorBoundTask(item, (Individual) host));
 				},
 				Colors.UI_GRAY,
 				Color.GREEN,
@@ -660,7 +661,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			() -> {
 				Prop prop = item.getProp();
 				prop.setWorldId(Domain.getActiveWorld().getWorldId());
-				BloodAndMithrilClient.setCursorBoundTask(
+				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 					new PlaceCursorBoundTask(prop, (Individual) host, item)
 				);
 			},
@@ -682,7 +683,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		MenuItem plant = new MenuItem(
 			"Plant",
 			() -> {
-				BloodAndMithrilClient.setCursorBoundTask(
+				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 					new PlantSeedCursorBoundTask((SeedItem) item, (Individual) host, null)
 				);
 			},

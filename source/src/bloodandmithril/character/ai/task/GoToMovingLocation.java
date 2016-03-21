@@ -1,14 +1,13 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
@@ -33,9 +32,10 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -161,9 +161,9 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	public boolean uponCompletion() {
 		Individual host = Domain.getIndividual(hostId.getId());
 
-		host.sendCommand(getKeyMappings().moveRight.keyCode, false);
-		host.sendCommand(getKeyMappings().moveLeft.keyCode, false);
-		host.sendCommand(getKeyMappings().walk.keyCode, host.isWalking());
+		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveRight.keyCode, false);
+		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveLeft.keyCode, false);
+		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().walk.keyCode, host.isWalking());
 
 		return false;
 	}
@@ -277,7 +277,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 						}
 					};
 
-					BloodAndMithrilClient.setCursorBoundTask(new CursorBoundTask(task, true) {
+					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(new CursorBoundTask(task, true) {
 						@Override
 						public void renderUIGuide() {
 							try {
@@ -375,7 +375,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 
 		return menu;
 	}
-	
+
 
 	@Override
 	public WayPoint provideNextWaypoint() {

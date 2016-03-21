@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components;
 
+import static bloodandmithril.control.InputUtilities.worldToScreen;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
@@ -7,15 +8,14 @@ import java.io.Serializable;
 import java.util.Deque;
 import java.util.List;
 
-import bloodandmithril.core.BloodAndMithrilClient;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Generic text bubble
@@ -59,7 +59,7 @@ public class TextBubble extends Component {
 
 	@Override
 	protected void internalComponentRender() {
-		Vector2 screen = BloodAndMithrilClient.worldToScreen(position.call());
+		Vector2 screen = worldToScreen(position.call());
 
 		int width = 300;
 		TextBounds bounds = new TextBounds();

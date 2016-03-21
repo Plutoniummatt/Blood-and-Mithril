@@ -1,8 +1,8 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Comparator;
@@ -15,10 +15,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Maps;
 
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
 import bloodandmithril.control.Controls.MappedKey;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
@@ -155,7 +156,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 	private void populateKeyMappingsPairs(List<HashMap<ListingMenuItem<MappedKey>, String>> listings) {
 		HashMap<ListingMenuItem<MappedKey>, String> map = Maps.newHashMap();
 
-		for (MappedKey mappedKey : BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings().values()) {
+		for (MappedKey mappedKey : Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().getFunctionalKeyMappings().values()) {
 			ContextMenu contextMenu = new ContextMenu(
 				getMouseScreenX(),
 				getMouseScreenY(),
@@ -221,7 +222,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 			);
 		}
 
-		for (MappedKey mappedKey : BloodAndMithrilClient.getKeyMappings().getUnmappableKeys()) {
+		for (MappedKey mappedKey : Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().getUnmappableKeys()) {
 			ContextMenu contextMenu = new ContextMenu(
 				getMouseScreenX(),
 				getMouseScreenY(),
@@ -297,8 +298,8 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 				UserInterface.addGlobalMessage("Disallowed", "Can not remap this key.");
 				setClosing(true);
 			} else {
-				if (BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings().containsKey(keyCode)) {
-					UserInterface.addGlobalMessage("Conflict", "Key already mapped to " + BloodAndMithrilClient.getKeyMappings().getFunctionalKeyMappings().get(keyCode).description);
+				if (Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().getFunctionalKeyMappings().containsKey(keyCode)) {
+					UserInterface.addGlobalMessage("Conflict", "Key already mapped to " + Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().getFunctionalKeyMappings().get(keyCode).description);
 				} else {
 					mappedKey.keyCode = keyCode;
 				}

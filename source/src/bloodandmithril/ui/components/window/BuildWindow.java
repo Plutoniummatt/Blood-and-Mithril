@@ -1,7 +1,7 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -12,8 +12,9 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -99,7 +100,7 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 				() -> {
 					Construction toConstruct = tEntry.getKey();
 					toConstruct.setWorldId(builder.getWorldId());
-					BloodAndMithrilClient.setCursorBoundTask(
+					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 						new PlaceCursorBoundTask(toConstruct, null, null)
 					);
 					this.setClosing(true);

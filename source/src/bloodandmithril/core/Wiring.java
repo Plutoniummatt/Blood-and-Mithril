@@ -79,7 +79,7 @@ public class Wiring {
 					return new IndividualAISupressionServiceClientImpl();
 				}
 			}
-			
+
 			@Provides
 			@Singleton
 			public IndividualWalkRunToggleService provideIndividualWalkRunToggleService() {
@@ -89,7 +89,7 @@ public class Wiring {
 					return new IndividualWalkRunToggleServiceClientImpl();
 				}
 			}
-			
+
 			@Provides
 			@Singleton
 			public IndividualToggleSpeakingService provideIndividualToggleSpeakingService() {
@@ -99,7 +99,7 @@ public class Wiring {
 					return new IndividualToggleSpeakingServiceClientImpl();
 				}
 			}
-			
+
 			@Provides
 			@Singleton
 			public IndividualTradeWithOtherService provideIndividualTradeWithOtherService() {
@@ -109,7 +109,7 @@ public class Wiring {
 					return new IndividualTradeWithOtherServiceClientImpl();
 				}
 			}
-			
+
 			@Provides
 			@Singleton
 			public IndividualFollowOtherService provideIndividualFollowOtherService() {
@@ -119,7 +119,7 @@ public class Wiring {
 					return new IndividualFollowOtherServiceClientImpl();
 				}
 			}
-			
+
 			@Provides
 			@Singleton
 			public IndividualChangeNicknameService provideIndividualChangeNicknameService() {
@@ -129,7 +129,7 @@ public class Wiring {
 					return new IndividualChangeNicknameServiceClientImpl();
 				}
 			}
-			
+
 			@Provides
 			@Singleton
 			public IndividualUpdateDescriptionService provideIndividualUpdateDescriptionService() {
@@ -139,7 +139,7 @@ public class Wiring {
 					return new IndividualUpdateDescriptionServiceClientImpl();
 				}
 			}
-			
+
 			@Provides
 			@Singleton
 			public IndividualAttackOtherService provideIndividualAttackOtherService() {

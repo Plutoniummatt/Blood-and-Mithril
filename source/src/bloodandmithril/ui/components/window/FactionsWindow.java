@@ -1,5 +1,8 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
@@ -243,8 +246,8 @@ public class FactionsWindow extends Window {
 			);
 
 			final ContextMenu menu = new ContextMenu(
-				BloodAndMithrilClient.getMouseScreenX(),
-				BloodAndMithrilClient.getMouseScreenY(),
+				getMouseScreenX(),
+				getMouseScreenY(),
 				true
 			);
 
@@ -268,8 +271,8 @@ public class FactionsWindow extends Window {
 					faction.name.length() * 10,
 					16,
 					() -> {
-						menu.x = BloodAndMithrilClient.getMouseScreenX();
-						menu.y = BloodAndMithrilClient.getMouseScreenY();
+						menu.x = getMouseScreenX();
+						menu.y = getMouseScreenY();
 					},
 					BloodAndMithrilClient.controlledFactions.contains(faction.factionId) ? Color.GREEN : Color.ORANGE,
 					Color.GREEN,

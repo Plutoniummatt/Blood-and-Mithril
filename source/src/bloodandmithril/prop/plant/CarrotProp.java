@@ -1,5 +1,7 @@
 package bloodandmithril.prop.plant;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.Collection;
@@ -12,7 +14,6 @@ import com.google.common.collect.Lists;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
@@ -69,7 +70,7 @@ public class CarrotProp extends PlantProp implements Harvestable {
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(), true);
+		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 		final Harvestable thisCarrot = this;
 
 		menu.addMenuItem(

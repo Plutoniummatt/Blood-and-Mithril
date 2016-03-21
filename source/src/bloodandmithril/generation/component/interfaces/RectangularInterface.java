@@ -1,6 +1,11 @@
 package bloodandmithril.generation.component.interfaces;
 
-import bloodandmithril.core.BloodAndMithrilClient;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.component.Component;
 import bloodandmithril.generation.component.Component.ComponentCreationCustomization;
@@ -15,9 +20,6 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.Boundaries;
 import bloodandmithril.world.topography.Topography;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * A simple rectangular interface, edges are inclusive
@@ -268,8 +270,8 @@ public class RectangularInterface extends Interface {
 		UserInterface.shapeRenderer.setColor(color);
 
 		UserInterface.shapeRenderer.rect(
-			BloodAndMithrilClient.worldToScreenX(boundaries.left * Topography.TILE_SIZE),
-			BloodAndMithrilClient.worldToScreenY(boundaries.bottom * Topography.TILE_SIZE),
+			worldToScreenX(boundaries.left * Topography.TILE_SIZE),
+			worldToScreenY(boundaries.bottom * Topography.TILE_SIZE),
 			(boundaries.right - boundaries.left + 1) * Topography.TILE_SIZE,
 			(boundaries.top - boundaries.bottom + 1) * Topography.TILE_SIZE
 		);

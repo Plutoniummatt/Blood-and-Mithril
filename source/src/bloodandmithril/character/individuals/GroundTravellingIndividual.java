@@ -10,7 +10,6 @@ import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGH
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT_ONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
 import static bloodandmithril.util.ComparisonUtil.obj;
 
 import java.util.List;
@@ -21,7 +20,9 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.ai.task.Idle;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
@@ -63,6 +64,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 	 * @return the Current animated action this {@link GroundTravellingIndividual} is performing.
 	 */
 	protected void updateCurrentAction() {
+		BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
 		// If dead, return
 		if (!isAlive()) {
 			return;
@@ -79,23 +81,23 @@ public abstract class GroundTravellingIndividual extends Individual {
 		}
 
 		// If we're moving to the right
-		if (isCommandActive(getKeyMappings().moveRight.keyCode)) {
+		if (isCommandActive(input.getKeyMappings().moveRight.keyCode)) {
 			// If walking, and current action is not walking right, then set action to walking right
-			if (isCommandActive(getKeyMappings().walk.keyCode) && !getCurrentAction().equals(WALK_RIGHT)) {
+			if (isCommandActive(input.getKeyMappings().walk.keyCode) && !getCurrentAction().equals(WALK_RIGHT)) {
 				setCurrentAction(WALK_RIGHT);
 				setAnimationTimer(0f);
-			} else if (!isCommandActive(getKeyMappings().walk.keyCode) && !getCurrentAction().equals(RUN_RIGHT)) {
+			} else if (!isCommandActive(input.getKeyMappings().walk.keyCode) && !getCurrentAction().equals(RUN_RIGHT)) {
 				// Otherwise if running, and current action is not running right, then set action to running right
 				setCurrentAction(RUN_RIGHT);
 				setAnimationTimer(0f);
 			}
 
 		// Same for if we're moving left
-		} else if (isCommandActive(getKeyMappings().moveLeft.keyCode)) {
-			if (isCommandActive(getKeyMappings().walk.keyCode) && !getCurrentAction().equals(WALK_LEFT)) {
+		} else if (isCommandActive(input.getKeyMappings().moveLeft.keyCode)) {
+			if (isCommandActive(input.getKeyMappings().walk.keyCode) && !getCurrentAction().equals(WALK_LEFT)) {
 				setCurrentAction(WALK_LEFT);
 				setAnimationTimer(0f);
-			} else if (!isCommandActive(getKeyMappings().walk.keyCode) && !getCurrentAction().equals(RUN_LEFT)) {
+			} else if (!isCommandActive(input.getKeyMappings().walk.keyCode) && !getCurrentAction().equals(RUN_LEFT)) {
 				setCurrentAction(RUN_LEFT);
 				setAnimationTimer(0f);
 			}
@@ -117,6 +119,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 			return;
 		}
 
+		BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+
 		//Horizontal movement
 		Topography topography = Domain.getWorld(getWorldId()).getTopography();
 		boolean attacking = attacking();
@@ -127,9 +131,9 @@ public abstract class GroundTravellingIndividual extends Individual {
 				float walkSpeed = getWalkSpeed();
 				float runSpeed = getRunSpeed();
 				int accel = 2000;
-				
-				if (!attacking && isCommandActive(getKeyMappings().moveLeft.keyCode) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
-					if (isCommandActive(getKeyMappings().walk.keyCode)) {
+
+				if (!attacking && isCommandActive(input.getKeyMappings().moveLeft.keyCode) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+					if (isCommandActive(input.getKeyMappings().walk.keyCode)) {
 						if (getState().velocity.x > -walkSpeed) {
 							getState().acceleration.x = -accel;
 						} else {
@@ -142,8 +146,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 							getState().acceleration.x = accel;
 						}
 					}
-				} else if (!attacking && isCommandActive(getKeyMappings().moveRight.keyCode) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
-					if (isCommandActive(getKeyMappings().walk.keyCode)) {
+				} else if (!attacking && isCommandActive(input.getKeyMappings().moveRight.keyCode) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+					if (isCommandActive(input.getKeyMappings().walk.keyCode)) {
 						if (getState().velocity.x < walkSpeed) {
 							getState().acceleration.x = accel;
 						} else {
@@ -159,14 +163,14 @@ public abstract class GroundTravellingIndividual extends Individual {
 				} else {
 					getState().acceleration.x = 0f;
 
-					int offset = isCommandActive(getKeyMappings().moveRight.keyCode) ? 2 : isCommandActive(getKeyMappings().moveLeft.keyCode) ? -2 : 0;
+					int offset = isCommandActive(input.getKeyMappings().moveRight.keyCode) ? 2 : isCommandActive(input.getKeyMappings().moveLeft.keyCode) ? -2 : 0;
 					if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(getAI().getCurrentTask() instanceof Idle)) {
 						getAI().setCurrentTask(new Idle());
 					}
 
-					sendCommand(getKeyMappings().moveRight.keyCode, false);
-					sendCommand(getKeyMappings().moveLeft.keyCode, false);
-					sendCommand(getKeyMappings().walk.keyCode, false);
+					sendCommand(input.getKeyMappings().moveRight.keyCode, false);
+					sendCommand(input.getKeyMappings().moveLeft.keyCode, false);
+					sendCommand(input.getKeyMappings().walk.keyCode, false);
 				}
 			}
 		} catch (NoTileFoundException e) {

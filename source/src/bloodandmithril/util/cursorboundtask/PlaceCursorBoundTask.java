@@ -1,10 +1,10 @@
 package bloodandmithril.util.cursorboundtask;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
@@ -17,6 +17,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.ai.task.PlaceProp;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.PropItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
@@ -51,7 +53,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 							coords = new Vector2(getMouseWorldX(), getMouseWorldY());
 						}
 
-						if (Gdx.input.isKeyPressed(getKeyMappings().snapToGrid.keyCode)) {
+						if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().snapToGrid.keyCode)) {
 							coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 							coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 						}
@@ -98,7 +100,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 				} else {
 					coords = new Vector2(getMouseWorldX(), getMouseWorldY());
 				}
-				if (Gdx.input.isKeyPressed(getKeyMappings().snapToGrid.keyCode)) {
+				if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().snapToGrid.keyCode)) {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}
@@ -142,12 +144,12 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 				} else {
 					coords = new Vector2(getMouseWorldX(), getMouseWorldY());
 				}
-				if (Gdx.input.isKeyPressed(getKeyMappings().snapToGrid.keyCode)) {
+				if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().snapToGrid.keyCode)) {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}
 
-				if (Gdx.input.isKeyPressed(getKeyMappings().snapToGrid.keyCode)) {
+				if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().snapToGrid.keyCode)) {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}

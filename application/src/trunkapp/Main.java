@@ -1,17 +1,12 @@
 package trunkapp;
 
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.persistence.ConfigPersistenceService;
-import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.window.DevWindow;
-
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 /**
  * The entry point of the game
@@ -37,24 +32,7 @@ public class Main {
 		cfg.addIcon("data/image/icon.png", FileType.Internal);
 
 		BloodAndMithrilClient.devMode = true;
-		client = new BloodAndMithrilClient() {
-			@Override
-			public boolean keyDown(int keycode) {
-				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && keycode == Input.Keys.D) {
-					UserInterface.addLayeredComponentUnique(
-						new DevWindow(
-							BloodAndMithrilClient.getGraphics().getWidth(),
-							BloodAndMithrilClient.getGraphics().getHeight()/2 + 150,
-							500,
-							300,
-							true
-						)
-					);
-				}
-
-				return super.keyDown(keycode);
-			}
-		};
+		client = new BloodAndMithrilClient();
 
 		new LwjglApplication(client, cfg);
 	}

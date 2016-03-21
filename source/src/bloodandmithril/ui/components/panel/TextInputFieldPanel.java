@@ -1,5 +1,6 @@
 package bloodandmithril.ui.components.panel;
 
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.Deque;
@@ -10,9 +11,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
@@ -33,7 +35,7 @@ public class TextInputFieldPanel extends Panel {
 
 	/** Current beginning index of the input string */
 	private int currentBeginningIndex;
-	
+
 	/** The amount of time backspace must be held before bulk backspace is triggered */
 	private float timer;
 
@@ -65,9 +67,9 @@ public class TextInputFieldPanel extends Panel {
 
 	@Override
 	public void render() {
-		if (Gdx.input.isKeyPressed(BloodAndMithrilClient.getKeyMappings().deleteCharacter.keyCode)) {
+		if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().deleteCharacter.keyCode)) {
 			if (timer < 0) {
-				keyPressed(BloodAndMithrilClient.getKeyMappings().deleteCharacter.keyCode);
+				keyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().deleteCharacter.keyCode);
 				timer = 0.02f;
 			} else {
 				timer -= Gdx.graphics.getDeltaTime();
@@ -75,7 +77,7 @@ public class TextInputFieldPanel extends Panel {
 		} else {
 			timer = 0.5f;
 		}
-		
+
 		Gdx.gl20.glLineWidth(2f);
 		Component.shapeRenderer.begin(ShapeType.Filled);
 		Component.shapeRenderer.setColor(0f, 0f, 0f, parent.isActive() ? 0.9f * parent.getAlpha(): 0.4f * parent.getAlpha());
@@ -105,7 +107,7 @@ public class TextInputFieldPanel extends Panel {
 			return false;
 		}
 
-		if (keyCode == BloodAndMithrilClient.getKeyMappings().deleteCharacter.keyCode) {
+		if (keyCode == Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().deleteCharacter.keyCode) {
 			if (inputText.length() == 0) {
 				return true;
 			}
@@ -117,7 +119,7 @@ public class TextInputFieldPanel extends Panel {
 			return true;
 		}
 
-		if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
+		if (isKeyPressed(Input.Keys.SHIFT_LEFT) || isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
 			inputText = inputText + string.b;
 		} else {
 			inputText = inputText + Controls.keyMap.get(keyCode).a;

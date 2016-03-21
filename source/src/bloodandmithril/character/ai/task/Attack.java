@@ -1,12 +1,11 @@
 package bloodandmithril.character.ai.task;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.util.Util.transformSet;
 import static bloodandmithril.world.Domain.getIndividual;
 
@@ -38,9 +37,10 @@ import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -140,8 +140,8 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	@Override
 	public final boolean uponCompletion() {
 		Individual host = Domain.getIndividual(hostId.getId());
-		host.sendCommand(getKeyMappings().moveRight.keyCode, false);
-		host.sendCommand(getKeyMappings().moveLeft.keyCode, false);
+		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveRight.keyCode, false);
+		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveLeft.keyCode, false);
 		if (!getHost().isWalking()) {
 			getHost().setWalking(true);
 		}
@@ -508,7 +508,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		return new MenuItem(
 			"Choose targets",
 			() -> {
-				BloodAndMithrilClient.setCursorBoundTask(
+				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 					new ChooseMultipleEntityCursorBoundTask<Individual, Integer>(true, Individual.class) {
 						@Override
 						public boolean canAdd(Individual f) {
@@ -555,7 +555,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 						public void keyPressed(int keyCode) {
 							if (keyCode == Keys.ENTER) {
 								routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), entities));
-								BloodAndMithrilClient.setCursorBoundTask(null);
+								Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(null);
 							}
 						}
 					}

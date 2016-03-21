@@ -1,18 +1,18 @@
 package bloodandmithril.ui;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getCursorBoundTask;
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.isButtonPressed;
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
+import static bloodandmithril.control.InputUtilities.screenToWorldX;
+import static bloodandmithril.control.InputUtilities.screenToWorldY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
 import static bloodandmithril.core.BloodAndMithrilClient.loading;
 import static bloodandmithril.core.BloodAndMithrilClient.paused;
-import static bloodandmithril.core.BloodAndMithrilClient.screenToWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.screenToWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -25,7 +25,6 @@ import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 import static com.badlogic.gdx.Gdx.files;
 import static com.badlogic.gdx.Gdx.gl;
-import static com.badlogic.gdx.Gdx.input;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
 import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
@@ -70,6 +69,7 @@ import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.ai.task.Travel;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualContextMenuService;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
@@ -184,6 +184,7 @@ public class UserInterface {
 	private static Deque<Task> uiTasks;
 
 	private static IndividualContextMenuService individualContextMenuService;
+	private static BloodAndMithrilClientInputProcessor inputProcessor;
 
 	static {
 		if (ClientServerInterface.isClient()) {
@@ -211,6 +212,7 @@ public class UserInterface {
 		loadButtons();
 
 		individualContextMenuService = Wiring.injector().getInstance(IndividualContextMenuService.class);
+		inputProcessor = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
 	}
 
 
@@ -485,7 +487,7 @@ public class UserInterface {
 
 
 	private static void renderHint() {
-		if (getCursorBoundTask() == null && contextMenus.isEmpty() && Domain.getActiveWorld() != null && !Gdx.input.isKeyPressed(Keys.ANY_KEY)) {
+		if (inputProcessor.getCursorBoundTask() == null && contextMenus.isEmpty() && Domain.getActiveWorld() != null && !isKeyPressed(Keys.ANY_KEY)) {
 			boolean renderHint = false;
 			PositionalIndexMap positionalIndexMap = Domain.getActiveWorld().getPositionalIndexMap();
 			for (int id : positionalIndexMap.getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
@@ -576,25 +578,25 @@ public class UserInterface {
 
 
 	private static void renderCursorBoundTaskText() {
-		if (getCursorBoundTask() != null) {
-			getCursorBoundTask().renderUIGuide();
+		if (inputProcessor.getCursorBoundTask() != null) {
+			inputProcessor.getCursorBoundTask().renderUIGuide();
 			getGraphics().getSpriteBatch().begin();
 			getGraphics().getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 			Shaders.filter.setUniformf("color", Color.BLACK);
 			Fonts.defaultFont.draw(
 				getGraphics().getSpriteBatch(),
-				getCursorBoundTask().getShortDescription(),
-				BloodAndMithrilClient.getMouseScreenX() + 20,
-				BloodAndMithrilClient.getMouseScreenY() - 20
+				inputProcessor.getCursorBoundTask().getShortDescription(),
+				getMouseScreenX() + 20,
+				getMouseScreenY() - 20
 			);
 			getGraphics().getSpriteBatch().flush();
 			Shaders.filter.setUniformf("color", Color.WHITE);
 			Fonts.defaultFont.draw(
 				getGraphics().getSpriteBatch(),
-				getCursorBoundTask().getShortDescription(),
-				BloodAndMithrilClient.getMouseScreenX() + 21,
-				BloodAndMithrilClient.getMouseScreenY() - 21
+				inputProcessor.getCursorBoundTask().getShortDescription(),
+				getMouseScreenX() + 21,
+				getMouseScreenY() - 21
 			);
 			getGraphics().getSpriteBatch().end();
 		}
@@ -782,9 +784,9 @@ public class UserInterface {
 					}
 				}
 			}
-			
+
 			if (Domain.getSelectedIndividuals().size() > 1) {
-				BloodAndMithrilClient.setCamFollowFunction(null);
+				inputProcessor.setCamFollowFunction(null);
 			}
 		}
 
@@ -798,7 +800,7 @@ public class UserInterface {
 
 
 	public static void rightClickRelease(int screenX, int screenY) {
-		if (initialRightMouseDragCoordinates != null && Gdx.input.isKeyPressed(getKeyMappings().rightClickDragBox.keyCode)) {
+		if (initialRightMouseDragCoordinates != null && isKeyPressed(inputProcessor.getKeyMappings().rightClickDragBox.keyCode)) {
 			Vector2 diagCorner1 = initialRightMouseDragCoordinates.cpy();
 			Vector2 diagCorner2 = new Vector2(screenX, screenY);
 
@@ -879,7 +881,7 @@ public class UserInterface {
 	 * Renders the drag-box
 	 */
 	private static void renderDragBox() {
-		if (input.isButtonPressed(getKeyMappings().leftClick.keyCode) && initialLeftMouseDragCoordinates != null) {
+		if (isButtonPressed(inputProcessor.getKeyMappings().leftClick.keyCode) && initialLeftMouseDragCoordinates != null) {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.GREEN);
 			float width = getMouseScreenX() - initialLeftMouseDragCoordinates.x;
@@ -888,7 +890,7 @@ public class UserInterface {
 			shapeRenderer.end();
 		}
 
-		if (input.isButtonPressed(getKeyMappings().rightClick.keyCode) && initialRightMouseDragCoordinates != null && Gdx.input.isKeyPressed(getKeyMappings().rightClickDragBox.keyCode)) {
+		if (isButtonPressed(inputProcessor.getKeyMappings().rightClick.keyCode) && initialRightMouseDragCoordinates != null && isKeyPressed(inputProcessor.getKeyMappings().rightClickDragBox.keyCode)) {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.RED);
 			float width = getMouseScreenX() - initialRightMouseDragCoordinates.x;
@@ -911,11 +913,11 @@ public class UserInterface {
 				} else if (currentTask instanceof Travel) {
 					((Travel) currentTask).renderWaypoints();
 
-					if (Gdx.input.isKeyPressed(getKeyMappings().jump.keyCode)) {
+					if (isKeyPressed(inputProcessor.getKeyMappings().jump.keyCode)) {
 						Vector2 destination = ((Travel) currentTask).getFinalGoToLocationWaypoint();
 						Vector2 start;
 						if (destination != null) {
-							if (Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode)) {
+							if (isKeyPressed(inputProcessor.getKeyMappings().addWayPoint.keyCode)) {
 								start = destination;
 							} else {
 								start = indi.getState().position.cpy();
@@ -944,7 +946,7 @@ public class UserInterface {
 				}
 
 				if (!(currentTask instanceof Travel)) {
-					if (Gdx.input.isKeyPressed(getKeyMappings().jump.keyCode)) {
+					if (isKeyPressed(inputProcessor.getKeyMappings().jump.keyCode)) {
 						renderJumpArrow(
 							indi.getState().position.cpy(),
 							new Vector2(getMouseWorldX(), getMouseWorldY())
@@ -959,7 +961,7 @@ public class UserInterface {
 
 
 	public static void renderJumpArrow(Vector2 start, Vector2 finish) {
-		if (!Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode) && !Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode)) {
+		if (!isKeyPressed(inputProcessor.getKeyMappings().attack.keyCode) && !isKeyPressed(inputProcessor.getKeyMappings().rangedAttack.keyCode)) {
 			renderArrow(start, finish, new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 75f);
 		}
 	}
@@ -1033,16 +1035,16 @@ public class UserInterface {
 
 
 	private static void renderMouseText() {
-		if (getCursorBoundTask() != null) {
+		if (inputProcessor.getCursorBoundTask() != null) {
 			return;
 		}
 
-		boolean jumpPressed = Gdx.input.isKeyPressed(getKeyMappings().jump.keyCode);
-		boolean addWayPointPressed = Gdx.input.isKeyPressed(getKeyMappings().addWayPoint.keyCode);
-		boolean forceMovePressed = Gdx.input.isKeyPressed(getKeyMappings().forceMove.keyCode);
-		boolean attackPressed = Gdx.input.isKeyPressed(getKeyMappings().attack.keyCode);
-		boolean rangedAttackPressed = Gdx.input.isKeyPressed(getKeyMappings().rangedAttack.keyCode);
-		boolean mineTIlePressed = Gdx.input.isKeyPressed(getKeyMappings().mineTile.keyCode);
+		boolean jumpPressed = isKeyPressed(inputProcessor.getKeyMappings().jump.keyCode);
+		boolean addWayPointPressed = isKeyPressed(inputProcessor.getKeyMappings().addWayPoint.keyCode);
+		boolean forceMovePressed = isKeyPressed(inputProcessor.getKeyMappings().forceMove.keyCode);
+		boolean attackPressed = isKeyPressed(inputProcessor.getKeyMappings().attack.keyCode);
+		boolean rangedAttackPressed = isKeyPressed(inputProcessor.getKeyMappings().rangedAttack.keyCode);
+		boolean mineTIlePressed = isKeyPressed(inputProcessor.getKeyMappings().mineTile.keyCode);
 
 		if (!Domain.getSelectedIndividuals().isEmpty()) {
 
@@ -1377,7 +1379,7 @@ public class UserInterface {
 			}
 		}
 
-		if (keyCode == getKeyMappings().openInventory.keyCode) {
+		if (keyCode == inputProcessor.getKeyMappings().openInventory.keyCode) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				Individual individual = Domain.getSelectedIndividuals().iterator().next();
 				String simpleName = individual.getId().getSimpleName();
@@ -1392,7 +1394,7 @@ public class UserInterface {
 			}
 		}
 
-		if (keyCode == getKeyMappings().openAIRoutines.keyCode) {
+		if (keyCode == inputProcessor.getKeyMappings().openAIRoutines.keyCode) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				Individual individual = Domain.getSelectedIndividuals().iterator().next();
 				UserInterface.addLayeredComponentUnique(
@@ -1403,7 +1405,7 @@ public class UserInterface {
 			}
 		}
 
-		if (keyCode == getKeyMappings().openBuildWindow.keyCode) {
+		if (keyCode == inputProcessor.getKeyMappings().openBuildWindow.keyCode) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
 				Individual individual = Domain.getSelectedIndividuals().iterator().next();
 
@@ -1459,7 +1461,7 @@ public class UserInterface {
 		}
 
 		contextMenus.clear();
-		ContextMenu newMenu = new ContextMenu(BloodAndMithrilClient.getMouseScreenX(), BloodAndMithrilClient.getMouseScreenY(), true);
+		ContextMenu newMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		if (!layeredComponents.isEmpty()) {
 			ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
@@ -1486,8 +1488,8 @@ public class UserInterface {
 					new MenuItem(
 						indi.getId().getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",
 						() -> {
-							secondaryMenu.x = BloodAndMithrilClient.getMouseScreenX();
-							secondaryMenu.y = BloodAndMithrilClient.getMouseScreenY();
+							secondaryMenu.x = getMouseScreenX();
+							secondaryMenu.y = getMouseScreenY();
 						},
 						Color.WHITE,
 						indi.getToolTipTextColor(),
@@ -1498,7 +1500,7 @@ public class UserInterface {
 			}
 		}
 
-		for (final int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())) {
+		for (final int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
 			Prop prop = Domain.getActiveWorld().props().getProp(propKey);
 			if (prop.isMouseOver()) {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
@@ -1518,7 +1520,7 @@ public class UserInterface {
 			}
 		}
 
-		for (final Integer itemId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Item.class, BloodAndMithrilClient.getMouseWorldX(), BloodAndMithrilClient.getMouseWorldY())) {
+		for (final Integer itemId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Item.class, getMouseWorldX(), getMouseWorldY())) {
 			final Item item = Domain.getActiveWorld().items().getItem(itemId);
 			if (item.isMouseOver()) {
 				final ContextMenu secondaryMenu = item.getContextMenu();

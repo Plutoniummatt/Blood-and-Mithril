@@ -1,9 +1,9 @@
 package bloodandmithril.ui.components.panel;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.isButtonPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -17,15 +17,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -185,7 +185,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		if (isMouseOverScrollButton(scrollBarButtonPos)) {
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * size);
 			scrollBarButtonLocationOld = scrollBarButtonLocation;
-			mouseLocYFrozen = BloodAndMithrilClient.getMouseScreenY();
+			mouseLocYFrozen = getMouseScreenY();
 		}
 
 		return false;
@@ -348,8 +348,8 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
 
 		float max = (height - 100f) / 20f;
-		if (Gdx.input.isButtonPressed(getKeyMappings().leftClick.keyCode) && scrollBarButtonLocationOld != null && size > max) {
-			scrollBarButtonLocation = Math.min(1, Math.max(0, scrollBarButtonLocationOld + (mouseLocYFrozen - BloodAndMithrilClient.getMouseScreenY())/(height - 102)));
+		if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode) && scrollBarButtonLocationOld != null && size > max) {
+			scrollBarButtonLocation = Math.min(1, Math.max(0, scrollBarButtonLocationOld + (mouseLocYFrozen - getMouseScreenY())/(height - 102)));
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * (size - max));
 		}
 
@@ -373,10 +373,10 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	 * True if the mouse is over the scroll button
 	 */
 	private boolean isMouseOverScrollButton(float scrollBarButtonPos) {
-		return	BloodAndMithrilClient.getMouseScreenX() > x + width - 13 &&
-				BloodAndMithrilClient.getMouseScreenX() < x + width + 4 &&
-				BloodAndMithrilClient.getMouseScreenY() > scrollBarButtonPos - 10 &&
-				BloodAndMithrilClient.getMouseScreenY() < scrollBarButtonPos + 10;
+		return	getMouseScreenX() > x + width - 13 &&
+				getMouseScreenX() < x + width + 4 &&
+				getMouseScreenY() > scrollBarButtonPos - 10 &&
+				getMouseScreenY() < scrollBarButtonPos + 10;
 	}
 
 

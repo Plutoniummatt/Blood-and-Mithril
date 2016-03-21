@@ -1,12 +1,17 @@
 package bloodandmithril.prop.plant;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.individuals.Individual;
@@ -27,11 +32,6 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * A dead bush

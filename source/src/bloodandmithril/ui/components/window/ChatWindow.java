@@ -16,8 +16,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.collect.Lists;
 
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.requests.SendChatMessage.Message;
 import bloodandmithril.ui.UserInterface;
@@ -189,7 +190,7 @@ public class ChatWindow extends Window {
 
 		textInputPanel.keyPressed(keyCode);
 
-		if (keyCode == BloodAndMithrilClient.getKeyMappings().sendChatMessage.keyCode) {
+		if (keyCode == Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().sendChatMessage.keyCode) {
 			if (!StringUtils.isEmpty(textInputPanel.getInputText())) {
 				ClientServerInterface.SendRequest.sendChatMessage(textInputPanel.getInputText());
 				textInputPanel.clear();

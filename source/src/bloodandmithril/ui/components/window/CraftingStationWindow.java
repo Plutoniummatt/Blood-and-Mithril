@@ -1,9 +1,9 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.control.InputUtilities.getMouseScreenX;
+import static bloodandmithril.control.InputUtilities.getMouseScreenY;
+import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getKeyMappings;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseScreenY;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
 import static com.google.common.collect.Lists.newArrayList;
@@ -15,14 +15,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
@@ -123,7 +124,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			90,
 			16,
 			() -> {
-				if (Gdx.input.isKeyPressed(getKeyMappings().bulkCraft.keyCode)) {
+				if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().bulkCraft.keyCode)) {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,
@@ -242,7 +243,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 							requiredMaterialsListing.getRequiredMaterials().putAll(((Craftable)item.getKey()).getRequiredMaterials());
 							refresh();
 						},
-						CraftingStation.enoughMaterialsToCraft(individual, ((Craftable) item.getKey()).getRequiredMaterials()) ? (currentlySelectedToCraft.t.sameAs(item.getKey()) ? Color.GREEN : Color.WHITE) : Color.GRAY,
+						CraftingStation.enoughMaterialsToCraft(individual, ((Craftable) item.getKey()).getRequiredMaterials()) ? currentlySelectedToCraft.t.sameAs(item.getKey()) ? Color.GREEN : Color.WHITE : Color.GRAY,
 						currentlySelectedToCraft.t.sameAs(item.getKey()) ? Color.ORANGE : Color.ORANGE,
 						CraftingStation.enoughMaterialsToCraft(individual, ((Craftable) item.getKey()).getRequiredMaterials()) ? Color.WHITE : Color.GRAY,
 						UIRef.BL

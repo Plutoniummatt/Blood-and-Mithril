@@ -1,11 +1,10 @@
 package bloodandmithril.util.cursorboundtask;
 
+import static bloodandmithril.control.InputUtilities.getMouseWorldX;
+import static bloodandmithril.control.InputUtilities.getMouseWorldY;
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldX;
-import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.setCursorBoundTask;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenX;
-import static bloodandmithril.core.BloodAndMithrilClient.worldToScreenY;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
@@ -21,6 +20,8 @@ import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.task.PlantSeed;
 import bloodandmithril.character.ai.task.PlantSeed.PlantSeedTaskGenerator;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
@@ -139,6 +140,6 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 	@Override
 	public final void keyPressed(int keyCode) {
 		routine.setAiTaskGenerator(new PlantSeedTaskGenerator(getPlantingLocations(), planter.getId().getId(), toPlant));
-		setCursorBoundTask(null);
+		Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(null);
 	}
 }
