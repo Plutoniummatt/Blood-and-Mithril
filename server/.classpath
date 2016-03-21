@@ -16,10 +16,10 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Client/libs/gdx-backend-lwjgl-natives.jar"/>
-	<classpathentry kind="lib" path="/Client/libs/gdx-backend-lwjgl.jar" sourcepath="/Client/libs/gdx-backend-lwjgl-sources.jar"/>
-	<classpathentry kind="lib" path="/Client/libs/gdx-natives.jar"/>
-	<classpathentry kind="lib" path="/Source/libs/gdx.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/bloodandmithril-source/libs/gdx.jar"/>
+	<classpathentry kind="lib" path="/bloodandmithril-client/libs/gdx-backend-lwjgl-natives.jar"/>
+	<classpathentry kind="lib" path="/bloodandmithril-client/libs/gdx-backend-lwjgl.jar" sourcepath="/bloodandmithril-client/libs/gdx-backend-lwjgl-sources.jar"/>
+	<classpathentry kind="lib" path="/bloodandmithril-client/libs/gdx-natives.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
