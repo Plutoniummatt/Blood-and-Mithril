@@ -20,7 +20,9 @@ import com.esotericsoftware.kryonet.Server;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.CommonModule;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.ServerModule;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.networking.ClientServerInterface;
@@ -172,7 +174,7 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public void create() {
-			Wiring.setupInjector();
+			Wiring.setupInjector(new ServerModule(), new CommonModule());
 			Faction nature = new Faction("Nature", ParameterPersistenceService.getParameters().getNextFactionId(), false, "");
 			Faction player = new Faction("Elves", ParameterPersistenceService.getParameters().getNextFactionId(), true, "Elves are cool");
 			Domain.getFactions().put(nature.factionId, nature);

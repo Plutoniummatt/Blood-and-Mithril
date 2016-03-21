@@ -3,7 +3,6 @@ package bloodandmithril.ui.components.panel;
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.control.InputUtilities.isButtonPressed;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -18,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
@@ -238,7 +238,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 
 	@Override
-	public void render() {
+	public void render(SpriteBatch batch) {
 		if (canScroll) {
 			// Render the scroll bar
 			renderScrollBar();
@@ -248,7 +248,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		}
 
 		// Render the listings
-		renderListing();
+		renderListing(batch);
 	}
 
 
@@ -273,7 +273,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	/**
 	 * Renders the listing
 	 */
-	private void renderListing() {
+	private void renderListing(SpriteBatch batch) {
 		if (listings.isEmpty()) {
 			return;
 		}
@@ -312,7 +312,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 					continue;
 				}
 				if (y - (i - (startingIndex == 0 ? 1 : startingIndex)) * 20 - 110 < y - height) {
-					defaultFont.draw(getGraphics().getSpriteBatch(), "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
+					defaultFont.draw(batch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
 					break;
 				}
 
@@ -320,15 +320,16 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 					x + item.getKey().button.width/2 + 6,
 					y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25,
 					parent.isActive() && UserInterface.contextMenus.isEmpty(), parent.getAlpha(),
-					width - extraColumnWidth
+					width - extraColumnWidth,
+					batch
 				);
 
-				defaultFont.draw(getGraphics().getSpriteBatch(), getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
+				defaultFont.draw(batch, getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
 				i++;
 			}
 		}
 
-		getGraphics().getSpriteBatch().flush();
+		batch.flush();
 	}
 
 

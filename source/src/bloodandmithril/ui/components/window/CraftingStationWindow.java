@@ -3,7 +3,6 @@ package bloodandmithril.ui.components.window;
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
 import static com.google.common.collect.Lists.newArrayList;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.character.ai.AITask;
@@ -259,7 +259,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(SpriteBatch batch) {
 		if (individual.getState().position.cpy().sub(craftingStation.position).len() > 96f) {
 			setClosing(true);
 		}
@@ -278,8 +278,8 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		requiredMaterialsListing.width = width / 2 + 40;
 		requiredMaterialsListing.height = height - 130;
 
-		craftablesListing.render();
-		requiredMaterialsListing.render();
+		craftablesListing.render(batch);
+		requiredMaterialsListing.render(batch);
 
 		defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.GREEN, getAlpha()) : Colors.modulateAlpha(Color.GREEN, 0.5f * getAlpha()));
 		String selected = craftingStation.getCurrentlyBeingCrafted() == null ? "Selected: " : craftingStation.getAction() + "ing: ";
@@ -292,23 +292,23 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		}
 
 		String progress = craftingStation.getCurrentlyBeingCrafted() == null ? "" : " (" + String.format("%.1f", 100f * craftingStation.getCraftingProgress()) + "%) " + bulkMessage;
-		defaultFont.draw(getGraphics().getSpriteBatch(), selected + currentlySelectedToCraft.t.getSingular(true) + progress, x + width / 2 - 33, y - 33);
-		defaultFont.draw(getGraphics().getSpriteBatch(), "Required materials:", x + width / 2 - 33, y - 133);
+		defaultFont.draw(batch, selected + currentlySelectedToCraft.t.getSingular(true) + progress, x + width / 2 - 33, y - 33);
+		defaultFont.draw(batch, "Required materials:", x + width / 2 - 33, y - 133);
 
-		renderButtons();
-		renderItemIcon();
+		renderButtons(batch);
+		renderItemIcon(batch);
 	}
 
 
-	private void renderItemIcon() {
+	private void renderItemIcon(SpriteBatch batch) {
 		renderRectangle(x + width - 74, y - 30, 64, 64, isActive(), modulateAlpha(Color.BLACK, 0.5f));
-		renderBox(x + width - 76, y - 32, 64, 64, isActive(), borderColor);
+		renderBox(x + width - 76, y - 32, 64, 64, isActive(), borderColor, batch);
 
 		TextureRegion icon = currentlySelectedToCraft.t.getIconTextureRegion();
 		if (icon != null) {
-			getGraphics().getSpriteBatch().setShader(Shaders.filter);
+			batch.setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, getAlpha() * (isActive() ? 1f : 0.6f));
-			getGraphics().getSpriteBatch().draw(icon, x + width - 74, y - 96);
+			batch.draw(icon, x + width - 74, y - 96);
 		}
 	}
 
@@ -316,29 +316,32 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	/**
 	 * Renders the buttons on this {@link CraftingStationWindow}
 	 */
-	protected void renderButtons() {
+	protected void renderButtons(SpriteBatch batch) {
 		showInfoButton.render(
 			x + width / 2 + 11,
 			y - 45,
 			isActive(),
-			getAlpha()
+			getAlpha(),
+			batch
 		);
 
 		craftButton.render(
 			x + width / 2 + 11,
 			y - 65,
 			isActive() && (craftingStation.getCurrentlyBeingCrafted() == null || !craftingStation.isOccupied()) && !craftingStation.isFinished() && (enoughMaterials || craftingStation.getCurrentlyBeingCrafted() != null) && customCanCraft(),
-			getAlpha()
+			getAlpha(),
+			batch
 		);
 
 		takeFinishedItemButton.render(
 			x + width / 2 + 11,
 			y - 85,
 			isActive() && craftingStation.isFinished(),
-			getAlpha()
+			getAlpha(),
+			batch
 		);
 
-		getGraphics().getSpriteBatch().flush();
+		batch.flush();
 	}
 
 

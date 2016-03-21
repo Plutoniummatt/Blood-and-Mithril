@@ -1,6 +1,5 @@
 package bloodandmithril.graphics;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 import static bloodandmithril.graphics.WorldRenderer.Depth.BACKGROUND;
 import static bloodandmithril.graphics.WorldRenderer.Depth.FOREGROUND;
@@ -28,14 +27,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.google.common.base.Predicate;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
@@ -53,6 +55,7 @@ import bloodandmithril.world.weather.WeatherRenderer;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2015")
 public class WorldRenderer {
 
@@ -74,9 +77,11 @@ public class WorldRenderer {
 	public static FrameBuffer combinedBufferQuantized;
 
 	private static TextureRegion circle;
+	private static Graphics graphics;
 
 	static {
 		if (ClientServerInterface.isClient()) {
+			graphics = Wiring.injector().getInstance(Graphics.class);
 			gameWorldTexture = new Texture(files.internal("data/image/gameWorld.png"));
 			individualTexture = new Texture(files.internal("data/image/character/individual.png"));
 			gameWorldTexture.setFilter(Linear, Linear);
@@ -97,166 +102,168 @@ public class WorldRenderer {
 	}
 
 	public static void setup() {
-		fBuffer 							= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
-		mBuffer 							= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
-		bBuffer 							= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
-		workingQuantized 					= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
-		bBufferQuantized 					= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
-		fBufferQuantized 					= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
-		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, getGraphics().getWidth() + getGraphics().getCamMarginX(), getGraphics().getHeight() + getGraphics().getCamMarginY(), false);
-		cloudBuffer 						= new FrameBuffer(RGBA8888, getGraphics().getWidth(), getGraphics().getHeight(), false);
+		fBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
+		mBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
+		bBuffer 							= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
+		workingQuantized 					= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
+		bBufferQuantized 					= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
+		fBufferQuantized 					= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
+		combinedBufferQuantized 			= new FrameBuffer(RGBA8888, Graphics.getGdxWidth() + graphics.getCamMarginX(), Graphics.getGdxHeight() + graphics.getCamMarginY(), false);
+		cloudBuffer 						= new FrameBuffer(RGBA8888, Graphics.getGdxWidth(), Graphics.getGdxHeight(), false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 
 	public static void render(World world, int camX, int camY) {
+		SpriteBatch batch = graphics.getSpriteBatch();
+
 		BloodAndMithrilClient.rendering.set(true);
 		bBuffer.begin();
 		Shaders.invertAlphaSolidColor.begin();
 		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {});
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.filter);
-		Shaders.pass.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
+		batch.begin();
+		batch.setShader(Shaders.filter);
+		Shaders.pass.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		for (Prop prop : world.props().getProps()) {
 			if (prop.depth == BACKGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-				prop.render();
-				getGraphics().getSpriteBatch().flush();
+				prop.render(batch);
+				batch.flush();
 			}
 		}
 		renderParticles(Depth.BACKGROUND, world);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		bBuffer.end();
-		
+
 		cloudBuffer.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		WeatherRenderer.renderClouds(world);
 		cloudBuffer.end();
 
-		int xOffset = round(getGraphics().getCam().position.x) % TILE_SIZE;
-		int yOffset = round(getGraphics().getCam().position.y) % TILE_SIZE;
+		int xOffset = round(graphics.getCam().position.x) % TILE_SIZE;
+		int yOffset = round(graphics.getCam().position.y) % TILE_SIZE;
 
 		workingQuantized.begin();
-		getGraphics().getCam().position.x = getGraphics().getCam().position.x - xOffset;
-		getGraphics().getCam().position.y = getGraphics().getCam().position.y - yOffset;
-		getGraphics().getCam().update();
+		graphics.getCam().position.x = graphics.getCam().position.x - xOffset;
+		graphics.getCam().position.y = graphics.getCam().position.y - yOffset;
+		graphics.getCam().update();
 		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {});
-		getGraphics().getCam().position.x = getGraphics().getCam().position.x + xOffset;
-		getGraphics().getCam().position.y = getGraphics().getCam().position.y + yOffset;
-		getGraphics().getCam().update();
+		graphics.getCam().position.x = graphics.getCam().position.x + xOffset;
+		graphics.getCam().position.y = graphics.getCam().position.y + yOffset;
+		graphics.getCam().update();
 		workingQuantized.end();
 
 		bBufferQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.invertAlphaSolidColor);
+		batch.begin();
+		batch.setShader(Shaders.invertAlphaSolidColor);
 		Shaders.invertAlphaSolidColor.setUniformf("c", 1.0f, 0.0f, 0.0f, 1.0f);
-		getGraphics().getSpriteBatch().draw(workingQuantized.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
-		getGraphics().getSpriteBatch().end();
+		batch.draw(workingQuantized.getColorBufferTexture(), 0, 0, Graphics.getGdxWidth(), Graphics.getGdxHeight());
+		batch.end();
 		bBufferQuantized.end();
 
 		workingQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getCam().position.x = getGraphics().getCam().position.x - xOffset;
-		getGraphics().getCam().position.y = getGraphics().getCam().position.y - yOffset;
-		getGraphics().getCam().update();
+		graphics.getCam().position.x = graphics.getCam().position.x - xOffset;
+		graphics.getCam().position.y = graphics.getCam().position.y - yOffset;
+		graphics.getCam().update();
 		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
-		getGraphics().getCam().position.x = getGraphics().getCam().position.x + xOffset;
-		getGraphics().getCam().position.y = getGraphics().getCam().position.y + yOffset;
-		getGraphics().getCam().update();
+		graphics.getCam().position.x = graphics.getCam().position.x + xOffset;
+		graphics.getCam().position.y = graphics.getCam().position.y + yOffset;
+		graphics.getCam().update();
 		workingQuantized.end();
 
 		fBufferQuantized.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.invertAlphaSolidColor);
+		batch.begin();
+		batch.setShader(Shaders.invertAlphaSolidColor);
 		Shaders.invertAlphaSolidColor.setUniformf("c", 0.0f, 1.0f, 0.0f, 1.0f);
-		getGraphics().getSpriteBatch().draw(workingQuantized.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
-		getGraphics().getSpriteBatch().end();
+		batch.draw(workingQuantized.getColorBufferTexture(), 0, 0, Graphics.getGdxWidth(), Graphics.getGdxHeight());
+		batch.end();
 		fBufferQuantized.end();
 
 		combinedBufferQuantized.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.invertAlphaSolidColorBlend);
+		batch.setShader(Shaders.invertAlphaSolidColorBlend);
 		bBufferQuantized.getColorBufferTexture().bind(1);
 		Shaders.invertAlphaSolidColorBlend.setUniformi("u_texture_2", 1);
 		gl.glActiveTexture(GL_TEXTURE0);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			fBufferQuantized.getColorBufferTexture(),
-			0, 0, getGraphics().getWidth(), getGraphics().getHeight()
+			0, 0, Graphics.getGdxWidth(), Graphics.getGdxHeight()
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		combinedBufferQuantized.end();
 
 		mBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
+		batch.begin();
+		batch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		for (Prop prop : world.props().getProps()) {
 			if (prop.depth == MIDDLEGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
-				prop.render();
-				getGraphics().getSpriteBatch().flush();
+				prop.render(batch);
+				batch.flush();
 			}
 		}
 		renderParticles(MIDDLEGROUND, world);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		mBuffer.end();
 
 		fBuffer.begin();
 		gl20.glClear(GL_COLOR_BUFFER_BIT);
 		individualTexture.setFilter(Linear, Linear);
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
+		batch.begin();
+		batch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		for (Prop prop : world.props().getProps()) {
 			if (prop.depth == FOREGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
-				prop.render();
-				getGraphics().getSpriteBatch().flush();
+				prop.render(batch);
+				batch.flush();
 			}
 		}
 		for (Item item : world.items().getItems()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			item.render();
-			getGraphics().getSpriteBatch().flush();
+			batch.flush();
 		}
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		individualTexture.setFilter(Nearest, Nearest);
 		IndividualPlatformFilteringRenderer.renderIndividuals(world.getWorldId());
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
+		batch.begin();
+		batch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		for (Projectile projectile : world.projectiles().getProjectiles()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-			projectile.render();
-			getGraphics().getSpriteBatch().flush();
+			projectile.render(batch);
+			batch.flush();
 		}
 		renderParticles(Depth.FOREGROUND, world);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
+		batch.begin();
+		batch.setShader(Shaders.filter);
+		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		for (Prop prop : world.props().getProps()) {
 			if (prop.depth == Depth.FRONT) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
-				prop.render();
-				getGraphics().getSpriteBatch().flush();
+				prop.render(batch);
+				batch.flush();
 			}
 		}
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		fBuffer.end();
 
 		GaussianLightingRenderer.render(camX, camY, world);
@@ -265,11 +272,13 @@ public class WorldRenderer {
 
 
 	private static void renderParticles(Depth depth, World world) {
+		SpriteBatch batch = graphics.getSpriteBatch();
+
 		gl20.glEnable(GL20.GL_BLEND);
 		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		shapeRenderer.begin(Line);
-		shapeRenderer.setProjectionMatrix(getGraphics().getCam().projection);
-		shapeRenderer.setTransformMatrix(getGraphics().getCam().view);
+		shapeRenderer.setProjectionMatrix(graphics.getCam().projection);
+		shapeRenderer.setTransformMatrix(graphics.getCam().view);
 		gl20.glEnable(GL11.GL_LINE_SMOOTH);
 		if (world.getClientParticles() != null) {
 			world.getClientParticles().stream().filter(p -> p.depth == depth).forEach(p -> {
@@ -284,11 +293,11 @@ public class WorldRenderer {
 		gl20.glDisable(GL11.GL_LINE_SMOOTH);
 		shapeRenderer.end();
 
-		getGraphics().getSpriteBatch().setShader(Shaders.particleTexture);
-		int source = getGraphics().getSpriteBatch().getBlendSrcFunc();
-		int destination = getGraphics().getSpriteBatch().getBlendDstFunc();
-		getGraphics().getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		Shaders.particleTexture.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
+		batch.setShader(Shaders.particleTexture);
+		int source = batch.getBlendSrcFunc();
+		int destination = batch.getBlendDstFunc();
+		batch.setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		Shaders.particleTexture.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		Shaders.particleTexture.setUniformf("feather", 0.3f);
 		Shaders.particleTexture.setUniformf("topLeft", circle.getU(), circle.getV());
 		Shaders.particleTexture.setUniformf("bottomRight", circle.getU2(), circle.getV2());
@@ -296,7 +305,7 @@ public class WorldRenderer {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
 			world.getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime(), circle);
-				getGraphics().getSpriteBatch().flush();
+				batch.flush();
 				counter.t++;
 			});
 		}
@@ -304,12 +313,12 @@ public class WorldRenderer {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
 			world.getServerParticles().values().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
 				p.render(Gdx.graphics.getDeltaTime(), circle);
-				getGraphics().getSpriteBatch().flush();
+				batch.flush();
 				counter.t++;
 			});
 		}
-		getGraphics().getSpriteBatch().flush();
-		getGraphics().getSpriteBatch().setBlendFunction(source, destination);
+		batch.flush();
+		batch.setBlendFunction(source, destination);
 
 		gl20.glDisable(GL20.GL_BLEND);
 	}

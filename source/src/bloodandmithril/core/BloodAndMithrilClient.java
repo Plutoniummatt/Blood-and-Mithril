@@ -5,6 +5,8 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.setInputProcessor;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
+import static bloodandmithril.graphics.Graphics.getGdxHeight;
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 
 import java.util.Collection;
@@ -92,40 +94,37 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	public static boolean devMode = false;
 
 	/** The game world */
-	private static boolean inGame;
+	private static AtomicBoolean inGame;
 
 	/** True if game is paused */
-	public static boolean paused;
+	public static AtomicBoolean paused;
 
 	/** True if the world is currently being rendered */
 	public static AtomicBoolean rendering = new AtomicBoolean(false);
 
 	/** True if game is loading */
-	public static boolean loading;
+	public static AtomicBoolean loading;
 
-	@Inject
-	private Timers timers;
+	@Inject	private Timers timers;
+	@Inject	private Graphics graphics;
+	@Inject	private BloodAndMithrilClientInputProcessor inputProcessor;
 
-	@Inject
-	private Graphics graphics;
-
-	@Inject
-	private BloodAndMithrilClientInputProcessor processor;
+	/** Current camera coordinates for each world */
+	private static final Map<Integer, Vector2> worldCamCoordinates = Maps.newHashMap();
 
 	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
 	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
-	private static final Map<Integer, Vector2> worldCamCoordinates = Maps.newHashMap();
+
 
 	public static float updateRateMultiplier = 1f;
 
 	@Override
 	public void create() {
 		// Load client-side resources
+		Wiring.setupInjector(new ClientModule(), new CommonModule());
 		ClientServerInterface.setClient(true);
-		Wiring.setupInjector();
 
 		loadResources();
-
 
 		SoundService.changeMusic(2f, SoundService.mainMenu);
 
@@ -135,11 +134,11 @@ public class BloodAndMithrilClient implements ApplicationListener {
 			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).setUpdateTick(1f/60f)
 		);
 		Domain.setActiveWorld(1);
-		getGraphics().getCam().position.y = Layer.getCameraYForHorizonCoord(getGraphics().getHeight()/3);
+		graphics.getCam().position.y = Layer.getCameraYForHorizonCoord(graphics.getHeight()/3);
 		ClientServerInterface.setServer(false);
 
 		Wiring.injector().injectMembers(this);
-		setInputProcessor(processor);
+		setInputProcessor(inputProcessor);
 	}
 
 
@@ -165,10 +164,10 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		Item.setup();
 		UserInterface.setup();
 
-		UserInterface.UICamera = new OrthographicCamera(getGraphics().getWidth(), getGraphics().getHeight());
-		UserInterface.UICamera.setToOrtho(false, getGraphics().getWidth(), getGraphics().getHeight());
-		UserInterface.UICameraTrackingCam = new OrthographicCamera(getGraphics().getWidth(), getGraphics().getHeight());
-		UserInterface.UICameraTrackingCam.setToOrtho(false, getGraphics().getWidth(), getGraphics().getHeight());
+		UserInterface.UICamera = new OrthographicCamera(graphics.getWidth(), graphics.getHeight());
+		UserInterface.UICamera.setToOrtho(false, graphics.getWidth(), graphics.getHeight());
+		UserInterface.UICameraTrackingCam = new OrthographicCamera(graphics.getWidth(), graphics.getHeight());
+		UserInterface.UICameraTrackingCam.setToOrtho(false, graphics.getWidth(), graphics.getHeight());
 
 		UserInterface.addLayeredComponent(
 			new MainMenuWindow(false)
@@ -184,15 +183,15 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	@Override
 	public void render() {
 		try {
-			processor.cameraControl();
+			inputProcessor.cameraControl();
 			if (!GameSaver.isSaving()) {
 				SoundService.update(Gdx.graphics.getDeltaTime());
 			}
 
-			float x = getGraphics().getCam().position.x;
-			float y = getGraphics().getCam().position.y;
-			getGraphics().getCam().position.x = Math.round(getGraphics().getCam().position.x);
-			getGraphics().getCam().position.y = Math.round(getGraphics().getCam().position.y);
+			float x = graphics.getCam().position.x;
+			float y = graphics.getCam().position.y;
+			graphics.getCam().position.x = Math.round(graphics.getCam().position.x);
+			graphics.getCam().position.y = Math.round(graphics.getCam().position.y);
 
 			// Topography backlog, must be done in main threadh because chunks rely on graphics ---------- /
 			if (System.currentTimeMillis() - timers.topographyBacklogExecutionTimer > 100) {
@@ -201,7 +200,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 			}
 
 			// Camera --------------------- /
-			getGraphics().getCam().update();
+			graphics.getCam().update();
 			UserInterface.update();
 
 			// Blending --------------------- /
@@ -211,8 +210,8 @@ public class BloodAndMithrilClient implements ApplicationListener {
 			Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 			// Rendering --------------------- /
-			if (Domain.getActiveWorld() != null && !loading) {
-				WorldRenderer.render(Domain.getActiveWorld(), (int) getGraphics().getCam().position.x, (int) getGraphics().getCam().position.y);
+			if (Domain.getActiveWorld() != null && !loading.get()) {
+				WorldRenderer.render(Domain.getActiveWorld(), (int) graphics.getCam().position.x, (int) graphics.getCam().position.y);
 			}
 
 			// Fading --------------------- /
@@ -220,8 +219,8 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 			UserInterface.render();
 
-			getGraphics().getCam().position.x = x;
-			getGraphics().getCam().position.y = y;
+			graphics.getCam().position.x = x;
+			graphics.getCam().position.y = y;
 		} catch (Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
@@ -247,7 +246,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		Gdx.gl20.glEnable(GL20.GL_BLEND);
 		UserInterface.shapeRenderer.begin(ShapeType.Filled);
 		UserInterface.shapeRenderer.setColor(0, 0, 0, graphics.getFadeAlpha());
-		UserInterface.shapeRenderer.rect(0, 0, getGraphics().getWidth(), getGraphics().getHeight());
+		UserInterface.shapeRenderer.rect(0, 0, graphics.getWidth(), graphics.getHeight());
 		UserInterface.shapeRenderer.end();
 		Gdx.gl20.glDisable(GL20.GL_BLEND);
 	}
@@ -255,7 +254,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
-		getGraphics().resize(width, height);
+		graphics.resize(width, height);
 
 		ConfigPersistenceService.getConfig().setResX(width);
 		ConfigPersistenceService.getConfig().setResY(height);
@@ -287,7 +286,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		float screenX = worldToScreenX(position.x);
 		float screenY = worldToScreenY(position.y);
 
-		return screenX > -tolerance && screenX < getGraphics().getWidth() + tolerance && screenY > -tolerance && screenY < getGraphics().getHeight() + tolerance;
+		return screenX > -tolerance && screenX < Graphics.getGdxWidth() + tolerance && screenY > -tolerance && screenY < Graphics.getGdxHeight() + tolerance;
 	}
 
 
@@ -313,13 +312,13 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	 * @return whether the chunks on screen are generated/loaded
 	 */
 	public static boolean areChunksOnScreenGenerated() {
-		int camX = (int) getGraphics().getCam().position.x;
-		int camY = (int) getGraphics().getCam().position.y;
+		int camX = (int) graphics.getCam().position.x;
+		int camY = (int) graphics.getCam().position.y;
 
-		int bottomLeftX = convertToChunkCoord((float)(camX - getGraphics().getWidth() / 2));
-		int bottomLeftY = convertToChunkCoord((float)(camY - getGraphics().getHeight() / 2));
-		int topRightX = bottomLeftX + convertToChunkCoord((float)getGraphics().getWidth());
-		int topRightY = bottomLeftY + convertToChunkCoord((float)getGraphics().getHeight());
+		int bottomLeftX = convertToChunkCoord((float)(camX - getGdxWidth() / 2));
+		int bottomLeftY = convertToChunkCoord((float)(camY - getGdxHeight() / 2));
+		int topRightX = bottomLeftX + convertToChunkCoord((float) getGdxWidth());
+		int topRightY = bottomLeftY + convertToChunkCoord((float) getGdxHeight());
 
 		World activeWorld = Domain.getActiveWorld();
 
@@ -349,7 +348,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	 * Sets the boolean value to indicate whether or not the loading screen should be rendered
 	 */
 	public static void setLoading(boolean loading) {
-		BloodAndMithrilClient.loading = loading;
+		BloodAndMithrilClient.loading.set(loading);
 	}
 
 
@@ -369,7 +368,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	 * Whether or not the client is currently in a game
 	 */
 	public static boolean isInGame() {
-		return inGame;
+		return inGame.get();
 	}
 
 
@@ -377,7 +376,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	 * Sets the inGame flag
 	 */
 	public static void setInGame(boolean inGame) {
-		BloodAndMithrilClient.inGame = inGame;
+		BloodAndMithrilClient.inGame.set(inGame);
 	}
 
 
@@ -407,10 +406,5 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 	public static Map<Integer, Vector2> getWorldcamcoordinates() {
 		return worldCamCoordinates;
-	}
-
-
-	public static Graphics getGraphics() {
-		return Wiring.injector().getInstance(Graphics.class);
 	}
 }

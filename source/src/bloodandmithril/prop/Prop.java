@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
@@ -88,7 +89,7 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 	}
 
 	/** Render this {@link Prop} */
-	public abstract void render();
+	public abstract void render(SpriteBatch batch);
 
 	/** Synchronizes this prop with another */
 	public abstract void synchronizeProp(Prop other);

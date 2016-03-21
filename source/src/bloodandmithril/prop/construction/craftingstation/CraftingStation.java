@@ -2,13 +2,13 @@ package bloodandmithril.prop.construction.craftingstation;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
@@ -94,11 +94,11 @@ public abstract class CraftingStation extends Construction {
 
 
 	@Override
-	protected void internalRender(float constructionProgress) {
+	protected void internalRender(float constructionProgress, SpriteBatch batch) {
 		if (constructionProgress == 0f) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 0.90f);
 		}
-		getGraphics().getSpriteBatch().draw(getTextureRegion(), position.x - width / 2, position.y);
+		batch.draw(getTextureRegion(), position.x - width / 2, position.y);
 	}
 
 

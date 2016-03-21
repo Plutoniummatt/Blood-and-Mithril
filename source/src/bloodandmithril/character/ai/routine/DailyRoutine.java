@@ -2,7 +2,6 @@ package bloodandmithril.character.ai.routine;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.world.Epoch.getTimeString;
 
@@ -11,6 +10,7 @@ import java.util.Deque;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.Routine;
@@ -223,12 +223,12 @@ public final class DailyRoutine extends Routine {
 		}
 
 		@Override
-		public final void render() {
-			super.render();
+		public final void render(SpriteBatch batch) {
+			super.render(batch);
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
-				getGraphics().getSpriteBatch(),
+				batch,
 				routineTime == null ? "Not configured" : "Routine occurs daily between " + getTimeString(routineTime) + " and " + getTimeString(routineTime + toleranceTime),
 				x + 10,
 				y - 27,
@@ -242,7 +242,7 @@ public final class DailyRoutine extends Routine {
 					epoch.incrementDay();
 				}
 				defaultFont.drawWrapped(
-					getGraphics().getSpriteBatch(),
+					batch,
 					"Next scheduled occurrence: " + (routineTime == null ? "N/A" : getTimeString(routineTime) + " on " + epoch.getDateString()),
 					x + 10,
 					y - 47,
@@ -252,7 +252,7 @@ public final class DailyRoutine extends Routine {
 				Epoch copy = lastExecutedEpoch.copy();
 				copy.incrementDay();
 				defaultFont.drawWrapped(
-					getGraphics().getSpriteBatch(),
+					batch,
 					"Next scheduled occurrence: " + (routineTime == null ? "N/A" : getTimeString(routineTime) + " on " + copy.getDateString()),
 					x + 10,
 					y - 47,
@@ -261,7 +261,7 @@ public final class DailyRoutine extends Routine {
 			}
 
 			defaultFont.drawWrapped(
-				getGraphics().getSpriteBatch(),
+				batch,
 				"Task:",
 				x + 10,
 				y - 97,
@@ -272,7 +272,7 @@ public final class DailyRoutine extends Routine {
 
 			if (aiTaskGenerator != null) {
 				defaultFont.drawWrapped(
-					getGraphics().getSpriteBatch(),
+					batch,
 					aiTaskGenerator.getDailyRoutineDetailedDescription(),
 					x + 10,
 					y - 117,
@@ -280,8 +280,8 @@ public final class DailyRoutine extends Routine {
 				);
 			}
 
-			changeToleranceButton.render(x + 84, y - height + 70, parent.isActive(), parent.getAlpha());
-			changeTimeButton.render(x + 64, y - height + 90, parent.isActive(), parent.getAlpha());
+			changeToleranceButton.render(x + 84, y - height + 70, parent.isActive(), parent.getAlpha(), batch);
+			changeTimeButton.render(x + 64, y - height + 90, parent.isActive(), parent.getAlpha(), batch);
 		}
 	}
 }

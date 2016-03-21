@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.ai.task.ConstructDeconstruct;
@@ -67,8 +68,8 @@ public abstract class Construction extends Prop implements Container {
 
 
 	@Override
-	public void render() {
-		internalRender(constructionProgress);
+	public void render(SpriteBatch batch) {
+		internalRender(constructionProgress, batch);
 	}
 
 
@@ -287,7 +288,7 @@ public abstract class Construction extends Prop implements Container {
 	}
 
 	/** Renders this {@link Construction} based on {@link #constructionProgress} */
-	protected abstract void internalRender(float constructionProgress);
+	protected abstract void internalRender(float constructionProgress, SpriteBatch batch);
 
 	/** Get the required items to construct this {@link Construction} */
 	public abstract Map<Item, Integer> getRequiredMaterials();

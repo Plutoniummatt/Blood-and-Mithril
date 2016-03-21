@@ -1,11 +1,16 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.item.items.material.ArrowHeadItem.arrowHead;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 
 import java.util.Map;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.task.Idle;
@@ -26,11 +31,6 @@ import bloodandmithril.item.material.metal.Iron;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
 
 /**
  * An blacksmith workshop, used to smith metallic items
@@ -69,11 +69,11 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 
 	@Override
-	protected void internalRender(float constructionProgress) {
+	protected void internalRender(float constructionProgress, SpriteBatch batch) {
 		if (isOccupied()) {
-			getGraphics().getSpriteBatch().draw(blackSmithWorkshopWorking, position.x - width / 2, position.y);
+			batch.draw(blackSmithWorkshopWorking, position.x - width / 2, position.y);
 		} else {
-			getGraphics().getSpriteBatch().draw(blackSmithWorkshop, position.x - width / 2, position.y);
+			batch.draw(blackSmithWorkshop, position.x - width / 2, position.y);
 		}
 	}
 

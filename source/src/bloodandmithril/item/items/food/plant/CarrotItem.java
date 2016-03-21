@@ -1,7 +1,11 @@
 package bloodandmithril.item.items.food.plant;
 
 import static bloodandmithril.character.ai.perception.Visible.getVisible;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -14,9 +18,6 @@ import bloodandmithril.prop.plant.CarrotProp;
 import bloodandmithril.prop.plant.CarrotProp.SoilTilesOnly;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * A Carrot
@@ -171,8 +172,8 @@ public class CarrotItem extends Food {
 
 
 		@Override
-		public void render() {
-			getGraphics().getSpriteBatch().draw(carrotSeed, position.x - width / 2, position.y);
+		public void render(SpriteBatch batch) {
+			batch.draw(carrotSeed, position.x - width / 2, position.y);
 		}
 
 

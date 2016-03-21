@@ -2,12 +2,12 @@ package bloodandmithril.prop.plant;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.Collection;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Lists;
 
@@ -53,11 +53,11 @@ public class CarrotProp extends PlantProp implements Harvestable {
 
 
 	@Override
-	public void render() {
+	public void render(SpriteBatch batch) {
 		if (getGrowthProgress() < 1.0f) {
-			getGraphics().getSpriteBatch().draw(halfCarrot, position.x - width / 2, position.y);
+			batch.draw(halfCarrot, position.x - width / 2, position.y);
 		} else {
-			getGraphics().getSpriteBatch().draw(carrot, position.x - width / 2, position.y);
+			batch.draw(carrot, position.x - width / 2, position.y);
 		}
 	}
 

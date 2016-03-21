@@ -1,8 +1,12 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-
 import java.util.Map;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
@@ -21,11 +25,6 @@ import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
 
 /**
  * A vanilla arrow
@@ -60,8 +59,8 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 
 
 	@Override
-	public void render() {
-		getGraphics().getSpriteBatch().draw(
+	public void render(SpriteBatch batch) {
+		batch.draw(
 			textureRegion,
 			position.x - 25,
 			position.y - 1.5f,

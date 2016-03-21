@@ -2,7 +2,6 @@ package bloodandmithril.util.cursorboundtask;
 
 import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
@@ -13,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
@@ -74,14 +74,14 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public void renderUIGuide() {
+	public void renderUIGuide(SpriteBatch batch) {
 		float mouseX = getMouseWorldX();
 		float mouseY = getMouseWorldY();
 
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.filter);
+		batch.begin();
+		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
 		for (Entry<Integer, Individual> entry : individuals.entrySet()) {
 			Vector2 pos;
@@ -93,13 +93,13 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 				boolean canPlace = canPlaceIndividual(entry.getValue());
 
 				Shaders.filter.setUniformf("color", canPlace ? Color.GREEN : Color.RED);
-				getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, pos.x - 5, pos.y);
-				getGraphics().getSpriteBatch().flush();
+				batch.draw(UserInterface.currentArrow, pos.x - 5, pos.y);
+				batch.flush();
 			} catch (NoTileFoundException e) {
 				pos = new Vector2();
 			}
 		}
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		gl.glDisable(GL_BLEND);
 
 		Container container = startingItemPackage.getContainer();

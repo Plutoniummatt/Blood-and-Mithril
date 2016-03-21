@@ -1,5 +1,7 @@
 package bloodandmithril.playerinteraction.individual.service;
 
+import com.google.inject.Singleton;
+
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -10,6 +12,7 @@ import bloodandmithril.playerinteraction.individual.api.IndividualTradeWithOther
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2015")
 public class IndividualTradeWithOtherServiceServerImpl implements IndividualTradeWithOtherService {
 

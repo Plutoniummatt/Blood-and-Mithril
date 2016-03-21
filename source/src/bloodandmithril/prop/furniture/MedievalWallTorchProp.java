@@ -2,10 +2,10 @@ package bloodandmithril.prop.furniture;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -61,8 +61,8 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 
 
 	@Override
-	public void render() {
-		getGraphics().getSpriteBatch().draw(medievalWallTorch, position.x - width / 2, position.y);
+	public void render(SpriteBatch batch) {
+		batch.draw(medievalWallTorch, position.x - width / 2, position.y);
 	}
 
 

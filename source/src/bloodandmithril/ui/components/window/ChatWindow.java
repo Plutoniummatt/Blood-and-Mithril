@@ -1,7 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Deque;
@@ -13,6 +11,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.collect.Lists;
 
@@ -78,11 +77,11 @@ public class ChatWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(SpriteBatch batch) {
 
-		renderMessage();
+		renderMessage(batch);
 		renderSeparator();
-		renderPlayerList();
+		renderPlayerList(batch);
 		renderTextInputPanel();
 	}
 
@@ -96,7 +95,7 @@ public class ChatWindow extends Window {
 	}
 
 
-	private void renderMessage() {
+	private void renderMessage(SpriteBatch batch) {
 		String string = "";
 
 		Iterator<Message> iterator = Lists.newArrayList(messagesToDisplay).iterator();
@@ -124,9 +123,9 @@ public class ChatWindow extends Window {
 			lines--;
 		}
 
-		Fonts.defaultFont.drawWrapped(getGraphics().getSpriteBatch(), string, x + 10, y - 30, width - 170);
+		Fonts.defaultFont.drawWrapped(batch, string, x + 10, y - 30, width - 170);
 
-		getGraphics().getSpriteBatch().flush();
+		batch.flush();
 	}
 
 
@@ -144,13 +143,13 @@ public class ChatWindow extends Window {
 	}
 
 
-	private void renderPlayerList() {
+	private void renderPlayerList(SpriteBatch batch) {
 		participants.x = x + width - 170;
 		participants.y = y;
 		participants.width = 170;
 		participants.height = height;
 
-		participants.render();
+		participants.render(batch);
 	}
 
 

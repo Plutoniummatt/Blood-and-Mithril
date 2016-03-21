@@ -3,19 +3,20 @@ package bloodandmithril.ui.components;
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.control.InputUtilities.isButtonPressed;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Util.fitToTextInputBox;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Function;
@@ -177,7 +178,7 @@ public class Button {
 	/**
 	 * Renders this button
 	 */
-	public void render(boolean active, float alpha, int maxWidth) {
+	public void render(boolean active, float alpha, int maxWidth, SpriteBatch batch) {
 		if (popup != null) {
 			InfoPopup p = popup.call();
 			if (!p.expiryFunction.call() && UserInterface.getInfoPopup() == null) {
@@ -190,7 +191,7 @@ public class Button {
 
 		if (idle == null) {
 
-			getGraphics().getSpriteBatch().setShader(Shaders.text);
+			batch.setShader(Shaders.text);
 			Color downColorToUse = active ? downColor : idle == null ? downColor.cpy() : downColor;
 			Color overColorToUse = active ? overColor : idle == null ? overColor.cpy() : overColor;
 			Color idleColorToUse = active ? idleColor : idle == null ? idleColor.cpy() : idleColor;
@@ -198,35 +199,35 @@ public class Button {
 			if (isMouseOver() && active) {
 				if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode)) {
 					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(getGraphics().getSpriteBatch(), maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
+					font.draw(batch, maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 				} else {
 					font.setColor(overColorToUse.r, overColorToUse.g, overColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(getGraphics().getSpriteBatch(),  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
+					font.draw(batch,  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 				}
 			} else {
 				font.setColor(idleColorToUse.r, idleColorToUse.g, idleColorToUse.b, alpha * (active ? 1f : 0.3f));
-				font.draw(getGraphics().getSpriteBatch(),  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
+				font.draw(batch,  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 			}
 		} else {
-			getGraphics().getSpriteBatch().setShader(Shaders.filter);
+			batch.setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, alpha);
 			if (isMouseOver() && active) {
 				if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode)) {
-					getGraphics().getSpriteBatch().draw(down, vec.x, vec.y);
+					batch.draw(down, vec.x, vec.y);
 				} else {
-					getGraphics().getSpriteBatch().draw(over, vec.x, vec.y);
+					batch.draw(over, vec.x, vec.y);
 				}
 			} else {
-				getGraphics().getSpriteBatch().draw(idle, vec.x, vec.y);
+				batch.draw(idle, vec.x, vec.y);
 			}
 		}
 
-		getGraphics().getSpriteBatch().flush();
+		batch.flush();
 	}
 
 
-	public void render(boolean active, float alpha) {
-		render(active, alpha, 0);
+	public void render(boolean active, float alpha, SpriteBatch batch) {
+		render(active, alpha, 0, batch);
 	}
 
 
@@ -239,48 +240,48 @@ public class Button {
 	/**
 	 * Renders this button at an override location
 	 */
-	public void render(int x, int y) {
+	public void render(int x, int y, SpriteBatch batch) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
 
-		render(true, 1f);
+		render(true, 1f, batch);
 	}
 
 
 	/**
 	 * Renders this button at an override location and whether or not this button is 'active'
 	 */
-	public void render(int x, int y, boolean active) {
+	public void render(int x, int y, boolean active, SpriteBatch batch) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
 
-		render(active, 1f);
+		render(active, 1f, batch);
 	}
 
 
 	/**
 	 * Renders this button at an override location and whether or not this button is 'active', plus an alpha value
 	 */
-	public void render(int x, int y, boolean active, float alpha) {
+	public void render(int x, int y, boolean active, float alpha, SpriteBatch batch) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
 
-		render(active, alpha);
+		render(active, alpha, batch);
 	}
 
 
 	/**
 	 * Renders this button at an override location and whether or not this button is 'active', plus an alpha value, and maximum width, truncating the rest
 	 */
-	public void render(int x, int y, boolean active, float alpha, int maxWidth) {
+	public void render(int x, int y, boolean active, float alpha, int maxWidth, SpriteBatch batch) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
 
-		render(active, alpha, maxWidth);
+		render(active, alpha, maxWidth, batch);
 	}
 
 
@@ -295,33 +296,33 @@ public class Button {
 			break;
 
 		case BM:
-			vec.x = getGraphics().getWidth()/2 + offsetX - width/2;
+			vec.x = Graphics.getGdxWidth()/2 + offsetX - width/2;
 			vec.y = offsetY - height/2;
 			break;
 
 		case BR:
-			vec.x = getGraphics().getWidth() + offsetX - width/2;
+			vec.x = Graphics.getGdxWidth() + offsetX - width/2;
 			vec.y = offsetY - height/2;
 			break;
 
 		case M:
-			vec.x = getGraphics().getWidth()/2 + offsetX - width/2;
-			vec.y = getGraphics().getHeight()/2 + offsetY - height/2;
+			vec.x = Graphics.getGdxWidth()/2 + offsetX - width/2;
+			vec.y = Graphics.getGdxHeight()/2 + offsetY - height/2;
 			break;
 
 		case TL:
 			vec.x = offsetX - width/2;
-			vec.y = getGraphics().getHeight() + offsetY - height/2;
+			vec.y = Graphics.getGdxHeight() + offsetY - height/2;
 			break;
 
 		case TM:
-			vec.x = getGraphics().getWidth()/2 + offsetX - width/2;
-			vec.y = getGraphics().getHeight() + offsetY - height/2;
+			vec.x = Graphics.getGdxWidth()/2 + offsetX - width/2;
+			vec.y = Graphics.getGdxHeight() + offsetY - height/2;
 			break;
 
 		case TR:
-			vec.x = getGraphics().getWidth() + offsetX - width/2;
-			vec.y = getGraphics().getHeight() + offsetY - height/2;
+			vec.x = Graphics.getGdxWidth() + offsetX - width/2;
+			vec.y = Graphics.getGdxHeight() + offsetY - height/2;
 			break;
 
 		default:

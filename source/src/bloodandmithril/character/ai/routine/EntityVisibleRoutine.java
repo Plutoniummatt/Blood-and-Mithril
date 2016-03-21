@@ -2,7 +2,6 @@ package bloodandmithril.character.ai.routine;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.ArrayDeque;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.character.ai.AITask;
@@ -498,12 +498,12 @@ public final class EntityVisibleRoutine extends Routine {
 		}
 
 		@Override
-		public final void render() {
-			super.render();
+		public final void render(SpriteBatch batch) {
+			super.render(batch);
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
-				getGraphics().getSpriteBatch(),
+				batch,
 				identificationFunction == null ? "Not configured" : identificationFunction.getDetailedDescription(getHost()),
 				x + 10,
 				y - 27,
@@ -511,7 +511,7 @@ public final class EntityVisibleRoutine extends Routine {
 			);
 
 			defaultFont.drawWrapped(
-				getGraphics().getSpriteBatch(),
+				batch,
 				"Task:",
 				x + 10,
 				y - 97,
@@ -522,7 +522,7 @@ public final class EntityVisibleRoutine extends Routine {
 
 			if (aiTaskGenerator != null) {
 				defaultFont.drawWrapped(
-					getGraphics().getSpriteBatch(),
+					batch,
 					aiTaskGenerator.getEntityVisibleRoutineDetailedDescription(),
 					x + 10,
 					y - 117,
@@ -530,7 +530,7 @@ public final class EntityVisibleRoutine extends Routine {
 				);
 			}
 
-			changeVisibleEntityButton.render(x + 114, y - height + 70, parent.isActive(), parent.getAlpha());
+			changeVisibleEntityButton.render(x + 114, y - height + 70, parent.isActive(), parent.getAlpha(), batch);
 		}
 	}
 

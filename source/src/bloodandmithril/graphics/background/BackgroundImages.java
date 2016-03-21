@@ -1,6 +1,5 @@
 package bloodandmithril.graphics.background;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static com.badlogic.gdx.Gdx.files;
 
 import java.io.Serializable;
@@ -12,8 +11,11 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
 
@@ -35,8 +37,12 @@ public class BackgroundImages implements Serializable {
 	public static final int ISLAND = 2;
 	public static final int SHIP = 3;
 
+	@Inject private static Graphics graphics;
+
 	static {
 		if (ClientServerInterface.isClient()) {
+			graphics = Wiring.injector().getInstance(Graphics.class);
+
 			backgrounds = new Texture(files.internal("data/image/bg.png"));
 			backgrounds.setFilter(TextureFilter.Linear, TextureFilter.Nearest);
 			textures.put(OCEAN, new TextureRegion(backgrounds, 474, 0, 10, 75));
@@ -54,19 +60,19 @@ public class BackgroundImages implements Serializable {
 	 */
 	public void renderBackground() {
 		// Render the sea
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.pass);
-		getGraphics().getSpriteBatch().draw(textures.get(OCEAN), 0, 0, getGraphics().getWidth(), Layer.getScreenHorizonY() - 1);
-		getGraphics().getSpriteBatch().end();
+		graphics.getSpriteBatch().begin();
+		graphics.getSpriteBatch().setShader(Shaders.pass);
+		graphics.getSpriteBatch().draw(textures.get(OCEAN), 0, 0, graphics.getWidth(), Layer.getScreenHorizonY() - 1);
+		graphics.getSpriteBatch().end();
 
 		for (Layer layer : layers) {
-			getGraphics().getSpriteBatch().begin();
+			graphics.getSpriteBatch().begin();
 			layer.preRender();
 			layer.render(
-				(int) getGraphics().getCam().position.x,
-				(int) getGraphics().getCam().position.y
+				(int) graphics.getCam().position.x,
+				(int) graphics.getCam().position.y
 			);
-			getGraphics().getSpriteBatch().end();
+			graphics.getSpriteBatch().end();
 		}
 	}
 }

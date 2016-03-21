@@ -2,7 +2,7 @@ package bloodandmithril.ui.components;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -73,9 +74,9 @@ public class ContextMenu extends Component {
 	 * Renders this context menu
 	 */
 	@Override
-	protected void internalComponentRender() {
+	protected void internalComponentRender(SpriteBatch batch) {
 
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		int maxHeight = 20 * (menuItems.size() + 1);
 		int maxLength = 0;
 		for (MenuItem item : menuItems) {
@@ -83,7 +84,7 @@ public class ContextMenu extends Component {
 		}
 		maxLength = maxLength * 10;
 
-		x = x + maxLength >= getGraphics().getWidth() ? getGraphics().getWidth() - maxLength : x;
+		x = x + maxLength >= getGdxWidth() ? getGdxWidth() - maxLength : x;
 		y = y - maxHeight <= 0 ? maxHeight : y;
 
 		renderRectangle(
@@ -101,18 +102,19 @@ public class ContextMenu extends Component {
 			maxLength,
 			maxHeight,
 			isActive(),
-			borderColor
+			borderColor,
+			batch
 		);
 
 		int i = 0;
 		Iterator<MenuItem> iterator = menuItems.iterator();
 		while (iterator.hasNext()) {
 			MenuItem next = iterator.next();
-			next.button.render(x + next.button.width/2 + 5, y - i * 20, isActive());
+			next.button.render(x + next.button.width/2 + 5, y - i * 20, isActive(), batch);
 			i++;
 		}
 
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 	}
 
 

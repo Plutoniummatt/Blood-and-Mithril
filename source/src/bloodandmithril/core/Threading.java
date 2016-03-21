@@ -63,7 +63,7 @@ public class Threading {
 
 						// Do not update if game is paused
 						// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-						if (!BloodAndMithrilClient.paused && !GameSaver.isSaving() && Domain.getActiveWorld() != null && !BloodAndMithrilClient.loading) {
+						if (!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving() && Domain.getActiveWorld() != null && !BloodAndMithrilClient.loading.get()) {
 							Domain.getActiveWorld().update();
 						}
 					} catch (Exception e) {

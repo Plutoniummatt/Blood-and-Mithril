@@ -1,11 +1,15 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.item.items.material.IngotItem.ingot;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 import java.util.TreeMap;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Maps;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
@@ -30,10 +34,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Maps;
 
 /**
  * A Furnace
@@ -86,17 +86,17 @@ public class Furnace extends CraftingStation implements Container {
 
 
 	@Override
-	protected void internalRender(float constructionProgress) {
+	protected void internalRender(float constructionProgress, SpriteBatch batch) {
 		if (getConstructionProgress() == 0f) {
-			getGraphics().getSpriteBatch().draw(FURNACE, position.x - width / 2, position.y);
+			batch.draw(FURNACE, position.x - width / 2, position.y);
 		} else if (getConstructionProgress() >= 1f) {
 			if (isOccupied()) {
-				getGraphics().getSpriteBatch().draw(FURNACE_BURNING, position.x - width / 2, position.y);
+				batch.draw(FURNACE_BURNING, position.x - width / 2, position.y);
 			} else {
-				getGraphics().getSpriteBatch().draw(FURNACE, position.x - width / 2, position.y);
+				batch.draw(FURNACE, position.x - width / 2, position.y);
 			}
 		} else {
-			getGraphics().getSpriteBatch().draw(inProgressTextures.floorEntry(getConstructionProgress()).getValue(), position.x - width / 2, position.y);
+			batch.draw(inProgressTextures.floorEntry(getConstructionProgress()).getValue(), position.x - width / 2, position.y);
 		}
 	}
 

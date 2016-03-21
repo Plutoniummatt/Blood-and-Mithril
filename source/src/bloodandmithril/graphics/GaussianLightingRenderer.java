@@ -2,8 +2,9 @@ package bloodandmithril.graphics;
 
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
+import static bloodandmithril.graphics.Graphics.getGdxHeight;
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE0;
@@ -16,12 +17,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.graphics.particles.Particle;
@@ -54,43 +57,46 @@ public class GaussianLightingRenderer {
 
 	public static final int MAX_PARTICLES = 100;
 	private static final int LIGHTING_FBO_DOWNSIZE_SAMPLER = 6;
+	private static Graphics graphics;
 
 	/**
 	 * Master render method.
 	 */
 	public static void render(float camX, float camY, World world) {
-		weather(world);
-		backgroundSprites(world);
-		backgroundLighting();
-		foregroundLighting();
-		lighting(foregroundLightingFBOSmall, foregroundLightingFBO, Depth.FOREGROUND, world);
-		lighting(middleGroundLightingFBOSmall, middleGroundLightingFBO, Depth.MIDDLEGROUND, world);
-		background(world);
-		middleground(world);
-		foreground(world);
-		volumetricLighting(world);
+		graphics = Wiring.injector().getInstance(Graphics.class);
+
+		weather(world, graphics.getSpriteBatch());
+		backgroundSprites(world, graphics.getSpriteBatch());
+		backgroundLighting(graphics.getSpriteBatch());
+		foregroundLighting(graphics.getSpriteBatch());
+		lighting(foregroundLightingFBOSmall, foregroundLightingFBO, Depth.FOREGROUND, world, graphics.getSpriteBatch());
+		lighting(middleGroundLightingFBOSmall, middleGroundLightingFBO, Depth.MIDDLEGROUND, world, graphics.getSpriteBatch());
+		background(world, graphics.getSpriteBatch());
+		middleground(world, graphics.getSpriteBatch());
+		foreground(world, graphics.getSpriteBatch());
+		volumetricLighting(world, graphics.getSpriteBatch());
 	}
 
 
-	private static void backgroundSprites(World world) {
+	private static void backgroundSprites(World world, SpriteBatch batch) {
 		workingFBO2.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		world.getBackgroundImages().renderBackground();
 		workingFBO2.end();
 
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.invertYReflective);
+		batch.begin();
+		batch.setShader(Shaders.invertYReflective);
 		workingFBO.getColorBufferTexture().bind(14);
 		Color daylightColor = WeatherRenderer.getDaylightColor(world);
 		Shaders.invertYReflective.setUniformf("filter", WeatherRenderer.getSunColor(world).mul(new Color(daylightColor.r, daylightColor.r, daylightColor.r, 1f)));
 		Shaders.invertYReflective.setUniformi("u_texture2", 14);
 		Shaders.invertYReflective.setUniformf("time", world.getEpoch().getTime() * 360f);
-		Shaders.invertYReflective.setUniformf("horizon", (getGraphics().getHeight() - (float) Layer.getScreenHorizonY()) / getGraphics().getHeight());
-		Shaders.invertYReflective.setUniformf("resolution", getGraphics().getWidth(), getGraphics().getHeight());
+		Shaders.invertYReflective.setUniformf("horizon", (getGdxHeight() - (float) Layer.getScreenHorizonY()) / getGdxHeight());
+		Shaders.invertYReflective.setUniformf("resolution", getGdxWidth(), getGdxHeight());
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-		getGraphics().getSpriteBatch().draw(workingFBO2.getColorBufferTexture(), 0, 0);
-		getGraphics().getSpriteBatch().end();
+		batch.draw(workingFBO2.getColorBufferTexture(), 0, 0);
+		batch.end();
 	}
 
 
@@ -120,113 +126,113 @@ public class GaussianLightingRenderer {
 	public static void setup() {
 		workingDownSampled = new FrameBuffer(
 			RGBA8888,
-			(getGraphics().getWidth() + getGraphics().getCamMarginX()) / 16,
-			(getGraphics().getHeight() + getGraphics().getCamMarginY()) / 16,
+			(getGdxWidth() + graphics.getCamMarginX()) / 16,
+			(getGdxHeight() + graphics.getCamMarginY()) / 16,
 			false
 		);
 
 		workingDownSampledXBlurColorBuffer = new FrameBuffer(
 			RGBA8888,
-			(getGraphics().getWidth() + getGraphics().getCamMarginX()) / 16,
-			(getGraphics().getHeight() + getGraphics().getCamMarginY()) / 16,
+			(getGdxWidth() + graphics.getCamMarginX()) / 16,
+			(getGdxHeight() + graphics.getCamMarginY()) / 16,
 			false
 		);
 
 		workingDownSampledYBlurColorBuffer = new FrameBuffer(
 			RGBA8888,
-			(getGraphics().getWidth() + getGraphics().getCamMarginX()) / 16,
-			(getGraphics().getHeight() + getGraphics().getCamMarginY()) / 16,
+			(getGdxWidth() + graphics.getCamMarginX()) / 16,
+			(getGdxHeight() + graphics.getCamMarginY()) / 16,
 			false
 		);
 
 		workingDownSampledXBlurColorBuffer2 = new FrameBuffer(
 			RGBA8888,
-			(getGraphics().getWidth() + getGraphics().getCamMarginX()) / 16,
-			(getGraphics().getHeight() + getGraphics().getCamMarginY()) / 16,
+			(getGdxWidth() + graphics.getCamMarginX()) / 16,
+			(getGdxHeight() + graphics.getCamMarginY()) / 16,
 			false
 		);
 
 		workingDownSampledYBlurColorBuffer2 = new FrameBuffer(
 			RGBA8888,
-			(getGraphics().getWidth() + getGraphics().getCamMarginX()) / 16,
-			(getGraphics().getHeight() + getGraphics().getCamMarginY()) / 16,
+			(getGdxWidth() + graphics.getCamMarginX()) / 16,
+			(getGdxHeight() + graphics.getCamMarginY()) / 16,
 			false
 		);
 
 		foregroundLightingFBO = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth(),
-			getGraphics().getHeight(),
+			getGdxWidth(),
+			getGdxHeight(),
 			false
 		);
 
 		workingFBO2 = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth(),
-			getGraphics().getHeight(),
+			getGdxWidth(),
+			getGdxHeight(),
 			false
 		);
 
 		middleGroundLightingFBO = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth(),
-			getGraphics().getHeight(),
+			getGdxWidth(),
+			getGdxHeight(),
 			false
 		);
 
 		foregroundLightingFBOSmall = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
-			getGraphics().getHeight()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			getGdxWidth()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			getGdxHeight()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
 			false
 		);
 
 		middleGroundLightingFBOSmall = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
-			getGraphics().getHeight()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			getGdxWidth()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			getGdxHeight()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
 			false
 		);
 
 		smallWorking = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
-			getGraphics().getHeight()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			getGdxWidth()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
+			getGdxHeight()/LIGHTING_FBO_DOWNSIZE_SAMPLER,
 			false
 		);
 
 		workingFBO = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth(),
-			getGraphics().getHeight(),
+			getGdxWidth(),
+			getGdxHeight(),
 			false
 		);
 
 		backgroundOcclusionFBO = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth(),
-			getGraphics().getHeight(),
+			getGdxWidth(),
+			getGdxHeight(),
 			false
 		);
 
 		backgroundOcclusionFBONearest = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth(),
-			getGraphics().getHeight(),
+			getGdxWidth(),
+			getGdxHeight(),
 			false
 		);
 
 		foregroundOcclusionFBO = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth(),
-			getGraphics().getHeight(),
+			getGdxWidth(),
+			getGdxHeight(),
 			false
 		);
 
 		foregroundShadowFBO = new FrameBuffer(
 			RGBA8888,
-			getGraphics().getWidth(),
-			getGraphics().getHeight(),
+			getGdxWidth(),
+			getGdxHeight(),
 			false
 		);
 
@@ -240,7 +246,7 @@ public class GaussianLightingRenderer {
 	}
 
 
-	private static void weather(World world) {
+	private static void weather(World world, SpriteBatch batch) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -248,21 +254,21 @@ public class GaussianLightingRenderer {
 		WeatherRenderer.render(workingFBO, world);
 
 
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.invertY);
-		getGraphics().getSpriteBatch().draw(workingFBO.getColorBufferTexture(), 0, 0);
-		getGraphics().getSpriteBatch().flush();
-		getGraphics().getSpriteBatch().setShader(Shaders.invertYFilter);
+		batch.begin();
+		batch.setShader(Shaders.invertY);
+		batch.draw(workingFBO.getColorBufferTexture(), 0, 0);
+		batch.flush();
+		batch.setShader(Shaders.invertYFilter);
 		Shaders.invertYFilter.setUniformf("color", WeatherRenderer.getSunColor(world));
-		getGraphics().getSpriteBatch().draw(WorldRenderer.cloudBuffer.getColorBufferTexture(), 0, 0);
-		getGraphics().getSpriteBatch().end();
+		batch.draw(WorldRenderer.cloudBuffer.getColorBufferTexture(), 0, 0);
+		batch.end();
 	}
 
 
 	/**
 	 * Handles rendering to the lighting FBO.
 	 */
-	private static void lighting(FrameBuffer lightingFboSmall, FrameBuffer lightingFbo, Depth depth, World world) {
+	private static void lighting(FrameBuffer lightingFboSmall, FrameBuffer lightingFbo, Depth depth, World world, SpriteBatch batch) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -308,8 +314,8 @@ public class GaussianLightingRenderer {
 
 		for (List<Particle> collection : particleCollections) {
 			smallWorking.begin();
-			getGraphics().getSpriteBatch().begin();
-			getGraphics().getSpriteBatch().setShader(Shaders.tracerParticlesFBO);
+			batch.begin();
+			batch.setShader(Shaders.tracerParticlesFBO);
 			Shaders.tracerParticlesFBO.begin();
 			Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -337,22 +343,22 @@ public class GaussianLightingRenderer {
 				}
 			}
 
-			Shaders.tracerParticlesFBO.setUniformf("resolution", getGraphics().getWidth(), getGraphics().getHeight());
+			Shaders.tracerParticlesFBO.setUniformf("resolution", getGdxWidth(), getGdxHeight());
 			Shaders.tracerParticlesFBO.setUniform1fv("intensity[0]", intensities, 0, MAX_PARTICLES);
 			Shaders.tracerParticlesFBO.setUniform2fv("currentPosition[0]", currentPositions, 0, MAX_PARTICLES * 2);
 			Shaders.tracerParticlesFBO.setUniform2fv("previousPosition[0]", previousPositions, 0, MAX_PARTICLES * 2);
 			Shaders.tracerParticlesFBO.setUniform4fv("color[0]", colors, 0, MAX_PARTICLES * 4);
-			getGraphics().getSpriteBatch().draw(lightingFboSmall.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
-			getGraphics().getSpriteBatch().end();
+			batch.draw(lightingFboSmall.getColorBufferTexture(), 0, 0, getGdxWidth(), getGdxHeight());
+			batch.end();
 			smallWorking.end();
 
 			lightingFboSmall.begin();
-			getGraphics().getSpriteBatch().begin();
-			getGraphics().getSpriteBatch().setShader(Shaders.invertY);
+			batch.begin();
+			batch.setShader(Shaders.invertY);
 			Gdx.gl20.glEnable(GL20.GL_BLEND);
 			Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-			getGraphics().getSpriteBatch().draw(smallWorking.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
-			getGraphics().getSpriteBatch().end();
+			batch.draw(smallWorking.getColorBufferTexture(), 0, 0, getGdxWidth(), getGdxHeight());
+			batch.end();
 			lightingFboSmall.end();
 
 			index = 0;
@@ -360,15 +366,13 @@ public class GaussianLightingRenderer {
 			colorIndex = 0;
 		}
 
-
-
 		lightingFbo.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.invertY);
-		getGraphics().getSpriteBatch().draw(lightingFboSmall.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
-		getGraphics().getSpriteBatch().end();
+		batch.begin();
+		batch.setShader(Shaders.invertY);
+		batch.draw(lightingFboSmall.getColorBufferTexture(), 0, 0, getGdxWidth(), getGdxHeight());
+		batch.end();
 		lightingFbo.end();
 	}
 
@@ -376,238 +380,238 @@ public class GaussianLightingRenderer {
 	/**
 	 * Renders the background lighting control occlusion FBO
 	 */
-	private static void backgroundLighting() {
+	private static void backgroundLighting(SpriteBatch batch) {
 		// Step 1
 		// Render the quantized background buffer to 16x downsampled FBO
 		workingDownSampled.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.pass);
-		getGraphics().getSpriteBatch().draw(
+		batch.setShader(Shaders.pass);
+		batch.draw(
 			WorldRenderer.combinedBufferQuantized.getColorBufferTexture(),
 			0,
 			0,
-			getGraphics().getWidth(), getGraphics().getHeight()
+			getGdxWidth(), getGdxHeight()
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingDownSampled.end();
 
 		// Step 2
 		// Apply y-blur to workingDownSampled, attenuated by foreground
 		workingDownSampledXBlurColorBuffer.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.colorSmearLargeRadius);
+		batch.setShader(Shaders.colorSmearLargeRadius);
 		Shaders.colorSmearLargeRadius.setUniformf("res", workingDownSampled.getWidth(), workingDownSampled.getHeight());
 		Shaders.colorSmearLargeRadius.setUniformf("dir", 0f, 1f);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			workingDownSampled.getColorBufferTexture(),
 			0,
 			0,
-			getGraphics().getWidth(), getGraphics().getHeight()
+			getGdxWidth(), getGdxHeight()
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingDownSampledXBlurColorBuffer.end();
 
 		// Step 3
 		// Apply x-blur to y-blurred workingDownSampledXBlur, attenuated by foreground
 		workingDownSampledYBlurColorBuffer.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.colorSmearLargeRadius);
+		batch.setShader(Shaders.colorSmearLargeRadius);
 		Shaders.colorSmearLargeRadius.setUniformf("res", workingDownSampledXBlurColorBuffer.getWidth(), workingDownSampledXBlurColorBuffer.getHeight());
 		Shaders.colorSmearLargeRadius.setUniformf("dir", 1f, 0f);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			workingDownSampledXBlurColorBuffer.getColorBufferTexture(),
 			0,
 			0,
-			getGraphics().getWidth(), getGraphics().getHeight()
+			getGdxWidth(), getGdxHeight()
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingDownSampledYBlurColorBuffer.end();
 
 		// Step 4
 		// Apply x-blur to another workingDownSampled, attenuated by foreground
 		workingDownSampledXBlurColorBuffer2.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.colorSmearLargeRadius);
+		batch.setShader(Shaders.colorSmearLargeRadius);
 		Shaders.colorSmearLargeRadius.setUniformf("res", workingDownSampled.getWidth(), workingDownSampled.getHeight());
 		Shaders.colorSmearLargeRadius.setUniformf("dir", 1f, 0f);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			workingDownSampled.getColorBufferTexture(),
 			0,
 			0,
-			getGraphics().getWidth(), getGraphics().getHeight()
+			getGdxWidth(), getGdxHeight()
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingDownSampledXBlurColorBuffer2.end();
 
 		// Step 5
 		// Apply y-blur to x-blurred workingDownSampledXBlur, attenuated by foreground
 		workingDownSampledYBlurColorBuffer2.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.colorSmearLargeRadius);
+		batch.setShader(Shaders.colorSmearLargeRadius);
 		Shaders.colorSmearLargeRadius.setUniformf("res", workingDownSampledXBlurColorBuffer2.getWidth(), workingDownSampledXBlurColorBuffer2.getHeight());
 		Shaders.colorSmearLargeRadius.setUniformf("dir", 0f, 1f);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			workingDownSampledXBlurColorBuffer2.getColorBufferTexture(),
 			0,
 			0,
-			getGraphics().getWidth(), getGraphics().getHeight()
+			getGdxWidth(), getGdxHeight()
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingDownSampledYBlurColorBuffer2.end();
 
 		backgroundOcclusionFBO.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.blendXYandYXSmears);
+		batch.setShader(Shaders.blendXYandYXSmears);
 		workingDownSampledYBlurColorBuffer2.getColorBufferTexture().bind(1);
 		Shaders.blendXYandYXSmears.setUniformi("u_texture2", 1);
 		gl.glActiveTexture(GL_TEXTURE0);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			workingDownSampledYBlurColorBuffer.getColorBufferTexture(),
-			-getGraphics().getCamMarginX() / 2 - round(getGraphics().getCam().position.x) % TILE_SIZE,
-			-getGraphics().getCamMarginY() / 2 - round(getGraphics().getCam().position.y) % TILE_SIZE,
+			-graphics.getCamMarginX() / 2 - round(graphics.getCam().position.x) % TILE_SIZE,
+			-graphics.getCamMarginY() / 2 - round(graphics.getCam().position.y) % TILE_SIZE,
 			workingDownSampledYBlurColorBuffer.getWidth() * TILE_SIZE,
 			workingDownSampledYBlurColorBuffer.getHeight() * TILE_SIZE
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		backgroundOcclusionFBO.end();
 
 		backgroundOcclusionFBONearest.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.pass);
-		getGraphics().getSpriteBatch().draw(
+		batch.setShader(Shaders.pass);
+		batch.draw(
 			workingDownSampled.getColorBufferTexture(),
-			-getGraphics().getCamMarginX() / 2 - round(getGraphics().getCam().position.x) % TILE_SIZE,
-			-getGraphics().getCamMarginY() / 2 - round(getGraphics().getCam().position.y) % TILE_SIZE,
+			-graphics.getCamMarginX() / 2 - round(graphics.getCam().position.x) % TILE_SIZE,
+			-graphics.getCamMarginY() / 2 - round(graphics.getCam().position.y) % TILE_SIZE,
 			workingDownSampled.getWidth() * TILE_SIZE,
 			workingDownSampled.getHeight() * TILE_SIZE
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		backgroundOcclusionFBONearest.end();
 	}
 
 
 
-	private static void foregroundLighting() {
+	private static void foregroundLighting(SpriteBatch batch) {
 		// Step 1
 		// Render the quantized foreground buffer to the 16x downsampled FBO
 		workingDownSampled.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.pass);
-		getGraphics().getSpriteBatch().draw(
+		batch.setShader(Shaders.pass);
+		batch.draw(
 			WorldRenderer.combinedBufferQuantized.getColorBufferTexture(),
 			0,
 			0,
-			getGraphics().getWidth(), getGraphics().getHeight()
+			getGdxWidth(), getGdxHeight()
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingDownSampled.end();
 
 		// Step 2
 		// Apply x-blur to workingDownSampled
 		workingDownSampledXBlurColorBuffer.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.colorSmearSmallRadius);
+		batch.setShader(Shaders.colorSmearSmallRadius);
 		Shaders.colorSmearSmallRadius.setUniformf("res", workingDownSampled.getWidth(), workingDownSampled.getHeight());
 		Shaders.colorSmearSmallRadius.setUniformf("dir", 1f, 0f);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			workingDownSampled.getColorBufferTexture(),
 			0,
 			0,
-			getGraphics().getWidth(), getGraphics().getHeight()
+			getGdxWidth(), getGdxHeight()
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingDownSampledXBlurColorBuffer.end();
 
 		// Step 3
 		// Apply y-blur to x-blurred workingDownSampledXBlur
 		workingDownSampledYBlurColorBuffer.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.colorSmearSmallRadius);
+		batch.setShader(Shaders.colorSmearSmallRadius);
 		Shaders.colorSmearSmallRadius.setUniformf("res", workingDownSampledXBlurColorBuffer.getWidth(), workingDownSampledXBlurColorBuffer.getHeight());
 		Shaders.colorSmearSmallRadius.setUniformf("dir", 0f, 1f);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			workingDownSampledXBlurColorBuffer.getColorBufferTexture(),
 			0,
 			0,
-			getGraphics().getWidth(), getGraphics().getHeight()
+			getGdxWidth(), getGdxHeight()
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingDownSampledYBlurColorBuffer.end();
 
 		foregroundOcclusionFBO.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.pass);
-		getGraphics().getSpriteBatch().draw(
+		batch.setShader(Shaders.pass);
+		batch.draw(
 			workingDownSampledYBlurColorBuffer.getColorBufferTexture(),
-			-getGraphics().getCamMarginX() / 2 - round(getGraphics().getCam().position.x) % TILE_SIZE,
-			-getGraphics().getCamMarginY() / 2 - round(getGraphics().getCam().position.y) % TILE_SIZE,
+			-graphics.getCamMarginX() / 2 - round(graphics.getCam().position.x) % TILE_SIZE,
+			-graphics.getCamMarginY() / 2 - round(graphics.getCam().position.y) % TILE_SIZE,
 			workingDownSampledYBlurColorBuffer.getWidth() * TILE_SIZE,
 			workingDownSampledYBlurColorBuffer.getHeight() * TILE_SIZE
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		foregroundOcclusionFBO.end();
 
 		// Process the foreground drop shadow
 		workingDownSampled.getColorBufferTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		foregroundShadowFBO.begin();
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().setShader(Shaders.pass);
-		getGraphics().getSpriteBatch().draw(
+		batch.setShader(Shaders.pass);
+		batch.draw(
 			workingDownSampled.getColorBufferTexture(),
-			-getGraphics().getCamMarginX() / 2 - round(getGraphics().getCam().position.x) % TILE_SIZE,
-			-getGraphics().getCamMarginY() / 2 - round(getGraphics().getCam().position.y) % TILE_SIZE,
+			-graphics.getCamMarginX() / 2 - round(graphics.getCam().position.x) % TILE_SIZE,
+			-graphics.getCamMarginY() / 2 - round(graphics.getCam().position.y) % TILE_SIZE,
 			workingDownSampled.getWidth() * TILE_SIZE,
 			workingDownSampled.getHeight() * TILE_SIZE
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		foregroundShadowFBO.end();
 		workingDownSampled.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
 
 
-	private static void background(World world) {
+	private static void background(World world, SpriteBatch batch) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.invertY);
-		getGraphics().getSpriteBatch().draw(
+		batch.begin();
+		batch.setShader(Shaders.invertY);
+		batch.draw(
 			WorldRenderer.bBuffer.getColorBufferTexture(),
-			-getGraphics().getCamMarginX() / 2,
-			-getGraphics().getCamMarginY() / 2
+			-graphics.getCamMarginX() / 2,
+			-graphics.getCamMarginY() / 2
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingFBO.end();
 
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		if (SEE_ALL) {
-			getGraphics().getSpriteBatch().setShader(Shaders.invertY);
+			batch.setShader(Shaders.invertY);
 		} else {
-			getGraphics().getSpriteBatch().setShader(Shaders.backgroundShader);
+			batch.setShader(Shaders.backgroundShader);
 			backgroundOcclusionFBO.getColorBufferTexture().bind(2);
 			backgroundOcclusionFBONearest.getColorBufferTexture().bind(3);
 			foregroundLightingFBO.getColorBufferTexture().bind(4);
@@ -618,38 +622,38 @@ public class GaussianLightingRenderer {
 			Shaders.backgroundShader.setUniformi("occlusion4", 3);
 			Shaders.backgroundShader.setUniformi("occlusion5", 4);
 			Shaders.backgroundShader.setUniformi("mgLighting", 8);
-			Shaders.backgroundShader.setUniformf("height", getGraphics().getHeight());
+			Shaders.backgroundShader.setUniformf("height", getGdxHeight());
 			gl.glActiveTexture(GL_TEXTURE0);
 
-			getGraphics().getSpriteBatch().draw(
+			batch.draw(
 				workingFBO.getColorBufferTexture(),
 				0, 0
 			);
 		}
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 	}
 
 
-	private static void middleground(World world) {
+	private static void middleground(World world, SpriteBatch batch) {
 		Gdx.gl20.glEnable(GL20.GL_DITHER);
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.invertY);
-		getGraphics().getSpriteBatch().draw(
+		batch.begin();
+		batch.setShader(Shaders.invertY);
+		batch.draw(
 			WorldRenderer.mBuffer.getColorBufferTexture(),
-			-getGraphics().getCamMarginX() / 2,
-			-getGraphics().getCamMarginY() / 2
+			-graphics.getCamMarginX() / 2,
+			-graphics.getCamMarginY() / 2
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingFBO.end();
 
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		if (SEE_ALL) {
-			getGraphics().getSpriteBatch().setShader(Shaders.invertY);
+			batch.setShader(Shaders.invertY);
 		} else {
-			getGraphics().getSpriteBatch().setShader(Shaders.foregroundShader);
+			batch.setShader(Shaders.foregroundShader);
 			Color daylight = WeatherRenderer.getDaylightColor(world);
 			Shaders.invertYBlendWithOcclusion.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
@@ -660,42 +664,42 @@ public class GaussianLightingRenderer {
 			Shaders.foregroundShader.setUniformi("occlusion3", 8);
 			gl.glActiveTexture(GL_TEXTURE0);
 
-			getGraphics().getSpriteBatch().draw(
+			batch.draw(
 				workingFBO.getColorBufferTexture(),
 				0, 0
 			);
 		}
 
-		getGraphics().getSpriteBatch().setShader(Shaders.lightingFBOBlend);
+		batch.setShader(Shaders.lightingFBOBlend);
 		Shaders.lightingFBOBlend.setUniformf("color", 1f, 1f, 1f, 0.45f);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			middleGroundLightingFBO.getColorBufferTexture(),
 			0, 0
 		);
 
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 	}
 
 
-	private static void foreground(World world) {
+	private static void foreground(World world, SpriteBatch batch) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.invertY);
-		getGraphics().getSpriteBatch().draw(
+		batch.begin();
+		batch.setShader(Shaders.invertY);
+		batch.draw(
 			WorldRenderer.fBuffer.getColorBufferTexture(),
-			-getGraphics().getCamMarginX() / 2,
-			-getGraphics().getCamMarginY() / 2
+			-graphics.getCamMarginX() / 2,
+			-graphics.getCamMarginY() / 2
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingFBO.end();
 
-		getGraphics().getSpriteBatch().begin();
+		batch.begin();
 		if (SEE_ALL) {
-			getGraphics().getSpriteBatch().setShader(Shaders.invertY);
+			batch.setShader(Shaders.invertY);
 		} else {
-			getGraphics().getSpriteBatch().setShader(Shaders.foregroundShader);
+			batch.setShader(Shaders.foregroundShader);
 			Color daylight = WeatherRenderer.getDaylightColor(world);
 			Shaders.foregroundShader.setUniformf("dayLightColor", daylight.r, daylight.g, daylight.b, 1.0f);
 			foregroundOcclusionFBO.getColorBufferTexture().bind(1);
@@ -708,61 +712,61 @@ public class GaussianLightingRenderer {
 			Shaders.foregroundShader.setUniformi("mgLighting", 8);
 			gl.glActiveTexture(GL_TEXTURE0);
 
-			getGraphics().getSpriteBatch().draw(
+			batch.draw(
 				workingFBO.getColorBufferTexture(),
 				0, 0
 			);
 		}
 
-		getGraphics().getSpriteBatch().setShader(Shaders.lightingFBOBlend);
+		batch.setShader(Shaders.lightingFBOBlend);
 		Shaders.lightingFBOBlend.setUniformf("color", 1f, 1f, 1f, 0.35f);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			foregroundLightingFBO.getColorBufferTexture(),
 			0, 0
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 	}
 
 
-	private static void volumetricLighting(World world) {
+	private static void volumetricLighting(World world, SpriteBatch batch) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		world.getBackgroundImages().renderBackground();
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.invertY);
-		getGraphics().getSpriteBatch().draw(
+		batch.begin();
+		batch.setShader(Shaders.invertY);
+		batch.draw(
 			WorldRenderer.fBuffer.getColorBufferTexture(),
-			-getGraphics().getCamMarginX() / 2,
-			-getGraphics().getCamMarginY() / 2
+			-graphics.getCamMarginX() / 2,
+			-graphics.getCamMarginY() / 2
 		);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			WorldRenderer.mBuffer.getColorBufferTexture(),
-			-getGraphics().getCamMarginX() / 2,
-			-getGraphics().getCamMarginY() / 2
+			-graphics.getCamMarginX() / 2,
+			-graphics.getCamMarginY() / 2
 		);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			WorldRenderer.bBuffer.getColorBufferTexture(),
-			-getGraphics().getCamMarginX() / 2,
-			-getGraphics().getCamMarginY() / 2
+			-graphics.getCamMarginX() / 2,
+			-graphics.getCamMarginY() / 2
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 		workingFBO.end();
 
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.volumetricLighting);
+		batch.begin();
+		batch.setShader(Shaders.volumetricLighting);
 		Color daylightColor = WeatherRenderer.getDaylightColor(world);
 		Vector3 rgb = new Vector3(daylightColor.r, daylightColor.g, daylightColor.b);
 		rgb.nor().scl(1.7f);
 
 		Shaders.volumetricLighting.setUniformf("color", rgb.x, rgb.y, rgb.z, daylightColor.r);
-		Shaders.volumetricLighting.setUniformf("resolution", getGraphics().getWidth(), getGraphics().getHeight());
+		Shaders.volumetricLighting.setUniformf("resolution", getGdxWidth(), getGdxHeight());
 		Shaders.volumetricLighting.setUniformf("time", world.getEpoch().getTime() * 300f);
 		Shaders.volumetricLighting.setUniformf("sourceLocation", WeatherRenderer.getSunPosition().cpy().x, WeatherRenderer.getSunPosition().cpy().y);
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			workingFBO.getColorBufferTexture(),
 			0, 0
 		);
-		getGraphics().getSpriteBatch().end();
+		batch.end();
 	}
 }

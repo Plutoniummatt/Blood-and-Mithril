@@ -2,11 +2,11 @@ package bloodandmithril.prop.furniture;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.function.Function;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.character.ai.task.LockUnlockContainer;
@@ -200,8 +200,8 @@ public class WoodenChestProp extends Furniture implements Container {
 
 
 	@Override
-	public void render() {
-		getGraphics().getSpriteBatch().draw(woodenChest, position.x - width / 2, position.y);
+	public void render(SpriteBatch batch) {
+		batch.draw(woodenChest, position.x - width / 2, position.y);
 	}
 
 

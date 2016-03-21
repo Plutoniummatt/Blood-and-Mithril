@@ -8,7 +8,6 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.isButtonPressed;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.isInGame;
-import static bloodandmithril.persistence.ConfigPersistenceService.getConfig;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -53,14 +52,13 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 @Copyright("Matthew Peck 2016")
 public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
-	private Controls controls = getConfig().getKeyMappings();
+	@Inject private Controls controls;
 
-	@Inject
-	private Graphics graphics;
+	@Inject	private Graphics graphics;
 
 	private CursorBoundTask cursorBoundTask = null;
-
 	private Function<Vector2> camFollowFunction;
+
 
 	@Override
 	public boolean keyUp(int keycode) {
@@ -131,8 +129,8 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 		if (isKeyPressed(Keys.CONTROL_LEFT) && keycode == Input.Keys.D) {
 			UserInterface.addLayeredComponentUnique(
 				new DevWindow(
-					BloodAndMithrilClient.getGraphics().getWidth(),
-					BloodAndMithrilClient.getGraphics().getHeight()/2 + 150,
+					graphics.getWidth(),
+					graphics.getHeight()/2 + 150,
 					500,
 					300,
 					true
@@ -141,7 +139,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 		}
 
 		try {
-			if (GameSaver.isSaving() || BloodAndMithrilClient.loading) {
+			if (GameSaver.isSaving() || BloodAndMithrilClient.loading.get()) {
 				return false;
 			}
 
@@ -178,7 +176,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		try {
-			if (GameSaver.isSaving() || BloodAndMithrilClient.loading) {
+			if (GameSaver.isSaving() || BloodAndMithrilClient.loading.get()) {
 				return false;
 			}
 

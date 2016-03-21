@@ -1,5 +1,7 @@
 package bloodandmithril.playerinteraction.individual.service;
 
+import com.google.inject.Singleton;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
@@ -10,6 +12,7 @@ import bloodandmithril.playerinteraction.individual.api.IndividualWalkRunToggleS
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2015")
 public class IndividualWalkRunToggleServiceClientImpl implements IndividualWalkRunToggleService {
 

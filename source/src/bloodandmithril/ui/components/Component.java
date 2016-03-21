@@ -1,6 +1,5 @@
 package bloodandmithril.ui.components;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.ui.UserInterface.uiTexture;
 import static bloodandmithril.util.Logger.generalDebug;
 import static bloodandmithril.util.Logger.LogLevel.DEBUG;
@@ -13,16 +12,17 @@ import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+
 import bloodandmithril.core.Copyright;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 /**
  * A {@link UserInterface} Component.
@@ -70,7 +70,7 @@ public abstract class Component {
 	public abstract void leftClickReleased();
 
 	/** Component specific render */
-	protected abstract void internalComponentRender();
+	protected abstract void internalComponentRender(SpriteBatch batch);
 
 	/**
 	 * Called when the scroll wheel is scrolled.
@@ -82,7 +82,7 @@ public abstract class Component {
 	/**
 	 * Renders this {@link Component}
 	 */
-	public void render() {
+	public void render(SpriteBatch batch) {
 		if (isClosing()) {
 			setAlpha(getAlpha() - 0.08f > 0f ? getAlpha() - 0.08f : 0f);
 		} else if (this instanceof Window) {
@@ -94,7 +94,7 @@ public abstract class Component {
 		} else {
 			setAlpha(getAlpha() + 0.08f >= 1f ? 1f : getAlpha() + 0.08f);
 		}
-		internalComponentRender();
+		internalComponentRender(batch);
 	}
 
 
@@ -109,19 +109,19 @@ public abstract class Component {
 	/**
 	 * Renders the text box for this {@link Component}
 	 */
-	protected void renderBox(int x, int y, int length, int height, boolean active, Color borderColor) {
+	protected void renderBox(int x, int y, int length, int height, boolean active, Color borderColor, SpriteBatch batch) {
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? borderColor.a * getAlpha() : borderColor.a * 0.4f * getAlpha());
 		Shaders.filter.end();
-		getGraphics().getSpriteBatch().setShader(Shaders.filter);
+		batch.setShader(Shaders.filter);
 
-		getGraphics().getSpriteBatch().draw(topLeft, x, y);
-		getGraphics().getSpriteBatch().draw(topRight, x + topLeft.getRegionWidth() + length, y);
-		getGraphics().getSpriteBatch().draw(bottomLeft, x, y - height - bottom.getRegionHeight());
-		getGraphics().getSpriteBatch().draw(bottomRight, x + topLeft.getRegionWidth() + length, y - height - bottom.getRegionHeight());
+		batch.draw(topLeft, x, y);
+		batch.draw(topRight, x + topLeft.getRegionWidth() + length, y);
+		batch.draw(bottomLeft, x, y - height - bottom.getRegionHeight());
+		batch.draw(bottomRight, x + topLeft.getRegionWidth() + length, y - height - bottom.getRegionHeight());
 
 
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			top,
 			x  + topLeft.getRegionWidth(),
 			y,
@@ -129,7 +129,7 @@ public abstract class Component {
 			top.getRegionHeight()
 		);
 
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			bottom,
 			x + topLeft.getRegionWidth(),
 			y - height - bottomLeft.getRegionHeight(),
@@ -137,7 +137,7 @@ public abstract class Component {
 			bottom.getRegionHeight()
 		);
 
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			left,
 			x,
 			y - height,
@@ -145,7 +145,7 @@ public abstract class Component {
 			height
 		);
 
-		getGraphics().getSpriteBatch().draw(
+		batch.draw(
 			right,
 			x + topLeft.getRegionWidth() + length,
 			y - height,

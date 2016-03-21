@@ -12,6 +12,7 @@ import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
@@ -83,7 +84,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 
 
 		@Override
-		public void renderUIGuide() {
+		public void renderUIGuide(SpriteBatch batch) {
 			renderGuide(toPlace);
 		}
 

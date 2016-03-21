@@ -4,7 +4,6 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
@@ -13,6 +12,7 @@ import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 
@@ -79,7 +79,7 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public final void renderUIGuide() {
+	public final void renderUIGuide(SpriteBatch batch) {
 		try {
 			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
@@ -88,13 +88,13 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			getGraphics().getSpriteBatch().begin();
-			getGraphics().getSpriteBatch().setColor(executionConditionMet() ? Color.GREEN : Color.RED);
-			getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, x - 5, y);
+			batch.begin();
+			batch.setColor(executionConditionMet() ? Color.GREEN : Color.RED);
+			batch.draw(UserInterface.currentArrow, x - 5, y);
 			for (Vector2 location : plantingLocations) {
-				getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, worldToScreenX(location.x), worldToScreenY(location.y));
+				batch.draw(UserInterface.currentArrow, worldToScreenX(location.x), worldToScreenY(location.y));
 			}
-			getGraphics().getSpriteBatch().end();
+			batch.end();
 			gl.glDisable(GL_BLEND);
 
 		} catch (NoTileFoundException e) {}

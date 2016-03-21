@@ -21,7 +21,7 @@ import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.util.ComparisonUtil.obj;
@@ -39,6 +39,7 @@ import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -386,9 +387,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** Renders any decorations for UI */
-	public final void renderUIDecorations() {
+	public final void renderUIDecorations(SpriteBatch batch) {
 		if (isSelected()) {
-			getGraphics().getSpriteBatch().setShader(Shaders.filter);
+			batch.setShader(Shaders.filter);
 
 			Shaders.filter.setUniformf("color",
 				(float)sin(PI * (1f - state.health/state.maxHealth) / 2),
@@ -398,7 +399,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 			);
 
 			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-			getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight() + 10);
+			batch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight() + 10);
 		}
 
 		if (UserInterface.DEBUG) {
@@ -424,13 +425,13 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 		if (isAlive() && isMouseOver() && isKeyPressed(input.getKeyMappings().attack.keyCode) && !isKeyPressed(input.getKeyMappings().rangedAttack.keyCode)) {
 			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.isIndividualSelected(this) || Domain.getSelectedIndividuals().size() > 1)) {
-				getGraphics().getSpriteBatch().setShader(Shaders.filter);
+				batch.setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
-				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "Attack Melee", getMouseScreenX() + 14, getMouseScreenY() - 26);
-				getGraphics().getSpriteBatch().flush();
+				Fonts.defaultFont.draw(batch, "Attack Melee", getMouseScreenX() + 14, getMouseScreenY() - 26);
+				batch.flush();
 				Shaders.filter.setUniformf("color", Color.ORANGE);
-				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), "Attack Melee", getMouseScreenX() + 15, getMouseScreenY() - 25);
+				Fonts.defaultFont.draw(batch, "Attack Melee", getMouseScreenX() + 15, getMouseScreenY() - 25);
 			}
 		}
 	}
@@ -449,7 +450,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 		if (ClientServerInterface.isClient()) {
 			UserInterface.addLayeredComponentUnique(
 				new SelectedIndividualsControlWindow(
-					getGraphics().getWidth() - 170,
+					getGdxWidth() - 170,
 					150,
 					150,
 					100,

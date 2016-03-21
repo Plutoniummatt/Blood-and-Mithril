@@ -286,7 +286,7 @@ public class UserInterface {
 			55,
 			16,
 			() -> {
-				BloodAndMithrilClient.paused = true;
+				BloodAndMithrilClient.paused.set(true);
 			},
 			Color.WHITE,
 			Color.GREEN,
@@ -302,7 +302,7 @@ public class UserInterface {
 			75,
 			16,
 			() -> {
-				BloodAndMithrilClient.paused = false;
+				BloodAndMithrilClient.paused.set(false);
 			},
 			Color.WHITE,
 			Color.GREEN,
@@ -710,7 +710,7 @@ public class UserInterface {
 
 	/** Darkens the screen by 50% and draws an "unpause" button on the screen if the game is paused */
 	private static void renderPauseScreen() {
-		if (paused) {
+		if (paused.get()) {
 			getGraphics().getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -731,7 +731,7 @@ public class UserInterface {
 
 	/** Draws the loading screen */
 	private static void renderLoadingScreen() {
-		if (loading) {
+		if (loading.get()) {
 			getGraphics().getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1227,7 +1227,7 @@ public class UserInterface {
 	 */
 	private static void renderButtons() {
 		for (Entry<String, Button> buttonEntry : buttons.entrySet()) {
-			buttonEntry.getValue().render(!BloodAndMithrilClient.paused && !GameSaver.isSaving(), 1f);
+			buttonEntry.getValue().render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f);
 		}
 	}
 
@@ -1249,7 +1249,7 @@ public class UserInterface {
 	public static boolean leftClick() {
 		boolean clicked = false;
 
-		if (BloodAndMithrilClient.paused) {
+		if (BloodAndMithrilClient.paused.get()) {
 			if (unpauseButton != null) {
 				clicked = unpauseButton.click();
 			}
@@ -1361,7 +1361,7 @@ public class UserInterface {
 
 
 	public static boolean keyPressed(int keyCode) {
-		if (BloodAndMithrilClient.paused) {
+		if (BloodAndMithrilClient.paused.get()) {
 			return false;
 		}
 
@@ -1456,7 +1456,7 @@ public class UserInterface {
 	public static boolean rightClick() {
 		boolean clicked = false;
 
-		if (BloodAndMithrilClient.paused || GameSaver.isSaving()) {
+		if (BloodAndMithrilClient.paused.get() || GameSaver.isSaving()) {
 			return false;
 		}
 

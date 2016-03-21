@@ -6,6 +6,11 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.Set;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Sets;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.graphics.WorldRenderer;
@@ -15,10 +20,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Sets;
 
 /**
  * Class representing a projectile
@@ -51,7 +52,7 @@ public abstract class Projectile implements Serializable {
 	/**
 	 * Renders this {@link Projectile}
 	 */
-	public abstract void render();
+	public abstract void render(SpriteBatch batch);
 
 
 	/**

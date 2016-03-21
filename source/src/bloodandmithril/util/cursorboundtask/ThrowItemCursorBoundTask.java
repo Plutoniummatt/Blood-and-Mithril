@@ -4,6 +4,7 @@ import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldCoords;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
@@ -58,7 +59,7 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public void renderUIGuide() {
+	public void renderUIGuide(SpriteBatch batch) {
 		UserInterface.renderArrow(individual.getEmissionPosition(), getMouseWorldCoords(), new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 300f);
 	}
 

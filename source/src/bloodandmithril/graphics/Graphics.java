@@ -1,5 +1,6 @@
 package bloodandmithril.graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.google.inject.Inject;
@@ -79,6 +80,16 @@ public class Graphics {
 
 	public int getWidth() {
 		return width;
+	}
+
+
+	public static int getGdxHeight() {
+		return Gdx.graphics.getHeight();
+	}
+
+
+	public static int getGdxWidth() {
+		return Gdx.graphics.getWidth();
 	}
 
 

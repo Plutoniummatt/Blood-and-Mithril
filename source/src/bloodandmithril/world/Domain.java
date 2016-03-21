@@ -1,6 +1,5 @@
 package bloodandmithril.world;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.core.BloodAndMithrilClient.getWorldcamcoordinates;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
@@ -23,10 +22,12 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.event.Event;
 import bloodandmithril.event.EventListener;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.DefaultBiomeDecider;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.objectives.Mission;
 import bloodandmithril.prop.Prop;
@@ -154,20 +155,22 @@ public class Domain {
 
 	public static void setActiveWorld(int worldId) {
 		if (ClientServerInterface.isClient()) {
+			Graphics graphics = Wiring.injector().getInstance(Graphics.class);
+
 			if (Domain.getActiveWorld() != null) {
-				getWorldcamcoordinates().put(Domain.getActiveWorldId(), new Vector2(getGraphics().getCam().position.x, getGraphics().getCam().position.y));
+				getWorldcamcoordinates().put(Domain.getActiveWorldId(), new Vector2(graphics.getCam().position.x, graphics.getCam().position.y));
 			}
 
 			if (getWorldcamcoordinates().containsKey(worldId)) {
 				Vector2 camPosition = getWorldcamcoordinates().get(worldId);
 
-				getGraphics().getCam().position.x = camPosition.x;
-				getGraphics().getCam().position.y = camPosition.y;
+				graphics.getCam().position.x = camPosition.x;
+				graphics.getCam().position.y = camPosition.y;
 			} else {
 				getWorldcamcoordinates().put(worldId, new Vector2());
 
-				getGraphics().getCam().position.x = 0;
-				getGraphics().getCam().position.y = 0;
+				graphics.getCam().position.x = 0;
+				graphics.getCam().position.y = 0;
 			}
 		}
 		activeWorldId = worldId;
