@@ -30,6 +30,7 @@ import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.graphics.particles.TracerParticle;
 import bloodandmithril.util.Shaders;
+import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.weather.WeatherRenderer;
 
@@ -261,7 +262,11 @@ public class GaussianLightingRenderer {
 		batch.draw(workingFBO.getColorBufferTexture(), 0, 0);
 		batch.flush();
 		batch.setShader(Shaders.invertYFilter);
-		Shaders.invertYFilter.setUniformf("color", WeatherRenderer.getSunColor(world));
+		
+		float r = WeatherRenderer.getDaylightColor(Domain.getActiveWorld()).g;
+		
+		Shaders.invertYFilter.setUniformf("color", r, r, r, 0.9f);
+		
 		batch.draw(WorldRenderer.cloudBuffer.getColorBufferTexture(), 0, 0);
 		batch.end();
 	}

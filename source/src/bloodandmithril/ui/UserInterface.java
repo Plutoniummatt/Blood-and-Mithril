@@ -59,6 +59,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Provider;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
@@ -183,7 +184,7 @@ public class UserInterface {
 
 	private static Deque<Task> uiTasks;
 
-	private static IndividualContextMenuService individualContextMenuService;
+	private static Provider<IndividualContextMenuService> individualContextMenuService;
 	private static BloodAndMithrilClientInputProcessor inputProcessor;
 	private static Graphics graphics;
 
@@ -209,10 +210,7 @@ public class UserInterface {
 	 * @param graphics.getHeight() - initial window height
 	 */
 	public static synchronized void setup() {
-		loadBars();
-		loadButtons();
-
-		individualContextMenuService = Wiring.injector().getInstance(IndividualContextMenuService.class);
+		individualContextMenuService = Wiring.injector().getProvider(IndividualContextMenuService.class);
 		inputProcessor = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
 		graphics = Wiring.injector().getInstance(Graphics.class);
 	}
@@ -245,7 +243,7 @@ public class UserInterface {
 	/**
 	 * Load the task bar and the status bar
 	 */
-	private static void loadBars() {
+	public static void loadBars() {
 		layeredComponents.add(new BottomBar());
 	}
 
@@ -279,7 +277,7 @@ public class UserInterface {
 	/**
 	 * Load the buttons
 	 */
-	private static void loadButtons() {
+	public static void loadButtons() {
 		Button pauseButton = new Button(
 			"Pause",
 			defaultFont,
@@ -1485,7 +1483,7 @@ public class UserInterface {
 		for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 			Individual indi = Domain.getIndividual(indiKey);
 			if (indi.isMouseOver()) {
-				final ContextMenu secondaryMenu = individualContextMenuService.getContextMenu(indi);
+				final ContextMenu secondaryMenu = individualContextMenuService.get().getContextMenu(indi);
 				newMenu.getMenuItems().add(
 					new MenuItem(
 						indi.getId().getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",

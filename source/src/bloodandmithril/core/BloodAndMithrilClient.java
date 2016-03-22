@@ -137,6 +137,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		ClientServerInterface.setServer(false);
 
 		Wiring.injector().injectMembers(this);
+		
 		graphics.getCam().position.y = Layer.getCameraYForHorizonCoord(graphics.getHeight()/3);
 		setInputProcessor(inputProcessor);
 	}
@@ -305,6 +306,8 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		SoundService.changeMusic(2f, SoundService.desertAmbient);
 		UserInterface.contextMenus.clear();
 		PositionalIndexingService.reindex();
+		UserInterface.loadBars();
+		UserInterface.loadButtons();
 	}
 
 

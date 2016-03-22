@@ -226,7 +226,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 			uiClicked = UserInterface.rightClick();
 		}
 
-		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !isKeyPressed(controls.rightClickDragBox.keyCode) && !isKeyPressed(controls.attack.keyCode) && isKeyPressed(controls.rangedAttack.keyCode)) {
+		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !isKeyPressed(controls.rightClickDragBox.keyCode) && !isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
 			Vector2 mouseCoordinate = new Vector2(getMouseWorldX(), getMouseWorldY());
 			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
 				if (isKeyPressed(controls.mineTile.keyCode) && !Domain.getWorld(indi.getWorldId()).getTopography().getTile(mouseCoordinate, true).getClass().equals(EmptyTile.class)) {
