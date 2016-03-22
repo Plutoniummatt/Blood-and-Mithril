@@ -19,6 +19,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
@@ -52,6 +53,8 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2014")
 public class TradeWindow extends Window implements Refreshable {
+
+	@Inject private TradeService tradeService;
 
 	/** Panels of involved traders */
 	protected ScrollableListingPanel<Item, Integer> proposerPanel;
@@ -198,7 +201,7 @@ public class TradeWindow extends Window implements Refreshable {
 				forThis.put(entry.getKey().t, entry.getValue());
 			}
 
-			proposalAccepted = TradeService.evaluate(
+			proposalAccepted = tradeService.evaluate(
 				(Individual)proposer,
 				tradeThis,
 				(Individual)proposee,
@@ -217,7 +220,7 @@ public class TradeWindow extends Window implements Refreshable {
 				proposeeItemsToTransfer.put(entry.getKey().t, entry.getValue());
 			}
 
-			TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
+			tradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
 
 			if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
 				UserInterface.refreshRefreshableWindows();

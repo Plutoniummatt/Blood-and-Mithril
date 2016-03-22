@@ -16,7 +16,6 @@ import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeCont
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.networking.ClientServerInterface.ping;
-import static bloodandmithril.persistence.GameSaver.isSaving;
 import static bloodandmithril.ui.UserInterface.FloatingText.floatingText;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.world.Domain.getActiveWorldId;
@@ -67,6 +66,7 @@ import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.ai.task.Travel;
+import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualContextMenuService;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
@@ -187,6 +187,9 @@ public class UserInterface {
 	private static Provider<IndividualContextMenuService> individualContextMenuService;
 	private static BloodAndMithrilClientInputProcessor inputProcessor;
 	private static Graphics graphics;
+	private static GameSaver gameSaver;
+	private static ChunkLoader chunkLoader;
+	private static FactionControlService factionControlService;
 
 	static {
 		if (ClientServerInterface.isClient()) {
@@ -213,6 +216,9 @@ public class UserInterface {
 		individualContextMenuService = Wiring.injector().getProvider(IndividualContextMenuService.class);
 		inputProcessor = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
 		graphics = Wiring.injector().getInstance(Graphics.class);
+		gameSaver = Wiring.injector().getInstance(GameSaver.class);
+		chunkLoader = Wiring.injector().getInstance(ChunkLoader.class);
+		factionControlService = Wiring.injector().getInstance(FactionControlService.class);
 	}
 
 
@@ -693,7 +699,7 @@ public class UserInterface {
 
 	/** Darkens the screen by 80% and draws "Saving..." on the screen if the game is being saved */
 	private static void renderSavingScreen() {
-		if (isSaving()) {
+		if (gameSaver.isSaving()) {
 			graphics.getSpriteBatch().begin();
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -742,7 +748,7 @@ public class UserInterface {
 
 			graphics.getSpriteBatch().setShader(Shaders.text);
 			defaultFont.setColor(Color.YELLOW);
-			defaultFont.draw(graphics.getSpriteBatch(), "Loading - " + ChunkLoader.loaderTasks.size(), graphics.getWidth()/2 - 60, graphics.getHeight()/2);
+			defaultFont.draw(graphics.getSpriteBatch(), "Loading - " + chunkLoader.loaderTasks.size(), graphics.getWidth()/2 - 60, graphics.getHeight()/2);
 
 			gl.glDisable(GL_BLEND);
 			graphics.getSpriteBatch().end();
@@ -769,7 +775,7 @@ public class UserInterface {
 			}
 
 			for (Individual indi : Domain.getIndividuals().values()) {
-				if (indi.isControllable() && indi.isAlive()) {
+				if (factionControlService.isControllable(indi) && indi.isAlive()) {
 
 					Vector2 centre = new Vector2(indi.getState().position.x, indi.getState().position.y + indi.getHeight() / 2);
 
@@ -1167,8 +1173,8 @@ public class UserInterface {
 		defaultFont.setColor(Color.GREEN);
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of chunks in memory of active world: " + Integer.toString(chunksInMemory), 5, graphics.getHeight() - 105);
 		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in AI/Pathfinding thread: " + Integer.toString(AIProcessor.getNumberOfOutstandingTasks()), 5, graphics.getHeight() - 125);
-		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Loader thread: " + Integer.toString(ChunkLoader.loaderTasks.size()), 5, graphics.getHeight() - 145);
-		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Saver thread: " + Integer.toString(GameSaver.saverTasks.size()), 5, graphics.getHeight() - 165);
+		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Loader thread: " + Integer.toString(chunkLoader.loaderTasks.size()), 5, graphics.getHeight() - 145);
+		defaultFont.draw(graphics.getSpriteBatch(), "Number of tasks queued in Saver thread: " + Integer.toString(gameSaver.saverTasks.size()), 5, graphics.getHeight() - 165);
 
 		defaultFont.setColor(Color.CYAN);
 	}
@@ -1227,7 +1233,7 @@ public class UserInterface {
 	 */
 	private static void renderButtons() {
 		for (Entry<String, Button> buttonEntry : buttons.entrySet()) {
-			buttonEntry.getValue().render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
+			buttonEntry.getValue().render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
 		}
 	}
 
@@ -1256,7 +1262,7 @@ public class UserInterface {
 			return false;
 		}
 
-		if (GameSaver.isSaving()) {
+		if (gameSaver.isSaving()) {
 			return false;
 		}
 
@@ -1365,7 +1371,7 @@ public class UserInterface {
 			return false;
 		}
 
-		if (GameSaver.isSaving()) {
+		if (gameSaver.isSaving()) {
 			return false;
 		}
 
@@ -1456,7 +1462,7 @@ public class UserInterface {
 	public static boolean rightClick() {
 		boolean clicked = false;
 
-		if (BloodAndMithrilClient.paused.get() || GameSaver.isSaving()) {
+		if (BloodAndMithrilClient.paused.get() || gameSaver.isSaving()) {
 			return false;
 		}
 

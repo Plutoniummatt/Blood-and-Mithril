@@ -1,7 +1,9 @@
 package bloodandmithril.objectives.objective.function;
 
+import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.util.SerializableMappingFunction;
 
 /**
@@ -15,6 +17,6 @@ public class AnyControllableIndividual extends SerializableMappingFunction<Indiv
 
 	@Override
 	public Boolean apply(Individual input) {
-		return input.isControllable();
+		return Wiring.injector().getInstance(FactionControlService.class).isControllable(input);
 	}
 }

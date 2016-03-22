@@ -3,6 +3,7 @@ package bloodandmithril.generation;
 import java.util.concurrent.ConcurrentHashMap;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -139,7 +140,7 @@ public class Structures {
 	public synchronized int addStructure(Boundaries boundaries, Structure structure, boolean superStructure) {
 		ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> structureKeys = superStructure ? getSuperStructureKeys() : getSubStructureKeys();
 
-		int structureKey = ParameterPersistenceService.getParameters().getNextStructureKey();
+		int structureKey = Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextStructureKey();
 		if (structures.get(structureKey) == null) {
 			structures.put(structureKey, structure);
 		} else {

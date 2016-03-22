@@ -77,20 +77,20 @@ public final class World implements Serializable {
 
 	/** Time between each update tick */
 	private float												updateTick = 1f/60f;
-	
+
 	/** Last time a cloud was added */
 	private long												lastCloudAdd 			= System.currentTimeMillis();
 
 	/** Outstanding events to be processed */
 	private final ConcurrentLinkedDeque<Event>					events					= new ConcurrentLinkedDeque<>();
-	
+
 	private final ConcurrentLinkedDeque<Cloud>					clouds					= new ConcurrentLinkedDeque<>();
-	
+
 	/**
 	 * Constructor
 	 */
 	public World(float gravity, Epoch epoch, ChunkGenerator generator) {
-		this(gravity, epoch, generator, ParameterPersistenceService.getParameters().getNextWorldKey());
+		this(gravity, epoch, generator, Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextWorldKey());
 	}
 
 
@@ -107,7 +107,7 @@ public final class World implements Serializable {
 		this.projectiles = new WorldProjectiles(worldId);
 		this.topography = new Topography(worldId);
 		this.positionalIndexMap = new PositionalIndexMap(worldId);
-		
+
 		clouds.add(new Cloud(new Vector2(-2000, 200), 200, 20, 30, 300, 1000, 0.2f));
 		clouds.add(new Cloud(new Vector2(-200, 200), 200, 20, 30, 300, 1000, 0.2f));
 		clouds.add(new Cloud(new Vector2(1600, 200), 200, 20, 30, 300, 1000, 0.2f));
@@ -158,20 +158,20 @@ public final class World implements Serializable {
 				item.update(updateTick);
 			} catch (NoTileFoundException e) {}
 		}
-		
+
 		for (Cloud c : clouds) {
 			c.update(updateTick);
-			
+
 			if (c.getPosition().x > Wiring.injector().getInstance(Graphics.class).getCam().position.x * 0.01f + 4000) {
 				clouds.remove(c);
 				System.out.println("Cloud Removed");
 			}
 		}
-		
+
 		if (System.currentTimeMillis() > lastCloudAdd + 180 * 1000) {
 			clouds.add(new Cloud(new Vector2(-2000, 200), 200, 20, 30, 300, 1000, 0.2f));
 			System.out.println("Cloud added");
-			
+
 			lastCloudAdd = System.currentTimeMillis();
 		}
 	}

@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -39,7 +40,7 @@ public final class WorldItems implements Serializable {
 		}
 
 		item.setWorldId(worldId);
-		item.setId(ParameterPersistenceService.getParameters().getNextItemId());
+		item.setId(Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextItemId());
 		item.setPosition(position);
 		item.setVelocity(velocity);
 		items.put(item.getId(), item);

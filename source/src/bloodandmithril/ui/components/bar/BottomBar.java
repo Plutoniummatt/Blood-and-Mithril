@@ -11,6 +11,7 @@ import java.util.Deque;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -37,6 +38,7 @@ import bloodandmithril.ui.components.window.Window;
 @Copyright("Matthew Peck 2014")
 public class BottomBar extends Component {
 
+	@Inject private GameSaver gameSaver;
 
 	private final Button mainMenu = new Button(UserInterface.uiTexture, 25, 16, 53, 0, 50, 32,
 		() -> {},
@@ -324,11 +326,11 @@ public class BottomBar extends Component {
 		graphics.getSpriteBatch().begin();
 		renderRectangle(0, 34, getGdxWidth(), 34, true, Color.BLACK);
 		renderBox(-left.getRegionWidth(), 32, getGdxWidth(), 34, true, Color.DARK_GRAY, graphics);
-		mainMenu.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
-		windows.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
-		chat.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
-		factions.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
-		missions.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
+		mainMenu.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
+		windows.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
+		chat.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
+		factions.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
+		missions.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
 		graphics.getSpriteBatch().end();
 	}
 

@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.inject.Inject;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.persistence.ParameterPersistenceService;
 
@@ -21,17 +24,20 @@ public final class WorldProjectiles implements Serializable {
 	private final ConcurrentHashMap<Integer, Projectile> projectiles = new ConcurrentHashMap<>();
 	private final int worldId;
 
+	@Inject private ParameterPersistenceService parameterPersistenceService;
+
 	/**
 	 * Constructor
 	 */
 	public WorldProjectiles(int worldId) {
 		this.worldId = worldId;
+		Wiring.injector().injectMembers(this);
 	}
 
 
 	public final int addProjectile(Projectile projectile) {
 		projectile.setWorldId(worldId);
-		projectile.setId(ParameterPersistenceService.getParameters().getNextProjectileId());
+		projectile.setId(parameterPersistenceService.getParameters().getNextProjectileId());
 		projectiles.put(projectile.getId(), projectile);
 
 		return projectile.getId();

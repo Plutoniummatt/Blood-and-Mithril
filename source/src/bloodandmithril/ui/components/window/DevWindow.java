@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
@@ -86,6 +87,8 @@ import bloodandmithril.world.topography.tile.tiles.brick.YellowBrickTile;
 public class DevWindow extends Window {
 
 	private final ScrollableListingPanel<String, Object> panel;
+
+	@Inject private GameSaver gameSaver;
 
 	/**
 	 * Constructor
@@ -700,7 +703,7 @@ public class DevWindow extends Window {
 										return;
 									}
 
-									GameSaver.save(input, false);
+									gameSaver.save(input, false);
 								},
 								"Save",
 								true,

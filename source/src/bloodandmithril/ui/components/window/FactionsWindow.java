@@ -17,9 +17,10 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.faction.Faction;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
@@ -42,6 +43,8 @@ import bloodandmithril.world.Domain;
 public class FactionsWindow extends Window {
 
 	private final ScrollableListingPanel<String, Object> factionsPanel;
+
+	@Inject private FactionControlService factionControlService;
 
 	/**
 	 * Constructor
@@ -127,14 +130,14 @@ public class FactionsWindow extends Window {
 			newList = Collections2.filter(newList, new Predicate<Faction>() {
 				@Override
 				public boolean apply(Faction input) {
-					return BloodAndMithrilClient.controlledFactions.contains(input.factionId);
+					return factionControlService.isUnderControl(input.factionId);
 				}
 			});
 		} else {
 			newList = Collections2.filter(newList, new Predicate<Faction>() {
 				@Override
 				public boolean apply(Faction input) {
-					return !BloodAndMithrilClient.controlledFactions.contains(input.factionId);
+					return !factionControlService.isUnderControl(input.factionId);
 				}
 			});
 		}
@@ -144,7 +147,7 @@ public class FactionsWindow extends Window {
 				"Control",
 				() -> {
 					if (StringUtils.isEmpty(faction.controlPassword)) {
-						BloodAndMithrilClient.controlledFactions.add(faction.factionId);
+						factionControlService.control(faction.factionId);
 						if (ClientServerInterface.isClient() && !ClientServerInterface.isServer()) {
 							ClientServerInterface.SendRequest.sendSynchronizeFactionsRequest();
 						}
@@ -159,7 +162,7 @@ public class FactionsWindow extends Window {
 								100,
 								args -> {
 									if (args[0].toString().equals(faction.controlPassword)) {
-										BloodAndMithrilClient.controlledFactions.add(faction.factionId);
+										factionControlService.control(faction.factionId);
 										if (ClientServerInterface.isClient() && !ClientServerInterface.isServer()) {
 											ClientServerInterface.SendRequest.sendSynchronizeFactionsRequest();
 										}
@@ -253,7 +256,7 @@ public class FactionsWindow extends Window {
 			);
 
 			menu.addFirst(showInfo);
-			if (!BloodAndMithrilClient.controlledFactions.contains(faction.factionId)) {
+			if (!factionControlService.isUnderControl(faction.factionId)) {
 				if (faction.controllable) {
 					menu.addMenuItem(control);
 				}
@@ -275,7 +278,7 @@ public class FactionsWindow extends Window {
 						menu.x = getMouseScreenX();
 						menu.y = getMouseScreenY();
 					},
-					BloodAndMithrilClient.controlledFactions.contains(faction.factionId) ? Color.GREEN : Color.ORANGE,
+					factionControlService.isUnderControl(faction.factionId) ? Color.GREEN : Color.ORANGE,
 					Color.GREEN,
 					Color.WHITE,
 					UIRef.BL

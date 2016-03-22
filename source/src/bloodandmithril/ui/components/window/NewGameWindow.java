@@ -30,6 +30,7 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 import bloodandmithril.character.faction.Faction;
+import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
@@ -83,11 +84,12 @@ public class NewGameWindow extends Window {
 	private ItemPackage selectedItemPackage;
 	private boolean enableTutorials = true;
 
-	@Inject
-	private Threading threading;
-
-	@Inject
-	private Graphics graphics;
+	@Inject	private Threading threading;
+	@Inject	private Graphics graphics;
+	@Inject	private ParameterPersistenceService parameterPersistenceService;
+	@Inject	private FactionControlService factionControlService;
+	@Inject	private GameLoader gameLoader;
+	@Inject	private ChunkLoader chunkLoader;
 
 	private Button next;
 	private Button startGame = new Button(
@@ -111,14 +113,14 @@ public class NewGameWindow extends Window {
 
 		Faction nature = new Faction(
 			"Nature",
-			ParameterPersistenceService.getParameters().getNextFactionId(),
+			parameterPersistenceService.getParameters().getNextFactionId(),
 			false,
 			"Mother nature"
 		);
 
 		Faction playerFaction = new Faction(
 			selectedRace.getAnnotation(Name.class).name(),
-			ParameterPersistenceService.getParameters().getNextFactionId(),
+			parameterPersistenceService.getParameters().getNextFactionId(),
 			true,
 			selectedRace.getAnnotation(Description.class).description()
 		);
@@ -134,11 +136,11 @@ public class NewGameWindow extends Window {
 			BloodAndMithrilClient.setLoading(true);
 			ClientServerInterface.setServer(true);
 
-			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
+			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 			Domain.setActiveWorld(Domain.createWorld());
 			BloodAndMithrilClient.setInGame(true);
 			BloodAndMithrilClient.setup();
-			BloodAndMithrilClient.controlledFactions.add(playerFaction.factionId);
+			factionControlService.control(playerFaction.factionId);
 
 			Topography topography = Domain.getActiveWorld().getTopography();
 			topography.loadOrGenerateChunk(0, 0, false);
@@ -172,7 +174,7 @@ public class NewGameWindow extends Window {
 				)
 			);
 
-			while(!ChunkLoader.loaderTasks.isEmpty()) {
+			while(!chunkLoader.loaderTasks.isEmpty()) {
 				BloodAndMithrilClient.threadWait(100);
 			}
 

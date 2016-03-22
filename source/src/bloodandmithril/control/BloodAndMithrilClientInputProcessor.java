@@ -22,6 +22,7 @@ import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.MineTile;
+import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -53,8 +54,9 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 	@Inject private Controls controls;
-
 	@Inject	private Graphics graphics;
+	@Inject	private FactionControlService factionControlService;
+	@Inject	private GameSaver gameSaver;
 
 	private CursorBoundTask cursorBoundTask = null;
 	private Function<Vector2> camFollowFunction;
@@ -93,7 +95,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if (GameSaver.isSaving()) {
+		if (gameSaver.isSaving()) {
 			return false;
 		}
 
@@ -139,7 +141,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 		}
 
 		try {
-			if (GameSaver.isSaving() || BloodAndMithrilClient.loading.get()) {
+			if (gameSaver.isSaving() || BloodAndMithrilClient.loading.get()) {
 				return false;
 			}
 
@@ -176,7 +178,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		try {
-			if (GameSaver.isSaving() || BloodAndMithrilClient.loading.get()) {
+			if (gameSaver.isSaving() || BloodAndMithrilClient.loading.get()) {
 				return false;
 			}
 
@@ -405,7 +407,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 			if (individualClicked == null) {
 				if (doubleClick && (cursorBoundTask == null || !(cursorBoundTask instanceof ThrowItemCursorBoundTask))) {
 					for (Individual indi : Domain.getIndividuals().values()) {
-						if (indi.isControllable()) {
+						if (factionControlService.isControllable(indi)) {
 							individualSelectionService.deselect(indi);
 						}
 					}
@@ -415,12 +417,12 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 				}
 			} else {
 				for (Individual indi : Domain.getIndividuals().values()) {
-					if (indi.isControllable() && indi.getId().getId() != individualClicked.getId().getId() && !isKeyPressed(controls.selectIndividual.keyCode)) {
+					if (factionControlService.isControllable(indi) && indi.getId().getId() != individualClicked.getId().getId() && !isKeyPressed(controls.selectIndividual.keyCode)) {
 						individualSelectionService.deselect(indi);
 					}
 				}
 
-				if (individualClicked.isControllable() && individualClicked.isAlive()) {
+				if (factionControlService.isControllable(individualClicked) && individualClicked.isAlive()) {
 					individualSelectionService.select(individualClicked);
 				}
 

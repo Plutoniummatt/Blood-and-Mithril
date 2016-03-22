@@ -2,7 +2,6 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.persistence.GameSaver.isSaving;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
@@ -38,8 +37,8 @@ public class MainMenuWindow extends Window {
 
 	private Button singlePlayer, multiPlayer, options, exit;
 
-	@Inject
-	private Threading threading;
+	@Inject	private Threading threading;
+	@Inject	private GameSaver gameSaver;
 
 	/**
 	 * Constructor
@@ -53,10 +52,10 @@ public class MainMenuWindow extends Window {
 
 	@Override
 	protected void internalWindowRender(Graphics graphics) {
-		singlePlayer.render(width/2 + x, y - 26, isActive() && !isSaving(), getAlpha(), graphics);
-		multiPlayer.render(width/2 + x, y - 46, isActive() && !isSaving() && !BloodAndMithrilClient.isInGame(), getAlpha(), graphics);
-		options.render(width/2 + x, y - 66, isActive() && !isSaving(), getAlpha(), graphics);
-		exit.render(width/2 + x, y - 86, isActive() && !isSaving(), getAlpha(), graphics);
+		singlePlayer.render(width/2 + x, y - 26, isActive() && !gameSaver.isSaving(), getAlpha(), graphics);
+		multiPlayer.render(width/2 + x, y - 46, isActive() && !gameSaver.isSaving() && !BloodAndMithrilClient.isInGame(), getAlpha(), graphics);
+		options.render(width/2 + x, y - 66, isActive() && !gameSaver.isSaving(), getAlpha(), graphics);
+		exit.render(width/2 + x, y - 86, isActive() && !gameSaver.isSaving(), getAlpha(), graphics);
 	}
 
 
@@ -109,7 +108,7 @@ public class MainMenuWindow extends Window {
 										return;
 									}
 
-									GameSaver.save(input, false);
+									gameSaver.save(input, false);
 								},
 								"Save",
 								true,

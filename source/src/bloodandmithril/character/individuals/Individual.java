@@ -20,7 +20,6 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.controlledFactions;
 import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
@@ -71,7 +70,6 @@ import bloodandmithril.item.items.container.ContainerImpl;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper;
 import bloodandmithril.item.items.equipment.EquipperImpl;
-import bloodandmithril.item.items.equipment.offhand.Torch;
 import bloodandmithril.item.items.equipment.weapon.OneHandedMeleeWeapon;
 import bloodandmithril.item.items.equipment.weapon.RangedWeapon;
 import bloodandmithril.item.items.equipment.weapon.TwoHandedMeleeWeapon;
@@ -376,12 +374,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	protected abstract void internalCopyFrom(Individual other);
 
 
-	/** Determines whether this {@link Individual} is controllable */
-	public final boolean isControllable() {
-		return controlledFactions.contains(getFactionId());
-	}
-
-
 	/** Setups up all individual resources */
 	public static final void setup() {
 	}
@@ -390,7 +382,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	/** Renders any decorations for UI */
 	public final void renderUIDecorations(Graphics graphics) {
 		SpriteBatch batch = graphics.getSpriteBatch();
-		
+
 		if (isSelected()) {
 			batch.setShader(Shaders.filter);
 
@@ -1103,17 +1095,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	public void sayStuck() {}
-
-
-	public final int getRenderPriority() {
-		for (Item equipped : getEquipped().keySet()) {
-			if (equipped instanceof Torch) {
-				return 2;
-			}
-		}
-
-		return isControllable() ? 1 : 0;
-	}
 
 
 	public final boolean canBeUsedAsFireSource() {

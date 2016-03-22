@@ -1,7 +1,5 @@
 package bloodandmithril.server;
 
-import static bloodandmithril.control.InputUtilities.setInputProcessor;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.Executors;
@@ -10,13 +8,11 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
@@ -26,9 +22,6 @@ import bloodandmithril.core.ServerModule;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.networking.Request;
-import bloodandmithril.networking.Response;
-import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.persistence.GameLoader;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
@@ -68,57 +61,7 @@ public class BloodAndMithrilServer {
 		ClientServerInterface.serverThread = Executors.newCachedThreadPool();
 
 		((Kryo.DefaultInstantiatorStrategy) server.getKryo().getInstantiatorStrategy()).setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
-		server.addListener(new Listener() {
-
-			@Override
-			public void disconnected (Connection connection) {
-				ClientServerInterface.SendNotification.notifySyncPlayerList();
-
-				for (Individual indi : Domain.getIndividuals().values()) {
-					if (indi.getSelectedByClient().remove(connection.getID())) {
-						indi.deselect(false, connection.getID());
-					}
-				}
-			}
-
-			@Override
-			public void received(final Connection connection, final Object object) {
-				if (object instanceof Request) {
-					ClientServerInterface.serverThread.execute(() -> {
-						// Cast to Request
-						Request request = (Request) object;
-
-						// Send response
-						if (request.tcp()) {
-							Responses responseToSend = request.respond();
-							for (Response response : responseToSend.getResponses()) {
-								response.prepare();
-							}
-							if (request.notifyOthers()) {
-								for (Connection c : server.getConnections()) {
-									c.sendTCP(responseToSend);
-								}
-							} else {
-								connection.sendTCP(responseToSend);
-							}
-						} else {
-							Responses responseToSend = request.respond();
-							for (Response response : responseToSend.getResponses()) {
-								response.prepare();
-							}
-							if (request.notifyOthers()) {
-								for (Connection c : server.getConnections()) {
-									c.sendUDP(responseToSend);
-								}
-							} else {
-								connection.sendUDP(responseToSend);
-							}
-							Logger.networkDebug("Responding to " + request.getClass().getSimpleName() + " from " + connection.getRemoteAddressTCP(), LogLevel.TRACE);
-						}
-					});
-				}
-			}
-		});
+		server.addListener(new ServerListener(server));
 
 		ClientServerInterface.syncThread = new Thread(
 			new Runnable() {
@@ -170,22 +113,24 @@ public class BloodAndMithrilServer {
 		new LwjglApplication(server, cfg);
 	}
 
-	public static class GameServer implements ApplicationListener, InputProcessor {
+	public static class GameServer implements ApplicationListener {
+
+		@Inject private GameSaver gameSaver;
+		@Inject private GameLoader gameLoader;
+		@Inject private ParameterPersistenceService parameterPersistenceService;
 
 		@Override
 		public void create() {
 			Wiring.setupInjector(new ServerModule(), new CommonModule());
-			Faction nature = new Faction("Nature", ParameterPersistenceService.getParameters().getNextFactionId(), false, "");
-			Faction player = new Faction("Elves", ParameterPersistenceService.getParameters().getNextFactionId(), true, "Elves are cool");
+			Faction nature = new Faction("Nature", parameterPersistenceService.getParameters().getNextFactionId(), false, "");
+			Faction player = new Faction("Elves", parameterPersistenceService.getParameters().getNextFactionId(), true, "Elves are cool");
 			Domain.getFactions().put(nature.factionId, nature);
 			Domain.getFactions().put(player.factionId, player);
 
 			ClientServerInterface.setServer(true);
-			GameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
+			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 			Domain.setActiveWorld(Domain.createWorld());
 			Domain.setup();
-
-			setInputProcessor(this);
 
 			PrefabricatedComponent.setup();
 		}
@@ -198,13 +143,13 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public void render() {
-			GameSaver.update();
+			gameSaver.update();
 
 			// Do not update if game is paused
 			// Do not update if FPS is lower than tolerance threshold, otherwise
 			// bad things can happen, like teleporting
 			float delta = Gdx.graphics.getDeltaTime();
-			if (delta < 0.1f && !GameSaver.isSaving()) {
+			if (delta < 0.1f && !gameSaver.isSaving()) {
 				World activeWorld = Domain.getActiveWorld();
 				if (activeWorld != null) {
 					activeWorld.update();
@@ -225,55 +170,6 @@ public class BloodAndMithrilServer {
 
 		@Override
 		public void dispose() {
-		}
-
-
-		@Override
-		public boolean keyDown(int keycode) {
-			return false;
-		}
-
-
-		@Override
-		public boolean keyUp(int keycode) {
-			return false;
-		}
-
-
-		@Override
-		public boolean keyTyped(char character) {
-			return false;
-		}
-
-
-		@Override
-		public boolean touchDown(int screenX, int screenY, int pointer,
-				int button) {
-			return false;
-		}
-
-
-		@Override
-		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-			return false;
-		}
-
-
-		@Override
-		public boolean touchDragged(int screenX, int screenY, int pointer) {
-			return false;
-		}
-
-
-		@Override
-		public boolean mouseMoved(int screenX, int screenY) {
-			return false;
-		}
-
-
-		@Override
-		public boolean scrolled(int amount) {
-			return false;
 		}
 	}
 }

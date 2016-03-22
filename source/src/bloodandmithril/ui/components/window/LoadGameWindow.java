@@ -38,11 +38,10 @@ public class LoadGameWindow extends Window {
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private ScrollableListingPanel<PersistenceMetaData, Date> savedGames;
 
-	@Inject
-	private Threading threading;
-
-	@Inject
-	private Graphics graphics;
+	@Inject	private Threading threading;
+	@Inject	private Graphics graphics;
+	@Inject	private GameLoader gameLoader;
+	@Inject	private ChunkLoader chunkLoader;
 
 	/**
 	 * Constructor
@@ -105,7 +104,7 @@ public class LoadGameWindow extends Window {
 	private void populateList(List<HashMap<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date>> listings) {
 		HashMap<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date> mapToAdd = Maps.newHashMap();
 
-		for (PersistenceMetaData metadata : GameLoader.loadMetaData()) {
+		for (PersistenceMetaData metadata : gameLoader.loadMetaData()) {
 			mapToAdd.put(
 				new ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>(
 					metadata,
@@ -125,11 +124,11 @@ public class LoadGameWindow extends Window {
 									MainMenuWindow.removeWindows();
 									BloodAndMithrilClient.threadWait(2000);
 									BloodAndMithrilClient.setLoading(true);
-									GameLoader.load(metadata, false);
+									gameLoader.load(metadata, false);
 									BloodAndMithrilClient.setInGame(true);
 									BloodAndMithrilClient.setup();
 
-									while(!ChunkLoader.loaderTasks.isEmpty()) {
+									while(!chunkLoader.loaderTasks.isEmpty()) {
 										BloodAndMithrilClient.threadWait(100);
 									}
 

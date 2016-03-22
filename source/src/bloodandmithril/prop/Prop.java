@@ -15,6 +15,7 @@ import com.google.common.collect.Lists;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -84,7 +85,7 @@ public abstract class Prop implements Serializable, Visible, MouseOverable {
 		this.preventsMining = preventsMining;
 		this.position = new Vector2(x, y);
 		this.depth = depth;
-		this.id = ParameterPersistenceService.getParameters().getNextPropId();
+		this.id = Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextPropId();
 		this.grounded = grounded;
 	}
 

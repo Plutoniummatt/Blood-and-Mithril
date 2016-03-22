@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.persistence.ParameterPersistenceService;
@@ -47,7 +48,7 @@ public abstract class Particle implements Serializable {
 		this.removalCondition = removalCondition;
 		this.movementMode = movementMode;
 		this.depth = depth;
-		this.particleId = ParameterPersistenceService.getParameters().getNextParticleId();
+		this.particleId = Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextParticleId();
 	}
 
 

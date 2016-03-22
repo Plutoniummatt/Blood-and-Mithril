@@ -23,7 +23,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -129,8 +128,6 @@ import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.character.proficiency.proficiencies.Cooking;
 import bloodandmithril.character.proficiency.proficiencies.Smithing;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Threading;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.BiomeDecider;
 import bloodandmithril.generation.biome.DefaultBiomeDecider;
@@ -287,7 +284,6 @@ import bloodandmithril.networking.requests.ToggleWalkRun;
 import bloodandmithril.networking.requests.TransferItems;
 import bloodandmithril.networking.requests.TransferItems.TradeEntity;
 import bloodandmithril.networking.requests.dev.RequestSpawnIndividual;
-import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Growable;
 import bloodandmithril.prop.Harvestable;
 import bloodandmithril.prop.Harvestable.VisibleHarvestable;
@@ -331,7 +327,6 @@ import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 import bloodandmithril.world.WorldProjectiles;
 import bloodandmithril.world.topography.Chunk.ChunkData;
-import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.DebugTile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -356,21 +351,12 @@ import bloodandmithril.world.topography.tile.tiles.stone.SandStoneTile;
 public class ClientServerInterface {
 
 	private static boolean isClient, isServer;
-
 	public static Client client;
-
 	public static Server server;
-
 	public static Thread syncThread;
-
 	public static String clientName;
-
 	public static ExecutorService serverThread;
-
 	public static HashMap<Integer, String> connectedPlayers = Maps.newHashMap();
-
-	private static Threading threading;
-
 	public static long ping;
 
 	/**
@@ -378,15 +364,13 @@ public class ClientServerInterface {
 	 * @throws IOException
 	 */
 	public static void setupAndConnect(String ip) throws IOException {
-		threading = Wiring.injector().getInstance(Threading.class);
-
 		clientName = InetAddress.getLocalHost().getHostName();
 
 		client = new Client(65536, 65536);
 		registerClasses(client.getKryo());
 		client.start();
 		client.connect(5000, ip, 42685, 42686);
-		
+
 		((Kryo.DefaultInstantiatorStrategy) client.getKryo().getInstantiatorStrategy()).setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
 		client.getUpdateThread().setUncaughtExceptionHandler(
 			(thread, throwable) -> {
@@ -395,60 +379,7 @@ public class ClientServerInterface {
 			}
 		);
 
-		client.addListener(new Listener() {
-
-			@Override
-			public void received(Connection connection, final Object object) {
-				if (!(object instanceof Responses)) {
-					return;
-				}
-
-				Responses resp = (Responses) object;
-
-				if (resp.executeInSingleThread()) {
-					for (final Response response : resp.getResponses()) {
-						if (response.forClient() != -1 && response.forClient() != client.getID()) {
-							continue;
-						}
-						response.acknowledge();
-					}
-					return;
-				}
-
-				for (final Response response : resp.getResponses()) {
-					if (response.forClient() != -1 && response.forClient() != client.getID()) {
-						continue;
-					}
-					if (response instanceof GenerateChunkResponse) {
-						ChunkLoader.loaderTasks.add(
-							() -> {
-								response.acknowledge();
-							}
-						);
-					} else if (response instanceof SynchronizeIndividualResponse) {
-						threading.clientProcessingThreadPool.execute(
-							() -> {
-								response.acknowledge();
-							}
-						);
-					} else if (response instanceof DestroyTileResponse) {
-						Topography.addTask(() -> {
-							response.acknowledge();
-						});
-					} else {
-						threading.clientProcessingThreadPool.execute(
-							() -> {
-								try {
-									response.acknowledge();
-								} catch (Throwable t) {
-									throw new RuntimeException(t);
-								}
-							}
-						);
-					}
-				}
-			}
-		});
+		client.addListener(new ClientListener(client));
 
 		client.sendTCP(new ClientConnected(client.getID(), clientName));
 		client.sendTCP(new SynchronizeWorldState());

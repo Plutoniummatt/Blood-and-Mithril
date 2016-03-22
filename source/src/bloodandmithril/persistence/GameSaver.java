@@ -6,9 +6,15 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AIProcessor;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.character.IndividualSaver;
@@ -17,52 +23,53 @@ import bloodandmithril.persistence.world.WorldSaver;
 import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-
 /**
  * Class for game saving
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2014")
 public class GameSaver {
 
-	/** The thread responsible for loading */
-	public static Thread saverThread;
+	@Inject private FactionControlService factionControlService;
+	@Inject private WorldSaver worldSaver;
+	@Inject private ParameterPersistenceService parameterPersistenceService;
+	@Inject private IndividualSaver individualSaver;
+	@Inject private ChunkLoader chunkLoader;
 
 	/** The list of tasks the saver thread must execute */
-	public static final BlockingQueue<Task> saverTasks = new ArrayBlockingQueue<Task>(500);
+	public final BlockingQueue<Task> saverTasks = new ArrayBlockingQueue<Task>(500);
 
 	/** File path for saved games */
-	private static String savePath;
+	private String savePath;
 
 	/** Name to use for saved game */
-	private static String savedGameName = null;
+	private String savedGameName = null;
 
 	/** The meta data of the most recently loaded saved game */
-	public static PersistenceMetaData mostRecentlyLoaded;
+	public PersistenceMetaData mostRecentlyLoaded;
 
 	/** Boolean switches used for processing */
-	private static boolean pending = false, saving = false, andExit = false, exiting = false;
+	private AtomicBoolean pending = new AtomicBoolean(false), saving = new AtomicBoolean(false), andExit = new AtomicBoolean(false), exiting = new AtomicBoolean(false);
 
 	/**
 	 * Saves the game
 	 */
-	public static synchronized void save(String name, boolean exitAfter) {
+	public synchronized void save(String name, boolean exitAfter) {
 		savedGameName = name;
 		savePath = "save/" + name;
-		pending = true;
-		andExit = exitAfter;
+		pending.set(true);
+		andExit.set(exitAfter);
 	}
 
 
-	public static synchronized void setPersistencePath(String savePath) {
-		GameSaver.savePath = savePath;
+	public synchronized void setPersistencePath(String savePath) {
+		this.savePath = savePath;
 	}
 
 
-	public static String getSavePath() {
+	public String getSavePath() {
 		return savePath;
 	}
 
@@ -70,74 +77,74 @@ public class GameSaver {
 	/**
 	 * @return True if currently saving or pending to save
 	 */
-	public static synchronized boolean isSaving() {
-		return saving || pending;
+	public synchronized boolean isSaving() {
+		return saving.get() || pending.get();
 	}
 
 
-	private static void internalSave() {
+	private void internalSave() {
 
 		// Save parameters
 		saverTasks.add(
 			() -> {
-				ParameterPersistenceService.saveParameters();
+				parameterPersistenceService.saveParameters();
 			}
 		);
 
 		saveMetaData();
 
 		// Save chunks + generation data
-		WorldSaver.save();
+		worldSaver.save();
 
 		saveFactions();
 
 		// Save all individuals
 		saverTasks.add(
 			() -> {
-				IndividualSaver.saveAll();
+				individualSaver.saveAll();
 				saveCompleted();
 			}
 		);
 	}
 
 
-	private static void saveFactions() {
-		FileHandle factiondata = Gdx.files.local(GameSaver.savePath + "/world/factions.txt");
+	private void saveFactions() {
+		FileHandle factiondata = Gdx.files.local(this.savePath + "/world/factions.txt");
 		factiondata.writeString(encode(Domain.getFactions()), false);
 
 		if (ClientServerInterface.isClient()) {
-			FileHandle controlled = Gdx.files.local(GameSaver.savePath + "/world/controlledfactions.txt");
-			controlled.writeString(encode(BloodAndMithrilClient.controlledFactions), false);
+			FileHandle controlled = Gdx.files.local(this.savePath + "/world/controlledfactions.txt");
+			controlled.writeString(encode(factionControlService.getControlledFactions()), false);
 		}
 	}
 
 
 	/** Saves metadata */
-	private static void saveMetaData() {
-		FileHandle metadata = Gdx.files.local(GameSaver.savePath + "/metadata.txt");
+	private void saveMetaData() {
+		FileHandle metadata = Gdx.files.local(this.savePath + "/metadata.txt");
 		metadata.writeString(encode(new PersistenceMetaData(savedGameName)), false);
 	}
 
 
 	/** Notifies this class that saving is complete */
-	private static synchronized void saveCompleted() {
-		saving = false;
-		exiting = andExit;
+	private synchronized void saveCompleted() {
+		saving.set(false);
+		exiting.set(andExit.get());
 	}
 
 
-	public static synchronized void update() {
-		if (pending) {
+	public synchronized void update() {
+		if (pending.get()) {
 			if (!outstandingTasks()) {
-				pending = false;
-				saving = true;
+				pending.set(false);
+				saving.set(true);
 				internalSave();
 			}
 		} else {
-			if (saving) {
+			if (saving.get()) {
 				return;
 			} else {
-				if (exiting) {
+				if (exiting.get()) {
 					Gdx.app.exit();
 				}
 				return;
@@ -149,8 +156,8 @@ public class GameSaver {
 	/**
 	 * @return true if there are outstanding tasks in AI thread, loader thread or pathfinding thread
 	 */
-	private static boolean outstandingTasks() {
-		return AIProcessor.getNumberOfOutstandingTasks() + ChunkLoader.loaderTasks.size() != 0;
+	private boolean outstandingTasks() {
+		return AIProcessor.getNumberOfOutstandingTasks() + chunkLoader.loaderTasks.size() != 0;
 	}
 
 

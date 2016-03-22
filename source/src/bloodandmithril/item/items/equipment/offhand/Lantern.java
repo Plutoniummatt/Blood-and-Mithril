@@ -4,7 +4,13 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 
 import java.util.Set;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Sets;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
 import bloodandmithril.graphics.particles.Particle;
@@ -16,11 +22,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Sets;
 
 /**
  * Offhand lantern for lighting
@@ -203,7 +204,7 @@ public class Lantern extends OffhandEquipment {
 	@Override
 	public void onEquip(Equipper equipper) {
 		if (workingId == null) {
-			this.workingId = ParameterPersistenceService.getParameters().getNextItemId();
+			this.workingId = Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextItemId();
 		}
 	}
 }

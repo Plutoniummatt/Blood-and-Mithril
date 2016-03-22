@@ -34,11 +34,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.google.common.base.Predicate;
 import com.google.inject.Singleton;
 
+import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
+import bloodandmithril.item.items.equipment.offhand.Torch;
 import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
@@ -78,10 +80,12 @@ public class WorldRenderer {
 
 	private static TextureRegion circle;
 	private static Graphics graphics;
+	private static FactionControlService factionControlService;
 
 	static {
 		if (ClientServerInterface.isClient()) {
 			graphics = Wiring.injector().getInstance(Graphics.class);
+			factionControlService = Wiring.injector().getInstance(FactionControlService.class);
 			gameWorldTexture = new Texture(files.internal("data/image/gameWorld.png"));
 			individualTexture = new Texture(files.internal("data/image/character/individual.png"));
 			gameWorldTexture.setFilter(Linear, Linear);
@@ -368,7 +372,7 @@ public class WorldRenderer {
 		};
 
 		private static Comparator<Individual> renderPrioritySorter = (i1, i2) -> {
-			return Integer.compare(i1.getRenderPriority(), i2.getRenderPriority());
+			return Integer.compare(getIndividualRenderPriority(i1), getIndividualRenderPriority(i2));
 		};
 
 		/** Renders all individuals, ones that are on platforms are rendered first */
@@ -390,5 +394,16 @@ public class WorldRenderer {
 
 	public enum Depth implements Serializable {
 		BACKGROUND, FOREGROUND, MIDDLEGROUND, FRONT
+	}
+
+
+	private static int getIndividualRenderPriority(Individual individual) {
+		for (Item equipped : individual.getEquipped().keySet()) {
+			if (equipped instanceof Torch) {
+				return 2;
+			}
+		}
+
+		return factionControlService.isControllable(individual) ? 1 : 0;
 	}
 }

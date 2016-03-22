@@ -37,6 +37,11 @@ public class Threading {
 	/** Handles the update of particles */
 	public Thread particleUpdateThread;
 
+	/** Thread used for saving/loading */
+	public Thread persistenceThread;
+
+	@Inject private GameSaver gameSaver;
+
 	/**
 	 * Constructor
 	 */
@@ -59,11 +64,11 @@ public class Threading {
 				if (System.currentTimeMillis() - prevFrame > Math.round(16f / BloodAndMithrilClient.getUpdateRate())) {
 					prevFrame = System.currentTimeMillis();
 					try {
-						GameSaver.update();
+						gameSaver.update();
 
 						// Do not update if game is paused
 						// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-						if (!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving() && Domain.getActiveWorld() != null && !BloodAndMithrilClient.loading.get()) {
+						if (!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving() && Domain.getActiveWorld() != null && !BloodAndMithrilClient.loading.get()) {
 							Domain.getActiveWorld().update();
 						}
 					} catch (Exception e) {

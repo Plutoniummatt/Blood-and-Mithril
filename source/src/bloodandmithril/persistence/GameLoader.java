@@ -1,6 +1,5 @@
 package bloodandmithril.persistence;
 
-import static bloodandmithril.persistence.GameSaver.getSavePath;
 import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.util.Logger.loaderDebug;
 import static com.badlogic.gdx.Gdx.files;
@@ -14,8 +13,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.faction.Faction;
+import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
@@ -31,41 +33,48 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2014")
 public class GameLoader {
+
+	@Inject private ParameterPersistenceService parameterPersistenceService;
+	@Inject private ChunkLoader chunkLoader;
+	@Inject private FactionControlService factionControlService;
+	@Inject private GameSaver gameSaver;
+	@Inject private IndividualLoader individualLoader;
 
 	/**
 	 * Loads a saved game
 	 */
-	public static void load(PersistenceMetaData metadata, boolean newGame) {
-		GameSaver.setPersistencePath("save/" + metadata.name);
+	public void load(PersistenceMetaData metadata, boolean newGame) {
+		gameSaver.setPersistencePath("save/" + metadata.name);
 
 		if (newGame) {
-			GameSaver.mostRecentlyLoaded = null;
+			gameSaver.mostRecentlyLoaded = null;
 		} else {
-			GameSaver.mostRecentlyLoaded = metadata;
+			gameSaver.mostRecentlyLoaded = metadata;
 			if (ClientServerInterface.isClient()) {
 				loadCameraPosition();
 			}
-			ParameterPersistenceService.loadParameters();
-			Domain.setActiveWorld(ParameterPersistenceService.getParameters().getActiveWorldId());
-			ChunkLoader.loadGenerationData();
-			ChunkLoader.loadWorlds();
+			parameterPersistenceService.loadParameters();
+			Domain.setActiveWorld(parameterPersistenceService.getParameters().getActiveWorldId());
+			chunkLoader.loadGenerationData();
+			chunkLoader.loadWorlds();
 			loadFactions();
-			IndividualLoader.loadAll();
+			individualLoader.loadAll();
 		}
 	}
 
 
 	@SuppressWarnings("unchecked")
-	private static void loadFactions() {
+	private void loadFactions() {
 		try {
-			ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(getSavePath() + "/world/factions.txt"));
-			HashSet<Integer> controlled = (HashSet<Integer>) decode(files.local(getSavePath() + "/world/controlledfactions.txt"));
+			ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(gameSaver.getSavePath() + "/world/factions.txt"));
+			HashSet<Integer> controlled = (HashSet<Integer>) decode(files.local(gameSaver.getSavePath() + "/world/controlledfactions.txt"));
 			Domain.setFactions(decoded);
 			if (ClientServerInterface.isClient()) {
 				for (Integer controlledId : controlled) {
-					BloodAndMithrilClient.controlledFactions.add(controlledId);
+					factionControlService.control(controlledId);
 				}
 			}
 		} catch (Exception e) {
@@ -75,7 +84,7 @@ public class GameLoader {
 
 
 	/** Loads and returns a collection of metadata of saved games */
-	public static Set<PersistenceMetaData> loadMetaData() {
+	public Set<PersistenceMetaData> loadMetaData() {
 		Set<PersistenceMetaData> data = Sets.newHashSet();
 
 		FileHandle local = Gdx.files.local("save");
@@ -90,8 +99,8 @@ public class GameLoader {
 
 
 	/** Sets current camera position to a saved position found in {@link Parameters} */
-	private static void loadCameraPosition() {
-		Map<Integer, Vector2> savedCameraPositions = ParameterPersistenceService.getParameters().getSavedCameraPosition();
+	private void loadCameraPosition() {
+		Map<Integer, Vector2> savedCameraPositions = parameterPersistenceService.getParameters().getSavedCameraPosition();
 		if (savedCameraPositions != null) {
 			BloodAndMithrilClient.getWorldcamcoordinates().clear();
 			BloodAndMithrilClient.getWorldcamcoordinates().putAll(savedCameraPositions);

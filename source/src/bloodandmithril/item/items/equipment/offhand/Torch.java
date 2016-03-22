@@ -10,6 +10,7 @@ import com.google.common.collect.Maps;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -168,7 +169,7 @@ public class Torch extends OffhandEquipment implements FireLighter, Craftable {
 	@Override
 	public void onEquip(Equipper equipper) {
 		if (workingId == null) {
-			this.workingId = ParameterPersistenceService.getParameters().getNextItemId();
+			this.workingId = Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextItemId();
 		}
 
 		if (equipper instanceof Individual) {

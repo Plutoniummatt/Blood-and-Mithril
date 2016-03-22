@@ -1,10 +1,10 @@
 package bloodandmithril.character.individuals;
 
-import static bloodandmithril.persistence.ParameterPersistenceService.getParameters;
-
 import java.io.Serializable;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
+import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.Epoch;
 
@@ -29,7 +29,7 @@ public class IndividualIdentifier implements Serializable {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.birthday = birthday;
-		this.id = getParameters().getNextIndividualId();
+		this.id = Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextIndividualId();
 	}
 
 

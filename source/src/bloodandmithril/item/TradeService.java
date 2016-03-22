@@ -3,6 +3,10 @@ package bloodandmithril.item;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.character.proficiency.proficiencies.Trading;
@@ -20,15 +24,18 @@ import bloodandmithril.ui.UserInterface;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2014")
 public class TradeService {
+
+	@Inject private FactionControlService factionControlService;
 
 	/**
 	 * Evaluates a trade proposal
 	 */
-	public static boolean evaluate(Individual proposer, HashMap<Item, Integer> tradeThis, Individual proposee, HashMap<Item, Integer> forThis) {
+	public boolean evaluate(Individual proposer, HashMap<Item, Integer> tradeThis, Individual proposee, HashMap<Item, Integer> forThis) {
 
-		if (proposee.isControllable() || !proposee.isAlive()) {
+		if (factionControlService.isControllable(proposee) || !proposee.isAlive()) {
 			return true;
 		}
 
@@ -68,7 +75,7 @@ public class TradeService {
 	/**
 	 * The trade proposal was accepted by the proposee, this method transfers the {@link Item}s and finalizes the trade
 	 */
-	public synchronized static void transferItems(HashMap<Item, Integer> proposerItemsToTrade, Container proposer, HashMap<Item, Integer> proposeeItemsToTrade, Container proposee) {
+	public synchronized void transferItems(HashMap<Item, Integer> proposerItemsToTrade, Container proposer, HashMap<Item, Integer> proposeeItemsToTrade, Container proposee) {
 
 		float proposerItemsToTradeMass = (float) proposerItemsToTrade.entrySet().stream().mapToDouble(entry -> {
 			return entry.getKey().getMass() * entry.getValue();

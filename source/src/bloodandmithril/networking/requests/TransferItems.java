@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -69,7 +70,7 @@ public class TransferItems implements Request {
 			throw new RuntimeException("Unknown Entity");
 		}
 
-		TradeService.transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
+		Wiring.injector().getInstance(TradeService.class).transferItems(proposerItemsToTransfer, proposer, proposeeItemsToTransfer, proposee);
 		response.add(new TransferItemsResponse(client));
 
 		return response;

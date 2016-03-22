@@ -10,7 +10,6 @@ import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,7 +23,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 import bloodandmithril.audio.SoundService;
@@ -108,14 +106,11 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	@Inject	private Timers timers;
 	@Inject	private Graphics graphics;
 	@Inject	private BloodAndMithrilClientInputProcessor inputProcessor;
+	@Inject	private GameSaver gameSaver;
 
 	/** Current camera coordinates for each world */
 	private static final Map<Integer, Vector2> worldCamCoordinates = Maps.newHashMap();
-
-	public static final HashSet<Integer> controlledFactions = Sets.newHashSet();
 	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
-
-
 	public static float updateRateMultiplier = 1f;
 
 	@Override
@@ -137,7 +132,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		ClientServerInterface.setServer(false);
 
 		Wiring.injector().injectMembers(this);
-		
+
 		graphics.getCam().position.y = Layer.getCameraYForHorizonCoord(graphics.getHeight()/3);
 		setInputProcessor(inputProcessor);
 	}
@@ -185,7 +180,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	public void render() {
 		try {
 			inputProcessor.cameraControl();
-			if (!GameSaver.isSaving()) {
+			if (!gameSaver.isSaving()) {
 				SoundService.update(Gdx.graphics.getDeltaTime());
 			}
 

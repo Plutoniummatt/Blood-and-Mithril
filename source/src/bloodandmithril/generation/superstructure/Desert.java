@@ -4,6 +4,7 @@ import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 import static java.lang.Math.max;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.component.components.Corridor;
@@ -43,7 +44,7 @@ public class Desert extends SuperStructure {
 	private static final long serialVersionUID = 4034191268168150728L;
 
 	/** Generates the wavey surface of the desert */
-	private final PerlinNoiseGenerator1D perlinSurfaceGenerator = new PerlinNoiseGenerator1D(30, ParameterPersistenceService.getParameters().getSeed(), 1, 0f);
+	private final PerlinNoiseGenerator1D perlinSurfaceGenerator = new PerlinNoiseGenerator1D(30, Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getSeed(), 1, 0f);
 
 	/** Dimensions of this {@link Desert} */
 	private int cWidth, cHeight, tDuneVariationHeight;

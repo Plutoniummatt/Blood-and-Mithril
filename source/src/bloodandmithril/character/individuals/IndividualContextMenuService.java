@@ -8,6 +8,7 @@ import com.google.common.base.Function;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.playerinteraction.individual.api.IndividualAISupressionService;
 import bloodandmithril.playerinteraction.individual.api.IndividualAttackOtherService;
@@ -50,6 +51,7 @@ public class IndividualContextMenuService {
 	@Inject private IndividualAttackOtherService individualAttackOtherService;
 	@Inject private IndividualChangeNicknameService individualChangeNicknameService;
 	@Inject private IndividualUpdateDescriptionService individualUpdateDescriptionService;
+	@Inject private FactionControlService factionControlService;
 
 	public ContextMenu getContextMenu(Individual indi) {
 		MenuItem camFollow = camFollow(indi);
@@ -104,7 +106,7 @@ public class IndividualContextMenuService {
 		contextMenuToReturn.addMenuItem(showInfoMenuItem);
 		contextMenuToReturn.addMenuItem(showStatusWindowItem);
 
-		if (indi.isControllable() && indi.isAlive()) {
+		if (factionControlService.isControllable(indi) && indi.isAlive()) {
 			contextMenuToReturn.addMenuItem(inventory(indi));
 			contextMenuToReturn.addMenuItem(skills(indi));
 			contextMenuToReturn.addMenuItem(actions);

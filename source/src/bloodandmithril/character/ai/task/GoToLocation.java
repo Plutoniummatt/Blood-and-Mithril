@@ -248,9 +248,6 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 
 			if (stuckCounter > stuckTolerance) {
 				path.clear();
-				if (!getHost().attacking() && getHost().isControllable()) {
-					getHost().speak("Looks like I'm stuck...", 1500);
-				}
 			}
 
 		// If we've reached the waypoint, and the next waypoint in the path is non-null, then move to the next one in the path.

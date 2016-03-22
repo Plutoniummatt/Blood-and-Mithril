@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.Window;
@@ -73,12 +74,22 @@ public abstract class Component {
 	/** Component specific render */
 	protected abstract void internalComponentRender(Graphics graphics);
 
+
+	/**
+	 * Protected constructor, injects dependencies
+	 */
+	protected Component() {
+		Wiring.injector().injectMembers(this);
+	}
+
+
 	/**
 	 * Called when the scroll wheel is scrolled.
 	 */
 	public boolean scrolled(int amount) {
 		return false;
 	}
+
 
 	/**
 	 * Renders this {@link Component}
@@ -112,7 +123,7 @@ public abstract class Component {
 	 */
 	protected void renderBox(int x, int y, int length, int height, boolean active, Color borderColor, Graphics graphics) {
 		SpriteBatch batch = graphics.getSpriteBatch();
-		
+
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? borderColor.a * getAlpha() : borderColor.a * 0.4f * getAlpha());
 		Shaders.filter.end();

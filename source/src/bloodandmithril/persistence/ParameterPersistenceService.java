@@ -1,12 +1,13 @@
 package bloodandmithril.persistence;
 
-import static bloodandmithril.persistence.GameSaver.getSavePath;
 import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.persistence.PersistenceUtil.encode;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
@@ -20,22 +21,25 @@ import bloodandmithril.world.Domain;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2014")
 public class ParameterPersistenceService {
 
-	/** THE current set of {@link Parameters} */
-	private static Parameters parameters = loadParameters();
+	@Inject private GameSaver gameSaver;
 
 	/** THE current set of {@link Parameters} */
-	public synchronized static Parameters getParameters() {
+	private Parameters parameters = loadParameters();
+
+	/** THE current set of {@link Parameters} */
+	public synchronized Parameters getParameters() {
 		Parameters params = parameters == null ? loadParameters() : parameters;
 		return params;
 	}
 
 	/** Loads and returns persisted parameters from disk */
-	public synchronized static Parameters loadParameters() {
+	public synchronized Parameters loadParameters() {
 		try {
-			FileHandle file = Gdx.files.local(getSavePath() + "/parameters.txt");
+			FileHandle file = Gdx.files.local(gameSaver.getSavePath() + "/parameters.txt");
 			parameters = decode(file);
 			return parameters;
 		} catch (Exception e) {
@@ -47,8 +51,8 @@ public class ParameterPersistenceService {
 
 
 	/** Saves the {@link Parameters} */
-	public synchronized static void saveParameters() {
-		FileHandle file = Gdx.files.local(getSavePath() + "/parameters.txt");
+	public synchronized void saveParameters() {
+		FileHandle file = Gdx.files.local(gameSaver.getSavePath() + "/parameters.txt");
 		parameters.setActiveWorldId(Domain.getActiveWorldId());
 		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? Maps.newHashMap(BloodAndMithrilClient.getWorldcamcoordinates()) : Maps.newHashMap());
 		file.writeString(encode(parameters), false);
