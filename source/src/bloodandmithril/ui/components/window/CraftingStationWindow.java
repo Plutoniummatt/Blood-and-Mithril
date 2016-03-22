@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.character.ai.AITask;
@@ -24,6 +23,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
@@ -259,7 +259,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender(SpriteBatch batch) {
+	protected void internalWindowRender(Graphics graphics) {
 		if (individual.getState().position.cpy().sub(craftingStation.position).len() > 96f) {
 			setClosing(true);
 		}
@@ -278,8 +278,8 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		requiredMaterialsListing.width = width / 2 + 40;
 		requiredMaterialsListing.height = height - 130;
 
-		craftablesListing.render(batch);
-		requiredMaterialsListing.render(batch);
+		craftablesListing.render(graphics);
+		requiredMaterialsListing.render(graphics);
 
 		defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.GREEN, getAlpha()) : Colors.modulateAlpha(Color.GREEN, 0.5f * getAlpha()));
 		String selected = craftingStation.getCurrentlyBeingCrafted() == null ? "Selected: " : craftingStation.getAction() + "ing: ";
@@ -292,23 +292,23 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		}
 
 		String progress = craftingStation.getCurrentlyBeingCrafted() == null ? "" : " (" + String.format("%.1f", 100f * craftingStation.getCraftingProgress()) + "%) " + bulkMessage;
-		defaultFont.draw(batch, selected + currentlySelectedToCraft.t.getSingular(true) + progress, x + width / 2 - 33, y - 33);
-		defaultFont.draw(batch, "Required materials:", x + width / 2 - 33, y - 133);
+		defaultFont.draw(graphics.getSpriteBatch(), selected + currentlySelectedToCraft.t.getSingular(true) + progress, x + width / 2 - 33, y - 33);
+		defaultFont.draw(graphics.getSpriteBatch(), "Required materials:", x + width / 2 - 33, y - 133);
 
-		renderButtons(batch);
-		renderItemIcon(batch);
+		renderButtons(graphics);
+		renderItemIcon(graphics);
 	}
 
 
-	private void renderItemIcon(SpriteBatch batch) {
+	private void renderItemIcon(Graphics graphics) {
 		renderRectangle(x + width - 74, y - 30, 64, 64, isActive(), modulateAlpha(Color.BLACK, 0.5f));
-		renderBox(x + width - 76, y - 32, 64, 64, isActive(), borderColor, batch);
+		renderBox(x + width - 76, y - 32, 64, 64, isActive(), borderColor, graphics);
 
 		TextureRegion icon = currentlySelectedToCraft.t.getIconTextureRegion();
 		if (icon != null) {
-			batch.setShader(Shaders.filter);
+			graphics.getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, getAlpha() * (isActive() ? 1f : 0.6f));
-			batch.draw(icon, x + width - 74, y - 96);
+			graphics.getSpriteBatch().draw(icon, x + width - 74, y - 96);
 		}
 	}
 
@@ -316,13 +316,13 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	/**
 	 * Renders the buttons on this {@link CraftingStationWindow}
 	 */
-	protected void renderButtons(SpriteBatch batch) {
+	protected void renderButtons(Graphics graphics) {
 		showInfoButton.render(
 			x + width / 2 + 11,
 			y - 45,
 			isActive(),
 			getAlpha(),
-			batch
+			graphics
 		);
 
 		craftButton.render(
@@ -330,7 +330,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			y - 65,
 			isActive() && (craftingStation.getCurrentlyBeingCrafted() == null || !craftingStation.isOccupied()) && !craftingStation.isFinished() && (enoughMaterials || craftingStation.getCurrentlyBeingCrafted() != null) && customCanCraft(),
 			getAlpha(),
-			batch
+			graphics
 		);
 
 		takeFinishedItemButton.render(
@@ -338,10 +338,10 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			y - 85,
 			isActive() && craftingStation.isFinished(),
 			getAlpha(),
-			batch
+			graphics
 		);
 
-		batch.flush();
+		graphics.getSpriteBatch().flush();
 	}
 
 

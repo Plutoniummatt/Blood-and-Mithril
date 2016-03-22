@@ -1,8 +1,7 @@
 package bloodandmithril.util;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 
 
 /**
@@ -51,7 +50,7 @@ public abstract class CursorBoundTask {
 	/**
 	 * Renders any UI guides for this {@link CursorBoundTask}
 	 */
-	public abstract void renderUIGuide(SpriteBatch batch);
+	public abstract void renderUIGuide(Graphics graphics);
 
 
 	/**

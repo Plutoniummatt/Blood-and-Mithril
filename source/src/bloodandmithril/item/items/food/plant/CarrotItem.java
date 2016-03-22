@@ -3,12 +3,12 @@ package bloodandmithril.item.items.food.plant;
 import static bloodandmithril.character.ai.perception.Visible.getVisible;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.Food;
@@ -172,8 +172,8 @@ public class CarrotItem extends Food {
 
 
 		@Override
-		public void render(SpriteBatch batch) {
-			batch.draw(carrotSeed, position.x - width / 2, position.y);
+		public void render(Graphics graphics) {
+			graphics.getSpriteBatch().draw(carrotSeed, position.x - width / 2, position.y);
 		}
 
 

@@ -2,7 +2,6 @@ package bloodandmithril.character.ai.routine;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.ArrayDeque;
@@ -22,6 +21,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -307,12 +307,11 @@ public final class IndividualConditionRoutine extends Routine {
 		}
 
 		@Override
-		public final void render() {
-			super.render();
+		public final void render(Graphics graphics) {
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
-				getGraphics().getSpriteBatch(),
+				graphics.getSpriteBatch(),
 				executionCondition == null ? "Not configured" : executionCondition.getDetailedDescription(getHost()),
 				x + 10,
 				y - 27,
@@ -320,7 +319,7 @@ public final class IndividualConditionRoutine extends Routine {
 			);
 
 			defaultFont.drawWrapped(
-				getGraphics().getSpriteBatch(),
+				graphics.getSpriteBatch(),
 				"Task:",
 				x + 10,
 				y - 97,
@@ -331,7 +330,7 @@ public final class IndividualConditionRoutine extends Routine {
 
 			if (aiTaskGenerator != null) {
 				defaultFont.drawWrapped(
-					getGraphics().getSpriteBatch(),
+					graphics.getSpriteBatch(),
 					aiTaskGenerator.getIndividualConditionRoutineDetailedDescription(),
 					x + 10,
 					y - 117,
@@ -339,7 +338,7 @@ public final class IndividualConditionRoutine extends Routine {
 				);
 			}
 
-			changeConditionButton.render(x + 89, y - height + 70, parent.isActive(), parent.getAlpha());
+			changeConditionButton.render(x + 89, y - height + 70, parent.isActive(), parent.getAlpha(), graphics);
 		}
 	}
 }

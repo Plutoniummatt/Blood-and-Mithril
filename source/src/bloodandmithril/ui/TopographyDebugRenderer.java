@@ -1,7 +1,6 @@
 package bloodandmithril.ui;
 
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 
 import java.util.HashMap;
@@ -19,6 +18,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.superstructure.SuperStructure;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Boundaries;
@@ -40,9 +40,9 @@ public class TopographyDebugRenderer {
 	/**
 	 * Renders the topography map
 	 */
-	public static void render() {
+	public static void render(Graphics graphics) {
 		UserInterface.shapeRenderer.begin(ShapeType.Line);
-		getGraphics().getSpriteBatch().begin();
+		graphics.getSpriteBatch().begin();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		for (Structure struct : Structures.getStructures().values()) {
 			if (struct.worldId != Domain.getActiveWorldId()) {
@@ -52,8 +52,8 @@ public class TopographyDebugRenderer {
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			if (struct instanceof SuperStructure) {
 				Boundaries boundaries = ((SuperStructure) struct).getBoundaries();
-				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), Integer.toString(struct.getStructureKey()), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY + 10);
-				Fonts.defaultFont.draw(getGraphics().getSpriteBatch(), struct.getClass().getSimpleName(), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY - 15);
+				Fonts.defaultFont.draw(graphics.getSpriteBatch(), Integer.toString(struct.getStructureKey()), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY + 10);
+				Fonts.defaultFont.draw(graphics.getSpriteBatch(), struct.getClass().getSimpleName(), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY - 15);
 				UserInterface.shapeRenderer.rect(
 					boundaries.left * Topography.CHUNK_SIZE - topoX,
 					boundaries.bottom * Topography.CHUNK_SIZE - topoY,
@@ -77,7 +77,7 @@ public class TopographyDebugRenderer {
 				);
 			}
 		}
-		getGraphics().getSpriteBatch().end();
+		graphics.getSpriteBatch().end();
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		UserInterface.shapeRenderer.setColor(Colors.modulateAlpha(Color.CYAN, 0.2f));
@@ -94,10 +94,10 @@ public class TopographyDebugRenderer {
 
 		UserInterface.shapeRenderer.setColor(Color.ORANGE);
 		UserInterface.shapeRenderer.rect(
-			(getGraphics().getCam().position.x - getGraphics().getWidth() / 2) / Topography.TILE_SIZE - topoX,
-			(getGraphics().getCam().position.y - getGraphics().getHeight() / 2) / Topography.TILE_SIZE - topoY,
-			getGraphics().getWidth() / Topography.TILE_SIZE,
-			getGraphics().getHeight() / Topography.TILE_SIZE
+			(graphics.getCam().position.x - graphics.getWidth() / 2) / Topography.TILE_SIZE - topoX,
+			(graphics.getCam().position.y - graphics.getHeight() / 2) / Topography.TILE_SIZE - topoY,
+			graphics.getWidth() / Topography.TILE_SIZE,
+			graphics.getHeight() / Topography.TILE_SIZE
 		);
 
 		UserInterface.shapeRenderer.end();

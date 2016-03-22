@@ -1,6 +1,5 @@
 package bloodandmithril.world.weather;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static java.lang.Math.cos;
 import static java.lang.Math.max;
 import static java.lang.Math.sin;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Shaders;
@@ -65,7 +65,7 @@ public final class CelestialBody {
 	/**
 	 * Renders this star
 	 */
-	public final void render(World world) {
+	public final void render(World world, Graphics graphics) {
 		float time = world.getEpoch().getTime();
 		float theta = angle + time / 24f * 360f;
 
@@ -74,7 +74,7 @@ public final class CelestialBody {
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", max(0.9f, filter.r), max(0.9f, filter.g), max(0.9f, filter.b), (float) Math.pow(1.0f - WeatherRenderer.getDaylightColor(world).r, 2));
 		if (rotates) {
-			getGraphics().getSpriteBatch().draw(
+			graphics.getSpriteBatch().draw(
 				region,
 				WeatherRenderer.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
 				WeatherRenderer.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2,
@@ -87,7 +87,7 @@ public final class CelestialBody {
 				- theta + 90f
 			);
 		} else {
-			getGraphics().getSpriteBatch().draw(
+			graphics.getSpriteBatch().draw(
 				region,
 				WeatherRenderer.orbitalPivot.x + orbitalRadius * (float) sin(toRadians(theta)) - region.getRegionWidth() / 2,
 				WeatherRenderer.orbitalPivot.y + orbitalRadius * (float) cos(toRadians(theta)) + region.getRegionHeight() / 2

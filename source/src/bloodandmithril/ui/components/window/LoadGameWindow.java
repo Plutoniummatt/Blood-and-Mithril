@@ -155,13 +155,13 @@ public class LoadGameWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		savedGames.height = height;
 		savedGames.width = width;
 		savedGames.x = x;
 		savedGames.y = y;
 
-		savedGames.render();
+		savedGames.render(graphics);
 	}
 
 

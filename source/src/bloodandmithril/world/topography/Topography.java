@@ -1,6 +1,7 @@
 package bloodandmithril.world.topography;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+import static bloodandmithril.graphics.Graphics.getGdxHeight;
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structures;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.prop.Prop;
@@ -95,7 +97,7 @@ public final class Topography {
 	/**
 	 * Renders the background
 	 */
-	public final void renderBackGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
+	public final void renderBackGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings, Graphics graphics) {
 		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
@@ -108,7 +110,7 @@ public final class Topography {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
 					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(false, getGraphics().getCam(), shader, uniformSettings);
+					getChunkMap().get(x).get(y).render(false, graphics.getCam(), shader, uniformSettings);
 				}
 			}
 		}
@@ -118,7 +120,7 @@ public final class Topography {
 	/**
 	 * Renders the foreground
 	 */
-	public final void renderForeGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings) {
+	public final void renderForeGround(int camX, int camY, ShaderProgram shader, Operator<ShaderProgram> uniformSettings, Graphics graphics) {
 		int bottomLeftX 	= (camX - Display.getWidth() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int bottomLeftY 	= (camY - Display.getHeight() / 2) / (CHUNK_SIZE * TILE_SIZE);
 		int topRightX 		= bottomLeftX + Display.getWidth() / (CHUNK_SIZE * TILE_SIZE);
@@ -129,7 +131,7 @@ public final class Topography {
 			for (int y = bottomLeftY - 2; y <= topRightY + 2; y++) {
 				if (getChunkMap().get(x) != null && getChunkMap().get(x).get(y) != null) {
 					getChunkMap().get(x).get(y).checkMesh();
-					getChunkMap().get(x).get(y).render(true, getGraphics().getCam(), shader, uniformSettings);
+					getChunkMap().get(x).get(y).render(true, graphics.getCam(), shader, uniformSettings);
 				}
 			}
 		}
@@ -424,10 +426,10 @@ public final class Topography {
 	 */
 	public final void loadOrGenerateNullChunksAccordingToPosition(int x, int y) {
 
-		int bottomLeftX = convertToChunkCoord((float)(x - getGraphics().getWidth() / 2));
-		int bottomLeftY = convertToChunkCoord((float)(y - getGraphics().getHeight() / 2));
-		int topRightX = bottomLeftX + convertToChunkCoord((float)getGraphics().getWidth());
-		int topRightY = bottomLeftY + convertToChunkCoord((float)getGraphics().getHeight());
+		int bottomLeftX = convertToChunkCoord((float)(x - getGdxWidth() / 2));
+		int bottomLeftY = convertToChunkCoord((float)(y - getGdxHeight() / 2));
+		int topRightX = bottomLeftX + convertToChunkCoord((float)getGdxWidth());
+		int topRightY = bottomLeftY + convertToChunkCoord((float)getGdxHeight());
 
 		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
 			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {

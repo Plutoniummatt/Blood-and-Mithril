@@ -22,6 +22,7 @@ import bloodandmithril.character.ai.routine.IndividualConditionRoutine;
 import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -142,14 +143,14 @@ public class AIRoutinesWindow extends ScrollableListingWindow<Routine, String> {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		if (!Domain.getIndividual(individualId).isAlive()) {
 			setClosing(true);
 		}
 
 
-		add.render(x + 62, y - height + 32, isActive() && UserInterface.contextMenus.isEmpty(), getAlpha());
-		super.internalWindowRender();
+		add.render(x + 62, y - height + 32, isActive() && UserInterface.contextMenus.isEmpty(), getAlpha(), graphics);
+		super.internalWindowRender(graphics);
 	};
 
 

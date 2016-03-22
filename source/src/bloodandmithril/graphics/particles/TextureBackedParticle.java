@@ -1,12 +1,11 @@
 package bloodandmithril.graphics.particles;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.networking.ClientServerInterface;
@@ -44,7 +43,7 @@ public class TextureBackedParticle extends Particle {
 
 
 	@Override
-	public void render(float delta, TextureRegion texture) {
+	public void render(float delta, TextureRegion texture, Graphics graphics) {
 		Topography topography = Domain.getWorld(worldId).getTopography();
 		if (topography.hasTile(position.x, position.y, true)) {
 			try {
@@ -59,11 +58,11 @@ public class TextureBackedParticle extends Particle {
 	}
 
 
-	public void renderLighting() {
-		getGraphics().getSpriteBatch().draw(
+	public void renderLighting(Graphics graphics) {
+		graphics.getSpriteBatch().draw(
 			texture,
-			position.x - getGraphics().getCam().position.x + getGraphics().getWidth() / 2 - texture.getRegionWidth() / 2,
-			- position.y + getGraphics().getCam().position.y + getGraphics().getHeight() / 2 - texture.getRegionHeight() / 2,
+			position.x - graphics.getCam().position.x + graphics.getWidth() / 2 - texture.getRegionWidth() / 2,
+			- position.y + graphics.getCam().position.y + graphics.getHeight() / 2 - texture.getRegionHeight() / 2,
 			texture.getRegionWidth() / 2,
 			texture.getRegionHeight() / 2,
 			texture.getRegionWidth(),

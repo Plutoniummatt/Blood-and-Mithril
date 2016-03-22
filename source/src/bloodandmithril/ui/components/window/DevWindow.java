@@ -41,6 +41,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.GaussianLightingRenderer;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingColorChangingParticle;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -122,13 +123,13 @@ public class DevWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		panel.x = x;
 		panel.y = y;
 		panel.width = width;
 		panel.height = height;
 
-		panel.render();
+		panel.render(graphics);
 
 		if (isKeyPressed(Keys.W)) {
 			for (int i = 0; i < 2; i++) {

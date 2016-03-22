@@ -1,15 +1,21 @@
 package bloodandmithril.item.items.equipment.weapon;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
 
 import java.util.Map;
+
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.equipment.weapon.dagger.BushKnife;
@@ -20,12 +26,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.AnimationHelper;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
 
 @Copyright("Matthew Peck 2014")
 public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> implements Craftable {
@@ -53,10 +53,10 @@ public abstract class Dagger<T extends Metal> extends OneHandedMeleeWeapon<T> im
 
 
 	@Override
-	public void render(Vector2 position, float angle, boolean flipX) {
+	public void render(Vector2 position, float angle, boolean flipX, Graphics graphics) {
 		TextureRegion textureRegion = getTextureRegion();
 
-		getGraphics().getSpriteBatch().draw(
+		graphics.getSpriteBatch().draw(
 			WorldRenderer.individualTexture,
 			position.x - (flipX ? textureRegion.getRegionWidth() - 15 : 15),
 			position.y - 7,

@@ -1,19 +1,19 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * {@link Window} used to display the info of an {@link Individual}
@@ -36,60 +36,60 @@ public class IndividualInfoWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		Color activeTitle = Colors.modulateAlpha(Color.GREEN, getAlpha());
 		Color inactiveTitle = Colors.modulateAlpha(Color.GREEN, getAlpha());
 		Color activeWhite = Colors.modulateAlpha(Color.WHITE, getAlpha());
 		Color inactiveWhite = Colors.modulateAlpha(Color.WHITE, 0.6f * getAlpha());
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
-		if (!drawLine("Name: ", 25)) {
+		if (!drawLine("Name: ", 25, graphics)) {
 			return;
 		}
 
 		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
-		if (!drawLine(truncate(individual.getId().getSimpleName()), 45)) {
+		if (!drawLine(truncate(individual.getId().getSimpleName()), 45, graphics)) {
 			return;
 		}
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
-		if (!drawLine("Nickname: ", 75)) {
+		if (!drawLine("Nickname: ", 75, graphics)) {
 			return;
 		}
 
 		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
-		if (!drawLine(truncate(individual.getId().getNickName()), 95)) {
+		if (!drawLine(truncate(individual.getId().getNickName()), 95, graphics)) {
 			return;
 		}
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
-		if (!drawLine("Age: ", 125)) {
+		if (!drawLine("Age: ", 125, graphics)) {
 			return;
 		}
 
 		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
-		if (!drawLine(truncate(Integer.toString(individual.getId().getAge())), 145)) {
+		if (!drawLine(truncate(Integer.toString(individual.getId().getAge())), 145, graphics)) {
 			return;
 		}
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
-		if (!drawLine("Description: ", 175)) {
+		if (!drawLine("Description: ", 175, graphics)) {
 			return;
 		}
 
 		String messageToDisplay = Util.fitToWindow(individual.getDescription(), width, (height - 250) / 25);
 
 		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
-		defaultFont.drawMultiLine(getGraphics().getSpriteBatch(), messageToDisplay, x + 6, y - 195);
+		defaultFont.drawMultiLine(graphics.getSpriteBatch(), messageToDisplay, x + 6, y - 195);
 	}
 
 
-	private boolean drawLine(String string, int yOff) {
+	private boolean drawLine(String string, int yOff, Graphics graphics) {
 		if (y - yOff < y - height + 60) {
-			defaultFont.draw(getGraphics().getSpriteBatch(), "...", x + 6, y - yOff);
+			defaultFont.draw(graphics.getSpriteBatch(), "...", x + 6, y - yOff);
 			return false;
 		} else {
-			defaultFont.draw(getGraphics().getSpriteBatch(), truncate(string), x + 6, y - yOff);
+			defaultFont.draw(graphics.getSpriteBatch(), truncate(string), x + 6, y - yOff);
 			return true;
 		}
 	}

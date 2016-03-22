@@ -12,13 +12,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.ItemPackage;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -74,14 +74,14 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public void renderUIGuide(SpriteBatch batch) {
+	public void renderUIGuide(Graphics graphics) {
 		float mouseX = getMouseWorldX();
 		float mouseY = getMouseWorldY();
 
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		batch.begin();
-		batch.setShader(Shaders.filter);
+		graphics.getSpriteBatch().begin();
+		graphics.getSpriteBatch().setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
 		for (Entry<Integer, Individual> entry : individuals.entrySet()) {
 			Vector2 pos;
@@ -93,13 +93,13 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 				boolean canPlace = canPlaceIndividual(entry.getValue());
 
 				Shaders.filter.setUniformf("color", canPlace ? Color.GREEN : Color.RED);
-				batch.draw(UserInterface.currentArrow, pos.x - 5, pos.y);
-				batch.flush();
+				graphics.getSpriteBatch().draw(UserInterface.currentArrow, pos.x - 5, pos.y);
+				graphics.getSpriteBatch().flush();
 			} catch (NoTileFoundException e) {
 				pos = new Vector2();
 			}
 		}
-		batch.end();
+		graphics.getSpriteBatch().end();
 		gl.glDisable(GL_BLEND);
 
 		Container container = startingItemPackage.getContainer();

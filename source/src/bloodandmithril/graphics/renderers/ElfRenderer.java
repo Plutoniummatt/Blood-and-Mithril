@@ -19,7 +19,6 @@ import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGH
 import static bloodandmithril.character.individuals.Individual.Action.STAND_RIGHT_COMBAT_ONE_HANDED;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_LEFT;
 import static bloodandmithril.character.individuals.Individual.Action.WALK_RIGHT;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.datastructure.WrapperForTwo.wrap;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -38,6 +37,7 @@ import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.AnimationHelper;
@@ -333,7 +333,7 @@ public class ElfRenderer extends IndividualRenderer<Elf> {
 
 
 	@Override
-	public void internalRender(Elf elf) {
+	public void internalRender(Elf elf, Graphics graphics) {
 		Shaders.filterIgnoreReplace.begin();
 		Shaders.filterIgnoreReplace.setUniformf("toReplace", Color.RED);
 		Shaders.filterIgnoreReplace.setUniformf("color", elf.getEyeColor().r, elf.getEyeColor().g, elf.getEyeColor().b, elf.getEyeColor().a);
@@ -358,19 +358,19 @@ public class ElfRenderer extends IndividualRenderer<Elf> {
 			Math.max(elf.getHairColor().a, elf.getDeathAlpha())
 		);
 
-		super.internalRender(elf);
+		super.internalRender(elf, graphics);
 	}
 
 
 	@Override
-	protected void renderCustomizations(Elf elf, int animationIndex) {
+	protected void renderCustomizations(Elf elf, int animationIndex, Graphics graphics) {
 		TextureRegion hair = hairStyleFemale.get(elf.getHairStyle());
 		SpacialConfiguration helmetConfig = elf.getHelmetSpatialConfigration();
 
-		getGraphics().getSpriteBatch().setShader(Shaders.colorize);
-		Shaders.colorize.setUniformMatrix("u_projTrans", getGraphics().getCam().combined);
+		graphics.getSpriteBatch().setShader(Shaders.colorize);
+		Shaders.colorize.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		if (animationIndex == 1) {
-			getGraphics().getSpriteBatch().draw(
+			graphics.getSpriteBatch().draw(
 				WorldRenderer.individualTexture,
 				elf.getState().position.x - hair.getRegionWidth() / 2 + helmetConfig.position.x,
 				elf.getState().position.y + helmetConfig.position.y,

@@ -1,10 +1,10 @@
 package bloodandmithril.prop.furniture;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-import bloodandmithril.core.Copyright;
-import bloodandmithril.item.material.wood.StandardWood;
-
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
+import bloodandmithril.item.material.wood.StandardWood;
 
 /**
  * Extention of {@link WoodenChestProp}, cant be locked and rotten
@@ -27,7 +27,7 @@ public class RottenWoodenChest extends WoodenChestProp {
 
 
 	@Override
-	public void render() {
-		getGraphics().getSpriteBatch().draw(rottenWoodenChest, position.x - width / 2, position.y);
+	public void render(Graphics graphics) {
+		graphics.getSpriteBatch().draw(rottenWoodenChest, position.x - width / 2, position.y);
 	}
 }

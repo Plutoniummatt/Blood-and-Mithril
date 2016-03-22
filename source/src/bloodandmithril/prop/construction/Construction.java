@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.ai.task.ConstructDeconstruct;
@@ -15,6 +14,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.event.events.ConstructionFinished;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -68,8 +68,8 @@ public abstract class Construction extends Prop implements Container {
 
 
 	@Override
-	public void render(SpriteBatch batch) {
-		internalRender(constructionProgress, batch);
+	public void render(Graphics graphics) {
+		internalRender(constructionProgress, graphics);
 	}
 
 
@@ -288,7 +288,7 @@ public abstract class Construction extends Prop implements Container {
 	}
 
 	/** Renders this {@link Construction} based on {@link #constructionProgress} */
-	protected abstract void internalRender(float constructionProgress, SpriteBatch batch);
+	protected abstract void internalRender(float constructionProgress, Graphics graphics);
 
 	/** Get the required items to construct this {@link Construction} */
 	public abstract Map<Item, Integer> getRequiredMaterials();

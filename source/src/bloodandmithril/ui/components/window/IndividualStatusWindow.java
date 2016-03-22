@@ -2,7 +2,6 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
 
@@ -22,6 +21,7 @@ import com.google.common.collect.Maps;
 import bloodandmithril.character.conditions.Condition;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -85,14 +85,14 @@ public class IndividualStatusWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		Color activeTitle = Colors.modulateAlpha(Color.GREEN, getAlpha());
 		Color inactiveTitle = Colors.modulateAlpha(Color.GREEN, getAlpha());
 		Color activeWhite = Colors.modulateAlpha(Color.WHITE, getAlpha());
 		Color inactiveWhite = Colors.modulateAlpha(Color.WHITE, 0.6f * getAlpha());
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
-		if (!drawLine("Vital signs: ", 25)) {
+		if (!drawLine("Vital signs: ", 25, graphics)) {
 			return;
 		}
 
@@ -107,22 +107,22 @@ public class IndividualStatusWindow extends Window {
 			setVitalsString(category);
 		}
 
-		if (!drawLine(truncate(vitals), 45)) {
+		if (!drawLine(truncate(vitals), 45, graphics)) {
 			return;
 		}
 
 		defaultFont.setColor(isActive() ? activeTitle : inactiveTitle);
-		if (!drawLine("Conditions: ", 175)) {
+		if (!drawLine("Conditions: ", 175, graphics)) {
 			return;
 		}
 
-		getGraphics().getSpriteBatch().setShader(Shaders.filter);
+		graphics.getSpriteBatch().setShader(Shaders.filter);
 		Shaders.filter.setUniformf("color", 1f, 1f, 1f, getAlpha() * (isActive() ? 1.0f : 0.7f));
-		getGraphics().getSpriteBatch().draw(icons, x + 20, y - 162);
+		graphics.getSpriteBatch().draw(icons, x + 20, y - 162);
 
 		defaultFont.setColor(isActive() ? activeWhite : inactiveWhite);
-		getGraphics().getSpriteBatch().flush();
-		renderConditionsPanel();
+		graphics.getSpriteBatch().flush();
+		renderConditionsPanel(graphics);
 
 		renderBars();
 	}
@@ -212,7 +212,7 @@ public class IndividualStatusWindow extends Window {
 	}
 
 
-	private void renderConditionsPanel() {
+	private void renderConditionsPanel(Graphics graphics) {
 		refreshLisitng(individual, conditionsPanel.getListing());
 
 		conditionsPanel.x = x;
@@ -220,7 +220,7 @@ public class IndividualStatusWindow extends Window {
 		conditionsPanel.width = width;
 		conditionsPanel.height = height - 160;
 
-		conditionsPanel.render();
+		conditionsPanel.render(graphics);
 	}
 
 
@@ -247,12 +247,12 @@ public class IndividualStatusWindow extends Window {
 	}
 
 
-	private boolean drawLine(String string, int yOff) {
+	private boolean drawLine(String string, int yOff, Graphics graphics) {
 		if (y - yOff < y - height + 60) {
-			defaultFont.draw(getGraphics().getSpriteBatch(), "...", x + 6, y - yOff);
+			defaultFont.draw(graphics.getSpriteBatch(), "...", x + 6, y - yOff);
 			return false;
 		} else {
-			defaultFont.draw(getGraphics().getSpriteBatch(), truncate(string), x + 6, y - yOff);
+			defaultFont.draw(graphics.getSpriteBatch(), truncate(string), x + 6, y - yOff);
 			return true;
 		}
 	}

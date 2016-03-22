@@ -1,22 +1,22 @@
 package bloodandmithril.ui.components.panel;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.util.Util.Colors.modulateAlpha;
 
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * A composite panel, consisting of multiple panels
@@ -49,17 +49,17 @@ public class ItemInfoPopupPanel extends Panel {
 
 
 	@Override
-	public void render() {
+	public void render(Graphics graphics) {
 		if (parent == null) {
 			defaultFont.setColor(Colors.modulateAlpha(Color.ORANGE, 1.0f));
 		} else {
 			defaultFont.setColor(Colors.modulateAlpha(Color.ORANGE, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
 		}
-		getGraphics().getSpriteBatch().setShader(Shaders.text);
+		graphics.getSpriteBatch().setShader(Shaders.text);
 
 		// Description
 		defaultFont.drawWrapped(
-			getGraphics().getSpriteBatch(),
+				graphics.getSpriteBatch(),
 			item.getDescription(),
 			x,
 			y - 74,
@@ -73,35 +73,35 @@ public class ItemInfoPopupPanel extends Panel {
 			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
 		}
 		defaultFont.draw(
-			getGraphics().getSpriteBatch(),
+			graphics.getSpriteBatch(),
 			item.getSingular(true),
 			x,
 			y
 		);
 		defaultFont.draw(
-			getGraphics().getSpriteBatch(),
+			graphics.getSpriteBatch(),
 			"Weight: " + String.format("%.2f", item.getMass()),
 			x,
 			y - 23
 		);
 		defaultFont.draw(
-			getGraphics().getSpriteBatch(),
+			graphics.getSpriteBatch(),
 			"Volume: " + item.getVolume(),
 			x,
 			y - 46
 		);
 
-		getGraphics().getSpriteBatch().flush();
+		graphics.getSpriteBatch().flush();
 
 		renderRectangle(x + width - 76 + 3, y + 3, 64, 64, true, modulateAlpha(Color.BLACK, 1f));
-		renderBox(x + width - 76, y, 64, 64, true, Color.GRAY);
+		renderBox(x + width - 76, y, 64, 64, true, Color.GRAY, graphics);
 		TextureRegion icon = item.getIconTextureRegion();
 		if (icon != null) {
-			getGraphics().getSpriteBatch().setShader(Shaders.filter);
+			graphics.getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, getAlpha());
-			getGraphics().getSpriteBatch().draw(icon, x + width - 74, y - 64);
+			graphics.getSpriteBatch().draw(icon, x + width - 74, y - 64);
 		}
-		getGraphics().getSpriteBatch().flush();
+		graphics.getSpriteBatch().flush();
 	}
 
 

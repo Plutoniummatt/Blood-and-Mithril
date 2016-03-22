@@ -2,7 +2,6 @@ package bloodandmithril.ui.components.window;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Comparator;
@@ -20,6 +19,7 @@ import bloodandmithril.control.Controls;
 import bloodandmithril.control.Controls.MappedKey;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface;
@@ -105,14 +105,14 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		keyMappings.x = x;
 		keyMappings.y = y;
 		keyMappings.width = width;
 		keyMappings.height = height - 50;
 
-		keyMappings.render();
-		saveButton.render(x + width / 2, y - height + 40, isActive(), getAlpha());
+		keyMappings.render(graphics);
+		saveButton.render(x + width / 2, y - height + 40, isActive(), getAlpha(), graphics);
 	}
 
 
@@ -310,10 +310,10 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 		}
 
 		@Override
-		protected void internalWindowRender() {
+		protected void internalWindowRender(Graphics graphics) {
 			defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.ORANGE, getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * getAlpha()));
 			String messageToDisplay = Util.fitToWindow("Press Key", width, (height - 75) / 25);
-			defaultFont.drawMultiLine(getGraphics().getSpriteBatch(), messageToDisplay, x + 6, y - 25);
+			defaultFont.drawMultiLine(graphics.getSpriteBatch(), messageToDisplay, x + 6, y - 25);
 
 			UserInterface.refreshRefreshableWindows();
 		}

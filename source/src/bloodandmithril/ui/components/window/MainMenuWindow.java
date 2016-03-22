@@ -18,6 +18,7 @@ import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.ui.UserInterface;
@@ -51,11 +52,11 @@ public class MainMenuWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
-		singlePlayer.render(width/2 + x, y - 26, isActive() && !isSaving(), getAlpha());
-		multiPlayer.render(width/2 + x, y - 46, isActive() && !isSaving() && !BloodAndMithrilClient.isInGame(), getAlpha());
-		options.render(width/2 + x, y - 66, isActive() && !isSaving(), getAlpha());
-		exit.render(width/2 + x, y - 86, isActive() && !isSaving(), getAlpha());
+	protected void internalWindowRender(Graphics graphics) {
+		singlePlayer.render(width/2 + x, y - 26, isActive() && !isSaving(), getAlpha(), graphics);
+		multiPlayer.render(width/2 + x, y - 46, isActive() && !isSaving() && !BloodAndMithrilClient.isInGame(), getAlpha(), graphics);
+		options.render(width/2 + x, y - 66, isActive() && !isSaving(), getAlpha(), graphics);
+		exit.render(width/2 + x, y - 86, isActive() && !isSaving(), getAlpha(), graphics);
 	}
 
 

@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.util.Performance;
@@ -40,14 +40,14 @@ public class TracerParticle extends Particle {
 
 
 	@Override
-	public synchronized void render(float delta, TextureRegion texture) {
+	public synchronized void render(float delta, TextureRegion texture, Graphics graphics) {
 		Topography topography = Domain.getWorld(worldId).getTopography();
 		if (topography.hasTile(position.x, position.y, true)) {
 			try {
 				if (topography.getTile(position.x, position.y, true).isPassable()) {
 					Color c = color.getColor();
 					Shaders.particleTexture.setUniformf("override", c.r, c.g, c.b, c.a);
-					BloodAndMithrilClient.getGraphics().getSpriteBatch().draw(
+					graphics.getSpriteBatch().draw(
 						texture,
 						position.x - radius,
 						position.y - radius,

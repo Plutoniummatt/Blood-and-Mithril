@@ -1,6 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 import bloodandmithril.character.ai.task.Construct;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.prop.construction.craftingstation.CraftingStation;
@@ -100,7 +100,7 @@ public class ConstructionWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		if (individual.getState().position.cpy().sub(construction.position.cpy()).len() > 64) {
 			setClosing(true);
 		}
@@ -117,16 +117,26 @@ public class ConstructionWindow extends Window implements Refreshable {
 		requiredMaterialsPanel.y = y - 110;
 		requiredMaterialsPanel.width = width - 13;
 		requiredMaterialsPanel.height = height - 110;
-		requiredMaterialsPanel.render();
+		requiredMaterialsPanel.render(graphics);
 
-		constructButton.render(x + 60, y - 55, isActive() && (enoughMaterialsToCraft || construction.getConstructionProgress() != 0f) && construction.getConstructionProgress() != 1f, isActive() ? getAlpha() : getAlpha() * 0.6f);
-		deconstructButton.render(x + 70, y - 74, isActive() && construction.canDeconstruct(), isActive() ? getAlpha() : getAlpha() * 0.6f);
+		constructButton.render(
+			x + 60, y - 55, 
+			isActive() && (enoughMaterialsToCraft || construction.getConstructionProgress() != 0f) && construction.getConstructionProgress() != 1f, 
+			isActive() ? getAlpha() : getAlpha() * 0.6f,
+			graphics
+		);
+		deconstructButton.render(
+			x + 70, 
+			y - 74, isActive() && construction.canDeconstruct(), 
+			isActive() ? getAlpha() : getAlpha() * 0.6f,
+			graphics
+		);
 
 		defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.GREEN, getAlpha()) : Colors.modulateAlpha(Color.GREEN, 0.5f * getAlpha()));
 		String progress = "(" + String.format("%.1f", 100f * construction.getConstructionProgress()) + "%)";
 
-		defaultFont.draw(getGraphics().getSpriteBatch(), "Constructing: " + construction.getTitle() + " " + progress, x + 15, y - 35);
-		defaultFont.draw(getGraphics().getSpriteBatch(), "Required materials:", x + 15, y - 115);
+		defaultFont.draw(graphics.getSpriteBatch(), "Constructing: " + construction.getTitle() + " " + progress, x + 15, y - 35);
+		defaultFont.draw(graphics.getSpriteBatch(), "Required materials:", x + 15, y - 115);
 	}
 
 

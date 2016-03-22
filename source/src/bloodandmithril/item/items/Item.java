@@ -2,7 +2,6 @@ package bloodandmithril.item.items;
 
 import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.Math.abs;
@@ -27,6 +26,7 @@ import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.affix.Affix;
 import bloodandmithril.item.affix.Affixed;
@@ -274,11 +274,11 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	}
 
 	/** Renders this item in world */
-	public void render() {
+	public void render(Graphics graphics) {
 		TextureRegion textureRegion = getTextureRegion();
 		Vector2 offset = getRenderCentreOffset();
 
-		getGraphics().getSpriteBatch().draw(
+		graphics.getSpriteBatch().draw(
 			textureRegion,
 			position.x - offset.x,
 			position.y - offset.y,

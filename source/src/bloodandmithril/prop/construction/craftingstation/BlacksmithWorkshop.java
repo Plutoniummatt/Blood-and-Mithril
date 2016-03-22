@@ -7,7 +7,6 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
@@ -18,6 +17,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -69,11 +69,11 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 
 	@Override
-	protected void internalRender(float constructionProgress, SpriteBatch batch) {
+	protected void internalRender(float constructionProgress, Graphics graphics) {
 		if (isOccupied()) {
-			batch.draw(blackSmithWorkshopWorking, position.x - width / 2, position.y);
+			graphics.getSpriteBatch().draw(blackSmithWorkshopWorking, position.x - width / 2, position.y);
 		} else {
-			batch.draw(blackSmithWorkshop, position.x - width / 2, position.y);
+			graphics.getSpriteBatch().draw(blackSmithWorkshop, position.x - width / 2, position.y);
 		}
 	}
 

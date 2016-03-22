@@ -43,6 +43,7 @@ import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Harvestable;
@@ -468,7 +469,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 								return f.id;
 							}
 							@Override
-							public void renderUIGuide() {
+							public void renderUIGuide(Graphics graphics) {
 								UserInterface.shapeRenderer.begin(ShapeType.Line);
 								UserInterface.shapeRenderer.setColor(Color.RED);
 								Gdx.gl20.glLineWidth(2f);

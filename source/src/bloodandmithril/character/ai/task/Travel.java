@@ -1,7 +1,5 @@
 package bloodandmithril.character.ai.task;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.Speech;
@@ -11,6 +9,7 @@ import bloodandmithril.character.ai.NextWaypointProvider;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
@@ -86,12 +85,12 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 	/**
 	 * Renders all waypoints in this {@link Travel} task
 	 */
-	public void renderWaypoints() {
-		renderForTask(null, getCurrentTask(), true);
+	public void renderWaypoints(Graphics graphics) {
+		renderForTask(null, getCurrentTask(), true, graphics);
 
 		AITask previousTask = null;
 		for (AITask task : tasks) {
-			renderForTask(previousTask, task, false);
+			renderForTask(previousTask, task, false, graphics);
 			previousTask = task;
 		}
 	}
@@ -104,7 +103,7 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 	}
 
 
-	private void renderForTask(AITask previousTask, AITask task, boolean isCurrentTask) {
+	private void renderForTask(AITask previousTask, AITask task, boolean isCurrentTask, Graphics graphics) {
 		if (task instanceof JitGoToLocation) {
 
 			float offset = 0f;
@@ -120,9 +119,9 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 			}
 
 			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
-			getGraphics().getSpriteBatch().setShader(Shaders.pass);
+			graphics.getSpriteBatch().setShader(Shaders.pass);
 			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-			getGraphics().getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y + offset * 10f);
+			graphics.getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y + offset * 10f);
 		} else if (task instanceof Jump) {
 			Vector2 start = null;
 

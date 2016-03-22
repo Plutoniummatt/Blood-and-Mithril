@@ -11,13 +11,13 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.requests.SendChatMessage.Message;
 import bloodandmithril.ui.UserInterface;
@@ -77,25 +77,25 @@ public class ChatWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender(SpriteBatch batch) {
+	protected void internalWindowRender(Graphics graphics) {
 
-		renderMessage(batch);
+		renderMessage(graphics);
 		renderSeparator();
-		renderPlayerList(batch);
-		renderTextInputPanel();
+		renderPlayerList(graphics);
+		renderTextInputPanel(graphics);
 	}
 
 
-	private void renderTextInputPanel() {
+	private void renderTextInputPanel(Graphics graphics) {
 		textInputPanel.x = x + 7;
 		textInputPanel.y = y - height + 5;
 		textInputPanel.width = width - 180;
 
-		textInputPanel.render();
+		textInputPanel.render(graphics);
 	}
 
 
-	private void renderMessage(SpriteBatch batch) {
+	private void renderMessage(Graphics graphics) {
 		String string = "";
 
 		Iterator<Message> iterator = Lists.newArrayList(messagesToDisplay).iterator();
@@ -123,9 +123,9 @@ public class ChatWindow extends Window {
 			lines--;
 		}
 
-		Fonts.defaultFont.drawWrapped(batch, string, x + 10, y - 30, width - 170);
+		Fonts.defaultFont.drawWrapped(graphics.getSpriteBatch(), string, x + 10, y - 30, width - 170);
 
-		batch.flush();
+		graphics.getSpriteBatch().flush();
 	}
 
 
@@ -143,13 +143,13 @@ public class ChatWindow extends Window {
 	}
 
 
-	private void renderPlayerList(SpriteBatch batch) {
+	private void renderPlayerList(Graphics graphics) {
 		participants.x = x + width - 170;
 		participants.y = y;
 		participants.width = 170;
 		participants.height = height;
 
-		participants.render(batch);
+		participants.render(graphics);
 	}
 
 

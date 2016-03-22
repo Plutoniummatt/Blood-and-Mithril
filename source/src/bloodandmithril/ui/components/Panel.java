@@ -6,9 +6,8 @@ import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import java.util.Deque;
 import java.util.List;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 
 /**
  * A renderable panel that sits inside {@link Component}s
@@ -44,7 +43,7 @@ public abstract class Panel extends Component {
 
 	/** Renders this panel */
 	@Override
-	public abstract void render(SpriteBatch batch);
+	public abstract void render(Graphics graphics);
 
 	/** True if mouse is within the window */
 	protected boolean isMouseWithin() {
@@ -55,7 +54,7 @@ public abstract class Panel extends Component {
 
 	/** Component specific render */
 	@Override
-	protected void internalComponentRender(SpriteBatch batch) {
+	protected void internalComponentRender(Graphics graphics) {
 		// Do nothing
 	}
 }

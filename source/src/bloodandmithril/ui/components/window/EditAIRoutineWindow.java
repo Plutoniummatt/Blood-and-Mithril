@@ -6,6 +6,7 @@ import java.util.List;
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
@@ -35,7 +36,7 @@ public class EditAIRoutineWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		if (!Domain.getIndividual(id.getId()).isAlive()) {
 			setClosing(true);
 		}
@@ -48,7 +49,7 @@ public class EditAIRoutineWindow extends Window {
 			panel.width = width;
 			panel.height = height;
 
-			panel.render();
+			panel.render(graphics);
 		}
 	}
 

@@ -21,6 +21,7 @@ import com.google.common.collect.Maps;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -78,13 +79,13 @@ public class FactionsWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		factionsPanel.height = height;
 		factionsPanel.width = width;
 		factionsPanel.x = x;
 		factionsPanel.y = y;
 
-		factionsPanel.render();
+		factionsPanel.render(graphics);
 	}
 
 

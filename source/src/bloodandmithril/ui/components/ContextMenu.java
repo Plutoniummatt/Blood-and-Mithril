@@ -10,9 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Function;
@@ -74,9 +74,9 @@ public class ContextMenu extends Component {
 	 * Renders this context menu
 	 */
 	@Override
-	protected void internalComponentRender(SpriteBatch batch) {
+	protected void internalComponentRender(Graphics graphics) {
 
-		batch.begin();
+		graphics.getSpriteBatch().begin();
 		int maxHeight = 20 * (menuItems.size() + 1);
 		int maxLength = 0;
 		for (MenuItem item : menuItems) {
@@ -103,18 +103,18 @@ public class ContextMenu extends Component {
 			maxHeight,
 			isActive(),
 			borderColor,
-			batch
+			graphics
 		);
 
 		int i = 0;
 		Iterator<MenuItem> iterator = menuItems.iterator();
 		while (iterator.hasNext()) {
 			MenuItem next = iterator.next();
-			next.button.render(x + next.button.width/2 + 5, y - i * 20, isActive(), batch);
+			next.button.render(x + next.button.width/2 + 5, y - i * 20, isActive(), graphics);
 			i++;
 		}
 
-		batch.end();
+		graphics.getSpriteBatch().end();
 	}
 
 

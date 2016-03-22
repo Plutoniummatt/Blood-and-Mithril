@@ -63,6 +63,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -387,7 +388,9 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** Renders any decorations for UI */
-	public final void renderUIDecorations(SpriteBatch batch) {
+	public final void renderUIDecorations(Graphics graphics) {
+		SpriteBatch batch = graphics.getSpriteBatch();
+		
 		if (isSelected()) {
 			batch.setShader(Shaders.filter);
 

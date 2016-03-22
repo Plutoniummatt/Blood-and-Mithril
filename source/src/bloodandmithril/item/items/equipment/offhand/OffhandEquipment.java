@@ -1,17 +1,18 @@
 package bloodandmithril.item.items.equipment.offhand;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.items.equipment.offhand.shield.WoodenBuckler;
 import bloodandmithril.item.items.equipment.offhand.shield.WoodenKiteShield;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * {@link Equipable} that goes in the {@link EquipmentSlot#OFFHAND}
@@ -42,11 +43,11 @@ public abstract class OffhandEquipment extends Equipable {
 
 
 	@Override
-	public void render(Vector2 position, float angle, boolean flipX) {
+	public void render(Vector2 position, float angle, boolean flipX, Graphics graphics) {
 		TextureRegion texture = getTextureRegion();
 		Vector2 grip = getGripLocation();
 
-		getGraphics().getSpriteBatch().draw(
+		graphics.getSpriteBatch().draw(
 			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - grip.x : grip.x),
 			position.y - grip.y,

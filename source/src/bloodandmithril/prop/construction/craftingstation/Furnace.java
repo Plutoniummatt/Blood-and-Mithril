@@ -15,6 +15,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -86,7 +87,8 @@ public class Furnace extends CraftingStation implements Container {
 
 
 	@Override
-	protected void internalRender(float constructionProgress, SpriteBatch batch) {
+	protected void internalRender(float constructionProgress, Graphics graphics) {
+		SpriteBatch batch = graphics.getSpriteBatch();
 		if (getConstructionProgress() == 0f) {
 			batch.draw(FURNACE, position.x - width / 2, position.y);
 		} else if (getConstructionProgress() >= 1f) {

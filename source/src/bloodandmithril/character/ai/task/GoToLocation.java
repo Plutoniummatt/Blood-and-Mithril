@@ -2,7 +2,6 @@ package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -19,6 +18,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Performance;
 import bloodandmithril.util.SerializableFunction;
@@ -192,16 +192,16 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 	/**
 	 * Renders the final {@link WayPoint} of the {@link #path}
 	 */
-	public void renderFinalWayPoint() {
+	public void renderFinalWayPoint(Graphics graphics) {
 		if (!path.isEmpty()) {
 			try {
 				Vector2 waypoint = path.getDestinationWayPoint().waypoint;
 				if (waypoint == null) {
 					return;
 				}
-				getGraphics().getSpriteBatch().setShader(Shaders.pass);
+				graphics.getSpriteBatch().setShader(Shaders.pass);
 				Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
-				getGraphics().getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
+				graphics.getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
 			} catch (NullPointerException e) {
 				// ???
 			}

@@ -121,14 +121,14 @@ public class WorldRenderer {
 		BloodAndMithrilClient.rendering.set(true);
 		bBuffer.begin();
 		Shaders.invertAlphaSolidColor.begin();
-		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {});
+		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {}, graphics);
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.pass.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		for (Prop prop : world.props().getProps()) {
 			if (prop.depth == BACKGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-				prop.render(batch);
+				prop.render(graphics);
 				batch.flush();
 			}
 		}
@@ -139,7 +139,7 @@ public class WorldRenderer {
 		cloudBuffer.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		WeatherRenderer.renderClouds(world);
+		WeatherRenderer.renderClouds(world, graphics);
 		cloudBuffer.end();
 
 		int xOffset = round(graphics.getCam().position.x) % TILE_SIZE;
@@ -149,7 +149,7 @@ public class WorldRenderer {
 		graphics.getCam().position.x = graphics.getCam().position.x - xOffset;
 		graphics.getCam().position.y = graphics.getCam().position.y - yOffset;
 		graphics.getCam().update();
-		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {});
+		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {}, graphics);
 		graphics.getCam().position.x = graphics.getCam().position.x + xOffset;
 		graphics.getCam().position.y = graphics.getCam().position.y + yOffset;
 		graphics.getCam().update();
@@ -171,7 +171,7 @@ public class WorldRenderer {
 		graphics.getCam().position.x = graphics.getCam().position.x - xOffset;
 		graphics.getCam().position.y = graphics.getCam().position.y - yOffset;
 		graphics.getCam().update();
-		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
+		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {}, graphics);
 		graphics.getCam().position.x = graphics.getCam().position.x + xOffset;
 		graphics.getCam().position.y = graphics.getCam().position.y + yOffset;
 		graphics.getCam().update();
@@ -211,7 +211,7 @@ public class WorldRenderer {
 			if (prop.depth == MIDDLEGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
-				prop.render(batch);
+				prop.render(graphics);
 				batch.flush();
 			}
 		}
@@ -229,13 +229,13 @@ public class WorldRenderer {
 			if (prop.depth == FOREGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
-				prop.render(batch);
+				prop.render(graphics);
 				batch.flush();
 			}
 		}
 		for (Item item : world.items().getItems()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
-			item.render();
+			item.render(graphics);
 			batch.flush();
 		}
 		batch.end();
@@ -251,7 +251,7 @@ public class WorldRenderer {
 		}
 		renderParticles(Depth.FOREGROUND, world);
 		batch.end();
-		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {});
+		world.getTopography().renderForeGround(camX, camY, Shaders.pass, shader -> {}, graphics);
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
@@ -259,7 +259,7 @@ public class WorldRenderer {
 			if (prop.depth == Depth.FRONT) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
-				prop.render(batch);
+				prop.render(graphics);
 				batch.flush();
 			}
 		}
@@ -304,7 +304,7 @@ public class WorldRenderer {
 		if (world.getClientParticles() != null) {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
 			world.getClientParticles().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
-				p.render(Gdx.graphics.getDeltaTime(), circle);
+				p.render(Gdx.graphics.getDeltaTime(), circle, graphics);
 				batch.flush();
 				counter.t++;
 			});
@@ -312,7 +312,7 @@ public class WorldRenderer {
 		if (world.getServerParticles() != null) {
 			final Wrapper<Integer> counter = new Wrapper<Integer>(0);
 			world.getServerParticles().values().stream().filter(p -> p.depth == depth && isOnScreen(p.position, 50f)).forEach(p -> {
-				p.render(Gdx.graphics.getDeltaTime(), circle);
+				p.render(Gdx.graphics.getDeltaTime(), circle, graphics);
 				batch.flush();
 				counter.t++;
 			});
@@ -375,11 +375,11 @@ public class WorldRenderer {
 		private static void renderIndividuals(int worldId) {
 			try {
 				for (Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), offPlatform)) {
-					Renderer.render(indi);
+					Renderer.render(indi, graphics);
 				}
 
 				for (Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), onPlatform)) {
-					Renderer.render(indi);
+					Renderer.render(indi, graphics);
 				}
 			} catch (NullPointerException e) {
 				generalDebug("Nullpointer whilst rendering individual", LogLevel.INFO, e);

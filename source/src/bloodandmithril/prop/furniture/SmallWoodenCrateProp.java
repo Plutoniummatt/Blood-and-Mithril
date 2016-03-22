@@ -6,7 +6,6 @@ import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import java.util.function.Function;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -14,6 +13,7 @@ import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.RandomParticle;
@@ -206,8 +206,8 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 
 
 	@Override
-	public void render(SpriteBatch batch) {
-		batch.draw(woodenCrate, position.x - width / 2, position.y);
+	public void render(Graphics graphics) {
+		graphics.getSpriteBatch().draw(woodenCrate, position.x - width / 2, position.y);
 	}
 
 

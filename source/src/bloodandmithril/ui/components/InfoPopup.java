@@ -2,7 +2,6 @@ package bloodandmithril.ui.components;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.Deque;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.util.Function;
 
 /**
@@ -55,9 +55,9 @@ public class InfoPopup extends Component {
 
 
 	@Override
-	protected void internalComponentRender() {
+	protected void internalComponentRender(Graphics graphics) {
 		setActive(true);
-		getGraphics().getSpriteBatch().begin();
+		graphics.getSpriteBatch().begin();
 		renderRectangle(
 			getMouseScreenX() + bottomLeft.getRegionWidth() + 10,
 			getMouseScreenY() + bottomLeft.getRegionHeight() - 10,
@@ -73,14 +73,15 @@ public class InfoPopup extends Component {
 			panel.width + 10,
 			panel.height + 10,
 			isActive(),
-			borderColor
+			borderColor,
+			graphics
 		);
-		getGraphics().getSpriteBatch().end();
+		graphics.getSpriteBatch().end();
 
-		getGraphics().getSpriteBatch().begin();
+		graphics.getSpriteBatch().begin();
 		panel.x = getMouseScreenX() + 20;
 		panel.y = getMouseScreenY() - 20;
-		panel.render();
-		getGraphics().getSpriteBatch().end();
+		panel.render(graphics);
+		graphics.getSpriteBatch().end();
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.prop.furniture.LiquidContainerProp;
 import bloodandmithril.prop.furniture.LiquidContainerProp.PropLiquidContainerItem;
 import bloodandmithril.ui.components.Component;
@@ -42,7 +43,7 @@ public class TransferLiquidsWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		if (!individual.isAlive()) {
 			setClosing(true);
 		}

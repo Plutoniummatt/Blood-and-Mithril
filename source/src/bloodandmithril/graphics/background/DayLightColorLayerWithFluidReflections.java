@@ -4,8 +4,8 @@ import java.util.TreeMap;
 
 import com.google.common.collect.Maps;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 
@@ -45,8 +45,8 @@ public class DayLightColorLayerWithFluidReflections extends Layer {
 
 
 	@Override
-	public void preRender() {
-		BloodAndMithrilClient.getGraphics().getSpriteBatch().setShader(Shaders.pass);
+	public void preRender(Graphics graphics) {
+		graphics.getSpriteBatch().setShader(Shaders.pass);
 	}
 
 

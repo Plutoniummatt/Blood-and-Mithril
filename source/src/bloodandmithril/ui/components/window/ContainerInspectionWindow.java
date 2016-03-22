@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.Color;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.ui.Refreshable;
@@ -130,13 +131,13 @@ public class ContainerInspectionWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		items.x = x;
 		items.y = y;
 		items.width = width;
 		items.height = height;
 
-		items.render();
+		items.render(graphics);
 	}
 
 

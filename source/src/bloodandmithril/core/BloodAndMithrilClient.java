@@ -94,16 +94,16 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	public static boolean devMode = false;
 
 	/** The game world */
-	private static AtomicBoolean inGame;
+	private static AtomicBoolean inGame = new AtomicBoolean(false);
 
 	/** True if game is paused */
-	public static AtomicBoolean paused;
+	public static AtomicBoolean paused = new AtomicBoolean(false);
 
 	/** True if the world is currently being rendered */
 	public static AtomicBoolean rendering = new AtomicBoolean(false);
 
 	/** True if game is loading */
-	public static AtomicBoolean loading;
+	public static AtomicBoolean loading = new AtomicBoolean(false);
 
 	@Inject	private Timers timers;
 	@Inject	private Graphics graphics;
@@ -134,10 +134,10 @@ public class BloodAndMithrilClient implements ApplicationListener {
 			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).setUpdateTick(1f/60f)
 		);
 		Domain.setActiveWorld(1);
-		graphics.getCam().position.y = Layer.getCameraYForHorizonCoord(graphics.getHeight()/3);
 		ClientServerInterface.setServer(false);
 
 		Wiring.injector().injectMembers(this);
+		graphics.getCam().position.y = Layer.getCameraYForHorizonCoord(graphics.getHeight()/3);
 		setInputProcessor(inputProcessor);
 	}
 
@@ -164,10 +164,10 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		Item.setup();
 		UserInterface.setup();
 
-		UserInterface.UICamera = new OrthographicCamera(graphics.getWidth(), graphics.getHeight());
-		UserInterface.UICamera.setToOrtho(false, graphics.getWidth(), graphics.getHeight());
-		UserInterface.UICameraTrackingCam = new OrthographicCamera(graphics.getWidth(), graphics.getHeight());
-		UserInterface.UICameraTrackingCam.setToOrtho(false, graphics.getWidth(), graphics.getHeight());
+		UserInterface.UICamera = new OrthographicCamera(getGdxWidth(), getGdxHeight());
+		UserInterface.UICamera.setToOrtho(false, getGdxWidth(), getGdxHeight());
+		UserInterface.UICameraTrackingCam = new OrthographicCamera(getGdxWidth(), getGdxHeight());
+		UserInterface.UICameraTrackingCam.setToOrtho(false, getGdxWidth(), getGdxHeight());
 
 		UserInterface.addLayeredComponent(
 			new MainMenuWindow(false)
@@ -311,7 +311,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	/**
 	 * @return whether the chunks on screen are generated/loaded
 	 */
-	public static boolean areChunksOnScreenGenerated() {
+	public static boolean areChunksOnScreenGenerated(Graphics graphics) {
 		int camX = (int) graphics.getCam().position.x;
 		int camY = (int) graphics.getCam().position.y;
 

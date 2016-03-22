@@ -1,9 +1,13 @@
 package bloodandmithril.item.items.equipment.weapon.ranged;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
@@ -15,10 +19,6 @@ import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A long bow, fires {@link ArrowProjectile}s
@@ -155,10 +155,10 @@ public class LongBow<T extends Wood> extends TwoHandedProjectileWeapon<T> {
 
 
 	@Override
-	public void render(Vector2 position, float angle, boolean flipX) {
+	public void render(Vector2 position, float angle, boolean flipX, Graphics graphics) {
 		TextureRegion texture = getTextureRegion();
 
-		getGraphics().getSpriteBatch().draw(
+		graphics.getSpriteBatch().draw(
 			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 47 : 47),
 			position.y - 3,

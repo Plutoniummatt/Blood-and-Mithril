@@ -1,7 +1,5 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +13,8 @@ import com.google.inject.Inject;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualContextMenuService;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -55,8 +55,8 @@ public class UnitsWindow extends Window implements Refreshable {
 	/**
 	 * Renders the separator
 	 */
-	private void renderSeparator() {
-		getGraphics().getSpriteBatch().setShader(Shaders.filter);
+	private void renderSeparator(Graphics graphics) {
+		graphics.getSpriteBatch().setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.Filled);
 		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
 		shapeRenderer.rect(x + width - 130, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
@@ -64,7 +64,7 @@ public class UnitsWindow extends Window implements Refreshable {
 	}
 
 
-	private void populateList() {
+	private void populateList(Graphics graphics) {
 		Domain.getIndividuals().values().forEach(individual -> {
 			if (individual.getFactionId() == this.factionId) {
 				this.individuals.put(
@@ -87,8 +87,8 @@ public class UnitsWindow extends Window implements Refreshable {
 							new ContextMenu.MenuItem(
 								"Go to",
 								() -> {
-									getGraphics().getCam().position.x = individual.getState().position.x;
-									getGraphics().getCam().position.y = individual.getState().position.y;
+									graphics.getCam().position.x = individual.getState().position.x;
+									graphics.getCam().position.y = individual.getState().position.y;
 								},
 								Color.ORANGE,
 								Color.WHITE,
@@ -105,13 +105,13 @@ public class UnitsWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		listing.x = x;
 		listing.y = y;
 		listing.width = width;
 		listing.height = height;
-		renderSeparator();
-		listing.render();
+		renderSeparator(graphics);
+		listing.render(graphics);
 	}
 
 
@@ -147,7 +147,7 @@ public class UnitsWindow extends Window implements Refreshable {
 	@Override
 	public void refresh() {
 		individuals.clear();
-		populateList();
+		populateList(Wiring.injector().getInstance(Graphics.class));
 		this.listing = new ScrollableListingPanel<Individual, String>(
 			this,
 			(i1, i2) -> {

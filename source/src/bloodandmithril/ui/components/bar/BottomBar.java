@@ -11,10 +11,10 @@ import java.util.Deque;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.ui.UserInterface;
@@ -320,16 +320,16 @@ public class BottomBar extends Component {
 
 	/** Renders this {@link BottomBar} */
 	@Override
-	protected void internalComponentRender(SpriteBatch batch) {
-		batch.begin();
+	protected void internalComponentRender(Graphics graphics) {
+		graphics.getSpriteBatch().begin();
 		renderRectangle(0, 34, getGdxWidth(), 34, true, Color.BLACK);
-		renderBox(-left.getRegionWidth(), 32, getGdxWidth(), 34, true, Color.DARK_GRAY, batch);
-		mainMenu.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f);
-		windows.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f);
-		chat.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f);
-		factions.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f);
-		missions.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f);
-		batch.end();
+		renderBox(-left.getRegionWidth(), 32, getGdxWidth(), 34, true, Color.DARK_GRAY, graphics);
+		mainMenu.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
+		windows.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
+		chat.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
+		factions.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
+		missions.render(!BloodAndMithrilClient.paused.get() && !GameSaver.isSaving(), 1f, graphics);
+		graphics.getSpriteBatch().end();
 	}
 
 

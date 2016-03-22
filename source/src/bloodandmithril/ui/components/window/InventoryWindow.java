@@ -3,7 +3,6 @@ package bloodandmithril.ui.components.window;
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static java.lang.Math.min;
@@ -29,6 +28,7 @@ import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.Consumable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.Item.ItemCategory;
@@ -321,7 +321,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected synchronized void internalWindowRender() {
+	protected synchronized void internalWindowRender(Graphics graphics) {
 		if (host instanceof Individual && !((Individual) host).isAlive()) {
 			setClosing(true);
 		}
@@ -345,15 +345,15 @@ public class InventoryWindow extends Window implements Refreshable {
 		filterButtons.y = y;
 
 		// Render the separator
-		renderSeparator(x + width - 88);
-		renderSeparator(x + 170);
+		renderSeparator(x + width - 88, graphics);
+		renderSeparator(x + 170, graphics);
 
 		// Render the listing panel
-		inventoryListingPanel.render();
-		filterButtons.render();
+		inventoryListingPanel.render(graphics);
+		filterButtons.render(graphics);
 
 		if (!equippedItemsToDisplay.isEmpty()) {
-			equippedListingPanel.render();
+			equippedListingPanel.render(graphics);
 		}
 
 		// Render the text search
@@ -361,10 +361,10 @@ public class InventoryWindow extends Window implements Refreshable {
 		textInput.y = y - height + 70;
 		textInput.width = 150;
 		textInput.height = 20;
-		textInput.render();
+		textInput.render(graphics);
 
 		// Render the weight indication text
-		renderCapacityIndicationText(host, this, 6, -height, "", "");
+		renderCapacityIndicationText(host, this, 6, -height, "", "", graphics);
 	}
 
 
@@ -381,8 +381,8 @@ public class InventoryWindow extends Window implements Refreshable {
 	/**
 	 * Renders the weight display
 	 */
-	public static void renderCapacityIndicationText(Container container, Window parentComponent, int xOffset, int yOffset, String extra1, String extra2) {
-		getGraphics().getSpriteBatch().setShader(Shaders.text);
+	public static void renderCapacityIndicationText(Container container, Window parentComponent, int xOffset, int yOffset, String extra1, String extra2, Graphics graphics) {
+		graphics.getSpriteBatch().setShader(Shaders.text);
 		Color activeColor;
 
 		if (container.getWeightLimited()) {
@@ -398,16 +398,16 @@ public class InventoryWindow extends Window implements Refreshable {
 					Colors.modulateAlpha(Color.RED, 0.6f * parentComponent.getAlpha());
 
 		defaultFont.setColor(parentComponent.isActive() ? activeColor : inactiveColor);
-		defaultFont.draw(getGraphics().getSpriteBatch(), parentComponent.truncate("Weight: " + String.format("%.2f", container.getCurrentLoad()) + (container.getWeightLimited() ? "/" + String.format("%.2f", container.getMaxCapacity()) : "") + extra1), parentComponent.x + xOffset, parentComponent.y + yOffset + 40);
-		defaultFont.draw(getGraphics().getSpriteBatch(), parentComponent.truncate("Volume: " + container.getCurrentVolume() + "/" + container.getMaxVolume() + extra2), parentComponent.x + xOffset, parentComponent.y + yOffset + 20);
+		defaultFont.draw(graphics.getSpriteBatch(), parentComponent.truncate("Weight: " + String.format("%.2f", container.getCurrentLoad()) + (container.getWeightLimited() ? "/" + String.format("%.2f", container.getMaxCapacity()) : "") + extra1), parentComponent.x + xOffset, parentComponent.y + yOffset + 40);
+		defaultFont.draw(graphics.getSpriteBatch(), parentComponent.truncate("Volume: " + container.getCurrentVolume() + "/" + container.getMaxVolume() + extra2), parentComponent.x + xOffset, parentComponent.y + yOffset + 20);
 	}
 
 
 	/**
 	 * Renders the separator that separates the item listing from the quantity listing
 	 */
-	private void renderSeparator(int xCoord) {
-		getGraphics().getSpriteBatch().setShader(Shaders.filter);
+	private void renderSeparator(int xCoord, Graphics graphics) {
+		graphics.getSpriteBatch().setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.Filled);
 		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
 		shapeRenderer.rect(xCoord, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);

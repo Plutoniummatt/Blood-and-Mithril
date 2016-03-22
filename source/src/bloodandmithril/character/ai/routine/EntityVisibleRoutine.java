@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.character.ai.AITask;
@@ -25,6 +24,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.Item.VisibleItem;
 import bloodandmithril.prop.Harvestable.VisibleHarvestable;
@@ -498,12 +498,12 @@ public final class EntityVisibleRoutine extends Routine {
 		}
 
 		@Override
-		public final void render(SpriteBatch batch) {
-			super.render(batch);
+		public final void render(Graphics graphics) {
+			super.render(graphics);
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
-				batch,
+				graphics.getSpriteBatch(),
 				identificationFunction == null ? "Not configured" : identificationFunction.getDetailedDescription(getHost()),
 				x + 10,
 				y - 27,
@@ -511,7 +511,7 @@ public final class EntityVisibleRoutine extends Routine {
 			);
 
 			defaultFont.drawWrapped(
-				batch,
+				graphics.getSpriteBatch(),
 				"Task:",
 				x + 10,
 				y - 97,
@@ -522,7 +522,7 @@ public final class EntityVisibleRoutine extends Routine {
 
 			if (aiTaskGenerator != null) {
 				defaultFont.drawWrapped(
-					batch,
+					graphics.getSpriteBatch(),
 					aiTaskGenerator.getEntityVisibleRoutineDetailedDescription(),
 					x + 10,
 					y - 117,
@@ -530,7 +530,7 @@ public final class EntityVisibleRoutine extends Routine {
 				);
 			}
 
-			changeVisibleEntityButton.render(x + 114, y - height + 70, parent.isActive(), parent.getAlpha(), batch);
+			changeVisibleEntityButton.render(x + 114, y - height + 70, parent.isActive(), parent.getAlpha(), graphics);
 		}
 	}
 

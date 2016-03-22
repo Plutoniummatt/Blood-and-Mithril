@@ -1,7 +1,5 @@
 package bloodandmithril.world;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
@@ -14,8 +12,10 @@ import com.badlogic.gdx.math.Vector2;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualUpdateService;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.event.Event;
 import bloodandmithril.generation.ChunkGenerator;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.background.BackgroundImages;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.item.items.Item;
@@ -162,7 +162,7 @@ public final class World implements Serializable {
 		for (Cloud c : clouds) {
 			c.update(updateTick);
 			
-			if (c.getPosition().x > getGraphics().getCam().position.x * 0.01f + 4000) {
+			if (c.getPosition().x > Wiring.injector().getInstance(Graphics.class).getCam().position.x * 0.01f + 4000) {
 				clouds.remove(c);
 				System.out.println("Cloud Removed");
 			}

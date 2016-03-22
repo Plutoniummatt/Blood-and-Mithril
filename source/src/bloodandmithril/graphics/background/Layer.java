@@ -1,6 +1,5 @@
 package bloodandmithril.graphics.background;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.graphics.background.BackgroundImages.textures;
 
 import java.io.Serializable;
@@ -10,6 +9,7 @@ import java.util.TreeMap;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.util.datastructure.WrapperForTwo;
 
 /**
@@ -34,8 +34,8 @@ public abstract class Layer implements Serializable {
 	}
 
 
-	public static int getScreenHorizonY() {
-		return 550 - Math.round((int) getGraphics().getCam().position.y * (1f - 0.95f));
+	public static int getScreenHorizonY(Graphics graphics) {
+		return 550 - Math.round((int) graphics.getCam().position.y * (1f - 0.95f));
 	}
 
 
@@ -47,8 +47,8 @@ public abstract class Layer implements Serializable {
 	/**
 	 * Renders this layer
 	 */
-	public void render(int camX, int camY) {
-		int startPositionX = Math.round((camX - getGraphics().getWidth() / 2) * (1f - getDistanceX()));
+	public void render(int camX, int camY, Graphics graphics) {
+		int startPositionX = Math.round((camX - graphics.getWidth() / 2) * (1f - getDistanceX()));
 		int startPositionY = Math.round(camY * (1f - getDistanceY()));
 		int currentPosition = 0;
 
@@ -56,11 +56,11 @@ public abstract class Layer implements Serializable {
 		if (floorEntry == null) {
 			return;
 		}
-		float startingRenderingPosition = (camX - getGraphics().getWidth()/2) * (1f - getDistanceX()) - floorEntry.getKey();
+		float startingRenderingPosition = (camX - graphics.getWidth()/2) * (1f - getDistanceX()) - floorEntry.getKey();
 
 		boolean rendering = true;
 		while(rendering) {
-			if (currentPosition - startingRenderingPosition > getGraphics().getWidth()) {
+			if (currentPosition - startingRenderingPosition > graphics.getWidth()) {
 				rendering = false;
 			}
 
@@ -68,7 +68,7 @@ public abstract class Layer implements Serializable {
 			TextureRegion toDraw = empty ? null : textures.get(images.floorEntry(startPositionX + currentPosition).getValue().a);
 
 			if (toDraw != null) {
-				getGraphics().getSpriteBatch().draw(
+				graphics.getSpriteBatch().draw(
 					toDraw,
 					currentPosition - startingRenderingPosition,
 					getOffsetY() - startPositionY + images.floorEntry(startPositionX + currentPosition).getValue().b
@@ -84,7 +84,7 @@ public abstract class Layer implements Serializable {
 	/**
 	 * Applies pre-render logic like shaders
 	 */
-	public abstract void preRender();
+	public abstract void preRender(Graphics graphics);
 
 
 	/**

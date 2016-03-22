@@ -63,10 +63,8 @@ public class GaussianLightingRenderer {
 	 * Master render method.
 	 */
 	public static void render(float camX, float camY, World world) {
-		graphics = Wiring.injector().getInstance(Graphics.class);
-
-		weather(world, graphics.getSpriteBatch());
-		backgroundSprites(world, graphics.getSpriteBatch());
+		weather(world, graphics);
+		backgroundSprites(world, graphics);
 		backgroundLighting(graphics.getSpriteBatch());
 		foregroundLighting(graphics.getSpriteBatch());
 		lighting(foregroundLightingFBOSmall, foregroundLightingFBO, Depth.FOREGROUND, world, graphics.getSpriteBatch());
@@ -78,11 +76,12 @@ public class GaussianLightingRenderer {
 	}
 
 
-	private static void backgroundSprites(World world, SpriteBatch batch) {
+	private static void backgroundSprites(World world, Graphics graphics) {
+		SpriteBatch batch = graphics.getSpriteBatch();
 		workingFBO2.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		world.getBackgroundImages().renderBackground();
+		world.getBackgroundImages().renderBackground(graphics);
 		workingFBO2.end();
 
 		batch.begin();
@@ -92,7 +91,7 @@ public class GaussianLightingRenderer {
 		Shaders.invertYReflective.setUniformf("filter", WeatherRenderer.getSunColor(world).mul(new Color(daylightColor.r, daylightColor.r, daylightColor.r, 1f)));
 		Shaders.invertYReflective.setUniformi("u_texture2", 14);
 		Shaders.invertYReflective.setUniformf("time", world.getEpoch().getTime() * 360f);
-		Shaders.invertYReflective.setUniformf("horizon", (getGdxHeight() - (float) Layer.getScreenHorizonY()) / getGdxHeight());
+		Shaders.invertYReflective.setUniformf("horizon", (getGdxHeight() - (float) Layer.getScreenHorizonY(graphics)) / getGdxHeight());
 		Shaders.invertYReflective.setUniformf("resolution", getGdxWidth(), getGdxHeight());
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		batch.draw(workingFBO2.getColorBufferTexture(), 0, 0);
@@ -124,6 +123,8 @@ public class GaussianLightingRenderer {
 	 * Loads framebuffers etc.
 	 */
 	public static void setup() {
+		graphics = Wiring.injector().getInstance(Graphics.class);
+		
 		workingDownSampled = new FrameBuffer(
 			RGBA8888,
 			(getGdxWidth() + graphics.getCamMarginX()) / 16,
@@ -246,13 +247,14 @@ public class GaussianLightingRenderer {
 	}
 
 
-	private static void weather(World world, SpriteBatch batch) {
+	private static void weather(World world, Graphics graphics) {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		workingFBO.end();
-		WeatherRenderer.render(workingFBO, world);
+		WeatherRenderer.render(workingFBO, world, graphics);
 
+		SpriteBatch batch = graphics.getSpriteBatch();
 
 		batch.begin();
 		batch.setShader(Shaders.invertY);
@@ -732,7 +734,7 @@ public class GaussianLightingRenderer {
 		workingFBO.begin();
 		Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		world.getBackgroundImages().renderBackground();
+		world.getBackgroundImages().renderBackground(graphics);
 		batch.begin();
 		batch.setShader(Shaders.invertY);
 		batch.draw(

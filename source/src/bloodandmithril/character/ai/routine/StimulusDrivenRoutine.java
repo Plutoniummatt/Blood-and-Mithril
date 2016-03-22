@@ -2,7 +2,6 @@ package bloodandmithril.character.ai.routine;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.ArrayDeque;
@@ -23,6 +22,7 @@ import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -227,12 +227,11 @@ public final class StimulusDrivenRoutine extends Routine {
 		}
 
 		@Override
-		public final void render() {
-			super.render();
+		public final void render(Graphics graphics) {
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
-				getGraphics().getSpriteBatch(),
+				graphics.getSpriteBatch(),
 				triggerFunction == null ? "Not configured" : triggerFunction.getDetailedDescription(),
 				x + 10,
 				y - 27,
@@ -240,7 +239,7 @@ public final class StimulusDrivenRoutine extends Routine {
 			);
 
 			defaultFont.drawWrapped(
-				getGraphics().getSpriteBatch(),
+				graphics.getSpriteBatch(),
 				"Task:",
 				x + 10,
 				y - 97,
@@ -251,7 +250,7 @@ public final class StimulusDrivenRoutine extends Routine {
 
 			if (aiTaskGenerator != null) {
 				defaultFont.drawWrapped(
-					getGraphics().getSpriteBatch(),
+					graphics.getSpriteBatch(),
 					aiTaskGenerator.getStimulusDrivenRoutineDetailedDescription(),
 					x + 10,
 					y - 117,
@@ -259,7 +258,7 @@ public final class StimulusDrivenRoutine extends Routine {
 				);
 			}
 
-			changeStimulusButton.render(x + 84, y - height + 70, parent.isActive(), parent.getAlpha());
+			changeStimulusButton.render(x + 84, y - height + 70, parent.isActive(), parent.getAlpha(), graphics);
 		}
 	}
 

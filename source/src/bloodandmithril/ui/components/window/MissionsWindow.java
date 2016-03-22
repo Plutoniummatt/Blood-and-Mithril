@@ -13,6 +13,7 @@ import com.google.common.collect.Sets;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.objectives.Mission;
 import bloodandmithril.objectives.Objective;
 import bloodandmithril.objectives.Objective.ObjectiveStatus;
@@ -119,7 +120,7 @@ public class MissionsWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		activeMissions.width = width;
 		activeMissions.height = height;
 		activeMissions.x = x;
@@ -131,9 +132,9 @@ public class MissionsWindow extends Window implements Refreshable {
 		completedMissions.y = y;
 
 		if (renderActive) {
-			activeMissions.render();
+			activeMissions.render(graphics);
 		} else {
-			completedMissions.render();
+			completedMissions.render(graphics);
 		}
 	}
 

@@ -1,7 +1,5 @@
 package bloodandmithril.util;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -13,6 +11,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.util.datastructure.Wrapper;
 
 @Copyright("Matthew Peck 2014")
@@ -62,8 +61,8 @@ public class Util {
 	}
 
 
-	public static void draw(TextureRegion region, float x, float y, float angle) {
-		getGraphics().getSpriteBatch().draw(region, x, y, 0, 0, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, angle);
+	public static void draw(TextureRegion region, float x, float y, float angle, Graphics graphics) {
+		graphics.getSpriteBatch().draw(region, x, y, 0, 0, region.getRegionWidth(), region.getRegionHeight(), 1f, 1f, angle);
 	}
 
 

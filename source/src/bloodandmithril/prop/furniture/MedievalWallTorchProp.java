@@ -5,12 +5,12 @@ import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -61,8 +61,8 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 
 
 	@Override
-	public void render(SpriteBatch batch) {
-		batch.draw(medievalWallTorch, position.x - width / 2, position.y);
+	public void render(Graphics graphics) {
+		graphics.getSpriteBatch().draw(medievalWallTorch, position.x - width / 2, position.y);
 	}
 
 

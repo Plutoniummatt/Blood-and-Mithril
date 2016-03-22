@@ -17,6 +17,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -146,7 +147,7 @@ public class ProficienciesWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		if (!Domain.getIndividual(individualId).isAlive()) {
 			setClosing(true);
 		}
@@ -156,7 +157,7 @@ public class ProficienciesWindow extends Window {
 		skills.width = width;
 		skills.height = height;
 
-		skills.render();
+		skills.render(graphics);
 	}
 
 

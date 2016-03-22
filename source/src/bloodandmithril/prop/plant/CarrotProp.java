@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Lists;
 
@@ -15,6 +14,7 @@ import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.food.plant.CarrotItem.CarrotSeedItem;
@@ -53,11 +53,11 @@ public class CarrotProp extends PlantProp implements Harvestable {
 
 
 	@Override
-	public void render(SpriteBatch batch) {
+	public void render(Graphics graphics) {
 		if (getGrowthProgress() < 1.0f) {
-			batch.draw(halfCarrot, position.x - width / 2, position.y);
+			graphics.getSpriteBatch().draw(halfCarrot, position.x - width / 2, position.y);
 		} else {
-			batch.draw(carrot, position.x - width / 2, position.y);
+			graphics.getSpriteBatch().draw(carrot, position.x - width / 2, position.y);
 		}
 	}
 

@@ -1,19 +1,19 @@
 package bloodandmithril.ui.components.panel;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.Panel;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * Panel to display some text
@@ -48,21 +48,21 @@ public class TextPanel extends Panel {
 
 
 	@Override
-	public void render() {
+	public void render(Graphics graphics) {
 		if (parent == null) {
 			defaultFont.setColor(Colors.modulateAlpha(textColor, 1.0f));
 		} else {
 			defaultFont.setColor(Colors.modulateAlpha(textColor, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
 		}
-		getGraphics().getSpriteBatch().setShader(Shaders.text);
+		graphics.getSpriteBatch().setShader(Shaders.text);
 		defaultFont.drawWrapped(
-			getGraphics().getSpriteBatch(),
+				graphics.getSpriteBatch(),
 			text,
 			x,
 			y,
 			width
 		);
-		getGraphics().getSpriteBatch().flush();
+		graphics.getSpriteBatch().flush();
 	}
 
 

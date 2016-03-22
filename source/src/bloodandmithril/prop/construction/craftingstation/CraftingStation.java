@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.base.Optional;
@@ -21,6 +20,7 @@ import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.networking.ClientServerInterface;
@@ -94,11 +94,11 @@ public abstract class CraftingStation extends Construction {
 
 
 	@Override
-	protected void internalRender(float constructionProgress, SpriteBatch batch) {
+	protected void internalRender(float constructionProgress, Graphics graphics) {
 		if (constructionProgress == 0f) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 0.90f);
 		}
-		batch.draw(getTextureRegion(), position.x - width / 2, position.y);
+		graphics.getSpriteBatch().draw(getTextureRegion(), position.x - width / 2, position.y);
 	}
 
 

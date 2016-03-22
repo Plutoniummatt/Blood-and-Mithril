@@ -1,7 +1,6 @@
 package bloodandmithril.audio;
 
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.datastructure.WrapperForThree.wrap;
@@ -19,6 +18,8 @@ import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.datastructure.WrapperForThree;
@@ -88,12 +89,12 @@ public class SoundService {
 	}
 
 	/** Returns the pan value in relation to camera location */
-	public static final float getPan(Vector2 location) {
+	public static final float getPan(Vector2 location, Graphics graphics) {
 		if (!ClientServerInterface.isClient()) {
 			return 0f;
 		}
 
-		float panValue = (location.x - getGraphics().getCam().position.x) / (getGraphics().getWidth() / 2);
+		float panValue = (location.x - graphics.getCam().position.x) / (graphics.getWidth() / 2);
 
 		if (panValue > 0f) {
 			return Math.min(panValue, 0.99f);
@@ -116,12 +117,14 @@ public class SoundService {
 		if (isServer()) {
 			triggerListeners(location, sounds.get(sound).c, sound, source);
 			if (isClient()) {
-				sounds.get(sound).b.play(getVolume(location), 1f, getPan(location));
+				Graphics graphics = Wiring.injector().getInstance(Graphics.class);
+				sounds.get(sound).b.play(getVolume(location, graphics), 1f, getPan(location, graphics));
 			} else if (requiresServerAuthority) {
 				ClientServerInterface.SendNotification.notifyPlaySound(-1, sound, location);
 			}
 		} else if (!requiresServerAuthority) {
-			sounds.get(sound).b.play(getVolume(location), 1f, getPan(location));
+			Graphics graphics = Wiring.injector().getInstance(Graphics.class);
+			sounds.get(sound).b.play(getVolume(location, graphics), 1f, getPan(location, graphics));
 		}
 	}
 
@@ -199,15 +202,15 @@ public class SoundService {
 
 
 	/** Returns the volume in relation to camera location */
-	private static final float getVolume(Vector2 location) {
+	private static final float getVolume(Vector2 location, Graphics graphics) {
 		if (!ClientServerInterface.isClient()) {
 			return 0f;
 		}
 
-		Vector2 camPos = new Vector2(getGraphics().getCam().position.x, getGraphics().getCam().position.y);
+		Vector2 camPos = new Vector2(graphics.getCam().position.x, graphics.getCam().position.y);
 
 		float distance = Math.abs(location.cpy().sub(camPos).len());
-		float volume = Math.max(1f - distance / getGraphics().getWidth(), 0f);
+		float volume = Math.max(1f - distance / graphics.getWidth(), 0f);
 
 		return volume;
 	}

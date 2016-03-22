@@ -1,6 +1,7 @@
 package bloodandmithril.world.weather;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+import static bloodandmithril.graphics.Graphics.getGdxHeight;
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888;
 import static java.lang.Math.exp;
 import static java.lang.Math.max;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.util.Shaders;
@@ -39,41 +41,41 @@ public final class WeatherRenderer {
 	private static final Color nightTopColor 							= new Color(33f/255f, 0f, 150f/255f, 1f);
 	private static final Color nightBottomColor 						= new Color(60f/255f, 0f, 152f/255f, 1f);
 
-	private static FrameBuffer skyBuffer								= new FrameBuffer(RGBA8888, getGraphics().getWidth(), getGraphics().getHeight(), false);
+	private static FrameBuffer skyBuffer								= new FrameBuffer(RGBA8888, getGdxWidth(), getGdxHeight(), false);
 	private static FrameBuffer working									= new FrameBuffer(RGBA8888, 1, 1, false);
 
 	private static Vector2 sunPosition									= new Vector2();
-	public static Vector2 orbitalPivot 									= new Vector2(getGraphics().getWidth()/2, getGraphics().getHeight()/4);
+	public static Vector2 orbitalPivot 									= new Vector2(getGdxWidth()/2, getGdxHeight()/4);
 
 	private static final LinkedList<CelestialBody> celestialBodies		= Lists.newLinkedList();
 
 	/**
 	 * Renders the {@link WeatherRenderer}
 	 */
-	public static final void render(FrameBuffer toDrawTo, World world) {
-		renderSky(toDrawTo, world);
-		renderStars(toDrawTo, world);
-		updateSun(world);
+	public static final void render(FrameBuffer toDrawTo, World world, Graphics graphics) {
+		renderSky(toDrawTo, world, graphics);
+		renderStars(toDrawTo, world, graphics);
+		updateSun(world, graphics);
 	}
 
 
-	public static void renderClouds(World world) {
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.particleTexture);
-		int source = getGraphics().getSpriteBatch().getBlendSrcFunc();
-		int destination = getGraphics().getSpriteBatch().getBlendDstFunc();
-		getGraphics().getSpriteBatch().setBlendFunction(GL11.GL_ONE, GL11.GL_ONE);
+	public static void renderClouds(World world, Graphics graphics) {
+		graphics.getSpriteBatch().begin();
+		graphics.getSpriteBatch().setShader(Shaders.particleTexture);
+		int source = graphics.getSpriteBatch().getBlendSrcFunc();
+		int destination = graphics.getSpriteBatch().getBlendDstFunc();
+		graphics.getSpriteBatch().setBlendFunction(GL11.GL_ONE, GL11.GL_ONE);
 		for (Cloud c : world.getClouds()) {
-			c.render(getGraphics().getSpriteBatch(), getGraphics().getCam().position);
+			c.render(graphics, graphics.getCam().position);
 		}
-		getGraphics().getSpriteBatch().setBlendFunction(source, destination);
-		getGraphics().getSpriteBatch().end();
+		graphics.getSpriteBatch().setBlendFunction(source, destination);
+		graphics.getSpriteBatch().end();
 	}
 
 
-	private static final void updateSun(World world) {
+	private static final void updateSun(World world, Graphics graphics) {
 		float time = world.getEpoch().getTime();
-		float radius = getGraphics().getWidth()/2.5f;
+		float radius = graphics.getWidth()/2.5f;
 		Vector2 position = orbitalPivot.cpy().add(new Vector2(0f, radius).rotate(-((time - 12f) / 12f) * 180f));
 
 		sunPosition.x = position.x;
@@ -133,10 +135,10 @@ public final class WeatherRenderer {
 
 
 	/** Renders the sky */
-	private static final void renderSky(FrameBuffer toDrawTo, World world) {
+	private static final void renderSky(FrameBuffer toDrawTo, World world, Graphics graphics) {
 		skyBuffer.begin();
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.sky);
+		graphics.getSpriteBatch().begin();
+		graphics.getSpriteBatch().setShader(Shaders.sky);
 		Color filter = getDaylightColor(world);
 
 		Color topColor = dayTopColor.cpy().mul(world.getEpoch().dayLight()).add(nightTopColor.cpy().mul(1f - world.getEpoch().dayLight())).mul(filter);
@@ -145,42 +147,42 @@ public final class WeatherRenderer {
 		Shaders.sky.setUniformf("top", topColor);
 		Shaders.sky.setUniformf("bottom", bottomColor);
 		Shaders.sky.setUniformf("sun", sunPosition);
-		Shaders.sky.setUniformf("horizon", (float) Layer.getScreenHorizonY() / getGraphics().getHeight());
-		Shaders.sky.setUniformf("resolution", getGraphics().getWidth(), getGraphics().getHeight());
+		Shaders.sky.setUniformf("horizon", (float) Layer.getScreenHorizonY(graphics) / graphics.getHeight());
+		Shaders.sky.setUniformf("resolution", graphics.getWidth(), graphics.getHeight());
 
-		getGraphics().getSpriteBatch().draw(working.getColorBufferTexture(), 0, 0, getGraphics().getWidth(), getGraphics().getHeight());
-		getGraphics().getSpriteBatch().flush();
-		getGraphics().getSpriteBatch().end();
+		graphics.getSpriteBatch().draw(working.getColorBufferTexture(), 0, 0, graphics.getWidth(), graphics.getHeight());
+		graphics.getSpriteBatch().flush();
+		graphics.getSpriteBatch().end();
 		skyBuffer.end();
 
 		float time = world.getEpoch().getTime();
 
 		toDrawTo.begin();
-		getGraphics().getSpriteBatch().begin();
-		getGraphics().getSpriteBatch().setShader(Shaders.sun);
-		Shaders.sun.setUniformf("resolution", getGraphics().getWidth(), getGraphics().getHeight());
+		graphics.getSpriteBatch().begin();
+		graphics.getSpriteBatch().setShader(Shaders.sun);
+		Shaders.sun.setUniformf("resolution", graphics.getWidth(), graphics.getHeight());
 		Shaders.sun.setUniformf("sunPosition", sunPosition);
 		Shaders.sun.setUniformf("filter", Colors.modulateAlpha(getSunColor(world), glareAlpha(time)));
 		Shaders.sun.setUniformf("epoch", world.getEpoch().getTime());
 		Shaders.sun.setUniformf("nightSuppression", nightSuppression(time));
-		getGraphics().getSpriteBatch().draw(skyBuffer.getColorBufferTexture(), 0, 0);
-		getGraphics().getSpriteBatch().end();
+		graphics.getSpriteBatch().draw(skyBuffer.getColorBufferTexture(), 0, 0);
+		graphics.getSpriteBatch().end();
 		toDrawTo.end();
 	}
 
 
-	private static final void renderStars(FrameBuffer toDrawTo, World world) {
+	private static final void renderStars(FrameBuffer toDrawTo, World world, Graphics graphics) {
 		toDrawTo.begin();
-		getGraphics().getSpriteBatch().begin();
-		int source = getGraphics().getSpriteBatch().getBlendSrcFunc();
-		int destination = getGraphics().getSpriteBatch().getBlendDstFunc();
-		getGraphics().getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+		graphics.getSpriteBatch().begin();
+		int source = graphics.getSpriteBatch().getBlendSrcFunc();
+		int destination = graphics.getSpriteBatch().getBlendDstFunc();
+		graphics.getSpriteBatch().setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		for (CelestialBody celestialBody : celestialBodies) {
-			celestialBody.render(world);
+			celestialBody.render(world, graphics);
 		}
-		getGraphics().getSpriteBatch().end();
-		getGraphics().getSpriteBatch().setBlendFunction(source, destination);
+		graphics.getSpriteBatch().end();
+		graphics.getSpriteBatch().setBlendFunction(source, destination);
 		toDrawTo.end();
 		WorldRenderer.gameWorldTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 	}
@@ -223,17 +225,17 @@ public final class WeatherRenderer {
 
 	/** Load resources */
 	public static final void setup() {
-		skyBuffer = new FrameBuffer(RGBA8888, getGraphics().getWidth(), getGraphics().getHeight(), false);
+		skyBuffer = new FrameBuffer(RGBA8888, getGdxWidth(), getGdxHeight(), false);
 		working = new FrameBuffer(RGBA8888, 1, 1, false);
-		orbitalPivot = new Vector2(getGraphics().getWidth()/2, getGraphics().getHeight()/4);
+		orbitalPivot = new Vector2(getGdxWidth()/2, getGdxHeight()/4);
 
 		celestialBodies.clear();
-		celestialBodies.add(new CelestialBody(0, getGraphics().getWidth()/2.5f, 0f, Color.WHITE, true));
+		celestialBodies.add(new CelestialBody(0, getGdxWidth()/2.5f, 0f, Color.WHITE, true));
 
 		for (int i = 0; i < 500; i++) {
 			Vector2 cartesian = new Vector2(
-				(Util.getRandom().nextFloat() - 0.5f) * max(getGraphics().getWidth(), getGraphics().getHeight()) * 2.0f,
-				(Util.getRandom().nextFloat() - 0.5f) * max(getGraphics().getWidth(), getGraphics().getHeight()) * 2.0f
+				(Util.getRandom().nextFloat() - 0.5f) * max(getGdxWidth(), getGdxHeight()) * 2.0f,
+				(Util.getRandom().nextFloat() - 0.5f) * max(getGdxWidth(), getGdxHeight()) * 2.0f
 			);
 
 			celestialBodies.add(
@@ -249,8 +251,8 @@ public final class WeatherRenderer {
 
 		for (int i = 0; i < 15; i++) {
 			Vector2 cartesian = new Vector2(
-				(Util.getRandom().nextFloat() - 0.5f) * max(getGraphics().getWidth(), getGraphics().getHeight()) * 2.0f,
-				(Util.getRandom().nextFloat() - 0.5f) * max(getGraphics().getWidth(), getGraphics().getHeight()) * 2.0f
+				(Util.getRandom().nextFloat() - 0.5f) * max(getGdxWidth(), getGdxHeight()) * 2.0f,
+				(Util.getRandom().nextFloat() - 0.5f) * max(getGdxWidth(), getGdxHeight()) * 2.0f
 			);
 
 			celestialBodies.add(

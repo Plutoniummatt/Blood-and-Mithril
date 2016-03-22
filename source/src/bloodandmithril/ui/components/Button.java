@@ -9,7 +9,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -178,7 +177,7 @@ public class Button {
 	/**
 	 * Renders this button
 	 */
-	public void render(boolean active, float alpha, int maxWidth, SpriteBatch batch) {
+	public void render(boolean active, float alpha, int maxWidth, Graphics graphics) {
 		if (popup != null) {
 			InfoPopup p = popup.call();
 			if (!p.expiryFunction.call() && UserInterface.getInfoPopup() == null) {
@@ -191,7 +190,7 @@ public class Button {
 
 		if (idle == null) {
 
-			batch.setShader(Shaders.text);
+			graphics.getSpriteBatch().setShader(Shaders.text);
 			Color downColorToUse = active ? downColor : idle == null ? downColor.cpy() : downColor;
 			Color overColorToUse = active ? overColor : idle == null ? overColor.cpy() : overColor;
 			Color idleColorToUse = active ? idleColor : idle == null ? idleColor.cpy() : idleColor;
@@ -199,35 +198,35 @@ public class Button {
 			if (isMouseOver() && active) {
 				if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode)) {
 					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(batch, maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
+					font.draw(graphics.getSpriteBatch(), maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 				} else {
 					font.setColor(overColorToUse.r, overColorToUse.g, overColorToUse.b, alpha * (active ? 1f : 0.3f));
-					font.draw(batch,  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
+					font.draw(graphics.getSpriteBatch(),  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 				}
 			} else {
 				font.setColor(idleColorToUse.r, idleColorToUse.g, idleColorToUse.b, alpha * (active ? 1f : 0.3f));
-				font.draw(batch,  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
+				font.draw(graphics.getSpriteBatch(),  maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 			}
 		} else {
-			batch.setShader(Shaders.filter);
+			graphics.getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, alpha);
 			if (isMouseOver() && active) {
 				if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode)) {
-					batch.draw(down, vec.x, vec.y);
+					graphics.getSpriteBatch().draw(down, vec.x, vec.y);
 				} else {
-					batch.draw(over, vec.x, vec.y);
+					graphics.getSpriteBatch().draw(over, vec.x, vec.y);
 				}
 			} else {
-				batch.draw(idle, vec.x, vec.y);
+				graphics.getSpriteBatch().draw(idle, vec.x, vec.y);
 			}
 		}
 
-		batch.flush();
+		graphics.getSpriteBatch().flush();
 	}
 
 
-	public void render(boolean active, float alpha, SpriteBatch batch) {
-		render(active, alpha, 0, batch);
+	public void render(boolean active, float alpha, Graphics graphics) {
+		render(active, alpha, 0, graphics);
 	}
 
 
@@ -240,48 +239,48 @@ public class Button {
 	/**
 	 * Renders this button at an override location
 	 */
-	public void render(int x, int y, SpriteBatch batch) {
+	public void render(int x, int y, Graphics graphics) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
 
-		render(true, 1f, batch);
+		render(true, 1f, graphics);
 	}
 
 
 	/**
 	 * Renders this button at an override location and whether or not this button is 'active'
 	 */
-	public void render(int x, int y, boolean active, SpriteBatch batch) {
+	public void render(int x, int y, boolean active, Graphics graphics) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
 
-		render(active, 1f, batch);
+		render(active, 1f, graphics);
 	}
 
 
 	/**
 	 * Renders this button at an override location and whether or not this button is 'active', plus an alpha value
 	 */
-	public void render(int x, int y, boolean active, float alpha, SpriteBatch batch) {
+	public void render(int x, int y, boolean active, float alpha, Graphics graphics) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
 
-		render(active, alpha, batch);
+		render(active, alpha, graphics);
 	}
 
 
 	/**
 	 * Renders this button at an override location and whether or not this button is 'active', plus an alpha value, and maximum width, truncating the rest
 	 */
-	public void render(int x, int y, boolean active, float alpha, int maxWidth, SpriteBatch batch) {
+	public void render(int x, int y, boolean active, float alpha, int maxWidth, Graphics graphics) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
 
-		render(active, alpha, maxWidth, batch);
+		render(active, alpha, maxWidth, graphics);
 	}
 
 

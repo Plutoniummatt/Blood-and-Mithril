@@ -7,7 +7,6 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_BLEND;
 import static com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA;
@@ -36,6 +35,7 @@ import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -279,7 +279,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 
 					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(new CursorBoundTask(task, true) {
 						@Override
-						public void renderUIGuide() {
+						public void renderUIGuide(Graphics graphics) {
 							try {
 								Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
@@ -288,10 +288,10 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 
 								gl.glEnable(GL_BLEND);
 								gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-								getGraphics().getSpriteBatch().begin();
-								getGraphics().getSpriteBatch().setColor(executionConditionMet() ? Color.GREEN : Color.RED);
-								getGraphics().getSpriteBatch().draw(UserInterface.currentArrow, x - 5, y);
-								getGraphics().getSpriteBatch().end();
+								graphics.getSpriteBatch().begin();
+								graphics.getSpriteBatch().setColor(executionConditionMet() ? Color.GREEN : Color.RED);
+								graphics.getSpriteBatch().draw(UserInterface.currentArrow, x - 5, y);
+								graphics.getSpriteBatch().end();
 								gl.glDisable(GL_BLEND);
 							} catch (NoTileFoundException e) {}
 						}

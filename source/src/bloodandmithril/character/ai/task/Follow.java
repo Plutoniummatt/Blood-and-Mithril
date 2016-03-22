@@ -28,6 +28,7 @@ import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -252,7 +253,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 
 				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(new CursorBoundTask(task, true) {
 					@Override
-					public void renderUIGuide() {
+					public void renderUIGuide(Graphics graphics) {
 					}
 
 					@Override

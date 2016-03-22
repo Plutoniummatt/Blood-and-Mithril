@@ -1,12 +1,13 @@
 package bloodandmithril.item.items.equipment.misc;
 
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
 import bloodandmithril.item.material.Material;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Rings, to be put on fingers
@@ -29,7 +30,7 @@ public abstract class Ring extends Equipable implements Craftable {
 
 
 	@Override
-	public void render(Vector2 position, float angle, boolean flipX) {
+	public void render(Vector2 position, float angle, boolean flipX, Graphics graphics) {
 		// Do nothing
 	}
 

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.base.Function;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.Refreshable;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -82,13 +83,13 @@ public abstract class ScrollableListingWindow<T, A> extends Window implements Re
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		listing.x = x;
 		listing.y = y;
 		listing.width = width;
 		listing.height = height;
 
-		listing.render();
+		listing.render(graphics);
 	}
 
 

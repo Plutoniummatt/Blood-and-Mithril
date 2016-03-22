@@ -12,7 +12,6 @@ import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
 
@@ -22,6 +21,7 @@ import bloodandmithril.character.ai.task.PlantSeed.PlantSeedTaskGenerator;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
@@ -79,7 +79,7 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public final void renderUIGuide(SpriteBatch batch) {
+	public final void renderUIGuide(Graphics graphics) {
 		try {
 			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
@@ -88,13 +88,13 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			batch.begin();
-			batch.setColor(executionConditionMet() ? Color.GREEN : Color.RED);
-			batch.draw(UserInterface.currentArrow, x - 5, y);
+			graphics.getSpriteBatch().begin();
+			graphics.getSpriteBatch().setColor(executionConditionMet() ? Color.GREEN : Color.RED);
+			graphics.getSpriteBatch().draw(UserInterface.currentArrow, x - 5, y);
 			for (Vector2 location : plantingLocations) {
-				batch.draw(UserInterface.currentArrow, worldToScreenX(location.x), worldToScreenY(location.y));
+				graphics.getSpriteBatch().draw(UserInterface.currentArrow, worldToScreenX(location.x), worldToScreenY(location.y));
 			}
-			batch.end();
+			graphics.getSpriteBatch().end();
 			gl.glDisable(GL_BLEND);
 
 		} catch (NoTileFoundException e) {}

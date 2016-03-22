@@ -25,6 +25,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -588,7 +589,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		if (proposer instanceof Individual) {
 			if (!((Individual) proposer).isAlive()) {
 				setClosing(true);
@@ -609,7 +610,7 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		}
 
-		renderListingPanels();
+		renderListingPanels(graphics);
 
 		if (rejected) {
 			if (tradeRejectionTimer > 0f) {
@@ -644,35 +645,38 @@ public class TradeWindow extends Window implements Refreshable {
 			return entry.getValue() * entry.getKey().t.getVolume();
 		}).sum();
 
-		InventoryWindow.renderCapacityIndicationText(proposer, this, 6, -height, " (+" + String.format("%.2f", proposeeMass) + ")", " (+" + proposeeVolume + ")");
-		InventoryWindow.renderCapacityIndicationText(proposee, this, width / 2 + 6, -height, " (+" + String.format("%.2f", proposerMass) + ")", " (+" + proposerVolume + ")");
+		InventoryWindow.renderCapacityIndicationText(proposer, this, 6, -height, " (+" + String.format("%.2f", proposeeMass) + ")", " (+" + proposeeVolume + ")", graphics);
+		InventoryWindow.renderCapacityIndicationText(proposee, this, width / 2 + 6, -height, " (+" + String.format("%.2f", proposerMass) + ")", " (+" + proposerVolume + ")", graphics);
 
 		// Render the text search
 		textInput.x = x + 6;
 		textInput.y = y - height + 90;
 		textInput.width = 180;
 		textInput.height = 20;
-		textInput.render();
+		textInput.render(graphics);
 
 		tradeButton.render(
 			x + 71,
 			y - height + 70,
 			tradeButtonClickable(),
-			getAlpha()
+			getAlpha(),
+			graphics
 		);
 
 		proposerButton.render(
 			x + width / 4,
 			y - 20,
 			isActive(),
-			getAlpha()
+			getAlpha(),
+			graphics
 		);
 
 		proposeeButton.render(
 			x + 3 * width / 4,
 			y - 20,
 			isActive(),
-			getAlpha()
+			getAlpha(),
+			graphics
 		);
 	}
 
@@ -690,7 +694,7 @@ public class TradeWindow extends Window implements Refreshable {
 	/**
 	 * Renders the listing panels
 	 */
-	protected synchronized void renderListingPanels() {
+	protected synchronized void renderListingPanels(Graphics graphics) {
 		int lineWidth = 23;
 
 		proposerPanel.x = x + 200;
@@ -723,16 +727,16 @@ public class TradeWindow extends Window implements Refreshable {
 		proposeeFilterButtons.height = height - 85;
 		proposeeFilterButtons.width = 180;
 
-		proposerFilterButtons.render();
-		proposeeFilterButtons.render();
-		proposerPanel.render();
-		proposeePanel.render();
+		proposerFilterButtons.render(graphics);
+		proposeeFilterButtons.render(graphics);
+		proposerPanel.render(graphics);
+		proposeePanel.render(graphics);
 
 		if (!proposerItemsToTrade.isEmpty()) {
-			proposerTradingPanel.render();
+			proposerTradingPanel.render(graphics);
 		}
 		if (!proposeeItemsToTrade.isEmpty()) {
-			proposeeTradingPanel.render();
+			proposeeTradingPanel.render(graphics);
 		}
 	}
 

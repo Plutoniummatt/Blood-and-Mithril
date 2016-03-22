@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.affix.Affixed;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipper.EquipmentSlot;
@@ -33,7 +34,7 @@ public abstract class Equipable extends Item implements Affixed {
 
 
 	/** Renders this {@link Equipable} */
-	public abstract void render(Vector2 position, float angle, boolean flipX);
+	public abstract void render(Vector2 position, float angle, boolean flipX, Graphics graphics);
 
 	/** Processes particle effects, these effects are rendered together with an individual */
 	public abstract void particleEffects(Vector2 position, float angle, boolean flipX);

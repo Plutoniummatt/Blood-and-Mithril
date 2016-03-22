@@ -3,7 +3,11 @@ package bloodandmithril.ui.components.window;
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -11,9 +15,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.panel.TextInputFieldPanel;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.JITTask;
-
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * A {@link Window} which handles text input
@@ -59,15 +60,15 @@ public class TextInputWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		panel.x = x + 15;
 		panel.y = y - 30;
 		panel.height = height - 70;
 		panel.width = width - 30;
 
-		panel.render();
+		panel.render(graphics);
 
-		confirmButton.render(x + width/2, y - height + 25, isActive(), getAlpha());
+		confirmButton.render(x + width/2, y - height + 25, isActive(), getAlpha(), graphics);
 	}
 
 

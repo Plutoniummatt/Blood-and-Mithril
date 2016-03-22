@@ -1,13 +1,17 @@
 package bloodandmithril.item.items.equipment.weapon;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
-
 import java.util.Map;
+
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.google.common.collect.Maps;
 
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Humanoid;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.material.Material;
@@ -15,11 +19,6 @@ import bloodandmithril.item.material.metal.Metal;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
 
 /**
  * One handed spear
@@ -49,10 +48,10 @@ public abstract class OneHandedSpear<T extends Metal> extends OneHandedMeleeWeap
 
 
 	@Override
-	public void render(Vector2 position, float angle, boolean flipX) {
+	public void render(Vector2 position, float angle, boolean flipX, Graphics graphics) {
 		TextureRegion texture = getTextureRegion();
 
-		getGraphics().getSpriteBatch().draw( // TODO origin & orientation
+		graphics.getSpriteBatch().draw( // TODO origin & orientation
 			WorldRenderer.individualTexture,
 			position.x - (flipX ? texture.getRegionWidth() - 17 : 17),
 			position.y - 9,

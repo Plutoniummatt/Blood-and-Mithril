@@ -6,12 +6,12 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.google.common.collect.Lists;
 
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.networking.ClientServerInterface;
@@ -104,20 +104,20 @@ public final class Cloud implements Serializable {
 	 * 
 	 * Renders the cloud
 	 */
-	public void render(SpriteBatch spriteBatch, Vector3 camLocation) {
+	public void render(Graphics graphics, Vector3 camLocation) {
 		for (CloudSegment segment : segments) {
 			Shaders.particleTexture.setUniformf("override", 1f, 1f, 1f, 0.3f);
 			Shaders.particleTexture.setUniformf("feather", segment.feather);
 			Shaders.particleTexture.setUniformf("topLeft", circle.getU(), circle.getV());
 			Shaders.particleTexture.setUniformf("bottomRight", circle.getU2(), circle.getV2());
-			spriteBatch.draw(
+			graphics.getSpriteBatch().draw(
 				circle, 
 				-camLocation.x * 0.01f + position.x - segment.radius + segment.relativePosition.x + (camLocation.x * 0.01f - position.x) * segment.distance * 2f, 
-				-camLocation.y * 0.01f + Layer.getScreenHorizonY() + position.y - segment.radius + segment.relativePosition.y + (camLocation.y * 0.01f - position.y) * segment.distance * 2f,
+				-camLocation.y * 0.01f + Layer.getScreenHorizonY(graphics) + position.y - segment.radius + segment.relativePosition.y + (camLocation.y * 0.01f - position.y) * segment.distance * 2f,
 				segment.radius * 2,
 				segment.radius * 2
 			);
-			spriteBatch.flush();
+			graphics.getSpriteBatch().flush();
 		}
 	}
 	

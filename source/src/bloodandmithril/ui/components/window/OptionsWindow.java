@@ -1,11 +1,16 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
+import static bloodandmithril.graphics.Graphics.getGdxHeight;
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
 
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -13,9 +18,6 @@ import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 
 /**
  * The options window
@@ -113,13 +115,13 @@ public class OptionsWindow extends Window {
 									},
 									"Confirm",
 									true,
-									Integer.toString(getGraphics().getHeight())
+									Integer.toString(getGdxHeight())
 								)
 							);
 						},
 						"Confirm",
 						true,
-						Integer.toString(getGraphics().getWidth())
+						Integer.toString(getGdxWidth())
 					)
 				);
 			},
@@ -184,10 +186,10 @@ public class OptionsWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
-		changeRes.render(x + width/2, y - 30, isActive() && Gdx.app.getGraphics().isFullscreen(), getAlpha());
-		fullScreen.render(x + width/2, y - 50, isActive(), getAlpha());
-		controls.render(x + width/2, y - 70, isActive(), getAlpha());
+	protected void internalWindowRender(Graphics graphics) {
+		changeRes.render(x + width/2, y - 30, isActive() && Gdx.app.getGraphics().isFullscreen(), getAlpha(), graphics);
+		fullScreen.render(x + width/2, y - 50, isActive(), getAlpha(), graphics);
+		controls.render(x + width/2, y - 70, isActive(), getAlpha(), graphics);
 	}
 
 

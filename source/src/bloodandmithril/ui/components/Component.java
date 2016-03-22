@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Shaders;
@@ -70,7 +71,7 @@ public abstract class Component {
 	public abstract void leftClickReleased();
 
 	/** Component specific render */
-	protected abstract void internalComponentRender(SpriteBatch batch);
+	protected abstract void internalComponentRender(Graphics graphics);
 
 	/**
 	 * Called when the scroll wheel is scrolled.
@@ -82,7 +83,7 @@ public abstract class Component {
 	/**
 	 * Renders this {@link Component}
 	 */
-	public void render(SpriteBatch batch) {
+	public void render(Graphics graphics) {
 		if (isClosing()) {
 			setAlpha(getAlpha() - 0.08f > 0f ? getAlpha() - 0.08f : 0f);
 		} else if (this instanceof Window) {
@@ -94,7 +95,7 @@ public abstract class Component {
 		} else {
 			setAlpha(getAlpha() + 0.08f >= 1f ? 1f : getAlpha() + 0.08f);
 		}
-		internalComponentRender(batch);
+		internalComponentRender(graphics);
 	}
 
 
@@ -109,7 +110,9 @@ public abstract class Component {
 	/**
 	 * Renders the text box for this {@link Component}
 	 */
-	protected void renderBox(int x, int y, int length, int height, boolean active, Color borderColor, SpriteBatch batch) {
+	protected void renderBox(int x, int y, int length, int height, boolean active, Color borderColor, Graphics graphics) {
+		SpriteBatch batch = graphics.getSpriteBatch();
+		
 		Shaders.filter.begin();
 		Shaders.filter.setUniformf("color", borderColor.r, borderColor.g, borderColor.b, active ? borderColor.a * getAlpha() : borderColor.a * 0.4f * getAlpha());
 		Shaders.filter.end();

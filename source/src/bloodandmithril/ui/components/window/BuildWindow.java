@@ -15,6 +15,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
@@ -115,11 +116,11 @@ public class BuildWindow extends ScrollableListingWindow<Construction, String> {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		if (!builder.isAlive()) {
 			setClosing(true);
 		}
-		super.internalWindowRender();
+		super.internalWindowRender(graphics);
 	};
 
 

@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -279,7 +280,7 @@ public abstract class Window extends Component {
 	public void renderWorldUIGuide() {}
 
 	/** Render implementation specific rendering of this {@link Window} */
-	protected abstract void internalWindowRender(SpriteBatch batch);
+	protected abstract void internalWindowRender(Graphics graphics);
 
 	/** Implementation-specific left click method */
 	protected abstract void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy);
@@ -289,22 +290,24 @@ public abstract class Window extends Component {
 
 	/** Renders this {@link Window} */
 	@Override
-	protected void internalComponentRender(SpriteBatch batch) {
+	protected void internalComponentRender(Graphics graphics) {
 		resize();
 		reposition();
+		
+		SpriteBatch batch = graphics.getSpriteBatch();
 
 		batch.begin();
 		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), width, height, isActive(), backGroundColor);
-		renderBox(x, y, width, height, isActive(), borderColor, batch);
+		renderBox(x, y, width, height, isActive(), borderColor, graphics);
 		renderSeparator(batch);
-		renderWindowButtons(batch);
+		renderWindowButtons(graphics);
 		renderTitle(batch);
 		batch.end();
 
 		batch.begin();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		internalWindowRender(batch);
+		internalWindowRender(graphics);
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 		batch.end();
 	}
@@ -364,14 +367,14 @@ public abstract class Window extends Component {
 	/**
 	 * Renders the window buttons of this {@link Window}
 	 */
-	private void renderWindowButtons(SpriteBatch batch) {
+	private void renderWindowButtons(Graphics graphics) {
 		if (closeable) {
 			closeButton.render(
 				x + width - 7,
 				y - close.getRegionHeight() - top.getRegionHeight() + 5,
 				isActive(),
 				isActive() ? getAlpha() : getAlpha() * 0.5f,
-				batch
+				graphics
 			);
 		}
 
@@ -381,7 +384,7 @@ public abstract class Window extends Component {
 				y - close.getRegionHeight() - top.getRegionHeight() + 5,
 				isActive(),
 				isActive() ? getAlpha() : getAlpha() * 0.5f,
-				batch
+				graphics
 			);
 		}
 
@@ -391,7 +394,7 @@ public abstract class Window extends Component {
 				y - height + 9,
 				isActive(),
 				isActive() ? getAlpha() : getAlpha() * 0.5f,
-				batch
+				graphics
 			);
 		}
 	}

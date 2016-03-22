@@ -13,6 +13,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -128,7 +129,7 @@ public class SelectedIndividualsControlWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		boolean someoneRunning = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
 			return individual.isWalking() ? 0 : 1;
 		}).sum() > 0;
@@ -149,21 +150,21 @@ public class SelectedIndividualsControlWindow extends Window {
 		buttons.get(0).setIdleColor(selected ? someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
 		buttons.get(0).setOverColor(selected ? buttonsActive ? someoneRunning ? Color.ORANGE : Color.GREEN : someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
 		buttons.get(0).setDownColor(selected ? buttonsActive ? Color.WHITE : someoneRunning ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
-		buttons.get(0).render(x + 27, y - 20, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
+		buttons.get(0).render(x + 27, y - 20, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f, graphics);
 
 		// Shut up button
 		buttons.get(1).text = someoneSpeaking ? () -> {return "Shut up";} : () -> {return "Speak";};
 		buttons.get(1).setIdleColor(selected ? someoneSpeaking ? Color.ORANGE : Color.GREEN : Colors.UI_GRAY);
 		buttons.get(1).setOverColor(selected ? buttonsActive ? someoneSpeaking ? Color.GREEN : Color.ORANGE : someoneSpeaking ? Color.ORANGE : Color.GREEN : Colors.UI_GRAY);
 		buttons.get(1).setDownColor(selected ? buttonsActive ? Color.WHITE : someoneSpeaking ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
-		buttons.get(1).render(x + 27, y - 40, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
+		buttons.get(1).render(x + 27, y - 40, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f, graphics);
 
 		// AI Suppression
 		buttons.get(2).text = someoneHasAISuppressed ? () -> {return "Enable AI";} : () -> {return "Disable AI";};
 		buttons.get(2).setIdleColor(selected ? someoneHasAISuppressed ? Color.ORANGE : Color.GREEN : Colors.UI_GRAY);
 		buttons.get(2).setOverColor(selected ? buttonsActive ? someoneHasAISuppressed ? Color.GREEN : Color.ORANGE : someoneHasAISuppressed ? Color.ORANGE : Color.GREEN : Colors.UI_GRAY);
 		buttons.get(2).setDownColor(selected ? buttonsActive ? Color.WHITE : someoneHasAISuppressed ? Color.GREEN : Color.ORANGE : Colors.UI_GRAY);
-		buttons.get(2).render(x + 27, y - 60, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f);
+		buttons.get(2).render(x + 27, y - 60, isActive(), isActive() ? getAlpha() : getAlpha() * 0.6f, graphics);
 	}
 
 

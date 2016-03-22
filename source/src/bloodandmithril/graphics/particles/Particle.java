@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.util.SerializableColor;
@@ -53,7 +54,7 @@ public abstract class Particle implements Serializable {
 	/**
 	 * Renders the point of this particle
 	 */
-	public abstract void render(float delta, TextureRegion texture);
+	public abstract void render(float delta, TextureRegion texture, Graphics graphics);
 
 	/**
 	 * Renders the movement line, if required

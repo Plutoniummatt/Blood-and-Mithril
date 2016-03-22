@@ -6,10 +6,10 @@ import java.util.Deque;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
@@ -232,19 +232,19 @@ public abstract class Routine extends AITask {
 		}
 
 		@Override
-		public void render(SpriteBatch batch) {
+		public void render(Graphics graphics) {
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
-					batch,
+				graphics.getSpriteBatch(),
 				"This routine can not occur more than once in " + Epoch.getTimeString(timeBetweenOcurrences),
 				x + 10,
 				y - height + 120,
 				width - 5
 			);
 
-			changeTimeBetweenOcurrences.render(x + 199, y - height + 50, parent.isActive(), parent.getAlpha(), batch);
-			changeTaskButton.render(x + 64, y - height + 30, parent.isActive(), parent.getAlpha(), batch);
+			changeTimeBetweenOcurrences.render(x + 199, y - height + 50, parent.isActive(), parent.getAlpha(), graphics);
+			changeTaskButton.render(x + 64, y - height + 30, parent.isActive(), parent.getAlpha(), graphics);
 		}
 
 		@Override

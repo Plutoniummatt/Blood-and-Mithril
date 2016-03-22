@@ -1,12 +1,15 @@
 package bloodandmithril.ui.components.window;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.util.Deque;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -15,9 +18,6 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Task;
 import bloodandmithril.util.Util.Colors;
-
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 
 /**
  * {@link Window} to display the a generic message.
@@ -109,7 +109,7 @@ public class MessageWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender() {
+	protected void internalWindowRender(Graphics graphics) {
 		defaultFont.setColor(isActive() ? Colors.modulateAlpha(messageColor, getAlpha()) : Colors.modulateAlpha(messageColor, 0.6f * getAlpha()));
 
 		TextBounds bounds = new TextBounds();
@@ -125,7 +125,7 @@ public class MessageWindow extends Window {
 		this.height = Math.max(this.height, this.minHeight);
 
 		defaultFont.drawWrapped(
-			getGraphics().getSpriteBatch(),
+			graphics.getSpriteBatch(),
 			message.call(),
 			x + 10,
 			y - 27,
@@ -133,7 +133,7 @@ public class MessageWindow extends Window {
 		);
 
 		if (button != null) {
-			button.render(x + width/2, y - height + 30, isActive(), getAlpha());
+			button.render(x + width/2, y - height + 30, isActive(), getAlpha(), graphics);
 		}
 	}
 

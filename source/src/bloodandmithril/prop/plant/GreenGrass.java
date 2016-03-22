@@ -2,12 +2,12 @@ package bloodandmithril.prop.plant;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.networking.ClientServerInterface;
@@ -45,11 +45,11 @@ public class GreenGrass extends PlantProp {
 
 
 	@Override
-	public void render() {
+	public void render(Graphics graphics) {
 		if (small) {
-			getGraphics().getSpriteBatch().draw(textureRegionSmall, position.x - width / 2, position.y - 5);
+			graphics.getSpriteBatch().draw(textureRegionSmall, position.x - width / 2, position.y - 5);
 		} else {
-			getGraphics().getSpriteBatch().draw(textureRegionBig, position.x - width / 2, position.y - 5);
+			graphics.getSpriteBatch().draw(textureRegionBig, position.x - width / 2, position.y - 5);
 		}
 	}
 

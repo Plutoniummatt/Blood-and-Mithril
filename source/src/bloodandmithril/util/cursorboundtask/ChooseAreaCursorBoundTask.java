@@ -6,11 +6,11 @@ import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.JITTask;
@@ -48,7 +48,7 @@ public abstract class ChooseAreaCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public void renderUIGuide(SpriteBatch batch) {
+	public void renderUIGuide(Graphics graphics) {
 		if (start == null) {
 			return;
 		} else {

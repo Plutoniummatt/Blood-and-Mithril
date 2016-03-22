@@ -26,11 +26,11 @@ public interface Renderer<T> {
 	 * Renders an instance of T
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> void render(T t) {
-		((Renderer<T>) Wiring.injector().getInstance(Renderers.class).map.get(t.getClass())).internalRender(t);
+	public static <T> void render(T t, Graphics graphics) {
+		((Renderer<T>) Wiring.injector().getInstance(Renderers.class).map.get(t.getClass())).internalRender(t, graphics);
 	}
 
-	public void internalRender(T t);
+	public void internalRender(T t, Graphics graphics);
 
 
 	@Singleton

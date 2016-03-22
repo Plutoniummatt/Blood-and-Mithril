@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
@@ -26,6 +25,7 @@ import com.google.common.collect.Sets;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
@@ -238,7 +238,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 
 	@Override
-	public void render(SpriteBatch batch) {
+	public void render(Graphics graphics) {
 		if (canScroll) {
 			// Render the scroll bar
 			renderScrollBar();
@@ -248,7 +248,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		}
 
 		// Render the listings
-		renderListing(batch);
+		renderListing(graphics);
 	}
 
 
@@ -273,7 +273,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	/**
 	 * Renders the listing
 	 */
-	private void renderListing(SpriteBatch batch) {
+	private void renderListing(Graphics graphics) {
 		if (listings.isEmpty()) {
 			return;
 		}
@@ -312,7 +312,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 					continue;
 				}
 				if (y - (i - (startingIndex == 0 ? 1 : startingIndex)) * 20 - 110 < y - height) {
-					defaultFont.draw(batch, "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
+					defaultFont.draw(graphics.getSpriteBatch(), "...", x + 6, y - (i - (startingIndex == 0 ? 1 : startingIndex) + 1) * 20 - 33);
 					break;
 				}
 
@@ -321,15 +321,15 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 					y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 25,
 					parent.isActive() && UserInterface.contextMenus.isEmpty(), parent.getAlpha(),
 					width - extraColumnWidth,
-					batch
+					graphics
 				);
 
-				defaultFont.draw(batch, getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
+				defaultFont.draw(graphics.getSpriteBatch(), getExtraString(item), x + width - getExtraStringOffset(), y - (i - startingIndex + (startingIndex == 0 ? 0 : 1)) * 20 - 33);
 				i++;
 			}
 		}
 
-		batch.flush();
+		graphics.getSpriteBatch().flush();
 	}
 
 

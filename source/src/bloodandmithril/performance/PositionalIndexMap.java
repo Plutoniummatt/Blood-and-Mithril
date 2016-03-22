@@ -1,6 +1,5 @@
 package bloodandmithril.performance;
 
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.world.topography.Topography.CHUNK_SIZE;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
@@ -17,6 +16,7 @@ import com.google.common.collect.Lists;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.MouseOverable;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.util.datastructure.ConcurrentDualKeyHashMap;
@@ -67,13 +67,13 @@ public class PositionalIndexMap implements Serializable {
 	/**
 	 * @return a {@link Collection} of entities of the same type, that are on screen
 	 */
-	public Collection<Integer> getOnScreenEntities(Class<?> clazz) {
+	public Collection<Integer> getOnScreenEntities(Class<?> clazz, Graphics graphics) {
 		return getEntitiesWithinBounds(
 			clazz,
-			getGraphics().getCam().position.x - getGraphics().getWidth(),
-			getGraphics().getCam().position.x + getGraphics().getWidth(),
-			getGraphics().getCam().position.y + getGraphics().getHeight(),
-			getGraphics().getCam().position.y - getGraphics().getHeight()
+			graphics.getCam().position.x - graphics.getWidth(),
+			graphics.getCam().position.x + graphics.getWidth(),
+			graphics.getCam().position.y + graphics.getHeight(),
+			graphics.getCam().position.y - graphics.getHeight()
 		);
 	}
 

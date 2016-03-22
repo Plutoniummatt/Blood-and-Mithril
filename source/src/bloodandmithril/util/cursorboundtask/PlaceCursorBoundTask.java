@@ -12,7 +12,6 @@ import static com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
@@ -20,6 +19,7 @@ import bloodandmithril.character.ai.task.PlaceProp;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.PropItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
@@ -84,7 +84,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 
 
 		@Override
-		public void renderUIGuide(SpriteBatch batch) {
+		public void renderUIGuide(Graphics graphics) {
 			renderGuide(toPlace);
 		}
 

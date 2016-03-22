@@ -1,7 +1,6 @@
 package bloodandmithril.ui.components;
 
 import static bloodandmithril.control.InputUtilities.worldToScreen;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 import static bloodandmithril.util.Fonts.defaultFont;
 
 import java.io.Serializable;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util.Colors;
@@ -58,7 +58,7 @@ public class TextBubble extends Component {
 
 
 	@Override
-	protected void internalComponentRender() {
+	protected void internalComponentRender(Graphics graphics) {
 		Vector2 screen = worldToScreen(position.call());
 
 		int width = 300;
@@ -72,18 +72,18 @@ public class TextBubble extends Component {
 		}
 
 		renderRectangle((int) screen.x + 2 + xOffset - width / 2, (int) screen.y + 2 + yOffset+ height / 2, width, height, isActive(), Color.BLACK);
-		renderBox((int) screen.x + xOffset - width / 2, (int) screen.y + yOffset + height / 2, width, height, isActive(), Color.GRAY);
+		renderBox((int) screen.x + xOffset - width / 2, (int) screen.y + yOffset + height / 2, width, height, isActive(), Color.GRAY, graphics);
 
-		getGraphics().getSpriteBatch().setShader(Shaders.text);
+		graphics.getSpriteBatch().setShader(Shaders.text);
 		defaultFont.setColor(Colors.modulateAlpha(Color.WHITE, getAlpha()));
 		defaultFont.drawWrapped(
-			getGraphics().getSpriteBatch(),
+			graphics.getSpriteBatch(),
 			bean.text,
 			(int) screen.x + 5 + xOffset - width / 2,
 			(int) screen.y - 5 + yOffset + height / 2,
 			width - 5
 		);
-		getGraphics().getSpriteBatch().flush();
+		graphics.getSpriteBatch().flush();
 	}
 
 

@@ -2,7 +2,6 @@ package bloodandmithril.prop.plant;
 
 import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.getGraphics;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.google.common.collect.Maps;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
@@ -88,8 +88,8 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 
 
 	@Override
-	public void render() {
-		getGraphics().getSpriteBatch().draw(textures.get(texture), position.x - width / 2, position.y);
+	public void render(Graphics graphics) {
+		graphics.getSpriteBatch().draw(textures.get(texture), position.x - width / 2, position.y);
 	}
 
 

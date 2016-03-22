@@ -41,6 +41,7 @@ import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -519,7 +520,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 							return f.getId().getId();
 						}
 						@Override
-						public void renderUIGuide() {
+						public void renderUIGuide(Graphics graphics) {
 							UserInterface.shapeRenderer.begin(ShapeType.Line);
 							UserInterface.shapeRenderer.setColor(Color.RED);
 							Gdx.gl20.glLineWidth(2f);

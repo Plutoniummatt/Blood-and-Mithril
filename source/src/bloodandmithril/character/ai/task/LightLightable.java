@@ -39,6 +39,7 @@ import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.FireLighter;
 import bloodandmithril.prop.Lightable;
 import bloodandmithril.prop.Prop;
@@ -434,7 +435,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 								return f.id;
 							}
 							@Override
-							public void renderUIGuide() {
+							public void renderUIGuide(Graphics graphics) {
 								UserInterface.shapeRenderer.begin(ShapeType.Line);
 								UserInterface.shapeRenderer.setColor(Color.RED);
 								Gdx.gl20.glLineWidth(2f);
