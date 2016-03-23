@@ -64,7 +64,8 @@ public class InfoPopup extends Component {
 			panel.width + 10,
 			panel.height + 10,
 			true,
-			backGroundColor
+			backGroundColor,
+			graphics
 		);
 
 		renderBox(

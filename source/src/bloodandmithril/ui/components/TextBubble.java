@@ -71,7 +71,7 @@ public class TextBubble extends Component {
 			width = (int) wrappedBounds.width + 10;
 		}
 
-		renderRectangle((int) screen.x + 2 + xOffset - width / 2, (int) screen.y + 2 + yOffset+ height / 2, width, height, isActive(), Color.BLACK);
+		renderRectangle((int) screen.x + 2 + xOffset - width / 2, (int) screen.y + 2 + yOffset+ height / 2, width, height, isActive(), Color.BLACK, graphics);
 		renderBox((int) screen.x + xOffset - width / 2, (int) screen.y + yOffset + height / 2, width, height, isActive(), Color.GRAY, graphics);
 
 		graphics.getSpriteBatch().setShader(Shaders.text);

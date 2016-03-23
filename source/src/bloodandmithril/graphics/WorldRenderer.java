@@ -1,6 +1,6 @@
 package bloodandmithril.graphics;
 
-import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
+import static bloodandmithril.graphics.Graphics.isOnScreen;
 import static bloodandmithril.graphics.WorldRenderer.Depth.BACKGROUND;
 import static bloodandmithril.graphics.WorldRenderer.Depth.FOREGROUND;
 import static bloodandmithril.graphics.WorldRenderer.Depth.MIDDLEGROUND;

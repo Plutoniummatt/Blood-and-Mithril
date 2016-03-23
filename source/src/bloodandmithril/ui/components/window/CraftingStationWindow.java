@@ -301,7 +301,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 
 	private void renderItemIcon(Graphics graphics) {
-		renderRectangle(x + width - 74, y - 30, 64, 64, isActive(), modulateAlpha(Color.BLACK, 0.5f));
+		renderRectangle(x + width - 74, y - 30, 64, 64, isActive(), modulateAlpha(Color.BLACK, 0.5f), graphics);
 		renderBox(x + width - 76, y - 32, 64, 64, isActive(), borderColor, graphics);
 
 		TextureRegion icon = currentlySelectedToCraft.t.getIconTextureRegion();

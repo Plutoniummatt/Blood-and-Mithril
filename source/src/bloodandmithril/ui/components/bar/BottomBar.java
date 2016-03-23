@@ -324,7 +324,7 @@ public class BottomBar extends Component {
 	@Override
 	protected void internalComponentRender(Graphics graphics) {
 		graphics.getSpriteBatch().begin();
-		renderRectangle(0, 34, getGdxWidth(), 34, true, Color.BLACK);
+		renderRectangle(0, 34, getGdxWidth(), 34, true, Color.BLACK, graphics);
 		renderBox(-left.getRegionWidth(), 32, getGdxWidth(), 34, true, Color.DARK_GRAY, graphics);
 		mainMenu.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
 		windows.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);

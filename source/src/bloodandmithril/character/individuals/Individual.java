@@ -393,7 +393,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 				1f
 			);
 
-			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
+			Shaders.filter.setUniformMatrix("u_projTrans", graphics.getUi().getUITrackingCamera().combined);
 			batch.draw(UserInterface.currentArrow, state.position.x - 5, state.position.y + getHeight() + 10);
 		}
 
@@ -421,7 +421,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 		if (isAlive() && isMouseOver() && isKeyPressed(input.getKeyMappings().attack.keyCode) && !isKeyPressed(input.getKeyMappings().rangedAttack.keyCode)) {
 			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.isIndividualSelected(this) || Domain.getSelectedIndividuals().size() > 1)) {
 				batch.setShader(Shaders.filter);
-				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+				Shaders.filter.setUniformMatrix("u_projTrans", graphics.getUi().getUICamera().combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
 				Fonts.defaultFont.draw(batch, "Attack Melee", getMouseScreenX() + 14, getMouseScreenY() - 26);
 				batch.flush();

@@ -116,7 +116,7 @@ public class ItemInfoWindow extends Window {
 	 * Renders the item icon
 	 */
 	private void renderItemIcon(Graphics graphics) {
-		renderRectangle(x + width - 74, y - 30, 64, 64, isActive(), modulateAlpha(Color.BLACK, 1f));
+		renderRectangle(x + width - 74, y - 30, 64, 64, isActive(), modulateAlpha(Color.BLACK, 1f), graphics);
 		renderBox(x + width - 76, y - 32, 64, 64, isActive(), Color.GRAY, graphics);
 
 		TextureRegion icon = item.getIconTextureRegion();

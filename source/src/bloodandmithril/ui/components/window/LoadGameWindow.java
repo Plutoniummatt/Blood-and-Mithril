@@ -1,5 +1,7 @@
 package bloodandmithril.ui.components.window;
 
+import static bloodandmithril.util.Util.threadWait;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Deque;
@@ -13,6 +15,7 @@ import com.google.inject.Inject;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameSetupService;
 import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -42,6 +45,7 @@ public class LoadGameWindow extends Window {
 	@Inject	private Graphics graphics;
 	@Inject	private GameLoader gameLoader;
 	@Inject	private ChunkLoader chunkLoader;
+	@Inject private GameSetupService gameSetupService;
 
 	/**
 	 * Constructor
@@ -122,18 +126,18 @@ public class LoadGameWindow extends Window {
 									ClientServerInterface.setServer(true);
 									graphics.setFading(true);
 									MainMenuWindow.removeWindows();
-									BloodAndMithrilClient.threadWait(2000);
+									threadWait(2000);
 									BloodAndMithrilClient.setLoading(true);
 									gameLoader.load(metadata, false);
 									BloodAndMithrilClient.setInGame(true);
-									BloodAndMithrilClient.setup();
+									gameSetupService.setup();
 
 									while(!chunkLoader.loaderTasks.isEmpty()) {
-										BloodAndMithrilClient.threadWait(100);
+										threadWait(100);
 									}
 
 									BloodAndMithrilClient.setLoading(false);
-									BloodAndMithrilClient.threadWait(2000);
+									threadWait(2000);
 									graphics.setFading(false);
 								}
 							);

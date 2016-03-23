@@ -82,7 +82,7 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		graphics.getSpriteBatch().begin();
 		graphics.getSpriteBatch().setShader(Shaders.filter);
-		Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
+		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getUi().getUITrackingCamera().combined);
 		for (Entry<Integer, Individual> entry : individuals.entrySet()) {
 			Vector2 pos;
 			try {

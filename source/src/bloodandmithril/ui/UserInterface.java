@@ -12,6 +12,8 @@ import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
 import static bloodandmithril.core.BloodAndMithrilClient.loading;
 import static bloodandmithril.core.BloodAndMithrilClient.paused;
+import static bloodandmithril.graphics.Graphics.getGdxHeight;
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -59,6 +61,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.AITask;
@@ -118,6 +121,7 @@ import bloodandmithril.world.topography.tile.Tile.EmptyTile;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2014")
 public class UserInterface {
 
@@ -128,11 +132,11 @@ public class UserInterface {
 	private static final Color COMPONENT_FILL_COLOR = new Color(0f, 1f, 0f, 0.15f);
 
 	/** UI camera */
-	public static OrthographicCamera UICamera;
-	public static OrthographicCamera UICameraTrackingCam;
+	private OrthographicCamera UICamera;
+	private OrthographicCamera UICameraTrackingCam;
 
 	/** List of {@link Button}s */
-	public static HashMap<String, Button> buttons = newHashMap();
+	public HashMap<String, Button> buttons = newHashMap();
 
 	/** Unpause button */
 	private static Button unpauseButton, savingButton;
@@ -205,6 +209,31 @@ public class UserInterface {
 			shapeRenderer = new ShapeRenderer();
 		}
 	}
+
+
+	public UserInterface() {
+		UICamera = new OrthographicCamera(getGdxWidth(), getGdxHeight());
+		UICamera.setToOrtho(false, getGdxWidth(), getGdxHeight());
+		UICameraTrackingCam = new OrthographicCamera(getGdxWidth(), getGdxHeight());
+		UICameraTrackingCam.setToOrtho(false, getGdxWidth(), getGdxHeight());
+	}
+
+
+	/**
+	 * @return a Camera that is used to display UI elements, but the coordiantes move with the main game camera
+	 */
+	public OrthographicCamera getUITrackingCamera() {
+		return UICameraTrackingCam;
+	}
+
+
+	/**
+	 * @return a Camera that is fixed to the game window
+	 */
+	public OrthographicCamera getUICamera() {
+		return UICamera;
+	}
+
 
 	/**
 	 * Setup for UI, makes everything it needs.
@@ -283,7 +312,7 @@ public class UserInterface {
 	/**
 	 * Load the buttons
 	 */
-	public static void loadButtons() {
+	public void loadButtons() {
 		Button pauseButton = new Button(
 			"Pause",
 			defaultFont,
@@ -348,7 +377,7 @@ public class UserInterface {
 	/**
 	 * Renders the UI
 	 */
-	public static void render() {
+	public void render() {
 
 		while (!uiTasks.isEmpty()) {
 			uiTasks.poll().execute();
@@ -492,7 +521,7 @@ public class UserInterface {
 	}
 
 
-	private static void renderHint() {
+	private void renderHint() {
 		if (inputProcessor.getCursorBoundTask() == null && contextMenus.isEmpty() && Domain.getActiveWorld() != null && !isKeyPressed(Keys.ANY_KEY)) {
 			boolean renderHint = false;
 			PositionalIndexMap positionalIndexMap = Domain.getActiveWorld().getPositionalIndexMap();
@@ -528,7 +557,7 @@ public class UserInterface {
 			if (renderHint) {
 				graphics.getSpriteBatch().begin();
 				graphics.getSpriteBatch().setShader(Shaders.filter);
-				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+				Shaders.filter.setUniformMatrix("u_projTrans", UICamera.combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), "?", getMouseScreenX() + 14, getMouseScreenY() - 5);
 				graphics.getSpriteBatch().flush();
@@ -583,12 +612,12 @@ public class UserInterface {
 	}
 
 
-	private static void renderCursorBoundTaskText() {
+	private void renderCursorBoundTaskText() {
 		if (inputProcessor.getCursorBoundTask() != null) {
 			inputProcessor.getCursorBoundTask().renderUIGuide(graphics);
 			graphics.getSpriteBatch().begin();
 			graphics.getSpriteBatch().setShader(Shaders.filter);
-			Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+			Shaders.filter.setUniformMatrix("u_projTrans", UICamera.combined);
 			Shaders.filter.setUniformf("color", Color.BLACK);
 			Fonts.defaultFont.draw(
 				graphics.getSpriteBatch(),
@@ -1021,7 +1050,7 @@ public class UserInterface {
 
 
 	/** Any text that is rendered on UI */
-	private static void renderUIText() {
+	private void renderUIText() {
 		defaultFont.setColor(Color.WHITE);
 		defaultFont.draw(graphics.getSpriteBatch(), "Time: " + Domain.getActiveWorld().getEpoch().getTimeString(), 5, graphics.getHeight() - 5);
 		defaultFont.draw(graphics.getSpriteBatch(), "Date: " + Domain.getActiveWorld().getEpoch().getDateString(), 5, graphics.getHeight() - 25);
@@ -1040,7 +1069,7 @@ public class UserInterface {
 	}
 
 
-	private static void renderMouseText() {
+	private void renderMouseText() {
 		if (inputProcessor.getCursorBoundTask() != null) {
 			return;
 		}
@@ -1073,7 +1102,7 @@ public class UserInterface {
 				}
 
 				graphics.getSpriteBatch().setShader(Shaders.filter);
-				Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+				Shaders.filter.setUniformMatrix("u_projTrans", UICamera.combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), text, getMouseScreenX() + 14, getMouseScreenY() - 26);
 				graphics.getSpriteBatch().flush();
@@ -1090,7 +1119,7 @@ public class UserInterface {
 
 				if (canAttackRanged) {
 					graphics.getSpriteBatch().setShader(Shaders.filter);
-					Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+					Shaders.filter.setUniformMatrix("u_projTrans", UICamera.combined);
 					Shaders.filter.setUniformf("color", Color.BLACK);
 					Fonts.defaultFont.draw(graphics.getSpriteBatch(), "Attack Ranged", getMouseScreenX() + 14, getMouseScreenY() - 26);
 					graphics.getSpriteBatch().flush();
@@ -1101,7 +1130,7 @@ public class UserInterface {
 				graphics.getSpriteBatch().flush();
 				if (renderMouseOverTileHighlightBox(true)) {
 					graphics.getSpriteBatch().setShader(Shaders.filter);
-					Shaders.filter.setUniformMatrix("u_projTrans", UserInterface.UICamera.combined);
+					Shaders.filter.setUniformMatrix("u_projTrans", UICamera.combined);
 					Shaders.filter.setUniformf("color", Color.BLACK);
 					Fonts.defaultFont.draw(graphics.getSpriteBatch(), "Mine", getMouseScreenX() + 14, getMouseScreenY() - 26);
 					graphics.getSpriteBatch().flush();
@@ -1231,7 +1260,7 @@ public class UserInterface {
 	/**
 	 * Renders all buttons
 	 */
-	private static void renderButtons() {
+	private void renderButtons() {
 		for (Entry<String, Button> buttonEntry : buttons.entrySet()) {
 			buttonEntry.getValue().render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
 		}
@@ -1241,7 +1270,7 @@ public class UserInterface {
 	/**
 	 * Updates the camera
 	 */
-	public static void update() {
+	public void update() {
 		UICamera.update();
 		UICameraTrackingCam.position.x = graphics.getCam().position.x;
 		UICameraTrackingCam.position.y = graphics.getCam().position.y;
@@ -1252,7 +1281,7 @@ public class UserInterface {
 	/**
 	 * Called when left mouse button is clicked
 	 */
-	public static boolean leftClick() {
+	public boolean leftClick() {
 		boolean clicked = false;
 
 		if (BloodAndMithrilClient.paused.get()) {
@@ -1712,5 +1741,15 @@ public class UserInterface {
 
 	public static void setInfoPopup(InfoPopup infoPopup) {
 		UserInterface.infoPopup = infoPopup;
+	}
+
+
+	public void addButton(String name, Button button) {
+		buttons.put(name, button);
+	}
+
+
+	public void removeButton(String button) {
+		buttons.remove(button);
 	}
 }

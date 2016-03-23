@@ -1,5 +1,6 @@
 package bloodandmithril.prop.construction.craftingstation;
 
+import static bloodandmithril.graphics.Graphics.isOnScreen;
 import static bloodandmithril.item.items.material.ArrowHeadItem.arrowHead;
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
@@ -14,7 +15,6 @@ import com.google.common.collect.Maps;
 import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.graphics.Graphics;
@@ -84,7 +84,7 @@ public class BlacksmithWorkshop extends CraftingStation {
 
 		if (isOccupied()) {
 			if (isClient()) {
-				if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
+				if (isOnScreen(position, 50f)) {
 					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 10f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 1.5f, 2f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 					ParticleService.randomVelocityDiminishing(position.cpy().add(35, height - 2), 7f, 30f, Colors.LIGHT_SMOKE, Color.BLACK, 5f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(4000), Depth.MIDDLEGROUND, false, null);
 				}

@@ -50,6 +50,18 @@ public class Util {
 
 
 	/**
+	 * Instructs calling thread to sleep for specified number of milliseconds
+	 */
+	public static void threadWait(long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+
+	/**
 	 * @return - The truncated string appended with ...
 	 */
 	public static String truncate(String toTruncate, int length) {

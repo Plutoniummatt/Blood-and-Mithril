@@ -1,6 +1,9 @@
 package bloodandmithril.persistence.world;
 
+import static bloodandmithril.graphics.Graphics.getGdxHeight;
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.persistence.PersistenceUtil.decode;
+import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -17,6 +20,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.GlobalLayers;
+import bloodandmithril.graphics.Graphics;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.ZipHelper;
 import bloodandmithril.util.Logger;
@@ -195,5 +199,41 @@ public class ChunkLoader {
 			// Remove chunk from queue.
 			chunksInQueue.remove(chunkX, chunkY);
 		}
+	}
+
+
+	/**
+	 * @return whether the chunks on screen are generated/loaded
+	 */
+	public boolean areChunksOnScreenGenerated(Graphics graphics) {
+		int camX = (int) graphics.getCam().position.x;
+		int camY = (int) graphics.getCam().position.y;
+
+		int bottomLeftX = convertToChunkCoord((float)(camX - getGdxWidth() / 2));
+		int bottomLeftY = convertToChunkCoord((float)(camY - getGdxHeight() / 2));
+		int topRightX = bottomLeftX + convertToChunkCoord((float) getGdxWidth());
+		int topRightY = bottomLeftY + convertToChunkCoord((float) getGdxHeight());
+
+		World activeWorld = Domain.getActiveWorld();
+
+		if (activeWorld == null) {
+			return true;
+		}
+
+		Topography topography = activeWorld.getTopography();
+
+		if (topography == null) {
+			return true;
+		}
+
+		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
+			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {
+				if (topography.getChunkMap().get(chunkX) == null || topography.getChunkMap().get(chunkX).get(chunkY) == null) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 }

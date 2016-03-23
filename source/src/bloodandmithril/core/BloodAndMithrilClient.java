@@ -3,11 +3,6 @@ package bloodandmithril.core;
 import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.setInputProcessor;
-import static bloodandmithril.control.InputUtilities.worldToScreenX;
-import static bloodandmithril.control.InputUtilities.worldToScreenY;
-import static bloodandmithril.graphics.Graphics.getGdxHeight;
-import static bloodandmithril.graphics.Graphics.getGdxWidth;
-import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 
 import java.util.Collection;
 import java.util.Map;
@@ -18,7 +13,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -36,12 +30,10 @@ import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
-import bloodandmithril.graphics.background.Layer;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.objectives.Mission;
-import bloodandmithril.performance.PositionalIndexingService;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
@@ -117,7 +109,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	public void create() {
 		// Load client-side resources
 		Wiring.setupInjector(new ClientModule(), new CommonModule());
-		ClientServerInterface.setClient(true);
 
 		loadResources();
 
@@ -133,7 +124,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 		Wiring.injector().injectMembers(this);
 
-		graphics.getCam().position.y = Layer.getCameraYForHorizonCoord(graphics.getHeight()/3);
 		setInputProcessor(inputProcessor);
 	}
 
@@ -142,6 +132,8 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	 * Loads global resources, client side
 	 */
 	private void loadResources() {
+		ClientServerInterface.setClient(true);
+
 		Domain.setup();
 		WorldRenderer.setup();
 		WorldRenderer.shapeRenderer = new ShapeRenderer();
@@ -159,11 +151,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		GaussianLightingRenderer.setup();
 		Item.setup();
 		UserInterface.setup();
-
-		UserInterface.UICamera = new OrthographicCamera(getGdxWidth(), getGdxHeight());
-		UserInterface.UICamera.setToOrtho(false, getGdxWidth(), getGdxHeight());
-		UserInterface.UICameraTrackingCam = new OrthographicCamera(getGdxWidth(), getGdxHeight());
-		UserInterface.UICameraTrackingCam.setToOrtho(false, getGdxWidth(), getGdxHeight());
 
 		UserInterface.addLayeredComponent(
 			new MainMenuWindow(false)
@@ -197,7 +184,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 			// Camera --------------------- /
 			graphics.getCam().update();
-			UserInterface.update();
+			graphics.getUi().update();
 
 			// Blending --------------------- /
 			Gdx.gl20.glClearColor(0f, 0f, 0f, 0f);
@@ -213,7 +200,8 @@ public class BloodAndMithrilClient implements ApplicationListener {
 			// Fading --------------------- /
 			fading();
 
-			UserInterface.render();
+			// UI Rendering --------------------- /
+			graphics.getUi().render();
 
 			graphics.getCam().position.x = x;
 			graphics.getCam().position.y = y;
@@ -276,17 +264,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 
 	/**
-	 * True is specified world coordinates are on screen within specified tolerance
-	 */
-	public static boolean isOnScreen(Vector2 position, float tolerance) {
-		float screenX = worldToScreenX(position.x);
-		float screenY = worldToScreenY(position.y);
-
-		return screenX > -tolerance && screenX < Graphics.getGdxWidth() + tolerance && screenY > -tolerance && screenY < Graphics.getGdxHeight() + tolerance;
-	}
-
-
-	/**
 	 * Get mouse world coord y
 	 */
 	public static Vector2 getMouseWorldCoords() {
@@ -295,70 +272,10 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 
 	/**
-	 * Initial setup
-	 */
-	public static void setup() {
-		SoundService.changeMusic(2f, SoundService.desertAmbient);
-		UserInterface.contextMenus.clear();
-		PositionalIndexingService.reindex();
-		UserInterface.loadBars();
-		UserInterface.loadButtons();
-	}
-
-
-	/**
-	 * @return whether the chunks on screen are generated/loaded
-	 */
-	public static boolean areChunksOnScreenGenerated(Graphics graphics) {
-		int camX = (int) graphics.getCam().position.x;
-		int camY = (int) graphics.getCam().position.y;
-
-		int bottomLeftX = convertToChunkCoord((float)(camX - getGdxWidth() / 2));
-		int bottomLeftY = convertToChunkCoord((float)(camY - getGdxHeight() / 2));
-		int topRightX = bottomLeftX + convertToChunkCoord((float) getGdxWidth());
-		int topRightY = bottomLeftY + convertToChunkCoord((float) getGdxHeight());
-
-		World activeWorld = Domain.getActiveWorld();
-
-		if (activeWorld == null) {
-			return true;
-		}
-
-		Topography topography = activeWorld.getTopography();
-
-		if (topography == null) {
-			return true;
-		}
-
-		for (int chunkX = bottomLeftX - 2; chunkX <= topRightX + 2; chunkX++) {
-			for (int chunkY = bottomLeftY - 2; chunkY <= topRightY + 2; chunkY++) {
-				if (topography.getChunkMap().get(chunkX) == null || topography.getChunkMap().get(chunkX).get(chunkY) == null) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-
-	/**
 	 * Sets the boolean value to indicate whether or not the loading screen should be rendered
 	 */
 	public static void setLoading(boolean loading) {
 		BloodAndMithrilClient.loading.set(loading);
-	}
-
-
-	/**
-	 * Instructs calling thread to sleep for specified number of milliseconds
-	 */
-	public static void threadWait(long millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 

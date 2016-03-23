@@ -2,9 +2,9 @@ package bloodandmithril.graphics;
 
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
-import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
 import static bloodandmithril.graphics.Graphics.getGdxHeight;
 import static bloodandmithril.graphics.Graphics.getGdxWidth;
+import static bloodandmithril.graphics.Graphics.isOnScreen;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.badlogic.gdx.Gdx.gl;
 import static com.badlogic.gdx.graphics.GL20.GL_TEXTURE0;
@@ -125,7 +125,7 @@ public class GaussianLightingRenderer {
 	 */
 	public static void setup() {
 		graphics = Wiring.injector().getInstance(Graphics.class);
-		
+
 		workingDownSampled = new FrameBuffer(
 			RGBA8888,
 			(getGdxWidth() + graphics.getCamMarginX()) / 16,
@@ -262,11 +262,11 @@ public class GaussianLightingRenderer {
 		batch.draw(workingFBO.getColorBufferTexture(), 0, 0);
 		batch.flush();
 		batch.setShader(Shaders.invertYFilter);
-		
+
 		float r = WeatherRenderer.getDaylightColor(Domain.getActiveWorld()).g;
-		
+
 		Shaders.invertYFilter.setUniformf("color", r, r, r, 0.9f);
-		
+
 		batch.draw(WorldRenderer.cloudBuffer.getColorBufferTexture(), 0, 0);
 		batch.end();
 	}

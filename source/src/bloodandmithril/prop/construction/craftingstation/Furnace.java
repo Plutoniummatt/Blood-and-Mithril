@@ -1,5 +1,6 @@
 package bloodandmithril.prop.construction.craftingstation;
 
+import static bloodandmithril.graphics.Graphics.isOnScreen;
 import static bloodandmithril.item.items.material.IngotItem.ingot;
 import static com.google.common.collect.Maps.newHashMap;
 
@@ -12,7 +13,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.google.common.collect.Maps;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Name;
 import bloodandmithril.graphics.Graphics;
@@ -108,7 +108,7 @@ public class Furnace extends CraftingStation implements Container {
 		super.update(delta);
 
 		if (isOccupied()) {
-			if (BloodAndMithrilClient.isOnScreen(position, 50f)) {
+			if (isOnScreen(position, 50f)) {
 				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 6f, 30f, Color.ORANGE, Color.ORANGE, 2f, 8f, MovementMode.EMBER, Util.getRandom().nextInt(600), Depth.MIDDLEGROUND, false, Color.RED);
 				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 6f, 30f, Color.ORANGE, Color.ORANGE, 1f, 6f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Color.RED);
 				ParticleService.randomVelocityDiminishing(position.cpy().add(0, height - 38), 30f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);

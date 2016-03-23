@@ -120,7 +120,7 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 
 			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
 			graphics.getSpriteBatch().setShader(Shaders.pass);
-			Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
+			Shaders.pass.setUniformMatrix("u_projTrans", graphics.getUi().getUITrackingCamera().combined);
 			graphics.getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y + offset * 10f);
 		} else if (task instanceof Jump) {
 			Vector2 start = null;

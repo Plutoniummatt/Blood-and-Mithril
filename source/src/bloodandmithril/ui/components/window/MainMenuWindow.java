@@ -15,6 +15,7 @@ import com.google.inject.Inject;
 
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameSetupService;
 import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -39,6 +40,8 @@ public class MainMenuWindow extends Window {
 
 	@Inject	private Threading threading;
 	@Inject	private GameSaver gameSaver;
+	@Inject private UserInterface userInterface;
+	@Inject private GameSetupService gameSetupService;
 
 	/**
 	 * Constructor
@@ -209,7 +212,7 @@ public class MainMenuWindow extends Window {
 
 										Domain.setActiveWorld(Domain.getWorlds().keySet().iterator().next().intValue());
 										BloodAndMithrilClient.setInGame(true);
-										BloodAndMithrilClient.setup();
+										gameSetupService.setup();
 									} catch (Exception e) {
 
 										// Deactivate all windows, close the connecting message pop-up.
@@ -254,7 +257,7 @@ public class MainMenuWindow extends Window {
 						""
 					)
 				);
-				UserInterface.buttons.remove("connect");
+				userInterface.removeButton("connect");
 			},
 			Color.ORANGE,
 			Color.GREEN,
@@ -309,7 +312,7 @@ public class MainMenuWindow extends Window {
 
 
 	public static void removeWindows() {
-		UserInterface.buttons.remove("connect");
+		Wiring.injector().getInstance(UserInterface.class).removeButton("connect");
 		for (Component component : UserInterface.getLayeredComponents()) {
 			if (component instanceof Window && ((Window) component).title.equals("Connecting") ||
 				component instanceof Window && ((Window) component).title.equals("Enter IP") ||

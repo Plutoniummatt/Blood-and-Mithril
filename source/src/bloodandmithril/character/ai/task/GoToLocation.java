@@ -200,7 +200,7 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 					return;
 				}
 				graphics.getSpriteBatch().setShader(Shaders.pass);
-				Shaders.pass.setUniformMatrix("u_projTrans", UserInterface.UICameraTrackingCam.combined);
+				Shaders.pass.setUniformMatrix("u_projTrans", graphics.getUi().getUITrackingCamera().combined);
 				graphics.getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y);
 			} catch (NullPointerException e) {
 				// ???

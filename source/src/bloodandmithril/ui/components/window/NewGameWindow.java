@@ -5,6 +5,7 @@ import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.util.Fonts.defaultFont;
+import static bloodandmithril.util.Util.threadWait;
 import static bloodandmithril.util.Util.Colors.lightColor;
 import static bloodandmithril.util.Util.Colors.lightSkinColor;
 import static com.google.common.collect.Collections2.filter;
@@ -40,6 +41,7 @@ import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
+import bloodandmithril.core.GameSetupService;
 import bloodandmithril.core.ItemPackage;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Threading;
@@ -90,6 +92,7 @@ public class NewGameWindow extends Window {
 	@Inject	private FactionControlService factionControlService;
 	@Inject	private GameLoader gameLoader;
 	@Inject	private ChunkLoader chunkLoader;
+	@Inject private GameSetupService gameSetupService;
 
 	private Button next;
 	private Button startGame = new Button(
@@ -132,14 +135,14 @@ public class NewGameWindow extends Window {
 		threading.clientProcessingThreadPool.execute(() -> {
 			UserInterface.closeAllWindows();
 			graphics.setFading(true);
-			BloodAndMithrilClient.threadWait(1500);
+			threadWait(1500);
 			BloodAndMithrilClient.setLoading(true);
 			ClientServerInterface.setServer(true);
 
 			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 			Domain.setActiveWorld(Domain.createWorld());
 			BloodAndMithrilClient.setInGame(true);
-			BloodAndMithrilClient.setup();
+			gameSetupService.setup();
 			factionControlService.control(playerFaction.factionId);
 
 			Topography topography = Domain.getActiveWorld().getTopography();
@@ -147,7 +150,7 @@ public class NewGameWindow extends Window {
 
 			SuperStructure superStructure = null;
 			while (superStructure == null || superStructure.getPossibleStartingLocations().isEmpty()) {
-				BloodAndMithrilClient.threadWait(1000);
+				threadWait(1000);
 
 				superStructure = (SuperStructure) Iterables.tryFind(Structures.getStructures().values(), structure -> {
 					return structure instanceof SuperStructure;
@@ -175,7 +178,7 @@ public class NewGameWindow extends Window {
 			);
 
 			while(!chunkLoader.loaderTasks.isEmpty()) {
-				BloodAndMithrilClient.threadWait(100);
+				threadWait(100);
 			}
 
 			BloodAndMithrilClient.setLoading(false);

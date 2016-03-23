@@ -1,6 +1,6 @@
 package bloodandmithril.prop.construction.craftingstation;
 
-import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
+import static bloodandmithril.graphics.Graphics.isOnScreen;
 import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;

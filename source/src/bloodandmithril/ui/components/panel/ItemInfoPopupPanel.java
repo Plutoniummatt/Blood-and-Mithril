@@ -93,7 +93,7 @@ public class ItemInfoPopupPanel extends Panel {
 
 		graphics.getSpriteBatch().flush();
 
-		renderRectangle(x + width - 76 + 3, y + 3, 64, 64, true, modulateAlpha(Color.BLACK, 1f));
+		renderRectangle(x + width - 76 + 3, y + 3, 64, 64, true, modulateAlpha(Color.BLACK, 1f), graphics);
 		renderBox(x + width - 76, y, 64, 64, true, Color.GRAY, graphics);
 		TextureRegion icon = item.getIconTextureRegion();
 		if (icon != null) {

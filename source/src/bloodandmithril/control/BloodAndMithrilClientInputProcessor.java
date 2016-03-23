@@ -373,7 +373,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 		boolean doubleClick = Controls.leftDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTimeMillis;
 		Controls.leftDoubleClickTimer = currentTimeMillis;
 
-		boolean uiClicked = UserInterface.leftClick();
+		boolean uiClicked = graphics.getUi().leftClick();
 
 		Individual individualClicked = null;
 		if (Domain.getActiveWorld() != null) {

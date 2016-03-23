@@ -172,10 +172,10 @@ public abstract class Component {
 	/**
 	 * Renders a rectangle
 	 */
-	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor) {
+	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor, Graphics graphics) {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(1f, 0f, 0f, 0.5f * getAlpha());
-		shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
+		shapeRenderer.setProjectionMatrix(graphics.getUi().getUICamera().combined);
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -203,10 +203,10 @@ public abstract class Component {
 	/**
 	 * Renders a rectangle
 	 */
-	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor, float alphaOverride) {
+	protected void renderRectangle(int renderX, int renderY, int length, int height, boolean active, Color backGroundColor, float alphaOverride, Graphics graphics) {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(1f, 0f, 0f, 0.5f * alphaOverride);
-		shapeRenderer.setProjectionMatrix(UserInterface.UICamera.combined);
+		shapeRenderer.setProjectionMatrix(graphics.getUi().getUICamera().combined);
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

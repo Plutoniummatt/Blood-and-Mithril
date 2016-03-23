@@ -1,6 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
-import static bloodandmithril.core.BloodAndMithrilClient.isOnScreen;
+import static bloodandmithril.graphics.Graphics.isOnScreen;
 
 import java.util.Map;
 

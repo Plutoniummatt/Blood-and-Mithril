@@ -93,7 +93,8 @@ public class ContextMenu extends Component {
 			maxLength,
 			maxHeight,
 			isActive(),
-			backGroundColor
+			backGroundColor,
+			graphics
 		);
 
 		renderBox(

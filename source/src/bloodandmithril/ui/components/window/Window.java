@@ -293,11 +293,11 @@ public abstract class Window extends Component {
 	protected void internalComponentRender(Graphics graphics) {
 		resize();
 		reposition();
-		
+
 		SpriteBatch batch = graphics.getSpriteBatch();
 
 		batch.begin();
-		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), width, height, isActive(), backGroundColor);
+		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), width, height, isActive(), backGroundColor, graphics);
 		renderBox(x, y, width, height, isActive(), borderColor, graphics);
 		renderSeparator(batch);
 		renderWindowButtons(graphics);

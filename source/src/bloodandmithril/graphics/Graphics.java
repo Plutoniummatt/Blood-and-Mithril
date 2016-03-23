@@ -1,8 +1,12 @@
 package bloodandmithril.graphics;
 
+import static bloodandmithril.control.InputUtilities.worldToScreenX;
+import static bloodandmithril.control.InputUtilities.worldToScreenY;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -38,8 +42,11 @@ public class Graphics {
 	/** Whether the screen is currently fading */
 	private boolean fading;
 
+	/** The {@link UserInterface} */
+	private UserInterface ui;
+
 	@Inject
-	public Graphics() {
+	public Graphics(UserInterface ui) {
 		this.width = ConfigPersistenceService.getConfig().getResX();
 		this.height = ConfigPersistenceService.getConfig().getResY();
 
@@ -50,6 +57,7 @@ public class Graphics {
 		cam.setToOrtho(false, width + camMarginX, height + camMarginY);
 
 		spriteBatch = new SpriteBatch();
+		this.ui = ui;
 	}
 
 
@@ -143,11 +151,11 @@ public class Graphics {
 		cam.position.x = oldCamX;
 		cam.position.y = oldCamY;
 
-		UserInterface.UICamera.setToOrtho(false, width, height);
-		UserInterface.UICameraTrackingCam.setToOrtho(false, width, height);
+		ui.getUICamera().setToOrtho(false, width, height);
+		ui.getUITrackingCamera().setToOrtho(false, width, height);
 
-		UserInterface.shapeRenderer.setProjectionMatrix(UserInterface.UICamera.projection);
-		UserInterface.shapeRenderer.setTransformMatrix(UserInterface.UICamera.view);
+		UserInterface.shapeRenderer.setProjectionMatrix(ui.getUICamera().projection);
+		UserInterface.shapeRenderer.setTransformMatrix(ui.getUICamera().view);
 
 		WorldRenderer.shapeRenderer.setProjectionMatrix(cam.projection);
 		WorldRenderer.shapeRenderer.setTransformMatrix(cam.view);
@@ -163,5 +171,25 @@ public class Graphics {
 		WeatherRenderer.setup();
 
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+	}
+
+
+	/**
+	 * @return the {@link UserInterface}
+	 */
+	public UserInterface getUi() {
+		return ui;
+	}
+
+
+
+	/**
+	 * True is specified world coordinates are on screen within specified tolerance
+	 */
+	public static boolean isOnScreen(Vector2 position, float tolerance) {
+		float screenX = worldToScreenX(position.x);
+		float screenY = worldToScreenY(position.y);
+
+		return screenX > -tolerance && screenX < getGdxWidth() + tolerance && screenY > -tolerance && screenY < getGdxHeight() + tolerance;
 	}
 }
