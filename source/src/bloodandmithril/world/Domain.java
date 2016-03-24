@@ -20,16 +20,12 @@ import com.google.common.collect.Lists;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.event.Event;
-import bloodandmithril.event.EventListener;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.DefaultBiomeDecider;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.objectives.Mission;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Component;
@@ -57,46 +53,6 @@ public class Domain {
 
 	/** Every {@link Prop} that exists */
 	private static ConcurrentHashMap<Integer, Faction> 					factions 				= new ConcurrentHashMap<>();
-
-	private static final Thread 										eventsProcessingThread;
-
-	static {
-		eventsProcessingThread = new Thread(() -> {
-			while (true) {
-				try {
-					Thread.sleep(250);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-
-				for (World world : worlds.values()) {
-					processEvents(world);
-				}
-
-				for (Mission m : BloodAndMithrilClient.getMissions()) {
-					m.update();
-				}
-			}
-		});
-
-		eventsProcessingThread.setDaemon(false);
-		eventsProcessingThread.setName("Events");
-		eventsProcessingThread.start();
-	}
-
-
-	/**
-	 * Processes any outstanding game events
-	 */
-	private static void processEvents(World world) {
-		while (!world.getEvents().isEmpty()) {
-			Event polled = world.getEvents().poll();
-			for (EventListener listener : BloodAndMithrilClient.getMissions()) {
-				listener.listen(polled);
-			}
-		}
-	}
-
 
 	public static int createWorld() {
 		World world = new World(1200f, new Epoch(15.5f, 15, 4, 2015), new ChunkGenerator(new DefaultBiomeDecider()));

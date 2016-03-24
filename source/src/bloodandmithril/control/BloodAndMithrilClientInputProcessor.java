@@ -61,7 +61,6 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	private CursorBoundTask cursorBoundTask = null;
 	private Function<Vector2> camFollowFunction;
 
-
 	@Override
 	public boolean keyUp(int keycode) {
 		return false;

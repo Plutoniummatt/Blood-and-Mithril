@@ -8,9 +8,12 @@ import com.badlogic.gdx.Gdx;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import bloodandmithril.event.Event;
+import bloodandmithril.event.EventListener;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.networking.ClientServerInterface;
+import bloodandmithril.objectives.Mission;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
@@ -40,6 +43,9 @@ public class Threading {
 	/** Thread used for saving/loading */
 	public Thread persistenceThread;
 
+	/** Thread responsible for processing events */
+	private Thread eventsProcessingThread;
+
 	@Inject private GameSaver gameSaver;
 
 	/**
@@ -47,11 +53,15 @@ public class Threading {
 	 */
 	@Inject
 	Threading(Graphics graphics) {
-		if (ClientServerInterface.isClient()) {
-			clientProcessingThreadPool = Executors.newCachedThreadPool();
-		}
+		setupEventProcessingThread();
+		setupUpdateThread();
+		setupTopographyQueryThread(graphics);
+		setupParticleUpdateThread();
+	}
 
-		updateThread = new Thread(() -> {
+
+	private void setupParticleUpdateThread() {
+		particleUpdateThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
 
 			while (true) {
@@ -61,24 +71,29 @@ public class Threading {
 					throw new RuntimeException(e);
 				}
 
-				if (System.currentTimeMillis() - prevFrame > Math.round(16f / BloodAndMithrilClient.getUpdateRate())) {
+				if (System.currentTimeMillis() - prevFrame > 16 && !BloodAndMithrilClient.rendering.get()) {
 					prevFrame = System.currentTimeMillis();
-					try {
-						gameSaver.update();
-
-						// Do not update if game is paused
-						// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-						if (!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving() && Domain.getActiveWorld() != null && !BloodAndMithrilClient.loading.get()) {
-							Domain.getActiveWorld().update();
+					World world = Domain.getActiveWorld();
+					if (world != null) {
+						Collection<Particle> particles = world.getClientParticles();
+						for (Particle p : particles) {
+							if (p.getRemovalCondition().call()) {
+								Domain.getActiveWorld().getClientParticles().remove(p);
+							}
+							try {
+								p.update(0.012f);
+							} catch (NoTileFoundException e) {}
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
-						Gdx.app.exit();
 					}
 				}
 			}
 		});
 
+		particleUpdateThread.start();
+	}
+
+
+	private void setupTopographyQueryThread(Graphics graphics) {
 		topographyQueryThread = new Thread(() -> {
 			long prevFrame1 = System.currentTimeMillis();
 			long prevFrame2 = System.currentTimeMillis();
@@ -118,7 +133,13 @@ public class Threading {
 			}
 		});
 
-		particleUpdateThread = new Thread(() -> {
+		topographyQueryThread.setName("Topography query thread");
+		topographyQueryThread.start();
+	}
+
+
+	private void setupUpdateThread() {
+		updateThread = new Thread(() -> {
 			long prevFrame = System.currentTimeMillis();
 
 			while (true) {
@@ -128,33 +149,60 @@ public class Threading {
 					throw new RuntimeException(e);
 				}
 
-				if (System.currentTimeMillis() - prevFrame > 16 && !BloodAndMithrilClient.rendering.get()) {
+				if (System.currentTimeMillis() - prevFrame > Math.round(16f / BloodAndMithrilClient.getUpdateRate())) {
 					prevFrame = System.currentTimeMillis();
-					World world = Domain.getActiveWorld();
-					if (world != null) {
-						Collection<Particle> particles = world.getClientParticles();
-						for (Particle p : particles) {
-							if (p.getRemovalCondition().call()) {
-								Domain.getActiveWorld().getClientParticles().remove(p);
-							}
-							try {
-								p.update(0.012f);
-							} catch (NoTileFoundException e) {}
+					try {
+						gameSaver.update();
+
+						// Do not update if game is paused
+						// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
+						if (!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving() && Domain.getActiveWorld() != null && !BloodAndMithrilClient.loading.get()) {
+							Domain.getActiveWorld().update();
 						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						Gdx.app.exit();
 					}
 				}
 			}
 		});
 
-
 		updateThread.setPriority(Thread.MAX_PRIORITY);
 		updateThread.setName("Update thread");
 		updateThread.start();
+	}
 
-		particleUpdateThread.setName("Particle thread");
-		particleUpdateThread.start();
 
-		topographyQueryThread.setName("Topography query thread");
-		topographyQueryThread.start();
+	private void setupEventProcessingThread() {
+		eventsProcessingThread = new Thread(() -> {
+			while (true) {
+				try {
+					Thread.sleep(250);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+
+				for (World world : Domain.getWorlds().values()) {
+					while (!world.getEvents().isEmpty()) {
+						Event polled = world.getEvents().poll();
+						for (EventListener listener : BloodAndMithrilClient.getMissions()) {
+							listener.listen(polled);
+						}
+					}
+				}
+
+				for (Mission m : BloodAndMithrilClient.getMissions()) {
+					m.update();
+				}
+			}
+		});
+
+		eventsProcessingThread.setDaemon(false);
+		eventsProcessingThread.setName("Events");
+		eventsProcessingThread.start();
+
+		if (ClientServerInterface.isClient()) {
+			clientProcessingThreadPool = Executors.newCachedThreadPool();
+		}
 	}
 }
