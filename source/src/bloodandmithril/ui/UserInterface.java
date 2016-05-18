@@ -1237,7 +1237,8 @@ public class UserInterface {
 			}
 		}
 
-		layeredComponents = copy;
+		layeredComponents.clear();
+		layeredComponents.addAll(copy);
 	}
 
 
@@ -1312,7 +1313,8 @@ public class UserInterface {
 				}
 			}
 			if (windowsCopy.size() >= layeredComponents.size()) {
-				layeredComponents = windowsCopy;
+				layeredComponents.clear();
+				layeredComponents.addAll(windowsCopy);
 			}
 		}
 
@@ -1508,7 +1510,8 @@ public class UserInterface {
 					break;
 				}
 			}
-			layeredComponents = windowsCopy;
+			layeredComponents.clear();
+			layeredComponents.addAll(windowsCopy);
 
 			if (clicked) {
 				return true;
