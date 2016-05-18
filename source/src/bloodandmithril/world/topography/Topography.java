@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
@@ -62,7 +63,7 @@ public final class Topography {
 	private final Structures structures;
 
 	/** The chunk loader. */
-	private static final ChunkLoader chunkLoader = new ChunkLoader();
+	private static final ChunkLoader chunkLoader = Wiring.injector().getInstance(ChunkLoader.class);
 
 	/** Any non-main thread topography tasks queued here */
 	private static BlockingQueue<Task> topographyTasks = new ArrayBlockingQueue<Task>(500000);

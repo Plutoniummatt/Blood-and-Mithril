@@ -66,6 +66,12 @@ public class BottomBar extends Component {
 	);
 
 
+	@Override
+	public void render(Graphics graphics) {
+		super.render(graphics);
+	}
+
+
 	/** Called upon left click */
 	@Override
 	public boolean leftClick(List<ContextMenu> copy, final Deque<Component> windowsCopy) {

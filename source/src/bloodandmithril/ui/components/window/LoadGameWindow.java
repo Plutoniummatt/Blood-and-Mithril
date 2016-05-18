@@ -64,7 +64,6 @@ public class LoadGameWindow extends Window {
 		);
 
 		Wiring.injector().injectMembers(this);
-
 		setupListing();
 	}
 

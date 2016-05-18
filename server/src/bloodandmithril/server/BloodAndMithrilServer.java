@@ -122,6 +122,8 @@ public class BloodAndMithrilServer {
 		@Override
 		public void create() {
 			Wiring.setupInjector(new ServerModule(), new CommonModule());
+			Wiring.injector().injectMembers(this);
+
 			Faction nature = new Faction("Nature", parameterPersistenceService.getParameters().getNextFactionId(), false, "");
 			Faction player = new Faction("Elves", parameterPersistenceService.getParameters().getNextFactionId(), true, "Elves are cool");
 			Domain.getFactions().put(nature.factionId, nature);

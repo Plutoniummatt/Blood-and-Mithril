@@ -24,7 +24,7 @@ public final class WorldProjectiles implements Serializable {
 	private final ConcurrentHashMap<Integer, Projectile> projectiles = new ConcurrentHashMap<>();
 	private final int worldId;
 
-	@Inject private ParameterPersistenceService parameterPersistenceService;
+	@Inject private transient ParameterPersistenceService parameterPersistenceService;
 
 	/**
 	 * Constructor

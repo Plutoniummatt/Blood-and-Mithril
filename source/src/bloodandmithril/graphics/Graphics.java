@@ -43,10 +43,11 @@ public class Graphics {
 	private boolean fading;
 
 	/** The {@link UserInterface} */
-	private UserInterface ui;
+	@Inject private UserInterface ui;
+
 
 	@Inject
-	public Graphics(UserInterface ui) {
+	public Graphics() {
 		this.width = ConfigPersistenceService.getConfig().getResX();
 		this.height = ConfigPersistenceService.getConfig().getResY();
 
@@ -57,7 +58,6 @@ public class Graphics {
 		cam.setToOrtho(false, width + camMarginX, height + camMarginY);
 
 		spriteBatch = new SpriteBatch();
-		this.ui = ui;
 	}
 
 
