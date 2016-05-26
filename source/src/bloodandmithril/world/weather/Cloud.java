@@ -31,13 +31,6 @@ public final class Cloud implements Serializable {
 		}
 	}
 	
-	/**
-	 * Constructor
-	 */
-	public Cloud(Vector2 position) {
-		this.position = position;
-	}
-	
 	
 	/**
 	 * Constructor
@@ -61,7 +54,7 @@ public final class Cloud implements Serializable {
 					Color.WHITE, 
 					99999f, 
 					60f, 
-					0.5f
+					0.15f
 				)
 			);
 		}
@@ -82,7 +75,7 @@ public final class Cloud implements Serializable {
 					Color.WHITE, 
 					99999f, 
 					60f, 
-					0.5f
+					0.15f
 				)
 			);
 		}
@@ -106,14 +99,14 @@ public final class Cloud implements Serializable {
 	 */
 	public void render(Graphics graphics, Vector3 camLocation) {
 		for (CloudSegment segment : segments) {
-			Shaders.particleTexture.setUniformf("override", 1f, 1f, 1f, 0.3f);
+			Shaders.particleTexture.setUniformf("override", 1f, 1f, 1f, 0.2f);
 			Shaders.particleTexture.setUniformf("feather", segment.feather);
 			Shaders.particleTexture.setUniformf("topLeft", circle.getU(), circle.getV());
 			Shaders.particleTexture.setUniformf("bottomRight", circle.getU2(), circle.getV2());
 			graphics.getSpriteBatch().draw(
 				circle, 
-				-camLocation.x * 0.01f + position.x - segment.radius + segment.relativePosition.x + (camLocation.x * 0.01f - position.x) * segment.distance * 2f, 
-				-camLocation.y * 0.01f + Layer.getScreenHorizonY(graphics) + position.y - segment.radius + segment.relativePosition.y + (camLocation.y * 0.01f - position.y) * segment.distance * 2f,
+				-camLocation.x * 0.01f + position.x - segment.radius + segment.relativePosition.x + (camLocation.x * 0.01f - position.x + graphics.getWidth()/2) * segment.distance * 2f, 
+				-camLocation.y * 0.01f + Layer.getScreenHorizonY(graphics) + position.y - segment.radius + segment.relativePosition.y + segment.distance * 2f,
 				segment.radius * 2,
 				segment.radius * 2
 			);

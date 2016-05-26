@@ -265,7 +265,7 @@ public class GaussianLightingRenderer {
 
 		float r = WeatherRenderer.getDaylightColor(Domain.getActiveWorld()).g;
 
-		Shaders.invertYFilter.setUniformf("color", r, r, r, 0.9f);
+		Shaders.invertYFilter.setUniformf("color", 1f, 1f, 1f, 0.9f);
 
 		batch.draw(WorldRenderer.cloudBuffer.getColorBufferTexture(), 0, 0);
 		batch.end();
