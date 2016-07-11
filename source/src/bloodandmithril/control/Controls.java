@@ -263,7 +263,7 @@ public class Controls implements Serializable {
 		keyMap.put(Input.Keys.Q, wrap("q", "Q"));
 		keyMap.put(Input.Keys.R, wrap("r", "R"));
 		keyMap.put(Input.Keys.S, wrap("s", "S"));
-		keyMap.put(Input.Keys.T, wrap("t", "Y"));
+		keyMap.put(Input.Keys.T, wrap("t", "T"));
 		keyMap.put(Input.Keys.U, wrap("u", "U"));
 		keyMap.put(Input.Keys.V, wrap("v", "V"));
 		keyMap.put(Input.Keys.W, wrap("w", "W"));

@@ -100,7 +100,7 @@ public abstract class OneHandedSword<T extends Metal> extends OneHandedMeleeWeap
 
 	@Override
 	public float getBaseAttackPeriod() {
-		return 2f;
+		return 1f;
 	}
 
 

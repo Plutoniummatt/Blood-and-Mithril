@@ -308,6 +308,7 @@ public final class IndividualConditionRoutine extends Routine {
 
 		@Override
 		public final void render(Graphics graphics) {
+			super.render(graphics);
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
 			defaultFont.drawWrapped(
