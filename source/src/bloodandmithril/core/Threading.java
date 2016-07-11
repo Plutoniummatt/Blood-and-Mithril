@@ -15,7 +15,6 @@ import bloodandmithril.graphics.particles.Particle;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.objectives.Mission;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
@@ -48,13 +47,12 @@ public class Threading {
 	private Thread eventsProcessingThread;
 
 	@Inject private GameSaver gameSaver;
-	@Inject private ChunkLoader chunkLoader;
 
 	/**
 	 * Constructor
 	 */
 	@Inject
-	Threading(final Graphics graphics) {
+	Threading(Graphics graphics) {
 		setupEventProcessingThread();
 		setupUpdateThread();
 		setupTopographyQueryThread(graphics);
@@ -69,22 +67,22 @@ public class Threading {
 			while (true) {
 				try {
 					Thread.sleep(1);
-				} catch (final Exception e) {
+				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
 
 				if (System.currentTimeMillis() - prevFrame > 16 && !BloodAndMithrilClient.rendering.get()) {
 					prevFrame = System.currentTimeMillis();
-					final World world = Domain.getActiveWorld();
+					World world = Domain.getActiveWorld();
 					if (world != null) {
-						final Collection<Particle> particles = world.getClientParticles();
-						for (final Particle p : particles) {
+						Collection<Particle> particles = world.getClientParticles();
+						for (Particle p : particles) {
 							if (p.getRemovalCondition().call()) {
 								Domain.getActiveWorld().getClientParticles().remove(p);
 							}
 							try {
 								p.update(0.012f);
-							} catch (final NoTileFoundException e) {}
+							} catch (NoTileFoundException e) {}
 						}
 					}
 				}
@@ -95,7 +93,7 @@ public class Threading {
 	}
 
 
-	private void setupTopographyQueryThread(final Graphics graphics) {
+	private void setupTopographyQueryThread(Graphics graphics) {
 		topographyQueryThread = new Thread(() -> {
 			long prevFrame1 = System.currentTimeMillis();
 			long prevFrame2 = System.currentTimeMillis();
@@ -103,7 +101,7 @@ public class Threading {
 			while (true) {
 				try {
 					Thread.sleep(2);
-				} catch (final Exception e) {
+				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
 
@@ -113,8 +111,7 @@ public class Threading {
 
 				if (System.currentTimeMillis() - prevFrame1 > 16) {
 					if (Domain.getActiveWorld() != null) {
-						chunkLoader.loadOrGenerateNullChunksAccordingToPosition(
-							Domain.getActiveWorldId(),
+						Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
 							(int) graphics.getCam().position.x,
 							(int) graphics.getCam().position.y
 						);
@@ -125,8 +122,7 @@ public class Threading {
 				if (System.currentTimeMillis() - prevFrame2 > 200) {
 					if (Domain.getActiveWorld() != null) {
 						Domain.getIndividuals().values().stream().forEach(individual -> {
-							chunkLoader.loadOrGenerateNullChunksAccordingToPosition(
-								Domain.getActiveWorldId(),
+							Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
 								(int) individual.getState().position.x,
 								(int) individual.getState().position.y
 							);
@@ -149,7 +145,7 @@ public class Threading {
 			while (true) {
 				try {
 					Thread.sleep(1);
-				} catch (final Exception e) {
+				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
 
@@ -163,7 +159,7 @@ public class Threading {
 						if (!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving() && Domain.getActiveWorld() != null && !BloodAndMithrilClient.loading.get()) {
 							Domain.getActiveWorld().update();
 						}
-					} catch (final Exception e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 						Gdx.app.exit();
 					}
@@ -182,20 +178,20 @@ public class Threading {
 			while (true) {
 				try {
 					Thread.sleep(250);
-				} catch (final Exception e) {
+				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
 
-				for (final World world : Domain.getWorlds().values()) {
+				for (World world : Domain.getWorlds().values()) {
 					while (!world.getEvents().isEmpty()) {
-						final Event polled = world.getEvents().poll();
-						for (final EventListener listener : BloodAndMithrilClient.getMissions()) {
+						Event polled = world.getEvents().poll();
+						for (EventListener listener : BloodAndMithrilClient.getMissions()) {
 							listener.listen(polled);
 						}
 					}
 				}
 
-				for (final Mission m : BloodAndMithrilClient.getMissions()) {
+				for (Mission m : BloodAndMithrilClient.getMissions()) {
 					m.update();
 				}
 			}

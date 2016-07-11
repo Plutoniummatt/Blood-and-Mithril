@@ -5,7 +5,7 @@ import static bloodandmithril.persistence.PersistenceUtil.encode;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Enumeration;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -54,7 +54,7 @@ public class WorldSaver {
 				while (true) {
 					try {
 						Thread.sleep(100);
-					} catch (final InterruptedException e) {
+					} catch (InterruptedException e) {
 						e.printStackTrace();
 						throw new RuntimeException("Something has interrupted the chunk loading thread.");
 					}
@@ -92,40 +92,40 @@ public class WorldSaver {
 		persistUnloadedChunks();
 		if (threading.persistenceThread.isAlive()) {
 			gameSaver.saverTasks.add(() -> {
-				final FileHandle structures = Gdx.files.local(gameSaver.getSavePath() + "/world/structures.txt");
-				final FileHandle worlds = Gdx.files.local(gameSaver.getSavePath() + "/world/worlds.txt");
-				final FileHandle layers = Gdx.files.local(gameSaver.getSavePath() + "/world/layers.txt");
+				FileHandle structures = Gdx.files.local(gameSaver.getSavePath() + "/world/structures.txt");
+				FileHandle worlds = Gdx.files.local(gameSaver.getSavePath() + "/world/worlds.txt");
+				FileHandle layers = Gdx.files.local(gameSaver.getSavePath() + "/world/layers.txt");
 
 				structures.writeString(encode(Structures.getStructures()), false);
 				worlds.writeString(encode(Domain.getWorlds()), false);
 				layers.writeString(encode(GlobalLayers.layers), false);
 
-				for (final Entry<Integer, World> world : Domain.getWorlds().entrySet()) {
+				for (Entry<Integer, World> world : Domain.getWorlds().entrySet()) {
 					saveStructureData(world);
 
-					final ZipHelper zip = new ZipHelper(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()), "/chunkData.zip");
+					ZipHelper zip = new ZipHelper(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()), "/chunkData.zip");
 					ZipFile zipTemp = null;
 
-					for (final Entry<Integer, Map<Integer, Chunk>> columnToSave : world.getValue().getTopography().getChunkMap().chunkMap.entrySet()) {
+					for (Entry<Integer, HashMap<Integer, Chunk>> columnToSave : world.getValue().getTopography().getChunkMap().chunkMap.entrySet()) {
 						saveColumn(columnToSave.getKey(), columnToSave.getValue(), zip);
 					}
 
 					try {
 						zipTemp = new ZipFile(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/chunkDataTemp.zip");
 
-						final Enumeration<? extends ZipEntry> allPreviousEntries = ZipHelper.readAllEntries(zipTemp);
+						Enumeration<? extends ZipEntry> allPreviousEntries = ZipHelper.readAllEntries(zipTemp);
 						while(allPreviousEntries.hasMoreElements()) {
-							final ZipEntry nextElement = allPreviousEntries.nextElement();
-							final String stringContent = ZipHelper.readEntry(zipTemp, nextElement);
-							final ChunkData data = PersistenceUtil.decode(stringContent);
+							ZipEntry nextElement = allPreviousEntries.nextElement();
+							String stringContent = ZipHelper.readEntry(zipTemp, nextElement);
+							ChunkData data = PersistenceUtil.decode(stringContent);
 
 							zip.addFile("column" + data.xChunkCoord + (data.foreground ? "/f" : "/b") + data.yChunkCoord+ "/", data.foreground ? "fData" : "bData", stringContent, true);
 						}
 
 						zipTemp.close();
-						final FileHandle toDelete = Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/chunkDataTemp.zip");
+						FileHandle toDelete = Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/chunkDataTemp.zip");
 						toDelete.delete();
-					} catch (final IOException e) {
+					} catch (IOException e) {
 						Logger.loaderDebug("No previous chunks", LogLevel.DEBUG);
 					}
 
@@ -143,8 +143,8 @@ public class WorldSaver {
 	 */
 	private void persistUnloadedChunks() {
 		if (gameSaver.mostRecentlyLoaded != null) {
-			for (final Integer world : Domain.getWorlds().keySet()) {
-				final FileHandle existingSavedChunks = Gdx.files.local("save/" + gameSaver.mostRecentlyLoaded.name + "/world/world" + Integer.toString(world) + "/chunkData.zip");
+			for (Integer world : Domain.getWorlds().keySet()) {
+				FileHandle existingSavedChunks = Gdx.files.local("save/" + gameSaver.mostRecentlyLoaded.name + "/world/world" + Integer.toString(world) + "/chunkData.zip");
 				existingSavedChunks.copyTo(Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world) + "/chunkDataTemp.zip"));
 			}
 		}
@@ -154,9 +154,9 @@ public class WorldSaver {
 	/**
 	 * Saves the data used for generation
 	 */
-	private void saveStructureData(final Entry<Integer, World> world) {
-		final FileHandle superStructureKeys = Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/superStructureKeys.txt");
-		final FileHandle subStructureKeys = Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/subStructureKeys.txt");
+	private void saveStructureData(Entry<Integer, World> world) {
+		FileHandle superStructureKeys = Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/superStructureKeys.txt");
+		FileHandle subStructureKeys = Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/subStructureKeys.txt");
 
 		superStructureKeys.writeString(encode(world.getValue().getTopography().getStructures().getSuperStructureKeys()), false);
 		subStructureKeys.writeString(encode(world.getValue().getTopography().getStructures().getSubStructureKeys()), false);
@@ -166,8 +166,8 @@ public class WorldSaver {
 	/**
 	 * @param columnToSave
 	 */
-	private void saveColumn(final int x, final Map<Integer, Chunk> columnToSave, final ZipHelper zip) {
-		for (final Entry<Integer, Chunk> chunkToSave : columnToSave.entrySet()) {
+	private void saveColumn(int x, HashMap<Integer, Chunk> columnToSave, ZipHelper zip) {
+		for (Entry<Integer, Chunk> chunkToSave : columnToSave.entrySet()) {
 			saveChunk(chunkToSave.getValue(), x, chunkToSave.getKey(), zip);
 		}
 	}
@@ -176,7 +176,7 @@ public class WorldSaver {
 	/**
 	 * @param chunk to save
 	 */
-	private void saveChunk(final Chunk chunk, final int x, final int y, final ZipHelper zip) {
+	private void saveChunk(Chunk chunk, int x, int y, ZipHelper zip) {
 		zip.addFile("column" + x + "/f" + y + "/", "fData", encode(chunk.getChunkData(true)), false);
 		zip.addFile("column" + x + "/b" + y + "/", "bData", encode(chunk.getChunkData(false)), false);
 		chunksInQueue.remove(x, y);
@@ -189,7 +189,7 @@ public class WorldSaver {
 	public void saveAndFlushChunk(final int x, final int y, final Topography topography) {
 		if (chunksInQueue.get(x, y) == null) {
 			gameSaver.saverTasks.add(() -> {
-				final ZipHelper zip = new ZipHelper(gameSaver.getSavePath() + "/world", "/chunkData.zip");
+				ZipHelper zip = new ZipHelper(gameSaver.getSavePath() + "/world", "/chunkData.zip");
 				saveChunk(topography.getChunkMap().get(x).get(y), x, y, zip);
 				topography.getChunkMap().get(x).remove(y);
 			});

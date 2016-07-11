@@ -115,7 +115,7 @@ public abstract class Tile implements Serializable {
 			}
 		}
 
-		return foreGround ? texX * Topography.TEXTURE_COORDINATE_QUANTIZATION : (texX + 20) * Topography.TEXTURE_COORDINATE_QUANTIZATION;
+		return foreGround ? texX * Topography.textureCoordinateQuantization : (texX + 20) * Topography.textureCoordinateQuantization;
 	}
 
 
@@ -134,7 +134,7 @@ public abstract class Tile implements Serializable {
 	 *  <p> 10		{@link YellowBrickPlatform}		</p>
 	 */
 	public final float getTexCoordY() {
-		return getTexCoordYSpecific() * Topography.TEXTURE_COORDINATE_QUANTIZATION;
+		return getTexCoordYSpecific() * Topography.textureCoordinateQuantization;
 	}
 
 

@@ -3,7 +3,7 @@ package bloodandmithril.ui;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.Gdx;
@@ -40,18 +40,18 @@ public class TopographyDebugRenderer {
 	/**
 	 * Renders the topography map
 	 */
-	public static void render(final Graphics graphics) {
+	public static void render(Graphics graphics) {
 		UserInterface.shapeRenderer.begin(ShapeType.Line);
 		graphics.getSpriteBatch().begin();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
-		for (final Structure struct : Structures.getStructures().values()) {
+		for (Structure struct : Structures.getStructures().values()) {
 			if (struct.worldId != Domain.getActiveWorldId()) {
 				continue;
 			}
 
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			if (struct instanceof SuperStructure) {
-				final Boundaries boundaries = ((SuperStructure) struct).getBoundaries();
+				Boundaries boundaries = ((SuperStructure) struct).getBoundaries();
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), Integer.toString(struct.getStructureKey()), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY + 10);
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), struct.getClass().getSimpleName(), boundaries.left * Topography.CHUNK_SIZE - topoX + 5, boundaries.top * Topography.CHUNK_SIZE - topoY - 15);
 				UserInterface.shapeRenderer.rect(
@@ -67,8 +67,8 @@ public class TopographyDebugRenderer {
 			}
 
 			UserInterface.shapeRenderer.setColor(Color.RED);
-			for (final bloodandmithril.generation.component.Component component : struct.getComponents()) {
-				final Boundaries boundaries = component.getBoundaries();
+			for (bloodandmithril.generation.component.Component component : struct.getComponents()) {
+				Boundaries boundaries = component.getBoundaries();
 				UserInterface.shapeRenderer.rect(
 					boundaries.left - topoX,
 					boundaries.bottom - topoY,
@@ -81,8 +81,8 @@ public class TopographyDebugRenderer {
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		UserInterface.shapeRenderer.setColor(Colors.modulateAlpha(Color.CYAN, 0.2f));
-		for (final Entry<Integer, Map<Integer, Chunk>> outerEntry : Domain.getActiveWorld().getTopography().getChunkMap().getChunkMap().entrySet()) {
-			for (final Entry<Integer, Chunk> innerEntry : outerEntry.getValue().entrySet()) {
+		for (Entry<Integer, HashMap<Integer, Chunk>> outerEntry : Domain.getActiveWorld().getTopography().getChunkMap().getChunkMap().entrySet()) {
+			for (Entry<Integer, Chunk> innerEntry : outerEntry.getValue().entrySet()) {
 				UserInterface.shapeRenderer.rect(
 					outerEntry.getKey() * Topography.CHUNK_SIZE - topoX,
 					innerEntry.getKey() * Topography.CHUNK_SIZE - topoY,
