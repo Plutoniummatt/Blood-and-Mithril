@@ -1,7 +1,5 @@
 package bloodandmithril.character.ai.pathfinding.implementations;
 
-import static bloodandmithril.networking.ClientServerInterface.isClient;
-import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.Logger.aiDebug;
 import static bloodandmithril.util.Logger.LogLevel.DEBUG;
 import static bloodandmithril.util.Logger.LogLevel.INFO;
@@ -25,10 +23,8 @@ import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.util.datastructure.DualKeyHashMap;
 import bloodandmithril.util.datastructure.DualKeyHashMap.DualKeyEntry;
 import bloodandmithril.world.World;
-import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
-import bloodandmithril.world.topography.tile.Tile.DebugTile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**
@@ -49,7 +45,7 @@ public final class AStarPathFinder extends PathFinder {
 	/** Used for sorting {@link Node}s in ascending order by F = G + H */
 	private static final Comparator<DualKeyEntry<Integer, Integer, Node>> fComparator = new Comparator<DualKeyEntry<Integer, Integer, Node>>() {
 		@Override
-		public int compare(DualKeyEntry<Integer, Integer, Node> entry1, DualKeyEntry<Integer, Integer, Node> entry2) {
+		public int compare(final DualKeyEntry<Integer, Integer, Node> entry1, final DualKeyEntry<Integer, Integer, Node> entry2) {
 			if (entry1.value.getF() > entry2.value.getF()) {
 				return 1;
 			} else if (entry1.value.getF() == entry2.value.getF()) {
@@ -63,7 +59,7 @@ public final class AStarPathFinder extends PathFinder {
 	/** Used for sorting {@link Node}s in ascending order by H */
 	private static final Comparator<DualKeyEntry<Integer, Integer, Node>> heuristicComparator = new Comparator<DualKeyEntry<Integer, Integer, Node>>() {
 		@Override
-		public int compare(DualKeyEntry<Integer, Integer, Node> entry1, DualKeyEntry<Integer, Integer, Node> entry2) {
+		public int compare(final DualKeyEntry<Integer, Integer, Node> entry1, final DualKeyEntry<Integer, Integer, Node> entry2) {
 			if (entry1.value.heuristic > entry2.value.heuristic) {
 				return 1;
 			} else if (entry1.value.heuristic == entry2.value.heuristic) {
@@ -78,7 +74,7 @@ public final class AStarPathFinder extends PathFinder {
 	 * See {@link PathFinder#findShortestPathAir(WayPoint, WayPoint)}
 	 */
 	@Override
-	public final Path findShortestPathAir(WayPoint start, WayPoint finish, World world) {
+	public final Path findShortestPathAir(final WayPoint start, final WayPoint finish, final World world) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -87,7 +83,7 @@ public final class AStarPathFinder extends PathFinder {
 	 * See {@link PathFinder#findShortestPathGround(WayPoint, WayPoint, int)}
 	 */
 	@Override
-	public final Path findShortestPathGround(WayPoint start, WayPoint finish, int height, int safeHeight, float forceTolerance, World world) {
+	public final Path findShortestPathGround(final WayPoint start, final WayPoint finish, final int height, final int safeHeight, final float forceTolerance, final World world) {
 		try {
 			Vector2 startCoords = determineWayPointCoords(start.waypoint, false, false, world);
 			Vector2 finishCoords = determineWayPointCoords(finish.waypoint, false, true, world);
@@ -104,37 +100,37 @@ public final class AStarPathFinder extends PathFinder {
 				return new Path();
 			}
 
-			int startX = round(startCoords.x);
-			int startY = round(startCoords.y);
+			final int startX = round(startCoords.x);
+			final int startY = round(startCoords.y);
 
-			int finishX = round(finishCoords.x);
-			int finishY = round(finishCoords.y);
+			final int finishX = round(finishCoords.x);
+			final int finishY = round(finishCoords.y);
 
-			Node finishNode = new Node(finishX, finishY, null, null, null, safeHeight);
+			final Node finishNode = new Node(finishX, finishY, null, null, null, safeHeight);
 			aiDebug("Destination: " + finishNode.toString(), DEBUG);
 
-			Node startNode = new Node(startX, startY, null, null, finishNode, safeHeight);
+			final Node startNode = new Node(startX, startY, null, null, finishNode, safeHeight);
 			openNodes.put(startX, startY, startNode);
 
 			boolean destinationFound = false;
 			while(!destinationFound) {
 				if (openNodes.getAllEntries().isEmpty()) {
-					List<DualKeyEntry<Integer, Integer, Node>> closedNodeEntries = closedNodes.getAllEntries();
+					final List<DualKeyEntry<Integer, Integer, Node>> closedNodeEntries = closedNodes.getAllEntries();
 					Collections.sort(closedNodeEntries, heuristicComparator);
-					DualKeyEntry<Integer, Integer, Node> closestEntry = closedNodeEntries.get(0);
+					final DualKeyEntry<Integer, Integer, Node> closestEntry = closedNodeEntries.get(0);
 
 					return extractPath(closestEntry.value, 0, forceTolerance, world);
 				}
 
-				List<DualKeyEntry<Integer, Integer, Node>> allEntries = openNodes.getAllEntries();
+				final List<DualKeyEntry<Integer, Integer, Node>> allEntries = openNodes.getAllEntries();
 				Collections.sort(allEntries, fComparator);
-				DualKeyEntry<Integer, Integer, Node> entry = allEntries.get(0);
+				final DualKeyEntry<Integer, Integer, Node> entry = allEntries.get(0);
 
 				Node destination = null;
 
 				try {
 					destination = processOpenNodeGround(entry.value, finishNode, height, safeHeight, world);
-				} catch (UndiscoveredPathNotification e) {
+				} catch (final UndiscoveredPathNotification e) {
 					aiDebug("Detected undiscovered region", DEBUG);
 				}
 
@@ -146,14 +142,14 @@ public final class AStarPathFinder extends PathFinder {
 			}
 
 			throw new RuntimeException("Failed to find path");
-		} catch (NoTileFoundException e) {
+		} catch (final NoTileFoundException e) {
 			aiDebug("NPE during pathfinding", LogLevel.DEBUG);
 			return new Path();
 		}
 	}
 
 
-	private final Vector2 determineWayPointCoords(Vector2 location, boolean floor, boolean finish, World world) throws NoTileFoundException {
+	private final Vector2 determineWayPointCoords(final Vector2 location, final boolean floor, final boolean finish, final World world) throws NoTileFoundException {
 		Tile tile = world.getTopography().getTile(location, true);
 		if (location.y < 0) {
 			tile = world.getTopography().getTile(location.x, location.y + 1, true);
@@ -163,7 +159,7 @@ public final class AStarPathFinder extends PathFinder {
 			return convertToWorldCoord(location, floor);
 		} else {
 			if (finish) {
-				Vector2 result = getGroundAboveOrBelowClosestEmptyOrPlatformSpace(location, 10, world);
+				final Vector2 result = getGroundAboveOrBelowClosestEmptyOrPlatformSpace(location, 10, world);
 				if (result != null) {
 					return convertToWorldCoord(result, floor);
 				} else {
@@ -177,13 +173,13 @@ public final class AStarPathFinder extends PathFinder {
 
 
 	/** Extracts the {@link Path} from the {@link #closedNodes} */
-	private final Path extractPath(Node finalNode, float finalTolerance, float forceTolerance, World world) throws NoTileFoundException {
-		Path answer = new Path();
+	private final Path extractPath(final Node finalNode, final float finalTolerance, final float forceTolerance, final World world) throws NoTileFoundException {
+		final Path answer = new Path();
 
 		if (finalNode.getF() > 9999999f) {
-			Node previousNode = closedNodes.get(finalNode.parentX, finalNode.parentY);
-			Vector2 previousVector = new Vector2(previousNode.x, previousNode.y);
-			float distance = Math.abs(previousVector.sub(new Vector2(finalNode.x, finalNode.y)).len());
+			final Node previousNode = closedNodes.get(finalNode.parentX, finalNode.parentY);
+			final Vector2 previousVector = new Vector2(previousNode.x, previousNode.y);
+			final float distance = Math.abs(previousVector.sub(new Vector2(finalNode.x, finalNode.y)).len());
 
 			if (distance < forceTolerance) {
 				return extractPath(previousNode, finalTolerance, forceTolerance, world);
@@ -206,7 +202,7 @@ public final class AStarPathFinder extends PathFinder {
 			answer.addWayPointReversed(new WayPoint(convertToWorldCoord(workingNode.x, workingNode.y, true), 0f));
 		}
 
-		int size = answer.getSize();
+		final int size = answer.getSize();
 		if (!answer.isEmpty() && size > 2) {
 			answer.getAndRemoveNextWayPoint();
 			answer.getNextPoint().tolerance = TILE_SIZE/2;
@@ -217,7 +213,7 @@ public final class AStarPathFinder extends PathFinder {
 
 
 	/** Processes an open {@link Node} */
-	private final Node processOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
+	private final Node processOpenNodeGround(final Node toProcess, final Node destinationNode, final int height, final int safeHeight, final World world) throws UndiscoveredPathNotification, NoTileFoundException {
 		aiDebug("Processing open node: " + toProcess.toString(), DEBUG);
 		openNodes.remove(toProcess.x, toProcess.y);
 		closedNodes.put(toProcess.x, toProcess.y, toProcess);
@@ -226,18 +222,18 @@ public final class AStarPathFinder extends PathFinder {
 
 
 	/** Processes the two adjascent locations to the argument */
-	private final Node processAdjascentNodesToOpenNodeGround(Node toProcess, Node destinationNode, int height, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
+	private final Node processAdjascentNodesToOpenNodeGround(final Node toProcess, final Node destinationNode, final int height, final int safeHeight, final World world) throws UndiscoveredPathNotification, NoTileFoundException {
 
 		// Left and right nodes, the tiles immediately to the left/right of the open node to process
-		Node leftNode = new Node(toProcess.x - TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
-		Node rightNode = new Node(toProcess.x + TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
+		final Node leftNode = new Node(toProcess.x - TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
+		final Node rightNode = new Node(toProcess.x + TILE_SIZE, toProcess.y, toProcess.x, toProcess.y, destinationNode, safeHeight);
 
 
 		if (isDestination(leftNode, destinationNode)) {
 			return leftNode;
 		}
-		int stepUpLeft = processAdjascent(leftNode, height, false, toProcess, destinationNode, safeHeight, world);
-		Node newLeftNode = new Node(leftNode.x, leftNode.y + stepUpLeft * TILE_SIZE, leftNode.parentX, leftNode.parentY, destinationNode, safeHeight);
+		final int stepUpLeft = processAdjascent(leftNode, height, false, toProcess, destinationNode, safeHeight, world);
+		final Node newLeftNode = new Node(leftNode.x, leftNode.y + stepUpLeft * TILE_SIZE, leftNode.parentX, leftNode.parentY, destinationNode, safeHeight);
 		if (!isDestination(newLeftNode, destinationNode)) {
 			if (stepUpLeft < 2) {
 				addToOpenNodes(newLeftNode);
@@ -250,8 +246,8 @@ public final class AStarPathFinder extends PathFinder {
 		if (isDestination(rightNode, destinationNode)) {
 			return rightNode;
 		}
-		int stepUpRight = processAdjascent(rightNode, height, true, toProcess, destinationNode, safeHeight, world);
-		Node newRightNode = new Node(rightNode.x, rightNode.y + stepUpRight * TILE_SIZE, rightNode.parentX, rightNode.parentY, destinationNode, safeHeight);
+		final int stepUpRight = processAdjascent(rightNode, height, true, toProcess, destinationNode, safeHeight, world);
+		final Node newRightNode = new Node(rightNode.x, rightNode.y + stepUpRight * TILE_SIZE, rightNode.parentX, rightNode.parentY, destinationNode, safeHeight);
 		if (!isDestination(newRightNode, destinationNode)) {
 			if (stepUpRight < 2) {
 				addToOpenNodes(newRightNode);
@@ -274,7 +270,7 @@ public final class AStarPathFinder extends PathFinder {
 
 	/** Determines if we can move to an adjascent {@link Node} */
 	@SuppressWarnings("cast")
-	private final int processAdjascent(final Node to, int height, boolean right, Node parent, Node destination, int safeHeight, World world) throws UndiscoveredPathNotification, NoTileFoundException {
+	private final int processAdjascent(final Node to, final int height, final boolean right, final Node parent, final Node destination, final int safeHeight, final World world) throws UndiscoveredPathNotification, NoTileFoundException {
 		Tile tile;
 
 		try {
@@ -283,27 +279,22 @@ public final class AStarPathFinder extends PathFinder {
 			// If the tile is empty, we check if all tiles above it (within specified height) are also empty, if not, we return 2, otherwise, we return the vertical distance
 			// To the empty tile that is above the non-empty tile below the adjascent tile
 			if (tile instanceof EmptyTile) {
-				changeToDebugTile(to.x, to.y, world);
 				for (int i = 1; i <= height; i++) {
-					changeToDebugTile(to.x, to.y + i * TILE_SIZE, world);
 					if (!world.getTopography().getTile(to.x, (float)to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
 				cascadeDownAndProcessPlatforms(to.x, to.y - TILE_SIZE, parent, destination, height, safeHeight, world);
-				changeToDebugTile(to.x, world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(to.x, to.y, false).y, world);
 				return -round(to.y - world.getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(to.x, to.y, false).y) / TILE_SIZE;
 
 			// If the tile is not empty and not a platform, we check that all tiles above it (within specified height) are also empty, if so, we return 1, otherwise we return 2.
 			} else if (!tile.isPlatformTile) {
 				// Note we're using height + 1 because we're stepping up
 				for (int i = 1; i <= height + 1; i++) {
-					changeToDebugTile(to.x, to.y + i * TILE_SIZE, world);
 					if (!world.getTopography().getTile(to.x, (float)to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
-				changeToDebugTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, world);
 				if (!world.getTopography().getTile((float)to.x + (float)(right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
 					return 2;
 				}
@@ -315,31 +306,28 @@ public final class AStarPathFinder extends PathFinder {
 				cascadeDownAndProcessPlatforms(to.x, to.y - TILE_SIZE, parent, destination, height, safeHeight, world);
 
 				for (int i = 1; i <= height + 1; i++) {
-					changeToDebugTile(to.x, to.y + i * TILE_SIZE, world);
 					if (!world.getTopography().getTile(to.x, (float)to.y + i * TILE_SIZE, true).isPassable()) {
 						return 2;
 					}
 				}
 
-				changeToDebugTile(to.x + (right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, world);
 				if (!world.getTopography().getTile((float)to.x + (float)(right ? -TILE_SIZE : TILE_SIZE), to.y + (height + 1) * TILE_SIZE, true).isPassable()) {
 					return 2;
 				}
 				return 1;
 			}
-		} catch (NoTileFoundException e) {
+		} catch (final NoTileFoundException e) {
 			throw new UndiscoveredPathNotification();
 		}
 	}
 
 
 	/** Cascades downwards and adds all platform tiles to {@link #openNodes} until a non-platform, non-empty {@link Tile} is found */
-	private final void cascadeDownAndProcessPlatforms(float x, float y, Node parent, Node destination, int height, int safeHeight, World world) throws NoTileFoundException {
+	private final void cascadeDownAndProcessPlatforms(final float x, final float y, final Node parent, final Node destination, final int height, final int safeHeight, final World world) throws NoTileFoundException {
 		Tile tile;
 		try {
 			tile = world.getTopography().getTile(x, y, true);
-			changeToDebugTile(x, y, world);
-		} catch (NoTileFoundException e) {
+		} catch (final NoTileFoundException e) {
 			aiDebug("Null tile encountered, perhaps not yet generated", INFO);
 			return;
 		}
@@ -353,7 +341,6 @@ public final class AStarPathFinder extends PathFinder {
 			// nodes.
 			boolean legal = true;
 			for (int i = 1; i <= height + 1; i++) {
-				changeToDebugTile(x, y + i * TILE_SIZE, world);
 				if (!world.getTopography().getTile(x, y + i * TILE_SIZE, true).isPassable()) {
 					legal = false;
 					break;
@@ -361,7 +348,7 @@ public final class AStarPathFinder extends PathFinder {
 			}
 
 			if (legal) {
-				Node newNode = new Node(round(x), round(y + TILE_SIZE), parent.x, parent.y, destination, safeHeight);
+				final Node newNode = new Node(round(x), round(y + TILE_SIZE), parent.x, parent.y, destination, safeHeight);
 				addToOpenNodes(newNode);
 			}
 
@@ -376,25 +363,14 @@ public final class AStarPathFinder extends PathFinder {
 	}
 
 
-	private final void changeToDebugTile(final float x, final float y, final World world) {
-		if (isServer() || isClient()) {
-			return;
-		}
-
-		Topography.addTask(() -> {
-			world.getTopography().changeTile(x, y, false, DebugTile.class);
-		});
-	}
-
-
 	/** Heuristic calculation */
-	private final float calculateHeuristic(int x, int y, Vector2 destination) {
+	private final float calculateHeuristic(final int x, final int y, final Vector2 destination) {
 		return abs(destination.cpy().sub(new Vector2(x, y)).len());
 	}
 
 
 	/** Adds a {@link Node} to {@link #openNodes} */
-	private final void addToOpenNodes(Node nodeToPut) {
+	private final void addToOpenNodes(final Node nodeToPut) {
 		if (closedNodes.get(nodeToPut.x, nodeToPut.y) == null) {
 			if (openNodes.get(nodeToPut.x, nodeToPut.y) == null) {
 				openNodes.put(nodeToPut.x, nodeToPut.y, nodeToPut);
@@ -428,7 +404,7 @@ public final class AStarPathFinder extends PathFinder {
 		/**
 		 * Constructor
 		 */
-		private Node(Integer x, Integer y, Integer parentX, Integer parentY, Node destination, int safeHeight) {
+		private Node(final Integer x, final Integer y, final Integer parentX, final Integer parentY, final Node destination, final int safeHeight) {
 			this.x = x;
 			this.y = y;
 			this.parentX = parentX;
@@ -439,7 +415,7 @@ public final class AStarPathFinder extends PathFinder {
 			}
 
 			if (parentX != null && parentY != null) {
-				float distance = abs(new Vector2(x, y).sub(parentX, parentY).len());
+				final float distance = abs(new Vector2(x, y).sub(parentX, parentY).len());
 				this.cost = distance > safeHeight ? Float.MAX_VALUE : distance + closedNodes.get(parentX, parentY).cost;
 			}
 		}

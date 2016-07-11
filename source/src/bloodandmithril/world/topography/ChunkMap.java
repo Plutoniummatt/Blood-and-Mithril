@@ -1,5 +1,7 @@
 package bloodandmithril.world.topography;
 
+import static com.google.common.collect.Maps.newHashMap;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,20 +16,20 @@ import bloodandmithril.core.Copyright;
 public final class ChunkMap {
 
 	/** The chunk map - an array list of columns */
-	public HashMap<Integer, HashMap<Integer, Chunk>> chunkMap;
+	public Map<Integer, Map<Integer, Chunk>> chunkMap;
 
 	/**
 	 * Constructor
 	 */
 	public ChunkMap() {
-		chunkMap = new HashMap<Integer, HashMap<Integer, Chunk>>();
+		chunkMap = newHashMap();
 	}
 
 
 	/**
 	 * Puts a column of chunks into the chunkMap
 	 */
-	public final synchronized void putColumn(int x, HashMap<Integer, Chunk> chunks) {
+	public final synchronized void putColumn(final int x, final Map<Integer, Chunk> chunks) {
 		chunkMap.put(x, chunks);
 	}
 
@@ -37,7 +39,7 @@ public final class ChunkMap {
 	 * @param chunkY - y-world chunk coord
 	 * @return whether or not a chunk at chunk coordinates x, y exists.
 	 */
-	public final synchronized boolean doesChunkExist(int chunkX, int chunkY) {
+	public final synchronized boolean doesChunkExist(final int chunkX, final int chunkY) {
 		if (chunkMap.get(chunkX) == null) {
 			return false;
 		} else {
@@ -51,9 +53,9 @@ public final class ChunkMap {
 	 * @param y - y-world coord
 	 * @return whether or not a chunk at chunk coordinates x, y exists.
 	 */
-	public final boolean doesChunkExist(float x, float y) {
-		int chunkX = Topography.convertToChunkCoord(x);
-		int chunkY = Topography.convertToChunkCoord(y);
+	public final boolean doesChunkExist(final float x, final float y) {
+		final int chunkX = Topography.convertToChunkCoord(x);
+		final int chunkY = Topography.convertToChunkCoord(y);
 
 		return doesChunkExist(chunkX, chunkY);
 	}
@@ -64,7 +66,7 @@ public final class ChunkMap {
 	 * @param y - y-world chunk coord
 	 * @return whether or not a chunk at chunk coordinates x, y exists.
 	 */
-	public final boolean doesChunkExist(Vector2 location) {
+	public final boolean doesChunkExist(final Vector2 location) {
 		return doesChunkExist(location.x, location.y);
 	}
 
@@ -73,7 +75,7 @@ public final class ChunkMap {
 	 * @param chunkX - the x chunk coordinate of the chunk column you want to get.
 	 * @return the column of chunks you wanted.
 	 */
-	public final synchronized HashMap<Integer, Chunk> get(int chunkX) {
+	public final synchronized Map<Integer, Chunk> get(final int chunkX) {
 		return chunkMap.get(chunkX);
 	}
 
@@ -81,7 +83,7 @@ public final class ChunkMap {
 	/**
 	 * See {@link #chunkMap}
 	 */
-	public final synchronized Map<Integer, HashMap<Integer, Chunk>> getChunkMap() {
+	public final synchronized Map<Integer, Map<Integer, Chunk>> getChunkMap() {
 		return chunkMap;
 	}
 
@@ -89,7 +91,7 @@ public final class ChunkMap {
 	/**
 	 * Adds a chunk to the chunkMap
 	 */
-	public final synchronized Chunk addChunk(int chunkX, int chunkY, Chunk chunk) {
+	public final synchronized Chunk addChunk(final int chunkX, final int chunkY, final Chunk chunk) {
 		if (chunkMap.get(chunkX) == null) {
 			chunkMap.put(chunkX, new HashMap<Integer, Chunk>());
 		}

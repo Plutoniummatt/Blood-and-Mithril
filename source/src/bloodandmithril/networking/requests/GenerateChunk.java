@@ -1,9 +1,11 @@
 package bloodandmithril.networking.requests;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
+import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
@@ -29,7 +31,7 @@ public class GenerateChunk implements Request {
 	/**
 	 * Constructor
 	 */
-	public GenerateChunk(int x, int y, int worldId) {
+	public GenerateChunk(final int x, final int y, final int worldId) {
 		this.x = x;
 		this.y = y;
 		this.worldId = worldId;
@@ -40,32 +42,32 @@ public class GenerateChunk implements Request {
 	public Responses respond() {
 		if (Domain.getWorld(worldId).getTopography().getChunkMap().doesChunkExist(x, y)) {
 			// Chunk already generated and in memory
-			ChunkData fData = Domain.getWorld(worldId).getTopography().getChunkMap().get(x).get(y).getChunkData(true);
-			ChunkData bData = Domain.getWorld(worldId).getTopography().getChunkMap().get(x).get(y).getChunkData(false);
-			Response response = new GenerateChunkResponse(fData, bData, worldId);
-			Responses responses = new Response.Responses(false);
+			final ChunkData fData = Domain.getWorld(worldId).getTopography().getChunkMap().get(x).get(y).getChunkData(true);
+			final ChunkData bData = Domain.getWorld(worldId).getTopography().getChunkMap().get(x).get(y).getChunkData(false);
+			final Response response = new GenerateChunkResponse(fData, bData, worldId);
+			final Responses responses = new Response.Responses(false);
 			responses.add(response);
 			return responses;
 		} else {
 			// Chunk does not exist on chunk map, attempt to load/generate
 			Response response = null;
-			Domain.getWorld(worldId).getTopography().loadOrGenerateChunk(x, y, true);
+			Wiring.injector().getInstance(ChunkLoader.class).load(Domain.getWorld(worldId), x, y, true);
 
 			do {
 				if (Domain.getWorld(worldId).getTopography().getChunkMap().doesChunkExist(x, y)) {
-					ChunkData fData = Domain.getWorld(worldId).getTopography().getChunkMap().get(x).get(y).getChunkData(true);
-					ChunkData bData = Domain.getWorld(worldId).getTopography().getChunkMap().get(x).get(y).getChunkData(false);
+					final ChunkData fData = Domain.getWorld(worldId).getTopography().getChunkMap().get(x).get(y).getChunkData(true);
+					final ChunkData bData = Domain.getWorld(worldId).getTopography().getChunkMap().get(x).get(y).getChunkData(false);
 					response = new GenerateChunkResponse(fData, bData, worldId);
 				} else {
 					try {
 						Thread.sleep(50);
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						throw new RuntimeException(e);
 					}
 				}
 			} while (!Domain.getWorld(worldId).getTopography().getChunkMap().doesChunkExist(x, y) || response == null);
 
-			Responses responses = new Response.Responses(false);
+			final Responses responses = new Response.Responses(false);
 			responses.add(response);
 			return responses;
 		}
@@ -82,7 +84,7 @@ public class GenerateChunk implements Request {
 		/**
 		 * Constructor
 		 */
-		public GenerateChunkResponse(ChunkData fData, ChunkData bData, int worldId) {
+		public GenerateChunkResponse(final ChunkData fData, final ChunkData bData, final int worldId) {
 			this.fData = fData;
 			this.bData = bData;
 			this.worldId = worldId;
@@ -90,7 +92,7 @@ public class GenerateChunk implements Request {
 
 		@Override
 		public void acknowledge() {
-			Chunk received = new Chunk(fData, bData);
+			final Chunk received = new Chunk(fData, bData);
 			Domain.getWorld(worldId).getTopography().getChunkMap().addChunk(fData.xChunkCoord, fData.yChunkCoord, received);
 			Logger.networkDebug("Received chunk: [" + fData.xChunkCoord + "," + fData.yChunkCoord +"]" , LogLevel.INFO);
 		}

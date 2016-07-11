@@ -254,11 +254,11 @@ public class UserInterface {
 	/**
 	 * Resets window positions when the screen is resized
 	 */
-	public static synchronized void resetWindowPositions(int oldWidth, int oldHeight) {
-		float oldW = oldWidth;
-		float oldH = oldHeight;
+	public static synchronized void resetWindowPositions(final int oldWidth, final int oldHeight) {
+		final float oldW = oldWidth;
+		final float oldH = oldHeight;
 
-		for (Component c : layeredComponents) {
+		for (final Component c : layeredComponents) {
 			if (c instanceof Window) {
 				((Window) c).x = Math.round(graphics.getWidth() * (float)((Window) c).x / oldW);
 				((Window) c).y = Math.round(graphics.getHeight() * (float)((Window) c).y / oldH);
@@ -286,7 +286,7 @@ public class UserInterface {
 	/**
 	 * Adds a {@link Task} to the {@link #uiTasks} Deque to be executed in the main thread
 	 */
-	public static void addUITask(Task task) {
+	public static void addUITask(final Task task) {
 		uiTasks.add(task);
 	}
 
@@ -300,7 +300,7 @@ public class UserInterface {
 	}
 
 
-	public static void refreshRefreshableWindows(Class<? extends Window> classToRefresh) {
+	public static void refreshRefreshableWindows(final Class<? extends Window> classToRefresh) {
 		layeredComponents.stream().filter((component) -> {
 			return component instanceof Refreshable && component.getClass().equals(classToRefresh);
 		}).forEach((component) -> {
@@ -313,7 +313,7 @@ public class UserInterface {
 	 * Load the buttons
 	 */
 	public void loadButtons() {
-		Button pauseButton = new Button(
+		final Button pauseButton = new Button(
 			"Pause",
 			defaultFont,
 			-32,
@@ -369,7 +369,7 @@ public class UserInterface {
 	 * @param width - new screen width
 	 * @param height - new screen height
 	 */
-	public void resize(int width, int height) {
+	public void resize(final int width, final int height) {
 		UICamera.setToOrtho(false, width, height);
 	}
 
@@ -454,7 +454,7 @@ public class UserInterface {
 				maxMana = 0f;
 				totalMana  = 0f;
 
-				for (Individual indi : Domain.getSelectedIndividuals()) {
+				for (final Individual indi : Domain.getSelectedIndividuals()) {
 					maxHealth += indi.getState().maxHealth;
 					totalHealth += indi.getState().health;
 
@@ -488,8 +488,8 @@ public class UserInterface {
 	private static synchronized void renderTextBubbles() {
 		graphics.getSpriteBatch().begin();
 
-		ArrayDeque<TextBubble> newBubbles = new ArrayDeque<>();
-		for (TextBubble bubble : textBubbles) {
+		final ArrayDeque<TextBubble> newBubbles = new ArrayDeque<>();
+		for (final TextBubble bubble : textBubbles) {
 			bubble.render(graphics);
 			if (bubble.getBean().removalFunction.call()) {
 				bubble.setClosing(true);
@@ -505,7 +505,7 @@ public class UserInterface {
 	}
 
 
-	public static synchronized void addTextBubble(String text, SerializableFunction<Vector2> position, long duration, int xOffset, int yOffset) {
+	public static synchronized void addTextBubble(final String text, final SerializableFunction<Vector2> position, final long duration, final int xOffset, final int yOffset) {
 		if (ClientServerInterface.isClient()) {
 			textBubbles.add(
 				new TextBubble(
@@ -524,30 +524,30 @@ public class UserInterface {
 	private void renderHint() {
 		if (inputProcessor.getCursorBoundTask() == null && contextMenus.isEmpty() && Domain.getActiveWorld() != null && !isKeyPressed(Keys.ANY_KEY)) {
 			boolean renderHint = false;
-			PositionalIndexMap positionalIndexMap = Domain.getActiveWorld().getPositionalIndexMap();
-			for (int id : positionalIndexMap.getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+			final PositionalIndexMap positionalIndexMap = Domain.getActiveWorld().getPositionalIndexMap();
+			for (final int id : positionalIndexMap.getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				if (Domain.getIndividual(id).isMouseOver()) {
 					renderHint = true;
 					break;
 				}
 			}
-			for (int id : positionalIndexMap.getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
+			for (final int id : positionalIndexMap.getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
 				if (renderHint) {
 					break;
 				}
 
-				Prop prop = Domain.getActiveWorld().props().getProp(id);
+				final Prop prop = Domain.getActiveWorld().props().getProp(id);
 				if (prop != null && prop.isMouseOver()) {
 					renderHint = true;
 					break;
 				}
 			}
-			for (int id : positionalIndexMap.getNearbyEntityIds(Item.class, getMouseWorldX(), getMouseWorldY())) {
+			for (final int id : positionalIndexMap.getNearbyEntityIds(Item.class, getMouseWorldX(), getMouseWorldY())) {
 				if (renderHint) {
 					break;
 				}
 
-				Item item = Domain.getActiveWorld().items().getItem(id);
+				final Item item = Domain.getActiveWorld().items().getItem(id);
 				if (item != null && item.isMouseOver()) {
 					renderHint = true;
 					break;
@@ -571,7 +571,7 @@ public class UserInterface {
 
 	private static void renderPositionalIndexes() {
 		defaultFont.setColor(Color.YELLOW);
-		Collection<Object> nearbyEntities = Lists.newLinkedList();
+		final Collection<Object> nearbyEntities = Lists.newLinkedList();
 
 		nearbyEntities.addAll(
 			Lists.newArrayList(
@@ -598,7 +598,7 @@ public class UserInterface {
 		int position = graphics.getHeight() - 270;
 		graphics.getSpriteBatch().begin();
 		Fonts.defaultFont.draw(graphics.getSpriteBatch(), "Entities near cursor:", 5, position + 40);
-		for (Object nearbyEntity : nearbyEntities) {
+		for (final Object nearbyEntity : nearbyEntities) {
 			if (nearbyEntity instanceof Individual) {
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), ((Individual) nearbyEntity).getId().getSimpleName() + " (" + nearbyEntity.getClass().getSimpleName() + ")", 5, position);
 			}
@@ -645,8 +645,8 @@ public class UserInterface {
 		gl.glEnable(GL_BLEND);
 		Gdx.gl20.glLineWidth(2f);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		for (Structure struct : Structures.getStructures().values()) {
-			for (bloodandmithril.generation.component.Component component : newArrayList(struct.getComponents())) {
+		for (final Structure struct : Structures.getStructures().values()) {
+			for (final bloodandmithril.generation.component.Component component : newArrayList(struct.getComponents())) {
 				shapeRenderer.begin(Filled);
 				shapeRenderer.setColor(COMPONENT_FILL_COLOR);
 				shapeRenderer.rect(
@@ -675,17 +675,17 @@ public class UserInterface {
 	/**
 	 * Renders a small rectangle to indicate the current tile the mouse is over
 	 */
-	private static boolean renderMouseOverTileHighlightBox(boolean nonEmptyTilesOnly) {
+	private static boolean renderMouseOverTileHighlightBox(final boolean nonEmptyTilesOnly) {
 		try {
 			if (nonEmptyTilesOnly && Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), getMouseWorldY(), true) instanceof EmptyTile) {
 				return false;
 			}
-		} catch (NoTileFoundException e) {
+		} catch (final NoTileFoundException e) {
 			return false;
 		}
 
-		float x = worldToScreenX(TILE_SIZE * convertToWorldTileCoord(getMouseWorldX()));
-		float y = worldToScreenY(TILE_SIZE * convertToWorldTileCoord(getMouseWorldY()));
+		final float x = worldToScreenX(TILE_SIZE * convertToWorldTileCoord(getMouseWorldX()));
+		final float y = worldToScreenY(TILE_SIZE * convertToWorldTileCoord(getMouseWorldY()));
 
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -704,16 +704,16 @@ public class UserInterface {
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl20.glLineWidth(2f);
-		for (Structure struct : Structures.getStructures().values()) {
-			for (bloodandmithril.generation.component.Component comp : newArrayList(struct.getComponents())) {
+		for (final Structure struct : Structures.getStructures().values()) {
+			for (final bloodandmithril.generation.component.Component comp : newArrayList(struct.getComponents())) {
 				if (renderAvailableInterfaces) {
-					for (Interface in : newArrayList(comp.getAvailableInterfaces())) {
+					for (final Interface in : newArrayList(comp.getAvailableInterfaces())) {
 						if (in != null) {
 							in.render(AVAILABLE_INTERFACE_COLOR);
 						}
 					}
 				} else {
-					for (Interface in : newArrayList(comp.getExistingInterfaces())) {
+					for (final Interface in : newArrayList(comp.getExistingInterfaces())) {
 						if (in != null) {
 
 							in.render(EXISTING_INTERFACE_COLOR);
@@ -788,30 +788,30 @@ public class UserInterface {
 	/**
 	 * Called when the left click is released
 	 */
-	public static void leftClickRelease(int screenX, int screenY) {
+	public static void leftClickRelease(final int screenX, final int screenY) {
 
 		if (initialLeftMouseDragCoordinates != null && BloodAndMithrilClient.isInGame()) {
-			Vector2 diagCorner1 = initialLeftMouseDragCoordinates.cpy();
-			Vector2 diagCorner2 = new Vector2(screenX, screenY);
+			final Vector2 diagCorner1 = initialLeftMouseDragCoordinates.cpy();
+			final Vector2 diagCorner2 = new Vector2(screenX, screenY);
 
-			float left = min(diagCorner1.x, diagCorner2.x);
-			float right = max(diagCorner1.x, diagCorner2.x);
-			float top = max(diagCorner1.y, diagCorner2.y);
-			float bottom = min(diagCorner1.y, diagCorner2.y);
+			final float left = min(diagCorner1.x, diagCorner2.x);
+			final float right = max(diagCorner1.x, diagCorner2.x);
+			final float top = max(diagCorner1.y, diagCorner2.y);
+			final float bottom = min(diagCorner1.y, diagCorner2.y);
 
 			if (right - left < 3 || top - bottom < 3) {
 				return;
 			}
 
-			for (Individual indi : Domain.getIndividuals().values()) {
+			for (final Individual indi : Domain.getIndividuals().values()) {
 				if (factionControlService.isControllable(indi) && indi.isAlive()) {
 
-					Vector2 centre = new Vector2(indi.getState().position.x, indi.getState().position.y + indi.getHeight() / 2);
+					final Vector2 centre = new Vector2(indi.getState().position.x, indi.getState().position.y + indi.getHeight() / 2);
 
 					centre.x = worldToScreenX(centre.x);
 					centre.y = worldToScreenY(centre.y);
 
-					IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
+					final IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
 						individualSelectionService.select(indi);
 					} else if (Domain.isIndividualSelected(indi)) {
@@ -826,7 +826,7 @@ public class UserInterface {
 		}
 
 		if (!layeredComponents.isEmpty()) {
-			Iterator<Component> iter = layeredComponents.descendingIterator();
+			final Iterator<Component> iter = layeredComponents.descendingIterator();
 			while (iter.hasNext()) {
 				iter.next().leftClickReleased();
 			}
@@ -834,21 +834,21 @@ public class UserInterface {
 	}
 
 
-	public static void rightClickRelease(int screenX, int screenY) {
+	public static void rightClickRelease(final int screenX, final int screenY) {
 		if (initialRightMouseDragCoordinates != null && isKeyPressed(inputProcessor.getKeyMappings().rightClickDragBox.keyCode)) {
-			Vector2 diagCorner1 = initialRightMouseDragCoordinates.cpy();
-			Vector2 diagCorner2 = new Vector2(screenX, screenY);
+			final Vector2 diagCorner1 = initialRightMouseDragCoordinates.cpy();
+			final Vector2 diagCorner2 = new Vector2(screenX, screenY);
 
-			float left = min(diagCorner1.x, diagCorner2.x);
-			float right = max(diagCorner1.x, diagCorner2.x);
-			float top = max(diagCorner1.y, diagCorner2.y);
-			float bottom = min(diagCorner1.y, diagCorner2.y);
+			final float left = min(diagCorner1.x, diagCorner2.x);
+			final float right = max(diagCorner1.x, diagCorner2.x);
+			final float top = max(diagCorner1.y, diagCorner2.y);
+			final float bottom = min(diagCorner1.y, diagCorner2.y);
 
 			if (right - left < 3 || top - bottom < 3) {
 				return;
 			}
 
-			List<Item> items = Lists.newLinkedList();
+			final List<Item> items = Lists.newLinkedList();
 
 			Lists.newLinkedList(Iterables.transform(
 				Domain.getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
@@ -876,7 +876,7 @@ public class UserInterface {
 			if (!items.isEmpty()) {
 				if (Domain.getSelectedIndividuals().size() > 0) {
 					contextMenus.clear();
-					boolean singleIndividualSelected = Domain.getSelectedIndividuals().size() == 1;
+					final boolean singleIndividualSelected = Domain.getSelectedIndividuals().size() == 1;
 					contextMenus.add(new ContextMenu(
 						screenX,
 						screenY,
@@ -885,11 +885,11 @@ public class UserInterface {
 							"Take items",
 							() -> {
 								if (singleIndividualSelected) {
-									Individual next = Domain.getSelectedIndividuals().iterator().next();
+									final Individual next = Domain.getSelectedIndividuals().iterator().next();
 									if (ClientServerInterface.isServer()) {
 										try {
 											next.getAI().setCurrentTask(new TakeItem(next, items));
-										} catch (NoTileFoundException e) {}
+										} catch (final NoTileFoundException e) {}
 									} else {
 										ClientServerInterface.SendRequest.sendRequestTakeItems(next, items);
 									}
@@ -919,8 +919,8 @@ public class UserInterface {
 		if (isButtonPressed(inputProcessor.getKeyMappings().leftClick.keyCode) && initialLeftMouseDragCoordinates != null) {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.GREEN);
-			float width = getMouseScreenX() - initialLeftMouseDragCoordinates.x;
-			float height = getMouseScreenY() - initialLeftMouseDragCoordinates.y;
+			final float width = getMouseScreenX() - initialLeftMouseDragCoordinates.x;
+			final float height = getMouseScreenY() - initialLeftMouseDragCoordinates.y;
 			shapeRenderer.rect(initialLeftMouseDragCoordinates.x, initialLeftMouseDragCoordinates.y, width, height);
 			shapeRenderer.end();
 		}
@@ -928,19 +928,19 @@ public class UserInterface {
 		if (isButtonPressed(inputProcessor.getKeyMappings().rightClick.keyCode) && initialRightMouseDragCoordinates != null && isKeyPressed(inputProcessor.getKeyMappings().rightClickDragBox.keyCode)) {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.RED);
-			float width = getMouseScreenX() - initialRightMouseDragCoordinates.x;
-			float height = getMouseScreenY() - initialRightMouseDragCoordinates.y;
+			final float width = getMouseScreenX() - initialRightMouseDragCoordinates.x;
+			final float height = getMouseScreenY() - initialRightMouseDragCoordinates.y;
 			shapeRenderer.rect(initialRightMouseDragCoordinates.x, initialRightMouseDragCoordinates.y, width, height);
 			shapeRenderer.end();
 		}
 	}
 
 
-	private static void renderIndividualUISprites(Graphics graphics) {
+	private static void renderIndividualUISprites(final Graphics graphics) {
 		graphics.getSpriteBatch().begin();
-		for (Individual indi : Domain.getIndividuals().values()) {
+		for (final Individual indi : Domain.getIndividuals().values()) {
 			if (indi.isSelected()) {
-				AITask currentTask = indi.getAI().getCurrentTask();
+				final AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
 					shapeRenderer.setColor(Color.WHITE);
 					 ((GoToLocation)currentTask).renderPath();
@@ -949,7 +949,7 @@ public class UserInterface {
 					((Travel) currentTask).renderWaypoints(graphics);
 
 					if (isKeyPressed(inputProcessor.getKeyMappings().jump.keyCode)) {
-						Vector2 destination = ((Travel) currentTask).getFinalGoToLocationWaypoint();
+						final Vector2 destination = ((Travel) currentTask).getFinalGoToLocationWaypoint();
 						Vector2 start;
 						if (destination != null) {
 							if (isKeyPressed(inputProcessor.getKeyMappings().addWayPoint.keyCode)) {
@@ -995,7 +995,7 @@ public class UserInterface {
 	}
 
 
-	public static void renderJumpArrow(Vector2 start, Vector2 finish) {
+	public static void renderJumpArrow(final Vector2 start, final Vector2 finish) {
 		if (!isKeyPressed(inputProcessor.getKeyMappings().attack.keyCode) && !isKeyPressed(inputProcessor.getKeyMappings().rangedAttack.keyCode)) {
 			renderArrow(start, finish, new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 75f);
 		}
@@ -1005,13 +1005,13 @@ public class UserInterface {
 	/**
 	 * Renders the jump arrow, coordinates are world coordinates
 	 */
-	public static void renderArrow(Vector2 start, Vector2 finish, Color color, float lineWidth, float arrowSize, float maxLength) {
-		Vector2 difference = finish.cpy().sub(start);
-		Vector2 arrowHead = start.cpy().add(
+	public static void renderArrow(final Vector2 start, final Vector2 finish, final Color color, final float lineWidth, final float arrowSize, final float maxLength) {
+		final Vector2 difference = finish.cpy().sub(start);
+		final Vector2 arrowHead = start.cpy().add(
 			difference.cpy().nor().scl(Math.min(difference.len(), maxLength))
 		);
 
-		Vector2 fin = arrowHead.cpy().sub(
+		final Vector2 fin = arrowHead.cpy().sub(
 			difference.cpy().nor().scl(14f)
 		);
 
@@ -1031,9 +1031,9 @@ public class UserInterface {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(color);
 
-		Vector2 point = arrowHead.cpy().add(difference.cpy().nor().scl(5f + arrowSize));
-		Vector2 corner1 = arrowHead.cpy().sub(difference.cpy().nor().rotate(25f).scl(15f + arrowSize / 2f));
-		Vector2 corner2 = arrowHead.cpy().sub(difference.cpy().nor().rotate(-25f).scl(15f + arrowSize / 2f));
+		final Vector2 point = arrowHead.cpy().add(difference.cpy().nor().scl(5f + arrowSize));
+		final Vector2 corner1 = arrowHead.cpy().sub(difference.cpy().nor().rotate(25f).scl(15f + arrowSize / 2f));
+		final Vector2 corner2 = arrowHead.cpy().sub(difference.cpy().nor().rotate(-25f).scl(15f + arrowSize / 2f));
 
 		shapeRenderer.triangle(
 			worldToScreenX(point.x),
@@ -1074,12 +1074,12 @@ public class UserInterface {
 			return;
 		}
 
-		boolean jumpPressed = isKeyPressed(inputProcessor.getKeyMappings().jump.keyCode);
-		boolean addWayPointPressed = isKeyPressed(inputProcessor.getKeyMappings().addWayPoint.keyCode);
-		boolean forceMovePressed = isKeyPressed(inputProcessor.getKeyMappings().forceMove.keyCode);
-		boolean attackPressed = isKeyPressed(inputProcessor.getKeyMappings().attack.keyCode);
-		boolean rangedAttackPressed = isKeyPressed(inputProcessor.getKeyMappings().rangedAttack.keyCode);
-		boolean mineTIlePressed = isKeyPressed(inputProcessor.getKeyMappings().mineTile.keyCode);
+		final boolean jumpPressed = isKeyPressed(inputProcessor.getKeyMappings().jump.keyCode);
+		final boolean addWayPointPressed = isKeyPressed(inputProcessor.getKeyMappings().addWayPoint.keyCode);
+		final boolean forceMovePressed = isKeyPressed(inputProcessor.getKeyMappings().forceMove.keyCode);
+		final boolean attackPressed = isKeyPressed(inputProcessor.getKeyMappings().attack.keyCode);
+		final boolean rangedAttackPressed = isKeyPressed(inputProcessor.getKeyMappings().rangedAttack.keyCode);
+		final boolean mineTIlePressed = isKeyPressed(inputProcessor.getKeyMappings().mineTile.keyCode);
 
 		if (!Domain.getSelectedIndividuals().isEmpty()) {
 
@@ -1110,7 +1110,7 @@ public class UserInterface {
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), text, getMouseScreenX() + 15, getMouseScreenY() - 25);
 			} else if (rangedAttackPressed) {
 				boolean canAttackRanged = false;
-				for (Individual indi : Domain.getSelectedIndividuals()) {
+				for (final Individual indi : Domain.getSelectedIndividuals()) {
 					if (indi.canAttackRanged()) {
 						renderArrow(indi.getEmissionPosition(), new Vector2(getMouseWorldX(), getMouseWorldY()), new Color(1f, 0f, 0f, 0.65f), 2f, 0f, rangeControl);
 						canAttackRanged = true;
@@ -1142,10 +1142,10 @@ public class UserInterface {
 	}
 
 
-	private static void renderFloatingText(int worldId) {
+	private static void renderFloatingText(final int worldId) {
 		graphics.getSpriteBatch().begin();
 
-		List<FloatingText> elements = worldFloatingTexts.get(worldId);
+		final List<FloatingText> elements = worldFloatingTexts.get(worldId);
 		if (elements != null) {
 			Lists.newArrayList(elements).stream().forEach(text -> {
 				defaultFont.setColor(Colors.modulateAlpha(Color.BLACK, text.life / text.maxLife));
@@ -1194,7 +1194,7 @@ public class UserInterface {
 
 		int chunksInMemory = 0;
 		if (ClientServerInterface.isServer()) {
-			for (Entry<Integer, HashMap<Integer, Chunk>> entry : Domain.getActiveWorld().getTopography().getChunkMap().chunkMap.entrySet()) {
+			for (final Entry<Integer, Map<Integer, Chunk>> entry : Domain.getActiveWorld().getTopography().getChunkMap().chunkMap.entrySet()) {
 				chunksInMemory = chunksInMemory + entry.getValue().size();
 			}
 		}
@@ -1211,14 +1211,14 @@ public class UserInterface {
 
 	/** Renders layered components, e.g. {@link Window}s */
 	private static synchronized void renderLayeredComponents() {
-		ArrayDeque<Component> copy = new ArrayDeque<>(layeredComponents);
-		for (Component component : new ArrayDeque<>(layeredComponents)) {
+		final ArrayDeque<Component> copy = new ArrayDeque<>(layeredComponents);
+		for (final Component component : new ArrayDeque<>(layeredComponents)) {
 			if (component instanceof Window) {
 				((Window) component).renderWorldUIGuide();
 			}
 		}
 
-		for (Component component : new ArrayDeque<>(layeredComponents)) {
+		for (final Component component : new ArrayDeque<>(layeredComponents)) {
 			if (component instanceof Window) {
 				if (((Window) component).y < 0) {
 					((Window) component).y = 20;
@@ -1244,9 +1244,9 @@ public class UserInterface {
 
 	/** Renders all the context menus */
 	private static void renderContextMenus() {
-		Iterator<ContextMenu> iterator = contextMenus.iterator();
+		final Iterator<ContextMenu> iterator = contextMenus.iterator();
 		while (iterator.hasNext()) {
-			ContextMenu next = iterator.next();
+			final ContextMenu next = iterator.next();
 			if (iterator.hasNext()) {
 				next.setActive(false);
 				next.render(graphics);
@@ -1262,7 +1262,7 @@ public class UserInterface {
 	 * Renders all buttons
 	 */
 	private void renderButtons() {
-		for (Entry<String, Button> buttonEntry : buttons.entrySet()) {
+		for (final Entry<String, Button> buttonEntry : buttons.entrySet()) {
 			buttonEntry.getValue().render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
 		}
 	}
@@ -1296,17 +1296,17 @@ public class UserInterface {
 			return false;
 		}
 
-		for (Entry<String, Button> buttonEntry : buttons.entrySet()) {
+		for (final Entry<String, Button> buttonEntry : buttons.entrySet()) {
 			clicked = buttonEntry.getValue().click() || clicked;
 		}
 
-		List<ContextMenu> contextMenuCopy = new ArrayList<ContextMenu>(contextMenus);
+		final List<ContextMenu> contextMenuCopy = new ArrayList<ContextMenu>(contextMenus);
 
 		if (!layeredComponents.isEmpty() && contextMenus.isEmpty()) {
-			ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
-			Iterator<Component> iter = layeredComponents.descendingIterator();
+			final ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
+			final Iterator<Component> iter = layeredComponents.descendingIterator();
 			while (iter.hasNext()) {
-				Component next = iter.next();
+				final Component next = iter.next();
 				if (next.leftClick(contextMenuCopy, windowsCopy)) {
 					clicked = true;
 					break;
@@ -1318,9 +1318,9 @@ public class UserInterface {
 			}
 		}
 
-		Iterator<ContextMenu> iterator = contextMenus.iterator();
+		final Iterator<ContextMenu> iterator = contextMenus.iterator();
 		while (iterator.hasNext()) {
-			ContextMenu menu = iterator.next();
+			final ContextMenu menu = iterator.next();
 			if (!iterator.hasNext()) {
 				clicked = menu.leftClick(contextMenuCopy, null) || clicked;
 			}
@@ -1348,12 +1348,12 @@ public class UserInterface {
 	}
 
 
-	public static void addFloatingText(String text, Color color, Vector2 position, boolean ui, int worldId) {
+	public static void addFloatingText(final String text, final Color color, final Vector2 position, final boolean ui, final int worldId) {
 		addFloatingText(floatingText(text, color, position, ui), worldId, false);
 	}
 
 
-	public static void addFloatingText(FloatingText floatingText, int worldId, boolean csi) {
+	public static void addFloatingText(final FloatingText floatingText, final int worldId, final boolean csi) {
 		if (isServer()) {
 			if (isClient()) {
 				synchronized(worldFloatingTexts) {
@@ -1380,7 +1380,7 @@ public class UserInterface {
 	}
 
 
-	public static void addUIFloatingText(String text, Color color, Vector2 position) {
+	public static void addUIFloatingText(final String text, final Color color, final Vector2 position) {
 		addFloatingText(floatingText(text, color, position, true), getActiveWorldId(), false);
 	}
 
@@ -1388,8 +1388,8 @@ public class UserInterface {
 	/**
 	 * Called when the scroll wheel is scrolled.
 	 */
-	public static void scrolled(int amount) {
-		for (Component component : newArrayList(layeredComponents)) {
+	public static void scrolled(final int amount) {
+		for (final Component component : newArrayList(layeredComponents)) {
 			if (component.isActive()) {
 				component.scrolled(amount);
 			}
@@ -1397,7 +1397,7 @@ public class UserInterface {
 	}
 
 
-	public static boolean keyPressed(int keyCode) {
+	public static boolean keyPressed(final int keyCode) {
 		if (BloodAndMithrilClient.paused.get()) {
 			return false;
 		}
@@ -1406,7 +1406,7 @@ public class UserInterface {
 			return false;
 		}
 
-		for (Component component : layeredComponents) {
+		for (final Component component : layeredComponents) {
 			boolean pressed = false;
 			if (component.isActive() && !(component instanceof BottomBar)) {
 				pressed = component.keyPressed(keyCode) || pressed;
@@ -1418,8 +1418,8 @@ public class UserInterface {
 
 		if (keyCode == inputProcessor.getKeyMappings().openInventory.keyCode) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
-				Individual individual = Domain.getSelectedIndividuals().iterator().next();
-				String simpleName = individual.getId().getSimpleName();
+				final Individual individual = Domain.getSelectedIndividuals().iterator().next();
+				final String simpleName = individual.getId().getSimpleName();
 
 				UserInterface.addLayeredComponentUnique(
 					new InventoryWindow(
@@ -1433,7 +1433,7 @@ public class UserInterface {
 
 		if (keyCode == inputProcessor.getKeyMappings().openAIRoutines.keyCode) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
-				Individual individual = Domain.getSelectedIndividuals().iterator().next();
+				final Individual individual = Domain.getSelectedIndividuals().iterator().next();
 				UserInterface.addLayeredComponentUnique(
 					new AIRoutinesWindow(
 						individual
@@ -1444,14 +1444,14 @@ public class UserInterface {
 
 		if (keyCode == inputProcessor.getKeyMappings().openBuildWindow.keyCode) {
 			if (Domain.getSelectedIndividuals().size() == 1) {
-				Individual individual = Domain.getSelectedIndividuals().iterator().next();
+				final Individual individual = Domain.getSelectedIndividuals().iterator().next();
 
 				UserInterface.addLayeredComponentUnique(
 					new BuildWindow(
 						individual,
 						new Function<Construction, String>() {
 							@Override
-							public String apply(Construction input) {
+							public String apply(final Construction input) {
 								return input.getTitle();
 							}
 						},
@@ -1470,7 +1470,7 @@ public class UserInterface {
 	/**
 	 * Removes a layered component
 	 */
-	public static void removeLayeredComponent(Component toRemove) {
+	public static void removeLayeredComponent(final Component toRemove) {
 		layeredComponents.remove(toRemove);
 	}
 
@@ -1478,8 +1478,8 @@ public class UserInterface {
 	/**
 	 * Removes a layered component
 	 */
-	public static void removeLayeredComponent(String title) {
-		for (Component component : layeredComponents) {
+	public static void removeLayeredComponent(final String title) {
+		for (final Component component : layeredComponents) {
 			if (component instanceof Window && ((Window) component).title.equals(title)) {
 				component.setClosing(true);
 			}
@@ -1498,13 +1498,13 @@ public class UserInterface {
 		}
 
 		contextMenus.clear();
-		ContextMenu newMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu newMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		if (!layeredComponents.isEmpty()) {
-			ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
-			Iterator<Component> iter = layeredComponents.descendingIterator();
+			final ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
+			final Iterator<Component> iter = layeredComponents.descendingIterator();
 			while (iter.hasNext()) {
-				Component next = iter.next();
+				final Component next = iter.next();
 				if (next instanceof Window && ((Window)next).rightClick(windowsCopy)) {
 					clicked = true;
 					break;
@@ -1519,7 +1519,7 @@ public class UserInterface {
 		}
 
 		for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-			Individual indi = Domain.getIndividual(indiKey);
+			final Individual indi = Domain.getIndividual(indiKey);
 			if (indi.isMouseOver()) {
 				final ContextMenu secondaryMenu = individualContextMenuService.get().getContextMenu(indi);
 				newMenu.getMenuItems().add(
@@ -1539,7 +1539,7 @@ public class UserInterface {
 		}
 
 		for (final int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
-			Prop prop = Domain.getActiveWorld().props().getProp(propKey);
+			final Prop prop = Domain.getActiveWorld().props().getProp(propKey);
 			if (prop.isMouseOver()) {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
 				newMenu.getMenuItems().add(
@@ -1587,8 +1587,8 @@ public class UserInterface {
 
 
 	/** Adds a {@link Component} to {@link #layeredComponents} */
-	public synchronized static void addLayeredComponent(Component toAdd) {
-		for (Component component : layeredComponents) {
+	public synchronized static void addLayeredComponent(final Component toAdd) {
+		for (final Component component : layeredComponents) {
 			if (component instanceof Window) {
 				((Window)component).setActive(false);
 			}
@@ -1598,15 +1598,15 @@ public class UserInterface {
 
 
 	/** Adds a {@link Component} to {@link #layeredComponents}, checking if an existing one with the same title exists */
-	public synchronized static void addLayeredComponentUnique(Window toAdd) {
+	public synchronized static void addLayeredComponentUnique(final Window toAdd) {
 		Window existing = null;
 
-		for (Component window : layeredComponents) {
+		for (final Component window : layeredComponents) {
 			if (window instanceof Window) {
 				((Window) window).setActive(false);
 
-				Object existingUniqueIdentifier = ((Window)window).getUniqueIdentifier();
-				Object newUniqueIdentifier = toAdd.getUniqueIdentifier();
+				final Object existingUniqueIdentifier = ((Window)window).getUniqueIdentifier();
+				final Object newUniqueIdentifier = toAdd.getUniqueIdentifier();
 
 				if (existingUniqueIdentifier.equals(newUniqueIdentifier)) {
 					existing = (Window)window;
@@ -1625,27 +1625,27 @@ public class UserInterface {
 	}
 
 
-	public static void addClientMessage(String title, String message) {
+	public static void addClientMessage(final String title, final String message) {
 		addGlobalMessage(title, message, -1, new FalseFunction());
 	}
 
 
-	public static void addClientMessage(String title, SerializableFunction<String> message) {
+	public static void addClientMessage(final String title, final SerializableFunction<String> message) {
 		addGlobalMessage(title, message, -1, new FalseFunction());
 	}
 
 
-	public static void addGlobalMessage(String title, String message) {
+	public static void addGlobalMessage(final String title, final String message) {
 		addGlobalMessage(title, message, -1, new AlwaysTrueFunction());
 	}
 
 
-	public static void addGlobalMessage(String title, String message, SerializableFunction<Boolean> function) {
+	public static void addGlobalMessage(final String title, final String message, final SerializableFunction<Boolean> function) {
 		addGlobalMessage(title, message, -1, function);
 	}
 
 
-	public static void addGlobalMessage(String title, SerializableFunction<String> message, int client, SerializableFunction<Boolean> function) {
+	public static void addGlobalMessage(final String title, final SerializableFunction<String> message, final int client, final SerializableFunction<Boolean> function) {
 		if (ClientServerInterface.isClient()) {
 			addLayeredComponent(
 				new MessageWindow(
@@ -1665,7 +1665,7 @@ public class UserInterface {
 	}
 
 
-	public static void addGlobalMessage(String title, String message, int client, SerializableFunction<Boolean> function) {
+	public static void addGlobalMessage(final String title, final String message, final int client, final SerializableFunction<Boolean> function) {
 		if (ClientServerInterface.isClient()) {
 			addLayeredComponent(
 				new MessageWindow(
@@ -1699,20 +1699,20 @@ public class UserInterface {
 		public float maxLife = 1f, life = 1f;
 		public boolean ui;
 
-		private FloatingText(String text, SerializableColor color, Vector2 worldPosition, boolean ui) {
+		private FloatingText(final String text, final SerializableColor color, final Vector2 worldPosition, final boolean ui) {
 			this.text = text;
 			this.color = color;
 			this.worldPosition = worldPosition;
 			this.ui = ui;
 		}
 
-		public static FloatingText floatingText(String text, Color color, Vector2 worldPosition, boolean ui) {
+		public static FloatingText floatingText(final String text, final Color color, final Vector2 worldPosition, final boolean ui) {
 			return new FloatingText(text, new SerializableColor(color), worldPosition, ui);
 		}
 
 
-		public static FloatingText floatingText(String text, Color color, Vector2 worldPosition, float life, boolean ui) {
-			FloatingText floatingText = new FloatingText(text, new SerializableColor(color), worldPosition, ui);
+		public static FloatingText floatingText(final String text, final Color color, final Vector2 worldPosition, final float life, final boolean ui) {
+			final FloatingText floatingText = new FloatingText(text, new SerializableColor(color), worldPosition, ui);
 			floatingText.maxLife = life;
 			floatingText.life = life;
 			return floatingText;
@@ -1731,7 +1731,7 @@ public class UserInterface {
 
 
 	public static void closeAllWindows() {
-		for (Component component : layeredComponents) {
+		for (final Component component : layeredComponents) {
 			component.setClosing(true);
 		}
 	}
@@ -1742,17 +1742,17 @@ public class UserInterface {
 	}
 
 
-	public static void setInfoPopup(InfoPopup infoPopup) {
+	public static void setInfoPopup(final InfoPopup infoPopup) {
 		UserInterface.infoPopup = infoPopup;
 	}
 
 
-	public void addButton(String name, Button button) {
+	public void addButton(final String name, final Button button) {
 		buttons.put(name, button);
 	}
 
 
-	public void removeButton(String button) {
+	public void removeButton(final String button) {
 		buttons.remove(button);
 	}
 }

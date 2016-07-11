@@ -43,11 +43,14 @@ public class Graphics {
 	private boolean fading;
 
 	/** The {@link UserInterface} */
-	@Inject private UserInterface ui;
+	private UserInterface ui;
+	private WorldRenderer worldRenderer;
 
 
 	@Inject
-	public Graphics() {
+	public Graphics(final UserInterface ui, final WorldRenderer worldRenderer) {
+		this.ui = ui;
+		this.worldRenderer = worldRenderer;
 		this.width = ConfigPersistenceService.getConfig().getResX();
 		this.height = ConfigPersistenceService.getConfig().getResY();
 
@@ -101,12 +104,12 @@ public class Graphics {
 	}
 
 
-	public void setWidth(int width) {
+	public void setWidth(final int width) {
 		this.width = width;
 	}
 
 
-	public void setHeight(int height) {
+	public void setHeight(final int height) {
 		this.height = height;
 	}
 
@@ -116,7 +119,7 @@ public class Graphics {
 	}
 
 
-	public void setFadeAlpha(float fadeAlpha) {
+	public void setFadeAlpha(final float fadeAlpha) {
 		this.fadeAlpha = fadeAlpha;
 	}
 
@@ -126,7 +129,7 @@ public class Graphics {
 	}
 
 
-	public void setFading(boolean fading) {
+	public void setFading(final boolean fading) {
 		this.fading = fading;
 	}
 
@@ -134,9 +137,9 @@ public class Graphics {
 	/**
 	 * Processes graphics side of resizing the window
 	 */
-	public void resize(int newWidth, int newHeight) {
-		int oldWidth = width;
-		int oldHeight = height;
+	public void resize(final int newWidth, final int newHeight) {
+		final int oldWidth = width;
+		final int oldHeight = height;
 
 		width = newWidth;
 		height = newHeight;
@@ -144,8 +147,8 @@ public class Graphics {
 		camMarginX = 640 + 32 - width % 32;
 		camMarginY = 640 + 32 - height % 32;
 
-		float oldCamX = cam.position.x;
-		float oldCamY = cam.position.y;
+		final float oldCamX = cam.position.x;
+		final float oldCamY = cam.position.y;
 
 		cam.setToOrtho(false, width + camMarginX, height + camMarginY);
 		cam.position.x = oldCamX;
@@ -162,11 +165,10 @@ public class Graphics {
 
 		UserInterface.resetWindowPositions(oldWidth, oldHeight);
 
-		WorldRenderer.dispose();
+		worldRenderer.dispose();
 		GaussianLightingRenderer.dispose();
 		WeatherRenderer.dispose();
 
-		WorldRenderer.setup();
 		GaussianLightingRenderer.setup();
 		WeatherRenderer.setup();
 
@@ -186,9 +188,9 @@ public class Graphics {
 	/**
 	 * True is specified world coordinates are on screen within specified tolerance
 	 */
-	public static boolean isOnScreen(Vector2 position, float tolerance) {
-		float screenX = worldToScreenX(position.x);
-		float screenY = worldToScreenY(position.y);
+	public static boolean isOnScreen(final Vector2 position, final float tolerance) {
+		final float screenX = worldToScreenX(position.x);
+		final float screenY = worldToScreenY(position.y);
 
 		return screenX > -tolerance && screenX < getGdxWidth() + tolerance && screenY > -tolerance && screenY < getGdxHeight() + tolerance;
 	}
