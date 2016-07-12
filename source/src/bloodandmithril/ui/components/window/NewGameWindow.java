@@ -5,16 +5,10 @@ import static bloodandmithril.control.InputUtilities.getMouseScreenX;
 import static bloodandmithril.control.InputUtilities.getMouseScreenY;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.util.Fonts.defaultFont;
-import static bloodandmithril.util.Util.threadWait;
 import static bloodandmithril.util.Util.Colors.lightColor;
 import static bloodandmithril.util.Util.Colors.lightSkinColor;
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Iterables.transform;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -27,34 +21,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 import bloodandmithril.character.faction.Faction;
-import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.proficiency.Proficiency;
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
-import bloodandmithril.core.ClientModule;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
-import bloodandmithril.core.GameClientStateTracker;
-import bloodandmithril.core.GameSetupService;
 import bloodandmithril.core.ItemPackage;
-import bloodandmithril.core.Name;
-import bloodandmithril.core.Threading;
+import bloodandmithril.core.StartGameService;
 import bloodandmithril.core.Wiring;
-import bloodandmithril.generation.Structures;
-import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.persistence.GameLoader;
-import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
-import bloodandmithril.persistence.ParameterPersistenceService;
-import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.UserInterface.UIRef;
 import bloodandmithril.ui.components.Button;
@@ -67,9 +47,6 @@ import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.util.cursorboundtask.ChooseStartingLocationCursorBoundTask;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.Topography;
 
 /**
  * Window for selecting starting units/items
@@ -86,15 +63,6 @@ public class NewGameWindow extends Window {
 	private final HashMap<ListingMenuItem<Individual>, String> startingIndividuals = Maps.newHashMap();
 	private ItemPackage selectedItemPackage;
 	private boolean enableTutorials = true;
-
-	@Inject	private Threading threading;
-	@Inject	private Graphics graphics;
-	@Inject	private ParameterPersistenceService parameterPersistenceService;
-	@Inject	private FactionControlService factionControlService;
-	@Inject	private GameLoader gameLoader;
-	@Inject	private ChunkLoader chunkLoader;
-	@Inject private GameSetupService gameSetupService;
-	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	private Button next;
 	private Button startGame = new Button(
@@ -113,80 +81,12 @@ public class NewGameWindow extends Window {
 		UIRef.BL
 	);
 
+	@Inject
+	private StartGameService startGameService;
+
 	private void startGame() {
 		setClosing(true);
-
-		final Faction nature = new Faction(
-			"Nature",
-			parameterPersistenceService.getParameters().getNextFactionId(),
-			false,
-			"Mother nature"
-		);
-
-		final Faction playerFaction = new Faction(
-			selectedRace.getAnnotation(Name.class).name(),
-			parameterPersistenceService.getParameters().getNextFactionId(),
-			true,
-			selectedRace.getAnnotation(Description.class).description()
-		);
-
-		Domain.getFactions().put(nature.factionId, nature);
-		Domain.getFactions().put(playerFaction.factionId, playerFaction);
-
-		ClientServerInterface.setServer(true);
-		Wiring.reconfigure(new ClientModule());
-		threading.clientProcessingThreadPool.execute(() -> {
-			UserInterface.closeAllWindows();
-			graphics.setFading(true);
-			threadWait(1500);
-			gameClientStateTracker.setLoading(true);
-			ClientServerInterface.setServer(true);
-
-			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
-			gameClientStateTracker.setActiveWorldId(Domain.createWorld());
-			gameClientStateTracker.setInGame(true);
-			gameSetupService.setup();
-			factionControlService.control(playerFaction.factionId);
-
-			final Topography topography = gameClientStateTracker.getActiveWorld().getTopography();
-			topography.loadOrGenerateChunk(0, 0, false);
-
-			SuperStructure superStructure = null;
-			while (superStructure == null || superStructure.getPossibleStartingLocations().isEmpty()) {
-				threadWait(1000);
-
-				superStructure = (SuperStructure) Iterables.tryFind(Structures.getStructures().values(), structure -> {
-					return structure instanceof SuperStructure;
-				}).orNull();
-			}
-
-			final ArrayList<Vector2> startingLocations = Lists.newArrayList(superStructure.getPossibleStartingLocations());
-			Collections.shuffle(startingLocations);
-			final Vector2 startingPosition = startingLocations.get(0);
-
-			graphics.getCam().position.x = startingPosition.x;
-			graphics.getCam().position.y = startingPosition.y;
-
-			Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
-				new ChooseStartingLocationCursorBoundTask(
-					Sets.newHashSet(filter(Lists.newArrayList(transform(startingIndividuals.keySet(), listingMenuItem -> {
-						return listingMenuItem.t;
-					})), test -> {
-						return test != null;
-					})),
-					selectedItemPackage,
-					playerFaction.factionId,
-					gameClientStateTracker.getActiveWorld().getWorldId()
-				)
-			);
-
-			while(!chunkLoader.loaderTasks.isEmpty()) {
-				threadWait(100);
-			}
-
-			gameClientStateTracker.setLoading(false);
-			graphics.setFading(false);
-		});
+		startGameService.start(selectedRace, selectedItemPackage, startingIndividuals);
 	}
 
 	/**

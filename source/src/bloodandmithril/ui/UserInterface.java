@@ -53,7 +53,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -86,7 +85,6 @@ import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.persistence.world.ChunkLoader;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.components.Button;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
@@ -95,9 +93,6 @@ import bloodandmithril.ui.components.InfoPopup;
 import bloodandmithril.ui.components.TextBubble;
 import bloodandmithril.ui.components.TextBubble.TextBubbleSerializableBean;
 import bloodandmithril.ui.components.bar.BottomBar;
-import bloodandmithril.ui.components.window.AIRoutinesWindow;
-import bloodandmithril.ui.components.window.BuildWindow;
-import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Countdown;
@@ -1396,76 +1391,6 @@ public class UserInterface {
 				component.scrolled(amount);
 			}
 		}
-	}
-
-
-	public static boolean keyPressed(final int keyCode) {
-		if (gameClientStateTracker.isPaused()) {
-			return false;
-		}
-
-		if (gameSaver.isSaving()) {
-			return false;
-		}
-
-		for (final Component component : layeredComponents) {
-			boolean pressed = false;
-			if (component.isActive() && !(component instanceof BottomBar)) {
-				pressed = component.keyPressed(keyCode) || pressed;
-			}
-			if (pressed) {
-				return true;
-			}
-		}
-
-		if (keyCode == inputProcessor.getKeyMappings().openInventory.keyCode) {
-			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
-				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
-				final String simpleName = individual.getId().getSimpleName();
-
-				UserInterface.addLayeredComponentUnique(
-					new InventoryWindow(
-						individual,
-						simpleName + " - Inventory",
-						true
-					)
-				);
-			}
-		}
-
-		if (keyCode == inputProcessor.getKeyMappings().openAIRoutines.keyCode) {
-			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
-				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
-				UserInterface.addLayeredComponentUnique(
-					new AIRoutinesWindow(
-						individual
-					)
-				);
-			}
-		}
-
-		if (keyCode == inputProcessor.getKeyMappings().openBuildWindow.keyCode) {
-			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
-				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
-
-				UserInterface.addLayeredComponentUnique(
-					new BuildWindow(
-						individual,
-						new Function<Construction, String>() {
-							@Override
-							public String apply(final Construction input) {
-								return input.getTitle();
-							}
-						},
-						(c1, c2) -> {
-							return c1.getTitle().compareTo(c2.getTitle());
-						}
-					)
-				);
-			}
-		}
-
-		return false;
 	}
 
 

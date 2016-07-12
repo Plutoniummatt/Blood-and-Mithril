@@ -9,7 +9,6 @@ import static bloodandmithril.control.InputUtilities.isButtonPressed;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
@@ -25,7 +24,6 @@ import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
-import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.event.events.IndividualMoved;
 import bloodandmithril.graphics.Graphics;
@@ -33,8 +31,6 @@ import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.window.DevWindow;
-import bloodandmithril.ui.components.window.MainMenuWindow;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.Function;
 import bloodandmithril.util.Util;
@@ -58,7 +54,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	@Inject	private FactionControlService factionControlService;
 	@Inject	private GameSaver gameSaver;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
-	@Inject	private Threading threading;
+	@Inject private InputHandlers handlers;
 
 	private CursorBoundTask cursorBoundTask = null;
 	private Function<Vector2> camFollowFunction;
@@ -130,48 +126,12 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyDown(final int keycode) {
-		if (isKeyPressed(Keys.CONTROL_LEFT) && keycode == Input.Keys.D) {
-			UserInterface.addLayeredComponentUnique(
-				new DevWindow(
-					graphics.getWidth(),
-					graphics.getHeight()/2 + 150,
-					500,
-					300,
-					true
-				)
-			);
+		// Ignore input during save/load
+		if (gameSaver.isSaving() || gameClientStateTracker.isLoading()) {
+			return false;
 		}
 
-		try {
-			if (gameSaver.isSaving() || gameClientStateTracker.isLoading()) {
-				return false;
-			}
-
-			if (UserInterface.keyPressed(keycode)) {
-				return false;
-			} else if (Keys.ESCAPE == keycode) {
-				UserInterface.addLayeredComponentUnique(
-					new MainMenuWindow(true)
-				);
-			} else {
-				if (keycode == controls.speedUp.keyCode) {
-					if (threading.getUpdateRate() < 16f) {
-						threading.setUpdateRate(Math.round(threading.getUpdateRate()) + 1);
-					}
-				}
-				if (keycode == controls.slowDown.keyCode) {
-					if (threading.getUpdateRate() > 1f) {
-						threading.setUpdateRate(Math.round(threading.getUpdateRate()) - 1);
-					}
-				}
-				if (cursorBoundTask != null) {
-					cursorBoundTask.keyPressed(keycode);
-				}
-			}
-		} catch (final Exception e) {
-			e.printStackTrace();
-			Gdx.app.exit();
-		}
+		handlers.iterateKeyDown(keycode);
 
 		return false;
 	}
