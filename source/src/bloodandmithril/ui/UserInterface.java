@@ -1281,15 +1281,10 @@ public class UserInterface {
 	 */
 	public boolean leftClick() {
 		boolean clicked = false;
-
 		if (gameClientStateTracker.isPaused()) {
 			if (unpauseButton != null) {
 				clicked = unpauseButton.click();
 			}
-			return false;
-		}
-
-		if (gameSaver.isSaving()) {
 			return false;
 		}
 

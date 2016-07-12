@@ -24,6 +24,9 @@ public class InputHandlers {
 	/** All key pressed handlers */
 	private List<KeyPressedHandler> keyPressedHandlers = Lists.newLinkedList();
 
+	/** All left click handlers */
+	private List<LeftClickHandler> leftClickHandlers = Lists.newLinkedList();
+
 	@Inject
 	InputHandlers(
 		final DevWindowKeyPressedHandler devWindowKeyPressedHandler,
@@ -44,6 +47,20 @@ public class InputHandlers {
 	public void iterateKeyDown(final int keycode) {
 		for (final KeyPressedHandler handler : keyPressedHandlers) {
 			if (handler.handle(keycode)) {
+				break;
+			}
+		}
+	}
+
+
+	public void addLeftClickHandler(final Class<? extends LeftClickHandler> handler) {
+		this.leftClickHandlers.add(Wiring.injector().getInstance(handler));
+	}
+
+
+	public void iterateLeftClick() {
+		for (final LeftClickHandler handler : leftClickHandlers) {
+			if (handler.leftClick()) {
 				break;
 			}
 		}

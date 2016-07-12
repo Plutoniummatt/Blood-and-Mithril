@@ -34,10 +34,6 @@ public class Controls implements Serializable {
 	/** For camera dragging */
 	public static int camDragX, camDragY, oldCamX, oldCamY;
 
-	/** The current timer for double clicking */
-	public static long leftDoubleClickTimer = 0L;
-	public static long rightDoubleClickTimer = 0L;
-
 	public static final Map<Integer, WrapperForTwo<String, String>> keyMap = Maps.newHashMap();
 	public static final Map<Integer, String> keyName = Maps.newHashMap();
 	public static final Set<Integer> disallowedKeys = Sets.newHashSet();
@@ -78,9 +74,9 @@ public class Controls implements Serializable {
 	public MappedKey slowDown = new MappedKey("Decrease game speed", Input.Keys.MINUS, "Press to decrease game speed.", true);
 
 	public Map<Integer, MappedKey> getFunctionalKeyMappings() {
-		Map<Integer, MappedKey> map = Maps.newHashMap();
+		final Map<Integer, MappedKey> map = Maps.newHashMap();
 
-		List<MappedKey> keys = Lists.newArrayList(
+		final List<MappedKey> keys = Lists.newArrayList(
 			rightClickDragBox,
 			forceMove,
 			jump,
@@ -99,7 +95,7 @@ public class Controls implements Serializable {
 			disableEnableAI
 		);
 
-		for (MappedKey key : keys) {
+		for (final MappedKey key : keys) {
 			map.put(key.keyCode, key);
 		}
 
@@ -128,7 +124,7 @@ public class Controls implements Serializable {
 		/**
 		 * Constructor
 		 */
-		public MappedKey(String description, int keyCode, String showInfo, boolean canChange) {
+		public MappedKey(final String description, final int keyCode, final String showInfo, final boolean canChange) {
 			this.description = description;
 			this.keyCode = keyCode;
 			this.showInfo = showInfo;

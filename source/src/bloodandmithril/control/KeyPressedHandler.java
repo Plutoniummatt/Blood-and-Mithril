@@ -3,7 +3,7 @@ package bloodandmithril.control;
 import bloodandmithril.core.Copyright;
 
 /**
- * Handles input, specific to a functional area of the game
+ * Handles a key press, specific to a functional area of the game
  *
  * @author Matt
  */

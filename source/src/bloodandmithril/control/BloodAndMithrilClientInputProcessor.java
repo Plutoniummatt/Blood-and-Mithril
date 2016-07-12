@@ -59,6 +59,9 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	private CursorBoundTask cursorBoundTask = null;
 	private Function<Vector2> camFollowFunction;
 
+	/** The current timer for double clicking */
+	public static long leftDoubleClickTimer = 0L;
+	public static long rightDoubleClickTimer = 0L;
 
 	@Override
 	public boolean keyUp(final int keycode) {
@@ -171,9 +174,9 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	@SuppressWarnings("unused")
 	private void rightClick() throws NoTileFoundException {
 		final long currentTime = System.currentTimeMillis();
-		final boolean doubleClick = Controls.rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
+		final boolean doubleClick = rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
 		boolean uiClicked = false;
-		Controls.rightDoubleClickTimer = currentTime;
+		rightDoubleClickTimer = currentTime;
 
 		if (cursorBoundTask != null && cursorBoundTask.canCancel()) {
 			cursorBoundTask = null;
@@ -329,11 +332,13 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	 * Called upon left clicking
 	 */
 	private void leftClick(final int screenX, final int screenY) {
+		if (gameSaver.isSaving()) {
+			return;
+		}
 
 		final long currentTimeMillis = System.currentTimeMillis();
-
-		final boolean doubleClick = Controls.leftDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTimeMillis;
-		Controls.leftDoubleClickTimer = currentTimeMillis;
+		final boolean doubleClick = leftDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTimeMillis;
+		leftDoubleClickTimer = currentTimeMillis;
 
 		final boolean uiClicked = graphics.getUi().leftClick();
 
