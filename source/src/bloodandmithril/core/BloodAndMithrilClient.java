@@ -4,12 +4,8 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.setInputProcessor;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedDeque;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -30,7 +26,6 @@ import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.objectives.Mission;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.prop.Prop;
@@ -86,8 +81,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	@Inject	private GameSaver gameSaver;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
 
-	/** Current camera coordinates for each world */
-	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
 	public static float updateRateMultiplier = 1f;
 
 	@Override
@@ -253,29 +246,5 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	 */
 	public static Vector2 getMouseWorldCoords() {
 		return new Vector2(getMouseWorldX(), getMouseWorldY());
-	}
-
-
-	public static void addMission(final Mission m) {
-		missions.add(m);
-
-		SoundService.play(SoundService.newMission);
-		Wiring.injector().getInstance(Threading.class).clientProcessingThreadPool.submit(() -> {
-			for (int i = 0; i < 5; i++) {
-				UserInterface.addUIFloatingText(
-					"New mission!",
-					Color.ORANGE,
-					new Vector2(220, 60)
-				);
-				try {
-					Thread.sleep(1000);
-				} catch (final Exception e) {}
-			}
-		});
-	}
-
-
-	public static Collection<Mission> getMissions() {
-		return missions;
 	}
 }

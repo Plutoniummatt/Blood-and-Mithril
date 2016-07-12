@@ -363,7 +363,7 @@ public class ClientServerInterface {
 	 * Sets up the client and attempt to connect to the server
 	 * @throws IOException
 	 */
-	public static void setupAndConnect(String ip) throws IOException {
+	public static void setupAndConnect(final String ip) throws IOException {
 		clientName = InetAddress.getLocalHost().getHostName();
 
 		client = new Client(65536, 65536);
@@ -390,10 +390,10 @@ public class ClientServerInterface {
 	public static synchronized void sendNotification(final int connectionId, final boolean tcp, final boolean executeInSingleThread, final Response... responses) {
 		serverThread.execute(
 			() -> {
-				for (Connection connection : server.getConnections()) {
+				for (final Connection connection : server.getConnections()) {
 					if (connectionId == -1) {
-						Responses resp = new Responses(executeInSingleThread);
-						for (Response response : responses) {
+						final Responses resp = new Responses(executeInSingleThread);
+						for (final Response response : responses) {
 							response.prepare();
 							resp.add(response);
 						}
@@ -407,8 +407,8 @@ public class ClientServerInterface {
 					}
 
 					if (connectionId == connection.getID()) {
-						Responses resp = new Responses(executeInSingleThread);
-						for (Response response : responses) {
+						final Responses resp = new Responses(executeInSingleThread);
+						for (final Response response : responses) {
 							response.prepare();
 							resp.add(response);
 						}
@@ -431,11 +431,11 @@ public class ClientServerInterface {
 		return isClient;
 	}
 
-	public static synchronized void setServer(boolean isServer) {
+	public static synchronized void setServer(final boolean isServer) {
 		ClientServerInterface.isServer = isServer;
 	}
 
-	public static synchronized void setClient(boolean isClient) {
+	public static synchronized void setClient(final boolean isClient) {
 		ClientServerInterface.isClient = isClient;
 	}
 
@@ -443,7 +443,7 @@ public class ClientServerInterface {
 	/**
 	 * Registers all request classes
 	 */
-	public static void registerClasses(Kryo kryo) {
+	public static void registerClasses(final Kryo kryo) {
 		kryo.setReferences(true);
 		kryo.register(RequestSpawnIndividual.class);
 
@@ -794,136 +794,136 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendRequest {
-		public static synchronized void sendAISuppressionRequest(Individual individual, boolean suppress) {
+		public static synchronized void sendAISuppressionRequest(final Individual individual, final boolean suppress) {
 			client.sendTCP(new RequestSuppressAI(individual, suppress));
 			Logger.networkDebug("Sending AI suppression request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendThrowItemRequest(Individual individual, Item item, Vector2 mouseCoords) {
+		public static synchronized void sendThrowItemRequest(final Individual individual, final Item item, final Vector2 mouseCoords) {
 			client.sendTCP(new RequestThrowItem(individual, item, mouseCoords));
 			Logger.networkDebug("Sending throw item request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendSpawnIndividualRequest(Individual individual) {
+		public static synchronized void sendSpawnIndividualRequest(final Individual individual) {
 			client.sendTCP(new RequestSpawnIndividual(individual));
 			Logger.networkDebug("Sending individual spawn request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendLightLightableRequest(Individual host, Lightable lightable) {
+		public static synchronized void sendLightLightableRequest(final Individual host, final Lightable lightable) {
 			client.sendTCP(new RequestLightCampfire(host, lightable));
 			Logger.networkDebug("Sending light lightable request", LogLevel.DEBUG);
 		}
 
 
-		public static synchronized void sendPlantSeedRequest(Individual planter, SeedProp toPlant) {
+		public static synchronized void sendPlantSeedRequest(final Individual planter, final SeedProp toPlant) {
 			client.sendTCP(new RequestPlantSeed(planter, toPlant));
 			Logger.networkDebug("Sending seed planting request", LogLevel.DEBUG);
 		}
 
 
-		public static synchronized void sendGenerateChunkRequest(int x, int y, int worldId) {
+		public static synchronized void sendGenerateChunkRequest(final int x, final int y, final int worldId) {
 			client.sendTCP(new GenerateChunk(x, y, worldId));
 			Logger.networkDebug("Sending chunk generation request for (" + x + ", " + y + ")", LogLevel.DEBUG);
 		}
 
 
-		public static synchronized void sendFollowRequest(final Individual follower, Individual followee, final int distance, SerializableFunction<Boolean> terminationCondition) {
+		public static synchronized void sendFollowRequest(final Individual follower, final Individual followee, final int distance, final SerializableFunction<Boolean> terminationCondition) {
 			client.sendTCP(new FollowRequest(follower, followee, distance, terminationCondition));
 			Logger.networkDebug("Sending chunk follow request", LogLevel.DEBUG);
 		}
 
 
-		public static synchronized void sendPlacePropRequest(Individual indi, PropItem propItem, float x, float y, Prop prop, int worldId) {
+		public static synchronized void sendPlacePropRequest(final Individual indi, final PropItem propItem, final float x, final float y, final Prop prop, final int worldId) {
 			client.sendTCP(new PlacePropRequest(propItem, indi == null ? null : indi.getId().getId(), prop, x, y, worldId));
 			Logger.networkDebug("Sending prop placement request", LogLevel.DEBUG);
 		}
 
 
-		public static synchronized void sendDiscardItemRequest(Individual individual, Item item, int quantity) {
+		public static synchronized void sendDiscardItemRequest(final Individual individual, final Item item, final int quantity) {
 			client.sendTCP(new RequestDiscardItem(individual, item, quantity));
 			Logger.networkDebug("Sending discard item request", LogLevel.DEBUG);
 		}
 
 
-		public static synchronized void sendUpdateBiographyRequest(Individual individual, String description) {
+		public static synchronized void sendUpdateBiographyRequest(final Individual individual, final String description) {
 			client.sendTCP(new ChangeIndividualBiography(individual, description));
 			Logger.networkDebug("Sending change individual description request", LogLevel.DEBUG);
 		}
 
 
-		public static synchronized void sendStartCraftingRequest(Individual individual, CraftingStation craftingStation, SerializableDoubleWrapper<Item, Integer> item, int quantity) {
+		public static synchronized void sendStartCraftingRequest(final Individual individual, final CraftingStation craftingStation, final SerializableDoubleWrapper<Item, Integer> item, final int quantity) {
 			client.sendTCP(new RequestStartCrafting(individual, craftingStation, item, quantity));
 			Logger.networkDebug("Sending start crafting item request", LogLevel.DEBUG);
 		}
 
 
-		public static synchronized void sendTakeItemFromCraftingStationRequest(CraftingStation craftingStation, Individual individual) {
+		public static synchronized void sendTakeItemFromCraftingStationRequest(final CraftingStation craftingStation, final Individual individual) {
 			client.sendTCP(new RequestTakeItemFromCraftingStation(individual, craftingStation));
 			Logger.networkDebug("Sending take item from crafting station request", LogLevel.DEBUG);
 		}
 
 
-		public static synchronized void sendOpenCraftingStationRequest(Individual individual, CraftingStation craftingStation) {
+		public static synchronized void sendOpenCraftingStationRequest(final Individual individual, final CraftingStation craftingStation) {
 			client.sendTCP(new CSIOpenCraftingStation(individual.getId().getId(), craftingStation.id, client.getID(), individual.getWorldId()));
 			Logger.networkDebug("Sending smith request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendLockUnlockContainerRequest(int individualId, int containerId, boolean lock) {
+		public static synchronized void sendLockUnlockContainerRequest(final int individualId, final int containerId, final boolean lock) {
 			client.sendTCP(new LockUnlockContainerRequest(individualId, containerId, lock));
 			Logger.networkDebug("Sending lock/unlock container request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendHarvestRequest(int individualId, int propId) {
+		public static synchronized void sendHarvestRequest(final int individualId, final int propId) {
 			client.sendTCP(new SendHarvestRequest(individualId, propId));
 			Logger.networkDebug("Sending harvest request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendConstructRequest(int individualId, int propId, boolean deconstruct) {
+		public static synchronized void sendConstructRequest(final int individualId, final int propId, final boolean deconstruct) {
 			client.sendTCP(new ConstructionRequest(individualId, propId, deconstruct));
 			Logger.networkDebug("Sending construction request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendConsumeItemRequest(Consumable consumable, int individualId) {
+		public static synchronized void sendConsumeItemRequest(final Consumable consumable, final int individualId) {
 			client.sendTCP(new ConsumeItem(consumable, individualId));
 			Logger.networkDebug("Sending item consumption request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendEquipOrUnequipItemRequest(boolean equip, Equipable equipable, int individualId) {
+		public static synchronized void sendEquipOrUnequipItemRequest(final boolean equip, final Equipable equipable, final int individualId) {
 			client.sendTCP(new EquipOrUnequipItem(equip, equipable, individualId));
 			Logger.networkDebug("Sending equip/unequip request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendRunWalkRequest(int individualId, boolean walk) {
+		public static synchronized void sendRunWalkRequest(final int individualId, final boolean walk) {
 			client.sendTCP(new ToggleWalkRun(individualId, walk));
 			Logger.networkDebug("Sending run/walk request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendDrinkLiquidRequest(int individualId, LiquidContainerItem bottleToDrinkFrom, float amount) {
+		public static synchronized void sendDrinkLiquidRequest(final int individualId, final LiquidContainerItem bottleToDrinkFrom, final float amount) {
 			client.sendTCP(new DrinkLiquid(individualId, bottleToDrinkFrom, amount));
 			Logger.networkDebug("Sending drink liquid request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendDiscardLiquidRequest(int individualId, LiquidContainerItem bottleToDiscardFrom, float amount) {
+		public static synchronized void sendDiscardLiquidRequest(final int individualId, final LiquidContainerItem bottleToDiscardFrom, final float amount) {
 			client.sendTCP(new DiscardLiquid(individualId, bottleToDiscardFrom, amount));
 			Logger.networkDebug("Sending discard liquid request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendRequestTransferLiquidBetweenContainers(Individual individual, LiquidContainerItem from, LiquidContainerItem to, float amount) {
+		public static synchronized void sendRequestTransferLiquidBetweenContainers(final Individual individual, final LiquidContainerItem from, final LiquidContainerItem to, final float amount) {
 			client.sendTCP(new RequestTransferLiquidBetweenContainers(individual, from, to, amount));
 			Logger.networkDebug("Sending transfer liquid between containers request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendAttackRangedRequest(Individual individual, Vector2 direction) {
+		public static synchronized void sendAttackRangedRequest(final Individual individual, final Vector2 direction) {
 			client.sendTCP(new RequestAttackRanged(individual.getId().getId(), direction));
 			Logger.networkDebug("Sending ranged attack request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendRequestChangeAmmo(Individual individual, RangedWeapon weapon, Item ammo) {
+		public static synchronized void sendRequestChangeAmmo(final Individual individual, final RangedWeapon weapon, final Item ammo) {
 			client.sendTCP(new RequestSetAmmo(individual.getId().getId(), weapon, ammo));
 			Logger.networkDebug("Sending change ammo request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendRequestAttack(Individual attacker, Individual... victims) {
+		public static synchronized void sendRequestAttack(final Individual attacker, final Individual... victims) {
 			client.sendTCP(new AttackRequest(attacker, Sets.newHashSet(victims)));
 			Logger.networkDebug("Sending attack request", LogLevel.DEBUG);
 		}
@@ -933,22 +933,22 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending client name list request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendIndividualSpeakRequest(Individual individual, boolean speak) {
+		public static synchronized void sendIndividualSpeakRequest(final Individual individual, final boolean speak) {
 			client.sendTCP(new IndividualSpeakRequest(individual, speak));
 			Logger.networkDebug("Sending individual speak request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendRequestTakeItem(Individual individual, Item item) {
+		public static synchronized void sendRequestTakeItem(final Individual individual, final Item item) {
 			client.sendTCP(new RequestTakeItem(individual, Lists.newArrayList(item)));
 			Logger.networkDebug("Sending take item request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendRequestTakeItems(Individual individual, Collection<Item> items) {
+		public static synchronized void sendRequestTakeItems(final Individual individual, final Collection<Item> items) {
 			client.sendTCP(new RequestTakeItem(individual, items));
 			Logger.networkDebug("Sending take item request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendSynchronizeIndividualRequest(int id) {
+		public static synchronized void sendSynchronizeIndividualRequest(final int id) {
 			client.sendUDP(new SynchronizeIndividual(id));
 			Logger.networkDebug("Sending sync individual request for " + id, LogLevel.TRACE);
 		}
@@ -958,7 +958,7 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending individual sync request for all", LogLevel.TRACE);
 		}
 
-		public static synchronized void sendDestroyTileRequest(float worldX, float worldY, boolean foreground, int worldId) {
+		public static synchronized void sendDestroyTileRequest(final float worldX, final float worldY, final boolean foreground, final int worldId) {
 			client.sendTCP(new DestroyTile(worldX, worldY, foreground, worldId));
 			Logger.networkDebug("Sending destroy tile request", LogLevel.DEBUG);
 		}
@@ -968,7 +968,7 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending ping request", LogLevel.TRACE);
 		}
 
-		public static synchronized void sendClearAITaskRequest(int individualId) {
+		public static synchronized void sendClearAITaskRequest(final int individualId) {
 			client.sendUDP(new SetAIIdle(individualId));
 			Logger.networkDebug("Sending request to clear AI task", LogLevel.TRACE);
 		}
@@ -978,37 +978,37 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending synchronize faction request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendTradeWithIndividualRequest(Individual proposer, Individual proposee) {
+		public static synchronized void sendTradeWithIndividualRequest(final Individual proposer, final Individual proposee) {
 			client.sendTCP(new CSITradeWith(proposer.getId().getId(), TradeEntity.INDIVIDUAL, proposee.getId().getId(), client.getID()));
 			Logger.networkDebug("Sending trade with individual request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendTradeWithPropRequest(Individual proposer, int propId) {
+		public static synchronized void sendTradeWithPropRequest(final Individual proposer, final int propId) {
 			client.sendTCP(new CSITradeWith(proposer.getId().getId(), TradeEntity.PROP, propId, client.getID()));
 			Logger.networkDebug("Sending trade with prop request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendConstructionRequest(Individual constructor, int propId) {
+		public static synchronized void sendConstructionRequest(final Individual constructor, final int propId) {
 			client.sendTCP(new RequestConstructDeconstruct(constructor.getId().getId(), propId, client.getID()));
 			Logger.networkDebug("Sending construction/deconstruction request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendIndividualSelectionRequest(int id, boolean select) {
+		public static synchronized void sendIndividualSelectionRequest(final int id, final boolean select) {
 			client.sendTCP(new IndividualSelection(id, select, client.getID()));
 			Logger.networkDebug("Sending individual selection request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendMoveIndividualRequest(int id, Vector2 destinationCoordinates, boolean forceMove, boolean add, boolean jump, Vector2 jumpFrom, Vector2 jumpTo) {
+		public static synchronized void sendMoveIndividualRequest(final int id, final Vector2 destinationCoordinates, final boolean forceMove, final boolean add, final boolean jump, final Vector2 jumpFrom, final Vector2 jumpTo) {
 			client.sendTCP(new MoveIndividual(id, destinationCoordinates, forceMove, add, jump, jumpFrom, jumpTo));
 			Logger.networkDebug("Sending move individual request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendChangeNickNameRequest(int id, String toChangeTo) {
+		public static synchronized void sendChangeNickNameRequest(final int id, final String toChangeTo) {
 			client.sendTCP(new ChangeNickName(id, toChangeTo));
 			Logger.networkDebug("Sending change individual nickname request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendMineTileRequest(int individualId, Vector2 location) {
+		public static synchronized void sendMineTileRequest(final int individualId, final Vector2 location) {
 			client.sendTCP(new CSIMineTile(individualId, location));
 			Logger.networkDebug("Sending mine tile request", LogLevel.DEBUG);
 		}
@@ -1018,17 +1018,17 @@ public class ClientServerInterface {
 			Logger.networkDebug("Sending item window refresh request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendChangeFactionControlPasswordRequest(int factionId, String newPassword) {
+		public static synchronized void sendChangeFactionControlPasswordRequest(final int factionId, final String newPassword) {
 			client.sendTCP(new ChangeFactionControlPassword(factionId, newPassword));
 			Logger.networkDebug("Sending change faction control password request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendOpenTradeWindowRequest(int proposerId, TradeEntity proposee, int proposeeId) {
+		public static synchronized void sendOpenTradeWindowRequest(final int proposerId, final TradeEntity proposee, final int proposeeId) {
 			client.sendTCP(new OpenTradeWindow(proposerId, proposee, proposeeId));
 			Logger.networkDebug("Sending open trade window request", LogLevel.DEBUG);
 		}
 
-		public static synchronized void sendChatMessage(String message) {
+		public static synchronized void sendChatMessage(final String message) {
 			client.sendTCP(
 				new SendChatMessage(
 					new Message(
@@ -1040,8 +1040,8 @@ public class ClientServerInterface {
 		}
 
 		public static synchronized void sendTransferItemsRequest(
-				HashMap<Item, Integer> proposerItemsToTransfer, int proposerId,
-				HashMap<Item, Integer> proposeeItemsToTransfer, TradeEntity proposeeEntityType, int proposeeId) {
+				final HashMap<Item, Integer> proposerItemsToTransfer, final int proposerId,
+				final HashMap<Item, Integer> proposeeItemsToTransfer, final TradeEntity proposeeEntityType, final int proposeeId) {
 
 			client.sendTCP(
 				new bloodandmithril.networking.requests.TransferItems(
@@ -1061,7 +1061,7 @@ public class ClientServerInterface {
 	 * @author Matt
 	 */
 	public static class SendNotification {
-		public static synchronized void notifyMessage(int connectionId, String title, String message, SerializableFunction<Boolean> function) {
+		public static synchronized void notifyMessage(final int connectionId, final String title, final String message, final SerializableFunction<Boolean> function) {
 			sendNotification(
 				connectionId,
 				true,
@@ -1071,7 +1071,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyTextBubble(String text, SerializableFunction<Vector2> position, long duration, int xOffset, int yOffset, int connectionId) {
+		public static synchronized void notifyTextBubble(final String text, final SerializableFunction<Vector2> position, final long duration, final int xOffset, final int yOffset, final int connectionId) {
 			sendNotification(
 				connectionId,
 				false,
@@ -1081,7 +1081,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyRunStaticMethod(int connectionId, Runnable staticMethod) {
+		public static synchronized void notifyRunStaticMethod(final int connectionId, final Runnable staticMethod) {
 			sendNotification(
 				connectionId,
 				false,
@@ -1091,7 +1091,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyPlaySound(int connectionId, int soundId, Vector2 location) {
+		public static synchronized void notifyPlaySound(final int connectionId, final int soundId, final Vector2 location) {
 			sendNotification(
 				connectionId,
 				false,
@@ -1101,7 +1101,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyRemoveProp(int propId, int worldId) {
+		public static synchronized void notifyRemoveProp(final int propId, final int worldId) {
 			sendNotification(
 				-1,
 				true,
@@ -1111,7 +1111,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifySyncItems(int worldId) {
+		public static synchronized void notifySyncItems(final int worldId) {
 			sendNotification(
 				-1,
 				true,
@@ -1121,7 +1121,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifySyncProjectiles(int worldId) {
+		public static synchronized void notifySyncProjectiles(final int worldId) {
 			sendNotification(
 				-1,
 				true,
@@ -1131,7 +1131,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifySyncParticles(int worldId) {
+		public static synchronized void notifySyncParticles(final int worldId) {
 			sendNotification(
 				-1,
 				true,
@@ -1141,7 +1141,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyAddFloatingText(FloatingText floatingText, int worldId) {
+		public static synchronized void notifyAddFloatingText(final FloatingText floatingText, final int worldId) {
 			sendNotification(
 				-1,
 				true,
@@ -1151,7 +1151,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyOpenCraftingStationWindow(int individualId, int craftingStationId, int connectionId, int worldId) {
+		public static synchronized void notifyOpenCraftingStationWindow(final int individualId, final int craftingStationId, final int connectionId, final int worldId) {
 			sendNotification(
 				connectionId,
 				true,
@@ -1162,8 +1162,8 @@ public class ClientServerInterface {
 
 
 		public static synchronized void notifySyncPlayerList() {
-			List<String> names = Lists.newLinkedList();
-			for (Connection connection : ClientServerInterface.server.getConnections()) {
+			final List<String> names = Lists.newLinkedList();
+			for (final Connection connection : ClientServerInterface.server.getConnections()) {
 				names.add(ClientServerInterface.connectedPlayers.get(connection.getID()));
 			}
 			sendNotification(
@@ -1175,7 +1175,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifySyncFaction(Faction faction) {
+		public static synchronized void notifySyncFaction(final Faction faction) {
 			sendNotification(
 				-1,
 				false,
@@ -1185,7 +1185,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyTileMined(int connectionId, Vector2 location, boolean foreGround, int worldId) {
+		public static synchronized void notifyTileMined(final int connectionId, final Vector2 location, final boolean foreGround, final int worldId) {
 			sendNotification(
 				connectionId,
 				true,
@@ -1195,7 +1195,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifySyncProp(Prop prop) {
+		public static synchronized void notifySyncProp(final Prop prop) {
 			sendNotification(
 				-1,
 				false,
@@ -1215,7 +1215,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyTradeWindowOpen(int proposerId, TradeEntity proposee, int proposeeId, int connectionId) {
+		public static synchronized void notifyTradeWindowOpen(final int proposerId, final TradeEntity proposee, final int proposeeId, final int connectionId) {
 			sendNotification(
 				connectionId,
 				true,
@@ -1229,7 +1229,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyConstructionWindowOpen(int individualId, int construction, int connectionId) {
+		public static synchronized void notifyConstructionWindowOpen(final int individualId, final int construction, final int connectionId) {
 			sendNotification(
 				connectionId,
 				true,
@@ -1242,8 +1242,8 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyGiveItem(int individualId, Item item, Vector2 positionIfCantReceive) {
-			Individual individual = Domain.getIndividual(individualId);
+		public static synchronized void notifyGiveItem(final int individualId, final Item item, final Vector2 positionIfCantReceive) {
+			final Individual individual = Domain.getIndividual(individualId);
 			if (individual.canReceive(item)) {
 				individual.giveItem(item);
 			} else {
@@ -1259,7 +1259,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifySyncWorldState(int worldId) {
+		public static synchronized void notifySyncWorldState(final int worldId) {
 			sendNotification(
 				-1,
 				false,
@@ -1269,7 +1269,7 @@ public class ClientServerInterface {
 		}
 
 
-		public static synchronized void notifyIndividualSync(int id) {
+		public static synchronized void notifyIndividualSync(final int id) {
 			sendNotification(
 				-1,
 				false,

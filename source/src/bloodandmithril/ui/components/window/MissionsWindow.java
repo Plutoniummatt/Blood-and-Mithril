@@ -10,9 +10,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.MissionTracker;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.objectives.Mission;
 import bloodandmithril.objectives.Objective;
@@ -36,13 +37,15 @@ import bloodandmithril.util.SerializableFunction;
 @Copyright("Matthew Peck 2015")
 public class MissionsWindow extends Window implements Refreshable {
 
+	@Inject MissionTracker missionTracker;
+
 	private ScrollableListingPanel<Mission, String> activeMissions;
 	private ScrollableListingPanel<Mission, String> completedMissions;
 	private boolean renderActive = true;
 
 	private static Comparator<Mission> alphabeticalSortingComparator = new Comparator<Mission>() {
 		@Override
-		public int compare(Mission o1, Mission o2) {
+		public int compare(final Mission o1, final Mission o2) {
 			return o1.getTitle().compareTo(o2.getTitle());
 		}
 	};
@@ -55,7 +58,7 @@ public class MissionsWindow extends Window implements Refreshable {
 
 		activeMissions = new ScrollableListingPanel<Mission, String>(this, alphabeticalSortingComparator, false, 100, null) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Mission>, String> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<Mission>, String> item) {
 				switch (item.getKey().t.getStatus()) {
 					case ACTIVE:
 						return "Active";
@@ -74,19 +77,19 @@ public class MissionsWindow extends Window implements Refreshable {
 			}
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Mission>, String>> listings) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<Mission>, String>> listings) {
 				listings.add(buildMap(ObjectiveStatus.ACTIVE));
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
 
 		completedMissions = new ScrollableListingPanel<Mission, String>(this, alphabeticalSortingComparator, false, 0, null) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Mission>, String> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<Mission>, String> item) {
 				switch (item.getKey().t.getStatus()) {
 					case ACTIVE:
 						return "Active";
@@ -105,12 +108,12 @@ public class MissionsWindow extends Window implements Refreshable {
 			}
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Mission>, String>> listings) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<Mission>, String>> listings) {
 				listings.add(buildMap(ObjectiveStatus.COMPLETE, ObjectiveStatus.FAILED));
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -120,7 +123,7 @@ public class MissionsWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		activeMissions.width = width;
 		activeMissions.height = height;
 		activeMissions.x = x;
@@ -140,7 +143,7 @@ public class MissionsWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		if (renderActive) {
 			activeMissions.leftClick(copy, windowsCopy);
 		} else {
@@ -167,23 +170,23 @@ public class MissionsWindow extends Window implements Refreshable {
 
 	@Override
 	public void refresh() {
-		List<HashMap<ListingMenuItem<Mission>, String>> activeListing = Lists.newLinkedList();
+		final List<HashMap<ListingMenuItem<Mission>, String>> activeListing = Lists.newLinkedList();
 		activeListing.add(buildMap(ObjectiveStatus.ACTIVE));
 		activeMissions.refresh(activeListing);
 
-		List<HashMap<ListingMenuItem<Mission>, String>> completeListing = Lists.newLinkedList();
+		final List<HashMap<ListingMenuItem<Mission>, String>> completeListing = Lists.newLinkedList();
 		activeListing.add(buildMap(ObjectiveStatus.COMPLETE, ObjectiveStatus.FAILED));
 		completedMissions.refresh(completeListing);
 	}
 
 
-	private HashMap<ListingMenuItem<Mission>, String> buildMap(ObjectiveStatus... statuses) {
-		HashMap<ListingMenuItem<Mission>, String> map = Maps.newHashMap();
-		for (final Mission mission : BloodAndMithrilClient.getMissions()) {
+	private HashMap<ListingMenuItem<Mission>, String> buildMap(final ObjectiveStatus... statuses) {
+		final HashMap<ListingMenuItem<Mission>, String> map = Maps.newHashMap();
+		for (final Mission mission : missionTracker.getMissions()) {
 			if (Sets.newHashSet(statuses).contains(mission.getStatus())) {
 				final SerializableFunction<String> objectivesFunction = () -> {
 					String objectives = "";
-					for (Objective obj : mission.getObjectives()) {
+					for (final Objective obj : mission.getObjectives()) {
 						objectives = objectives + obj.getTitle() + " (" + obj.getStatus().getDescription() + ") \n";
 					}
 

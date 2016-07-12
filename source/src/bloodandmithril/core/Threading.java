@@ -48,6 +48,7 @@ public class Threading {
 
 	@Inject private GameSaver gameSaver;
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private MissionTracker missionTracker;
 
 	/**
 	 * Constructor
@@ -186,13 +187,13 @@ public class Threading {
 				for (final World world : Domain.getWorlds().values()) {
 					while (!world.getEvents().isEmpty()) {
 						final Event polled = world.getEvents().poll();
-						for (final EventListener listener : BloodAndMithrilClient.getMissions()) {
+						for (final EventListener listener : missionTracker.getMissions()) {
 							listener.listen(polled);
 						}
 					}
 				}
 
-				for (final Mission m : BloodAndMithrilClient.getMissions()) {
+				for (final Mission m : missionTracker.getMissions()) {
 					m.update();
 				}
 			}

@@ -40,6 +40,7 @@ import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.MissionTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.GaussianLightingRenderer;
 import bloodandmithril.graphics.Graphics;
@@ -89,17 +90,18 @@ public class DevWindow extends Window {
 	private final ScrollableListingPanel<String, Object> panel;
 
 	@Inject private GameSaver gameSaver;
+	@Inject private MissionTracker missionTracker;
 
 	/**
 	 * Constructor
 	 */
-	public DevWindow(int x, int y, int length, int height, boolean active) {
+	public DevWindow(final int x, final int y, final int length, final int height, final boolean active) {
 		super(length, height, "Developer", active, 500, 300, false, true, true);
 		Wiring.injector().injectMembers(this);
 
 		panel = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35, null) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<String>, Object> item) {
 				return "";
 			}
 
@@ -109,14 +111,14 @@ public class DevWindow extends Window {
 			}
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<String>, Object>> listings) {
-				HashMap<ListingMenuItem<String>, Object> newHashMap = buildMap();
+			protected void populateListings(final List<HashMap<ListingMenuItem<String>, Object>> listings) {
+				final HashMap<ListingMenuItem<String>, Object> newHashMap = buildMap();
 
 				listings.add(newHashMap);
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -126,7 +128,7 @@ public class DevWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		panel.x = x;
 		panel.y = y;
 		panel.width = width;
@@ -136,9 +138,9 @@ public class DevWindow extends Window {
 
 		if (isKeyPressed(Keys.W)) {
 			for (int i = 0; i < 2; i++) {
-				long lifetime = Util.getRandom().nextInt(10000);
-				Color randomOneOf = Util.randomOneOf(new Color(0.4f, 0.224f, 0.76f, 1.0f), new Color(0.1f, 0.763f, 0.324f, 1.0f));
-				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(1000f, 0f);
+				final long lifetime = Util.getRandom().nextInt(10000);
+				final Color randomOneOf = Util.randomOneOf(new Color(0.4f, 0.224f, 0.76f, 1.0f), new Color(0.1f, 0.763f, 0.324f, 1.0f));
+				final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(1000f, 0f);
 
 				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					getMouseWorldCoords(),
@@ -160,7 +162,7 @@ public class DevWindow extends Window {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		panel.leftClick(copy, windowsCopy);
 	}
 
@@ -171,13 +173,13 @@ public class DevWindow extends Window {
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		return panel.scrolled(amount);
 	}
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
+	public boolean keyPressed(final int keyCode) {
 		if (super.keyPressed(keyCode)) {
 			return true;
 		}
@@ -187,13 +189,13 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.J) {
-			Set<Integer> keySet = Sets.newHashSet(Domain.getWorlds().keySet());
+			final Set<Integer> keySet = Sets.newHashSet(Domain.getWorlds().keySet());
 			keySet.remove(Domain.getActiveWorldId());
 			Domain.setActiveWorld(keySet.iterator().next());
 		}
 
 		if (keyCode == Keys.B) {
-			BloodAndMithrilClient.addMission(new Tutorial(Domain.getActiveWorldId()));
+			missionTracker.addMission(new Tutorial(Domain.getActiveWorldId()));
 		}
 
 		if (keyCode == Keys.H) {
@@ -247,7 +249,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.E) {
-			IndividualState state = new IndividualState.IndividualStateBuilder()
+			final IndividualState state = new IndividualState.IndividualStateBuilder()
 			.withMaxHealth(30f)
 			.withHealthRegen(0.01f)
 			.withStaminaRegen(0.02f)
@@ -259,10 +261,10 @@ public class DevWindow extends Window {
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
 
-			IndividualIdentifier id = getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
+			final IndividualIdentifier id = getRandomElfIdentifier(true, Util.getRandom().nextInt(100) + 50);
 			id.setNickName("Elfie");
 
-			Elf elf = new Elf(
+			final Elf elf = new Elf(
 				id, state, isKeyPressed(Input.Keys.Q) ? Faction.NPC : 2, true,
 				getActiveWorld(),
 				lightColor(),
@@ -278,7 +280,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.R) {
-			IndividualState state = new IndividualState.IndividualStateBuilder()
+			final IndividualState state = new IndividualState.IndividualStateBuilder()
 			.withMaxHealth(1000f)
 			.withHealthRegen(0.01f)
 			.withMaxMana(0.02f)
@@ -289,10 +291,10 @@ public class DevWindow extends Window {
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
 
-			IndividualIdentifier id = getUnknownNatureIdentifier(Util.getRandom().nextBoolean(), Util.getRandom().nextInt(5));
+			final IndividualIdentifier id = getUnknownNatureIdentifier(Util.getRandom().nextBoolean(), Util.getRandom().nextInt(5));
 			id.setNickName("Rabbit");
 
-			Hare hare = new Hare(id, state, Faction.NPC, getActiveWorld().getWorldId());
+			final Hare hare = new Hare(id, state, Faction.NPC, getActiveWorld().getWorldId());
 
 			if (isServer()) {
 				Domain.addIndividual(hare, Domain.getActiveWorld().getWorldId());
@@ -302,7 +304,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.W) {
-			IndividualState state = new IndividualState.IndividualStateBuilder()
+			final IndividualState state = new IndividualState.IndividualStateBuilder()
 			.withMaxHealth(1000f)
 			.withHealthRegen(0.01f)
 			.withMaxMana(0.02f)
@@ -313,10 +315,10 @@ public class DevWindow extends Window {
 			state.velocity = new Vector2(0, 0);
 			state.acceleration = new Vector2(0, 0);
 
-			IndividualIdentifier id = getUnknownNatureIdentifier(Util.getRandom().nextBoolean(), Util.getRandom().nextInt(5));
+			final IndividualIdentifier id = getUnknownNatureIdentifier(Util.getRandom().nextBoolean(), Util.getRandom().nextInt(5));
 			id.setNickName("Wolf");
 
-			Wolf wolf= new Wolf(id, state, 2, getActiveWorld().getWorldId());
+			final Wolf wolf= new Wolf(id, state, 2, getActiveWorld().getWorldId());
 
 			if (isServer()) {
 				Domain.addIndividual(wolf, Domain.getActiveWorld().getWorldId());
@@ -338,7 +340,7 @@ public class DevWindow extends Window {
 
 
 	private HashMap<ListingMenuItem<String>, Object> buildMap() {
-		HashMap<ListingMenuItem<String>, Object> newHashMap = Maps.newHashMap();
+		final HashMap<ListingMenuItem<String>, Object> newHashMap = Maps.newHashMap();
 
 		newHashMap.put(
 			new ListingMenuItem<String>(
@@ -363,9 +365,9 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Dry grass",
 						() -> {
-							Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								DryGrass grass = new DryGrass(individual.getState().position.x, individual.getState().position.y);
+								final DryGrass grass = new DryGrass(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(grass);
 							}
 						},
@@ -377,9 +379,9 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Anvil",
 						() -> {
-							Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								BlacksmithWorkshop anvil = new BlacksmithWorkshop(individual.getState().position.x, individual.getState().position.y);
+								final BlacksmithWorkshop anvil = new BlacksmithWorkshop(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(anvil);
 							}
 						},
@@ -391,9 +393,9 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Wooden Chest",
 						() -> {
-							Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								WoodenChestProp pineChest = new WoodenChestProp(
+								final WoodenChestProp pineChest = new WoodenChestProp(
 									individual.getState().position.x,
 									individual.getState().position.y,
 									100f,
@@ -401,7 +403,7 @@ public class DevWindow extends Window {
 									true,
 									new Function<Item, Boolean>() {
 										@Override
-										public Boolean apply(Item item) {
+										public Boolean apply(final Item item) {
 											return true;
 										}
 									},
@@ -419,9 +421,9 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Rotten Chest",
 						() -> {
-							Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								WoodenChestProp rottenChest = new RottenWoodenChest(
+								final WoodenChestProp rottenChest = new RottenWoodenChest(
 									individual.getState().position.x,
 									individual.getState().position.y,
 									100f,
@@ -439,9 +441,9 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Workbench",
 						() -> {
-							Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								WorkBench carpenterWorkshop = new WorkBench(
+								final WorkBench carpenterWorkshop = new WorkBench(
 									individual.getState().position.x,
 									individual.getState().position.y
 								);
@@ -457,9 +459,9 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Furnace",
 						() -> {
-							Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								Furnace furnace = new Furnace(SandStone.class, individual.getState().position.x, individual.getState().position.y);
+								final Furnace furnace = new Furnace(SandStone.class, individual.getState().position.x, individual.getState().position.y);
 								furnace.setConstructionProgress(1f);
 								for (int i = 0; i < 0; i++) {
 									furnace.giveItem(RockItem.rock(Coal.class));
@@ -475,9 +477,9 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Campfire",
 						() -> {
-							Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								Campfire campfire = new Campfire(individual.getState().position.x, individual.getState().position.y);
+								final Campfire campfire = new Campfire(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(campfire);
 							}
 						},
@@ -489,9 +491,9 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Carrot",
 						() -> {
-							Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
+								final bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(carrot);
 							}
 						},
@@ -503,9 +505,9 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Torch",
 						() -> {
-							Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividuals().get(1);
 							if (individual != null) {
-								MedievalWallTorchProp torch = new MedievalWallTorchProp(individual.getState().position.x, individual.getState().position.y + 100);
+								final MedievalWallTorchProp torch = new MedievalWallTorchProp(individual.getState().position.x, individual.getState().position.y + 100);
 								Domain.getWorld(individual.getWorldId()).props().addProp(torch);
 							}
 						},
@@ -587,7 +589,7 @@ public class DevWindow extends Window {
 									if (isServer()) {
 										try {
 											Domain.getActiveWorld().getEpoch().setTimeOfDay(Float.parseFloat((String) args[0]));
-										} catch (Exception e) {
+										} catch (final Exception e) {
 										}
 									}
 								},
@@ -695,7 +697,7 @@ public class DevWindow extends Window {
 								250,
 								100,
 								args -> {
-									String input = (String)args[0];
+									final String input = (String)args[0];
 									input.replace(" ", "");
 
 									if (StringUtils.isBlank(input)) {
