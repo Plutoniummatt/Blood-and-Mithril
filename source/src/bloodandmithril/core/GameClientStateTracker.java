@@ -44,7 +44,7 @@ public class GameClientStateTracker {
 	private AtomicBoolean loading = new AtomicBoolean(false);
 
 	/** The world that's currently selected */
-	private Integer selectedActiveWorldId;
+	private int selectedActiveWorldId;
 
 	/** {@link Individual} that are selected for manual control */
 	private static Set<Integer> selectedIndividuals = newHashSet();
@@ -90,7 +90,7 @@ public class GameClientStateTracker {
 	}
 
 
-	public Integer getSelectedActiveWorldId() {
+	public int getSelectedActiveWorldId() {
 		return selectedActiveWorldId;
 	}
 

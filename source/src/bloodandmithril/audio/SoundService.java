@@ -52,10 +52,6 @@ public class SoundService {
 	public static final int newMission			= 14;
 	public static final int achievement			= 15;
 
-	static {
-
-	}
-
 	private static final Map<Integer, WrapperForThree<Function<SoundStimulus>, com.badlogic.gdx.audio.Sound, Float>> sounds = Maps.newHashMap();
 
 	private static Music current, next;
