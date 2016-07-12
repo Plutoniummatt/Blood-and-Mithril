@@ -227,7 +227,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 				Color.WHITE,
 				Color.RED,
 				2f,
-				Wiring.injector().getInstance(GameClientStateTracker.class).getSelectedActiveWorldId(),
+				Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorldId(),
 				4f,
 				MovementMode.EMBER,
 				Depth.FOREGROUND,

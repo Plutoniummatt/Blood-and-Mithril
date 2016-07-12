@@ -60,7 +60,7 @@ public class GameLoader {
 				loadCameraPosition();
 			}
 			parameterPersistenceService.loadParameters();
-			gameClientStateTracker.setSelectedActiveWorldId(parameterPersistenceService.getParameters().getActiveWorldId());
+			gameClientStateTracker.setActiveWorldId(parameterPersistenceService.getParameters().getActiveWorldId());
 			chunkLoader.loadGenerationData();
 			chunkLoader.loadWorlds();
 			loadFactions();

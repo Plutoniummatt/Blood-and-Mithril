@@ -50,7 +50,7 @@ public class TopographyDebugRenderer {
 		graphics.getSpriteBatch().begin();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		for (final Structure struct : Structures.getStructures().values()) {
-			if (struct.worldId != gameClientStateTracker.getSelectedActiveWorldId()) {
+			if (struct.worldId != gameClientStateTracker.getActiveWorldId()) {
 				continue;
 			}
 

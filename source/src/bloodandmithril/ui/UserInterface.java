@@ -402,7 +402,7 @@ public class UserInterface {
 		}
 
 
-		renderFloatingText(gameClientStateTracker.getSelectedActiveWorldId());
+		renderFloatingText(gameClientStateTracker.getActiveWorldId());
 		renderTextBubbles();
 		renderHint();
 		renderCursorBoundTaskText();
@@ -525,7 +525,7 @@ public class UserInterface {
 
 
 	private void renderHint() {
-		if (inputProcessor.getCursorBoundTask() == null && contextMenus.isEmpty() && gameClientStateTracker.getSelectedActiveWorldId() != null && !isKeyPressed(Keys.ANY_KEY)) {
+		if (inputProcessor.getCursorBoundTask() == null && contextMenus.isEmpty() && gameClientStateTracker.getActiveWorld() != null && !isKeyPressed(Keys.ANY_KEY)) {
 			boolean renderHint = false;
 			final PositionalIndexMap positionalIndexMap = gameClientStateTracker.getActiveWorld().getPositionalIndexMap();
 			for (final int id : positionalIndexMap.getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
@@ -1384,7 +1384,7 @@ public class UserInterface {
 
 
 	public static void addUIFloatingText(final String text, final Color color, final Vector2 position) {
-		addFloatingText(floatingText(text, color, position, true), gameClientStateTracker.getSelectedActiveWorldId(), false);
+		addFloatingText(floatingText(text, color, position, true), gameClientStateTracker.getActiveWorldId(), false);
 	}
 
 

@@ -90,12 +90,12 @@ public class GameClientStateTracker {
 	}
 
 
-	public int getSelectedActiveWorldId() {
+	public int getActiveWorldId() {
 		return selectedActiveWorldId;
 	}
 
 
-	public void setSelectedActiveWorldId(final int selectedActiveWorldId) {
+	public void setActiveWorldId(final int selectedActiveWorldId) {
 		if (ClientServerInterface.isClient()) {
 			if (getActiveWorld() != null) {
 				cameraTracker.getWorldcamcoordinates().put(selectedActiveWorldId, new Vector2(graphics.getCam().position.x, graphics.getCam().position.y));

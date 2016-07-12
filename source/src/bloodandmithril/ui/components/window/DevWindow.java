@@ -191,12 +191,12 @@ public class DevWindow extends Window {
 
 		if (keyCode == Keys.J) {
 			final Set<Integer> keySet = Sets.newHashSet(Domain.getWorlds().keySet());
-			keySet.remove(gameClientStateTracker.getSelectedActiveWorldId());
-			gameClientStateTracker.setSelectedActiveWorldId(keySet.iterator().next());
+			keySet.remove(gameClientStateTracker.getActiveWorldId());
+			gameClientStateTracker.setActiveWorldId(keySet.iterator().next());
 		}
 
 		if (keyCode == Keys.B) {
-			missionTracker.addMission(new Tutorial(gameClientStateTracker.getSelectedActiveWorldId()));
+			missionTracker.addMission(new Tutorial(gameClientStateTracker.getActiveWorldId()));
 		}
 
 		if (keyCode == Keys.H) {
@@ -208,7 +208,7 @@ public class DevWindow extends Window {
 						Color.WHITE,
 						Color.CYAN,
 						2f,
-						gameClientStateTracker.getSelectedActiveWorldId(),
+						gameClientStateTracker.getActiveWorldId(),
 						4f,
 						MovementMode.EMBER,
 						Depth.FOREGROUND,

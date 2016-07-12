@@ -141,7 +141,7 @@ public class NewGameWindow extends Window {
 			ClientServerInterface.setServer(true);
 
 			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
-			gameClientStateTracker.setSelectedActiveWorldId(Domain.createWorld());
+			gameClientStateTracker.setActiveWorldId(Domain.createWorld());
 			gameClientStateTracker.setInGame(true);
 			gameSetupService.setup();
 			factionControlService.control(playerFaction.factionId);

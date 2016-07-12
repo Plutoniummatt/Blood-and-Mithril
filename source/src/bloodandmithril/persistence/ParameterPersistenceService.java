@@ -55,7 +55,7 @@ public class ParameterPersistenceService {
 	/** Saves the {@link Parameters} */
 	public synchronized void saveParameters() {
 		final FileHandle file = Gdx.files.local(gameSaver.getSavePath() + "/parameters.txt");
-		parameters.setActiveWorldId(gameClientStateTracker.getSelectedActiveWorldId());
+		parameters.setActiveWorldId(gameClientStateTracker.getActiveWorldId());
 		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? Maps.newHashMap(cameraTracker.getWorldcamcoordinates()) : Maps.newHashMap());
 		file.writeString(encode(parameters), false);
 	}

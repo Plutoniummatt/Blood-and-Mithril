@@ -96,7 +96,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).setUpdateTick(1f/60f)
 		);
 		Wiring.injector().injectMembers(this);
-		gameClientStateTracker.setSelectedActiveWorldId(1);
+		gameClientStateTracker.setActiveWorldId(1);
 		ClientServerInterface.setServer(false);
 
 
