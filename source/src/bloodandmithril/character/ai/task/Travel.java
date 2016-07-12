@@ -9,6 +9,8 @@ import bloodandmithril.character.ai.NextWaypointProvider;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.Shaders;
@@ -26,7 +28,7 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 	/**
 	 * Constructor
 	 */
-	public Travel(IndividualIdentifier hostId) {
+	public Travel(final IndividualIdentifier hostId) {
 		super(hostId, "Travelling");
 	}
 
@@ -34,9 +36,9 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 	/**
 	 * Adds a {@link GoToLocation} task
 	 */
-	public void addGotoLocation(JitGoToLocation goToLocation) {
+	public void addGotoLocation(final JitGoToLocation goToLocation) {
 		appendTask(goToLocation);
-		if (getHost().isSelected() && Util.roll(0.3f)) {
+		if (Wiring.injector().getInstance(GameClientStateTracker.class).isIndividualSelected(getHost()) && Util.roll(0.3f)) {
 			getHost().speak(Speech.getRandomAffirmativeSpeech(), 1000);
 			getHost().playAffirmativeSound();
 		}
@@ -46,7 +48,7 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 	/**
 	 * Adds a {@link GoToLocation} task
 	 */
-	public void addJump(Jump jump) {
+	public void addJump(final Jump jump) {
 		if (getCurrentTask() instanceof Jump || tasks.peekLast() instanceof Jump) {
 			return;
 		}
@@ -55,7 +57,7 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 
 
 	public Vector2 getDestination() {
-		AITask task = getCurrentTask();
+		final AITask task = getCurrentTask();
 		if (task instanceof GoToLocation) {
 			return ((GoToLocation) task).getPath().getDestinationWayPoint().waypoint.cpy();
 		} else {
@@ -65,9 +67,9 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 
 
 	public Vector2 getFinalGoToLocationWaypoint() {
-		AITask peekLast = tasks.peekLast();
+		final AITask peekLast = tasks.peekLast();
 		if (peekLast == null) {
-			AITask currentTask = getCurrentTask();
+			final AITask currentTask = getCurrentTask();
 			if (currentTask != null && currentTask instanceof JitGoToLocation) {
 				return ((JitGoToLocation) currentTask).getDestination().waypoint.cpy();
 			} else {
@@ -85,11 +87,11 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 	/**
 	 * Renders all waypoints in this {@link Travel} task
 	 */
-	public void renderWaypoints(Graphics graphics) {
+	public void renderWaypoints(final Graphics graphics) {
 		renderForTask(null, getCurrentTask(), true, graphics);
 
 		AITask previousTask = null;
-		for (AITask task : tasks) {
+		for (final AITask task : tasks) {
 			renderForTask(previousTask, task, false, graphics);
 			previousTask = task;
 		}
@@ -97,13 +99,13 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 
 
 	@Override
-	public void setCurrentTask(AITask currentTask) {
+	public void setCurrentTask(final AITask currentTask) {
 		getHost().setTravelIconTimer(0f);
 		super.setCurrentTask(currentTask);
 	}
 
 
-	private void renderForTask(AITask previousTask, AITask task, boolean isCurrentTask, Graphics graphics) {
+	private void renderForTask(final AITask previousTask, final AITask task, final boolean isCurrentTask, final Graphics graphics) {
 		if (task instanceof JitGoToLocation) {
 
 			float offset = 0f;
@@ -112,13 +114,13 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 			}
 
 			if (UserInterface.DEBUG) {
-				GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)task).getTask();
+				final GoToLocation goToLocation = (GoToLocation)((JitGoToLocation)task).getTask();
 				if (goToLocation != null) {
 					goToLocation.renderPath();
 				}
 			}
 
-			Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
+			final Vector2 waypoint = ((JitGoToLocation) task).getDestination().waypoint.cpy();
 			graphics.getSpriteBatch().setShader(Shaders.pass);
 			Shaders.pass.setUniformMatrix("u_projTrans", graphics.getUi().getUITrackingCamera().combined);
 			graphics.getSpriteBatch().draw(UserInterface.finalWaypointTexture, waypoint.x - UserInterface.finalWaypointTexture.getRegionWidth()/2, waypoint.y + offset * 10f);
@@ -128,14 +130,14 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 			if (previousTask instanceof JitGoToLocation) {
 				start = ((JitGoToLocation) previousTask).getDestination().waypoint.cpy();
 			} else {
-				AITask currentTask = getCurrentTask();
+				final AITask currentTask = getCurrentTask();
 				if (currentTask instanceof JitGoToLocation) {
 					start = ((JitGoToLocation) currentTask).getDestination().waypoint;
 				}
 			}
 
 			if (start != null) {
-				Vector2 waypoint = ((Jump) task).getDestination();
+				final Vector2 waypoint = ((Jump) task).getDestination();
 				UserInterface.renderJumpArrow(
 					start,
 					waypoint
@@ -147,7 +149,7 @@ public class Travel extends CompositeAITask implements NextWaypointProvider {
 
 	@Override
 	public WayPoint provideNextWaypoint() {
-		AITask current = getCurrentTask();
+		final AITask current = getCurrentTask();
 		if (current instanceof NextWaypointProvider) {
 			return ((NextWaypointProvider) current).provideNextWaypoint();
 		}

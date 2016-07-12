@@ -1,7 +1,10 @@
 package bloodandmithril.networking.requests;
 
+import com.google.inject.Inject;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -21,10 +24,13 @@ public class IndividualSelection implements Request {
 
 	private int clientId;
 
+	@Inject
+	private transient GameClientStateTracker gameClientStateTracker;
+
 	/**
 	 * Constructor
 	 */
-	public IndividualSelection(int individualId, boolean select, int clientId) {
+	public IndividualSelection(final int individualId, final boolean select, final int clientId) {
 		this.individualId = individualId;
 		this.select = select;
 		this.clientId = clientId;
@@ -33,17 +39,17 @@ public class IndividualSelection implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividual(individualId);
+		final Individual individual = Domain.getIndividual(individualId);
 		if (select) {
 			individual.select(clientId);
-			Domain.removeSelectedIndividual(individual);
-			Domain.addSelectedIndividual(individual);
+			gameClientStateTracker.removeSelectedIndividual(individual);
+			gameClientStateTracker.addSelectedIndividual(individual);
 		} else {
 			individual.deselect(false, clientId);
-			Domain.removeSelectedIndividual(individual);
+			gameClientStateTracker.removeSelectedIndividual(individual);
 		}
-		Response response = new SelectIndividualResponse(individualId, select);
-		Responses responses = new Response.Responses(false);
+		final Response response = new SelectIndividualResponse(individualId, select);
+		final Responses responses = new Response.Responses(false);
 		responses.add(response);
 		return responses;
 	}
@@ -63,6 +69,9 @@ public class IndividualSelection implements Request {
 
 	public static class SelectIndividualResponse implements Response {
 
+		@Inject
+		private transient GameClientStateTracker gameClientStateTracker;
+
 		/** id of the {@link Individual} to be selected */
 		public final int individualId;
 
@@ -72,21 +81,21 @@ public class IndividualSelection implements Request {
 		/**
 		 * Constructor
 		 */
-		public SelectIndividualResponse(int individualId, boolean select) {
+		public SelectIndividualResponse(final int individualId, final boolean select) {
 			this.individualId = individualId;
 			this.select = select;
 		}
 
 		@Override
 		public void acknowledge() {
-			Individual individual = Domain.getIndividual(individualId);
+			final Individual individual = Domain.getIndividual(individualId);
 			if (select) {
 				individual.select(0);
-				Domain.removeSelectedIndividual(individual);
-				Domain.addSelectedIndividual(individual);
+				gameClientStateTracker.removeSelectedIndividual(individual);
+				gameClientStateTracker.addSelectedIndividual(individual);
 			} else {
 				individual.deselect(false, 0);
-				Domain.removeSelectedIndividual(individual);
+				gameClientStateTracker.removeSelectedIndividual(individual);
 			}
 		}
 

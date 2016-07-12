@@ -1,19 +1,15 @@
 package bloodandmithril.world;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static com.google.common.collect.Sets.newHashSet;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.character.faction.Faction;
@@ -38,9 +34,6 @@ public class Domain {
 	/** {@link World}s */
 	private static HashMap<Integer, World> 								worlds 					= newHashMap();
 
-	/** {@link Individual} that are selected for manual control */
-	private static Set<Integer> 										selectedIndividuals 	= newHashSet();
-
 	/** Every {@link Individual} that exists */
 	private static ConcurrentHashMap<Integer, Individual> 				individuals 			= new ConcurrentHashMap<>();
 
@@ -55,40 +48,6 @@ public class Domain {
 		getWorlds().put(world2.getWorldId(), world2);
 
 		return world.getWorldId();
-	}
-
-
-	public synchronized static void addSelectedIndividual(final Individual individual) {
-		selectedIndividuals.add(individual.getId().getId());
-	}
-
-
-	public synchronized static boolean removeSelectedIndividual(final Individual individual) {
-		return selectedIndividuals.removeIf(id -> {
-			return individual.getId().getId() == id;
-		});
-	}
-
-
-	public synchronized static boolean removeSelectedIndividualIf(final java.util.function.Predicate<Integer> predicate) {
-		return selectedIndividuals.removeIf(predicate);
-	}
-
-
-	public synchronized static boolean isIndividualSelected(final Individual individual) {
-		return selectedIndividuals.contains(individual.getId().getId());
-	}
-
-
-	public synchronized static void clearSelectedIndividuals() {
-		selectedIndividuals.clear();
-	}
-
-
-	public synchronized static Collection<Individual> getSelectedIndividuals() {
-		return Lists.newLinkedList(Iterables.transform(selectedIndividuals, id -> {
-			return getIndividual(id);
-		}));
 	}
 
 

@@ -1,15 +1,17 @@
 package bloodandmithril.networking.requests;
 
+import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
+
 import bloodandmithril.character.ai.AIProcessor;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * {@link Request} to move an {@link Individual}
@@ -25,20 +27,23 @@ public class MoveIndividual implements Request {
 
 	/** Whether or not to force move */
 	private final boolean forceMove;
-	
+
 	/** Whether to add to existing task */
 	private final boolean add;
-	
+
 	/** Whether to jump */
 	private final boolean jump;
 
 	/** Coordinates of the jump destination */
 	private final Vector2 jumpFrom, jumpCoords;
 
+	@Inject
+	private transient GameClientStateTracker gameClientStateTracker;
+
 	/**
 	 * Constructor
 	 */
-	public MoveIndividual(int individualId, Vector2 destinationCoordinates, boolean forceMove, boolean add, boolean jump, Vector2 jumpFrom, Vector2 jumpCoords) {
+	public MoveIndividual(final int individualId, final Vector2 destinationCoordinates, final boolean forceMove, final boolean add, final boolean jump, final Vector2 jumpFrom, final Vector2 jumpCoords) {
 		this.individualId = individualId;
 		this.destinationCoordinates = destinationCoordinates;
 		this.forceMove = forceMove;
@@ -51,13 +56,13 @@ public class MoveIndividual implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual individual = Domain.getIndividual(individualId);
-		if (individual != null && Domain.isIndividualSelected(individual)) {
+		final Individual individual = Domain.getIndividual(individualId);
+		if (individual != null && gameClientStateTracker.isIndividualSelected(individual)) {
 			if (jump) {
 				AIProcessor.sendJumpResolutionRequest(
-					individual, 
-					jumpFrom, 
-					jumpCoords, 
+					individual,
+					jumpFrom,
+					jumpCoords,
 					add
 				);
 			} else {
@@ -71,7 +76,7 @@ public class MoveIndividual implements Request {
 				);
 			}
 		}
-		
+
 		return new Response.Responses(false);
 	}
 

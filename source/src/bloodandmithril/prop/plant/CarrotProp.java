@@ -14,6 +14,8 @@ import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.ai.task.Trading;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.item.items.Item;
@@ -26,7 +28,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.SerializableMappingFunction;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.tiles.SoilTile;
@@ -47,13 +48,13 @@ public class CarrotProp extends PlantProp implements Harvestable {
 	/**
 	 * Constructor
 	 */
-	public CarrotProp(float x, float y) {
+	public CarrotProp(final float x, final float y) {
 		super(x, y, 12, 17, Depth.MIDDLEGROUND, new SoilTilesOnly(), false);
 	}
 
 
 	@Override
-	public void render(Graphics graphics) {
+	public void render(final Graphics graphics) {
 		if (getGrowthProgress() < 1.0f) {
 			graphics.getSpriteBatch().draw(halfCarrot, position.x - width / 2, position.y);
 		} else {
@@ -63,14 +64,16 @@ public class CarrotProp extends PlantProp implements Harvestable {
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 		// Don't need to synchronize a carrot
 	}
 
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 		final Harvestable thisCarrot = this;
 
 		menu.addMenuItem(
@@ -97,20 +100,20 @@ public class CarrotProp extends PlantProp implements Harvestable {
 			)
 		);
 
-		if (Domain.getSelectedIndividuals().size() == 1 &&
-		  !(Domain.getSelectedIndividuals().iterator().next().getAI().getCurrentTask() instanceof Trading) && getGrowthProgress() == 1f) {
+		if (gameClientStateTracker.getSelectedIndividuals().size() == 1 &&
+		  !(gameClientStateTracker.getSelectedIndividuals().iterator().next().getAI().getCurrentTask() instanceof Trading) && getGrowthProgress() == 1f) {
 
 			menu.addMenuItem(
 				new MenuItem(
 					"Harvest",
 					() -> {
-						Individual individual = Domain.getSelectedIndividuals().iterator().next();
+						final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 						if (ClientServerInterface.isServer()) {
 							try {
 								individual.getAI().setCurrentTask(
 									new Harvest(individual, thisCarrot)
 								);
-							} catch (NoTileFoundException e) {
+							} catch (final NoTileFoundException e) {
 							}
 						} else {
 							ClientServerInterface.SendRequest.sendHarvestRequest(individual.getId().getId(), id);
@@ -129,8 +132,8 @@ public class CarrotProp extends PlantProp implements Harvestable {
 
 
 	@Override
-	public Collection<Item> harvest(boolean canReceive) {
-		List<Item> items = Lists.newArrayList();
+	public Collection<Item> harvest(final boolean canReceive) {
+		final List<Item> items = Lists.newArrayList();
 		items.add(new bloodandmithril.item.items.food.plant.CarrotItem());
 		items.add(new CarrotSeedItem());
 		items.add(new CarrotSeedItem());
@@ -145,7 +148,7 @@ public class CarrotProp extends PlantProp implements Harvestable {
 
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		grow(delta / 100f);
 	}
 
@@ -171,7 +174,7 @@ public class CarrotProp extends PlantProp implements Harvestable {
 		private static final long serialVersionUID = 698418294898570694L;
 
 		@Override
-		public Boolean apply(Tile input) {
+		public Boolean apply(final Tile input) {
 			return input instanceof SoilTile;
 		}
 	}

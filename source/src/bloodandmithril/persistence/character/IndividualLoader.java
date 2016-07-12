@@ -13,6 +13,7 @@ import com.google.inject.Singleton;
 import bloodandmithril.character.ai.ArtificialIntelligence.AIMode;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.util.Logger.LogLevel;
@@ -28,6 +29,7 @@ import bloodandmithril.world.Domain;
 public class IndividualLoader {
 
 	@Inject private GameSaver gameSaver;
+	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	/**
 	 * Loads all {@link Individual}s
@@ -35,16 +37,16 @@ public class IndividualLoader {
 	@SuppressWarnings("unchecked")
 	public void loadAll() {
 		try {
-			ConcurrentHashMap<Integer, Individual> decoded = (ConcurrentHashMap<Integer, Individual>) decode(files.local(gameSaver.getSavePath() + "/world/individuals.txt"));
+			final ConcurrentHashMap<Integer, Individual> decoded = (ConcurrentHashMap<Integer, Individual>) decode(files.local(gameSaver.getSavePath() + "/world/individuals.txt"));
 			setIndividuals(decoded);
 			if (ClientServerInterface.isClient()) {
-				for (Individual individual : Domain.getIndividuals().values()) {
+				for (final Individual individual : Domain.getIndividuals().values()) {
 					if (individual.getAI().getAIMode() == AIMode.MANUAL) {
-						Domain.addSelectedIndividual(individual);
+						gameClientStateTracker.addSelectedIndividual(individual);
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			loaderDebug("Failed to load individuals", LogLevel.DEBUG);
 		}
 	}

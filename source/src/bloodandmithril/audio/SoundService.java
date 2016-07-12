@@ -136,6 +136,7 @@ public class SoundService {
 
 
 	private static final void triggerListeners(final Vector2 location, final float triggerRadius, final int sound, final Visible source) {
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
 		Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
 			Individual.class,
 			location.x - triggerRadius,
@@ -144,7 +145,7 @@ public class SoundService {
 			location.y - triggerRadius
 		).forEach(individualId -> {
 			final Individual listener = Domain.getIndividual(individualId);
-			if (listener == null || listener.isAISuppressed() || !(listener instanceof Listener) || listener.getState().position.cpy().dst(location) > triggerRadius || listener.isSelected()) {
+			if (listener == null || listener.isAISuppressed() || !(listener instanceof Listener) || listener.getState().position.cpy().dst(location) > triggerRadius || gameClientStateTracker.isIndividualSelected(listener)) {
 				return;
 			}
 

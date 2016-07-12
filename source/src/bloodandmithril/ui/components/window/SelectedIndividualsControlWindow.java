@@ -8,10 +8,12 @@ import java.util.List;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
@@ -22,7 +24,6 @@ import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 
 /**
  * {@link Window} with controls relevant to the selected entity
@@ -32,12 +33,15 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class SelectedIndividualsControlWindow extends Window {
 
+	@Inject
+	private GameClientStateTracker gameClientStateTracker;
+
 	HashMap<Integer, Button> buttons = newHashMap();
 
 	/**
 	 * Constructor
 	 */
-	public SelectedIndividualsControlWindow(int x, int y, int length, int height, String title, boolean active) {
+	public SelectedIndividualsControlWindow(final int x, final int y, final int length, final int height, final String title, final boolean active) {
 		super(x, y, length, height, title, active, length, height, true, false, true);
 		setupButtons();
 		setAlwaysActive(true);
@@ -56,11 +60,11 @@ public class SelectedIndividualsControlWindow extends Window {
 			40,
 			16,
 			() -> {
-				boolean run = Domain.getSelectedIndividuals().stream().mapToInt(indi -> {
+				final boolean run = gameClientStateTracker.getSelectedIndividuals().stream().mapToInt(indi -> {
 					return indi.isWalking() ? 0 : 1;
 				}).sum() > 0;
 
-				for (Individual individual : Domain.getSelectedIndividuals()) {
+				for (final Individual individual : gameClientStateTracker.getSelectedIndividuals()) {
 					if (ClientServerInterface.isServer()) {
 						individual.setWalking(run);
 					} else {
@@ -82,11 +86,11 @@ public class SelectedIndividualsControlWindow extends Window {
 			40,
 			16,
 			() -> {
-				boolean someoneSpeaking = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
+				final boolean someoneSpeaking = gameClientStateTracker.getSelectedIndividuals().stream().mapToInt(individual -> {
 					return individual.isShutUp() ? 0 : 1;
 				}).sum() > 0;
 
-				for (Individual individual : Domain.getSelectedIndividuals()) {
+				for (final Individual individual : gameClientStateTracker.getSelectedIndividuals()) {
 					if (ClientServerInterface.isServer()) {
 						individual.setShutUp(someoneSpeaking);
 					} else {
@@ -108,11 +112,11 @@ public class SelectedIndividualsControlWindow extends Window {
 			40,
 			16,
 			() -> {
-				boolean someoneHasAISuppressed = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
+				final boolean someoneHasAISuppressed = gameClientStateTracker.getSelectedIndividuals().stream().mapToInt(individual -> {
 					return individual.isAISuppressed() ? 1 : 0;
 				}).sum() > 0;
 
-				for (Individual individual : Domain.getSelectedIndividuals()) {
+				for (final Individual individual : gameClientStateTracker.getSelectedIndividuals()) {
 					if (ClientServerInterface.isServer()) {
 						individual.setAISuppression(!someoneHasAISuppressed);
 					} else {
@@ -129,21 +133,21 @@ public class SelectedIndividualsControlWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
-		boolean someoneRunning = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
+	protected void internalWindowRender(final Graphics graphics) {
+		final boolean someoneRunning = gameClientStateTracker.getSelectedIndividuals().stream().mapToInt(individual -> {
 			return individual.isWalking() ? 0 : 1;
 		}).sum() > 0;
 
-		boolean someoneSpeaking = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
+		final boolean someoneSpeaking = gameClientStateTracker.getSelectedIndividuals().stream().mapToInt(individual -> {
 			return individual.isShutUp() ? 0 : 1;
 		}).sum() > 0;
 
-		boolean someoneHasAISuppressed = Domain.getSelectedIndividuals().stream().mapToInt(individual -> {
+		final boolean someoneHasAISuppressed = gameClientStateTracker.getSelectedIndividuals().stream().mapToInt(individual -> {
 			return individual.isAISuppressed() ? 1 : 0;
 		}).sum() > 0;
 
-		boolean buttonsActive = UserInterface.getLayeredComponents().isEmpty() ? false : UserInterface.getLayeredComponents().getLast() == this;
-		boolean selected = Domain.getSelectedIndividuals().size() > 0;
+		final boolean buttonsActive = UserInterface.getLayeredComponents().isEmpty() ? false : UserInterface.getLayeredComponents().getLast() == this;
+		final boolean selected = gameClientStateTracker.getSelectedIndividuals().size() > 0;
 
 		// Run button
 		buttons.get(0).text = someoneRunning ? () -> {return "Walk";} : () -> {return "Run";};
@@ -170,15 +174,15 @@ public class SelectedIndividualsControlWindow extends Window {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-		for (Button button : buttons.values()) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
+		for (final Button button : buttons.values()) {
 			button.click();
 		}
 	}
 
 
 	@Override
-	public void setActive(boolean active) {
+	public void setActive(final boolean active) {
 		super.setActive(true);
 	}
 
@@ -189,7 +193,7 @@ public class SelectedIndividualsControlWindow extends Window {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
+	public boolean keyPressed(final int keyCode) {
 		if (keyCode == Keys.ESCAPE) {
 			return false;
 		}

@@ -25,7 +25,9 @@ import bloodandmithril.character.ai.routine.EntityVisibleRoutine.EntityVisible;
 import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.MouseOverable;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.affix.Affix;
@@ -119,7 +121,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	/**
 	 * Constructor
 	 */
-	protected Item(float mass, int volume, boolean equippable) {
+	protected Item(final float mass, final int volume, final boolean equippable) {
 		this.mass = mass;
 		this.volume = volume;
 		this.equippable = equippable;
@@ -130,7 +132,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	/**
 	 * Constructor
 	 */
-	protected Item(float mass, int volume, boolean equippable, long value) {
+	protected Item(final float mass, final int volume, final boolean equippable, final long value) {
 		this.mass = mass;
 		this.volume = volume;
 		this.equippable = equippable;
@@ -140,12 +142,12 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	}
 
 	/** Get the singular name for this item */
-	public String getSingular(boolean firstCap) {
+	public String getSingular(final boolean firstCap) {
 		return modifyName(internalGetSingular(firstCap));
 	}
 
 	/** Get the plural name for this item */
-	public String getPlural(boolean firstCap) {
+	public String getPlural(final boolean firstCap) {
 		return modifyName(internalGetPlural(firstCap));
 	}
 
@@ -173,7 +175,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	}
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(final Object other) {
 		if (other instanceof Item) {
 			return sameAs((Item)other);
 		}
@@ -183,13 +185,13 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	/**
 	 * @return true if this {@link Item} is identical to another, including affixes
 	 */
-	public boolean sameAs(Item other) {
+	public boolean sameAs(final Item other) {
 		if (minorAffixes.size() != other.minorAffixes.size()) {
 			return false;
 		}
 
 		for (final Affix affix : minorAffixes) {
-			Optional<MinorAffix> tryFind = Iterables.tryFind(other.minorAffixes, a -> {
+			final Optional<MinorAffix> tryFind = Iterables.tryFind(other.minorAffixes, a -> {
 				return a.getClass().equals(affix.getClass());
 			});
 
@@ -243,7 +245,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 
 	/** Clones this {@link Item}, WARNING : ID IS NOT CLONED! */
 	public Item copy() {
-		Item item = internalCopy();
+		final Item item = internalCopy();
 
 		item.angle = angle;
 		item.angularVelocity = angularVelocity;
@@ -264,7 +266,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		return true;
 	}
 
-	public void setAngularVelocity(float angVel) {
+	public void setAngularVelocity(final float angVel) {
 		this.angularVelocity = angVel;
 	}
 
@@ -274,9 +276,9 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	}
 
 	/** Renders this item in world */
-	public void render(Graphics graphics) {
-		TextureRegion textureRegion = getTextureRegion();
-		Vector2 offset = getRenderCentreOffset();
+	public void render(final Graphics graphics) {
+		final TextureRegion textureRegion = getTextureRegion();
+		final Vector2 offset = getRenderCentreOffset();
 
 		graphics.getSpriteBatch().draw(
 			textureRegion,
@@ -301,14 +303,14 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 
 	@Override
 	public boolean isMouseOver() {
-		Vector2 mouseCoords = new Vector2(
+		final Vector2 mouseCoords = new Vector2(
 			getMouseWorldX(),
 			getMouseWorldY()
 		);
 
-		TextureRegion textureRegion = getTextureRegion();
-		int width = textureRegion.getRegionWidth();
-		int height = textureRegion.getRegionHeight();
+		final TextureRegion textureRegion = getTextureRegion();
+		final int width = textureRegion.getRegionWidth();
+		final int height = textureRegion.getRegionHeight();
 
 		// Translate coordinate system to have origin on the centre of the item (rotation pivot of rendering), then work out mouse coordinates in this coordinate system
 		// Then apply rotation of -(renderAngle) to mouse coordinates in these new coordinates, result should be a rectangle. Then apply standard logic.
@@ -376,7 +378,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 
 
 	/** Update method, delta measured in seconds */
-	public void update(float delta) throws NoTileFoundException {
+	public void update(final float delta) throws NoTileFoundException {
 		if (getId() == null) {
 			return;
 		}
@@ -385,25 +387,25 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 			return;
 		}
 
-		Vector2 previousPosition = position.cpy();
-		Vector2 previousVelocity = velocity.cpy();
+		final Vector2 previousPosition = position.cpy();
+		final Vector2 previousVelocity = velocity.cpy();
 
 		position.add(velocity.cpy().scl(delta));
 
-		float gravity = Domain.getWorld(getWorldId()).getGravity();
+		final float gravity = Domain.getWorld(getWorldId()).getGravity();
 		if (velocity.cpy().scl(delta).len() > TILE_SIZE) {
 			velocity.scl(0.9f);
 		}
 
 		velocity.y = velocity.y - delta * gravity;
 
-		Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
+		final Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
 		if (rotates() && tileUnder.isPassable()) {
 			angle = angle + angularVelocity;
 		}
 
 		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
-			Vector2 trial = position.cpy();
+			final Vector2 trial = position.cpy();
 			trial.y += -previousVelocity.y*delta;
 
 			if (Domain.getWorld(getWorldId()).getTopography().getTile(trial.x, trial.y, true).isPassable()) {
@@ -413,7 +415,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 					if (i < 0) {
 						i = i + 360;
 					}
-					boolean pointingUp = i > 350 || i > 0 && i < 190;
+					final boolean pointingUp = i > 350 || i > 0 && i < 190;
 					if (pointingUp && bounces) {
 						if (abs(velocity.y) > 400f) {
 							angularVelocity = (Util.getRandom().nextFloat() - 0.5f) * 40f;
@@ -445,7 +447,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 
 
 	public void updatePositionalIndex() {
-		for (PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
+		for (final PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
 			node.removeItem(id);
 		}
 
@@ -454,23 +456,25 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 
 
 	public ContextMenu getContextMenu() {
-		MenuItem takeItem = new MenuItem(
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+
+		final MenuItem takeItem = new MenuItem(
 			"Take",
 			() -> {
-				if (Domain.getSelectedIndividuals().size() == 1) {
-					Individual selected = Domain.getSelectedIndividuals().iterator().next();
+				if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
+					final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 					if (ClientServerInterface.isServer()) {
 						try {
 							selected.getAI().setCurrentTask(new TakeItem(selected, this));
-						} catch (NoTileFoundException e) {}
+						} catch (final NoTileFoundException e) {}
 					} else {
 						ClientServerInterface.SendRequest.sendRequestTakeItem(selected, this);
 					}
 				}
 			},
-			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
-			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
-			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+			gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+			gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+			gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
 			() -> { return new ContextMenu(0, 0, true, new MenuItem(
 				"You have multiple individuals selected",
 				() -> {},
@@ -479,10 +483,10 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 				Colors.UI_DARK_GRAY,
 				null
 			));},
-			() -> {return Domain.getSelectedIndividuals().size() > 1;}
+			() -> {return gameClientStateTracker.getSelectedIndividuals().size() > 1;}
 		);
 
-		ContextMenu menu = new ContextMenu(0, 0, true,
+		final ContextMenu menu = new ContextMenu(0, 0, true,
 			new MenuItem(
 				"Show info",
 				() -> {
@@ -497,7 +501,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 			)
 		);
 
-		if (!Domain.getSelectedIndividuals().isEmpty()) {
+		if (!gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
 			menu.addMenuItem(takeItem);
 		}
 
@@ -514,7 +518,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		return position;
 	}
 
-	public void setPosition(Vector2 position) {
+	public void setPosition(final Vector2 position) {
 		this.position = position;
 	}
 
@@ -522,7 +526,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -530,7 +534,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		return velocity;
 	}
 
-	public void setVelocity(Vector2 velocity) {
+	public void setVelocity(final Vector2 velocity) {
 		this.velocity = velocity;
 	}
 
@@ -538,7 +542,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		return worldId;
 	}
 
-	public void setWorldId(Integer worldId) {
+	public void setWorldId(final Integer worldId) {
 		this.worldId = worldId;
 	}
 
@@ -550,19 +554,19 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		return value;
 	}
 
-	protected void setValue(long value) {
+	protected void setValue(final long value) {
 		this.value = value;
 	}
 
 	public Panel getInfoPanel() {
-		ItemInfoPopupPanel panel = new ItemInfoPopupPanel(null, this);
+		final ItemInfoPopupPanel panel = new ItemInfoPopupPanel(null, this);
 
-		float width1 = Fonts.defaultFont.getBounds(getSingular(true), new TextBounds()).width;
-		float width2 = Fonts.defaultFont.getBounds("Weight :" + String.format("%.2f", getMass()), new TextBounds()).width;
-		float width3 = Fonts.defaultFont.getBounds("Volume :" + getVolume(), new TextBounds()).width;
-		float max = Math.max(width1, Math.max(width2, width3));
+		final float width1 = Fonts.defaultFont.getBounds(getSingular(true), new TextBounds()).width;
+		final float width2 = Fonts.defaultFont.getBounds("Weight :" + String.format("%.2f", getMass()), new TextBounds()).width;
+		final float width3 = Fonts.defaultFont.getBounds("Volume :" + getVolume(), new TextBounds()).width;
+		final float max = Math.max(width1, Math.max(width2, width3));
 
-		TextBounds textBounds = Fonts.defaultFont.getWrappedBounds(getDescription(), 250, new TextBounds());
+		final TextBounds textBounds = Fonts.defaultFont.getWrappedBounds(getDescription(), 250, new TextBounds());
 
 		panel.width = (int) Math.max(textBounds.width, max + 150);
 		panel.height = (int) textBounds.height + 94;
@@ -589,12 +593,12 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	}
 
 	@Override
-	public void setPostAffix(PostAffix postAffix) {
+	public void setPostAffix(final PostAffix postAffix) {
 		this.postAffix = postAffix;
 	}
 
 	@Override
-	public void setPreAffix(PreAffix preAffix) {
+	public void setPreAffix(final PreAffix preAffix) {
 		this.preAffix = preAffix;
 	}
 
@@ -604,7 +608,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	public abstract ItemCategory getType();
 
 	@Override
-	public String modifyName(String original) {
+	public String modifyName(final String original) {
 		String toReturn = original;
 		if (preAffix != null) {
 			toReturn = preAffix.modifyName(toReturn);
@@ -620,7 +624,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		return volume;
 	}
 
-	public void setVolume(int volume) {
+	public void setVolume(final int volume) {
 		this.volume = volume;
 	}
 
@@ -650,7 +654,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 
 		private String value;
 		private Color color;
-		private ItemCategory(String value, Color color) {
+		private ItemCategory(final String value, final Color color) {
 			this.value = value;
 			this.color = color;
 		}
@@ -688,7 +692,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 
 
 	@Override
-	public boolean sameAs(Visible other) {
+	public boolean sameAs(final Visible other) {
 		if (other instanceof Item) {
 			return ((Item) other).id == id;
 		}
@@ -699,7 +703,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 
 	@Override
 	public Collection<Vector2> getVisibleLocations() {
-		LinkedList<Vector2> locations = Lists.newLinkedList();
+		final LinkedList<Vector2> locations = Lists.newLinkedList();
 		for (int i = 2; i < getTextureRegion().getRegionHeight() - 2 ; i += 2) {
 			locations.add(position.cpy().add(0f, i));
 		}
@@ -712,7 +716,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		private WrapperForTwo<Class<? extends Item>, Item> wrapper = WrapperForTwo.wrap(Item.class, null);
 
 		@Override
-		public Boolean apply(Visible input) {
+		public Boolean apply(final Visible input) {
 			if (input instanceof Item) {
 				return true;
 			}
@@ -721,7 +725,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		}
 
 		@Override
-		public String getDetailedDescription(Individual host) {
+		public String getDetailedDescription(final Individual host) {
 			return "This routine occurs when an item is visible to " + host.getId().getSimpleName();
 		}
 

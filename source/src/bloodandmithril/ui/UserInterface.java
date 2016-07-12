@@ -444,8 +444,8 @@ public class UserInterface {
 
 
 	private static void renderAverageBars() {
-		if (averageBarAlpha != 0f || !Domain.getSelectedIndividuals().isEmpty()) {
-			if (Domain.getSelectedIndividuals().isEmpty()) {
+		if (averageBarAlpha != 0f || !gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
+			if (gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
 				averageBarAlpha = averageBarAlpha - 0.04f < 0f ? 0f : averageBarAlpha - 0.04f;
 			} else {
 				averageBarAlpha = averageBarAlpha + 0.04f > 0.6f ? 0.6f : averageBarAlpha + 0.04f;
@@ -457,7 +457,7 @@ public class UserInterface {
 				maxMana = 0f;
 				totalMana  = 0f;
 
-				for (final Individual indi : Domain.getSelectedIndividuals()) {
+				for (final Individual indi : gameClientStateTracker.getSelectedIndividuals()) {
 					maxHealth += indi.getState().maxHealth;
 					totalHealth += indi.getState().health;
 
@@ -817,13 +817,13 @@ public class UserInterface {
 					final IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
 						individualSelectionService.select(indi);
-					} else if (Domain.isIndividualSelected(indi)) {
+					} else if (gameClientStateTracker.isIndividualSelected(indi)) {
 						individualSelectionService.deselect(indi);
 					}
 				}
 			}
 
-			if (Domain.getSelectedIndividuals().size() > 1) {
+			if (gameClientStateTracker.getSelectedIndividuals().size() > 1) {
 				inputProcessor.setCamFollowFunction(null);
 			}
 		}
@@ -877,9 +877,9 @@ public class UserInterface {
 			});
 
 			if (!items.isEmpty()) {
-				if (Domain.getSelectedIndividuals().size() > 0) {
+				if (gameClientStateTracker.getSelectedIndividuals().size() > 0) {
 					contextMenus.clear();
-					final boolean singleIndividualSelected = Domain.getSelectedIndividuals().size() == 1;
+					final boolean singleIndividualSelected = gameClientStateTracker.getSelectedIndividuals().size() == 1;
 					contextMenus.add(new ContextMenu(
 						screenX,
 						screenY,
@@ -888,7 +888,7 @@ public class UserInterface {
 							"Take items",
 							() -> {
 								if (singleIndividualSelected) {
-									final Individual next = Domain.getSelectedIndividuals().iterator().next();
+									final Individual next = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 									if (ClientServerInterface.isServer()) {
 										try {
 											next.getAI().setCurrentTask(new TakeItem(next, items));
@@ -942,7 +942,7 @@ public class UserInterface {
 	private static void renderIndividualUISprites(final Graphics graphics) {
 		graphics.getSpriteBatch().begin();
 		for (final Individual indi : Domain.getIndividuals().values()) {
-			if (indi.isSelected()) {
+			if (gameClientStateTracker.isIndividualSelected(indi)) {
 				final AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {
 					shapeRenderer.setColor(Color.WHITE);
@@ -1084,7 +1084,7 @@ public class UserInterface {
 		final boolean rangedAttackPressed = isKeyPressed(inputProcessor.getKeyMappings().rangedAttack.keyCode);
 		final boolean mineTIlePressed = isKeyPressed(inputProcessor.getKeyMappings().mineTile.keyCode);
 
-		if (!Domain.getSelectedIndividuals().isEmpty()) {
+		if (!gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
 
 			if ((jumpPressed || addWayPointPressed || forceMovePressed) && !attackPressed && !rangedAttackPressed && !mineTIlePressed) {
 				String text = "";
@@ -1113,7 +1113,7 @@ public class UserInterface {
 				Fonts.defaultFont.draw(graphics.getSpriteBatch(), text, getMouseScreenX() + 15, getMouseScreenY() - 25);
 			} else if (rangedAttackPressed) {
 				boolean canAttackRanged = false;
-				for (final Individual indi : Domain.getSelectedIndividuals()) {
+				for (final Individual indi : gameClientStateTracker.getSelectedIndividuals()) {
 					if (indi.canAttackRanged()) {
 						renderArrow(indi.getEmissionPosition(), new Vector2(getMouseWorldX(), getMouseWorldY()), new Color(1f, 0f, 0f, 0.65f), 2f, 0f, rangeControl);
 						canAttackRanged = true;
@@ -1420,8 +1420,8 @@ public class UserInterface {
 		}
 
 		if (keyCode == inputProcessor.getKeyMappings().openInventory.keyCode) {
-			if (Domain.getSelectedIndividuals().size() == 1) {
-				final Individual individual = Domain.getSelectedIndividuals().iterator().next();
+			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
+				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 				final String simpleName = individual.getId().getSimpleName();
 
 				UserInterface.addLayeredComponentUnique(
@@ -1435,8 +1435,8 @@ public class UserInterface {
 		}
 
 		if (keyCode == inputProcessor.getKeyMappings().openAIRoutines.keyCode) {
-			if (Domain.getSelectedIndividuals().size() == 1) {
-				final Individual individual = Domain.getSelectedIndividuals().iterator().next();
+			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
+				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 				UserInterface.addLayeredComponentUnique(
 					new AIRoutinesWindow(
 						individual
@@ -1446,8 +1446,8 @@ public class UserInterface {
 		}
 
 		if (keyCode == inputProcessor.getKeyMappings().openBuildWindow.keyCode) {
-			if (Domain.getSelectedIndividuals().size() == 1) {
-				final Individual individual = Domain.getSelectedIndividuals().iterator().next();
+			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
+				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 
 				UserInterface.addLayeredComponentUnique(
 					new BuildWindow(

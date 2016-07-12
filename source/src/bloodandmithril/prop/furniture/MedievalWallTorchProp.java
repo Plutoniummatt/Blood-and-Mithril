@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -24,7 +26,6 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.SerializableMappingFunction;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
 import bloodandmithril.world.topography.tile.Tile.EmptyTile;
@@ -45,7 +46,7 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 		}
 
 		@Override
-		public Boolean apply(Tile input) {
+		public Boolean apply(final Tile input) {
 			return !(input instanceof EmptyTile);
 		}
 	}
@@ -54,27 +55,28 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 	/**
 	 * Constructor
 	 */
-	public MedievalWallTorchProp(float x, float y) {
+	public MedievalWallTorchProp(final float x, final float y) {
 		super(x, y, 13, 30, false);
 		canPlaceInFrontOf(new NotEmptyTile());
 	}
 
 
 	@Override
-	public void render(Graphics graphics) {
+	public void render(final Graphics graphics) {
 		graphics.getSpriteBatch().draw(medievalWallTorch, position.x - width / 2, position.y);
 	}
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 	}
 
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 		final MedievalWallTorchProp thisCampfire = this;
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
 
 		menu.addMenuItem(
 			new MenuItem(
@@ -100,25 +102,25 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 			)
 		);
 
-		MenuItem ignite = new MenuItem(
+		final MenuItem ignite = new MenuItem(
 			"Ignite",
 			() -> {
-				if (Domain.getSelectedIndividuals().size() > 1) {
+				if (gameClientStateTracker.getSelectedIndividuals().size() > 1) {
 					return;
 				}
 
-				Individual selected = Domain.getSelectedIndividuals().iterator().next();
+				final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 				if (ClientServerInterface.isServer()) {
 					try {
 						selected.getAI().setCurrentTask(new LightLightable(selected, thisCampfire, false));
-					} catch (NoTileFoundException e) {}
+					} catch (final NoTileFoundException e) {}
 				} else {
 					ClientServerInterface.SendRequest.sendLightLightableRequest(selected, thisCampfire);
 				}
 			},
-			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.WHITE,
-			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GREEN,
-			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GRAY,
+			gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.WHITE,
+			gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GREEN,
+			gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GRAY,
 			() -> { return new ContextMenu(0, 0,
 				true,
 				new MenuItem(
@@ -131,11 +133,11 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 				)
 			);},
 			() -> {
-				return Domain.getSelectedIndividuals().size() > 1;
+				return gameClientStateTracker.getSelectedIndividuals().size() > 1;
 			}
 		);
 
-		if (Domain.getSelectedIndividuals().size() == 1) {
+		if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 			menu.addMenuItem(ignite);
 		}
 
@@ -144,11 +146,11 @@ public class MedievalWallTorchProp extends Furniture implements Lightable {
 
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		if (lit) {
 
 			if (isOnScreen(position, 50f)) {
-				Vector2 firePosition = position.cpy().add(0, 23);
+				final Vector2 firePosition = position.cpy().add(0, 23);
 				ParticleService.randomVelocityDiminishing(firePosition, 3f, 15f, Colors.FIRE_START, Colors.FIRE_START, Util.getRandom().nextFloat() * 3f, 14f, MovementMode.EMBER, Util.getRandom().nextInt(800), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
 				ParticleService.randomVelocityDiminishing(firePosition, 3f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 8f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.BACKGROUND, false, null);
 			}

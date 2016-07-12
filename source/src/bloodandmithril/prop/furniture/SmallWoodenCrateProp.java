@@ -79,6 +79,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 	@Override
 	public ContextMenu getContextMenu() {
 		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
 
 		menu.addMenuItem(
 			new MenuItem(
@@ -105,29 +106,29 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 		);
 
 		if (!isLocked()) {
-			if (Domain.getSelectedIndividuals().size() > 0) {
-				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
+			if (gameClientStateTracker.getSelectedIndividuals().size() > 0) {
+				final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 				final MenuItem openChestMenuItem = new MenuItem(
 					"Open",
 					() -> {
-						if (Domain.getSelectedIndividuals().size() == 1) {
+						if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 							if (ClientServerInterface.isServer()) {
 								selected.getAI().setCurrentTask(
-										new TradeWith(selected, this)
-										);
+									new TradeWith(selected, this)
+								);
 							} else {
 								ClientServerInterface.SendRequest.sendTradeWithPropRequest(selected, id);
 							}
 						}
 					},
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
 					() -> {
 						return new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
 					},
 					() -> {
-						return Domain.getSelectedIndividuals().size() > 1;
+						return gameClientStateTracker.getSelectedIndividuals().size() > 1;
 					}
 				);
 				menu.addMenuItem(openChestMenuItem);
@@ -136,7 +137,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 					final MenuItem lockChestMenuItem = new MenuItem(
 						"Lock",
 						() -> {
-							if (Domain.getSelectedIndividuals().size() == 1) {
+							if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 								if (ClientServerInterface.isServer()) {
 									try {
 										selected.getAI().setCurrentTask(
@@ -148,26 +149,26 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 								}
 							}
 						},
-						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
-						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
-						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+						gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+						gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+						gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
 						() -> {
 							return new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
 						},
 						() -> {
-							return Domain.getSelectedIndividuals().size() > 1;
+							return gameClientStateTracker.getSelectedIndividuals().size() > 1;
 						}
 					);
 					menu.addMenuItem(lockChestMenuItem);
 				}
 			}
 		} else {
-			if (Domain.getSelectedIndividuals().size() > 0) {
-				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
+			if (gameClientStateTracker.getSelectedIndividuals().size() > 0) {
+				final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 				final MenuItem unlockChestMenuItem = new MenuItem(
 					"Unlock",
 					() -> {
-						if (Domain.getSelectedIndividuals().size() == 1) {
+						if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 							if (ClientServerInterface.isServer()) {
 								try {
 									selected.getAI().setCurrentTask(
@@ -179,14 +180,14 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 							}
 						}
 					},
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
 					() -> { return
 						new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
 					},
 					() -> {
-						return Domain.getSelectedIndividuals().size() > 1;
+						return gameClientStateTracker.getSelectedIndividuals().size() > 1;
 					}
 				);
 				menu.addMenuItem(unlockChestMenuItem);

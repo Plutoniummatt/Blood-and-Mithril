@@ -59,6 +59,7 @@ import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.MouseOverable;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
@@ -202,19 +203,19 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	 * Constructor
 	 */
 	protected Individual(
-			IndividualIdentifier id,
-			IndividualState state,
-			int factionId,
-			Behaviour naturalBehaviour,
-			float inventoryMassCapacity,
-			int inventoryVolumeCapacity,
-			int maxRings,
-			int width,
-			int height,
-			int safetyHeight,
-			Box interactionBox,
-			int worldId,
-			int maximumConcurrentMeleeAttackers) {
+			final IndividualIdentifier id,
+			final IndividualState state,
+			final int factionId,
+			final Behaviour naturalBehaviour,
+			final float inventoryMassCapacity,
+			final int inventoryVolumeCapacity,
+			final int maxRings,
+			final int width,
+			final int height,
+			final int safetyHeight,
+			final Box interactionBox,
+			final int worldId,
+			final int maximumConcurrentMeleeAttackers) {
 		this.naturalBehaviour = naturalBehaviour;
 		this.equipperImpl = new EquipperImpl(inventoryMassCapacity, inventoryVolumeCapacity, maxRings);
 		this.id = id;
@@ -230,7 +231,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	/**
 	 * Copies all fields onto this individual from another, this is used in multi-player when synchronising server/client individual data
 	 */
-	public synchronized void copyFrom(Individual other) {
+	public synchronized void copyFrom(final Individual other) {
 		this.currentAction = other.currentAction;
 		this.selectedByClient = other.selectedByClient;
 		this.skills = other.skills;
@@ -317,7 +318,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	/**
 	 * Adds a floating text at close proximity to this individual
 	 */
-	public void addFloatingText(String text, Color color) {
+	public void addFloatingText(final String text, final Color color) {
 		UserInterface.addFloatingText(
 			text,
 			color,
@@ -353,7 +354,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** See {@link #getTimeStamp()} */
-	public synchronized final void setTimeStamp(long timeStamp) {
+	public synchronized final void setTimeStamp(final long timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 
@@ -365,7 +366,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** See {@link #isWalking()} */
-	public final synchronized void setWalking(boolean walking) {
+	public final synchronized void setWalking(final boolean walking) {
 		this.walking = walking;
 	}
 
@@ -380,10 +381,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** Renders any decorations for UI */
-	public final void renderUIDecorations(Graphics graphics) {
-		SpriteBatch batch = graphics.getSpriteBatch();
+	public final void renderUIDecorations(final Graphics graphics) {
+		final SpriteBatch batch = graphics.getSpriteBatch();
 
-		if (isSelected()) {
+		if (Wiring.injector().getInstance(GameClientStateTracker.class).isIndividualSelected(this)) {
 			batch.setShader(Shaders.filter);
 
 			Shaders.filter.setUniformf("color",
@@ -416,10 +417,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 			shapeRenderer.end();
 		}
 
-		BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+		final BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
 
 		if (isAlive() && isMouseOver() && isKeyPressed(input.getKeyMappings().attack.keyCode) && !isKeyPressed(input.getKeyMappings().rangedAttack.keyCode)) {
-			if (Domain.getSelectedIndividuals().size() > 0 && (!Domain.isIndividualSelected(this) || Domain.getSelectedIndividuals().size() > 1)) {
+			if (gameClientStateTracker.getSelectedIndividuals().size() > 0 && (!gameClientStateTracker.isIndividualSelected(this) || gameClientStateTracker.getSelectedIndividuals().size() > 1)) {
 				batch.setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", graphics.getUi().getUICamera().combined);
 				Shaders.filter.setUniformf("color", Color.BLACK);
@@ -433,12 +435,14 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** Select this {@link Individual} */
-	public final void select(int clientId) {
+	public final void select(final int clientId) {
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+
 		if (!isAlive()) {
 			return;
 		}
 
-		Domain.addSelectedIndividual(this);
+		gameClientStateTracker.addSelectedIndividual(this);
 		getAI().setToManual();
 		selectedByClient.add(clientId);
 
@@ -458,7 +462,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** Deselect this {@link Individual} */
-	public final void deselect(boolean clearTask, int id) {
+	public final void deselect(final boolean clearTask, final int id) {
 		selectedByClient.remove(id);
 
 		if (selectedByClient.isEmpty()) {
@@ -474,7 +478,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	/** Handles commands */
-	public final synchronized void sendCommand(int keyCode, boolean val) {
+	public final synchronized void sendCommand(final int keyCode, final boolean val) {
 		if (val) {
 			activeCommands.activate(Integer.toString(keyCode));
 		} else {
@@ -502,17 +506,11 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	protected abstract float staminaDrain();
 
 
-	/** Is this individual the current one? */
-	public final boolean isSelected() {
-		return Domain.isIndividualSelected(this);
-	}
-
-
 	/** Calculates the distance between this individual and the Vector2 parameter */
-	public final float getDistanceFrom(Vector2 position) {
+	public final float getDistanceFrom(final Vector2 position) {
 		try {
 			return state.position.cpy().sub(position).len();
-		} catch (Throwable a) {
+		} catch (final Throwable a) {
 			a.printStackTrace();
 			throw new RuntimeException(a);
 		}
@@ -521,7 +519,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	/**
 	 * @param Revive from the dead with specified health
 	 */
-	public final void revive(float health) {
+	public final void revive(final float health) {
 		if (dead) {
 			dead = false;
 			heal(health);
@@ -539,7 +537,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	private final void kill() {
 		dead = true;
 		if (ClientServerInterface.isClient()) {
-			Domain.removeSelectedIndividual(this);
+			Wiring.injector().getInstance(GameClientStateTracker.class).removeSelectedIndividual(this);
 		}
 		getEquipped().keySet().forEach(eq -> {
 			Individual.this.unequip((Equipable ) eq);
@@ -562,7 +560,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setAISuppression(boolean suppress) {
+	public final void setAISuppression(final boolean suppress) {
 		this.supressAI = suppress;
 	}
 
@@ -570,12 +568,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	/**
 	 * @return true if a command is currently active
 	 */
-	public final synchronized boolean isCommandActive(int keycode) {
+	public final synchronized boolean isCommandActive(final int keycode) {
 		return activeCommands.isActive(Integer.toString(keycode));
 	}
 
 
-	public final synchronized void decreaseThirst(float amount) {
+	public final synchronized void decreaseThirst(final float amount) {
 		if (state.thirst - amount <= 0f) {
 			state.thirst = 0f;
 		} else {
@@ -584,7 +582,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final synchronized void increaseThirst(float amount) {
+	public final synchronized void increaseThirst(final float amount) {
 		if (state.thirst + amount > 1f) {
 			state.thirst = 1f;
 		} else {
@@ -593,7 +591,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final synchronized void damage(float amount) {
+	public final synchronized void damage(final float amount) {
 		if (state.health == 0f) {
 			return;
 		}
@@ -613,7 +611,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	public abstract void moan();
 
 
-	public synchronized void heal(float amount) {
+	public synchronized void heal(final float amount) {
 		if (state.health + amount > state.maxHealth) {
 			state.health = state.maxHealth;
 		} else {
@@ -622,7 +620,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final synchronized void increaseHunger(float amount) {
+	public final synchronized void increaseHunger(final float amount) {
 		if (state.hunger + amount >= 1f) {
 			state.hunger = 1f;
 		} else {
@@ -631,7 +629,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final synchronized void decreaseHunger(float amount) {
+	public final synchronized void decreaseHunger(final float amount) {
 		if (state.hunger - amount <= 0f) {
 			state.hunger = 0f;
 		} else {
@@ -640,7 +638,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final synchronized void increaseMana(float amount) {
+	public final synchronized void increaseMana(final float amount) {
 		if (state.mana + amount >= state.maxMana) {
 			state.mana = state.maxMana;
 		} else {
@@ -649,7 +647,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final synchronized void decreaseMana(float amount) {
+	public final synchronized void decreaseMana(final float amount) {
 		if (state.mana - amount <= 0f) {
 			state.mana = 0f;
 		} else {
@@ -658,7 +656,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final synchronized void increaseStamina(float amount) {
+	public final synchronized void increaseStamina(final float amount) {
 		if (state.stamina + amount >= 1f) {
 			state.stamina = 1f;
 		} else {
@@ -667,7 +665,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final synchronized void decreaseStamina(float amount) {
+	public final synchronized void decreaseStamina(final float amount) {
 		if (state.stamina - amount <= 0f) {
 			state.stamina = 0f;
 		} else {
@@ -680,8 +678,8 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	 * Add a {@link Condition} to this {@link Individual}, if there is already an existing {@link Condition}
 	 * that is of the same class as the condition trying to be added, stack them by calling {@link Condition#stack(Condition)}
 	 */
-	public final synchronized void addCondition(Condition condition) {
-		for (Condition existing : newHashSet(state.currentConditions)) {
+	public final synchronized void addCondition(final Condition condition) {
+		for (final Condition existing : newHashSet(state.currentConditions)) {
 			if (condition.getClass().equals(existing.getClass())) {
 				existing.stack(condition);
 				return;
@@ -691,12 +689,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final synchronized void changeStaminaRegen(float newValue) {
+	public final synchronized void changeStaminaRegen(final float newValue) {
 		state.staminaRegen = newValue;
 	}
 
 
-	public final synchronized void changeHealthRegen(float newValue) {
+	public final synchronized void changeHealthRegen(final float newValue) {
 		state.healthRegen = newValue;
 	}
 
@@ -736,10 +734,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	/** True if mouse is over */
 	@Override
 	public final boolean isMouseOver() {
-		float x = getMouseWorldX();
-		float y = getMouseWorldY();
+		final float x = getMouseWorldX();
+		final float y = getMouseWorldY();
 
-		boolean ans = x >= getState().position.x - getWidth()/2 && x <= getState().position.x + getWidth()/2 && y >= getState().position.y && y <= getState().position.y + getHeight();
+		final boolean ans = x >= getState().position.x - getWidth()/2 && x <= getState().position.x + getWidth()/2 && y >= getState().position.y && y <= getState().position.y + getHeight();
 		return ans;
 	}
 
@@ -751,14 +749,14 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	@Override
-	public final boolean unlock(Item with) {
+	public final boolean unlock(final Item with) {
 		// Do nothing
 		return false;
 	}
 
 
 	@Override
-	public final boolean lock(Item with) {
+	public final boolean lock(final Item with) {
 		// Do nothing
 		return false;
 	}
@@ -854,7 +852,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	/**
 	 * See {@link #getWorldId()}
 	 */
-	public final void setWorldId(int worldId) {
+	public final void setWorldId(final int worldId) {
 		this.worldId = worldId;
 	}
 
@@ -875,7 +873,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setCombatStance(boolean combatStance) {
+	public final void setCombatStance(final boolean combatStance) {
 		if (combatStance) {
 			setCombatTimer(5f);
 		}
@@ -888,7 +886,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setCurrentAction(Action currentAction) {
+	public final void setCurrentAction(final Action currentAction) {
 		this.currentAction = currentAction;
 	}
 
@@ -898,7 +896,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public void setAnimationTimer(float animationTimer) {
+	public void setAnimationTimer(final float animationTimer) {
 		this.animationTimer = animationTimer;
 	}
 
@@ -908,12 +906,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setFactionId(int factionId) {
+	public final void setFactionId(final int factionId) {
 		this.factionId = factionId;
 	}
 
 
-	public final void setAi(ArtificialIntelligence ai) {
+	public final void setAi(final ArtificialIntelligence ai) {
 		this.ai = ai;
 	}
 
@@ -923,7 +921,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setIndividualsToBeAttacked(Set<Integer> individualsToBeAttacked) {
+	public final void setIndividualsToBeAttacked(final Set<Integer> individualsToBeAttacked) {
 		this.individualsToBeAttacked = individualsToBeAttacked;
 	}
 
@@ -933,12 +931,12 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final boolean canBeAttacked(Individual by) {
+	public final boolean canBeAttacked(final Individual by) {
 		synchronized (getBeingAttackedBy()) {
 			if (getBeingAttackedBy().containsKey(by.getId().getId())) {
 				return true;
 			} else {
-				int totalConcurrentAttackNumber = getBeingAttackedBy().keySet().stream().mapToInt(i -> {
+				final int totalConcurrentAttackNumber = getBeingAttackedBy().keySet().stream().mapToInt(i -> {
 					return Domain.getIndividual(i).getConcurrentAttackNumber();
 				}).sum();
 
@@ -948,7 +946,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void addAttacker(Individual attacker) {
+	public final void addAttacker(final Individual attacker) {
 		if (canBeAttacked(attacker)) {
 			this.getBeingAttackedBy().put(attacker.getId().getId(), System.currentTimeMillis());
 		}
@@ -981,7 +979,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setAttackTimer(float timer) {
+	public final void setAttackTimer(final float timer) {
 		this.attackTimer = timer;
 	}
 
@@ -996,21 +994,21 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void attackRanged(Vector2 target) {
-		RangedWeapon rangedWeapon = (RangedWeapon) getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).findAny().get();
+	public final void attackRanged(final Vector2 target) {
+		final RangedWeapon rangedWeapon = (RangedWeapon) getEquipped().keySet().stream().filter(item -> {return item instanceof RangedWeapon;}).findAny().get();
 		if (rangedWeapon != null) {
-			Vector2 emissionPosition = getEmissionPosition();
-			Vector2 firingVector = target.cpy().sub(emissionPosition);
+			final Vector2 emissionPosition = getEmissionPosition();
+			final Vector2 firingVector = target.cpy().sub(emissionPosition);
 
 			boolean hasAmmo = false;
-			Item ammo = rangedWeapon.getAmmo();
+			final Item ammo = rangedWeapon.getAmmo();
 
 			if (ammo == null) {
 				addFloatingText("No ammo selected", Color.ORANGE);
 				return;
 			}
 
-			for (Item item : Lists.newArrayList(getInventory().keySet())) {
+			for (final Item item : Lists.newArrayList(getInventory().keySet())) {
 				if (ammo.sameAs(item)) {
 					hasAmmo = true;
 					takeItem(item);
@@ -1019,7 +1017,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 			}
 
 			if (hasAmmo) {
-				Projectile fired = rangedWeapon.fire(
+				final Projectile fired = rangedWeapon.fire(
 					emissionPosition,
 					firingVector.cpy().nor().scl(
 						Math.min(
@@ -1055,7 +1053,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setTravelIconTimer(float travelIconTimer) {
+	public final void setTravelIconTimer(final float travelIconTimer) {
 		this.travelIconTimer = travelIconTimer;
 	}
 
@@ -1065,7 +1063,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setShutUp(boolean shutup) {
+	public final void setShutUp(final boolean shutup) {
 		this.shutup = shutup;
 	}
 
@@ -1076,7 +1074,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	public abstract void playAffirmativeSound();
 
 
-	public final void speak(String text, long duration) {
+	public final void speak(final String text, final long duration) {
 		if (dead || shutup || getSpeakTimer() > 0f) {
 			return;
 		}
@@ -1098,7 +1096,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	public final boolean canBeUsedAsFireSource() {
-		for (Item item : getEquipped().keySet()) {
+		for (final Item item : getEquipped().keySet()) {
 			if (item instanceof FireLighter) {
 				if (((FireLighter) item).canLightFire()) {
 					return true;
@@ -1111,7 +1109,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 
 	public final FireLighter getFireLighter() {
-		for (Item item : getEquipped().keySet()) {
+		for (final Item item : getEquipped().keySet()) {
 			if (item instanceof FireLighter) {
 				if (((FireLighter) item).canLightFire()) {
 					return (FireLighter) item;
@@ -1119,7 +1117,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 			}
 		}
 
-		for (Item item : getInventory().keySet()) {
+		for (final Item item : getInventory().keySet()) {
 			if (item instanceof FireLighter) {
 				if (((FireLighter) item).canLightFire()) {
 					return (FireLighter) item;
@@ -1136,7 +1134,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setSpeakTimer(float speakTimer) {
+	public final void setSpeakTimer(final float speakTimer) {
 		this.speakTimer = speakTimer;
 	}
 
@@ -1146,7 +1144,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setCombatTimer(float combatTimer) {
+	public final void setCombatTimer(final float combatTimer) {
 		this.combatTimer = combatTimer;
 	}
 
@@ -1156,7 +1154,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setAiReactionTimer(float aiReactionTimer) {
+	public final void setAiReactionTimer(final float aiReactionTimer) {
 		this.aiReactionTimer = aiReactionTimer;
 	}
 
@@ -1166,7 +1164,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setBeingAttackedBy(Map<Integer, Long> beingAttackedBy) {
+	public final void setBeingAttackedBy(final Map<Integer, Long> beingAttackedBy) {
 		this.beingAttackedBy = beingAttackedBy;
 	}
 
@@ -1176,7 +1174,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setPreviousActionFrameAction(Action previousActionFrameAction) {
+	public final void setPreviousActionFrameAction(final Action previousActionFrameAction) {
 		this.previousActionFrameAction = previousActionFrameAction;
 	}
 
@@ -1186,7 +1184,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final void setPreviousActionFrame(int previousActionFrame) {
+	public final void setPreviousActionFrame(final int previousActionFrame) {
 		this.previousActionFrame = previousActionFrame;
 	}
 
@@ -1203,7 +1201,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 	@SuppressWarnings("unchecked")
 	public static final Map<Class<? extends Visible>, List<Class<? extends Individual>>> getAllIndividualClasses() {
-		Map<Class<? extends Visible>, List<Class<? extends Individual>>> map = Maps.newHashMap();
+		final Map<Class<? extends Visible>, List<Class<? extends Individual>>> map = Maps.newHashMap();
 
 		map.put(Humanoid.class, Lists.newArrayList(Elf.class));
 		map.put(Animal.class, Lists.newArrayList(Wolf.class, Hare.class));
@@ -1212,7 +1210,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	}
 
 
-	public final Behaviour deriveBehaviourTowards(Individual indi) {
+	public final Behaviour deriveBehaviourTowards(final Individual indi) {
 		if (indi.factionId == Faction.getNature().factionId) {
 			return indi.naturalBehaviour;
 		} else {
@@ -1229,7 +1227,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 	public enum Behaviour {
 		FRIENDLY("Friendly"), NEUTRAL("Neutral"), HOSTILE("Hostile");
 		public String description;
-		private Behaviour(String s) {
+		private Behaviour(final String s) {
 			this.description = s;
 		}
 	}
@@ -1264,7 +1262,7 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 
 		private boolean left;
 
-		private Action(boolean left) {
+		private Action(final boolean left) {
 			this.left = left;
 		}
 

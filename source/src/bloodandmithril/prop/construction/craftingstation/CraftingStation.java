@@ -20,6 +20,8 @@ import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.ai.task.OpenCraftingStation;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
@@ -56,7 +58,7 @@ public abstract class CraftingStation extends Construction {
 	/**
 	 * Constructor
 	 */
-	protected CraftingStation(float x, float y, int width, int height, float constructionRate) {
+	protected CraftingStation(final float x, final float y, final int width, final int height, final float constructionRate) {
 		super(x, y, width, height, true, constructionRate, null);
 	}
 
@@ -94,7 +96,7 @@ public abstract class CraftingStation extends Construction {
 
 
 	@Override
-	protected void internalRender(float constructionProgress, Graphics graphics) {
+	protected void internalRender(final float constructionProgress, final Graphics graphics) {
 		if (constructionProgress == 0f) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 0.90f);
 		}
@@ -110,7 +112,7 @@ public abstract class CraftingStation extends Construction {
 
 	@Override
 	protected ContextMenu getCompletedContextMenu() {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			new MenuItem(
@@ -142,15 +144,17 @@ public abstract class CraftingStation extends Construction {
 	}
 
 
-	protected void addCraftMenuItem(ContextMenu menu) {
-		if (Domain.getSelectedIndividuals().size() > 0) {
-			final Individual selected = Domain.getSelectedIndividuals().iterator().next();
+	protected void addCraftMenuItem(final ContextMenu menu) {
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+
+		if (gameClientStateTracker.getSelectedIndividuals().size() > 0) {
+			final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 			menu.addMenuItem(
 				new MenuItem(
 					getAction(),
 					() -> {
-						if (Domain.getSelectedIndividuals().size() == 1) {
-							AITask currentTask = selected.getAI().getCurrentTask();
+						if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
+							final AITask currentTask = selected.getAI().getCurrentTask();
 							if (currentTask instanceof Craft && ((Craft)currentTask).getCraftingStationId() == id) {
 								OpenCraftingStation.openCraftingStationWindow(selected, this);
 								return;
@@ -163,14 +167,14 @@ public abstract class CraftingStation extends Construction {
 							}
 						}
 					},
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
 					() -> {
 						return new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
 					},
 					() -> {
-						return Domain.getSelectedIndividuals().size() > 1;
+						return gameClientStateTracker.getSelectedIndividuals().size() > 1;
 					}
 				)
 			);
@@ -179,7 +183,7 @@ public abstract class CraftingStation extends Construction {
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 		this.craftingProgress = ((CraftingStation)other).craftingProgress;
 		this.currentlyBeingCrafted = ((CraftingStation)other).currentlyBeingCrafted;
 		this.finished = ((CraftingStation)other).finished;
@@ -188,7 +192,7 @@ public abstract class CraftingStation extends Construction {
 
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		if (currentlyBeingCrafted != null && occupiedBy != null) {
 			occupiedBy = Domain.getIndividual(occupiedBy).getAI().getCurrentTask() instanceof Craft ? occupiedBy : null;
 		}
@@ -205,7 +209,7 @@ public abstract class CraftingStation extends Construction {
 	}
 
 
-	public void setCurrentlyBeingCrafted(SerializableDoubleWrapper<Item, Integer> currentlyBeingCrafted) {
+	public void setCurrentlyBeingCrafted(final SerializableDoubleWrapper<Item, Integer> currentlyBeingCrafted) {
 		this.currentlyBeingCrafted = currentlyBeingCrafted;
 	}
 
@@ -219,7 +223,7 @@ public abstract class CraftingStation extends Construction {
 	 *
 	 * @return whether or not the crafting task should continue.
 	 */
-	public synchronized boolean craft(SerializableDoubleWrapper<Item, Integer> item, Individual individual, float aiTaskDelay) {
+	public synchronized boolean craft(final SerializableDoubleWrapper<Item, Integer> item, final Individual individual, final float aiTaskDelay) {
 		if (!customCanCraft()) {
 			return false;
 		}
@@ -232,7 +236,7 @@ public abstract class CraftingStation extends Construction {
 			currentlyBeingCrafted = item;
 
 			if (enoughMaterialsToCraft(individual, ((Craftable)item.t).getRequiredMaterials())) {
-				for (Entry<Item, Integer> requiredItem : ((Craftable)item.t).getRequiredMaterials().entrySet()) {
+				for (final Entry<Item, Integer> requiredItem : ((Craftable)item.t).getRequiredMaterials().entrySet()) {
 					for (int i = requiredItem.getValue(); i > 0; i--) {
 						individual.takeItem(requiredItem.getKey());
 					}
@@ -277,10 +281,10 @@ public abstract class CraftingStation extends Construction {
 	/**
 	 * @return whether the {@link Individual} has enough items to craft a {@link Craftable}
 	 */
-	public static boolean enoughMaterialsToCraft(Individual individual, Map<Item, Integer> requiredMaterials) {
-		Map<Item, Integer> inventoryCopy = individual.getInventory();
-		for (Entry<Item, Integer> requiredItem : requiredMaterials.entrySet()) {
-			Optional<Entry<Item, Integer>> tryFind = Iterables.tryFind(inventoryCopy.entrySet(), toMatch -> {
+	public static boolean enoughMaterialsToCraft(final Individual individual, final Map<Item, Integer> requiredMaterials) {
+		final Map<Item, Integer> inventoryCopy = individual.getInventory();
+		for (final Entry<Item, Integer> requiredItem : requiredMaterials.entrySet()) {
+			final Optional<Entry<Item, Integer>> tryFind = Iterables.tryFind(inventoryCopy.entrySet(), toMatch -> {
 				return toMatch.getKey().sameAs(requiredItem.getKey());
 			});
 
@@ -305,13 +309,13 @@ public abstract class CraftingStation extends Construction {
 	/**
 	 * Take the currently crafted item from this {@link CraftingStation}, if the inventory is full, it will be dropped instead
 	 */
-	public void takeItem(Individual individual) {
+	public void takeItem(final Individual individual) {
 		if (currentlyBeingCrafted != null && finished) {
 			for (int i = currentlyBeingCrafted.s; i > 0; i--) {
 				if (individual.canReceive(currentlyBeingCrafted.t)) {
 					individual.giveItem(currentlyBeingCrafted.t);
 				} else {
-					Item item = currentlyBeingCrafted.t.copy();
+					final Item item = currentlyBeingCrafted.t.copy();
 					Domain.getWorld(getWorldId()).items().addItem(
 						item,
 						position.cpy().add(0f, height / 2),
@@ -337,7 +341,7 @@ public abstract class CraftingStation extends Construction {
 	}
 
 
-	public CraftingStationWindow getCraftingStationWindow(Individual individual) {
+	public CraftingStationWindow getCraftingStationWindow(final Individual individual) {
 		return new CraftingStationWindow(
 			individual.getId().getFirstName() + " interacting with " + getTitle(),
 			individual,

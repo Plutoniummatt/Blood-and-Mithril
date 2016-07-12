@@ -10,6 +10,7 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.playerinteraction.individual.api.IndividualAISupressionService;
 import bloodandmithril.playerinteraction.individual.api.IndividualAttackOtherService;
 import bloodandmithril.playerinteraction.individual.api.IndividualChangeNicknameService;
@@ -31,7 +32,6 @@ import bloodandmithril.ui.components.window.InventoryWindow;
 import bloodandmithril.ui.components.window.ProficienciesWindow;
 import bloodandmithril.ui.components.window.TextInputWindow;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 
 /**
  * Service for providing context menus for individuals
@@ -52,14 +52,15 @@ public class IndividualContextMenuService {
 	@Inject private IndividualChangeNicknameService individualChangeNicknameService;
 	@Inject private IndividualUpdateDescriptionService individualUpdateDescriptionService;
 	@Inject private FactionControlService factionControlService;
+	@Inject private GameClientStateTracker gameClientStateTracker;
 
-	public ContextMenu getContextMenu(Individual indi) {
-		MenuItem camFollow = camFollow(indi);
-		MenuItem showInfoMenuItem = showInfo(indi);
-		MenuItem showStatusWindowItem = showStatus(indi);
+	public ContextMenu getContextMenu(final Individual indi) {
+		final MenuItem camFollow = camFollow(indi);
+		final MenuItem showInfoMenuItem = showInfo(indi);
+		final MenuItem showStatusWindowItem = showStatus(indi);
 
 		final ContextMenu actionMenu = actions(indi);
-		MenuItem actions = new MenuItem(
+		final MenuItem actions = new MenuItem(
 			"Actions",
 			() -> {
 				actionMenu.x = getMouseScreenX();
@@ -72,7 +73,7 @@ public class IndividualContextMenuService {
 		);
 
 		final ContextMenu interactMenu = interactMenu(indi);
-		MenuItem interact = new MenuItem(
+		final MenuItem interact = new MenuItem(
 			"Interact",
 			() -> {
 				interactMenu.x = getMouseScreenX();
@@ -85,7 +86,7 @@ public class IndividualContextMenuService {
 		);
 
 		final ContextMenu editMenu = editSubMenu(indi);
-		MenuItem edit = new MenuItem(
+		final MenuItem edit = new MenuItem(
 			"Edit",
 			() -> {
 				editMenu.x = getMouseScreenX();
@@ -97,8 +98,8 @@ public class IndividualContextMenuService {
 			() -> { return editMenu; }
 		);
 
-		ContextMenu contextMenuToReturn = new ContextMenu(0, 0, true);
-		if (!Domain.getSelectedIndividuals().isEmpty() && !(Domain.getSelectedIndividuals().size() == 1 && Domain.isIndividualSelected(indi))) {
+		final ContextMenu contextMenuToReturn = new ContextMenu(0, 0, true);
+		if (!gameClientStateTracker.getSelectedIndividuals().isEmpty() && !(gameClientStateTracker.getSelectedIndividuals().size() == 1 && gameClientStateTracker.isIndividualSelected(indi))) {
 			contextMenuToReturn.addMenuItem(interact);
 		}
 
@@ -117,7 +118,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private ContextMenu actions(Individual indi) {
+	private ContextMenu actions(final Individual indi) {
 		return new ContextMenu(0, 0,
 			true,
 			selectDeselect(indi),
@@ -130,7 +131,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private MenuItem walkRun(Individual indi) {
+	private MenuItem walkRun(final Individual indi) {
 		return new MenuItem(
 			indi.isWalking() ? "Run" : "Walk",
 			() -> {
@@ -144,7 +145,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private ContextMenu interactMenu(Individual indi) {
+	private ContextMenu interactMenu(final Individual indi) {
 		if (indi.isAlive()) {
 			return new ContextMenu(0, 0,
 				true,
@@ -161,7 +162,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private MenuItem shutUpSpeak(Individual indi) {
+	private MenuItem shutUpSpeak(final Individual indi) {
 		return new MenuItem(
 			indi.isShutUp() ? "Speak" : "Shut up",
 			() -> {
@@ -176,7 +177,7 @@ public class IndividualContextMenuService {
 
 
 
-	private MenuItem skills(Individual indi) {
+	private MenuItem skills(final Individual indi) {
 		return new MenuItem(
 			"Proficiencies",
 			() -> {
@@ -192,7 +193,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private MenuItem aiRoutines(Individual indi) {
+	private MenuItem aiRoutines(final Individual indi) {
 		return new MenuItem(
 			"AI Routines",
 			() -> {
@@ -208,7 +209,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private MenuItem suppressAI(Individual indi) {
+	private MenuItem suppressAI(final Individual indi) {
 		return new MenuItem(
 				indi.isAISuppressed() ? "Enable AI" : "Disable AI",
 			() -> {
@@ -222,7 +223,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private MenuItem showStatus(Individual indi) {
+	private MenuItem showStatus(final Individual indi) {
 		return new MenuItem(
 			"Show status",
 			() -> {
@@ -248,7 +249,7 @@ public class IndividualContextMenuService {
 		return new MenuItem(
 			"Follow",
 			() -> {
-				for (Individual indi : Domain.getSelectedIndividuals()) {
+				for (final Individual indi : gameClientStateTracker.getSelectedIndividuals()) {
 					if (indi != individual) {
 						individualFollowOtherService.follow(indi, individual, 10, null);
 					}
@@ -266,7 +267,7 @@ public class IndividualContextMenuService {
 		return new MenuItem(
 			"Attack",
 				() -> {
-					for (Individual indi : Domain.getSelectedIndividuals()) {
+					for (final Individual indi : gameClientStateTracker.getSelectedIndividuals()) {
 						if (indi != individual) {
 							individualAttackOtherService.attack(indi, individual);
 						}
@@ -284,11 +285,11 @@ public class IndividualContextMenuService {
 		return new MenuItem(
 			individual.isAlive() ? "Trade with" : "Loot",
 			() -> {
-				if (Domain.getSelectedIndividuals().size() > 1) {
+				if (gameClientStateTracker.getSelectedIndividuals().size() > 1) {
 					return;
 				}
 
-				for (Individual selected : Domain.getSelectedIndividuals()) {
+				for (final Individual selected : gameClientStateTracker.getSelectedIndividuals()) {
 					if (selected != individual) {
 						individualTradeWithOtherService.tradeWith(selected, individual);
 					}
@@ -309,17 +310,17 @@ public class IndividualContextMenuService {
 				)
 			);},
 			() -> {
-				return Domain.getSelectedIndividuals().size() > 1;
+				return gameClientStateTracker.getSelectedIndividuals().size() > 1;
 			}
 		);
 	}
 
 
-	private MenuItem inventory(Individual indi) {
+	private MenuItem inventory(final Individual indi) {
 		return new MenuItem(
 			"Inventory",
 			() -> {
-				InventoryWindow inventoryWindow = new InventoryWindow(
+				final InventoryWindow inventoryWindow = new InventoryWindow(
 					indi,
 					indi.getId().getSimpleName() + " - Inventory",
 					true
@@ -334,15 +335,15 @@ public class IndividualContextMenuService {
 	}
 
 
-	private MenuItem build(Individual indi) {
+	private MenuItem build(final Individual indi) {
 		return new MenuItem(
 			"Build",
 			() -> {
-				BuildWindow window = new BuildWindow(
+				final BuildWindow window = new BuildWindow(
 					indi,
 					new Function<Construction, String>() {
 						@Override
-						public String apply(Construction input) {
+						public String apply(final Construction input) {
 							return input.getTitle();
 						}
 					},
@@ -361,7 +362,7 @@ public class IndividualContextMenuService {
 	}
 
 
-	private ContextMenu editSubMenu(Individual indi) {
+	private ContextMenu editSubMenu(final Individual indi) {
 		return new ContextMenu(0, 0,
 			true,
 			new MenuItem(
@@ -419,7 +420,7 @@ public class IndividualContextMenuService {
 	/**
 	 * @return The show info {@link MenuItem} for this individual
 	 */
-	private MenuItem camFollow(Individual indi) {
+	private MenuItem camFollow(final Individual indi) {
 		return new MenuItem(
 			"Follow cam",
 			() -> {
@@ -436,11 +437,11 @@ public class IndividualContextMenuService {
 	/**
 	 * @return The show info {@link MenuItem} for this individual
 	 */
-	private MenuItem showInfo(Individual indi) {
+	private MenuItem showInfo(final Individual indi) {
 		return new MenuItem(
 			"Show info",
 			() -> {
-				IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
+				final IndividualInfoWindow individualInfoWindow = new IndividualInfoWindow(
 					indi,
 					300,
 					320,
@@ -462,7 +463,7 @@ public class IndividualContextMenuService {
 	 * @return The {@link MenuItem} to select/deselect this individual
 	 */
 	private MenuItem selectDeselect(final Individual indi) {
-		return Domain.isIndividualSelected(indi) ?
+		return gameClientStateTracker.isIndividualSelected(indi) ?
 		new MenuItem(
 			"Deselect",
 			() -> {

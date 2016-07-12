@@ -12,6 +12,8 @@ import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.container.Container;
@@ -25,7 +27,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
@@ -46,7 +47,7 @@ public class WoodenChestProp extends Furniture implements Container {
 	/**
 	 * Constructor
 	 */
-	public WoodenChestProp(float x, float y, float capacity, int volume, Class<? extends Wood> wood) {
+	public WoodenChestProp(final float x, final float y, final float capacity, final int volume, final Class<? extends Wood> wood) {
 		super(x, y, 56, 31, true);
 		this.wood = wood;
 		container = new ContainerImpl(capacity, volume);
@@ -56,7 +57,7 @@ public class WoodenChestProp extends Furniture implements Container {
 	/**
 	 * Constructor for lockable {@link WoodenChestProp}
 	 */
-	public WoodenChestProp(float x, float y, float capacity, int volume, boolean locked, Function<Item, Boolean> unlockingFunction, Class<? extends Wood> wood) {
+	public WoodenChestProp(final float x, final float y, final float capacity, final int volume, final boolean locked, final Function<Item, Boolean> unlockingFunction, final Class<? extends Wood> wood) {
 		super(x, y, 56, 31, true);
 		this.wood = wood;
 		container = new ContainerImpl(capacity, volume, locked, unlockingFunction);
@@ -70,7 +71,8 @@ public class WoodenChestProp extends Furniture implements Container {
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
 
 		menu.addMenuItem(
 			new MenuItem(
@@ -97,12 +99,12 @@ public class WoodenChestProp extends Furniture implements Container {
 		);
 
 		if (!isLocked()) {
-			if (Domain.getSelectedIndividuals().size() > 0) {
-				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-				MenuItem openChestMenuItem = new MenuItem(
+			if (gameClientStateTracker.getSelectedIndividuals().size() > 0) {
+				final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
+				final MenuItem openChestMenuItem = new MenuItem(
 					"Open",
 					() -> {
-						if (Domain.getSelectedIndividuals().size() == 1) {
+						if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 							if (ClientServerInterface.isServer()) {
 								selected.getAI().setCurrentTask(
 										new TradeWith(selected, this)
@@ -112,73 +114,73 @@ public class WoodenChestProp extends Furniture implements Container {
 							}
 						}
 					},
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
 					() -> {
 						return new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
 					},
 					() -> {
-						return Domain.getSelectedIndividuals().size() > 1;
+						return gameClientStateTracker.getSelectedIndividuals().size() > 1;
 					}
 				);
 				menu.addMenuItem(openChestMenuItem);
 
 				if (container.isLockable()) {
-					MenuItem lockChestMenuItem = new MenuItem(
+					final MenuItem lockChestMenuItem = new MenuItem(
 						"Lock",
 						() -> {
-							if (Domain.getSelectedIndividuals().size() == 1) {
+							if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 								if (ClientServerInterface.isServer()) {
 									try {
 										selected.getAI().setCurrentTask(
 											new LockUnlockContainer(selected, this, true)
 										);
-									} catch (NoTileFoundException e) {}
+									} catch (final NoTileFoundException e) {}
 								} else {
 									ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, true);
 								}
 							}
 						},
-						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
-						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
-						Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+						gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+						gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+						gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
 						() -> {
 							return new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
 						},
 						() -> {
-							return Domain.getSelectedIndividuals().size() > 1;
+							return gameClientStateTracker.getSelectedIndividuals().size() > 1;
 						}
 					);
 					menu.addMenuItem(lockChestMenuItem);
 				}
 			}
 		} else {
-			if (Domain.getSelectedIndividuals().size() > 0) {
-				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-				MenuItem unlockChestMenuItem = new MenuItem(
+			if (gameClientStateTracker.getSelectedIndividuals().size() > 0) {
+				final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
+				final MenuItem unlockChestMenuItem = new MenuItem(
 					"Unlock",
 					() -> {
-						if (Domain.getSelectedIndividuals().size() == 1) {
+						if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 							if (ClientServerInterface.isServer()) {
 								try {
 									selected.getAI().setCurrentTask(
 										new LockUnlockContainer(selected, this, false)
 									);
-								} catch (NoTileFoundException e) {}
+								} catch (final NoTileFoundException e) {}
 							} else {
 								ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, false);
 							}
 						}
 					},
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
-					Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.WHITE,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GREEN,
+					gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_DARK_GRAY : Color.GRAY,
 					() -> { return
 						new ContextMenu(0, 0, true, new MenuItem("You have multiple individuals selected", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
 					},
 					() -> {
-						return Domain.getSelectedIndividuals().size() > 1;
+						return gameClientStateTracker.getSelectedIndividuals().size() > 1;
 					}
 				);
 				menu.addMenuItem(unlockChestMenuItem);
@@ -190,7 +192,7 @@ public class WoodenChestProp extends Furniture implements Container {
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 		if (other instanceof WoodenChestProp) {
 			this.container.synchronizeContainer(((WoodenChestProp)other).container);
 		} else {
@@ -200,13 +202,13 @@ public class WoodenChestProp extends Furniture implements Container {
 
 
 	@Override
-	public void render(Graphics graphics) {
+	public void render(final Graphics graphics) {
 		graphics.getSpriteBatch().draw(woodenChest, position.x - width / 2, position.y);
 	}
 
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 	}
 
 
@@ -223,19 +225,19 @@ public class WoodenChestProp extends Furniture implements Container {
 
 
 	@Override
-	public boolean unlock(Item with) {
+	public boolean unlock(final Item with) {
 		return container.unlock(with);
 	}
 
 
 	@Override
-	public int has(Item item) {
+	public int has(final Item item) {
 		return container.has(item);
 	}
 
 
 	@Override
-	public boolean lock(Item with) {
+	public boolean lock(final Item with) {
 		return container.lock(with);
 	}
 

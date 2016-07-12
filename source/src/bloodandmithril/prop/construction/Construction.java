@@ -12,7 +12,9 @@ import com.badlogic.gdx.math.Vector2;
 import bloodandmithril.character.ai.task.ConstructDeconstruct;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.event.events.ConstructionFinished;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -61,14 +63,14 @@ public abstract class Construction extends Prop implements Container {
 	/**
 	 * Constructor
 	 */
-	protected Construction(float x, float y, int width, int height, boolean grounded, float constructionRate, SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
+	protected Construction(final float x, final float y, final int width, final int height, final boolean grounded, final float constructionRate, final SerializableMappingFunction<Tile, Boolean> canPlaceOnTopOf) {
 		super(x, y, width, height, grounded, Depth.MIDDLEGROUND, canPlaceOnTopOf, true);
 		this.constructionRate = constructionRate;
 	}
 
 
 	@Override
-	public void render(Graphics graphics) {
+	public void render(final Graphics graphics) {
 		internalRender(constructionProgress, graphics);
 	}
 
@@ -96,10 +98,10 @@ public abstract class Construction extends Prop implements Container {
 	/**
 	 * Progresses the construction of this {@link Construction}, in time units measured in seconds
 	 */
-	public synchronized void construct(Individual individual, float time) {
+	public synchronized void construct(final Individual individual, final float time) {
 		if (constructionProgress == 0f) {
 			if (CraftingStation.enoughMaterialsToCraft(individual, getRequiredMaterials())) {
-				for (Entry<Item, Integer> requiredItem : getRequiredMaterials().entrySet()) {
+				for (final Entry<Item, Integer> requiredItem : getRequiredMaterials().entrySet()) {
 					for (int i = requiredItem.getValue(); i > 0; i--) {
 						individual.takeItem(requiredItem.getKey());
 					}
@@ -128,15 +130,15 @@ public abstract class Construction extends Prop implements Container {
 	/**
 	 * Regresses the construction of this {@link Construction}, in time units measured in seconds
 	 */
-	public synchronized void deconstruct(Individual individual, float time) {
+	public synchronized void deconstruct(final Individual individual, final float time) {
 		if (canDeconstruct()) {
 			if (constructionProgress <= 0f) {
 				Domain.getWorld(getWorldId()).props().removeProp(id);
 
 				if (finishedConstruction) {
-					for (Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
+					for (final Entry<Item, Integer> entry : getRequiredMaterials().entrySet()) {
 						for (int i = entry.getValue(); i > 0; i--) {
-							Item item = entry.getKey();
+							final Item item = entry.getKey();
 							item.setWorldId(getWorldId());
 							Domain.getWorld(getWorldId()).items().addItem(
 								item.copy(),
@@ -146,9 +148,9 @@ public abstract class Construction extends Prop implements Container {
 						}
 					}
 				} else {
-					for (Entry<Item, Integer> entry : materialContainer.getInventory().entrySet()) {
+					for (final Entry<Item, Integer> entry : materialContainer.getInventory().entrySet()) {
 						for (int i = entry.getValue(); i > 0; i--) {
-							Item item = entry.getKey();
+							final Item item = entry.getKey();
 							item.setWorldId(getWorldId());
 							Domain.getWorld(getWorldId()).items().addItem(
 								item.copy(),
@@ -178,12 +180,14 @@ public abstract class Construction extends Prop implements Container {
 
 	@Override
 	public ContextMenu getContextMenu() {
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+
 		if (constructionProgress == 1f) {
-			MenuItem deconstruct = new MenuItem(
+			final MenuItem deconstruct = new MenuItem(
 				requiresConstruction() ? "Deconstruct" : "Disassemble",
 				() -> {
-					if (Domain.getSelectedIndividuals().size() == 1) {
-						Individual selected = Domain.getSelectedIndividuals().iterator().next();
+					if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
+						final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 						if (isServer()) {
 							selected.getAI().setCurrentTask(
 								new ConstructDeconstruct(selected, this, isServer() ? 0 : client.getID())
@@ -193,28 +197,28 @@ public abstract class Construction extends Prop implements Container {
 						}
 					}
 				},
-				Domain.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
-				Domain.getSelectedIndividuals().size() == 1 ? Color.GREEN : Colors.UI_DARK_GRAY,
-				Domain.getSelectedIndividuals().size() == 1 ? Color.GRAY : Colors.UI_DARK_GRAY,
+				gameClientStateTracker.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
+				gameClientStateTracker.getSelectedIndividuals().size() == 1 ? Color.GREEN : Colors.UI_DARK_GRAY,
+				gameClientStateTracker.getSelectedIndividuals().size() == 1 ? Color.GRAY : Colors.UI_DARK_GRAY,
 				() -> {
 					return new ContextMenu(0, 0, true, new MenuItem("You must select a single individual", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
 				},
 				() -> {
-					return Domain.getSelectedIndividuals().size() != 1;
+					return gameClientStateTracker.getSelectedIndividuals().size() != 1;
 				}
 			);
 
-			ContextMenu completedContextMenu = getCompletedContextMenu();
+			final ContextMenu completedContextMenu = getCompletedContextMenu();
 			completedContextMenu.addMenuItem(deconstruct);
 			return completedContextMenu;
 		} else {
-			ContextMenu menu = new ContextMenu(0, 0, true);
+			final ContextMenu menu = new ContextMenu(0, 0, true);
 
-			MenuItem openTransferItemsWindow = new MenuItem(
+			final MenuItem openTransferItemsWindow = new MenuItem(
 				requiresConstruction() ? "Construct" : "Assemble",
 				() -> {
-					if (Domain.getSelectedIndividuals().size() == 1) {
-						Individual selected = Domain.getSelectedIndividuals().iterator().next();
+					if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
+						final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 						if (isServer()) {
 							selected.getAI().setCurrentTask(
 								new ConstructDeconstruct(selected, this, isServer() ? 0 : client.getID())
@@ -224,18 +228,18 @@ public abstract class Construction extends Prop implements Container {
 						}
 					}
 				},
-				Domain.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
-				Domain.getSelectedIndividuals().size() == 1 ? Color.GREEN : Colors.UI_DARK_GRAY,
-				Domain.getSelectedIndividuals().size() == 1 ? Color.GRAY : Colors.UI_DARK_GRAY,
+				gameClientStateTracker.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
+				gameClientStateTracker.getSelectedIndividuals().size() == 1 ? Color.GREEN : Colors.UI_DARK_GRAY,
+				gameClientStateTracker.getSelectedIndividuals().size() == 1 ? Color.GRAY : Colors.UI_DARK_GRAY,
 				() -> {
 					return new ContextMenu(0, 0, true, new MenuItem("You must select a single individual", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
 				},
 				() -> {
-					return Domain.getSelectedIndividuals().size() != 1;
+					return gameClientStateTracker.getSelectedIndividuals().size() != 1;
 				}
 			);
 
-			MenuItem cancel = new MenuItem(
+			final MenuItem cancel = new MenuItem(
 				"Cancel",
 				() -> {
 					if (getConstructionProgress() == 0f) {
@@ -271,14 +275,14 @@ public abstract class Construction extends Prop implements Container {
 	/**
 	 * See {@link #constructionStage}
 	 */
-	public void setConstructionProgress(float constructionProgress) {
+	public void setConstructionProgress(final float constructionProgress) {
 		this.constructionProgress = constructionProgress;
 	}
 
 
 	@Override
 	public String getContextMenuItemLabel() {
-		String progress = requiresConstruction() ? "Under construction" : "Incomplete";
+		final String progress = requiresConstruction() ? "Under construction" : "Incomplete";
 		return getTitle() + (constructionProgress == 1f ? "" : " - " + progress + " (" + String.format("%.1f", constructionProgress * 100) + "%)");
 	}
 
@@ -300,19 +304,19 @@ public abstract class Construction extends Prop implements Container {
 	public abstract boolean canDeconstruct();
 
 	@Override
-	public void synchronizeContainer(Container other) {
+	public void synchronizeContainer(final Container other) {
 		materialContainer.synchronizeContainer(other);
 	}
 
 
-	public void synchronizeConstruction(Construction other) {
+	public void synchronizeConstruction(final Construction other) {
 		constructionProgress = other.getConstructionProgress();
 		finishedConstruction = other.finishedConstruction;
 	}
 
 
 	@Override
-	public void giveItem(Item item) {
+	public void giveItem(final Item item) {
 		if (constructionProgress == 1f) {
 			getContainerImpl().giveItem(item);
 		} else {
@@ -357,7 +361,7 @@ public abstract class Construction extends Prop implements Container {
 
 
 	@Override
-	public boolean unlock(Item with) {
+	public boolean unlock(final Item with) {
 		if (constructionProgress == 1f) {
 			return getContainerImpl().unlock(with);
 		} else {
@@ -367,7 +371,7 @@ public abstract class Construction extends Prop implements Container {
 
 
 	@Override
-	public boolean lock(Item with) {
+	public boolean lock(final Item with) {
 		if (constructionProgress == 1f) {
 			return getContainerImpl().lock(with);
 		} else {

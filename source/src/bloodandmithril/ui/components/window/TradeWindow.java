@@ -25,6 +25,7 @@ import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.TradeService;
@@ -54,6 +55,7 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class TradeWindow extends Window implements Refreshable {
 
+	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private TradeService tradeService;
 
 	/** Panels of involved traders */
@@ -104,7 +106,7 @@ public class TradeWindow extends Window implements Refreshable {
 	private String searchString = "";
 	private final Predicate<Item> textSearch = new Predicate<Item>() {
 		@Override
-		public boolean apply(Item input) {
+		public boolean apply(final Item input) {
 			return input.getSingular(true).toUpperCase().contains(searchString.toUpperCase());
 		}
 	};
@@ -115,7 +117,7 @@ public class TradeWindow extends Window implements Refreshable {
 	/**
 	 * Constructor
 	 */
-	public TradeWindow(String title, boolean active, Individual proposer, Container proposee, Comparator<Item> sortingComparator) {
+	public TradeWindow(final String title, final boolean active, final Individual proposer, final Container proposee, final Comparator<Item> sortingComparator) {
 		super(
 			1300,
 			600,
@@ -143,7 +145,7 @@ public class TradeWindow extends Window implements Refreshable {
 		proposerFilterButtons = InventoryWindow.setupFilters(proposerFilters, this).canScroll(false);
 		proposeeFilterButtons = InventoryWindow.setupFilters(proposeeFilters, this).canScroll(false);
 
-		String proposerTitle = "---- " + proposer.getId().getSimpleName() + " ----";
+		final String proposerTitle = "---- " + proposer.getId().getSimpleName() + " ----";
 		proposerButton = new Button(
 			proposerTitle,
 			defaultFont,
@@ -159,7 +161,7 @@ public class TradeWindow extends Window implements Refreshable {
 			UIRef.BL
 		);
 
-		String proposeeTitle = "---- " + (proposee instanceof Individual ? ((Individual)proposee).getId().getSimpleName() : ((Prop) proposee).getTitle()) + " ----";
+		final String proposeeTitle = "---- " + (proposee instanceof Individual ? ((Individual)proposee).getId().getSimpleName() : ((Prop) proposee).getTitle()) + " ----";
 		proposeeButton = new Button(
 			proposeeTitle,
 			defaultFont,
@@ -190,14 +192,14 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 		if (proposer instanceof Individual && proposee instanceof Individual && !proposalAccepted) {
-			HashMap<Item, Integer> tradeThis = Maps.newHashMap();
-			HashMap<Item, Integer> forThis = Maps.newHashMap();
+			final HashMap<Item, Integer> tradeThis = Maps.newHashMap();
+			final HashMap<Item, Integer> forThis = Maps.newHashMap();
 
-			for (Entry<ListingMenuItem<Item>, Integer> entry : proposerItemsToTrade.entrySet()) {
+			for (final Entry<ListingMenuItem<Item>, Integer> entry : proposerItemsToTrade.entrySet()) {
 				tradeThis.put(entry.getKey().t, entry.getValue());
 			}
 
-			for (Entry<ListingMenuItem<Item>, Integer> entry : proposeeItemsToTrade.entrySet()) {
+			for (final Entry<ListingMenuItem<Item>, Integer> entry : proposeeItemsToTrade.entrySet()) {
 				forThis.put(entry.getKey().t, entry.getValue());
 			}
 
@@ -210,13 +212,13 @@ public class TradeWindow extends Window implements Refreshable {
 		}
 
 		if (proposalAccepted) {
-			HashMap<Item, Integer> proposerItemsToTransfer = Maps.newHashMap();
-			for (Entry<ListingMenuItem<Item>, Integer> entry : proposerItemsToTrade.entrySet()) {
+			final HashMap<Item, Integer> proposerItemsToTransfer = Maps.newHashMap();
+			for (final Entry<ListingMenuItem<Item>, Integer> entry : proposerItemsToTrade.entrySet()) {
 				proposerItemsToTransfer.put(entry.getKey().t, entry.getValue());
 			}
 
-			HashMap<Item, Integer> proposeeItemsToTransfer = Maps.newHashMap();
-			for (Entry<ListingMenuItem<Item>, Integer> entry : proposeeItemsToTrade.entrySet()) {
+			final HashMap<Item, Integer> proposeeItemsToTransfer = Maps.newHashMap();
+			for (final Entry<ListingMenuItem<Item>, Integer> entry : proposeeItemsToTrade.entrySet()) {
 				proposeeItemsToTransfer.put(entry.getKey().t, entry.getValue());
 			}
 
@@ -243,8 +245,8 @@ public class TradeWindow extends Window implements Refreshable {
 	public synchronized void refresh() {
 		proposer = Domain.getIndividual(((Individual) proposer).getId().getId());
 
-		HashMap<ListingMenuItem<Item>, Integer> proposerToTrade = newHashMap(proposerItemsToTrade);
-		HashMap<ListingMenuItem<Item>, Integer> proposeeToTrade = newHashMap(proposeeItemsToTrade);
+		final HashMap<ListingMenuItem<Item>, Integer> proposerToTrade = newHashMap(proposerItemsToTrade);
+		final HashMap<ListingMenuItem<Item>, Integer> proposeeToTrade = newHashMap(proposeeItemsToTrade);
 
 		proposerItemsToTrade.clear();
 		proposeeItemsToTrade.clear();
@@ -254,8 +256,8 @@ public class TradeWindow extends Window implements Refreshable {
 		populate(proposerItemsToTrade, proposerItemsNotToTrade, proposer.getInventory());
 		populate(proposeeItemsToTrade, proposeeItemsNotToTrade, proposee.getInventory());
 
-		for (Entry<ListingMenuItem<Item>, Integer> entry : proposerToTrade.entrySet()) {
-			Optional<Entry<ListingMenuItem<Item>, Integer>> tryFind = tryFind(proposerItemsNotToTrade.entrySet(), e -> {
+		for (final Entry<ListingMenuItem<Item>, Integer> entry : proposerToTrade.entrySet()) {
+			final Optional<Entry<ListingMenuItem<Item>, Integer>> tryFind = tryFind(proposerItemsNotToTrade.entrySet(), e -> {
 				return e.getKey().t.sameAs(entry.getKey().t);
 			});
 
@@ -271,8 +273,8 @@ public class TradeWindow extends Window implements Refreshable {
 			);
 		}
 
-		for (Entry<ListingMenuItem<Item>, Integer> entry : proposeeToTrade.entrySet()) {
-			Optional<Entry<ListingMenuItem<Item>, Integer>> tryFind = tryFind(proposeeItemsNotToTrade.entrySet(), e -> {
+		for (final Entry<ListingMenuItem<Item>, Integer> entry : proposeeToTrade.entrySet()) {
+			final Optional<Entry<ListingMenuItem<Item>, Integer>> tryFind = tryFind(proposeeItemsNotToTrade.entrySet(), e -> {
 				return e.getKey().t.sameAs(entry.getKey().t);
 			});
 
@@ -324,11 +326,11 @@ public class TradeWindow extends Window implements Refreshable {
 	}
 
 
-	private void createPanels(Comparator<Item> sortingComparator) {
+	private void createPanels(final Comparator<Item> sortingComparator) {
 		proposerPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, true, 35, textSearch) {
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(proposerItemsNotToTrade);
 			}
 
@@ -338,12 +340,12 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<Item>, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -351,7 +353,7 @@ public class TradeWindow extends Window implements Refreshable {
 		proposeePanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, true, 35, textSearch) {
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(proposeeItemsNotToTrade);
 			}
 
@@ -361,12 +363,12 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<Item>, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -374,7 +376,7 @@ public class TradeWindow extends Window implements Refreshable {
 		proposerTradingPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, false, 35, null) {
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(proposerItemsToTrade);
 			}
 
@@ -385,12 +387,12 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<Item>, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -398,7 +400,7 @@ public class TradeWindow extends Window implements Refreshable {
 		proposeeTradingPanel = new ScrollableListingPanel<Item, Integer>(this, sortingComparator, false, 35, null) {
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 				listings.add(proposeeItemsToTrade);
 			}
 
@@ -409,12 +411,12 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<Item>, Integer> item) {
 				return Integer.toString(item.getValue());
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -424,10 +426,10 @@ public class TradeWindow extends Window implements Refreshable {
 	/**
 	 * Populates a listing
 	 */
-	private void populate(final HashMap<ListingMenuItem<Item>, Integer> trading, final HashMap<ListingMenuItem<Item>, Integer> notTrading, Map<Item, Integer> toPopulateFrom) {
+	private void populate(final HashMap<ListingMenuItem<Item>, Integer> trading, final HashMap<ListingMenuItem<Item>, Integer> notTrading, final Map<Item, Integer> toPopulateFrom) {
 		for (final Entry<Item, Integer> entry : toPopulateFrom.entrySet()) {
 
-			Button button = new Button(
+			final Button button = new Button(
 				() -> {return entry.getKey().getSingular(true);},
 				defaultFont,
 				0,
@@ -451,7 +453,7 @@ public class TradeWindow extends Window implements Refreshable {
 									try {
 										changeList(entry.getKey(), Integer.parseInt(args[0].toString()), trading, notTrading, false);
 										setActive(true);
-									} catch (NumberFormatException e) {
+									} catch (final NumberFormatException e) {
 										UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 									}
 								},
@@ -498,13 +500,13 @@ public class TradeWindow extends Window implements Refreshable {
 	/**
 	 * @return whether or not a listing item is able to be selected for trade
 	 */
-	protected boolean isItemAvailableToTrade(Container proposer, Container proposee, Item item) {
+	protected boolean isItemAvailableToTrade(final Container proposer, final Container proposee, final Item item) {
 		return true; // by default
 	}
 
 
-	private void changeList(final Item key, int numberToChange, final HashMap<ListingMenuItem<Item>, Integer> transferTo, final HashMap<ListingMenuItem<Item>, Integer> transferFrom, final boolean toTrade) {
-		Button button = new Button(
+	private void changeList(final Item key, final int numberToChange, final HashMap<ListingMenuItem<Item>, Integer> transferTo, final HashMap<ListingMenuItem<Item>, Integer> transferFrom, final boolean toTrade) {
+		final Button button = new Button(
 			() -> {return key.getSingular(true);},
 			defaultFont,
 			0,
@@ -524,7 +526,7 @@ public class TradeWindow extends Window implements Refreshable {
 								try {
 									changeList(key, Integer.parseInt(args[0].toString()), transferFrom, transferTo, !toTrade);
 									setActive(true);
-								} catch (NumberFormatException e) {
+								} catch (final NumberFormatException e) {
 									UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 								}
 							},
@@ -560,7 +562,7 @@ public class TradeWindow extends Window implements Refreshable {
 			null
 		);
 
-		for (Entry<ListingMenuItem<Item>, Integer> entry : Lists.newArrayList(transferFrom.entrySet())) {
+		for (final Entry<ListingMenuItem<Item>, Integer> entry : Lists.newArrayList(transferFrom.entrySet())) {
 			if (entry.getKey().t.sameAs(key)) {
 				int transferred = 0;
 
@@ -573,7 +575,7 @@ public class TradeWindow extends Window implements Refreshable {
 				}
 
 				boolean found = false;
-				for (Entry<ListingMenuItem<Item>, Integer> innerEntry : Lists.newArrayList(transferTo.entrySet())) {
+				for (final Entry<ListingMenuItem<Item>, Integer> innerEntry : Lists.newArrayList(transferTo.entrySet())) {
 					if (innerEntry.getKey().t.sameAs(key)) {
 						transferTo.remove(innerEntry.getKey());
 						transferTo.put(listingMenuItem, innerEntry.getValue() + transferred);
@@ -592,7 +594,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		if (proposer instanceof Individual) {
 			if (!((Individual) proposer).isAlive()) {
 				setClosing(true);
@@ -632,19 +634,19 @@ public class TradeWindow extends Window implements Refreshable {
 			}
 		}
 
-		float proposerMass = (float) proposerItemsToTrade.entrySet().stream().mapToDouble(entry -> {
+		final float proposerMass = (float) proposerItemsToTrade.entrySet().stream().mapToDouble(entry -> {
 			return entry.getValue() * entry.getKey().t.getMass();
 		}).sum();
 
-		float proposeeMass = (float) proposeeItemsToTrade.entrySet().stream().mapToDouble(entry -> {
+		final float proposeeMass = (float) proposeeItemsToTrade.entrySet().stream().mapToDouble(entry -> {
 			return entry.getValue() * entry.getKey().t.getMass();
 		}).sum();
 
-		int proposerVolume = (int) proposerItemsToTrade.entrySet().stream().mapToLong(entry -> {
+		final int proposerVolume = (int) proposerItemsToTrade.entrySet().stream().mapToLong(entry -> {
 			return entry.getValue() * entry.getKey().t.getVolume();
 		}).sum();
 
-		int proposeeVolume = (int) proposeeItemsToTrade.entrySet().stream().mapToLong(entry -> {
+		final int proposeeVolume = (int) proposeeItemsToTrade.entrySet().stream().mapToLong(entry -> {
 			return entry.getValue() * entry.getKey().t.getVolume();
 		}).sum();
 
@@ -697,8 +699,8 @@ public class TradeWindow extends Window implements Refreshable {
 	/**
 	 * Renders the listing panels
 	 */
-	protected synchronized void renderListingPanels(Graphics graphics) {
-		int lineWidth = 23;
+	protected synchronized void renderListingPanels(final Graphics graphics) {
+		final int lineWidth = 23;
 
 		proposerPanel.x = x + 200;
 		proposerPanel.y = y - (proposerItemsToTrade.isEmpty() ? 0 : (2 + min(5,proposerItemsToTrade.size())) * lineWidth) - 30;
@@ -745,7 +747,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		proposerPanel.leftClick(copy, windowsCopy);
 		proposeePanel.leftClick(copy, windowsCopy);
 		proposerTradingPanel.leftClick(copy, windowsCopy);
@@ -760,8 +762,8 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
-		boolean keyPressed = textInput.keyPressed(keyCode);
+	public boolean keyPressed(final int keyCode) {
+		final boolean keyPressed = textInput.keyPressed(keyCode);
 		this.searchString = textInput.getInputText();
 		refresh();
 
@@ -770,7 +772,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		return
 			proposerTradingPanel.scrolled(amount) ||
 			proposeeTradingPanel.scrolled(amount) ||
@@ -802,10 +804,10 @@ public class TradeWindow extends Window implements Refreshable {
 				((Individual) proposee).getAI().setCurrentTask(new Idle());
 			}
 		} else {
-			if (Domain.isIndividualSelected((Individual) proposer)) {
+			if (gameClientStateTracker.isIndividualSelected((Individual) proposer)) {
 				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposer).getId().getId());
 			}
-			if (proposee instanceof Individual && Domain.isIndividualSelected((Individual) proposee)) {
+			if (proposee instanceof Individual && gameClientStateTracker.isIndividualSelected((Individual) proposee)) {
 				ClientServerInterface.SendRequest.sendClearAITaskRequest(((Individual)proposee).getId().getId());
 			}
 		}

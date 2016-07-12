@@ -15,6 +15,8 @@ import com.google.common.collect.Maps;
 import bloodandmithril.character.ai.task.Harvest;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.graphics.WorldRenderer.Depth;
@@ -30,7 +32,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.util.Util;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
@@ -60,7 +61,7 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 	/**
 	 * Constructor
 	 */
-	public DeadDesertBush(float x, float y) {
+	public DeadDesertBush(final float x, final float y) {
 		super(x, y, 0, 0, Depth.MIDDLEGROUND, new NotEmptyTile(), true);
 		this.texture = Util.getRandom().nextInt(4) + 1;
 
@@ -88,20 +89,22 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 
 
 	@Override
-	public void render(Graphics graphics) {
+	public void render(final Graphics graphics) {
 		graphics.getSpriteBatch().draw(textures.get(texture), position.x - width / 2, position.y);
 	}
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 		this.numberOfSticksLeft = ((DeadDesertBush) other).numberOfSticksLeft;
 	}
 
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 		menu.addMenuItem(
 			new MenuItem(
 				"Show info",
@@ -126,18 +129,18 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 			)
 		);
 
-		if (Domain.getSelectedIndividuals().size() == 1) {
+		if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 			menu.addMenuItem(
 				new MenuItem(
 					"Harvest sticks",
 					() -> {
-						Individual individual = Domain.getSelectedIndividuals().iterator().next();
+						final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 						if (ClientServerInterface.isServer()) {
 							try {
 								individual.getAI().setCurrentTask(
 									new Harvest(individual, DeadDesertBush.this)
 								);
-							} catch (NoTileFoundException e) {
+							} catch (final NoTileFoundException e) {
 							}
 						} else {
 							ClientServerInterface.SendRequest.sendHarvestRequest(individual.getId().getId(), id);
@@ -156,7 +159,7 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 	}
 
 
@@ -178,8 +181,8 @@ public class DeadDesertBush extends PlantProp implements Harvestable {
 
 
 	@Override
-	public Collection<Item> harvest(boolean canReceive) {
-		List<Item> sticks = Lists.newLinkedList();
+	public Collection<Item> harvest(final boolean canReceive) {
+		final List<Item> sticks = Lists.newLinkedList();
 		for (int i = numberOfSticksLeft; i > 0; i--) {
 			sticks.add(StickItem.stick(StandardWood.class));
 		}

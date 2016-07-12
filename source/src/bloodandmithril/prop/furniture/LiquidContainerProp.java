@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import bloodandmithril.character.individuals.Individual;
+import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.container.LiquidContainerItem;
 import bloodandmithril.item.liquid.Liquid;
 import bloodandmithril.prop.Prop;
@@ -14,7 +16,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.ui.components.window.TransferLiquidsWindow;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 
 /**
  * A {@link Prop} that represents a container of liquids
@@ -28,7 +29,7 @@ public abstract class LiquidContainerProp extends Furniture {
 	/**
 	 * Constructor
 	 */
-	protected LiquidContainerProp(float x, float y, int width, int height, boolean grounded, boolean snapToGrid, float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids) {
+	protected LiquidContainerProp(final float x, final float y, final int width, final int height, final boolean grounded, final boolean snapToGrid, final float maxAmount, final Map<Class<? extends Liquid>, Float> containedLiquids) {
 		super(x, y, width, height, grounded);
 		this.container = new PropLiquidContainerItem(maxAmount, containedLiquids);
 	}
@@ -36,29 +37,31 @@ public abstract class LiquidContainerProp extends Furniture {
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(0, 0, true);
+		final ContextMenu menu = new ContextMenu(0, 0, true);
 		final LiquidContainerProp prop = this;
 
-		MenuItem openContainer = new MenuItem(
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+
+		final MenuItem openContainer = new MenuItem(
 			"Transfer liquids",
 			() -> {
-				if (Domain.getSelectedIndividuals().size() != 1) {
+				if (gameClientStateTracker.getSelectedIndividuals().size() != 1) {
 					return;
 				} else {
-					Individual selected = Domain.getSelectedIndividuals().iterator().next();
+					final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 					UserInterface.addLayeredComponentUnique(
 						new TransferLiquidsWindow(selected, prop)
 					);
 				}
 			},
-			Domain.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
-			Domain.getSelectedIndividuals().size() == 1 ? Color.GREEN : Colors.UI_DARK_GRAY,
-			Domain.getSelectedIndividuals().size() == 1 ? Color.GRAY : Colors.UI_DARK_GRAY,
+			gameClientStateTracker.getSelectedIndividuals().size() == 1 ? Color.WHITE : Colors.UI_DARK_GRAY,
+			gameClientStateTracker.getSelectedIndividuals().size() == 1 ? Color.GREEN : Colors.UI_DARK_GRAY,
+			gameClientStateTracker.getSelectedIndividuals().size() == 1 ? Color.GRAY : Colors.UI_DARK_GRAY,
 			() -> {
 				return new ContextMenu(0, 0, true, new MenuItem("You must select a single individual", () -> {}, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, Colors.UI_DARK_GRAY, null));
 			},
 			() -> {
-				return Domain.getSelectedIndividuals().size() != 1;
+				return gameClientStateTracker.getSelectedIndividuals().size() != 1;
 			}
 		);
 
@@ -80,7 +83,7 @@ public abstract class LiquidContainerProp extends Furniture {
 	public static class PropLiquidContainerItem extends LiquidContainerItem {
 		private static final long serialVersionUID = 5157248940455259595L;
 
-		public PropLiquidContainerItem(float maxAmount, Map<Class<? extends Liquid>, Float> containedLiquids) {
+		public PropLiquidContainerItem(final float maxAmount, final Map<Class<? extends Liquid>, Float> containedLiquids) {
 			super(0f, 0, maxAmount, containedLiquids, 0);
 		}
 
@@ -103,13 +106,13 @@ public abstract class LiquidContainerProp extends Furniture {
 
 
 		@Override
-		protected String internalGetSingular(boolean firstCap) {
+		protected String internalGetSingular(final boolean firstCap) {
 			throw new RuntimeException("This should not be called");
 		}
 
 
 		@Override
-		protected String internalGetPlural(boolean firstCap) {
+		protected String internalGetPlural(final boolean firstCap) {
 			throw new RuntimeException("This should not be called");
 		}
 

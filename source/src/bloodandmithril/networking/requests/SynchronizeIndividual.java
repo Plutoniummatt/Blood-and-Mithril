@@ -2,11 +2,15 @@ package bloodandmithril.networking.requests;
 
 import java.util.Set;
 
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
@@ -14,8 +18,6 @@ import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
-
-import com.google.common.collect.Sets;
 
 /**
  * Synchronizes an {@link Individual}
@@ -31,7 +33,7 @@ public class SynchronizeIndividual implements Request {
 	/**
 	 * Constructor
 	 */
-	public SynchronizeIndividual(int id) {
+	public SynchronizeIndividual(final int id) {
 		this.id = id;
 	}
 
@@ -45,7 +47,7 @@ public class SynchronizeIndividual implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Response.Responses(false);
+		final Responses responses = new Response.Responses(false);
 
 		Response response;
 		if (id == -1) {
@@ -74,10 +76,13 @@ public class SynchronizeIndividual implements Request {
 
 		private Integer individualId;
 
+		@Inject
+		private transient GameClientStateTracker gameClientStateTracker;
+
 		/**
 		 * Synchronize single individual
 		 */
-		public SynchronizeIndividualResponse(int individualId, long timeStamp) {
+		public SynchronizeIndividualResponse(final int individualId, final long timeStamp) {
 			this.individualId = individualId;
 			this.timeStamp = timeStamp;
 			this.individuals = null;
@@ -86,7 +91,7 @@ public class SynchronizeIndividual implements Request {
 		/**
 		 * Synchronize all individuals
 		 */
-		public SynchronizeIndividualResponse(Set<Integer> individuals) {
+		public SynchronizeIndividualResponse(final Set<Integer> individuals) {
 			this.individuals = individuals;
 			this.individualId = null;
 			this.timeStamp = -1;
@@ -99,7 +104,7 @@ public class SynchronizeIndividual implements Request {
 			}
 
 			if (this.individuals != null) {
-				for (Integer id : individuals) {
+				for (final Integer id : individuals) {
 					ClientServerInterface.SendRequest.sendSynchronizeIndividualRequest(id);
 				}
 			}
@@ -111,7 +116,7 @@ public class SynchronizeIndividual implements Request {
 		}
 
 		private void syncSingleIndividual() {
-			Individual got = Domain.getIndividual(individual.getId().getId());
+			final Individual got = Domain.getIndividual(individual.getId().getId());
 			if (got == null) {
 				Domain.addIndividual(individual, individual.getWorldId());
 			} else {
@@ -122,7 +127,7 @@ public class SynchronizeIndividual implements Request {
 				got.copyFrom(individual);
 
 				if (!got.getSelectedByClient().contains(ClientServerInterface.client.getID())) {
-					Domain.removeSelectedIndividualIf(id -> {
+					gameClientStateTracker.removeSelectedIndividualIf(id -> {
 						return id == got.getId().getId();
 					});
 				}
@@ -140,13 +145,13 @@ public class SynchronizeIndividual implements Request {
 
 				// Handle AITasks with Paths explicitly, these guys cause ConcurrentModificationExceptions and nasty NPE's even with
 				// ConcurrentLinkedDeque's
-				AITask current = this.individual.getAI().getCurrentTask();
+				final AITask current = this.individual.getAI().getCurrentTask();
 
 				synchronized (current) {
 					if (current instanceof GoToLocation) {
 						((GoToLocation) current).setPath(((GoToLocation) current).getPath().copy());
 					} else if (current instanceof CompositeAITask) {
-						AITask currentTask = ((CompositeAITask) current).getCurrentTask();
+						final AITask currentTask = ((CompositeAITask) current).getCurrentTask();
 						if (currentTask instanceof GoToLocation) {
 							((GoToLocation) currentTask).setPath(((GoToLocation) currentTask).getPath().copy());
 						}

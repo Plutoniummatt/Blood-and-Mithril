@@ -13,7 +13,9 @@ import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.ai.task.LightLightable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.graphics.particles.ParticleService;
@@ -29,7 +31,6 @@ import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
@@ -53,14 +54,14 @@ public class Campfire extends CraftingStation implements Lightable {
 	/**
 	 * Constructor
 	 */
-	public Campfire(float x, float y) {
+	public Campfire(final float x, final float y) {
 		super(x, y, 64, 32, 0.2f);
 		setConstructionProgress(0f);
 	}
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 		if (other instanceof Campfire) {
 			super.synchronizeProp(other);
 		} else {
@@ -83,7 +84,7 @@ public class Campfire extends CraftingStation implements Lightable {
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
-		Map<Item, Integer> requiredItems = newHashMap();
+		final Map<Item, Integer> requiredItems = newHashMap();
 		requiredItems.put(StickItem.stick(StandardWood.class), 10);
 		requiredItems.put(PlankItem.plank(StandardWood.class), 2);
 		return requiredItems;
@@ -121,12 +122,12 @@ public class Campfire extends CraftingStation implements Lightable {
 
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		super.update(delta);
 
 		if (lit && isOnScreen(position, 50f)) {
-			float size1 = Util.getRandom().nextFloat();
-			float size2 = Util.getRandom().nextFloat();
+			final float size1 = Util.getRandom().nextFloat();
+			final float size2 = Util.getRandom().nextFloat();
 
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 7f, 30f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 10f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(5000), Depth.MIDDLEGROUND, false, null);
 			ParticleService.randomVelocityDiminishing(position.cpy().add(0, 13f), 8f, 15f, Color.WHITE, Colors.FIRE_START, size1 * 3.5f, size1 * 16f + 5f, MovementMode.EMBER, Util.getRandom().nextInt(1000), Depth.MIDDLEGROUND, false, Colors.FIRE_END);
@@ -137,28 +138,29 @@ public class Campfire extends CraftingStation implements Lightable {
 
 	@Override
 	protected ContextMenu getCompletedContextMenu() {
-		ContextMenu superCompletedContextMenu = super.getCompletedContextMenu();
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+		final ContextMenu superCompletedContextMenu = super.getCompletedContextMenu();
 		final Campfire thisCampfire = this;
 
-		MenuItem ignite = new MenuItem(
+		final MenuItem ignite = new MenuItem(
 			"Ignite",
 			() -> {
-				if (Domain.getSelectedIndividuals().size() > 1) {
+				if (gameClientStateTracker.getSelectedIndividuals().size() > 1) {
 					return;
 				}
 
-				Individual selected = Domain.getSelectedIndividuals().iterator().next();
+				final Individual selected = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 				if (ClientServerInterface.isServer()) {
 					try {
 						selected.getAI().setCurrentTask(new LightLightable(selected, thisCampfire, false));
-					} catch (NoTileFoundException e) {}
+					} catch (final NoTileFoundException e) {}
 				} else {
 					ClientServerInterface.SendRequest.sendLightLightableRequest(selected, thisCampfire);
 				}
 			},
-			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.WHITE,
-			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GREEN,
-			Domain.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GRAY,
+			gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.WHITE,
+			gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GREEN,
+			gameClientStateTracker.getSelectedIndividuals().size() > 1 ? Colors.UI_GRAY : Color.GRAY,
 			() -> { return new ContextMenu(0, 0,
 				true,
 				new MenuItem(
@@ -171,11 +173,11 @@ public class Campfire extends CraftingStation implements Lightable {
 				)
 			);},
 			() -> {
-				return Domain.getSelectedIndividuals().size() > 1;
+				return gameClientStateTracker.getSelectedIndividuals().size() > 1;
 			}
 		);
 
-		if (Domain.getSelectedIndividuals().size() == 1) {
+		if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 			superCompletedContextMenu.addMenuItem(ignite);
 		}
 
@@ -232,7 +234,7 @@ public class Campfire extends CraftingStation implements Lightable {
 
 
 	@Override
-	public void affectIndividual(Individual individual, float delta) {
+	public void affectIndividual(final Individual individual, final float delta) {
 		individual.decreaseThirst(delta / 600f);
 	}
 }

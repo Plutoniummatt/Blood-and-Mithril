@@ -4,8 +4,6 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
 
 import bloodandmithril.playerinteraction.individual.api.IndividualAISupressionService;
 import bloodandmithril.playerinteraction.individual.api.IndividualAttackOtherService;
@@ -44,97 +42,15 @@ import bloodandmithril.playerinteraction.individual.service.IndividualWalkRunTog
 public class ClientModule implements Module {
 
 	@Override
-	public void configure(Binder binder) {
-	}
-	
-	
-	@Provides
-	@Singleton
-	public IndividualSelectionService provideIndividualSelectionService() {
-		if (isServer()) {
-			return new IndividualSelectionServiceServerImpl();
-		} else {
-			return new IndividualSelectionServiceClientImpl();
-		}
-	}
-
-	@Provides
-	@Singleton
-	public IndividualAISupressionService provideIndividualAISupressionService() {
-		if (isServer()) {
-			return new IndividualAISupressionServiceServerImpl();
-		} else {
-			return new IndividualAISupressionServiceClientImpl();
-		}
-	}
-
-	@Provides
-	@Singleton
-	public IndividualWalkRunToggleService provideIndividualWalkRunToggleService() {
-		if (isServer()) {
-			return new IndividualWalkRunToggleServiceServerImpl();
-		} else {
-			return new IndividualWalkRunToggleServiceClientImpl();
-		}
-	}
-
-	@Provides
-	@Singleton
-	public IndividualToggleSpeakingService provideIndividualToggleSpeakingService() {
-		if (isServer()) {
-			return new IndividualToggleSpeakingServiceServerImpl();
-		} else {
-			return new IndividualToggleSpeakingServiceClientImpl();
-		}
-	}
-
-	@Provides
-	@Singleton
-	public IndividualTradeWithOtherService provideIndividualTradeWithOtherService() {
-		if (isServer()) {
-			return new IndividualTradeWithOtherServiceServerImpl();
-		} else {
-			return new IndividualTradeWithOtherServiceClientImpl();
-		}
-	}
-
-	@Provides
-	@Singleton
-	public IndividualFollowOtherService provideIndividualFollowOtherService() {
-		if (isServer()) {
-			return new IndividualFollowOtherServiceServerImpl();
-		} else {
-			return new IndividualFollowOtherServiceClientImpl();
-		}
-	}
-
-	@Provides
-	@Singleton
-	public IndividualChangeNicknameService provideIndividualChangeNicknameService() {
-		if (isServer()) {
-			return new IndividualChangeNicknameServiceServerImpl();
-		} else {
-			return new IndividualChangeNicknameServiceClientImpl();
-		}
-	}
-
-	@Provides
-	@Singleton
-	public IndividualUpdateDescriptionService provideIndividualUpdateDescriptionService() {
-		if (isServer()) {
-			return new IndividualUpdateDescriptionServiceServerImpl();
-		} else {
-			return new IndividualUpdateDescriptionServiceClientImpl();
-		}
-	}
-
-	@Provides
-	@Singleton
-	public IndividualAttackOtherService provideIndividualAttackOtherService() {
-		if (isServer()) {
-			return new IndividualAttackOtherServiceServerImpl();
-		} else {
-			return new IndividualAttackOtherServiceClientImpl();
-		}
+	public void configure(final Binder binder) {
+		binder.bind(IndividualSelectionService.class).to(isServer() ? IndividualSelectionServiceServerImpl.class : IndividualSelectionServiceClientImpl.class);
+		binder.bind(IndividualAISupressionService.class).to(isServer() ? IndividualAISupressionServiceServerImpl.class : IndividualAISupressionServiceClientImpl.class);
+		binder.bind(IndividualWalkRunToggleService.class).to(isServer() ? IndividualWalkRunToggleServiceServerImpl.class : IndividualWalkRunToggleServiceClientImpl.class);
+		binder.bind(IndividualToggleSpeakingService.class).to(isServer() ? IndividualToggleSpeakingServiceServerImpl.class : IndividualToggleSpeakingServiceClientImpl.class);
+		binder.bind(IndividualTradeWithOtherService.class).to(isServer() ? IndividualTradeWithOtherServiceServerImpl.class : IndividualTradeWithOtherServiceClientImpl.class);
+		binder.bind(IndividualFollowOtherService.class).to(isServer() ? IndividualFollowOtherServiceServerImpl.class : IndividualFollowOtherServiceClientImpl.class);
+		binder.bind(IndividualChangeNicknameService.class).to(isServer() ? IndividualChangeNicknameServiceServerImpl.class : IndividualChangeNicknameServiceClientImpl.class);
+		binder.bind(IndividualUpdateDescriptionService.class).to(isServer() ? IndividualUpdateDescriptionServiceServerImpl.class : IndividualUpdateDescriptionServiceClientImpl.class);
+		binder.bind(IndividualAttackOtherService.class).to(isServer() ? IndividualAttackOtherServiceServerImpl.class : IndividualAttackOtherServiceClientImpl.class);
 	}
 }

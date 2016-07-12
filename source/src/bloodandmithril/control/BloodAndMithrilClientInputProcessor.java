@@ -232,7 +232,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !isKeyPressed(controls.rightClickDragBox.keyCode) && !isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
 			final Vector2 mouseCoordinate = new Vector2(getMouseWorldX(), getMouseWorldY());
-			for (final Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
+			for (final Individual indi : Sets.newHashSet(gameClientStateTracker.getSelectedIndividuals())) {
 				if (isKeyPressed(controls.mineTile.keyCode) && !Domain.getWorld(indi.getWorldId()).getTopography().getTile(mouseCoordinate, true).getClass().equals(EmptyTile.class)) {
 					mineTile(mouseCoordinate, indi);
 				} else if (isKeyPressed(controls.jump.keyCode)) {
@@ -252,7 +252,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 
 	private void moveIndividual(final Individual indi) throws NoTileFoundException {
-		final float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), Controls.INDIVIDUAL_SPREAD);
+		final float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (gameClientStateTracker.getSelectedIndividuals().size() - 1), Controls.INDIVIDUAL_SPREAD);
 		if (ClientServerInterface.isServer()) {
 			AIProcessor.sendPathfindingRequest(
 				indi,
@@ -330,7 +330,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 
 	private void rangedAttack() {
-		for (final Individual selected : Domain.getSelectedIndividuals()) {
+		for (final Individual selected : gameClientStateTracker.getSelectedIndividuals()) {
 			if (selected.canAttackRanged()) {
 				if (ClientServerInterface.isServer()) {
 					selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
@@ -343,11 +343,11 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 
 	private void meleeAttack() {
-		if (!Domain.getSelectedIndividuals().isEmpty()) {
+		if (!gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
 			for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				final Individual indi = Domain.getIndividual(indiKey);
 				if (indi.isMouseOver() && indi.isAlive()) {
-					for (final Individual selected : Domain.getSelectedIndividuals()) {
+					for (final Individual selected : gameClientStateTracker.getSelectedIndividuals()) {
 						if (indi == selected) {
 							continue;
 						}
@@ -414,7 +414,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 						}
 					}
 					if (ClientServerInterface.isServer()) {
-						Domain.clearSelectedIndividuals();
+						gameClientStateTracker.clearSelectedIndividuals();
 					}
 				}
 			} else {
