@@ -425,7 +425,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 				}
 
 				if (factionControlService.isControllable(individualClicked) && individualClicked.isAlive()) {
-					individualSelectionService.select(individualClicked);
+					individualSelectionService.select(individualClicked, ClientServerInterface.getClientID());
 				}
 
 			}

@@ -14,7 +14,7 @@ public interface IndividualSelectionService {
 	/**
 	 * Selects an individual
 	 */
-	public void select(Individual indi);
+	public void select(Individual indi, int client);
 
 	/**
 	 * De-selects an individual

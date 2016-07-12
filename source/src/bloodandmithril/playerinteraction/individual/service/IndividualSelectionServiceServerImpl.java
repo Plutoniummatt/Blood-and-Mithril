@@ -1,12 +1,18 @@
 package bloodandmithril.playerinteraction.individual.service;
 
+import static bloodandmithril.graphics.Graphics.getGdxWidth;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
+import bloodandmithril.ui.UserInterface;
+import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 
 /**
  * See {@link IndividualSelectionService}, this implementation is used for a game server, or a client running in server mode
@@ -22,8 +28,29 @@ public class IndividualSelectionServiceServerImpl implements IndividualSelection
 
 
 	@Override
-	public void select(final Individual indi) {
-		indi.select(0);
+	public void select(final Individual indi, final int client) {
+		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+
+		if (!indi.isAlive()) {
+			return;
+		}
+
+		gameClientStateTracker.addSelectedIndividual(indi);
+		indi.getAI().setToManual();
+		indi.getSelectedByClient().add(client);
+
+		if (ClientServerInterface.isClient()) {
+			UserInterface.addLayeredComponentUnique(
+				new SelectedIndividualsControlWindow(
+					getGdxWidth() - 170,
+					150,
+					150,
+					100,
+					"Actions",
+					true
+				)
+			);
+		}
 	}
 
 

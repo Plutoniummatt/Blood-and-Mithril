@@ -8,6 +8,7 @@ import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
+import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.world.Domain;
 
 /**
@@ -27,6 +28,9 @@ public class IndividualSelection implements Request {
 	@Inject
 	private transient GameClientStateTracker gameClientStateTracker;
 
+	@Inject
+	private transient IndividualSelectionService individualSelectionService;
+
 	/**
 	 * Constructor
 	 */
@@ -41,7 +45,7 @@ public class IndividualSelection implements Request {
 	public Responses respond() {
 		final Individual individual = Domain.getIndividual(individualId);
 		if (select) {
-			individual.select(clientId);
+			individualSelectionService.select(individual, clientId);
 			gameClientStateTracker.removeSelectedIndividual(individual);
 			gameClientStateTracker.addSelectedIndividual(individual);
 		} else {
@@ -72,6 +76,9 @@ public class IndividualSelection implements Request {
 		@Inject
 		private transient GameClientStateTracker gameClientStateTracker;
 
+		@Inject
+		private transient IndividualSelectionService individualSelectionService;
+
 		/** id of the {@link Individual} to be selected */
 		public final int individualId;
 
@@ -90,7 +97,7 @@ public class IndividualSelection implements Request {
 		public void acknowledge() {
 			final Individual individual = Domain.getIndividual(individualId);
 			if (select) {
-				individual.select(0);
+				individualSelectionService.select(individual, 0);
 				gameClientStateTracker.removeSelectedIndividual(individual);
 				gameClientStateTracker.addSelectedIndividual(individual);
 			} else {

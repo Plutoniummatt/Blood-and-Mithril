@@ -20,7 +20,6 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.control.InputUtilities.worldToScreenX;
 import static bloodandmithril.control.InputUtilities.worldToScreenY;
-import static bloodandmithril.graphics.Graphics.getGdxWidth;
 import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeControl;
 import static bloodandmithril.ui.UserInterface.shapeRenderer;
 import static bloodandmithril.util.ComparisonUtil.obj;
@@ -78,7 +77,6 @@ import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.construction.Construction;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.window.SelectedIndividualsControlWindow;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
 import bloodandmithril.util.Fonts;
 import bloodandmithril.util.ParameterizedTask;
@@ -430,33 +428,6 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 				Shaders.filter.setUniformf("color", Color.ORANGE);
 				Fonts.defaultFont.draw(batch, "Attack Melee", getMouseScreenX() + 15, getMouseScreenY() - 25);
 			}
-		}
-	}
-
-
-	/** Select this {@link Individual} */
-	public final void select(final int clientId) {
-		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
-
-		if (!isAlive()) {
-			return;
-		}
-
-		gameClientStateTracker.addSelectedIndividual(this);
-		getAI().setToManual();
-		selectedByClient.add(clientId);
-
-		if (ClientServerInterface.isClient()) {
-			UserInterface.addLayeredComponentUnique(
-				new SelectedIndividualsControlWindow(
-					getGdxWidth() - 170,
-					150,
-					150,
-					100,
-					"Actions",
-					true
-				)
-			);
 		}
 	}
 

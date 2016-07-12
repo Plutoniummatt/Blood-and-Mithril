@@ -816,7 +816,7 @@ public class UserInterface {
 
 					final IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
 					if (centre.x > left && centre.x < right && centre.y > bottom && centre.y < top) {
-						individualSelectionService.select(indi);
+						individualSelectionService.select(indi, ClientServerInterface.getClientID());
 					} else if (gameClientStateTracker.isIndividualSelected(indi)) {
 						individualSelectionService.deselect(indi);
 					}

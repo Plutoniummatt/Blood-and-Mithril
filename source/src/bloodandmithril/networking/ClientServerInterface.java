@@ -439,6 +439,10 @@ public class ClientServerInterface {
 		ClientServerInterface.isClient = isClient;
 	}
 
+	public static int getClientID() {
+		return client == null ? 0 : client.getID();
+	}
+
 
 	/**
 	 * Registers all request classes

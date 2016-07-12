@@ -18,13 +18,13 @@ public class IndividualSelectionServiceClientImpl implements IndividualSelection
 
 
 	@Override
-	public void select(Individual indi) {
+	public void select(final Individual indi, final int client) {
 		ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), true);
 	}
 
 
 	@Override
-	public void deselect(Individual indi) {
+	public void deselect(final Individual indi) {
 		ClientServerInterface.SendRequest.sendIndividualSelectionRequest(indi.getId().getId(), false);
 	}
 }

@@ -11,6 +11,7 @@ import com.google.inject.Singleton;
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.playerinteraction.individual.api.IndividualAISupressionService;
 import bloodandmithril.playerinteraction.individual.api.IndividualAttackOtherService;
 import bloodandmithril.playerinteraction.individual.api.IndividualChangeNicknameService;
@@ -478,7 +479,7 @@ public class IndividualContextMenuService {
 		new MenuItem(
 			"Select",
 			() -> {
-				individualSelectionService.select(indi);
+				individualSelectionService.select(indi, ClientServerInterface.getClientID());
 			},
 			Color.WHITE,
 			indi.getToolTipTextColor(),
