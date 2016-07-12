@@ -12,19 +12,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.control.CameraTracker;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.DefaultBiomeDecider;
-import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.ui.UserInterface;
@@ -38,9 +34,6 @@ import bloodandmithril.ui.components.window.UnitsWindow;
  */
 @Copyright("Matthew Peck 2014")
 public class Domain {
-
-	/** The current active {@link World} */
-	private static int activeWorldId;
 
 	/** {@link World}s */
 	private static HashMap<Integer, World> 								worlds 					= newHashMap();
@@ -96,41 +89,6 @@ public class Domain {
 		return Lists.newLinkedList(Iterables.transform(selectedIndividuals, id -> {
 			return getIndividual(id);
 		}));
-	}
-
-
-	public static World getActiveWorld() {
-		return getWorld(activeWorldId);
-	}
-
-
-	public static int getActiveWorldId() {
-		return activeWorldId;
-	}
-
-
-	public static void setActiveWorld(final int worldId) {
-		if (ClientServerInterface.isClient()) {
-			final Graphics graphics = Wiring.injector().getInstance(Graphics.class);
-			final CameraTracker cameraTracker = Wiring.injector().getInstance(CameraTracker.class);
-
-			if (Domain.getActiveWorld() != null) {
-				cameraTracker.getWorldcamcoordinates().put(Domain.getActiveWorldId(), new Vector2(graphics.getCam().position.x, graphics.getCam().position.y));
-			}
-
-			if (cameraTracker.getWorldcamcoordinates().containsKey(worldId)) {
-				final Vector2 camPosition = cameraTracker.getWorldcamcoordinates().get(worldId);
-
-				graphics.getCam().position.x = camPosition.x;
-				graphics.getCam().position.y = camPosition.y;
-			} else {
-				cameraTracker.getWorldcamcoordinates().put(worldId, new Vector2());
-
-				graphics.getCam().position.x = 0;
-				graphics.getCam().position.y = 0;
-			}
-		}
-		activeWorldId = worldId;
 	}
 
 

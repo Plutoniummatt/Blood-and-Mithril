@@ -2,9 +2,14 @@ package bloodandmithril.item.items.furniture;
 
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.common.collect.Maps;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.proficiency.proficiencies.Carpentry;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.ItemValues;
 import bloodandmithril.item.items.Item;
@@ -13,10 +18,6 @@ import bloodandmithril.item.items.material.PlankItem;
 import bloodandmithril.item.material.Material;
 import bloodandmithril.item.material.wood.Wood;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.world.Domain;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.google.common.collect.Maps;
 
 /**
  * The {@link Item} representation of a WoodenChest.
@@ -33,20 +34,20 @@ public class SmallWoodenCrateItem extends FurnitureItem implements Craftable {
 	/**
 	 * Constructor
 	 */
-	public SmallWoodenCrateItem(Class<? extends Wood> wood) {
+	public SmallWoodenCrateItem(final Class<? extends Wood> wood) {
 		super(10f, 300, ItemValues.WOODENCHEST);
 		this.wood = wood;
 	}
 
 
 	@Override
-	protected String internalGetSingular(boolean firstCap) {
+	protected String internalGetSingular(final boolean firstCap) {
 		return "Small" + Material.getMaterial(wood).getName() + " Crate";
 	}
 
 
 	@Override
-	protected String internalGetPlural(boolean firstCap) {
+	protected String internalGetPlural(final boolean firstCap) {
 		return "Small" + Material.getMaterial(wood).getName() + " Crates";
 	}
 
@@ -58,20 +59,20 @@ public class SmallWoodenCrateItem extends FurnitureItem implements Craftable {
 
 
 	@Override
-	protected boolean internalSameAs(Item other) {
+	protected boolean internalSameAs(final Item other) {
 		return other instanceof SmallWoodenCrateItem;
 	}
 
 
 	@Override
-	public boolean canBeCraftedBy(Individual individual) {
+	public boolean canBeCraftedBy(final Individual individual) {
 		return false;
 	}
 
 
 	@Override
 	public Map<Item, Integer> getRequiredMaterials() {
-		Map<Item, Integer> map = Maps.newHashMap();
+		final Map<Item, Integer> map = Maps.newHashMap();
 
 		map.put(PlankItem.plank(wood), 15);
 
@@ -106,16 +107,16 @@ public class SmallWoodenCrateItem extends FurnitureItem implements Craftable {
 
 	@Override
 	public Prop getProp() {
-		bloodandmithril.prop.furniture.SmallWoodenCrateProp woodenCrate = new bloodandmithril.prop.furniture.SmallWoodenCrateProp(0, 0, wood);
-		if (Domain.getActiveWorld() != null) {
-			woodenCrate.setWorldId(Domain.getActiveWorld().getWorldId());
+		final bloodandmithril.prop.furniture.SmallWoodenCrateProp woodenCrate = new bloodandmithril.prop.furniture.SmallWoodenCrateProp(0, 0, wood);
+		if (Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld() != null) {
+			woodenCrate.setWorldId(Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getWorldId());
 		}
 		return woodenCrate;
 	}
 
 
 	@Override
-	public void crafterEffects(Individual crafter, float delta) {
+	public void crafterEffects(final Individual crafter, final float delta) {
 		crafter.getProficiencies().getProficiency(Carpentry.class).increaseExperience(delta * 8f);
 	}
 }

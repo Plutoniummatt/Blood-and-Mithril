@@ -35,6 +35,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
@@ -72,7 +73,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 	/**
 	 * Constructor
 	 */
-	public PlantSeed(Individual host, SeedProp toPlant) throws NoTileFoundException {
+	public PlantSeed(final Individual host, final SeedProp toPlant) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Planting seed",
@@ -112,7 +113,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 
 		boolean planted;
 
-		public Plant(IndividualIdentifier hostId) {
+		public Plant(final IndividualIdentifier hostId) {
 			super(hostId);
 		}
 
@@ -136,10 +137,10 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public void execute(float delta) {
+		public void execute(final float delta) {
 			planted = true;
-			Individual individual = getIndividual(hostId.getId());
-			int takeItem = individual.takeItem(toPlant.getSeed());
+			final Individual individual = getIndividual(hostId.getId());
+			final int takeItem = individual.takeItem(toPlant.getSeed());
 			toPlant.setWorldId(individual.getWorldId());
 			if (takeItem == 1) {
 				if (toPlant.canPlaceAtCurrentPosition()) {
@@ -158,17 +159,17 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 		private List<Vector2> locations;
 		private int hostId;
 		private SeedItem item;
-		public PlantSeedTaskGenerator(List<Vector2> locations, int hostId, SeedItem item) {
+		public PlantSeedTaskGenerator(final List<Vector2> locations, final int hostId, final SeedItem item) {
 			this.locations = locations;
 			this.hostId = hostId;
 			this.item = item;
 		}
 		@Override
-		public AITask apply(Object input) {
+		public AITask apply(final Object input) {
 			try {
 				PlantSeed plantSeed = null;
-				for (Vector2 location : locations) {
-					SeedProp propSeed = item.getPropSeed();
+				for (final Vector2 location : locations) {
+					final SeedProp propSeed = item.getPropSeed();
 					propSeed.position = location.cpy();
 
 					if (plantSeed == null) {
@@ -179,7 +180,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 				}
 
 				return plantSeed;
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				return null;
 			}
 		}
@@ -201,7 +202,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 		}
 		private String getDescription() {
 			if (locations.size() == 1) {
-				Vector2 location = locations.get(0);
+				final Vector2 location = locations.get(0);
 				return "Plant " + item.getSingular(false) + " at " + String.format("%.1f", location.x) + ", " + String.format("%.1f", location.y);
 			} else {
 				return "Plant " + item.getSingular(false) + " at multiple locations";
@@ -214,13 +215,13 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 			}
 
 			try {
-				for (Vector2 location : locations) {
-					SeedProp propSeed = item.getPropSeed();
+				for (final Vector2 location : locations) {
+					final SeedProp propSeed = item.getPropSeed();
 					propSeed.position = location.cpy();
 					new PlantSeed(Domain.getIndividual(hostId), propSeed);
 				}
 				return true;
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				return false;
 			}
 		}
@@ -229,7 +230,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
-			Individual attacker = Domain.getIndividual(hostId);
+			final Individual attacker = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
@@ -238,7 +239,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 			);
 
 			UserInterface.shapeRenderer.setColor(Color.RED);
-			for (Vector2 location : locations) {
+			for (final Vector2 location : locations) {
 				UserInterface.shapeRenderer.circle(worldToScreenX(location.x), worldToScreenY(location.y), 3f);
 			}
 			UserInterface.shapeRenderer.end();
@@ -246,19 +247,19 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 	}
 
 
-	private ContextMenu chooseSeedMenu(Individual host, Routine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
+	private ContextMenu chooseSeedMenu(final Individual host, final Routine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
-		Set<Item> seeds = host.getItemsSatisfyingPredicate(new SerializableMappingFunction<Entry<Item,Integer>, Boolean>() {
+		final Set<Item> seeds = host.getItemsSatisfyingPredicate(new SerializableMappingFunction<Entry<Item,Integer>, Boolean>() {
 			private static final long serialVersionUID = -6464048831666670157L;
 			@Override
-			public Boolean apply(Entry<Item, Integer> input) {
+			public Boolean apply(final Entry<Item, Integer> input) {
 				return SeedItem.class.isAssignableFrom(input.getKey().getClass());
 			}
 		}).keySet();
 
 
-		for (Item item : seeds) {
+		for (final Item item : seeds) {
 			menu.addMenuItem(
 				new MenuItem(
 					item.getSingular(true),
@@ -288,12 +289,12 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 	}
 
 
-	private ContextMenu chooseLocationMenu(SeedItem seed, Individual planter, Routine routine) {
+	private ContextMenu chooseLocationMenu(final SeedItem seed, final Individual planter, final Routine routine) {
 		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
 			new MenuItem(
 				"Choose locations (Press enter to finalise)",
 				() -> {
-					PlantSeedCursorBoundTask cursorBoundTask = new PlantSeedCursorBoundTask(seed, planter, routine) {
+					final PlantSeedCursorBoundTask cursorBoundTask = new PlantSeedCursorBoundTask(seed, planter, routine) {
 						@Override
 						public CursorBoundTask getImmediateTask() {
 							return this;
@@ -301,11 +302,11 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 					};
 					cursorBoundTask.setTask(new JITTask() {
 						@Override
-						public void execute(Object... args) {
+						public void execute(final Object... args) {
 							try {
-								Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+								final Vector2 coords = Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 								cursorBoundTask.getPlantingLocations().add(new Vector2(getMouseWorldX(), coords.y));
-							} catch (NoTileFoundException e) {
+							} catch (final NoTileFoundException e) {
 								return;
 							}
 						}
@@ -322,25 +323,25 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+	public ContextMenu getDailyRoutineContextMenu(final Individual host, final DailyRoutine routine) {
 		return chooseSeedMenu(host, routine);
 	}
 
 
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
+	public ContextMenu getEntityVisibleRoutineContextMenu(final Individual host, final EntityVisibleRoutine routine) {
 		return chooseSeedMenu(host, routine);
 	}
 
 
 	@Override
-	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+	public ContextMenu getIndividualConditionRoutineContextMenu(final Individual host, final IndividualConditionRoutine routine) {
 		return chooseSeedMenu(host, routine);
 	}
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+	public ContextMenu getStimulusDrivenRoutineContextMenu(final Individual host, final StimulusDrivenRoutine routine) {
 		return chooseSeedMenu(host, routine);
 	}
 }

@@ -22,11 +22,13 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.Consumable;
@@ -69,7 +71,6 @@ import bloodandmithril.util.cursorboundtask.PlaceCursorBoundTask;
 import bloodandmithril.util.cursorboundtask.PlantSeedCursorBoundTask;
 import bloodandmithril.util.cursorboundtask.ThrowItemCursorBoundTask;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
 
 /**
  * {@link Window} to display the inventory of an {@link Individual} or Container
@@ -78,6 +79,8 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2014")
 public class InventoryWindow extends Window implements Refreshable {
+
+	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	/** Inventory listing maps */
 	private HashMap<ListingMenuItem<Item>, Integer> equippedItemsToDisplay = Maps.newHashMap();
@@ -98,7 +101,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 	public static Comparator<Item> inventorySortingOrder = new Comparator<Item>() {
 		@Override
-		public int compare(Item o1, Item o2) {
+		public int compare(final Item o1, final Item o2) {
 			return ComparisonChain.start()
 					.compare(o1.getType().getColor().toIntBits(), o2.getType().getColor().toIntBits())
 					.compare(o1.getSingular(false).toUpperCase(), o2.getSingular(false).toUpperCase())
@@ -110,7 +113,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	private String searchString = "";
 	private final Predicate<Item> textSearch = new Predicate<Item>() {
 		@Override
-		public boolean apply(Item input) {
+		public boolean apply(final Item input) {
 			return input.getSingular(true).toUpperCase().contains(searchString.toUpperCase());
 		}
 	};
@@ -122,9 +125,9 @@ public class InventoryWindow extends Window implements Refreshable {
 	 * Overloaded constructor - with default colors
 	 */
 	public InventoryWindow(
-			Equipper host,
-			String title,
-			boolean active) {
+			final Equipper host,
+			final String title,
+			final boolean active) {
 		super(
 			600,
 			500,
@@ -143,7 +146,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	}
 
 
-	public static ScrollableListingPanel<Button, String> setupFilters(Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters, Component parent) {
+	public static ScrollableListingPanel<Button, String> setupFilters(final Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters, final Component parent) {
 		filters.put("Weapons", 		WrapperForTwo.wrap(item -> {return item instanceof Weapon;}, true));
 		filters.put("Armor", 		WrapperForTwo.wrap(item -> {return item instanceof Armor;}, true));
 		filters.put("Accesories", 	WrapperForTwo.wrap(item -> {return item instanceof Equipable && !(item instanceof Armor) && !(item instanceof Weapon);}, true));
@@ -161,7 +164,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			return b1.text.call().compareTo(b2.text.call());
 		}, false, 0, null) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Button>, String> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<Button>, String> item) {
 				return "";
 			}
 			@Override
@@ -169,18 +172,18 @@ public class InventoryWindow extends Window implements Refreshable {
 				return 0;
 			}
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Button>, String>> listings) {
-				HashMap<ListingMenuItem<Button>, String> map = Maps.newHashMap();
-				Button[] filterButtonsArray = filterButtons(filters, (Refreshable) parent);
-				for (Button button : filterButtonsArray) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<Button>, String>> listings) {
+				final HashMap<ListingMenuItem<Button>, String> map = Maps.newHashMap();
+				final Button[] filterButtonsArray = filterButtons(filters, (Refreshable) parent);
+				for (final Button button : filterButtonsArray) {
 					map.put(
 						new ListingMenuItem<Button>(button, button, null),
 						""
 					);
 				}
 
-				HashMap<ListingMenuItem<Button>, String> map2 = Maps.newHashMap();
-				for (Button button : filterAllButtons(Lists.newArrayList(filterButtonsArray), filters, (Refreshable) parent)) {
+				final HashMap<ListingMenuItem<Button>, String> map2 = Maps.newHashMap();
+				for (final Button button : filterAllButtons(Lists.newArrayList(filterButtonsArray), filters, (Refreshable) parent)) {
 					map2.put(
 						new ListingMenuItem<Button>(button, button, null),
 						""
@@ -191,7 +194,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				listings.add(map2);
 			}
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -199,13 +202,13 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		inventoryListingPanel.leftClick(copy, windowsCopy);
 		equippedListingPanel.leftClick(copy, windowsCopy);
 		filterButtons.leftClick(copy, windowsCopy);
 	}
 
-	private static Button[] filterAllButtons(Collection<Button> filterButtons, Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters, Refreshable refreshable) {
+	private static Button[] filterAllButtons(final Collection<Button> filterButtons, final Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters, final Refreshable refreshable) {
 		final Collection<Button> buttons = Lists.newArrayList();
 
 		final Button selectAll = new Button(
@@ -272,7 +275,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			return Lists.newArrayList(buttons).toArray(new Button[buttons.size()]);
 	}
 
-	private static Button[] filterButtons(Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters, Refreshable refreshable) {
+	private static Button[] filterButtons(final Map<String, WrapperForTwo<Predicate<Item>, Boolean>> filters, final Refreshable refreshable) {
 		final Collection<Button> buttons = Lists.newArrayList(Collections2.transform(
 			filters.entrySet(),
 			entry -> {
@@ -307,7 +310,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		return equippedListingPanel.scrolled(amount) || inventoryListingPanel.scrolled(amount) || filterButtons.scrolled(amount);
 	}
 
@@ -321,12 +324,12 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected synchronized void internalWindowRender(Graphics graphics) {
+	protected synchronized void internalWindowRender(final Graphics graphics) {
 		if (host instanceof Individual && !((Individual) host).isAlive()) {
 			setClosing(true);
 		}
 
-		int lineWidth = 23;
+		final int lineWidth = 23;
 
 		// Set the position and dimensions of the panel
 		inventoryListingPanel.height = height - (equippedItemsToDisplay.isEmpty() ? 0 : (1 + min(5,equippedItemsToDisplay.size())) * lineWidth) - lineWidth * 3;
@@ -369,8 +372,8 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
-		boolean keyPressed = textInput.keyPressed(keyCode);
+	public boolean keyPressed(final int keyCode) {
+		final boolean keyPressed = textInput.keyPressed(keyCode);
 		this.searchString = textInput.getInputText();
 		refresh();
 
@@ -381,7 +384,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	/**
 	 * Renders the weight display
 	 */
-	public static void renderCapacityIndicationText(Container container, Window parentComponent, int xOffset, int yOffset, String extra1, String extra2, Graphics graphics) {
+	public static void renderCapacityIndicationText(final Container container, final Window parentComponent, final int xOffset, final int yOffset, final String extra1, final String extra2, final Graphics graphics) {
 		graphics.getSpriteBatch().setShader(Shaders.text);
 		Color activeColor;
 
@@ -393,7 +396,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			activeColor = Colors.modulateAlpha(Color.GREEN, parentComponent.getAlpha());
 		}
 
-		Color inactiveColor = container.getCurrentLoad() < container.getMaxCapacity() ?
+		final Color inactiveColor = container.getCurrentLoad() < container.getMaxCapacity() ?
 				new Color(0.7f*container.getCurrentLoad()/container.getMaxCapacity(), 1f - 0.7f * container.getCurrentLoad()/container.getMaxCapacity(), 0f, 0.6f * parentComponent.getAlpha()) :
 					Colors.modulateAlpha(Color.RED, 0.6f * parentComponent.getAlpha());
 
@@ -406,10 +409,10 @@ public class InventoryWindow extends Window implements Refreshable {
 	/**
 	 * Renders the separator that separates the item listing from the quantity listing
 	 */
-	private void renderSeparator(int xCoord, Graphics graphics) {
+	private void renderSeparator(final int xCoord, final Graphics graphics) {
 		graphics.getSpriteBatch().setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.Filled);
-		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
+		final Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
 		shapeRenderer.rect(xCoord, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
 		shapeRenderer.end();
 	}
@@ -419,14 +422,14 @@ public class InventoryWindow extends Window implements Refreshable {
 	 * Builds the list of items to display
 	 */
 	@SuppressWarnings("unchecked")
-	private void buildItems(Map<Item, Integer> equippedItems, Map<Item, Integer> nonEquippedItems, boolean newPanels) {
+	private void buildItems(final Map<Item, Integer> equippedItems, final Map<Item, Integer> nonEquippedItems, final boolean newPanels) {
 		populateList(equippedItems, true);
 		populateList(nonEquippedItems, false);
 
 		if (newPanels) {
 			inventoryListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder, true, 35, textSearch) {
 				@Override
-				protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+				protected void populateListings(final List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 					listings.add(nonEquippedItemsToDisplay);
 				}
 
@@ -436,19 +439,19 @@ public class InventoryWindow extends Window implements Refreshable {
 				}
 
 				@Override
-				protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+				protected String getExtraString(final Entry<ListingMenuItem<Item>, Integer> item) {
 					return Integer.toString(item.getValue());
 				}
 
 				@Override
-				public boolean keyPressed(int keyCode) {
+				public boolean keyPressed(final int keyCode) {
 					return false;
 				}
 			};
 
 			equippedListingPanel = new ScrollableListingPanel<Item, Integer>(this, inventorySortingOrder, false, 35, null) {
 				@Override
-				protected void populateListings(List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
+				protected void populateListings(final List<HashMap<ListingMenuItem<Item>, Integer>> listings) {
 					listings.add(equippedItemsToDisplay);
 				}
 
@@ -458,12 +461,12 @@ public class InventoryWindow extends Window implements Refreshable {
 				}
 
 				@Override
-				protected String getExtraString(Entry<ListingMenuItem<Item>, Integer> item) {
+				protected String getExtraString(final Entry<ListingMenuItem<Item>, Integer> item) {
 					return Integer.toString(item.getValue());
 				}
 
 				@Override
-				public boolean keyPressed(int keyCode) {
+				public boolean keyPressed(final int keyCode) {
 					return false;
 				}
 			};
@@ -490,7 +493,7 @@ public class InventoryWindow extends Window implements Refreshable {
 	 * @param listToPopulate
 	 * @param eq - true if equipped
 	 */
-	private void populateList(Map<Item, Integer> listToPopulate, boolean eq) {
+	private void populateList(final Map<Item, Integer> listToPopulate, final boolean eq) {
 		for(final Entry<Item, Integer> item : listToPopulate.entrySet()) {
 
 			final ContextMenu menuToAddUnequipped = determineMenu(item.getKey(), false);
@@ -524,7 +527,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			);
 
 			final ContextMenu menuToAddEquipped = determineMenu(item.getKey(), true);
-			Button equippedButton = new Button(
+			final Button equippedButton = new Button(
 				() -> {return item.getKey().getSingular(true);},
 				defaultFont,
 				0,
@@ -572,7 +575,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	/** Determines which context menu to use */
-	private ContextMenu determineMenu(final Item item, boolean equipped) {
+	private ContextMenu determineMenu(final Item item, final boolean equipped) {
 		ContextMenu toReturn = null;
 
 		if (item instanceof Consumable) {
@@ -617,7 +620,7 @@ public class InventoryWindow extends Window implements Refreshable {
 										quantity = Integer.parseInt(args[0].toString());
 										ContainerImpl.discard((Individual)host, item, quantity);
 										UserInterface.refreshRefreshableWindows();
-									} catch (NumberFormatException e) {
+									} catch (final NumberFormatException e) {
 										UserInterface.addGlobalMessage("Error", "Can not recognise " + args[0].toString() + " as a quantity");
 									}
 								},
@@ -655,12 +658,12 @@ public class InventoryWindow extends Window implements Refreshable {
 	}
 
 
-	private ContextMenu placeableMenu(PropItem item) {
-		MenuItem place = new MenuItem(
+	private ContextMenu placeableMenu(final PropItem item) {
+		final MenuItem place = new MenuItem(
 			"Place",
 			() -> {
-				Prop prop = item.getProp();
-				prop.setWorldId(Domain.getActiveWorld().getWorldId());
+				final Prop prop = item.getProp();
+				prop.setWorldId(gameClientStateTracker.getActiveWorld().getWorldId());
 				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 					new PlaceCursorBoundTask(prop, (Individual) host, item)
 				);
@@ -679,8 +682,8 @@ public class InventoryWindow extends Window implements Refreshable {
 	}
 
 
-	private ContextMenu seedMenu(Item item) {
-		MenuItem plant = new MenuItem(
+	private ContextMenu seedMenu(final Item item) {
+		final MenuItem plant = new MenuItem(
 			"Plant",
 			() -> {
 				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
@@ -701,8 +704,8 @@ public class InventoryWindow extends Window implements Refreshable {
 	}
 
 
-	private ContextMenu equippableMenu(final Item item, boolean equipped) {
-		MenuItem equipUnequip = equipped ? new MenuItem(
+	private ContextMenu equippableMenu(final Item item, final boolean equipped) {
+		final MenuItem equipUnequip = equipped ? new MenuItem(
 			"Unequip",
 			() -> {
 				if (ClientServerInterface.isServer()) {
@@ -724,7 +727,7 @@ public class InventoryWindow extends Window implements Refreshable {
 				if (ClientServerInterface.isServer()) {
 					if (item instanceof Weapon && host instanceof Individual) {
 						if (((Individual) host).attacking()) {
-							Action action = ((Individual) host).getCurrentAction();
+							final Action action = ((Individual) host).getCurrentAction();
 							((Individual) host).setCurrentAction(action.left() ? Action.STAND_LEFT : Action.STAND_RIGHT);
 						}
 					}
@@ -740,7 +743,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			null
 		);
 
-		ContextMenu contextMenu = new ContextMenu(x, y,
+		final ContextMenu contextMenu = new ContextMenu(x, y,
 			true,
 			InventoryItemContextMenuConstructor.showInfo(item),
 			equipUnequip
@@ -779,7 +782,7 @@ public class InventoryWindow extends Window implements Refreshable {
 								100,
 								args -> {
 									try {
-										float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
+										final float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
 										if (amount < 0.01f) {
 											UserInterface.addGlobalMessage("Too little to refuel", "Its too little to refuel, enter a larger amount");
 											return;
@@ -787,14 +790,14 @@ public class InventoryWindow extends Window implements Refreshable {
 
 										refreshSuppressed = true;
 
-										for (ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
+										for (final ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
 											listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
 											listItem.button.setDownColor(Colors.UI_DARK_GRAY);
 											listItem.button.setOverColor(Colors.UI_DARK_GRAY);
 											listItem.menu = null;
 										}
 
-										for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
+										for (final ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
 											if (listItem.t instanceof LiquidContainerItem) {
 
 												listItem.button.setIdleColor(Color.ORANGE);
@@ -804,10 +807,10 @@ public class InventoryWindow extends Window implements Refreshable {
 													if (isServer()) {
 														host.takeItem(listItem.t);
 
-														Item copy = listItem.t.copy();
-														Map<Class<? extends Liquid>, Float> subtracted = ((LiquidContainerItem) copy).subtract(amount);
+														final Item copy = listItem.t.copy();
+														final Map<Class<? extends Liquid>, Float> subtracted = ((LiquidContainerItem) copy).subtract(amount);
 														if (subtracted.containsKey(Oil.class)) {
-															float oil = subtracted.get(Oil.class);
+															final float oil = subtracted.get(Oil.class);
 															((Lantern) item).addFuel(oil);
 														}
 
@@ -827,7 +830,7 @@ public class InventoryWindow extends Window implements Refreshable {
 											}
 										}
 
-									} catch (NumberFormatException e) {
+									} catch (final NumberFormatException e) {
 										UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 									}
 								},
@@ -849,9 +852,9 @@ public class InventoryWindow extends Window implements Refreshable {
 	}
 
 
-	private MenuItem[] getAmmo(RangedWeapon weapon) {
-		List<Item> ammo = Lists.newArrayList();
-		for (Item item : host.getInventory().keySet()) {
+	private MenuItem[] getAmmo(final RangedWeapon weapon) {
+		final List<Item> ammo = Lists.newArrayList();
+		for (final Item item : host.getInventory().keySet()) {
 			if  (weapon.canFire(item)) {
 				ammo.add(item);
 			}
@@ -871,7 +874,7 @@ public class InventoryWindow extends Window implements Refreshable {
 		} else {
 			menuItems = new MenuItem[ammo.size()];
 			int i = 0;
-			for (Item item : ammo) {
+			for (final Item item : ammo) {
 				menuItems[i] = new MenuItem(
 					item.getSingular(true),
 					() -> {
@@ -896,7 +899,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	private ContextMenu liquidContainerMenu(final Item item) {
-		MenuItem drink = new MenuItem(
+		final MenuItem drink = new MenuItem(
 			"Drink from",
 			() -> {
 				UserInterface.addLayeredComponent(
@@ -908,7 +911,7 @@ public class InventoryWindow extends Window implements Refreshable {
 						100,
 						args -> {
 							try {
-								float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
+								final float amount = Float.parseFloat(String.format("%.2f", Float.parseFloat(args[0].toString())));
 
 								if (amount < 0.01f) {
 									UserInterface.addGlobalMessage("Too little to drink", "It would be a waste of time to drink this little, enter a larger amount");
@@ -917,14 +920,14 @@ public class InventoryWindow extends Window implements Refreshable {
 
 								if (ClientServerInterface.isServer()) {
 									host.takeItem(item);
-									LiquidContainerItem newContainer = ((LiquidContainerItem) item).clone();
+									final LiquidContainerItem newContainer = ((LiquidContainerItem) item).clone();
 									newContainer.drinkFrom(amount, (Individual)host);
 									host.giveItem(newContainer);
 									refresh();
 								} else {
 									ClientServerInterface.SendRequest.sendDrinkLiquidRequest(((Individual)host).getId().getId(), (LiquidContainerItem)item, Float.parseFloat((String)args[0]));
 								}
-							} catch (NumberFormatException e) {
+							} catch (final NumberFormatException e) {
 								UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 							}
 						},
@@ -940,7 +943,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			null
 		);
 
-		MenuItem emptyContainerContents = new MenuItem(
+		final MenuItem emptyContainerContents = new MenuItem(
 			"Discard content",
 			() -> {
 				UserInterface.addLayeredComponent(
@@ -952,7 +955,7 @@ public class InventoryWindow extends Window implements Refreshable {
 						100,
 						args -> {
 							try {
-								float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
+								final float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
 
 								if (amount < 0.01f) {
 									UserInterface.addGlobalMessage("Too little to discard", "Its too little to discard, enter a larger amount");
@@ -964,7 +967,7 @@ public class InventoryWindow extends Window implements Refreshable {
 								} else {
 									ClientServerInterface.SendRequest.sendDiscardLiquidRequest(((Individual)host).getId().getId(), (LiquidContainerItem) item, amount);
 								}
-							} catch (NumberFormatException e) {
+							} catch (final NumberFormatException e) {
 								UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 							}
 						},
@@ -980,7 +983,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			null
 		);
 
-		MenuItem transferContainerContents = new MenuItem(
+		final MenuItem transferContainerContents = new MenuItem(
 			"Transfer",
 			() -> {
 				UserInterface.addLayeredComponent(
@@ -992,7 +995,7 @@ public class InventoryWindow extends Window implements Refreshable {
 						100,
 						args -> {
 							try {
-								float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
+								final float amount = Util.round2dp(Float.parseFloat(args[0].toString()));
 								if (amount < 0.01f) {
 									UserInterface.addGlobalMessage("Too little to transfer", "Its too little to transfer, enter a larger amount");
 									return;
@@ -1000,13 +1003,13 @@ public class InventoryWindow extends Window implements Refreshable {
 
 								refreshSuppressed = true;
 
-								for (ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
+								for (final ListingMenuItem<Item> listItem : equippedItemsToDisplay.keySet()) {
 									listItem.button.setIdleColor(Colors.UI_DARK_GRAY);
 									listItem.button.setDownColor(Colors.UI_DARK_GRAY);
 									listItem.button.setOverColor(Colors.UI_DARK_GRAY);
 									listItem.menu = null;
 								}
-								for (ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
+								for (final ListingMenuItem<Item> listItem : nonEquippedItemsToDisplay.keySet()) {
 									if (listItem.t instanceof LiquidContainerItem) {
 
 										if (listItem.t == item) {
@@ -1017,7 +1020,7 @@ public class InventoryWindow extends Window implements Refreshable {
 										} else {
 											listItem.button.setIdleColor(Color.ORANGE);
 											setActive(true);
-											LiquidContainerItem toTransferTo = ((LiquidContainerItem)listItem.t).clone();
+											final LiquidContainerItem toTransferTo = ((LiquidContainerItem)listItem.t).clone();
 											listItem.menu = null;
 											listItem.button.setTask(() -> {
 												if (isServer()) {
@@ -1048,7 +1051,7 @@ public class InventoryWindow extends Window implements Refreshable {
 									}
 								}
 
-							} catch (NumberFormatException e) {
+							} catch (final NumberFormatException e) {
 								UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as an amount.");
 							}
 						},
@@ -1064,7 +1067,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			null
 		);
 
-		ContextMenu contextMenu = new ContextMenu(x, y, true,
+		final ContextMenu contextMenu = new ContextMenu(x, y, true,
 			InventoryItemContextMenuConstructor.showInfo(item)
 		);
 
@@ -1079,7 +1082,7 @@ public class InventoryWindow extends Window implements Refreshable {
 
 
 	private ContextMenu consumableMenu(final Item item) {
-		MenuItem consume = new MenuItem(
+		final MenuItem consume = new MenuItem(
 			"Consume",
 			() -> {
 				if (ClientServerInterface.isServer()) {
@@ -1097,7 +1100,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			null
 		);
 
-		ContextMenu contextMenu = new ContextMenu(x, y, true,
+		final ContextMenu contextMenu = new ContextMenu(x, y, true,
 			InventoryItemContextMenuConstructor.showInfo(item)
 		);
 

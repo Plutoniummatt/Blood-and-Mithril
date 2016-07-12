@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
 import bloodandmithril.networking.ClientServerInterface;
@@ -15,7 +17,6 @@ import bloodandmithril.util.Countdown;
 import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
-import bloodandmithril.world.Domain;
 
 /**
  * Service responsible for adding particles to the world
@@ -25,17 +26,19 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class ParticleService {
 
-	public static void bloodSplat(Vector2 position, Vector2 knockBack) {
+	private static GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+
+	public static void bloodSplat(final Vector2 position, final Vector2 knockBack) {
 		if (isClient()) {
 			for (int i = 0; i < 35; i++) {
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+				gameClientStateTracker.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 40f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).scl(5f),
 					Color.RED,
 					Color.RED,
 					Color.RED,
 					2f,
-					Domain.getActiveWorld().getWorldId(),
+					gameClientStateTracker.getActiveWorld().getWorldId(),
 					0f,
 					MovementMode.GRAVITY,
 					Depth.FOREGROUND,
@@ -49,10 +52,10 @@ public class ParticleService {
 	}
 
 
-	public static void mineExplosion(Vector2 position, Color c) {
+	public static void mineExplosion(final Vector2 position, final Color c) {
 		if (isClient()) {
 			for (int i = 0; i < 40; i++) {
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+				gameClientStateTracker.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy().add(
 						(Util.getRandom().nextFloat() - 0.5f) * 30,
 						(Util.getRandom().nextFloat() - 0.5f) * 30
@@ -62,7 +65,7 @@ public class ParticleService {
 					Colors.LIGHT_SMOKE,
 					Colors.LIGHT_SMOKE,
 					Util.getRandom().nextFloat() * 25f + 3f,
-					Domain.getActiveWorld().getWorldId(),
+					gameClientStateTracker.getActiveWorld().getWorldId(),
 					0f,
 					MovementMode.WEIGHTLESS,
 					Depth.FOREGROUND,
@@ -71,15 +74,15 @@ public class ParticleService {
 				));
 			}
 			for (int i = 0; i < 100; i++) {
-				float radius = Util.getRandom().nextFloat() * 3f;
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+				final float radius = Util.getRandom().nextFloat() * 3f;
+				gameClientStateTracker.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * 50f, 0f).rotate(Util.getRandom().nextFloat() * 360f).scl(5f),
 					c,
 					c,
 					c,
 					radius,
-					Domain.getActiveWorld().getWorldId(),
+					gameClientStateTracker.getActiveWorld().getWorldId(),
 					0,
 					MovementMode.GRAVITY,
 					Depth.FOREGROUND,
@@ -91,21 +94,21 @@ public class ParticleService {
 	}
 
 
-	public static void fireworks(Vector2 position, Color... color) {
+	public static void fireworks(final Vector2 position, final Color... color) {
 		if (isClient()) {
 			for (int i = 0; i < 100; i++) {
-				long lifetime = Util.getRandom().nextInt(2000) + 1000;
-				Color randomOneOf = Util.randomOneOf(color);
-				Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 400f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
+				final long lifetime = Util.getRandom().nextInt(2000) + 1000;
+				final Color randomOneOf = Util.randomOneOf(color);
+				final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 400f, 0f).rotate(Util.getRandom().nextFloat() * 360f);
 
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+				gameClientStateTracker.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
 					rotate,
 					Color.WHITE,
 					randomOneOf,
 					Color.WHITE,
 					Util.getRandom().nextFloat() * 5f,
-					Domain.getActiveWorld().getWorldId(),
+					gameClientStateTracker.getActiveWorld().getWorldId(),
 					Util.getRandom().nextFloat() * 10f,
 					Util.randomOneOf(MovementMode.WEIGHTLESS),
 					Util.getRandom().nextBoolean() ? Depth.FOREGROUND : Depth.MIDDLEGROUND,
@@ -117,15 +120,15 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocityTracer(Vector2 position, float spawnSpread, float maxVel, Color color, Color glowColor, float glow, int maxLifeTime, MovementMode mode, Depth depth) {
+	public static void randomVelocityTracer(final Vector2 position, final float spawnSpread, final float maxVel, final Color color, final Color glowColor, final float glow, final int maxLifeTime, final MovementMode mode, final Depth depth) {
 		if (isClient()) {
-			Domain.getActiveWorld().getClientParticles().add(new TracerParticle(
+			gameClientStateTracker.getActiveWorld().getClientParticles().add(new TracerParticle(
 				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 				new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 				color,
 				glowColor,
 				1f,
-				Domain.getActiveWorld().getWorldId(),
+				gameClientStateTracker.getActiveWorld().getWorldId(),
 				new Countdown(Util.getRandom().nextInt(maxLifeTime)),
 				glow,
 				mode,
@@ -138,14 +141,14 @@ public class ParticleService {
 
 
 
-	public static void randomVelocityTextureBackedParticle(Vector2 position, float spawnSpread, float maxVel, Color color, int maxLifeTime, MovementMode mode, Depth depth) {
+	public static void randomVelocityTextureBackedParticle(final Vector2 position, final float spawnSpread, final float maxVel, final Color color, final int maxLifeTime, final MovementMode mode, final Depth depth) {
 		if (isClient()) {
-			Domain.getActiveWorld().getClientParticles().add(new TextureBackedParticle(
+			gameClientStateTracker.getActiveWorld().getClientParticles().add(new TextureBackedParticle(
 				position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 				new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 				color,
 				Util.getRandom().nextFloat() * 2f,
-				Domain.getActiveWorld().getWorldId(),
+				gameClientStateTracker.getActiveWorld().getWorldId(),
 				new Countdown(Util.getRandom().nextInt(maxLifeTime)),
 				mode,
 				depth,
@@ -155,34 +158,34 @@ public class ParticleService {
 	}
 
 
-	public static void randomVelocityDiminishing(Vector2 position, float spawnSpread, float maxVel, Color color, Color glowColor, float initialRadius, float glow, MovementMode mode, long diminishingDuration, Depth depth, boolean tracer, Color toChangeTo) {
+	public static void randomVelocityDiminishing(final Vector2 position, final float spawnSpread, final float maxVel, final Color color, final Color glowColor, final float initialRadius, final float glow, final MovementMode mode, long diminishingDuration, final Depth depth, final boolean tracer, final Color toChangeTo) {
 		if (diminishingDuration < 100) {
 			diminishingDuration = 100;
 		}
 
 		if (isClient()) {
 			if (tracer) {
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingTracerParticle(
+				gameClientStateTracker.getActiveWorld().getClientParticles().add(new DiminishingTracerParticle(
 					position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 					new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 					color,
 					glowColor,
 					initialRadius,
-					Domain.getActiveWorld().getWorldId(),
+					gameClientStateTracker.getActiveWorld().getWorldId(),
 					glow,
 					mode,
 					depth,
 					diminishingDuration
 				));
 			} else {
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+				gameClientStateTracker.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy().add(new Vector2(Util.getRandom().nextFloat() * spawnSpread, 0f).rotate(Util.getRandom().nextFloat() * 360f)),
 					new Vector2(Util.getRandom().nextFloat() * maxVel, 0f).rotate(Util.getRandom().nextFloat() * 360f),
 					color,
 					glowColor,
 					toChangeTo,
 					initialRadius,
-					Domain.getActiveWorld().getWorldId(),
+					gameClientStateTracker.getActiveWorld().getWorldId(),
 					glow,
 					mode,
 					depth,
@@ -195,19 +198,19 @@ public class ParticleService {
 	}
 
 
-	public static void parrySpark(Vector2 position, Vector2 knockBack, Depth depth, Color color, Color glowColor, int life, boolean trancer, int numberOfParticles, float baseSpeed) {
+	public static void parrySpark(final Vector2 position, final Vector2 knockBack, final Depth depth, final Color color, final Color glowColor, final int life, final boolean trancer, final int numberOfParticles, final float baseSpeed) {
 		if (isClient()) {
 			for (int i = 0; i < numberOfParticles; i++) {
-				long lifetime = Util.getRandom().nextInt(life);
-				float size = Util.getRandom().nextFloat();
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+				final long lifetime = Util.getRandom().nextInt(life);
+				final float size = Util.getRandom().nextFloat();
+				gameClientStateTracker.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					position.cpy(),
 					new Vector2(Util.getRandom().nextFloat() * baseSpeed, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(knockBack).scl(2f),
 					color,
 					glowColor,
 					color,
 					size * 1.2f,
-					Domain.getActiveWorld().getWorldId(),
+					gameClientStateTracker.getActiveWorld().getWorldId(),
 					size * 5f,
 					MovementMode.GRAVITY,
 					depth,
@@ -227,7 +230,7 @@ public class ParticleService {
 		private Vector2 knockBack;
 		private Depth depth;
 
-		public ParrySpark(Vector2 position, Vector2 knockBack, Depth depth) {
+		public ParrySpark(final Vector2 position, final Vector2 knockBack, final Depth depth) {
 			this.position = position;
 			this.knockBack = knockBack;
 			this.depth = depth;
@@ -245,7 +248,7 @@ public class ParticleService {
 		private Vector2 position;
 		private Vector2 knockBack;
 
-		public BloodSplat(Vector2 position, Vector2 knockBack) {
+		public BloodSplat(final Vector2 position, final Vector2 knockBack) {
 			this.position = position;
 			this.knockBack = knockBack;
 		}
@@ -269,7 +272,7 @@ public class ParticleService {
 		private Depth depth;
 		private SerializableColor glowColor;
 
-		public FlameEmber(Vector2 position, float spawnSpread, float maxVel, SerializableColor color, SerializableColor glowColor, float glow, int maxLifeTime, MovementMode mode, Depth depth) {
+		public FlameEmber(final Vector2 position, final float spawnSpread, final float maxVel, final SerializableColor color, final SerializableColor glowColor, final float glow, final int maxLifeTime, final MovementMode mode, final Depth depth) {
 			this.position = position;
 			this.spawnSpread = spawnSpread;
 			this.maxVel = maxVel;

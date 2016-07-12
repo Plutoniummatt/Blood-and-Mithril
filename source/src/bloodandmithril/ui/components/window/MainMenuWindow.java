@@ -211,7 +211,7 @@ public class MainMenuWindow extends Window {
 											}
 										}
 
-										Domain.setActiveWorld(Domain.getWorlds().keySet().iterator().next().intValue());
+										gameClientStateTracker.setSelectedActiveWorldId(Domain.getWorlds().keySet().iterator().next().intValue());
 										gameClientStateTracker.setInGame(true);
 										gameSetupService.setup();
 									} catch (final Exception e) {

@@ -18,6 +18,7 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.CommonModule;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.ServerModule;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.component.PrefabricatedComponent;
@@ -45,7 +46,7 @@ public class BloodAndMithrilServer {
 	/**
 	 * Entry point for the server
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 
 		ClientServerInterface.server = new Server(1048576, 1048576);
 		final Server server = ClientServerInterface.server;
@@ -54,7 +55,7 @@ public class BloodAndMithrilServer {
 
 		try {
 			server.bind(42685, 42686);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Logger.networkDebug(e.getMessage(), LogLevel.WARN);
 		}
 
@@ -70,24 +71,24 @@ public class BloodAndMithrilServer {
 					while (ClientServerInterface.server.getUpdateThread().isAlive()) {
 						try {
 							Thread.sleep(100);
-							for (Individual individual : Domain.getIndividuals().values()) {
+							for (final Individual individual : Domain.getIndividuals().values()) {
 								ClientServerInterface.SendNotification.notifyIndividualSync(individual.getId().getId());
 							}
 
-						} catch (InterruptedException e) {
+						} catch (final InterruptedException e) {
 							Logger.generalDebug(e.getMessage(), LogLevel.WARN, e);
 						}
-						for (Faction faction : Domain.getFactions().values()) {
+						for (final Faction faction : Domain.getFactions().values()) {
 							ClientServerInterface.SendNotification.notifySyncFaction(faction);
 						}
 
-						for (int worldId : Domain.getWorlds().keySet()) {
+						for (final int worldId : Domain.getWorlds().keySet()) {
 							ClientServerInterface.SendNotification.notifySyncItems(worldId);
 							ClientServerInterface.SendNotification.notifySyncProjectiles(worldId);
 							ClientServerInterface.SendNotification.notifySyncParticles(worldId);
 							ClientServerInterface.SendNotification.notifySyncWorldState(worldId);
 
-							for (Prop prop : Domain.getWorld(worldId).props().getProps()) {
+							for (final Prop prop : Domain.getWorld(worldId).props().getProps()) {
 								ClientServerInterface.SendNotification.notifySyncProp(prop);
 							}
 						}
@@ -104,7 +105,7 @@ public class BloodAndMithrilServer {
 	private static void start() {
 
 		// Configurations
-		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+		final LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Blood and Mithril Server";
 		cfg.width = 200;
 		cfg.height = 20;
@@ -124,14 +125,14 @@ public class BloodAndMithrilServer {
 			Wiring.setupInjector(new ServerModule(), new CommonModule());
 			Wiring.injector().injectMembers(this);
 
-			Faction nature = new Faction("Nature", parameterPersistenceService.getParameters().getNextFactionId(), false, "");
-			Faction player = new Faction("Elves", parameterPersistenceService.getParameters().getNextFactionId(), true, "Elves are cool");
+			final Faction nature = new Faction("Nature", parameterPersistenceService.getParameters().getNextFactionId(), false, "");
+			final Faction player = new Faction("Elves", parameterPersistenceService.getParameters().getNextFactionId(), true, "Elves are cool");
 			Domain.getFactions().put(nature.factionId, nature);
 			Domain.getFactions().put(player.factionId, player);
 
 			ClientServerInterface.setServer(true);
 			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
-			Domain.setActiveWorld(Domain.createWorld());
+			Wiring.injector().getInstance(GameClientStateTracker.class).setSelectedActiveWorldId(Domain.createWorld());
 			Domain.setup();
 
 			PrefabricatedComponent.setup();
@@ -139,7 +140,7 @@ public class BloodAndMithrilServer {
 
 
 		@Override
-		public void resize(int width, int height) {
+		public void resize(final int width, final int height) {
 		}
 
 
@@ -150,9 +151,9 @@ public class BloodAndMithrilServer {
 			// Do not update if game is paused
 			// Do not update if FPS is lower than tolerance threshold, otherwise
 			// bad things can happen, like teleporting
-			float delta = Gdx.graphics.getDeltaTime();
+			final float delta = Gdx.graphics.getDeltaTime();
 			if (delta < 0.1f && !gameSaver.isSaving()) {
-				World activeWorld = Domain.getActiveWorld();
+				final World activeWorld = Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld();
 				if (activeWorld != null) {
 					activeWorld.update();
 				}

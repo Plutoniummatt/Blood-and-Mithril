@@ -11,7 +11,6 @@ import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldCoords;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.util.Util.Colors.lightColor;
 import static bloodandmithril.util.Util.Colors.lightSkinColor;
-import static bloodandmithril.world.Domain.getActiveWorld;
 
 import java.util.Comparator;
 import java.util.Deque;
@@ -40,6 +39,7 @@ import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.MissionTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.GaussianLightingRenderer;
@@ -91,6 +91,7 @@ public class DevWindow extends Window {
 
 	@Inject private GameSaver gameSaver;
 	@Inject private MissionTracker missionTracker;
+	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	/**
 	 * Constructor
@@ -142,14 +143,14 @@ public class DevWindow extends Window {
 				final Color randomOneOf = Util.randomOneOf(new Color(0.4f, 0.224f, 0.76f, 1.0f), new Color(0.1f, 0.763f, 0.324f, 1.0f));
 				final Vector2 rotate = new Vector2(Util.getRandom().nextFloat() * 200f, 0f).rotate(Util.getRandom().nextFloat() * 360f).add(1000f, 0f);
 
-				Domain.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
+				gameClientStateTracker.getActiveWorld().getClientParticles().add(new DiminishingColorChangingParticle(
 					getMouseWorldCoords(),
 					rotate,
 					Color.WHITE,
 					randomOneOf,
 					randomOneOf,
 					Util.getRandom().nextFloat() * 3.4f,
-					Domain.getActiveWorld().getWorldId(),
+					gameClientStateTracker.getActiveWorld().getWorldId(),
 					Util.getRandom().nextFloat() * 20f + 10,
 					MovementMode.GRAVITY,
 					Util.getRandom().nextBoolean() ? Depth.FOREGROUND : Depth.MIDDLEGROUND,
@@ -185,29 +186,29 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.I) {
-			Domain.getActiveWorld().items().addItem(new CarrotItem(), new Vector2(getMouseWorldX(), getMouseWorldY()), new Vector2());
+			gameClientStateTracker.getActiveWorld().items().addItem(new CarrotItem(), new Vector2(getMouseWorldX(), getMouseWorldY()), new Vector2());
 		}
 
 		if (keyCode == Keys.J) {
 			final Set<Integer> keySet = Sets.newHashSet(Domain.getWorlds().keySet());
-			keySet.remove(Domain.getActiveWorldId());
-			Domain.setActiveWorld(keySet.iterator().next());
+			keySet.remove(gameClientStateTracker.getSelectedActiveWorldId());
+			gameClientStateTracker.setSelectedActiveWorldId(keySet.iterator().next());
 		}
 
 		if (keyCode == Keys.B) {
-			missionTracker.addMission(new Tutorial(Domain.getActiveWorldId()));
+			missionTracker.addMission(new Tutorial(gameClientStateTracker.getSelectedActiveWorldId()));
 		}
 
 		if (keyCode == Keys.H) {
 			for (int i = 0; i < 20; i++) {
-				Domain.getActiveWorld().getClientParticles().add(
+				gameClientStateTracker.getActiveWorld().getClientParticles().add(
 					new RandomParticle(
 						BloodAndMithrilClient.getMouseWorldCoords(),
 						new Vector2(),
 						Color.WHITE,
 						Color.CYAN,
 						2f,
-						Domain.getActiveWorldId(),
+						gameClientStateTracker.getSelectedActiveWorldId(),
 						4f,
 						MovementMode.EMBER,
 						Depth.FOREGROUND,
@@ -222,7 +223,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.T) {
-			Domain.getActiveWorld().getTopography().changeTile(
+			gameClientStateTracker.getActiveWorld().getTopography().changeTile(
 				getMouseWorldX(),
 				getMouseWorldY(),
 				true,
@@ -231,7 +232,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.P) {
-			Domain.getActiveWorld().getTopography().changeTile(
+			gameClientStateTracker.getActiveWorld().getTopography().changeTile(
 				getMouseWorldX(),
 				getMouseWorldY(),
 				true,
@@ -240,7 +241,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.D) {
-			Domain.getActiveWorld().getTopography().deleteTile(
+			gameClientStateTracker.getActiveWorld().getTopography().deleteTile(
 				getMouseWorldX(),
 				getMouseWorldY(),
 				true,
@@ -266,14 +267,14 @@ public class DevWindow extends Window {
 
 			final Elf elf = new Elf(
 				id, state, isKeyPressed(Input.Keys.Q) ? Faction.NPC : 2, true,
-				getActiveWorld(),
+				gameClientStateTracker.getActiveWorld(),
 				lightColor(),
 				lightColor(),
 				lightSkinColor()
 			);
 
 			if (isServer()) {
-				Domain.addIndividual(elf, Domain.getActiveWorld().getWorldId());
+				Domain.addIndividual(elf, gameClientStateTracker.getActiveWorld().getWorldId());
 			} else {
 				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(elf);
 			}
@@ -294,10 +295,10 @@ public class DevWindow extends Window {
 			final IndividualIdentifier id = getUnknownNatureIdentifier(Util.getRandom().nextBoolean(), Util.getRandom().nextInt(5));
 			id.setNickName("Rabbit");
 
-			final Hare hare = new Hare(id, state, Faction.NPC, getActiveWorld().getWorldId());
+			final Hare hare = new Hare(id, state, Faction.NPC, gameClientStateTracker.getActiveWorld().getWorldId());
 
 			if (isServer()) {
-				Domain.addIndividual(hare, Domain.getActiveWorld().getWorldId());
+				Domain.addIndividual(hare, gameClientStateTracker.getActiveWorld().getWorldId());
 			} else {
 				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(hare);
 			}
@@ -318,10 +319,10 @@ public class DevWindow extends Window {
 			final IndividualIdentifier id = getUnknownNatureIdentifier(Util.getRandom().nextBoolean(), Util.getRandom().nextInt(5));
 			id.setNickName("Wolf");
 
-			final Wolf wolf= new Wolf(id, state, 2, getActiveWorld().getWorldId());
+			final Wolf wolf= new Wolf(id, state, 2, gameClientStateTracker.getActiveWorld().getWorldId());
 
 			if (isServer()) {
-				Domain.addIndividual(wolf, Domain.getActiveWorld().getWorldId());
+				Domain.addIndividual(wolf, gameClientStateTracker.getActiveWorld().getWorldId());
 			} else {
 				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(wolf);
 			}
@@ -588,7 +589,7 @@ public class DevWindow extends Window {
 								args -> {
 									if (isServer()) {
 										try {
-											Domain.getActiveWorld().getEpoch().setTimeOfDay(Float.parseFloat((String) args[0]));
+											gameClientStateTracker.getActiveWorld().getEpoch().setTimeOfDay(Float.parseFloat((String) args[0]));
 										} catch (final Exception e) {
 										}
 									}

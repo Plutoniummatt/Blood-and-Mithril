@@ -39,6 +39,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -65,6 +66,8 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 	private final Set<Integer> toBeAttacked = Sets.newHashSet();
 
+	@Inject private transient GameClientStateTracker gameClientStateTracker;
+
 	@Inject
 	Attack() {
 		super(null, "");
@@ -73,21 +76,21 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	/**
 	 * Constructor
 	 */
-	public Attack(Individual host, Individual... toBeAttacked) {
+	public Attack(final Individual host, final Individual... toBeAttacked) {
 		this(host, Sets.newHashSet(toBeAttacked));
 	}
 
 	/**
 	 * Constructor
 	 */
-	public Attack(Individual host, Set<Individual> toBeAttacked) {
+	public Attack(final Individual host, final Set<Individual> toBeAttacked) {
 		super(host.getId(), "Attacking");
 
-		for (Individual individual : toBeAttacked) {
+		for (final Individual individual : toBeAttacked) {
 			this.toBeAttacked.add(individual.getId().getId());
 		}
 
-		Individual alive = getAlive();
+		final Individual alive = getAlive();
 
 		if (alive != null) {
 			if (alive.canBeAttacked(host)) {
@@ -112,7 +115,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	/**
 	 * Constructor
 	 */
-	public Attack(IndividualIdentifier hostId, Set<Integer> toBeAttacked) {
+	public Attack(final IndividualIdentifier hostId, final Set<Integer> toBeAttacked) {
 		this(Domain.getIndividual(hostId.getId()), transformSet(toBeAttacked, id -> {return Domain.getIndividual(id);}));
 	}
 
@@ -130,7 +133,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public final void execute(float delta) {
+	public final void execute(final float delta) {
 		if (getHost().isWalking()) {
 			getHost().setWalking(false);
 		}
@@ -140,7 +143,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 	@Override
 	public final boolean uponCompletion() {
-		Individual host = Domain.getIndividual(hostId.getId());
+		final Individual host = Domain.getIndividual(hostId.getId());
 		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveRight.keyCode, false);
 		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveLeft.keyCode, false);
 		if (!getHost().isWalking()) {
@@ -151,8 +154,8 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 	private final Individual getAlive() {
-		for (Integer id : toBeAttacked) {
-			Individual individual = Domain.getIndividual(id);
+		for (final Integer id : toBeAttacked) {
+			final Individual individual = Domain.getIndividual(id);
 			if (individual != null && individual.getState().health > 0f) {
 				return individual;
 			}
@@ -175,7 +178,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		/**
 		 * Constructor
 		 */
-		public WithinAttackRangeOrCantAttack(IndividualIdentifier attacker, IndividualIdentifier attackee) {
+		public WithinAttackRangeOrCantAttack(final IndividualIdentifier attacker, final IndividualIdentifier attackee) {
 			this.attacker = attacker;
 			this.attackee = attackee;
 		}
@@ -183,13 +186,13 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public final Boolean call() {
-			Individual atker = getIndividual(attacker.getId());
-			Individual victim = getIndividual(attackee.getId());
+			final Individual atker = getIndividual(attacker.getId());
+			final Individual victim = getIndividual(attackee.getId());
 
 			boolean closeEnough = false;
-			AITask subTask = getCurrentTask();
+			final AITask subTask = getCurrentTask();
 			if (subTask instanceof GoToMovingLocation) {
-				int size = ((GoToMovingLocation) subTask).getCurrentGoToLocation().getPath().getSize();
+				final int size = ((GoToMovingLocation) subTask).getCurrentGoToLocation().getPath().getSize();
 				closeEnough = size < 8;
 			}
 
@@ -209,7 +212,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		/**
 		 * Constructor
 		 */
-		public ReevaluateAttack(IndividualIdentifier hostId) {
+		public ReevaluateAttack(final IndividualIdentifier hostId) {
 			super(hostId);
 		}
 
@@ -234,7 +237,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public final void execute(float delta) {
+		public final void execute(final float delta) {
 		}
 	}
 
@@ -249,7 +252,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		private boolean complete;
 		private int target;
 
-		protected AttackTarget(IndividualIdentifier hostId, int target) {
+		protected AttackTarget(final IndividualIdentifier hostId, final int target) {
 			super(hostId);
 			this.target = target;
 		}
@@ -275,14 +278,14 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public final void execute(float delta) {
+		public final void execute(final float delta) {
 			getHost().setCombatStance(true);
-			Individual alive = getAlive();
+			final Individual alive = getAlive();
 			if (alive == null) {
 				return;
 			}
 
-			Individual attacker = Domain.getIndividual(hostId.getId());
+			final Individual attacker = Domain.getIndividual(hostId.getId());
 			if (!alive.canBeAttacked(attacker)) {
 				complete = true;
 				return;
@@ -305,7 +308,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		private final int attackerId;
 		private String attackerName;
 
-		public AttackTaskGenerator(int attackerId, List<Integer> victimIds) {
+		public AttackTaskGenerator(final int attackerId, final List<Integer> victimIds) {
 			this.attackerId = attackerId;
 			this.victimIds = victimIds;
 
@@ -313,10 +316,10 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public final AITask apply(Object input) {
-			List<Integer> validVictims = Lists.newLinkedList();
-			for (int id : victimIds) {
-				Individual victim = Domain.getIndividual(id);
+		public final AITask apply(final Object input) {
+			final List<Integer> validVictims = Lists.newLinkedList();
+			for (final int id : victimIds) {
+				final Individual victim = Domain.getIndividual(id);
 				if (victim.isAlive()) {
 					validVictims.add(id);
 				}
@@ -325,11 +328,11 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 			if (validVictims.isEmpty()) {
 				return null;
 			} else if (validVictims.size() > 1) {
-				Attack attackTask = new Attack(Domain.getIndividual(attackerId), Domain.getIndividual(validVictims.get(0)));
-				ArrayList<Integer> validVictimsCopy = Lists.newArrayList(validVictims);
+				final Attack attackTask = new Attack(Domain.getIndividual(attackerId), Domain.getIndividual(validVictims.get(0)));
+				final ArrayList<Integer> validVictimsCopy = Lists.newArrayList(validVictims);
 				validVictimsCopy.remove(0);
 
-				for (int i : validVictimsCopy) {
+				for (final int i : validVictimsCopy) {
 					attackTask.appendTask(new Attack(Domain.getIndividual(attackerId), Domain.getIndividual(i)));
 				}
 
@@ -365,9 +368,9 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public final boolean valid() {
-			List<Integer> validVictims = Lists.newLinkedList();
-			for (int id : victimIds) {
-				Individual victim = Domain.getIndividual(id);
+			final List<Integer> validVictims = Lists.newLinkedList();
+			for (final int id : victimIds) {
+				final Individual victim = Domain.getIndividual(id);
 				if (victim.isAlive()) {
 					validVictims.add(id);
 				}
@@ -378,9 +381,9 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public void render() {
-			List<Integer> validVictims = Lists.newLinkedList();
-			for (int id : victimIds) {
-				Individual victim = Domain.getIndividual(id);
+			final List<Integer> validVictims = Lists.newLinkedList();
+			for (final int id : victimIds) {
+				final Individual victim = Domain.getIndividual(id);
 				if (victim.isAlive()) {
 					validVictims.add(id);
 				}
@@ -389,9 +392,9 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.RED);
 			Gdx.gl20.glLineWidth(2f);
-			for (int i : validVictims) {
-				Individual individual = Domain.getIndividual(i);
-				Vector2 position = individual.getState().position;
+			for (final int i : validVictims) {
+				final Individual individual = Domain.getIndividual(i);
+				final Vector2 position = individual.getState().position;
 
 				UserInterface.shapeRenderer.rect(
 					worldToScreenX(position.x) - individual.getWidth()/2,
@@ -403,7 +406,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 			}
 
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
-			Individual attacker = Domain.getIndividual(attackerId);
+			final Individual attacker = Domain.getIndividual(attackerId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
@@ -422,7 +425,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		private final int attackerId;
 		private String attackerName, victimName;
 
-		public AttackVisibleIndividualTaskGenerator(int attackerId, VisibleIndividualFuture victimId, String overriddenVictimName) {
+		public AttackVisibleIndividualTaskGenerator(final int attackerId, final VisibleIndividualFuture victimId, final String overriddenVictimName) {
 			this.attackerId = attackerId;
 			this.victimId = victimId;
 
@@ -431,7 +434,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public final AITask apply(Object input) {
+		public final AITask apply(final Object input) {
 			if (!Domain.getIndividual(victimId.call()).isAlive()) {
 				return null;
 			}
@@ -477,7 +480,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
-			Individual attacker = Domain.getIndividual(attackerId);
+			final Individual attacker = Domain.getIndividual(attackerId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
@@ -494,7 +497,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 		private static final long serialVersionUID = 5647294340775051321L;
 		private int id;
 
-		public ReturnVictimId(int id) {
+		public ReturnVictimId(final int id) {
 			this.id = id;
 		}
 
@@ -505,28 +508,28 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	}
 
 
-	private final MenuItem chooseTargetMenuItem(Individual host, Routine routine) {
+	private final MenuItem chooseTargetMenuItem(final Individual host, final Routine routine) {
 		return new MenuItem(
 			"Choose targets",
 			() -> {
 				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 					new ChooseMultipleEntityCursorBoundTask<Individual, Integer>(true, Individual.class) {
 						@Override
-						public boolean canAdd(Individual f) {
+						public boolean canAdd(final Individual f) {
 							return f.isAlive() && f.getId().getId() != host.getId().getId();
 						}
 						@Override
-						public Integer transform(Individual f) {
+						public Integer transform(final Individual f) {
 							return f.getId().getId();
 						}
 						@Override
-						public void renderUIGuide(Graphics graphics) {
+						public void renderUIGuide(final Graphics graphics) {
 							UserInterface.shapeRenderer.begin(ShapeType.Line);
 							UserInterface.shapeRenderer.setColor(Color.RED);
 							Gdx.gl20.glLineWidth(2f);
-							for (int i : entities) {
-								Individual individual = Domain.getIndividual(i);
-								Vector2 position = individual.getState().position;
+							for (final int i : entities) {
+								final Individual individual = Domain.getIndividual(i);
+								final Vector2 position = individual.getState().position;
 
 								UserInterface.shapeRenderer.rect(
 									worldToScreenX(position.x) - individual.getWidth()/2,
@@ -540,8 +543,8 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 						}
 						@Override
 						public boolean executionConditionMet() {
-							Collection<Individual> nearbyEntities = Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY());
-							for (Individual indi : nearbyEntities) {
+							final Collection<Individual> nearbyEntities = gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Individual.class, getMouseWorldX(), getMouseWorldY());
+							for (final Individual indi : nearbyEntities) {
 								if (indi.isMouseOver()) {
 									return true;
 								}
@@ -553,7 +556,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 							return "Choose targets (Press enter to finalise)";
 						}
 						@Override
-						public void keyPressed(int keyCode) {
+						public void keyPressed(final int keyCode) {
 							if (keyCode == Keys.ENTER) {
 								routine.setAiTaskGenerator(new AttackTaskGenerator(host.getId().getId(), entities));
 								Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(null);
@@ -571,8 +574,8 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public final ContextMenu getDailyRoutineContextMenu(Individual host, final DailyRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public final ContextMenu getDailyRoutineContextMenu(final Individual host, final DailyRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseTargetMenuItem(host, routine)
@@ -583,8 +586,8 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public final ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public final ContextMenu getEntityVisibleRoutineContextMenu(final Individual host, final EntityVisibleRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseTargetMenuItem(host, routine)
@@ -611,8 +614,8 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public final ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public final ContextMenu getIndividualConditionRoutineContextMenu(final Individual host, final IndividualConditionRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseTargetMenuItem(host, routine)
@@ -623,8 +626,8 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public final ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public final ContextMenu getStimulusDrivenRoutineContextMenu(final Individual host, final StimulusDrivenRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseTargetMenuItem(host, routine)

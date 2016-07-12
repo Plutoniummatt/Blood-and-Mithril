@@ -1,6 +1,7 @@
 package bloodandmithril.util;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 
 
@@ -18,13 +19,14 @@ public abstract class CursorBoundTask {
 	/**
 	 * Constructor
 	 */
-	public CursorBoundTask(JITTask task, boolean isWorldCoordinate) {
+	public CursorBoundTask(final JITTask task, final boolean isWorldCoordinate) {
 		this.task = task;
 		this.isWorldCoordinate = isWorldCoordinate;
+		Wiring.injector().injectMembers(this);
 	}
 
 
-	public void setTask(JITTask task) {
+	public void setTask(final JITTask task) {
 		this.task = task;
 	}
 
@@ -35,7 +37,7 @@ public abstract class CursorBoundTask {
 	 * @param x - the x coordinate of the mouse, could either be world or screen coords.
 	 * @param y - the y coordinate of the mouse, could either be world or screen coords.
 	 */
-	public CursorBoundTask execute(int x, int y) {
+	public CursorBoundTask execute(final int x, final int y) {
 		task.execute(x, y);
 		return getImmediateTask();
 	}

@@ -13,12 +13,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Lists;
 
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.MouseOverable;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
 import bloodandmithril.util.CursorBoundTask;
-import bloodandmithril.world.Domain;
 
 /**
  * A {@link CursorBoundTask} to select multiple entities for whatever
@@ -30,14 +31,14 @@ public abstract class ChooseMultipleEntityCursorBoundTask<F extends MouseOverabl
 
 	protected List<T> entities = Lists.newLinkedList();
 
-	public ChooseMultipleEntityCursorBoundTask(boolean isWorldCoordinate, Class<F> clazz) {
+	public ChooseMultipleEntityCursorBoundTask(final boolean isWorldCoordinate, final Class<F> clazz) {
 		super(null, isWorldCoordinate);
 
 		setTask(args -> {
-			Collection<F> nearbyEntities = Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(clazz, getMouseWorldX(), getMouseWorldY());
-			List<T> availableEntities = Lists.newLinkedList();
+			final Collection<F> nearbyEntities = Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getPositionalIndexMap().getNearbyEntities(clazz, getMouseWorldX(), getMouseWorldY());
+			final List<T> availableEntities = Lists.newLinkedList();
 
-			for (F entity : Lists.newArrayList(nearbyEntities)) {
+			for (final F entity : Lists.newArrayList(nearbyEntities)) {
 				if (canAdd(entity) && entity.isMouseOver()) {
 					availableEntities.add(transform(entity));
 				} else {
@@ -46,8 +47,8 @@ public abstract class ChooseMultipleEntityCursorBoundTask<F extends MouseOverabl
 			}
 
 			if (availableEntities.size() > 1) {
-				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-				for (F entity : nearbyEntities) {
+				final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+				for (final F entity : nearbyEntities) {
 					menu.addMenuItem(
 						new MenuItem(
 							"Select " + entity.getMenuTitle(),
@@ -83,7 +84,7 @@ public abstract class ChooseMultipleEntityCursorBoundTask<F extends MouseOverabl
 
 
 	@Override
-	public void keyPressed(int keyCode) {
+	public void keyPressed(final int keyCode) {
 	}
 
 

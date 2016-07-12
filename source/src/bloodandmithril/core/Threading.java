@@ -46,6 +46,9 @@ public class Threading {
 	/** Thread responsible for processing events */
 	private Thread eventsProcessingThread;
 
+	/** Update rate multiplier */
+	private float updateRate;
+
 	@Inject private GameSaver gameSaver;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private MissionTracker missionTracker;
@@ -75,12 +78,12 @@ public class Threading {
 
 				if (System.currentTimeMillis() - prevFrame > 16 && !gameClientStateTracker.isRendering()) {
 					prevFrame = System.currentTimeMillis();
-					final World world = Domain.getActiveWorld();
+					final World world = gameClientStateTracker.getActiveWorld();
 					if (world != null) {
 						final Collection<Particle> particles = world.getClientParticles();
 						for (final Particle p : particles) {
 							if (p.getRemovalCondition().call()) {
-								Domain.getActiveWorld().getClientParticles().remove(p);
+								gameClientStateTracker.getActiveWorld().getClientParticles().remove(p);
 							}
 							try {
 								p.update(0.012f);
@@ -112,8 +115,8 @@ public class Threading {
 				}
 
 				if (System.currentTimeMillis() - prevFrame1 > 16) {
-					if (Domain.getActiveWorld() != null) {
-						Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
+					if (gameClientStateTracker.getActiveWorld() != null) {
+						gameClientStateTracker.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
 							(int) graphics.getCam().position.x,
 							(int) graphics.getCam().position.y
 						);
@@ -122,9 +125,9 @@ public class Threading {
 				}
 
 				if (System.currentTimeMillis() - prevFrame2 > 200) {
-					if (Domain.getActiveWorld() != null) {
+					if (gameClientStateTracker.getActiveWorld() != null) {
 						Domain.getIndividuals().values().stream().forEach(individual -> {
-							Domain.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
+							gameClientStateTracker.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
 								(int) individual.getState().position.x,
 								(int) individual.getState().position.y
 							);
@@ -151,15 +154,15 @@ public class Threading {
 					throw new RuntimeException(e);
 				}
 
-				if (System.currentTimeMillis() - prevFrame > Math.round(16f / BloodAndMithrilClient.getUpdateRate())) {
+				if (System.currentTimeMillis() - prevFrame > Math.round(16f / updateRate)) {
 					prevFrame = System.currentTimeMillis();
 					try {
 						gameSaver.update();
 
 						// Do not update if game is paused
 						// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
-						if (!gameClientStateTracker.isPaused() && !gameSaver.isSaving() && Domain.getActiveWorld() != null && !gameClientStateTracker.isLoading()) {
-							Domain.getActiveWorld().update();
+						if (!gameClientStateTracker.isPaused() && !gameSaver.isSaving() && gameClientStateTracker.getActiveWorld() != null && !gameClientStateTracker.isLoading()) {
+							gameClientStateTracker.getActiveWorld().update();
 						}
 					} catch (final Exception e) {
 						e.printStackTrace();
@@ -206,5 +209,15 @@ public class Threading {
 		if (ClientServerInterface.isClient()) {
 			clientProcessingThreadPool = Executors.newCachedThreadPool();
 		}
+	}
+
+
+	public float getUpdateRate() {
+		return updateRate;
+	}
+
+
+	public void setUpdateRate(final float updateRate) {
+		this.updateRate = updateRate;
 	}
 }

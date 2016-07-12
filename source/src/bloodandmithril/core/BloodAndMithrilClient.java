@@ -81,8 +81,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	@Inject	private GameSaver gameSaver;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
 
-	public static float updateRateMultiplier = 1f;
-
 	@Override
 	public void create() {
 		// Load client-side resources
@@ -97,7 +95,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 			1,
 			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).setUpdateTick(1f/60f)
 		);
-		Domain.setActiveWorld(1);
+		gameClientStateTracker.setSelectedActiveWorldId(1);
 		ClientServerInterface.setServer(false);
 
 		Wiring.injector().injectMembers(this);
@@ -136,11 +134,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	}
 
 
-	public static int getUpdateRate() {
-		return Math.round(updateRateMultiplier);
-	}
-
-
 	@Override
 	public void render() {
 		try {
@@ -171,8 +164,8 @@ public class BloodAndMithrilClient implements ApplicationListener {
 			Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 			// Rendering --------------------- /
-			if (Domain.getActiveWorld() != null && !gameClientStateTracker.isLoading()) {
-				WorldRenderer.render(Domain.getActiveWorld(), (int) graphics.getCam().position.x, (int) graphics.getCam().position.y);
+			if (gameClientStateTracker.getActiveWorld() != null && !gameClientStateTracker.isLoading()) {
+				WorldRenderer.render(gameClientStateTracker.getActiveWorld(), (int) graphics.getCam().position.x, (int) graphics.getCam().position.y);
 			}
 
 			// Fading --------------------- /

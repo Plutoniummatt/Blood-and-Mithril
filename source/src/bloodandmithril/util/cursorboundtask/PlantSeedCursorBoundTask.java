@@ -14,19 +14,20 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.Routine;
 import bloodandmithril.character.ai.task.PlantSeed;
 import bloodandmithril.character.ai.task.PlantSeed.PlantSeedTaskGenerator;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.food.plant.SeedItem;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 import bloodandmithril.world.topography.tile.Tile;
@@ -44,17 +45,19 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 	private final Routine routine;
 	private final Individual planter;
 
+	@Inject private GameClientStateTracker gameClientStateTracker;
+
 	/**
 	 * Constructor
 	 */
-	public PlantSeedCursorBoundTask(SeedItem seed, Individual planter, Routine routine) {
+	public PlantSeedCursorBoundTask(final SeedItem seed, final Individual planter, final Routine routine) {
 		super(
 			args -> {
-				bloodandmithril.prop.plant.seed.SeedProp propSeed = seed.getPropSeed();
+				final bloodandmithril.prop.plant.seed.SeedProp propSeed = seed.getPropSeed();
 				Vector2 coords;
 				try {
-					coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
-				} catch (NoTileFoundException e) {
+					coords = Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+				} catch (final NoTileFoundException e) {
 					return;
 				}
 				propSeed.position.x = getMouseWorldX();
@@ -64,7 +67,7 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 					if (ClientServerInterface.isServer()) {
 						try {
 							planter.getAI().setCurrentTask(new PlantSeed(planter, propSeed));
-						} catch (NoTileFoundException e) {}
+						} catch (final NoTileFoundException e) {}
 					} else {
 						ClientServerInterface.SendRequest.sendPlantSeedRequest(planter, propSeed);
 					}
@@ -79,36 +82,36 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public final void renderUIGuide(Graphics graphics) {
+	public final void renderUIGuide(final Graphics graphics) {
 		try {
-			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+			final Vector2 coords = gameClientStateTracker.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
-			float x = worldToScreenX(getMouseWorldX());
-			float y = worldToScreenY(coords.y);
+			final float x = worldToScreenX(getMouseWorldX());
+			final float y = worldToScreenY(coords.y);
 
 			gl.glEnable(GL_BLEND);
 			gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			graphics.getSpriteBatch().begin();
 			graphics.getSpriteBatch().setColor(executionConditionMet() ? Color.GREEN : Color.RED);
 			graphics.getSpriteBatch().draw(UserInterface.currentArrow, x - 5, y);
-			for (Vector2 location : plantingLocations) {
+			for (final Vector2 location : plantingLocations) {
 				graphics.getSpriteBatch().draw(UserInterface.currentArrow, worldToScreenX(location.x), worldToScreenY(location.y));
 			}
 			graphics.getSpriteBatch().end();
 			gl.glDisable(GL_BLEND);
 
-		} catch (NoTileFoundException e) {}
+		} catch (final NoTileFoundException e) {}
 	}
 
 
 	@Override
 	public final boolean executionConditionMet() {
 		try {
-			Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+			final Vector2 coords = gameClientStateTracker.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
-			Tile tile = Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), coords.y - Topography.TILE_SIZE / 2, true);
+			final Tile tile = gameClientStateTracker.getActiveWorld().getTopography().getTile(getMouseWorldX(), coords.y - Topography.TILE_SIZE / 2, true);
 			return tile instanceof SoilTile && ((SoilTile) tile).canPlant(toPlant);
-		} catch (NoTileFoundException e) {
+		} catch (final NoTileFoundException e) {
 			return false;
 		}
 	}
@@ -138,7 +141,7 @@ public class PlantSeedCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public final void keyPressed(int keyCode) {
+	public final void keyPressed(final int keyCode) {
 		routine.setAiTaskGenerator(new PlantSeedTaskGenerator(getPlantingLocations(), planter.getId().getId(), toPlant));
 		Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(null);
 	}

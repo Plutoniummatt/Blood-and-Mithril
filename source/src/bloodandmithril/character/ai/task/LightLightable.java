@@ -37,6 +37,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -77,7 +78,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 	/**
 	 * Constructor
 	 */
-	public LightLightable(Individual host, Lightable lightable, boolean auto) throws NoTileFoundException {
+	public LightLightable(final Individual host, final Lightable lightable, final boolean auto) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Lighting"
@@ -105,7 +106,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public Boolean call() {
-			Lightable prop = (Lightable) Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId);
+			final Lightable prop = (Lightable) Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId);
 			return prop == null || prop.isLit() && auto || getHost().getInteractionBox().isWithinBox(Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId).position);
 		}
 	}
@@ -120,7 +121,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		private static final long serialVersionUID = -5213896264414790155L;
 		private boolean lit;
 
-		public LightFire(IndividualIdentifier hostId) {
+		public LightFire(final IndividualIdentifier hostId) {
 			super(hostId);
 		}
 
@@ -133,7 +134,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public boolean isComplete() {
-			Prop prop = Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId);
+			final Prop prop = Domain.getWorld(getHost().getWorldId()).props().getProp(lightableId);
 			return prop != null && (lit || ((Lightable) prop).isLit()) || !((Lightable) prop).canLight();
 		}
 
@@ -145,14 +146,14 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public void execute(float delta) {
-			Individual host = Domain.getIndividual(hostId.getId());
+		public void execute(final float delta) {
+			final Individual host = Domain.getIndividual(hostId.getId());
 
 			if (!Domain.getWorld(host.getWorldId()).props().hasProp(lightableId)) {
 				return;
 			}
 
-			Lightable lightable = (Lightable) Domain.getWorld(host.getWorldId()).props().getProp(lightableId);
+			final Lightable lightable = (Lightable) Domain.getWorld(host.getWorldId()).props().getProp(lightableId);
 
 			if (!lightable.canLight()) {
 				lit = true;
@@ -160,7 +161,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 			}
 
 			if (host.getInteractionBox().isWithinBox(((Prop) lightable).position)) {
-				FireLighter fireLighter = host.getFireLighter();
+				final FireLighter fireLighter = host.getFireLighter();
 				if (fireLighter != null) {
 					fireLighter.fireLightingEffect((Prop) lightable);
 					lightable.light();
@@ -179,33 +180,33 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		private final List<Integer> lightableIds;
 		private final int worldId;
 
-		public LightSelectedLightablesTaskGenerator(int hostId, List<Integer> lightableIds, int worldId) {
+		public LightSelectedLightablesTaskGenerator(final int hostId, final List<Integer> lightableIds, final int worldId) {
 			this.hostId = hostId;
 			this.lightableIds = lightableIds;
 			this.worldId = worldId;
 		}
 
 		@Override
-		public AITask apply(Object input) {
+		public AITask apply(final Object input) {
 			if (valid()) {
 				try {
-					List<Integer> validEntities = Lists.newLinkedList();
-					for (int i : lightableIds) {
-						WorldProps props = Domain.getWorld(worldId).props();
+					final List<Integer> validEntities = Lists.newLinkedList();
+					for (final int i : lightableIds) {
+						final WorldProps props = Domain.getWorld(worldId).props();
 						if (props.hasProp(i) && Lightable.class.isAssignableFrom(props.getProp(i).getClass())) {
 							validEntities.add(i);
 						}
 					}
 
-					LightLightable lightLightable = new LightLightable(getIndividual(hostId), (Lightable) getWorld(worldId).props().getProp(validEntities.get(0)), true);
-					ArrayList<Integer> lightableIdsCopy = Lists.newArrayList(validEntities);
+					final LightLightable lightLightable = new LightLightable(getIndividual(hostId), (Lightable) getWorld(worldId).props().getProp(validEntities.get(0)), true);
+					final ArrayList<Integer> lightableIdsCopy = Lists.newArrayList(validEntities);
 					lightableIdsCopy.remove(0);
-					for (int id : lightableIdsCopy) {
+					for (final int id : lightableIdsCopy) {
 						lightLightable.appendTask(new LightLightable(getIndividual(hostId), (Lightable) getWorld(worldId).props().getProp(id), true));
 					}
 
 					return lightLightable;
-				} catch (NoTileFoundException e) {
+				} catch (final NoTileFoundException e) {
 					return null;
 				}
 			}
@@ -234,9 +235,9 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public boolean valid() {
-			for (int id : lightableIds) {
+			for (final int id : lightableIds) {
 				if (getWorld(worldId).props().hasProp(id)) {
-					Prop prop = getWorld(worldId).props().getProp(id);
+					final Prop prop = getWorld(worldId).props().getProp(id);
 					if (Lightable.class.isAssignableFrom(prop.getClass()) && ((Lightable) prop).canLight() && !((Lightable) prop).isLit()) {
 						return true;
 					}
@@ -255,10 +256,10 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public void render() {
-			List<Prop> validEntities = Lists.newLinkedList();
-			for (int i : lightableIds) {
+			final List<Prop> validEntities = Lists.newLinkedList();
+			for (final int i : lightableIds) {
 				if (Domain.getWorld(worldId).props().hasProp(i)) {
-					Prop prop = Domain.getWorld(worldId).props().getProp(i);
+					final Prop prop = Domain.getWorld(worldId).props().getProp(i);
 					if (Lightable.class.isAssignableFrom(prop.getClass())) {
 						validEntities.add(prop);
 					}
@@ -268,7 +269,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
-			Individual harvestable = Domain.getIndividual(hostId);
+			final Individual harvestable = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(harvestable.getState().position.x) - harvestable.getWidth()/2,
 				worldToScreenY(harvestable.getState().position.y),
@@ -277,7 +278,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 			);
 			UserInterface.shapeRenderer.setColor(Color.RED);
 			Gdx.gl20.glLineWidth(2f);
-			for (Prop p : validEntities) {
+			for (final Prop p : validEntities) {
 				UserInterface.shapeRenderer.rect(
 					worldToScreenX(p.position.x) - p.width/2,
 					worldToScreenY(p.position.y),
@@ -296,7 +297,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		private final float left, right, top, bottom;
 		private final int hostId;
 
-		public LightLightablesInAreaTaskGenerator(Vector2 start, Vector2 finish, int hostId) {
+		public LightLightablesInAreaTaskGenerator(final Vector2 start, final Vector2 finish, final int hostId) {
 			this.hostId = hostId;
 			this.left 	= min(start.x, finish.x);
 			this.right 	= max(start.x, finish.x);
@@ -305,10 +306,10 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public final AITask apply(Object input) {
+		public final AITask apply(final Object input) {
 			final Individual individual = getIndividual(hostId);
-			World world = getWorld(individual.getWorldId());
-			List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Prop.class, left, right, top, bottom);
+			final World world = getWorld(individual.getWorldId());
+			final List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Prop.class, left, right, top, bottom);
 
 			final Wrapper<LightLightable> task = new Wrapper<LightLightable>(null);
 
@@ -327,7 +328,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 					} else {
 						task.t.appendTask(new LightLightable(individual, lightable, true));
 					}
-				} catch (Exception e) {}
+				} catch (final Exception e) {}
 			});
 
 			return task.t;
@@ -361,7 +362,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
-			Individual attacker = Domain.getIndividual(hostId);
+			final Individual attacker = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
@@ -382,7 +383,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 	}
 
 
-	private ContextMenu getContextMenu(Routine routine, Individual host) {
+	private ContextMenu getContextMenu(final Routine routine, final Individual host) {
 		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
 			new MenuItem(
 				"Light lightables in area",
@@ -411,7 +412,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 								return null;
 							}
 							@Override
-							public void keyPressed(int keyCode) {
+							public void keyPressed(final int keyCode) {
 							}
 						}
 					);
@@ -427,21 +428,21 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 						new ChooseMultipleEntityCursorBoundTask<Prop, Integer>(true, Prop.class) {
 							@Override
-							public boolean canAdd(Prop f) {
+							public boolean canAdd(final Prop f) {
 								return Lightable.class.isAssignableFrom(f.getClass());
 							}
 							@Override
-							public Integer transform(Prop f) {
+							public Integer transform(final Prop f) {
 								return f.id;
 							}
 							@Override
-							public void renderUIGuide(Graphics graphics) {
+							public void renderUIGuide(final Graphics graphics) {
 								UserInterface.shapeRenderer.begin(ShapeType.Line);
 								UserInterface.shapeRenderer.setColor(Color.RED);
 								Gdx.gl20.glLineWidth(2f);
-								for (int i : entities) {
-									Prop p = Domain.getActiveWorld().props().getProp(i);
-									Vector2 position = p.position;
+								for (final int i : entities) {
+									final Prop p = Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().props().getProp(i);
+									final Vector2 position = p.position;
 
 									UserInterface.shapeRenderer.rect(
 										worldToScreenX(position.x) - p.width/2,
@@ -455,7 +456,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 							}
 							@Override
 							public boolean executionConditionMet() {
-								for (Prop prop : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY())) {
+								for (final Prop prop : Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY())) {
 									if (Lightable.class.isAssignableFrom(prop.getClass())) {
 										return true;
 									}
@@ -467,7 +468,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 								return "Select lightables";
 							}
 							@Override
-							public void keyPressed(int keyCode) {
+							public void keyPressed(final int keyCode) {
 								if (keyCode == Keys.ENTER) {
 									routine.setAiTaskGenerator(new LightSelectedLightablesTaskGenerator(host.getId().getId(), entities, host.getWorldId()));
 									Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(null);
@@ -486,14 +487,14 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+	public ContextMenu getDailyRoutineContextMenu(final Individual host, final DailyRoutine routine) {
 		return getContextMenu(routine, host);
 	}
 
 
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		ContextMenu contextMenu = getContextMenu(routine, host);
+	public ContextMenu getEntityVisibleRoutineContextMenu(final Individual host, final EntityVisibleRoutine routine) {
+		final ContextMenu contextMenu = getContextMenu(routine, host);
 
 		final EntityVisible identificationFunction = routine.getIdentificationFunction();
 		if (Lightable.class.isAssignableFrom(identificationFunction.getEntity().a)) {
@@ -515,13 +516,13 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+	public ContextMenu getIndividualConditionRoutineContextMenu(final Individual host, final IndividualConditionRoutine routine) {
 		return getContextMenu(routine, host);
 	}
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+	public ContextMenu getStimulusDrivenRoutineContextMenu(final Individual host, final StimulusDrivenRoutine routine) {
 		return getContextMenu(routine, host);
 	}
 
@@ -530,23 +531,23 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		private static final long serialVersionUID = 1898797069712115415L;
 		private int individualId;
 
-		public GenerateLightAnyVisibleLightables(int individualId) {
+		public GenerateLightAnyVisibleLightables(final int individualId) {
 			this.individualId = individualId;
 		}
 
 		@Override
-		public AITask apply(Object input) {
+		public AITask apply(final Object input) {
 			if (!(input instanceof Lightable)) {
 				return null;
 			}
 
 			try {
-				Individual individual = Domain.getIndividual(individualId);
+				final Individual individual = Domain.getIndividual(individualId);
 				if (individual.getFireLighter() == null || !individual.isAlive()) {
 					return null;
 				}
 				return new LightLightable(individual, (Lightable) input, true);
-			} catch (NoTileFoundException e) {
+			} catch (final NoTileFoundException e) {
 				return null;
 			}
 		}
@@ -580,7 +581,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 		public void render() {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
-			Individual attacker = Domain.getIndividual(individualId);
+			final Individual attacker = Domain.getIndividual(individualId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),

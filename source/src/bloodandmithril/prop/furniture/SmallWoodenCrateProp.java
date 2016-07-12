@@ -13,6 +13,8 @@ import bloodandmithril.character.ai.task.LockUnlockContainer;
 import bloodandmithril.character.ai.task.TradeWith;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.Particle.MovementMode;
@@ -52,7 +54,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 	/**
 	 * Constructor
 	 */
-	public SmallWoodenCrateProp(float x, float y, Class<? extends Wood> wood) {
+	public SmallWoodenCrateProp(final float x, final float y, final Class<? extends Wood> wood) {
 		super(x, y, 44, 35, true);
 		this.wood = wood;
 		container = new ContainerImpl(10000, 400);
@@ -62,7 +64,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 	/**
 	 * Constructor for lockable {@link WoodenChestProp}
 	 */
-	public SmallWoodenCrateProp(float x, float y, float capacity, int volume, boolean locked, Function<Item, Boolean> unlockingFunction, Class<? extends Wood> wood) {
+	public SmallWoodenCrateProp(final float x, final float y, final float capacity, final int volume, final boolean locked, final Function<Item, Boolean> unlockingFunction, final Class<? extends Wood> wood) {
 		super(x, y, 44, 35, true);
 		this.wood = wood;
 		container = new ContainerImpl(capacity, volume, locked, unlockingFunction);
@@ -76,7 +78,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 
 	@Override
 	public ContextMenu getContextMenu() {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			new MenuItem(
@@ -105,7 +107,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 		if (!isLocked()) {
 			if (Domain.getSelectedIndividuals().size() > 0) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-				MenuItem openChestMenuItem = new MenuItem(
+				final MenuItem openChestMenuItem = new MenuItem(
 					"Open",
 					() -> {
 						if (Domain.getSelectedIndividuals().size() == 1) {
@@ -131,7 +133,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 				menu.addMenuItem(openChestMenuItem);
 
 				if (container.isLockable()) {
-					MenuItem lockChestMenuItem = new MenuItem(
+					final MenuItem lockChestMenuItem = new MenuItem(
 						"Lock",
 						() -> {
 							if (Domain.getSelectedIndividuals().size() == 1) {
@@ -140,7 +142,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 										selected.getAI().setCurrentTask(
 											new LockUnlockContainer(selected, this, true)
 										);
-									} catch (NoTileFoundException e) {}
+									} catch (final NoTileFoundException e) {}
 								} else {
 									ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, true);
 								}
@@ -162,7 +164,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 		} else {
 			if (Domain.getSelectedIndividuals().size() > 0) {
 				final Individual selected = Domain.getSelectedIndividuals().iterator().next();
-				MenuItem unlockChestMenuItem = new MenuItem(
+				final MenuItem unlockChestMenuItem = new MenuItem(
 					"Unlock",
 					() -> {
 						if (Domain.getSelectedIndividuals().size() == 1) {
@@ -171,7 +173,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 									selected.getAI().setCurrentTask(
 										new LockUnlockContainer(selected, this, false)
 									);
-								} catch (NoTileFoundException e) {}
+								} catch (final NoTileFoundException e) {}
 							} else {
 								ClientServerInterface.SendRequest.sendLockUnlockContainerRequest(selected.getId().getId(), id, false);
 							}
@@ -196,7 +198,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 
 
 	@Override
-	public void synchronizeProp(Prop other) {
+	public void synchronizeProp(final Prop other) {
 		if (other instanceof SmallWoodenCrateProp) {
 			this.container.synchronizeContainer(((SmallWoodenCrateProp)other).container);
 		} else {
@@ -206,13 +208,13 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 
 
 	@Override
-	public void render(Graphics graphics) {
+	public void render(final Graphics graphics) {
 		graphics.getSpriteBatch().draw(woodenCrate, position.x - width / 2, position.y);
 	}
 
 
 	@Override
-	public void update(float delta) {
+	public void update(final float delta) {
 		if (Util.roll(0.95f)) {
 			return;
 		}
@@ -224,7 +226,7 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 				Color.WHITE,
 				Color.RED,
 				2f,
-				Domain.getActiveWorldId(),
+				Wiring.injector().getInstance(GameClientStateTracker.class).getSelectedActiveWorldId(),
 				4f,
 				MovementMode.EMBER,
 				Depth.FOREGROUND,
@@ -251,19 +253,19 @@ public class SmallWoodenCrateProp extends Furniture implements Container {
 
 
 	@Override
-	public boolean unlock(Item with) {
+	public boolean unlock(final Item with) {
 		return container.unlock(with);
 	}
 
 
 	@Override
-	public int has(Item item) {
+	public int has(final Item item) {
 		return container.has(item);
 	}
 
 
 	@Override
-	public boolean lock(Item with) {
+	public boolean lock(final Item with) {
 		return container.lock(with);
 	}
 

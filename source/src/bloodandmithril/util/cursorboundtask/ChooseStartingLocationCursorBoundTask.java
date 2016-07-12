@@ -17,7 +17,9 @@ import com.google.common.collect.Maps;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.ItemPackage;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.container.Container;
 import bloodandmithril.prop.Prop;
@@ -45,7 +47,7 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	/**
 	 * Constructor
 	 */
-	public ChooseStartingLocationCursorBoundTask(Set<Individual> startingIndividuals, ItemPackage startingItemPackage, int startingFactionId, int worldId) {
+	public ChooseStartingLocationCursorBoundTask(final Set<Individual> startingIndividuals, final ItemPackage startingItemPackage, final int startingFactionId, final int worldId) {
 		super(
 			null,
 			true
@@ -54,16 +56,16 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 		((Prop) startingItemPackage.getContainer()).setWorldId(worldId);
 		setTask(args -> {
 			Domain.getWorld(worldId).props().addProp((Prop) startingItemPackage.getContainer());
-			for (Individual individual : individuals.values()) {
+			for (final Individual individual : individuals.values()) {
 				individual.setFactionId(startingFactionId);
-				Domain.addIndividual(individual, Domain.getActiveWorld().getWorldId());
+				Domain.addIndividual(individual, Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getWorldId());
 			}
 		});
 
 		this.startingItemPackage = startingItemPackage;
 
-		int maxSpread = startingIndividuals.size() * 30;
-		for (Individual individual : startingIndividuals) {
+		final int maxSpread = startingIndividuals.size() * 30;
+		for (final Individual individual : startingIndividuals) {
 			this.individuals.put(
 				Util.getRandom().nextInt(maxSpread) - maxSpread / 2,
 				individual
@@ -74,35 +76,35 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public void renderUIGuide(Graphics graphics) {
-		float mouseX = getMouseWorldX();
-		float mouseY = getMouseWorldY();
+	public void renderUIGuide(final Graphics graphics) {
+		final float mouseX = getMouseWorldX();
+		final float mouseY = getMouseWorldY();
 
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		graphics.getSpriteBatch().begin();
 		graphics.getSpriteBatch().setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getUi().getUITrackingCamera().combined);
-		for (Entry<Integer, Individual> entry : individuals.entrySet()) {
+		for (final Entry<Integer, Individual> entry : individuals.entrySet()) {
 			Vector2 pos;
 			try {
-				pos = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(mouseX + entry.getKey(), mouseY, true);
+				pos = Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(mouseX + entry.getKey(), mouseY, true);
 				entry.getValue().getState().position.x = pos.x;
 				entry.getValue().getState().position.y = pos.y;
 
-				boolean canPlace = canPlaceIndividual(entry.getValue());
+				final boolean canPlace = canPlaceIndividual(entry.getValue());
 
 				Shaders.filter.setUniformf("color", canPlace ? Color.GREEN : Color.RED);
 				graphics.getSpriteBatch().draw(UserInterface.currentArrow, pos.x - 5, pos.y);
 				graphics.getSpriteBatch().flush();
-			} catch (NoTileFoundException e) {
+			} catch (final NoTileFoundException e) {
 				pos = new Vector2();
 			}
 		}
 		graphics.getSpriteBatch().end();
 		gl.glDisable(GL_BLEND);
 
-		Container container = startingItemPackage.getContainer();
+		final Container container = startingItemPackage.getContainer();
 		if (container instanceof Prop) {
 			((Prop) container).position.x = mouseX;
 			((Prop) container).position.y = mouseY;
@@ -111,7 +113,7 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	}
 
 
-	private boolean canPlaceIndividual(Individual individual) {
+	private boolean canPlaceIndividual(final Individual individual) {
 		return Prop.canPlaceAt(
 			individual.getState().position.x,
 			individual.getState().position.y,
@@ -120,14 +122,14 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 			new SerializableMappingFunction<Tile, Boolean>() {
 				private static final long serialVersionUID = 1L;
 				@Override
-				public Boolean apply(Tile input) {
+				public Boolean apply(final Tile input) {
 					return !(input instanceof EmptyTile);
 				}
 			},
 			new SerializableMappingFunction<Tile, Boolean>() {
 				private static final long serialVersionUID = 1L;
 				@Override
-				public Boolean apply(Tile input) {
+				public Boolean apply(final Tile input) {
 					return true;
 				}
 			},
@@ -142,10 +144,10 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 
 	@Override
 	public boolean executionConditionMet() {
-		Container container = startingItemPackage.getContainer();
+		final Container container = startingItemPackage.getContainer();
 
 		if (container instanceof Prop) {
-			for (Individual individual : individuals.values()) {
+			for (final Individual individual : individuals.values()) {
 				if  (!canPlaceIndividual(individual)) {
 					return false;
 				}
@@ -176,6 +178,6 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public void keyPressed(int keyCode) {
+	public void keyPressed(final int keyCode) {
 	}
 }

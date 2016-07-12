@@ -141,12 +141,12 @@ public class NewGameWindow extends Window {
 			ClientServerInterface.setServer(true);
 
 			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
-			Domain.setActiveWorld(Domain.createWorld());
+			gameClientStateTracker.setSelectedActiveWorldId(Domain.createWorld());
 			gameClientStateTracker.setInGame(true);
 			gameSetupService.setup();
 			factionControlService.control(playerFaction.factionId);
 
-			final Topography topography = Domain.getActiveWorld().getTopography();
+			final Topography topography = gameClientStateTracker.getActiveWorld().getTopography();
 			topography.loadOrGenerateChunk(0, 0, false);
 
 			SuperStructure superStructure = null;
@@ -174,7 +174,7 @@ public class NewGameWindow extends Window {
 					})),
 					selectedItemPackage,
 					playerFaction.factionId,
-					Domain.getActiveWorld().getWorldId()
+					gameClientStateTracker.getActiveWorld().getWorldId()
 				)
 			);
 

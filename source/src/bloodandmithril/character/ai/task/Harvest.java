@@ -41,6 +41,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -79,6 +80,8 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 	/** Coordinate of the {@link Harvestable} to harvest */
 	private final Prop harvestable;
 
+	@Inject private GameClientStateTracker gameClientStateTracker;
+
 	@Inject
 	Harvest() {
 		super(null, "");
@@ -90,7 +93,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 	 *
 	 * @param coordinate - World pixel coordinate of the {@link Harvestable} to harvest.
 	 */
-	public Harvest(Individual host, Harvestable harvestable) throws NoTileFoundException {
+	public Harvest(final Individual host, final Harvestable harvestable) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Harvesting",
@@ -122,7 +125,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 		/**
 		 * Constructor
 		 */
-		public HarvestItem(IndividualIdentifier hostId) {
+		public HarvestItem(final IndividualIdentifier hostId) {
 			super(hostId);
 		}
 
@@ -146,9 +149,9 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public final void execute(float delta) {
+		public final void execute(final float delta) {
 
-			Individual host = Domain.getIndividual(hostId.getId());
+			final Individual host = Domain.getIndividual(hostId.getId());
 
 			if (host.getInteractionBox().overlapsWith(harvestable.getBoundingBox())) {
 				if (Domain.getWorld(host.getWorldId()).props().hasProp(harvestable.id)) {
@@ -161,10 +164,10 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 					}
 
 					if (ClientServerInterface.isClient() && ClientServerInterface.isServer()) {
-						Collection<Item> harvested = ((Harvestable)harvestable).harvest(true);
-						Individual individual = Domain.getIndividual(hostId.getId());
+						final Collection<Item> harvested = ((Harvestable)harvestable).harvest(true);
+						final Individual individual = Domain.getIndividual(hostId.getId());
 						if (harvested != null && !harvested.isEmpty()) {
-							for (Item item : harvested) {
+							for (final Item item : harvested) {
 								if (individual.canReceive(item)) {
 									individual.giveItem(item);
 								} else {
@@ -173,9 +176,9 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 							}
 						}
 						taskDone = true;
-						InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.getLayeredComponents(), new Predicate<Component>() {
+						final InventoryWindow existingInventoryWindow = (InventoryWindow) Iterables.find(UserInterface.getLayeredComponents(), new Predicate<Component>() {
 							@Override
-							public boolean apply(Component input) {
+							public boolean apply(final Component input) {
 								if (input instanceof Window) {
 									return ((Window) input).title.equals(hostId.getSimpleName() + " - Inventory");
 								}
@@ -187,9 +190,9 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 							existingInventoryWindow.refresh();
 						}
 					} else if (ClientServerInterface.isServer()) {
-						Collection<Item> harvested = ((Harvestable)harvestable).harvest(true);
+						final Collection<Item> harvested = ((Harvestable)harvestable).harvest(true);
 						if (harvested != null && !harvested.isEmpty()) {
-							for (Item item : harvested) {
+							for (final Item item : harvested) {
 								ClientServerInterface.SendNotification.notifyGiveItem(host.getId().getId(), item, harvestable.position.cpy().add(0, 10f));
 							}
 						}
@@ -206,20 +209,20 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 		private final List<Integer> harvestableIds;
 		private final int worldId;
 
-		public HarvestSelectedHarvestablesTaskGenerator(int hostId, List<Integer> harvestableIds, int worldId) {
+		public HarvestSelectedHarvestablesTaskGenerator(final int hostId, final List<Integer> harvestableIds, final int worldId) {
 			this.hostId = hostId;
 			this.harvestableIds = harvestableIds;
 			this.worldId = worldId;
 		}
 
 		@Override
-		public AITask apply(Object input) {
+		public AITask apply(final Object input) {
 			if (valid()) {
 				try {
-					List<Harvestable> validEntities = Lists.newLinkedList();
-					for (int i : harvestableIds) {
+					final List<Harvestable> validEntities = Lists.newLinkedList();
+					for (final int i : harvestableIds) {
 						if (Domain.getWorld(worldId).props().hasProp(i)) {
-							Prop prop = Domain.getWorld(worldId).props().getProp(i);
+							final Prop prop = Domain.getWorld(worldId).props().getProp(i);
 							if (Harvestable.class.isAssignableFrom(prop.getClass())) {
 								validEntities.add((Harvestable) prop);
 							}
@@ -231,15 +234,15 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 					} else if (validEntities.size() == 1) {
 						return new Harvest(getIndividual(hostId), validEntities.get(0));
 					} else {
-						Harvest harvest = new Harvest(getIndividual(hostId), validEntities.get(0));
+						final Harvest harvest = new Harvest(getIndividual(hostId), validEntities.get(0));
 						validEntities.remove(0);
-						for (Harvestable h : validEntities) {
+						for (final Harvestable h : validEntities) {
 							harvest.appendTask(new Harvest(getIndividual(hostId), h));
 						}
 
 						return harvest;
 					}
-				} catch (NoTileFoundException e) {
+				} catch (final NoTileFoundException e) {
 					return null;
 				}
 			}
@@ -268,7 +271,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public boolean valid() {
-			for (int i : harvestableIds) {
+			for (final int i : harvestableIds) {
 				if (getWorld(worldId).props().hasProp(i)) {
 					if (Harvestable.class.isAssignableFrom(getWorld(worldId).props().getProp(i).getClass())) {
 						return true;
@@ -288,10 +291,10 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public void render() {
-			List<Prop> validEntities = Lists.newLinkedList();
-			for (int i : harvestableIds) {
+			final List<Prop> validEntities = Lists.newLinkedList();
+			for (final int i : harvestableIds) {
 				if (Domain.getWorld(worldId).props().hasProp(i)) {
-					Prop prop = Domain.getWorld(worldId).props().getProp(i);
+					final Prop prop = Domain.getWorld(worldId).props().getProp(i);
 					if (Harvestable.class.isAssignableFrom(prop.getClass())) {
 						validEntities.add(prop);
 					}
@@ -300,7 +303,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
-			Individual harvestable = Domain.getIndividual(hostId);
+			final Individual harvestable = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(harvestable.getState().position.x) - harvestable.getWidth()/2,
 				worldToScreenY(harvestable.getState().position.y),
@@ -309,7 +312,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 			);
 			UserInterface.shapeRenderer.setColor(Color.RED);
 			Gdx.gl20.glLineWidth(2f);
-			for (Prop p : validEntities) {
+			for (final Prop p : validEntities) {
 				UserInterface.shapeRenderer.rect(
 					worldToScreenX(p.position.x) - p.width/2,
 					worldToScreenY(p.position.y),
@@ -332,7 +335,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 		/**
 		 * Constructor
 		 */
-		public HarvestAreaTaskGenerator(Vector2 start, Vector2 finish, int hostId) {
+		public HarvestAreaTaskGenerator(final Vector2 start, final Vector2 finish, final int hostId) {
 			this.hostId = hostId;
 			this.left 	= min(start.x, finish.x);
 			this.right 	= max(start.x, finish.x);
@@ -341,10 +344,10 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public final AITask apply(Object input) {
+		public final AITask apply(final Object input) {
 			final Individual individual = getIndividual(hostId);
-			World world = getWorld(individual.getWorldId());
-			List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Prop.class, left, right, top, bottom);
+			final World world = getWorld(individual.getWorldId());
+			final List<Integer> propsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Prop.class, left, right, top, bottom);
 
 			final Wrapper<Harvest> task = new Wrapper<Harvest>(null);
 
@@ -363,7 +366,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 					} else {
 						task.t.appendTask(new Harvest(individual, harvestable));
 					}
-				} catch (Exception e) {}
+				} catch (final Exception e) {}
 			});
 
 			return task.t;
@@ -395,7 +398,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 		public void render() {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
-			Individual harvester = Domain.getIndividual(hostId);
+			final Individual harvester = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(harvester.getState().position.x) - harvester.getWidth()/2,
 				worldToScreenY(harvester.getState().position.y),
@@ -445,7 +448,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 								return null;
 							}
 							@Override
-							public void keyPressed(int keyCode) {
+							public void keyPressed(final int keyCode) {
 							}
 						}
 					);
@@ -461,21 +464,21 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(
 						new ChooseMultipleEntityCursorBoundTask<Prop, Integer>(true, Prop.class) {
 							@Override
-							public boolean canAdd(Prop f) {
+							public boolean canAdd(final Prop f) {
 								return Harvestable.class.isAssignableFrom(f.getClass());
 							}
 							@Override
-							public Integer transform(Prop f) {
+							public Integer transform(final Prop f) {
 								return f.id;
 							}
 							@Override
-							public void renderUIGuide(Graphics graphics) {
+							public void renderUIGuide(final Graphics graphics) {
 								UserInterface.shapeRenderer.begin(ShapeType.Line);
 								UserInterface.shapeRenderer.setColor(Color.RED);
 								Gdx.gl20.glLineWidth(2f);
-								for (int i : entities) {
-									Prop p = Domain.getActiveWorld().props().getProp(i);
-									Vector2 position = p.position;
+								for (final int i : entities) {
+									final Prop p = gameClientStateTracker.getActiveWorld().props().getProp(i);
+									final Vector2 position = p.position;
 
 									UserInterface.shapeRenderer.rect(
 										worldToScreenX(position.x) - p.width/2,
@@ -489,8 +492,8 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 							}
 							@Override
 							public boolean executionConditionMet() {
-								Collection<Prop> nearbyEntities = Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY());
-								for (Prop p : nearbyEntities) {
+								final Collection<Prop> nearbyEntities = gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntities(Prop.class, getMouseWorldX(), getMouseWorldY());
+								for (final Prop p : nearbyEntities) {
 									if (p.isMouseOver() && Harvestable.class.isAssignableFrom(p.getClass())) {
 										return true;
 									}
@@ -502,9 +505,9 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 								return "Choose entities to harvest (Press enter to finalise)";
 							}
 							@Override
-							public void keyPressed(int keyCode) {
+							public void keyPressed(final int keyCode) {
 								if (keyCode == Keys.ENTER) {
-									routine.setAiTaskGenerator(new HarvestSelectedHarvestablesTaskGenerator(host.getId().getId(), entities, Domain.getActiveWorld().getWorldId()));
+									routine.setAiTaskGenerator(new HarvestSelectedHarvestablesTaskGenerator(host.getId().getId(), entities, gameClientStateTracker.getActiveWorld().getWorldId()));
 									Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(null);
 								}
 							}
@@ -525,19 +528,19 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 		private final VisiblePropFuture propId;
 		private final int hostId, worldId;
 
-		public HarvestVisibleEntityTaskGenerator(int hostId, int worldId, VisiblePropFuture propId) {
+		public HarvestVisibleEntityTaskGenerator(final int hostId, final int worldId, final VisiblePropFuture propId) {
 			this.hostId = hostId;
 			this.worldId = worldId;
 			this.propId = propId;
 		}
 
 		@Override
-		public final AITask apply(Object input) {
-			Prop prop = Domain.getWorld(worldId).props().getProp(propId.call());
+		public final AITask apply(final Object input) {
+			final Prop prop = Domain.getWorld(worldId).props().getProp(propId.call());
 			if (Harvestable.class.isAssignableFrom(prop.getClass())) {
 				try {
 					return new Harvest(Domain.getIndividual(hostId), (Harvestable) prop);
-				} catch (NoTileFoundException e) {
+				} catch (final NoTileFoundException e) {
 					return null;
 				}
 			}
@@ -579,7 +582,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
-			Individual attacker = Domain.getIndividual(hostId);
+			final Individual attacker = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
@@ -593,14 +596,14 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public final ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+	public final ContextMenu getDailyRoutineContextMenu(final Individual host, final DailyRoutine routine) {
 		return getChoices(routine, host);
 	}
 
 
 	@Override
-	public final ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		ContextMenu choices = getChoices(routine, host);
+	public final ContextMenu getEntityVisibleRoutineContextMenu(final Individual host, final EntityVisibleRoutine routine) {
+		final ContextMenu choices = getChoices(routine, host);
 
 		final EntityVisible identificationFunction = routine.getIdentificationFunction();
 		if (Harvestable.class.isAssignableFrom(identificationFunction.getEntity().a)) {
@@ -623,13 +626,13 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public final ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+	public final ContextMenu getIndividualConditionRoutineContextMenu(final Individual host, final IndividualConditionRoutine routine) {
 		return getChoices(routine, host);
 	}
 
 
 	@Override
-	public final ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+	public final ContextMenu getStimulusDrivenRoutineContextMenu(final Individual host, final StimulusDrivenRoutine routine) {
 		return getChoices(routine, host);
 	}
 }

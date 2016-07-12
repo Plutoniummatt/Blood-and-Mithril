@@ -23,9 +23,9 @@ import bloodandmithril.character.ai.task.Attack;
 import bloodandmithril.character.ai.task.MineTile;
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.event.events.IndividualMoved;
 import bloodandmithril.graphics.Graphics;
@@ -58,9 +58,11 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	@Inject	private FactionControlService factionControlService;
 	@Inject	private GameSaver gameSaver;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
+	@Inject	private Threading threading;
 
 	private CursorBoundTask cursorBoundTask = null;
 	private Function<Vector2> camFollowFunction;
+
 
 	@Override
 	public boolean keyUp(final int keycode) {
@@ -153,13 +155,13 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 				);
 			} else {
 				if (keycode == controls.speedUp.keyCode) {
-					if (BloodAndMithrilClient.updateRateMultiplier < 16f) {
-						BloodAndMithrilClient.updateRateMultiplier = Math.round(BloodAndMithrilClient.updateRateMultiplier) + 1;
+					if (threading.getUpdateRate() < 16f) {
+						threading.setUpdateRate(Math.round(threading.getUpdateRate()) + 1);
 					}
 				}
 				if (keycode == controls.slowDown.keyCode) {
-					if (BloodAndMithrilClient.updateRateMultiplier > 1f) {
-						BloodAndMithrilClient.updateRateMultiplier = Math.round(BloodAndMithrilClient.updateRateMultiplier) - 1;
+					if (threading.getUpdateRate() > 1f) {
+						threading.setUpdateRate(Math.round(threading.getUpdateRate()) - 1);
 					}
 				}
 				if (cursorBoundTask != null) {
@@ -342,7 +344,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 	private void meleeAttack() {
 		if (!Domain.getSelectedIndividuals().isEmpty()) {
-			for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+			for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				final Individual indi = Domain.getIndividual(indiKey);
 				if (indi.isMouseOver() && indi.isAlive()) {
 					for (final Individual selected : Domain.getSelectedIndividuals()) {
@@ -376,8 +378,8 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 		final boolean uiClicked = graphics.getUi().leftClick();
 
 		Individual individualClicked = null;
-		if (Domain.getActiveWorld() != null) {
-			for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+		if (gameClientStateTracker.getActiveWorld() != null) {
+			for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				final Individual indi = Domain.getIndividual(indiKey);
 				if (indi.isMouseOver()) {
 					individualClicked = indi;

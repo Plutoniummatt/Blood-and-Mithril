@@ -18,6 +18,7 @@ import bloodandmithril.character.ai.perception.SoundStimulus;
 import bloodandmithril.character.ai.perception.Visible;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
@@ -89,12 +90,12 @@ public class SoundService {
 	}
 
 	/** Returns the pan value in relation to camera location */
-	public static final float getPan(Vector2 location, Graphics graphics) {
+	public static final float getPan(final Vector2 location, final Graphics graphics) {
 		if (!ClientServerInterface.isClient()) {
 			return 0f;
 		}
 
-		float panValue = (location.x - graphics.getCam().position.x) / (graphics.getWidth() / 2);
+		final float panValue = (location.x - graphics.getCam().position.x) / (graphics.getWidth() / 2);
 
 		if (panValue > 0f) {
 			return Math.min(panValue, 0.99f);
@@ -102,14 +103,14 @@ public class SoundService {
 			return Math.max(panValue, -0.99f);
 		}
 	}
-	
-	
-	public static final void play(int sound) {
+
+
+	public static final void play(final int sound) {
 		sounds.get(sound).b.play(1f, 1f, 0f);
 	}
 
 
-	public static final void play(int sound, Vector2 location, boolean requiresServerAuthority, Visible source) {
+	public static final void play(final int sound, final Vector2 location, final boolean requiresServerAuthority, final Visible source) {
 		if (sound == -1) {
 			return;
 		}
@@ -117,37 +118,37 @@ public class SoundService {
 		if (isServer()) {
 			triggerListeners(location, sounds.get(sound).c, sound, source);
 			if (isClient()) {
-				Graphics graphics = Wiring.injector().getInstance(Graphics.class);
+				final Graphics graphics = Wiring.injector().getInstance(Graphics.class);
 				sounds.get(sound).b.play(getVolume(location, graphics), 1f, getPan(location, graphics));
 			} else if (requiresServerAuthority) {
 				ClientServerInterface.SendNotification.notifyPlaySound(-1, sound, location);
 			}
 		} else if (!requiresServerAuthority) {
-			Graphics graphics = Wiring.injector().getInstance(Graphics.class);
+			final Graphics graphics = Wiring.injector().getInstance(Graphics.class);
 			sounds.get(sound).b.play(getVolume(location, graphics), 1f, getPan(location, graphics));
 		}
 	}
 
 
-	public static final Function<SoundStimulus> getSoundStimulusFunction(int id) {
+	public static final Function<SoundStimulus> getSoundStimulusFunction(final int id) {
 		return sounds.get(id).a;
 	}
 
 
-	private static final void triggerListeners(Vector2 location, float triggerRadius, int sound, Visible source) {
-		Domain.getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
+	private static final void triggerListeners(final Vector2 location, final float triggerRadius, final int sound, final Visible source) {
+		Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
 			Individual.class,
 			location.x - triggerRadius,
 			location.x + triggerRadius,
 			location.y + triggerRadius,
 			location.y - triggerRadius
 		).forEach(individualId -> {
-			Individual listener = Domain.getIndividual(individualId);
+			final Individual listener = Domain.getIndividual(individualId);
 			if (listener == null || listener.isAISuppressed() || !(listener instanceof Listener) || listener.getState().position.cpy().dst(location) > triggerRadius || listener.isSelected()) {
 				return;
 			}
 
-			SoundStimulus stimulus = sounds.get(sound).a.call();
+			final SoundStimulus stimulus = sounds.get(sound).a.call();
 			stimulus.setEmissionPosition(location);
 
 			if (source != null && listener instanceof Observer) {
@@ -162,7 +163,7 @@ public class SoundService {
 
 
 	/** Update the music transition timer */
-	public static final void update(float delta) {
+	public static final void update(final float delta) {
 		decreasing = decreasing - delta / rate < 0f ? 0f : decreasing - delta / rate;
 		increasing = increasing + delta / rate > volume ? volume : increasing + delta / rate;
 
@@ -202,26 +203,26 @@ public class SoundService {
 
 
 	/** Returns the volume in relation to camera location */
-	private static final float getVolume(Vector2 location, Graphics graphics) {
+	private static final float getVolume(final Vector2 location, final Graphics graphics) {
 		if (!ClientServerInterface.isClient()) {
 			return 0f;
 		}
 
-		Vector2 camPos = new Vector2(graphics.getCam().position.x, graphics.getCam().position.y);
+		final Vector2 camPos = new Vector2(graphics.getCam().position.x, graphics.getCam().position.y);
 
-		float distance = Math.abs(location.cpy().sub(camPos).len());
-		float volume = Math.max(1f - distance / graphics.getWidth(), 0f);
+		final float distance = Math.abs(location.cpy().sub(camPos).len());
+		final float volume = Math.max(1f - distance / graphics.getWidth(), 0f);
 
 		return volume;
 	}
 
 
-	public static final void setVolumne(float volume) {
+	public static final void setVolumne(final float volume) {
 		SoundService.volume = volume;
 	}
 
 
-	public static final void changeMusic(float transitionTime, Music toChangeTo) {
+	public static final void changeMusic(final float transitionTime, final Music toChangeTo) {
 		fadeOut = false;
 
 		if (toChangeTo == current) {
@@ -243,7 +244,7 @@ public class SoundService {
 	}
 
 
-	public static final void fadeOut(float transitionTime) {
+	public static final void fadeOut(final float transitionTime) {
 		if (next != null) {
 			current = next;
 		}
@@ -270,7 +271,7 @@ public class SoundService {
 		/**
 		 * Constructor
 		 */
-		public SuspiciousSound(Vector2 position, SuspicionLevel suspicionLevel) {
+		public SuspiciousSound(final Vector2 position, final SuspicionLevel suspicionLevel) {
 			this.position = position;
 			this.suspicionLevel = suspicionLevel;
 		}
@@ -285,12 +286,12 @@ public class SoundService {
 		}
 
 		@Override
-		public final void setEmissionPosition(Vector2 position) {
+		public final void setEmissionPosition(final Vector2 position) {
 			this.position = position;
 		}
 
 		@Override
-		public final void stimulate(Individual individual) {
+		public final void stimulate(final Individual individual) {
 			// TODO Auto-generated method stub
 		}
 	}
@@ -300,7 +301,7 @@ public class SoundService {
 		NONE(0), PAUSE(1), INVESTIGATE(2), INVESTIGATE_CAUTION(3), BACKUP(4), FLEE(5);
 		public final int severity;
 
-		private SuspicionLevel(int severity) {
+		private SuspicionLevel(final int severity) {
 			this.severity = severity;
 		}
 	}

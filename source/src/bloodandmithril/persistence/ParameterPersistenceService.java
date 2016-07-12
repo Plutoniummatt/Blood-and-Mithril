@@ -11,10 +11,10 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.control.CameraTracker;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
-import bloodandmithril.world.Domain;
 
 /**
  * Responsible for persistence of {@link Parameters}
@@ -27,6 +27,7 @@ public class ParameterPersistenceService {
 
 	@Inject private GameSaver gameSaver;
 	@Inject private CameraTracker cameraTracker;
+	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	/** THE current set of {@link Parameters} */
 	private Parameters parameters = loadParameters();
@@ -54,7 +55,7 @@ public class ParameterPersistenceService {
 	/** Saves the {@link Parameters} */
 	public synchronized void saveParameters() {
 		final FileHandle file = Gdx.files.local(gameSaver.getSavePath() + "/parameters.txt");
-		parameters.setActiveWorldId(Domain.getActiveWorldId());
+		parameters.setActiveWorldId(gameClientStateTracker.getSelectedActiveWorldId());
 		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? Maps.newHashMap(cameraTracker.getWorldcamcoordinates()) : Maps.newHashMap());
 		file.writeString(encode(parameters), false);
 	}

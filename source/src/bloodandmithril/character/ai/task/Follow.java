@@ -26,6 +26,7 @@ import bloodandmithril.character.ai.task.Attack.ReturnVictimId;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -48,6 +49,9 @@ public class Follow extends CompositeAITask implements RoutineTask {
 	private int distance;
 
 	@Inject
+	private GameClientStateTracker gameClientStateTracker;
+
+	@Inject
 	Follow() {
 		super(null, "");
 	}
@@ -55,14 +59,14 @@ public class Follow extends CompositeAITask implements RoutineTask {
 	/**
 	 * Constructor, the int distance is the maximum number of waypoints to stay at
 	 */
-	public Follow(final Individual follower, Individual followee, final int distance, SerializableFunction<Boolean> terminationCondition) {
+	public Follow(final Individual follower, final Individual followee, final int distance, final SerializableFunction<Boolean> terminationCondition) {
 		super(follower.getId(), "Following");
 		this.followee = followee;
 		this.distance = distance;
 		this.terminationCondition = terminationCondition;
 
-		WithinNumberOfWaypointsFunction termCondition = new WithinNumberOfWaypointsFunction();
-		RepathCondition repathCondition = new RepathCondition();
+		final WithinNumberOfWaypointsFunction termCondition = new WithinNumberOfWaypointsFunction();
+		final RepathCondition repathCondition = new RepathCondition();
 
 		appendTask(
 			new GoToMovingLocation(
@@ -103,7 +107,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 		if (terminationCondition != null && terminationCondition.call()) {
 			return false;
 		} else {
-			Individual follower = Domain.getIndividual(hostId.getId());
+			final Individual follower = Domain.getIndividual(hostId.getId());
 			if (follower == null) {
 				return false;
 			}
@@ -118,7 +122,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public Boolean call() {
-			AITask currentTask = getCurrentTask();
+			final AITask currentTask = getCurrentTask();
 			if (currentTask instanceof GoToMovingLocation) {
 				return ((GoToMovingLocation)currentTask).getCurrentGoToLocation().getPath().getSize() <= distance;
 			}
@@ -133,7 +137,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 
 		@Override
 		public Boolean call() {
-			AITask currentTask = getCurrentTask();
+			final AITask currentTask = getCurrentTask();
 			if (currentTask instanceof GoToMovingLocation) {
 				return ((GoToMovingLocation)currentTask).getCurrentGoToLocation().getPath().getSize() == distance + 1;
 			}
@@ -149,7 +153,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 		private String followerName, followeeName;
 		private int followerId;
 
-		public FollowTaskGenerator(int followerId, SerializableFunction<Integer> followeeId, String overriddenFolloweeName) {
+		public FollowTaskGenerator(final int followerId, final SerializableFunction<Integer> followeeId, final String overriddenFolloweeName) {
 			this.followerId = followerId;
 			this.followeeId = followeeId;
 
@@ -160,7 +164,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 			}
 		}
 		@Override
-		public AITask apply(Object input) {
+		public AITask apply(final Object input) {
 			if (!Domain.getIndividual(followeeId.call()).isAlive()) {
 				return null;
 			}
@@ -196,7 +200,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			Gdx.gl20.glLineWidth(2f);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
-			Individual attacker = Domain.getIndividual(followerId);
+			final Individual attacker = Domain.getIndividual(followerId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
@@ -205,7 +209,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 			);
 
 			UserInterface.shapeRenderer.setColor(Color.RED);
-			Individual followee = Domain.getIndividual(followeeId.call());
+			final Individual followee = Domain.getIndividual(followeeId.call());
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(followee.getState().position.x) - followee.getWidth()/2,
 				worldToScreenY(followee.getState().position.y),
@@ -217,16 +221,16 @@ public class Follow extends CompositeAITask implements RoutineTask {
 	}
 
 
-	private MenuItem chooseFolloweeMenuItem(Individual host, Routine routine, ContextMenu toChooseFrom) {
+	private MenuItem chooseFolloweeMenuItem(final Individual host, final Routine routine, final ContextMenu toChooseFrom) {
 		return new MenuItem(
 			"Choose individual to follow",
 			() -> {
-				JITTask task = new JITTask() {
+				final JITTask task = new JITTask() {
 					@Override
-					public void execute(Object... args) {
-						if (Domain.getActiveWorld() != null) {
-							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-								Individual indi = Domain.getIndividual(indiKey);
+					public void execute(final Object... args) {
+						if (gameClientStateTracker.getActiveWorld() != null) {
+							for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+								final Individual indi = Domain.getIndividual(indiKey);
 								if (indi.isMouseOver()) {
 									toChooseFrom.addMenuItem(
 										new MenuItem(
@@ -253,7 +257,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 
 				Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(new CursorBoundTask(task, true) {
 					@Override
-					public void renderUIGuide(Graphics graphics) {
+					public void renderUIGuide(final Graphics graphics) {
 					}
 
 					@Override
@@ -268,9 +272,9 @@ public class Follow extends CompositeAITask implements RoutineTask {
 
 					@Override
 					public boolean executionConditionMet() {
-						if (Domain.getActiveWorld() != null) {
-							for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-								Individual indi = Domain.getIndividual(indiKey);
+						if (gameClientStateTracker.getActiveWorld() != null) {
+							for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+								final Individual indi = Domain.getIndividual(indiKey);
 								if (indi.isMouseOver()) {
 									return true;
 								}
@@ -286,7 +290,7 @@ public class Follow extends CompositeAITask implements RoutineTask {
 					}
 
 					@Override
-					public void keyPressed(int keyCode) {
+					public void keyPressed(final int keyCode) {
 					}
 				});
 			},
@@ -299,9 +303,9 @@ public class Follow extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public ContextMenu getDailyRoutineContextMenu(final Individual host, final DailyRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseFolloweeMenuItem(host, routine, toChooseFrom)
@@ -312,9 +316,9 @@ public class Follow extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public ContextMenu getEntityVisibleRoutineContextMenu(final Individual host, final EntityVisibleRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseFolloweeMenuItem(host, routine, toChooseFrom)
@@ -341,9 +345,9 @@ public class Follow extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public ContextMenu getIndividualConditionRoutineContextMenu(final Individual host, final IndividualConditionRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseFolloweeMenuItem(host, routine, toChooseFrom)
@@ -354,9 +358,9 @@ public class Follow extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-		ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public ContextMenu getStimulusDrivenRoutineContextMenu(final Individual host, final StimulusDrivenRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		final ContextMenu toChooseFrom = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseFolloweeMenuItem(host, routine, toChooseFrom)

@@ -33,6 +33,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -60,8 +61,9 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	private final float tolerance;
 	private GoToLocation currentGoToLocation;
 	private SerializableFunction<Boolean> terminationCondition;
-
 	private SerializableFunction<Boolean> repathCondition;
+
+	@Inject private transient GameClientStateTracker gameClientStateTracker;
 
 	@Inject
 	GoToMovingLocation() {
@@ -73,12 +75,12 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, SerializableFunction<Vector2> destination, float tolerance) {
+	protected GoToMovingLocation(final IndividualIdentifier hostId, final SerializableFunction<Vector2> destination, final float tolerance) {
 		super(hostId);
 		this.destination = destination;
 		this.tolerance = tolerance;
 
-		Individual host = Domain.getIndividual(hostId.getId());
+		final Individual host = Domain.getIndividual(hostId.getId());
 		this.currentGoToLocation = goTo(
 			host,
 			host.getState().position.cpy(),
@@ -93,13 +95,13 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, SerializableFunction<Vector2> destination, SerializableFunction<Boolean> terminationCondition) {
+	protected GoToMovingLocation(final IndividualIdentifier hostId, final SerializableFunction<Vector2> destination, final SerializableFunction<Boolean> terminationCondition) {
 		super(hostId);
 		this.destination = destination;
 		this.terminationCondition = terminationCondition;
 		this.tolerance = -1f;
 
-		Individual host = Domain.getIndividual(hostId.getId());
+		final Individual host = Domain.getIndividual(hostId.getId());
 		this.currentGoToLocation = goTo(
 			host,
 			host.getState().position.cpy(),
@@ -114,14 +116,14 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	/**
 	 * Constructor
 	 */
-	protected GoToMovingLocation(IndividualIdentifier hostId, SerializableFunction<Vector2> destination, SerializableFunction<Boolean> terminationCondition, SerializableFunction<Boolean> repathCondition) {
+	protected GoToMovingLocation(final IndividualIdentifier hostId, final SerializableFunction<Vector2> destination, final SerializableFunction<Boolean> terminationCondition, final SerializableFunction<Boolean> repathCondition) {
 		super(hostId);
 		this.destination = destination;
 		this.terminationCondition = terminationCondition;
 		this.repathCondition = repathCondition;
 		this.tolerance = -1f;
 
-		Individual host = Domain.getIndividual(hostId.getId());
+		final Individual host = Domain.getIndividual(hostId.getId());
 		this.currentGoToLocation = goTo(
 			host,
 			host.getState().position.cpy(),
@@ -152,14 +154,14 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	/**
 	 * See {@link Path#isDirectlyAboveNext(Vector2)}
 	 */
-	public boolean isAboveNext(Vector2 location) {
+	public boolean isAboveNext(final Vector2 location) {
 		return this.currentGoToLocation.getPath().isDirectlyAboveNext(location);
 	}
 
 
 	@Override
 	public boolean uponCompletion() {
-		Individual host = Domain.getIndividual(hostId.getId());
+		final Individual host = Domain.getIndividual(hostId.getId());
 
 		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveRight.keyCode, false);
 		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveLeft.keyCode, false);
@@ -170,11 +172,11 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 
 
 	@Override
-	public void execute(float delta) {
+	public void execute(final float delta) {
 		getCurrentGoToLocation().execute(delta);
 
 		if (repathCondition == null ? getCurrentGoToLocation().isComplete() : repathCondition.call()) {
-			Individual host = Domain.getIndividual(hostId.getId());
+			final Individual host = Domain.getIndividual(hostId.getId());
 			this.currentGoToLocation = goTo(
 				host,
 				host.getState().position.cpy(),
@@ -196,15 +198,15 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 		private float x, y;
 		private int hostId;
 
-		public GoToMovingLocationTaskGenerator(float x, float y, int hostId) {
+		public GoToMovingLocationTaskGenerator(final float x, final float y, final int hostId) {
 			this.x = x;
 			this.y = y;
 			this.hostId = hostId;
 		}
 
 		@Override
-		public AITask apply(Object input) {
-			Individual individual = Domain.getIndividual(hostId);
+		public AITask apply(final Object input) {
+			final Individual individual = Domain.getIndividual(hostId);
 			return goTo(
 				individual,
 				individual.getState().position.cpy(),
@@ -239,7 +241,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			Gdx.gl20.glLineWidth(2f);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
-			Individual attacker = Domain.getIndividual(hostId);
+			final Individual attacker = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
@@ -254,22 +256,22 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	}
 
 
-	private MenuItem chooseLocationMenuItem(Individual host, Routine routine) {
+	private MenuItem chooseLocationMenuItem(final Individual host, final Routine routine) {
 		return new MenuItem(
 				"Choose location",
 				() -> {
-					JITTask task = new JITTask() {
+					final JITTask task = new JITTask() {
 						@Override
-						public void execute(Object... args) {
+						public void execute(final Object... args) {
 							Vector2 coords;
 							try {
-								coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
-							} catch (NoTileFoundException e) {
+								coords = gameClientStateTracker.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+							} catch (final NoTileFoundException e) {
 								return;
 							}
 
-							float x = getMouseWorldX();
-							float y = coords.y;
+							final float x = getMouseWorldX();
+							final float y = coords.y;
 
 							routine.setAiTaskGenerator(
 								new GoToMovingLocationTaskGenerator(x, y, host.getId().getId())
@@ -279,12 +281,12 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 
 					Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).setCursorBoundTask(new CursorBoundTask(task, true) {
 						@Override
-						public void renderUIGuide(Graphics graphics) {
+						public void renderUIGuide(final Graphics graphics) {
 							try {
-								Vector2 coords = Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
+								final Vector2 coords = gameClientStateTracker.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true);
 
-								float x = worldToScreenX(getMouseWorldX());
-								float y = worldToScreenY(coords.y);
+								final float x = worldToScreenX(getMouseWorldX());
+								final float y = worldToScreenY(coords.y);
 
 								gl.glEnable(GL_BLEND);
 								gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -293,7 +295,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 								graphics.getSpriteBatch().draw(UserInterface.currentArrow, x - 5, y);
 								graphics.getSpriteBatch().end();
 								gl.glDisable(GL_BLEND);
-							} catch (NoTileFoundException e) {}
+							} catch (final NoTileFoundException e) {}
 						}
 
 						@Override
@@ -317,7 +319,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 						}
 
 						@Override
-						public void keyPressed(int keyCode) {
+						public void keyPressed(final int keyCode) {
 						}
 					});
 				},
@@ -330,8 +332,8 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 
 
 	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public ContextMenu getDailyRoutineContextMenu(final Individual host, final DailyRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseLocationMenuItem(host, routine)
@@ -342,8 +344,8 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 
 
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public ContextMenu getEntityVisibleRoutineContextMenu(final Individual host, final EntityVisibleRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseLocationMenuItem(host, routine)
@@ -354,8 +356,8 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 
 
 	@Override
-	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public ContextMenu getIndividualConditionRoutineContextMenu(final Individual host, final IndividualConditionRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseLocationMenuItem(host, routine)
@@ -366,8 +368,8 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
-		ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+	public ContextMenu getStimulusDrivenRoutineContextMenu(final Individual host, final StimulusDrivenRoutine routine) {
+		final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 		menu.addMenuItem(
 			chooseLocationMenuItem(host, routine)

@@ -14,10 +14,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.task.PlaceProp;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.PropItem;
@@ -37,10 +39,12 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 
 		private Prop toPlace;
 
+		@Inject private GameClientStateTracker gameClientStateTracker;
+
 		/**
 		 * Constructor
 		 */
-		public PlaceCursorBoundTask(Prop toPlace, Individual indi, PropItem propItem) {
+		public PlaceCursorBoundTask(final Prop toPlace, final Individual indi, final PropItem propItem) {
 			super(
 				args -> {
 					Vector2 coords;
@@ -48,7 +52,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 						if (toPlace.grounded) {
 							coords = new Vector2(
 								getMouseWorldX(),
-								Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
+								Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
 							);
 						} else {
 							coords = new Vector2(getMouseWorldX(), getMouseWorldY());
@@ -58,22 +62,22 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 							coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 							coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 						}
-					} catch (NoTileFoundException e) {
+					} catch (final NoTileFoundException e) {
 						return;
 					}
 
-					boolean canBuild = toPlace.canPlaceAt(coords);
+					final boolean canBuild = toPlace.canPlaceAt(coords);
 
 					if (canBuild) {
 						if (ClientServerInterface.isServer()) {
 							if (indi == null) {
-								World world = Domain.getWorld(toPlace.getWorldId());
+								final World world = Domain.getWorld(toPlace.getWorldId());
 								world.props().addProp(toPlace);
 							} else {
 								indi.getAI().setCurrentTask(new PlaceProp(indi, coords, propItem));
 							}
 						} else {
-							ClientServerInterface.SendRequest.sendPlacePropRequest(indi, propItem, coords.x, coords.y, toPlace, Domain.getActiveWorld().getWorldId());
+							ClientServerInterface.SendRequest.sendPlacePropRequest(indi, propItem, coords.x, coords.y, toPlace, Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getWorldId());
 						}
 					}
 				},
@@ -84,19 +88,19 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 
 
 		@Override
-		public void renderUIGuide(Graphics graphics) {
+		public void renderUIGuide(final Graphics graphics) {
 			renderGuide(toPlace);
 		}
 
 
-		public static void renderGuide(Prop propToPlace) {
+		public static void renderGuide(final Prop propToPlace) {
 			Vector2 coords;
 			Gdx.gl20.glLineWidth(2f);
 			try {
 				if (propToPlace.grounded) {
 					coords = new Vector2(
 						getMouseWorldX(),
-						Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
+						Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
 					);
 				} else {
 					coords = new Vector2(getMouseWorldX(), getMouseWorldY());
@@ -105,14 +109,14 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}
-			} catch (NoTileFoundException e) {
+			} catch (final NoTileFoundException e) {
 				return;
 			}
 
-			float x = worldToScreenX(coords.x);
-			float y = worldToScreenY(coords.y);
+			final float x = worldToScreenX(coords.x);
+			final float y = worldToScreenY(coords.y);
 
-			boolean canBuild = propToPlace.canPlaceAt(coords);
+			final boolean canBuild = propToPlace.canPlaceAt(coords);
 
 			propToPlace.position.x = coords.x;
 			propToPlace.position.y = coords.y;
@@ -140,7 +144,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 				if (toPlace.grounded) {
 					coords = new Vector2(
 						getMouseWorldX(),
-						Domain.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
+						gameClientStateTracker.getActiveWorld().getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getMouseWorldX(), getMouseWorldY(), true).y
 					);
 				} else {
 					coords = new Vector2(getMouseWorldX(), getMouseWorldY());
@@ -155,7 +159,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}
 				return toPlace.canPlaceAt(coords);
-			} catch (NoTileFoundException e) {
+			} catch (final NoTileFoundException e) {
 				return false;
 			}
 		}
@@ -174,6 +178,6 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 
 
 		@Override
-		public void keyPressed(int keyCode) {
+		public void keyPressed(final int keyCode) {
 		}
 	}

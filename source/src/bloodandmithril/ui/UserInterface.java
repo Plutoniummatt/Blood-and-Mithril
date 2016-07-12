@@ -18,7 +18,6 @@ import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.networking.ClientServerInterface.ping;
 import static bloodandmithril.ui.UserInterface.FloatingText.floatingText;
 import static bloodandmithril.util.Fonts.defaultFont;
-import static bloodandmithril.world.Domain.getActiveWorldId;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
 import static com.badlogic.gdx.Gdx.files;
@@ -71,9 +70,9 @@ import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualContextMenuService;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
@@ -194,6 +193,8 @@ public class UserInterface {
 	private static ChunkLoader chunkLoader;
 	private static FactionControlService factionControlService;
 	private static GameClientStateTracker gameClientStateTracker;
+	private static Threading threading;
+	private static TopographyDebugRenderer topographyDebugRenderer;
 
 	static {
 		if (ClientServerInterface.isClient()) {
@@ -249,6 +250,7 @@ public class UserInterface {
 		chunkLoader = Wiring.injector().getInstance(ChunkLoader.class);
 		factionControlService = Wiring.injector().getInstance(FactionControlService.class);
 		gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
+		topographyDebugRenderer = Wiring.injector().getInstance(TopographyDebugRenderer.class);
 	}
 
 
@@ -400,7 +402,7 @@ public class UserInterface {
 		}
 
 
-		renderFloatingText(getActiveWorldId());
+		renderFloatingText(gameClientStateTracker.getSelectedActiveWorldId());
 		renderTextBubbles();
 		renderHint();
 		renderCursorBoundTaskText();
@@ -436,7 +438,7 @@ public class UserInterface {
 		renderLoadingScreen();
 
 		if (RENDER_TOPOGRAPHY) {
-			TopographyDebugRenderer.render(graphics);
+			topographyDebugRenderer.render(graphics);
 		}
 	}
 
@@ -523,9 +525,9 @@ public class UserInterface {
 
 
 	private void renderHint() {
-		if (inputProcessor.getCursorBoundTask() == null && contextMenus.isEmpty() && Domain.getActiveWorld() != null && !isKeyPressed(Keys.ANY_KEY)) {
+		if (inputProcessor.getCursorBoundTask() == null && contextMenus.isEmpty() && gameClientStateTracker.getSelectedActiveWorldId() != null && !isKeyPressed(Keys.ANY_KEY)) {
 			boolean renderHint = false;
-			final PositionalIndexMap positionalIndexMap = Domain.getActiveWorld().getPositionalIndexMap();
+			final PositionalIndexMap positionalIndexMap = gameClientStateTracker.getActiveWorld().getPositionalIndexMap();
 			for (final int id : positionalIndexMap.getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 				if (Domain.getIndividual(id).isMouseOver()) {
 					renderHint = true;
@@ -537,7 +539,7 @@ public class UserInterface {
 					break;
 				}
 
-				final Prop prop = Domain.getActiveWorld().props().getProp(id);
+				final Prop prop = gameClientStateTracker.getActiveWorld().props().getProp(id);
 				if (prop != null && prop.isMouseOver()) {
 					renderHint = true;
 					break;
@@ -548,7 +550,7 @@ public class UserInterface {
 					break;
 				}
 
-				final Item item = Domain.getActiveWorld().items().getItem(id);
+				final Item item = gameClientStateTracker.getActiveWorld().items().getItem(id);
 				if (item != null && item.isMouseOver()) {
 					renderHint = true;
 					break;
@@ -577,7 +579,7 @@ public class UserInterface {
 		nearbyEntities.addAll(
 			Lists.newArrayList(
 				Iterables.transform(
-					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY()),
+					gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
 						return Domain.getIndividual(id);
 					}
@@ -588,9 +590,9 @@ public class UserInterface {
 		nearbyEntities.addAll(
 			Lists.newArrayList(
 				Iterables.transform(
-					Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY()),
+					gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY()),
 					id -> {
-						return Domain.getActiveWorld().props().getProp(id);
+						return gameClientStateTracker.getActiveWorld().props().getProp(id);
 					}
 				)
 			)
@@ -678,7 +680,7 @@ public class UserInterface {
 	 */
 	private static boolean renderMouseOverTileHighlightBox(final boolean nonEmptyTilesOnly) {
 		try {
-			if (nonEmptyTilesOnly && Domain.getActiveWorld().getTopography().getTile(getMouseWorldX(), getMouseWorldY(), true) instanceof EmptyTile) {
+			if (nonEmptyTilesOnly && gameClientStateTracker.getActiveWorld().getTopography().getTile(getMouseWorldX(), getMouseWorldY(), true) instanceof EmptyTile) {
 				return false;
 			}
 		} catch (final NoTileFoundException e) {
@@ -852,7 +854,7 @@ public class UserInterface {
 			final List<Item> items = Lists.newLinkedList();
 
 			Lists.newLinkedList(Iterables.transform(
-				Domain.getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
+				gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getEntitiesWithinBounds(
 					Item.class,
 					screenToWorldX(left),
 					screenToWorldX(right),
@@ -860,10 +862,10 @@ public class UserInterface {
 					screenToWorldY(bottom)
 				),
 				id -> {
-					return Domain.getActiveWorld().items().getItem(id);
+					return gameClientStateTracker.getActiveWorld().items().getItem(id);
 				}
 			)).stream().filter(toKeep -> {
-				return toKeep.getWorldId() == Domain.getActiveWorld().getWorldId();
+				return toKeep.getWorldId() == gameClientStateTracker.getActiveWorld().getWorldId();
 			}).filter(item -> {
 				return
 					worldToScreenX(item.getPosition().x) > left &&
@@ -1053,8 +1055,8 @@ public class UserInterface {
 	/** Any text that is rendered on UI */
 	private void renderUIText() {
 		defaultFont.setColor(Color.WHITE);
-		defaultFont.draw(graphics.getSpriteBatch(), "Time: " + Domain.getActiveWorld().getEpoch().getTimeString(), 5, graphics.getHeight() - 5);
-		defaultFont.draw(graphics.getSpriteBatch(), "Date: " + Domain.getActiveWorld().getEpoch().getDateString(), 5, graphics.getHeight() - 25);
+		defaultFont.draw(graphics.getSpriteBatch(), "Time: " + gameClientStateTracker.getActiveWorld().getEpoch().getTimeString(), 5, graphics.getHeight() - 5);
+		defaultFont.draw(graphics.getSpriteBatch(), "Date: " + gameClientStateTracker.getActiveWorld().getEpoch().getDateString(), 5, graphics.getHeight() - 25);
 		defaultFont.draw(graphics.getSpriteBatch(), "Ping: " + ping, 5, graphics.getHeight() - 45);
 
 		fps = (fps + Math.round(1f/Gdx.graphics.getDeltaTime())) / 2;
@@ -1065,7 +1067,7 @@ public class UserInterface {
 		}
 
 		defaultFont.draw(graphics.getSpriteBatch(), "Framerate: " + fpsDisplayed, 5, graphics.getHeight() - 65);
-		defaultFont.draw(graphics.getSpriteBatch(), "Game speed: " + BloodAndMithrilClient.getUpdateRate() + "x", graphics.getWidth() - 165, 20);
+		defaultFont.draw(graphics.getSpriteBatch(), "Game speed: " + threading.getUpdateRate() + "x", graphics.getWidth() - 165, 20);
 		renderMouseText();
 	}
 
@@ -1195,7 +1197,7 @@ public class UserInterface {
 
 		int chunksInMemory = 0;
 		if (ClientServerInterface.isServer()) {
-			for (final Entry<Integer, HashMap<Integer, Chunk>> entry : Domain.getActiveWorld().getTopography().getChunkMap().chunkMap.entrySet()) {
+			for (final Entry<Integer, HashMap<Integer, Chunk>> entry : gameClientStateTracker.getActiveWorld().getTopography().getChunkMap().chunkMap.entrySet()) {
 				chunksInMemory = chunksInMemory + entry.getValue().size();
 			}
 		}
@@ -1382,7 +1384,7 @@ public class UserInterface {
 
 
 	public static void addUIFloatingText(final String text, final Color color, final Vector2 position) {
-		addFloatingText(floatingText(text, color, position, true), getActiveWorldId(), false);
+		addFloatingText(floatingText(text, color, position, true), gameClientStateTracker.getSelectedActiveWorldId(), false);
 	}
 
 
@@ -1519,7 +1521,7 @@ public class UserInterface {
 			}
 		}
 
-		for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+		for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
 			final Individual indi = Domain.getIndividual(indiKey);
 			if (indi.isMouseOver()) {
 				final ContextMenu secondaryMenu = individualContextMenuService.get().getContextMenu(indi);
@@ -1539,8 +1541,8 @@ public class UserInterface {
 			}
 		}
 
-		for (final int propKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
-			final Prop prop = Domain.getActiveWorld().props().getProp(propKey);
+		for (final int propKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
+			final Prop prop = gameClientStateTracker.getActiveWorld().props().getProp(propKey);
 			if (prop.isMouseOver()) {
 				final ContextMenu secondaryMenu = prop.getContextMenu();
 				newMenu.getMenuItems().add(
@@ -1559,8 +1561,8 @@ public class UserInterface {
 			}
 		}
 
-		for (final Integer itemId : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Item.class, getMouseWorldX(), getMouseWorldY())) {
-			final Item item = Domain.getActiveWorld().items().getItem(itemId);
+		for (final Integer itemId : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Item.class, getMouseWorldX(), getMouseWorldY())) {
+			final Item item = gameClientStateTracker.getActiveWorld().items().getItem(itemId);
 			if (item.isMouseOver()) {
 				final ContextMenu secondaryMenu = item.getContextMenu();
 				newMenu.getMenuItems().add(

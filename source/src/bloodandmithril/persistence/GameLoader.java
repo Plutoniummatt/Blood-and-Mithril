@@ -20,6 +20,7 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.control.CameraTracker;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
@@ -43,6 +44,7 @@ public class GameLoader {
 	@Inject private FactionControlService factionControlService;
 	@Inject private GameSaver gameSaver;
 	@Inject private IndividualLoader individualLoader;
+	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	/**
 	 * Loads a saved game
@@ -58,7 +60,7 @@ public class GameLoader {
 				loadCameraPosition();
 			}
 			parameterPersistenceService.loadParameters();
-			Domain.setActiveWorld(parameterPersistenceService.getParameters().getActiveWorldId());
+			gameClientStateTracker.setSelectedActiveWorldId(parameterPersistenceService.getParameters().getActiveWorldId());
 			chunkLoader.loadGenerationData();
 			chunkLoader.loadWorlds();
 			loadFactions();
