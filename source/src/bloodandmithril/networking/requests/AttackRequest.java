@@ -3,10 +3,10 @@ package bloodandmithril.networking.requests;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
 import bloodandmithril.playerinteraction.individual.api.IndividualAttackOtherService;
@@ -20,15 +20,18 @@ import bloodandmithril.world.Domain;
 @Copyright("Matthew Peck 2014")
 public class AttackRequest implements Request {
 
+	@Inject
+	private transient IndividualAttackOtherService individualAttackOtherService;
+
 	private Set<Integer> victims = Sets.newHashSet();
 	private int attacker;
 
 	/**
 	 * Constructor
 	 */
-	public AttackRequest(Individual attacker, Set<Individual> victims) {
+	public AttackRequest(final Individual attacker, final Set<Individual> victims) {
 		this.attacker = attacker.getId().getId();
-		for (Individual indi : victims) {
+		for (final Individual indi : victims) {
 			this.victims.add(indi.getId().getId());
 		}
 	}
@@ -36,11 +39,11 @@ public class AttackRequest implements Request {
 
 	@Override
 	public Responses respond() {
-		Individual attackingIndividual = Domain.getIndividual(attacker);
-		Individual[] toBeAttacked = new Individual[victims.size()];
+		final Individual attackingIndividual = Domain.getIndividual(attacker);
+		final Individual[] toBeAttacked = new Individual[victims.size()];
 
 		int index = 0;
-		for (Integer i : victims) {
+		for (final Integer i : victims) {
 			toBeAttacked[index] = Domain.getIndividual(i);
 			index++;
 		}
@@ -49,7 +52,7 @@ public class AttackRequest implements Request {
 			return new Responses(false);
 		}
 
-		Wiring.injector().getInstance(IndividualAttackOtherService.class).attack(attackingIndividual, toBeAttacked);
+		individualAttackOtherService.attack(attackingIndividual, toBeAttacked);
 
 		return new Responses(false);
 	}

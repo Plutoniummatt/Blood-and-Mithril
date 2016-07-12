@@ -18,8 +18,9 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.faction.FactionControlService;
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.CameraTracker;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver.PersistenceMetaData;
 import bloodandmithril.persistence.character.IndividualLoader;
@@ -46,7 +47,7 @@ public class GameLoader {
 	/**
 	 * Loads a saved game
 	 */
-	public void load(PersistenceMetaData metadata, boolean newGame) {
+	public void load(final PersistenceMetaData metadata, final boolean newGame) {
 		gameSaver.setPersistencePath("save/" + metadata.name);
 
 		if (newGame) {
@@ -69,15 +70,15 @@ public class GameLoader {
 	@SuppressWarnings("unchecked")
 	private void loadFactions() {
 		try {
-			ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(gameSaver.getSavePath() + "/world/factions.txt"));
-			HashSet<Integer> controlled = (HashSet<Integer>) decode(files.local(gameSaver.getSavePath() + "/world/controlledfactions.txt"));
+			final ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(gameSaver.getSavePath() + "/world/factions.txt"));
+			final HashSet<Integer> controlled = (HashSet<Integer>) decode(files.local(gameSaver.getSavePath() + "/world/controlledfactions.txt"));
 			Domain.setFactions(decoded);
 			if (ClientServerInterface.isClient()) {
-				for (Integer controlledId : controlled) {
+				for (final Integer controlledId : controlled) {
 					factionControlService.control(controlledId);
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			loaderDebug("Failed to load factions", LogLevel.DEBUG);
 		}
 	}
@@ -85,10 +86,10 @@ public class GameLoader {
 
 	/** Loads and returns a collection of metadata of saved games */
 	public Set<PersistenceMetaData> loadMetaData() {
-		Set<PersistenceMetaData> data = Sets.newHashSet();
+		final Set<PersistenceMetaData> data = Sets.newHashSet();
 
-		FileHandle local = Gdx.files.local("save");
-		for (FileHandle directory : local.list()) {
+		final FileHandle local = Gdx.files.local("save");
+		for (final FileHandle directory : local.list()) {
 			if (directory.isDirectory()) {
 				data.add(PersistenceUtil.decode(directory.child("metadata.txt")));
 			}
@@ -100,10 +101,11 @@ public class GameLoader {
 
 	/** Sets current camera position to a saved position found in {@link Parameters} */
 	private void loadCameraPosition() {
-		Map<Integer, Vector2> savedCameraPositions = parameterPersistenceService.getParameters().getSavedCameraPosition();
+		final Map<Integer, Vector2> savedCameraPositions = parameterPersistenceService.getParameters().getSavedCameraPosition();
 		if (savedCameraPositions != null) {
-			BloodAndMithrilClient.getWorldcamcoordinates().clear();
-			BloodAndMithrilClient.getWorldcamcoordinates().putAll(savedCameraPositions);
+			final CameraTracker cameraTracker = Wiring.injector().getInstance(CameraTracker.class);
+			cameraTracker.getWorldcamcoordinates().clear();
+			cameraTracker.getWorldcamcoordinates().putAll(savedCameraPositions);
 		}
 	}
 }

@@ -21,18 +21,21 @@ public class ClientListener extends Listener {
 
 	private Client client;
 
-	public ClientListener(Client client) {
+	public ClientListener(final Client client) {
 		this.client = client;
 		Wiring.injector().injectMembers(this);
 	}
 
 	@Override
-	public void received(Connection connection, final Object object) {
+	public void received(final Connection connection, final Object object) {
+		// Sadface...
+		Wiring.injector().injectMembers(object);
+
 		if (!(object instanceof Responses)) {
 			return;
 		}
 
-		Responses resp = (Responses) object;
+		final Responses resp = (Responses) object;
 
 		if (resp.executeInSingleThread()) {
 			for (final Response response : resp.getResponses()) {
@@ -69,7 +72,7 @@ public class ClientListener extends Listener {
 					() -> {
 						try {
 							response.acknowledge();
-						} catch (Throwable t) {
+						} catch (final Throwable t) {
 							throw new RuntimeException(t);
 						}
 					}

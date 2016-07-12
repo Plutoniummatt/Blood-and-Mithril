@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Server;
 
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
@@ -27,16 +28,16 @@ public class ServerListener extends Listener {
 	/**
 	 * Constructor
 	 */
-	public ServerListener(Server server) {
+	public ServerListener(final Server server) {
 		this.server = server;
 	}
 
 
 	@Override
-	public void disconnected (Connection connection) {
+	public void disconnected (final Connection connection) {
 		ClientServerInterface.SendNotification.notifySyncPlayerList();
 
-		for (Individual indi : Domain.getIndividuals().values()) {
+		for (final Individual indi : Domain.getIndividuals().values()) {
 			if (indi.getSelectedByClient().remove(connection.getID())) {
 				indi.deselect(false, connection.getID());
 			}
@@ -46,31 +47,34 @@ public class ServerListener extends Listener {
 
 	@Override
 	public void received(final Connection connection, final Object object) {
+		// Bit of a crutch, but meh...
+		Wiring.injector().injectMembers(object);
+
 		if (object instanceof Request) {
 			ClientServerInterface.serverThread.execute(() -> {
 				// Cast to Request
-				Request request = (Request) object;
+				final Request request = (Request) object;
 
 				// Send response
 				if (request.tcp()) {
-					Responses responseToSend = request.respond();
-					for (Response response : responseToSend.getResponses()) {
+					final Responses responseToSend = request.respond();
+					for (final Response response : responseToSend.getResponses()) {
 						response.prepare();
 					}
 					if (request.notifyOthers()) {
-						for (Connection c : server.getConnections()) {
+						for (final Connection c : server.getConnections()) {
 							c.sendTCP(responseToSend);
 						}
 					} else {
 						connection.sendTCP(responseToSend);
 					}
 				} else {
-					Responses responseToSend = request.respond();
-					for (Response response : responseToSend.getResponses()) {
+					final Responses responseToSend = request.respond();
+					for (final Response response : responseToSend.getResponses()) {
 						response.prepare();
 					}
 					if (request.notifyOthers()) {
-						for (Connection c : server.getConnections()) {
+						for (final Connection c : server.getConnections()) {
 							c.sendUDP(responseToSend);
 						}
 					} else {

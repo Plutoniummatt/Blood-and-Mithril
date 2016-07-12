@@ -9,7 +9,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import bloodandmithril.core.BloodAndMithrilClient;
+import bloodandmithril.control.CameraTracker;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
@@ -26,23 +26,24 @@ import bloodandmithril.world.Domain;
 public class ParameterPersistenceService {
 
 	@Inject private GameSaver gameSaver;
+	@Inject private CameraTracker cameraTracker;
 
 	/** THE current set of {@link Parameters} */
 	private Parameters parameters = loadParameters();
 
 	/** THE current set of {@link Parameters} */
 	public synchronized Parameters getParameters() {
-		Parameters params = parameters == null ? loadParameters() : parameters;
+		final Parameters params = parameters == null ? loadParameters() : parameters;
 		return params;
 	}
 
 	/** Loads and returns persisted parameters from disk */
 	public synchronized Parameters loadParameters() {
 		try {
-			FileHandle file = Gdx.files.local(gameSaver.getSavePath() + "/parameters.txt");
+			final FileHandle file = Gdx.files.local(gameSaver.getSavePath() + "/parameters.txt");
 			parameters = decode(file);
 			return parameters;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Logger.loaderDebug("No parameters found on disk, using new parameter set", LogLevel.DEBUG);
 			parameters = new Parameters();
 			return parameters;
@@ -52,9 +53,9 @@ public class ParameterPersistenceService {
 
 	/** Saves the {@link Parameters} */
 	public synchronized void saveParameters() {
-		FileHandle file = Gdx.files.local(gameSaver.getSavePath() + "/parameters.txt");
+		final FileHandle file = Gdx.files.local(gameSaver.getSavePath() + "/parameters.txt");
 		parameters.setActiveWorldId(Domain.getActiveWorldId());
-		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? Maps.newHashMap(BloodAndMithrilClient.getWorldcamcoordinates()) : Maps.newHashMap());
+		parameters.setSavedCameraPosition(ClientServerInterface.isClient() ? Maps.newHashMap(cameraTracker.getWorldcamcoordinates()) : Maps.newHashMap());
 		file.writeString(encode(parameters), false);
 	}
 }

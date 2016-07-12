@@ -5,7 +5,6 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.setInputProcessor;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -16,7 +15,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import bloodandmithril.audio.SoundService;
@@ -101,7 +99,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	@Inject	private GameSaver gameSaver;
 
 	/** Current camera coordinates for each world */
-	private static final Map<Integer, Vector2> worldCamCoordinates = Maps.newHashMap();
 	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
 	public static float updateRateMultiplier = 1f;
 
@@ -171,8 +168,8 @@ public class BloodAndMithrilClient implements ApplicationListener {
 				SoundService.update(Gdx.graphics.getDeltaTime());
 			}
 
-			float x = graphics.getCam().position.x;
-			float y = graphics.getCam().position.y;
+			final float x = graphics.getCam().position.x;
+			final float y = graphics.getCam().position.y;
 			graphics.getCam().position.x = Math.round(graphics.getCam().position.x);
 			graphics.getCam().position.y = Math.round(graphics.getCam().position.y);
 
@@ -205,7 +202,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 			graphics.getCam().position.x = x;
 			graphics.getCam().position.y = y;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
@@ -237,7 +234,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 
 	@Override
-	public void resize(int width, int height) {
+	public void resize(final int width, final int height) {
 		graphics.resize(width, height);
 
 		ConfigPersistenceService.getConfig().setResX(width);
@@ -274,7 +271,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	/**
 	 * Sets the boolean value to indicate whether or not the loading screen should be rendered
 	 */
-	public static void setLoading(boolean loading) {
+	public static void setLoading(final boolean loading) {
 		BloodAndMithrilClient.loading.set(loading);
 	}
 
@@ -290,12 +287,12 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	/**
 	 * Sets the inGame flag
 	 */
-	public static void setInGame(boolean inGame) {
+	public static void setInGame(final boolean inGame) {
 		BloodAndMithrilClient.inGame.set(inGame);
 	}
 
 
-	public static void addMission(Mission m) {
+	public static void addMission(final Mission m) {
 		missions.add(m);
 
 		SoundService.play(SoundService.newMission);
@@ -308,7 +305,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 				);
 				try {
 					Thread.sleep(1000);
-				} catch (Exception e) {}
+				} catch (final Exception e) {}
 			}
 		});
 	}
@@ -316,10 +313,5 @@ public class BloodAndMithrilClient implements ApplicationListener {
 
 	public static Collection<Mission> getMissions() {
 		return missions;
-	}
-
-
-	public static Map<Integer, Vector2> getWorldcamcoordinates() {
-		return worldCamCoordinates;
 	}
 }
