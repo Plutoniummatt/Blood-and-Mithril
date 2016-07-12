@@ -117,8 +117,4 @@ public class Domain {
 	public static void setFactions(final ConcurrentHashMap<Integer, Faction> factions) {
 		Domain.factions = factions;
 	}
-
-
-	public static void setup() {
-	}
 }

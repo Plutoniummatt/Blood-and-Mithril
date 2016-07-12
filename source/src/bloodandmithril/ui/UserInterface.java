@@ -57,7 +57,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AIProcessor;
@@ -186,7 +185,7 @@ public class UserInterface {
 
 	private static Deque<Task> uiTasks;
 
-	private static Provider<IndividualContextMenuService> individualContextMenuService;
+	private static IndividualContextMenuService individualContextMenuService;
 	private static BloodAndMithrilClientInputProcessor inputProcessor;
 	private static Graphics graphics;
 	private static GameSaver gameSaver;
@@ -243,7 +242,6 @@ public class UserInterface {
 	 * @param graphics.getHeight() - initial window height
 	 */
 	public static synchronized void setup() {
-		individualContextMenuService = Wiring.injector().getProvider(IndividualContextMenuService.class);
 		inputProcessor = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
 		graphics = Wiring.injector().getInstance(Graphics.class);
 		gameSaver = Wiring.injector().getInstance(GameSaver.class);
@@ -251,6 +249,7 @@ public class UserInterface {
 		factionControlService = Wiring.injector().getInstance(FactionControlService.class);
 		gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
 		topographyDebugRenderer = Wiring.injector().getInstance(TopographyDebugRenderer.class);
+		threading = Wiring.injector().getInstance(Threading.class);
 	}
 
 
@@ -1522,9 +1521,10 @@ public class UserInterface {
 		}
 
 		for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+			individualContextMenuService = Wiring.injector().getInstance(IndividualContextMenuService.class);
 			final Individual indi = Domain.getIndividual(indiKey);
 			if (indi.isMouseOver()) {
-				final ContextMenu secondaryMenu = individualContextMenuService.get().getContextMenu(indi);
+				final ContextMenu secondaryMenu = individualContextMenuService.getContextMenu(indi);
 				newMenu.getMenuItems().add(
 					new MenuItem(
 						indi.getId().getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",

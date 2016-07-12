@@ -118,6 +118,7 @@ public class WorldRenderer {
 		cloudBuffer 						= new FrameBuffer(RGBA8888, Graphics.getGdxWidth(), Graphics.getGdxHeight(), false);
 
 		bBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		shapeRenderer = new ShapeRenderer();
 	}
 
 

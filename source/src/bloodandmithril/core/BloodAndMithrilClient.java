@@ -7,7 +7,6 @@ import static bloodandmithril.control.InputUtilities.setInputProcessor;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.google.inject.Inject;
@@ -84,7 +83,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	@Override
 	public void create() {
 		// Load client-side resources
-		Wiring.setupInjector(new ClientModule(), new CommonModule());
+		Wiring.setupInjector(new CommonModule());
 
 		loadResources();
 
@@ -110,9 +109,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	private void loadResources() {
 		ClientServerInterface.setClient(true);
 
-		Domain.setup();
 		WorldRenderer.setup();
-		WorldRenderer.shapeRenderer = new ShapeRenderer();
 		Fonts.setup();
 		Individual.setup();
 		Elf.setup();

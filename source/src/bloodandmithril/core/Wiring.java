@@ -21,7 +21,11 @@ public class Wiring {
 		return injector;
 	}
 
-	public static void setupInjector(Module... module) {
+	public static void setupInjector(final Module... module) {
 		injector = Guice.createInjector(module);
+	}
+
+	public static void reconfigure(final Module... module) {
+		injector = injector.createChildInjector(module);
 	}
 }

@@ -38,6 +38,7 @@ import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.core.ClientModule;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
 import bloodandmithril.core.GameClientStateTracker;
@@ -133,6 +134,7 @@ public class NewGameWindow extends Window {
 		Domain.getFactions().put(playerFaction.factionId, playerFaction);
 
 		ClientServerInterface.setServer(true);
+		Wiring.reconfigure(new ClientModule());
 		threading.clientProcessingThreadPool.execute(() -> {
 			UserInterface.closeAllWindows();
 			graphics.setFading(true);

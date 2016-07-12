@@ -133,7 +133,6 @@ public class BloodAndMithrilServer {
 			ClientServerInterface.setServer(true);
 			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 			Wiring.injector().getInstance(GameClientStateTracker.class).setActiveWorldId(Domain.createWorld());
-			Domain.setup();
 
 			PrefabricatedComponent.setup();
 		}

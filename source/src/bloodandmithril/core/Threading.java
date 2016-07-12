@@ -47,7 +47,7 @@ public class Threading {
 	private Thread eventsProcessingThread;
 
 	/** Update rate multiplier */
-	private float updateRate;
+	private float updateRate = 1.0f;
 
 	@Inject private GameSaver gameSaver;
 	@Inject private GameClientStateTracker gameClientStateTracker;
