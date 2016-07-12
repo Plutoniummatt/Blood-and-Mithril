@@ -7,7 +7,6 @@ import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.isButtonPressed;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
-import static bloodandmithril.core.BloodAndMithrilClient.isInGame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -26,6 +25,7 @@ import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.event.events.IndividualMoved;
 import bloodandmithril.graphics.Graphics;
@@ -57,24 +57,25 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	@Inject	private Graphics graphics;
 	@Inject	private FactionControlService factionControlService;
 	@Inject	private GameSaver gameSaver;
+	@Inject	private GameClientStateTracker gameClientStateTracker;
 
 	private CursorBoundTask cursorBoundTask = null;
 	private Function<Vector2> camFollowFunction;
 
 	@Override
-	public boolean keyUp(int keycode) {
+	public boolean keyUp(final int keycode) {
 		return false;
 	}
 
 
 	@Override
-	public boolean keyTyped(char character) {
+	public boolean keyTyped(final char character) {
 		return false;
 	}
 
 
 	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+	public boolean touchUp(final int screenX, final int screenY, final int pointer, final int button) {
 		try {
 			if (button == controls.leftClick.keyCode) {
 				UserInterface.leftClickRelease(screenX, graphics.getHeight() - screenY);
@@ -83,7 +84,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 			if (button == controls.rightClick.keyCode) {
 				UserInterface.rightClickRelease(screenX, graphics.getHeight() - screenY);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
@@ -93,12 +94,12 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 
 	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
+	public boolean touchDragged(final int screenX, final int screenY, final int pointer) {
 		if (gameSaver.isSaving()) {
 			return false;
 		}
 
-		if (isButtonPressed(controls.middleClick.keyCode) && isInGame()) {
+		if (isButtonPressed(controls.middleClick.keyCode) && gameClientStateTracker.isInGame()) {
 			graphics.getCam().position.x = Controls.oldCamX + Controls.camDragX - screenX;
 			graphics.getCam().position.y = Controls.oldCamY + screenY - Controls.camDragY;
 		}
@@ -107,16 +108,16 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 
 	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
+	public boolean mouseMoved(final int screenX, final int screenY) {
 		return false;
 	}
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		try {
 			UserInterface.scrolled(amount);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
@@ -126,7 +127,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 
 	@Override
-	public boolean keyDown(int keycode) {
+	public boolean keyDown(final int keycode) {
 		if (isKeyPressed(Keys.CONTROL_LEFT) && keycode == Input.Keys.D) {
 			UserInterface.addLayeredComponentUnique(
 				new DevWindow(
@@ -140,7 +141,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 		}
 
 		try {
-			if (gameSaver.isSaving() || BloodAndMithrilClient.loading.get()) {
+			if (gameSaver.isSaving() || gameClientStateTracker.isLoading()) {
 				return false;
 			}
 
@@ -165,7 +166,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 					cursorBoundTask.keyPressed(keycode);
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
@@ -175,9 +176,9 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 
 	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+	public boolean touchDown(final int screenX, final int screenY, final int pointer, final int button) {
 		try {
-			if (gameSaver.isSaving() || BloodAndMithrilClient.loading.get()) {
+			if (gameSaver.isSaving() || gameClientStateTracker.isLoading()) {
 				return false;
 			}
 
@@ -192,8 +193,8 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 			if (button == controls.middleClick.keyCode) {
 				middleClick(screenX, screenY);
 			}
-		} catch (NoTileFoundException e) {
-		} catch (Exception e) {
+		} catch (final NoTileFoundException e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			Gdx.app.exit();
 		}
@@ -207,8 +208,8 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	 */
 	@SuppressWarnings("unused")
 	private void rightClick() throws NoTileFoundException {
-		long currentTime = System.currentTimeMillis();
-		boolean doubleClick = Controls.rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
+		final long currentTime = System.currentTimeMillis();
+		final boolean doubleClick = Controls.rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
 		boolean uiClicked = false;
 		Controls.rightDoubleClickTimer = currentTime;
 
@@ -228,8 +229,8 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 		}
 
 		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !isKeyPressed(controls.rightClickDragBox.keyCode) && !isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
-			Vector2 mouseCoordinate = new Vector2(getMouseWorldX(), getMouseWorldY());
-			for (Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
+			final Vector2 mouseCoordinate = new Vector2(getMouseWorldX(), getMouseWorldY());
+			for (final Individual indi : Sets.newHashSet(Domain.getSelectedIndividuals())) {
 				if (isKeyPressed(controls.mineTile.keyCode) && !Domain.getWorld(indi.getWorldId()).getTopography().getTile(mouseCoordinate, true).getClass().equals(EmptyTile.class)) {
 					mineTile(mouseCoordinate, indi);
 				} else if (isKeyPressed(controls.jump.keyCode)) {
@@ -242,14 +243,14 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	}
 
 
-	private void middleClick(int screenX, int screenY) {
+	private void middleClick(final int screenX, final int screenY) {
 		camFollowFunction = null;
 		saveCamDragCoordinates(screenX, screenY);
 	}
 
 
-	private void moveIndividual(Individual indi) throws NoTileFoundException {
-		float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), Controls.INDIVIDUAL_SPREAD);
+	private void moveIndividual(final Individual indi) throws NoTileFoundException {
+		final float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (Domain.getSelectedIndividuals().size() - 1), Controls.INDIVIDUAL_SPREAD);
 		if (ClientServerInterface.isServer()) {
 			AIProcessor.sendPathfindingRequest(
 				indi,
@@ -295,7 +296,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	}
 
 
-	private void jump(Individual indi) {
+	private void jump(final Individual indi) {
 		if (ClientServerInterface.isServer()) {
 			AIProcessor.sendJumpResolutionRequest(
 				indi,
@@ -317,7 +318,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	}
 
 
-	private void mineTile(Vector2 mouseCoordinate, Individual indi) {
+	private void mineTile(final Vector2 mouseCoordinate, final Individual indi) {
 		if (ClientServerInterface.isServer()) {
 			indi.getAI().setCurrentTask(new MineTile(indi, mouseCoordinate));
 		} else {
@@ -327,7 +328,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 
 	private void rangedAttack() {
-		for (Individual selected : Domain.getSelectedIndividuals()) {
+		for (final Individual selected : Domain.getSelectedIndividuals()) {
 			if (selected.canAttackRanged()) {
 				if (ClientServerInterface.isServer()) {
 					selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
@@ -342,9 +343,9 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	private void meleeAttack() {
 		if (!Domain.getSelectedIndividuals().isEmpty()) {
 			for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-				Individual indi = Domain.getIndividual(indiKey);
+				final Individual indi = Domain.getIndividual(indiKey);
 				if (indi.isMouseOver() && indi.isAlive()) {
-					for (Individual selected : Domain.getSelectedIndividuals()) {
+					for (final Individual selected : Domain.getSelectedIndividuals()) {
 						if (indi == selected) {
 							continue;
 						}
@@ -365,26 +366,26 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	/**
 	 * Called upon left clicking
 	 */
-	private void leftClick(int screenX, int screenY) {
+	private void leftClick(final int screenX, final int screenY) {
 
-		long currentTimeMillis = System.currentTimeMillis();
+		final long currentTimeMillis = System.currentTimeMillis();
 
-		boolean doubleClick = Controls.leftDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTimeMillis;
+		final boolean doubleClick = Controls.leftDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTimeMillis;
 		Controls.leftDoubleClickTimer = currentTimeMillis;
 
-		boolean uiClicked = graphics.getUi().leftClick();
+		final boolean uiClicked = graphics.getUi().leftClick();
 
 		Individual individualClicked = null;
 		if (Domain.getActiveWorld() != null) {
-			for (int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-				Individual indi = Domain.getIndividual(indiKey);
+			for (final int indiKey : Domain.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
+				final Individual indi = Domain.getIndividual(indiKey);
 				if (indi.isMouseOver()) {
 					individualClicked = indi;
 				}
 			}
 		}
 
-		if (!uiClicked && isInGame()) {
+		if (!uiClicked && gameClientStateTracker.isInGame()) {
 			if (getCursorBoundTask() != null) {
 				if (getCursorBoundTask().executionConditionMet()) {
 					if (getCursorBoundTask().isWorldCoordinate()) {
@@ -402,10 +403,10 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 				return;
 			}
 
-			IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
+			final IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
 			if (individualClicked == null) {
 				if (doubleClick && (cursorBoundTask == null || !(cursorBoundTask instanceof ThrowItemCursorBoundTask))) {
-					for (Individual indi : Domain.getIndividuals().values()) {
+					for (final Individual indi : Domain.getIndividuals().values()) {
 						if (factionControlService.isControllable(indi)) {
 							individualSelectionService.deselect(indi);
 						}
@@ -415,7 +416,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 					}
 				}
 			} else {
-				for (Individual indi : Domain.getIndividuals().values()) {
+				for (final Individual indi : Domain.getIndividuals().values()) {
 					if (factionControlService.isControllable(indi) && indi.getId().getId() != individualClicked.getId().getId() && !isKeyPressed(controls.selectIndividual.keyCode)) {
 						individualSelectionService.deselect(indi);
 					}
@@ -435,12 +436,12 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	 */
 	public void cameraControl() {
 		if (camFollowFunction != null) {
-			Vector2 followCam = camFollowFunction.call();
+			final Vector2 followCam = camFollowFunction.call();
 			graphics.getCam().position.x += (followCam.x - graphics.getCam().position.x) * 0.01f;
 			graphics.getCam().position.y += (followCam.y - graphics.getCam().position.y) * 0.03f;
 		}
 
-		if (!isKeyPressed(Keys.CONTROL_LEFT) && isInGame()) {
+		if (!isKeyPressed(Keys.CONTROL_LEFT) && gameClientStateTracker.isInGame()) {
 
 			if (isKeyPressed(controls.moveCamUp.keyCode)){
 				graphics.getCam().position.y += 10f;
@@ -465,7 +466,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	/**
 	 * Camera dragging processing
 	 */
-	private void saveCamDragCoordinates(int screenX, int screenY) {
+	private void saveCamDragCoordinates(final int screenX, final int screenY) {
 		Controls.oldCamX = (int)graphics.getCam().position.x;
 		Controls.oldCamY = (int)graphics.getCam().position.y;
 
@@ -485,7 +486,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	/**
 	 * @param cursorBoundTask to set
 	 */
-	public void setCursorBoundTask(CursorBoundTask cursorBoundTask) {
+	public void setCursorBoundTask(final CursorBoundTask cursorBoundTask) {
 		this.cursorBoundTask = cursorBoundTask;
 	}
 
@@ -495,7 +496,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	}
 
 
-	public void setCamFollowFunction(Function<Vector2> camFollowFunction) {
+	public void setCamFollowFunction(final Function<Vector2> camFollowFunction) {
 		this.camFollowFunction = camFollowFunction;
 	}
 }

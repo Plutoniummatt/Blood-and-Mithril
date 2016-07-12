@@ -13,8 +13,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.GameSetupService;
 import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
@@ -46,6 +46,7 @@ public class LoadGameWindow extends Window {
 	@Inject	private GameLoader gameLoader;
 	@Inject	private ChunkLoader chunkLoader;
 	@Inject private GameSetupService gameSetupService;
+	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	/**
 	 * Constructor
@@ -79,7 +80,7 @@ public class LoadGameWindow extends Window {
 			null
 		) {
 			@Override
-			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date> item) {
+			protected String getExtraString(final Entry<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date> item) {
 				return dateFormat.format(item.getValue());
 			}
 
@@ -91,23 +92,23 @@ public class LoadGameWindow extends Window {
 
 
 			@Override
-			protected void populateListings(List<HashMap<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date>> listings) {
+			protected void populateListings(final List<HashMap<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date>> listings) {
 				populateList(listings);
 			}
 
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
 	}
 
 
-	private void populateList(List<HashMap<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date>> listings) {
-		HashMap<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date> mapToAdd = Maps.newHashMap();
+	private void populateList(final List<HashMap<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date>> listings) {
+		final HashMap<ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>, Date> mapToAdd = Maps.newHashMap();
 
-		for (PersistenceMetaData metadata : gameLoader.loadMetaData()) {
+		for (final PersistenceMetaData metadata : gameLoader.loadMetaData()) {
 			mapToAdd.put(
 				new ScrollableListingPanel.ListingMenuItem<PersistenceMetaData>(
 					metadata,
@@ -126,16 +127,16 @@ public class LoadGameWindow extends Window {
 									graphics.setFading(true);
 									MainMenuWindow.removeWindows();
 									threadWait(2000);
-									BloodAndMithrilClient.setLoading(true);
+									gameClientStateTracker.setLoading(true);
 									gameLoader.load(metadata, false);
-									BloodAndMithrilClient.setInGame(true);
+									gameClientStateTracker.setInGame(true);
 									gameSetupService.setup();
 
 									while(!chunkLoader.loaderTasks.isEmpty()) {
 										threadWait(100);
 									}
 
-									BloodAndMithrilClient.setLoading(false);
+									gameClientStateTracker.setLoading(false);
 									threadWait(2000);
 									graphics.setFading(false);
 								}
@@ -157,7 +158,7 @@ public class LoadGameWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		savedGames.height = height;
 		savedGames.width = width;
 		savedGames.x = x;
@@ -168,7 +169,7 @@ public class LoadGameWindow extends Window {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		savedGames.leftClick(copy, windowsCopy);
 	}
 

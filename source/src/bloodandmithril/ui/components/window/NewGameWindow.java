@@ -38,9 +38,9 @@ import bloodandmithril.character.individuals.IndividualState;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.character.proficiency.Proficiency;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Description;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.GameSetupService;
 import bloodandmithril.core.ItemPackage;
 import bloodandmithril.core.Name;
@@ -93,6 +93,7 @@ public class NewGameWindow extends Window {
 	@Inject	private GameLoader gameLoader;
 	@Inject	private ChunkLoader chunkLoader;
 	@Inject private GameSetupService gameSetupService;
+	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	private Button next;
 	private Button startGame = new Button(
@@ -114,14 +115,14 @@ public class NewGameWindow extends Window {
 	private void startGame() {
 		setClosing(true);
 
-		Faction nature = new Faction(
+		final Faction nature = new Faction(
 			"Nature",
 			parameterPersistenceService.getParameters().getNextFactionId(),
 			false,
 			"Mother nature"
 		);
 
-		Faction playerFaction = new Faction(
+		final Faction playerFaction = new Faction(
 			selectedRace.getAnnotation(Name.class).name(),
 			parameterPersistenceService.getParameters().getNextFactionId(),
 			true,
@@ -136,16 +137,16 @@ public class NewGameWindow extends Window {
 			UserInterface.closeAllWindows();
 			graphics.setFading(true);
 			threadWait(1500);
-			BloodAndMithrilClient.setLoading(true);
+			gameClientStateTracker.setLoading(true);
 			ClientServerInterface.setServer(true);
 
 			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
 			Domain.setActiveWorld(Domain.createWorld());
-			BloodAndMithrilClient.setInGame(true);
+			gameClientStateTracker.setInGame(true);
 			gameSetupService.setup();
 			factionControlService.control(playerFaction.factionId);
 
-			Topography topography = Domain.getActiveWorld().getTopography();
+			final Topography topography = Domain.getActiveWorld().getTopography();
 			topography.loadOrGenerateChunk(0, 0, false);
 
 			SuperStructure superStructure = null;
@@ -157,9 +158,9 @@ public class NewGameWindow extends Window {
 				}).orNull();
 			}
 
-			ArrayList<Vector2> startingLocations = Lists.newArrayList(superStructure.getPossibleStartingLocations());
+			final ArrayList<Vector2> startingLocations = Lists.newArrayList(superStructure.getPossibleStartingLocations());
 			Collections.shuffle(startingLocations);
-			Vector2 startingPosition = startingLocations.get(0);
+			final Vector2 startingPosition = startingLocations.get(0);
 
 			graphics.getCam().position.x = startingPosition.x;
 			graphics.getCam().position.y = startingPosition.y;
@@ -181,7 +182,7 @@ public class NewGameWindow extends Window {
 				threadWait(100);
 			}
 
-			BloodAndMithrilClient.setLoading(false);
+			gameClientStateTracker.setLoading(false);
 			graphics.setFading(false);
 		});
 	}
@@ -218,13 +219,13 @@ public class NewGameWindow extends Window {
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		return currentPanel.scrolled(amount);
 	}
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		if (currentPanel != null) {
 			currentPanel.x = x;
 			currentPanel.y = y;
@@ -242,7 +243,7 @@ public class NewGameWindow extends Window {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		currentPanel.leftClick(copy, windowsCopy);
 
 		if (canNext()) {
@@ -291,14 +292,14 @@ public class NewGameWindow extends Window {
 
 		private ScrollableListingPanel<ItemPackage, String> itemPackages;
 
-		public ChooseStartingItemPackagePanel(Component parent) {
+		public ChooseStartingItemPackagePanel(final Component parent) {
 			super(parent);
 
 			itemPackages = new ScrollableListingPanel<ItemPackage, String>(
 				NewGameWindow.this,
 				new Comparator<ItemPackage>() {
 					@Override
-					public int compare(ItemPackage o1, ItemPackage o2) {
+					public int compare(final ItemPackage o1, final ItemPackage o2) {
 						return o1.getName().compareTo(o2.getName());
 					}
 				},
@@ -308,7 +309,7 @@ public class NewGameWindow extends Window {
 			) {
 
 				@Override
-				protected String getExtraString(Entry<ListingMenuItem<ItemPackage>, String> item) {
+				protected String getExtraString(final Entry<ListingMenuItem<ItemPackage>, String> item) {
 					return "";
 				}
 
@@ -320,16 +321,16 @@ public class NewGameWindow extends Window {
 				}
 
 				@Override
-				protected void populateListings(List<HashMap<ListingMenuItem<ItemPackage>, String>> listings) {
-					HashMap<ListingMenuItem<ItemPackage>, String> newHashMap = Maps.newHashMap();
+				protected void populateListings(final List<HashMap<ListingMenuItem<ItemPackage>, String>> listings) {
+					final HashMap<ListingMenuItem<ItemPackage>, String> newHashMap = Maps.newHashMap();
 
-					for (ItemPackage pack : ItemPackage.getAvailablePackages()) {
-						ContextMenu.MenuItem select = new ContextMenu.MenuItem(
+					for (final ItemPackage pack : ItemPackage.getAvailablePackages()) {
+						final ContextMenu.MenuItem select = new ContextMenu.MenuItem(
 							"Select",
 							() -> {
 								NewGameWindow.this.selectedItemPackage = pack;
-								for (HashMap<ListingMenuItem<ItemPackage>, String> item : itemPackages.getListing()) {
-									for (ListingMenuItem<ItemPackage> listingItem : item.keySet()) {
+								for (final HashMap<ListingMenuItem<ItemPackage>, String> item : itemPackages.getListing()) {
+									for (final ListingMenuItem<ItemPackage> listingItem : item.keySet()) {
 										if (listingItem.t == selectedItemPackage) {
 											listingItem.button.setIdleColor(Color.CYAN);
 										} else {
@@ -348,7 +349,7 @@ public class NewGameWindow extends Window {
 							null
 						);
 
-						ContextMenu.MenuItem inspect = new ContextMenu.MenuItem(
+						final ContextMenu.MenuItem inspect = new ContextMenu.MenuItem(
 							"Inspect",
 							() -> {
 								UserInterface.addLayeredComponentUnique(
@@ -395,7 +396,7 @@ public class NewGameWindow extends Window {
 
 
 				@Override
-				public boolean keyPressed(int keyCode) {
+				public boolean keyPressed(final int keyCode) {
 					return false;
 				}
 			};
@@ -403,13 +404,13 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public boolean scrolled(int amount) {
+		public boolean scrolled(final int amount) {
 			return itemPackages.scrolled(amount);
 		}
 
 
 		@Override
-		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 			return itemPackages.leftClick(copy, windowsCopy);
 		}
 
@@ -421,7 +422,7 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public void render(Graphics graphics) {
+		public void render(final Graphics graphics) {
 			itemPackages.x = x + 10;
 			itemPackages.y = y - 120;
 			itemPackages.width = width - 10;
@@ -437,7 +438,7 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public boolean keyPressed(int keyCode) {
+		public boolean keyPressed(final int keyCode) {
 			return false;
 		}
 	}
@@ -453,7 +454,7 @@ public class NewGameWindow extends Window {
 		/**
 		 * Constructor
 		 */
-		public ChooseStartingIndividualsPanel(Component parent) {
+		public ChooseStartingIndividualsPanel(final Component parent) {
 			super(parent);
 
 			if (!startingIndividuals.keySet().isEmpty()) {
@@ -491,7 +492,7 @@ public class NewGameWindow extends Window {
 				NewGameWindow.this,
 				new Comparator<Individual>() {
 					@Override
-					public int compare(Individual o1, Individual o2) {
+					public int compare(final Individual o1, final Individual o2) {
 						if (o1 == null) {
 							return -1;
 						} else if (o2 == null) {
@@ -506,7 +507,7 @@ public class NewGameWindow extends Window {
 				null
 			) {
 				@Override
-				protected String getExtraString(Entry<ListingMenuItem<Individual>, String> item) {
+				protected String getExtraString(final Entry<ListingMenuItem<Individual>, String> item) {
 					return "";
 				}
 
@@ -518,13 +519,13 @@ public class NewGameWindow extends Window {
 
 
 				@Override
-				protected void populateListings(List<HashMap<ListingMenuItem<Individual>, String>> listings) {
+				protected void populateListings(final List<HashMap<ListingMenuItem<Individual>, String>> listings) {
 					listings.add(startingIndividuals);
 				}
 
 
 				@Override
-				public boolean keyPressed(int keyCode) {
+				public boolean keyPressed(final int keyCode) {
 					return false;
 				}
 			};
@@ -534,7 +535,7 @@ public class NewGameWindow extends Window {
 				NewGameWindow.this,
 				new Comparator<Proficiency>() {
 					@Override
-					public int compare(Proficiency o1, Proficiency o2) {
+					public int compare(final Proficiency o1, final Proficiency o2) {
 						return o1.getName().compareTo(o2.getName());
 					}
 				},
@@ -543,7 +544,7 @@ public class NewGameWindow extends Window {
 				null
 			) {
 				@Override
-				protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Proficiency>, String> item) {
+				protected String getExtraString(final Entry<ScrollableListingPanel.ListingMenuItem<Proficiency>, String> item) {
 					return item.getValue();
 				}
 
@@ -555,7 +556,7 @@ public class NewGameWindow extends Window {
 
 
 				@Override
-				protected void populateListings(List<HashMap<ListingMenuItem<Proficiency>, String>> listings) {
+				protected void populateListings(final List<HashMap<ListingMenuItem<Proficiency>, String>> listings) {
 					if (selectedIndividual == null) {
 						listings.add(Maps.newHashMap());
 					} else {
@@ -565,20 +566,20 @@ public class NewGameWindow extends Window {
 
 
 				@Override
-				public boolean keyPressed(int keyCode) {
+				public boolean keyPressed(final int keyCode) {
 					return false;
 				}
 			};
 		}
 
 		@Override
-		public boolean scrolled(int amount) {
+		public boolean scrolled(final int amount) {
 			return skills.scrolled(amount) || individuals.scrolled(amount);
 		}
 
 		private void addIndividual() {
-			Individual newIndividual = newIndividual(selectedRace);
-			ListingMenuItem<Individual> listingItem = new ListingMenuItem<Individual>(
+			final Individual newIndividual = newIndividual(selectedRace);
+			final ListingMenuItem<Individual> listingItem = new ListingMenuItem<Individual>(
 				newIndividual,
 				new Button(
 					newIndividual.getId().getSimpleName(),
@@ -606,13 +607,13 @@ public class NewGameWindow extends Window {
 						startingIndividuals.remove(listingItem);
 						refreshSkillListing();
 						assignablePoints += 10;
-						for (Proficiency skill : listingItem.t.getProficiencies().getAllProficiencies()) {
+						for (final Proficiency skill : listingItem.t.getProficiencies().getAllProficiencies()) {
 							assignablePoints += skill.getLevel();
 						}
 					} else {
 						selectedIndividual = newIndividual;
 						refreshSkillListing();
-						for (ListingMenuItem<Individual> item : startingIndividuals.keySet()) {
+						for (final ListingMenuItem<Individual> item : startingIndividuals.keySet()) {
 							if (item.t == null) {
 								item.button.setIdleColor(Color.GREEN);
 							} else if (item.t == selectedIndividual) {
@@ -636,9 +637,9 @@ public class NewGameWindow extends Window {
 
 		private void refreshSkillListing() {
 			ChooseStartingIndividualsPanel.this.skills.getListing().clear();
-			HashMap<ListingMenuItem<Proficiency>, String> newHashMap = Maps.newHashMap();
+			final HashMap<ListingMenuItem<Proficiency>, String> newHashMap = Maps.newHashMap();
 			if (selectedIndividual != null) {
-				for (Proficiency skill : selectedIndividual.getProficiencies().getAllProficiencies()) {
+				for (final Proficiency skill : selectedIndividual.getProficiencies().getAllProficiencies()) {
 					final ListingMenuItem<Proficiency> item = new ListingMenuItem<Proficiency>(
 						skill,
 						new Button(
@@ -680,9 +681,9 @@ public class NewGameWindow extends Window {
 		}
 
 
-		private Individual newIndividual(Class<? extends Individual> selectedRace) {
+		private Individual newIndividual(final Class<? extends Individual> selectedRace) {
 			if (selectedRace.equals(Elf.class)) {
-				IndividualState state = new IndividualState.IndividualStateBuilder()
+				final IndividualState state = new IndividualState.IndividualStateBuilder()
 				.withMaxHealth(30f)
 				.withHealthRegen(0.01f)
 				.withStaminaRegen(0.02f)
@@ -693,10 +694,10 @@ public class NewGameWindow extends Window {
 				state.velocity = new Vector2();
 				state.acceleration = new Vector2();
 
-				IndividualIdentifier id = getRandomElfIdentifier(true, 18 + Util.getRandom().nextInt(10));
+				final IndividualIdentifier id = getRandomElfIdentifier(true, 18 + Util.getRandom().nextInt(10));
 				id.setNickName("");
 
-				Elf elf = new Elf(
+				final Elf elf = new Elf(
 					id, state, Faction.NPC, true,
 					null,
 					lightColor(),
@@ -712,7 +713,7 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 			if (individuals.leftClick(copy, windowsCopy)) {
 				return true;
 			} else if (skills.leftClick(copy, windowsCopy)) {
@@ -730,7 +731,7 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public void render(Graphics graphics) {
+		public void render(final Graphics graphics) {
 			individuals.x = x + 10;
 			individuals.y = y - 220;
 			individuals.width = width/2 - 10;
@@ -755,7 +756,7 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public boolean keyPressed(int keyCode) {
+		public boolean keyPressed(final int keyCode) {
 			return false;
 		}
 	}
@@ -768,7 +769,7 @@ public class NewGameWindow extends Window {
 		/**
 		 * Constructor
 		 */
-		public ChooseTutorialsPanel(Component parent) {
+		public ChooseTutorialsPanel(final Component parent) {
 			super(parent);
 
 			tutorialsButton = new Button(
@@ -796,8 +797,8 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
-			boolean clicked = tutorialsButton.click();
+		public boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
+			final boolean clicked = tutorialsButton.click();
 			return clicked;
 		}
 
@@ -808,7 +809,7 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public void render(Graphics graphics) {
+		public void render(final Graphics graphics) {
 			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
 			defaultFont.draw(graphics.getSpriteBatch(), "Choose whether or not tutorials are enabled.", x + width / 2 - 220, y - 40);
 
@@ -817,7 +818,7 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public boolean keyPressed(int keyCode) {
+		public boolean keyPressed(final int keyCode) {
 			return false;
 		}
 	}
@@ -833,10 +834,10 @@ public class NewGameWindow extends Window {
 		 * Constructor
 		 */
 		@SuppressWarnings("unchecked")
-		public ChooseRacePanel(Component parent) {
+		public ChooseRacePanel(final Component parent) {
 			super(parent);
 
-			for (Class<? extends Individual> race : Lists.newArrayList(Elf.class)) {
+			for (final Class<? extends Individual> race : Lists.newArrayList(Elf.class)) {
 				availableRaces.add(
 					new Button(
 						race.getSimpleName(),
@@ -859,9 +860,9 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 			boolean clicked = false;
-			for (Button button : availableRaces) {
+			for (final Button button : availableRaces) {
 				clicked = button.click();
 				if (clicked) {
 					break;
@@ -878,12 +879,12 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public void render(Graphics graphics) {
+		public void render(final Graphics graphics) {
 			defaultFont.setColor(Colors.modulateAlpha(Color.GREEN, parent.getAlpha() * (parent.isActive() ? 1.0f : 0.6f)));
 			defaultFont.draw(graphics.getSpriteBatch(), "Choose starting race", x + width / 2 - 100, y - 40);
 
 			int i = 0;
-			for (Button button : availableRaces) {
+			for (final Button button : availableRaces) {
 				button.render(x + width / 2, y - 75 - i * 18, parent.isActive(), parent.getAlpha(), graphics);
 				i++;
 			}
@@ -893,7 +894,7 @@ public class NewGameWindow extends Window {
 		}
 
 
-		private String deriveDescription(Class<? extends Individual> clazz) {
+		private String deriveDescription(final Class<? extends Individual> clazz) {
 			if (selectedRace != null) {
 				return clazz.getAnnotation(Description.class).description();
 			}
@@ -903,7 +904,7 @@ public class NewGameWindow extends Window {
 
 
 		@Override
-		public boolean keyPressed(int keyCode) {
+		public boolean keyPressed(final int keyCode) {
 			return false;
 		}
 	}

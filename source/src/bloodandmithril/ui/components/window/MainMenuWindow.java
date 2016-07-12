@@ -13,8 +13,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.google.inject.Inject;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.GameSetupService;
 import bloodandmithril.core.Threading;
 import bloodandmithril.core.Wiring;
@@ -42,11 +42,12 @@ public class MainMenuWindow extends Window {
 	@Inject	private GameSaver gameSaver;
 	@Inject private UserInterface userInterface;
 	@Inject private GameSetupService gameSetupService;
+	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	/**
 	 * Constructor
 	 */
-	public MainMenuWindow(boolean closeable) {
+	public MainMenuWindow(final boolean closeable) {
 		super(200, 130, "Main Menu", true, false, false, closeable);
 		loadButtons();
 		Wiring.injector().injectMembers(this);
@@ -54,16 +55,16 @@ public class MainMenuWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		singlePlayer.render(width/2 + x, y - 26, isActive() && !gameSaver.isSaving(), getAlpha(), graphics);
-		multiPlayer.render(width/2 + x, y - 46, isActive() && !gameSaver.isSaving() && !BloodAndMithrilClient.isInGame(), getAlpha(), graphics);
+		multiPlayer.render(width/2 + x, y - 46, isActive() && !gameSaver.isSaving() && !gameClientStateTracker.isInGame(), getAlpha(), graphics);
 		options.render(width/2 + x, y - 66, isActive() && !gameSaver.isSaving(), getAlpha(), graphics);
 		exit.render(width/2 + x, y - 86, isActive() && !gameSaver.isSaving(), getAlpha(), graphics);
 	}
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		multiPlayer.click();
 		exit.click();
 
@@ -92,7 +93,7 @@ public class MainMenuWindow extends Window {
 				new ContextMenu.MenuItem(
 					"Save game",
 					() -> {
-						if (!BloodAndMithrilClient.isInGame()) {
+						if (!gameClientStateTracker.isInGame()) {
 							return;
 						}
 
@@ -104,7 +105,7 @@ public class MainMenuWindow extends Window {
 								250,
 								100,
 								args -> {
-									String input = (String)args[0];
+									final String input = (String)args[0];
 
 									if (StringUtils.isBlank(input.replace(" ", ""))) {
 										UserInterface.addGlobalMessage("Invalid name", "Please enter a valid name.");
@@ -119,9 +120,9 @@ public class MainMenuWindow extends Window {
 							)
 						);
 					},
-					BloodAndMithrilClient.isInGame() ? Color.ORANGE : Colors.UI_DARK_GRAY,
-					BloodAndMithrilClient.isInGame() ? Color.GREEN  : Colors.UI_DARK_GRAY,
-					BloodAndMithrilClient.isInGame() ? Color.ORANGE : Colors.UI_DARK_GRAY,
+					gameClientStateTracker.isInGame() ? Color.ORANGE : Colors.UI_DARK_GRAY,
+					gameClientStateTracker.isInGame() ? Color.GREEN  : Colors.UI_DARK_GRAY,
+					gameClientStateTracker.isInGame() ? Color.ORANGE : Colors.UI_DARK_GRAY,
 					null
 				),
 				new ContextMenu.MenuItem(
@@ -173,7 +174,7 @@ public class MainMenuWindow extends Window {
 			100,
 			16,
 			() -> {
-				if (BloodAndMithrilClient.isInGame()) {
+				if (gameClientStateTracker.isInGame()) {
 					return;
 				}
 
@@ -185,7 +186,7 @@ public class MainMenuWindow extends Window {
 						250,
 						100,
 						args -> {
-							for (Component component : UserInterface.getLayeredComponents()) {
+							for (final Component component : UserInterface.getLayeredComponents()) {
 								if (component instanceof Window && ((Window) component).title.equals("Enter IP") ||
 									component instanceof MainMenuWindow) {
 									component.setClosing(true);
@@ -205,18 +206,18 @@ public class MainMenuWindow extends Window {
 										while (Domain.getWorlds().isEmpty()) {
 											try {
 												Thread.sleep(100);
-											} catch (Exception e) {
+											} catch (final Exception e) {
 												throw new RuntimeException(e);
 											}
 										}
 
 										Domain.setActiveWorld(Domain.getWorlds().keySet().iterator().next().intValue());
-										BloodAndMithrilClient.setInGame(true);
+										gameClientStateTracker.setInGame(true);
 										gameSetupService.setup();
-									} catch (Exception e) {
+									} catch (final Exception e) {
 
 										// Deactivate all windows, close the connecting message pop-up.
-										for (Component component : UserInterface.getLayeredComponents()) {
+										for (final Component component : UserInterface.getLayeredComponents()) {
 											component.setActive(false);
 											if (component instanceof Window && ((Window) component).title.equals("Connecting")) {
 												component.setClosing(true);
@@ -238,7 +239,7 @@ public class MainMenuWindow extends Window {
 												300,
 												100,
 												() -> {
-													for (Component component : UserInterface.getLayeredComponents()) {
+													for (final Component component : UserInterface.getLayeredComponents()) {
 														if (component instanceof Window && ((Window) component).title.equals("Error")) {
 															component.setClosing(true);
 														} else if (component instanceof Window && ((Window) component).title.equals("Enter IP")) {
@@ -302,7 +303,7 @@ public class MainMenuWindow extends Window {
 	 * Single player mode was selected
 	 */
 	private void singlePlayer() {
-		for (Component component : UserInterface.getLayeredComponents()) {
+		for (final Component component : UserInterface.getLayeredComponents()) {
 			if (component instanceof MainMenuWindow) {
 				component.setClosing(true);
 			}
@@ -313,7 +314,7 @@ public class MainMenuWindow extends Window {
 
 	public static void removeWindows() {
 		Wiring.injector().getInstance(UserInterface.class).removeButton("connect");
-		for (Component component : UserInterface.getLayeredComponents()) {
+		for (final Component component : UserInterface.getLayeredComponents()) {
 			if (component instanceof Window && ((Window) component).title.equals("Connecting") ||
 				component instanceof Window && ((Window) component).title.equals("Enter IP") ||
 				component instanceof MainMenuWindow ||

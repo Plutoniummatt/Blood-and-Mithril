@@ -13,8 +13,8 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Color;
 import com.google.inject.Inject;
 
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
@@ -39,6 +39,7 @@ import bloodandmithril.ui.components.window.Window;
 public class BottomBar extends Component {
 
 	@Inject private GameSaver gameSaver;
+	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	private final Button mainMenu = new Button(UserInterface.uiTexture, 25, 16, 53, 0, 50, 32,
 		() -> {},
@@ -67,14 +68,14 @@ public class BottomBar extends Component {
 
 
 	@Override
-	public void render(Graphics graphics) {
+	public void render(final Graphics graphics) {
 		super.render(graphics);
 	}
 
 
 	/** Called upon left click */
 	@Override
-	public boolean leftClick(List<ContextMenu> copy, final Deque<Component> windowsCopy) {
+	public boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 
 		if (mainMenu.click()) {
 			mainMenuClicked(windowsCopy);
@@ -124,7 +125,7 @@ public class BottomBar extends Component {
 
 	/** Called when the factions button is clicked */
 	private void factionsClicked() {
-		for (Component component : newArrayList(UserInterface.getLayeredComponents())) {
+		for (final Component component : newArrayList(UserInterface.getLayeredComponents())) {
 			if (component instanceof FactionsWindow) {
 				((FactionsWindow) component).x = getGdxWidth()/2 - ((FactionsWindow) component).width/2;
 				((FactionsWindow) component).y = getGdxHeight()/2 + ((FactionsWindow) component).height/2;
@@ -147,9 +148,9 @@ public class BottomBar extends Component {
 
 
 	/** Called when the chat button is clicked */
-	private void chatClicked(List<ContextMenu> copy) {
+	private void chatClicked(final List<ContextMenu> copy) {
 
-		ContextMenu contextMenu = new ContextMenu(
+		final ContextMenu contextMenu = new ContextMenu(
 			getMouseScreenX(),
 			getMouseScreenY() + 44,
 			true,
@@ -163,37 +164,38 @@ public class BottomBar extends Component {
 			)
 		);
 
-		if (ClientServerInterface.isClient() && !ClientServerInterface.isServer())
-		contextMenu.addMenuItem(
-			new MenuItem(
-				"Chat",
-				() -> {
-					for (Component component : newArrayList(UserInterface.getLayeredComponents())) {
-						if (component instanceof ChatWindow) {
-							((ChatWindow) component).x = getGdxWidth()/2 - ((ChatWindow) component).width/2;
-							((ChatWindow) component).y = getGdxHeight()/2 + ((ChatWindow) component).height/2;
-							((ChatWindow) component).minimized = false;
-							((ChatWindow) component).setActive(true);
-							break;
-						}
+		if (ClientServerInterface.isClient() && !ClientServerInterface.isServer()) {
+			contextMenu.addMenuItem(
+				new MenuItem(
+					"Chat",
+					() -> {
+						for (final Component component : newArrayList(UserInterface.getLayeredComponents())) {
+							if (component instanceof ChatWindow) {
+								((ChatWindow) component).x = getGdxWidth()/2 - ((ChatWindow) component).width/2;
+								((ChatWindow) component).y = getGdxHeight()/2 + ((ChatWindow) component).height/2;
+								((ChatWindow) component).minimized = false;
+								((ChatWindow) component).setActive(true);
+								break;
+							}
 
-						UserInterface.addLayeredComponent(
-							new ChatWindow(
-								500,
-								300,
-								true,
-								300,
-								250
-							)
-						);
-					}
-				},
-				Color.ORANGE,
-				Color.GREEN,
-				Color.GRAY,
-				null
-			)
-		);
+							UserInterface.addLayeredComponent(
+								new ChatWindow(
+									500,
+									300,
+									true,
+									300,
+									250
+								)
+							);
+						}
+					},
+					Color.ORANGE,
+					Color.GREEN,
+					Color.GRAY,
+					null
+				)
+			);
+		}
 
 		copy.add(
 			contextMenu
@@ -203,10 +205,10 @@ public class BottomBar extends Component {
 
 
 	/** Called when the windows button is clicked */
-	private void windowsClicked(List<ContextMenu> copy, final Deque<Component> windowsCopy) {
+	private void windowsClicked(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		copy.clear();
 		int size = 0;
-		ArrayList<MenuItem> items = new ArrayList<>();
+		final ArrayList<MenuItem> items = new ArrayList<>();
 		for (final Component component : UserInterface.getLayeredComponents()) {
 			if (component instanceof Window) {
 				if (((Window) component).minimized) {
@@ -225,13 +227,13 @@ public class BottomBar extends Component {
 			}
 		}
 
-		ContextMenu newMenu = new ContextMenu(
+		final ContextMenu newMenu = new ContextMenu(
 			getMouseScreenX(),
 			getMouseScreenY() + (size + 3) * 22,
 			true
 		);
 
-		for (MenuItem item : items) {
+		for (final MenuItem item : items) {
 			newMenu.addMenuItem(item);
 		}
 
@@ -298,7 +300,7 @@ public class BottomBar extends Component {
 	private void mainMenuClicked(final Deque<Component> windowsCopy) {
 		// Check if the main menu is already open
 		Component existing = null;
-		for (Component component : windowsCopy) {
+		for (final Component component : windowsCopy) {
 			if (component instanceof Window && ((Window) component).title.equals("Main menu")) {
 				existing = component;
 				break;
@@ -320,23 +322,23 @@ public class BottomBar extends Component {
 
 	/** True if mouse coords are inside the {@link BottomBar} */
 	private boolean isWithin() {
-		int x = getMouseScreenX();
-		int y = getMouseScreenY();
+		final int x = getMouseScreenX();
+		final int y = getMouseScreenY();
 		return x >= 0 && x <= getGdxWidth() && y >= 0 && y <= 50;
 	}
 
 
 	/** Renders this {@link BottomBar} */
 	@Override
-	protected void internalComponentRender(Graphics graphics) {
+	protected void internalComponentRender(final Graphics graphics) {
 		graphics.getSpriteBatch().begin();
 		renderRectangle(0, 34, getGdxWidth(), 34, true, Color.BLACK, graphics);
 		renderBox(-left.getRegionWidth(), 32, getGdxWidth(), 34, true, Color.DARK_GRAY, graphics);
-		mainMenu.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
-		windows.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
-		chat.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
-		factions.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
-		missions.render(!BloodAndMithrilClient.paused.get() && !gameSaver.isSaving(), 1f, graphics);
+		mainMenu.render(!gameClientStateTracker.isPaused() && !gameSaver.isSaving(), 1f, graphics);
+		windows.render(!gameClientStateTracker.isPaused() && !gameSaver.isSaving(), 1f, graphics);
+		chat.render(!gameClientStateTracker.isPaused() && !gameSaver.isSaving(), 1f, graphics);
+		factions.render(!gameClientStateTracker.isPaused() && !gameSaver.isSaving(), 1f, graphics);
+		missions.render(!gameClientStateTracker.isPaused() && !gameSaver.isSaving(), 1f, graphics);
 		graphics.getSpriteBatch().end();
 	}
 
@@ -347,7 +349,7 @@ public class BottomBar extends Component {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
+	public boolean keyPressed(final int keyCode) {
 		return false;
 	}
 }

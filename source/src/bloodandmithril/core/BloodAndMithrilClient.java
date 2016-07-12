@@ -6,7 +6,6 @@ import static bloodandmithril.control.InputUtilities.setInputProcessor;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -81,22 +80,11 @@ import bloodandmithril.world.weather.WeatherRenderer;
 public class BloodAndMithrilClient implements ApplicationListener {
 	public static boolean devMode = false;
 
-	/** The game world */
-	private static AtomicBoolean inGame = new AtomicBoolean(false);
-
-	/** True if game is paused */
-	public static AtomicBoolean paused = new AtomicBoolean(false);
-
-	/** True if the world is currently being rendered */
-	public static AtomicBoolean rendering = new AtomicBoolean(false);
-
-	/** True if game is loading */
-	public static AtomicBoolean loading = new AtomicBoolean(false);
-
 	@Inject	private Timers timers;
 	@Inject	private Graphics graphics;
 	@Inject	private BloodAndMithrilClientInputProcessor inputProcessor;
 	@Inject	private GameSaver gameSaver;
+	@Inject	private GameClientStateTracker gameClientStateTracker;
 
 	/** Current camera coordinates for each world */
 	private static final Collection<Mission> missions = new ConcurrentLinkedDeque<Mission>();
@@ -190,7 +178,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 			Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 			// Rendering --------------------- /
-			if (Domain.getActiveWorld() != null && !loading.get()) {
+			if (Domain.getActiveWorld() != null && !gameClientStateTracker.isLoading()) {
 				WorldRenderer.render(Domain.getActiveWorld(), (int) graphics.getCam().position.x, (int) graphics.getCam().position.y);
 			}
 
@@ -265,30 +253,6 @@ public class BloodAndMithrilClient implements ApplicationListener {
 	 */
 	public static Vector2 getMouseWorldCoords() {
 		return new Vector2(getMouseWorldX(), getMouseWorldY());
-	}
-
-
-	/**
-	 * Sets the boolean value to indicate whether or not the loading screen should be rendered
-	 */
-	public static void setLoading(final boolean loading) {
-		BloodAndMithrilClient.loading.set(loading);
-	}
-
-
-	/**
-	 * Whether or not the client is currently in a game
-	 */
-	public static boolean isInGame() {
-		return inGame.get();
-	}
-
-
-	/**
-	 * Sets the inGame flag
-	 */
-	public static void setInGame(final boolean inGame) {
-		BloodAndMithrilClient.inGame.set(inGame);
 	}
 
 

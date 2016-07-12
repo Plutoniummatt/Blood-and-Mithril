@@ -36,8 +36,8 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.core.BloodAndMithrilClient;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.offhand.Torch;
@@ -81,11 +81,13 @@ public class WorldRenderer {
 	private static TextureRegion circle;
 	private static Graphics graphics;
 	private static FactionControlService factionControlService;
+	private static GameClientStateTracker gameClientStateTracker;
 
 	static {
 		if (ClientServerInterface.isClient()) {
 			graphics = Wiring.injector().getInstance(Graphics.class);
 			factionControlService = Wiring.injector().getInstance(FactionControlService.class);
+			gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
 			gameWorldTexture = new Texture(files.internal("data/image/gameWorld.png"));
 			individualTexture = new Texture(files.internal("data/image/character/individual.png"));
 			gameWorldTexture.setFilter(Linear, Linear);
@@ -119,17 +121,17 @@ public class WorldRenderer {
 	}
 
 
-	public static void render(World world, int camX, int camY) {
-		SpriteBatch batch = graphics.getSpriteBatch();
+	public static void render(final World world, final int camX, final int camY) {
+		final SpriteBatch batch = graphics.getSpriteBatch();
 
-		BloodAndMithrilClient.rendering.set(true);
+		gameClientStateTracker.setRendering(true);
 		bBuffer.begin();
 		Shaders.invertAlphaSolidColor.begin();
 		world.getTopography().renderBackGround(camX, camY, Shaders.pass, shader -> {}, graphics);
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.pass.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (Prop prop : world.props().getProps()) {
+		for (final Prop prop : world.props().getProps()) {
 			if (prop.depth == BACKGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.render(graphics);
@@ -146,8 +148,8 @@ public class WorldRenderer {
 		WeatherRenderer.renderClouds(world, graphics);
 		cloudBuffer.end();
 
-		int xOffset = round(graphics.getCam().position.x) % TILE_SIZE;
-		int yOffset = round(graphics.getCam().position.y) % TILE_SIZE;
+		final int xOffset = round(graphics.getCam().position.x) % TILE_SIZE;
+		final int yOffset = round(graphics.getCam().position.y) % TILE_SIZE;
 
 		workingQuantized.begin();
 		graphics.getCam().position.x = graphics.getCam().position.x - xOffset;
@@ -211,7 +213,7 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (Prop prop : world.props().getProps()) {
+		for (final Prop prop : world.props().getProps()) {
 			if (prop.depth == MIDDLEGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
@@ -229,7 +231,7 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (Prop prop : world.props().getProps()) {
+		for (final Prop prop : world.props().getProps()) {
 			if (prop.depth == FOREGROUND) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
@@ -237,7 +239,7 @@ public class WorldRenderer {
 				batch.flush();
 			}
 		}
-		for (Item item : world.items().getItems()) {
+		for (final Item item : world.items().getItems()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			item.render(graphics);
 			batch.flush();
@@ -248,7 +250,7 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (Projectile projectile : world.projectiles().getProjectiles()) {
+		for (final Projectile projectile : world.projectiles().getProjectiles()) {
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 			projectile.render(batch);
 			batch.flush();
@@ -259,7 +261,7 @@ public class WorldRenderer {
 		batch.begin();
 		batch.setShader(Shaders.filter);
 		Shaders.filter.setUniformMatrix("u_projTrans", graphics.getCam().combined);
-		for (Prop prop : world.props().getProps()) {
+		for (final Prop prop : world.props().getProps()) {
 			if (prop.depth == Depth.FRONT) {
 				Shaders.filter.setUniformf("color", 1f, 1f, 1f, 1f);
 				prop.preRender();
@@ -271,12 +273,12 @@ public class WorldRenderer {
 		fBuffer.end();
 
 		GaussianLightingRenderer.render(camX, camY, world);
-		BloodAndMithrilClient.rendering.set(false);
+		gameClientStateTracker.setRendering(false);
 	}
 
 
-	private static void renderParticles(Depth depth, World world) {
-		SpriteBatch batch = graphics.getSpriteBatch();
+	private static void renderParticles(final Depth depth, final World world) {
+		final SpriteBatch batch = graphics.getSpriteBatch();
 
 		gl20.glEnable(GL20.GL_BLEND);
 		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
@@ -298,8 +300,8 @@ public class WorldRenderer {
 		shapeRenderer.end();
 
 		batch.setShader(Shaders.particleTexture);
-		int source = batch.getBlendSrcFunc();
-		int destination = batch.getBlendDstFunc();
+		final int source = batch.getBlendSrcFunc();
+		final int destination = batch.getBlendDstFunc();
 		batch.setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 		Shaders.particleTexture.setUniformMatrix("u_projTrans", graphics.getCam().combined);
 		Shaders.particleTexture.setUniformf("feather", 0.3f);
@@ -339,7 +341,7 @@ public class WorldRenderer {
 		/** {@link Predicate} for filtering out those that are NOT on platforms */
 		private static Predicate<Individual> onPlatform = new Predicate<Individual>() {
 			@Override
-			public boolean apply(Individual individual) {
+			public boolean apply(final Individual individual) {
 				try {
 					if (Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
 						Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
@@ -347,7 +349,7 @@ public class WorldRenderer {
 					} else {
 						return false;
 					}
-				} catch (NoTileFoundException e) {
+				} catch (final NoTileFoundException e) {
 					return false;
 				}
 
@@ -357,7 +359,7 @@ public class WorldRenderer {
 		/** {@link Predicate} for filtering out those that ARE on platforms */
 		private static Predicate<Individual> offPlatform = new Predicate<Individual>() {
 			@Override
-			public boolean apply(Individual individual) {
+			public boolean apply(final Individual individual) {
 				try {
 					if (Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - TILE_SIZE/2, true).isPlatformTile ||
 						Domain.getWorld(individual.getWorldId()).getTopography().getTile(individual.getState().position.x, individual.getState().position.y - 3 * TILE_SIZE/2, true).isPlatformTile) {
@@ -365,7 +367,7 @@ public class WorldRenderer {
 					} else {
 						return true;
 					}
-				} catch (NoTileFoundException e) {
+				} catch (final NoTileFoundException e) {
 					return false;
 				}
 			};
@@ -376,16 +378,16 @@ public class WorldRenderer {
 		};
 
 		/** Renders all individuals, ones that are on platforms are rendered first */
-		private static void renderIndividuals(int worldId) {
+		private static void renderIndividuals(final int worldId) {
 			try {
-				for (Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), offPlatform)) {
+				for (final Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), offPlatform)) {
 					Renderer.render(indi, graphics);
 				}
 
-				for (Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), onPlatform)) {
+				for (final Individual indi : filter(Domain.getSortedIndividualsForWorld(renderPrioritySorter, worldId), onPlatform)) {
 					Renderer.render(indi, graphics);
 				}
-			} catch (NullPointerException e) {
+			} catch (final NullPointerException e) {
 				generalDebug("Nullpointer whilst rendering individual", LogLevel.INFO, e);
 			}
 		}
@@ -397,8 +399,8 @@ public class WorldRenderer {
 	}
 
 
-	private static int getIndividualRenderPriority(Individual individual) {
-		for (Item equipped : individual.getEquipped().keySet()) {
+	private static int getIndividualRenderPriority(final Individual individual) {
+		for (final Item equipped : individual.getEquipped().keySet()) {
 			if (equipped instanceof Torch) {
 				return 2;
 			}
