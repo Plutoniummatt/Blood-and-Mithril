@@ -22,7 +22,7 @@ public class Idle extends AITask {
 
 
 	@Override
-	public void execute(float delta) {
+	protected void internalExecute(final float delta) {
 		//Do Nothing
 	}
 

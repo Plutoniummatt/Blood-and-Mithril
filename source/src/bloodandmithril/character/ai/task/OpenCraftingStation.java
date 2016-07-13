@@ -25,7 +25,7 @@ public class OpenCraftingStation extends CompositeAITask {
 	/**
 	 * Overloaded constructor
 	 */
-	public OpenCraftingStation(final Individual individual, final CraftingStation craftingStation, int connectionId) {
+	public OpenCraftingStation(final Individual individual, final CraftingStation craftingStation, final int connectionId) {
 		super(individual.getId(), "Opening " + craftingStation.getClass().getSimpleName());
 
 		setCurrentTask(new GoToMovingLocation(
@@ -74,7 +74,7 @@ public class OpenCraftingStation extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		protected OpenCraftingStationWindow(IndividualIdentifier hostId, int craftingStationId, int connectionId) {
+		protected OpenCraftingStationWindow(final IndividualIdentifier hostId, final int craftingStationId, final int connectionId) {
 			super(hostId);
 			this.craftingStationId = craftingStationId;
 			this.connectionId = connectionId;
@@ -83,7 +83,7 @@ public class OpenCraftingStation extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		protected OpenCraftingStationWindow(IndividualIdentifier hostId, int anvil) {
+		protected OpenCraftingStationWindow(final IndividualIdentifier hostId, final int anvil) {
 			super(hostId);
 			this.craftingStationId = anvil;
 			this.connectionId = -1;
@@ -105,7 +105,7 @@ public class OpenCraftingStation extends CompositeAITask {
 		}
 
 		@Override
-		public void execute(float delta) {
+		protected void internalExecute(final float delta) {
 			if (Domain.getIndividual(hostId.getId()).getDistanceFrom(Domain.getWorld(getHost().getWorldId()).props().getProp(craftingStationId).position) > 64f) {
 				return;
 			}
@@ -122,7 +122,7 @@ public class OpenCraftingStation extends CompositeAITask {
 	}
 
 
-	public static void openCraftingStationWindow(Individual individual, CraftingStation craftingStation) {
+	public static void openCraftingStationWindow(final Individual individual, final CraftingStation craftingStation) {
 		UserInterface.addLayeredComponentUnique(
 			craftingStation.getCraftingStationWindow(individual)
 		);

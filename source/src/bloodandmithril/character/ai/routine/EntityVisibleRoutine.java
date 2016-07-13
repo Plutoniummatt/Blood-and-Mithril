@@ -60,7 +60,7 @@ public final class EntityVisibleRoutine extends Routine {
 	/**
 	 * Constructor
 	 */
-	public EntityVisibleRoutine(IndividualIdentifier hostId, EntityVisible identificationFunction) {
+	public EntityVisibleRoutine(final IndividualIdentifier hostId, final EntityVisible identificationFunction) {
 		super(hostId);
 		this.identificationFunction = identificationFunction;
 		setDescription("Entity visible routine");
@@ -73,9 +73,9 @@ public final class EntityVisibleRoutine extends Routine {
 			return false;
 		}
 
-		Individual individual = Domain.getIndividual(hostId.getId());
-		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
-		for (Visible v : observed) {
+		final Individual individual = Domain.getIndividual(hostId.getId());
+		final List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
+		for (final Visible v : observed) {
 			if (identificationFunction.apply(v)) {
 				return true && aiTaskGenerator != null;
 			}
@@ -93,9 +93,9 @@ public final class EntityVisibleRoutine extends Routine {
 			return null;
 		}
 
-		Individual individual = Domain.getIndividual(hostId.getId());
-		List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
-		for (Visible v : observed) {
+		final Individual individual = Domain.getIndividual(hostId.getId());
+		final List<Visible> observed = ((Observer) individual).observe(individual.getWorldId(), individual.getId().getId());
+		for (final Visible v : observed) {
 			if (identificationFunction.apply(v)) {
 				return v;
 			}
@@ -124,7 +124,7 @@ public final class EntityVisibleRoutine extends Routine {
 	@Override
 	public final boolean uponCompletion() {
 		if (task != null) {
-			AITask toNullify = task;
+			final AITask toNullify = task;
 			if (toNullify.uponCompletion()) {
 				return true;
 			} else {
@@ -138,16 +138,16 @@ public final class EntityVisibleRoutine extends Routine {
 
 
 	@Override
-	public final void execute(float delta) {
+	protected void internalExecute(final float delta) {
 		if (task != null) {
-			task.execute(delta);
+			task.executeTask(delta);
 		}
 	}
 
 
 	@Override
-	public final Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
-		Deque<Panel> wizard = new ArrayDeque<>();
+	public final Deque<Panel> constructEditWizard(final EditAIRoutineWindow parent) {
+		final Deque<Panel> wizard = new ArrayDeque<>();
 
 		wizard.add(new EntityVisibleInfoPanel(parent));
 
@@ -171,18 +171,18 @@ public final class EntityVisibleRoutine extends Routine {
 		private T t;
 		private WrapperForTwo<Class<? extends Visible>, T> wrapper;
 
-		public SpecificEntityVisible(T t) {
+		public SpecificEntityVisible(final T t) {
 			this.t = t;
 			this.wrapper = WrapperForTwo.wrap(t.getClass(), t);
 		}
 
 		@Override
-		public final Boolean apply(Visible input) {
+		public final Boolean apply(final Visible input) {
 			return t.sameAs(input);
 		}
 
 		@Override
-		public final String getDetailedDescription(Individual host) {
+		public final String getDetailedDescription(final Individual host) {
 			return null;
 		}
 
@@ -219,12 +219,12 @@ public final class EntityVisibleRoutine extends Routine {
 		private static final long serialVersionUID = -5442698966769008090L;
 		protected Class<? extends Visible> t;
 
-		TypeEntityVisible(Class<? extends Visible> t) {
+		TypeEntityVisible(final Class<? extends Visible> t) {
 			this.t = t;
 		}
 
 		@Override
-		public Boolean apply(Visible input) {
+		public Boolean apply(final Visible input) {
 			return t.isAssignableFrom(input.getClass());
 		}
 	}
@@ -236,7 +236,7 @@ public final class EntityVisibleRoutine extends Routine {
 		private final WrapperForTwo<Class<? extends Visible>, Individual> wrapper;
 		private final boolean alive;
 
-		public IndividualEntityVisible(int hostId, Class<? extends Visible> t, Behaviour b, boolean alive) {
+		public IndividualEntityVisible(final int hostId, final Class<? extends Visible> t, final Behaviour b, final boolean alive) {
 			super(t);
 			this.hostId = hostId;
 			this.behaviour = b;
@@ -249,7 +249,7 @@ public final class EntityVisibleRoutine extends Routine {
 		}
 
 		@Override
-		public final Boolean apply(Visible input) {
+		public final Boolean apply(final Visible input) {
 			if (input instanceof Individual) {
 				return super.apply(input) && (behaviour == null || ((Individual) input).deriveBehaviourTowards(Domain.getIndividual(hostId)) == behaviour) && ((Individual) input).isAlive() == alive;
 			}
@@ -258,7 +258,7 @@ public final class EntityVisibleRoutine extends Routine {
 		}
 
 		@Override
-		public final String getDetailedDescription(Individual host) {
+		public final String getDetailedDescription(final Individual host) {
 			return "This routine occurs when " + (behaviour == null ? "" : behaviour.description.toLowerCase() + " ") + t.getAnnotation(Name.class).name() + " are visible to " + Domain.getIndividual(hostId).getId().getSimpleName();
 		}
 
@@ -279,7 +279,7 @@ public final class EntityVisibleRoutine extends Routine {
 	public final class EntityVisibleInfoPanel extends RoutinePanel {
 		private Button changeVisibleEntityButton;
 
-		protected EntityVisibleInfoPanel(Component parent) {
+		protected EntityVisibleInfoPanel(final Component parent) {
 			super(parent);
 			this.changeVisibleEntityButton = new Button(
 				"Change visible entity",
@@ -298,11 +298,11 @@ public final class EntityVisibleRoutine extends Routine {
 		}
 
 		@Override
-		public final boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public final boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 			if (changeTaskButton.click()) {
-				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
+				final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
-				for (Class<? extends RoutineTask> routineClass : RoutineTasks.getTaskClasses()) {
+				for (final Class<? extends RoutineTask> routineClass : RoutineTasks.getTaskClasses()) {
 					menu.addMenuItem(
 						new MenuItem(
 							routineClass.getAnnotation(Name.class).name(),
@@ -321,10 +321,10 @@ public final class EntityVisibleRoutine extends Routine {
 
 			if (changeVisibleEntityButton.click()) {
 				parent.setActive(false);
-				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
+				final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
-				Wrapper<Behaviour> args = new Wrapper<>(null);
-				Function<ContextMenu> deriveIndividualTypeContextMenu = () -> { return deriveIndividualTypeContextMenu(args);};
+				final Wrapper<Behaviour> args = new Wrapper<>(null);
+				final Function<ContextMenu> deriveIndividualTypeContextMenu = () -> { return deriveIndividualTypeContextMenu(args);};
 
 				menu.addMenuItem(
 					new MenuItem(
@@ -378,7 +378,7 @@ public final class EntityVisibleRoutine extends Routine {
 		}
 
 		private MenuItem[] derivePropTypeContextMenu() {
-			List<MenuItem> items = Lists.newArrayList();
+			final List<MenuItem> items = Lists.newArrayList();
 
 			items.add(
 				new MenuItem(
@@ -408,19 +408,19 @@ public final class EntityVisibleRoutine extends Routine {
 				)
 			);
 
-			MenuItem[] array = new MenuItem[items.size()];
+			final MenuItem[] array = new MenuItem[items.size()];
 			for (int i = 0; i < items.size(); i++) {
 				array[i] = items.get(i);
 			}
 			return array;
 		}
 
-		private final ContextMenu deriveIndividualTypeContextMenu(Wrapper<Behaviour> args) {
-			ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-			for (Entry<Class<? extends Visible>, List<Class<? extends Individual>>> category : Individual.getAllIndividualClasses().entrySet()) {
-				ContextMenu secondaryMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+		private final ContextMenu deriveIndividualTypeContextMenu(final Wrapper<Behaviour> args) {
+			final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+			for (final Entry<Class<? extends Visible>, List<Class<? extends Individual>>> category : Individual.getAllIndividualClasses().entrySet()) {
+				final ContextMenu secondaryMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
-				for (Class<? extends Individual> clazz : category.getValue()) {
+				for (final Class<? extends Individual> clazz : category.getValue()) {
 					secondaryMenu.addMenuItem(
 						new MenuItem(
 							clazz.getAnnotation(Name.class).name(),
@@ -498,7 +498,7 @@ public final class EntityVisibleRoutine extends Routine {
 		}
 
 		@Override
-		public final void render(Graphics graphics) {
+		public final void render(final Graphics graphics) {
 			super.render(graphics);
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
@@ -539,13 +539,13 @@ public final class EntityVisibleRoutine extends Routine {
 		private static final long serialVersionUID = -3026958963883212173L;
 		private final EntityVisibleRoutine routine;
 
-		public VisibleItemFuture(EntityVisibleRoutine routine) {
+		public VisibleItemFuture(final EntityVisibleRoutine routine) {
 			this.routine = routine;
 		}
 
 		@Override
 		public final Integer call() {
-			Visible visibleEntity = routine.getVisibleEntity();
+			final Visible visibleEntity = routine.getVisibleEntity();
 			if (visibleEntity instanceof Item) {
 				return ((Item) visibleEntity).getId();
 			}
@@ -559,13 +559,13 @@ public final class EntityVisibleRoutine extends Routine {
 		private static final long serialVersionUID = -3026958963883212173L;
 		private final EntityVisibleRoutine routine;
 
-		public VisiblePropFuture(EntityVisibleRoutine routine) {
+		public VisiblePropFuture(final EntityVisibleRoutine routine) {
 			this.routine = routine;
 		}
 
 		@Override
 		public final Integer call() {
-			Visible visibleEntity = routine.getVisibleEntity();
+			final Visible visibleEntity = routine.getVisibleEntity();
 			if (visibleEntity instanceof Prop) {
 				return ((Prop) visibleEntity).id;
 			}
@@ -579,13 +579,13 @@ public final class EntityVisibleRoutine extends Routine {
 		private static final long serialVersionUID = 3527567985423803956L;
 		private EntityVisibleRoutine routine;
 
-		public VisibleIndividualFuture(EntityVisibleRoutine routine) {
+		public VisibleIndividualFuture(final EntityVisibleRoutine routine) {
 			this.routine = routine;
 		}
 
 		@Override
 		public Integer call() {
-			Visible visibleEntity = routine.getVisibleEntity();
+			final Visible visibleEntity = routine.getVisibleEntity();
 			if (visibleEntity instanceof Individual) {
 				return ((Individual) visibleEntity).getId().getId();
 			}

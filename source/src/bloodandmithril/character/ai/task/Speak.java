@@ -48,7 +48,7 @@ public class Speak extends AITask implements RoutineTask {
 	/**
 	 * @param Constructor
 	 */
-	public Speak(Individual host, String text, long duration) {
+	public Speak(final Individual host, final String text, final long duration) {
 		super(host.getId());
 		this.text = text;
 		this.duration = duration;
@@ -74,7 +74,7 @@ public class Speak extends AITask implements RoutineTask {
 
 
 	@Override
-	public void execute(float delta) {
+	protected void internalExecute(final float delta) {
 		if (!spoken) {
 			getHost().speak(text, duration);
 			spoken = true;
@@ -89,7 +89,7 @@ public class Speak extends AITask implements RoutineTask {
 		private long duration;
 		private int hostId;
 
-		public SpeakTaskGenerator(Individual indi, long duration, String... text) {
+		public SpeakTaskGenerator(final Individual indi, final long duration, final String... text) {
 			this.text = text;
 			this.duration = duration;
 			this.hostName = indi.getId().getSimpleName();
@@ -97,7 +97,7 @@ public class Speak extends AITask implements RoutineTask {
 		}
 
 		@Override
-		public AITask apply(Object input) {
+		public AITask apply(final Object input) {
 			if (Domain.getIndividual(hostId) == null || !Domain.getIndividual(hostId).isAlive()) {
 				return null;
 			}
@@ -143,7 +143,7 @@ public class Speak extends AITask implements RoutineTask {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
-			Individual attacker = Domain.getIndividual(hostId);
+			final Individual attacker = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
@@ -156,13 +156,13 @@ public class Speak extends AITask implements RoutineTask {
 	}
 
 
-	private ContextMenu getContextMenu(Individual host, Routine routine) {
+	private ContextMenu getContextMenu(final Individual host, final Routine routine) {
 		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true, new ContextMenu.MenuItem(
 			"Set text",
 			() -> {
 				UserInterface.addLayeredComponent(
 					new TextInputWindow(500, 100, "Input text", 300, 250, args -> {
-						String text = (String) args[0];
+						final String text = (String) args[0];
 						routine.setAiTaskGenerator(new SpeakTaskGenerator(host, Math.max(7500, text.length() * 10), text));
 					}, "Set", true, "")
 				);
@@ -176,25 +176,25 @@ public class Speak extends AITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+	public ContextMenu getDailyRoutineContextMenu(final Individual host, final DailyRoutine routine) {
 		return getContextMenu(host, routine);
 	}
 
 
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
+	public ContextMenu getEntityVisibleRoutineContextMenu(final Individual host, final EntityVisibleRoutine routine) {
 		return getContextMenu(host, routine);
 	}
 
 
 	@Override
-	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+	public ContextMenu getIndividualConditionRoutineContextMenu(final Individual host, final IndividualConditionRoutine routine) {
 		return getContextMenu(host, routine);
 	}
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+	public ContextMenu getStimulusDrivenRoutineContextMenu(final Individual host, final StimulusDrivenRoutine routine) {
 		return getContextMenu(host, routine);
 	}
 }

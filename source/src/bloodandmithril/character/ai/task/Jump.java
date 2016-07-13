@@ -31,7 +31,7 @@ public class Jump extends AITask {
 	/**
 	 * Constructor
 	 */
-	public Jump(IndividualIdentifier hostId, SerializableFunction<Vector2> from, Vector2 to) {
+	public Jump(final IndividualIdentifier hostId, final SerializableFunction<Vector2> from, final Vector2 to) {
 		super(hostId);
 		this.from = from;
 		this.to = to;
@@ -62,8 +62,8 @@ public class Jump extends AITask {
 
 
 	@Override
-	public void execute(float delta) {
-		Individual host = getIndividual(hostId.getId());
+	protected void internalExecute(final float delta) {
+		final Individual host = getIndividual(hostId.getId());
 		if (obj(host.getCurrentAction()).oneOf(Action.JUMP_LEFT, Action.JUMP_RIGHT)) {
 			return;
 		}
@@ -87,9 +87,9 @@ public class Jump extends AITask {
 
 
 	private Vector2 resolveJumpVector() {
-		Vector2 call = from.call();
-		Vector2 difference = to.cpy().sub(call);
-		Vector2 nor = difference.cpy().nor();
+		final Vector2 call = from.call();
+		final Vector2 difference = to.cpy().sub(call);
+		final Vector2 nor = difference.cpy().nor();
 		if (nor.y < 0f) {
 			return new Vector2();
 		}

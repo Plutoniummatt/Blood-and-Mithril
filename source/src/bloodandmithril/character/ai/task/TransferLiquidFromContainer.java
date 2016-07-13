@@ -1,6 +1,7 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
@@ -23,7 +24,7 @@ public class TransferLiquidFromContainer extends CompositeAITask {
 	/**
 	 * Constructor
 	 */
-	public TransferLiquidFromContainer(Individual host, LiquidContainerProp container) {
+	public TransferLiquidFromContainer(final Individual host, final LiquidContainerProp container) {
 		super(
 			host.getId(),
 			"Transfer liquids",
@@ -47,7 +48,7 @@ public class TransferLiquidFromContainer extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		protected OpenTranferLiquidWindow(IndividualIdentifier hostId) {
+		protected OpenTranferLiquidWindow(final IndividualIdentifier hostId) {
 			super(hostId);
 		}
 
@@ -71,7 +72,7 @@ public class TransferLiquidFromContainer extends CompositeAITask {
 
 
 		@Override
-		public void execute(float delta) {
+		protected void internalExecute(final float delta) {
 			if (Domain.getIndividual(hostId.getId()).getDistanceFrom(Domain.getWorld(getHost().getWorldId()).props().getProp(containerId).position) > 64f) {
 				return;
 			}

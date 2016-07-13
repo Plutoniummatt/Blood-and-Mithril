@@ -26,7 +26,7 @@ public class Trading extends AITask {
 	/**
 	 * Constructor
 	 */
-	public Trading(IndividualIdentifier hostId, int otherId, TradeEntity entity) {
+	public Trading(final IndividualIdentifier hostId, final int otherId, final TradeEntity entity) {
 		super(hostId);
 		this.entity = entity;
 		this.proposer = Domain.getIndividual(hostId.getId());
@@ -67,6 +67,6 @@ public class Trading extends AITask {
 
 
 	@Override
-	public void execute(float delta) {
+	protected void internalExecute(final float delta) {
 	}
 }

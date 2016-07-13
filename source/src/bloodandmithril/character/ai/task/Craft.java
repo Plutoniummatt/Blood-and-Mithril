@@ -1,6 +1,7 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.individuals.Individual;
@@ -28,7 +29,7 @@ public class Craft extends CompositeAITask {
 	/**
 	 * Constructor
 	 */
-	public Craft(Individual host, CraftingStation craftingStation, SerializableDoubleWrapper<Item, Integer> item, int quantity) {
+	public Craft(final Individual host, final CraftingStation craftingStation, final SerializableDoubleWrapper<Item, Integer> item, final int quantity) {
 		super(
 			host.getId(),
 			"Crafting",
@@ -68,7 +69,7 @@ public class Craft extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		public Crafting(IndividualIdentifier hostId, int craftingStationId) {
+		public Crafting(final IndividualIdentifier hostId, final int craftingStationId) {
 			super(hostId);
 			this.craftingStationId = craftingStationId;
 		}
@@ -93,9 +94,9 @@ public class Craft extends CompositeAITask {
 
 
 		@Override
-		public void execute(float delta) {
-			CraftingStation craftingStation = (CraftingStation) Domain.getWorld(getHost().getWorldId()).props().getProp(craftingStationId);
-			Individual individual = Domain.getIndividual(hostId.getId());
+		protected void internalExecute(final float delta) {
+			final CraftingStation craftingStation = (CraftingStation) Domain.getWorld(getHost().getWorldId()).props().getProp(craftingStationId);
+			final Individual individual = Domain.getIndividual(hostId.getId());
 
 			if (individual == null || craftingStation == null) {
 				stop = true;

@@ -146,7 +146,7 @@ public class LightLightable extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public void execute(final float delta) {
+		protected void internalExecute(final float delta) {
 			final Individual host = Domain.getIndividual(hostId.getId());
 
 			if (!Domain.getWorld(host.getWorldId()).props().hasProp(lightableId)) {

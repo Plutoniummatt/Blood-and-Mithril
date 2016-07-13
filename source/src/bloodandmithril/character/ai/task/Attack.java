@@ -135,11 +135,12 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public final void execute(final float delta) {
+	protected final void internalExecute(final float delta) {
 		if (getHost().isWalking()) {
 			getHost().setWalking(false);
 		}
-		super.execute(delta);
+
+		super.executeTask(delta);
 	}
 
 
@@ -239,7 +240,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public final void execute(final float delta) {
+		protected final void internalExecute(final float delta) {
 		}
 	}
 
@@ -280,7 +281,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public final void execute(final float delta) {
+		protected final void internalExecute(final float delta) {
 			getHost().setCombatStance(true);
 			final Individual alive = getAlive();
 			if (alive == null) {

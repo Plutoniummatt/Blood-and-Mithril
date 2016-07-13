@@ -27,11 +27,11 @@ public class CompositeAITask extends AITask {
 	/**
 	 * Constructor
 	 */
-	protected CompositeAITask(IndividualIdentifier hostId, String description, AITask... tasks) {
+	protected CompositeAITask(final IndividualIdentifier hostId, final String description, final AITask... tasks) {
 		super(hostId);
 		this.description = description;
 
-		for (AITask task : tasks) {
+		for (final AITask task : tasks) {
 			this.tasks.addLast(task);
 		}
 
@@ -40,7 +40,7 @@ public class CompositeAITask extends AITask {
 
 
 	/** Adds a task to the end of the queue */
-	protected final void appendTask(AITask taskToAdd) {
+	protected final void appendTask(final AITask taskToAdd) {
 		tasks.addLast(taskToAdd);
 
 		if (getCurrentTask() == null) {
@@ -50,7 +50,7 @@ public class CompositeAITask extends AITask {
 
 
 	/** Adds a task to the front of the queue */
-	protected final void setNextTask(AITask taskToAdd) {
+	protected final void setNextTask(final AITask taskToAdd) {
 		tasks.addFirst(taskToAdd);
 	}
 
@@ -68,7 +68,7 @@ public class CompositeAITask extends AITask {
 	 * @see bloodandmithril.character.ai.AITask#execute()
 	 */
 	@Override
-	public void execute(float delta) {
+	protected void internalExecute(final float delta) {
 		if (getCurrentTask() == null) {
 			return;
 		}
@@ -79,7 +79,7 @@ public class CompositeAITask extends AITask {
 		}
 
 		if (getCurrentTask() != null) {
-			getCurrentTask().execute(delta);
+			getCurrentTask().executeTask(delta);
 		}
 	}
 
@@ -101,7 +101,7 @@ public class CompositeAITask extends AITask {
 	}
 
 
-	public void setCurrentTask(AITask currentTask) {
+	public void setCurrentTask(final AITask currentTask) {
 		this.currentTask = currentTask;
 	}
 }

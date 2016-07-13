@@ -26,14 +26,14 @@ public class Wait extends AITask {
 	/**
 	 * Constructor
 	 */
-	public Wait(Individual host, float time) {
+	public Wait(final Individual host, final float time) {
 		super(host.getId());
 		this.time = time;
 	}
 
 
 	@Override
-	public void execute(float delta) {
+	protected void internalExecute(final float delta) {
 		Domain.getIndividual(hostId.getId()).clearCommands();
 		if (time < 0f) {
 			complete = true;

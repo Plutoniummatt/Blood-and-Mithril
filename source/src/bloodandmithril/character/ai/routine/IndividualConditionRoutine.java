@@ -49,13 +49,13 @@ public final class IndividualConditionRoutine extends Routine {
 	/**
 	 * Constructor
 	 */
-	public IndividualConditionRoutine(IndividualIdentifier hostId) {
+	public IndividualConditionRoutine(final IndividualIdentifier hostId) {
 		super(hostId);
 		setDescription("Condition routine");
 	}
 
 
-	public final void setTriggerFunction(IndividualConditionTriggerFunction executionCondition) {
+	public final void setTriggerFunction(final IndividualConditionTriggerFunction executionCondition) {
 		this.executionCondition = executionCondition;
 	}
 
@@ -85,7 +85,7 @@ public final class IndividualConditionRoutine extends Routine {
 	@Override
 	public final boolean uponCompletion() {
 		if (task != null) {
-			AITask toNullify = task;
+			final AITask toNullify = task;
 			if (toNullify.uponCompletion()) {
 				return true;
 			} else {
@@ -98,16 +98,16 @@ public final class IndividualConditionRoutine extends Routine {
 
 
 	@Override
-	public final void execute(float delta) {
+	protected void internalExecute(final float delta) {
 		if (task != null) {
-			task.execute(delta);
+			task.executeTask(delta);
 		}
 	}
 
 
 	@Override
-	public final Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
-		Deque<Panel> wizard = new ArrayDeque<>();
+	public final Deque<Panel> constructEditWizard(final EditAIRoutineWindow parent) {
+		final Deque<Panel> wizard = new ArrayDeque<>();
 
 		wizard.add(new IndividualConditionRoutinePanel(parent));
 
@@ -125,18 +125,18 @@ public final class IndividualConditionRoutine extends Routine {
 		private static final long serialVersionUID = -4307447978296098496L;
 		private Class<? extends Condition> condition;
 
-		public IndividualAffectedByConditionTriggerFunction(Class<? extends Condition> condition) {
+		public IndividualAffectedByConditionTriggerFunction(final Class<? extends Condition> condition) {
 			this.condition = condition;
 		}
 
 		@Override
-		public final Boolean apply(Individual input) {
+		public final Boolean apply(final Individual input) {
 			return Iterables.tryFind(input.getState().currentConditions, c -> {
 				return condition.isAssignableFrom(c.getClass());
 			}).isPresent();
 		}
 		@Override
-		public final String getDetailedDescription(Individual host) {
+		public final String getDetailedDescription(final Individual host) {
 			return "This routine occurs when affected by " + condition.getAnnotation(Name.class).name();
 		}
 	}
@@ -147,7 +147,7 @@ public final class IndividualConditionRoutine extends Routine {
 		private boolean greaterThan;
 		private float percentage;
 
-		public IndividualHealthTriggerFunction(boolean greaterThan, float percentage) {
+		public IndividualHealthTriggerFunction(final boolean greaterThan, final float percentage) {
 			this.greaterThan = greaterThan;
 			if (percentage < 0 || percentage > 100) {
 				throw new RuntimeException();
@@ -156,7 +156,7 @@ public final class IndividualConditionRoutine extends Routine {
 		}
 
 		@Override
-		public final Boolean apply(Individual input) {
+		public final Boolean apply(final Individual input) {
 			if (greaterThan) {
 				return input.getState().health/input.getState().maxHealth > percentage;
 			} else {
@@ -164,7 +164,7 @@ public final class IndividualConditionRoutine extends Routine {
 			}
 		}
 		@Override
-		public final String getDetailedDescription(Individual host) {
+		public final String getDetailedDescription(final Individual host) {
 			if (greaterThan) {
 				return "This routine occurs when health is above " + String.format("%.2f", percentage*100) + "%";
 			} else {
@@ -182,7 +182,7 @@ public final class IndividualConditionRoutine extends Routine {
 	@Copyright("Matthew Peck 2015")
 	public final class IndividualConditionRoutinePanel extends RoutinePanel {
 		private Button changeConditionButton;
-		protected IndividualConditionRoutinePanel(Component parent) {
+		protected IndividualConditionRoutinePanel(final Component parent) {
 			super(parent);
 			this.changeConditionButton = new Button(
 				"Change condition",
@@ -201,11 +201,11 @@ public final class IndividualConditionRoutine extends Routine {
 		}
 
 		@Override
-		public final boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public final boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 			if (changeTaskButton.click()) {
-				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
+				final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
-				for (Class<? extends RoutineTask> routineClass : RoutineTasks.getTaskClasses()) {
+				for (final Class<? extends RoutineTask> routineClass : RoutineTasks.getTaskClasses()) {
 					menu.addMenuItem(
 						new MenuItem(
 							routineClass.getAnnotation(Name.class).name(),
@@ -223,7 +223,7 @@ public final class IndividualConditionRoutine extends Routine {
 			}
 
 			if (changeConditionButton.click()) {
-				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
+				final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
 				menu.addMenuItem(
 					new ContextMenu.MenuItem(
@@ -237,12 +237,12 @@ public final class IndividualConditionRoutine extends Routine {
 								UserInterface.addLayeredComponent(
 									new TextInputWindow(300, 100, "Input %", 200, 100, args -> {
 										try {
-											float parseFloat = Float.parseFloat((String)args[0]);
+											final float parseFloat = Float.parseFloat((String)args[0]);
 											if (parseFloat > 100 || parseFloat < 0) {
 												throw new RuntimeException();
 											}
 											IndividualConditionRoutine.this.setTriggerFunction(new IndividualHealthTriggerFunction(false, parseFloat));
-										} catch (Exception e) {
+										} catch (final Exception e) {
 											UserInterface.addClientMessage("Error", "Enter valid value (between 0 and 100)");
 										}
 									}, "Confirm", true, "")
@@ -252,12 +252,12 @@ public final class IndividualConditionRoutine extends Routine {
 								UserInterface.addLayeredComponent(
 									new TextInputWindow(300, 100, "Input %", 200, 100, args -> {
 										try {
-											float parseFloat = Float.parseFloat((String)args[0]);
+											final float parseFloat = Float.parseFloat((String)args[0]);
 											if (parseFloat > 100 || parseFloat < 0) {
 												throw new RuntimeException();
 											}
 											IndividualConditionRoutine.this.setTriggerFunction(new IndividualHealthTriggerFunction(true, parseFloat));
-										} catch (Exception e) {
+										} catch (final Exception e) {
 											UserInterface.addClientMessage("Error", "Enter valid value (between 0 and 100)");
 										}
 									}, "Confirm", true, "")
@@ -285,13 +285,13 @@ public final class IndividualConditionRoutine extends Routine {
 		}
 
 		private ContextMenu getConditionsSubMenu() {
-			ContextMenu contextMenu = new ContextMenu(
+			final ContextMenu contextMenu = new ContextMenu(
 				0,
 				0,
 				true
 			);
 
-			for (Class<? extends Condition> c : Condition.getAllConditions()) {
+			for (final Class<? extends Condition> c : Condition.getAllConditions()) {
 				contextMenu.addMenuItem(new MenuItem(
 					c.getAnnotation(Name.class).name(),
 					() -> {
@@ -307,7 +307,7 @@ public final class IndividualConditionRoutine extends Routine {
 		}
 
 		@Override
-		public final void render(Graphics graphics) {
+		public final void render(final Graphics graphics) {
 			super.render(graphics);
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 

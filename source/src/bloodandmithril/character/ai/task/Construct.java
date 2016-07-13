@@ -20,7 +20,7 @@ public class Construct extends CompositeAITask {
 	/**
 	 * Constructor
 	 */
-	public Construct(Individual host, Construction construction, boolean deconstruct) {
+	public Construct(final Individual host, final Construction construction, final boolean deconstruct) {
 		super(
 			host.getId(),
 			"Constructing",
@@ -47,7 +47,7 @@ public class Construct extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		public Constructing(IndividualIdentifier hostId, int constructionId, boolean deconstruct) {
+		public Constructing(final IndividualIdentifier hostId, final int constructionId, final boolean deconstruct) {
 			super(hostId);
 			this.constructionId = constructionId;
 			this.deconstruct = deconstruct;
@@ -77,8 +77,8 @@ public class Construct extends CompositeAITask {
 
 
 		@Override
-		public void execute(float delta) {
-			Construction construction = (Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId);
+		protected void internalExecute(final float delta) {
+			final Construction construction = (Construction) Domain.getWorld(getHost().getWorldId()).props().getProp(constructionId);
 			if (construction != null) {
 				if (deconstruct) {
 					construction.deconstruct(Domain.getIndividual(hostId.getId()), delta);

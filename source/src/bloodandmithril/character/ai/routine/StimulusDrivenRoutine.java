@@ -51,13 +51,13 @@ public final class StimulusDrivenRoutine extends Routine {
 	/**
 	 * Constructor
 	 */
-	public StimulusDrivenRoutine(IndividualIdentifier hostId) {
+	public StimulusDrivenRoutine(final IndividualIdentifier hostId) {
 		super(hostId);
 		setDescription("Stimulus driven routine");
 	}
 
 
-	public final void setTriggerFunction(StimulusTriggerFunction triggerFunction) {
+	public final void setTriggerFunction(final StimulusTriggerFunction triggerFunction) {
 		this.triggerFunction = triggerFunction;
 	}
 
@@ -65,7 +65,7 @@ public final class StimulusDrivenRoutine extends Routine {
 	/**
 	 * Attempt to trigger the execution of this {@link Routine}
 	 */
-	public final void attemptTrigger(Stimulus stimulus) {
+	public final void attemptTrigger(final Stimulus stimulus) {
 		if (triggerFunction.s.isAssignableFrom(stimulus.getClass())) {
 			if (triggerFunction.apply(stimulus)) {
 				this.triggeringStimulus = stimulus;
@@ -122,7 +122,7 @@ public final class StimulusDrivenRoutine extends Routine {
 	@Override
 	public final boolean uponCompletion() {
 		if (task != null) {
-			AITask toNullify = task;
+			final AITask toNullify = task;
 			if (toNullify.uponCompletion()) {
 				return true;
 			} else {
@@ -137,9 +137,9 @@ public final class StimulusDrivenRoutine extends Routine {
 
 
 	@Override
-	public final void execute(float delta) {
+	protected void internalExecute(final float delta) {
 		if (task != null) {
-			task.execute(delta);
+			task.executeTask(delta);
 			if (triggered) {
 				triggered = false;
 			}
@@ -148,8 +148,8 @@ public final class StimulusDrivenRoutine extends Routine {
 
 
 	@Override
-	public final Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
-		Deque<Panel> wizard = new ArrayDeque<>();
+	public final Deque<Panel> constructEditWizard(final EditAIRoutineWindow parent) {
+		final Deque<Panel> wizard = new ArrayDeque<>();
 
 		wizard.add(new StimulusDrivenRoutinePanel(parent));
 
@@ -159,7 +159,7 @@ public final class StimulusDrivenRoutine extends Routine {
 
 	public final class StimulusDrivenRoutinePanel extends RoutinePanel {
 		private Button changeStimulusButton;
-		protected StimulusDrivenRoutinePanel(Component parent) {
+		protected StimulusDrivenRoutinePanel(final Component parent) {
 			super(parent);
 			this.changeStimulusButton = new Button(
 				"Change stimulus",
@@ -178,11 +178,11 @@ public final class StimulusDrivenRoutine extends Routine {
 		}
 
 		@Override
-		public final boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public final boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 			if (changeTaskButton.click()) {
-				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
+				final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
-				for (Class<? extends RoutineTask> routineTaskClass : RoutineTasks.getTaskClasses()) {
+				for (final Class<? extends RoutineTask> routineTaskClass : RoutineTasks.getTaskClasses()) {
 					menu.addMenuItem(
 						new MenuItem(
 							routineTaskClass.getAnnotation(Name.class).name(),
@@ -200,7 +200,7 @@ public final class StimulusDrivenRoutine extends Routine {
 			}
 
 			if (changeStimulusButton.click()) {
-				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
+				final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
 
 				menu.addMenuItem(
 					new MenuItem(
@@ -227,7 +227,7 @@ public final class StimulusDrivenRoutine extends Routine {
 		}
 
 		@Override
-		public final void render(Graphics graphics) {
+		public final void render(final Graphics graphics) {
 			super.render(graphics);
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
@@ -268,7 +268,7 @@ public final class StimulusDrivenRoutine extends Routine {
 		private static final long serialVersionUID = 6829023381484228088L;
 		private Class<? extends Stimulus> s;
 
-		protected StimulusTriggerFunction(Class<? extends Stimulus> s) {
+		protected StimulusTriggerFunction(final Class<? extends Stimulus> s) {
 			this.s = s;
 		}
 
@@ -284,7 +284,7 @@ public final class StimulusDrivenRoutine extends Routine {
 		private static final long serialVersionUID = 5189638348993362947L;
 		private SuspicionLevel level;
 
-		public SuspiciousSoundAITriggerFunction(SuspicionLevel level) {
+		public SuspiciousSoundAITriggerFunction(final SuspicionLevel level) {
 			super(SuspiciousSound.class);
 			this.level = level;
 		}
@@ -295,7 +295,7 @@ public final class StimulusDrivenRoutine extends Routine {
 		}
 
 		@Override
-		public final Boolean apply(Stimulus input) {
+		public final Boolean apply(final Stimulus input) {
 			if (input instanceof SuspiciousSound) {
 				return ((SuspiciousSound) input).getSuspicionLevel().severity >= level.severity;
 			}

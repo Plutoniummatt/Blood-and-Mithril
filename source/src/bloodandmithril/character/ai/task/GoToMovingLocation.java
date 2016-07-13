@@ -174,8 +174,8 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 
 
 	@Override
-	public void execute(final float delta) {
-		getCurrentGoToLocation().execute(delta);
+	protected void internalExecute(final float delta) {
+		getCurrentGoToLocation().executeTask(delta);
 
 		if (repathCondition == null ? getCurrentGoToLocation().isComplete() : repathCondition.call()) {
 			final Individual host = Domain.getIndividual(hostId.getId());

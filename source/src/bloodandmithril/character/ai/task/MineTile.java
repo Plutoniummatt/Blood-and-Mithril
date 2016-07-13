@@ -56,7 +56,7 @@ public class MineTile extends CompositeAITask {
 	 *
 	 * @param coordinate - World pixel coordinate of the tile to mine, does not have to be a converted tile coordinate
 	 */
-	public MineTile(Individual host, Vector2 coordinate) {
+	public MineTile(final Individual host, final Vector2 coordinate) {
 		super(
 			host.getId(),
 			"Mining"
@@ -73,12 +73,12 @@ public class MineTile extends CompositeAITask {
 					true
 				)
 			);
-		} catch (NoTileFoundException e) {}
+		} catch (final NoTileFoundException e) {}
 		appendTask(new AttemptMine(hostId));
 
 		try {
 			this.tileCoordinate = Topography.convertToWorldCoord(coordinate, false);
-		} catch (NoTileFoundException e) {
+		} catch (final NoTileFoundException e) {
 			this.tileCoordinate = coordinate;
 		}
 	}
@@ -100,7 +100,7 @@ public class MineTile extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		protected AttemptMine(IndividualIdentifier hostId) {
+		protected AttemptMine(final IndividualIdentifier hostId) {
 			super(hostId);
 		}
 
@@ -117,7 +117,7 @@ public class MineTile extends CompositeAITask {
 				return
 					!Domain.getIndividual(hostId.getId()).getInteractionBox().isWithinBox(tileCoordinate) ||
 					Domain.getWorld(Domain.getIndividual(hostId.getId()).getWorldId()).getTopography().getTile(tileCoordinate, true) instanceof EmptyTile;
-			} catch (NoTileFoundException e) {
+			} catch (final NoTileFoundException e) {
 				return true;
 			}
 		}
@@ -130,8 +130,8 @@ public class MineTile extends CompositeAITask {
 
 
 		@Override
-		public void execute(float delta) {
-			Individual host = Domain.getIndividual(hostId.getId());
+		protected void internalExecute(final float delta) {
+			final Individual host = Domain.getIndividual(hostId.getId());
 
 			if (obj(host.getCurrentAction()).oneOf(ATTACK_LEFT_ONE_HANDED_WEAPON_MINE, ATTACK_RIGHT_ONE_HANDED_WEAPON_MINE)) {
 				return;
@@ -166,7 +166,7 @@ public class MineTile extends CompositeAITask {
 		/**
 		 * Mines the tile
 		 */
-		public static void mine(final Individual host, Vector2 tileCoordinate) {
+		public static void mine(final Individual host, final Vector2 tileCoordinate) {
 			final Topography topography = Domain.getWorld(host.getWorldId()).getTopography();
 
 			if (host.getInteractionBox().isWithinBox(tileCoordinate)) {
@@ -175,7 +175,7 @@ public class MineTile extends CompositeAITask {
 						Tile tileToBeDeleted;
 						try {
 							tileToBeDeleted = topography.getTile(tileCoordinate.x, tileCoordinate.y, true);
-						} catch (NoTileFoundException e) {
+						} catch (final NoTileFoundException e) {
 							return;
 						}
 
@@ -191,7 +191,7 @@ public class MineTile extends CompositeAITask {
 								getVisible(host)
 							);
 
-							Item mined = tileToBeDeleted.mine();
+							final Item mined = tileToBeDeleted.mine();
 							ParticleService.mineExplosion(tileCoordinate, tileToBeDeleted.getMineExplosionColor());
 							if (ClientServerInterface.isServer() && ClientServerInterface.isClient()) {
 								if (topography.deleteTile(tileCoordinate.x, tileCoordinate.y, true, false) != null) {

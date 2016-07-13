@@ -21,7 +21,6 @@ import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -115,11 +114,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 			if (getCurrentTask() != null) {
 				final AITask taskToExecute = getCurrentTask();
-				if (!taskToExecute.isInjected()) {
-					Wiring.injector().injectMembers(taskToExecute);
-					taskToExecute.setInjected(true);
-				}
-				taskToExecute.execute(delta);
+				taskToExecute.executeTask(delta);
 				Logger.aiDebug(hostId.getSimpleName() + " is: " + taskToExecute.getShortDescription(), LogLevel.INFO);
 
 				if (taskToExecute.isComplete() && !taskToExecute.uponCompletion() && !(taskToExecute instanceof Idle)) {

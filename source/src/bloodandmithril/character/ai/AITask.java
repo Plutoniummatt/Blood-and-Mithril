@@ -51,8 +51,19 @@ public abstract class AITask implements Serializable {
 	/** Called upon task completion */
 	public abstract boolean uponCompletion();
 
+	/** Injects any dependencies, i know, this is bad, but will be refactored in time */
+	public void executeTask(final float delta) {
+		if (!injected) {
+			Wiring.injector().injectMembers(this);
+			injected = true;
+		}
+
+		internalExecute(delta);
+	}
+
+
 	/** Execute the implementation of this task. */
-	public abstract void execute(float delta);
+	protected abstract void internalExecute(float delta);
 
 
 	public boolean isInjected() {

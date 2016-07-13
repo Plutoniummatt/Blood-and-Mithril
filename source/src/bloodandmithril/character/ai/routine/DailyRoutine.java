@@ -100,9 +100,9 @@ public final class DailyRoutine extends Routine {
 
 
 	@Override
-	public void execute(final float delta) {
+	protected void internalExecute(final float delta) {
 		if (task != null) {
-			task.execute(delta);
+			task.executeTask(delta);
 		}
 	}
 

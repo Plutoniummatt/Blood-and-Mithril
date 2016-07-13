@@ -1,6 +1,7 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goTo;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
@@ -30,7 +31,7 @@ public class LockUnlockContainer extends CompositeAITask {
 	/**
 	 * Constructor
 	 */
-	public LockUnlockContainer(Individual host, Prop container, boolean lock) throws NoTileFoundException {
+	public LockUnlockContainer(final Individual host, final Prop container, final boolean lock) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Locking/Unlocking container",
@@ -67,7 +68,7 @@ public class LockUnlockContainer extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		public LockUnlock(IndividualIdentifier id) {
+		public LockUnlock(final IndividualIdentifier id) {
 			super(id);
 		}
 
@@ -87,8 +88,8 @@ public class LockUnlockContainer extends CompositeAITask {
 		}
 
 		@Override
-		public void execute(float delta) {
-			Individual individual = Domain.getIndividual(hostId.getId());
+		protected void internalExecute(final float delta) {
+			final Individual individual = Domain.getIndividual(hostId.getId());
 			individual.getInventory().keySet().stream().forEach(item -> {
 				if (lock) {
 					if (container.lock(item)) {
@@ -100,7 +101,7 @@ public class LockUnlockContainer extends CompositeAITask {
 					}
 				}
 			});
-			
+
 			if (individual.getInventory().isEmpty()) {
 				if (lock) {
 					if (container.lock(null)) {
@@ -112,7 +113,7 @@ public class LockUnlockContainer extends CompositeAITask {
 					}
 				}
 			}
-			
+
 			complete = true;
 		}
 	}

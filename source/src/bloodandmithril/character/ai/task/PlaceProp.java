@@ -1,6 +1,9 @@
 package bloodandmithril.character.ai.task;
 
 import static bloodandmithril.character.ai.task.GoToLocation.goToWithTerminationFunction;
+
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
 import bloodandmithril.character.ai.pathfinding.PathFinder;
@@ -14,8 +17,6 @@ import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * A composite AI task that instructs the host to go to location then place a {@link Prop}
  *
@@ -27,7 +28,7 @@ public class PlaceProp extends CompositeAITask {
 	private Vector2 position;
 	private PropItem propItem;
 
-	public PlaceProp(Individual host, Vector2 position, PropItem propItem) {
+	public PlaceProp(final Individual host, final Vector2 position, final PropItem propItem) {
 		super(host.getId(), "Placing");
 		this.position = position;
 		this.propItem = propItem;
@@ -43,7 +44,7 @@ public class PlaceProp extends CompositeAITask {
 					true
 				)
 			);
-		} catch (NoTileFoundException e) {}
+		} catch (final NoTileFoundException e) {}
 
 		appendTask(new Place(position, hostId));
 	}
@@ -63,7 +64,7 @@ public class PlaceProp extends CompositeAITask {
 		private static final long serialVersionUID = 7788789888406267718L;
 		private boolean placed;
 
-		protected Place(Vector2 position, IndividualIdentifier hostId) {
+		protected Place(final Vector2 position, final IndividualIdentifier hostId) {
 			super(hostId);
 		}
 
@@ -87,9 +88,9 @@ public class PlaceProp extends CompositeAITask {
 
 
 		@Override
-		public void execute(float delta) {
-			Prop prop = propItem.getProp();
-			Individual host = getHost();
+		protected void internalExecute(final float delta) {
+			final Prop prop = propItem.getProp();
+			final Individual host = getHost();
 			prop.setWorldId(host.getWorldId());
 			if (host.has(propItem) > 0 && host.getInteractionBox().isWithinBox(position) && prop.canPlaceAt(position)) {
 				prop.position.x = position.x;

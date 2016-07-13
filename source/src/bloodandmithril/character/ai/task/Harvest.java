@@ -149,7 +149,7 @@ public final class Harvest extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public final void execute(final float delta) {
+		protected void internalExecute(final float delta) {
 
 			final Individual host = Domain.getIndividual(hostId.getId());
 

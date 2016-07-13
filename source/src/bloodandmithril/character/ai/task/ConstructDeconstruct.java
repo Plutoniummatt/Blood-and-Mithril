@@ -26,7 +26,7 @@ public class ConstructDeconstruct extends CompositeAITask {
 	/**
 	 * Constructor
 	 */
-	public ConstructDeconstruct(final Individual host, final Construction construction, int connectionId) {
+	public ConstructDeconstruct(final Individual host, final Construction construction, final int connectionId) {
 		super(host.getId(), "Constructing/Deconstructing");
 		this.construction = construction;
 		this.connectionId = connectionId;
@@ -48,7 +48,7 @@ public class ConstructDeconstruct extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		public OpenWindow(IndividualIdentifier hostId) {
+		public OpenWindow(final IndividualIdentifier hostId) {
 			super(hostId);
 		}
 
@@ -72,7 +72,7 @@ public class ConstructDeconstruct extends CompositeAITask {
 
 
 		@Override
-		public void execute(float delta) {
+		protected void internalExecute(final float delta) {
 			if (getHost().getInteractionBox().isWithinBox(construction.position)) {
 				if (isClient()) {
 					UserInterface.addLayeredComponentUnique(

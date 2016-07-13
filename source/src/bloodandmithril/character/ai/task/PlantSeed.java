@@ -137,7 +137,7 @@ public class PlantSeed extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public void execute(final float delta) {
+		protected void internalExecute(final float delta) {
 			planted = true;
 			final Individual individual = getIndividual(hostId.getId());
 			final int takeItem = individual.takeItem(toPlant.getSeed());

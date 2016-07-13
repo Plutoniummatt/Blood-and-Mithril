@@ -114,7 +114,7 @@ public class GoToLocation extends AITask implements NextWaypointProvider {
 
 
 	@Override
-	public void execute(final float delta) {
+	protected void internalExecute(final float delta) {
 		if (!path.isEmpty()) {
 			if (fly) {
 				// TODO Flying

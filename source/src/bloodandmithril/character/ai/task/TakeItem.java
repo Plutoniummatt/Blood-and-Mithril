@@ -80,7 +80,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 	/**
 	 * Constructor
 	 */
-	public TakeItem(Individual host, Item item) throws NoTileFoundException {
+	public TakeItem(final Individual host, final Item item) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Taking item",
@@ -111,13 +111,13 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 	/**
 	 * Take multiple items
 	 */
-	public TakeItem(Individual host, Collection<Item> items) throws NoTileFoundException {
+	public TakeItem(final Individual host, final Collection<Item> items) throws NoTileFoundException {
 		super(
 			host.getId(),
 			"Taking items"
 		);
 
-		for (Item item : items) {
+		for (final Item item : items) {
 			itemIds.addLast(item.getId());
 		}
 
@@ -132,10 +132,10 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 	/**
 	 * Take multiple items
 	 */
-	public TakeItem(Individual host, Item item, Deque<Integer> itemIds) throws NoTileFoundException {
+	public TakeItem(final Individual host, final Item item, final Deque<Integer> itemIds) throws NoTileFoundException {
 		this(host, item);
 
-		for (Integer id : itemIds) {
+		for (final Integer id : itemIds) {
 			this.itemIds.addLast(id);
 		}
 	}
@@ -143,7 +143,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 	public class Take extends AITask {
 		private static final long serialVersionUID = 8539704078732653173L;
 
-		public Take(IndividualIdentifier hostId) {
+		public Take(final IndividualIdentifier hostId) {
 			super(hostId);
 		}
 
@@ -178,8 +178,8 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 
 		private void takeNextItem() {
 			if (!itemIds.isEmpty()) {
-				Integer next = itemIds.poll();
-				Individual individual = Domain.getIndividual(hostId.getId());
+				final Integer next = itemIds.poll();
+				final Individual individual = Domain.getIndividual(hostId.getId());
 				if (Domain.getWorld(individual.getWorldId()).items().getItem(next) != null) {
 					try {
 						appendTask(new TakeItem(
@@ -187,7 +187,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 							Domain.getWorld(individual.getWorldId()).items().getItem(next),
 							itemIds
 						));
-					} catch (NoTileFoundException e) {}
+					} catch (final NoTileFoundException e) {}
 				} else {
 					takeNextItem();
 				}
@@ -196,8 +196,8 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 
 
 		@Override
-		public void execute(float delta) {
-			Individual individual = Domain.getIndividual(hostId.getId());
+		protected void internalExecute(final float delta) {
+			final Individual individual = Domain.getIndividual(hostId.getId());
 			if (individual.getInteractionBox().overlapsWith(item.getPickupBox())) {
 				if (!individual.canReceive(item)) {
 					UserInterface.addGlobalMessage("Inventory full", "Can not pick up item, inventory is full.", new IndividualSelected(individual.getId().getId()));
@@ -222,18 +222,18 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 		private final VisibleItemFuture itemId;
 		private final int hostId, worldId;
 
-		public TakeVisibleItemTaskGenerator(int hostId, int worldId, VisibleItemFuture itemId) {
+		public TakeVisibleItemTaskGenerator(final int hostId, final int worldId, final VisibleItemFuture itemId) {
 			this.hostId = hostId;
 			this.worldId = worldId;
 			this.itemId = itemId;
 		}
 
 		@Override
-		public final AITask apply(Object input) {
-			Item item = Domain.getWorld(worldId).items().getItem(itemId.call());
+		public final AITask apply(final Object input) {
+			final Item item = Domain.getWorld(worldId).items().getItem(itemId.call());
 			try {
 				return new TakeItem(Domain.getIndividual(hostId), item);
-			} catch (NoTileFoundException e) {
+			} catch (final NoTileFoundException e) {
 				return null;
 			}
 		}
@@ -272,7 +272,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
 			Gdx.gl20.glLineWidth(2f);
-			Individual attacker = Domain.getIndividual(hostId);
+			final Individual attacker = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(attacker.getState().position.x) - attacker.getWidth()/2,
 				worldToScreenY(attacker.getState().position.y),
@@ -294,7 +294,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 		/**
 		 * Constructor
 		 */
-		public LootAreaTaskGenerator(Vector2 start, Vector2 finish, int hostId) {
+		public LootAreaTaskGenerator(final Vector2 start, final Vector2 finish, final int hostId) {
 			this.hostId = hostId;
 			this.left 	= min(start.x, finish.x);
 			this.right 	= max(start.x, finish.x);
@@ -303,10 +303,10 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 		}
 
 		@Override
-		public AITask apply(Object input) {
+		public AITask apply(final Object input) {
 			final Individual individual = getIndividual(hostId);
-			World world = getWorld(individual.getWorldId());
-			List<Integer> itemsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Item.class, left, right, top, bottom);
+			final World world = getWorld(individual.getWorldId());
+			final List<Integer> itemsWithinBounds = world.getPositionalIndexMap().getEntitiesWithinBounds(Item.class, left, right, top, bottom);
 
 			final List<Item> itemsToLoot = Lists.newLinkedList();
 
@@ -320,7 +320,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 
 			try {
 				return new TakeItem(individual, itemsToLoot);
-			} catch (NoTileFoundException e) {
+			} catch (final NoTileFoundException e) {
 				return null;
 			}
 		}
@@ -354,7 +354,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 		public void render() {
 			UserInterface.shapeRenderer.begin(ShapeType.Line);
 			UserInterface.shapeRenderer.setColor(Color.GREEN);
-			Individual looter = Domain.getIndividual(hostId);
+			final Individual looter = Domain.getIndividual(hostId);
 			UserInterface.shapeRenderer.rect(
 				worldToScreenX(looter.getState().position.x) - looter.getWidth()/2,
 				worldToScreenY(looter.getState().position.y),
@@ -375,7 +375,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 	}
 
 
-	private ContextMenu getContextMenu(Routine routine, Individual host) {
+	private ContextMenu getContextMenu(final Routine routine, final Individual host) {
 		return new ContextMenu(getMouseScreenX(), getMouseScreenY(), true,
 			new ContextMenu.MenuItem(
 				"Choose area to loot",
@@ -388,7 +388,7 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 							true
 						) {
 							@Override
-							public void keyPressed(int keyCode) {
+							public void keyPressed(final int keyCode) {
 							}
 							@Override
 							public String getShortDescription() {
@@ -419,14 +419,14 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getDailyRoutineContextMenu(Individual host, DailyRoutine routine) {
+	public ContextMenu getDailyRoutineContextMenu(final Individual host, final DailyRoutine routine) {
 		return getContextMenu(routine, host);
 	}
 
 
 	@Override
-	public ContextMenu getEntityVisibleRoutineContextMenu(Individual host, EntityVisibleRoutine routine) {
-		ContextMenu contextMenu = getContextMenu(routine, host);
+	public ContextMenu getEntityVisibleRoutineContextMenu(final Individual host, final EntityVisibleRoutine routine) {
+		final ContextMenu contextMenu = getContextMenu(routine, host);
 
 		final EntityVisible identificationFunction = routine.getIdentificationFunction();
 		if (Item.class.isAssignableFrom(identificationFunction.getEntity().a)) {
@@ -449,13 +449,13 @@ public class TakeItem extends CompositeAITask implements RoutineTask {
 
 
 	@Override
-	public ContextMenu getIndividualConditionRoutineContextMenu(Individual host, IndividualConditionRoutine routine) {
+	public ContextMenu getIndividualConditionRoutineContextMenu(final Individual host, final IndividualConditionRoutine routine) {
 		return getContextMenu(routine, host);
 	}
 
 
 	@Override
-	public ContextMenu getStimulusDrivenRoutineContextMenu(Individual host, StimulusDrivenRoutine routine) {
+	public ContextMenu getStimulusDrivenRoutineContextMenu(final Individual host, final StimulusDrivenRoutine routine) {
 		return getContextMenu(routine, host);
 	}
 }

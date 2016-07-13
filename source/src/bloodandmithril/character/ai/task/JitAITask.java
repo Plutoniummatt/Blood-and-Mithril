@@ -15,27 +15,27 @@ public class JitAITask extends AITask {
 	private static final long serialVersionUID = 50973528081693772L;
 	private SerializableFunction<? extends AITask> taskFunction;
 	private AITask task;
-	
+
 	/**
 	 * Constructor
 	 */
-	public JitAITask(IndividualIdentifier hostId, SerializableFunction<? extends AITask> taskFunction) {
+	public JitAITask(final IndividualIdentifier hostId, final SerializableFunction<? extends AITask> taskFunction) {
 		super(hostId);
 		this.taskFunction = taskFunction;
 	}
-	
-	
+
+
 	public AITask getTask() {
 		return task;
 	}
-	
-	
+
+
 	public void initialise() {
 		if (task == null) {
 			this.task = taskFunction.call();
 		}
 	}
-	
+
 
 	@Override
 	public String getShortDescription() {
@@ -43,24 +43,24 @@ public class JitAITask extends AITask {
 		return task.getShortDescription();
 	}
 
-	
+
 	@Override
 	public boolean isComplete() {
 		initialise();
 		return task.isComplete();
 	}
 
-	
+
 	@Override
 	public boolean uponCompletion() {
 		initialise();
 		return task.uponCompletion();
 	}
 
-	
+
 	@Override
-	public void execute(float delta) {
+	protected void internalExecute(final float delta) {
 		initialise();
-		task.execute(delta);
+		task.executeTask(delta);
 	}
 }

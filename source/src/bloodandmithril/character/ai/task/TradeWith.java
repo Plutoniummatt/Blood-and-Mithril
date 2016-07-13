@@ -35,7 +35,7 @@ public class TradeWith extends CompositeAITask {
 
 	public static Comparator<Item> sortOrder = new Comparator<Item>() {
 		@Override
-		public int compare(Item o1, Item o2) {
+		public int compare(final Item o1, final Item o2) {
 			return ComparisonChain.start()
 					.compare(o1.getType().getColor().toIntBits(), o2.getType().getColor().toIntBits())
 					.compare(o1.getSingular(false).toUpperCase(), o2.getSingular(false).toUpperCase())
@@ -46,7 +46,7 @@ public class TradeWith extends CompositeAITask {
 	/**
 	 * Overloaded constructor
 	 */
-	public TradeWith(final Individual proposer, final Container proposee, int connectionId) {
+	public TradeWith(final Individual proposer, final Container proposee, final int connectionId) {
 		super(proposer.getId(), "Trading");
 
 		SerializableFunction<Vector2> function = null;
@@ -112,7 +112,7 @@ public class TradeWith extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		protected Trade(IndividualIdentifier hostId, Individual proposer, Container proposee, int connectionId) {
+		protected Trade(final IndividualIdentifier hostId, final Individual proposer, final Container proposee, final int connectionId) {
 			super(hostId);
 			this.proposer = proposer;
 			this.proposee = proposee;
@@ -122,7 +122,7 @@ public class TradeWith extends CompositeAITask {
 		/**
 		 * Constructor
 		 */
-		protected Trade(IndividualIdentifier hostId, Individual proposer, Container proposee) {
+		protected Trade(final IndividualIdentifier hostId, final Individual proposer, final Container proposee) {
 			super(hostId);
 			this.proposer = proposer;
 			this.proposee = proposee;
@@ -151,13 +151,13 @@ public class TradeWith extends CompositeAITask {
 		}
 
 		@Override
-		public void execute(float delta) {
+		protected void internalExecute(final float delta) {
 			if (proposee.isLocked()) {
 				return;
 			}
 
 			if (proposee instanceof Individual) {
-				Individual proposeeCasted = (Individual)proposee;
+				final Individual proposeeCasted = (Individual)proposee;
 
 				if (proposer.getDistanceFrom(proposeeCasted.getState().position) > 64f) {
 					return;
@@ -195,9 +195,9 @@ public class TradeWith extends CompositeAITask {
 	/**
 	 * Opens a {@link TradeWindow} with a {@link Prop}  is also a {@link Container}
 	 */
-	public static void openTradeWindowWithProp(Individual proposer, Container container) {
+	public static void openTradeWindowWithProp(final Individual proposer, final Container container) {
 		if (container instanceof Prop) {
-			Prop prop = Domain.getWorld(proposer.getWorldId()).props().getProp(((Prop) container).id);
+			final Prop prop = Domain.getWorld(proposer.getWorldId()).props().getProp(((Prop) container).id);
 				UserInterface.addLayeredComponentUnique(
 				new TradeWindow(
 					proposer.getId().getSimpleName() + " interacting with container",
@@ -214,7 +214,7 @@ public class TradeWith extends CompositeAITask {
 	/**
 	 * Opens a {@link TradeWindow} with another {@link Individual}
 	 */
-	public static void openTradeWindowWithIndividual(Individual proposer, Individual proposeeCasted) {
+	public static void openTradeWindowWithIndividual(final Individual proposer, final Individual proposeeCasted) {
 		UserInterface.addLayeredComponentUnique(
 			new TradeWindow(
 				"Trade between " + proposer.getId().getFirstName() + " and " + proposeeCasted.getId().getFirstName(),
