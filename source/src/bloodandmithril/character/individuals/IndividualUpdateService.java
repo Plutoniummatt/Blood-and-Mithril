@@ -7,6 +7,8 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.Math.round;
 
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Attack;
@@ -30,13 +32,17 @@ import bloodandmithril.world.topography.Topography.NoTileFoundException;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2015")
 public class IndividualUpdateService {
+
+	@Inject
+	private PositionalIndexingService positionalIndexingService;
 
 	/**
 	 * Updates the individual
 	 */
-	public static void update(final Individual indi, final float delta) {
+	public void update(final Individual indi, final float delta) {
 		final float aiTaskDelay = 0.01f;
 		indi.setTravelIconTimer(indi.getTravelIconTimer() + delta * 10f);
 		indi.setSpeakTimer(indi.getSpeakTimer() - delta <= 0f ? 0f : indi.getSpeakTimer() - delta);
@@ -109,7 +115,7 @@ public class IndividualUpdateService {
 		} catch (final NoTileFoundException e) {}
 
 		updateConditions(indi, delta);
-		PositionalIndexingService.indexInvidivual(indi);
+		positionalIndexingService.indexInvidivual(indi);
 
 		Sets.newHashSet(indi.getEquipped().keySet()).forEach(equipped -> {
 			((Equipable) equipped).update(indi, delta);
@@ -121,7 +127,7 @@ public class IndividualUpdateService {
 	 * Updates the vitals of this {@link Individual}
 	 * @param indi
 	 */
-	private static void updateVitals(final Individual indi, final float delta) {
+	private void updateVitals(final Individual indi, final float delta) {
 		indi.heal(delta * indi.getState().healthRegen);
 
 		indi.decreaseHunger(indi.hungerDrain() * (delta* 60f));
@@ -160,7 +166,7 @@ public class IndividualUpdateService {
 	/**
 	 * Performs the {@link Task} associated with the current frame of the animation of the current {@link Action}
 	 */
-	private static void executeActionFrames(final Individual indi) {
+	private void executeActionFrames(final Individual indi) {
 		ParameterizedTask<Individual> task = null;
 		try {
 			task = indi.getActionFrames()
@@ -187,7 +193,7 @@ public class IndividualUpdateService {
 	/**
 	 * Update how this {@link Individual} is affected by its {@link Condition}s
 	 */
-	private static void updateConditions(final Individual indi, final float delta) {
+	private void updateConditions(final Individual indi, final float delta) {
 		// Reset regeneration values
 		if (isServer()) {
 			indi.getState().reset();

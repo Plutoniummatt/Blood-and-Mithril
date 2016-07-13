@@ -41,14 +41,14 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 	/**
 	 * Constructor
 	 */
-	public FireArrowProjectile(Class<T> metal, Vector2 position, Vector2 velocity, float burnDuration, boolean lit) {
+	public FireArrowProjectile(final Class<T> metal, final Vector2 position, final Vector2 velocity, final float burnDuration, final boolean lit) {
 		super(metal, position, velocity);
 		this.burnDuration = burnDuration;
 	}
 
 
 	@Override
-	public void update(float delta) {
+	public void particleEffects(final float delta) {
 		if (lit) {
 			if (burnDuration > 0f) {
 				burnDuration -= delta;
@@ -60,13 +60,11 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 				ParticleService.randomVelocityDiminishing(position, 0f, 10f, Colors.LIGHT_SMOKE, Colors.LIGHT_SMOKE, 4f, 0f, MovementMode.EMBER, Util.getRandom().nextInt(3000), Depth.FOREGROUND, false, null);
 			}
 		}
-
-		super.update(delta);
 	}
 
 
 	@Override
-	public void hit(Individual victim) {
+	public void hit(final Individual victim) {
 		super.hit(victim);
 
 		if (Util.roll(0.35f) && lit) {
@@ -76,19 +74,19 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 
 
 	@Override
-	public void preFireDecorate(Individual individual) {
-		World world = Domain.getWorld(individual.getWorldId());
+	public void preFireDecorate(final Individual individual) {
+		final World world = Domain.getWorld(individual.getWorldId());
 
-		for (int propId : world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, individual.getState().position)) {
-			Prop prop = world.props().getProp(propId);
+		for (final int propId : world.getPositionalIndexMap().getNearbyEntityIds(Prop.class, individual.getState().position)) {
+			final Prop prop = world.props().getProp(propId);
 			if (prop.canBeUsedAsFireSource() && individual.getInteractionBox().overlapsWith(new Box(prop.position.cpy().add(0, prop.height/2), prop.width, prop.height))) {
 				lit = true;
 				return;
 			}
 		}
 
-		for (int individualId : world.getPositionalIndexMap().getNearbyEntityIds(Individual.class, individual.getState().position)) {
-			Individual nearbyIndividual = Domain.getIndividual(individualId);
+		for (final int individualId : world.getPositionalIndexMap().getNearbyEntityIds(Individual.class, individual.getState().position)) {
+			final Individual nearbyIndividual = Domain.getIndividual(individualId);
 			if (nearbyIndividual.canBeUsedAsFireSource() && nearbyIndividual.getInteractionBox().isWithinBox(individual.getState().position)) {
 				lit = true;
 				return;
@@ -105,19 +103,19 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 	public static class FireArrowItem<T extends Metal> extends ArrowItem<T> {
 		private static final long serialVersionUID = 9027137493687956507L;
 
-		public FireArrowItem(Class<T> metal) {
+		public FireArrowItem(final Class<T> metal) {
 			super(metal);
 			this.setValue(getValue() + ItemValues.COAL);
 		}
 
 		@Override
-		protected String internalGetSingular(boolean firstCap) {
+		protected String internalGetSingular(final boolean firstCap) {
 			return "Ignitable " + super.internalGetSingular(firstCap);
 		}
 
 
 		@Override
-		protected String internalGetPlural(boolean firstCap) {
+		protected String internalGetPlural(final boolean firstCap) {
 			return "Ignitable " + super.internalGetPlural(firstCap);
 		}
 
@@ -130,7 +128,7 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 
 		@Override
 		@SuppressWarnings("rawtypes")
-		protected boolean internalSameAs(Item other) {
+		protected boolean internalSameAs(final Item other) {
 			if (other instanceof FireArrowItem) {
 				return metal.equals(((FireArrowItem) other).metal);
 			}
@@ -140,7 +138,7 @@ public class FireArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 
 		@Override
 		public Map<Item, Integer> getRequiredMaterials() {
-			Map<Item, Integer> requiredMaterials = super.getRequiredMaterials();
+			final Map<Item, Integer> requiredMaterials = super.getRequiredMaterials();
 			requiredMaterials.put(RockItem.rock(Coal.class), 1);
 			return requiredMaterials;
 		}

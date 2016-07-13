@@ -17,6 +17,7 @@ import bloodandmithril.objectives.Mission;
 import bloodandmithril.persistence.GameSaver;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.WorldUpdateService;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
@@ -52,6 +53,7 @@ public class Threading {
 	@Inject private GameSaver gameSaver;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private MissionTracker missionTracker;
+	@Inject private WorldUpdateService worldUpdateService;
 
 	/**
 	 * Constructor
@@ -162,7 +164,7 @@ public class Threading {
 						// Do not update if game is paused
 						// Do not update if FPS is lower than tolerance threshold, otherwise bad things can happen, like teleporting
 						if (!gameClientStateTracker.isPaused() && !gameSaver.isSaving() && gameClientStateTracker.getActiveWorld() != null && !gameClientStateTracker.isLoading()) {
-							gameClientStateTracker.getActiveWorld().update();
+							worldUpdateService.update(gameClientStateTracker.getActiveWorld());
 						}
 					} catch (final Exception e) {
 						e.printStackTrace();

@@ -2,10 +2,7 @@ package bloodandmithril.item.items;
 
 import static bloodandmithril.control.InputUtilities.getMouseWorldX;
 import static bloodandmithril.control.InputUtilities.getMouseWorldY;
-import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static com.google.common.collect.Lists.newArrayList;
-import static java.lang.Math.abs;
-import static java.lang.Math.max;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -59,7 +56,6 @@ import bloodandmithril.item.material.mineral.Hematite;
 import bloodandmithril.item.material.mineral.SandStone;
 import bloodandmithril.item.material.wood.StandardWood;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.performance.PositionalIndexNode;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.ContextMenu;
 import bloodandmithril.ui.components.ContextMenu.MenuItem;
@@ -72,9 +68,7 @@ import bloodandmithril.util.Util;
 import bloodandmithril.util.Util.Colors;
 import bloodandmithril.util.datastructure.Box;
 import bloodandmithril.util.datastructure.WrapperForTwo;
-import bloodandmithril.world.Domain;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-import bloodandmithril.world.topography.tile.Tile;
 
 /**
  * An {@link Item}
@@ -113,7 +107,8 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	private Integer id, worldId;
 
 	/** Rotating when in world */
-	private float angle, angularVelocity = (Util.getRandom().nextFloat() - 0.5f) * 40f;
+	private float angle;
+	private float angularVelocity = (Util.getRandom().nextFloat() - 0.5f) * 40f;
 
 	/** Whether or not this item bounces when discarded */
 	private boolean bounces = false;
@@ -126,7 +121,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		this.volume = volume;
 		this.equippable = equippable;
 
-		this.angle = rotates() ? Util.getRandom().nextFloat() * 360f : 0f;
+		this.setAngle(rotates() ? Util.getRandom().nextFloat() * 360f : 0f);
 	}
 
 	/**
@@ -138,7 +133,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 		this.equippable = equippable;
 		this.value = value;
 
-		this.angle = rotates() ? Util.getRandom().nextFloat() * 360f : 0f;
+		this.setAngle(rotates() ? Util.getRandom().nextFloat() * 360f : 0f);
 	}
 
 	/** Get the singular name for this item */
@@ -172,6 +167,11 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	public Item bounces() {
 		this.bounces = true;
 		return this;
+	}
+
+	/** Return true if this item bounces */
+	public boolean doesBounce() {
+		return bounces;
 	}
 
 	@Override
@@ -247,7 +247,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 	public Item copy() {
 		final Item item = internalCopy();
 
-		item.angle = angle;
+		item.setAngle(angle);
 		item.angularVelocity = angularVelocity;
 		item.equippable = equippable;
 		item.mass = mass;
@@ -290,7 +290,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 			textureRegion.getRegionHeight(),
 			1f,
 			1f,
-			angle
+			getAngle()
 		);
 	};
 
@@ -314,7 +314,7 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 
 		// Translate coordinate system to have origin on the centre of the item (rotation pivot of rendering), then work out mouse coordinates in this coordinate system
 		// Then apply rotation of -(renderAngle) to mouse coordinates in these new coordinates, result should be a rectangle. Then apply standard logic.
-		mouseCoords.sub(position).add(getRenderCentreOffset().rotate(angle)).rotate(-angle);
+		mouseCoords.sub(position).add(getRenderCentreOffset().rotate(getAngle())).rotate(-getAngle());
 
 		return mouseCoords.x > 0 && mouseCoords.x < width && mouseCoords.y > 0 && mouseCoords.y < height;
 	}
@@ -366,92 +366,6 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 			400,
 			350
 		);
-	}
-
-
-	/**
-	 * Processes particle effects
-	 */
-	protected void particleEffects() {
-		// No-op default
-	};
-
-
-	/** Update method, delta measured in seconds */
-	public void update(final float delta) throws NoTileFoundException {
-		if (getId() == null) {
-			return;
-		}
-
-		if (!Domain.getWorld(getWorldId()).getTopography().getChunkMap().doesChunkExist(position)) {
-			return;
-		}
-
-		final Vector2 previousPosition = position.cpy();
-		final Vector2 previousVelocity = velocity.cpy();
-
-		position.add(velocity.cpy().scl(delta));
-
-		final float gravity = Domain.getWorld(getWorldId()).getGravity();
-		if (velocity.cpy().scl(delta).len() > TILE_SIZE) {
-			velocity.scl(0.9f);
-		}
-
-		velocity.y = velocity.y - delta * gravity;
-
-		final Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
-		if (rotates() && tileUnder.isPassable()) {
-			angle = angle + angularVelocity;
-		}
-
-		if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
-			final Vector2 trial = position.cpy();
-			trial.y += -previousVelocity.y*delta;
-
-			if (Domain.getWorld(getWorldId()).getTopography().getTile(trial.x, trial.y, true).isPassable()) {
-				if (previousVelocity.y <= 0f) {
-
-					int i = (int)angle % 360 - (int)getUprightAngle();
-					if (i < 0) {
-						i = i + 360;
-					}
-					final boolean pointingUp = i > 350 || i > 0 && i < 190;
-					if (pointingUp && bounces) {
-						if (abs(velocity.y) > 400f) {
-							angularVelocity = (Util.getRandom().nextFloat() - 0.5f) * 40f;
-						} else {
-							angularVelocity = max(angularVelocity * 0.6f, 5f);
-						}
-						setPosition(previousPosition);
-						velocity.y = -previousVelocity.y * 0.7f;
-						velocity.x = previousVelocity.x * 0.3f;
-					} else {
-						angularVelocity = 0f;
-						velocity.x = velocity.x * 0.3f;
-						velocity.y = 0f;
-						position.y = Domain.getWorld(getWorldId()).getTopography().getLowestEmptyTileOrPlatformTileWorldCoords(getPosition(), true).y;
-					}
-				} else {
-					setPosition(previousPosition);
-					velocity.y = -previousVelocity.y;
-				}
-			} else {
-				velocity.x = 0f;
-				setPosition(previousPosition);
-			}
-		}
-
-		updatePositionalIndex();
-		particleEffects();
-	}
-
-
-	public void updatePositionalIndex() {
-		for (final PositionalIndexNode node : Domain.getWorld(worldId).getPositionalIndexMap().getNearbyNodes(position.x, position.y)) {
-			node.removeItem(id);
-		}
-
-		Domain.getWorld(worldId).getPositionalIndexMap().get(position.x, position.y).addItem(id);
 	}
 
 
@@ -708,6 +622,21 @@ public abstract class Item implements Serializable, Affixed, MouseOverable, Visi
 			locations.add(position.cpy().add(0f, i));
 		}
 		return locations;
+	}
+
+
+	public float getAngle() {
+		return angle;
+	}
+
+
+	public void setAngle(final float angle) {
+		this.angle = angle;
+	}
+
+
+	public float getAngularVelocity() {
+		return angularVelocity;
 	}
 
 

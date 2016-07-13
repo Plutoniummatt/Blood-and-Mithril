@@ -32,6 +32,7 @@ import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
 import bloodandmithril.world.Domain;
 import bloodandmithril.world.World;
+import bloodandmithril.world.WorldUpdateService;
 
 /**
  * Entry point class for the remote game server
@@ -119,6 +120,8 @@ public class BloodAndMithrilServer {
 		@Inject private GameSaver gameSaver;
 		@Inject private GameLoader gameLoader;
 		@Inject private ParameterPersistenceService parameterPersistenceService;
+		@Inject private WorldUpdateService worldUpdateService;
+		@Inject private GameClientStateTracker gameClientStateTracker;
 
 		@Override
 		public void create() {
@@ -132,7 +135,7 @@ public class BloodAndMithrilServer {
 
 			ClientServerInterface.setServer(true);
 			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);
-			Wiring.injector().getInstance(GameClientStateTracker.class).setActiveWorldId(Domain.createWorld());
+			gameClientStateTracker.setActiveWorldId(Domain.createWorld());
 
 			PrefabricatedComponent.setup();
 		}
@@ -152,9 +155,9 @@ public class BloodAndMithrilServer {
 			// bad things can happen, like teleporting
 			final float delta = Gdx.graphics.getDeltaTime();
 			if (delta < 0.1f && !gameSaver.isSaving()) {
-				final World activeWorld = Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld();
+				final World activeWorld = gameClientStateTracker.getActiveWorld();
 				if (activeWorld != null) {
-					activeWorld.update();
+					worldUpdateService.update(activeWorld);
 				}
 			}
 		}

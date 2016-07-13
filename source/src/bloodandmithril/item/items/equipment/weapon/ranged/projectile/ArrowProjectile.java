@@ -38,28 +38,19 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 
 	public static TextureRegion textureRegion;
 	private float angle;
-	protected boolean stuck = false;
 
 	/**
 	 * Constructor
 	 */
-	public ArrowProjectile(Class<T> metal, Vector2 position, Vector2 velocity) {
+	public ArrowProjectile(final Class<T> metal, final Vector2 position, final Vector2 velocity) {
 		super(position, velocity, new Vector2());
 		this.arrowTipMaterial = metal;
 	}
 
 
 	@Override
-	public void update(float delta) {
-		if (!stuck) {
-			angle = velocity.angle();
-			super.update(delta);
-		}
-	}
-
-
-	@Override
-	public void render(SpriteBatch batch) {
+	public void render(final SpriteBatch batch) {
+		angle = velocity.angle();
 		batch.draw(
 			textureRegion,
 			position.x - 25,
@@ -76,18 +67,18 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 
 
 	@Override
-	protected float getTerminalVelocity() {
+	public float getTerminalVelocity() {
 		return 2000f;
 	}
 
 
 	@Override
-	protected void collision(Vector2 previousPosition) {
+	public void collision(final Vector2 previousPosition) {
 		try {
 			Tile tile = Domain.getWorld(getWorldId()).getTopography().getTile(position, true);
 
-			Vector2 testPosition = position.cpy();
-			Vector2 velocityCopy = velocity.cpy();
+			final Vector2 testPosition = position.cpy();
+			final Vector2 velocityCopy = velocity.cpy();
 			while (tile.isPlatformTile || !tile.isPassable()) {
 				testPosition.sub(velocityCopy.nor());
 				tile = Domain.getWorld(getWorldId()).getTopography().getTile(testPosition, true);
@@ -95,13 +86,13 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 
 			setPosition(testPosition);
 			stuck = true;
-		} catch (NoTileFoundException e) {}
+		} catch (final NoTileFoundException e) {}
 	}
 
 
 	@Override
-	public void hit(Individual victim) {
-		float damage = velocity.len() / getTerminalVelocity() * (5f + 5f * Util.getRandom().nextFloat()) * Metal.getMaterial(arrowTipMaterial).getCombatMultiplier();
+	public void hit(final Individual victim) {
+		final float damage = velocity.len() / getTerminalVelocity() * (5f + 5f * Util.getRandom().nextFloat()) * Metal.getMaterial(arrowTipMaterial).getCombatMultiplier();
 		victim.damage(damage);
 		victim.addFloatingText(String.format("%.2f", damage), Color.RED);
 		ParticleService.bloodSplat(victim.getEmissionPosition(), new Vector2());
@@ -109,13 +100,13 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 
 
 	@Override
-	protected boolean penetrating() {
+	public boolean penetrating() {
 		return Util.roll(0.2f);
 	}
 
 
 	@Override
-	protected int getHitSound(Individual individual) {
+	public int getHitSound(final Individual individual) {
 		return SoundService.stab;
 	}
 
@@ -127,7 +118,7 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 		/**
 		 * Constructor
 		 */
-		protected ArrowItem(Class<T> metal) {
+		protected ArrowItem(final Class<T> metal) {
 			super(0.05f, 1, false, Material.getMaterial(metal).getIngot().getValue() / 25 + ItemValues.WOODSTICK);
 			this.metal = metal;
 		}
@@ -137,19 +128,19 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 		 * Static instance getter
 		 */
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		public static ArrowItem arrowItem(Class<? extends Metal> metal) {
+		public static ArrowItem arrowItem(final Class<? extends Metal> metal) {
 			return new ArrowItem(metal);
 		}
 
 
 		@Override
-		protected String internalGetSingular(boolean firstCap) {
+		protected String internalGetSingular(final boolean firstCap) {
 			return Metal.getMaterial(metal).getName() + " Arrow";
 		}
 
 
 		@Override
-		protected String internalGetPlural(boolean firstCap) {
+		protected String internalGetPlural(final boolean firstCap) {
 			return Metal.getMaterial(metal).getName() + " Arrows";
 		}
 
@@ -162,7 +153,7 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 
 		@Override
 		@SuppressWarnings("rawtypes")
-		protected boolean internalSameAs(Item other) {
+		protected boolean internalSameAs(final Item other) {
 			if (other.getClass().equals(ArrowItem.class)) {
 				return ((ArrowItem) other).metal.equals(metal);
 			}
@@ -195,14 +186,14 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 
 
 		@Override
-		public boolean canBeCraftedBy(Individual individual) {
+		public boolean canBeCraftedBy(final Individual individual) {
 			return true;
 		}
 
 
 		@Override
 		public Map<Item, Integer> getRequiredMaterials() {
-			Map<Item, Integer> requiredMaterials = Maps.newHashMap();
+			final Map<Item, Integer> requiredMaterials = Maps.newHashMap();
 			requiredMaterials.put(StickItem.stick(StandardWood.class), 1);
 			requiredMaterials.put(ArrowHeadItem.arrowHead(metal), 1);
 			return requiredMaterials;
@@ -216,13 +207,13 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 
 
 		@Override
-		public void crafterEffects(Individual crafter, float delta) {
+		public void crafterEffects(final Individual crafter, final float delta) {
 		}
 	}
 
 
 	@Override
-	protected void targetHitKinematics() {
+	public void targetHitKinematics() {
 		if (Util.roll(0.2f)) {
 			Domain.getWorld(getWorldId()).projectiles().removeProjectile(getId());
 		} else {
@@ -233,6 +224,11 @@ public class ArrowProjectile<T extends Metal> extends Projectile {
 
 
 	@Override
-	public void preFireDecorate(Individual individual) {
+	public void preFireDecorate(final Individual individual) {
+	}
+
+
+	@Override
+	public void particleEffects(final float delta) {
 	}
 }

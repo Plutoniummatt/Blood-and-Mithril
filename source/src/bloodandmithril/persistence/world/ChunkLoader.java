@@ -17,6 +17,7 @@ import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
+import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.Structure;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.patterns.GlobalLayers;
@@ -52,6 +53,7 @@ public class ChunkLoader {
 	private final ConcurrentDualKeyHashMap<Integer, Integer, Boolean> chunksInQueue = new ConcurrentDualKeyHashMap<>();
 
 	@Inject private GameSaver gameSaver;
+	@Inject private ChunkGenerator chunkGenerator;
 	@Inject private GameClientStateTracker gameClientStateTracker;
 
 	/**
@@ -197,7 +199,7 @@ public class ChunkLoader {
 				Logger.loaderDebug("No chunk found on disk, generating new chunk: " + chunkX + ", " + chunkY, LogLevel.DEBUG);
 				// If load was unsuccessful, the chunk in question remains null and we
 				// generate it.
-				world.getGenerator().generate(chunkX, chunkY, world, populateChunkMap);
+				chunkGenerator.generate(chunkX, chunkY, world, populateChunkMap);
 			}
 
 			// Remove chunk from queue.

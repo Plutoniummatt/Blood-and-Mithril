@@ -1,7 +1,7 @@
 package bloodandmithril.networking.requests;
 
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.ChunkGenerator;
+import bloodandmithril.generation.biome.BiomeDecider;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response;
 import bloodandmithril.networking.Response.Responses;
@@ -40,15 +40,15 @@ public class SynchronizeWorldState implements Request {
 
 		private final float gravity;
 		private final Epoch currentEpoch;
-		private final ChunkGenerator chunkGenerator;
 		private final int worldId;
+		private final Class<? extends BiomeDecider> biomeDecider;
 
 		/** Constructor */
 		public SynchronizeWorldStateResponse(final World world) {
 			this.worldId = world.getWorldId();
 			this.gravity = world.getGravity();
 			this.currentEpoch = world.getEpoch();
-			this.chunkGenerator = world.getGenerator();
+			this.biomeDecider = world.getBiomeDecider();
 		}
 
 
@@ -57,7 +57,7 @@ public class SynchronizeWorldState implements Request {
 			if (Domain.getWorld(worldId) != null) {
 				Domain.getWorld(worldId).setEpoch(currentEpoch);
 			} else {
-				Domain.addWorld(new World(gravity, currentEpoch, chunkGenerator, worldId));
+				Domain.addWorld(new World(gravity, currentEpoch, worldId, biomeDecider));
 			}
 		}
 

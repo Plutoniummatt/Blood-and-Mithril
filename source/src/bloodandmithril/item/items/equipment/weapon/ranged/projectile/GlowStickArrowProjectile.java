@@ -1,6 +1,11 @@
 package bloodandmithril.item.items.equipment.weapon.ranged.projectile;
 
 import static bloodandmithril.networking.ClientServerInterface.isServer;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+
 import bloodandmithril.graphics.WorldRenderer.Depth;
 import bloodandmithril.graphics.particles.DiminishingTracerParticle;
 import bloodandmithril.graphics.particles.Particle;
@@ -14,10 +19,6 @@ import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.Util;
 import bloodandmithril.world.Domain;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-
 public class GlowStickArrowProjectile<T extends Metal> extends ArrowProjectile<T> {
 	private static final long serialVersionUID = -6641284233913835594L;
 	private float lightingDuration;
@@ -28,7 +29,7 @@ public class GlowStickArrowProjectile<T extends Metal> extends ArrowProjectile<T
 	/**
 	 * Constructor
 	 */
-	public GlowStickArrowProjectile(Class<T> metal, Vector2 position, Vector2 velocity, float lightingDuration, Color color) {
+	public GlowStickArrowProjectile(final Class<T> metal, final Vector2 position, final Vector2 velocity, final float lightingDuration, final Color color) {
 		super(metal, position, velocity);
 		this.lightingDuration = lightingDuration;
 		this.previousPosition = position;
@@ -37,12 +38,12 @@ public class GlowStickArrowProjectile<T extends Metal> extends ArrowProjectile<T
 
 
 	@Override
-	public void update(float delta) {
+	public void particleEffects(final float delta) {
 		if (lightingDuration > 0f) {
 			lightingDuration -= delta;
 			if (particleId == null) {
 				if (isServer()) {
-					Particle particle = new DiminishingTracerParticle(
+					final Particle particle = new DiminishingTracerParticle(
 						position,
 						velocity,
 						Color.WHITE,
@@ -59,7 +60,7 @@ public class GlowStickArrowProjectile<T extends Metal> extends ArrowProjectile<T
 					particleId = particle.particleId;
 				}
 			} else {
-				DiminishingTracerParticle particle = (DiminishingTracerParticle) Domain.getWorld(getWorldId()).getServerParticles().get(particleId);
+				final DiminishingTracerParticle particle = (DiminishingTracerParticle) Domain.getWorld(getWorldId()).getServerParticles().get(particleId);
 				if (particle != null) {
 					particle.position = position;
 					particle.prevPosition = previousPosition;
@@ -72,12 +73,11 @@ public class GlowStickArrowProjectile<T extends Metal> extends ArrowProjectile<T
 		}
 
 		previousPosition = position.cpy();
-		super.update(delta);
 	}
 
 
 	@Override
-	protected void targetHitKinematics() {
+	public void targetHitKinematics() {
 		if (Util.roll(0.2f)) {
 			Domain.getWorld(getWorldId()).projectiles().removeProjectile(getId());
 			Domain.getWorld(getWorldId()).getServerParticles().remove(particleId);
@@ -91,19 +91,19 @@ public class GlowStickArrowProjectile<T extends Metal> extends ArrowProjectile<T
 	public static class GlowStickArrowItem<T extends Metal> extends ArrowItem<T> {
 		private static final long serialVersionUID = 9027137493687956507L;
 
-		public GlowStickArrowItem(Class<T> metal) {
+		public GlowStickArrowItem(final Class<T> metal) {
 			super(metal);
 			this.setValue(getValue() + ItemValues.GLOWSTICK);
 		}
 
 		@Override
-		protected String internalGetSingular(boolean firstCap) {
+		protected String internalGetSingular(final boolean firstCap) {
 			return "Glowing " + super.internalGetSingular(firstCap);
 		}
 
 
 		@Override
-		protected String internalGetPlural(boolean firstCap) {
+		protected String internalGetPlural(final boolean firstCap) {
 			return "Glowing " + super.internalGetPlural(firstCap);
 		}
 
@@ -116,7 +116,7 @@ public class GlowStickArrowProjectile<T extends Metal> extends ArrowProjectile<T
 
 		@Override
 		@SuppressWarnings("rawtypes")
-		protected boolean internalSameAs(Item other) {
+		protected boolean internalSameAs(final Item other) {
 			if (other instanceof GlowStickArrowItem) {
 				return metal.equals(((GlowStickArrowItem) other).metal);
 			}

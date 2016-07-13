@@ -17,7 +17,6 @@ import com.google.common.collect.Lists;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.DefaultBiomeDecider;
 import bloodandmithril.prop.Prop;
 
@@ -38,13 +37,10 @@ public class Domain {
 	/** Every {@link Prop} that exists */
 	private static ConcurrentHashMap<Integer, Faction> 					factions 				= new ConcurrentHashMap<>();
 
+
 	public static int createWorld() {
-		final World world = new World(1200f, new Epoch(15.5f, 15, 4, 2015), new ChunkGenerator(new DefaultBiomeDecider()));
+		final World world = new World(1200f, new Epoch(15.5f, 15, 4, 2015), DefaultBiomeDecider.class);
 		worlds.put(world.getWorldId(), world);
-
-		final World world2 = new World(1200f, new Epoch(15.5f, 15, 4, 2015), new ChunkGenerator(new DefaultBiomeDecider()));
-		worlds.put(world2.getWorldId(), world2);
-
 		return world.getWorldId();
 	}
 

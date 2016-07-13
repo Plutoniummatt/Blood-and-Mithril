@@ -16,7 +16,6 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.characters.Elf;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
-import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.MainMenuBiomeDecider;
 import bloodandmithril.generation.component.PrefabricatedComponent;
 import bloodandmithril.graphics.GaussianLightingRenderer;
@@ -90,7 +89,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		SoundService.changeMusic(2f, SoundService.mainMenu);
 
 		ClientServerInterface.setServer(true);
-		Domain.addWorld(new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).setUpdateTick(1f/60f));
+		Domain.addWorld(new World(1200, new Epoch(15.5f, 5, 22, 25), MainMenuBiomeDecider.class));
 		Wiring.injector().injectMembers(this);
 		gameClientStateTracker.setActiveWorldId(1);
 		ClientServerInterface.setServer(false);

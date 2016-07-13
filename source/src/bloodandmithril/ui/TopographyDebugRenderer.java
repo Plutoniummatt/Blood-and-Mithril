@@ -67,7 +67,11 @@ public class TopographyDebugRenderer {
 				);
 
 				for (int x = convertToWorldTileCoord(((SuperStructure) struct).getBoundaries().left, 0); x <= convertToWorldTileCoord(((SuperStructure) struct).getBoundaries().right, Topography.CHUNK_SIZE - 1); x++) {
-					UserInterface.shapeRenderer.circle(x - topoX + 0.5f, ((SuperStructure) struct).getSurfaceHeight().apply(x) - topoY, 1);
+					try {
+						UserInterface.shapeRenderer.circle(x - topoX + 0.5f, ((SuperStructure) struct).getSurfaceHeight().apply(x) - topoY, 1);
+					} catch (final NullPointerException e) {
+						// Whatever
+					}
 				}
 			}
 

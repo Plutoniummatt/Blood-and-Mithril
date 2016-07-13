@@ -1,5 +1,7 @@
 package bloodandmithril.performance;
 
+import com.google.inject.Singleton;
+
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.item.items.Item;
@@ -12,13 +14,14 @@ import bloodandmithril.world.World;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2014")
 public class PositionalIndexingService {
 
 	/**
 	 * Clears down all positional indexes and reindexes all indexed entities
 	 */
-	public static void reindex() {
+	public void reindex() {
 		for (final World world : Domain.getAllWorlds()) {
 			for (final PositionalIndexNode node : world.getPositionalIndexMap().getAllNodes()) {
 				node.clear();
@@ -29,7 +32,7 @@ public class PositionalIndexingService {
 			}
 
 			for (final Item item : world.items().getItems()) {
-				item.updatePositionalIndex();
+				indexItem(item);
 			}
 
 			for (final Prop prop : world.props().getProps()) {
@@ -39,11 +42,20 @@ public class PositionalIndexingService {
 	}
 
 
-	public static void indexInvidivual(final Individual indi) {
+	public void indexInvidivual(final Individual indi) {
 		for (final PositionalIndexNode node : Domain.getWorld(indi.getWorldId()).getPositionalIndexMap().getNearbyNodes(indi.getState().position.x, indi.getState().position.y)) {
 			node.removeIndividual(indi.getId().getId());
 		}
 
 		Domain.getWorld(indi.getWorldId()).getPositionalIndexMap().get(indi.getState().position.x, indi.getState().position.y).addIndividual(indi.getId().getId());
+	}
+
+
+	public void indexItem(final Item item) {
+		for (final PositionalIndexNode node : Domain.getWorld(item.getWorldId()).getPositionalIndexMap().getNearbyNodes(item.getPosition().x, item.getPosition().y)) {
+			node.removeItem(item.getId());
+		}
+
+		Domain.getWorld(item.getWorldId()).getPositionalIndexMap().get(item.getPosition().x, item.getPosition().y).addItem(item.getId());
 	}
 }

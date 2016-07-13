@@ -8,20 +8,16 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.IndividualUpdateService;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.event.Event;
-import bloodandmithril.generation.ChunkGenerator;
+import bloodandmithril.generation.biome.BiomeDecider;
 import bloodandmithril.graphics.background.BackgroundImages;
 import bloodandmithril.graphics.particles.Particle;
-import bloodandmithril.item.items.Item;
-import bloodandmithril.item.items.equipment.weapon.ranged.Projectile;
 import bloodandmithril.performance.PositionalIndexMap;
 import bloodandmithril.persistence.ParameterPersistenceService;
 import bloodandmithril.prop.Prop;
 import bloodandmithril.world.topography.Topography;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
 
 /**
  * A World, holds info about the {@link Topography}, {@link Prop}s, {@link Individual}s and any related entities.
@@ -35,14 +31,14 @@ public final class World implements Serializable {
 	/** Unique identifier of this {@link World} */
 	private final int worldId;
 
-	/** Background images of this world */
-	private final BackgroundImages 								backgroundImages 		= new BackgroundImages();
-
 	/** Gravity on this world */
 	private final float gravity;
 
 	/** {@link Topography} of this {@link World} */
 	private transient Topography topography;
+
+	/** Background images of this world */
+	private final BackgroundImages 								backgroundImages 		= new BackgroundImages();
 
 	/** Individuals that are currently in this {@link World} */
 	private final ConcurrentSkipListSet<Integer>				individuals 			= new ConcurrentSkipListSet<Integer>();
@@ -65,34 +61,31 @@ public final class World implements Serializable {
 	/** The projectiles of this {@link World} */
 	private final WorldProjectiles projectiles;
 
-	/** World-specific {@link ChunkGenerator} */
-	private final ChunkGenerator 								generator;
-
 	/** Epoch of this world */
 	private Epoch epoch;
-
-	/** Time between each update tick */
-	private float												updateTick = 1f/60f;
 
 	/** Outstanding events to be processed */
 	private final ConcurrentLinkedDeque<Event>					events					= new ConcurrentLinkedDeque<>();
 
+	/** Biome decider of this {@link World} */
+	private final Class<? extends BiomeDecider> 				biomeDecider;
+
 	/**
 	 * Constructor
 	 */
-	public World(final float gravity, final Epoch epoch, final ChunkGenerator generator) {
-		this(gravity, epoch, generator, Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextWorldKey());
+	public World(final float gravity, final Epoch epoch, final Class<? extends BiomeDecider> biomeDecider) {
+		this(gravity, epoch, Wiring.injector().getInstance(ParameterPersistenceService.class).getParameters().getNextWorldKey(), biomeDecider);
 	}
 
 
 	/**
 	 * Constructor
 	 */
-	public World(final float gravity, final Epoch epoch, final ChunkGenerator generator, final int worldId) {
+	public World(final float gravity, final Epoch epoch, final int worldId, final Class<? extends BiomeDecider> biomeDecider) {
 		this.epoch = epoch;
-		this.generator = generator;
 		this.worldId = worldId;
 		this.gravity = gravity;
+		this.biomeDecider = biomeDecider;
 		this.items = new WorldItems(worldId);
 		this.props = new WorldProps(worldId);
 		this.projectiles = new WorldProjectiles(worldId);
@@ -114,37 +107,6 @@ public final class World implements Serializable {
 	 */
 	public synchronized final ConcurrentLinkedDeque<Event> getEvents() {
 		return events;
-	}
-
-
-	public final World setUpdateTick(final float updateTick) {
-		this.updateTick = updateTick;
-		return this;
-	}
-
-
-	public final void update() {
-		epoch.incrementTime(updateTick);
-
-		for (int i = 5; i > 0; i--) {
-			for (final int individualId : individuals) {
-				IndividualUpdateService.update(Domain.getIndividual(individualId), updateTick / 5f);
-			}
-		}
-
-		for (final Prop prop : props().getProps()) {
-			prop.update(updateTick);
-		}
-
-		for (final Projectile projectile : projectiles().getProjectiles()) {
-			projectile.update(updateTick);
-		}
-
-		for (final Item item : items().getItems()) {
-			try {
-				item.update(updateTick);
-			} catch (final NoTileFoundException e) {}
-		}
 	}
 
 
@@ -254,7 +216,10 @@ public final class World implements Serializable {
 	}
 
 
-	public final ChunkGenerator getGenerator() {
-		return generator;
+	/**
+	 * @return the {@link BiomeDecider} implementation for this {@link World}
+	 */
+	public Class<? extends BiomeDecider> getBiomeDecider() {
+		return biomeDecider;
 	}
 }

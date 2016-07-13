@@ -1,9 +1,6 @@
 package bloodandmithril.item.items.equipment.weapon.ranged;
 
-import static bloodandmithril.character.ai.perception.Visible.getVisible;
-
 import java.io.Serializable;
-import java.util.Optional;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,15 +8,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Sets;
 
-import bloodandmithril.audio.SoundService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.graphics.WorldRenderer;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.weapon.ranged.projectile.ArrowProjectile;
 import bloodandmithril.networking.ClientServerInterface;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.Topography.NoTileFoundException;
-import bloodandmithril.world.topography.tile.Tile;
 
 /**
  * Class representing a projectile
@@ -31,6 +24,7 @@ public abstract class Projectile implements Serializable {
 
 	public Vector2 position, pPosition, velocity, acceleration;
 	private int worldId, id;
+	protected boolean stuck = false;
 	private Set<Integer> ignoredIndividuals = Sets.newHashSet();
 
 	static {
@@ -42,7 +36,7 @@ public abstract class Projectile implements Serializable {
 	/**
 	 * Protected constructor
 	 */
-	protected Projectile(Vector2 position, Vector2 velocity, Vector2 acceleration) {
+	protected Projectile(final Vector2 position, final Vector2 velocity, final Vector2 acceleration) {
 		this.position = position;
 		this.pPosition = position;
 		this.velocity = velocity;
@@ -60,84 +54,35 @@ public abstract class Projectile implements Serializable {
 	 */
 	public abstract void hit(Individual victim);
 
-
-	/**
-	 * Updates this {@link Projectile}
-	 */
-	public void update(float delta) {
-		float length = pPosition.dst(position);
-		Vector2 nor = pPosition.cpy().sub(position).nor();
-		Optional<Integer> findAny = Domain.getWorld(getWorldId()).getPositionalIndexMap().getNearbyEntityIds(Individual.class, position).stream().filter(individual -> {
-			for (float l = 0f; l < length; l += 4f) {
-				Vector2 test = position.cpy().add(nor.cpy().scl(l));
-				Individual target = Domain.getIndividual(individual);
-				if (target.getHitBox().isWithinBox(test) && target.isAlive()) {
-					return true;
-				}
-			}
-			return false;
-		}).findAny();
-
-		if (findAny.isPresent()) {
-			Individual individual = Domain.getIndividual(findAny.get());
-
-			if (canAffect(individual)) {
-				hit(individual);
-				SoundService.play(getHitSound(individual), individual.getState().position, true, getVisible(individual));
-				ignoreIndividual(individual);
-				if (!penetrating()) {
-					targetHitKinematics();
-				}
-			}
-		}
-
-		if (!Domain.getWorld(getWorldId()).getTopography().getChunkMap().doesChunkExist(position)) {
-			return;
-		}
-		Vector2 previousPosition = position.cpy();
-		position.add(velocity.cpy().scl(delta));
-		float gravity = Domain.getWorld(getWorldId()).getGravity();
-		if (velocity.len() > getTerminalVelocity()) {
-			velocity.add(0f, -gravity * delta).scl(0.95f);
-		} else {
-			velocity.add(0f, -gravity * delta);
-		}
-
-		try {
-			Tile tileUnder = Domain.getWorld(getWorldId()).getTopography().getTile(position.x, position.y, true);
-			if (tileUnder.isPlatformTile || !tileUnder.isPassable()) {
-				collision(previousPosition);
-			}
-		} catch (NoTileFoundException e) {
-		}
-
-		this.pPosition = previousPosition;
-	}
-
 	/**
 	 * Called when an {@link Individual} is hit
 	 */
-	protected abstract void targetHitKinematics();
+	public abstract void targetHitKinematics();
 
 	/**
 	 * @return the hit sound when it hits an {@link Individual}
 	 */
-	protected abstract int getHitSound(Individual individual);
+	public abstract int getHitSound(Individual individual);
 
 	/**
 	 * Called when this projectile collides with a tile
 	 */
-	protected abstract void collision(Vector2 previousPosition);
+	public abstract void collision(Vector2 previousPosition);
 
 	/**
 	 * @return The terminal velocity of this {@link Projectile}
 	 */
-	protected abstract float getTerminalVelocity();
+	public abstract float getTerminalVelocity();
 
 	/**
 	 * @return whether this {@link Projectile} will penetrate
 	 */
-	protected abstract boolean penetrating();
+	public abstract boolean penetrating();
+
+	/**
+	 * Adds particles
+	 */
+	public abstract void particleEffects(float delta);
 
 	/**
 	 * called just before the projectile is fired.
@@ -147,15 +92,15 @@ public abstract class Projectile implements Serializable {
 	/**
 	 * @param individual to be ignored by this {@link Projectile}
 	 */
-	public void ignoreIndividual(Individual individual) {
+	public void ignoreIndividual(final Individual individual) {
 		ignoredIndividuals.add(individual.getId().getId());
 	}
 
-	private boolean canAffect(Individual individual) {
+	public boolean canAffect(final Individual individual) {
 		return !ignoredIndividuals.contains(individual.getId().getId()) && individual.isAlive();
 	}
 
-	public void setWorldId(int worldId) {
+	public void setWorldId(final int worldId) {
 		this.worldId = worldId;
 	}
 
@@ -165,12 +110,12 @@ public abstract class Projectile implements Serializable {
 	}
 
 
-	public void setId(int nextProjectileId) {
+	public void setId(final int nextProjectileId) {
 		this.id = nextProjectileId;
 	}
 
 
-	public void setPosition(Vector2 position) {
+	public void setPosition(final Vector2 position) {
 		if (pPosition == null) {
 			pPosition = position.cpy();
 		}
@@ -178,7 +123,7 @@ public abstract class Projectile implements Serializable {
 	}
 
 
-	public void setVelocity(Vector2 velocity) {
+	public void setVelocity(final Vector2 velocity) {
 		this.velocity = velocity;
 	}
 
@@ -198,13 +143,18 @@ public abstract class Projectile implements Serializable {
 	}
 
 
+	public boolean isStuck() {
+		return stuck;
+	}
+
+
 	public static abstract class ProjectileItem extends Item {
 		private static final long serialVersionUID = -8997843179593339141L;
 
 		/**
 		 * Constructor
 		 */
-		protected ProjectileItem(float mass, int volume, boolean equippable, long value) {
+		protected ProjectileItem(final float mass, final int volume, final boolean equippable, final long value) {
 			super(mass, volume, equippable, value);
 		}
 

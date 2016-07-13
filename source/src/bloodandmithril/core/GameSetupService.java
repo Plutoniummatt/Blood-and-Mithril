@@ -26,11 +26,12 @@ public class GameSetupService {
 
 	@Inject private Graphics graphics;
 	@Inject private InputHandlers inputHandlers;
+	@Inject private PositionalIndexingService positionalIndexingService;
 
 	public void setup() {
 		SoundService.changeMusic(2f, SoundService.desertAmbient);
 		UserInterface.contextMenus.clear();
-		PositionalIndexingService.reindex();
+		positionalIndexingService.reindex();
 		UserInterface.loadBars();
 		graphics.getUi().loadButtons();
 		addAdditionalInputHandlers();
