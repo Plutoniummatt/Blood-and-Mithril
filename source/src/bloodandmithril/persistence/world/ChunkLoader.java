@@ -6,7 +6,6 @@ import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.world.topography.Topography.convertToChunkCoord;
 
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -122,31 +121,34 @@ public class ChunkLoader {
 	public void loadWorlds() {
 		try {
 			final HashMap<Integer, World> worlds = decode(Gdx.files.local(gameSaver.getSavePath() + "/world/worlds.txt"));
-			Domain.setWorlds(worlds);
+
+			worlds.values().stream().forEach(world -> {
+				Domain.addWorld(world);
+			});
 		} catch (final Exception e) {
 			Logger.loaderDebug("Failed to load worlds", LogLevel.DEBUG);
 		}
 
-		if (!Domain.getWorlds().isEmpty()) {
-			for (final Entry<Integer, World> world : Domain.getWorlds().entrySet()) {
-				world.getValue().setTopography(new Topography(world.getKey()));
+		if (!Domain.getAllWorlds().isEmpty()) {
+			for (final World world : Domain.getAllWorlds()) {
+				world.setTopography(new Topography(world.getWorldId()));
 
 				try {
-					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/superStructureKeys.txt"));
-					world.getValue().getTopography().getStructures().setSuperStructureKeys(keys);
+					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/superStructureKeys.txt"));
+					world.getTopography().getStructures().setSuperStructureKeys(keys);
 				} catch (final Exception e) {
 					Logger.loaderDebug("Failed to load chunk super structure structure keys", LogLevel.DEBUG);
 					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> map = new ConcurrentHashMap<>();
-					world.getValue().getTopography().getStructures().setSuperStructureKeys(map);
+					world.getTopography().getStructures().setSuperStructureKeys(map);
 				}
 
 				try {
-					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getKey()) + "/subStructureKeys.txt"));
-					world.getValue().getTopography().getStructures().setSubStructureKeys(keys);
+					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> keys = decode(Gdx.files.local(gameSaver.getSavePath() + "/world/world" + Integer.toString(world.getWorldId()) + "/subStructureKeys.txt"));
+					world.getTopography().getStructures().setSubStructureKeys(keys);
 				} catch (final Exception e) {
 					Logger.loaderDebug("Failed to load chunk sub structure keys", LogLevel.DEBUG);
 					final ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Integer>> map = new ConcurrentHashMap<>();
-					world.getValue().getTopography().getStructures().setSubStructureKeys(map);
+					world.getTopography().getStructures().setSubStructureKeys(map);
 				}
 			}
 		}

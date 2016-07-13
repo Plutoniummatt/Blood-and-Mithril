@@ -74,7 +74,11 @@ public class GameLoader {
 		try {
 			final ConcurrentHashMap<Integer, Faction> decoded = (ConcurrentHashMap<Integer, Faction>) decode(files.local(gameSaver.getSavePath() + "/world/factions.txt"));
 			final HashSet<Integer> controlled = (HashSet<Integer>) decode(files.local(gameSaver.getSavePath() + "/world/controlledfactions.txt"));
-			Domain.setFactions(decoded);
+
+			decoded.values().stream().forEach(faction -> {
+				Domain.addFaction(faction);
+			});
+
 			if (ClientServerInterface.isClient()) {
 				for (final Integer controlledId : controlled) {
 					factionControlService.control(controlledId);

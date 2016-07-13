@@ -90,10 +90,7 @@ public class BloodAndMithrilClient implements ApplicationListener {
 		SoundService.changeMusic(2f, SoundService.mainMenu);
 
 		ClientServerInterface.setServer(true);
-		Domain.getWorlds().put(
-			1,
-			new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).setUpdateTick(1f/60f)
-		);
+		Domain.addWorld(new World(1200, new Epoch(15.5f, 5, 22, 25), new ChunkGenerator(new MainMenuBiomeDecider())).setUpdateTick(1f/60f));
 		Wiring.injector().injectMembers(this);
 		gameClientStateTracker.setActiveWorldId(1);
 		ClientServerInterface.setServer(false);

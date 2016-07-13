@@ -68,9 +68,9 @@ public class CoreUILeftClickHandler implements LeftClickHandler {
 					break;
 				}
 			}
-			if (windowsCopy.size() >= layeredComponents.size()) {
-				layeredComponents.clear();
-				layeredComponents.addAll(windowsCopy);
+			if (windowsCopy.size() > layeredComponents.size()) {
+				userInterface.clearLayeredComponents();
+				userInterface.addLayeredComponents(windowsCopy);
 			}
 		}
 

@@ -192,7 +192,7 @@ public class DevWindow extends Window {
 		}
 
 		if (keyCode == Keys.J) {
-			final Set<Integer> keySet = Sets.newHashSet(Domain.getWorlds().keySet());
+			final Set<Integer> keySet = Sets.newHashSet(Domain.getAllWorldIds());
 			keySet.remove(gameClientStateTracker.getActiveWorldId());
 			gameClientStateTracker.setActiveWorldId(keySet.iterator().next());
 		}
@@ -368,7 +368,7 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Dry grass",
 						() -> {
-							final Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividualsMap().get(1);
 							if (individual != null) {
 								final DryGrass grass = new DryGrass(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(grass);
@@ -382,7 +382,7 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Anvil",
 						() -> {
-							final Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividualsMap().get(1);
 							if (individual != null) {
 								final BlacksmithWorkshop anvil = new BlacksmithWorkshop(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(anvil);
@@ -396,7 +396,7 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Wooden Chest",
 						() -> {
-							final Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividualsMap().get(1);
 							if (individual != null) {
 								final WoodenChestProp pineChest = new WoodenChestProp(
 									individual.getState().position.x,
@@ -424,7 +424,7 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Rotten Chest",
 						() -> {
-							final Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividualsMap().get(1);
 							if (individual != null) {
 								final WoodenChestProp rottenChest = new RottenWoodenChest(
 									individual.getState().position.x,
@@ -444,7 +444,7 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Workbench",
 						() -> {
-							final Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividualsMap().get(1);
 							if (individual != null) {
 								final WorkBench carpenterWorkshop = new WorkBench(
 									individual.getState().position.x,
@@ -462,7 +462,7 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Furnace",
 						() -> {
-							final Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividualsMap().get(1);
 							if (individual != null) {
 								final Furnace furnace = new Furnace(SandStone.class, individual.getState().position.x, individual.getState().position.y);
 								furnace.setConstructionProgress(1f);
@@ -480,7 +480,7 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Campfire",
 						() -> {
-							final Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividualsMap().get(1);
 							if (individual != null) {
 								final Campfire campfire = new Campfire(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(campfire);
@@ -494,7 +494,7 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Carrot",
 						() -> {
-							final Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividualsMap().get(1);
 							if (individual != null) {
 								final bloodandmithril.prop.plant.CarrotProp carrot = new bloodandmithril.prop.plant.CarrotProp(individual.getState().position.x, individual.getState().position.y);
 								Domain.getWorld(individual.getWorldId()).props().addProp(carrot);
@@ -508,7 +508,7 @@ public class DevWindow extends Window {
 					new ContextMenu.MenuItem(
 						"Torch",
 						() -> {
-							final Individual individual = Domain.getIndividuals().get(1);
+							final Individual individual = Domain.getIndividualsMap().get(1);
 							if (individual != null) {
 								final MedievalWallTorchProp torch = new MedievalWallTorchProp(individual.getState().position.x, individual.getState().position.y + 100);
 								Domain.getWorld(individual.getWorldId()).props().addProp(torch);

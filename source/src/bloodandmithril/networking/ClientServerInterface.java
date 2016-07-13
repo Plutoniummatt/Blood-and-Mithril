@@ -656,7 +656,7 @@ public class ClientServerInterface {
 		kryo.register(DestroyTile.class);
 		kryo.register(DestroyTileResponse.class);
 		kryo.register(DirtItem.class);
-		kryo.register(Domain.getIndividuals().keySet().getClass());
+		kryo.register(Domain.getIndividualIds().getClass());
 		kryo.register(DrinkLiquid.class);
 		kryo.register(DryDirtTile.class);
 		kryo.register(DualKeyHashMap.class);

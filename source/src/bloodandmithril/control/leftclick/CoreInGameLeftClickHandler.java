@@ -73,7 +73,7 @@ public class CoreInGameLeftClickHandler implements LeftClickHandler {
 			final IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
 			if (individualClicked == null) {
 				if (doubleClick && (cursorBoundTask == null || !(cursorBoundTask instanceof ThrowItemCursorBoundTask))) {
-					for (final Individual indi : Domain.getIndividuals().values()) {
+					for (final Individual indi : Domain.getIndividuals()) {
 						if (factionControlService.isControllable(indi)) {
 							individualSelectionService.deselect(indi);
 						}
@@ -83,7 +83,7 @@ public class CoreInGameLeftClickHandler implements LeftClickHandler {
 					}
 				}
 			} else {
-				for (final Individual indi : Domain.getIndividuals().values()) {
+				for (final Individual indi : Domain.getIndividuals()) {
 					if (factionControlService.isControllable(indi) && indi.getId().getId() != individualClicked.getId().getId() && !isKeyPressed(controls.selectIndividual.keyCode)) {
 						individualSelectionService.deselect(indi);
 					}

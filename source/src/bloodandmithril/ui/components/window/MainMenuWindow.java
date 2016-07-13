@@ -203,7 +203,7 @@ public class MainMenuWindow extends Window {
 										Thread.sleep(1000);
 										ClientServerInterface.setupAndConnect(args[0].toString());
 
-										while (Domain.getWorlds().isEmpty()) {
+										while (Domain.getAllWorlds().isEmpty()) {
 											try {
 												Thread.sleep(100);
 											} catch (final Exception e) {
@@ -211,7 +211,7 @@ public class MainMenuWindow extends Window {
 											}
 										}
 
-										gameClientStateTracker.setActiveWorldId(Domain.getWorlds().keySet().iterator().next().intValue());
+										gameClientStateTracker.setActiveWorldId(Domain.getAllWorldIds().iterator().next().intValue());
 										gameClientStateTracker.setInGame(true);
 										gameSetupService.setup();
 									} catch (final Exception e) {

@@ -126,7 +126,7 @@ public class Threading {
 
 				if (System.currentTimeMillis() - prevFrame2 > 200) {
 					if (gameClientStateTracker.getActiveWorld() != null) {
-						Domain.getIndividuals().values().stream().forEach(individual -> {
+						Domain.getIndividuals().stream().forEach(individual -> {
 							gameClientStateTracker.getActiveWorld().getTopography().loadOrGenerateNullChunksAccordingToPosition(
 								(int) individual.getState().position.x,
 								(int) individual.getState().position.y
@@ -187,7 +187,7 @@ public class Threading {
 					throw new RuntimeException(e);
 				}
 
-				for (final World world : Domain.getWorlds().values()) {
+				for (final World world : Domain.getAllWorlds()) {
 					while (!world.getEvents().isEmpty()) {
 						final Event polled = world.getEvents().poll();
 						for (final EventListener listener : missionTracker.getMissions()) {

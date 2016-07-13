@@ -37,7 +37,7 @@ public class ServerListener extends Listener {
 	public void disconnected (final Connection connection) {
 		ClientServerInterface.SendNotification.notifySyncPlayerList();
 
-		for (final Individual indi : Domain.getIndividuals().values()) {
+		for (final Individual indi : Domain.getIndividuals()) {
 			if (indi.getSelectedByClient().remove(connection.getID())) {
 				indi.deselect(false, connection.getID());
 			}

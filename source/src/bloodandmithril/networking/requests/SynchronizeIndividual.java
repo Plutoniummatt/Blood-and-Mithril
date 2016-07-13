@@ -52,7 +52,7 @@ public class SynchronizeIndividual implements Request {
 
 		Response response;
 		if (id == -1) {
-			response = new SynchronizeIndividualResponse(Sets.newHashSet(Domain.getIndividuals().keySet()));
+			response = new SynchronizeIndividualResponse(Sets.newHashSet(Domain.getIndividualIds()));
 			responses.add(response);
 			return responses;
 		}

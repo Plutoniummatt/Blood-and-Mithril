@@ -168,8 +168,8 @@ public class StartGameService {
 			selectedRace.getAnnotation(Description.class).description()
 		);
 
-		Domain.getFactions().put(nature.factionId, nature);
-		Domain.getFactions().put(playerFaction.factionId, playerFaction);
+		Domain.addFaction(nature);
+		Domain.addFaction(playerFaction);
 		factionControlService.control(playerFaction.factionId);
 
 		return playerFaction;

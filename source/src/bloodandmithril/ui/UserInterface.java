@@ -799,7 +799,7 @@ public class UserInterface {
 				return;
 			}
 
-			for (final Individual indi : Domain.getIndividuals().values()) {
+			for (final Individual indi : Domain.getIndividuals()) {
 				if (factionControlService.isControllable(indi) && indi.isAlive()) {
 
 					final Vector2 centre = new Vector2(indi.getState().position.x, indi.getState().position.y + indi.getHeight() / 2);
@@ -934,7 +934,7 @@ public class UserInterface {
 
 	private static void renderIndividualUISprites(final Graphics graphics) {
 		graphics.getSpriteBatch().begin();
-		for (final Individual indi : Domain.getIndividuals().values()) {
+		for (final Individual indi : Domain.getIndividuals()) {
 			if (gameClientStateTracker.isIndividualSelected(indi)) {
 				final AITask currentTask = indi.getAI().getCurrentTask();
 				if (currentTask instanceof GoToLocation) {

@@ -45,8 +45,8 @@ public class UnitsWindow extends Window implements Refreshable {
 	/**
 	 * Constructor
 	 */
-	public UnitsWindow(int factoinId) {
-		super(500, 400, Domain.getFactions().get(factoinId).name + " - Members", true, 500, 400, true, true, true);
+	public UnitsWindow(final int factoinId) {
+		super(500, 400, Domain.getFaction(factoinId).name + " - Members", true, 500, 400, true, true, true);
 		factionId = factoinId;
 		refresh();
 	}
@@ -55,17 +55,17 @@ public class UnitsWindow extends Window implements Refreshable {
 	/**
 	 * Renders the separator
 	 */
-	private void renderSeparator(Graphics graphics) {
+	private void renderSeparator(final Graphics graphics) {
 		graphics.getSpriteBatch().setShader(Shaders.filter);
 		shapeRenderer.begin(ShapeType.Filled);
-		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
+		final Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
 		shapeRenderer.rect(x + width - 130, y + 24 - height, 2, height - 45, Color.CLEAR, Color.CLEAR, color, color);
 		shapeRenderer.end();
 	}
 
 
-	private void populateList(Graphics graphics) {
-		Domain.getIndividuals().values().forEach(individual -> {
+	private void populateList(final Graphics graphics) {
+		Domain.getIndividuals().forEach(individual -> {
 			if (individual.getFactionId() == this.factionId) {
 				this.individuals.put(
 					new ScrollableListingPanel.ListingMenuItem<Individual>(
@@ -105,7 +105,7 @@ public class UnitsWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		listing.x = x;
 		listing.y = y;
 		listing.width = width;
@@ -116,13 +116,13 @@ public class UnitsWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		listing.leftClick(copy, windowsCopy);
 	}
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		return listing.scrolled(amount);
 	}
 
@@ -158,7 +158,7 @@ public class UnitsWindow extends Window implements Refreshable {
 			null
 		) {
 			@Override
-			protected String getExtraString(Entry<ScrollableListingPanel.ListingMenuItem<Individual>, String> item) {
+			protected String getExtraString(final Entry<ScrollableListingPanel.ListingMenuItem<Individual>, String> item) {
 				if (item.getKey().t.isAlive()) {
 					return Util.truncate(item.getKey().t.getAI().getCurrentTask().getShortDescription(), 8);
 				} else {
@@ -172,12 +172,12 @@ public class UnitsWindow extends Window implements Refreshable {
 			}
 
 			@Override
-			protected void populateListings(List<HashMap<ScrollableListingPanel.ListingMenuItem<Individual>, String>> listings) {
+			protected void populateListings(final List<HashMap<ScrollableListingPanel.ListingMenuItem<Individual>, String>> listings) {
 				listings.add(individuals);
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};

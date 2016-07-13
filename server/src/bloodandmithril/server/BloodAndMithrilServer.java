@@ -71,7 +71,7 @@ public class BloodAndMithrilServer {
 					while (ClientServerInterface.server.getUpdateThread().isAlive()) {
 						try {
 							Thread.sleep(100);
-							for (final Individual individual : Domain.getIndividuals().values()) {
+							for (final Individual individual : Domain.getIndividuals()) {
 								ClientServerInterface.SendNotification.notifyIndividualSync(individual.getId().getId());
 							}
 
@@ -82,7 +82,7 @@ public class BloodAndMithrilServer {
 							ClientServerInterface.SendNotification.notifySyncFaction(faction);
 						}
 
-						for (final int worldId : Domain.getWorlds().keySet()) {
+						for (final int worldId : Domain.getAllWorldIds()) {
 							ClientServerInterface.SendNotification.notifySyncItems(worldId);
 							ClientServerInterface.SendNotification.notifySyncProjectiles(worldId);
 							ClientServerInterface.SendNotification.notifySyncParticles(worldId);
@@ -127,8 +127,8 @@ public class BloodAndMithrilServer {
 
 			final Faction nature = new Faction("Nature", parameterPersistenceService.getParameters().getNextFactionId(), false, "");
 			final Faction player = new Faction("Elves", parameterPersistenceService.getParameters().getNextFactionId(), true, "Elves are cool");
-			Domain.getFactions().put(nature.factionId, nature);
-			Domain.getFactions().put(player.factionId, player);
+			Domain.addFaction(nature);
+			Domain.addFaction(player);
 
 			ClientServerInterface.setServer(true);
 			gameLoader.load(new PersistenceMetaData("New game - " + new Date().toString()), true);

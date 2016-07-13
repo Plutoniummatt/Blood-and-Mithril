@@ -14,9 +14,9 @@ public class SynchronizeWorldState implements Request {
 
 	@Override
 	public Responses respond() {
-		Responses responses = new Responses(false);
+		final Responses responses = new Responses(false);
 
-		for (World w : Domain.getWorlds().values()) {
+		for (final World w : Domain.getAllWorlds()) {
 			responses.add(new SynchronizeWorldStateResponse(w));
 		}
 
@@ -44,7 +44,7 @@ public class SynchronizeWorldState implements Request {
 		private final int worldId;
 
 		/** Constructor */
-		public SynchronizeWorldStateResponse(World world) {
+		public SynchronizeWorldStateResponse(final World world) {
 			this.worldId = world.getWorldId();
 			this.gravity = world.getGravity();
 			this.currentEpoch = world.getEpoch();
@@ -54,10 +54,10 @@ public class SynchronizeWorldState implements Request {
 
 		@Override
 		public void acknowledge() {
-			if (Domain.getWorlds().containsKey(worldId)) {
+			if (Domain.getWorld(worldId) != null) {
 				Domain.getWorld(worldId).setEpoch(currentEpoch);
 			} else {
-				Domain.getWorlds().put(worldId, new World(gravity, currentEpoch, chunkGenerator, worldId));
+				Domain.addWorld(new World(gravity, currentEpoch, chunkGenerator, worldId));
 			}
 		}
 

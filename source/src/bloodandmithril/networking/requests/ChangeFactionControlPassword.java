@@ -25,17 +25,17 @@ public class ChangeFactionControlPassword implements Request {
 	/**
 	 * Constructor
 	 */
-	public ChangeFactionControlPassword(int factionId, String newPassword) {
+	public ChangeFactionControlPassword(final int factionId, final String newPassword) {
 		this.factionId = factionId;
 		this.newPassword = newPassword;
 	}
 
 	@Override
 	public Responses respond() {
-		Domain.getFactions().get(factionId).changeControlPassword(newPassword);
+		Domain.getFaction(factionId).changeControlPassword(newPassword);
 
-		Responses responses = new Responses(true);
-		for (Faction faction : Domain.getFactions().values()) {
+		final Responses responses = new Responses(true);
+		for (final Faction faction : Domain.getFactions().values()) {
 			responses.add(new SynchronizeFactionResponse(faction));
 		}
 		responses.add(new RefreshFactionWindow());
@@ -59,7 +59,7 @@ public class ChangeFactionControlPassword implements Request {
 	public static class RefreshFactionWindow implements Response {
 		@Override
 		public void acknowledge() {
-			for (Component component : UserInterface.getLayeredComponents()) {
+			for (final Component component : UserInterface.getLayeredComponents()) {
 				if (component instanceof FactionsWindow) {
 					((FactionsWindow) component).refreshWindow();
 				}

@@ -2,7 +2,6 @@ package bloodandmithril.persistence.character;
 
 import static bloodandmithril.persistence.PersistenceUtil.decode;
 import static bloodandmithril.util.Logger.loaderDebug;
-import static bloodandmithril.world.Domain.setIndividuals;
 import static com.badlogic.gdx.Gdx.files;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import bloodandmithril.character.AddIndividualService;
 import bloodandmithril.character.ai.ArtificialIntelligence.AIMode;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
@@ -30,6 +30,7 @@ public class IndividualLoader {
 
 	@Inject private GameSaver gameSaver;
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private AddIndividualService addIndividualService;
 
 	/**
 	 * Loads all {@link Individual}s
@@ -38,9 +39,13 @@ public class IndividualLoader {
 	public void loadAll() {
 		try {
 			final ConcurrentHashMap<Integer, Individual> decoded = (ConcurrentHashMap<Integer, Individual>) decode(files.local(gameSaver.getSavePath() + "/world/individuals.txt"));
-			setIndividuals(decoded);
+
+			decoded.values().stream().forEach(individual -> {
+				addIndividualService.addIndividual(individual, individual.getWorldId());
+			});
+
 			if (ClientServerInterface.isClient()) {
-				for (final Individual individual : Domain.getIndividuals().values()) {
+				for (final Individual individual : Domain.getIndividuals()) {
 					if (individual.getAI().getAIMode() == AIMode.MANUAL) {
 						gameClientStateTracker.addSelectedIndividual(individual);
 					}
