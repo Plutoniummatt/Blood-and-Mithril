@@ -38,8 +38,8 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	private Function<Vector2> camFollowFunction;
 
 	/** The current timer for double clicking */
-	public static long leftDoubleClickTimer = 0L;
-	public static long rightDoubleClickTimer = 0L;
+	private long leftDoubleClickTimer = 0L;
+	private long rightDoubleClickTimer = 0L;
 
 	@Override
 	public boolean keyUp(final int keycode) {
@@ -82,6 +82,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 			graphics.getCam().position.x = Controls.oldCamX + Controls.camDragX - screenX;
 			graphics.getCam().position.y = Controls.oldCamY + screenY - Controls.camDragY;
 		}
+
 		return false;
 	}
 
@@ -149,11 +150,9 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	/**
 	 * Called upon right clicking
 	 */
-	@SuppressWarnings("unused")
 	private void rightClick() throws NoTileFoundException {
 		final long currentTime = System.currentTimeMillis();
 		final boolean doubleClick = rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
-		final boolean uiClicked = false;
 		rightDoubleClickTimer = currentTime;
 
 		handlers.rightClick(doubleClick);
@@ -242,11 +241,9 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	}
 
 
-	public Controls getKeyMappings() {
-		return controls;
-	}
-
-
+	/**
+	 * @param camFollowFunction to set
+	 */
 	public void setCamFollowFunction(final Function<Vector2> camFollowFunction) {
 		this.camFollowFunction = camFollowFunction;
 	}

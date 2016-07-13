@@ -13,12 +13,11 @@ import java.util.Map.Entry;
 import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
 import bloodandmithril.control.Controls.MappedKey;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.persistence.ConfigPersistenceService;
 import bloodandmithril.ui.Refreshable;
@@ -40,6 +39,9 @@ import bloodandmithril.util.Util.Colors;
 @Copyright("Matthew Peck 2015")
 public class KeyMappingsWindow extends Window implements Refreshable {
 
+	@Inject
+	private Controls controls;
+
 	private ScrollableListingPanel<MappedKey, String> keyMappings;
 	private Button saveButton = new Button(
 		"Save and close",
@@ -60,7 +62,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 
 	private static Comparator<MappedKey> mapabilityComparator = new Comparator<MappedKey>() {
 		@Override
-		public int compare(MappedKey o1, MappedKey o2) {
+		public int compare(final MappedKey o1, final MappedKey o2) {
 			return new Boolean(o1.canChange).compareTo(o2.canChange);
 		}
 
@@ -68,7 +70,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 
 	private static Comparator<MappedKey> stringComparator = new Comparator<MappedKey>() {
 		@Override
-		public int compare(MappedKey o1, MappedKey o2) {
+		public int compare(final MappedKey o1, final MappedKey o2) {
 			return ComparisonChain.start().compare(o1, o2, mapabilityComparator).compare(o1.description, o2.description).result();
 		}
 	};
@@ -82,7 +84,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 		keyMappings = new ScrollableListingPanel<MappedKey, String>(this, stringComparator, false, 100, null) {
 
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<MappedKey>, String> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<MappedKey>, String> item) {
 				return Controls.keyName.get(Integer.parseInt(item.getValue()));
 			}
 
@@ -92,12 +94,12 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 			}
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<MappedKey>, String>> listings) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<MappedKey>, String>> listings) {
 				populateKeyMappingsPairs(listings);
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -105,7 +107,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		keyMappings.x = x;
 		keyMappings.y = y;
 		keyMappings.width = width;
@@ -117,7 +119,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		keyMappings.leftClick(copy, windowsCopy);
 		saveButton.click();
 	}
@@ -141,7 +143,7 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		return keyMappings.scrolled(amount);
 	}
 
@@ -153,11 +155,11 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 	}
 
 
-	private void populateKeyMappingsPairs(List<HashMap<ListingMenuItem<MappedKey>, String>> listings) {
-		HashMap<ListingMenuItem<MappedKey>, String> map = Maps.newHashMap();
+	private void populateKeyMappingsPairs(final List<HashMap<ListingMenuItem<MappedKey>, String>> listings) {
+		final HashMap<ListingMenuItem<MappedKey>, String> map = Maps.newHashMap();
 
-		for (MappedKey mappedKey : Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().getFunctionalKeyMappings().values()) {
-			ContextMenu contextMenu = new ContextMenu(
+		for (final MappedKey mappedKey : controls.getFunctionalKeyMappings().values()) {
+			final ContextMenu contextMenu = new ContextMenu(
 				getMouseScreenX(),
 				getMouseScreenY(),
 				true,
@@ -222,8 +224,8 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 			);
 		}
 
-		for (MappedKey mappedKey : Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().getUnmappableKeys()) {
-			ContextMenu contextMenu = new ContextMenu(
+		for (final MappedKey mappedKey : controls.getUnmappableKeys()) {
+			final ContextMenu contextMenu = new ContextMenu(
 				getMouseScreenX(),
 				getMouseScreenY(),
 				true,
@@ -282,24 +284,27 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 	 */
 	@Copyright("Matthew Peck 2015")
 	public static class ChangeKeyWindow extends Window {
+		@Inject
+		private Controls controls;
+
 		private MappedKey mappedKey;
 
 		/**
 		 * Constructor
 		 */
-		public ChangeKeyWindow(MappedKey mappedKey) {
+		public ChangeKeyWindow(final MappedKey mappedKey) {
 			super(200, 100, "Change key", true, false, false, true);
 			this.mappedKey = mappedKey;
 		}
 
 		@Override
-		public boolean keyPressed(int keyCode) {
+		public boolean keyPressed(final int keyCode) {
 			if (Controls.disallowedKeys.contains(keyCode)) {
 				UserInterface.addGlobalMessage("Disallowed", "Can not remap this key.");
 				setClosing(true);
 			} else {
-				if (Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().getFunctionalKeyMappings().containsKey(keyCode)) {
-					UserInterface.addGlobalMessage("Conflict", "Key already mapped to " + Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().getFunctionalKeyMappings().get(keyCode).description);
+				if (controls.getFunctionalKeyMappings().containsKey(keyCode)) {
+					UserInterface.addGlobalMessage("Conflict", "Key already mapped to " + controls.getFunctionalKeyMappings().get(keyCode).description);
 				} else {
 					mappedKey.keyCode = keyCode;
 				}
@@ -310,16 +315,16 @@ public class KeyMappingsWindow extends Window implements Refreshable {
 		}
 
 		@Override
-		protected void internalWindowRender(Graphics graphics) {
+		protected void internalWindowRender(final Graphics graphics) {
 			defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.ORANGE, getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * getAlpha()));
-			String messageToDisplay = Util.fitToWindow("Press Key", width, (height - 75) / 25);
+			final String messageToDisplay = Util.fitToWindow("Press Key", width, (height - 75) / 25);
 			defaultFont.drawMultiLine(graphics.getSpriteBatch(), messageToDisplay, x + 6, y - 25);
 
 			UserInterface.refreshRefreshableWindows();
 		}
 
 		@Override
-		protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		}
 
 		@Override

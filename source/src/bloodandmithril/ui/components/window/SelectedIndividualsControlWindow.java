@@ -11,10 +11,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.ui.UserInterface;
@@ -35,6 +34,8 @@ public class SelectedIndividualsControlWindow extends Window {
 
 	@Inject
 	private GameClientStateTracker gameClientStateTracker;
+	@Inject
+	private Controls controls;
 
 	HashMap<Integer, Button> buttons = newHashMap();
 
@@ -202,11 +203,11 @@ public class SelectedIndividualsControlWindow extends Window {
 			return true;
 		}
 
-		if (keyCode == Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().toggleWalkRun.keyCode) {
+		if (keyCode == controls.toggleWalkRun.keyCode) {
 			buttons.get(0).getTask().execute();
 		}
 
-		if (keyCode == Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().disableEnableAI.keyCode) {
+		if (keyCode == controls.disableEnableAI.keyCode) {
 			buttons.get(2).getTask().execute();
 		}
 		return false;

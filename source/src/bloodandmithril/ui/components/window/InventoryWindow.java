@@ -27,6 +27,7 @@ import com.google.inject.Inject;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.Individual.Action;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
@@ -81,6 +82,7 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
 public class InventoryWindow extends Window implements Refreshable {
 
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private Controls controls;
 
 	/** Inventory listing maps */
 	private HashMap<ListingMenuItem<Item>, Integer> equippedItemsToDisplay = Maps.newHashMap();
@@ -606,7 +608,7 @@ public class InventoryWindow extends Window implements Refreshable {
 			toReturn.addMenuItem(new MenuItem(
 				"Discard",
 				() -> {
-					if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().bulkDiscard.keyCode)) {
+					if (isKeyPressed(controls.bulkDiscard.keyCode)) {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,

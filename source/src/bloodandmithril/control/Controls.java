@@ -11,6 +11,7 @@ import com.badlogic.gdx.Input;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Singleton;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.util.datastructure.WrapperForTwo;
@@ -21,6 +22,7 @@ import bloodandmithril.util.datastructure.WrapperForTwo;
  *
  * @author Matt
  */
+@Singleton
 @Copyright("Matthew Peck 2014")
 public class Controls implements Serializable {
 	private static final long serialVersionUID = -1052808676922281824L;

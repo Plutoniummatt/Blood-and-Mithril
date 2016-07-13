@@ -66,6 +66,7 @@ import bloodandmithril.character.ai.task.Travel;
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Threading;
@@ -178,6 +179,7 @@ public class UserInterface {
 	private static Deque<Task> uiTasks;
 
 	private static BloodAndMithrilClientInputProcessor inputProcessor;
+	private static Controls controls;
 	private static Graphics graphics;
 	private static GameSaver gameSaver;
 	private static ChunkLoader chunkLoader;
@@ -234,6 +236,7 @@ public class UserInterface {
 	 */
 	public static synchronized void setup() {
 		inputProcessor = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+		controls = Wiring.injector().getInstance(Controls.class);
 		graphics = Wiring.injector().getInstance(Graphics.class);
 		gameSaver = Wiring.injector().getInstance(GameSaver.class);
 		chunkLoader = Wiring.injector().getInstance(ChunkLoader.class);
@@ -828,7 +831,7 @@ public class UserInterface {
 
 
 	public static void rightClickRelease(final int screenX, final int screenY) {
-		if (initialRightMouseDragCoordinates != null && isKeyPressed(inputProcessor.getKeyMappings().rightClickDragBox.keyCode)) {
+		if (initialRightMouseDragCoordinates != null && isKeyPressed(controls.rightClickDragBox.keyCode)) {
 			final Vector2 diagCorner1 = initialRightMouseDragCoordinates.cpy();
 			final Vector2 diagCorner2 = new Vector2(screenX, screenY);
 
@@ -909,7 +912,7 @@ public class UserInterface {
 	 * Renders the drag-box
 	 */
 	private static void renderDragBox() {
-		if (isButtonPressed(inputProcessor.getKeyMappings().leftClick.keyCode) && initialLeftMouseDragCoordinates != null) {
+		if (isButtonPressed(controls.leftClick.keyCode) && initialLeftMouseDragCoordinates != null) {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.GREEN);
 			final float width = getMouseScreenX() - initialLeftMouseDragCoordinates.x;
@@ -918,7 +921,7 @@ public class UserInterface {
 			shapeRenderer.end();
 		}
 
-		if (isButtonPressed(inputProcessor.getKeyMappings().rightClick.keyCode) && initialRightMouseDragCoordinates != null && isKeyPressed(inputProcessor.getKeyMappings().rightClickDragBox.keyCode)) {
+		if (isButtonPressed(controls.rightClick.keyCode) && initialRightMouseDragCoordinates != null && isKeyPressed(controls.rightClickDragBox.keyCode)) {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.RED);
 			final float width = getMouseScreenX() - initialRightMouseDragCoordinates.x;
@@ -941,11 +944,11 @@ public class UserInterface {
 				} else if (currentTask instanceof Travel) {
 					((Travel) currentTask).renderWaypoints(graphics);
 
-					if (isKeyPressed(inputProcessor.getKeyMappings().jump.keyCode)) {
+					if (isKeyPressed(controls.jump.keyCode)) {
 						final Vector2 destination = ((Travel) currentTask).getFinalGoToLocationWaypoint();
 						Vector2 start;
 						if (destination != null) {
-							if (isKeyPressed(inputProcessor.getKeyMappings().addWayPoint.keyCode)) {
+							if (isKeyPressed(controls.addWayPoint.keyCode)) {
 								start = destination;
 							} else {
 								start = indi.getState().position.cpy();
@@ -974,7 +977,7 @@ public class UserInterface {
 				}
 
 				if (!(currentTask instanceof Travel)) {
-					if (isKeyPressed(inputProcessor.getKeyMappings().jump.keyCode)) {
+					if (isKeyPressed(controls.jump.keyCode)) {
 						renderJumpArrow(
 							indi.getState().position.cpy(),
 							new Vector2(getMouseWorldX(), getMouseWorldY())
@@ -989,7 +992,7 @@ public class UserInterface {
 
 
 	public static void renderJumpArrow(final Vector2 start, final Vector2 finish) {
-		if (!isKeyPressed(inputProcessor.getKeyMappings().attack.keyCode) && !isKeyPressed(inputProcessor.getKeyMappings().rangedAttack.keyCode)) {
+		if (!isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
 			renderArrow(start, finish, new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 75f);
 		}
 	}
@@ -1067,12 +1070,12 @@ public class UserInterface {
 			return;
 		}
 
-		final boolean jumpPressed = isKeyPressed(inputProcessor.getKeyMappings().jump.keyCode);
-		final boolean addWayPointPressed = isKeyPressed(inputProcessor.getKeyMappings().addWayPoint.keyCode);
-		final boolean forceMovePressed = isKeyPressed(inputProcessor.getKeyMappings().forceMove.keyCode);
-		final boolean attackPressed = isKeyPressed(inputProcessor.getKeyMappings().attack.keyCode);
-		final boolean rangedAttackPressed = isKeyPressed(inputProcessor.getKeyMappings().rangedAttack.keyCode);
-		final boolean mineTIlePressed = isKeyPressed(inputProcessor.getKeyMappings().mineTile.keyCode);
+		final boolean jumpPressed = isKeyPressed(controls.jump.keyCode);
+		final boolean addWayPointPressed = isKeyPressed(controls.addWayPoint.keyCode);
+		final boolean forceMovePressed = isKeyPressed(controls.forceMove.keyCode);
+		final boolean attackPressed = isKeyPressed(controls.attack.keyCode);
+		final boolean rangedAttackPressed = isKeyPressed(controls.rangedAttack.keyCode);
+		final boolean mineTIlePressed = isKeyPressed(controls.mineTile.keyCode);
 
 		if (!gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
 

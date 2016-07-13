@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.control.KeyPressedHandler;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
@@ -25,14 +25,14 @@ import bloodandmithril.ui.components.window.InventoryWindow;
 public class IndividualUIKeyPressedHandler implements KeyPressedHandler {
 
 	@Inject
-	private BloodAndMithrilClientInputProcessor inputProcessor;
+	private Controls controls;
 
 	@Inject
 	private GameClientStateTracker gameClientStateTracker;
 
 	@Override
 	public boolean handle(final int keycode) {
-		if (keycode == inputProcessor.getKeyMappings().openInventory.keyCode) {
+		if (keycode == controls.openInventory.keyCode) {
 			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 				final String simpleName = individual.getId().getSimpleName();
@@ -47,7 +47,7 @@ public class IndividualUIKeyPressedHandler implements KeyPressedHandler {
 			}
 		}
 
-		if (keycode == inputProcessor.getKeyMappings().openAIRoutines.keyCode) {
+		if (keycode == controls.openAIRoutines.keyCode) {
 			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 				UserInterface.addLayeredComponentUnique(
@@ -58,7 +58,7 @@ public class IndividualUIKeyPressedHandler implements KeyPressedHandler {
 			}
 		}
 
-		if (keycode == inputProcessor.getKeyMappings().openBuildWindow.keyCode) {
+		if (keycode == controls.openBuildWindow.keyCode) {
 			if (gameClientStateTracker.getSelectedIndividuals().size() == 1) {
 				final Individual individual = gameClientStateTracker.getSelectedIndividuals().iterator().next();
 

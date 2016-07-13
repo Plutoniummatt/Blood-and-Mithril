@@ -21,10 +21,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.ui.components.Button;
@@ -44,6 +44,9 @@ import bloodandmithril.util.Util.Colors;
  */
 @Copyright("Matthew Peck 2014")
 public abstract class ScrollableListingPanel<T, A> extends Panel {
+
+	@Inject
+	private Controls controls;
 
 	/** Datastructure that backs this listing panel */
 	private List<HashMap<ListingMenuItem<T>, A>> listings = Lists.newArrayList();
@@ -71,7 +74,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	/**
 	 * Constructor
 	 */
-	public ScrollableListingPanel(Component parent, Comparator<T> sortingComparator, boolean filtered, int extraColumnWidth, Predicate<T> textSearch) {
+	public ScrollableListingPanel(final Component parent, final Comparator<T> sortingComparator, final boolean filtered, final int extraColumnWidth, final Predicate<T> textSearch) {
 		super(parent);
 		this.sortingComparator = sortingComparator;
 		this.filtered = filtered;
@@ -81,7 +84,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	}
 
 
-	public ScrollableListingPanel<T, A> canScroll(boolean canScroll) {
+	public ScrollableListingPanel<T, A> canScroll(final boolean canScroll) {
 		this.canScroll = canScroll;
 		return this;
 	}
@@ -90,17 +93,17 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	/**
 	 * Refreshes this {@link Panel}
 	 */
-	public void refresh(List<HashMap<ListingMenuItem<T>, A>> listings) {
+	public void refresh(final List<HashMap<ListingMenuItem<T>, A>> listings) {
 		this.listings = listings;
 
 		if (!filtered) {
 			return;
 		}
 
-		for (HashMap<ListingMenuItem<T>, A> item : Lists.newArrayList(this.listings)) {
-			for (ListingMenuItem<T> t : Sets.newHashSet(item.keySet())) {
+		for (final HashMap<ListingMenuItem<T>, A> item : Lists.newArrayList(this.listings)) {
+			for (final ListingMenuItem<T> t : Sets.newHashSet(item.keySet())) {
 				boolean keep = false;
-				for (Predicate<T> predicate : filters) {
+				for (final Predicate<T> predicate : filters) {
 					if (predicate.apply(t.t)) {
 						if (textSearch != null) {
 							keep = textSearch.apply(t.t);
@@ -139,27 +142,27 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 
 	@Override
-	public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	public boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		int size = 0;
-		for (Map<ListingMenuItem<T>, A> listing : listings) {
+		for (final Map<ListingMenuItem<T>, A> listing : listings) {
 			size += listing.size();
 		}
 
 		int i = 0;
-		ArrayList<HashMap<ListingMenuItem<T>, A>> newArrayList = Lists.newArrayList(listings);
-		for (Map<ListingMenuItem<T>, A> listing : newArrayList) {
+		final ArrayList<HashMap<ListingMenuItem<T>, A>> newArrayList = Lists.newArrayList(listings);
+		for (final Map<ListingMenuItem<T>, A> listing : newArrayList) {
 
-			List<Entry<ListingMenuItem<T>, A>> entrySet = Lists.newArrayList(listing.entrySet());
+			final List<Entry<ListingMenuItem<T>, A>> entrySet = Lists.newArrayList(listing.entrySet());
 
 			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, A>>() {
 				@Override
-				public int compare(Entry<ListingMenuItem<T>, A> o1, Entry<ListingMenuItem<T>, A> o2) {
+				public int compare(final Entry<ListingMenuItem<T>, A> o1, final Entry<ListingMenuItem<T>, A> o2) {
 					return sortingComparator.compare(o1.getKey().t, o2.getKey().t);
 				}
 			});
 
 			boolean clicked = false;
-			for(Entry<ListingMenuItem<T>, A> item : entrySet) {
+			for(final Entry<ListingMenuItem<T>, A> item : entrySet) {
 				if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
 					i++;
 					continue;
@@ -169,7 +172,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 					clicked = true;
 				}
 				if (item.getKey().menu != null && item.getKey().button.isMouseOver()) {
-					ContextMenu newMenu = item.getKey().menu.call();
+					final ContextMenu newMenu = item.getKey().menu.call();
 					newMenu.x = getMouseScreenX();
 					newMenu.y = getMouseScreenY();
 					copy.add(newMenu);
@@ -181,7 +184,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 			}
 		}
 
-		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
+		final float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
 		if (isMouseOverScrollButton(scrollBarButtonPos)) {
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * size);
 			scrollBarButtonLocationOld = scrollBarButtonLocation;
@@ -193,12 +196,12 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		scrollWheelActive = isMouseWithin();
 		if (scrollWheelActive && canScroll) {
-			float max = Math.round((height - 100f) / 20f);
+			final float max = Math.round((height - 100f) / 20f);
 			int size = 0;
-			for (Map<ListingMenuItem<T>, A> listing : listings) {
+			for (final Map<ListingMenuItem<T>, A> listing : listings) {
 				size += listing.size();
 			}
 
@@ -238,7 +241,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 
 	@Override
-	public void render(Graphics graphics) {
+	public void render(final Graphics graphics) {
 		if (canScroll) {
 			// Render the scroll bar
 			renderScrollBar();
@@ -260,8 +263,8 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 			return;
 		}
 
-		Window p = (Window) parent;
-		Color scrollBarColor = p.isActive() ? Colors.modulateAlpha(p.borderColor, 0.5f * p.getAlpha()) : Colors.modulateAlpha(p.borderColor, 0.2f * p.getAlpha());
+		final Window p = (Window) parent;
+		final Color scrollBarColor = p.isActive() ? Colors.modulateAlpha(p.borderColor, 0.5f * p.getAlpha()) : Colors.modulateAlpha(p.borderColor, 0.2f * p.getAlpha());
 		Component.shapeRenderer.begin(ShapeType.Filled);
 		Component.shapeRenderer.setColor(scrollBarColor);
 		Component.shapeRenderer.rect(x + width - 6, y - 50, 3, 30, scrollBarColor, scrollBarColor, Color.CLEAR, Color.CLEAR);
@@ -273,14 +276,14 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	/**
 	 * Renders the listing
 	 */
-	private void renderListing(Graphics graphics) {
+	private void renderListing(final Graphics graphics) {
 		if (listings.isEmpty()) {
 			return;
 		}
 
 		int size = 0;
-		float max = Math.round((height - 100f) / 20f);
-		for (Map<ListingMenuItem<T>, A> listing : listings) {
+		final float max = Math.round((height - 100f) / 20f);
+		for (final Map<ListingMenuItem<T>, A> listing : listings) {
 			size += listing.size();
 		}
 
@@ -293,20 +296,20 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 
 		// Render the equipped items first
 		int i = 0;
-		ArrayList<HashMap<ListingMenuItem<T>, A>> newArrayList = Lists.newArrayList(listings);
+		final ArrayList<HashMap<ListingMenuItem<T>, A>> newArrayList = Lists.newArrayList(listings);
 
-		for (Map<ListingMenuItem<T>, A> listing : newArrayList) {
+		for (final Map<ListingMenuItem<T>, A> listing : newArrayList) {
 
-			List<Entry<ListingMenuItem<T>, A>> entrySet = newArrayList(listing.entrySet());
+			final List<Entry<ListingMenuItem<T>, A>> entrySet = newArrayList(listing.entrySet());
 
 			Collections.sort(entrySet, new Comparator<Entry<ListingMenuItem<T>, A>>() {
 				@Override
-				public int compare(Entry<ListingMenuItem<T>, A> o1, Entry<ListingMenuItem<T>, A> o2) {
+				public int compare(final Entry<ListingMenuItem<T>, A> o1, final Entry<ListingMenuItem<T>, A> o2) {
 					return sortingComparator.compare(o1.getKey().t, o2.getKey().t);
 				}
 			});
 
-			for(Entry<ListingMenuItem<T>, A> item : entrySet) {
+			for(final Entry<ListingMenuItem<T>, A> item : entrySet) {
 				if (i + 1 < (startingIndex == 0 ? 1 : startingIndex)) {
 					i++;
 					continue;
@@ -342,14 +345,14 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		}
 
 		int size = 0;
-		for (Map<ListingMenuItem<T>, A> listing : listings) {
+		for (final Map<ListingMenuItem<T>, A> listing : listings) {
 			size += listing.size();
 		}
 
-		float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
+		final float scrollBarButtonPos = y - 50 - (height - 102) * scrollBarButtonLocation;
 
-		float max = (height - 100f) / 20f;
-		if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode) && scrollBarButtonLocationOld != null && size > max) {
+		final float max = (height - 100f) / 20f;
+		if (isButtonPressed(controls.leftClick.keyCode) && scrollBarButtonLocationOld != null && size > max) {
 			scrollBarButtonLocation = Math.min(1, Math.max(0, scrollBarButtonLocationOld + (mouseLocYFrozen - getMouseScreenY())/(height - 102)));
 			startingIndex = Math.round((y - 50 - scrollBarButtonPos)/(height - 102) * (size - max));
 		}
@@ -373,7 +376,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	/**
 	 * True if the mouse is over the scroll button
 	 */
-	private boolean isMouseOverScrollButton(float scrollBarButtonPos) {
+	private boolean isMouseOverScrollButton(final float scrollBarButtonPos) {
 		return	getMouseScreenX() > x + width - 13 &&
 				getMouseScreenX() < x + width + 4 &&
 				getMouseScreenY() > scrollBarButtonPos - 10 &&
@@ -393,7 +396,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 		/**
 		 * Constructor
 		 */
-		public ListingMenuItem(T t, Button button, Function<ContextMenu> menu) {
+		public ListingMenuItem(final T t, final Button button, final Function<ContextMenu> menu) {
 			super(button, menu);
 			this.t = t;
 		}
@@ -405,7 +408,7 @@ public abstract class ScrollableListingPanel<T, A> extends Panel {
 	}
 
 
-	public void setScrollWheelActive(boolean active) {
+	public void setScrollWheelActive(final boolean active) {
 		this.scrollWheelActive = active;
 	}
 

@@ -57,6 +57,7 @@ import bloodandmithril.character.individuals.characters.Hare;
 import bloodandmithril.character.individuals.characters.Wolf;
 import bloodandmithril.character.proficiency.Proficiencies;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.MouseOverable;
@@ -415,10 +416,10 @@ public abstract class Individual implements Equipper, Serializable, Kinematics, 
 			shapeRenderer.end();
 		}
 
-		final BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+		final Controls controls = Wiring.injector().getInstance(Controls.class);
 		final GameClientStateTracker gameClientStateTracker = Wiring.injector().getInstance(GameClientStateTracker.class);
 
-		if (isAlive() && isMouseOver() && isKeyPressed(input.getKeyMappings().attack.keyCode) && !isKeyPressed(input.getKeyMappings().rangedAttack.keyCode)) {
+		if (isAlive() && isMouseOver() && isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
 			if (gameClientStateTracker.getSelectedIndividuals().size() > 0 && (!gameClientStateTracker.isIndividualSelected(this) || gameClientStateTracker.getSelectedIndividuals().size() > 1)) {
 				batch.setShader(Shaders.filter);
 				Shaders.filter.setUniformMatrix("u_projTrans", graphics.getUi().getUICamera().combined);

@@ -9,11 +9,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.google.inject.Inject;
 
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.ui.components.Component;
 import bloodandmithril.ui.components.ContextMenu;
@@ -39,10 +38,12 @@ public class TextInputFieldPanel extends Panel {
 	/** The amount of time backspace must be held before bulk backspace is triggered */
 	private float timer;
 
+	@Inject private Controls controls;
+
 	/**
 	 * Constructor
 	 */
-	public TextInputFieldPanel(Component parent, String defaultText) {
+	public TextInputFieldPanel(final Component parent, final String defaultText) {
 		super(parent);
 		this.inputText = defaultText;
 	}
@@ -55,7 +56,7 @@ public class TextInputFieldPanel extends Panel {
 
 
 	@Override
-	public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	public boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		return false;
 	}
 
@@ -66,10 +67,10 @@ public class TextInputFieldPanel extends Panel {
 
 
 	@Override
-	public void render(Graphics graphics) {
-		if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().deleteCharacter.keyCode)) {
+	public void render(final Graphics graphics) {
+		if (isKeyPressed(controls.deleteCharacter.keyCode)) {
 			if (timer < 0) {
-				keyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().deleteCharacter.keyCode);
+				keyPressed(controls.deleteCharacter.keyCode);
 				timer = 0.02f;
 			} else {
 				timer -= Gdx.graphics.getDeltaTime();
@@ -102,19 +103,19 @@ public class TextInputFieldPanel extends Panel {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
+	public boolean keyPressed(final int keyCode) {
 		if (keyCode == Input.Keys.SHIFT_LEFT || keyCode == Input.Keys.SHIFT_RIGHT) {
 			return false;
 		}
 
-		if (keyCode == Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().deleteCharacter.keyCode) {
+		if (keyCode == controls.deleteCharacter.keyCode) {
 			if (inputText.length() == 0) {
 				return true;
 			}
 			inputText = inputText.substring(0, inputText.length() - 1);
 		}
 
-		WrapperForTwo<String, String> string = Controls.keyMap.get(keyCode);
+		final WrapperForTwo<String, String> string = Controls.keyMap.get(keyCode);
 		if (string == null) {
 			return true;
 		}

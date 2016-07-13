@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 
 import bloodandmithril.character.ai.task.Idle;
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.util.AnimationHelper.AnimationSwitcher;
@@ -43,19 +43,19 @@ public abstract class GroundTravellingIndividual extends Individual {
 	 * Constructor
 	 */
 	protected GroundTravellingIndividual(
-			IndividualIdentifier id,
-			IndividualState state,
-			int factionId,
-			Behaviour naturalBehaviour,
-			float inventoryMassCapacity,
-			int inventoryVolumeCapacity,
-			int maxRings,
-			int width,
-			int height,
-			int safetyHeight,
-			Box interactionBox,
-			int worldId,
-			int maximumConcurrentMeleeAttackers) {
+			final IndividualIdentifier id,
+			final IndividualState state,
+			final int factionId,
+			final Behaviour naturalBehaviour,
+			final float inventoryMassCapacity,
+			final int inventoryVolumeCapacity,
+			final int maxRings,
+			final int width,
+			final int height,
+			final int safetyHeight,
+			final Box interactionBox,
+			final int worldId,
+			final int maximumConcurrentMeleeAttackers) {
 		super(id, state, factionId, naturalBehaviour, inventoryMassCapacity, inventoryVolumeCapacity, maxRings, width, height, safetyHeight, interactionBox, worldId, maximumConcurrentMeleeAttackers);
 	}
 
@@ -64,7 +64,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 	 * @return the Current animated action this {@link GroundTravellingIndividual} is performing.
 	 */
 	protected void updateCurrentAction() {
-		BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+		final Controls controls = Wiring.injector().getInstance(Controls.class);
 		// If dead, return
 		if (!isAlive()) {
 			return;
@@ -81,23 +81,23 @@ public abstract class GroundTravellingIndividual extends Individual {
 		}
 
 		// If we're moving to the right
-		if (isCommandActive(input.getKeyMappings().moveRight.keyCode)) {
+		if (isCommandActive(controls.moveRight.keyCode)) {
 			// If walking, and current action is not walking right, then set action to walking right
-			if (isCommandActive(input.getKeyMappings().walk.keyCode) && !getCurrentAction().equals(WALK_RIGHT)) {
+			if (isCommandActive(controls.walk.keyCode) && !getCurrentAction().equals(WALK_RIGHT)) {
 				setCurrentAction(WALK_RIGHT);
 				setAnimationTimer(0f);
-			} else if (!isCommandActive(input.getKeyMappings().walk.keyCode) && !getCurrentAction().equals(RUN_RIGHT)) {
+			} else if (!isCommandActive(controls.walk.keyCode) && !getCurrentAction().equals(RUN_RIGHT)) {
 				// Otherwise if running, and current action is not running right, then set action to running right
 				setCurrentAction(RUN_RIGHT);
 				setAnimationTimer(0f);
 			}
 
 		// Same for if we're moving left
-		} else if (isCommandActive(input.getKeyMappings().moveLeft.keyCode)) {
-			if (isCommandActive(input.getKeyMappings().walk.keyCode) && !getCurrentAction().equals(WALK_LEFT)) {
+		} else if (isCommandActive(controls.moveLeft.keyCode)) {
+			if (isCommandActive(controls.walk.keyCode) && !getCurrentAction().equals(WALK_LEFT)) {
 				setCurrentAction(WALK_LEFT);
 				setAnimationTimer(0f);
-			} else if (!isCommandActive(input.getKeyMappings().walk.keyCode) && !getCurrentAction().equals(RUN_LEFT)) {
+			} else if (!isCommandActive(controls.walk.keyCode) && !getCurrentAction().equals(RUN_LEFT)) {
 				setCurrentAction(RUN_LEFT);
 				setAnimationTimer(0f);
 			}
@@ -119,21 +119,21 @@ public abstract class GroundTravellingIndividual extends Individual {
 			return;
 		}
 
-		BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+		final Controls controls = Wiring.injector().getInstance(Controls.class);
 
 		//Horizontal movement
-		Topography topography = Domain.getWorld(getWorldId()).getTopography();
-		boolean attacking = attacking();
+		final Topography topography = Domain.getWorld(getWorldId()).getTopography();
+		final boolean attacking = attacking();
 
 		try {
 			if (Math.abs(getState().velocity.y) < 5f) {
 
-				float walkSpeed = getWalkSpeed();
-				float runSpeed = getRunSpeed();
-				int accel = 2000;
+				final float walkSpeed = getWalkSpeed();
+				final float runSpeed = getRunSpeed();
+				final int accel = 2000;
 
-				if (!attacking && isCommandActive(input.getKeyMappings().moveLeft.keyCode) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
-					if (isCommandActive(input.getKeyMappings().walk.keyCode)) {
+				if (!attacking && isCommandActive(controls.moveLeft.keyCode) && (Kinematics.canStepUp(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(-2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+					if (isCommandActive(controls.walk.keyCode)) {
 						if (getState().velocity.x > -walkSpeed) {
 							getState().acceleration.x = -accel;
 						} else {
@@ -146,8 +146,8 @@ public abstract class GroundTravellingIndividual extends Individual {
 							getState().acceleration.x = accel;
 						}
 					}
-				} else if (!attacking && isCommandActive(input.getKeyMappings().moveRight.keyCode) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
-					if (isCommandActive(input.getKeyMappings().walk.keyCode)) {
+				} else if (!attacking && isCommandActive(controls.moveRight.keyCode) && (Kinematics.canStepUp(2, topography, getState(), getHeight(), getAI(), getKinematicsData()) || !Kinematics.obstructed(2, topography, getState(), getHeight(), getAI(), getKinematicsData()))) {
+					if (isCommandActive(controls.walk.keyCode)) {
 						if (getState().velocity.x < walkSpeed) {
 							getState().acceleration.x = accel;
 						} else {
@@ -163,17 +163,17 @@ public abstract class GroundTravellingIndividual extends Individual {
 				} else {
 					getState().acceleration.x = 0f;
 
-					int offset = isCommandActive(input.getKeyMappings().moveRight.keyCode) ? 2 : isCommandActive(input.getKeyMappings().moveLeft.keyCode) ? -2 : 0;
+					final int offset = isCommandActive(controls.moveRight.keyCode) ? 2 : isCommandActive(controls.moveLeft.keyCode) ? -2 : 0;
 					if (Kinematics.obstructed(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !Kinematics.canStepUp(offset, topography, getState(), getHeight(), getAI(), getKinematicsData()) && !(getAI().getCurrentTask() instanceof Idle)) {
 						getAI().setCurrentTask(new Idle());
 					}
 
-					sendCommand(input.getKeyMappings().moveRight.keyCode, false);
-					sendCommand(input.getKeyMappings().moveLeft.keyCode, false);
-					sendCommand(input.getKeyMappings().walk.keyCode, false);
+					sendCommand(controls.moveRight.keyCode, false);
+					sendCommand(controls.moveLeft.keyCode, false);
+					sendCommand(controls.walk.keyCode, false);
 				}
 			}
-		} catch (NoTileFoundException e) {
+		} catch (final NoTileFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -225,7 +225,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 
 
 	@Override
-	protected void internalUpdate(float delta) {
+	protected void internalUpdate(final float delta) {
 		respondToCommands();
 		updateCurrentAction();
 	}
@@ -234,7 +234,7 @@ public abstract class GroundTravellingIndividual extends Individual {
 	/**
 	 * Performs a jump at the specified jump vector.
 	 */
-	public void jump(Vector2 jumpVector) {
+	public void jump(final Vector2 jumpVector) {
 		getState().velocity.x = jumpVector.x;
 		getState().velocity.y = jumpVector.y;
 		decreaseStamina(0.1f);

@@ -13,10 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.networking.requests.SendChatMessage.Message;
@@ -37,6 +37,9 @@ import bloodandmithril.util.Util.Colors;
 @Copyright("Matthew Peck 2014")
 public class ChatWindow extends Window {
 
+	@Inject
+	private Controls controls;
+
 	public final ScrollableListingPanel<String, Object> participants;
 
 	private final TextInputFieldPanel textInputPanel;
@@ -46,12 +49,12 @@ public class ChatWindow extends Window {
 	/**
 	 * Constructor
 	 */
-	public ChatWindow(int length, int height, boolean active, int minLength, int minHeight) {
+	public ChatWindow(final int length, final int height, final boolean active, final int minLength, final int minHeight) {
 		super(length, height, "Chat", active, minLength, minHeight, true, true, true);
 
 		participants = new ScrollableListingPanel<String, Object>(this, Comparator.<String>naturalOrder(), false, 35, null) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<String>, Object> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<String>, Object> item) {
 				return "";
 			}
 
@@ -61,11 +64,11 @@ public class ChatWindow extends Window {
 			}
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<String>, Object>> listings) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<String>, Object>> listings) {
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -77,7 +80,7 @@ public class ChatWindow extends Window {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 
 		renderMessage(graphics);
 		renderSeparator();
@@ -86,7 +89,7 @@ public class ChatWindow extends Window {
 	}
 
 
-	private void renderTextInputPanel(Graphics graphics) {
+	private void renderTextInputPanel(final Graphics graphics) {
 		textInputPanel.x = x + 7;
 		textInputPanel.y = y - height + 5;
 		textInputPanel.width = width - 180;
@@ -95,12 +98,12 @@ public class ChatWindow extends Window {
 	}
 
 
-	private void renderMessage(Graphics graphics) {
+	private void renderMessage(final Graphics graphics) {
 		String string = "";
 
-		Iterator<Message> iterator = Lists.newArrayList(messagesToDisplay).iterator();
+		final Iterator<Message> iterator = Lists.newArrayList(messagesToDisplay).iterator();
 		while (iterator.hasNext()) {
-			Message next = iterator.next();
+			final Message next = iterator.next();
 			String temp = "";
 			temp = temp.concat(next.sender) + ": ";
 			temp = temp.concat(next.message);
@@ -116,7 +119,7 @@ public class ChatWindow extends Window {
 		);
 
 		int lines = StringUtils.countMatches(string, "\n");
-		int maxLines = (height - 130)/26;
+		final int maxLines = (height - 130)/26;
 
 		while (lines > maxLines) {
 			string = string.substring(StringUtils.indexOf(string, "\n") + 1);
@@ -130,12 +133,12 @@ public class ChatWindow extends Window {
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		return participants.scrolled(amount);
 	}
 
 
-	public static synchronized void addMessage(Message messageToAdd) {
+	public static synchronized void addMessage(final Message messageToAdd) {
 		if (!messagesToDisplay.offerLast(messageToAdd)) {
 			messagesToDisplay.removeFirst();
 			addMessage(messageToAdd);
@@ -143,7 +146,7 @@ public class ChatWindow extends Window {
 	}
 
 
-	private void renderPlayerList(Graphics graphics) {
+	private void renderPlayerList(final Graphics graphics) {
 		participants.x = x + width - 170;
 		participants.y = y;
 		participants.width = 170;
@@ -154,7 +157,7 @@ public class ChatWindow extends Window {
 
 
 	private void renderSeparator() {
-		Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
+		final Color color = isActive() ? Colors.modulateAlpha(borderColor, getAlpha()) : Colors.modulateAlpha(borderColor, 0.4f * getAlpha());
 		UserInterface.shapeRenderer.begin(ShapeType.Filled);
 		UserInterface.shapeRenderer.rect(
 			x + width - 170,
@@ -171,7 +174,7 @@ public class ChatWindow extends Window {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		participants.leftClick(copy, windowsCopy);
 	}
 
@@ -182,14 +185,14 @@ public class ChatWindow extends Window {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
+	public boolean keyPressed(final int keyCode) {
 		if (super.keyPressed(keyCode)) {
 			return true;
 		}
 
 		textInputPanel.keyPressed(keyCode);
 
-		if (keyCode == Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().sendChatMessage.keyCode) {
+		if (keyCode == controls.sendChatMessage.keyCode) {
 			if (!StringUtils.isEmpty(textInputPanel.getInputText())) {
 				ClientServerInterface.SendRequest.sendChatMessage(textInputPanel.getInputText());
 				textInputPanel.clear();

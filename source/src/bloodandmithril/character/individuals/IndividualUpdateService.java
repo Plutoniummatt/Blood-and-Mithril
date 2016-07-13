@@ -15,7 +15,7 @@ import bloodandmithril.character.conditions.Exhaustion;
 import bloodandmithril.character.conditions.Hunger;
 import bloodandmithril.character.conditions.Thirst;
 import bloodandmithril.character.individuals.Individual.Action;
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -36,15 +36,15 @@ public class IndividualUpdateService {
 	/**
 	 * Updates the individual
 	 */
-	public static void update(Individual indi, float delta) {
-		float aiTaskDelay = 0.01f;
+	public static void update(final Individual indi, final float delta) {
+		final float aiTaskDelay = 0.01f;
 		indi.setTravelIconTimer(indi.getTravelIconTimer() + delta * 10f);
 		indi.setSpeakTimer(indi.getSpeakTimer() - delta <= 0f ? 0f : indi.getSpeakTimer() - delta);
 
 		// If chunk has not yet been loaded, do not update
 		try {
 			Domain.getWorld(indi.getWorldId()).getTopography().getTile(indi.getState().position, true);
-		} catch (NoTileFoundException e) {
+		} catch (final NoTileFoundException e) {
 			return;
 		}
 
@@ -79,11 +79,11 @@ public class IndividualUpdateService {
 
 		synchronized (indi.getBeingAttackedBy()) {
 			Sets.newHashSet(indi.getBeingAttackedBy().keySet()).stream().forEach(i -> {
-				Individual individual = Domain.getIndividual(i);
+				final Individual individual = Domain.getIndividual(i);
 				if (indi.getBeingAttackedBy().get(i) <= System.currentTimeMillis() - round(getAttackPeriod(individual) * 1000D) - 1000L) {
 					indi.getBeingAttackedBy().remove(i);
 				} else {
-					AITask currentTask = individual.getAI().getCurrentTask();
+					final AITask currentTask = individual.getAI().getCurrentTask();
 					if (currentTask instanceof Attack) {
 						if (!((Attack) currentTask).getTargets().contains(indi.getId().getId())) {
 							indi.getBeingAttackedBy().remove(i);
@@ -106,7 +106,7 @@ public class IndividualUpdateService {
 
 		try {
 			Kinematics.kinetics(delta, Domain.getWorld(indi.getWorldId()), indi);
-		} catch (NoTileFoundException e) {}
+		} catch (final NoTileFoundException e) {}
 
 		updateConditions(indi, delta);
 		PositionalIndexingService.indexInvidivual(indi);
@@ -121,22 +121,22 @@ public class IndividualUpdateService {
 	 * Updates the vitals of this {@link Individual}
 	 * @param indi
 	 */
-	private static void updateVitals(Individual indi, float delta) {
+	private static void updateVitals(final Individual indi, final float delta) {
 		indi.heal(delta * indi.getState().healthRegen);
 
 		indi.decreaseHunger(indi.hungerDrain() * (delta* 60f));
 		indi.decreaseThirst(indi.thirstDrain() * (delta* 60f));
 
-		BloodAndMithrilClientInputProcessor input = Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class);
+		final Controls controls = Wiring.injector().getInstance(Controls.class);
 
 		if (indi.isWalking()) {
-			if (indi.isCommandActive(input.getKeyMappings().moveLeft.keyCode) || indi.isCommandActive(input.getKeyMappings().moveRight.keyCode)) {
+			if (indi.isCommandActive(controls.moveLeft.keyCode) || indi.isCommandActive(controls.moveRight.keyCode)) {
 				indi.increaseStamina(delta * indi.getState().staminaRegen / 2f);
 			} else {
 				indi.increaseStamina(delta * indi.getState().staminaRegen);
 			}
 		} else {
-			if (indi.isCommandActive(input.getKeyMappings().moveLeft.keyCode) || indi.isCommandActive(input.getKeyMappings().moveRight.keyCode)) {
+			if (indi.isCommandActive(controls.moveLeft.keyCode) || indi.isCommandActive(controls.moveRight.keyCode)) {
 				indi.decreaseStamina(indi.staminaDrain() * (delta* 60f));
 			} else {
 				indi.increaseStamina(delta * indi.getState().staminaRegen);
@@ -160,13 +160,13 @@ public class IndividualUpdateService {
 	/**
 	 * Performs the {@link Task} associated with the current frame of the animation of the current {@link Action}
 	 */
-	private static void executeActionFrames(Individual indi) {
+	private static void executeActionFrames(final Individual indi) {
 		ParameterizedTask<Individual> task = null;
 		try {
 			task = indi.getActionFrames()
 				.get(indi.getCurrentAction())
 				.get(indi.getCurrentAnimation().get(0).a.getAnimation(indi).getKeyFrameIndex(indi.getAnimationTimer()));
-		} catch (NullPointerException e) {
+		} catch (final NullPointerException e) {
 			// Do nothing
 		}
 
@@ -187,12 +187,12 @@ public class IndividualUpdateService {
 	/**
 	 * Update how this {@link Individual} is affected by its {@link Condition}s
 	 */
-	private static void updateConditions(Individual indi, float delta) {
+	private static void updateConditions(final Individual indi, final float delta) {
 		// Reset regeneration values
 		if (isServer()) {
 			indi.getState().reset();
 
-			for (Condition condition : newArrayList(indi.getState().currentConditions)) {
+			for (final Condition condition : newArrayList(indi.getState().currentConditions)) {
 				if (condition.isExpired()) {
 					condition.uponExpiry();
 					indi.getState().currentConditions.remove(condition);
@@ -203,7 +203,7 @@ public class IndividualUpdateService {
 		}
 
 		if (isClient()) {
-			for (Condition condition : newArrayList(indi.getState().currentConditions)) {
+			for (final Condition condition : newArrayList(indi.getState().currentConditions)) {
 				condition.clientSideEffects(indi, delta);
 			}
 		}

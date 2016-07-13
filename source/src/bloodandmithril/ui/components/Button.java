@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -65,7 +65,7 @@ public class Button {
 	/**
 	 * Constructor for text button
 	 */
-	public Button(String text, BitmapFont font, int offsetX, int offsetY, int width, int height, Sound mouseClickedSound, Task task, Color idle, Color over, Color down, UIRef ref) {
+	public Button(final String text, final BitmapFont font, final int offsetX, final int offsetY, final int width, final int height, final Sound mouseClickedSound, final Task task, final Color idle, final Color over, final Color down, final UIRef ref) {
 		this.text = () -> {return text;};
 		this.font = font;
 		this.offsetX = offsetX;
@@ -85,7 +85,7 @@ public class Button {
 	/**
 	 * Constructor for text button no sound
 	 */
-	public Button(String text, BitmapFont font, int offsetX, int offsetY, int width, int height, Task task, Color idle, Color over, Color down, UIRef ref) {
+	public Button(final String text, final BitmapFont font, final int offsetX, final int offsetY, final int width, final int height, final Task task, final Color idle, final Color over, final Color down, final UIRef ref) {
 		this.text = () -> {return text;};
 		this.font = font;
 		this.offsetX = offsetX;
@@ -105,7 +105,7 @@ public class Button {
 	/**
 	 * Constructor for text button no sound
 	 */
-	public Button(Function<String> text, BitmapFont font, int offsetX, int offsetY, int width, int height, Task task, Color idle, Color over, Color down, UIRef ref) {
+	public Button(final Function<String> text, final BitmapFont font, final int offsetX, final int offsetY, final int width, final int height, final Task task, final Color idle, final Color over, final Color down, final UIRef ref) {
 		this.text = text;
 		this.font = font;
 		this.offsetX = offsetX;
@@ -125,7 +125,7 @@ public class Button {
 	/**
 	 * Constructor for text button no sound - with a {@link JITTask}
 	 */
-	public Button(String text, BitmapFont font, int offsetX, int offsetY, int width, int height, JITTask task, Color idle, Color over, Color down, UIRef ref) {
+	public Button(final String text, final BitmapFont font, final int offsetX, final int offsetY, final int width, final int height, final JITTask task, final Color idle, final Color over, final Color down, final UIRef ref) {
 	  this.text = () -> {return text;};
 	  this.font = font;
 	  this.offsetX = offsetX;
@@ -145,7 +145,7 @@ public class Button {
 	/**
 	 * Constructor
 	 */
-	public Button(Texture buttonAtlas, int offsetX, int offsetY, int atlasX, int atlasY, int width, int height, Sound mouseClickedSound, Task task, UIRef ref) {
+	public Button(final Texture buttonAtlas, final int offsetX, final int offsetY, final int atlasX, final int atlasY, final int width, final int height, final Sound mouseClickedSound, final Task task, final UIRef ref) {
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
 		this.width = width;
@@ -163,12 +163,12 @@ public class Button {
 	/**
 	 * Overloaded constructor, no sound required
 	 */
-	public Button(Texture buttonAtlas, int offsetX, int offsetY, int atlasX, int atlasY, int width, int height, Task task, UIRef ref) {
+	public Button(final Texture buttonAtlas, final int offsetX, final int offsetY, final int atlasX, final int atlasY, final int width, final int height, final Task task, final UIRef ref) {
 		this(buttonAtlas, offsetX, offsetY, atlasX, atlasY, width, height, null, task, ref);
 	}
 
 
-	public Button mouseOverPopup(Function<InfoPopup> popup) {
+	public Button mouseOverPopup(final Function<InfoPopup> popup) {
 		this.popup = popup;
 		return this;
 	}
@@ -177,26 +177,26 @@ public class Button {
 	/**
 	 * Renders this button
 	 */
-	public void render(boolean active, float alpha, int maxWidth, Graphics graphics) {
+	public void render(final boolean active, final float alpha, final int maxWidth, final Graphics graphics) {
 		if (popup != null) {
-			InfoPopup p = popup.call();
+			final InfoPopup p = popup.call();
 			if (!p.expiryFunction.call() && UserInterface.getInfoPopup() == null) {
 				UserInterface.setInfoPopup(popup.call());
 			}
 		}
 
-		Vector2 vec = new Vector2();
+		final Vector2 vec = new Vector2();
 		morph(vec);
 
 		if (idle == null) {
 
 			graphics.getSpriteBatch().setShader(Shaders.text);
-			Color downColorToUse = active ? downColor : idle == null ? downColor.cpy() : downColor;
-			Color overColorToUse = active ? overColor : idle == null ? overColor.cpy() : overColor;
-			Color idleColorToUse = active ? idleColor : idle == null ? idleColor.cpy() : idleColor;
+			final Color downColorToUse = active ? downColor : idle == null ? downColor.cpy() : downColor;
+			final Color overColorToUse = active ? overColor : idle == null ? overColor.cpy() : overColor;
+			final Color idleColorToUse = active ? idleColor : idle == null ? idleColor.cpy() : idleColor;
 
 			if (isMouseOver() && active) {
-				if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode)) {
+				if (isButtonPressed(Wiring.injector().getInstance(Controls.class).leftClick.keyCode)) {
 					font.setColor(downColorToUse.r, downColorToUse.g, downColorToUse.b, alpha * (active ? 1f : 0.3f));
 					font.draw(graphics.getSpriteBatch(), maxWidth == 0 ? text.call() : fitToTextInputBox(text.call(), maxWidth, 0, false), vec.x, vec.y);
 				} else {
@@ -211,7 +211,7 @@ public class Button {
 			graphics.getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, alpha);
 			if (isMouseOver() && active) {
-				if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode)) {
+				if (isButtonPressed(Wiring.injector().getInstance(Controls.class).leftClick.keyCode)) {
 					graphics.getSpriteBatch().draw(down, vec.x, vec.y);
 				} else {
 					graphics.getSpriteBatch().draw(over, vec.x, vec.y);
@@ -225,7 +225,7 @@ public class Button {
 	}
 
 
-	public void render(boolean active, float alpha, Graphics graphics) {
+	public void render(final boolean active, final float alpha, final Graphics graphics) {
 		render(active, alpha, 0, graphics);
 	}
 
@@ -239,7 +239,7 @@ public class Button {
 	/**
 	 * Renders this button at an override location
 	 */
-	public void render(int x, int y, Graphics graphics) {
+	public void render(final int x, final int y, final Graphics graphics) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
@@ -251,7 +251,7 @@ public class Button {
 	/**
 	 * Renders this button at an override location and whether or not this button is 'active'
 	 */
-	public void render(int x, int y, boolean active, Graphics graphics) {
+	public void render(final int x, final int y, final boolean active, final Graphics graphics) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
@@ -263,7 +263,7 @@ public class Button {
 	/**
 	 * Renders this button at an override location and whether or not this button is 'active', plus an alpha value
 	 */
-	public void render(int x, int y, boolean active, float alpha, Graphics graphics) {
+	public void render(final int x, final int y, final boolean active, final float alpha, final Graphics graphics) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
@@ -275,7 +275,7 @@ public class Button {
 	/**
 	 * Renders this button at an override location and whether or not this button is 'active', plus an alpha value, and maximum width, truncating the rest
 	 */
-	public void render(int x, int y, boolean active, float alpha, int maxWidth, Graphics graphics) {
+	public void render(final int x, final int y, final boolean active, final float alpha, final int maxWidth, final Graphics graphics) {
 		offsetX = x;
 		offsetY = y;
 		ref = UIRef.BL;
@@ -287,7 +287,7 @@ public class Button {
 	/**
 	 * Morphs the render position of a button.
 	 */
-	private void morph(Vector2 vec) {
+	private void morph(final Vector2 vec) {
 		switch (ref) {
 		case BL:
 			vec.x = offsetX - width/2;
@@ -350,7 +350,7 @@ public class Button {
 	/**
 	 * Called when this button is clicked
 	 */
-	public boolean click(Object... args) {
+	public boolean click(final Object... args) {
 	  if (isMouseOver()) {
 	    if (mouseClickSound != null) {
 	      mouseClickSound.play();
@@ -369,11 +369,11 @@ public class Button {
 	 */
 	public boolean isMouseOver() {
 
-		Vector2 vec = new Vector2();
+		final Vector2 vec = new Vector2();
 		morph(vec);
 
-		int mouseX = getMouseScreenX();
-		int mouseY = getMouseScreenY();
+		final int mouseX = getMouseScreenX();
+		final int mouseY = getMouseScreenY();
 
 		if (idle == null) {
 			return mouseX >= vec.x && mouseX <= vec.x + width && mouseY <= vec.y && mouseY >= vec.y - height;
@@ -398,22 +398,22 @@ public class Button {
 	}
 
 
-	public void setOverColor(Color overColor) {
+	public void setOverColor(final Color overColor) {
 		this.overColor = overColor;
 	}
 
 
-	public void setDownColor(Color downColor) {
+	public void setDownColor(final Color downColor) {
 		this.downColor = downColor;
 	}
 
 
-	public void setIdleColor(Color color) {
+	public void setIdleColor(final Color color) {
 		this.idleColor = color;
 	}
 
 
-	public void setTask(Task task) {
+	public void setTask(final Task task) {
 		this.task = task;
 	}
 

@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -69,7 +69,7 @@ public abstract class Window extends Component {
 	/**
 	 * Constructor
 	 */
-	public Window(int x, int y, int length, int height, Color borderColor, Color backGroundColor, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, boolean closeable) {
+	public Window(final int x, final int y, final int length, final int height, final Color borderColor, final Color backGroundColor, final String title, final boolean active, final int minLength, final int minHeight, final boolean minimizable, final boolean resizeable, final boolean closeable) {
 		this.x = x;
 		this.y = y;
 		this.width = length;
@@ -92,7 +92,7 @@ public abstract class Window extends Component {
 	/**
 	 * Overloaded contructor, uses default colors
 	 */
-	public Window(int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, boolean closeable) {
+	public Window(final int length, final int height, final String title, final boolean active, final int minLength, final int minHeight, final boolean minimizable, final boolean resizeable, final boolean closeable) {
 		this((getGdxWidth() - length) / 2, (getGdxHeight() + height) / 2, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable, resizeable, closeable);
 	}
 
@@ -100,7 +100,7 @@ public abstract class Window extends Component {
 	/**
 	 * Overloaded contructor, uses default colors
 	 */
-	public Window(int x, int y, int length, int height, String title, boolean active, int minLength, int minHeight, boolean minimizable, boolean resizeable, boolean closeable) {
+	public Window(final int x, final int y, final int length, final int height, final String title, final boolean active, final int minLength, final int minHeight, final boolean minimizable, final boolean resizeable, final boolean closeable) {
 		this(x, y, length, height, Color.GRAY, Color.BLACK, title, active, minLength, minHeight, minimizable, resizeable, closeable);
 	}
 
@@ -108,13 +108,13 @@ public abstract class Window extends Component {
 	/**
 	 * Overloaded contructor, uses default colors, position set to centre of screen, min width/height set to initial values
 	 */
-	public Window(int length, int height, String title, boolean active, boolean minimizable, boolean resizeable, boolean closeable) {
+	public Window(final int length, final int height, final String title, final boolean active, final boolean minimizable, final boolean resizeable, final boolean closeable) {
 		this((getGdxWidth() - length) / 2, (getGdxHeight() + height) / 2, length, height, Color.GRAY, Color.BLACK, title, active, length, height, minimizable, resizeable, closeable);
 	}
 
 
 	/** Truncates the string based on length of window */
-	protected String truncate(String string) {
+	protected String truncate(final String string) {
 		String answer = string.substring(0, width / 10 - 6 < 0 ? 0 : width / 10 - 6 > string.length() ? string.length() : width / 10 - 6);
 		if (answer.length() < string.length()) {
 			answer = answer + "...";
@@ -124,7 +124,7 @@ public abstract class Window extends Component {
 
 
 	@Override
-	public boolean keyPressed(int keyCode) {
+	public boolean keyPressed(final int keyCode) {
 		if (keyCode == Input.Keys.ESCAPE && closeable) {
 			setClosing(true);
 			return true;
@@ -135,7 +135,7 @@ public abstract class Window extends Component {
 
 	/** Called when left clicked */
 	@Override
-	public boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	public boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		if (minimized) {
 			return false;
 		}
@@ -188,7 +188,7 @@ public abstract class Window extends Component {
 
 
 	/** Called when right clicked */
-	public boolean rightClick(Deque<Component> windowsCopy) {
+	public boolean rightClick(final Deque<Component> windowsCopy) {
 		if (minimized) {
 			return false;
 		}
@@ -225,8 +225,8 @@ public abstract class Window extends Component {
 
 	/** True if mouse is within the window */
 	private boolean isMouseWithin() {
-		int posX = getMouseScreenX();
-		int posY = getMouseScreenY();
+		final int posX = getMouseScreenX();
+		final int posY = getMouseScreenY();
 		return posX > x && posX < x + width && posY < y && posY > y - height;
 	}
 
@@ -290,11 +290,11 @@ public abstract class Window extends Component {
 
 	/** Renders this {@link Window} */
 	@Override
-	protected void internalComponentRender(Graphics graphics) {
+	protected void internalComponentRender(final Graphics graphics) {
 		resize();
 		reposition();
 
-		SpriteBatch batch = graphics.getSpriteBatch();
+		final SpriteBatch batch = graphics.getSpriteBatch();
 
 		batch.begin();
 		renderRectangle(x + bottomLeft.getRegionWidth(), y + bottomLeft.getRegionHeight(), width, height, isActive(), backGroundColor, graphics);
@@ -316,7 +316,7 @@ public abstract class Window extends Component {
 	/** Handles the repositioning of the {@link Window} */
 	private void reposition() {
 		if (positioning) {
-			if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode)) {
+			if (isButtonPressed(Wiring.injector().getInstance(Controls.class).leftClick.keyCode)) {
 				x = oldX + getMouseScreenX() - mx;
 				y = oldY + getMouseScreenY() - my;
 			} else {
@@ -329,9 +329,9 @@ public abstract class Window extends Component {
 	/** Handles the resizing of the {@link Window} */
 	private void resize() {
 		if (resizing) {
-			if (isButtonPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().leftClick.keyCode)) {
-				int calcualtedNewLength = oldLength + getMouseScreenX() - mx;
-				int calcualtedNewHeight = oldHeight - getMouseScreenY() + my;
+			if (isButtonPressed(Wiring.injector().getInstance(Controls.class).leftClick.keyCode)) {
+				final int calcualtedNewLength = oldLength + getMouseScreenX() - mx;
+				final int calcualtedNewHeight = oldHeight - getMouseScreenY() + my;
 				width = calcualtedNewLength < minLength ? minLength : calcualtedNewLength;
 				height = calcualtedNewHeight < minHeight ? minHeight : calcualtedNewHeight;
 			} else {
@@ -344,7 +344,7 @@ public abstract class Window extends Component {
 	/**
 	 * Renders the separator that separates the body of the window from the head
 	 */
-	private void renderSeparator(SpriteBatch batch) {
+	private void renderSeparator(final SpriteBatch batch) {
 		batch.draw(separatorEnd, x + left.getRegionWidth() + 4, y - 20);
 		batch.draw(separatorBody, x + left.getRegionWidth() + 5, y - 21, width - 10, separatorBody.getRegionHeight());
 		batch.draw(separatorEnd, x + width - 3, y - 20);
@@ -354,7 +354,7 @@ public abstract class Window extends Component {
 	/**
 	 * Handles closing of this component
 	 */
-	public void close(ArrayDeque<Component> windowsCopy) {
+	public void close(final ArrayDeque<Component> windowsCopy) {
 		if (isClosing()) {
 			if (getAlpha() == 0f) {
 				windowsCopy.remove(this);
@@ -367,7 +367,7 @@ public abstract class Window extends Component {
 	/**
 	 * Renders the window buttons of this {@link Window}
 	 */
-	private void renderWindowButtons(Graphics graphics) {
+	private void renderWindowButtons(final Graphics graphics) {
 		if (closeable) {
 			closeButton.render(
 				x + width - 7,
@@ -403,7 +403,7 @@ public abstract class Window extends Component {
 	/**
 	 * Render the title of this window
 	 */
-	private void renderTitle(SpriteBatch batch) {
+	private void renderTitle(final SpriteBatch batch) {
 		batch.setShader(Shaders.text);
 		defaultFont.setColor(1f, 1f, 1f, 1f * getAlpha() * (isActive() ? 1f : 0.7f));
 		defaultFont.draw(batch, truncate(title), x + 6, y - 3);
@@ -411,7 +411,7 @@ public abstract class Window extends Component {
 	}
 
 
-	public void setAlwaysActive(boolean alwaysActive) {
+	public void setAlwaysActive(final boolean alwaysActive) {
 		this.alwaysActive = alwaysActive;
 	}
 

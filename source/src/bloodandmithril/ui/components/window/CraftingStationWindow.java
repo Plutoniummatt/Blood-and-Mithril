@@ -16,13 +16,13 @@ import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.Craft;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.Craftable;
 import bloodandmithril.item.items.Item;
@@ -51,6 +51,9 @@ import bloodandmithril.util.datastructure.SerializableDoubleWrapper;
 @Copyright("Matthew Peck 2014")
 public class CraftingStationWindow extends Window implements Refreshable {
 
+	@Inject
+	private Controls controls;
+
 	private final Individual individual;
 	private SerializableDoubleWrapper<Item, Integer> currentlySelectedToCraft;
 	protected final CraftingStation craftingStation;
@@ -62,7 +65,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 	private static Comparator<Item> sortingComparator = new Comparator<Item>() {
 		@Override
-		public int compare(Item o1, Item o2) {
+		public int compare(final Item o1, final Item o2) {
 			return o1.getSingular(false).compareTo(o2.getSingular(false));
 		}
 	};
@@ -70,17 +73,17 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	/**
 	 * Constructor
 	 */
-	public CraftingStationWindow(String title, Individual individual, CraftingStation craftingStation) {
+	public CraftingStationWindow(final String title, final Individual individual, final CraftingStation craftingStation) {
 		super(800, 300, title, true, 800, 300, true, true, true);
 		this.individual = individual;
 		this.craftingStation = craftingStation;
 
-		Entry<Item, Integer> next = craftingStation.getCraftables().entrySet().iterator().next();
+		final Entry<Item, Integer> next = craftingStation.getCraftables().entrySet().iterator().next();
 		this.currentlySelectedToCraft = craftingStation.getCurrentlyBeingCrafted() == null ? new SerializableDoubleWrapper<Item, Integer>(next.getKey(), next.getValue()) : craftingStation.getCurrentlyBeingCrafted();
 
 		this.craftablesListing = new ScrollableListingPanel<Item, String>(this, sortingComparator, false, 35, null) {
 			@Override
-			protected String getExtraString(Entry<ListingMenuItem<Item>, String> item) {
+			protected String getExtraString(final Entry<ListingMenuItem<Item>, String> item) {
 				return "";
 			}
 
@@ -90,12 +93,12 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			}
 
 			@Override
-			protected void populateListings(List<HashMap<ListingMenuItem<Item>, String>> listings) {
+			protected void populateListings(final List<HashMap<ListingMenuItem<Item>, String>> listings) {
 				listings.add(constructCraftablesListing());
 			}
 
 			@Override
-			public boolean keyPressed(int keyCode) {
+			public boolean keyPressed(final int keyCode) {
 				return false;
 			}
 		};
@@ -124,7 +127,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 			90,
 			16,
 			() -> {
-				if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().bulkCraft.keyCode)) {
+				if (isKeyPressed(controls.bulkCraft.keyCode)) {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,
@@ -134,9 +137,9 @@ public class CraftingStationWindow extends Window implements Refreshable {
 							100,
 							args -> {
 								try {
-									int quantity = Integer.parseInt(args[0].toString());
+									final int quantity = Integer.parseInt(args[0].toString());
 									craft(quantity);
-								} catch (Exception e) {
+								} catch (final Exception e) {
 									UserInterface.addGlobalMessage("Error", "Cannot recognise " + args[0].toString() + " as a quantity.");
 								}
 							},
@@ -196,7 +199,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	/**
 	 * Called when the action button is pressed, i.e 'Smith'
 	 */
-	private void craft(int quantity) {
+	private void craft(final int quantity) {
 		if (!customCanCraft() ||
 			craftingStation.getCurrentlyBeingCrafted() != null && craftingStation.isOccupied() ||
 			!enoughMaterials && craftingStation.getCurrentlyBeingCrafted() == null) {
@@ -212,7 +215,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 
 	@Override
-	public boolean scrolled(int amount) {
+	public boolean scrolled(final int amount) {
 		return craftablesListing.scrolled(amount) || requiredMaterialsListing.scrolled(amount);
 	}
 
@@ -221,10 +224,10 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	 * Constructs the listing
 	 */
 	private HashMap<ListingMenuItem<Item>, String> constructCraftablesListing() {
-		HashMap<ListingMenuItem<Item>, String> listing = newHashMap();
+		final HashMap<ListingMenuItem<Item>, String> listing = newHashMap();
 
-		for (Entry<Item, Integer> item : craftingStation.getCraftables().entrySet()) {
-			String itemName = item.getKey().getSingular(true) + " (" + item.getValue() + ")";
+		for (final Entry<Item, Integer> item : craftingStation.getCraftables().entrySet()) {
+			final String itemName = item.getKey().getSingular(true) + " (" + item.getValue() + ")";
 			listing.put(
 				new ListingMenuItem<Item>(
 					item.getKey(),
@@ -259,7 +262,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalWindowRender(Graphics graphics) {
+	protected void internalWindowRender(final Graphics graphics) {
 		if (individual.getState().position.cpy().sub(craftingStation.position).len() > 96f) {
 			setClosing(true);
 		}
@@ -282,16 +285,16 @@ public class CraftingStationWindow extends Window implements Refreshable {
 		requiredMaterialsListing.render(graphics);
 
 		defaultFont.setColor(isActive() ? Colors.modulateAlpha(Color.GREEN, getAlpha()) : Colors.modulateAlpha(Color.GREEN, 0.5f * getAlpha()));
-		String selected = craftingStation.getCurrentlyBeingCrafted() == null ? "Selected: " : craftingStation.getAction() + "ing: ";
+		final String selected = craftingStation.getCurrentlyBeingCrafted() == null ? "Selected: " : craftingStation.getAction() + "ing: ";
 		String bulkMessage = "";
 
-		AITask currentTask = individual.getAI().getCurrentTask();
+		final AITask currentTask = individual.getAI().getCurrentTask();
 		if (currentTask instanceof Craft) {
-			int quantity = ((Craft) currentTask).getQuantity();
+			final int quantity = ((Craft) currentTask).getQuantity();
 			bulkMessage = quantity > 1 ? "(" + quantity + " left)" : "";
 		}
 
-		String progress = craftingStation.getCurrentlyBeingCrafted() == null ? "" : " (" + String.format("%.1f", 100f * craftingStation.getCraftingProgress()) + "%) " + bulkMessage;
+		final String progress = craftingStation.getCurrentlyBeingCrafted() == null ? "" : " (" + String.format("%.1f", 100f * craftingStation.getCraftingProgress()) + "%) " + bulkMessage;
 		defaultFont.draw(graphics.getSpriteBatch(), selected + currentlySelectedToCraft.t.getSingular(true) + progress, x + width / 2 - 33, y - 33);
 		defaultFont.draw(graphics.getSpriteBatch(), "Required materials:", x + width / 2 - 33, y - 133);
 
@@ -300,11 +303,11 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	}
 
 
-	private void renderItemIcon(Graphics graphics) {
+	private void renderItemIcon(final Graphics graphics) {
 		renderRectangle(x + width - 74, y - 30, 64, 64, isActive(), modulateAlpha(Color.BLACK, 0.5f), graphics);
 		renderBox(x + width - 76, y - 32, 64, 64, isActive(), borderColor, graphics);
 
-		TextureRegion icon = currentlySelectedToCraft.t.getIconTextureRegion();
+		final TextureRegion icon = currentlySelectedToCraft.t.getIconTextureRegion();
 		if (icon != null) {
 			graphics.getSpriteBatch().setShader(Shaders.filter);
 			Shaders.filter.setUniformf("color", 1f, 1f, 1f, getAlpha() * (isActive() ? 1f : 0.6f));
@@ -316,7 +319,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 	/**
 	 * Renders the buttons on this {@link CraftingStationWindow}
 	 */
-	protected void renderButtons(Graphics graphics) {
+	protected void renderButtons(final Graphics graphics) {
 		showInfoButton.render(
 			x + width / 2 + 11,
 			y - 45,
@@ -354,7 +357,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 
 	@Override
-	protected void internalLeftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+	protected void internalLeftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 		craftablesListing.leftClick(copy, windowsCopy);
 		requiredMaterialsListing.leftClick(copy, windowsCopy);
 		showInfoButton.click();
@@ -457,7 +460,7 @@ public class CraftingStationWindow extends Window implements Refreshable {
 
 		if (craftingStation.getCurrentlyBeingCrafted() != null) {
 			craftablesListing.getListing().stream().forEach(map -> {
-				for (Entry<ListingMenuItem<Item>, String> entry : map.entrySet()) {
+				for (final Entry<ListingMenuItem<Item>, String> entry : map.entrySet()) {
 					if (!entry.getKey().t.sameAs(craftingStation.getCurrentlyBeingCrafted().t)) {
 						entry.getKey().button.setIdleColor(Colors.UI_DARK_GRAY);
 						entry.getKey().button.setOverColor(Colors.UI_DARK_GRAY);

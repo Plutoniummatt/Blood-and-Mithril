@@ -23,10 +23,9 @@ import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.task.Idle;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.TradeService;
 import bloodandmithril.item.items.Item;
@@ -57,6 +56,7 @@ public class TradeWindow extends Window implements Refreshable {
 
 	@Inject private GameClientStateTracker gameClientStateTracker;
 	@Inject private TradeService tradeService;
+	@Inject private Controls controls;
 
 	/** Panels of involved traders */
 	protected ScrollableListingPanel<Item, Integer> proposerPanel;
@@ -441,7 +441,7 @@ public class TradeWindow extends Window implements Refreshable {
 						return;
 					}
 
-					if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().bulkTrade.keyCode)) {
+					if (isKeyPressed(controls.bulkTrade.keyCode)) {
 						UserInterface.addLayeredComponent(
 							new TextInputWindow(
 								250,
@@ -514,7 +514,7 @@ public class TradeWindow extends Window implements Refreshable {
 			key.getSingular(true).length() * 10,
 			16,
 			() -> {
-				if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().bulkTrade.keyCode)) {
+				if (isKeyPressed(controls.bulkTrade.keyCode)) {
 					UserInterface.addLayeredComponent(
 						new TextInputWindow(
 							250,

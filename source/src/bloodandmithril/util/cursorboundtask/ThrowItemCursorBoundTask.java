@@ -4,11 +4,11 @@ import static bloodandmithril.control.InputUtilities.isKeyPressed;
 import static bloodandmithril.core.BloodAndMithrilClient.getMouseWorldCoords;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.inject.Inject;
 
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
-import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
 import bloodandmithril.item.items.Item;
 import bloodandmithril.item.items.equipment.Equipable;
@@ -25,6 +25,10 @@ import bloodandmithril.world.Domain;
  */
 @Copyright("Matthew Peck 2015")
 public class ThrowItemCursorBoundTask extends CursorBoundTask {
+
+	@Inject
+	private Controls controls;
+
 	private Individual individual;
 	private Item item;
 
@@ -59,7 +63,7 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public void renderUIGuide(Graphics graphics) {
+	public void renderUIGuide(final Graphics graphics) {
 		UserInterface.renderArrow(individual.getEmissionPosition(), getMouseWorldCoords(), new Color(0f, 1f, 0f, 0.65f), 3f, 0f, 300f);
 	}
 
@@ -84,7 +88,7 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 
 	@Override
 	public CursorBoundTask getImmediateTask() {
-		if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().continuousThrowing.keyCode) && individual.has(item) > 0) {
+		if (isKeyPressed(controls.continuousThrowing.keyCode) && individual.has(item) > 0) {
 			return new ThrowItemCursorBoundTask(item, individual);
 		}
 		return null;
@@ -92,6 +96,6 @@ public class ThrowItemCursorBoundTask extends CursorBoundTask {
 
 
 	@Override
-	public void keyPressed(int keyCode) {
+	public void keyPressed(final int keyCode) {
 	}
 }

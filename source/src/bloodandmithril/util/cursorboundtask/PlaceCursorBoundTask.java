@@ -18,7 +18,7 @@ import com.google.inject.Inject;
 
 import bloodandmithril.character.ai.task.PlaceProp;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Wiring;
 import bloodandmithril.graphics.Graphics;
@@ -58,7 +58,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 							coords = new Vector2(getMouseWorldX(), getMouseWorldY());
 						}
 
-						if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().snapToGrid.keyCode)) {
+						if (isKeyPressed(Wiring.injector().getInstance(Controls.class).snapToGrid.keyCode)) {
 							coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 							coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 						}
@@ -105,7 +105,7 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 				} else {
 					coords = new Vector2(getMouseWorldX(), getMouseWorldY());
 				}
-				if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().snapToGrid.keyCode)) {
+				if (isKeyPressed(Wiring.injector().getInstance(Controls.class).snapToGrid.keyCode)) {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}
@@ -149,12 +149,12 @@ public class PlaceCursorBoundTask extends CursorBoundTask {
 				} else {
 					coords = new Vector2(getMouseWorldX(), getMouseWorldY());
 				}
-				if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().snapToGrid.keyCode)) {
+				if (isKeyPressed(Wiring.injector().getInstance(Controls.class).snapToGrid.keyCode)) {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}
 
-				if (isKeyPressed(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().snapToGrid.keyCode)) {
+				if (isKeyPressed(Wiring.injector().getInstance(Controls.class).snapToGrid.keyCode)) {
 					coords.x = Topography.convertToWorldTileCoord(coords.x) * Topography.TILE_SIZE;
 					coords.y = Topography.convertToWorldTileCoord(coords.y) * Topography.TILE_SIZE;
 				}
