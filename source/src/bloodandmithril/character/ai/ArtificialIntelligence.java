@@ -21,6 +21,7 @@ import bloodandmithril.character.ai.task.Wait;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.util.Logger;
 import bloodandmithril.util.Logger.LogLevel;
@@ -56,7 +57,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 	private LinkedList<Routine> aiRoutines = new LinkedList<>();
 
 	public ArtificialIntelligence copy() {
-		ArtificialIntelligence internalCopy = internalCopy();
+		final ArtificialIntelligence internalCopy = internalCopy();
 		internalCopy.hostId = hostId;
 		internalCopy.currentTask = currentTask;
 		internalCopy.mode = mode;
@@ -78,13 +79,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/**
 	 * Constructor, starts the AI processing thread if it has not been started.
 	 */
-	public ArtificialIntelligence(Individual host) {
+	public ArtificialIntelligence(final Individual host) {
 		this.hostId = host.getId();
 	}
 
 
 	/** Adds an item to the AI processing thread to await execution */
-	public void update(float delta) {
+	public void update(final float delta) {
 		AIProcessor.setup();
 
 		if (!getHost().isAlive()) {
@@ -113,7 +114,11 @@ public abstract class ArtificialIntelligence implements Serializable {
 			}
 
 			if (getCurrentTask() != null) {
-				AITask taskToExecute = getCurrentTask();
+				final AITask taskToExecute = getCurrentTask();
+				if (!taskToExecute.isInjected()) {
+					Wiring.injector().injectMembers(taskToExecute);
+					taskToExecute.setInjected(true);
+				}
 				taskToExecute.execute(delta);
 				Logger.aiDebug(hostId.getSimpleName() + " is: " + taskToExecute.getShortDescription(), LogLevel.INFO);
 
@@ -131,12 +136,12 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 * Processes specific AI routines
 	 */
 	private void processAIRoutines() {
-		LinkedList<Routine> sortedRoutines = Lists.newLinkedList(aiRoutines);
+		final LinkedList<Routine> sortedRoutines = Lists.newLinkedList(aiRoutines);
 		Collections.sort(sortedRoutines, (r1, r2) -> {
 			return new Integer(r2.getPriority()).compareTo(new Integer(r1.getPriority()));
 		});
 
-		for (Routine routine : sortedRoutines) {
+		for (final Routine routine : sortedRoutines) {
 			if (!routine.isEnabled() || !routine.areExecutionConditionsMet()) {
 				continue;
 			}
@@ -145,9 +150,9 @@ public abstract class ArtificialIntelligence implements Serializable {
 				routine.setEnabled(false);
 			}
 
-			Epoch current = Domain.getWorld(routine.getHost().getWorldId()).getEpoch().copy();
+			final Epoch current = Domain.getWorld(routine.getHost().getWorldId()).getEpoch().copy();
 			if (routine.getLastOcurrence() != null) {
-				Epoch lastOcurrence = routine.getLastOcurrence().copy();
+				final Epoch lastOcurrence = routine.getLastOcurrence().copy();
 				lastOcurrence.incrementGameTime(routine.getTimeBetweenOcurrences());
 
 				if (lastOcurrence.isLaterThan(current)) {
@@ -155,7 +160,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 				}
 			}
 
-			AITask internalCurrentTask = getCurrentTask();
+			final AITask internalCurrentTask = getCurrentTask();
 			if (internalCurrentTask instanceof Routine) {
 				if (routine.getPriority() > ((Routine) internalCurrentTask).getPriority()) {
 					routine.generateTask();
@@ -179,7 +184,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 
 	/** Clears current task */
-	public synchronized void setToAuto(boolean clearTask) {
+	public synchronized void setToAuto(final boolean clearTask) {
 		mode = AIMode.AUTO;
 		if (clearTask) {
 			currentTask = new Idle();
@@ -193,7 +198,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 
 	/** Instruct the {@link ArtificialIntelligence} to perform a {@link AITask} */
-	public synchronized void setCurrentTask(AITask task) {
+	public synchronized void setCurrentTask(final AITask task) {
 		currentTask = task;
 	}
 
@@ -210,8 +215,8 @@ public abstract class ArtificialIntelligence implements Serializable {
 	/** Reacts to any stimuli */
 	private synchronized void reactToStimuli() {
 		while(!stimuli.isEmpty()) {
-			Stimulus polled = stimuli.poll();
-			for (Routine r : aiRoutines) {
+			final Stimulus polled = stimuli.poll();
+			for (final Routine r : aiRoutines) {
 				if (r instanceof StimulusDrivenRoutine) {
 					((StimulusDrivenRoutine) r).attemptTrigger(polled);
 				}
@@ -221,13 +226,13 @@ public abstract class ArtificialIntelligence implements Serializable {
 	}
 
 	/** Calculates the distance from an individual */
-	protected float distanceFrom(Individual other) {
+	protected float distanceFrom(final Individual other) {
 		return getHost().getState().position.cpy().sub(other.getState().position).len();
 	}
 
 
 	/** Gets all stimuli */
-	public synchronized void addStimulus(Stimulus stimulus) {
+	public synchronized void addStimulus(final Stimulus stimulus) {
 		stimuli.add(stimulus);
 	}
 
@@ -239,7 +244,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 
 
 	/** Calculates the distance to a location */
-	protected float distanceFrom(Vector2 location) {
+	protected float distanceFrom(final Vector2 location) {
 		return getHost().getState().position.cpy().sub(location).len();
 	}
 
@@ -265,8 +270,8 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 *
 	 * @param distance - The maximum distance from the hosts current position that the host wanders.
 	 */
-	protected void wander(float distance, boolean fly) {
-		Individual host = Domain.getIndividual(hostId.getId());
+	protected void wander(final float distance, final boolean fly) {
+		final Individual host = Domain.getIndividual(hostId.getId());
 
 		if (Util.getRandom().nextBoolean() && getCurrentTask() instanceof Idle) {
 			try {
@@ -290,7 +295,7 @@ public abstract class ArtificialIntelligence implements Serializable {
 					true,
 					false
 				);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				setCurrentTask(new Wait(host, Util.getRandom().nextFloat() * 3f + 1f));
 			}
 		} else if (currentTask instanceof Idle) {
@@ -305,9 +310,9 @@ public abstract class ArtificialIntelligence implements Serializable {
 	 * @param individual - {@link Individual} to go to.
 	 * @param tolerance - The tolerance distance.
 	 */
-	public void goToIndividual(Individual individual, float tolerance, boolean fly) {
+	public void goToIndividual(final Individual individual, final float tolerance, final boolean fly) {
 		if (distanceFrom(individual) > tolerance) {
-			Individual host = Domain.getIndividual(hostId.getId());
+			final Individual host = Domain.getIndividual(hostId.getId());
 			setCurrentTask(
 				goTo(
 					host,
@@ -327,8 +332,8 @@ public abstract class ArtificialIntelligence implements Serializable {
 	}
 
 
-	public void addRoutine(Routine routine) {
-		for (Routine r : aiRoutines) {
+	public void addRoutine(final Routine routine) {
+		for (final Routine r : aiRoutines) {
 			r.setPriority(r.getPriority() + 1);
 		}
 		routine.setPriority(0);
@@ -336,8 +341,8 @@ public abstract class ArtificialIntelligence implements Serializable {
 	}
 
 
-	public void removeRoutine(Routine routine) {
-		for (Routine r : aiRoutines) {
+	public void removeRoutine(final Routine routine) {
+		for (final Routine r : aiRoutines) {
 			if (r.getPriority() > routine.getPriority()) {
 				r.setPriority(r.getPriority() - 1);
 			}

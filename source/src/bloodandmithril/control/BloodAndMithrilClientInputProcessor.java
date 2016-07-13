@@ -155,6 +155,8 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 		final boolean doubleClick = rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
 		final boolean uiClicked = false;
 		rightDoubleClickTimer = currentTime;
+
+		handlers.rightClick(doubleClick);
 	}
 
 

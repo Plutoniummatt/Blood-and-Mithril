@@ -38,6 +38,7 @@ import bloodandmithril.character.combat.CombatService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
@@ -67,6 +68,7 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	private final Set<Integer> toBeAttacked = Sets.newHashSet();
 
 	@Inject private transient GameClientStateTracker gameClientStateTracker;
+	@Inject private transient Controls controls;
 
 	@Inject
 	Attack() {
@@ -144,8 +146,8 @@ public final class Attack extends CompositeAITask implements RoutineTask {
 	@Override
 	public final boolean uponCompletion() {
 		final Individual host = Domain.getIndividual(hostId.getId());
-		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveRight.keyCode, false);
-		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveLeft.keyCode, false);
+		host.sendCommand(controls.moveRight.keyCode, false);
+		host.sendCommand(controls.moveLeft.keyCode, false);
 		if (!getHost().isWalking()) {
 			getHost().setWalking(true);
 		}

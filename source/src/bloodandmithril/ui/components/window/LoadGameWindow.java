@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
+import bloodandmithril.core.ClientModule;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.GameSetupService;
@@ -124,6 +125,7 @@ public class LoadGameWindow extends Window {
 								() -> {
 									setClosing(true);
 									ClientServerInterface.setServer(true);
+									Wiring.reconfigure(new ClientModule());
 									graphics.setFading(true);
 									MainMenuWindow.removeWindows();
 									threadWait(2000);

@@ -50,7 +50,7 @@ public final class DailyRoutine extends Routine {
 	/**
 	 * Constructor
 	 */
-	public DailyRoutine(IndividualIdentifier hostId, Float routineTime, float toleranceTime) {
+	public DailyRoutine(final IndividualIdentifier hostId, final Float routineTime, final float toleranceTime) {
 		super(hostId);
 		this.routineTime = routineTime;
 		this.toleranceTime = toleranceTime;
@@ -60,7 +60,7 @@ public final class DailyRoutine extends Routine {
 
 	@Override
 	public final boolean areExecutionConditionsMet() {
-		Epoch currentEpoch = Domain.getWorld(getHost().getWorldId()).getEpoch();
+		final Epoch currentEpoch = Domain.getWorld(getHost().getWorldId()).getEpoch();
 		return currentEpoch.getTime() >= routineTime && currentEpoch.getTime() <= routineTime + toleranceTime && (lastExecutedEpoch == null || currentEpoch.dayOfMonth != lastExecutedEpoch.dayOfMonth);
 	}
 
@@ -84,7 +84,7 @@ public final class DailyRoutine extends Routine {
 	@Override
 	public final boolean uponCompletion() {
 		if (task != null) {
-			AITask toNullify = task;
+			final AITask toNullify = task;
 
 			if (toNullify.uponCompletion()) {
 				return true;
@@ -100,7 +100,7 @@ public final class DailyRoutine extends Routine {
 
 
 	@Override
-	public void execute(float delta) {
+	public void execute(final float delta) {
 		if (task != null) {
 			task.execute(delta);
 		}
@@ -108,8 +108,8 @@ public final class DailyRoutine extends Routine {
 
 
 	@Override
-	public final Deque<Panel> constructEditWizard(EditAIRoutineWindow parent) {
-		Deque<Panel> wizard = new ArrayDeque<>();
+	public final Deque<Panel> constructEditWizard(final EditAIRoutineWindow parent) {
+		final Deque<Panel> wizard = new ArrayDeque<>();
 
 		wizard.add(new DailyRoutineInfoPanel(parent));
 
@@ -125,7 +125,7 @@ public final class DailyRoutine extends Routine {
 	@Copyright("Matthew Peck 2015")
 	public final class DailyRoutineInfoPanel extends RoutinePanel {
 		private Button changeTimeButton, changeToleranceButton;
-		protected DailyRoutineInfoPanel(Component parent) {
+		protected DailyRoutineInfoPanel(final Component parent) {
 			super(parent);
 			this.changeTimeButton = new Button(
 				"Change time",
@@ -144,9 +144,9 @@ public final class DailyRoutine extends Routine {
 							100,
 							args -> {
 								try {
-									String[] split = ((String) args[0]).split(":");
+									final String[] split = ((String) args[0]).split(":");
 									routineTime = Float.parseFloat(split[0]) + Float.parseFloat(split[1])/60f;
-								} catch (Exception e) {
+								} catch (final Exception e) {
 									UserInterface.addClientMessage("Error", "Enter time in HH:mm format");
 								}
 							},
@@ -178,9 +178,9 @@ public final class DailyRoutine extends Routine {
 							100,
 							args -> {
 								try {
-									String[] split = ((String) args[0]).split(":");
+									final String[] split = ((String) args[0]).split(":");
 									toleranceTime = Float.parseFloat(split[0]) + Float.parseFloat(split[1])/60f;
-								} catch (Exception e) {
+								} catch (final Exception e) {
 									UserInterface.addClientMessage("Error", "Enter time in HH:mm format");
 								}
 							},
@@ -198,11 +198,11 @@ public final class DailyRoutine extends Routine {
 		}
 
 		@Override
-		public final boolean leftClick(List<ContextMenu> copy, Deque<Component> windowsCopy) {
+		public final boolean leftClick(final List<ContextMenu> copy, final Deque<Component> windowsCopy) {
 			if (changeTaskButton.click()) {
-				ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
+				final ContextMenu menu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), false);
 
-				for (Class<? extends RoutineTask> routineClass : RoutineTasks.getTaskClasses()) {
+				for (final Class<? extends RoutineTask> routineClass : RoutineTasks.getTaskClasses()) {
 					menu.addMenuItem(
 						new MenuItem(
 							routineClass.getAnnotation(Name.class).name(),
@@ -223,7 +223,7 @@ public final class DailyRoutine extends Routine {
 		}
 
 		@Override
-		public final void render(Graphics graphics) {
+		public final void render(final Graphics graphics) {
 			super.render(graphics);
 			defaultFont.setColor(parent.isActive() ? Colors.modulateAlpha(Color.ORANGE, parent.getAlpha()) : Colors.modulateAlpha(Color.ORANGE, 0.6f * parent.getAlpha()));
 
@@ -249,7 +249,7 @@ public final class DailyRoutine extends Routine {
 					width - 5
 				);
 			} else {
-				Epoch copy = lastExecutedEpoch.copy();
+				final Epoch copy = lastExecutedEpoch.copy();
 				copy.incrementDay();
 				defaultFont.drawWrapped(
 					graphics.getSpriteBatch(),

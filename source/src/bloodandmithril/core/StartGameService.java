@@ -20,13 +20,6 @@ import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
-import bloodandmithril.control.InputHandlers;
-import bloodandmithril.control.keydown.GameSpeedControlKeyPressedHandler;
-import bloodandmithril.control.keydown.IndividualUIKeyPressedHandler;
-import bloodandmithril.control.leftclick.CoreInGameLeftClickHandler;
-import bloodandmithril.control.rightclick.CancelCursorBoundTaskRightClickHandler;
-import bloodandmithril.control.rightclick.InGameContextMenuSpawner;
-import bloodandmithril.control.rightclick.IndividualControlRightClickHandler;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.graphics.Graphics;
@@ -50,7 +43,6 @@ import bloodandmithril.world.topography.Topography;
 @Copyright("Matthew Peck 2016")
 public class StartGameService {
 
-	@Inject	private InputHandlers inputHandlers;
 	@Inject	private Threading threading;
 	@Inject	private Graphics graphics;
 	@Inject	private ParameterPersistenceService parameterPersistenceService;
@@ -70,7 +62,6 @@ public class StartGameService {
 	) {
 		final Faction playerFaction = setupFactions(selectedRace);
 		reconfigureGameClient();
-		addAdditionalInputHandlers();
 
 		threading.clientProcessingThreadPool.execute(() -> {
 			closeWindowsAndFadeToBlack();
@@ -159,20 +150,6 @@ public class StartGameService {
 
 		// "Install" the ClientModule
 		Wiring.reconfigure(new ClientModule());
-	}
-
-
-	private void addAdditionalInputHandlers() {
-		// Add additional input handlers
-		// WARNING: Ordering here is very important
-		inputHandlers.addKeyPressedHandler(IndividualUIKeyPressedHandler.class);
-		inputHandlers.addKeyPressedHandler(GameSpeedControlKeyPressedHandler.class);
-
-		inputHandlers.addLeftClickHandler(CoreInGameLeftClickHandler.class);
-
-		inputHandlers.addRightClickHandler(CancelCursorBoundTaskRightClickHandler.class);
-		inputHandlers.addRightClickHandler(InGameContextMenuSpawner.class);
-		inputHandlers.addRightClickHandler(IndividualControlRightClickHandler.class);
 	}
 
 

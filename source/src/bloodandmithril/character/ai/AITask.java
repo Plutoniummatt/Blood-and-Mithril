@@ -5,6 +5,7 @@ import java.io.Serializable;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.core.Copyright;
+import bloodandmithril.core.Wiring;
 import bloodandmithril.util.Task;
 import bloodandmithril.world.Domain;
 
@@ -20,11 +21,17 @@ public abstract class AITask implements Serializable {
 	/** The host of this task */
 	protected final IndividualIdentifier hostId;
 
+	private transient boolean injected = false;
+
 	/**
 	 * Protected constructor
 	 */
-	protected AITask(IndividualIdentifier hostId) {
+	protected AITask(final IndividualIdentifier hostId) {
 		this.hostId = hostId;
+
+		// Sadface...
+		Wiring.injector().injectMembers(this);
+		this.injected = true;
 	}
 
 	public IndividualIdentifier getHostId() {
@@ -46,4 +53,13 @@ public abstract class AITask implements Serializable {
 
 	/** Execute the implementation of this task. */
 	public abstract void execute(float delta);
+
+
+	public boolean isInjected() {
+		return injected;
+	}
+
+	public void setInjected(final boolean injected) {
+		this.injected = injected;
+	}
 }

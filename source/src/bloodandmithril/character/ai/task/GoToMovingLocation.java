@@ -32,6 +32,7 @@ import bloodandmithril.character.ai.routine.StimulusDrivenRoutine;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
+import bloodandmithril.control.Controls;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
 import bloodandmithril.core.Name;
@@ -64,6 +65,7 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	private SerializableFunction<Boolean> repathCondition;
 
 	@Inject private transient GameClientStateTracker gameClientStateTracker;
+	@Inject private transient Controls controls;
 
 	@Inject
 	GoToMovingLocation() {
@@ -163,9 +165,9 @@ public class GoToMovingLocation extends AITask implements RoutineTask, NextWaypo
 	public boolean uponCompletion() {
 		final Individual host = Domain.getIndividual(hostId.getId());
 
-		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveRight.keyCode, false);
-		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().moveLeft.keyCode, false);
-		host.sendCommand(Wiring.injector().getInstance(BloodAndMithrilClientInputProcessor.class).getKeyMappings().walk.keyCode, host.isWalking());
+		host.sendCommand(controls.moveRight.keyCode, false);
+		host.sendCommand(controls.moveLeft.keyCode, false);
+		host.sendCommand(controls.walk.keyCode, host.isWalking());
 
 		return false;
 	}
