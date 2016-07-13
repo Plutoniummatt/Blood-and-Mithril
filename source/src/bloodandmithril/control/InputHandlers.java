@@ -15,7 +15,7 @@ import bloodandmithril.core.Copyright;
 import bloodandmithril.core.Wiring;
 
 /**
- * Maintains a list of {@link KeyPressedHandler}s that are currently in use
+ * Maintains a list of Input Handlers that are currently in use
  *
  * @author Matt
  */
