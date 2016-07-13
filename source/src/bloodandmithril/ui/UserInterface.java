@@ -16,7 +16,7 @@ import static bloodandmithril.item.items.equipment.weapon.RangedWeapon.rangeCont
 import static bloodandmithril.networking.ClientServerInterface.isClient;
 import static bloodandmithril.networking.ClientServerInterface.isServer;
 import static bloodandmithril.networking.ClientServerInterface.ping;
-import static bloodandmithril.ui.UserInterface.FloatingText.floatingText;
+import static bloodandmithril.ui.FloatingText.floatingText;
 import static bloodandmithril.util.Fonts.defaultFont;
 import static bloodandmithril.world.topography.Topography.TILE_SIZE;
 import static bloodandmithril.world.topography.Topography.convertToWorldTileCoord;
@@ -31,7 +31,6 @@ import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,7 +65,6 @@ import bloodandmithril.character.ai.task.TakeItem;
 import bloodandmithril.character.ai.task.Travel;
 import bloodandmithril.character.faction.FactionControlService;
 import bloodandmithril.character.individuals.Individual;
-import bloodandmithril.character.individuals.IndividualContextMenuService;
 import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
@@ -97,7 +95,6 @@ import bloodandmithril.ui.components.window.MessageWindow;
 import bloodandmithril.ui.components.window.Window;
 import bloodandmithril.util.Countdown;
 import bloodandmithril.util.Fonts;
-import bloodandmithril.util.SerializableColor;
 import bloodandmithril.util.SerializableFunction;
 import bloodandmithril.util.Shaders;
 import bloodandmithril.util.Task;
@@ -131,7 +128,7 @@ public class UserInterface {
 	public HashMap<String, Button> buttons = newHashMap();
 
 	/** Unpause button */
-	private static Button unpauseButton, savingButton;
+	public static Button unpauseButton, savingButton;
 
 	/** {@link ContextMenu}s */
 	public static List<ContextMenu> contextMenus = new ArrayList<ContextMenu>();
@@ -150,7 +147,7 @@ public class UserInterface {
 	public static Texture iconTexture;
 
 	/** Initial coordinates for the drag box, see {@link #renderDragBox()} */
-	private static Vector2 initialLeftMouseDragCoordinates = null;
+	public static Vector2 initialLeftMouseDragCoordinates = null;
 	public static Vector2 initialRightMouseDragCoordinates = null;
 
 	/** A flag to indicate whether we should render the available interfaces or existing interfaces */
@@ -180,7 +177,6 @@ public class UserInterface {
 
 	private static Deque<Task> uiTasks;
 
-	private static IndividualContextMenuService individualContextMenuService;
 	private static BloodAndMithrilClientInputProcessor inputProcessor;
 	private static Graphics graphics;
 	private static GameSaver gameSaver;
@@ -1276,70 +1272,6 @@ public class UserInterface {
 	}
 
 
-	/**
-	 * Called when left mouse button is clicked
-	 */
-	public boolean leftClick() {
-		boolean clicked = false;
-		if (gameClientStateTracker.isPaused()) {
-			if (unpauseButton != null) {
-				clicked = unpauseButton.click();
-			}
-			return false;
-		}
-
-		for (final Entry<String, Button> buttonEntry : buttons.entrySet()) {
-			clicked = buttonEntry.getValue().click() || clicked;
-		}
-
-		final List<ContextMenu> contextMenuCopy = new ArrayList<ContextMenu>(contextMenus);
-
-		if (!layeredComponents.isEmpty() && contextMenus.isEmpty()) {
-			final ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
-			final Iterator<Component> iter = layeredComponents.descendingIterator();
-			while (iter.hasNext()) {
-				final Component next = iter.next();
-				if (next.leftClick(contextMenuCopy, windowsCopy)) {
-					clicked = true;
-					break;
-				}
-			}
-			if (windowsCopy.size() >= layeredComponents.size()) {
-				layeredComponents.clear();
-				layeredComponents.addAll(windowsCopy);
-			}
-		}
-
-		final Iterator<ContextMenu> iterator = contextMenus.iterator();
-		while (iterator.hasNext()) {
-			final ContextMenu menu = iterator.next();
-			if (!iterator.hasNext()) {
-				clicked = menu.leftClick(contextMenuCopy, null) || clicked;
-			}
-			if (!menu.isInside(getMouseScreenX(), getMouseScreenY())) {
-				if (menu.getTop() == null) {
-					contextMenuCopy.remove(menu);
-				} else {
-					if (!menu.getTop().isInside(getMouseScreenX(), getMouseScreenY())) {
-						contextMenuCopy.remove(menu);
-					}
-				}
-			}
-		}
-
-		contextMenus.clear();
-		contextMenus.addAll(contextMenuCopy);
-
-		if (!clicked) {
-			initialLeftMouseDragCoordinates = new Vector2(getMouseScreenX(), getMouseScreenY());
-		} else {
-			initialLeftMouseDragCoordinates = null;
-		}
-
-		return clicked;
-	}
-
-
 	public static void addFloatingText(final String text, final Color color, final Vector2 position, final boolean ui, final int worldId) {
 		addFloatingText(floatingText(text, color, position, ui), worldId, false);
 	}
@@ -1406,106 +1338,6 @@ public class UserInterface {
 				component.setClosing(true);
 			}
 		}
-	}
-
-
-	/**
-	 * Called when right mouse button is clicked
-	 */
-	public static boolean rightClick() {
-		boolean clicked = false;
-
-		if (gameClientStateTracker.isPaused() || gameSaver.isSaving()) {
-			return false;
-		}
-
-		contextMenus.clear();
-		final ContextMenu newMenu = new ContextMenu(getMouseScreenX(), getMouseScreenY(), true);
-
-		if (!layeredComponents.isEmpty()) {
-			final ArrayDeque<Component> windowsCopy = new ArrayDeque<Component>(layeredComponents);
-			final Iterator<Component> iter = layeredComponents.descendingIterator();
-			while (iter.hasNext()) {
-				final Component next = iter.next();
-				if (next instanceof Window && ((Window)next).rightClick(windowsCopy)) {
-					clicked = true;
-					break;
-				}
-			}
-			layeredComponents.clear();
-			layeredComponents.addAll(windowsCopy);
-
-			if (clicked) {
-				return true;
-			}
-		}
-
-		for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-			individualContextMenuService = Wiring.injector().getInstance(IndividualContextMenuService.class);
-			final Individual indi = Domain.getIndividual(indiKey);
-			if (indi.isMouseOver()) {
-				final ContextMenu secondaryMenu = individualContextMenuService.getContextMenu(indi);
-				newMenu.getMenuItems().add(
-					new MenuItem(
-						indi.getId().getSimpleName() + " (" + indi.getClass().getSimpleName() + ")",
-						() -> {
-							secondaryMenu.x = getMouseScreenX();
-							secondaryMenu.y = getMouseScreenY();
-						},
-						Color.WHITE,
-						indi.getToolTipTextColor(),
-						indi.getToolTipTextColor(),
-						() -> { return secondaryMenu; }
-					)
-				);
-			}
-		}
-
-		for (final int propKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Prop.class, getMouseWorldX(), getMouseWorldY())) {
-			final Prop prop = gameClientStateTracker.getActiveWorld().props().getProp(propKey);
-			if (prop.isMouseOver()) {
-				final ContextMenu secondaryMenu = prop.getContextMenu();
-				newMenu.getMenuItems().add(
-					new MenuItem(
-						prop.getContextMenuItemLabel(),
-						() -> {
-							secondaryMenu.x = getMouseScreenX();
-							secondaryMenu.y = getMouseScreenY();
-						},
-						prop.getContextMenuColor(),
-						Color.GREEN,
-						Color.GRAY,
-						() -> { return secondaryMenu; }
-					)
-				);
-			}
-		}
-
-		for (final Integer itemId : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Item.class, getMouseWorldX(), getMouseWorldY())) {
-			final Item item = gameClientStateTracker.getActiveWorld().items().getItem(itemId);
-			if (item.isMouseOver()) {
-				final ContextMenu secondaryMenu = item.getContextMenu();
-				newMenu.getMenuItems().add(
-					new MenuItem(
-						item.getSingular(true),
-						() -> {
-							secondaryMenu.x = getMouseScreenX();
-							secondaryMenu.y = getMouseScreenY();
-						},
-						Color.ORANGE,
-						Color.GREEN,
-						Color.GRAY,
-						() -> { return secondaryMenu; }
-					)
-				);
-			}
-		}
-
-		if (!newMenu.getMenuItems().isEmpty()) {
-			contextMenus.add(newMenu);
-		}
-
-		return clicked;
 	}
 
 
@@ -1609,41 +1441,6 @@ public class UserInterface {
 
 
 	/**
-	 * Floating text that is rendered at UI layer
-	 *
-	 * @author Matt
-	 */
-	public static class FloatingText implements Serializable {
-		private static final long serialVersionUID = -2300891549168870979L;
-
-		public final String text;
-		public final SerializableColor color;
-		public final Vector2 worldPosition;
-		public float maxLife = 1f, life = 1f;
-		public boolean ui;
-
-		private FloatingText(final String text, final SerializableColor color, final Vector2 worldPosition, final boolean ui) {
-			this.text = text;
-			this.color = color;
-			this.worldPosition = worldPosition;
-			this.ui = ui;
-		}
-
-		public static FloatingText floatingText(final String text, final Color color, final Vector2 worldPosition, final boolean ui) {
-			return new FloatingText(text, new SerializableColor(color), worldPosition, ui);
-		}
-
-
-		public static FloatingText floatingText(final String text, final Color color, final Vector2 worldPosition, final float life, final boolean ui) {
-			final FloatingText floatingText = new FloatingText(text, new SerializableColor(color), worldPosition, ui);
-			floatingText.maxLife = life;
-			floatingText.life = life;
-			return floatingText;
-		}
-	}
-
-
-	/**
 	 * Where an UI element should be rendered
 	 *
 	 * @author Matt
@@ -1677,5 +1474,15 @@ public class UserInterface {
 
 	public void removeButton(final String button) {
 		buttons.remove(button);
+	}
+
+
+	public void clearLayeredComponents() {
+		layeredComponents.clear();
+	}
+
+
+	public void addLayeredComponents(final Collection<Component> toAdd) {
+		layeredComponents.addAll(toAdd);
 	}
 }

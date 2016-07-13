@@ -1,10 +1,5 @@
 package bloodandmithril.control;
 
-import static bloodandmithril.character.ai.pathfinding.PathFinder.getGroundAboveOrBelowClosestEmptyOrPlatformSpace;
-import static bloodandmithril.control.InputUtilities.getMouseScreenX;
-import static bloodandmithril.control.InputUtilities.getMouseScreenY;
-import static bloodandmithril.control.InputUtilities.getMouseWorldX;
-import static bloodandmithril.control.InputUtilities.getMouseWorldY;
 import static bloodandmithril.control.InputUtilities.isButtonPressed;
 import static bloodandmithril.control.InputUtilities.isKeyPressed;
 
@@ -12,33 +7,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import bloodandmithril.character.ai.AIProcessor;
-import bloodandmithril.character.ai.pathfinding.Path.WayPoint;
-import bloodandmithril.character.ai.task.Attack;
-import bloodandmithril.character.ai.task.MineTile;
-import bloodandmithril.character.faction.FactionControlService;
-import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
-import bloodandmithril.core.Wiring;
-import bloodandmithril.event.events.IndividualMoved;
 import bloodandmithril.graphics.Graphics;
-import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.persistence.GameSaver;
-import bloodandmithril.playerinteraction.individual.api.IndividualSelectionService;
 import bloodandmithril.ui.UserInterface;
 import bloodandmithril.util.CursorBoundTask;
 import bloodandmithril.util.Function;
-import bloodandmithril.util.Util;
-import bloodandmithril.util.cursorboundtask.ThrowItemCursorBoundTask;
-import bloodandmithril.world.Domain;
-import bloodandmithril.world.topography.Topography;
 import bloodandmithril.world.topography.Topography.NoTileFoundException;
-import bloodandmithril.world.topography.tile.Tile.EmptyTile;
 
 /**
  * {@link InputProcessor} for the game client
@@ -51,7 +30,6 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 
 	@Inject private Controls controls;
 	@Inject	private Graphics graphics;
-	@Inject	private FactionControlService factionControlService;
 	@Inject	private GameSaver gameSaver;
 	@Inject	private GameClientStateTracker gameClientStateTracker;
 	@Inject private InputHandlers handlers;
@@ -134,7 +112,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 			return false;
 		}
 
-		handlers.iterateKeyDown(keycode);
+		handlers.keyDown(keycode);
 
 		return false;
 	}
@@ -175,156 +153,14 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 	private void rightClick() throws NoTileFoundException {
 		final long currentTime = System.currentTimeMillis();
 		final boolean doubleClick = rightDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTime;
-		boolean uiClicked = false;
+		final boolean uiClicked = false;
 		rightDoubleClickTimer = currentTime;
-
-		if (cursorBoundTask != null && cursorBoundTask.canCancel()) {
-			cursorBoundTask = null;
-			return;
-		}
-
-		UserInterface.initialRightMouseDragCoordinates = new Vector2(getMouseScreenX(), getMouseScreenY());
-
-		if (isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
-			meleeAttack();
-		} else if (isKeyPressed(controls.rangedAttack.keyCode)) {
-			rangedAttack();
-		} else if (!isKeyPressed(Keys.ANY_KEY)) {
-			uiClicked = UserInterface.rightClick();
-		}
-
-		if (UserInterface.contextMenus.isEmpty() && !uiClicked && !isKeyPressed(controls.rightClickDragBox.keyCode) && !isKeyPressed(controls.attack.keyCode) && !isKeyPressed(controls.rangedAttack.keyCode)) {
-			final Vector2 mouseCoordinate = new Vector2(getMouseWorldX(), getMouseWorldY());
-			for (final Individual indi : Sets.newHashSet(gameClientStateTracker.getSelectedIndividuals())) {
-				if (isKeyPressed(controls.mineTile.keyCode) && !Domain.getWorld(indi.getWorldId()).getTopography().getTile(mouseCoordinate, true).getClass().equals(EmptyTile.class)) {
-					mineTile(mouseCoordinate, indi);
-				} else if (isKeyPressed(controls.jump.keyCode)) {
-					jump(indi);
-				} else {
-					moveIndividual(indi);
-				}
-			}
-		}
 	}
 
 
 	private void middleClick(final int screenX, final int screenY) {
 		camFollowFunction = null;
 		saveCamDragCoordinates(screenX, screenY);
-	}
-
-
-	private void moveIndividual(final Individual indi) throws NoTileFoundException {
-		final float spread = Math.min(indi.getWidth() * (Util.getRandom().nextFloat() - 0.5f) * 0.5f * (gameClientStateTracker.getSelectedIndividuals().size() - 1), Controls.INDIVIDUAL_SPREAD);
-		if (ClientServerInterface.isServer()) {
-			AIProcessor.sendPathfindingRequest(
-				indi,
-				new WayPoint(
-					Topography.convertToWorldCoord(
-						getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
-							new Vector2(
-								getMouseWorldX() + (isKeyPressed(controls.forceMove.keyCode) ? 0f : spread),
-								getMouseWorldY()
-							),
-							10,
-							Domain.getWorld(indi.getWorldId())
-						),
-						true
-					)
-				),
-				false,
-				150f,
-				!isKeyPressed(controls.forceMove.keyCode),
-				isKeyPressed(controls.addWayPoint.keyCode)
-			);
-
-			Domain.getWorld(indi.getWorldId()).addEvent(new IndividualMoved(indi));
-		} else {
-			ClientServerInterface.SendRequest.sendMoveIndividualRequest(
-				indi.getId().getId(),
-				Topography.convertToWorldCoord(
-					getGroundAboveOrBelowClosestEmptyOrPlatformSpace(
-						new Vector2(
-							getMouseWorldX() + (isKeyPressed(controls.forceMove.keyCode) ? 0f : spread),
-							getMouseWorldY()
-						),
-						10,
-						Domain.getWorld(indi.getWorldId())
-					),
-					true
-				),
-				!isKeyPressed(controls.forceMove.keyCode),
-				isKeyPressed(controls.addWayPoint.keyCode),
-				false, null, null
-			);
-		}
-	}
-
-
-	private void jump(final Individual indi) {
-		if (ClientServerInterface.isServer()) {
-			AIProcessor.sendJumpResolutionRequest(
-				indi,
-				indi.getState().position.cpy(),
-				new Vector2(getMouseWorldX(), getMouseWorldY()),
-				isKeyPressed(controls.addWayPoint.keyCode)
-			);
-		} else {
-			ClientServerInterface.SendRequest.sendMoveIndividualRequest(
-				indi.getId().getId(),
-				null,
-				!isKeyPressed(controls.forceMove.keyCode),
-				isKeyPressed(controls.addWayPoint.keyCode),
-				true,
-				indi.getState().position.cpy(),
-				new Vector2(getMouseWorldX(), getMouseWorldY())
-			);
-		}
-	}
-
-
-	private void mineTile(final Vector2 mouseCoordinate, final Individual indi) {
-		if (ClientServerInterface.isServer()) {
-			indi.getAI().setCurrentTask(new MineTile(indi, mouseCoordinate));
-		} else {
-			ClientServerInterface.SendRequest.sendMineTileRequest(indi.getId().getId(), new Vector2(getMouseWorldX(), getMouseWorldY()));
-		}
-	}
-
-
-	private void rangedAttack() {
-		for (final Individual selected : gameClientStateTracker.getSelectedIndividuals()) {
-			if (selected.canAttackRanged()) {
-				if (ClientServerInterface.isServer()) {
-					selected.attackRanged(new Vector2(getMouseWorldX(), getMouseWorldY()));
-				} else {
-					ClientServerInterface.SendRequest.sendAttackRangedRequest(selected, new Vector2(getMouseWorldX(), getMouseWorldY()));
-				}
-			}
-		}
-	}
-
-
-	private void meleeAttack() {
-		if (!gameClientStateTracker.getSelectedIndividuals().isEmpty()) {
-			for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-				final Individual indi = Domain.getIndividual(indiKey);
-				if (indi.isMouseOver() && indi.isAlive()) {
-					for (final Individual selected : gameClientStateTracker.getSelectedIndividuals()) {
-						if (indi == selected) {
-							continue;
-						}
-
-						if (ClientServerInterface.isServer()) {
-							selected.getAI().setCurrentTask(new Attack(selected, indi));
-						} else {
-							ClientServerInterface.SendRequest.sendRequestAttack(selected, indi);
-						}
-					}
-					break;
-				}
-			}
-		}
 	}
 
 
@@ -340,61 +176,7 @@ public class BloodAndMithrilClientInputProcessor implements InputProcessor {
 		final boolean doubleClick = leftDoubleClickTimer + Controls.DOUBLE_CLICK_TIME > currentTimeMillis;
 		leftDoubleClickTimer = currentTimeMillis;
 
-		final boolean uiClicked = graphics.getUi().leftClick();
-
-		Individual individualClicked = null;
-		if (gameClientStateTracker.getActiveWorld() != null) {
-			for (final int indiKey : gameClientStateTracker.getActiveWorld().getPositionalIndexMap().getNearbyEntityIds(Individual.class, getMouseWorldX(), getMouseWorldY())) {
-				final Individual indi = Domain.getIndividual(indiKey);
-				if (indi.isMouseOver()) {
-					individualClicked = indi;
-				}
-			}
-		}
-
-		if (!uiClicked && gameClientStateTracker.isInGame()) {
-			if (getCursorBoundTask() != null) {
-				if (getCursorBoundTask().executionConditionMet()) {
-					if (getCursorBoundTask().isWorldCoordinate()) {
-						setCursorBoundTask(getCursorBoundTask().execute(
-							(int) getMouseWorldX(),
-							(int) getMouseWorldY()
-						));
-					} else {
-						setCursorBoundTask(getCursorBoundTask().execute(
-							getMouseScreenX(),
-							getMouseScreenY()
-						));
-					}
-				}
-				return;
-			}
-
-			final IndividualSelectionService individualSelectionService = Wiring.injector().getInstance(IndividualSelectionService.class);
-			if (individualClicked == null) {
-				if (doubleClick && (cursorBoundTask == null || !(cursorBoundTask instanceof ThrowItemCursorBoundTask))) {
-					for (final Individual indi : Domain.getIndividuals().values()) {
-						if (factionControlService.isControllable(indi)) {
-							individualSelectionService.deselect(indi);
-						}
-					}
-					if (ClientServerInterface.isServer()) {
-						gameClientStateTracker.clearSelectedIndividuals();
-					}
-				}
-			} else {
-				for (final Individual indi : Domain.getIndividuals().values()) {
-					if (factionControlService.isControllable(indi) && indi.getId().getId() != individualClicked.getId().getId() && !isKeyPressed(controls.selectIndividual.keyCode)) {
-						individualSelectionService.deselect(indi);
-					}
-				}
-
-				if (factionControlService.isControllable(individualClicked) && individualClicked.isAlive()) {
-					individualSelectionService.select(individualClicked, ClientServerInterface.getClientID());
-				}
-
-			}
-		}
+		handlers.leftClick(doubleClick);
 	}
 
 

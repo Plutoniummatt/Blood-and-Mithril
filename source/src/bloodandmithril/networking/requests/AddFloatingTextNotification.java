@@ -2,8 +2,8 @@ package bloodandmithril.networking.requests;
 
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Response;
+import bloodandmithril.ui.FloatingText;
 import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.UserInterface.FloatingText;
 
 @Copyright("Matthew Peck 2014")
 public class AddFloatingTextNotification implements Response {
@@ -14,7 +14,7 @@ public class AddFloatingTextNotification implements Response {
 	/**
 	 * Constructor
 	 */
-	public AddFloatingTextNotification(FloatingText floatingText, int worldId) {
+	public AddFloatingTextNotification(final FloatingText floatingText, final int worldId) {
 		this.floatingText = floatingText;
 		this.worldId = worldId;
 	}

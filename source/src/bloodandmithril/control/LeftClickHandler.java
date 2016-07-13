@@ -13,5 +13,5 @@ public interface LeftClickHandler {
 	/**
 	 * Handles the left click, returning true if subsequent handlers should be ignored
 	 */
-	public boolean leftClick();
+	public boolean leftClick(boolean doubleClick);
 }

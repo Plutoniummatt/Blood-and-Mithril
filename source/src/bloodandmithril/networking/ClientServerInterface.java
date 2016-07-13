@@ -306,7 +306,7 @@ import bloodandmithril.prop.plant.DryGrass;
 import bloodandmithril.prop.plant.GreenGrass;
 import bloodandmithril.prop.plant.PlantProp;
 import bloodandmithril.prop.plant.seed.SeedProp;
-import bloodandmithril.ui.UserInterface.FloatingText;
+import bloodandmithril.ui.FloatingText;
 import bloodandmithril.ui.components.TextBubble.TextBubbleSerializableBean;
 import bloodandmithril.ui.components.panel.ScrollableListingPanel.ListingMenuItem;
 import bloodandmithril.util.Countdown;

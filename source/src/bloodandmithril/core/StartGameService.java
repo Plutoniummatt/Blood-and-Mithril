@@ -23,6 +23,10 @@ import bloodandmithril.control.BloodAndMithrilClientInputProcessor;
 import bloodandmithril.control.InputHandlers;
 import bloodandmithril.control.keydown.GameSpeedControlKeyPressedHandler;
 import bloodandmithril.control.keydown.IndividualUIKeyPressedHandler;
+import bloodandmithril.control.leftclick.CoreInGameLeftClickHandler;
+import bloodandmithril.control.rightclick.CancelCursorBoundTaskRightClickHandler;
+import bloodandmithril.control.rightclick.InGameContextMenuSpawner;
+import bloodandmithril.control.rightclick.IndividualControlRightClickHandler;
 import bloodandmithril.generation.Structures;
 import bloodandmithril.generation.superstructure.SuperStructure;
 import bloodandmithril.graphics.Graphics;
@@ -160,8 +164,15 @@ public class StartGameService {
 
 	private void addAdditionalInputHandlers() {
 		// Add additional input handlers
+		// WARNING: Ordering here is very important
 		inputHandlers.addKeyPressedHandler(IndividualUIKeyPressedHandler.class);
 		inputHandlers.addKeyPressedHandler(GameSpeedControlKeyPressedHandler.class);
+
+		inputHandlers.addLeftClickHandler(CoreInGameLeftClickHandler.class);
+
+		inputHandlers.addRightClickHandler(CancelCursorBoundTaskRightClickHandler.class);
+		inputHandlers.addRightClickHandler(InGameContextMenuSpawner.class);
+		inputHandlers.addRightClickHandler(IndividualControlRightClickHandler.class);
 	}
 
 
