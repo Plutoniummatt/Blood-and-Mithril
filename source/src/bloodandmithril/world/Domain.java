@@ -17,11 +17,7 @@ import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.generation.ChunkGenerator;
 import bloodandmithril.generation.biome.DefaultBiomeDecider;
-import bloodandmithril.networking.ClientServerInterface;
 import bloodandmithril.prop.Prop;
-import bloodandmithril.ui.UserInterface;
-import bloodandmithril.ui.components.Component;
-import bloodandmithril.ui.components.window.UnitsWindow;
 
 /**
  * Class representing the entire domain governing the game.
@@ -87,20 +83,8 @@ public class Domain {
 	}
 
 
-	public static void addIndividual(final Individual indi, final int worldId) {
-		indi.setWorldId(worldId);
-		indi.getId().getBirthday().year = Domain.getWorld(worldId).getEpoch().year;
-		individuals.put(indi.getId().getId(), indi);
-		Domain.getWorld(worldId).getIndividuals().add(indi.getId().getId());
-		if (ClientServerInterface.isClient()) {
-			for (final Component component : UserInterface.getLayeredComponents()) {
-				if (component instanceof UnitsWindow) {
-					((UnitsWindow) component).refresh();
-				}
-			}
-		} else {
-			ClientServerInterface.SendNotification.notifyRefreshWindows();
-		}
+	public static void addIndividual(final Individual indi) {
+		Domain.individuals.put(indi.getId().getId(), indi);
 	}
 
 

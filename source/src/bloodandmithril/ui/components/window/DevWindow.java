@@ -30,6 +30,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
+import bloodandmithril.character.AddIndividualService;
 import bloodandmithril.character.faction.Faction;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.character.individuals.IndividualIdentifier;
@@ -92,6 +93,7 @@ public class DevWindow extends Window {
 	@Inject private GameSaver gameSaver;
 	@Inject private MissionTracker missionTracker;
 	@Inject private GameClientStateTracker gameClientStateTracker;
+	@Inject private AddIndividualService addIndividualService;
 
 	/**
 	 * Constructor
@@ -274,7 +276,7 @@ public class DevWindow extends Window {
 			);
 
 			if (isServer()) {
-				Domain.addIndividual(elf, gameClientStateTracker.getActiveWorld().getWorldId());
+				addIndividualService.addIndividual(elf, gameClientStateTracker.getActiveWorld().getWorldId());
 			} else {
 				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(elf);
 			}
@@ -298,7 +300,7 @@ public class DevWindow extends Window {
 			final Hare hare = new Hare(id, state, Faction.NPC, gameClientStateTracker.getActiveWorld().getWorldId());
 
 			if (isServer()) {
-				Domain.addIndividual(hare, gameClientStateTracker.getActiveWorld().getWorldId());
+				addIndividualService.addIndividual(hare, gameClientStateTracker.getActiveWorld().getWorldId());
 			} else {
 				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(hare);
 			}
@@ -322,7 +324,7 @@ public class DevWindow extends Window {
 			final Wolf wolf= new Wolf(id, state, 2, gameClientStateTracker.getActiveWorld().getWorldId());
 
 			if (isServer()) {
-				Domain.addIndividual(wolf, gameClientStateTracker.getActiveWorld().getWorldId());
+				addIndividualService.addIndividual(wolf, gameClientStateTracker.getActiveWorld().getWorldId());
 			} else {
 				ClientServerInterface.SendRequest.sendSpawnIndividualRequest(wolf);
 			}

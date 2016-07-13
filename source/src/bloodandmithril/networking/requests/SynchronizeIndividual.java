@@ -5,6 +5,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
+import bloodandmithril.character.AddIndividualService;
 import bloodandmithril.character.ai.AITask;
 import bloodandmithril.character.ai.task.CompositeAITask;
 import bloodandmithril.character.ai.task.GoToLocation;
@@ -78,6 +79,8 @@ public class SynchronizeIndividual implements Request {
 
 		@Inject
 		private transient GameClientStateTracker gameClientStateTracker;
+		@Inject
+		private transient AddIndividualService addIndividualService;
 
 		/**
 		 * Synchronize single individual
@@ -118,7 +121,7 @@ public class SynchronizeIndividual implements Request {
 		private void syncSingleIndividual() {
 			final Individual got = Domain.getIndividual(individual.getId().getId());
 			if (got == null) {
-				Domain.addIndividual(individual, individual.getWorldId());
+				addIndividualService.addIndividual(individual, individual.getWorldId());
 			} else {
 				if (timeStamp < got.getTimeStamp()) {
 					// Received snapshot is older than the most recently updated snapshot

@@ -2,9 +2,9 @@ package bloodandmithril.character;
 
 import java.util.List;
 
-import bloodandmithril.util.Util;
-
 import com.google.common.collect.Lists;
+
+import bloodandmithril.util.Util;
 
 public class Speech {
 
@@ -43,7 +43,6 @@ public class Speech {
 		cantDoItSpeech.add("Can't do it...");
 		cantDoItSpeech.add("Sorry I can't");
 		cantDoItSpeech.add("I don't think so");
-		cantDoItSpeech.add("Don't be silly");
 	}
 
 	public static String getRandomIdleSpeech() {

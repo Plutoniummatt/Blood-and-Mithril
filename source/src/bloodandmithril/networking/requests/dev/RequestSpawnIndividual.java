@@ -1,10 +1,12 @@
 package bloodandmithril.networking.requests.dev;
 
+import com.google.inject.Inject;
+
+import bloodandmithril.character.AddIndividualService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.networking.Request;
 import bloodandmithril.networking.Response.Responses;
-import bloodandmithril.world.Domain;
 
 /**
  * {@link Request} to spawn an {@link Individual}
@@ -16,17 +18,20 @@ public class RequestSpawnIndividual implements Request {
 
 	private Individual individual;
 
+	@Inject
+	private transient AddIndividualService addIndividualService;
+
 	/**
 	 * Constructor
 	 */
-	public RequestSpawnIndividual(Individual individual) {
+	public RequestSpawnIndividual(final Individual individual) {
 		this.individual = individual;
 	}
 
 
 	@Override
 	public Responses respond() {
-		Domain.addIndividual(individual, individual.getWorldId());
+		addIndividualService.addIndividual(individual, individual.getWorldId());
 		return new Responses(false);
 	}
 

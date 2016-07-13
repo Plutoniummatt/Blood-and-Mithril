@@ -14,7 +14,9 @@ import java.util.Set;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
+import bloodandmithril.character.AddIndividualService;
 import bloodandmithril.character.individuals.Individual;
 import bloodandmithril.core.Copyright;
 import bloodandmithril.core.GameClientStateTracker;
@@ -44,6 +46,11 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 	private final Map<Integer, Individual> individuals = Maps.newHashMap();
 	private final ItemPackage startingItemPackage;
 
+	@Inject
+	private AddIndividualService addIndividualService;
+	@Inject
+	private GameClientStateTracker gameClientStateTracker;
+
 	/**
 	 * Constructor
 	 */
@@ -58,7 +65,7 @@ public class ChooseStartingLocationCursorBoundTask extends CursorBoundTask {
 			Domain.getWorld(worldId).props().addProp((Prop) startingItemPackage.getContainer());
 			for (final Individual individual : individuals.values()) {
 				individual.setFactionId(startingFactionId);
-				Domain.addIndividual(individual, Wiring.injector().getInstance(GameClientStateTracker.class).getActiveWorld().getWorldId());
+				addIndividualService.addIndividual(individual, gameClientStateTracker.getActiveWorld().getWorldId());
 			}
 		});
 
